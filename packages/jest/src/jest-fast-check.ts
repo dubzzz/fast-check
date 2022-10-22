@@ -22,7 +22,8 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params?: fc.Parameters<Ts>
+  params: fc.Parameters<Ts> | undefined,
+  timeout: number | undefined
 ): void {
   const customParams: fc.Parameters<Ts> = { ...params };
   if (customParams.seed === undefined) {
@@ -42,9 +43,13 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
   }
 
   const promiseProp = wrapProp(prop);
-  testFn(`${label} (with seed=${customParams.seed})`, async () => {
-    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
-  });
+  testFn(
+    `${label} (with seed=${customParams.seed})`,
+    async () => {
+      await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
+    },
+    timeout
+  );
 }
 
 // Mimic Failing from @jest/types
@@ -55,7 +60,7 @@ function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['faili
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
   ): void {
-    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+    internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
   const extras = {
     // TODO - each
@@ -71,7 +76,7 @@ function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['on
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
   ): void {
-    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+    internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
   const extras = {
     failing: internalTestPropFailing(testFn.failing),
@@ -87,7 +92,7 @@ function internalTestPropConcurrent(testFn: It | It['concurrent']) {
     prop: Prop<Ts>,
     params?: fc.Parameters<Ts>
   ): void {
-    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+    internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
   const extras = {
     only: internalTestPropBase(testFn.only),
@@ -132,8 +137,8 @@ function buildTestProp<Ts extends [any] | any[]>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing']
 ): TestProp<Ts> {
   return (arbitraries: ArbitraryTuple<Ts>, params?: fc.Parameters<Ts>) =>
-    (testName: string, prop: Prop<Ts>, _timeout?: number | undefined) =>
-      internalTestPropExecute(testFn, testName, arbitraries, prop, params);
+    (testName: string, prop: Prop<Ts>, timeout?: number | undefined) =>
+      internalTestPropExecute(testFn, testName, arbitraries, prop, params, timeout);
 }
 
 /**
