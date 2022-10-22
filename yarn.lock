@@ -682,6 +682,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@fast-check/expect-type@workspace:packages/expect-type":
+  version: 0.0.0-use.local
+  resolution: "@fast-check/expect-type@workspace:packages/expect-type"
+  dependencies:
+    typescript: ^4.8.4
+  languageName: unknown
+  linkType: soft
+
 "@fast-check/jest@workspace:packages/jest":
   version: 0.0.0-use.local
   resolution: "@fast-check/jest@workspace:packages/jest"

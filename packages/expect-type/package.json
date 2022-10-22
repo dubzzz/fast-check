@@ -1,0 +1,55 @@
+{
+  "name": "@fast-check/expect-type",
+  "description": "Ensure correct typings will be emited by your code",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "main": "src/main.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": "./src/main.js",
+      "import": "./src/esm/main.js",
+      "default": "./src/esm/main.js"
+    }
+  },
+  "module": "src/esm/main.js",
+  "types": "src/main.d.ts",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/expect-type"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  },
+  "keywords": [
+    "type",
+    "checker",
+    "tsc",
+    "assert",
+    "typescript"
+  ],
+  "funding": [
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    },
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    }
+  ]
+}
