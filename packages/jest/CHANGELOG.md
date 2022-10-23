@@ -3,13 +3,10 @@
 _Better typings for `{it,test}Prop`_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.3.0...jest%2Fv1.3.1)]
 
-## Features
-
-- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Wrongly typed `itProp` when receiving `examples`
-
 ## Fixes
 
 - ([PR#3345](https://github.com/dubzzz/fast-check/pull/3345)) Doc: Fix dead link in readme
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typing: Wrongly typed `itProp` when receiving `examples`
 
 # 1.3.0
 
@@ -35,7 +32,7 @@ _Better typings for `{it,test}Prop`_
 
 ## Fixes
 
-- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Wrongly typed `itProp` when receiving `examples`
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typing: Wrongly typed `itProp` when receiving `examples`
 
 # 1.2.0
 
@@ -64,7 +61,7 @@ _Various fixes_
 
 - ([PR#3279](https://github.com/dubzzz/fast-check/pull/3279)) Bug: Pass the forged seed to the runner
 - ([PR#3281](https://github.com/dubzzz/fast-check/pull/3281)) Bug: Fallback on the seed coming from globals if any
-- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typings: Wrongly typed `itProp` when receiving `examples`
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typing: Wrongly typed `itProp` when receiving `examples`
 
 # 1.1.0
 
@@ -94,7 +91,7 @@ _Various fixes_
 
 - ([PR#3279](https://github.com/dubzzz/fast-check/pull/3279)) Bug: Pass the forged seed to the runner
 - ([PR#3281](https://github.com/dubzzz/fast-check/pull/3281)) Bug: Fallback on the seed coming from globals if any
-- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typings: Wrongly typed `itProp` when receiving `examples`
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typing: Wrongly typed `itProp` when receiving `examples`
 
 # 1.0.1
 
