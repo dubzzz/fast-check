@@ -16,14 +16,14 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
 }
 
-function internalTestPropExecute<Ts extends [any] | any[]>(
+function internalTestPropExecute<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing'],
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<TsParameters>
 ): void {
-  const customParams: fc.Parameters<Ts> = { ...params };
+  const customParams: fc.Parameters<TsParameters> = { ...params };
   if (customParams.seed === undefined) {
     const seedFromGlobals = fc.readConfigureGlobal().seed;
     if (seedFromGlobals !== undefined) {
@@ -48,11 +48,11 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
 
 // Mimic Failing from @jest/types
 function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['failing']) {
-  function base<Ts extends [any] | any[]>(
+  function base<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void {
     internalTestPropExecute(testFn, label, arbitraries, prop, params);
   }
@@ -64,11 +64,11 @@ function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['faili
 
 // Mimic ItBase from @jest/types
 function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['only' | 'skip']) {
-  function base<Ts extends [any] | any[]>(
+  function base<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void {
     internalTestPropExecute(testFn, label, arbitraries, prop, params);
   }
@@ -80,11 +80,11 @@ function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['on
 
 // Mimic ItConcurrentExtended from @jest/types
 function internalTestPropConcurrent(testFn: It | It['concurrent']) {
-  function base<Ts extends [any] | any[]>(
+  function base<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void {
     internalTestPropExecute(testFn, label, arbitraries, prop, params);
   }
