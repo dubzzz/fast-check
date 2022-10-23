@@ -28,6 +28,15 @@ _Support for new `--seed` feature of Jest_
 
 ---
 
+# 1.2.1
+
+_Better typings for `{it,test}Prop`_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.2.0...jest%2Fv1.2.1)]
+
+## Fixes
+
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Wrongly typed `itProp` when receiving `examples`
+
 # 1.2.0
 
 _Align seed computation with fast-check's one_
@@ -45,6 +54,17 @@ _Align seed computation with fast-check's one_
 - ([PR#3284](https://github.com/dubzzz/fast-check/pull/3284)) Test: Faster tests without `babel-jest`
 
 ---
+
+# 1.1.1
+
+_Various fixes_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.1.0...jest%2Fv1.1.1)]
+
+## Fixes
+
+- ([PR#3279](https://github.com/dubzzz/fast-check/pull/3279)) Bug: Pass the forged seed to the runner
+- ([PR#3281](https://github.com/dubzzz/fast-check/pull/3281)) Bug: Fallback on the seed coming from globals if any
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typings: Wrongly typed `itProp` when receiving `examples`
 
 # 1.1.0
 
@@ -64,6 +84,17 @@ _Support more variants of `it`_
 - ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
 
 ---
+
+# 1.0.2
+
+_Various fixes_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.0.1...jest%2Fv1.0.2)]
+
+## Fixes
+
+- ([PR#3279](https://github.com/dubzzz/fast-check/pull/3279)) Bug: Pass the forged seed to the runner
+- ([PR#3281](https://github.com/dubzzz/fast-check/pull/3281)) Bug: Fallback on the seed coming from globals if any
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Typings: Wrongly typed `itProp` when receiving `examples`
 
 # 1.0.1
 
