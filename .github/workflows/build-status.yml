@@ -484,7 +484,6 @@ jobs:
       - documentation
       - format_lint
       - no_dedupe_required
-      - all_version_bump_declared
       - package_quality
       - typecheck
       - test
