@@ -496,6 +496,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "SimenB",
+      "name": "Simen Bekkhus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1404810?v=4",
+      "profile": "https://github.com/SimenB",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

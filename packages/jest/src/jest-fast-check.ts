@@ -17,15 +17,15 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
 }
 
-function internalTestPropExecute<Ts extends [any] | any[]>(
+function internalTestPropExecute<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing'],
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params: fc.Parameters<Ts> | undefined,
+  params: fc.Parameters<TsParameters> | undefined,
   timeout: number | undefined
 ): void {
-  const customParams: fc.Parameters<Ts> = { ...params };
+  const customParams: fc.Parameters<TsParameters> = { ...params };
   if (customParams.seed === undefined) {
     const seedFromGlobals = fc.readConfigureGlobal().seed;
     if (seedFromGlobals !== undefined) {
@@ -54,11 +54,11 @@ function internalTestPropExecute<Ts extends [any] | any[]>(
 
 // Mimic Failing from @jest/types
 function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['failing']) {
-  function base<Ts extends [any] | any[]>(
+  function base<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void {
     internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
@@ -70,11 +70,11 @@ function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['faili
 
 // Mimic ItBase from @jest/types
 function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['only' | 'skip']) {
-  function base<Ts extends [any] | any[]>(
+  function base<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void {
     internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
@@ -86,11 +86,11 @@ function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['on
 
 // Mimic ItConcurrentExtended from @jest/types
 function internalTestPropConcurrent(testFn: It | It['concurrent']) {
-  function base<Ts extends [any] | any[]>(
+  function base<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void {
     internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
@@ -115,28 +115,28 @@ function internalTestProp(testFn: It) {
 /**
  * Type used for any `{it,test}.*.prop`
  */
-type TestProp<Ts extends [any] | any[]> = (
+type TestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
   arbitraries: ArbitraryTuple<Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<TsParameters>
 ) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
 
 /**
  * prop has just been declared for typing reasons, ideally TestProp should be enough
  * and should be used to replace `{ prop: typeof prop }` by `{ prop: TestProp<???> }`
  */
-declare const prop: <Ts extends [any] | any[]>(
+declare const prop: <Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   arbitraries: ArbitraryTuple<Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<TsParameters>
 ) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
 
 /**
  * Build `{it,test}.*.prop` out of `{it,test}.*`
  * @param testFn - The source `{it,test}.*`
  */
-function buildTestProp<Ts extends [any] | any[]>(
+function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing']
-): TestProp<Ts> {
-  return (arbitraries: ArbitraryTuple<Ts>, params?: fc.Parameters<Ts>) =>
+): TestProp<Ts, TsParameters> {
+  return (arbitraries: ArbitraryTuple<Ts>, params?: fc.Parameters<TsParameters>) =>
     (testName: string, prop: Prop<Ts>, timeout?: number | undefined) =>
       internalTestPropExecute(testFn, testName, arbitraries, prop, params, timeout);
 }
