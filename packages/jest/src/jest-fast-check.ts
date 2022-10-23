@@ -1,8 +1,7 @@
 import { it as itJest, test as testJest, jest } from '@jest/globals';
-import { type Global } from '@jest/types';
 import * as fc from 'fast-check';
 
-type It = Global.ItConcurrent;
+type It = typeof itJest;
 
 // Pre-requisite: https://github.com/Microsoft/TypeScript/pull/26063
 // Require TypeScript 3.1
