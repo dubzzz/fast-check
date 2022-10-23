@@ -24,6 +24,16 @@ _Align seed computation with fast-check's one_
 
 ---
 
+# 1.0.3
+
+_Fixes around seed not being passed correctly_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.0.2...ava%2Fv1.0.3)]
+
+## Fixes
+
+- ([PR#3280](https://github.com/dubzzz/fast-check/pull/3280)) Bug: Pass the forged seed to the runner
+- ([PR#3283](https://github.com/dubzzz/fast-check/pull/3283)) Bug: Fallback on the seed coming from globals if any
+
 # 1.0.2
 
 _Only keep comments in published typings not in published code_
