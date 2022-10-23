@@ -1,6 +1,6 @@
 {
   "name": "@fast-check/expect-type",
-  "description": "Ensure correct typings will be emited by your code",
+  "description": "Make sure your types are the ones you expect (similar to tsd)",
   "version": "0.0.0",
   "type": "commonjs",
   "main": "src/main.js",
