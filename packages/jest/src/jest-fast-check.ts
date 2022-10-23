@@ -30,14 +30,14 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
 }
 
-function internalTestProp<Ts extends [any] | any[]>(
+function internalTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   testFn: It,
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<TsParameters>
 ): void {
-  const customParams: fc.Parameters<Ts> = { ...params };
+  const customParams: fc.Parameters<TsParameters> = { ...params };
   if (customParams.seed === undefined) {
     const seedFromGlobals = fc.readConfigureGlobal().seed;
     if (seedFromGlobals !== undefined) {
@@ -53,56 +53,56 @@ function internalTestProp<Ts extends [any] | any[]>(
   });
 }
 
-export function testProp<Ts extends [any] | any[]>(
+export function testProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<TsParameters>
 ): void {
   internalTestProp(test, label, arbitraries, prop, params);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace testProp {
-  export const only = <Ts extends [any] | any[]>(
+  export const only = <Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void => internalTestProp(test.only, label, arbitraries, prop, params);
-  export const skip = <Ts extends [any] | any[]>(
+  export const skip = <Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void => internalTestProp(test.skip, label, arbitraries, prop, params);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export const todo = <Ts extends [any] | any[]>(label: string, arbitraries?: ArbitraryTuple<Ts>): void =>
     test.todo(label);
 }
 
-export function itProp<Ts extends [any] | any[]>(
+export function itProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<TsParameters>
 ): void {
   internalTestProp(it, label, arbitraries, prop, params);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace itProp {
-  export const only = <Ts extends [any] | any[]>(
+  export const only = <Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void => internalTestProp(it.only, label, arbitraries, prop, params);
-  export const skip = <Ts extends [any] | any[]>(
+  export const skip = <Ts extends [any] | any[], TsParameters extends Ts = Ts>(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<TsParameters>
   ): void => internalTestProp(it.skip, label, arbitraries, prop, params);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export const todo = <Ts extends [any] | any[]>(label: string, arbitraries?: ArbitraryTuple<Ts>): void =>
