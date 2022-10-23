@@ -6,6 +6,7 @@
     "test": "tsc"
   },
   "dependencies": {
+    "@fast-check/expect-type": "workspace:*",
     "fast-check": "workspace:*"
   },
   "devDependencies": {
