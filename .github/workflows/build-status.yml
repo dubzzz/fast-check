@@ -71,20 +71,6 @@ jobs:
           node-version: '16.x'
       - name: Ensure no dedupe required
         run: yarn dedupe --check
-  all_version_bump_declared:
-    name: 'All version bump declared'
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/') || github.event.pull_request.user.login != 'renovate[bot]'
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Using Node v16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      - name: Ensure versions have been properly bumped
-        run: yarn version check
   package_quality:
     name: 'Package quality'
     runs-on: ubuntu-latest
@@ -472,7 +458,6 @@ jobs:
       - documentation
       - format_lint
       - no_dedupe_required
-      - all_version_bump_declared
       - package_quality
       - typecheck
       - test
