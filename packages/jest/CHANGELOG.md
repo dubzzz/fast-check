@@ -1,3 +1,16 @@
+# 1.3.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.3.0...jest%2Fv1.3.1)]
+
+## Features
+
+- ([PR#3349](https://github.com/dubzzz/fast-check/pull/3349)) Wrongly typed `itProp` when receiving `examples`
+
+## Fixes
+
+- ([PR#3345](https://github.com/dubzzz/fast-check/pull/3345)) Doc: Fix dead link in readme
+
 # 1.3.0
 
 _Support for new `--seed` feature of Jest_
