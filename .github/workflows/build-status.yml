@@ -494,27 +494,27 @@ jobs:
           path: packages/
       - if: startsWith(github.ref, 'refs/tags/v')
         name: Publish fast-check
-        run: npm publish --access public packages/fast-check/package.tgz
+        run: npm publish --tag legacy --access public packages/fast-check/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/ava/v')
         name: Publish @fast-check/ava
-        run: npm publish --access public packages/ava/package.tgz
+        run: npm publish --tag legacy --access public packages/ava/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/jest/v')
         name: Publish @fast-check/jest
-        run: npm publish --access public packages/jest/package.tgz
+        run: npm publish --tag legacy --access public packages/jest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/packaged/v')
         name: Publish @fast-check/packaged
-        run: npm publish --access public packages/packaged/package.tgz
+        run: npm publish --tag legacy --access public packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/poisoning/v')
         name: Publish @fast-check/poisoning
-        run: npm publish --access public packages/poisoning/package.tgz
+        run: npm publish --tag legacy --access public packages/poisoning/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/worker/v')
