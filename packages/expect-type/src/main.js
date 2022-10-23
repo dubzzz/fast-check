@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-empty-function */
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
