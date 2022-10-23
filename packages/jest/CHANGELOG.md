@@ -1,6 +1,6 @@
 # 1.3.1
 
-_TODO Description_
+_Better typings for `{it,test}Prop`_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.3.0...jest%2Fv1.3.1)]
 
 ## Features
