@@ -1,7 +1,7 @@
-import { it, test, jest } from '@jest/globals';
+import { it as itJest, test as testJest, jest } from '@jest/globals';
 import * as fc from 'fast-check';
 
-type It = typeof it;
+type It = typeof itJest;
 
 // Pre-requisite: https://github.com/Microsoft/TypeScript/pull/26063
 // Require TypeScript 3.1
@@ -21,7 +21,8 @@ function internalTestPropExecute<Ts extends [any] | any[], TsParameters extends 
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params?: fc.Parameters<TsParameters>
+  params: fc.Parameters<TsParameters> | undefined,
+  timeout: number | undefined
 ): void {
   const customParams: fc.Parameters<TsParameters> = { ...params };
   if (customParams.seed === undefined) {
@@ -41,9 +42,13 @@ function internalTestPropExecute<Ts extends [any] | any[], TsParameters extends 
   }
 
   const promiseProp = wrapProp(prop);
-  testFn(`${label} (with seed=${customParams.seed})`, async () => {
-    await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
-  });
+  testFn(
+    `${label} (with seed=${customParams.seed})`,
+    async () => {
+      await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
+    },
+    timeout
+  );
 }
 
 // Mimic Failing from @jest/types
@@ -54,7 +59,7 @@ function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['faili
     prop: Prop<Ts>,
     params?: fc.Parameters<TsParameters>
   ): void {
-    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+    internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
   const extras = {
     // TODO - each
@@ -70,7 +75,7 @@ function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['on
     prop: Prop<Ts>,
     params?: fc.Parameters<TsParameters>
   ): void {
-    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+    internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
   const extras = {
     failing: internalTestPropFailing(testFn.failing),
@@ -86,7 +91,7 @@ function internalTestPropConcurrent(testFn: It | It['concurrent']) {
     prop: Prop<Ts>,
     params?: fc.Parameters<TsParameters>
   ): void {
-    internalTestPropExecute(testFn, label, arbitraries, prop, params);
+    internalTestPropExecute(testFn, label, arbitraries, prop, params, undefined);
   }
   const extras = {
     only: internalTestPropBase(testFn.only),
@@ -106,6 +111,67 @@ function internalTestProp(testFn: It) {
   return Object.assign(base, extras);
 }
 
-export const testProp = internalTestProp(test);
-export const itProp = internalTestProp(it);
+/**
+ * Type used for any `{it,test}.*.prop`
+ */
+type TestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
+  arbitraries: ArbitraryTuple<Ts>,
+  params?: fc.Parameters<TsParameters>
+) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
+
+/**
+ * prop has just been declared for typing reasons, ideally TestProp should be enough
+ * and should be used to replace `{ prop: typeof prop }` by `{ prop: TestProp<???> }`
+ */
+declare const prop: <Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  arbitraries: ArbitraryTuple<Ts>,
+  params?: fc.Parameters<TsParameters>
+) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
+
+/**
+ * Build `{it,test}.*.prop` out of `{it,test}.*`
+ * @param testFn - The source `{it,test}.*`
+ */
+function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing']
+): TestProp<Ts, TsParameters> {
+  return (arbitraries: ArbitraryTuple<Ts>, params?: fc.Parameters<TsParameters>) =>
+    (testName: string, prop: Prop<Ts>, timeout?: number | undefined) =>
+      internalTestPropExecute(testFn, testName, arbitraries, prop, params, timeout);
+}
+
+/**
+ * Revamped {it,test} with added `.prop`
+ */
+type FastCheckItBuilder<T> = T &
+  ('each' extends keyof T ? T & { prop: typeof prop } : T) & {
+    [K in keyof Omit<T, 'each'>]: FastCheckItBuilder<T[K]>;
+  };
+
+/**
+ * Build the enriched version of {it,test}, the one with added `.prop`
+ */
+function enrichWithTestProp<T extends (...args: any[]) => any>(testFn: T): FastCheckItBuilder<T> {
+  let atLeastOneExtra = false;
+  const extraKeys: Partial<FastCheckItBuilder<T>> = {};
+  for (const key in testFn) {
+    if (typeof testFn[key] === 'function') {
+      atLeastOneExtra = true;
+      extraKeys[key] = key !== 'each' ? enrichWithTestProp(testFn[key] as any) : testFn[key];
+    }
+  }
+  if (!atLeastOneExtra) {
+    return testFn as FastCheckItBuilder<T>;
+  }
+  const enrichedTestFn = (...args: Parameters<T>): ReturnType<T> => testFn(...args);
+  if ('each' in testFn) {
+    extraKeys['prop' as keyof typeof extraKeys] = buildTestProp(testFn as any) as any;
+  }
+  return Object.assign(enrichedTestFn, extraKeys) as FastCheckItBuilder<T>;
+}
+
+export const test: FastCheckItBuilder<It> = enrichWithTestProp(testJest);
+export const it: FastCheckItBuilder<It> = enrichWithTestProp(itJest);
+export const testProp = internalTestProp(testJest);
+export const itProp = internalTestProp(itJest);
 export { fc };

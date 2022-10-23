@@ -1,4 +1,16 @@
-import { itProp, fc } from '@fast-check/jest';
+import { it, itProp, fc } from '@fast-check/jest';
+
+// should accept examples with stricter types than arbitraries without requiring explicit typings
+// case coming from: https://github.com/facebook/jest/pull/13493
+it.prop([fc.anything(), fc.anything()], { examples: [[0, 5e-324]] })('test', (_a, _b) => undefined);
+
+// should accept examples with same types as arbitraries without requiring explicit typings
+// case coming from: https://github.com/facebook/jest/pull/13493
+it.prop([fc.double(), fc.double()], { examples: [[0, 5e-324]] })('test', (_a, _b) => undefined);
+
+declare const var1: number | string;
+// @ts-expect-error - should reject examples with types more generic than passed arbitraries
+it.prop([fc.double(), fc.double()], { examples: [[var1, var1]] })('test', (_a, _b) => undefined);
 
 // should accept examples with stricter types than arbitraries without requiring explicit typings
 // case coming from: https://github.com/facebook/jest/pull/13493
@@ -8,6 +20,6 @@ itProp('test', [fc.anything(), fc.anything()], (_a, _b) => undefined, { examples
 // case coming from: https://github.com/facebook/jest/pull/13493
 itProp('test', [fc.double(), fc.double()], (_a, _b) => undefined, { examples: [[0, 5e-324]] });
 
-declare const var1: number | string;
+declare const var2: number | string;
 // @ts-expect-error - should reject examples with types more generic than passed arbitraries
-itProp('test', [fc.double(), fc.double()], (_a, _b) => undefined, { examples: [[var1, var1]] });
+itProp('test', [fc.double(), fc.double()], (_a, _b) => undefined, { examples: [[var2, var2]] });
