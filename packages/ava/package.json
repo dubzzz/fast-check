@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/node": "^17.0.44",
-    "ava": "^4.3.3",
+    "ava": "^5.0.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "typescript": "^4.8.4"
