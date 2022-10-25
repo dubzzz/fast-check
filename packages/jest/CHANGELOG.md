@@ -1,3 +1,18 @@
+# 1.4.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.3.1...jest%2Fv1.4.0)]
+
+## Features
+
+- ([PR#3339](https://github.com/dubzzz/fast-check/pull/3339)) Add new `it.prop` and related
+
+## Fixes
+
+- ([PR#3352](https://github.com/dubzzz/fast-check/pull/3352)) Doc: Add missing 'Typing' on PRs in changelog
+
+---
+
 # 1.3.1
 
 _Better typings for `{it,test}Prop`_
