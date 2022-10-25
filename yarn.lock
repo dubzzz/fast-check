@@ -645,7 +645,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
-    "@types/node": ^17.0.44
+    "@types/node": ^18.11.5
     ava: ^5.0.1
     esm: ^3.2.25
     fast-check: "workspace:*"
@@ -695,7 +695,7 @@ __metadata:
   resolution: "@fast-check/jest@workspace:packages/jest"
   dependencies:
     "@jest/globals": ^29.2.2
-    "@types/node": ^17.0.44
+    "@types/node": ^18.11.5
     fast-check: "workspace:*"
     jest: ^29.2.2
     ts-jest: ^29.0.3
@@ -2156,10 +2156,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^17.0.0, @types/node@npm:^17.0.44":
-  version: 17.0.44
-  resolution: "@types/node@npm:17.0.44"
-  checksum: 8e2786472507575a9c49ec6c4b056cbe1f4fd6766fd03299f8510bbdce558d8522691b2cc24329396742002c2a8c3708cb453053ecbe0ce09c10b9d48887c9d8
+"@types/node@npm:*, @types/node@npm:^18.11.5":
+  version: 18.11.5
+  resolution: "@types/node@npm:18.11.5"
+  checksum: ac54e9287dd4549ea3dc8aabc0cf7bfa04c52f02925d7fd68414789617ec770f034c8ae2e111e8bd00d446a46fcac42587b5a316a1303e2f6ea094854248c9ff
   languageName: node
   linkType: hard
 
@@ -4993,7 +4993,7 @@ __metadata:
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": ^7.33.4
     "@types/jest": ^29.2.0
-    "@types/node": ^17.0.0
+    "@types/node": ^18.11.5
     buffer: ^6.0.3
     cross-env: ^7.0.3
     fast-check: "workspace:*"
