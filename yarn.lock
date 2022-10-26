@@ -723,7 +723,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
-    "@npmcli/arborist": 6.0.0
+    "@npmcli/arborist": 6.1.0
     "@types/jest": ^29.2.0
     "@types/pacote": ^11.1.5
     "@types/tar": ^6.1.3
@@ -1552,9 +1552,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/arborist@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@npmcli/arborist@npm:6.0.0"
+"@npmcli/arborist@npm:6.1.0":
+  version: 6.1.0
+  resolution: "@npmcli/arborist@npm:6.1.0"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/installed-package-contents": ^2.0.0
@@ -1591,7 +1591,7 @@ __metadata:
     walk-up-path: ^1.0.0
   bin:
     arborist: bin/index.js
-  checksum: 9891fae8dc3b39ab0a998d1bd9b7a938978df72d1ce93b9f1adc73fff2136fa7d29b9f414969b6a20eb489482876cdf527ce76d2739edb95167f82faf8bf41dd
+  checksum: 5072893a20f044b4dee6bdff3abe4f2a350d06bed4fe09304550139072607c8b353ba9cc33a18ac1fd6bd0365ec7dbb42f18fc825b8999388b452c662e14603c
   languageName: node
   linkType: hard
 
