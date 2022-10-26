@@ -1719,6 +1719,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@npmcli/promise-spawn@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@npmcli/promise-spawn@npm:5.0.0"
+  checksum: f6b9a0b41ea827faf752c72d10094be072851ec7b31f7cf97b151293850216bdf58c4c3bcce7466399da28224f4faa372190c13f242c6d9eb32967e71cb8e03d
+  languageName: node
+  linkType: hard
+
 "@npmcli/query@npm:^3.0.0":
   version: 3.0.0
   resolution: "@npmcli/query@npm:3.0.0"
@@ -8329,12 +8336,12 @@ __metadata:
   linkType: hard
 
 "pacote@npm:^15.0.0, pacote@npm:^15.0.2":
-  version: 15.0.3
-  resolution: "pacote@npm:15.0.3"
+  version: 15.0.4
+  resolution: "pacote@npm:15.0.4"
   dependencies:
     "@npmcli/git": ^4.0.0
     "@npmcli/installed-package-contents": ^2.0.1
-    "@npmcli/promise-spawn": ^4.0.0
+    "@npmcli/promise-spawn": ^5.0.0
     "@npmcli/run-script": ^5.0.0
     cacache: ^17.0.0
     fs-minipass: ^2.1.0
@@ -8351,7 +8358,7 @@ __metadata:
     tar: ^6.1.11
   bin:
     pacote: lib/bin.js
-  checksum: 8664a89509532b8a2fa871c14ba5dafba41527d8b492aa908edef5ae60dd52557daabf71da7ba2450f506e0b89056461a70bf551444f93fd0b31a05a3f01ef9e
+  checksum: fe7e73f3cf53ec16ee8c078d7c28c587bb470eaaa53cb19ae67580d6749ff3a53d49a143e2af0872c12197fb47d298c808310de204abe85b4c7e8df46bba4351
   languageName: node
   linkType: hard
 
