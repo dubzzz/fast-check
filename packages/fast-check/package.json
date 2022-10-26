@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.33.4",
+    "@microsoft/api-extractor": "^7.33.5",
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.5",
     "buffer": "^6.0.3",

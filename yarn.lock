@@ -1466,23 +1466,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.25.1":
-  version: 7.25.1
-  resolution: "@microsoft/api-extractor-model@npm:7.25.1"
+"@microsoft/api-extractor-model@npm:7.25.2":
+  version: 7.25.2
+  resolution: "@microsoft/api-extractor-model@npm:7.25.2"
   dependencies:
-    "@microsoft/tsdoc": 0.14.1
+    "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.53.2
-  checksum: fd63f794358b92de84dda95c545ad8147ebd0c71bb4aff63d2ef4f727243d5de7251aa3301f3f917dda1e84248683d9a569a5aa884124fc1f1f6e40444ba8633
+  checksum: b91782eacbe5cc519bbb048289237bef4fdd49fcd2e5c9bd716d6ee63360d1ab4279c0b64deeb83b5df54b074372edb64631fb7d2395757980240031c83f3097
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.33.4":
-  version: 7.33.4
-  resolution: "@microsoft/api-extractor@npm:7.33.4"
+"@microsoft/api-extractor@npm:^7.33.5":
+  version: 7.33.5
+  resolution: "@microsoft/api-extractor@npm:7.33.5"
   dependencies:
-    "@microsoft/api-extractor-model": 7.25.1
-    "@microsoft/tsdoc": 0.14.1
+    "@microsoft/api-extractor-model": 7.25.2
+    "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.53.2
     "@rushstack/rig-package": 0.3.17
@@ -1495,7 +1495,7 @@ __metadata:
     typescript: ~4.8.4
   bin:
     api-extractor: bin/api-extractor
-  checksum: 9462c36c00b3b718ddc00a3cee98236c1ec322244a677485ccec00f7bc2d487ac0e08610870db3aa72eb18eabd7d918c9e7f9909383b4eb56eb055471895c72b
+  checksum: 1e000c536bf5e21ac0cfb21bb00e67663835f604f2fce8b6321a40caa306f12b8bf728a669f6f3d40d105e2504eb35ecf0f48971481fc1abdd26aaa141c2fd79
   languageName: node
   linkType: hard
 
@@ -1515,6 +1515,13 @@ __metadata:
   version: 0.14.1
   resolution: "@microsoft/tsdoc@npm:0.14.1"
   checksum: e4ad038ccff2cd96e0d53ee42e2136f0f5a925b16cfda14261f1c2eb55ba0088a0e3b08ff819b476ddc69b2242a391925fab7f6ae2afabb19b96f87e19c114fc
+  languageName: node
+  linkType: hard
+
+"@microsoft/tsdoc@npm:0.14.2":
+  version: 0.14.2
+  resolution: "@microsoft/tsdoc@npm:0.14.2"
+  checksum: b167c89e916ba73ee20b9c9d5dba6aa3a0de25ed3d50050e8a344dca7cd43cb2e1059bd515c820369b6e708901dd3fda476a42bc643ca74a35671ce77f724a3a
   languageName: node
   linkType: hard
 
@@ -4991,7 +4998,7 @@ __metadata:
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": ^7.33.4
+    "@microsoft/api-extractor": ^7.33.5
     "@types/jest": ^29.2.0
     "@types/node": ^18.11.5
     buffer: ^6.0.3
