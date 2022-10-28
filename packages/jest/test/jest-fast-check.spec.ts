@@ -155,9 +155,6 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
         runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property fail record', ({ a, b, c }) => {
-          expect(typeof a).toBe('string');
-          expect(typeof b).toBe('string');
-          expect(typeof c).toBe('string');
           return `${a}${b}${c}`.includes(`${b}!`);
         });
       });
