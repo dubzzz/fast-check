@@ -131,6 +131,65 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
     expect(out).toMatch(/[×✕] property fail async \(with seed=-?\d+\)/);
   });
 
+  if (!useLegacySignatures) {
+    it.concurrent('should pass on truthy record-based property', async () => {
+      // Arrange
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property pass record', ({ a, b, c }) => {
+          expect(typeof a).toBe('string');
+          expect(typeof b).toBe('string');
+          expect(typeof c).toBe('string');
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectPass(out, specFileName);
+      expect(out).toMatch(/[√✓] property pass record \(with seed=-?\d+\)/);
+    });
+
+    it.concurrent('should fail on falsy record-based property', async () => {
+      // Arrange
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property fail record', ({ a, b, c }) => {
+          expect(typeof a).toBe('string');
+          expect(typeof b).toBe('string');
+          expect(typeof c).toBe('string');
+          return `${a}${b}${c}`.includes(`${b}!`);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+      expectAlignedSeeds(out);
+      expect(out).toMatch(/[×✕] property fail record \(with seed=-?\d+\)/);
+    });
+
+    it.concurrent('should fail on falsy record-based property with seed', async () => {
+      // Arrange
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() }, { seed: 4869 })(
+          'property fail record seeded',
+          (_unused) => false
+        );
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+      expectAlignedSeeds(out, { noAlignWithJest: true });
+      expect(out).toMatch(/[×✕] property fail record seeded \(with seed=4869\)/);
+    });
+  }
+
   it.concurrent('should fail with locally requested seed', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
