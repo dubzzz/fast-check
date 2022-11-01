@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.2.2",
-    "@types/node": "^18.11.8",
+    "@types/node": "^18.11.9",
     "fast-check": "workspace:*",
     "jest": "^29.2.2",
     "ts-jest": "^29.0.3",
