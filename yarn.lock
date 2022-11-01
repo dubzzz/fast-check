@@ -1719,10 +1719,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/promise-spawn@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@npmcli/promise-spawn@npm:5.0.0"
-  checksum: f6b9a0b41ea827faf752c72d10094be072851ec7b31f7cf97b151293850216bdf58c4c3bcce7466399da28224f4faa372190c13f242c6d9eb32967e71cb8e03d
+"@npmcli/promise-spawn@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@npmcli/promise-spawn@npm:6.0.1"
+  dependencies:
+    which: ^3.0.0
+  checksum: c4bfdf2e85a0556ba4c0b1013118593f36ed1000906569ea5962a7808807ca78362208404d951cc8d3b4163818e50c349c6d7065785378fb09234e0b3b3406e3
   languageName: node
   linkType: hard
 
@@ -8344,12 +8346,12 @@ __metadata:
   linkType: hard
 
 "pacote@npm:^15.0.0, pacote@npm:^15.0.2":
-  version: 15.0.4
-  resolution: "pacote@npm:15.0.4"
+  version: 15.0.5
+  resolution: "pacote@npm:15.0.5"
   dependencies:
     "@npmcli/git": ^4.0.0
     "@npmcli/installed-package-contents": ^2.0.1
-    "@npmcli/promise-spawn": ^5.0.0
+    "@npmcli/promise-spawn": ^6.0.1
     "@npmcli/run-script": ^5.0.0
     cacache: ^17.0.0
     fs-minipass: ^2.1.0
@@ -8366,7 +8368,7 @@ __metadata:
     tar: ^6.1.11
   bin:
     pacote: lib/bin.js
-  checksum: fe7e73f3cf53ec16ee8c078d7c28c587bb470eaaa53cb19ae67580d6749ff3a53d49a143e2af0872c12197fb47d298c808310de204abe85b4c7e8df46bba4351
+  checksum: 29e0f5fd4dc89ff193094467327402bbb30edc790c51de530a1740fabd6f16c1c3cef9ed72e56e9f20118a0af769ca0ad4471c564949b79daae2c393fb3119bd
   languageName: node
   linkType: hard
 
@@ -10441,6 +10443,17 @@ __metadata:
   bin:
     node-which: ./bin/node-which
   checksum: 1a5c563d3c1b52d5f893c8b61afe11abc3bab4afac492e8da5bde69d550de701cf9806235f20a47b5c8fa8a1d6a9135841de2596535e998027a54589000e66d1
+  languageName: node
+  linkType: hard
+
+"which@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "which@npm:3.0.0"
+  dependencies:
+    isexe: ^2.0.0
+  bin:
+    node-which: bin/which.js
+  checksum: fdcf3cadab414e60b86c6836e7ac9de9273561a8926f57cbc28641b602a771527239ee4d47f2689ed255666f035ba0a0d72390986cc0c4e45344491adc7d0eeb
   languageName: node
   linkType: hard
 
