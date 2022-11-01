@@ -48,7 +48,7 @@
     "ava": ">=4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.8",
+    "@types/node": "^18.11.9",
     "ava": "^5.0.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
