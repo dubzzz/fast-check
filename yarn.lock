@@ -1738,19 +1738,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/run-script@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@npmcli/run-script@npm:5.0.0"
-  dependencies:
-    "@npmcli/node-gyp": ^3.0.0
-    "@npmcli/promise-spawn": ^4.0.0
-    node-gyp: ^9.0.0
-    read-package-json-fast: ^3.0.0
-    which: ^2.0.2
-  checksum: db265c72d42893df9d6708ad1447c50715c029b762e83a5a636cc32b54ebb8435bcb4ffedaa80b365650f715347abd15b46a49af382a9c7d635999a2ab98a98a
-  languageName: node
-  linkType: hard
-
 "@npmcli/run-script@npm:^6.0.0":
   version: 6.0.0
   resolution: "@npmcli/run-script@npm:6.0.0"
@@ -8367,13 +8354,13 @@ __metadata:
   linkType: hard
 
 "pacote@npm:^15.0.0, pacote@npm:^15.0.2":
-  version: 15.0.5
-  resolution: "pacote@npm:15.0.5"
+  version: 15.0.6
+  resolution: "pacote@npm:15.0.6"
   dependencies:
     "@npmcli/git": ^4.0.0
     "@npmcli/installed-package-contents": ^2.0.1
     "@npmcli/promise-spawn": ^6.0.1
-    "@npmcli/run-script": ^5.0.0
+    "@npmcli/run-script": ^6.0.0
     cacache: ^17.0.0
     fs-minipass: ^2.1.0
     minipass: ^3.1.6
@@ -8389,7 +8376,7 @@ __metadata:
     tar: ^6.1.11
   bin:
     pacote: lib/bin.js
-  checksum: 29e0f5fd4dc89ff193094467327402bbb30edc790c51de530a1740fabd6f16c1c3cef9ed72e56e9f20118a0af769ca0ad4471c564949b79daae2c393fb3119bd
+  checksum: 780090212079efc787fc3c3b19bfcec34beeb6f24ef2ac43981c496ee24acbf1846752245740111db6cb7decf542313cb258b1339a57a7430d1b6626e4bfe1d0
   languageName: node
   linkType: hard
 
