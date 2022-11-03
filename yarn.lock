@@ -723,7 +723,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
-    "@npmcli/arborist": 6.1.0
+    "@npmcli/arborist": ^6.0.0
     "@types/jest": ^29.2.0
     "@types/pacote": ^11.1.5
     "@types/tar": ^6.1.3
@@ -1552,9 +1552,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/arborist@npm:6.1.0":
-  version: 6.1.0
-  resolution: "@npmcli/arborist@npm:6.1.0"
+"@npmcli/arborist@npm:^6.0.0":
+  version: 6.1.1
+  resolution: "@npmcli/arborist@npm:6.1.1"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/installed-package-contents": ^2.0.0
@@ -1565,14 +1565,15 @@ __metadata:
     "@npmcli/node-gyp": ^3.0.0
     "@npmcli/package-json": ^3.0.0
     "@npmcli/query": ^3.0.0
-    "@npmcli/run-script": ^5.0.0
+    "@npmcli/run-script": ^6.0.0
     bin-links: ^4.0.1
     cacache: ^17.0.1
     common-ancestor-path: ^1.0.1
+    hosted-git-info: ^6.1.1
     json-parse-even-better-errors: ^3.0.0
     json-stringify-nice: ^1.1.4
     minimatch: ^5.1.0
-    nopt: ^6.0.0
+    nopt: ^7.0.0
     npm-install-checks: ^6.0.0
     npm-package-arg: ^10.0.0
     npm-pick-manifest: ^8.0.1
@@ -1591,7 +1592,7 @@ __metadata:
     walk-up-path: ^1.0.0
   bin:
     arborist: bin/index.js
-  checksum: 5072893a20f044b4dee6bdff3abe4f2a350d06bed4fe09304550139072607c8b353ba9cc33a18ac1fd6bd0365ec7dbb42f18fc825b8999388b452c662e14603c
+  checksum: ca90690aa255993150b19a7e60194c6ecf31b63c18b08ebb64fa0d5f9e906831d48d2d86ea20fea1f203a95fbefe3ee6bc15d9b4030d99f5f943e7d4b6719e53
   languageName: node
   linkType: hard
 
@@ -1719,7 +1720,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/promise-spawn@npm:^6.0.1":
+"@npmcli/promise-spawn@npm:^6.0.0, @npmcli/promise-spawn@npm:^6.0.1":
   version: 6.0.1
   resolution: "@npmcli/promise-spawn@npm:6.0.1"
   dependencies:
@@ -1747,6 +1748,19 @@ __metadata:
     read-package-json-fast: ^3.0.0
     which: ^2.0.2
   checksum: db265c72d42893df9d6708ad1447c50715c029b762e83a5a636cc32b54ebb8435bcb4ffedaa80b365650f715347abd15b46a49af382a9c7d635999a2ab98a98a
+  languageName: node
+  linkType: hard
+
+"@npmcli/run-script@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@npmcli/run-script@npm:6.0.0"
+  dependencies:
+    "@npmcli/node-gyp": ^3.0.0
+    "@npmcli/promise-spawn": ^6.0.0
+    node-gyp: ^9.0.0
+    read-package-json-fast: ^3.0.0
+    which: ^3.0.0
+  checksum: 9fc387f7c405ae4948921764b8b970c12ae07df22bacc242b0f68709c99a83b9d12f411ebd7e60c85a933e2d7be42c70e243ebd71a8d3f6e783e1aab5ccbb2f5
   languageName: node
   linkType: hard
 
@@ -2733,10 +2747,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abbrev@npm:1, abbrev@npm:^1.0.0":
+"abbrev@npm:1":
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
   checksum: a4a97ec07d7ea112c517036882b2ac22f3109b7b19077dc656316d07d308438aac28e4d9746dc4d84bf6b1e75b4a7b0a5f3cb30592419f128ca9a8cee3bcfa17
+  languageName: node
+  linkType: hard
+
+"abbrev@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "abbrev@npm:2.0.0"
+  checksum: 0e994ad2aa6575f94670d8a2149afe94465de9cedaaaac364e7fb43a40c3691c980ff74899f682f4ca58fa96b4cbd7421a015d3a6defe43a442117d7821a2f36
   languageName: node
   linkType: hard
 
@@ -5566,12 +5587,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hosted-git-info@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "hosted-git-info@npm:6.0.0"
+"hosted-git-info@npm:^6.0.0, hosted-git-info@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "hosted-git-info@npm:6.1.1"
   dependencies:
     lru-cache: ^7.5.1
-  checksum: 85aeb79a1902416eab622ccffd61ccf428260b0f8949e02f5abe70ee2702b7af2bdd7a9b77e6573190464602d42bb05c4d8300873f86ce62bc450365398da1fb
+  checksum: fcd3ca2eaa05f3201425ccbb8aa47f88cdda4a3a6d79453f8e269f7171356278bd1db08f059d8439eb5eaa91c6a8a20800fc49cca6e9e4e899b202a332d5ba6b
   languageName: node
   linkType: hard
 
@@ -8003,14 +8024,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nopt@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "nopt@npm:6.0.0"
+"nopt@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "nopt@npm:7.0.0"
   dependencies:
-    abbrev: ^1.0.0
+    abbrev: ^2.0.0
   bin:
     nopt: bin/nopt.js
-  checksum: 82149371f8be0c4b9ec2f863cc6509a7fd0fa729929c009f3a58e4eb0c9e4cae9920e8f1f8eb46e7d032fec8fb01bede7f0f41a67eb3553b7b8e14fa53de1dac
+  checksum: 71d296ea66a00e877ff8dd432d004ae6844f582d2ac203ce191c5e2873a878401093f13193f25352a749ae77d422fe2df1c168f55a720ee5285c85e7de3cb3a3
   languageName: node
   linkType: hard
 
