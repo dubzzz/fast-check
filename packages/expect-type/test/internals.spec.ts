@@ -47,6 +47,7 @@ export const Test_IsSame_any_boolean: IsSame<any, boolean> = false;
 export const Test_IsSame_any_any: IsSame<any, any> = true;
 export const Test_IsSame_any_any_Bis: IsSame<IsSame<any, any>, true> = true;
 export const Test_IsSame_tuple_any_tuple_any: IsSame<[any], [any]> = true;
+export const Test_IsSame_set_any_set_any: IsSame<Set<any>, Set<any>> = true;
 export const Test_IsSame_any_tuple_any: IsSame<any, [any]> = false;
 export const Test_IsSame_tuple_any_any: IsSame<[any], any> = false;
 export const Test_IsSame_any_unknown: IsSame<any, unknown> = false;
@@ -55,7 +56,9 @@ export const Test_IsSame_unknown_boolean: IsSame<unknown, boolean> = false;
 export const Test_IsSame_unknown_any: IsSame<unknown, any> = false;
 export const Test_IsSame_unknown_unknown: IsSame<unknown, unknown> = true;
 export const Test_IsSame_tuple_unknown_tuple_unknown: IsSame<[unknown], [unknown]> = true;
+export const Test_IsSame_set_unknown_set_unknown: IsSame<Set<unknown>, Set<unknown>> = true;
 export const Test_IsSame_unknown_never: IsSame<unknown, never> = false;
+export const Test_IsSame_set_unknown_set_number: IsSame<Set<unknown>, Set<number>> = false;
 export const Test_IsSame_tuple_number_tuple_string: IsSame<[number], [string]> = false;
 export const Test_IsSame_tuple_any_tuple_unknown: IsSame<[any], [unknown]> = false;
 export const Test_IsSame_tuple_unknown_tuple_any: IsSame<[unknown], [any]> = false;
@@ -63,6 +66,7 @@ export const Test_IsSame_tuple_2_any_tuple_2_unknown: IsSame<[any, any], [unknow
 export const Test_IsSame_deep_tuple_any_deep_tuple_unknown: IsSame<[[any]], [[unknown]]> = false;
 export const Test_IsSame_object_any_object_unknown: IsSame<{ a: any }, { a: unknown }> = false;
 export const Test_IsSame_object_any_partial_object_unknown: IsSame<{ a: any }, { a?: unknown }> = false;
+//export const Test_IsSame_set_any_set_unknown: IsSame<Set<any>, Set<unknown>> = false;
 
 type Tree<T> = { value: T } | { left: Tree<T>; right: Tree<T> };
 export const Test_IsSame_tree_number_tree_number: IsSame<Tree<number>, Tree<number>> = true;
