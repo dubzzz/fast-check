@@ -36,7 +36,14 @@ export const Test_IsAny_never: IsAny<never> = false;
 
 export const Test_IsSame_true_true: IsSame<true, true> = true;
 export const Test_IsSame_tuple_true_tuple_true: IsSame<[true], [true]> = true;
+export const Test_IsSame_return_true_return_true: IsSame<() => true, () => true> = true;
+export const Test_IsSame_take_true_take_true: IsSame<(v: true) => void, (v: true) => void> = true;
 export const Test_IsSame_true_false: IsSame<true, false> = false;
+export const Test_IsSame_return_true_return_false: IsSame<() => true, () => false> = false;
+export const Test_IsSame_take_true_take_false: IsSame<(v: true) => void, (v: false) => void> = false;
+export const Test_IsSame_take_true_take_true_and_false: IsSame<(v: true) => void, (v: true, u: false) => void> = false;
+// @ts-expect-error - Variadic arguments are somehow ignored at the moment
+export const Test_IsSame_take_1_take_1_and_others: IsSame<(v: 1) => 0, (v: 1, ...u: unknown[]) => 0> = false;
 export const Test_IsSame_true_boolean: IsSame<true, boolean> = false;
 export const Test_IsSame_never_boolean: IsSame<never, boolean> = false;
 export const Test_IsSame_never_any: IsSame<never, any> = false;
