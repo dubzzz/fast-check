@@ -63,3 +63,18 @@ export const Test_IsSame_tuple_2_any_tuple_2_unknown: IsSame<[any, any], [unknow
 export const Test_IsSame_deep_tuple_any_deep_tuple_unknown: IsSame<[[any]], [[unknown]]> = false;
 export const Test_IsSame_object_any_object_unknown: IsSame<{ a: any }, { a: unknown }> = false;
 export const Test_IsSame_object_any_partial_object_unknown: IsSame<{ a: any }, { a?: unknown }> = false;
+
+type Tree<T> = { value: T } | { left: Tree<T>; right: Tree<T> };
+export const Test_IsSame_tree_number_tree_number: IsSame<Tree<number>, Tree<number>> = true;
+export const Test_IsSame_tree_tuple_number_tree_tuple_number: IsSame<Tree<[number]>, Tree<[number]>> = true;
+export const Test_IsSame_tree_never_tree_never: IsSame<Tree<never>, Tree<never>> = true;
+export const Test_IsSame_tree_tuple_never_tree_tuple_never: IsSame<Tree<[never]>, Tree<[never]>> = true;
+export const Test_IsSame_tree_any_tree_any: IsSame<Tree<any>, Tree<any>> = true;
+export const Test_IsSame_tree_tuple_any_tree_tuple_any: IsSame<Tree<[any]>, Tree<[any]>> = true;
+export const Test_IsSame_tree_unknown_tree_unknown: IsSame<Tree<unknown>, Tree<unknown>> = true;
+export const Test_IsSame_tree_tuple_unknown_tree_tuple_unknown: IsSame<Tree<[unknown]>, Tree<[unknown]>> = true;
+export const Test_IsSame_tree_number_tree_string: IsSame<Tree<number>, Tree<string>> = false;
+export const Test_IsSame_tree_number_tree_unknown: IsSame<Tree<number>, Tree<unknown>> = false;
+//export const Test_IsSame_tree_number_tree_any: IsSame<Tree<number>, Tree<any>> = false;
+//export const Test_IsSame_tree_unknown_tree_any: IsSame<Tree<unknown>, Tree<any>> = false;
+//export const Test_IsSame_tree_any_tree_unknown: IsSame<Tree<any>, Tree<unknown>> = false;
