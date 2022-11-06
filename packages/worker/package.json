@@ -7,6 +7,7 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./lib/main.d.ts",
       "require": "./lib/main.js",
       "import": "./lib/esm/main.js",
       "default": "./lib/esm/main.js"
