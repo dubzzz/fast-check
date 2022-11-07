@@ -30,45 +30,66 @@ jest --show-seed
 ## Example
 
 ```javascript
-import { testProp, fc } from '@fast-check/jest';
+import { test, fc } from '@fast-check/jest';
 
 // for all a, b, c strings
 // b is a substring of a + b + c
+test.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', (a, b, c) => {
+  return (a + b + c).includes(b);
+});
+
+// Or the exact same test but based on named parameters
+test.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('should detect the substring', ({ a, b, c }) => {
+  return (a + b + c).includes(b);
+});
+```
+
+The `it` and `test` functions returned by `@fast-check/jest` are just enriched versions of the ones coming from `jest` itself. They both come with `.prop`.
+
+Please note that the properties accepted by `@fast-check/jest` as input can either be synchronous or asynchronous (even just `PromiseLike` instances). In other words, the predicate passed as the last argument can be asynchronous.
+
+**Remark:** `it` and `test` have been introduced in 1.4.0. You have to refer to [Deprecated API](#deprecated-api) if you are using a version of `@fast-check/jest` <1.4.0.
+
+## Advanced
+
+If you want to forward custom parameters to `fast-check`, `test.prop` and its variants accept an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Runners.md#runners)).
+
+`@fast-check/jest` also comes with support for `.only`, `.skip`, `.todo` and `.concurrent` from `jest`. It also accepts more complex ones such as `.concurrent.failing` or `.concurrent.only.failing`.
+
+```javascript
+import { it, test, fc } from '@fast-check/jest';
+
+// With custom `fc.Parameters`, here { seed: 4242 }
+test.prop([fc.nat(), fc.nat()], { seed: 4242 })('should replay the test for the seed 4242', (a, b) => {
+  return a + b === b + a;
+});
+
+// With .skip
+test.skip.prop([fc.fullUnicodeString()])('should be skipped', (text) => {
+  return text.length === [...text].length;
+});
+
+// With it version
+describe('with it', () => {
+  it.prop([fc.nat(), fc.nat()])('should run too', (a, b) => {
+    return a + b === b + a;
+  });
+});
+```
+
+## Deprecated API
+
+Our old API was not as close from `jest` as the current one is. Writing a property was done via:
+
+```ts
+import { testProp, fc } from '@fast-check/jest';
+
 testProp('should detect the substring', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
   return (a + b + c).includes(b);
 });
 ```
 
-Please note that the properties accepted by `@fast-check/jest` as input can either be synchronous or asynchronous (even just `PromiseLike` instances).
-
-## Advanced
-
-If you want to forward custom parameters to fast-check, `testProp` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Runners.md#runners)).
-
-`@fast-check/jest` also comes with `.only`, `.skip`, `.todo` and `.concurrent` from jest. It also accepts more complex ones such as `.concurrent.failing` or `.concurrent.only.failing`.
-
-```javascript
-import { itProp, testProp, fc } from '@fast-check/jest';
-
-testProp(
-  'should replay the test for the seed 4242',
-  [fc.nat(), fc.nat()],
-  (a, b) => {
-    return a + b === b + a;
-  },
-  { seed: 4242 }
-);
-
-testProp.skip('should be skipped', [fc.fullUnicodeString()], (text) => {
-  return text.length === [...text].length;
-});
-
-describe('with it', () => {
-  itProp('should run too', [fc.nat(), fc.nat()], (a, b) => {
-    return a + b === b + a;
-  });
-});
-```
+This API is available in all 1.x versions but may not exist anymore starting at 2.x.
 
 ## Minimal requirements
 
