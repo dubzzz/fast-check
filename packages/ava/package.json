@@ -7,6 +7,7 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./lib/ava-fast-check.d.ts",
       "require": "./lib/ava-fast-check.js",
       "import": "./lib/esm/ava-fast-check.js",
       "default": "./lib/esm/ava-fast-check.js"
