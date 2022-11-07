@@ -1,3 +1,16 @@
+# 1.1.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.1...ava%2Fv1.1.2)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3385](https://github.com/dubzzz/fast-check/pull/3385)) Bug: Fix types not being properly exported for ESM
+
 # 1.1.1
 
 _Add GitHub Sponsors link_

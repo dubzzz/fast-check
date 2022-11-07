@@ -1,3 +1,16 @@
+# 0.0.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.2...worker%2Fv0.0.3)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3388](https://github.com/dubzzz/fast-check/pull/3388)) Bug: Fix types not being properly exported for ESM
+
 # 0.0.2
 
 _Add GitHub Sponsors link_

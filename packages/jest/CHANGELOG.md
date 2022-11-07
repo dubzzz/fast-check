@@ -1,3 +1,21 @@
+# 1.4.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.3.1...jest%2Fv1.4.0)]
+
+## Features
+
+- ([PR#3339](https://github.com/dubzzz/fast-check/pull/3339)) Add new `it.prop` and related
+- ([PR#3366](https://github.com/dubzzz/fast-check/pull/3366)) Add support for record-based `it.prop`
+
+## Fixes
+
+- ([PR#3383](https://github.com/dubzzz/fast-check/pull/3383)) Bug: Fix types not being properly exported for ESM
+- ([PR#3352](https://github.com/dubzzz/fast-check/pull/3352)) Doc: Add missing 'Typing' on PRs in changelog
+- ([PR#3389](https://github.com/dubzzz/fast-check/pull/3389)) Doc: Adapt documentation for new API based on `it`/`test`
+
+---
+
 # 1.3.1
 
 _Better typings for `{it,test}Prop`_
