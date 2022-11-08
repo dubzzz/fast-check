@@ -15,6 +15,7 @@ type AutoContext = {
 
 export type AutoValue = {
   builder: <T>(arb: Arbitrary<T>) => T;
+  values: () => unknown[];
 };
 
 class AutoArbitrary extends Arbitrary<AutoValue> {
@@ -27,6 +28,7 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
         context.history.push({ arb, value: g.value_, context: g.context });
         return g.value;
       },
+      values: () => context.history.map((c) => c.value),
       [toStringMethod]: () => {
         return stringify(context.history.map((c) => c.value));
       },
@@ -65,6 +67,7 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
             newContext.history.push({ arb, value: g.value_, context: g.context });
             return g.value;
           },
+          values: () => newContext.history.map((c) => c.value),
           [toStringMethod]: () => {
             return stringify(newContext.history.map((c) => c.value));
           },
