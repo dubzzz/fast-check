@@ -48,7 +48,8 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
         fc.property(fc.auto(), (auto) => {
           const v1 = auto.builder(natArb);
           const v2 = auto.builder(buildSquareArb(v1));
-          expect(v2.length * v2[0].length).toBeLessThanOrEqual(8);
+          const surface = v2.length !== 0 ? v2.length * v2[0].length : 0;
+          expect(surface).toBeLessThanOrEqual(8);
         }),
         { seed: seed }
       );
