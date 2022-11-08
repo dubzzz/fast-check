@@ -19,6 +19,7 @@ import {
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
+import { auto, AutoValue } from './arbitrary/auto';
 import { array, ArrayConstraints } from './arbitrary/array';
 import { bigInt, BigIntConstraints } from './arbitrary/bigInt';
 import { bigIntN } from './arbitrary/bigIntN';
@@ -228,6 +229,7 @@ export {
   PropertyHookFunction,
   PropertyFailure,
   // pre-built arbitraries
+  auto,
   boolean,
   falsy,
   float,
@@ -395,6 +397,7 @@ export {
   LetrecLooselyTypedTie,
   LetrecLooselyTypedBuilder,
   // produced values
+  AutoValue,
   CloneValue,
   ContextValue,
   FalsyValue,
