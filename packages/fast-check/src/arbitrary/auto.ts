@@ -7,36 +7,14 @@ type AutoContext = {
   mrng: Random;
   biasFactor: number | undefined;
   history: {
-    arbBuilder: () => Arbitrary<unknown>;
-    args: unknown[];
     arb: Arbitrary<unknown>;
     value: unknown;
     context: unknown;
   }[];
 };
 
-function isEqual(v1: unknown, v2: unknown): boolean {
-  if (Object.is(v1, v2)) {
-    return true;
-  }
-  if (v1 === null || v2 === null) {
-    return false;
-  }
-  if (typeof v1 !== 'object' || typeof v2 !== 'object') {
-    return false;
-  }
-  if (Array.isArray(v1) && Array.isArray(v2)) {
-    if (v1.length !== v2.length) {
-      return false;
-    }
-    return v1.every((item, index) => isEqual(item, v2[index]));
-  }
-  // HACKY!!! Do not work
-  return isEqual(Object.entries(v1), Object.entries(v2));
-}
-
 export type AutoValue = {
-  builder: <T, TArgs extends unknown[]>(arbBuilder: (...args: TArgs) => Arbitrary<T>, ...args: TArgs) => T;
+  builder: <T>(arb: Arbitrary<T>) => T;
   values: () => unknown[];
 };
 
@@ -45,10 +23,9 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
     const clonedMrng = mrng.clone();
     const context: AutoContext = { mrng: clonedMrng, biasFactor, history: [] };
     const value: AutoValue & WithToStringMethod = {
-      builder: (arbBuilder, ...args) => {
-        const arb = arbBuilder(...args);
+      builder: (arb) => {
         const g = arb.generate(clonedMrng, biasFactor);
-        context.history.push({ arbBuilder, args, arb, value: g.value_, context: g.context });
+        context.history.push({ arb, value: g.value_, context: g.context });
         return g.value;
       },
       values: () => context.history.map((c) => c.value),
@@ -78,21 +55,16 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
         const clonedMrng = mrng.clone();
         const newContext: AutoContext = { mrng: clonedMrng, biasFactor, history: [] };
         const newValue: AutoValue & WithToStringMethod = {
-          builder: <T, TArgs extends unknown[]>(arbBuilder: (...args: TArgs) => Arbitrary<T>, ...args: TArgs): T => {
+          builder: <T>(arb: Arbitrary<T>): T => {
             const fromOldContext = safeContext.history[newContext.history.length];
-            if (
-              fromOldContext !== undefined &&
-              fromOldContext.arbBuilder === arbBuilder &&
-              isEqual(fromOldContext.args, args)
-            ) {
+            if (fromOldContext !== undefined && fromOldContext.arb === arb) {
               const value = shrink.value_[newContext.history.length];
               const context = (shrink.context as unknown[])[newContext.history.length]; // HACKY!!!
-              newContext.history.push({ arbBuilder, args, arb: fromOldContext.arb, value, context });
+              newContext.history.push({ arb, value, context });
               return value as T;
             }
-            const arb = arbBuilder(...args);
             const g = arb.generate(clonedMrng, biasFactor);
-            newContext.history.push({ arbBuilder, args, arb, value: g.value_, context: g.context });
+            newContext.history.push({ arb, value: g.value_, context: g.context });
             return g.value;
           },
           values: () => newContext.history.map((c) => c.value),

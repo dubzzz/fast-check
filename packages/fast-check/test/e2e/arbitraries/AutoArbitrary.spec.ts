@@ -4,9 +4,10 @@ import { seed } from '../seed';
 describe(`AutoArbitrary (seed: ${seed})`, () => {
   describe('auto', () => {
     it('should be able to shrink a single arbitrary', () => {
+      const integerArb = fc.integer();
       const out = fc.check(
         fc.property(fc.auto(), (auto) => {
-          const v1 = auto.builder(fc.integer);
+          const v1 = auto.builder(integerArb);
           expect(v1).toBeLessThanOrEqual(10);
         }),
         { seed: seed }
@@ -16,10 +17,11 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
     });
 
     it('should be able to shrink two unrelated arbitraries', () => {
+      const natArb = fc.nat();
       const out = fc.check(
         fc.property(fc.auto(), (auto) => {
-          const v1 = auto.builder(fc.integer);
-          const v2 = auto.builder(fc.integer); // unrelated because does not depend on v1
+          const v1 = auto.builder(natArb);
+          const v2 = auto.builder(natArb); // unrelated because does not depend on v1
           expect(v1).toBeLessThanOrEqual(v2);
         }),
         { seed: seed }
