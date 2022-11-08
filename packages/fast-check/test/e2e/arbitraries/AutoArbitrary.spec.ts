@@ -72,9 +72,6 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
           const v1 = auto.builder(integerArb);
           if (v1 < 0) {
             const v2 = auto.builder(integerArb);
-            return typeof v2 === 'number'; // success
-          } else if (v1 > 100) {
-            const v2 = auto.builder(integerArb);
             const v3 = auto.builder(integerArb);
             return typeof v2 === 'number' && typeof v3 === 'number'; // success
           }
