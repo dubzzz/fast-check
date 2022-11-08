@@ -64,6 +64,53 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
       ]);
     });
 
-    it.todo('should be able to shrink two related arbitraries with changing branches');
+    it('should be able to shrink two related arbitraries with changing branches', () => {
+      const integerArb = fc.integer();
+      const stringArb = fc.string();
+      const out = fc.check(
+        fc.property(fc.auto(), (auto) => {
+          const v1 = auto.builder(integerArb);
+          if (v1 < 0) {
+            const v2 = auto.builder(integerArb);
+            return typeof v2 === 'number'; // success
+          } else if (v1 > 100) {
+            const v2 = auto.builder(integerArb);
+            const v3 = auto.builder(integerArb);
+            return typeof v2 === 'number' && typeof v3 === 'number'; // success
+          }
+          const v2 = auto.builder(stringArb);
+          expect(v2.length).toBeLessThan(v1);
+        }),
+        { seed: seed }
+      );
+      expect(out.failed).toBe(true);
+      expect(out.counterexample![0].values()).toEqual([0, '']);
+    });
+
+    it('should be able to shrink arbitraries built out of for loops', () => {
+      const natArb = fc.nat(10); // Maximum call stack size exceeded for 100
+      const out = fc.check(
+        fc.property(fc.auto(), (auto) => {
+          const width = auto.builder(natArb);
+          const height = auto.builder(natArb);
+          const grid: number[][] = [];
+          for (let i = 0; i !== width; ++i) {
+            const line: number[] = [];
+            for (let j = 0; j !== height; ++j) {
+              line.push(auto.builder(natArb));
+            }
+            grid.push(line);
+          }
+          const allValues = grid.flat();
+          const allValuesUnique = [...new Set(allValues)];
+          expect(allValuesUnique).toEqual(allValues);
+        }),
+        { seed: seed }
+      );
+      expect(out.failed).toBe(true);
+      const values = out.counterexample![0].values() as number[];
+      expect(values[0] * values[1]).toBe(2);
+      expect(values.slice(2)).toEqual([0, 0]);
+    });
   });
 });
