@@ -1,3 +1,0 @@
-declined:
-  - "@fast-check/ava"
-  - "@fast-check/jest"

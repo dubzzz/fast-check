@@ -1,3 +1,12 @@
+# 0.0.4
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.3...poisoning%2Fv0.0.4)]
+
+## Fixes
+
+- ([PR#3387](https://github.com/dubzzz/fast-check/pull/3387)) Bug: Fix types not being properly exported for ESM
+
 # 0.0.3
 
 _Faster computation of diffs when filters apply_

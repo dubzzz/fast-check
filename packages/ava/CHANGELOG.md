@@ -1,3 +1,12 @@
+# 1.1.2
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.1...ava%2Fv1.1.2)]
+
+## Fixes
+
+- ([PR#3385](https://github.com/dubzzz/fast-check/pull/3385)) Bug: Fix types not being properly exported for ESM
+
 # 1.1.1
 
 _Add GitHub Sponsors link_
@@ -23,6 +32,15 @@ _Align seed computation with fast-check's one_
 - ([PR#3283](https://github.com/dubzzz/fast-check/pull/3283)) Bug: Fallback on the seed coming from globals if any
 
 ---
+
+# 1.0.4
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.0.3...ava%2Fv1.0.4)]
+
+## Fixes
+
+- ([PR#3385](https://github.com/dubzzz/fast-check/pull/3385)) Bug: Fix types not being properly exported for ESM
 
 # 1.0.3
 
