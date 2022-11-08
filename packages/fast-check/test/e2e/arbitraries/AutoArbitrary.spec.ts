@@ -63,6 +63,6 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
       ]);
     });
 
-    it.todo('should be able to shrink two related arbitraries with changing branches', () => {});
+    it.todo('should be able to shrink two related arbitraries with changing branches');
   });
 });
