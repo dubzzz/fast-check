@@ -1,6 +1,6 @@
 # 1.4.0
 
-_TODO Description_
+_Introduce new `it.prop` and `test.prop` APIs_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.3.1...jest%2Fv1.4.0)]
 
 ## Features
@@ -15,6 +15,15 @@ _TODO Description_
 - ([PR#3389](https://github.com/dubzzz/fast-check/pull/3389)) Doc: Adapt documentation for new API based on `it`/`test`
 
 ---
+
+# 1.3.2
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.3.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.3.1...jest%2Fv1.3.2)]
+
+## Fixes
+
+- ([PR#3383](https://github.com/dubzzz/fast-check/pull/3383)) Bug: Fix types not being properly exported for ESM
 
 # 1.3.1
 
@@ -43,6 +52,15 @@ _Support for new `--seed` feature of Jest_
 
 ---
 
+# 1.2.2
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.2.1...jest%2Fv1.2.2)]
+
+## Fixes
+
+- ([PR#3383](https://github.com/dubzzz/fast-check/pull/3383)) Bug: Fix types not being properly exported for ESM
+
 # 1.2.1
 
 _Better typings for `{it,test}Prop`_
@@ -69,6 +87,15 @@ _Align seed computation with fast-check's one_
 - ([PR#3284](https://github.com/dubzzz/fast-check/pull/3284)) Test: Faster tests without `babel-jest`
 
 ---
+
+# 1.1.2
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.1.1...jest%2Fv1.1.2)]
+
+## Fixes
+
+- ([PR#3383](https://github.com/dubzzz/fast-check/pull/3383)) Bug: Fix types not being properly exported for ESM
 
 # 1.1.1
 
@@ -99,6 +126,15 @@ _Support more variants of `it`_
 - ([PR#3213](https://github.com/dubzzz/fast-check/pull/3213)) Script: Factorize production `tsconfig.json`
 
 ---
+
+# 1.0.3
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.0.2...jest%2Fv1.0.3)]
+
+## Fixes
+
+- ([PR#3383](https://github.com/dubzzz/fast-check/pull/3383)) Bug: Fix types not being properly exported for ESM
 
 # 1.0.2
 

@@ -1,11 +1,7 @@
 # 0.0.3
 
-_TODO Description_
+_Properly define types for TypeScript_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.2...worker%2Fv0.0.3)]
-
-## Features
-
-
 
 ## Fixes
 

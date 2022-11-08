@@ -1,11 +1,7 @@
 # 0.0.4
 
-_TODO Description_
+_Properly define types for TypeScript_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.3...poisoning%2Fv0.0.4)]
-
-## Features
-
-
 
 ## Fixes
 

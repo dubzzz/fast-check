@@ -1,15 +1,11 @@
 # 0.0.6
 
-_TODO Description_
+_Lower constraints on external dependencies_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.5...packaged%2Fv0.0.6)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#3377](https://github.com/dubzzz/fast-check/pull/3377)) Dependencies: Relax constraint on `@npmcli/arborist`
 
 # 0.0.5
 
