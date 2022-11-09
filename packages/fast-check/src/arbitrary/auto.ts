@@ -76,18 +76,16 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
         history.map((c) => c.context) // HACKY!!!
       )
       .map((shrink): Value<AutoValue> => {
-        if (
-          shrink.value_.length !== history.length ||
-          !Array.isArray(shrink.context) ||
-          shrink.context.length !== history.length
-        ) {
+        const subValues = shrink.value_;
+        const subContexts = shrink.context;
+        const length = history.length;
+        if (subValues.length !== length || !Array.isArray(subContexts) || subContexts.length !== length) {
           return buildAutoValue(mrng, biasFactor, []);
         }
-        const shrinkContext = shrink.context;
         const preBuiltValues: PreBuiltValue[] = safeContext.history.map((entry, index) => ({
           arb: entry.arb,
-          value: shrink.value_[index],
-          context: shrinkContext[index], // HACKY!!!
+          value: subValues[index],
+          context: subContexts[index], // HACKY!!!
         }));
         return buildAutoValue(mrng, biasFactor, preBuiltValues);
       });
