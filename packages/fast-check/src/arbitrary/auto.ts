@@ -13,26 +13,25 @@ type AutoContext = {
   }[];
 };
 
-export type AutoValue = {
-  builder: <T>(arb: Arbitrary<T>) => T;
-  values: () => unknown[];
-};
+export type AutoValue = (<T>(arb: Arbitrary<T>) => T) & { values: () => unknown[] };
 
 class AutoArbitrary extends Arbitrary<AutoValue> {
   generate(mrng: Random, biasFactor: number | undefined): Value<AutoValue> {
     const clonedMrng = mrng.clone();
     const context: AutoContext = { mrng: clonedMrng, biasFactor, history: [] };
-    const value: AutoValue & WithToStringMethod = {
-      builder: (arb) => {
+    const value: AutoValue & WithToStringMethod = Object.assign(
+      <T>(arb: Arbitrary<T>): T => {
         const g = arb.generate(clonedMrng, biasFactor);
         context.history.push({ arb, value: g.value_, context: g.context });
         return g.value;
       },
-      values: () => context.history.map((c) => c.value),
-      [toStringMethod]: () => {
-        return stringify(context.history.map((c) => c.value));
-      },
-    };
+      {
+        values: () => context.history.map((c) => c.value),
+        [toStringMethod]: () => {
+          return stringify(context.history.map((c) => c.value));
+        },
+      }
+    );
     return new Value(value, context);
   }
   canShrinkWithoutContext(value: unknown): value is AutoValue {
@@ -54,8 +53,8 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
       .map((shrink): Value<AutoValue> => {
         const clonedMrng = mrng.clone();
         const newContext: AutoContext = { mrng: clonedMrng, biasFactor, history: [] };
-        const newValue: AutoValue & WithToStringMethod = {
-          builder: <T>(arb: Arbitrary<T>): T => {
+        const newValue: AutoValue & WithToStringMethod = Object.assign(
+          <T>(arb: Arbitrary<T>): T => {
             const fromOldContext = safeContext.history[newContext.history.length];
             if (fromOldContext !== undefined && fromOldContext.arb === arb) {
               const value = shrink.value_[newContext.history.length];
@@ -67,11 +66,13 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
             newContext.history.push({ arb, value: g.value_, context: g.context });
             return g.value;
           },
-          values: () => newContext.history.map((c) => c.value),
-          [toStringMethod]: () => {
-            return stringify(newContext.history.map((c) => c.value));
-          },
-        };
+          {
+            values: () => newContext.history.map((c) => c.value),
+            [toStringMethod]: () => {
+              return stringify(newContext.history.map((c) => c.value));
+            },
+          }
+        );
         return new Value(newValue, newContext);
       });
   }

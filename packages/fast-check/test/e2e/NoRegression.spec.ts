@@ -72,8 +72,8 @@ describe(`NoRegression`, () => {
     expect(() =>
       fc.assert(
         fc.property(fc.auto(), (auto) => {
-          const v1 = auto.builder(fc.integer());
-          const v2 = auto.builder(fc.integer());
+          const v1 = auto(fc.integer());
+          const v2 = auto(fc.integer());
           return testFunc(`${v1}-${v2}`);
         }),
         settings
