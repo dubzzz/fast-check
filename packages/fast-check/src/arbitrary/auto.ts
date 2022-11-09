@@ -44,7 +44,7 @@ function buildAutoValue(
       return context.history.map((c) => c.value);
     },
     [cloneMethod](): AutoValue {
-      return buildAutoValue(clonedMrng, biasFactor, preBuiltValues).value_;
+      return buildAutoValue(mrng, biasFactor, preBuiltValues).value_;
     },
     [toStringMethod](): string {
       return stringify(context.history.map((c) => c.value));
@@ -56,7 +56,7 @@ function buildAutoValue(
 
 class AutoArbitrary extends Arbitrary<AutoValue> {
   generate(mrng: Random, biasFactor: number | undefined): Value<AutoValue> {
-    return buildAutoValue(mrng, biasFactor, []);
+    return buildAutoValue(mrng.clone(), biasFactor, []);
   }
   canShrinkWithoutContext(value: unknown): value is AutoValue {
     return false;
