@@ -64,6 +64,32 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
       ]);
     });
 
+    it('should be able to shrink three related arbitraries', () => {
+      const integerArbs = new Map<string, fc.Arbitrary<number>>();
+      const buildIntegerArb = (constraints: Pick<fc.IntegerConstraints, 'min' | 'max'>) => {
+        const key = `min:${constraints.min},max:${constraints.max}`;
+        if (integerArbs.has(key)) {
+          return integerArbs.get(key)!;
+        }
+        const arb = fc.integer(constraints);
+        integerArbs.set(key, arb);
+        return arb;
+      };
+      const out = fc.check(
+        fc.property(fc.auto(), (auto) => {
+          const min = auto.builder(buildIntegerArb({ min: 0, max: 1000 }));
+          const max = auto.builder(buildIntegerArb({ min: min + 10, max: 2000 }));
+          const value = auto.builder(buildIntegerArb({ min, max }));
+          expect(value).toBeGreaterThanOrEqual((min + max) / 2);
+        }),
+        { seed: seed }
+      );
+      expect(out.failed).toBe(true);
+      const values = out.counterexample![0].values() as number[]; // ideally it should be: [0, 10, 0]
+      expect(values[1] - values[0]).toBeGreaterThanOrEqual(10); // range will try to shrink but may not find the lower bound as it will generate values that may pass
+      expect(values[2]).toBe(values[0]);
+    });
+
     it('should be able to shrink two related arbitraries with changing branches', () => {
       const integerArb = fc.integer();
       const stringArb = fc.string();
