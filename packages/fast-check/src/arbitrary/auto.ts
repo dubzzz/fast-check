@@ -4,7 +4,7 @@ import { cloneMethod } from '../check/symbols';
 import { Random } from '../random/generator/Random';
 import { Stream } from '../stream/Stream';
 import { stringify, toStringMethod } from '../utils/stringify';
-import { TupleArbitrary } from './_internals/TupleArbitrary';
+import { tupleShrink } from './_internals/TupleArbitrary';
 
 type AutoContext = {
   mrng: Random;
@@ -70,28 +70,22 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
     const mrng = safeContext.mrng;
     const biasFactor = safeContext.biasFactor;
     const history = safeContext.history;
-    const tupleArb = new TupleArbitrary(history.map((c) => c.arb));
-    return tupleArb
-      .shrink(
-        history.map((c) => c.value),
-        history.map((c) => c.context) // HACKY!!!
-      )
-      .map((shrink): Value<AutoValue> => {
-        function computePreBuiltValues(): PreBuiltValue[] {
-          const subValues = shrink.value; // trigger an explicit access to the value in case it needs to be cloned
-          const subContexts = shrink.context;
-          const length = history.length;
-          if (subValues.length !== length || !Array.isArray(subContexts) || subContexts.length !== length) {
-            return [];
-          }
-          return history.map((entry, index) => ({
-            arb: entry.arb,
-            value: subValues[index],
-            context: subContexts[index], // HACKY!!!
-          }));
-        }
-        return buildAutoValue(mrng, biasFactor, computePreBuiltValues);
-      });
+    return tupleShrink(
+      history.map((c) => c.arb),
+      history.map((c) => c.value),
+      history.map((c) => c.context)
+    ).map((shrink): Value<AutoValue> => {
+      function computePreBuiltValues(): PreBuiltValue[] {
+        const subValues = shrink.value; // trigger an explicit access to the value in case it needs to be cloned
+        const subContexts = shrink.context;
+        return history.map((entry, index) => ({
+          arb: entry.arb,
+          value: subValues[index],
+          context: subContexts[index],
+        }));
+      }
+      return buildAutoValue(mrng, biasFactor, computePreBuiltValues);
+    });
   }
 }
 
