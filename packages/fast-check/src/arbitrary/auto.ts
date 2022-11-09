@@ -1,6 +1,9 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { Random, Value, Stream } from '../fast-check-default';
-import { stringify, toStringMethod, WithToStringMethod } from '../utils/stringify';
+import { Value } from '../check/arbitrary/definition/Value';
+import { cloneMethod } from '../check/symbols';
+import { Random } from '../random/generator/Random';
+import { Stream } from '../stream/Stream';
+import { stringify, toStringMethod } from '../utils/stringify';
 import { TupleArbitrary } from './_internals/TupleArbitrary';
 
 type AutoContext = {
@@ -36,11 +39,14 @@ function buildAutoValue(
     context.history.push({ arb, value: g.value_, context: g.context });
     return g.value;
   };
-  const valueMethods: AutoValueMethods & WithToStringMethod = {
-    values() {
+  const valueMethods = {
+    values(): unknown[] {
       return context.history.map((c) => c.value);
     },
-    [toStringMethod]() {
+    [cloneMethod](): AutoValue {
+      return buildAutoValue(clonedMrng, biasFactor, preBuiltValues).value_;
+    },
+    [toStringMethod](): string {
       return stringify(context.history.map((c) => c.value));
     },
   };
