@@ -135,5 +135,29 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
       expect(values[0] * values[1]).toBe(2);
       expect(values.slice(2)).toEqual([0, 0]);
     });
+
+    it('should be able to be used in conjonction with other arbitraries', () => {
+      const integerArbs = new Map<string, fc.Arbitrary<number>>();
+      const buildIntegerArb = (constraints: Pick<fc.IntegerConstraints, 'min' | 'max'>) => {
+        const key = `min:${constraints.min},max:${constraints.max}`;
+        if (integerArbs.has(key)) {
+          return integerArbs.get(key)!;
+        }
+        const arb = fc.integer(constraints);
+        integerArbs.set(key, arb);
+        return arb;
+      };
+      const out = fc.check(
+        fc.property(fc.integer({ min: 0, max: 1000 }), fc.auto(), fc.integer({ min: 0, max: 1000 }), (a, auto, b) => {
+          const min = Math.min(a, b);
+          const max = Math.max(a, b);
+          const value = auto(buildIntegerArb({ min, max }));
+          expect(value).toBeGreaterThanOrEqual((min + max) / 2);
+        }),
+        { seed: seed }
+      );
+      expect(out.failed).toBe(true);
+      expect(out.counterexample![1].values()).toBe([Math.min(out.counterexample![0], out.counterexample![2])]);
+    });
   });
 });
