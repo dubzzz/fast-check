@@ -24,8 +24,9 @@ type PreBuiltValue = { arb: Arbitrary<unknown>; value: unknown; context: unknown
 function buildAutoValue(
   mrng: Random,
   biasFactor: number | undefined,
-  preBuiltValues: PreBuiltValue[]
+  computePreBuiltValues: () => PreBuiltValue[]
 ): Value<AutoValue> {
+  const preBuiltValues = computePreBuiltValues();
   const clonedMrng = mrng.clone();
   const context: AutoContext = { mrng: clonedMrng, biasFactor, history: [] };
   const valueFunction: AutoValueFunction = <T>(arb: Arbitrary<T>): T => {
@@ -44,7 +45,7 @@ function buildAutoValue(
       return context.history.map((c) => c.value);
     },
     [cloneMethod](): AutoValue {
-      return buildAutoValue(mrng, biasFactor, preBuiltValues).value_;
+      return buildAutoValue(mrng, biasFactor, computePreBuiltValues).value;
     },
     [toStringMethod](): string {
       return stringify(context.history.map((c) => c.value));
@@ -56,7 +57,7 @@ function buildAutoValue(
 
 class AutoArbitrary extends Arbitrary<AutoValue> {
   generate(mrng: Random, biasFactor: number | undefined): Value<AutoValue> {
-    return buildAutoValue(mrng.clone(), biasFactor, []);
+    return buildAutoValue(mrng.clone(), biasFactor, () => []);
   }
   canShrinkWithoutContext(value: unknown): value is AutoValue {
     return false;
@@ -76,18 +77,20 @@ class AutoArbitrary extends Arbitrary<AutoValue> {
         history.map((c) => c.context) // HACKY!!!
       )
       .map((shrink): Value<AutoValue> => {
-        const subValues = shrink.value_;
-        const subContexts = shrink.context;
-        const length = history.length;
-        if (subValues.length !== length || !Array.isArray(subContexts) || subContexts.length !== length) {
-          return buildAutoValue(mrng, biasFactor, []);
+        function computePreBuiltValues(): PreBuiltValue[] {
+          const subValues = shrink.value; // trigger an explicit access to the value in case it needs to be cloned
+          const subContexts = shrink.context;
+          const length = history.length;
+          if (subValues.length !== length || !Array.isArray(subContexts) || subContexts.length !== length) {
+            return [];
+          }
+          return history.map((entry, index) => ({
+            arb: entry.arb,
+            value: subValues[index],
+            context: subContexts[index], // HACKY!!!
+          }));
         }
-        const preBuiltValues: PreBuiltValue[] = safeContext.history.map((entry, index) => ({
-          arb: entry.arb,
-          value: subValues[index],
-          context: subContexts[index], // HACKY!!!
-        }));
-        return buildAutoValue(mrng, biasFactor, preBuiltValues);
+        return buildAutoValue(mrng, biasFactor, computePreBuiltValues);
       });
   }
 }
