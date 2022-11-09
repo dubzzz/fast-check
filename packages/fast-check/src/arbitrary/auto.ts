@@ -13,7 +13,9 @@ type AutoContext = {
   }[];
 };
 
-export type AutoValue = (<T>(arb: Arbitrary<T>) => T) & { values: () => unknown[] };
+export type AutoValueFunction = <T>(arb: Arbitrary<T>) => T;
+export type AutoValueMethods = { values: () => unknown[] };
+export type AutoValue = AutoValueFunction & AutoValueMethods;
 
 class AutoArbitrary extends Arbitrary<AutoValue> {
   generate(mrng: Random, biasFactor: number | undefined): Value<AutoValue> {
