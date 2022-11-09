@@ -36,6 +36,12 @@ function buildAutoValue(
       context.history.push({ arb, value, context: preBuiltValue.context });
       return value as T;
     }
+    if (preBuiltValue !== undefined && context.history.length === 0) {
+      throw new Error(
+        `Illegal use of fc.auto: ` +
+          `passed arbitraries can only vary between calls based on generated values not on external world`
+      );
+    }
     const g = arb.generate(clonedMrng, biasFactor);
     context.history.push({ arb, value: g.value_, context: g.context });
     return g.value;
