@@ -25,25 +25,26 @@ function buildAutoValue(
 ): Value<AutoValue> {
   const clonedMrng = mrng.clone();
   const context: AutoContext = { mrng: clonedMrng, biasFactor, history: [] };
-  const value: AutoValue & WithToStringMethod = Object.assign(
-    <T>(arb: Arbitrary<T>): T => {
-      const preBuiltValue = preBuiltValues[context.history.length];
-      if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
-        const value = preBuiltValue.value;
-        context.history.push({ arb, value, context: preBuiltValue.context });
-        return value as T;
-      }
-      const g = arb.generate(clonedMrng, biasFactor);
-      context.history.push({ arb, value: g.value_, context: g.context });
-      return g.value;
-    },
-    {
-      values: () => context.history.map((c) => c.value),
-      [toStringMethod]: () => {
-        return stringify(context.history.map((c) => c.value));
-      },
+  const valueFunction: AutoValueFunction = <T>(arb: Arbitrary<T>): T => {
+    const preBuiltValue = preBuiltValues[context.history.length];
+    if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
+      const value = preBuiltValue.value;
+      context.history.push({ arb, value, context: preBuiltValue.context });
+      return value as T;
     }
-  );
+    const g = arb.generate(clonedMrng, biasFactor);
+    context.history.push({ arb, value: g.value_, context: g.context });
+    return g.value;
+  };
+  const valueMethods: AutoValueMethods & WithToStringMethod = {
+    values() {
+      return context.history.map((c) => c.value);
+    },
+    [toStringMethod]() {
+      return stringify(context.history.map((c) => c.value));
+    },
+  };
+  const value = Object.assign(valueFunction, valueMethods);
   return new Value(value, context);
 }
 
