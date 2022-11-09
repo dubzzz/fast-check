@@ -68,6 +68,18 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('auto', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.auto(), (auto) => {
+          const v1 = auto.builder(fc.integer());
+          const v2 = auto.builder(fc.integer());
+          return testFunc(`${v1}-${v2}`);
+        }),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('double', () => {
     expect(() =>
       fc.assert(
