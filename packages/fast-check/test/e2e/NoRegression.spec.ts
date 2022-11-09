@@ -69,11 +69,12 @@ describe(`NoRegression`, () => {
     ).toThrowErrorMatchingSnapshot();
   });
   it('auto', () => {
+    const integerArb = fc.integer();
     expect(() =>
       fc.assert(
         fc.property(fc.auto(), (auto) => {
-          const v1 = auto(fc.integer());
-          const v2 = auto(fc.integer());
+          const v1 = auto(integerArb);
+          const v2 = auto(integerArb);
           return testFunc(`${v1}-${v2}`);
         }),
         settings
