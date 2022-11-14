@@ -4999,7 +4999,7 @@ __metadata:
     pure-rand: ^5.0.2
     replace-in-file: ^6.3.5
     ts-jest: ^29.0.3
-    typedoc: ^0.23.20
+    typedoc: ^0.23.21
     typescript: ^4.8.4
   languageName: unknown
   linkType: soft
@@ -10023,19 +10023,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.23.20":
-  version: 0.23.20
-  resolution: "typedoc@npm:0.23.20"
+"typedoc@npm:^0.23.21":
+  version: 0.23.21
+  resolution: "typedoc@npm:0.23.21"
   dependencies:
     lunr: ^2.3.9
     marked: ^4.0.19
     minimatch: ^5.1.0
     shiki: ^0.11.1
   peerDependencies:
-    typescript: 4.6.x || 4.7.x || 4.8.x
+    typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x
   bin:
     typedoc: bin/typedoc
-  checksum: 8dbe046794a827b87e186523df86573673520ea5c706e1dfc2a820360bda5e998c23fd2ced91299ef060339f6ebba1086776e4e7423769da9b135a13edee10ec
+  checksum: 931520b21ae25ba8ea86111ea7c66f474468bb83cbe1d04c0ea19490f130ea44ba58b7ee4d12f7f02368cfe053ed1fa291c8843c466c8af383ef956de177360d
   languageName: node
   linkType: hard
 
