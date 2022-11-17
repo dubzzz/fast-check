@@ -649,7 +649,7 @@ __metadata:
     ava: ^5.1.0
     esm: ^3.2.25
     fast-check: "workspace:*"
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   peerDependencies:
     ava: ">=4.0.0"
   languageName: unknown
@@ -686,7 +686,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/expect-type@workspace:packages/expect-type"
   dependencies:
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   languageName: unknown
   linkType: soft
 
@@ -699,7 +699,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: ^29.2.2
     ts-jest: ^29.0.3
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   peerDependencies:
     "@jest/globals": ">=25.5.2"
   languageName: unknown
@@ -731,7 +731,7 @@ __metadata:
     pacote: ^15.0.0
     tar: ^6.1.11
     ts-jest: ^29.0.3
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   bin:
     packaged: ./bin/packaged.js
   languageName: unknown
@@ -744,7 +744,7 @@ __metadata:
     jest: ^29.2.2
     ts-jest: ^29.0.3
     ts-jest-resolver: ^2.0.0
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   languageName: unknown
   linkType: soft
 
@@ -856,7 +856,7 @@ __metadata:
   dependencies:
     "@fast-check/expect-type": "workspace:*"
     fast-check: "workspace:*"
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   languageName: unknown
   linkType: soft
 
@@ -868,7 +868,7 @@ __metadata:
     jest: ^29.2.2
     ts-jest: ^29.0.3
     ts-jest-resolver: ^2.0.0
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   languageName: unknown
   linkType: soft
 
@@ -5000,7 +5000,7 @@ __metadata:
     replace-in-file: ^6.3.5
     ts-jest: ^29.0.3
     typedoc: ^0.23.21
-    typescript: ^4.8.4
+    typescript: ^4.9.3
   languageName: unknown
   linkType: soft
 
@@ -10039,7 +10039,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.6.3, typescript@npm:^4.8.4, typescript@npm:~4.8.4":
+"typescript@npm:^4.6.3, typescript@npm:^4.9.3":
+  version: 4.9.3
+  resolution: "typescript@npm:4.9.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 17b8f816050b412403e38d48eef0e893deb6be522d6dc7caf105e54a72e34daf6835c447735fd2b28b66784e72bfbf87f627abb4818a8e43d1fa8106396128dc
+  languageName: node
+  linkType: hard
+
+"typescript@npm:~4.8.4":
   version: 4.8.4
   resolution: "typescript@npm:4.8.4"
   bin:
@@ -10049,7 +10059,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.6.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.6.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>":
+  version: 4.9.3
+  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=d73830"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 67ca21a387c0572f1c04936e638dde7782c5aa520c3754aadc7cc9b7c915da9ebc3e27c601bfff4ccb7d7264e82dce6d277ada82ec09dc75024349e0ef64926d
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
   version: 4.8.4
   resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=0102e9"
   bin:
