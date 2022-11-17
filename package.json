@@ -2,7 +2,7 @@
   "private": true,
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
-  "packageManager": "yarn@3.2.4",
+  "packageManager": "yarn@3.3.0",
   "workspaces": [
     ".github/actions/*",
     "examples",
