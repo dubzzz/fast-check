@@ -64,8 +64,6 @@
     "cross-env": "^7.0.3",
     "fast-check": "workspace:*",
     "jest": "^29.2.2",
-    "jscodeshift": "^0.14.0",
-    "mkdirp": "^1.0.4",
     "replace-in-file": "^6.3.5",
     "ts-jest": "^29.0.3",
     "typedoc": "^0.23.21",
