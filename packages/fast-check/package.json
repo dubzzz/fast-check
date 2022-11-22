@@ -57,19 +57,17 @@
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.33.5",
+    "@microsoft/api-extractor": "^7.33.6",
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.9",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
     "fast-check": "workspace:*",
     "jest": "^29.2.2",
-    "jscodeshift": "^0.14.0",
-    "mkdirp": "^1.0.4",
     "replace-in-file": "^6.3.5",
     "ts-jest": "^29.0.3",
-    "typedoc": "^0.23.20",
-    "typescript": "^4.8.4"
+    "typedoc": "^0.23.21",
+    "typescript": "^4.9.3"
   },
   "keywords": [
     "property-based testing",
