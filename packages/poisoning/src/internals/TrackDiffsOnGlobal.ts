@@ -3,6 +3,7 @@ import { EntriesSymbol, HasSymbol } from './PoisoningFreeMap.js';
 import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
 const SString = String;
+const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
@@ -46,7 +47,9 @@ export function trackDiffsOnGlobals(
       if (!isEligibleProperty(globalDetails, SString(propertyName))) {
         continue;
       }
-      if (!(propertyName in (currentDescriptors as any))) {
+      const currentDescriptor =
+        currentDescriptors[propertyName as any] || safeObjectGetOwnPropertyDescriptor(instance, propertyName);
+      if (currentDescriptor === undefined) {
         observedDiffs[PushSymbol]({
           keyName: SString(propertyName),
           fullyQualifiedKeyName: name + '.' + SString(propertyName),
@@ -57,9 +60,9 @@ export function trackDiffsOnGlobals(
           globalDetails,
         });
       } else if (
-        !safeObjectIs(initialPropertyDescriptor.value, (currentDescriptors as any)[propertyName].value) ||
-        !safeObjectIs(initialPropertyDescriptor.get, (currentDescriptors as any)[propertyName].get) ||
-        !safeObjectIs(initialPropertyDescriptor.set, (currentDescriptors as any)[propertyName].set)
+        !safeObjectIs(initialPropertyDescriptor.value, currentDescriptor.value) ||
+        !safeObjectIs(initialPropertyDescriptor.get, currentDescriptor.get) ||
+        !safeObjectIs(initialPropertyDescriptor.set, currentDescriptor.set)
       ) {
         observedDiffs[PushSymbol]({
           keyName: SString(propertyName),
