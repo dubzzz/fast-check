@@ -4,7 +4,6 @@ import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
 const SString = String;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;
 const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 const safeObjectIs = Object.is;
@@ -34,7 +33,6 @@ export function trackDiffsOnGlobals(
       continue;
     }
     const name = globalDetails.name;
-    const currentDescriptors = safeObjectGetOwnPropertyDescriptors(instance);
     const initialProperties = globalDetails.properties;
     const initialPropertiesList = [...initialProperties[EntriesSymbol]()];
 
@@ -47,8 +45,7 @@ export function trackDiffsOnGlobals(
       if (!isEligibleProperty(globalDetails, SString(propertyName))) {
         continue;
       }
-      const currentDescriptor =
-        currentDescriptors[propertyName as any] || safeObjectGetOwnPropertyDescriptor(instance, propertyName);
+      const currentDescriptor = safeObjectGetOwnPropertyDescriptor(instance, propertyName);
       if (currentDescriptor === undefined) {
         observedDiffs[PushSymbol]({
           keyName: SString(propertyName),
