@@ -170,6 +170,31 @@ function dropAllFromObj(obj: unknown): void {
   }
 }
 function dropMainGlobals(): void {
+  const trySomething = [
+    typeof Performance,
+    typeof ReadableStream,
+    typeof ReadableStreamDefaultReader,
+    typeof ReadableStreamBYOBReader,
+    typeof ReadableStreamBYOBRequest,
+    typeof ReadableByteStreamController,
+    typeof ReadableStreamDefaultController,
+    typeof TransformStream,
+    typeof TransformStreamDefaultController,
+    typeof WritableStream,
+    typeof WritableStreamDefaultWriter,
+    typeof WritableStreamDefaultController,
+    typeof ByteLengthQueuingStrategy,
+    typeof CountQueuingStrategy,
+    typeof TextEncoderStream,
+    typeof TextDecoderStream,
+    typeof FormData,
+    typeof Headers,
+    typeof Request,
+    typeof Response,
+  ];
+  if (trySomething.includes('undefined')) {
+    expect(trySomething).toEqual([]);
+  }
   const mainGlobals = [
     Object,
     Function,
@@ -226,7 +251,6 @@ function dropMainGlobals(): void {
     Atomics,
     WebAssembly,
     globalThis,
-    Blob,
     Performance,
     ReadableStream,
     ReadableStreamDefaultReader,
@@ -257,6 +281,7 @@ function dropMainGlobals(): void {
     'DecompressionStream', // TS issue
     'BroadcastChannel', // Unknown in CI against macOS
     'DOMException', // Unknown in CI against macOS
+    'Blob', // Unknown in CI against macOS
   ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
