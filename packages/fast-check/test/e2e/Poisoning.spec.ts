@@ -226,7 +226,6 @@ function dropMainGlobals(): void {
     Atomics,
     WebAssembly,
     globalThis,
-    DOMException,
     Blob,
     Performance,
     ReadableStream,
@@ -257,6 +256,7 @@ function dropMainGlobals(): void {
     'CompressionStream', // TS issue
     'DecompressionStream', // TS issue
     'BroadcastChannel', // Unknown in CI against macOS
+    'DOMException', // Unknown in CI against macOS
   ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
