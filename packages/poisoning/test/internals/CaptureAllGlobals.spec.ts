@@ -1,4 +1,5 @@
 import { captureAllGlobals } from '../../src/internals/CaptureAllGlobals.js';
+import { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
 import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 import { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
@@ -149,43 +150,43 @@ describe('captureAllGlobals', () => {
     const expectedExtractedGlobalThis: GlobalDetails = {
       name: 'globalThis',
       depth: 0,
-      properties: expect.any(Map),
+      properties: expect.any(Map) as PoisoningFreeMap<string | symbol, PropertyDescriptor>,
       rootAncestors: PoisoningFreeSet.from(['globalThis']),
     };
     const expectedExtractedDataA: GlobalDetails = {
       name: 'dataA',
       depth: 1,
-      properties: expect.any(Map),
+      properties: expect.any(Map) as PoisoningFreeMap<string | symbol, PropertyDescriptor>,
       rootAncestors: PoisoningFreeSet.from(['globalThis', 'dataD']),
     };
     const expectedExtractedDataB: GlobalDetails = {
       name: 'dataB',
       depth: 1,
-      properties: expect.any(Map),
+      properties: expect.any(Map) as PoisoningFreeMap<string | symbol, PropertyDescriptor>,
       rootAncestors: PoisoningFreeSet.from(['globalThis', 'dataA', 'dataC']), // not dataD as it passes through other roots
     };
     const expectedExtractedDataC: GlobalDetails = {
       name: 'dataC',
       depth: 1,
-      properties: expect.any(Map),
+      properties: expect.any(Map) as PoisoningFreeMap<string | symbol, PropertyDescriptor>,
       rootAncestors: PoisoningFreeSet.from(['globalThis', 'dataD']),
     };
     const expectedExtractedDataD: GlobalDetails = {
       name: 'dataD',
       depth: 1,
-      properties: expect.any(Map),
+      properties: expect.any(Map) as PoisoningFreeMap<string | symbol, PropertyDescriptor>,
       rootAncestors: PoisoningFreeSet.from(['globalThis']),
     };
     const expectedExtractedC: GlobalDetails = {
       name: 'dataB.c', // shortest path to c
       depth: 2,
-      properties: expect.any(Map),
+      properties: expect.any(Map) as PoisoningFreeMap<string | symbol, PropertyDescriptor>,
       rootAncestors: PoisoningFreeSet.from(['dataB']),
     };
     const expectedExtractedK: GlobalDetails = {
       name: 'dataD.h.i.j.k', // shortest and only path to k
       depth: 5,
-      properties: expect.any(Map),
+      properties: expect.any(Map) as PoisoningFreeMap<string | symbol, PropertyDescriptor>,
       rootAncestors: PoisoningFreeSet.from(['dataD']),
     };
 
