@@ -170,31 +170,6 @@ function dropAllFromObj(obj: unknown): void {
   }
 }
 function dropMainGlobals(): void {
-  const trySomething = [
-    typeof Performance,
-    typeof ReadableStream,
-    typeof ReadableStreamDefaultReader,
-    typeof ReadableStreamBYOBReader,
-    typeof ReadableStreamBYOBRequest,
-    typeof ReadableByteStreamController,
-    typeof ReadableStreamDefaultController,
-    typeof TransformStream,
-    typeof TransformStreamDefaultController,
-    typeof WritableStream,
-    typeof WritableStreamDefaultWriter,
-    typeof WritableStreamDefaultController,
-    typeof ByteLengthQueuingStrategy,
-    typeof CountQueuingStrategy,
-    typeof TextEncoderStream,
-    typeof TextDecoderStream,
-    typeof FormData,
-    typeof Headers,
-    typeof Request,
-    typeof Response,
-  ];
-  if (trySomething.includes('undefined')) {
-    expect(trySomething).toEqual([]);
-  }
   const mainGlobals = [
     Object,
     Function,
@@ -251,26 +226,6 @@ function dropMainGlobals(): void {
     Atomics,
     WebAssembly,
     globalThis,
-    Performance,
-    ReadableStream,
-    ReadableStreamDefaultReader,
-    ReadableStreamBYOBReader,
-    ReadableStreamBYOBRequest,
-    ReadableByteStreamController,
-    ReadableStreamDefaultController,
-    TransformStream,
-    TransformStreamDefaultController,
-    WritableStream,
-    WritableStreamDefaultWriter,
-    WritableStreamDefaultController,
-    ByteLengthQueuingStrategy,
-    CountQueuingStrategy,
-    TextEncoderStream,
-    TextDecoderStream,
-    FormData,
-    Headers,
-    Request,
-    Response,
   ];
   const skippedGlobals = new Set([
     'AggregateError',
@@ -282,6 +237,26 @@ function dropMainGlobals(): void {
     'BroadcastChannel', // Unknown in CI against macOS
     'DOMException', // Unknown in CI against macOS
     'Blob', // Unknown in CI against macOS
+    'Performance', // Unknown in CI against macOS
+    'ReadableStream', // Unknown in CI against macOS
+    'ReadableStreamDefaultReader', // Unknown in CI against macOS
+    'ReadableStreamBYOBReader', // Unknown in CI against macOS
+    'ReadableStreamBYOBRequest', // Unknown in CI against macOS
+    'ReadableByteStreamController', // Unknown in CI against macOS
+    'ReadableStreamDefaultController', // Unknown in CI against macOS
+    'TransformStream', // Unknown in CI against macOS
+    'TransformStreamDefaultController', // Unknown in CI against macOS
+    'WritableStream', // Unknown in CI against macOS
+    'WritableStreamDefaultWriter', // Unknown in CI against macOS
+    'WritableStreamDefaultController', // Unknown in CI against macOS
+    'ByteLengthQueuingStrategy', // Unknown in CI against macOS
+    'CountQueuingStrategy', // Unknown in CI against macOS
+    'TextEncoderStream', // Unknown in CI against macOS
+    'TextDecoderStream', // Unknown in CI against macOS
+    'FormData', // Unknown in CI against macOS
+    'Headers', // Unknown in CI against macOS
+    'Request', // Unknown in CI against macOS
+    'Response', // Unknown in CI against macOS
   ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
