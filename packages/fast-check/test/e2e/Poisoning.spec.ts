@@ -213,7 +213,6 @@ function dropMainGlobals(): void {
     MessageChannel,
     MessagePort,
     MessageEvent,
-    //URL,
     URLSearchParams,
     JSON,
     Math,
@@ -227,7 +226,6 @@ function dropMainGlobals(): void {
     Atomics,
     WebAssembly,
     globalThis,
-    BroadcastChannel,
     DOMException,
     Blob,
     Performance,
@@ -255,9 +253,10 @@ function dropMainGlobals(): void {
     'AggregateError',
     'FinalizationRegistry',
     'WeakRef',
-    'URL',
-    'CompressionStream',
-    'DecompressionStream',
+    'URL', // Causing exception in test (unrelated to fast-check)
+    'CompressionStream', // TS issue
+    'DecompressionStream', // TS issue
+    'BroadcastChannel', // Unknown in CI against macOS
   ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
