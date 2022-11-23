@@ -227,8 +227,38 @@ function dropMainGlobals(): void {
     Atomics,
     WebAssembly,
     globalThis,
+    BroadcastChannel,
+    DOMException,
+    Blob,
+    Performance,
+    ReadableStream,
+    ReadableStreamDefaultReader,
+    ReadableStreamBYOBReader,
+    ReadableStreamBYOBRequest,
+    ReadableByteStreamController,
+    ReadableStreamDefaultController,
+    TransformStream,
+    TransformStreamDefaultController,
+    WritableStream,
+    WritableStreamDefaultWriter,
+    WritableStreamDefaultController,
+    ByteLengthQueuingStrategy,
+    CountQueuingStrategy,
+    TextEncoderStream,
+    TextDecoderStream,
+    FormData,
+    Headers,
+    Request,
+    Response,
   ];
-  const skippedGlobals = new Set(['AggregateError', 'FinalizationRegistry', 'WeakRef', 'URL']);
+  const skippedGlobals = new Set([
+    'AggregateError',
+    'FinalizationRegistry',
+    'WeakRef',
+    'URL',
+    'CompressionStream',
+    'DecompressionStream',
+  ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
       globalName[0] >= 'A' &&
