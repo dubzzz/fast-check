@@ -346,6 +346,9 @@ jobs:
         run: yarn unpack:all
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Drop @types to avoid failures on legacy versions of TypeScript
+        if: matrix.ts-version == '4.1'
+        run: mv node_modules/@types node_modules/at-types
       - name: TypeScript version
         run: |
           cd packages/test-types
