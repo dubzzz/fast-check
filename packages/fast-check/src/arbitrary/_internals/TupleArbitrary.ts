@@ -53,10 +53,11 @@ export function tupleShrink<Ts extends unknown[]>(
 ): Stream<TupleExtendedValue<Ts>> {
   // shrinking one by one is the not the most comprehensive
   // but allows a reasonable number of entries in the shrink
-  let s = Stream.nil<TupleExtendedValue<Ts>>();
+  const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = [];
   const safeContext: TupleContext = safeArrayIsArray(context) ? context : [];
   for (let idx = 0; idx !== arbs.length; ++idx) {
-    s = s.join(
+    safePush(
+      shrinks,
       makeLazy(() =>
         arbs[idx]
           .shrink(value[idx], safeContext[idx])
@@ -71,7 +72,7 @@ export function tupleShrink<Ts extends unknown[]>(
       )
     );
   }
-  return s;
+  return Stream.nil<TupleExtendedValue<Ts>>().join(...shrinks);
 }
 
 /** @internal */
