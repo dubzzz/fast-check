@@ -53,9 +53,11 @@ describe('buildPartialRecordArbitrary', () => {
     expect(tuple).toHaveBeenCalledTimes(1);
     expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);
     expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
-    expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol as any));
     expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledTimes(1);
-    expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol as any));
     expect(map).toHaveBeenCalledTimes(1);
     expect(map).toHaveBeenCalledWith(mapper, unmapper);
   });
@@ -105,14 +107,18 @@ describe('buildPartialRecordArbitrary', () => {
     // Assert
     expect(arb).toBe(mappedInstance);
     expect(option).toHaveBeenCalledTimes(2);
-    expect(option).toHaveBeenCalledWith(recordModel.a, { nil: expect.any(Symbol) });
-    expect(option).toHaveBeenCalledWith(recordModel.c, { nil: expect.any(Symbol) });
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(option).toHaveBeenCalledWith(recordModel.a, { nil: expect.any(Symbol as any) });
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(option).toHaveBeenCalledWith(recordModel.c, { nil: expect.any(Symbol as any) });
     expect(tuple).toHaveBeenCalledTimes(1);
     expect(tuple).toHaveBeenCalledWith(optionInstance1Old, recordModel.b, optionInstance2Old);
     expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
-    expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol as any));
     expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledTimes(1);
-    expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol as any));
     expect(map).toHaveBeenCalledTimes(1);
     expect(map).toHaveBeenCalledWith(mapper, unmapper);
   });
@@ -158,9 +164,11 @@ describe('buildPartialRecordArbitrary', () => {
     expect(tuple).toHaveBeenCalledTimes(1);
     expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);
     expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
-    expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol as any));
     expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledTimes(1);
-    expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
+    // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
+    expect(buildValuesAndSeparateKeysToObjectUnmapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol as any));
     expect(map).toHaveBeenCalledTimes(1);
     expect(map).toHaveBeenCalledWith(mapper, unmapper);
   });
