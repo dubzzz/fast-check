@@ -90,7 +90,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.tuple<boolean[]>(...[...Array(maxDepthForArrays)].fill(fc.boolean()));
     const value: fc.Value<boolean[]> = arb.generate(mrng, undefined);
-    expect(() => iterateOverShrunkValues(arb, value!)).not.toThrow();
+    expect(() => iterateOverShrunkValues(arb, value)).not.toThrow();
   });
 
   it('should not run into stack overflow while calling shrink on very large shuffled sub-arrays', () => {
