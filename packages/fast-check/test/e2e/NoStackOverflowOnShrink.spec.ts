@@ -89,13 +89,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
     const arb = fc.tuple<boolean[]>(...[...Array(maxDepthForArrays)].fill(fc.boolean()));
-    let value: fc.Value<boolean[]> | null = null;
-    while (value === null) {
-      const tempShrinkable = arb.generate(mrng, undefined);
-      if (tempShrinkable.value.length >= callStackSize) {
-        value = tempShrinkable;
-      }
-    }
+    const value: fc.Value<boolean[]> = arb.generate(mrng, undefined);
     expect(() => iterateOverShrunkValues(arb, value!)).not.toThrow();
   });
 
