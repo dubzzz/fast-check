@@ -231,7 +231,8 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   ): IterableIterator<[Value<T>[], unknown, number]> {
     const shrinks: IterableIterator<[Value<T>[], unknown, number]>[] = [];
     for (let index = safeContext.startIndex; index < endIndex; ++index) {
-      shrinks.push(
+      safePush(
+        shrinks,
         makeLazy(() =>
           this.arb.shrink(value[index], safeContext.itemsContexts[index]).map((v): [Value<T>[], unknown, number] => {
             const beforeCurrent = safeMap(
