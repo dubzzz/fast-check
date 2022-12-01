@@ -229,9 +229,9 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     safeContext: ArrayArbitraryContext,
     endIndex: number
   ): IterableIterator<[Value<T>[], unknown, number]> {
-    let shrinks = Stream.nil<[Value<T>[], unknown, number]>();
+    const shrinks: IterableIterator<[Value<T>[], unknown, number]>[] = [];
     for (let index = safeContext.startIndex; index < endIndex; ++index) {
-      shrinks = shrinks.join(
+      shrinks.push(
         makeLazy(() =>
           this.arb.shrink(value[index], safeContext.itemsContexts[index]).map((v): [Value<T>[], unknown, number] => {
             const beforeCurrent = safeMap(
@@ -251,7 +251,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         )
       );
     }
-    return shrinks;
+    return Stream.nil<[Value<T>[], unknown, number]>().join(...shrinks);
   }
 
   private shrinkImpl(value: T[], context?: unknown): Stream<[Value<T>[], unknown, number]> {
@@ -301,20 +301,20 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         .join(
           value.length > this.minLength
             ? makeLazy(() => {
-                // We pass itemsLengthContext=undefined to next shrinker to start shrinking
-                // without any assumptions on the current state (we never explored that one)
-                const subContext: ArrayArbitraryContext = {
-                  shrunkOnce: false,
-                  lengthContext: undefined,
-                  itemsContexts: safeSlice(safeContext.itemsContexts, 1),
-                  startIndex: 0,
-                };
-                return this.shrinkImpl(safeSlice(value, 1), subContext)
-                  .filter((v) => this.minLength <= v[0].length + 1)
-                  .map((v): [Value<T>[], unknown, number] => {
-                    return [[new Value(cloneIfNeeded(value[0]), safeContext.itemsContexts[0]), ...v[0]], undefined, 0];
-                  });
-              })
+              // We pass itemsLengthContext=undefined to next shrinker to start shrinking
+              // without any assumptions on the current state (we never explored that one)
+              const subContext: ArrayArbitraryContext = {
+                shrunkOnce: false,
+                lengthContext: undefined,
+                itemsContexts: safeSlice(safeContext.itemsContexts, 1),
+                startIndex: 0,
+              };
+              return this.shrinkImpl(safeSlice(value, 1), subContext)
+                .filter((v) => this.minLength <= v[0].length + 1)
+                .map((v): [Value<T>[], unknown, number] => {
+                  return [[new Value(cloneIfNeeded(value[0]), safeContext.itemsContexts[0]), ...v[0]], undefined, 0];
+                });
+            })
             : Stream.nil()
         )
     );
