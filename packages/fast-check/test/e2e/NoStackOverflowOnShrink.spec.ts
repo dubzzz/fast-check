@@ -82,6 +82,17 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     expect(() => iterateOverShrunkValues(arb, value!)).not.toThrow();
   });
 
+  it('should not run into stack overflow while calling shrink on very large tuple', () => {
+    // We expect the depth used by this test to be greater than
+    // the maximal depth we computed before reaching a stack overflow
+    expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
+
+    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const arb = fc.tuple<boolean[]>(...[...Array(maxDepthForArrays)].fill(fc.boolean()));
+    const value: fc.Value<boolean[]> = arb.generate(mrng, undefined);
+    expect(() => iterateOverShrunkValues(arb, value)).not.toThrow();
+  });
+
   it('should not run into stack overflow while calling shrink on very large shuffled sub-arrays', () => {
     // We expect the depth used by this test to be greater than
     // the maximal depth we computed before reaching a stack overflow
