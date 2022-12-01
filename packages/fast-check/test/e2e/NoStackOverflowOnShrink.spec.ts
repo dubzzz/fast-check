@@ -127,9 +127,9 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
     class AnyCommand implements fc.Command<Record<string, unknown>, unknown> {
-      constructor(readonly b: boolean) { }
+      constructor(readonly b: boolean) {}
       check = () => true;
-      run = () => { };
+      run = () => {};
     }
 
     const mrng = new fc.Random(prand.xorshift128plus(seed));
