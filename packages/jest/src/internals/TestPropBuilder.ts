@@ -54,6 +54,7 @@ function internalTestPropConcurrent(testFn: It | It['concurrent']) {
 }
 
 // Mimic ItConcurrent from @jest/types
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function internalTestProp(testFn: It) {
   const base = internalTestPropConcurrent(testFn);
   const extras = {
