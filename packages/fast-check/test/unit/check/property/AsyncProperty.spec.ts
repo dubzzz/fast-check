@@ -87,7 +87,7 @@ describe('AsyncProperty', () => {
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should succeed if predicate does not return anything', async () => {
-    const p = asyncProperty(stubArb.single(8), async (_arg: number) => {});
+    const p = asyncProperty(stubArb.single(8), async (_arg: number) => { });
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should wait until completion of the check to follow', async () => {
@@ -113,7 +113,7 @@ describe('AsyncProperty', () => {
   });
   it('Should throw on invalid arbitrary', () =>
     expect(() =>
-      asyncProperty(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, async () => {})
+      asyncProperty(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, async () => { })
     ).toThrowError());
 
   it('Should use the unbiased arbitrary by default', () => {
@@ -121,7 +121,7 @@ describe('AsyncProperty', () => {
     generate.mockReturnValue(new Value(69, undefined));
     const mrng = stubRng.mutable.nocall();
 
-    const p = asyncProperty(instance, async () => {});
+    const p = asyncProperty(instance, async () => { });
     expect(generate).not.toHaveBeenCalled();
 
     expect(p.generate(mrng).value).toEqual([69]);
@@ -133,7 +133,7 @@ describe('AsyncProperty', () => {
     generate.mockReturnValue(new Value(42, undefined));
     const mrng = stubRng.mutable.nocall();
 
-    const p = asyncProperty(instance, async () => {});
+    const p = asyncProperty(instance, async () => { });
     expect(generate).not.toHaveBeenCalled();
 
     const runId1 = 0;
@@ -208,10 +208,10 @@ describe('AsyncProperty', () => {
   });
   it('Should fail if both global asyncBeforeEach and beforeEach are specified', () => {
     configureGlobal({
-      asyncBeforeEach: () => {},
-      beforeEach: () => {},
+      asyncBeforeEach: () => { },
+      beforeEach: () => { },
     });
-    expect(() => asyncProperty(stubArb.single(8), async () => {})).toThrowError(
+    expect(() => asyncProperty(stubArb.single(8), async () => { })).toThrowError(
       'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties'
     );
   });
@@ -294,10 +294,10 @@ describe('AsyncProperty', () => {
   });
   it('Should fail if both global asyncAfterEach and afterEach are specified', () => {
     configureGlobal({
-      asyncAfterEach: () => {},
-      afterEach: () => {},
+      asyncAfterEach: () => { },
+      afterEach: () => { },
     });
-    expect(() => asyncProperty(stubArb.single(8), async () => {})).toThrowError(
+    expect(() => asyncProperty(stubArb.single(8), async () => { })).toThrowError(
       'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties'
     );
   });
@@ -309,13 +309,15 @@ describe('AsyncProperty', () => {
 
     // Act
     const p = asyncProperty(arb, jest.fn());
-    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
+    const shrinks = [...shrinksStream]
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
     expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
     expect(shrink).not.toHaveBeenCalled();
-    expect([...shrinks]).toEqual([]);
+    expect(shrinks).toEqual([]);
   });
   it('should call shrink on the arbitrary if no context but properly handled value', () => {
     // Arrange
@@ -328,13 +330,16 @@ describe('AsyncProperty', () => {
 
     // Act
     const p = asyncProperty(arb, jest.fn());
-    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
+    expect(shrink).not.toHaveBeenCalled();
+    const shrinks = [...shrinksStream]
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
     expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
     expect(shrink).toHaveBeenCalledWith(value, undefined);
     expect(shrink).toHaveBeenCalledTimes(1);
-    expect([...shrinks].map((s) => s.value_)).toEqual([[s1], [s2]]);
+    expect(shrinks.map((s) => s.value_)).toEqual([[s1], [s2]]);
   });
 });

@@ -87,7 +87,7 @@ describe('Property', () => {
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should succeed if predicate does not return anything', () => {
-    const p = property(stubArb.single(8), (_arg: number) => {});
+    const p = property(stubArb.single(8), (_arg: number) => { });
     expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
   });
   it('Should call and forward arbitraries one time', () => {
@@ -115,13 +115,13 @@ describe('Property', () => {
     }
   });
   it('Should throw on invalid arbitrary', () =>
-    expect(() => property(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, () => {})).toThrowError());
+    expect(() => property(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, () => { })).toThrowError());
   it('Should use the unbiased arbitrary by default', () => {
     const { instance, generate } = fakeArbitrary<number>();
     generate.mockReturnValue(new Value(69, undefined));
     const mrng = stubRng.mutable.nocall();
 
-    const p = property(instance, () => {});
+    const p = property(instance, () => { });
     expect(generate).not.toHaveBeenCalled();
 
     expect(p.generate(mrng).value).toEqual([69]);
@@ -133,7 +133,7 @@ describe('Property', () => {
     generate.mockReturnValue(new Value(42, undefined));
     const mrng = stubRng.mutable.nocall();
 
-    const p = property(instance, () => {});
+    const p = property(instance, () => { });
     expect(generate).not.toHaveBeenCalled();
 
     const runId1 = 0;
@@ -196,9 +196,9 @@ describe('Property', () => {
   });
   it('should fail if global asyncBeforeEach has been set', () => {
     configureGlobal({
-      asyncBeforeEach: () => {},
+      asyncBeforeEach: () => { },
     });
-    expect(() => property(stubArb.single(8), (_arg: number) => {})).toThrowError(
+    expect(() => property(stubArb.single(8), (_arg: number) => { })).toThrowError(
       '"asyncBeforeEach" can\'t be set when running synchronous properties'
     );
   });
@@ -266,9 +266,9 @@ describe('Property', () => {
   });
   it('should fail if global asyncAfterEach has been set', () => {
     configureGlobal({
-      asyncAfterEach: () => {},
+      asyncAfterEach: () => { },
     });
-    expect(() => property(stubArb.single(8), (_arg: number) => {})).toThrowError(
+    expect(() => property(stubArb.single(8), (_arg: number) => { })).toThrowError(
       '"asyncAfterEach" can\'t be set when running synchronous properties'
     );
   });
@@ -280,13 +280,15 @@ describe('Property', () => {
 
     // Act
     const p = property(arb, jest.fn());
-    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
+    const shrinks = [...shrinksStream]
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
     expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
     expect(shrink).not.toHaveBeenCalled();
-    expect([...shrinks]).toEqual([]);
+    expect(shrinks).toEqual([]);
   });
   it('should call shrink on the arbitrary if no context but properly handled value', () => {
     // Arrange
@@ -299,13 +301,16 @@ describe('Property', () => {
 
     // Act
     const p = property(arb, jest.fn());
-    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
+    expect(shrink).not.toHaveBeenCalled();
+    const shrinks = [...shrinksStream]
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
     expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
     expect(shrink).toHaveBeenCalledWith(value, undefined);
     expect(shrink).toHaveBeenCalledTimes(1);
-    expect([...shrinks].map((s) => s.value_)).toEqual([[s1], [s2]]);
+    expect(shrinks.map((s) => s.value_)).toEqual([[s1], [s2]]);
   });
 });
