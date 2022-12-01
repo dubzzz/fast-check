@@ -4,6 +4,7 @@ import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';
+import { makeLazy } from '../../stream/LazyIterableIterator';
 
 const safeArrayIsArray = Array.isArray;
 const safeObjectDefineProperty = Object.defineProperty;
@@ -52,19 +53,26 @@ export function tupleShrink<Ts extends unknown[]>(
 ): Stream<TupleExtendedValue<Ts>> {
   // shrinking one by one is the not the most comprehensive
   // but allows a reasonable number of entries in the shrink
-  let s = Stream.nil<TupleExtendedValue<Ts>>();
+  const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = [];
   const safeContext: TupleContext = safeArrayIsArray(context) ? context : [];
   for (let idx = 0; idx !== arbs.length; ++idx) {
-    const shrinksForIndex: Stream<TupleExtendedValue<Ts>> = arbs[idx]
-      .shrink(value[idx], safeContext[idx])
-      .map((v) => {
-        const nextValues: Value<unknown>[] = safeMap(value, (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx]));
-        return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
-      })
-      .map((values) => tupleWrapper(values) as TupleExtendedValue<Ts>);
-    s = s.join(shrinksForIndex);
+    safePush(
+      shrinks,
+      makeLazy(() =>
+        arbs[idx]
+          .shrink(value[idx], safeContext[idx])
+          .map((v) => {
+            const nextValues: Value<unknown>[] = safeMap(
+              value,
+              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx])
+            );
+            return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
+          })
+          .map((values) => tupleWrapper(values) as TupleExtendedValue<Ts>)
+      )
+    );
   }
-  return s;
+  return Stream.nil<TupleExtendedValue<Ts>>().join(...shrinks);
 }
 
 /** @internal */

@@ -280,13 +280,15 @@ describe('Property', () => {
 
     // Act
     const p = property(arb, jest.fn());
-    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
+    const shrinks = [...shrinksStream];
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
     expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
     expect(shrink).not.toHaveBeenCalled();
-    expect([...shrinks]).toEqual([]);
+    expect(shrinks).toEqual([]);
   });
   it('should call shrink on the arbitrary if no context but properly handled value', () => {
     // Arrange
@@ -299,13 +301,16 @@ describe('Property', () => {
 
     // Act
     const p = property(arb, jest.fn());
-    const shrinks = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
+    expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
+    expect(shrink).not.toHaveBeenCalled();
+    const shrinks = [...shrinksStream];
 
     // Assert
     expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
     expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
     expect(shrink).toHaveBeenCalledWith(value, undefined);
     expect(shrink).toHaveBeenCalledTimes(1);
-    expect([...shrinks].map((s) => s.value_)).toEqual([[s1], [s2]]);
+    expect(shrinks.map((s) => s.value_)).toEqual([[s1], [s2]]);
   });
 });
