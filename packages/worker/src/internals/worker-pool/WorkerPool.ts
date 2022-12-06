@@ -1,4 +1,4 @@
-import { BasicPool, OnErrorCallback, OnSuccessCallback } from './BasicPool';
+import { BasicPool, OnErrorCallback, OnSuccessCallback } from './BasicPool.js';
 
 /**
  * Advanced pool for workers
