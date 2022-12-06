@@ -1,7 +1,7 @@
-import { jest } from '@jest/globals';
-import * as fc from 'fast-check';
+import { readConfigureGlobal } from 'fast-check';
 
-import type { Prop, PromiseProp, It, ArbitraryTuple } from './types.js';
+import type { Parameters as FcParameters } from 'fast-check';
+import type { Prop, PromiseProp, It, ArbitraryTuple, JestExtra, FcExtra } from './types.js';
 
 function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
@@ -12,17 +12,17 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Ts>,
-  params: fc.Parameters<TsParameters> | undefined,
-  timeout: number | undefined
+  params: FcParameters<TsParameters> | undefined,
+  timeout: number | undefined,
+  jest: JestExtra,
+  fc: FcExtra
 ): void {
-  const customParams: fc.Parameters<TsParameters> = { ...params };
+  const customParams: FcParameters<TsParameters> = { ...params };
   if (customParams.seed === undefined) {
-    const seedFromGlobals = fc.readConfigureGlobal().seed;
+    const seedFromGlobals = readConfigureGlobal().seed;
     if (seedFromGlobals !== undefined) {
       customParams.seed = seedFromGlobals;
     } else {
-      // This option is only available since v29.2.0 of Jest
-      // See official release note: https://github.com/facebook/jest/releases/tag/v29.2.0
       const seedFromJest = typeof jest.getSeed === 'function' ? jest.getSeed() : undefined;
       if (seedFromJest !== undefined) {
         customParams.seed = seedFromJest;

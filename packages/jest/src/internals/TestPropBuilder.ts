@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { jest } from '@jest/globals';
 import { buildTestWithPropRunner } from './TestWithPropRunnerBuilder.js';
 
 import type { It, ArbitraryTuple, Prop } from './types.js';
@@ -11,7 +12,7 @@ function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['faili
     prop: Prop<Ts>,
     params?: fc.Parameters<TsParameters>
   ): void {
-    buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined);
+    buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined, jest, fc);
   }
   const extras = {
     // TODO - each
@@ -27,7 +28,7 @@ function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['on
     prop: Prop<Ts>,
     params?: fc.Parameters<TsParameters>
   ): void {
-    buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined);
+    buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined, jest, fc);
   }
   const extras = {
     failing: internalTestPropFailing(testFn.failing),
@@ -43,7 +44,7 @@ function internalTestPropConcurrent(testFn: It | It['concurrent']) {
     prop: Prop<Ts>,
     params?: fc.Parameters<TsParameters>
   ): void {
-    buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined);
+    buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined, jest, fc);
   }
   const extras = {
     only: internalTestPropBase(testFn.only),
