@@ -33,10 +33,13 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
   }
 
   const promiseProp = wrapProp(prop);
+
+  // Instantiate property outside of testFn for the needs of worker-based version
+  const propertyInstance = (fc.asyncProperty as any)(...(arbitraries as any), promiseProp);
   testFn(
     `${label} (with seed=${customParams.seed})`,
     async () => {
-      await fc.assert((fc.asyncProperty as any)(...(arbitraries as any), promiseProp), customParams);
+      await fc.assert(propertyInstance, customParams);
     },
     timeout
   );

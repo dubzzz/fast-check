@@ -11,6 +11,12 @@
       "require": "./lib/jest-fast-check.js",
       "import": "./lib/esm/jest-fast-check.js",
       "default": "./lib/esm/jest-fast-check.js"
+    },
+    "./worker": {
+      "types": "./lib/jest-fast-check-worker.d.ts",
+      "require": "./lib/jest-fast-check-worker.js",
+      "import": "./lib/esm/jest-fast-check-worker.js",
+      "default": "./lib/esm/jest-fast-check-worker.js"
     }
   },
   "module": "lib/esm/jest-fast-check.js",
@@ -45,9 +51,16 @@
     "fast-check": "^3.0.0"
   },
   "peerDependencies": {
+    "@fast-check/worker": "^0.0.1",
     "@jest/globals": ">=25.5.2"
   },
+  "peerDependenciesMeta": {
+    "@fast-check/worker": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@fast-check/worker": "workspace:*",
     "@jest/globals": "^29.3.1",
     "@types/node": "^18.11.11",
     "fast-check": "workspace:*",
