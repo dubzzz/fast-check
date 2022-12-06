@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "contributor:add": "all-contributors add",
-    "build:all": "yarn workspaces foreach -ptvi run build",
-    "build-ci:all": "yarn workspaces foreach -ptvi run build-ci",
+    "build:all": "yarn workspaces foreach -pvi --topological-dev run build",
+    "build-ci:all": "yarn workspaces foreach -pvi --topological-dev run build-ci",
     "test:all": "yarn workspaces foreach -pvi run test && yarn workspaces foreach -pvi run e2e",
     "typecheck:all": "yarn workspaces foreach -pvi run typecheck",
     "format": "prettier --write .",
