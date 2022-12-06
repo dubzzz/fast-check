@@ -25,6 +25,9 @@
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "test": "jest",
+    "test-bundle:cjs": "node test-bundle/main.cjs",
+    "test-bundle:mjs": "node test-bundle/main.mjs",
+    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
