@@ -25,10 +25,8 @@ describe('bigInt64Array', () => {
     expect(arb).toBe(instance);
     expect(builder).toHaveBeenCalledWith(
       expect.anything(),
-      // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
-      expect.any(BigInt as any),
-      // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
-      expect.any(BigInt as any),
+      expect.any(BigInt),
+      expect.any(BigInt),
       BigInt64Array,
       expect.anything()
     );

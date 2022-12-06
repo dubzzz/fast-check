@@ -211,8 +211,7 @@ describe('BigIntArbitrary', () => {
           // Assert
           expect(shrinks).toBe(expectedShrinks);
           expect(shrinkBigInt).toHaveBeenCalledTimes(1);
-          // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
-          expect(shrinkBigInt).toHaveBeenCalledWith(mid, expect.any(BigInt as any), true);
+          expect(shrinkBigInt).toHaveBeenCalledWith(mid, expect.any(BigInt), true);
         })
       ));
   });

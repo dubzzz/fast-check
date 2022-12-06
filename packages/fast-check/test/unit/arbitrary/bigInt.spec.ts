@@ -58,10 +58,8 @@ describe('bigInt', () => {
 
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(
-          // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
-          withMin ? min : expect.any(BigInt as any),
-          // Typing issue of expect.any() - see DefinitelyTyped/DefinitelyTyped#62831
-          withMax ? max : expect.any(BigInt as any)
+          withMin ? min : expect.any(BigInt),
+          withMax ? max : expect.any(BigInt)
         );
         const argumentsForCall = BigIntArbitrary.mock.calls[0];
         expect(argumentsForCall[0]).toBeLessThanOrEqual(argumentsForCall[1]);
