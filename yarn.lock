@@ -508,7 +508,7 @@ __metadata:
     ts-jest: ^29.0.3
     typescript: ^4.9.3
   peerDependencies:
-    "@fast-check/worker": ^0.0.1
+    "@fast-check/worker": ~0.0.1
     "@jest/globals": ">=25.5.2"
   peerDependenciesMeta:
     "@fast-check/worker":
