@@ -500,6 +500,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/jest@workspace:packages/jest"
   dependencies:
+    "@fast-check/worker": "workspace:*"
     "@jest/globals": ^29.3.1
     "@types/node": ^18.11.11
     fast-check: "workspace:*"
@@ -507,7 +508,11 @@ __metadata:
     ts-jest: ^29.0.3
     typescript: ^4.9.3
   peerDependencies:
+    "@fast-check/worker": ~0.0.1
     "@jest/globals": ">=25.5.2"
+  peerDependenciesMeta:
+    "@fast-check/worker":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -666,7 +671,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fast-check/worker@workspace:packages/worker":
+"@fast-check/worker@workspace:*, @fast-check/worker@workspace:packages/worker":
   version: 0.0.0-use.local
   resolution: "@fast-check/worker@workspace:packages/worker"
   dependencies:

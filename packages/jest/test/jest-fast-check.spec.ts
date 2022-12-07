@@ -23,16 +23,18 @@ afterAll(async () => {
   await fs.rm(generatedTestsDirectory, { recursive: true });
 });
 
-describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: boolean }>([
-  { specName: 'testProp', runnerName: 'test', useLegacySignatures: true },
-  { specName: 'test', runnerName: 'test', useLegacySignatures: false },
-  { specName: 'itProp', runnerName: 'it', useLegacySignatures: true },
-  { specName: 'it', runnerName: 'it', useLegacySignatures: false },
-])('$specName', ({ runnerName, useLegacySignatures }) => {
+describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: boolean; useWorkers: boolean }>([
+  { specName: 'testProp', runnerName: 'test', useLegacySignatures: true, useWorkers: false },
+  { specName: 'test', runnerName: 'test', useLegacySignatures: false, useWorkers: false },
+  { specName: 'test (worker)', runnerName: 'test', useLegacySignatures: false, useWorkers: true },
+  { specName: 'itProp', runnerName: 'it', useLegacySignatures: true, useWorkers: false },
+  { specName: 'it', runnerName: 'it', useLegacySignatures: false, useWorkers: false },
+])('$specName', ({ runnerName, useLegacySignatures, useWorkers }) => {
+  const options = { useLegacySignatures, useWorkers };
   if (!useLegacySignatures) {
     it.concurrent('should pass on successful no prop mode', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner('successful no prop', () => {
           expect(true).toBe(true);
         });
@@ -48,7 +50,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
     it.concurrent('should fail on failing no prop mode', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner('failing no prop', () => {
           expect(false).toBe(true);
         });
@@ -63,9 +65,28 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
     });
   }
 
+  if (useWorkers) {
+    it.concurrent('should fail on property blocking the main thread', async () => {
+      // Arrange
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+        runner.prop([fc.nat()], { timeout: 500 })('property block main thread', () => {
+          // eslint-disable-next-line no-constant-condition
+          while (true);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+      expect(out).toMatch(/[×✕] property block main thread/);
+    });
+  }
+
   it.concurrent('should pass on truthy synchronous property', async () => {
     // Arrange
-    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.string(), fc.string(), fc.string()])('property pass sync', (a, b, c) => {
         return `${a}${b}${c}`.includes(b);
       });
@@ -81,7 +102,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
   it.concurrent('should pass on truthy asynchronous property', async () => {
     // Arrange
-    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.string(), fc.string(), fc.string()])('property pass async', async (a, b, c) => {
         await new Promise((resolve) => setTimeout(resolve, 0));
         return `${a}${b}${c}`.includes(b);
@@ -98,7 +119,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
   it.concurrent('should fail on falsy synchronous property', async () => {
     // Arrange
-    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.nat()])('property fail sync', (a) => {
         return a === 0;
       });
@@ -115,7 +136,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
   it.concurrent('should fail on falsy asynchronous property', async () => {
     // Arrange
-    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.nat()])('property fail async', async (a) => {
         await new Promise((resolve) => setTimeout(resolve, 0));
         return a === 0;
@@ -134,7 +155,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
   if (!useLegacySignatures) {
     it.concurrent('should pass on truthy record-based property', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property pass record', ({ a, b, c }) => {
           expect(typeof a).toBe('string');
           expect(typeof b).toBe('string');
@@ -153,7 +174,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
     it.concurrent('should fail on falsy record-based property', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property fail record', ({ a, b, c }) => {
           return `${a}${b}${c}`.includes(`${b}!`);
         });
@@ -170,7 +191,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
     it.concurrent('should fail on falsy record-based property with seed', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() }, { seed: 4869 })(
           'property fail record seeded',
           (_unused) => false
@@ -189,7 +210,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
   it.concurrent('should fail with locally requested seed', async () => {
     // Arrange
-    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.constant(null)], { seed: 4242 })('property fail with locally requested seed', (_unused) => false);
     });
 
@@ -204,7 +225,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
   it.concurrent('should fail with globally requested seed', async () => {
     // Arrange
-    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       fc.configureGlobal({ seed: 4848 });
       runner.prop([fc.constant(null)])('property fail with globally requested seed', (_unused) => false);
     });
@@ -220,7 +241,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
   it.concurrent('should fail with seed requested at jest level', async () => {
     // Arrange
-    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+    const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.constant(null)])('property fail with globally requested seed', (_unused) => false);
     });
 
@@ -236,7 +257,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
   describe('.skip', () => {
     it.concurrent('should never be executed', async () => {
       // Arrange
-      const { jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.skip.prop([fc.constant(null)])('property never executed', (_unused) => false);
       });
 
@@ -253,7 +274,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
     if (!useLegacySignatures) {
       it.concurrent('should fail on successful no prop mode', async () => {
         // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing('successful no prop', () => {
             expect(true).toBe(true);
           });
@@ -269,7 +290,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
       it.concurrent('should pass on failing no prop mode', async () => {
         // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing('failing no prop', () => {
             expect(false).toBe(true);
           });
@@ -286,7 +307,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
     it.concurrent('should pass because failing', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.failing.prop([fc.constant(null)])('property pass because failing', async (_unused) => false);
       });
 
@@ -300,7 +321,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
     it.concurrent('should fail because passing', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.failing.prop([fc.constant(null)])('property fail because passing', async (_unused) => true);
       });
 
@@ -316,7 +337,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
   describe('.concurrent', () => {
     it.concurrent('should pass on truthy property', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.concurrent.prop([fc.constant(null)])('property pass on truthy property', (_unused) => true);
       });
 
@@ -330,7 +351,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
     it.concurrent('should fail on falsy property', async () => {
       // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.concurrent.prop([fc.constant(null)])('property fail on falsy property', (_unused) => false);
       });
 
@@ -346,7 +367,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
     describe('.failing', () => {
       it.concurrent('should pass because failing', async () => {
         // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.concurrent.failing.prop([fc.constant(null)])(
             'property pass because failing',
             async (_unused) => false
@@ -363,7 +384,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 
       it.concurrent('should fail because passing', async () => {
         // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, useLegacySignatures, () => {
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.concurrent.failing.prop([fc.constant(null)])('property fail because passing', async (_unused) => true);
         });
 
@@ -383,9 +404,10 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 let num = -1;
 async function writeToFile(
   runner: 'test' | 'it',
-  useLegacySignatures: boolean,
+  options: { useLegacySignatures: boolean; useWorkers: boolean },
   fileContent: () => void
 ): Promise<{ specFileName: string; jestConfigRelativePath: string }> {
+  const { useLegacySignatures, useWorkers } = options;
   const specFileSeed = Math.random().toString(16).substring(2);
 
   // Prepare test file itself
@@ -408,6 +430,8 @@ async function writeToFile(
     : (testCode: string) => testCode;
   const importFromFastCheckJest = useLegacySignatures
     ? `const {${runner}Prop: runnerProp} = require('@fast-check/jest');\n`
+    : useWorkers
+    ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
     : `const {${runner}: runner} = require('@fast-check/jest');\n`;
   const specContent =
     "const fc = require('fast-check');\n" +
