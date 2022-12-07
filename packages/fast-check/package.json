@@ -62,7 +62,6 @@
     "@types/node": "^18.11.11",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
-    "fast-check": "workspace:*",
     "jest": "^29.3.1",
     "replace-in-file": "^6.3.5",
     "ts-jest": "^29.0.3",
