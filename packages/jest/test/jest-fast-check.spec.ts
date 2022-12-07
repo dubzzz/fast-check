@@ -65,6 +65,25 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
     });
   }
 
+  if (useWorkers) {
+    it.concurrent('should fail on property blocking the main thread', async () => {
+      // Arrange
+      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+        runner.prop([fc.nat()], { timeout: 500 })('property block main thread', () => {
+          // eslint-disable-next-line no-constant-condition
+          while (true);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+      expect(out).toMatch(/[×✕] property block main thread/);
+    });
+  }
+
   it.concurrent('should pass on truthy synchronous property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
