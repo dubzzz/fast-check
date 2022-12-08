@@ -397,6 +397,8 @@ fc.assert(
 )
 ```
 
+Note that this feature is not compatible with the use [custom examples](#add-custom-examples-next-to-generated-ones). If you want to use custom examples you cannot use `fc.context()`.
+
 ## Preview generated values
 
 Before writing down your test, it might be great to confirm that the arbitrary you will be using produce the values you want.
@@ -533,6 +535,8 @@ fc.assert(fc.property(fc.string(), fc.string(), fc.string(), myCheckFunction), {
 ```
 
 Please keep in mind that property based testing frameworks are fully able to find corner-cases with no help at all.
+
+Note that this feature is not compatible with the use of `Context`. If you want to [log within a predicate](#log-within-a-predicate), you cannot use custom examples. Alternatively, if you wish to use customm examples, you must remove `fc.context()`.
 
 ## Simplify user definable corner cases
 
