@@ -26,7 +26,17 @@ const timeoutAfter = (timeMs: number) => {
 
 /** @internal */
 export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
-  constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {}
+  runBeforeEach?: () => Promise<void>;
+  runAfterEach?: () => Promise<void>;
+
+  constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {
+    const sourceRunBeforeEach = this.property.runBeforeEach;
+    const sourceRunAfterEach = this.property.runAfterEach;
+    if (sourceRunBeforeEach !== undefined && sourceRunAfterEach !== undefined) {
+      this.runBeforeEach = () => Promise.resolve(sourceRunBeforeEach());
+      this.runAfterEach = () => Promise.resolve(sourceRunAfterEach());
+    }
+  }
 
   isAsync(): true {
     return true;
@@ -40,9 +50,9 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
     return this.property.shrink(value);
   }
 
-  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+  async run(v: Ts, dontRunHook: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
     const t = timeoutAfter(this.timeMs);
-    const propRun = Promise.race([this.property.run(v), t.promise]);
+    const propRun = Promise.race([this.property.run(v, dontRunHook), t.promise]);
     propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
     return propRun;
   }

@@ -5,7 +5,17 @@ import { IRawProperty } from './IRawProperty';
 
 /** @internal */
 export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
-  constructor(readonly property: IRawProperty<Ts, IsAsync>) {}
+  runBeforeEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runAfterEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+
+  constructor(readonly property: IRawProperty<Ts, IsAsync>) {
+    const sourceRunBeforeEach = this.property.runBeforeEach;
+    const sourceRunAfterEach = this.property.runAfterEach;
+    if (sourceRunBeforeEach !== undefined && sourceRunAfterEach !== undefined) {
+      this.runBeforeEach = () => sourceRunBeforeEach();
+      this.runAfterEach = () => sourceRunAfterEach();
+    }
+  }
 
   isAsync(): IsAsync {
     return this.property.isAsync();
@@ -19,7 +29,7 @@ export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProper
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
-    return this.property.run(v);
+  run(v: Ts, dontRunHook: boolean): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
+    return this.property.run(v, dontRunHook);
   }
 }
