@@ -7988,8 +7988,8 @@ __metadata:
   linkType: hard
 
 "pacote@npm:^15.0.0, pacote@npm:^15.0.2":
-  version: 15.0.6
-  resolution: "pacote@npm:15.0.6"
+  version: 15.0.7
+  resolution: "pacote@npm:15.0.7"
   dependencies:
     "@npmcli/git": ^4.0.0
     "@npmcli/installed-package-contents": ^2.0.1
@@ -7997,7 +7997,7 @@ __metadata:
     "@npmcli/run-script": ^6.0.0
     cacache: ^17.0.0
     fs-minipass: ^2.1.0
-    minipass: ^3.1.6
+    minipass: ^4.0.0
     npm-package-arg: ^10.0.0
     npm-packlist: ^7.0.0
     npm-pick-manifest: ^8.0.0
@@ -8010,7 +8010,7 @@ __metadata:
     tar: ^6.1.11
   bin:
     pacote: lib/bin.js
-  checksum: 780090212079efc787fc3c3b19bfcec34beeb6f24ef2ac43981c496ee24acbf1846752245740111db6cb7decf542313cb258b1339a57a7430d1b6626e4bfe1d0
+  checksum: a02f0390ca18bd54453d5b3b1fca83f90b1d304b38866eed4306c81ff8a7ff50adb390a30e24615201f5593de99307da198a71aa8e5709916f9e0a0a62100361
   languageName: node
   linkType: hard
 
