@@ -6,7 +6,7 @@ import { IRawProperty } from '../../../../../src/check/property/IRawProperty';
  */
 export function fakeProperty<T = unknown, TIsAsync extends boolean = boolean>(
   isAsyncResponse?: TIsAsync
-): { instance: IRawProperty<T, TIsAsync> } & MaybeMocked<IRawProperty<T, TIsAsync>> {
+): { instance: IRawProperty<T, TIsAsync> } & MaybeMocked<Required<IRawProperty<T, TIsAsync>>> {
   const isAsync = jest.fn();
   if (isAsyncResponse !== undefined) {
     isAsync.mockReturnValue(isAsyncResponse);
