@@ -7,7 +7,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 const startTimeMs = 200;
 const timeLimitMs = 100;
 
-describe('SkipAfterProperty', () => {
+describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: $dontRunHook)', (dontRunHook) => {
   it('should call timer at construction', async () => {
     // Arrange
     const timerMock = jest.fn();
@@ -23,7 +23,7 @@ describe('SkipAfterProperty', () => {
   it('should not call timer on isAsync but forward call', async () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -35,12 +35,14 @@ describe('SkipAfterProperty', () => {
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
+    expect(runBeforeEach).not.toHaveBeenCalled();
+    expect(runAfterEach).not.toHaveBeenCalled();
   });
 
   it('should not call timer on generate but forward call', async () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
     const { instance: mrng } = fakeRandom();
 
     // Act
@@ -53,12 +55,14 @@ describe('SkipAfterProperty', () => {
     expect(generate).toHaveBeenCalledTimes(1);
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
+    expect(runBeforeEach).not.toHaveBeenCalled();
+    expect(runAfterEach).not.toHaveBeenCalled();
   });
 
   it('should not call timer on shrink but forward call', async () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
@@ -70,16 +74,24 @@ describe('SkipAfterProperty', () => {
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).toHaveBeenCalledTimes(1);
     expect(run).not.toHaveBeenCalled();
+    expect(runBeforeEach).not.toHaveBeenCalled();
+    expect(runAfterEach).not.toHaveBeenCalled();
   });
 
   it('should call timer on run and forward call if ok', () => {
     // Arrange
     const timerMock = jest.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
-    p.run(Symbol('value'));
+    if (dontRunHook) {
+      p.runBeforeEach!();
+      p.run(Symbol('value'), true);
+      p.runAfterEach!();
+    } else {
+      p.run(Symbol('value'), false);
+    }
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(2);
@@ -87,6 +99,8 @@ describe('SkipAfterProperty', () => {
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).toHaveBeenCalledTimes(1);
+    expect(runBeforeEach).toHaveBeenCalledTimes(1);
+    expect(runAfterEach).toHaveBeenCalledTimes(1);
   });
 
   it('should call timer on run and fail after time limit', () => {
@@ -95,11 +109,18 @@ describe('SkipAfterProperty', () => {
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
-    const { instance: decoratedProperty, isAsync, generate, shrink, run } = fakeProperty();
+    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
-    const out = p.run(Symbol('value'));
+    let out: ReturnType<typeof p.run>;
+    if (dontRunHook) {
+      p.runBeforeEach!();
+      out = p.run(Symbol('value'), true);
+      p.runAfterEach!();
+    } else {
+      out = p.run(Symbol('value'), false);
+    }
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -108,6 +129,8 @@ describe('SkipAfterProperty', () => {
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
+    expect(runBeforeEach).not.toHaveBeenCalled();
+    expect(runAfterEach).not.toHaveBeenCalled();
   });
 
   it('should forward falsy interrupt flag to the precondition failure', async () => {
@@ -120,7 +143,14 @@ describe('SkipAfterProperty', () => {
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
-    const out = p.run(Symbol('value'));
+    let out: ReturnType<typeof p.run>;
+    if (dontRunHook) {
+      p.runBeforeEach!();
+      out = p.run(Symbol('value'), true);
+      p.runAfterEach!();
+    } else {
+      out = p.run(Symbol('value'), false);
+    }
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -137,7 +167,14 @@ describe('SkipAfterProperty', () => {
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, true);
-    const out = p.run(Symbol('value'));
+    let out: ReturnType<typeof p.run>;
+    if (dontRunHook) {
+      p.runBeforeEach!();
+      out = p.run(Symbol('value'), true);
+      p.runAfterEach!();
+    } else {
+      out = p.run(Symbol('value'), false);
+    }
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
