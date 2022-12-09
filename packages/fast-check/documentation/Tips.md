@@ -400,7 +400,7 @@ fc.assert(
 Please note that if you are using [custom examples](#add-custom-examples-next-to-generated-ones) in your tests, you will need the following implementation of `Context` in your examples:
 
 ```typescript
-const exampleContext = () => fc.sample(fc.context(), {numRuns:1})[0];
+const exampleContext = () => fc.sample(fc.context(), { numRuns: 1 })[0];
 ```
 
 ## Preview generated values
@@ -541,7 +541,7 @@ fc.assert(fc.property(fc.string(), fc.string(), fc.string(), myCheckFunction), {
 If you are using `Context` to [log within a predicate](#log-within-a-predicate) you will need to use the following context implementation in the examples.
 
 ```typescript
-const exampleContext = () => fc.sample(fc.context(), {numRuns:1})[0];
+const exampleContext = () => fc.sample(fc.context(), { numRuns: 1 })[0];
 
 fc.assert(fc.property(fc.string(), fc.string(), fc.context(), myCheckFunction), {
   examples: [['', '', exampleContext()]],
