@@ -7,29 +7,32 @@ describe.each([[true], [false]])('IgnoreEqualValuesProperty (dontRunHook: %p)', 
     skipRuns
     ${false}
     ${true}
-  `('should not call run on the decorated property when property is run on the same value', ({ skipRuns }) => {
-    // Arrange
-    const { instance: decoratedProperty, run, runBeforeEach, runAfterEach } = fakeProperty();
+  `(
+    'should not call run on the decorated property when property is run on the same value for skipRuns=$skipRuns',
+    ({ skipRuns }) => {
+      // Arrange
+      const { instance: decoratedProperty, run, runBeforeEach, runAfterEach } = fakeProperty();
 
-    // Act
-    const property = new IgnoreEqualValuesProperty(decoratedProperty, skipRuns);
-    if (dontRunHook) {
-      property.runBeforeEach!();
-      property.run(1, true);
-      property.runAfterEach!();
-      property.runBeforeEach!();
-      property.run(1, true);
-      property.runAfterEach!();
-    } else {
-      property.run(1, false);
-      property.run(1, false);
+      // Act
+      const property = new IgnoreEqualValuesProperty(decoratedProperty, skipRuns);
+      if (dontRunHook) {
+        property.runBeforeEach!();
+        property.run(1, true);
+        property.runAfterEach!();
+        property.runBeforeEach!();
+        property.run(1, true);
+        property.runAfterEach!();
+      } else {
+        property.run(1, false);
+        property.run(1, false);
+      }
+
+      // Assert
+      expect(run).toHaveBeenCalledTimes(1);
+      expect(runBeforeEach).toHaveBeenCalledTimes(2);
+      expect(runAfterEach).toHaveBeenCalledTimes(2);
     }
-
-    // Assert
-    expect(run).toHaveBeenCalledTimes(1);
-    expect(runBeforeEach).toHaveBeenCalledTimes(2);
-    expect(runAfterEach).toHaveBeenCalledTimes(2);
-  });
+  );
 
   it.each`
     originalValue                           | originalValuePretty            | isAsync
