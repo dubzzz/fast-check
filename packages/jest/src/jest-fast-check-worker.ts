@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
 import { assert, propertyFor } from '@fast-check/worker';
-import { jestExpect } from '@jest/expect';
+import { expect } from '@jest/globals';
 import { buildTest } from './internals/TestBuilder.js';
 
 import type { FastCheckItBuilder } from './internals/TestBuilder.js';
@@ -59,7 +59,7 @@ export const init = (url: URL): InitOutput => {
       return {
         test: buildTest(test as It, jest, fc),
         it: buildTest(it as It, jest, fc),
-        expect: jestExpect,
+        expect,
       };
     } else {
       // But in ES Modules mode, it cannot be accessed directly, thus users have to directly import it
@@ -67,10 +67,10 @@ export const init = (url: URL): InitOutput => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return import('@jest/globals').then(
-        ({ jest }): InitOutput => ({
+        ({ jest, expect }): InitOutput => ({
           test: buildTest(test as It, jest, fc),
           it: buildTest(it as It, jest, fc),
-          expect: jestExpect,
+          expect,
         })
       ) as any;
     }
@@ -79,7 +79,7 @@ export const init = (url: URL): InitOutput => {
   return {
     test: buildTest(dummyTest(), dummyJest, fc),
     it: buildTest(dummyTest(), dummyJest, fc),
-    expect: jestExpect,
+    expect,
   };
 };
 export { fc };
