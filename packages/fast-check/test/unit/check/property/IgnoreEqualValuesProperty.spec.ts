@@ -29,8 +29,14 @@ describe.each([[true], [false]])('IgnoreEqualValuesProperty (dontRunHook: %p)', 
 
       // Assert
       expect(run).toHaveBeenCalledTimes(1);
-      expect(runBeforeEach).toHaveBeenCalledTimes(2);
-      expect(runAfterEach).toHaveBeenCalledTimes(2);
+      if (dontRunHook) {
+        // We may not want to run them twice but once in such context, but so far we do
+        expect(runBeforeEach).toHaveBeenCalledTimes(2);
+        expect(runAfterEach).toHaveBeenCalledTimes(2);
+      } else {
+        expect(runBeforeEach).toHaveBeenCalledTimes(1);
+        expect(runAfterEach).toHaveBeenCalledTimes(1);
+      }
     }
   );
 
