@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 import { type PropertyArbitraries, type WorkerProperty } from './SharedTypes.js';
-import { WorkerPool } from './worker-pool/WorkerPool.js';
+import { BasicPool, PooledWorker } from './worker-pool/BasicPool.js';
+import { Lock } from './worker-pool/Lock.js';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -15,12 +16,36 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   workerId: number,
   arbitraries: PropertyArbitraries<Ts>
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
-  const pool = new WorkerPool<boolean | void, Ts>(workerFileUrl, workerId);
+  const lock = new Lock();
+  const pool = new BasicPool<boolean | void, Ts>(workerFileUrl, workerId);
+
+  let releaseLock: (() => void) | undefined = undefined;
+  let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;
   const property = fc.asyncProperty<Ts>(...arbitraries, async (...inputs) => {
     return new Promise((resolve, reject) => {
-      // TODO - Move acquire phase into some kind of beforeEach not to run it with the predicate
-      pool.acquireOne(inputs, resolve, reject).catch(reject);
+      if (worker === undefined) {
+        reject(new Error('Badly initialized worker, unable to run the property'));
+        return;
+      }
+      worker.register(inputs, resolve, reject);
     });
+  });
+  property.beforeEach(async (hookFunction) => {
+    await hookFunction(); // run outside of the worker, can throw
+    const acquired = await lock.acquire();
+    releaseLock = acquired.release;
+    worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
+  });
+  property.afterEach(async (hookFunction) => {
+    if (worker !== undefined) {
+      worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
+      worker = undefined;
+    }
+    if (releaseLock !== undefined) {
+      releaseLock();
+      releaseLock = undefined;
+    }
+    await hookFunction(); // run outside of the worker, can throw
   });
   const terminateAllWorkers = () => pool.terminateAllWorkers();
   return { property, terminateAllWorkers };
