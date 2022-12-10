@@ -59,7 +59,7 @@ export const init = (url: URL): InitOutput => {
       return {
         test: buildTest(test as It, jest, fc),
         it: buildTest(it as It, jest, fc),
-        expect: expect as typeof jestExpect,
+        expect: expect as unknown as typeof jestExpect,
       };
     } else {
       // But in ES Modules mode, it cannot be accessed directly, thus users have to directly import it
