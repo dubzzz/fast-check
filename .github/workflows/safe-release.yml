@@ -21,14 +21,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const Glob = require('glob');
             const { promises: { readFile } } = require('fs');
-            const files = await new Promise((resolve, reject) => {
-              Glob('**/package.json', {}, (err, files) => {
-                if (files) resolve(files);
-                else reject(err);
-              });
-            });
+            const globber = await glob.create('**/package.json');
+            const files = await globber.glob();
             for (const file of files) {
               const fileContentRaw = await readFile(file);
               const fileContent = JSON.parse(fileContentRaw.toString());
