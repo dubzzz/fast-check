@@ -44,11 +44,11 @@ export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements I
   private coveredCases: Map<string, ReturnType<IRawProperty<Ts, IsAsync>['run']>> = new Map();
 
   constructor(readonly property: IRawProperty<Ts, IsAsync>, readonly skipRuns: boolean) {
-    const sourceRunBeforeEach = this.property.runBeforeEach;
-    const sourceRunAfterEach = this.property.runAfterEach;
-    if (sourceRunBeforeEach !== undefined && sourceRunAfterEach !== undefined) {
-      this.runBeforeEach = () => sourceRunBeforeEach();
-      this.runAfterEach = () => sourceRunAfterEach();
+    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runBeforeEach = () => this.property.runBeforeEach!();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runAfterEach = () => this.property.runAfterEach!();
     }
   }
 

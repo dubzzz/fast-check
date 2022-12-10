@@ -17,11 +17,11 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
     readonly interruptExecution: boolean
   ) {
     this.skipAfterTime = this.getTime() + timeLimit;
-    const sourceRunBeforeEach = this.property.runBeforeEach;
-    const sourceRunAfterEach = this.property.runAfterEach;
-    if (sourceRunBeforeEach !== undefined && sourceRunAfterEach !== undefined) {
-      this.runBeforeEach = () => sourceRunBeforeEach();
-      this.runAfterEach = () => sourceRunAfterEach();
+    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runBeforeEach = () => this.property.runBeforeEach!();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runAfterEach = () => this.property.runAfterEach!();
     }
   }
 
