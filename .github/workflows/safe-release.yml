@@ -1,0 +1,47 @@
+name: Safe Release
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
+    paths:
+      - '**/CHANGELOG.md'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  safe_release:
+    name: 'Safe release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check no package from workspace
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const glob = require('glob');
+            const { promises: { readFile } } = require('fs');
+            const files = await new Promise((resolve, reject) => {
+              glob('**/package.json', {}, (err, files) => {
+                if (files) resolve(files);
+                else reject(err);
+              });
+            });
+            for (const file of files) {
+              const fileContentRaw = await readFile(file);
+              const fileContent = JSON.parse(fileContentRaw.toString());
+              for (const depVersion of Object.values(fileContent.dependencies || {})) {
+                if (depVersion.startsWith('workspace:')) {
+                  throw new Error(`Dependencies cannot start by workspace at release time, got: ${depVersion}`);
+                }
+              }
+              for (const depVersion of Object.values(fileContent.peerDependencies || {})) {
+                if (depVersion.startsWith('workspace:')) {
+                  throw new Error(`Peer-Dependencies cannot start by workspace at release time, got: ${depVersion}`);
+                }
+              }
+            }
