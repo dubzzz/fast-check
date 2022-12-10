@@ -1,8 +1,8 @@
 import * as fc from 'fast-check';
 import { assert, propertyFor } from '@fast-check/worker';
-import { expect } from '@jest/globals';
 import { buildTest } from './internals/TestBuilder.js';
 
+import type { expect } from '@jest/globals';
 import type { FastCheckItBuilder } from './internals/TestBuilder.js';
 import type { FcExtra, It, JestExtra } from './internals/types.js';
 
@@ -49,7 +49,7 @@ function dummyTest(): It {
   });
 }
 
-type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof jestExpect };
+type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof expect };
 
 export const init = (url: URL): InitOutput => {
   const fc: FcExtra = { asyncProperty: propertyFor(url), assert: assert as FcExtra['assert'] };
@@ -67,7 +67,7 @@ export const init = (url: URL): InitOutput => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return import('@jest/globals').then(
-        ({ jest, expect }): InitOutput => ({
+        ({ jest, expect, test, it }): InitOutput => ({
           test: buildTest(test as It, jest, fc),
           it: buildTest(it as It, jest, fc),
           expect,
