@@ -79,7 +79,7 @@ export const init = (url: URL): InitOutput => {
   return {
     test: buildTest(dummyTest(), dummyJest, fc),
     it: buildTest(dummyTest(), dummyJest, fc),
-    expect: expect as typeof jestExpect,
+    expect: expect as unknown as typeof jestExpect,
   };
 };
 export { fc };
