@@ -1,0 +1,5 @@
+releases:
+  "@fast-check/worker": patch
+
+declined:
+  - "@fast-check/jest"
