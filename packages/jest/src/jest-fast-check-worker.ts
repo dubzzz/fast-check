@@ -2,7 +2,7 @@ import * as fc from 'fast-check';
 import { assert, propertyFor } from '@fast-check/worker';
 import { buildTest } from './internals/TestBuilder.js';
 
-import type { expect } from '@jest/globals';
+import type { expect as jestExpect } from '@jest/globals';
 import type { FastCheckItBuilder } from './internals/TestBuilder.js';
 import type { FcExtra, It, JestExtra } from './internals/types.js';
 
@@ -49,7 +49,7 @@ function dummyTest(): It {
   });
 }
 
-type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof expect };
+type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof jestExpect };
 
 export const init = (url: URL): InitOutput => {
   const fc: FcExtra = { asyncProperty: propertyFor(url), assert: assert as FcExtra['assert'] };
