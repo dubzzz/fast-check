@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
   "dependencies": {
-    "fast-check": "^3.0.0"
+    "fast-check": "workspace:^"
   },
   "devDependencies": {
     "jest": "^29.3.1",

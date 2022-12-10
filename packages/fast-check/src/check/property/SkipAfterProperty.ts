@@ -6,7 +6,10 @@ import { IRawProperty } from './IRawProperty';
 
 /** @internal */
 export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
+  runBeforeEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runAfterEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
   private skipAfterTime: number;
+
   constructor(
     readonly property: IRawProperty<Ts, IsAsync>,
     readonly getTime: () => number,
@@ -14,6 +17,12 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
     readonly interruptExecution: boolean
   ) {
     this.skipAfterTime = this.getTime() + timeLimit;
+    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runBeforeEach = () => this.property.runBeforeEach!();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runAfterEach = () => this.property.runAfterEach!();
+    }
   }
 
   isAsync(): IsAsync {
@@ -28,7 +37,7 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
+  run(v: Ts, dontRunHook: boolean): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
     if (this.getTime() >= this.skipAfterTime) {
       const preconditionFailure = new PreconditionFailure(this.interruptExecution);
       if (this.isAsync()) {
@@ -37,6 +46,6 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
         return preconditionFailure as any; // !IsAsync => PreconditionFailure | string | null
       }
     }
-    return this.property.run(v);
+    return this.property.run(v, dontRunHook);
   }
 }
