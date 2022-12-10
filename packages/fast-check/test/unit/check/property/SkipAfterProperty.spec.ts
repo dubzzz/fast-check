@@ -129,8 +129,14 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
-    expect(runBeforeEach).not.toHaveBeenCalled();
-    expect(runAfterEach).not.toHaveBeenCalled();
+    if (dontRunHook) {
+      // We may not want to run them in such context
+      expect(runBeforeEach).toHaveBeenCalledTimes(1);
+      expect(runAfterEach).toHaveBeenCalledTimes(1);
+    } else {
+      expect(runBeforeEach).not.toHaveBeenCalled();
+      expect(runAfterEach).not.toHaveBeenCalled();
+    }
   });
 
   it('should forward falsy interrupt flag to the precondition failure', async () => {
