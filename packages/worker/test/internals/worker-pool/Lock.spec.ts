@@ -24,11 +24,11 @@ describe('Lock', () => {
       lastAcquiredLock = acquired;
     });
     lock.acquire().then((acquired) => {
-      seenValues.push(1);
+      seenValues.push(2);
       lastAcquiredLock = acquired;
     });
     lock.acquire().then((acquired) => {
-      seenValues.push(1);
+      seenValues.push(3);
       lastAcquiredLock = acquired;
     });
 
