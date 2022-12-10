@@ -7,7 +7,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 const startTimeMs = 200;
 const timeLimitMs = 100;
 
-describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: $dontRunHook)', (dontRunHook) => {
+describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRunHook) => {
   it('should call timer at construction', async () => {
     // Arrange
     const timerMock = jest.fn();

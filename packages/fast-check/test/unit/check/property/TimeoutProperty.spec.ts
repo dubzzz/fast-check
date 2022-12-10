@@ -3,7 +3,7 @@ import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty'
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 
-describe.each([[true], [false]])('TimeoutProperty (dontRunHook: $dontRunHook)', (dontRunHook) => {
+describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHook) => {
   beforeEach(() => {
     jest.clearAllTimers();
   });

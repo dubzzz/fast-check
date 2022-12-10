@@ -12,7 +12,7 @@ import { Stream } from '../../../../src/stream/Stream';
 import { PropertyFailure } from '../../../../src/check/property/IRawProperty';
 import fc from 'fast-check';
 
-describe.each([[true], [false]])('AsyncProperty (dontRunHook: $dontRunHook)', (dontRunHook) => {
+describe.each([[true], [false]])('AsyncProperty (dontRunHook: %p)', (dontRunHook) => {
   afterEach(() => resetConfigureGlobal());
 
   it('Should fail if predicate fails', async () => {

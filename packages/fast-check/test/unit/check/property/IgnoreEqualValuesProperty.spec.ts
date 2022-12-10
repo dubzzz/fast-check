@@ -2,7 +2,7 @@ import { IgnoreEqualValuesProperty } from '../../../../src/check/property/Ignore
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 
-describe.each([[true], [false]])('IgnoreEqualValuesProperty (dontRunHook: $dontRunHook)', (dontRunHook) => {
+describe.each([[true], [false]])('IgnoreEqualValuesProperty (dontRunHook: %p)', (dontRunHook) => {
   it.each`
     skipRuns
     ${false}
