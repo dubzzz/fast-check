@@ -130,7 +130,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
     if (dontRunHook) {
-      // We may not want to run them in such context
+      // We may not want to run them in such context, but so far we do
       expect(runBeforeEach).toHaveBeenCalledTimes(1);
       expect(runAfterEach).toHaveBeenCalledTimes(1);
     } else {
