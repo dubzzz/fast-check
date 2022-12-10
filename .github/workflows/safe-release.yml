@@ -6,6 +6,8 @@ on:
       - main
       - 'next-*_*_*'
       - 'fix-v*'
+    paths:
+      - '**/CHANGELOG.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
