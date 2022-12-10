@@ -49,6 +49,10 @@ function dummyTest(): It {
   });
 }
 
+function dummyExpect() {
+  throw new Error('Not implemented');
+}
+
 type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof jestExpect };
 
 export const init = (url: URL): InitOutput => {
@@ -79,7 +83,7 @@ export const init = (url: URL): InitOutput => {
   return {
     test: buildTest(dummyTest(), dummyJest, fc),
     it: buildTest(dummyTest(), dummyJest, fc),
-    expect: expect as unknown as typeof jestExpect,
+    expect: dummyExpect as unknown as typeof jestExpect,
   };
 };
 export { fc };
