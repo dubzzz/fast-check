@@ -30,11 +30,11 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
   runAfterEach?: () => Promise<void>;
 
   constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {
-    const sourceRunBeforeEach = this.property.runBeforeEach;
-    const sourceRunAfterEach = this.property.runAfterEach;
-    if (sourceRunBeforeEach !== undefined && sourceRunAfterEach !== undefined) {
-      this.runBeforeEach = () => Promise.resolve(sourceRunBeforeEach());
-      this.runAfterEach = () => Promise.resolve(sourceRunAfterEach());
+    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runBeforeEach = () => Promise.resolve(this.property.runBeforeEach!());
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runAfterEach = () => Promise.resolve(this.property.runAfterEach!());
     }
   }
 
