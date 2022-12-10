@@ -21,9 +21,10 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const Glob = require('glob');
             const { promises: { readFile } } = require('fs');
             const files = await new Promise((resolve, reject) => {
-              glob('**/package.json', {}, (err, files) => {
+              Glob('**/package.json', {}, (err, files) => {
                 if (files) resolve(files);
                 else reject(err);
               });
