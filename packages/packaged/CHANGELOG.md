@@ -1,3 +1,16 @@
+# 0.0.7
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.6...packaged%2Fv0.0.7)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.6
 
 _Lower constraints on external dependencies_

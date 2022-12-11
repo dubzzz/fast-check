@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/worker",
   "description": "Provide built-ins to run predicates directly within dedicated workers",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "commonjs",
   "main": "lib/main.js",
   "exports": {

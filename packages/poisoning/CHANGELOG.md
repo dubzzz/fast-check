@@ -1,3 +1,16 @@
+# 0.0.5
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.4...poisoning%2Fv0.0.5)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3421](https://github.com/dubzzz/fast-check/pull/3421)) Bug: Switch from descriptors to descriptor for Node 18
+
 # 0.0.4
 
 _Properly define types for TypeScript_

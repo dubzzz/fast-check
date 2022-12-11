@@ -1,8 +1,0 @@
-releases:
-  "@fast-check/ava": patch
-  "@fast-check/expect-type": patch
-  "@fast-check/jest": patch
-  "@fast-check/packaged": patch
-  "@fast-check/poisoning": patch
-  "@fast-check/worker": patch
-  fast-check: patch
