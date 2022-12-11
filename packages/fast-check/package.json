@@ -75,19 +75,21 @@
     "testing",
     "quickcheck",
     "jscheck",
-    "jsverify"
+    "jsverify",
+    "faker",
+    "jest"
   ],
   "tsd": {
     "directory": "test/type"
   },
   "funding": [
     {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
-    },
-    {
       "type": "individual",
       "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
     }
   ]
 }
