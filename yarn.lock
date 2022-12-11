@@ -641,6 +641,7 @@ __metadata:
   resolution: "@fast-check/jest@workspace:packages/jest"
   dependencies:
     "@fast-check/worker": "workspace:*"
+    "@jest/expect": ^29.3.1
     "@jest/globals": ^29.3.1
     "@types/node": ^18.11.12
     fast-check: "workspace:*"
@@ -649,9 +650,12 @@ __metadata:
     typescript: ^4.9.4
   peerDependencies:
     "@fast-check/worker": ~0.0.1
+    "@jest/expect": ">=28.0.0"
     "@jest/globals": ">=25.5.2"
   peerDependenciesMeta:
     "@fast-check/worker":
+      optional: true
+    "@jest/expect":
       optional: true
   languageName: unknown
   linkType: soft
