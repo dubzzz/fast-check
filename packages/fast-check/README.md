@@ -226,6 +226,6 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 Many individuals and companies offer their financial support to the project, a huge thanks to all of them too 💓
 
-<img align="center" src="https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg" alt="all sponsors" />
+<a href="https://github.com/sponsors/dubzzz"><img align="center" src="https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg" alt="all sponsors" /></a>
 
 You can also become one of them by contributing via [GitHub Sponsors](https://github.com/sponsors/dubzzz) or [OpenCollective](https://opencollective.com/fast-check/contribute).
