@@ -9,7 +9,7 @@ _TODO Description_
 
 ## Fixes
 
-
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
 
 # 1.1.2
 
