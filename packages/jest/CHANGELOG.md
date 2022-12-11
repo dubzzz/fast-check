@@ -1,3 +1,21 @@
+# 1.5.0
+
+_Add worker-based runner able to stop synchronous code_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.4.0...jest%2Fv1.5.0)]
+
+## Features
+
+- ([PR#3444](https://github.com/dubzzz/fast-check/pull/3444)) Add basic worker based runner
+
+## Fixes
+
+- ([PR#3471](https://github.com/dubzzz/fast-check/pull/3471)) CI: Add missing peerDependency for worker-based
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+- ([PR#3433](https://github.com/dubzzz/fast-check/pull/3433)) Refactor: Divide code into multiple files
+- ([PR#3443](https://github.com/dubzzz/fast-check/pull/3443)) Refactor: Take `jest` and `fc` as input for main internals
+
+---
+
 # 1.4.0
 
 _Introduce new `it.prop` and `test.prop` APIs_

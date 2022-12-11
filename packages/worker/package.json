@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/worker",
   "description": "Provide built-ins to run predicates directly within dedicated workers",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "commonjs",
   "main": "lib/main.js",
   "exports": {
@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
   "dependencies": {
-    "fast-check": "workspace:^"
+    "fast-check": "^3.4.0"
   },
   "devDependencies": {
     "jest": "^29.3.1",

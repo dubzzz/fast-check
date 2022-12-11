@@ -1,3 +1,31 @@
+# 3.4.0
+
+_Better handling of timeout with beforeEach and afterEach_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.3.0...v3.4.0)]
+
+## Features
+
+- ([PR#3464](https://github.com/dubzzz/fast-check/pull/3464)) No timeout for beforeEach or afterEach
+
+## Fixes
+
+- ([PR#3428](https://github.com/dubzzz/fast-check/pull/3428)) Bug: Avoid stack overflow during shrinking of tuples
+- ([PR#3432](https://github.com/dubzzz/fast-check/pull/3432)) Bug: Avoid stack overflow during shrinking of arrays
+- ([PR#3354](https://github.com/dubzzz/fast-check/pull/3354)) CI: Ignore version bump checks on publish
+- ([PR#3379](https://github.com/dubzzz/fast-check/pull/3379)) CI: Fix configuration for rollup esm tests
+- ([PR#3394](https://github.com/dubzzz/fast-check/pull/3394)) CI: Limit scope of "All ...bump declared"
+- ([PR#3393](https://github.com/dubzzz/fast-check/pull/3393)) CI: Run tests against Node 18.x
+- ([PR#3446](https://github.com/dubzzz/fast-check/pull/3446)) CI: Drop circular deps for dev topo builds
+- ([PR#3417](https://github.com/dubzzz/fast-check/pull/3417)) Clean: Drop v2 to v3 codemods from the repository
+- ([PR#3351](https://github.com/dubzzz/fast-check/pull/3351)) Doc: Update changelogs following backports
+- ([PR#3458](https://github.com/dubzzz/fast-check/pull/3458)) Doc: Document how to use `context` in `examples`
+- ([PR#3476](https://github.com/dubzzz/fast-check/pull/3476)) Doc: Revamp sponsoring section to show GitHub Sponsors
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+- ([PR#3427](https://github.com/dubzzz/fast-check/pull/3427)) Refactor: Expose shrinker of tuples internally
+- ([PR#3468](https://github.com/dubzzz/fast-check/pull/3468)) Script: Ensure we don't release workspace-based packages
+
+---
+
 # 3.3.0
 
 _Expose `webPath` arbitrary_
