@@ -210,6 +210,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://matinzd.dev/"><img src="https://avatars.githubusercontent.com/u/24797481?v=4?s=100" width="100px;" alt="Matin Zadeh Dolatabad"/><br /><sub><b>Matin Zadeh Dolatabad</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=matinzd" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://goo.gl/IlWG8U"><img src="https://avatars.githubusercontent.com/u/500?v=4?s=100" width="100px;" alt="Juan Julián Merelo Guervós"/><br /><sub><b>Juan Julián Merelo Guervós</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=JJ" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/SimenB"><img src="https://avatars.githubusercontent.com/u/1404810?v=4?s=100" width="100px;" alt="Simen Bekkhus"/><br /><sub><b>Simen Bekkhus</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=SimenB" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tskj"><img src="https://avatars.githubusercontent.com/u/25415972?v=4?s=100" width="100px;" alt="Tarjei Skjærset"/><br /><sub><b>Tarjei Skjærset</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=tskj" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
