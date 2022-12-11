@@ -1,6 +1,6 @@
 # 3.4.0
 
-_TODO Description_
+_Better handling of timeout with beforeEach and afterEach_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.3.0...v3.4.0)]
 
 ## Features
@@ -20,6 +20,7 @@ _TODO Description_
 - ([PR#3351](https://github.com/dubzzz/fast-check/pull/3351)) Doc: Update changelogs following backports
 - ([PR#3458](https://github.com/dubzzz/fast-check/pull/3458)) Doc: Document how to use `context` in `examples`
 - ([PR#3476](https://github.com/dubzzz/fast-check/pull/3476)) Doc: Revamp sponsoring section to show GitHub Sponsors
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
 - ([PR#3427](https://github.com/dubzzz/fast-check/pull/3427)) Refactor: Expose shrinker of tuples internally
 - ([PR#3468](https://github.com/dubzzz/fast-check/pull/3468)) Script: Ensure we don't release workspace-based packages
 
