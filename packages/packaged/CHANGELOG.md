@@ -1,15 +1,11 @@
 # 0.0.7
 
-_TODO Description_
+_Update funding section in package.json_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.6...packaged%2Fv0.0.7)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
 
 # 0.0.6
 
