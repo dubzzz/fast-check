@@ -49,7 +49,7 @@
     "ava": ">=4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.16",
+    "@types/node": "^18.11.17",
     "ava": "^5.1.0",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
