@@ -28,7 +28,14 @@ export type FalsyValue<TConstraints extends FalsyContraints = {}> =
   | ''
   | typeof NaN
   | undefined
+  | HTMLAllCollection
   | (TConstraints extends { withBigInt: true } ? 0n : never);
+
+const allDefaultFalsyValuesBase: FalsyValue[] = [false, null, undefined, 0, '', NaN];
+const allDefaultFalsyValues: FalsyValue[] =
+  typeof document !== 'undefined' && document.all !== undefined
+    ? [...allDefaultFalsyValuesBase, document.all]
+    : allDefaultFalsyValuesBase;
 
 /**
  * For falsy values:
@@ -49,7 +56,7 @@ export function falsy<TConstraints extends FalsyContraints>(
   constraints?: TConstraints
 ): Arbitrary<FalsyValue<TConstraints>> {
   if (!constraints || !constraints.withBigInt) {
-    return constantFrom<FalsyValue[]>(false, null, undefined, 0, '', NaN);
+    return constantFrom<FalsyValue[]>(...allDefaultFalsyValues);
   }
-  return constantFrom<FalsyValue<TConstraints>[]>(false, null, undefined, 0, '', NaN, BigInt(0) as any);
+  return constantFrom<FalsyValue<TConstraints>[]>(...allDefaultFalsyValues, BigInt(0) as any);
 }
