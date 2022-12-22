@@ -18,7 +18,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
     expect(out.numSkips).toBe(10001); // maxSkipsPerRun(100) * numRuns(100) +1
     expect(numRuns).toBe(0); // Expired immediately (timeout = 0)
   });
-  it('should interrupt as soon as delay expires and mark run as success (no failure before)', () => {
+  it('should interrupt as soon as delay expires and mark run as failure (no success before)', () => {
     let numRuns = 0;
     const out = fc.check(
       fc.property(fc.integer(), (_n) => {
@@ -27,7 +27,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
       }),
       { interruptAfterTimeLimit: 0 }
     );
-    expect(out.failed).toBe(false); // No failure received before interrupt signal
+    expect(out.failed).toBe(true); // No success received before interrupt signal
     expect(out.interrupted).toBe(true);
     expect(out.numRuns).toBe(0);
     expect(out.numShrinks).toBe(0);
@@ -50,7 +50,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
     expect(out.numSkips).toBe(0);
     expect(numRuns).toBe(0); // Expired immediately (timeout = 0)
   });
-  it('should consider interrupt with higer priority than skip', () => {
+  it('should consider interrupt with higher priority than skip', () => {
     let numRuns = 0;
     const out = fc.check(
       fc.property(fc.integer(), (_n) => {
@@ -59,7 +59,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
       }),
       { interruptAfterTimeLimit: 0, skipAllAfterTimeLimit: 0 }
     );
-    expect(out.failed).toBe(false); // No failure received before interrupt signal
+    expect(out.failed).toBe(true); // No success received before interrupt signal
     expect(out.interrupted).toBe(true);
     expect(out.numRuns).toBe(0);
     expect(out.numShrinks).toBe(0);
