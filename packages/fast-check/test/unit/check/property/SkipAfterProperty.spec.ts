@@ -186,4 +186,81 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     expect(PreconditionFailure.isFailure(out)).toBe(true);
     expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
   });
+
+  describe('timeout', () => {
+    it('should clear all started timeouts on success', async () => {
+      // Arrange
+      jest.useFakeTimers();
+      jest.spyOn(global, 'setTimeout');
+      jest.spyOn(global, 'clearTimeout');
+      const { instance: decoratedProperty, run } = fakeProperty(true);
+      run.mockResolvedValueOnce(null);
+
+      // Act
+      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true);
+      if (dontRunHook) {
+        await timeoutProp.runBeforeEach!();
+        await timeoutProp.run({}, true);
+        await timeoutProp.runAfterEach!();
+      } else {
+        await timeoutProp.run({}, false);
+      }
+
+      // Assert
+      expect(setTimeout).toBeCalledTimes(1);
+      expect(clearTimeout).toBeCalledTimes(1);
+    });
+
+    it('should clear all started timeouts on failure', async () => {
+      // Arrange
+      const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
+      jest.useFakeTimers();
+      jest.spyOn(global, 'setTimeout');
+      jest.spyOn(global, 'clearTimeout');
+      const { instance: decoratedProperty, run } = fakeProperty(true);
+      run.mockResolvedValueOnce(errorFromUnderlying);
+
+      // Act
+      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true);
+      if (dontRunHook) {
+        await timeoutProp.runBeforeEach!();
+        await timeoutProp.run({}, true);
+        await timeoutProp.runAfterEach!();
+      } else {
+        await timeoutProp.run({}, false);
+      }
+
+      // Assert
+      expect(setTimeout).toBeCalledTimes(1);
+      expect(clearTimeout).toBeCalledTimes(1);
+    });
+
+    it('should timeout if it takes to long', async () => {
+      // Arrange
+      jest.useFakeTimers();
+      const { instance: decoratedProperty, run } = fakeProperty(true);
+      run.mockReturnValueOnce(
+        new Promise(function (resolve) {
+          setTimeout(() => resolve(null), 100);
+        })
+      );
+
+      // Act
+      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true);
+      let runPromise: ReturnType<typeof timeoutProp.run>;
+      if (dontRunHook) {
+        await timeoutProp.runBeforeEach!();
+        runPromise = timeoutProp.run({}, true);
+      } else {
+        runPromise = timeoutProp.run({}, false);
+      }
+      jest.advanceTimersByTime(10);
+
+      // Assert
+      const out = await runPromise;
+      expect(PreconditionFailure.isFailure(out)).toBe(true);
+      expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
+      await timeoutProp.runAfterEach!();
+    });
+  });
 });
