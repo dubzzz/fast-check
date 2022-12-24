@@ -1,6 +1,6 @@
 # 3.5.0
 
-_TODO Description_
+_Interrupt running tasks when `interruptAfterTimeLimit` exceeded_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.4.0...v3.5.0)]
 
 ## Features
