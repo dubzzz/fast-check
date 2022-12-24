@@ -87,7 +87,8 @@ export interface Parameters<T = void> {
    */
   interruptAfterTimeLimit?: number;
   /**
-   * Mark interrupted runs as failed runs: disabled by default
+   * Mark interrupted runs as failed runs if preceded by one success or more: disabled by default
+   * Interrupted with no success at all always defaults to failure whatever the value of this flag.
    * @remarks Since 1.19.0
    */
   markInterruptAsFailure?: boolean;
