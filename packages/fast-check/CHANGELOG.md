@@ -8,10 +8,6 @@ _TODO Description_
 - ([PR#3507](https://github.com/dubzzz/fast-check/pull/3507)) Interrupt predicates when `interruptAfterTimeLimit`
 - ([PR#3508](https://github.com/dubzzz/fast-check/pull/3508)) Mark interrupted runs without any success as failures
 
-## Fixes
-
-
-
 ---
 
 # 3.4.0
