@@ -1,3 +1,19 @@
+# 3.5.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.4.0...v3.5.0)]
+
+## Features
+
+- ([PR#3507](https://github.com/dubzzz/fast-check/pull/3507)) Interrupt predicates when `interruptAfterTimeLimit`
+- ([PR#3508](https://github.com/dubzzz/fast-check/pull/3508)) Mark interrupted runs without any success as failures
+
+## Fixes
+
+
+
+---
+
 # 3.4.0
 
 _Better handling of timeout with beforeEach and afterEach_
