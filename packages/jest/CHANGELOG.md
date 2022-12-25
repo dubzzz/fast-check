@@ -1,6 +1,6 @@
 # 1.6.0
 
-_TODO Description_
+_Let fast-check guide timeouts_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.5.0...jest%2Fv1.6.0)]
 
 ## Features
