@@ -71,7 +71,9 @@ function extractJestGLobalTimeout(): number | undefined {
   for (const key of Object.getOwnPropertySymbols(globalThis)) {
     if (String(key) === stateSymbolStringValue) {
       const jestState = (globalThis as any)[key];
-      return jestState.testTimeout;
+      if (jestState !== null && typeof jestState === 'object' && typeof jestState.testTimeout === 'number') {
+        return jestState.testTimeout;
+      }
     }
   }
   return undefined; // no such case expected
