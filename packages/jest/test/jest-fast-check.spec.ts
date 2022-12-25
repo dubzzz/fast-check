@@ -462,7 +462,9 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
       it.concurrent('should fail as test takes longer than Jest setTimeout', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          jest.setTimeout(1000);
+          if (typeof jest !== 'undefined') {
+            jest.setTimeout(1000);
+          }
           runner.prop([fc.nat()])('property takes longer than Jest setTimeout', async () => {
             await new Promise(() => {}); // never resolving
           });
@@ -498,7 +500,9 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
         it.concurrent('should fail but favor local Jest timeout over Jest setTimeout', async () => {
           // Arrange
           const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-            jest.setTimeout(2000);
+            if (typeof jest !== 'undefined') {
+              jest.setTimeout(2000);
+            }
             runner.prop([fc.nat()])(
               'property favor local Jest timeout over Jest setTimeout',
               async () => {
@@ -521,7 +525,9 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
       it.concurrent('should fail but favor Jest setTimeout over Jest CLI timeout', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          jest.setTimeout(1000);
+          if (typeof jest !== 'undefined') {
+            jest.setTimeout(1000);
+          }
           runner.prop([fc.nat()])('property favor Jest setTimeout over Jest CLI timeout', async () => {
             await new Promise(() => {}); // never resolving
           });
