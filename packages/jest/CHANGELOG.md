@@ -1,3 +1,18 @@
+# 1.6.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.5.0...jest%2Fv1.6.0)]
+
+## Features
+
+- ([PR#3511](https://github.com/dubzzz/fast-check/pull/3511)) Let fast-check guide timeouts
+
+## Fixes
+
+
+
+---
+
 # 1.5.0
 
 _Add worker-based runner able to stop synchronous code_
