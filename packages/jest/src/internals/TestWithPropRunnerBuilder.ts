@@ -76,5 +76,5 @@ function extractJestGLobalTimeout(): number | undefined {
       }
     }
   }
-  return undefined; // no such case expected
+  return 10000; // no such case expected
 }
