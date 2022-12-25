@@ -507,17 +507,17 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
               1000
             );
           });
-  
+
           // Act
           const out = await runSpec(jestConfigRelativePath);
-  
+
           // Assert
           expectFail(out, specFileName);
           expectTimeout(out, 1000); // neither 2000 (setTimeout), nor 5000 (default)
           expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
         });
       }
-  
+
       it.concurrent('should fail but favor Jest setTimeout over Jest CLI timeout', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
@@ -526,10 +526,10 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
             await new Promise(() => {}); // never resolving
           });
         });
-  
+
         // Act
         const out = await runSpec(jestConfigRelativePath, { testTimeoutCLI: 2000 });
-  
+
         // Assert
         expectFail(out, specFileName);
         expectTimeout(out, 1000); // neither 2000 (cli), nor 5000 (default)
