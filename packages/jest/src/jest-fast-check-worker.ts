@@ -52,13 +52,17 @@ function dummyTest(): It {
 type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof jestExpect };
 
 export const init = (url: URL): InitOutput => {
-  const fc: FcExtra = { asyncProperty: propertyFor(url), assert: assert as FcExtra['assert'] };
+  const fcExtra: FcExtra = {
+    asyncProperty: propertyFor(url),
+    assert: assert as FcExtra['assert'],
+    readConfigureGlobal: fc.readConfigureGlobal,
+  };
   if (typeof it !== 'undefined') {
     if (typeof jest !== 'undefined') {
       // Jest is always properly defined when in CommonJS bundles
       return {
-        test: buildTest(test as It, jest, fc),
-        it: buildTest(it as It, jest, fc),
+        test: buildTest(test as It, jest, fcExtra),
+        it: buildTest(it as It, jest, fcExtra),
         expect: jestExpect,
       };
     } else {
@@ -68,8 +72,8 @@ export const init = (url: URL): InitOutput => {
       // @ts-ignore
       return import('@jest/globals').then(
         ({ jest }): InitOutput => ({
-          test: buildTest(test as It, jest, fc),
-          it: buildTest(it as It, jest, fc),
+          test: buildTest(test as It, jest, fcExtra),
+          it: buildTest(it as It, jest, fcExtra),
           expect: jestExpect,
         })
       ) as any;
@@ -77,8 +81,8 @@ export const init = (url: URL): InitOutput => {
   }
   const dummyJest: JestExtra = {};
   return {
-    test: buildTest(dummyTest(), dummyJest, fc),
-    it: buildTest(dummyTest(), dummyJest, fc),
+    test: buildTest(dummyTest(), dummyJest, fcExtra),
+    it: buildTest(dummyTest(), dummyJest, fcExtra),
     expect: jestExpect,
   };
 };

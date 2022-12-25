@@ -396,6 +396,104 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
         expect(out).toMatch(/[×✕] property fail because passing \(with seed=-?\d+\)/);
       });
     });
+
+    describe('timeout', () => {
+      it.concurrent('should fail as test takes longer than global Jest timeout', async () => {
+        // Arrange
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+          runner.prop([fc.nat()])('property takes longer than global Jest timeout', async () => {
+            await new Promise(() => {}); // never resolving
+          });
+        });
+
+        // Act
+        const out = await runSpec(jestConfigRelativePath);
+
+        // Assert
+        expectFail(out, specFileName);
+        expectTimeout(out, 5000);
+        expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
+      });
+
+      if (!useLegacySignatures) {
+        it.concurrent('should fail as test takes longer than Jest local timeout', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+            runner.prop([fc.nat()])(
+              'property takes longer than Jest local timeout',
+              async () => {
+                await new Promise(() => {}); // never resolving
+              },
+              1000
+            );
+          });
+
+          // Act
+          const out = await runSpec(jestConfigRelativePath);
+
+          // Assert
+          expectFail(out, specFileName);
+          expectTimeout(out, 1000);
+          expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
+        });
+      }
+
+      it.concurrent('should fail as test takes longer than Jest config timeout', async () => {
+        // Arrange
+        const { specFileName, jestConfigRelativePath } = await writeToFile(
+          runnerName,
+          { ...options, testTimeoutConfig: 1000 },
+          () => {
+            runner.prop([fc.nat()])('property takes longer than Jest config timeout', async () => {
+              await new Promise(() => {}); // never resolving
+            });
+          }
+        );
+
+        // Act
+        const out = await runSpec(jestConfigRelativePath);
+
+        // Assert
+        expectFail(out, specFileName);
+        expectTimeout(out, 1000);
+        expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
+      });
+
+      it.concurrent('should fail as test takes longer than Jest setTimeout', async () => {
+        // Arrange
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+          jest.setTimeout(1000);
+          runner.prop([fc.nat()])('property takes longer than Jest setTimeout', async () => {
+            await new Promise(() => {}); // never resolving
+          });
+        });
+
+        // Act
+        const out = await runSpec(jestConfigRelativePath);
+
+        // Assert
+        expectFail(out, specFileName);
+        expectTimeout(out, 1000);
+        expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
+      });
+
+      it.concurrent('should fail as test takes longer than Jest CLI timeout', async () => {
+        // Arrange
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+          runner.prop([fc.nat()])('property takes longer than Jest CLI timeout', async () => {
+            await new Promise(() => {}); // never resolving
+          });
+        });
+
+        // Act
+        const out = await runSpec(jestConfigRelativePath, { testTimeoutCLI: 1000 });
+
+        // Assert
+        expectFail(out, specFileName);
+        expectTimeout(out, 1000);
+        expect(out).toMatch(/[×✕] property takes longer than Jest CLI timeout/);
+      });
+    });
   });
 });
 
@@ -404,7 +502,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 let num = -1;
 async function writeToFile(
   runner: 'test' | 'it',
-  options: { useLegacySignatures: boolean; useWorkers: boolean },
+  options: { useLegacySignatures: boolean; useWorkers: boolean; testTimeoutConfig?: number },
   fileContent: () => void
 ): Promise<{ specFileName: string; jestConfigRelativePath: string }> {
   const { useLegacySignatures, useWorkers } = options;
@@ -448,13 +546,21 @@ async function writeToFile(
   // Write the files
   await Promise.all([
     fs.writeFile(specFilePath, specContent),
-    fs.writeFile(jestConfigPath, `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {} };`),
+    fs.writeFile(
+      jestConfigPath,
+      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
+        options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
+      } };`
+    ),
   ]);
 
   return { specFileName, jestConfigRelativePath };
 }
 
-async function runSpec(jestConfigRelativePath: string, opts: { jestSeed?: number } = {}): Promise<string> {
+async function runSpec(
+  jestConfigRelativePath: string,
+  opts: { jestSeed?: number; testTimeoutCLI?: number } = {}
+): Promise<string> {
   const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin', 'jest'], { shell: true });
   const jestBinaryPath = jestBinaryPathCommand.split('\n')[0];
   try {
@@ -464,6 +570,7 @@ async function runSpec(jestConfigRelativePath: string, opts: { jestSeed?: number
       jestConfigRelativePath,
       '--show-seed',
       ...(opts.jestSeed !== undefined ? ['--seed', String(opts.jestSeed)] : []),
+      ...(opts.testTimeoutCLI !== undefined ? [`--testTimeout=${opts.testTimeoutCLI}`] : []),
     ]);
     return specOutput;
   } catch (err) {
@@ -477,6 +584,15 @@ function expectPass(out: string, specFileName: string): void {
 
 function expectFail(out: string, specFileName: string): void {
   expect(out).toMatch(new RegExp('FAIL .*/' + specFileName));
+}
+
+function expectTimeout(out: string, timeout: number): void {
+  expect(out).toContain('Property interrupted after 0 tests');
+  const timeRegex = /[×✕] .* \(with seed=-?\d+\) \((\d+) ms\)/;
+  expect(out).toMatch(timeRegex);
+  const time = timeRegex.exec(out)!;
+  expect(Number(time[1])).toBeGreaterThanOrEqual(timeout);
+  expect(Number(time[1])).toBeLessThan(timeout * 1.5);
 }
 
 function expectAlignedSeeds(out: string, opts: { noAlignWithJest?: boolean } = {}): void {
