@@ -7,10 +7,6 @@ _TODO Description_
 
 - ([PR#3511](https://github.com/dubzzz/fast-check/pull/3511)) Let fast-check guide timeouts
 
-## Fixes
-
-
-
 ---
 
 # 1.5.0
