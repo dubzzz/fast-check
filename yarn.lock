@@ -646,6 +646,7 @@ __metadata:
     "@types/node": ^18.11.17
     fast-check: "workspace:*"
     jest: ^29.3.1
+    jest-jasmine2: ^29.3.1
     ts-jest: ^29.0.3
     typescript: ^4.9.4
   peerDependencies:
@@ -6209,6 +6210,31 @@ __metadata:
     fsevents:
       optional: true
   checksum: 97ea26af0c28a2ba568c9c65d06211487bbcd501cb4944f9d55e07fd2b00ad96653ea2cc9033f3d5b7dc1feda33e47ae9cc56b400191ea4533be213c9f82e67c
+  languageName: node
+  linkType: hard
+
+"jest-jasmine2@npm:^29.3.1":
+  version: 29.3.1
+  resolution: "jest-jasmine2@npm:29.3.1"
+  dependencies:
+    "@jest/environment": ^29.3.1
+    "@jest/expect": ^29.3.1
+    "@jest/source-map": ^29.2.0
+    "@jest/test-result": ^29.3.1
+    "@jest/types": ^29.3.1
+    "@types/node": "*"
+    chalk: ^4.0.0
+    co: ^4.6.0
+    is-generator-fn: ^2.0.0
+    jest-each: ^29.3.1
+    jest-matcher-utils: ^29.3.1
+    jest-message-util: ^29.3.1
+    jest-runtime: ^29.3.1
+    jest-snapshot: ^29.3.1
+    jest-util: ^29.3.1
+    p-limit: ^3.1.0
+    pretty-format: ^29.3.1
+  checksum: e8a3fabed31322ee2f9b687e5f0955bb0114634007aa0edc43742babb43b84f243a81e00fe97daa5bfe51def4ebe4b8f9fdf6561858d6eb1c5d2473de15aca59
   languageName: node
   linkType: hard
 

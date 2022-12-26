@@ -397,36 +397,68 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
       });
     });
 
-    describe('timeout', () => {
-      it.concurrent('should fail as test takes longer than global Jest timeout', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          runner.prop([fc.nat()])('property takes longer than global Jest timeout', async () => {
-            await new Promise(() => {}); // never resolving
-          });
+    describe.each([{ testRunner: undefined }, { testRunner: 'jasmine' as const }])(
+      'timeout (runner: $testRunner)',
+      ({ testRunner }) => {
+        it.concurrent('should fail as test takes longer than global Jest timeout', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(
+            runnerName,
+            { ...options, testRunner },
+            () => {
+              runner.prop([fc.nat()])('property takes longer than global Jest timeout', async () => {
+                await new Promise(() => {}); // never resolving
+              });
+            }
+          );
+
+          // Act
+          const out = await runSpec(jestConfigRelativePath);
+
+          // Assert
+          expectFail(out, specFileName);
+          expectTimeout(out, 5000);
+          expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
         });
 
-        // Act
-        const out = await runSpec(jestConfigRelativePath);
-
-        // Assert
-        expectFail(out, specFileName);
-        expectTimeout(out, 5000);
-        expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
-      });
-
-      if (!useLegacySignatures) {
-        it.concurrent('should fail as test takes longer than Jest local timeout', async () => {
-          // Arrange
-          const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-            runner.prop([fc.nat()])(
-              'property takes longer than Jest local timeout',
-              async () => {
-                await new Promise(() => {}); // never resolving
-              },
-              1000
+        if (!useLegacySignatures) {
+          it.concurrent('should fail as test takes longer than Jest local timeout', async () => {
+            // Arrange
+            const { specFileName, jestConfigRelativePath } = await writeToFile(
+              runnerName,
+              { ...options, testRunner },
+              () => {
+                runner.prop([fc.nat()])(
+                  'property takes longer than Jest local timeout',
+                  async () => {
+                    await new Promise(() => {}); // never resolving
+                  },
+                  1000
+                );
+              }
             );
+
+            // Act
+            const out = await runSpec(jestConfigRelativePath);
+
+            // Assert
+            expectFail(out, specFileName);
+            expectTimeout(out, 1000);
+            expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
           });
+        }
+
+        it.concurrent('should fail as test takes longer than Jest config timeout', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(
+            runnerName,
+            { ...options, testRunner, testTimeoutConfig: 1000 },
+            () => {
+              runner.prop([fc.nat()])('property takes longer than Jest config timeout', async () => {
+                await new Promise(() => {}); // never resolving
+              });
+            }
+          );
 
           // Act
           const out = await runSpec(jestConfigRelativePath);
@@ -434,114 +466,109 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
           // Assert
           expectFail(out, specFileName);
           expectTimeout(out, 1000);
-          expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
-        });
-      }
-
-      it.concurrent('should fail as test takes longer than Jest config timeout', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(
-          runnerName,
-          { ...options, testTimeoutConfig: 1000 },
-          () => {
-            runner.prop([fc.nat()])('property takes longer than Jest config timeout', async () => {
-              await new Promise(() => {}); // never resolving
-            });
-          }
-        );
-
-        // Act
-        const out = await runSpec(jestConfigRelativePath);
-
-        // Assert
-        expectFail(out, specFileName);
-        expectTimeout(out, 1000);
-        expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
-      });
-
-      it.concurrent('should fail as test takes longer than Jest setTimeout', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          if (typeof jest !== 'undefined') {
-            jest.setTimeout(1000);
-          }
-          runner.prop([fc.nat()])('property takes longer than Jest setTimeout', async () => {
-            await new Promise(() => {}); // never resolving
-          });
+          expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
         });
 
-        // Act
-        const out = await runSpec(jestConfigRelativePath);
-
-        // Assert
-        expectFail(out, specFileName);
-        expectTimeout(out, 1000);
-        expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
-      });
-
-      it.concurrent('should fail as test takes longer than Jest CLI timeout', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          runner.prop([fc.nat()])('property takes longer than Jest CLI timeout', async () => {
-            await new Promise(() => {}); // never resolving
-          });
-        });
-
-        // Act
-        const out = await runSpec(jestConfigRelativePath, { testTimeoutCLI: 1000 });
-
-        // Assert
-        expectFail(out, specFileName);
-        expectTimeout(out, 1000);
-        expect(out).toMatch(/[×✕] property takes longer than Jest CLI timeout/);
-      });
-
-      if (!useLegacySignatures) {
-        it.concurrent('should fail but favor local Jest timeout over Jest setTimeout', async () => {
+        it.concurrent('should fail as test takes longer than Jest setTimeout', async () => {
           // Arrange
-          const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-            if (typeof jest !== 'undefined') {
-              jest.setTimeout(2000);
-            }
-            runner.prop([fc.nat()])(
-              'property favor local Jest timeout over Jest setTimeout',
-              async () => {
+          const { specFileName, jestConfigRelativePath } = await writeToFile(
+            runnerName,
+            { ...options, testRunner },
+            () => {
+              if (typeof jest !== 'undefined') {
+                jest.setTimeout(1000);
+              }
+              runner.prop([fc.nat()])('property takes longer than Jest setTimeout', async () => {
                 await new Promise(() => {}); // never resolving
-              },
-              1000
-            );
-          });
+              });
+            }
+          );
 
           // Act
           const out = await runSpec(jestConfigRelativePath);
 
           // Assert
           expectFail(out, specFileName);
-          expectTimeout(out, 1000); // neither 2000 (setTimeout), nor 5000 (default)
-          expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
+          expectTimeout(out, 1000);
+          expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
+        });
+
+        it.concurrent('should fail as test takes longer than Jest CLI timeout', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(
+            runnerName,
+            { ...options, testRunner },
+            () => {
+              runner.prop([fc.nat()])('property takes longer than Jest CLI timeout', async () => {
+                await new Promise(() => {}); // never resolving
+              });
+            }
+          );
+
+          // Act
+          const out = await runSpec(jestConfigRelativePath, { testTimeoutCLI: 1000 });
+
+          // Assert
+          expectFail(out, specFileName);
+          expectTimeout(out, 1000);
+          expect(out).toMatch(/[×✕] property takes longer than Jest CLI timeout/);
+        });
+
+        if (!useLegacySignatures) {
+          it.concurrent('should fail but favor local Jest timeout over Jest setTimeout', async () => {
+            // Arrange
+            const { specFileName, jestConfigRelativePath } = await writeToFile(
+              runnerName,
+              { ...options, testRunner },
+              () => {
+                if (typeof jest !== 'undefined') {
+                  jest.setTimeout(2000);
+                }
+                runner.prop([fc.nat()])(
+                  'property favor local Jest timeout over Jest setTimeout',
+                  async () => {
+                    await new Promise(() => {}); // never resolving
+                  },
+                  1000
+                );
+              }
+            );
+
+            // Act
+            const out = await runSpec(jestConfigRelativePath);
+
+            // Assert
+            expectFail(out, specFileName);
+            expectTimeout(out, 1000); // neither 2000 (setTimeout), nor 5000 (default)
+            expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
+          });
+        }
+
+        it.concurrent('should fail but favor Jest setTimeout over Jest CLI timeout', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(
+            runnerName,
+            { ...options, testRunner },
+            () => {
+              if (typeof jest !== 'undefined') {
+                jest.setTimeout(1000);
+              }
+              runner.prop([fc.nat()])('property favor Jest setTimeout over Jest CLI timeout', async () => {
+                await new Promise(() => {}); // never resolving
+              });
+            }
+          );
+
+          // Act
+          const out = await runSpec(jestConfigRelativePath, { testTimeoutCLI: 2000 });
+
+          // Assert
+          expectFail(out, specFileName);
+          expectTimeout(out, 1000); // neither 2000 (cli), nor 5000 (default)
+          expect(out).toMatch(/[×✕] property favor Jest setTimeout over Jest CLI timeout/);
         });
       }
-
-      it.concurrent('should fail but favor Jest setTimeout over Jest CLI timeout', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          if (typeof jest !== 'undefined') {
-            jest.setTimeout(1000);
-          }
-          runner.prop([fc.nat()])('property favor Jest setTimeout over Jest CLI timeout', async () => {
-            await new Promise(() => {}); // never resolving
-          });
-        });
-
-        // Act
-        const out = await runSpec(jestConfigRelativePath, { testTimeoutCLI: 2000 });
-
-        // Assert
-        expectFail(out, specFileName);
-        expectTimeout(out, 1000); // neither 2000 (cli), nor 5000 (default)
-        expect(out).toMatch(/[×✕] property favor Jest setTimeout over Jest CLI timeout/);
-      });
-    });
+    );
   });
 });
 
@@ -550,7 +577,12 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 let num = -1;
 async function writeToFile(
   runner: 'test' | 'it',
-  options: { useLegacySignatures: boolean; useWorkers: boolean; testTimeoutConfig?: number },
+  options: {
+    useLegacySignatures: boolean;
+    useWorkers: boolean;
+    testTimeoutConfig?: number;
+    testRunner?: undefined | 'jasmine';
+  },
   fileContent: () => void
 ): Promise<{ specFileName: string; jestConfigRelativePath: string }> {
   const { useLegacySignatures, useWorkers } = options;
@@ -598,6 +630,10 @@ async function writeToFile(
       jestConfigPath,
       `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
         options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
+      }${
+        options.testRunner !== undefined
+          ? `testRunner: '<rootDir>/../../../../node_modules/jest-jasmine2/build/index.js',`
+          : ''
       } };`
     ),
   ]);
