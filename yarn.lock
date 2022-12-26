@@ -652,6 +652,7 @@ __metadata:
     "@fast-check/worker": ~0.0.1
     "@jest/expect": ">=28.0.0"
     "@jest/globals": ">=25.5.2"
+    jest-circus: ">=25.0.0"
   peerDependenciesMeta:
     "@fast-check/worker":
       optional: true
