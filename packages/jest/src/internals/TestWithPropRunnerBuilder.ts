@@ -1,4 +1,5 @@
 import { readConfigureGlobal } from 'fast-check';
+import { getState } from 'jest-circus';
 
 import type { Parameters as FcParameters } from 'fast-check';
 import type { Prop, PromiseProp, It, ArbitraryTuple, JestExtra, FcExtra } from './types.js';
@@ -37,7 +38,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     // Copy global configuration of interruptAfterTimeLimit as local one
     customParams.interruptAfterTimeLimit = fc.readConfigureGlobal().interruptAfterTimeLimit;
   }
-  const jestTimeout = timeout !== undefined ? timeout : extractJestGLobalTimeout();
+  const jestTimeout = timeout !== undefined ? timeout : extractJestGlobalTimeout();
   if (jestTimeout !== undefined) {
     if (customParams.interruptAfterTimeLimit === undefined) {
       // Use the timeout specified at jest's level for interruptAfterTimeLimit
@@ -61,20 +62,11 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
   );
 }
 
-function extractJestGLobalTimeout(): number | undefined {
-  // Initialized via setTimeout, see https://github.com/facebook/jest/blob/fb2de8a10f8e808b080af67aa771f67b5ea537ce/packages/jest-runtime/src/index.ts#L2174
-  const jestTimeout = (globalThis as any)[Symbol.for('TEST_TIMEOUT_SYMBOL')];
-  if (typeof jestTimeout === 'number') {
-    return jestTimeout;
+function extractJestGlobalTimeout(): number | undefined {
+  // for jest-circus runner
+  const jestCircusState = getState();
+  if (state !== undefined) {
+    return getState().testTimeout;
   }
-  const stateSymbolStringValue = String(Symbol('JEST_STATE_SYMBOL'));
-  for (const key of Object.getOwnPropertySymbols(globalThis)) {
-    if (String(key) === stateSymbolStringValue) {
-      const jestState = (globalThis as any)[key];
-      if (jestState !== null && typeof jestState === 'object' && typeof jestState.testTimeout === 'number') {
-        return jestState.testTimeout;
-      }
-    }
-  }
-  return undefined; // no such case expected
+  return undefined;
 }
