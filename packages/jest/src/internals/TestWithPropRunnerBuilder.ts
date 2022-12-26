@@ -74,5 +74,9 @@ function extractJestGlobalTimeout(): number | undefined {
   if (jestCircusState !== undefined) {
     return getState().testTimeout;
   }
+  // Tiemout defined via global configuraton or CLI option (jest-jasmine2 runner)
+  if (typeof jasmine !== 'undefined') {
+    return jasmine.DEFAULT_TIMEOUT_INTERVAL;
+  }
   return undefined;
 }
