@@ -72,7 +72,7 @@ function extractJestGlobalTimeout(): number | undefined {
   // Timeout defined via global configuration or CLI options (jest-circus runner)
   const jestCircusState = getState();
   if (jestCircusState !== undefined) {
-    return getState().testTimeout;
+    return jestCircusState.testTimeout;
   }
   // Tiemout defined via global configuraton or CLI option (jest-jasmine2 runner)
   if (typeof jasmine !== 'undefined') {
