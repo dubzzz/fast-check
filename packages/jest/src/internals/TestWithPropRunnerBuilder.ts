@@ -63,9 +63,15 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
 }
 
 function extractJestGlobalTimeout(): number | undefined {
-  // for jest-circus runner
+  // Timeout defined via explicit calls to jest.setTimeout
+  // See https://github.com/facebook/jest/blob/fb2de8a10f8e808b080af67aa771f67b5ea537ce/packages/jest-runtime/src/index.ts#L2174
+  const jestTimeout = (globalThis as any)[Symbol.for('TEST_TIMEOUT_SYMBOL')];
+  if (typeof jestTimeout === 'number') {
+    return jestTimeout;
+  }
+  // Timeout defined via global configuration or CLI options (jest-circus runner)
   const jestCircusState = getState();
-  if (state !== undefined) {
+  if (jestCircusState !== undefined) {
     return getState().testTimeout;
   }
   return undefined;
