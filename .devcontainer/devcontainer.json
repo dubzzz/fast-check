@@ -1,0 +1,11 @@
+{
+  "name": "Node.js",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "ms-azuretools.vscode-docker", "eamodio.gitlens"],
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
+}
