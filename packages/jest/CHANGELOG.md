@@ -6,6 +6,12 @@ _Let fast-check guide timeouts_
 ## Features
 
 - ([PR#3511](https://github.com/dubzzz/fast-check/pull/3511)) Let fast-check guide timeouts
+- ([PR#3520](https://github.com/dubzzz/fast-check/pull/3520)) Add support for jasmine runner
+
+## Fixes
+
+- ([PR#3519](https://github.com/dubzzz/fast-check/pull/3519)) Bug: Support failure to get timeout out of Jest
+- ([PR#3521](https://github.com/dubzzz/fast-check/pull/3521)) Test: Properly categorize timeout tests
 
 ---
 
