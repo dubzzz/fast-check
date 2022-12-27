@@ -6,6 +6,13 @@
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  },
   "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "ms-azuretools.vscode-docker", "eamodio.gitlens"],
   "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
 }
