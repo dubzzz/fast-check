@@ -447,7 +447,7 @@ describe.each<DescribeOptions>([
 
           // Assert
           expectFail(out, specFileName);
-          expectTimeout(out, 5000, true);
+          expectTimeout(out, 5000, true, testRunner);
           expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
         });
       }
@@ -470,7 +470,7 @@ describe.each<DescribeOptions>([
 
           // Assert
           expectFail(out, specFileName);
-          expectTimeout(out, 1000, false);
+          expectTimeout(out, 1000, false, testRunner);
           expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
         });
       }
@@ -493,7 +493,7 @@ describe.each<DescribeOptions>([
 
           // Assert
           expectFail(out, specFileName);
-          expectTimeout(out, 1000, true);
+          expectTimeout(out, 1000, true, testRunner);
           expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
         });
       }
@@ -514,7 +514,7 @@ describe.each<DescribeOptions>([
 
         // Assert
         expectFail(out, specFileName);
-        expectTimeout(out, 1000, false);
+        expectTimeout(out, 1000, false, testRunner);
         expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
       });
 
@@ -532,7 +532,7 @@ describe.each<DescribeOptions>([
 
           // Assert
           expectFail(out, specFileName);
-          expectTimeout(out, 1000, true);
+          expectTimeout(out, 1000, true, testRunner);
           expect(out).toMatch(/[×✕] property takes longer than Jest CLI timeout/);
         });
       }
@@ -558,7 +558,7 @@ describe.each<DescribeOptions>([
 
           // Assert
           expectFail(out, specFileName);
-          expectTimeout(out, 1000, false); // neither 2000 (setTimeout), nor 5000 (default)
+          expectTimeout(out, 1000, false, testRunner); // neither 2000 (setTimeout), nor 5000 (default)
           expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
         });
       }
@@ -579,7 +579,7 @@ describe.each<DescribeOptions>([
 
         // Assert
         expectFail(out, specFileName);
-        expectTimeout(out, 1000, false); // neither 2000 (cli), nor 5000 (default)
+        expectTimeout(out, 1000, false, testRunner); // neither 2000 (cli), nor 5000 (default)
         expect(out).toMatch(/[×✕] property favor Jest setTimeout over Jest CLI timeout/);
       });
     });
@@ -679,10 +679,15 @@ function expectFail(out: string, specFileName: string): void {
   expect(out).toMatch(new RegExp('FAIL .*/' + specFileName));
 }
 
-function expectTimeout(out: string, timeout: number, isGlobalInterrupt: boolean): void {
+function expectTimeout(
+  out: string,
+  timeout: number,
+  isGlobalInterrupt: boolean,
+  testRunner: DescribeOptions['testRunner']
+): void {
   // Related to ticket https://github.com/facebook/jest/issues/13338
   const supportForGlobalLevel = !process.version.startsWith('v18.');
-  if (supportForGlobalLevel || !isGlobalInterrupt) {
+  if (supportForGlobalLevel || !isGlobalInterrupt || testRunner === 'jasmine') {
     expect(out).toContain('Property interrupted after 0 tests');
   } else {
     // In such context, interrupt from fast-check will occur after the one caused by Jest.
