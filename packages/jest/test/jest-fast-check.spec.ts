@@ -23,14 +23,42 @@ afterAll(async () => {
   await fs.rm(generatedTestsDirectory, { recursive: true });
 });
 
-describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: boolean; useWorkers: boolean }>([
-  { specName: 'testProp', runnerName: 'test', useLegacySignatures: true, useWorkers: false },
-  { specName: 'test', runnerName: 'test', useLegacySignatures: false, useWorkers: false },
-  { specName: 'test (worker)', runnerName: 'test', useLegacySignatures: false, useWorkers: true },
-  { specName: 'itProp', runnerName: 'it', useLegacySignatures: true, useWorkers: false },
-  { specName: 'it', runnerName: 'it', useLegacySignatures: false, useWorkers: false },
-])('$specName', ({ runnerName, useLegacySignatures, useWorkers }) => {
-  const options = { useLegacySignatures, useWorkers };
+type DescribeOptions = {
+  specName: string;
+  runnerName: RunnerType;
+  useLegacySignatures: boolean;
+  useWorkers: boolean;
+  testRunner: 'jasmine' | undefined;
+};
+
+describe.each<DescribeOptions>([
+  { specName: 'testProp', runnerName: 'test', useLegacySignatures: true, useWorkers: false, testRunner: undefined },
+  { specName: 'test', runnerName: 'test', useLegacySignatures: false, useWorkers: false, testRunner: undefined },
+  {
+    specName: 'test (worker)',
+    runnerName: 'test',
+    useLegacySignatures: false,
+    useWorkers: true,
+    testRunner: undefined,
+  },
+  {
+    specName: 'test (jasmine)',
+    runnerName: 'test',
+    useLegacySignatures: false,
+    useWorkers: false,
+    testRunner: 'jasmine',
+  },
+  {
+    specName: 'test (jasmine)(worker)',
+    runnerName: 'test',
+    useLegacySignatures: false,
+    useWorkers: true,
+    testRunner: 'jasmine',
+  },
+  { specName: 'itProp', runnerName: 'it', useLegacySignatures: true, useWorkers: false, testRunner: undefined },
+  { specName: 'it', runnerName: 'it', useLegacySignatures: false, useWorkers: false, testRunner: undefined },
+])('$specName', ({ runnerName, useLegacySignatures, useWorkers, testRunner }) => {
+  const options = { useLegacySignatures, useWorkers, testRunner };
   if (!useLegacySignatures) {
     it.concurrent('should pass on successful no prop mode', async () => {
       // Arrange
@@ -550,7 +578,7 @@ describe.each<{ specName: string; runnerName: RunnerType; useLegacySignatures: b
 let num = -1;
 async function writeToFile(
   runner: 'test' | 'it',
-  options: { useLegacySignatures: boolean; useWorkers: boolean; testTimeoutConfig?: number },
+  options: { useLegacySignatures: boolean; useWorkers: boolean; testTimeoutConfig?: number; testRunner?: 'jasmine' },
   fileContent: () => void
 ): Promise<{ specFileName: string; jestConfigRelativePath: string }> {
   const { useLegacySignatures, useWorkers } = options;
@@ -598,6 +626,10 @@ async function writeToFile(
       jestConfigPath,
       `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
         options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
+      }${
+        options.testRunner !== undefined
+          ? `testRunner: '<rootDir>/../../../../node_modules/jest-jasmine2/build/index.js',`
+          : ''
       } };`
     ),
   ]);
