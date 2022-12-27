@@ -62,11 +62,13 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
 }
 
 function extractJestGLobalTimeout(): number | undefined {
-  // Initialized via setTimeout, see https://github.com/facebook/jest/blob/fb2de8a10f8e808b080af67aa771f67b5ea537ce/packages/jest-runtime/src/index.ts#L2174
+  // Timeout defined via explicit calls to jest.setTimeout
+  // See https://github.com/facebook/jest/blob/fb2de8a10f8e808b080af67aa771f67b5ea537ce/packages/jest-runtime/src/index.ts#L2174
   const jestTimeout = (globalThis as any)[Symbol.for('TEST_TIMEOUT_SYMBOL')];
   if (typeof jestTimeout === 'number') {
     return jestTimeout;
   }
+  // Timeout defined via global configuration or CLI options (jest-circus runner, the default starting since Jest 27)
   const stateSymbolStringValue = String(Symbol('JEST_STATE_SYMBOL'));
   for (const key of Object.getOwnPropertySymbols(globalThis)) {
     if (String(key) === stateSymbolStringValue) {
@@ -75,6 +77,10 @@ function extractJestGLobalTimeout(): number | undefined {
         return jestState.testTimeout;
       }
     }
+  }
+  // Timeout defined via global configuraton or CLI option (jest-jasmine2 runner, the default until Jest 26 included)
+  if (typeof jasmine !== 'undefined') {
+    return jasmine.DEFAULT_TIMEOUT_INTERVAL;
   }
   return undefined; // no such case expected
 }
