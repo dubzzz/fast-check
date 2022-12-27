@@ -46,6 +46,11 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
       // Mix both jest and fc's timeouts
       customParams.interruptAfterTimeLimit = Math.min(customParams.interruptAfterTimeLimit, jestTimeout);
     }
+  } else {
+    // Related to ticket https://github.com/facebook/jest/issues/13338
+    // May occur whenever test runner is not one of the uspported ones (see extractJestGLobalTimeout)
+    // or if node version is 18.2.0 or above until the issue gets fixed on node side if confirmed
+    console.warn('Unable to get back timeout of Jest, falling back onto Jest for global timeout handling');
   }
 
   const promiseProp = wrapProp(prop);
@@ -57,7 +62,9 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     async () => {
       await fc.assert(propertyInstance, customParams);
     },
-    0x7fffffff // must be 32-bit signed integer
+    jestTimeout !== undefined
+      ? 0x7fffffff // must be 32-bit signed integer
+      : undefined
   );
 }
 

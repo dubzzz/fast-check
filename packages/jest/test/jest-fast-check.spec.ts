@@ -635,12 +635,17 @@ function expectFail(out: string, specFileName: string): void {
 }
 
 function expectTimeout(out: string, timeout: number): void {
-  expect(out).toContain('Property interrupted after 0 tests');
+  // Related to ticket https://github.com/facebook/jest/issues/13338
+  const supportForGlobalLevel = !process.version.startsWith('v18.');
+  if (supportForGlobalLevel) {
+    expect(out).toContain('Property interrupted after 0 tests');
+  }
+  const consideredTimeout = supportForGlobalLevel ? timeout : 5000;
   const timeRegex = /[×✕] .* \(with seed=-?\d+\) \((\d+) ms\)/;
   expect(out).toMatch(timeRegex);
   const time = timeRegex.exec(out)!;
-  expect(Number(time[1])).toBeGreaterThanOrEqual(timeout);
-  expect(Number(time[1])).toBeLessThan(timeout * 1.5);
+  expect(Number(time[1])).toBeGreaterThanOrEqual(consideredTimeout);
+  expect(Number(time[1])).toBeLessThan(consideredTimeout * 1.5);
 }
 
 function expectAlignedSeeds(out: string, opts: { noAlignWithJest?: boolean } = {}): void {
