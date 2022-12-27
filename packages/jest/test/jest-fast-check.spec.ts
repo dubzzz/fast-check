@@ -298,30 +298,46 @@ describe.each<DescribeOptions>([
     });
   });
 
-  describe('.failing', () => {
-    if (!useLegacySignatures) {
-      it.concurrent('should fail on successful no prop mode', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          runner.failing('successful no prop', () => {
-            expect(true).toBe(true);
+  if (testRunner === undefined) {
+    describe('.failing', () => {
+      if (!useLegacySignatures) {
+        it.concurrent('should fail on successful no prop mode', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+            runner.failing('successful no prop', () => {
+              expect(true).toBe(true);
+            });
           });
+
+          // Act
+          const out = await runSpec(jestConfigRelativePath);
+
+          // Assert
+          expectFail(out, specFileName);
+          expect(out).toMatch(/[×✕] successful no prop/);
         });
 
-        // Act
-        const out = await runSpec(jestConfigRelativePath);
+        it.concurrent('should pass on failing no prop mode', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+            runner.failing('failing no prop', () => {
+              expect(false).toBe(true);
+            });
+          });
 
-        // Assert
-        expectFail(out, specFileName);
-        expect(out).toMatch(/[×✕] successful no prop/);
-      });
+          // Act
+          const out = await runSpec(jestConfigRelativePath);
 
-      it.concurrent('should pass on failing no prop mode', async () => {
+          // Assert
+          expectPass(out, specFileName);
+          expect(out).toMatch(/[√✓] failing no prop/);
+        });
+      }
+
+      it.concurrent('should pass because failing', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          runner.failing('failing no prop', () => {
-            expect(false).toBe(true);
-          });
+          runner.failing.prop([fc.constant(null)])('property pass because failing', async (_unused) => false);
         });
 
         // Act
@@ -329,38 +345,24 @@ describe.each<DescribeOptions>([
 
         // Assert
         expectPass(out, specFileName);
-        expect(out).toMatch(/[√✓] failing no prop/);
-      });
-    }
-
-    it.concurrent('should pass because failing', async () => {
-      // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-        runner.failing.prop([fc.constant(null)])('property pass because failing', async (_unused) => false);
+        expect(out).toMatch(/[√✓] property pass because failing \(with seed=-?\d+\)/);
       });
 
-      // Act
-      const out = await runSpec(jestConfigRelativePath);
+      it.concurrent('should fail because passing', async () => {
+        // Arrange
+        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+          runner.failing.prop([fc.constant(null)])('property fail because passing', async (_unused) => true);
+        });
 
-      // Assert
-      expectPass(out, specFileName);
-      expect(out).toMatch(/[√✓] property pass because failing \(with seed=-?\d+\)/);
+        // Act
+        const out = await runSpec(jestConfigRelativePath);
+
+        // Assert
+        expectFail(out, specFileName);
+        expect(out).toMatch(/[×✕] property fail because passing \(with seed=-?\d+\)/);
+      });
     });
-
-    it.concurrent('should fail because passing', async () => {
-      // Arrange
-      const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-        runner.failing.prop([fc.constant(null)])('property fail because passing', async (_unused) => true);
-      });
-
-      // Act
-      const out = await runSpec(jestConfigRelativePath);
-
-      // Assert
-      expectFail(out, specFileName);
-      expect(out).toMatch(/[×✕] property fail because passing \(with seed=-?\d+\)/);
-    });
-  });
+  }
 
   describe('.concurrent', () => {
     it.concurrent('should pass on truthy property', async () => {
@@ -392,38 +394,43 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property fail on falsy property \(with seed=-?\d+\)/);
     });
 
-    describe('.failing', () => {
-      it.concurrent('should pass because failing', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          runner.concurrent.failing.prop([fc.constant(null)])(
-            'property pass because failing',
-            async (_unused) => false
-          );
+    if (testRunner === undefined) {
+      describe('.failing', () => {
+        it.concurrent('should pass because failing', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+            runner.concurrent.failing.prop([fc.constant(null)])(
+              'property pass because failing',
+              async (_unused) => false
+            );
+          });
+
+          // Act
+          const out = await runSpec(jestConfigRelativePath);
+
+          // Assert
+          expectPass(out, specFileName);
+          expect(out).toMatch(/[√✓] property pass because failing \(with seed=-?\d+\)/);
         });
 
-        // Act
-        const out = await runSpec(jestConfigRelativePath);
+        it.concurrent('should fail because passing', async () => {
+          // Arrange
+          const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
+            runner.concurrent.failing.prop([fc.constant(null)])(
+              'property fail because passing',
+              async (_unused) => true
+            );
+          });
 
-        // Assert
-        expectPass(out, specFileName);
-        expect(out).toMatch(/[√✓] property pass because failing \(with seed=-?\d+\)/);
-      });
+          // Act
+          const out = await runSpec(jestConfigRelativePath);
 
-      it.concurrent('should fail because passing', async () => {
-        // Arrange
-        const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
-          runner.concurrent.failing.prop([fc.constant(null)])('property fail because passing', async (_unused) => true);
+          // Assert
+          expectFail(out, specFileName);
+          expect(out).toMatch(/[×✕] property fail because passing \(with seed=-?\d+\)/);
         });
-
-        // Act
-        const out = await runSpec(jestConfigRelativePath);
-
-        // Assert
-        expectFail(out, specFileName);
-        expect(out).toMatch(/[×✕] property fail because passing \(with seed=-?\d+\)/);
       });
-    });
+    }
 
     describe('timeout', () => {
       if (!useWorkers || !process.version.startsWith('v18.')) {
