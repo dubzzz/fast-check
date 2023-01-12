@@ -62,7 +62,8 @@ describe('QualifiedParameters', () => {
       fc.assert(
         fc.property(parametersArbitrary, hardCodedRandomType, (params, randomType) => {
           const qparams = QualifiedParameters.read({ ...params, randomType });
-          return qparams.randomType === prand[randomType];
+          const resolvedRandomType = randomType === 'congruential' ? 'congruential32' : randomType;
+          return qparams.randomType === prand[resolvedRandomType];
         })
       ));
     it('Should throw on invalid randomType', () =>
