@@ -23,9 +23,9 @@ export const sizeRelatedGlobalConfigArb = fc.record(
 
 // Type check that helpers are covering all the possibilities
 
-const failIfMissingSize: Size extends typeof allSizeOrdered[number] ? true : never = true;
-const failIfMissingRelativeSize: RelativeSize extends typeof allRelativeSize[number] ? true : never = true;
-const failIfMissingSizeForArbitrary: NonNullable<SizeForArbitrary> extends typeof allSizeForArbitrary[number]
+const failIfMissingSize: Size extends (typeof allSizeOrdered)[number] ? true : never = true;
+const failIfMissingRelativeSize: RelativeSize extends (typeof allRelativeSize)[number] ? true : never = true;
+const failIfMissingSizeForArbitrary: NonNullable<SizeForArbitrary> extends (typeof allSizeForArbitrary)[number]
   ? true
   : never = true;
 assert(failIfMissingSize); // just not to appear unused
