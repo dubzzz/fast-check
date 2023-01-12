@@ -106,7 +106,6 @@ export class QualifiedParameters<T> {
         case 'mersenne':
           return prand.mersenne;
         case 'congruential':
-          return prand.congruential;
         case 'congruential32':
           return prand.congruential32;
         case 'xorshift128plus':
@@ -116,6 +115,13 @@ export class QualifiedParameters<T> {
         default:
           throw new Error(`Invalid random specified: '${p.randomType}'`);
       }
+    }
+    const mrng = p.randomType(0);
+    if ('min' in mrng && mrng.min !== -0x80000000) {
+      throw new Error(`Invalid random number generator: min must equal -0x80000000, got ${String(mrng.min)}`);
+    }
+    if ('max' in mrng && mrng.max !== 0x7fffffff) {
+      throw new Error(`Invalid random number generator: max must equal 0x7fffffff, got ${String(mrng.max)}`);
     }
     return p.randomType;
   };
