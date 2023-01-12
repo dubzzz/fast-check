@@ -27,6 +27,9 @@ export interface Parameters<T = void> {
    * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus', 'xoroshiro128plus'
    * Or any function able to build a `RandomGenerator` based on a seed
    *
+   * As required since pure-rand@6.0.0, when passing a builder for {@see RandomGenerator},
+   * the random number generator must generate values between -0x80000000 and 0x7fffffff.
+   *
    * @remarks Since 1.6.0
    */
   randomType?: RandomType | ((seed: number) => RandomGenerator);

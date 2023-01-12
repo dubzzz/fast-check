@@ -8,13 +8,7 @@ import { VerbosityLevel } from '../../../../../src/check/runner/configuration/Ve
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
-    randomType: fc.constantFrom(
-      prand.mersenne,
-      prand.congruential,
-      prand.congruential32,
-      prand.xorshift128plus,
-      prand.xoroshiro128plus
-    ),
+    randomType: fc.constantFrom(prand.mersenne, prand.congruential32, prand.xorshift128plus, prand.xoroshiro128plus),
     numRuns: fc.nat(),
     maxSkipsPerRun: fc.nat(),
     timeout: fc.nat(),
