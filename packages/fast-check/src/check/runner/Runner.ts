@@ -144,7 +144,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const initialValues =
     qParams.path.length === 0
       ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
-      : buildInitialValues(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples), shrink, qParams);
+      : applyPath(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples), shrink, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()
