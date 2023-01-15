@@ -39,7 +39,7 @@ function streamSample<Ts>(
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map((s) => s.value_);
   }
-  return stream(pathWalk(qParams.path, tossedValues, shrink))
+  return pathWalk(qParams.path, tossedValues, shrink)
     .take(qParams.numRuns)
     .map((s) => s.value_);
 }
