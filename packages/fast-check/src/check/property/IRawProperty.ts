@@ -97,6 +97,6 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
  * @internal
  */
 export function runIdToFrequency(runId: number): number {
-  // 0.43429448190325176 = 1 / log(10)
-  return 2 + ~~(safeMathLog(runId + 1) * 0.43429448190325176);
+  // 0.4342944819032518 = 1 / log(10)
+  return 2 + ~~(safeMathLog(runId + 1) * 0.4342944819032518);
 }
