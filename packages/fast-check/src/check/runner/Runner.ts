@@ -74,13 +74,13 @@ function runnerPathWalker<Ts>(
   valueProducers: IterableIterator<() => Value<Ts>>,
   shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
   path: string
-): Stream<() => Value<Ts>> {
+): IterableIterator<() => Value<Ts>> {
   const pathPoints = path.split(':');
   const pathStream = stream(valueProducers)
     .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
     .map((producer) => producer());
   const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
-  return stream(pathWalk(adaptedPath, pathStream, shrink)).map((v) => () => v);
+  return pathWalk(adaptedPath, pathStream, shrink).map((v) => () => v);
 }
 
 /** @internal */
@@ -88,9 +88,9 @@ function buildInitialValues<Ts>(
   valueProducers: IterableIterator<() => Value<Ts>>,
   shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
   qParams: QualifiedParameters<Ts>
-): Stream<() => Value<Ts>> {
+): IterableIterator<() => Value<Ts>> {
   if (qParams.path.length === 0) {
-    return stream(valueProducers);
+    return valueProducers;
   }
   return runnerPathWalker(valueProducers, shrink, qParams.path);
 }
