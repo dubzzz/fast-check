@@ -3578,12 +3578,12 @@ fc.statistics(
 // • 1 to 4 items..100.00%
 // For size = "small":
 // • 1 to 4 items....60.75%
-// • 10 to 49 items..24.44%
-// • 5 to 9 items....14.80%
+// • 10 to 49 items..24.45%
+// • 5 to 9 items....14.79%
 // • 50 to 99 items...0.01%
 // For size = "medium":
-// • 1 to 4 items......52.09%
-// • 50 to 99 items....25.68%
+// • 1 to 4 items......52.10%
+// • 50 to 99 items....25.67%
 // • 10 to 49 items....15.87%
 // • 100 to 499 items...6.21%
 // • 5 to 9 items.......0.12%
