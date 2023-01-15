@@ -70,7 +70,7 @@ async function asyncRunIt<Ts>(
 }
 
 /** @internal */
-function buildInitialValues<Ts>(
+function applyPath<Ts>(
   valueProducers: IterableIterator<() => Value<Ts>>,
   shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
   qParams: QualifiedParameters<Ts>
