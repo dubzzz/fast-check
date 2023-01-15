@@ -14,14 +14,10 @@ function iotaN(n: number) {
 }
 
 function source() {
-  return iota()
-    .map((v) => () => v)
-    [Symbol.iterator]();
+  return iota()[Symbol.iterator]();
 }
 function sourceN(n: number) {
-  return iotaN(n)
-    .map((v) => () => v)
-    [Symbol.iterator]();
+  return iotaN(n)[Symbol.iterator]();
 }
 
 function simulateSkips(svIt: SourceValuesIterator<number>, skippedValues: number[]) {

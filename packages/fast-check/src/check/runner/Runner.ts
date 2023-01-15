@@ -10,7 +10,7 @@ import { RunDetails } from './reporter/RunDetails';
 import { RunExecution } from './reporter/RunExecution';
 import { RunnerIterator } from './RunnerIterator';
 import { SourceValuesIterator } from './SourceValuesIterator';
-import { toss } from './Tosser';
+import { lazyToss, toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
@@ -71,14 +71,16 @@ async function asyncRunIt<Ts>(
 
 /** @internal */
 function buildInitialValues<Ts>(
-  valueProducers: IterableIterator<Value<Ts>>,
+  valueProducers: IterableIterator<() => Value<Ts>>,
   shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
   qParams: QualifiedParameters<Ts>
 ): IterableIterator<Value<Ts>> {
-  if (qParams.path.length === 0) {
-    return valueProducers;
-  }
-  return pathWalk(qParams.path, stream(valueProducers), shrink);
+  const pathPoints = qParams.path.split(':');
+  const pathStream = stream(valueProducers)
+    .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
+    .map((producer) => producer());
+  const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
+  return pathWalk(adaptedPath, pathStream, shrink);
 }
 
 /**
@@ -135,12 +137,14 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   if (qParams.asyncReporter !== null && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
-  const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof property.shrink = (...args) => property.shrink(...args);
-  const initialValues = buildInitialValues(generator, shrink, qParams);
+  const initialValues =
+    qParams.path.length === 0
+      ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
+      : buildInitialValues(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples), shrink, qParams);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()
