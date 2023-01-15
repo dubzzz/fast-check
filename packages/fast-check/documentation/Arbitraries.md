@@ -3535,8 +3535,8 @@ fc.statistics(
 )
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
-// • 5 to 9 items....44.67%
-// • 10 to 49 items..37.86%
+// • 5 to 9 items....44.68%
+// • 10 to 49 items..37.85%
 // • 1 to 4 items....17.47%
 // For size = "small":
 // • 10 to 49 items..85.91%
@@ -3577,8 +3577,8 @@ fc.statistics(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....60.74%
-// • 10 to 49 items..24.45%
+// • 1 to 4 items....60.75%
+// • 10 to 49 items..24.44%
 // • 5 to 9 items....14.80%
 // • 50 to 99 items...0.01%
 // For size = "medium":
