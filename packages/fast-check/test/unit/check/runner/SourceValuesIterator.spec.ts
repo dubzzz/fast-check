@@ -44,7 +44,7 @@ describe('SourceValuesIterator', () => {
         const svValues = [...svIt];
 
         expect(generatedValues).toHaveLength(askedValues + 1);
-        expect(generatedValues.slice(0, askedValues)).toEqual(svValues);
+        expect(generatedValues.slice(0, asked values)).toEqual(svValues);
       })
     ));
   describe('Not enough skipped values', () => {
