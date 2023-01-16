@@ -16,7 +16,11 @@ export function* toss<Ts>(
   let idx = 0;
   let rng = random(seed);
   for (;;) {
-    rng = rng.jump ? rng.jump() : skipN(rng, 42);
+    if (rng.unsafeJump !== undefined) {
+      rng.unsafeJump();
+    } else {
+      rng = rng.jump !== undefined ? rng.jump() : skipN(rng, 42);
+    }
     yield generator.generate(new Random(rng), idx++);
   }
 }
