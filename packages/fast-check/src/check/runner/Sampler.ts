@@ -7,7 +7,7 @@ import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
-import { toss } from './Tosser';
+import { lazyToss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
 /** @internal */
@@ -34,8 +34,11 @@ function streamSample<Ts>(
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues: Stream<Value<Ts>> = stream(
-    toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
-  );
+    // lazyToss can be passed to pathWalk safely, toss on the other hand would imply possibly generating
+    // many useles values. In the case of samples we don't really care about the extra cost implied by lazy
+    // version of the code so we can go with it.
+    lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
+  ).map((s) => s());
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map((s) => s.value_);
   }
