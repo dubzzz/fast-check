@@ -30,7 +30,7 @@ function simulateSkips(svIt: SourceValuesIterator<number>, skippedValues: number
 }
 
 describe('SourceValuesIterator', () => {
-  it('Should call the produce method when iterating on the value', () =>
+  it('Should only call the produce method when iterating on the value', () =>
     fc.assert(
       fc.property(fc.nat(100), (askedValues) => {
         const generatedValues: number[] = [];
@@ -43,8 +43,8 @@ describe('SourceValuesIterator', () => {
         const svIt = new SourceValuesIterator(initialValues, askedValues, 0);
         const svValues = [...svIt];
 
-        expect(generatedValues).toHaveLength(askedValues + 1);
-        expect(generatedValues.slice(0, asked values)).toEqual(svValues);
+        expect(generatedValues).toHaveLength(askedValues);
+        expect(generatedValues).toEqual(svValues);
       })
     ));
   describe('Not enough skipped values', () => {
