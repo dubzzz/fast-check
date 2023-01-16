@@ -33,19 +33,13 @@ function streamSample<Ts>(
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
-  const tossedValues: Stream<() => Value<Ts>> = stream(
+  const tossedValues: Stream<Value<Ts>> = stream(
     toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
   );
   if (qParams.path.length === 0) {
-    return tossedValues.take(qParams.numRuns).map((s) => s().value_);
+    return tossedValues.take(qParams.numRuns).map((s) => s.value_);
   }
-  return stream(
-    pathWalk(
-      qParams.path,
-      tossedValues.map((s) => s()),
-      shrink
-    )
-  )
+  return pathWalk(qParams.path, tossedValues, shrink)
     .take(qParams.numRuns)
     .map((s) => s.value_);
 }
