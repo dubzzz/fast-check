@@ -15,12 +15,11 @@ export function* toss<Ts>(
   yield* safeMap(examples, (e) => new Value(e, undefined));
   let idx = 0;
   const rng = random(seed);
+  if (rng.unsafeJump === undefined) {
+    rng.unsafeJump = () => unsafeSkipN(rng, 42);
+  }
   for (;;) {
-    if (rng.unsafeJump !== undefined) {
-      rng.unsafeJump();
-    } else {
-      unsafeSkipN(rng, 42);
-    }
+    rng.unsafeJump();
     yield generator.generate(new Random(rng), idx++);
   }
 }
