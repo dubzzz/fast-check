@@ -1,4 +1,4 @@
-import { RandomGenerator, skipN } from 'pure-rand';
+import { RandomGenerator,skipN, unsafeSkipN } from 'pure-rand';
 
 import { Random } from '../../random/generator/Random';
 import { IRawProperty } from '../property/IRawProperty';
@@ -14,12 +14,12 @@ export function* toss<Ts>(
 ): IterableIterator<Value<Ts>> {
   yield* safeMap(examples, (e) => new Value(e, undefined));
   let idx = 0;
-  let rng = random(seed);
+  const rng = random(seed);
   for (;;) {
     if (rng.unsafeJump !== undefined) {
       rng.unsafeJump();
     } else {
-      rng = rng.jump !== undefined ? rng.jump() : skipN(rng, 42);
+      unsafeSkipN(rng,42)
     }
     yield generator.generate(new Random(rng), idx++);
   }
