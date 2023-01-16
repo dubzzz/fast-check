@@ -1,3 +1,25 @@
+# 3.6.0
+
+_Slightly faster execution of properties_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.5.0...v3.6.0)]
+
+## Features
+
+- ([PR#3547](https://github.com/dubzzz/fast-check/pull/3547)) Slightly faster thanks to pure-rand v6
+- ([PR#3552](https://github.com/dubzzz/fast-check/pull/3552)) Do not wrap stream when dropping 0 items
+- ([PR#3551](https://github.com/dubzzz/fast-check/pull/3551)) Faster implementation of internal function `runIdToFrequency`
+- ([PR#3553](https://github.com/dubzzz/fast-check/pull/3553)) Drop useless internal stream conversions
+- ([PR#3554](https://github.com/dubzzz/fast-check/pull/3554)) Tosser must immediately produce values
+
+## Fixes
+
+- ([PR#3556](https://github.com/dubzzz/fast-check/pull/3556)) CI: Enable sourceMap in unpublished for coverage
+- ([PR#3512](https://github.com/dubzzz/fast-check/pull/3512)) Script: Add `--cache` option to Prettier
+- ([PR#3523](https://github.com/dubzzz/fast-check/pull/3523)) Script: Initialize default devcontainer
+- ([PR#3524](https://github.com/dubzzz/fast-check/pull/3524)) Script: Install and setup nvs inside Dockerfile
+
+---
+
 # 3.5.0
 
 _Interrupt running tasks when `interruptAfterTimeLimit` exceeded_
