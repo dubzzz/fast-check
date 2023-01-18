@@ -10,19 +10,6 @@ const safeMathRandom = Math.random;
 /** @internal */
 export type QualifiedRandomGenerator = RandomGenerator & Required<Pick<RandomGenerator, 'unsafeJump'>>;
 
-/** @internal */
-function createQualifiedRandomGenerator(
-  random: (seed: number) => RandomGenerator
-): (seed: number) => QualifiedRandomGenerator {
-  return (seed) => {
-    const rng = random(seed);
-    if (rng.unsafeJump === undefined) {
-      rng.unsafeJump = () => unsafeSkipN(rng, 42);
-    }
-    return rng as QualifiedRandomGenerator;
-  };
-}
-
 /**
  * Configuration extracted from incoming Parameters
  *
@@ -103,6 +90,18 @@ export class QualifiedParameters<T> {
     return parameters;
   }
 
+  private static createQualifiedRandomGenerator = (
+    random: (seed: number) => RandomGenerator
+  ): ((seed: number) => QualifiedRandomGenerator) => {
+    return (seed) => {
+      const rng = random(seed);
+      if (rng.unsafeJump === undefined) {
+        rng.unsafeJump = () => unsafeSkipN(rng, 42);
+      }
+      return rng as QualifiedRandomGenerator;
+    };
+  };
+
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
     if (p.seed == null) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
@@ -120,10 +119,10 @@ export class QualifiedParameters<T> {
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
         case 'mersenne':
-          return createQualifiedRandomGenerator(prand.mersenne);
+          return QualifiedParameters.createQualifiedRandomGenerator(prand.mersenne);
         case 'congruential':
         case 'congruential32':
-          return createQualifiedRandomGenerator(prand.congruential32);
+          return QualifiedParameters.createQualifiedRandomGenerator(prand.congruential32);
         case 'xorshift128plus':
           return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
         case 'xoroshiro128plus':
@@ -142,7 +141,7 @@ export class QualifiedParameters<T> {
     if ('unsafeJump' in mrng) {
       return p.randomType as (seed: number) => QualifiedRandomGenerator;
     }
-    return createQualifiedRandomGenerator(p.randomType);
+    return QualifiedParameters.createQualifiedRandomGenerator(p.randomType);
   };
   private static readNumRuns = <T>(p: Parameters<T>): number => {
     const defaultValue = 100;
