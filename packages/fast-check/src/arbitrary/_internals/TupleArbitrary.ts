@@ -93,7 +93,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
     const mapped = [] as ValuesArray<Ts>;
     for (let idx = 0; idx !== this.arbs.length; ++idx) {
-      mapped.push(this.arbs[idx].generate(mrng, biasFactor));
+      safePush(mapped, this.arbs[idx].generate(mrng, biasFactor));
     }
     return tupleWrapper<Ts>(mapped);
   }
