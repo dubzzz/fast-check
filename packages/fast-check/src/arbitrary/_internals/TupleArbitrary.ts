@@ -68,7 +68,7 @@ export function tupleShrink<Ts extends unknown[]>(
             );
             return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
           })
-          .map((values) => tupleWrapper(values) as TupleExtendedValue<Ts>)
+          .map(tupleWrapper)
       )
     );
   }
@@ -91,7 +91,11 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     }
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
-    return tupleWrapper<Ts>(safeMap(this.arbs, (a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
+    const mapped = [] as ValuesArray<Ts>;
+    for (let idx = 0; idx !== this.arbs.length; ++idx) {
+      mapped.push(this.arbs[idx].generate(mrng, biasFactor));
+    }
+    return tupleWrapper<Ts>(mapped);
   }
   canShrinkWithoutContext(value: unknown): value is Ts {
     if (!safeArrayIsArray(value) || value.length !== this.arbs.length) {
