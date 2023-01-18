@@ -30,7 +30,7 @@ const parametersArbitrary = fc.record(
   { requiredKeys: [] }
 );
 
-const hardCodedRandomType = fc.constantFrom(
+const hardCodedRandomTypeWithJump = fc.constantFrom(
   'mersenne',
   'congruential',
   'congruential32',
@@ -46,7 +46,10 @@ describe('QualifiedParameters', () => {
           const qualifiedParams = QualifiedParameters.read(params);
           for (const key of Object.keys(params)) {
             expect(qualifiedParams).toHaveProperty(key);
-            expect((qualifiedParams as any)[key]).toEqual((params as any)[key]);
+            if (key !== 'randomType') {
+              // for randomType, case is a bit more complex
+              expect((qualifiedParams as any)[key]).toEqual((params as any)[key]);
+            }
           }
         })
       ));
@@ -60,11 +63,23 @@ describe('QualifiedParameters', () => {
       ));
     it('Should transform correctly hardcoded randomType', () =>
       fc.assert(
-        fc.property(parametersArbitrary, hardCodedRandomType, (params, randomType) => {
-          const qparams = QualifiedParameters.read({ ...params, randomType });
-          const resolvedRandomType = randomType === 'congruential' ? 'congruential32' : randomType;
-          return qparams.randomType === prand[resolvedRandomType];
-        })
+        fc.property(
+          parametersArbitrary,
+          fc.option(hardCodedRandomTypeWithJump, { nil: undefined }),
+          (params, randomType) => {
+            const qparams = QualifiedParameters.read({ ...params, randomType });
+            const resolvedRandomType = randomType === 'congruential' ? 'congruential32' : randomType;
+            const defaultRandomType = prand.xorshift128plus;
+            if (resolvedRandomType === undefined) {
+              expect(qparams.randomType).toBe(defaultRandomType);
+            } else if (resolvedRandomType === 'congruential32' || resolvedRandomType === 'mersenne') {
+              expect(qparams.randomType).not.toBe(defaultRandomType);
+              expect(qparams.randomType).not.toBe(prand[resolvedRandomType]); // re-wrapped so not fully the same
+            } else {
+              expect(qparams.randomType).toBe(prand[resolvedRandomType]);
+            }
+          }
+        )
       ));
     it('Should throw on invalid randomType', () =>
       fc.assert(
