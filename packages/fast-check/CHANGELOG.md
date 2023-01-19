@@ -1,11 +1,7 @@
 # 3.6.2
 
-_TODO Description_
+_Still work in fake timer contexts_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.6.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.1...v3.6.2)]
-
-## Features
-
-
 
 ## Fixes
 
