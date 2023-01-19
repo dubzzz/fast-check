@@ -1,3 +1,18 @@
+# 3.7.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.0...v3.7.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3563](https://github.com/dubzzz/fast-check/pull/3563)) Performance: Mutate rng inplace in tosser
+
+---
+
 # 3.6.0
 
 _Slightly faster execution of properties_
