@@ -1,3 +1,12 @@
+# 3.6.1
+
+_Some more performance improvements_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.0...v3.6.1)]
+
+## Fixes
+
+- ([PR#3563](https://github.com/dubzzz/fast-check/pull/3563)) Performance: Mutate rng inplace in tosser
+
 # 3.6.0
 
 _Slightly faster execution of properties_
