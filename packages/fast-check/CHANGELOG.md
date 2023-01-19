@@ -40,7 +40,7 @@ _Slightly faster execution of properties_
 
 ---
 
-# 3.6.2
+# 3.5.1
 
 _Still work in fake timer contexts_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.5.0...v3.5.1)]
