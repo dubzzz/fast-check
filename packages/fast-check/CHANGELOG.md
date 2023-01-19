@@ -1,3 +1,14 @@
+# 3.6.2
+
+_Still work in fake timer contexts_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.1...v3.6.2)]
+
+## Fixes
+
+- ([PR#3571](https://github.com/dubzzz/fast-check/pull/3571)) Bug: Resist to fake timers in interruptAfterTimeLimit
+- ([PR#3572](https://github.com/dubzzz/fast-check/pull/3572)) Bug: Resist to fake timers in timeout
+- ([PR#3564](https://github.com/dubzzz/fast-check/pull/3564)) Performance: Drop bailout linked to toss
+
 # 3.6.1
 
 _Some more performance improvements_
