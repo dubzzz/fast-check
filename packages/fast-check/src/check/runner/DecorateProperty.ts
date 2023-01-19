@@ -20,7 +20,7 @@ export function decorateProperty<Ts>(
 ): IRawProperty<Ts> {
   let prop = rawProperty;
   if (rawProperty.isAsync() && qParams.timeout != null) {
-    prop = new TimeoutProperty(prop, qParams.timeout);
+    prop = new TimeoutProperty(prop, qParams.timeout, safeSetTimeout, safeClearTimeout);
   }
   if (qParams.unbiased) {
     prop = new UnbiasedProperty(prop);
