@@ -16,14 +16,14 @@ function tossNext<Ts>(generator: IRawProperty<Ts>, rng: QualifiedRandomGenerator
 }
 
 /** @internal */
-export function *toss<Ts>(
+export function* toss<Ts>(
   generator: IRawProperty<Ts>,
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
   examples: Ts[]
 ): IterableIterator<Value<Ts>> {
-  for (let idx = 0 ; idx !== examples.length ; ++idx) {
-    yield new Value(examples[idx], undefined)
+  for (let idx = 0; idx !== examples.length; ++idx) {
+    yield new Value(examples[idx], undefined);
   }
   for (let idx = 0, rng = random(seed); ; ++idx) {
     yield tossNext(generator, rng, idx);
