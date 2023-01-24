@@ -3,7 +3,7 @@ import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty'
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 
-describe('TimeoutProperty', () => {
+describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHook) => {
   beforeEach(() => {
     jest.clearAllTimers();
   });
@@ -18,7 +18,7 @@ describe('TimeoutProperty', () => {
     generate.mockReturnValueOnce(expectedOut);
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
     const out = timeoutProp.generate(mrng, expectedRunId);
 
     // Assert
@@ -30,18 +30,28 @@ describe('TimeoutProperty', () => {
   it('should forward inputs to run', async () => {
     // Arrange
     jest.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeProperty(true);
+    const { instance: decoratedProperty, run, runBeforeEach, runAfterEach } = fakeProperty(true);
     const expectedRunInput = { anything: Symbol('something') };
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
-    const runPromise = timeoutProp.run(expectedRunInput);
-    jest.advanceTimersByTime(10);
-    await runPromise;
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
+    if (dontRunHook) {
+      await timeoutProp.runBeforeEach!();
+      const runPromise = timeoutProp.run(expectedRunInput, true);
+      jest.advanceTimersByTime(10);
+      await runPromise;
+      await timeoutProp.runAfterEach!();
+    } else {
+      const runPromise = timeoutProp.run(expectedRunInput, false);
+      jest.advanceTimersByTime(10);
+      await runPromise;
+    }
 
     // Assert
     expect(run).toHaveBeenCalledTimes(1);
-    expect(run).toHaveBeenCalledWith(expectedRunInput);
+    expect(run).toHaveBeenCalledWith(expectedRunInput, dontRunHook);
+    expect(runBeforeEach).toHaveBeenCalledTimes(1);
+    expect(runAfterEach).toHaveBeenCalledTimes(1);
   });
 
   it('should not timeout if it succeeds in time', async () => {
@@ -55,14 +65,63 @@ describe('TimeoutProperty', () => {
     );
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
-    const runPromise = timeoutProp.run({});
-    jest.advanceTimersByTime(10);
-    await runPromise;
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
+    let runPromise: ReturnType<typeof timeoutProp.run>;
+    if (dontRunHook) {
+      await timeoutProp.runBeforeEach!();
+      runPromise = timeoutProp.run({}, true);
+      jest.advanceTimersByTime(10);
+      await runPromise;
+      await timeoutProp.runAfterEach!();
+    } else {
+      runPromise = timeoutProp.run({}, false);
+      jest.advanceTimersByTime(10);
+      await runPromise;
+    }
 
     // Assert
     expect(await runPromise).toBe(null);
   });
+
+  if (dontRunHook) {
+    it('should not timeout if it succeeds in time while timeout in beforeEach', async () => {
+      // Arrange
+      jest.useFakeTimers();
+      const { instance: decoratedProperty, runBeforeEach } = fakeProperty(true);
+      runBeforeEach.mockReturnValueOnce(
+        new Promise(function (resolve) {
+          setTimeout(() => resolve(), 100);
+        })
+      );
+
+      // Act / After
+      const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
+      const beforeEachPromise = timeoutProp.runBeforeEach!();
+      jest.advanceTimersByTime(100);
+      await beforeEachPromise;
+      await timeoutProp.run({}, true);
+      await timeoutProp.runAfterEach!();
+    });
+
+    it('should not timeout if it succeeds in time while timeout in afterEach', async () => {
+      // Arrange
+      jest.useFakeTimers();
+      const { instance: decoratedProperty, runAfterEach } = fakeProperty(true);
+      runAfterEach.mockReturnValueOnce(
+        new Promise(function (resolve) {
+          setTimeout(() => resolve(), 100);
+        })
+      );
+
+      // Act / Assert
+      const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
+      await timeoutProp.runBeforeEach!();
+      await timeoutProp.run({}, true);
+      const afterEachPromise = timeoutProp.runAfterEach!();
+      jest.advanceTimersByTime(100);
+      await afterEachPromise;
+    });
+  }
 
   it('should not timeout if it fails in time', async () => {
     // Arrange
@@ -77,10 +136,19 @@ describe('TimeoutProperty', () => {
     );
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
-    const runPromise = timeoutProp.run({});
-    jest.advanceTimersByTime(10);
-    await runPromise;
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
+    let runPromise: ReturnType<typeof timeoutProp.run>;
+    if (dontRunHook) {
+      await timeoutProp.runBeforeEach!();
+      runPromise = timeoutProp.run({}, true);
+      jest.advanceTimersByTime(10);
+      await runPromise;
+      await timeoutProp.runAfterEach!();
+    } else {
+      runPromise = timeoutProp.run({}, false);
+      jest.advanceTimersByTime(10);
+      await runPromise;
+    }
 
     // Assert
     expect(await runPromise).toBe(errorFromUnderlying);
@@ -95,8 +163,14 @@ describe('TimeoutProperty', () => {
     run.mockResolvedValueOnce(null);
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
-    await timeoutProp.run({});
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
+    if (dontRunHook) {
+      await timeoutProp.runBeforeEach!();
+      await timeoutProp.run({}, true);
+      await timeoutProp.runAfterEach!();
+    } else {
+      await timeoutProp.run({}, false);
+    }
 
     // Assert
     expect(setTimeout).toBeCalledTimes(1);
@@ -113,8 +187,14 @@ describe('TimeoutProperty', () => {
     run.mockResolvedValueOnce(errorFromUnderlying);
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
-    await timeoutProp.run({});
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
+    if (dontRunHook) {
+      await timeoutProp.runBeforeEach!();
+      await timeoutProp.run({}, true);
+      await timeoutProp.runAfterEach!();
+    } else {
+      await timeoutProp.run({}, false);
+    }
 
     // Assert
     expect(setTimeout).toBeCalledTimes(1);
@@ -132,8 +212,14 @@ describe('TimeoutProperty', () => {
     );
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
-    const runPromise = timeoutProp.run({});
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
+    let runPromise: ReturnType<typeof timeoutProp.run>;
+    if (dontRunHook) {
+      await timeoutProp.runBeforeEach!();
+      runPromise = timeoutProp.run({}, true);
+    } else {
+      runPromise = timeoutProp.run({}, false);
+    }
     jest.advanceTimersByTime(10);
 
     // Assert
@@ -141,6 +227,7 @@ describe('TimeoutProperty', () => {
       error: expect.any(Error),
       errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
     });
+    await timeoutProp.runAfterEach!();
   });
 
   it('Should timeout if it never ends', async () => {
@@ -150,8 +237,14 @@ describe('TimeoutProperty', () => {
     run.mockReturnValueOnce(new Promise(() => {}));
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
-    const runPromise = timeoutProp.run({});
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
+    let runPromise: ReturnType<typeof timeoutProp.run>;
+    if (dontRunHook) {
+      await timeoutProp.runBeforeEach!();
+      runPromise = timeoutProp.run({}, true);
+    } else {
+      runPromise = timeoutProp.run({}, false);
+    }
     jest.advanceTimersByTime(10);
 
     // Assert
@@ -159,5 +252,6 @@ describe('TimeoutProperty', () => {
       error: expect.any(Error),
       errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
     });
+    await timeoutProp.runAfterEach!();
   });
 });

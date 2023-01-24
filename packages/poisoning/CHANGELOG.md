@@ -1,3 +1,13 @@
+# 0.0.5
+
+_Add support for Node 18_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.4...poisoning%2Fv0.0.5)]
+
+## Fixes
+
+- ([PR#3421](https://github.com/dubzzz/fast-check/pull/3421)) Bug: Switch from descriptors to descriptor for Node 18
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+
 # 0.0.4
 
 _Properly define types for TypeScript_

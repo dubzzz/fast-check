@@ -129,7 +129,8 @@ export class RunExecution<Ts> {
 
     // Either 'too many skips' or 'interrupted' with flag interruptedAsFailure enabled
     // The two cases are exclusive (the two cannot be true at the same time)
-    const failed = this.numSkips > maxSkips || (this.interrupted && this.interruptedAsFailure);
+    const considerInterruptedAsFailure = this.interruptedAsFailure || this.numSuccesses === 0;
+    const failed = this.numSkips > maxSkips || (this.interrupted && considerInterruptedAsFailure);
 
     // -- Let's suppose: this.numSkips > maxSkips
     // In the context of RunnerIterator we pull values from the stream

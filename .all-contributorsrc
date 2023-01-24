@@ -505,6 +505,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "tskj",
+      "name": "Tarjei Skjærset",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25415972?v=4",
+      "profile": "https://github.com/tskj",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

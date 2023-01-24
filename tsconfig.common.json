@@ -3,7 +3,7 @@
     "noEmit": true,
     "declaration": false,
     "incremental": false,
-    "sourceMap": false,
+    "sourceMap": true,
     "target": "es2017",
     "module": "commonjs",
     "importHelpers": false,

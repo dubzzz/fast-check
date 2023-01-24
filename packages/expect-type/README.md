@@ -3,8 +3,8 @@
 Make sure your types are the ones you expect (similar to `tsd`)
 
 <a href="https://badge.fury.io/js/@fast-check%2Fexpect-type"><img src="https://badge.fury.io/js/@fast-check%2Fexpect-type.svg" alt="npm version" /></a>
-<a href="https://www.npmjs.com/package/@fast-check/poisoning"><img src="https://img.shields.io/npm/dm/@fast-check%2Fexpect-type" alt="monthly downloads" /></a>
-<a href="https://github.com/dubzzz/fast-check/blob/main/packages/poisoning/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fexpect-type.svg" alt="License" /></a>
+<a href="https://www.npmjs.com/package/@fast-check/expect-type"><img src="https://img.shields.io/npm/dm/@fast-check%2Fexpect-type" alt="monthly downloads" /></a>
+<a href="https://github.com/dubzzz/fast-check/blob/main/packages/expect-type/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fexpect-type.svg" alt="License" /></a>
 
 ---
 

@@ -210,6 +210,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://matinzd.dev/"><img src="https://avatars.githubusercontent.com/u/24797481?v=4?s=100" width="100px;" alt="Matin Zadeh Dolatabad"/><br /><sub><b>Matin Zadeh Dolatabad</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=matinzd" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://goo.gl/IlWG8U"><img src="https://avatars.githubusercontent.com/u/500?v=4?s=100" width="100px;" alt="Juan Julián Merelo Guervós"/><br /><sub><b>Juan Julián Merelo Guervós</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=JJ" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/SimenB"><img src="https://avatars.githubusercontent.com/u/1404810?v=4?s=100" width="100px;" alt="Simen Bekkhus"/><br /><sub><b>Simen Bekkhus</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=SimenB" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tskj"><img src="https://avatars.githubusercontent.com/u/25415972?v=4?s=100" width="100px;" alt="Tarjei Skjærset"/><br /><sub><b>Tarjei Skjærset</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=tskj" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
@@ -221,22 +222,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome! [Become one of them](CONTRIBUTING.md)
 
-**Backers**
+## Sponsors 💸
 
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/fast-check/contribute)] and help us sustain our community.
-<a href="https://opencollective.com/fast-check#backers"><img src="https://opencollective.com/fast-check/backers.svg?width=890"></a>
+Many individuals and companies offer their financial support to the project, a huge thanks to all of them too 💓
 
-**Sponsors**
+<a href="https://github.com/sponsors/dubzzz"><img align="center" src="https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg" alt="all sponsors" /></a>
 
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/fast-check#sponsor)]
-
-<a href="https://opencollective.com/fast-check/sponsor/0/website"><img src="https://opencollective.com/fast-check/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/1/website"><img src="https://opencollective.com/fast-check/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/2/website"><img src="https://opencollective.com/fast-check/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/3/website"><img src="https://opencollective.com/fast-check/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/4/website"><img src="https://opencollective.com/fast-check/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/5/website"><img src="https://opencollective.com/fast-check/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/6/website"><img src="https://opencollective.com/fast-check/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/7/website"><img src="https://opencollective.com/fast-check/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/8/website"><img src="https://opencollective.com/fast-check/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/fast-check/sponsor/9/website"><img src="https://opencollective.com/fast-check/sponsor/9/avatar.svg"></a>
+You can also become one of them by contributing via [GitHub Sponsors](https://github.com/sponsors/dubzzz) or [OpenCollective](https://opencollective.com/fast-check/contribute).

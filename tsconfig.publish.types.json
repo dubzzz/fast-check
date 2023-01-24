@@ -5,6 +5,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "removeComments": false,
+    "sourceMap": false,
     "stripInternal": true
   }
 }

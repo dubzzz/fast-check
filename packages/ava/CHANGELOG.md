@@ -1,3 +1,12 @@
+# 1.1.3
+
+_Update funding section in package.json_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.2...ava%2Fv1.1.3)]
+
+## Fixes
+
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+
 # 1.1.2
 
 _Properly define types for TypeScript_

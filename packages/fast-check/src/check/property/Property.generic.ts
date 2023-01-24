@@ -117,8 +117,18 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  run(v: Ts): PreconditionFailure | PropertyFailure | null {
+  runBeforeEach(): void {
     this.beforeEachHook();
+  }
+
+  runAfterEach(): void {
+    this.afterEachHook();
+  }
+
+  run(v: Ts, dontRunHook?: boolean): PreconditionFailure | PropertyFailure | null {
+    if (!dontRunHook) {
+      this.beforeEachHook();
+    }
     try {
       const output = this.predicate(v);
       return output == null || output === true
@@ -136,7 +146,9 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
       }
       return { error: err, errorMessage: String(err) };
     } finally {
-      this.afterEachHook();
+      if (!dontRunHook) {
+        this.afterEachHook();
+      }
     }
   }
 

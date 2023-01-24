@@ -213,7 +213,6 @@ function dropMainGlobals(): void {
     MessageChannel,
     MessagePort,
     MessageEvent,
-    //URL,
     URLSearchParams,
     JSON,
     Math,
@@ -228,7 +227,37 @@ function dropMainGlobals(): void {
     WebAssembly,
     globalThis,
   ];
-  const skippedGlobals = new Set(['AggregateError', 'FinalizationRegistry', 'WeakRef', 'URL']);
+  const skippedGlobals = new Set([
+    'AggregateError',
+    'FinalizationRegistry',
+    'WeakRef',
+    'URL', // Causing exception in test (unrelated to fast-check)
+    'CompressionStream', // TS issue
+    'DecompressionStream', // TS issue
+    'BroadcastChannel', // Unknown in CI against macOS
+    'DOMException', // Unknown in CI against macOS
+    'Blob', // Unknown in CI against macOS
+    'Performance', // Unknown in CI against macOS
+    'ReadableStream', // Unknown in CI against macOS
+    'ReadableStreamDefaultReader', // Unknown in CI against macOS
+    'ReadableStreamBYOBReader', // Unknown in CI against macOS
+    'ReadableStreamBYOBRequest', // Unknown in CI against macOS
+    'ReadableByteStreamController', // Unknown in CI against macOS
+    'ReadableStreamDefaultController', // Unknown in CI against macOS
+    'TransformStream', // Unknown in CI against macOS
+    'TransformStreamDefaultController', // Unknown in CI against macOS
+    'WritableStream', // Unknown in CI against macOS
+    'WritableStreamDefaultWriter', // Unknown in CI against macOS
+    'WritableStreamDefaultController', // Unknown in CI against macOS
+    'ByteLengthQueuingStrategy', // Unknown in CI against macOS
+    'CountQueuingStrategy', // Unknown in CI against macOS
+    'TextEncoderStream', // Unknown in CI against macOS
+    'TextDecoderStream', // Unknown in CI against macOS
+    'FormData', // Unknown in CI against macOS
+    'Headers', // Unknown in CI against macOS
+    'Request', // Unknown in CI against macOS
+    'Response', // Unknown in CI against macOS
+  ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
       globalName[0] >= 'A' &&

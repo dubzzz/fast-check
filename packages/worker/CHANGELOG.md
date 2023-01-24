@@ -1,3 +1,17 @@
+# 0.0.4
+
+_Terminate workers earlier if they are not used anymore_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.3...worker%2Fv0.0.4)]
+
+## Features
+
+- ([PR#3467](https://github.com/dubzzz/fast-check/pull/3467)) Terminate workers if property timeout-ed
+
+## Fixes
+
+- ([PR#3445](https://github.com/dubzzz/fast-check/pull/3445)) Bug: Unable to import in ESM mode
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+
 # 0.0.3
 
 _Properly define types for TypeScript_

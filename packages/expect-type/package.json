@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/expect-type",
   "description": "Make sure your types are the ones you expect (similar to tsd)",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "commonjs",
   "main": "src/main.js",
   "exports": {
@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
   "devDependencies": {
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.4"
   },
   "keywords": [
     "type",
@@ -45,12 +45,12 @@
   ],
   "funding": [
     {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
-    },
-    {
       "type": "individual",
       "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
     }
   ]
 }

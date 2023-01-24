@@ -1,3 +1,38 @@
+# 1.6.0
+
+_Let fast-check guide timeouts_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.5.0...jest%2Fv1.6.0)]
+
+## Features
+
+- ([PR#3511](https://github.com/dubzzz/fast-check/pull/3511)) Let fast-check guide timeouts
+- ([PR#3520](https://github.com/dubzzz/fast-check/pull/3520)) Add support for jasmine runner
+
+## Fixes
+
+- ([PR#3519](https://github.com/dubzzz/fast-check/pull/3519)) Bug: Support failure to get timeout out of Jest
+- ([PR#3521](https://github.com/dubzzz/fast-check/pull/3521)) Test: Properly categorize timeout tests
+
+---
+
+# 1.5.0
+
+_Add worker-based runner able to stop synchronous code_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.4.0...jest%2Fv1.5.0)]
+
+## Features
+
+- ([PR#3444](https://github.com/dubzzz/fast-check/pull/3444)) Add basic worker based runner
+
+## Fixes
+
+- ([PR#3471](https://github.com/dubzzz/fast-check/pull/3471)) CI: Add missing peerDependency for worker-based
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+- ([PR#3433](https://github.com/dubzzz/fast-check/pull/3433)) Refactor: Divide code into multiple files
+- ([PR#3443](https://github.com/dubzzz/fast-check/pull/3443)) Refactor: Take `jest` and `fc` as input for main internals
+
+---
+
 # 1.4.0
 
 _Introduce new `it.prop` and `test.prop` APIs_

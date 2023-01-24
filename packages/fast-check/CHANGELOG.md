@@ -1,3 +1,95 @@
+# 3.6.2
+
+_Still work in fake timer contexts_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.1...v3.6.2)]
+
+## Fixes
+
+- ([PR#3571](https://github.com/dubzzz/fast-check/pull/3571)) Bug: Resist to fake timers in interruptAfterTimeLimit
+- ([PR#3572](https://github.com/dubzzz/fast-check/pull/3572)) Bug: Resist to fake timers in timeout
+- ([PR#3564](https://github.com/dubzzz/fast-check/pull/3564)) Performance: Drop bailout linked to toss
+
+# 3.6.1
+
+_Some more performance improvements_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.0...v3.6.1)]
+
+## Fixes
+
+- ([PR#3563](https://github.com/dubzzz/fast-check/pull/3563)) Performance: Mutate rng inplace in tosser
+
+# 3.6.0
+
+_Slightly faster execution of properties_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.5.0...v3.6.0)]
+
+## Features
+
+- ([PR#3547](https://github.com/dubzzz/fast-check/pull/3547)) Slightly faster thanks to pure-rand v6
+- ([PR#3552](https://github.com/dubzzz/fast-check/pull/3552)) Do not wrap stream when dropping 0 items
+- ([PR#3551](https://github.com/dubzzz/fast-check/pull/3551)) Faster implementation of internal function `runIdToFrequency`
+- ([PR#3553](https://github.com/dubzzz/fast-check/pull/3553)) Drop useless internal stream conversions
+- ([PR#3554](https://github.com/dubzzz/fast-check/pull/3554)) Tosser must immediately produce values
+
+## Fixes
+
+- ([PR#3556](https://github.com/dubzzz/fast-check/pull/3556)) CI: Enable sourceMap in unpublished for coverage
+- ([PR#3512](https://github.com/dubzzz/fast-check/pull/3512)) Script: Add `--cache` option to Prettier
+- ([PR#3523](https://github.com/dubzzz/fast-check/pull/3523)) Script: Initialize default devcontainer
+- ([PR#3524](https://github.com/dubzzz/fast-check/pull/3524)) Script: Install and setup nvs inside Dockerfile
+
+---
+
+# 3.5.1
+
+_Still work in fake timer contexts_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.5.0...v3.5.1)]
+
+## Fixes
+
+- ([PR#3571](https://github.com/dubzzz/fast-check/pull/3571)) Bug: Resist to fake timers in interruptAfterTimeLimit
+- ([PR#3572](https://github.com/dubzzz/fast-check/pull/3572)) Bug: Resist to fake timers in timeout
+
+# 3.5.0
+
+_Interrupt running tasks when `interruptAfterTimeLimit` exceeded_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.4.0...v3.5.0)]
+
+## Features
+
+- ([PR#3507](https://github.com/dubzzz/fast-check/pull/3507)) Interrupt predicates when `interruptAfterTimeLimit`
+- ([PR#3508](https://github.com/dubzzz/fast-check/pull/3508)) Mark interrupted runs without any success as failures
+
+---
+
+# 3.4.0
+
+_Better handling of timeout with beforeEach and afterEach_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.3.0...v3.4.0)]
+
+## Features
+
+- ([PR#3464](https://github.com/dubzzz/fast-check/pull/3464)) No timeout for beforeEach or afterEach
+
+## Fixes
+
+- ([PR#3428](https://github.com/dubzzz/fast-check/pull/3428)) Bug: Avoid stack overflow during shrinking of tuples
+- ([PR#3432](https://github.com/dubzzz/fast-check/pull/3432)) Bug: Avoid stack overflow during shrinking of arrays
+- ([PR#3354](https://github.com/dubzzz/fast-check/pull/3354)) CI: Ignore version bump checks on publish
+- ([PR#3379](https://github.com/dubzzz/fast-check/pull/3379)) CI: Fix configuration for rollup esm tests
+- ([PR#3394](https://github.com/dubzzz/fast-check/pull/3394)) CI: Limit scope of "All ...bump declared"
+- ([PR#3393](https://github.com/dubzzz/fast-check/pull/3393)) CI: Run tests against Node 18.x
+- ([PR#3446](https://github.com/dubzzz/fast-check/pull/3446)) CI: Drop circular deps for dev topo builds
+- ([PR#3417](https://github.com/dubzzz/fast-check/pull/3417)) Clean: Drop v2 to v3 codemods from the repository
+- ([PR#3351](https://github.com/dubzzz/fast-check/pull/3351)) Doc: Update changelogs following backports
+- ([PR#3458](https://github.com/dubzzz/fast-check/pull/3458)) Doc: Document how to use `context` in `examples`
+- ([PR#3476](https://github.com/dubzzz/fast-check/pull/3476)) Doc: Revamp sponsoring section to show GitHub Sponsors
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+- ([PR#3427](https://github.com/dubzzz/fast-check/pull/3427)) Refactor: Expose shrinker of tuples internally
+- ([PR#3468](https://github.com/dubzzz/fast-check/pull/3468)) Script: Ensure we don't release workspace-based packages
+
+---
+
 # 3.3.0
 
 _Expose `webPath` arbitrary_
