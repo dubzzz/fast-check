@@ -55,8 +55,14 @@
     "quickcheck",
     "fast-check"
   ],
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/fast-check"
-  }
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
 }
