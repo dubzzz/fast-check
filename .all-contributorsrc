@@ -487,6 +487,33 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "JJ",
+      "name": "Juan Julián Merelo Guervós",
+      "avatar_url": "https://avatars.githubusercontent.com/u/500?v=4",
+      "profile": "http://goo.gl/IlWG8U",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "SimenB",
+      "name": "Simen Bekkhus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1404810?v=4",
+      "profile": "https://github.com/SimenB",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "tskj",
+      "name": "Tarjei Skjærset",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25415972?v=4",
+      "profile": "https://github.com/tskj",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

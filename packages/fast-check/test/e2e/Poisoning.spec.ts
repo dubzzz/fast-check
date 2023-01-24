@@ -59,6 +59,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'webFragments', arbitraryBuilder: () => fc.webFragments() },
     { name: 'webQueryParameters', arbitraryBuilder: () => fc.webQueryParameters() },
     { name: 'webSegment', arbitraryBuilder: () => fc.webSegment() },
+    { name: 'webPath', arbitraryBuilder: () => fc.webPath() },
     { name: 'webUrl', arbitraryBuilder: () => fc.webUrl() },
     { name: 'emailAddress', arbitraryBuilder: () => fc.emailAddress() },
     { name: 'mixedCase', arbitraryBuilder: () => fc.mixedCase(fc.string()) },
@@ -186,8 +187,6 @@ function dropMainGlobals(): void {
     Set,
     WeakMap,
     WeakSet,
-    WeakRef,
-    FinalizationRegistry,
     Proxy,
     Reflect,
     Buffer,
@@ -214,13 +213,68 @@ function dropMainGlobals(): void {
     MessageChannel,
     MessagePort,
     MessageEvent,
-    //URL,
     URLSearchParams,
     JSON,
     Math,
     Intl,
+    EvalError,
+    RangeError,
+    ReferenceError,
+    SyntaxError,
+    TypeError,
+    URIError,
+    Atomics,
+    WebAssembly,
     globalThis,
   ];
+  const skippedGlobals = new Set([
+    'AggregateError',
+    'FinalizationRegistry',
+    'WeakRef',
+    'URL', // Causing exception in test (unrelated to fast-check)
+    'CompressionStream', // TS issue
+    'DecompressionStream', // TS issue
+    'BroadcastChannel', // Unknown in CI against macOS
+    'DOMException', // Unknown in CI against macOS
+    'Blob', // Unknown in CI against macOS
+    'Performance', // Unknown in CI against macOS
+    'ReadableStream', // Unknown in CI against macOS
+    'ReadableStreamDefaultReader', // Unknown in CI against macOS
+    'ReadableStreamBYOBReader', // Unknown in CI against macOS
+    'ReadableStreamBYOBRequest', // Unknown in CI against macOS
+    'ReadableByteStreamController', // Unknown in CI against macOS
+    'ReadableStreamDefaultController', // Unknown in CI against macOS
+    'TransformStream', // Unknown in CI against macOS
+    'TransformStreamDefaultController', // Unknown in CI against macOS
+    'WritableStream', // Unknown in CI against macOS
+    'WritableStreamDefaultWriter', // Unknown in CI against macOS
+    'WritableStreamDefaultController', // Unknown in CI against macOS
+    'ByteLengthQueuingStrategy', // Unknown in CI against macOS
+    'CountQueuingStrategy', // Unknown in CI against macOS
+    'TextEncoderStream', // Unknown in CI against macOS
+    'TextDecoderStream', // Unknown in CI against macOS
+    'FormData', // Unknown in CI against macOS
+    'Headers', // Unknown in CI against macOS
+    'Request', // Unknown in CI against macOS
+    'Response', // Unknown in CI against macOS
+  ]);
+  const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
+    (globalName) =>
+      globalName[0] >= 'A' &&
+      globalName[0] <= 'Z' &&
+      (typeof (globalThis as any)[globalName] === 'function' || typeof (globalThis as any)[globalName] === 'object')
+  );
+  const mainGlobalsSet = new Set<unknown>(mainGlobals);
+  const missingGlobals: string[] = [];
+  for (const globalName of allAccessibleGlobals) {
+    if (skippedGlobals.has(globalName)) {
+      continue;
+    }
+    if (!mainGlobalsSet.has((globalThis as any)[globalName])) {
+      missingGlobals.push(globalName);
+    }
+  }
+  expect(missingGlobals).toEqual([]);
   for (const mainGlobal of mainGlobals) {
     if ('prototype' in mainGlobal) {
       dropAllFromObj(mainGlobal.prototype);

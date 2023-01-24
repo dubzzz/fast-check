@@ -8,7 +8,7 @@ import { webFragments } from './webFragments';
 import { webAuthority, WebAuthorityConstraints } from './webAuthority';
 import { partsToUrlMapper, partsToUrlUnmapper } from './_internals/mappers/PartsToUrl';
 import { relativeSizeToSize, resolveSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { buildUriPathArbitrary } from './_internals/builders/UriPathArbitraryBuilder';
+import { webPath } from './webPath';
 
 const safeObjectAssign = Object.assign;
 
@@ -20,21 +20,25 @@ const safeObjectAssign = Object.assign;
 export interface WebUrlConstraints {
   /**
    * Enforce specific schemes, eg.: http, https
+   * @defaultValue ['http', 'https']
    * @remarks Since 1.14.0
    */
   validSchemes?: string[];
   /**
    * Settings for {@link webAuthority}
+   * @defaultValue &#123;&#125;
    * @remarks Since 1.14.0
    */
   authoritySettings?: WebAuthorityConstraints;
   /**
    * Enable query parameters in the generated url
+   * @defaultValue false
    * @remarks Since 1.14.0
    */
   withQueryParameters?: boolean;
   /**
    * Enable fragments in the generated url
+   * @defaultValue false
    * @remarks Since 1.14.0
    */
   withFragments?: boolean;
@@ -70,11 +74,10 @@ export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
   const authorityArb = webAuthority(resolvedAuthoritySettings);
-  const pathArb = buildUriPathArbitrary(resolvedSize);
   return tuple(
     schemeArb,
     authorityArb,
-    pathArb,
+    webPath({ size: resolvedSize }),
     c.withQueryParameters === true ? option(webQueryParameters({ size: resolvedSize })) : constant(null),
     c.withFragments === true ? option(webFragments({ size: resolvedSize })) : constant(null)
   ).map(partsToUrlMapper, partsToUrlUnmapper);

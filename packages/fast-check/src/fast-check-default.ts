@@ -36,7 +36,7 @@ import { unicode } from './arbitrary/unicode';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import { context, ContextValue } from './arbitrary/context';
-import { date } from './arbitrary/date';
+import { date, DateConstraints } from './arbitrary/date';
 import { clone, CloneValue } from './arbitrary/clone';
 import { dictionary, DictionaryConstraints } from './arbitrary/dictionary';
 import { emailAddress, EmailAddressConstraints } from './arbitrary/emailAddress';
@@ -98,6 +98,7 @@ import { uuid } from './arbitrary/uuid';
 import { uuidV } from './arbitrary/uuidV';
 import { webAuthority, WebAuthorityConstraints } from './arbitrary/webAuthority';
 import { webFragments, WebFragmentsConstraints } from './arbitrary/webFragments';
+import { webPath, WebPathConstraints } from './arbitrary/webPath';
 import { webQueryParameters, WebQueryParametersConstraints } from './arbitrary/webQueryParameters';
 import { webSegment, WebSegmentConstraints } from './arbitrary/webSegment';
 import { webUrl, WebUrlConstraints } from './arbitrary/webUrl';
@@ -292,6 +293,7 @@ export {
   webAuthority,
   webSegment,
   webFragments,
+  webPath,
   webQueryParameters,
   webUrl,
   emailAddress,
@@ -351,6 +353,7 @@ export {
   BigIntArrayConstraints,
   BigUintConstraints,
   CommandsContraints,
+  DateConstraints,
   DictionaryConstraints,
   DomainConstraints,
   DoubleConstraints,
@@ -381,6 +384,7 @@ export {
   ShuffledSubarrayConstraints,
   WebAuthorityConstraints,
   WebFragmentsConstraints,
+  WebPathConstraints,
   WebQueryParametersConstraints,
   WebSegmentConstraints,
   WebUrlConstraints,

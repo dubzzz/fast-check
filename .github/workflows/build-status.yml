@@ -26,11 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         id: yarn-cache
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -46,11 +46,11 @@ jobs:
         os: ['macos-latest', 'windows-latest']
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         id: yarn-cache
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -65,24 +65,24 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
       - name: Ensure no dedupe required
         run: yarn dedupe --check
   all_version_bump_declared:
     name: 'All version bump declared'
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/') || github.event.pull_request.user.login != 'renovate[bot]'
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
       - name: Ensure versions have been properly bumped
         run: yarn version check
   package_quality:
@@ -90,10 +90,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
       - name: Check package score using skypack
         run: cd packages/fast-check && yarn dlx @skypack/package-check
 
@@ -104,10 +104,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn workspace @fast-check/monorepo install --immutable
@@ -121,10 +121,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
@@ -149,10 +149,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
@@ -181,51 +181,36 @@ jobs:
           - '@fast-check/packaged'
           - '@fast-check/poisoning'
           - '@fast-check/vitest'
+          - '@fast-check/worker'
         script-name: ['test']
-        node-version: [14.x, 16.x]
+        node-version: [14.x, 16.x, 18.x]
         os: ['ubuntu-latest']
         include:
           # More platforms and scripts...
           - package-name: 'fast-check'
             script-name: 'e2e'
-            node-version: 16.x
+            node-version: 18.x
             os: 'ubuntu-latest'
           - package-name: 'fast-check'
             script-name: 'e2e'
-            node-version: 16.x
+            node-version: 18.x
             os: 'macos-latest'
           - package-name: 'fast-check'
             script-name: 'e2e'
-            node-version: 16.x
+            node-version: 18.x
             os: 'windows-latest'
           - package-name: '@fast-check/packaged'
             script-name: 'test'
-            node-version: 16.x
+            node-version: 18.x
             os: 'macos-latest'
           - package-name: '@fast-check/packaged'
             script-name: 'test'
-            node-version: 16.x
+            node-version: 18.x
             os: 'windows-latest'
           # Limited matrix for test only packages
           - package-name: '@fast-check/examples'
             script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-ava-bundle-cjs'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-ava-bundle-esm'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-jest-bundle-cjs'
-            script-name: 'test'
-            node-version: 16.x
-            os: 'ubuntu-latest'
-          - package-name: '@fast-check/test-jest-bundle-esm'
-            script-name: 'test'
-            node-version: 16.x
+            node-version: 18.x
             os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
@@ -275,10 +260,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
@@ -298,6 +283,34 @@ jobs:
           path: packages/fast-check/docs/
           if-no-files-found: error
           retention-days: 1
+  test_bundle:
+    name: 'Test bundle'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Retrieve potentially dropped test-bundle
+        run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-bundle || true"
+      - name: Check bundles
+        run: yarn workspaces foreach -pvi --no-private run test-bundle
   test_types:
     name: 'Test types'
     needs:
@@ -318,10 +331,10 @@ jobs:
           - 'next'
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
@@ -334,6 +347,9 @@ jobs:
         run: yarn unpack:all
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Drop @types to avoid failures on legacy versions of TypeScript
+        if: matrix.ts-version == '4.1'
+        run: mv node_modules/@types node_modules/at-types
       - name: TypeScript version
         run: |
           cd packages/test-types
@@ -361,10 +377,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
@@ -388,10 +404,10 @@ jobs:
           node main.js
       # Re-install node 16, for clean-up related logic as it does not work with node 8
       # The caching logic of actions/setup-node calls yarn to know the version
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
   test_cjs_esm:
     name: 'Test CJS & ESM'
     needs:
@@ -421,10 +437,10 @@ jobs:
           - '13'
     steps:
       - uses: actions/checkout@v3
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
@@ -460,7 +476,7 @@ jobs:
           name: docs
           path: packages/fast-check/docs/
       - name: Publish to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.0
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
           folder: packages/fast-check/docs/
@@ -472,20 +488,20 @@ jobs:
       - documentation
       - format_lint
       - no_dedupe_required
-      - all_version_bump_declared
       - package_quality
       - typecheck
       - test
+      - test_bundle
       - test_cjs_esm
       - test_node_8
       - test_types
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Using Node v16.x
+      - name: Using Node v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Download production packages
         uses: actions/download-artifact@v3
@@ -520,5 +536,15 @@ jobs:
       - if: startsWith(github.ref, 'refs/tags/vitest/v')
         name: Publish @fast-check/vitest
         run: npm publish --access public packages/vitest/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: startsWith(github.ref, 'refs/tags/worker/v')
+        name: Publish @fast-check/worker
+        run: npm publish --access public packages/worker/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: startsWith(github.ref, 'refs/tags/expect-type/v')
+        name: Publish @fast-check/expect-type
+        run: npm publish --access public packages/expect-type/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

@@ -1,28 +1,47 @@
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { Error } from '../../utils/globals';
 import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { PropertyFailure, IRawProperty } from './IRawProperty';
 
 /** @internal */
-const timeoutAfter = (timeMs: number) => {
+const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) => {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   const promise = new Promise<PropertyFailure>((resolve) => {
-    timeoutHandle = setTimeout(() => {
-      resolve({ error: undefined, errorMessage: `Property timeout: exceeded limit of ${timeMs} milliseconds` });
+    timeoutHandle = setTimeoutSafe(() => {
+      resolve({
+        error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
+        errorMessage: `Property timeout: exceeded limit of ${timeMs} milliseconds`,
+      });
     }, timeMs);
   });
   return {
     // `timeoutHandle` will always be initialised at this point: body of `new Promise` has already been executed
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    clear: () => clearTimeout(timeoutHandle!),
+    clear: () => clearTimeoutSafe(timeoutHandle!),
     promise,
   };
 };
 
 /** @internal */
 export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
-  constructor(readonly property: IRawProperty<Ts>, readonly timeMs: number) {}
+  runBeforeEach?: () => Promise<void>;
+  runAfterEach?: () => Promise<void>;
+
+  constructor(
+    readonly property: IRawProperty<Ts>,
+    readonly timeMs: number,
+    readonly setTimeoutSafe: typeof setTimeout,
+    readonly clearTimeoutSafe: typeof clearTimeout
+  ) {
+    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runBeforeEach = () => Promise.resolve(this.property.runBeforeEach!());
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runAfterEach = () => Promise.resolve(this.property.runAfterEach!());
+    }
+  }
 
   isAsync(): true {
     return true;
@@ -36,9 +55,9 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
     return this.property.shrink(value);
   }
 
-  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
-    const t = timeoutAfter(this.timeMs);
-    const propRun = Promise.race([this.property.run(v), t.promise]);
+  async run(v: Ts, dontRunHook: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
+    const t = timeoutAfter(this.timeMs, this.setTimeoutSafe, this.clearTimeoutSafe);
+    const propRun = Promise.race([this.property.run(v, dontRunHook), t.promise]);
     propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
     return propRun;
   }

@@ -1,0 +1,67 @@
+{
+  "name": "@fast-check/worker",
+  "description": "Provide built-ins to run predicates directly within dedicated workers",
+  "version": "0.0.4",
+  "type": "commonjs",
+  "main": "lib/main.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./lib/main.d.ts",
+      "require": "./lib/main.js",
+      "import": "./lib/esm/main.js",
+      "default": "./lib/esm/main.js"
+    }
+  },
+  "module": "lib/esm/main.js",
+  "types": "lib/main.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
+    "build-ci": "yarn build",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "test": "jest",
+    "test-bundle:cjs": "node test-bundle/main.cjs",
+    "test-bundle:mjs": "node test-bundle/main.mjs",
+    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/worker"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
+  "dependencies": {
+    "fast-check": "^3.4.0"
+  },
+  "devDependencies": {
+    "jest": "^29.4.0",
+    "ts-jest": "^29.0.5",
+    "ts-jest-resolver": "^2.0.0",
+    "typescript": "^4.9.4"
+  },
+  "keywords": [
+    "worker",
+    "fast-check"
+  ],
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
+}

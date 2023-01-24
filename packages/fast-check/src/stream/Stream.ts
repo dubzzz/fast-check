@@ -112,6 +112,9 @@ export class Stream<T> implements IterableIterator<T> {
    * @remarks Since 0.0.1
    */
   drop(n: number): Stream<T> {
+    if (n <= 0) {
+      return this;
+    }
     let idx = 0;
     function helper(): boolean {
       return idx++ < n;

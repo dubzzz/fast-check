@@ -119,7 +119,9 @@ export interface Parameters<T = void> {
   // in milliseconds (relies on Date.now): disabled by default
   interruptAfterTimeLimit?: number; // optional, interrupt test execution after a given time limit
   // in milliseconds (relies on Date.now): disabled by default
-  markInterruptAsFailure?: boolean; // optional, mark interrupted runs as failure: disabled by default
+  markInterruptAsFailure?: boolean; // optional, mark interrupted runs as failure even if preceded by
+  // one success or more: disabled by default
+  // Interrupted with no success at all always defaults to failure whatever the value of this flag.
   skipEqualValues?: boolean; // optional, skip repeated runs: disabled by default
   // If a same input is encountered multiple times only the first one will be executed,
   // next ones will be skipped. Be aware that skipping runs may lead to property failure
@@ -138,6 +140,10 @@ export interface Parameters<T = void> {
   // it cannot be used in conjonction with reporter
   // it cannot be set on synchronous properties
   // it will be used by assert for asynchronous properties
+  errorWithCause?: boolean; // optional, enable Error with cause instead of raw Error including the original error
+  // as part of the message. The Error with cause format is currently well supported starting at node ≥16.14.0
+  // and by test runners such as vitest (neither jasmine, nor mocha, nor jest supported Error with cause when
+  // tested on the 20th of September 2022).
 }
 ```
 

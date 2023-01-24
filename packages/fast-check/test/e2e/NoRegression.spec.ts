@@ -530,6 +530,14 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('webPath', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.webPath(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('webUrl', () => {
     expect(() =>
       fc.assert(

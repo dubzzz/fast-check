@@ -7,7 +7,8 @@
     "packages/jest",
     "packages/packaged",
     "packages/poisoning",
-    "packages/vitest"
+    "packages/vitest",
+    "packages/worker"
   ],
   "node": "14"
 }

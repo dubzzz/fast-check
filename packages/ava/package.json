@@ -1,12 +1,13 @@
 {
   "name": "@fast-check/ava",
   "description": "Property based testing for AVA based on fast-check",
-  "version": "1.0.2",
+  "version": "1.1.3",
   "type": "commonjs",
   "main": "lib/ava-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./lib/ava-fast-check.d.ts",
       "require": "./lib/ava-fast-check.js",
       "import": "./lib/esm/ava-fast-check.js",
       "default": "./lib/esm/ava-fast-check.js"
@@ -25,6 +26,9 @@
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "ava-test": "ava -s -t",
     "test": "sh test.sh",
+    "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
+    "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
+    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -45,11 +49,11 @@
     "ava": ">=4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^17.0.44",
-    "ava": "^4.3.3",
+    "@types/node": "^18.11.18",
+    "ava": "^5.1.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
-    "typescript": "^4.8.3"
+    "typescript": "^4.9.4"
   },
   "keywords": [
     "ava",
@@ -67,8 +71,14 @@
       "esm"
     ]
   },
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/fast-check"
-  }
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
 }

@@ -3,7 +3,7 @@
   "name": "@fast-check/test-bundle-rollup-with-require",
   "description": "Test making sure fast-check can be used with CJS in Rollup",
   "scripts": {
-    "generate": "rollup --config rollup.config.js && rollup --config rollup.config.dry.js",
+    "generate": "rollup --config rollup.config.mjs && rollup --config rollup.config.dry.mjs",
     "out:dry": "node dist/dry.js",
     "out:start": "node dist/main.js > out.txt",
     "dry": "yarn generate && yarn out:dry",
@@ -14,9 +14,9 @@
     "fast-check": "workspace:*"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-node-resolve": "^14.1.0",
-    "rollup": "^2.79.0"
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "rollup": "^3.10.1"
   },
   "license": "MIT"
 }

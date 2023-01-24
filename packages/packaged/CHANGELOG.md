@@ -1,3 +1,30 @@
+# 0.0.7
+
+_Update funding section in package.json_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.6...packaged%2Fv0.0.7)]
+
+## Fixes
+
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+
+# 0.0.6
+
+_Lower constraints on external dependencies_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.5...packaged%2Fv0.0.6)]
+
+## Fixes
+
+- ([PR#3377](https://github.com/dubzzz/fast-check/pull/3377)) Dependencies: Relax constraint on `@npmcli/arborist`
+
+# 0.0.5
+
+_Add GitHub Sponsors link_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.4...packaged%2Fv0.0.5)]
+
+## Fixes
+
+- ([PR#3316](https://github.com/dubzzz/fast-check/pull/3316)) Funding: Add link to GitHub sponsors in funding
+
 # 0.0.4
 
 _Only keep comments in published typings not in published code_

@@ -108,7 +108,7 @@ describe('SlicedBasedGenerator', () => {
                 return (streamModValues.next().value % (max - min + 1)) + min; // pure random for next calls
               });
               const value = generator.next().value;
-              expect(allValuesFromSlices).toContain(value); // should only produce values coming from slices
+              expect(allValuesFromSlices).toContainEqual(value); // should only produce values coming from slices
               readFromGenerator.push(value);
             }
 

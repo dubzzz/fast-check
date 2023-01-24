@@ -55,6 +55,7 @@ export type OneOfConstraints = {
    * Warning: First arbitrary must be the one resulting in the smallest structures
    * for usages in deep tree-like structures.
    *
+   * @defaultValue false
    * @remarks Since 2.14.0
    */
   withCrossShrink?: boolean;
@@ -70,6 +71,7 @@ export type OneOfConstraints = {
    * Maximal authorized depth.
    * Once this depth has been reached only the first arbitrary will be used.
    *
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.14.0
    */
   maxDepth?: number;

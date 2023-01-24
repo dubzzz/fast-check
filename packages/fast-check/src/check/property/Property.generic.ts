@@ -9,7 +9,7 @@ import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
 } from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
-import { String } from '../../utils/globals';
+import { Error, String } from '../../utils/globals';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -117,13 +117,26 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  run(v: Ts): PreconditionFailure | PropertyFailure | null {
+  runBeforeEach(): void {
     this.beforeEachHook();
+  }
+
+  runAfterEach(): void {
+    this.afterEachHook();
+  }
+
+  run(v: Ts, dontRunHook?: boolean): PreconditionFailure | PropertyFailure | null {
+    if (!dontRunHook) {
+      this.beforeEachHook();
+    }
     try {
       const output = this.predicate(v);
       return output == null || output === true
         ? null
-        : { error: undefined, errorMessage: 'Property failed by returning false' };
+        : {
+            error: new Error('Property failed by returning false'),
+            errorMessage: 'Property failed by returning false',
+          };
     } catch (err) {
       // precondition failure considered as success for the first version
       if (PreconditionFailure.isFailure(err)) return err;
@@ -133,7 +146,9 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
       }
       return { error: err, errorMessage: String(err) };
     } finally {
-      this.afterEachHook();
+      if (!dontRunHook) {
+        this.afterEachHook();
+      }
     }
   }
 

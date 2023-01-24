@@ -1,4 +1,4 @@
-import prand from 'pure-rand';
+import prand, { unsafeSkipN } from 'pure-rand';
 import { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
 import { RunDetails } from '../reporter/RunDetails';
@@ -6,6 +6,9 @@ import { RandomGenerator } from 'pure-rand';
 
 const safeDateNow = Date.now;
 const safeMathRandom = Math.random;
+
+/** @internal */
+export type QualifiedRandomGenerator = RandomGenerator & Required<Pick<RandomGenerator, 'unsafeJump'>>;
 
 /**
  * Configuration extracted from incoming Parameters
@@ -16,7 +19,7 @@ const safeMathRandom = Math.random;
  */
 export class QualifiedParameters<T> {
   seed: number;
-  randomType: (seed: number) => RandomGenerator;
+  randomType: (seed: number) => QualifiedRandomGenerator;
   numRuns: number;
   maxSkipsPerRun: number;
   timeout: number | null;
@@ -33,6 +36,7 @@ export class QualifiedParameters<T> {
   ignoreEqualValues: boolean;
   reporter: ((runDetails: RunDetails<T>) => void) | null;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
+  errorWithCause: boolean;
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -57,11 +61,12 @@ export class QualifiedParameters<T> {
     this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
     this.reporter = QualifiedParameters.readOrDefault(p, 'reporter', null);
     this.asyncReporter = QualifiedParameters.readOrDefault(p, 'asyncReporter', null);
+    this.errorWithCause = QualifiedParameters.readBoolean(p, 'errorWithCause');
   }
 
   toParameters(): Parameters<T> {
     const orUndefined = <V>(value: V | null) => (value !== null ? value : undefined);
-    return {
+    const parameters: { [K in keyof Required<Parameters<T>>]: Parameters<T>[K] } = {
       seed: this.seed,
       randomType: this.randomType,
       numRuns: this.numRuns,
@@ -80,8 +85,22 @@ export class QualifiedParameters<T> {
       endOnFailure: this.endOnFailure,
       reporter: orUndefined(this.reporter),
       asyncReporter: orUndefined(this.asyncReporter),
+      errorWithCause: this.errorWithCause,
     };
+    return parameters;
   }
+
+  private static createQualifiedRandomGenerator = (
+    random: (seed: number) => RandomGenerator
+  ): ((seed: number) => QualifiedRandomGenerator) => {
+    return (seed) => {
+      const rng = random(seed);
+      if (rng.unsafeJump === undefined) {
+        rng.unsafeJump = () => unsafeSkipN(rng, 42);
+      }
+      return rng as QualifiedRandomGenerator;
+    };
+  };
 
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
@@ -95,25 +114,34 @@ export class QualifiedParameters<T> {
     const gap = p.seed - seed32;
     return seed32 ^ (gap * 0x100000000);
   };
-  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => RandomGenerator) => {
-    if (p.randomType == null) return prand.xorshift128plus;
+  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => QualifiedRandomGenerator) => {
+    if (p.randomType == null) return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
         case 'mersenne':
-          return prand.mersenne;
+          return QualifiedParameters.createQualifiedRandomGenerator(prand.mersenne);
         case 'congruential':
-          return prand.congruential;
         case 'congruential32':
-          return prand.congruential32;
+          return QualifiedParameters.createQualifiedRandomGenerator(prand.congruential32);
         case 'xorshift128plus':
-          return prand.xorshift128plus;
+          return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
         case 'xoroshiro128plus':
-          return prand.xoroshiro128plus;
+          return prand.xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
         default:
           throw new Error(`Invalid random specified: '${p.randomType}'`);
       }
     }
-    return p.randomType;
+    const mrng = p.randomType(0);
+    if ('min' in mrng && mrng.min !== -0x80000000) {
+      throw new Error(`Invalid random number generator: min must equal -0x80000000, got ${String(mrng.min)}`);
+    }
+    if ('max' in mrng && mrng.max !== 0x7fffffff) {
+      throw new Error(`Invalid random number generator: max must equal 0x7fffffff, got ${String(mrng.max)}`);
+    }
+    if ('unsafeJump' in mrng) {
+      return p.randomType as (seed: number) => QualifiedRandomGenerator;
+    }
+    return QualifiedParameters.createQualifiedRandomGenerator(p.randomType);
   };
   private static readNumRuns = <T>(p: Parameters<T>): number => {
     const defaultValue = 100;
