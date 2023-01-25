@@ -42,7 +42,7 @@ Please note that the properties accepted by `@fast-check/vitest` as input can ei
 
 ## Advanced
 
-If you want to forward custom parameters to fast-check, `testProp` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
+If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
 
 `@fast-check/vitest` also comes with `.only`, `.skip`, `.todo` and `.concurrent` from vitest. It also accepts more complex ones such as `.concurrent.skip`.
 
