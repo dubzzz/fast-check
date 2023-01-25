@@ -1,0 +1,2 @@
+releases:
+  "@fast-check/vitest": patch
