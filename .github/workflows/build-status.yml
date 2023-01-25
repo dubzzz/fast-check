@@ -507,7 +507,7 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - if: startsWith(github.ref, 'refs/tags/v')
+      - if: startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/vitest/v')
         name: Publish fast-check
         run: npm publish --access public packages/fast-check/package.tgz
         env:
