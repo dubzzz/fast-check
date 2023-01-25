@@ -46,7 +46,7 @@
   "devDependencies": {
     "fast-check": "workspace:*",
     "typescript": "^4.9.4",
-    "vitest": "^0.28.1"
+    "vitest": "^0.28.2"
   },
   "keywords": [
     "vitest",
