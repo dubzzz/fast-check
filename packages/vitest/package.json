@@ -23,6 +23,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "test-bundle": "vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
