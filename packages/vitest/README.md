@@ -3,7 +3,7 @@
 ![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/packages/fast-check/documentation/images/logo.png)
 
 Bring the power of property based testing framework `fast-check` into Vitest.
-`@fast-check/vitest` simplifies the integration of `fast-check` into Jest testing framework.
+`@fast-check/vitest` simplifies the integration of `fast-check` into Vitest.
 
 <a href="https://badge.fury.io/js/@fast-check%2Fvitest"><img src="https://badge.fury.io/js/@fast-check%2Fvitest.svg" alt="npm version" /></a>
 <a href="https://www.npmjs.com/package/@fast-check/vitest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fvitest" alt="monthly downloads" /></a>
@@ -42,7 +42,7 @@ Please note that the properties accepted by `@fast-check/vitest` as input can ei
 
 ## Advanced
 
-If you want to forward custom parameters to fast-check, `testProp` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
+If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
 
 `@fast-check/vitest` also comes with `.only`, `.skip`, `.todo` and `.concurrent` from vitest. It also accepts more complex ones such as `.concurrent.skip`.
 
@@ -68,4 +68,4 @@ describe('with it', () => {
 
 | @fast-check/vitest | vitest   | fast-check |
 | ------------------ | -------- | ---------- |
-| ^1.0.0             | >=0.28.1 | ^3.0.0     |
+| ^0.0.0             | >=0.28.1 | ^3.0.0     |
