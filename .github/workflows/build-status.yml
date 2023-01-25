@@ -180,7 +180,6 @@ jobs:
           - '@fast-check/jest'
           - '@fast-check/packaged'
           - '@fast-check/poisoning'
-          - '@fast-check/vitest'
           - '@fast-check/worker'
         script-name: ['test']
         node-version: [14.x, 16.x, 18.x]
