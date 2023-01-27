@@ -23,6 +23,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "test": "jest",
     "test-bundle": "vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },
@@ -45,6 +46,7 @@
   },
   "devDependencies": {
     "fast-check": "workspace:*",
+    "jest": "^29.4.0",
     "typescript": "^4.9.4",
     "vitest": "^0.28.2"
   },
