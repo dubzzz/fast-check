@@ -134,13 +134,19 @@ export type FastCheckItBuilder<T> = T &
 /**
  * Build the enriched version of {it,test}, the one with added `.prop`
  */
-function enrichWithTestProp<T extends (...args: any[]) => any>(testFn: T, fc: FcExtra): FastCheckItBuilder<T> {
+function enrichWithTestProp<T extends (...args: any[]) => any>(
+  testFn: T,
+  fc: FcExtra,
+  ancestors: Set<string> = new Set()
+): FastCheckItBuilder<T> {
   let atLeastOneExtra = false;
   const extraKeys: Partial<FastCheckItBuilder<T>> = {};
-  for (const key in testFn) {
-    if (typeof testFn[key] === 'function') {
+  for (const unsafeKey of Object.getOwnPropertyNames(testFn)) {
+    const key = unsafeKey as keyof typeof testFn & string;
+    if (!ancestors.has(key) && typeof testFn[key] === 'function') {
       atLeastOneExtra = true;
-      extraKeys[key] = key !== 'each' ? enrichWithTestProp(testFn[key] as any, fc) : testFn[key];
+      extraKeys[key] =
+        key !== 'each' ? enrichWithTestProp(testFn[key] as any, fc, new Set([...ancestors, key])) : testFn[key];
     }
   }
   if (!atLeastOneExtra) {

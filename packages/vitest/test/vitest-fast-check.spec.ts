@@ -46,6 +46,145 @@ describe.each<DescribeOptions>([
     // Assert
     expectPass(out, specFileName);
   });
+
+  describe('at depth 1', () => {
+    it.concurrent(`should support ${runnerName}.concurrent.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.concurrent.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectPass(out, specFileName);
+    });
+
+    it.concurrent(`should support ${runnerName}.fails.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.fails.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+    });
+
+    it.concurrent.skip(`should support ${runnerName}.only.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectPass(out, specFileName);
+    });
+
+    it.concurrent(`should support ${runnerName}.skip.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.skip.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+
+    it.concurrent(`should support ${runnerName}.todo.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.todo.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+  });
+
+  describe('at depth strictly above 1', () => {
+    it.concurrent(`should support ${runnerName}.concurrent.fails.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.concurrent.fails.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+    });
+
+    it.concurrent(`should support ${runnerName}.concurrent.fails.only.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.concurrent.fails.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+    });
+
+    it.concurrent(`should support ${runnerName}.concurrent.fails.skip.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.concurrent.fails.skip.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+
+    it.concurrent(`should support ${runnerName}.concurrent.fails.todo.prop`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+        runner.concurrent.fails.todo.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+  });
 });
 
 // Helper
@@ -111,4 +250,12 @@ async function runSpec(vitestConfigRelativePath: string): Promise<string> {
 
 function expectPass(out: string, specFileName: string): void {
   expect(out).toMatch(new RegExp('✓ .*\\/' + specFileName));
+}
+
+function expectFail(out: string, specFileName: string): void {
+  expect(out).toMatch(new RegExp('FAIL .*\\/' + specFileName));
+}
+
+function expectSkip(out: string, specFileName: string): void {
+  expect(out).toMatch(new RegExp('↓ .*\\/' + specFileName));
 }
