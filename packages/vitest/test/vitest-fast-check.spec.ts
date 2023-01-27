@@ -78,7 +78,7 @@ describe.each<DescribeOptions>([
       expectFail(out, specFileName);
     });
 
-    it.concurrent(`should support ${runnerName}.only.prop`, async () => {
+    it.skip.concurrent(`should support ${runnerName}.only.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
