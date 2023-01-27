@@ -101,6 +101,7 @@ async function runSpec(vitestConfigRelativePath: string): Promise<string> {
       '--config',
       vitestConfigRelativePath,
       '--run', // no watch
+      '--no-color',
     ]);
     return specOutput;
   } catch (err) {
