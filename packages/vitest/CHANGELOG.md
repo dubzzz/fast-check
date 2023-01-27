@@ -1,11 +1,7 @@
 # 0.0.2
 
-_TODO Description_
+_Support `it.skip`, `it.fails` and others_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.1...vitest%2Fv0.0.2)]
-
-## Features
-
-
 
 ## Fixes
 
