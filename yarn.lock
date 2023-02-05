@@ -1589,25 +1589,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.26.2":
-  version: 7.26.2
-  resolution: "@microsoft/api-extractor-model@npm:7.26.2"
+"@microsoft/api-extractor-model@npm:7.26.3":
+  version: 7.26.3
+  resolution: "@microsoft/api-extractor-model@npm:7.26.3"
   dependencies:
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
-    "@rushstack/node-core-library": 3.55.0
-  checksum: 14c03a9b6acc49f0b5d783cc6cbf897e9469f0ace035c1b48b761c5f8c01fe7bebf8441c87b457eaf29c8a1e4ced89c098a86777f46bfb8f8f5d54897ecf84e9
+    "@rushstack/node-core-library": 3.55.1
+  checksum: aad10eef9b15f6b0886021315ccc4b1bc2867855375da2b265a440e97e615a9e2833a0ff25f4dc78543acd7f3fc599a5f3f7f84f10cd8fafc7f712ad1c7bfbe4
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.34.2":
-  version: 7.34.2
-  resolution: "@microsoft/api-extractor@npm:7.34.2"
+"@microsoft/api-extractor@npm:^7.34.3":
+  version: 7.34.3
+  resolution: "@microsoft/api-extractor@npm:7.34.3"
   dependencies:
-    "@microsoft/api-extractor-model": 7.26.2
+    "@microsoft/api-extractor-model": 7.26.3
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
-    "@rushstack/node-core-library": 3.55.0
+    "@rushstack/node-core-library": 3.55.1
     "@rushstack/rig-package": 0.3.17
     "@rushstack/ts-command-line": 4.13.1
     colors: ~1.2.1
@@ -1618,7 +1618,7 @@ __metadata:
     typescript: ~4.8.4
   bin:
     api-extractor: bin/api-extractor
-  checksum: cc9a13d64d0ff2e68fb9522ee4505538d36f886ca00b2cd05fc1f2d0ecbad645804a9f2d9c91fcff031a4113022cae8d7efdeeb7388df11177be3e9a25925ea0
+  checksum: 87ce0bdfe094992e407915117457786991b5a12bef5415895dfedeead8d573c84368ac3e5465b36fad0f66e079e8eb5484c7b05a289c39ad97576c5c64f1a27e
   languageName: node
   linkType: hard
 
@@ -1917,9 +1917,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/node-core-library@npm:3.55.0":
-  version: 3.55.0
-  resolution: "@rushstack/node-core-library@npm:3.55.0"
+"@rushstack/node-core-library@npm:3.55.1":
+  version: 3.55.1
+  resolution: "@rushstack/node-core-library@npm:3.55.1"
   dependencies:
     colors: ~1.2.1
     fs-extra: ~7.0.1
@@ -1929,11 +1929,11 @@ __metadata:
     semver: ~7.3.0
     z-schema: ~5.0.2
   peerDependencies:
-    "@types/node": ^14.18.36
+    "@types/node": "*"
   peerDependenciesMeta:
     "@types/node":
       optional: true
-  checksum: 138ab94dc5a0919a22982762040138d8762c3b316f4a46b14c10308451744d57022e58f97d98f8edd66a10b1226d456b7d7fe182a37b29906b2b21e590ebec02
+  checksum: 6c71d1bfc1f29a82735bc7e322a1c3ffc47f7468698c5ca4386cdb8a3359455aaf44c26c8ca9dda1fbe50230a252f873a2bd9d8901cbeb389330131db2cabc0e
   languageName: node
   linkType: hard
 
@@ -5145,7 +5145,7 @@ __metadata:
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": ^7.34.2
+    "@microsoft/api-extractor": ^7.34.3
     "@types/jest": ^29.4.0
     "@types/node": ^18.11.18
     buffer: ^6.0.3
