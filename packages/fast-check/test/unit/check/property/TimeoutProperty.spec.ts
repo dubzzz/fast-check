@@ -18,7 +18,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     generate.mockReturnValueOnce(expectedOut);
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
     const out = timeoutProp.generate(mrng, expectedRunId);
 
     // Assert
@@ -34,7 +34,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     const expectedRunInput = { anything: Symbol('something') };
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
     if (dontRunHook) {
       await timeoutProp.runBeforeEach!();
       const runPromise = timeoutProp.run(expectedRunInput, true);
@@ -65,7 +65,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     );
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
     let runPromise: ReturnType<typeof timeoutProp.run>;
     if (dontRunHook) {
       await timeoutProp.runBeforeEach!();
@@ -95,7 +95,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
       );
 
       // Act / After
-      const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
+      const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
       const beforeEachPromise = timeoutProp.runBeforeEach!();
       jest.advanceTimersByTime(100);
       await beforeEachPromise;
@@ -114,7 +114,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
       );
 
       // Act / Assert
-      const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
+      const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
       await timeoutProp.runBeforeEach!();
       await timeoutProp.run({}, true);
       const afterEachPromise = timeoutProp.runAfterEach!();
@@ -136,7 +136,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     );
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
     let runPromise: ReturnType<typeof timeoutProp.run>;
     if (dontRunHook) {
       await timeoutProp.runBeforeEach!();
@@ -163,7 +163,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     run.mockResolvedValueOnce(null);
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
     if (dontRunHook) {
       await timeoutProp.runBeforeEach!();
       await timeoutProp.run({}, true);
@@ -187,7 +187,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     run.mockResolvedValueOnce(errorFromUnderlying);
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 100);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
     if (dontRunHook) {
       await timeoutProp.runBeforeEach!();
       await timeoutProp.run({}, true);
@@ -212,7 +212,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     );
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
     let runPromise: ReturnType<typeof timeoutProp.run>;
     if (dontRunHook) {
       await timeoutProp.runBeforeEach!();
@@ -237,7 +237,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     run.mockReturnValueOnce(new Promise(() => {}));
 
     // Act
-    const timeoutProp = new TimeoutProperty(decoratedProperty, 10);
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
     let runPromise: ReturnType<typeof timeoutProp.run>;
     if (dontRunHook) {
       await timeoutProp.runBeforeEach!();

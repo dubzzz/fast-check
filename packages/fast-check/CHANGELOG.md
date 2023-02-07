@@ -1,3 +1,55 @@
+# 3.6.2
+
+_Still work in fake timer contexts_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.1...v3.6.2)]
+
+## Fixes
+
+- ([PR#3571](https://github.com/dubzzz/fast-check/pull/3571)) Bug: Resist to fake timers in interruptAfterTimeLimit
+- ([PR#3572](https://github.com/dubzzz/fast-check/pull/3572)) Bug: Resist to fake timers in timeout
+- ([PR#3564](https://github.com/dubzzz/fast-check/pull/3564)) Performance: Drop bailout linked to toss
+
+# 3.6.1
+
+_Some more performance improvements_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.0...v3.6.1)]
+
+## Fixes
+
+- ([PR#3563](https://github.com/dubzzz/fast-check/pull/3563)) Performance: Mutate rng inplace in tosser
+
+# 3.6.0
+
+_Slightly faster execution of properties_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.5.0...v3.6.0)]
+
+## Features
+
+- ([PR#3547](https://github.com/dubzzz/fast-check/pull/3547)) Slightly faster thanks to pure-rand v6
+- ([PR#3552](https://github.com/dubzzz/fast-check/pull/3552)) Do not wrap stream when dropping 0 items
+- ([PR#3551](https://github.com/dubzzz/fast-check/pull/3551)) Faster implementation of internal function `runIdToFrequency`
+- ([PR#3553](https://github.com/dubzzz/fast-check/pull/3553)) Drop useless internal stream conversions
+- ([PR#3554](https://github.com/dubzzz/fast-check/pull/3554)) Tosser must immediately produce values
+
+## Fixes
+
+- ([PR#3556](https://github.com/dubzzz/fast-check/pull/3556)) CI: Enable sourceMap in unpublished for coverage
+- ([PR#3512](https://github.com/dubzzz/fast-check/pull/3512)) Script: Add `--cache` option to Prettier
+- ([PR#3523](https://github.com/dubzzz/fast-check/pull/3523)) Script: Initialize default devcontainer
+- ([PR#3524](https://github.com/dubzzz/fast-check/pull/3524)) Script: Install and setup nvs inside Dockerfile
+
+---
+
+# 3.5.1
+
+_Still work in fake timer contexts_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.5.0...v3.5.1)]
+
+## Fixes
+
+- ([PR#3571](https://github.com/dubzzz/fast-check/pull/3571)) Bug: Resist to fake timers in interruptAfterTimeLimit
+- ([PR#3572](https://github.com/dubzzz/fast-check/pull/3572)) Bug: Resist to fake timers in timeout
+
 # 3.5.0
 
 _Interrupt running tasks when `interruptAfterTimeLimit` exceeded_

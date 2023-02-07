@@ -14,9 +14,9 @@
     "fast-check": "workspace:*"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "rollup": "^3.10.0"
+    "rollup": "^3.14.0"
   },
   "license": "MIT"
 }

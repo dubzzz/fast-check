@@ -9,6 +9,9 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 
 import * as stubArb from '../../stubs/arbitraries';
 import prand from 'pure-rand';
+import { QualifiedRandomGenerator } from '../../../../src/check/runner/configuration/QualifiedParameters';
+
+const rngProducer = prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
 
 const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
   new (class implements IRawProperty<T> {
@@ -24,7 +27,7 @@ describe('Tosser', () => {
     it('Should offset the random number generator between calls', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(100), (seed, start) => {
-          const s = stream(toss(wrap(stubArb.forwardArray(4)), seed, prand.xorshift128plus, []));
+          const s = stream(toss(wrap(stubArb.forwardArray(4)), seed, rngProducer, []));
           const [g1, g2] = [
             ...s
               .drop(start)
@@ -39,11 +42,11 @@ describe('Tosser', () => {
       fc.assert(
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
           expect([
-            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
+            ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, []))
               .take(num)
               .map((f) => f.value),
           ]).toStrictEqual([
-            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, []))
+            ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, []))
               .take(num)
               .map((f) => f.value),
           ]);
@@ -52,8 +55,8 @@ describe('Tosser', () => {
     it('Should not depend on the order of iteration', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
-          const onGoingItems1 = [...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num)];
-          const onGoingItems2 = [...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num)];
+          const onGoingItems1 = [...stream(toss(wrap(stubArb.forward()), seed, rngProducer, [])).take(num)];
+          const onGoingItems2 = [...stream(toss(wrap(stubArb.forward()), seed, rngProducer, [])).take(num)];
           expect(
             onGoingItems2
               .reverse()
@@ -66,10 +69,10 @@ describe('Tosser', () => {
       fc.assert(
         fc.property(fc.integer(), fc.nat(20), fc.array(fc.integer()), (seed, num, examples) => {
           const noExamplesProvided = [
-            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, [])).take(num - examples.length),
+            ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, [])).take(num - examples.length),
           ].map((f) => f.value);
           const examplesProvided = [
-            ...stream(toss(wrap(stubArb.forward()), seed, prand.xorshift128plus, examples)).take(num),
+            ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, examples)).take(num),
           ].map((f) => f.value);
           expect([...examples, ...noExamplesProvided].slice(0, num)).toStrictEqual(examplesProvided);
         })

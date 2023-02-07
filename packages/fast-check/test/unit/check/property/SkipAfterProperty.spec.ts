@@ -14,7 +14,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: decoratedProperty } = fakeProperty();
 
     // Act
-    new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
+    new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(1);
@@ -26,7 +26,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
+    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
     p.isAsync();
 
     // Assert
@@ -46,7 +46,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: mrng } = fakeRandom();
 
     // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
+    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
     p.generate(mrng, 123);
 
     // Assert
@@ -65,7 +65,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
+    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
     p.shrink(new Value(Symbol('value'), Symbol('context')));
 
     // Assert
@@ -84,7 +84,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
+    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
     if (dontRunHook) {
       p.runBeforeEach!();
       p.run(Symbol('value'), true);
@@ -112,7 +112,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
+    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
     let out: ReturnType<typeof p.run>;
     if (dontRunHook) {
       p.runBeforeEach!();
@@ -148,7 +148,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: decoratedProperty } = fakeProperty();
 
     // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false);
+    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
     let out: ReturnType<typeof p.run>;
     if (dontRunHook) {
       p.runBeforeEach!();
@@ -172,7 +172,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     const { instance: decoratedProperty } = fakeProperty();
 
     // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, true);
+    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, true, setTimeout, clearTimeout);
     let out: ReturnType<typeof p.run>;
     if (dontRunHook) {
       p.runBeforeEach!();
@@ -197,7 +197,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
       run.mockResolvedValueOnce(null);
 
       // Act
-      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true);
+      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
       if (dontRunHook) {
         await timeoutProp.runBeforeEach!();
         await timeoutProp.run({}, true);
@@ -221,7 +221,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
       run.mockResolvedValueOnce(errorFromUnderlying);
 
       // Act
-      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true);
+      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
       if (dontRunHook) {
         await timeoutProp.runBeforeEach!();
         await timeoutProp.run({}, true);
@@ -246,7 +246,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
       );
 
       // Act
-      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true);
+      const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
       let runPromise: ReturnType<typeof timeoutProp.run>;
       if (dontRunHook) {
         await timeoutProp.runBeforeEach!();

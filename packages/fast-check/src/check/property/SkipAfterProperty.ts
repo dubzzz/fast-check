@@ -5,10 +5,10 @@ import { PreconditionFailure } from '../precondition/PreconditionFailure';
 import { IRawProperty } from './IRawProperty';
 
 /** @internal */
-function interruptAfter(timeMs: number) {
+function interruptAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) {
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   const promise = new Promise<PreconditionFailure>((resolve) => {
-    timeoutHandle = setTimeout(() => {
+    timeoutHandle = setTimeoutSafe(() => {
       const preconditionFailure = new PreconditionFailure(true);
       resolve(preconditionFailure);
     }, timeMs);
@@ -16,7 +16,7 @@ function interruptAfter(timeMs: number) {
   return {
     // `timeoutHandle` will always be initialised at this point: body of `new Promise` has already been executed
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    clear: () => clearTimeout(timeoutHandle!),
+    clear: () => clearTimeoutSafe(timeoutHandle!),
     promise,
   };
 }
@@ -31,7 +31,9 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
     readonly property: IRawProperty<Ts, IsAsync>,
     readonly getTime: () => number,
     timeLimit: number,
-    readonly interruptExecution: boolean
+    readonly interruptExecution: boolean,
+    readonly setTimeoutSafe: typeof setTimeout,
+    readonly clearTimeoutSafe: typeof clearTimeout
   ) {
     this.skipAfterTime = this.getTime() + timeLimit;
     if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
@@ -65,7 +67,7 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
       }
     }
     if (this.interruptExecution && this.isAsync()) {
-      const t = interruptAfter(remainingTime);
+      const t = interruptAfter(remainingTime, this.setTimeoutSafe, this.clearTimeoutSafe);
       const propRun = Promise.race([this.property.run(v, dontRunHook), t.promise]);
       propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
       return propRun as any; // IsAsync => Promise<PreconditionFailure | string | null>
