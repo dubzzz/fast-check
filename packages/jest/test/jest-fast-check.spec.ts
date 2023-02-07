@@ -690,9 +690,7 @@ function expectTimeout(
   isGlobalInterrupt: boolean,
   testRunner: DescribeOptions['testRunner']
 ): void {
-  // Related to ticket https://github.com/facebook/jest/issues/13338
-  const supportForGlobalLevel = supportForGlobalLevel();
-  if (supportForGlobalLevel || !isGlobalInterrupt || testRunner === 'jasmine') {
+  if (supportForGlobalLevel() || !isGlobalInterrupt || testRunner === 'jasmine') {
     expect(out).toContain('Property interrupted after 0 tests');
   } else {
     // In such context, interrupt from fast-check will occur after the one caused by Jest.
