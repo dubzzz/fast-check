@@ -48,7 +48,7 @@
     "fast-check": "workspace:*",
     "jest": "^29.4.1",
     "typescript": "^4.9.5",
-    "vitest": "^0.28.3"
+    "vitest": "^0.28.4"
   },
   "keywords": [
     "vitest",
