@@ -5,7 +5,7 @@ _Fix broken replay based on path_
 
 ## Fixes
 
-- ([PR#3617](https://github.com/dubzzz/fast-check/pull/3617)) Bug: Fix broken replay based on path 
+- ([PR#3617](https://github.com/dubzzz/fast-check/pull/3617)) Bug: Fix broken replay based on path
 - ([PR#3583](https://github.com/dubzzz/fast-check/pull/3583)) CI: Do not run publish workflow of fast-check for vitest
 - ([PR#3616](https://github.com/dubzzz/fast-check/pull/3616)) CI: Always build against latest node
 
