@@ -1676,45 +1676,45 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^6.0.0":
-  version: 6.2.1
-  resolution: "@npmcli/arborist@npm:6.2.1"
+  version: 6.2.2
+  resolution: "@npmcli/arborist@npm:6.2.2"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/fs": ^3.1.0
     "@npmcli/installed-package-contents": ^2.0.0
-    "@npmcli/map-workspaces": ^3.0.0
+    "@npmcli/map-workspaces": ^3.0.2
     "@npmcli/metavuln-calculator": ^5.0.0
-    "@npmcli/name-from-folder": ^1.0.1
+    "@npmcli/name-from-folder": ^2.0.0
     "@npmcli/node-gyp": ^3.0.0
     "@npmcli/package-json": ^3.0.0
     "@npmcli/query": ^3.0.0
     "@npmcli/run-script": ^6.0.0
     bin-links: ^4.0.1
-    cacache: ^17.0.3
+    cacache: ^17.0.4
     common-ancestor-path: ^1.0.1
     hosted-git-info: ^6.1.1
     json-parse-even-better-errors: ^3.0.0
     json-stringify-nice: ^1.1.4
-    minimatch: ^5.1.1
+    minimatch: ^6.1.6
     nopt: ^7.0.0
     npm-install-checks: ^6.0.0
     npm-package-arg: ^10.1.0
     npm-pick-manifest: ^8.0.1
     npm-registry-fetch: ^14.0.3
     npmlog: ^7.0.1
-    pacote: ^15.0.7
+    pacote: ^15.0.8
     parse-conflict-json: ^3.0.0
     proc-log: ^3.0.0
     promise-all-reject-late: ^1.0.0
     promise-call-limit: ^1.0.1
-    read-package-json-fast: ^3.0.1
+    read-package-json-fast: ^3.0.2
     semver: ^7.3.7
     ssri: ^10.0.1
     treeverse: ^3.0.0
     walk-up-path: ^1.0.0
   bin:
     arborist: bin/index.js
-  checksum: f0c2e7c46de5dbcf67e0756cb33eb435be608e1d536f2da644543993a987047dc0f4dee5aabdb901d232faab9236cbb19cbcd05fb30822442c283907de9517bd
+  checksum: 78039b93c95b16111100feb66845f5c68687b12aeb2c83f609844275f6e9f674b76fa5293d969fb3c2608e5d78c7cbe6948aaae19c79967297c08092283e971b
   languageName: node
   linkType: hard
 
@@ -1766,15 +1766,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/map-workspaces@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@npmcli/map-workspaces@npm:3.0.0"
+"@npmcli/map-workspaces@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@npmcli/map-workspaces@npm:3.0.2"
   dependencies:
-    "@npmcli/name-from-folder": ^1.0.1
+    "@npmcli/name-from-folder": ^2.0.0
     glob: ^8.0.1
-    minimatch: ^5.0.1
+    minimatch: ^6.1.6
     read-package-json-fast: ^3.0.0
-  checksum: 949a57da93180950555f74c3adebca391fa50d6bbe76e72ce99360c86f4b8f91f3630e24cfe014d759f92b5f093f53f8ce9d3645cb93f5c342ea67cde848da4f
+  checksum: 8eec27414261e8333bdbe4d9901c3c75c63a0883b49a0cfa8596da591aa75465965e1883d76ead201724514c887403e0a8a324cdf7abf58be1366317bb4d1238
   languageName: node
   linkType: hard
 
@@ -1800,10 +1800,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/name-from-folder@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@npmcli/name-from-folder@npm:1.0.1"
-  checksum: 67339f4096e32b712d2df0250cc95c087569f09e657d7f81a1760fa2cc5123e29c3c3e1524388832310ba2d96ec4679985b643b44627f6a51f4a00c3b0075de9
+"@npmcli/name-from-folder@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@npmcli/name-from-folder@npm:2.0.0"
+  checksum: fb3ef891aa57315fb6171866847f298577c8bda98a028e93e458048477133e142b4eb45ce9f3b80454f7c257612cb01754ee782d608507698dd712164436f5bd
   languageName: node
   linkType: hard
 
@@ -3661,12 +3661,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cacache@npm:^17.0.0, cacache@npm:^17.0.3":
-  version: 17.0.3
-  resolution: "cacache@npm:17.0.3"
+"cacache@npm:^17.0.0, cacache@npm:^17.0.4":
+  version: 17.0.4
+  resolution: "cacache@npm:17.0.4"
   dependencies:
     "@npmcli/fs": ^3.1.0
-    fs-minipass: ^2.1.0
+    fs-minipass: ^3.0.0
     glob: ^8.0.1
     lru-cache: ^7.7.1
     minipass: ^4.0.0
@@ -3678,7 +3678,7 @@ __metadata:
     ssri: ^10.0.0
     tar: ^6.1.11
     unique-filename: ^3.0.0
-  checksum: de86ac4a07c4aefdbd7f20cbba74461bd0816355fedc36f75a10336cef70efc84ae08a6f8f206e686bc32f46941a5a81a1fb7b0b189ad7858011b83caee3dfdb
+  checksum: fea0ed5ab9bb5a56a51c39714f0b93821155538d012b3699cd4e901f39498fdd6283353946625a8c47de20c01b18da4c73fb404552323c66b321d279d80ffa6a
   languageName: node
   linkType: hard
 
@@ -7826,12 +7826,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^5.0.1, minimatch@npm:^5.1.1, minimatch@npm:^5.1.2":
+"minimatch@npm:^5.0.1, minimatch@npm:^5.1.2":
   version: 5.1.2
   resolution: "minimatch@npm:5.1.2"
   dependencies:
     brace-expansion: ^2.0.1
   checksum: 32ffda25b9fb8270a1c1beafdb7489dc0e411af553495136509a945691f63c9b6b000eeeaaf8bffe3efa609c1d6d3bc0f5a106f6c3443b5c05da649100ded964
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:^6.1.6":
+  version: 6.1.6
+  resolution: "minimatch@npm:6.1.6"
+  dependencies:
+    brace-expansion: ^2.0.1
+  checksum: 707b026e0adc610be6c02f24173d84811e5b8cc2e434881e47ef00a72be5fbea9323b7158d7bf065782b1e1d5c50d7d80cd72f2602255f2fddfb1d2f02e9092c
   languageName: node
   linkType: hard
 
@@ -8443,7 +8452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pacote@npm:^15.0.0, pacote@npm:^15.0.7":
+"pacote@npm:^15.0.0, pacote@npm:^15.0.8":
   version: 15.0.8
   resolution: "pacote@npm:15.0.8"
   dependencies:
@@ -8942,13 +8951,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"read-package-json-fast@npm:^3.0.0, read-package-json-fast@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "read-package-json-fast@npm:3.0.1"
+"read-package-json-fast@npm:^3.0.0, read-package-json-fast@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "read-package-json-fast@npm:3.0.2"
   dependencies:
     json-parse-even-better-errors: ^3.0.0
     npm-normalize-package-bin: ^3.0.0
-  checksum: b2e249c9bba4e0f188bea06dd57a7cfe0d76e272e8de14d1d71bcee894f48f576a9884a5890786a4a97990d196b86461c8b7e43024dca00b091081effcfd7ea0
+  checksum: 8d406869f045f1d76e2a99865a8fd1c1af9c1dc06200b94d2b07eef87ed734b22703a8d72e1cd36ea36cc48e22020bdd187f88243c7dd0563f72114d38c17072
   languageName: node
   linkType: hard
 
