@@ -1,3 +1,14 @@
+# 3.6.3
+
+_Fix broken replay based on path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.2...v3.6.3)]
+
+## Fixes
+
+- ([PR#3617](https://github.com/dubzzz/fast-check/pull/3617)) Bug: Fix broken replay based on path
+- ([PR#3583](https://github.com/dubzzz/fast-check/pull/3583)) CI: Do not run publish workflow of fast-check for vitest
+- ([PR#3616](https://github.com/dubzzz/fast-check/pull/3616)) CI: Always build against latest node
+
 # 3.6.2
 
 _Still work in fake timer contexts_
