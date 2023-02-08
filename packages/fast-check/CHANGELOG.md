@@ -1,11 +1,7 @@
 # 3.6.3
 
-_TODO Description_
+_Fix broken replay based on path_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.6.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.2...v3.6.3)]
-
-## Features
-
-
 
 ## Fixes
 
