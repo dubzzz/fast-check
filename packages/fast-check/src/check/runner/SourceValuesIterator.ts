@@ -6,7 +6,7 @@
  */
 export class SourceValuesIterator<Ts> implements IterableIterator<Ts> {
   constructor(
-    readonly initialValues: IterableIterator<() => Ts>,
+    readonly initialValues: IterableIterator<Ts>,
     private maxInitialIterations: number,
     private remainingSkips: number
   ) {}
@@ -16,7 +16,7 @@ export class SourceValuesIterator<Ts> implements IterableIterator<Ts> {
   next(): IteratorResult<Ts> {
     if (--this.maxInitialIterations !== -1 && this.remainingSkips >= 0) {
       const n = this.initialValues.next();
-      if (!n.done) return { value: n.value(), done: false };
+      if (!n.done) return { value: n.value, done: false };
     }
     return { value: undefined, done: true };
   }

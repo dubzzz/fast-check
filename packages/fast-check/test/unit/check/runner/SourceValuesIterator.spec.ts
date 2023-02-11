@@ -13,15 +13,11 @@ function iotaN(n: number) {
   return iota().take(n);
 }
 
-function source() {
-  return iota()
-    .map((v) => () => v)
-    [Symbol.iterator]();
+function source(): IterableIterator<number> {
+  return iota()[Symbol.iterator]();
 }
-function sourceN(n: number) {
-  return iotaN(n)
-    .map((v) => () => v)
-    [Symbol.iterator]();
+function sourceN(n: number): IterableIterator<number> {
+  return iotaN(n)[Symbol.iterator]();
 }
 
 function simulateSkips(svIt: SourceValuesIterator<number>, skippedValues: number[]) {
@@ -38,8 +34,8 @@ describe('SourceValuesIterator', () => {
     fc.assert(
       fc.property(fc.nat(100), (askedValues) => {
         const generatedValues: number[] = [];
-        const initialValues = iota()
-          .map((v) => () => {
+        const initialValues: IterableIterator<number> = iota()
+          .map((v) => {
             generatedValues.push(v);
             return v;
           })

@@ -51,7 +51,7 @@ So signatures have been adapted to embrace our new approach:
 - `integer(max)` ➜ `integer({max})` _requires at least 2.6.0_ — [#2939](https://github.com/dubzzz/fast-check/pull/2939)
 - `integer(min, max)` ➜ `integer({min, max})` _requires at least 2.6.0_ — [#2939](https://github.com/dubzzz/fast-check/pull/2939)
 
-As the migration is pretty automatable, a codemod is provided to do part of the changes linked to this part for you. More details at: https://github.com/dubzzz/fast-check/tree/main/codemods/unify-signatures
+As the migration is pretty automatable, a codemod is provided to do part of the changes linked to this part for you. More details at: https://github.com/dubzzz/fast-check/tree/v3.3.0/codemods/unify-signatures
 
 **Other related issues and PRs**: [#992](https://github.com/dubzzz/fast-check/issues/992)
 

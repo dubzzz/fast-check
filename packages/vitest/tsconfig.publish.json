@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.publish.json",
+  "compilerOptions": {
+    "outDir": "lib/"
+  },
+  "include": ["src/"]
+}

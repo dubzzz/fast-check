@@ -27,6 +27,9 @@ export interface Parameters<T = void> {
    * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus', 'xoroshiro128plus'
    * Or any function able to build a `RandomGenerator` based on a seed
    *
+   * As required since pure-rand v6.0.0, when passing a builder for {@link RandomGenerator},
+   * the random number generator must generate values between -0x80000000 and 0x7fffffff.
+   *
    * @remarks Since 1.6.0
    */
   randomType?: RandomType | ((seed: number) => RandomGenerator);
@@ -87,7 +90,8 @@ export interface Parameters<T = void> {
    */
   interruptAfterTimeLimit?: number;
   /**
-   * Mark interrupted runs as failed runs: disabled by default
+   * Mark interrupted runs as failed runs if preceded by one success or more: disabled by default
+   * Interrupted with no success at all always defaults to failure whatever the value of this flag.
    * @remarks Since 1.19.0
    */
   markInterruptAsFailure?: boolean;

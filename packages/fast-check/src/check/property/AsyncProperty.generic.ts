@@ -101,8 +101,18 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+  async runBeforeEach(): Promise<void> {
     await this.beforeEachHook();
+  }
+
+  async runAfterEach(): Promise<void> {
+    await this.afterEachHook();
+  }
+
+  async run(v: Ts, dontRunHook?: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
+    if (!dontRunHook) {
+      await this.beforeEachHook();
+    }
     try {
       const output = await this.predicate(v);
       return output == null || output === true
@@ -120,7 +130,9 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       }
       return { error: err, errorMessage: String(err) };
     } finally {
-      await this.afterEachHook();
+      if (!dontRunHook) {
+        await this.afterEachHook();
+      }
     }
   }
 

@@ -1342,6 +1342,41 @@ fc.webFragments()
 </details>
 
 <details>
+<summary><b>webPath</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webpath">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> Web path
+>
+> Following the specs specified by RFC 3986 and WHATWG URL Standard
+
+*&#8195;Signatures*
+
+- `fc.webPath()`
+- `fc.webPath({size?})`
+
+*&#8195;with:*
+
+- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
+
+*&#8195;Usages*
+
+```js
+fc.webPath()
+// Examples of generated values: "", "/AwBKGBUB", "/%F4%85%A2%88%F0%91%90%B5dU'", "/key", "/O"…
+
+fc.webPath({size: '+1'})
+// Examples of generated values:
+// • "/%F0%BE%81%918%F2%9E%9F%BA=p"
+// • "/a%F4%8F%BF%BBe/r%F1%83%B5%8C"
+// • "/sCG%F2%9E%AB%BASA/6;+b=%2af@b/8VadfgM/V%F1%90%B8%B3%F0%92%A6%9E!hP/%F0%BF%9C%ADJ8/~6/Eo!B"
+// • "/.YAG/Lg3b//'wz%F4%8F%80%91/;8l':P!7/%F2%BA%A9%89pf+tX/I+uHD!//c%F3%80%B0%88u/Bq%F1%B0%A3%9D1"
+// • "/a)=I1:B/z/VdPcVeh!J7"
+// • …
+```
+</details>
+
+<details>
 <summary><b>webQueryParameters</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webqueryparameters">api</a>]</summary><br/>
 
 *&#8195;Description*
@@ -3500,8 +3535,8 @@ fc.statistics(
 )
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
-// • 5 to 9 items....44.67%
-// • 10 to 49 items..37.86%
+// • 5 to 9 items....44.68%
+// • 10 to 49 items..37.85%
 // • 1 to 4 items....17.47%
 // For size = "small":
 // • 10 to 49 items..85.91%
@@ -3542,13 +3577,13 @@ fc.statistics(
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....60.74%
+// • 1 to 4 items....60.75%
 // • 10 to 49 items..24.45%
-// • 5 to 9 items....14.80%
+// • 5 to 9 items....14.79%
 // • 50 to 99 items...0.01%
 // For size = "medium":
-// • 1 to 4 items......52.09%
-// • 50 to 99 items....25.68%
+// • 1 to 4 items......52.10%
+// • 50 to 99 items....25.67%
 // • 10 to 49 items....15.87%
 // • 100 to 499 items...6.21%
 // • 5 to 9 items.......0.12%

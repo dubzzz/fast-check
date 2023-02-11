@@ -3,7 +3,6 @@ import { Stream } from '../../stream/Stream';
 import { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
 
-const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;
 
 /**
@@ -66,13 +65,27 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   /**
    * Check the predicate for v
    * @param v - Value of which we want to check the predicate
+   * @param dontRunHook - Do not run beforeEach and afterEach hooks within run
    * @remarks Since 0.0.7
    */
   run(
-    v: Ts
+    v: Ts,
+    dontRunHook?: boolean
   ):
     | (IsAsync extends true ? Promise<PreconditionFailure | PropertyFailure | null> : never)
     | (IsAsync extends false ? PreconditionFailure | PropertyFailure | null : never);
+
+  /**
+   * Run before each hook
+   * @remarks Since 3.4.0
+   */
+  runBeforeEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+
+  /**
+   * Run after each hook
+   * @remarks Since 3.4.0
+   */
+  runAfterEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
 }
 
 /**
@@ -83,4 +96,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
  *
  * @internal
  */
-export const runIdToFrequency = (runId: number): number => 2 + safeMathFloor(safeMathLog(runId + 1) / safeMathLog(10));
+export function runIdToFrequency(runId: number): number {
+  // 0.4342944819032518 = 1 / log(10)
+  return 2 + ~~(safeMathLog(runId + 1) * 0.4342944819032518);
+}

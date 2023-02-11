@@ -1,15 +1,17 @@
 import { Value } from '../../arbitrary/definition/Value';
-import { Stream, stream } from '../../../stream/Stream';
+import { Stream } from '../../../stream/Stream';
 
 /** @internal */
 export function pathWalk<Ts>(
   path: string,
-  initialValues: IterableIterator<Value<Ts>>,
+  initialValues: Stream<Value<Ts>>,
   shrink: (value: Value<Ts>) => Stream<Value<Ts>>
-): IterableIterator<Value<Ts>> {
-  let values: Stream<Value<Ts>> = stream(initialValues);
+): Stream<Value<Ts>> {
+  let values: Stream<Value<Ts>> = initialValues;
   const segments: number[] = path.split(':').map((text: string) => +text);
-  if (segments.length === 0) return values;
+  if (segments.length === 0) {
+    return values;
+  }
   if (!segments.every((v) => !Number.isNaN(v))) {
     throw new Error(`Unable to replay, got invalid path=${path}`);
   }

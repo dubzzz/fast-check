@@ -14,7 +14,7 @@
     "fast-check": "workspace:*"
   },
   "devDependencies": {
-    "esbuild": "^0.15.12"
+    "esbuild": "^0.17.7"
   },
   "license": "MIT"
 }

@@ -10,7 +10,7 @@ import { RunDetails } from './reporter/RunDetails';
 import { RunExecution } from './reporter/RunExecution';
 import { RunnerIterator } from './RunnerIterator';
 import { SourceValuesIterator } from './SourceValuesIterator';
-import { toss } from './Tosser';
+import { lazyToss, toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
 import { IAsyncProperty } from '../property/AsyncProperty';
@@ -27,9 +27,18 @@ function runIt<Ts>(
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
 ): RunExecution<Ts> {
+  const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
+    if (isModernProperty) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      property.runBeforeEach!();
+    }
+    const out = property.run(v, isModernProperty) as PreconditionFailure | PropertyFailure | null;
+    if (isModernProperty) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      property.runAfterEach!();
+    }
     runner.handleResult(out);
   }
   return runner.runExecution;
@@ -43,38 +52,35 @@ async function asyncRunIt<Ts>(
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean
 ): Promise<RunExecution<Ts>> {
+  const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    const out = await property.run(v);
+    if (isModernProperty) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await property.runBeforeEach!();
+    }
+    const out = await property.run(v, isModernProperty);
+    if (isModernProperty) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await property.runAfterEach!();
+    }
     runner.handleResult(out);
   }
   return runner.runExecution;
 }
 
 /** @internal */
-function runnerPathWalker<Ts>(
+function applyPath<Ts>(
   valueProducers: IterableIterator<() => Value<Ts>>,
   shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
-  path: string
-): Stream<() => Value<Ts>> {
-  const pathPoints = path.split(':');
+  nonEmptyPath: string
+): IterableIterator<Value<Ts>> {
+  const pathPoints = nonEmptyPath.split(':');
   const pathStream = stream(valueProducers)
     .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
     .map((producer) => producer());
   const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
-  return stream(pathWalk(adaptedPath, pathStream, shrink)).map((v) => () => v);
-}
-
-/** @internal */
-function buildInitialValues<Ts>(
-  valueProducers: IterableIterator<() => Value<Ts>>,
-  shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
-  qParams: QualifiedParameters<Ts>
-): Stream<() => Value<Ts>> {
-  if (qParams.path.length === 0) {
-    return stream(valueProducers);
-  }
-  return runnerPathWalker(valueProducers, shrink, qParams.path);
+  return pathWalk(adaptedPath, pathStream, shrink);
 }
 
 /**
@@ -131,12 +137,14 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   if (qParams.asyncReporter !== null && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
-  const generator = toss(property, qParams.seed, qParams.randomType, qParams.examples);
 
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof property.shrink = (...args) => property.shrink(...args);
-  const initialValues = buildInitialValues(generator, shrink, qParams);
+  const initialValues =
+    qParams.path.length === 0
+      ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
+      : applyPath(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples), shrink, qParams.path);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()

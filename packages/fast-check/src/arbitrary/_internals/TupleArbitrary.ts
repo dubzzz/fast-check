@@ -4,9 +4,76 @@ import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';
+import { makeLazy } from '../../stream/LazyIterableIterator';
 
 const safeArrayIsArray = Array.isArray;
 const safeObjectDefineProperty = Object.defineProperty;
+
+/** @internal */
+type TupleContext = unknown[];
+/** @internal */
+type TupleExtendedValue<Ts> = Value<Ts> & { context: TupleContext };
+
+/** @internal */
+function tupleMakeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): WithCloneMethod<TValue[]> {
+  return safeObjectDefineProperty(vs, cloneMethod, {
+    value: () => {
+      const cloned: TValue[] = [];
+      for (let idx = 0; idx !== values.length; ++idx) {
+        safePush(cloned, values[idx].value); // push potentially cloned values
+      }
+      tupleMakeItCloneable(cloned, values);
+      return cloned;
+    },
+  }) as unknown as WithCloneMethod<TValue[]>;
+}
+
+/** @internal */
+function tupleWrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): TupleExtendedValue<Ts> {
+  let cloneable = false;
+  const vs = [] as unknown as Ts & unknown[];
+  const ctxs: TupleContext = [];
+  for (let idx = 0; idx !== values.length; ++idx) {
+    const v = values[idx];
+    cloneable = cloneable || v.hasToBeCloned;
+    safePush(vs, v.value);
+    safePush(ctxs, v.context);
+  }
+  if (cloneable) {
+    tupleMakeItCloneable(vs, values);
+  }
+  return new Value(vs, ctxs) as TupleExtendedValue<Ts>;
+}
+
+/** @internal */
+export function tupleShrink<Ts extends unknown[]>(
+  arbs: ArbsArray<Ts>,
+  value: Ts,
+  context?: TupleContext
+): Stream<TupleExtendedValue<Ts>> {
+  // shrinking one by one is the not the most comprehensive
+  // but allows a reasonable number of entries in the shrink
+  const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = [];
+  const safeContext: TupleContext = safeArrayIsArray(context) ? context : [];
+  for (let idx = 0; idx !== arbs.length; ++idx) {
+    safePush(
+      shrinks,
+      makeLazy(() =>
+        arbs[idx]
+          .shrink(value[idx], safeContext[idx])
+          .map((v) => {
+            const nextValues: Value<unknown>[] = safeMap(
+              value,
+              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx])
+            );
+            return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
+          })
+          .map(tupleWrapper)
+      )
+    );
+  }
+  return Stream.nil<TupleExtendedValue<Ts>>().join(...shrinks);
+}
 
 /** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
@@ -23,35 +90,12 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
         throw new Error(`Invalid parameter encountered at index ${idx}: expecting an Arbitrary`);
     }
   }
-  private static makeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): WithCloneMethod<TValue[]> {
-    return safeObjectDefineProperty(vs, cloneMethod, {
-      value: () => {
-        const cloned: TValue[] = [];
-        for (let idx = 0; idx !== values.length; ++idx) {
-          safePush(cloned, values[idx].value); // push potentially cloned values
-        }
-        TupleArbitrary.makeItCloneable(cloned, values);
-        return cloned;
-      },
-    }) as unknown as WithCloneMethod<TValue[]>;
-  }
-  private static wrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): Value<Ts> {
-    let cloneable = false;
-    const vs = [] as unknown as Ts & unknown[];
-    const ctxs: unknown[] = [];
-    for (let idx = 0; idx !== values.length; ++idx) {
-      const v = values[idx];
-      cloneable = cloneable || v.hasToBeCloned;
-      safePush(vs, v.value);
-      safePush(ctxs, v.context);
-    }
-    if (cloneable) {
-      TupleArbitrary.makeItCloneable(vs, values);
-    }
-    return new Value(vs, ctxs);
-  }
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
-    return TupleArbitrary.wrapper<Ts>(safeMap(this.arbs, (a) => a.generate(mrng, biasFactor)) as ValuesArray<Ts>);
+    const mapped = [] as ValuesArray<Ts>;
+    for (let idx = 0; idx !== this.arbs.length; ++idx) {
+      safePush(mapped, this.arbs[idx].generate(mrng, biasFactor));
+    }
+    return tupleWrapper<Ts>(mapped);
   }
   canShrinkWithoutContext(value: unknown): value is Ts {
     if (!safeArrayIsArray(value) || value.length !== this.arbs.length) {
@@ -65,23 +109,6 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     return true;
   }
   shrink(value: Ts, context?: unknown): Stream<Value<Ts>> {
-    // shrinking one by one is the not the most comprehensive
-    // but allows a reasonable number of entries in the shrink
-    let s = Stream.nil<Value<Ts>>();
-    const safeContext: unknown[] = safeArrayIsArray(context) ? context : [];
-    for (let idx = 0; idx !== this.arbs.length; ++idx) {
-      const shrinksForIndex: Stream<Value<Ts>> = this.arbs[idx]
-        .shrink(value[idx], safeContext[idx])
-        .map((v) => {
-          const nextValues: Value<unknown>[] = safeMap(
-            value,
-            (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx])
-          );
-          return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
-        })
-        .map((values) => TupleArbitrary.wrapper(values) as Value<Ts>);
-      s = s.join(shrinksForIndex);
-    }
-    return s;
+    return tupleShrink(this.arbs, value, context as TupleContext | undefined);
   }
 }

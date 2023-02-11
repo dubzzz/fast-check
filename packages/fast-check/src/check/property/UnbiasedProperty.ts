@@ -5,7 +5,17 @@ import { IRawProperty } from './IRawProperty';
 
 /** @internal */
 export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
-  constructor(readonly property: IRawProperty<Ts, IsAsync>) {}
+  runBeforeEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runAfterEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+
+  constructor(readonly property: IRawProperty<Ts, IsAsync>) {
+    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runBeforeEach = () => this.property.runBeforeEach!();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.runAfterEach = () => this.property.runAfterEach!();
+    }
+  }
 
   isAsync(): IsAsync {
     return this.property.isAsync();
@@ -19,7 +29,7 @@ export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProper
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
-    return this.property.run(v);
+  run(v: Ts, dontRunHook: boolean): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
+    return this.property.run(v, dontRunHook);
   }
 }

@@ -1,3 +1,36 @@
+# 0.0.5
+
+_Add support for Node 18_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.4...poisoning%2Fv0.0.5)]
+
+## Fixes
+
+- ([PR#3421](https://github.com/dubzzz/fast-check/pull/3421)) Bug: Switch from descriptors to descriptor for Node 18
+- ([PR#3473](https://github.com/dubzzz/fast-check/pull/3473)) Funding: Re-order links in funding section
+
+# 0.0.4
+
+_Properly define types for TypeScript_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.3...poisoning%2Fv0.0.4)]
+
+## Fixes
+
+- ([PR#3387](https://github.com/dubzzz/fast-check/pull/3387)) Bug: Fix types not being properly exported for ESM
+
+# 0.0.3
+
+_Faster computation of diffs when filters apply_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.2...poisoning%2Fv0.0.3)]
+
+## Features
+
+- ([PR#3318](https://github.com/dubzzz/fast-check/pull/3318)) Do not recompute ignore globals for attributes
+
+## Fixes
+
+- ([PR#3316](https://github.com/dubzzz/fast-check/pull/3316)) Funding: Add link to GitHub sponsors in funding
+- ([PR#3317](https://github.com/dubzzz/fast-check/pull/3317)) Performance: Faster diff tracking with pre-filtering of uneligible
+
 # 0.0.2
 
 _Add ability to omit some instances when checking for poisoning_

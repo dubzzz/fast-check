@@ -229,9 +229,10 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     safeContext: ArrayArbitraryContext,
     endIndex: number
   ): IterableIterator<[Value<T>[], unknown, number]> {
-    let shrinks = Stream.nil<[Value<T>[], unknown, number]>();
+    const shrinks: IterableIterator<[Value<T>[], unknown, number]>[] = [];
     for (let index = safeContext.startIndex; index < endIndex; ++index) {
-      shrinks = shrinks.join(
+      safePush(
+        shrinks,
         makeLazy(() =>
           this.arb.shrink(value[index], safeContext.itemsContexts[index]).map((v): [Value<T>[], unknown, number] => {
             const beforeCurrent = safeMap(
@@ -251,7 +252,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
         )
       );
     }
-    return shrinks;
+    return Stream.nil<[Value<T>[], unknown, number]>().join(...shrinks);
   }
 
   private shrinkImpl(value: T[], context?: unknown): Stream<[Value<T>[], unknown, number]> {

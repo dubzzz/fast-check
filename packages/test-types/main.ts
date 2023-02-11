@@ -4,7 +4,7 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import fc from 'fast-check';
-import { expectType, expectTypeAssignable } from './type-checker';
+import { expectType, expectTypeAssignable } from '@fast-check/expect-type';
 
 // assert
 expectType<void>()(fc.assert(fc.property(fc.nat(), () => {})), 'Synchronous property means synchronous assert');

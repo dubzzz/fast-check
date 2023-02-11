@@ -279,6 +279,114 @@ describe('BasicPool', () => {
       await expect(workerPromise).rejects.toThrowError();
     });
   });
+
+  describe('timeout-ed worker', () => {
+    it('should not alter a never started worker', async () => {
+      // Arrange
+      const { on, terminate } = mockWorker();
+      const workerFileUrl = new URL('file:///worker.cjs');
+      const workerId = 0;
+      const pool = new BasicPool<string, string>(workerFileUrl, workerId);
+      const workerPromise = pool.spawnNewWorker();
+      fireOnlineEvent(on);
+      const worker = await workerPromise;
+
+      // Act
+      await worker.terminateIfStillRunning();
+
+      // Assert
+      expect(terminate).not.toHaveBeenCalled(); // not terminated, was stop running
+      expect(worker.isAvailable()).toBe(true); // still available
+      expect(worker.isFaulty()).toBe(false); // still not faulty
+      expect(pool.getFirstAvailableWorker()).toBe(worker); // in the pool
+    });
+
+    it('should not alter a worker that successfully ended', async () => {
+      // Arrange
+      const { on, postMessage, terminate } = mockWorker();
+      const workerFileUrl = new URL('file:///worker.cjs');
+      const workerId = 0;
+      const onSuccess = jest.fn();
+      const onFailure = jest.fn();
+      const pool = new BasicPool<string, string>(workerFileUrl, workerId);
+      const workerPromise = pool.spawnNewWorker();
+      fireOnlineEvent(on);
+      const worker = await workerPromise;
+      worker.register('to-worker', onSuccess, onFailure);
+      const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
+      const receivedRunId = receivedMessage.runId;
+      const message: WorkerToPoolMessage<string> = { runId: receivedRunId, success: true, output: 'successMessage' };
+      const onMessageHandler = on.mock.calls.find(([eventName]) => eventName === 'message')![1];
+      onMessageHandler(message); // emulate success
+
+      // Act
+      await worker.terminateIfStillRunning();
+
+      // Assert
+      expect(terminate).not.toHaveBeenCalled(); // not terminated, was stop running
+      expect(worker.isAvailable()).toBe(true); // still available
+      expect(worker.isFaulty()).toBe(false); // still not faulty
+      expect(pool.getFirstAvailableWorker()).toBe(worker); // in the pool
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onFailure).not.toHaveBeenCalled();
+    });
+
+    it('should not alter a worker that rejected', async () => {
+      // Arrange
+      const { on, postMessage, terminate } = mockWorker();
+      const workerFileUrl = new URL('file:///worker.cjs');
+      const workerId = 0;
+      const onSuccess = jest.fn();
+      const onFailure = jest.fn();
+      const pool = new BasicPool<string, string>(workerFileUrl, workerId);
+      const workerPromise = pool.spawnNewWorker();
+      fireOnlineEvent(on);
+      const worker = await workerPromise;
+      worker.register('to-worker', onSuccess, onFailure);
+      const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
+      const receivedRunId = receivedMessage.runId;
+      const message: WorkerToPoolMessage<string> = { runId: receivedRunId, success: false, error: 'errorMessage' };
+      const onMessageHandler = on.mock.calls.find(([eventName]) => eventName === 'message')![1];
+      onMessageHandler(message); // emulate failure
+
+      // Act
+      await worker.terminateIfStillRunning();
+
+      // Assert
+      expect(terminate).not.toHaveBeenCalled(); // not terminated, was stop running
+      expect(worker.isAvailable()).toBe(true); // still available
+      expect(worker.isFaulty()).toBe(false); // still not faulty
+      expect(pool.getFirstAvailableWorker()).toBe(worker); // in the pool
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(onFailure).toHaveBeenCalledTimes(1);
+    });
+
+    it('should stop a registered worker still being running', async () => {
+      // Arrange
+      const { on, terminate } = mockWorker();
+      const workerFileUrl = new URL('file:///worker.cjs');
+      const workerId = 0;
+      const onSuccess = jest.fn();
+      const onFailure = jest.fn();
+      const pool = new BasicPool<string, string>(workerFileUrl, workerId);
+      const workerPromise = pool.spawnNewWorker();
+      fireOnlineEvent(on);
+      const worker = await workerPromise;
+      worker.register('to-worker', onSuccess, onFailure);
+      expect(terminate).not.toHaveBeenCalled();
+
+      // Act
+      await worker.terminateIfStillRunning();
+
+      // Assert
+      expect(terminate).toHaveBeenCalledTimes(1);
+      expect(worker.isAvailable()).toBe(false); // not available as we mark the worker as not being ready
+      expect(worker.isFaulty()).toBe(false); // no impact on faulty state
+      expect(pool.getFirstAvailableWorker()).toBe(undefined); // no worker available
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(onFailure).not.toHaveBeenCalled();
+    });
+  });
 });
 
 // Helpers
@@ -287,14 +395,16 @@ function mockWorker() {
   const Worker = jest.spyOn(WorkerThreadsMock, 'Worker');
   const on = jest.fn();
   const postMessage = jest.fn();
+  const terminate = jest.fn();
   Worker.mockImplementation(
     () =>
       ({
         on,
         postMessage,
+        terminate,
       } as unknown as WorkerThreadsMock.Worker)
   );
-  return { Worker, on, postMessage };
+  return { Worker, on, postMessage, terminate };
 }
 
 function fireOnlineEvent(on: jest.Mock<any, any>) {

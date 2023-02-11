@@ -6,10 +6,11 @@ export type OnErrorCallback = (error: unknown) => void;
 /**
  * Worker API
  */
-type PooledWorker<TSuccess, TPayload> = {
+export type PooledWorker<TSuccess, TPayload> = {
   isAvailable: () => boolean;
   isFaulty: () => boolean;
   register: (payload: TPayload, onSuccess: OnSuccessCallback<TSuccess>, onFailure: OnErrorCallback) => void;
+  terminateIfStillRunning: () => Promise<void>;
 };
 
 /**
@@ -143,6 +144,15 @@ export class BasicPool<TSuccess, TPayload> {
         registration = { currentRunId, onSuccess, onFailure };
         const message: PoolToWorkerMessage<TPayload> = { payload, runId: currentRunId };
         worker.postMessage(message);
+      },
+      terminateIfStillRunning: async () => {
+        if (registration !== null) {
+          ready = false; // not ready anymore
+          registration = null; // not running anything
+          const workerIndex = this.workers.findIndex((w) => w.worker !== worker);
+          this.workers.splice(workerIndex, 1); // remove the worker from the set of known workers
+          await worker.terminate();
+        }
       },
     };
     this.workers.push(pooledWorker);
