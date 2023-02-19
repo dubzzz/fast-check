@@ -1441,6 +1441,76 @@ Execution summary:
 . . . . . . . . [31m×[0m ["a@a.aa"]"
 `;
 
+exports[`NoRegression expect 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:2:4:3:1:1:0:1:6:0:2", endOnFailure: true }
+Counterexample: [854975880]
+Shrunk 10 time(s)
+Got error: Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32mtrue[39m
+Received: [31mfalse[39m
+    at /workspaces/fast-check/packages/fast-check/test/e2e/NoRegression.spec.ts:34:31
+    at Property.predicate (/workspaces/fast-check/packages/fast-check/src/check/property/Property.ts:23:56)
+    at Property.predicate [as run] (/workspaces/fast-check/packages/fast-check/src/check/property/Property.generic.ts:133:27)
+    at run (/workspaces/fast-check/packages/fast-check/src/check/runner/Runner.ts:37:26)
+    at runIt (/workspaces/fast-check/packages/fast-check/src/check/runner/Runner.ts:154:7)
+    at Object.check (/workspaces/fast-check/packages/fast-check/src/check/runner/Runner.ts:206:15)
+    at /workspaces/fast-check/packages/fast-check/test/e2e/NoRegression.spec.ts:32:10
+    at _toThrowErrorMatchingSnapshot (/workspaces/fast-check/node_modules/jest-snapshot/build/index.js:561:7)
+    at Object.toThrowErrorMatchingSnapshot (/workspaces/fast-check/node_modules/jest-snapshot/build/index.js:461:10)
+    at __EXTERNAL_MATCHER_TRAP__ (/workspaces/fast-check/node_modules/expect/build/index.js:317:30)
+    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (/workspaces/fast-check/node_modules/expect/build/index.js:318:15)
+    at Object.<anonymous> (/workspaces/fast-check/packages/fast-check/test/e2e/NoRegression.spec.ts:38:7)
+    at Promise.then.completed (/workspaces/fast-check/node_modules/jest-circus/build/utils.js:293:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/workspaces/fast-check/node_modules/jest-circus/build/utils.js:226:10)
+    at _callCircusTest (/workspaces/fast-check/node_modules/jest-circus/build/run.js:248:40)
+    at _runTest (/workspaces/fast-check/node_modules/jest-circus/build/run.js:184:3)
+    at _runTestsForDescribeBlock (/workspaces/fast-check/node_modules/jest-circus/build/run.js:86:9)
+    at _runTestsForDescribeBlock (/workspaces/fast-check/node_modules/jest-circus/build/run.js:81:9)
+    at run (/workspaces/fast-check/node_modules/jest-circus/build/run.js:26:3)
+    at runAndTransformResultsToJestFormat (/workspaces/fast-check/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
+    at jestAdapter (/workspaces/fast-check/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/workspaces/fast-check/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/workspaces/fast-check/node_modules/jest-runner/build/runTest.js:444:34)
+
+Execution summary:
+[32m√[0m [2147483626]
+[31m×[0m [1152992794]
+. [32m√[0m [0]
+. [32m√[0m [576496397]
+. [31m×[0m [864744596]
+. . [32m√[0m [720620497]
+. . [32m√[0m [792682547]
+. . [32m√[0m [828713572]
+. . [32m√[0m [846729084]
+. . [31m×[0m [855736840]
+. . . [32m√[0m [851232962]
+. . . [32m√[0m [853484901]
+. . . [32m√[0m [854610871]
+. . . [31m×[0m [855173856]
+. . . . [32m√[0m [854892364]
+. . . . [31m×[0m [855033110]
+. . . . . [32m√[0m [854962737]
+. . . . . [31m×[0m [854997924]
+. . . . . . [31m×[0m [854980331]
+. . . . . . . [32m√[0m [854971534]
+. . . . . . . [31m×[0m [854975933]
+. . . . . . . . [32m√[0m [854973734]
+. . . . . . . . [32m√[0m [854974834]
+. . . . . . . . [32m√[0m [854975384]
+. . . . . . . . [32m√[0m [854975659]
+. . . . . . . . [32m√[0m [854975796]
+. . . . . . . . [32m√[0m [854975865]
+. . . . . . . . [31m×[0m [854975899]
+. . . . . . . . . [31m×[0m [854975882]
+. . . . . . . . . . [32m√[0m [854975874]
+. . . . . . . . . . [32m√[0m [854975878]
+. . . . . . . . . . [31m×[0m [854975880]
+. . . . . . . . . . . [32m√[0m [854975879]"
+`;
+
 exports[`NoRegression float 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: "0:1:0:1", endOnFailure: true }

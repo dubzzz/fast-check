@@ -27,6 +27,16 @@ const testFunc = (value: unknown) => {
 const settings = { seed: 42, verbose: 2 };
 
 describe(`NoRegression`, () => {
+  it('expect', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.nat(), (v) => {
+          expect(testFunc(v)).toBe(true);
+        }),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('.filter', () => {
     expect(() =>
       fc.assert(
