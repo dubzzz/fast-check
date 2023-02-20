@@ -135,7 +135,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
         ? null
         : {
             error: new Error('Property failed by returning false'),
-            errorMessage: 'Property failed by returning false',
+            errorMessage: 'Error: Property failed by returning false',
           };
     } catch (err) {
       // precondition failure considered as success for the first version

@@ -82,7 +82,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
 /** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const noErrorInMessage = out.runConfiguration.errorWithCause;
-  const messageErrorPart = noErrorInMessage ? '' : `\nGot error: ${out.error}`;
+  const messageErrorPart = noErrorInMessage ? '' : `\nGot ${out.error.replace(/^Error: /, 'error: ')}`;
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${
