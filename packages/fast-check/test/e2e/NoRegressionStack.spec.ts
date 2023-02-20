@@ -4,37 +4,61 @@ const settings = { seed: 42, verbose: 0 };
 
 describe(`NoRegressionStack`, () => {
   it('throw', () => {
-    expect(() =>
-      fc.assert(
-        fc.property(fc.nat(), fc.nat(), (a, b) => {
-          if (a < b) {
-            throw new Error('a must be >= b');
-          }
-        }),
-        settings
+    expect(
+      sanitize(() =>
+        fc.assert(
+          fc.property(fc.nat(), fc.nat(), (a, b) => {
+            if (a < b) {
+              throw new Error('a must be >= b');
+            }
+          }),
+          settings
+        )
       )
     ).toThrowErrorMatchingSnapshot();
   });
 
   it('expect', () => {
-    expect(() =>
-      fc.assert(
-        fc.property(fc.nat(), fc.nat(), (a, b) => {
-          expect(a).toBeGreaterThanOrEqual(b);
-        }),
-        settings
+    expect(
+      sanitize(() =>
+        fc.assert(
+          fc.property(fc.nat(), fc.nat(), (a, b) => {
+            expect(a).toBeGreaterThanOrEqual(b);
+          }),
+          settings
+        )
       )
     ).toThrowErrorMatchingSnapshot();
   });
 
   it('not a function', () => {
-    expect(() =>
-      fc.assert(
-        fc.property(fc.nat(), (v) => {
-          (v as any)();
-        }),
-        settings
+    expect(
+      sanitize(() =>
+        fc.assert(
+          fc.property(fc.nat(), (v) => {
+            (v as any)();
+          }),
+          settings
+        )
       )
     ).toThrowErrorMatchingSnapshot();
   });
 });
+
+// Helpers
+
+function sanitize(run: () => void) {
+  return () => {
+    try {
+      run();
+    } catch (err) {
+      const initialMessage = (err as Error).message;
+      throw new Error(
+        initialMessage
+          .replace(/\\/g, '/')
+          .replace(/at [^(]*fast-check\/(packages|node_modules)(.*)/g, 'at $1$2')
+          .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*)\)/g, 'at $1 ($2$3)')
+      );
+    }
+  };
+}
