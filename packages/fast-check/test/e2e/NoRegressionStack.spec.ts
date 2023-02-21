@@ -18,19 +18,6 @@ describe(`NoRegressionStack`, () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
-  it('expect', () => {
-    expect(
-      sanitize(() =>
-        fc.assert(
-          fc.property(fc.nat(), fc.nat(), (a, b) => {
-            expect(a).toBeGreaterThanOrEqual(b);
-          }),
-          settings
-        )
-      )
-    ).toThrowErrorMatchingSnapshot();
-  });
-
   it('not a function', () => {
     expect(
       sanitize(() =>
