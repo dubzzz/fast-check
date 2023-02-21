@@ -278,7 +278,7 @@ const untouchedToLowerCase = String.prototype.toLowerCase;
 const untouchedToUpperCase = String.prototype.toUpperCase;
 const untouchedPadStart = String.prototype.padStart;
 const untouchedCharCodeAt = String.prototype.charCodeAt;
-const untouchedReplace = String.prototype.replace;
+const untouchedReplace: (pattern: RegExp | string, replacement: string) => string = String.prototype.replace;
 function extractSplit(instance: string) {
   try {
     return instance.split;
@@ -399,7 +399,7 @@ export function safeCharCodeAt(instance: string, index: number): number {
   }
   return safeApply(untouchedCharCodeAt, instance, [index]);
 }
-export function safeReplace(instance: string, pattern: Regex|string, replacement: string): number {
+export function safeReplace(instance: string, pattern: RegExp | string, replacement: string): string {
   if (extractReplace(instance) === untouchedReplace) {
     return instance.replace(pattern, replacement);
   }
