@@ -6,7 +6,7 @@ exports[`NoRegressionStack not a function 1`] = `
 Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:39:14
+    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:26:14
     at Property.predicate (packages/fast-check/src/check/property/Property.ts:23:56)
     at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:133:27)
     at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
