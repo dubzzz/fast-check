@@ -17,7 +17,7 @@ Got TypeError: v is not a function
     at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:461:10)
     at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:317:30)
     at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:318:15)
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:44:7)
+    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:31:7)
     at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
     at new Promise (<anonymous>)
     at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
