@@ -46,7 +46,7 @@ Got error: a must be >= b
     at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:154:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:206:15)
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:53:7
+    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:40:7
     at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:561:7)
     at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:461:10)
     at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:317:30)
