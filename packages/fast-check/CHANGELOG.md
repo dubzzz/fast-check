@@ -1,6 +1,6 @@
 # 3.7.0
 
-_TODO Description_
+_Better error reports without duplicated messages_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.3...v3.7.0)]
 
 ## Features
