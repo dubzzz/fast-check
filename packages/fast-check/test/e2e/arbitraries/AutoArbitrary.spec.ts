@@ -76,12 +76,12 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
             return typeof v2 === 'number' && typeof v3 === 'number'; // success
           }
           const v2 = auto(stringArb);
-          expect(v2.length).toBeLessThan(v1);
+          expect(v2.length).toBeGreaterThanOrEqual(v1);
         }),
         { seed: seed }
       );
       expect(out.failed).toBe(true);
-      expect(out.counterexample![0].values()).toEqual([0, '']);
+      expect(out.counterexample![0].values()).toEqual([1, '']);
     });
 
     it('should be able to shrink arbitraries built out of for loops', () => {
