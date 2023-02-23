@@ -7,15 +7,17 @@ import { tupleShrink } from './TupleArbitrary';
 
 export class AutoArbitrary extends Arbitrary<AutoValue> {
   generate(mrng: Random, biasFactor: number | undefined): Value<AutoValue> {
-    return buildAutoValue(mrng.clone(), biasFactor, () => []);
+    return buildAutoValue(mrng, biasFactor, () => []);
   }
+
   canShrinkWithoutContext(value: unknown): value is AutoValue {
+    // Auto can NEVER shrink without any context as there is no way to find back what to call to apply the shrink
     return false;
   }
+
   shrink(_value: AutoValue, context: unknown): Stream<Value<AutoValue>> {
     if (context === undefined) {
-      // Auto is NEVER shrinkable without any context as there is no way to find back
-      // what to call to apply the shrink
+      // Auto can NEVER shrink without any context as there is no way to find back what to call to apply the shrink
       return Stream.nil();
     }
     const safeContext = context as AutoContext;
