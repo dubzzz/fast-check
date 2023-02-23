@@ -53,11 +53,21 @@ function sanitize(run: () => void) {
       run();
     } catch (err) {
       const initialMessage = (err as Error).message;
+      const lines = initialMessage
+        .replace(/\\/g, '/')
+        .replace(/at [^(]*fast-check\/(packages|node_modules)(.*)/g, 'at $1$2')
+        .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*)\)/g, 'at $1 ($2$3)')
+        .replace(/at (.*) \((node_modules\/.*):\d+:\d+\)/g, 'at $1 ($2:?:?)') // reducing risks of changes on bumps
+        .split('\n');
       throw new Error(
-        initialMessage
-          .replace(/\\/g, '/')
-          .replace(/at [^(]*fast-check\/(packages|node_modules)(.*)/g, 'at $1$2')
-          .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*)\)/g, 'at $1 ($2$3)')
+        lines
+          .slice(
+            0,
+            // internals of jest, subject to regular changes
+            // and OS dependent
+            lines.findIndex((line) => line.includes('node_modules/jest-circus'))
+          )
+          .join('\n')
       );
     }
   };

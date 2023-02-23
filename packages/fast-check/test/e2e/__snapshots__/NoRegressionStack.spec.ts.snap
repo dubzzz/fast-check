@@ -16,25 +16,11 @@ Received:    [31m0[39m
     at runIt (packages/fast-check/src/check/runner/Runner.ts:154:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:206:15)
     at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:53:7
-    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:561:7)
-    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:461:10)
-    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:317:30)
-    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:318:15)
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:31:7)
-    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
-    at _runTest (node_modules/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
-    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:81:9)
-    at run (node_modules/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (node_modules/jest-runner/build/runTest.js:444:34)
-
-Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
+    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
+    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
+    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
+    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:31:7)"
 `;
 
 exports[`NoRegressionStack not a function 1`] = `
@@ -50,25 +36,11 @@ Got TypeError: v is not a function
     at runIt (packages/fast-check/src/check/runner/Runner.ts:154:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:206:15)
     at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:53:7
-    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:561:7)
-    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:461:10)
-    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:317:30)
-    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:318:15)
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:44:7)
-    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
-    at _runTest (node_modules/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
-    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:81:9)
-    at run (node_modules/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (node_modules/jest-runner/build/runTest.js:444:34)
-
-Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
+    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
+    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
+    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
+    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:44:7)"
 `;
 
 exports[`NoRegressionStack throw 1`] = `
@@ -84,23 +56,9 @@ Got error: a must be >= b
     at runIt (packages/fast-check/src/check/runner/Runner.ts:154:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:206:15)
     at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:53:7
-    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:561:7)
-    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:461:10)
-    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:317:30)
-    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:318:15)
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:18:7)
-    at Promise.then.completed (node_modules/jest-circus/build/utils.js:293:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (node_modules/jest-circus/build/utils.js:226:10)
-    at _callCircusTest (node_modules/jest-circus/build/run.js:248:40)
-    at _runTest (node_modules/jest-circus/build/run.js:184:3)
-    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:86:9)
-    at _runTestsForDescribeBlock (node_modules/jest-circus/build/run.js:81:9)
-    at run (node_modules/jest-circus/build/run.js:26:3)
-    at runAndTransformResultsToJestFormat (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)
-    at jestAdapter (node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (node_modules/jest-runner/build/runTest.js:444:34)
-
-Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
+    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
+    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
+    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
+    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:18:7)"
 `;
