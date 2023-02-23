@@ -48,18 +48,22 @@ export function buildAutoValue(
   const context: AutoContext = { mrng: mrng.clone(), biasFactor, history: [] };
 
   const valueFunction: AutoValueFunction = <T>(arb: Arbitrary<T>): T => {
+    // We pull values from our pre-built values until we reach mismatching ones
     const preBuiltValue = preBuiltValues[context.history.length];
     if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
+      // Until it matches we just re-use the originally produced value
       const value = preBuiltValue.value;
       context.history.push({ arb, value, context: preBuiltValue.context });
       return value as T;
     }
+    // Forbid users to diverge on the first generated value
     if (preBuiltValue !== undefined && context.history.length === 0) {
       throw new Error(
         `Illegal use of fc.auto: ` +
           `passed arbitraries can only vary between calls based on generated values not on external world`
       );
     }
+    // If we start to mismatch we run a new random value computation
     const g = arb.generate(localMrng, biasFactor);
     context.history.push({ arb, value: g.value_, context: g.context });
     return g.value;
