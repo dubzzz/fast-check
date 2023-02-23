@@ -1,46 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NoRegressionStack expect 1`] = `
-"Property failed after 2 tests
-{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
-Counterexample: [0,1]
-Shrunk 32 time(s)
-Got error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThanOrEqual[2m([22m[32mexpected[39m[2m)[22m
-
-Expected: >= [32m1[39m
-Received:    [31m0[39m
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:26:23
-    at Property.predicate (packages/fast-check/src/check/property/Property.ts:23:56)
-    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:133:27)
-    at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:154:7)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:206:15)
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:53:7
-    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
-    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
-    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
-    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:31:7)"
-`;
-
 exports[`NoRegressionStack not a function 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: "0:0", endOnFailure: true }
 Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:39:14
+    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:26:14
     at Property.predicate (packages/fast-check/src/check/property/Property.ts:23:56)
     at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:133:27)
     at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:154:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:206:15)
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:53:7
+    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:40:7
     at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
     at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
     at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
     at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:44:7)"
+    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:31:7)"
 `;
 
 exports[`NoRegressionStack throw 1`] = `
@@ -55,7 +32,7 @@ Got error: a must be >= b
     at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:154:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:206:15)
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:53:7
+    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:40:7
     at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
     at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
     at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
