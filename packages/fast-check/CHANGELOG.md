@@ -1,3 +1,18 @@
+# 3.7.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.3...v3.7.0)]
+
+## Features
+
+- ([PR#3638](https://github.com/dubzzz/fast-check/pull/3638)) Stop repeating the error twice in reports
+
+## Fixes
+
+- ([PR#3637](https://github.com/dubzzz/fast-check/pull/3637)) CI: Update ts-jest configuration files
+
+---
+
 # 3.6.3
 
 _Fix broken replay based on path_
