@@ -1683,12 +1683,12 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^6.0.0":
-  version: 6.2.3
-  resolution: "@npmcli/arborist@npm:6.2.3"
+  version: 6.2.4
+  resolution: "@npmcli/arborist@npm:6.2.4"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/fs": ^3.1.0
-    "@npmcli/installed-package-contents": ^2.0.0
+    "@npmcli/installed-package-contents": ^2.0.2
     "@npmcli/map-workspaces": ^3.0.2
     "@npmcli/metavuln-calculator": ^5.0.0
     "@npmcli/name-from-folder": ^2.0.0
@@ -1721,7 +1721,7 @@ __metadata:
     walk-up-path: ^1.0.0
   bin:
     arborist: bin/index.js
-  checksum: f52261745fdcdb95813ec47d0fbe375e6448f3d62f805601a7afe447540f3ffb741834a1c2275707c17a4322e723915c1bb8abb3400dd3a3476ab281b64954bc
+  checksum: 402cb9d5d1e3778574087beb046ba524c31663c7c3b371fb90ae39af7b2c68eb1a37cf0a6a3912cf8f522a5029f469caeffa7f42b70b27ec2f92c2042dee949e
   languageName: node
   linkType: hard
 
@@ -1761,15 +1761,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/installed-package-contents@npm:^2.0.0, @npmcli/installed-package-contents@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@npmcli/installed-package-contents@npm:2.0.1"
+"@npmcli/installed-package-contents@npm:^2.0.1, @npmcli/installed-package-contents@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@npmcli/installed-package-contents@npm:2.0.2"
   dependencies:
     npm-bundled: ^3.0.0
     npm-normalize-package-bin: ^3.0.0
   bin:
     installed-package-contents: lib/index.js
-  checksum: 75126a3b3a741cd68e78ccea25256e87734379e5e0d827674fc3ec1f39b6ed356ae2c3e2d906c9c0247c192e8ca7e67188ad346f86042baabbac274e9b02d770
+  checksum: 60789d5ed209ee5df479232f62d9d38ecec36e95701cae88320b828b8651351b32d7b47d16d4c36cc7ce5000db4bf1f3e6981bed6381bdc5687ff4bc0795682d
   languageName: node
   linkType: hard
 
