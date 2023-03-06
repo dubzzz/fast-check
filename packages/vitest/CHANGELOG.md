@@ -1,3 +1,16 @@
+# 0.0.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.2...vitest%2Fv0.0.3)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3660](https://github.com/dubzzz/fast-check/pull/3660)) Bug: Fix vitest import failing due to TestBuilder
+
 # 0.0.2
 
 _Support `it.skip`, `it.fails` and others_
