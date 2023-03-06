@@ -1,6 +1,6 @@
 import { it as itVitest, test as testVitest } from 'vitest';
 import * as fc from 'fast-check';
-import { buildTest } from './internals/TestBuilder';
+import { buildTest } from './internals/TestBuilder.js';
 
 import type { FastCheckItBuilder } from './internals/TestBuilder';
 import type { It } from './internals/types';
