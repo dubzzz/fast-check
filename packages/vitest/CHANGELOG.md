@@ -1,11 +1,7 @@
 # 0.0.3
 
-_TODO Description_
+_Fix vitest import failing due to TestBuilder_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.2...vitest%2Fv0.0.3)]
-
-## Features
-
-
 
 ## Fixes
 
