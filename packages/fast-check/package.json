@@ -7,8 +7,8 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "require": "./lib/fast-check.js",
       "types": "./lib/types/fast-check.d.ts",
+      "require": "./lib/fast-check.js",
       "default": "./lib/esm/fast-check.js"
     }
   },
