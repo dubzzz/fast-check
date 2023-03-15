@@ -1,11 +1,7 @@
 # 3.7.1
 
-_TODO Description_
+_Safer declaration of types in package.json_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.7.0...v3.7.1)]
-
-## Features
-
-
 
 ## Fixes
 
