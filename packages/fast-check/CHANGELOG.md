@@ -1,3 +1,17 @@
+# 3.7.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.7.0...v3.7.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3671](https://github.com/dubzzz/fast-check/pull/3671)) Bug: Declare types field first in exports
+- ([PR#3646](https://github.com/dubzzz/fast-check/pull/3646)) Doc: Fix a typo in Runners.md
+
 # 3.7.0
 
 _Better error reports without duplicated messages_
