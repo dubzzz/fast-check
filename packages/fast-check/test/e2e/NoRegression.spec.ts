@@ -68,13 +68,13 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
-  it('auto', () => {
+  it('gen', () => {
     const integerArb = fc.integer();
     expect(() =>
       fc.assert(
-        fc.property(fc.auto(), (auto) => {
-          const v1 = auto(integerArb);
-          const v2 = auto(integerArb);
+        fc.property(fc.__experimentalGen(), (gen) => {
+          const v1 = gen(integerArb);
+          const v2 = gen(integerArb);
           return testFunc(`${v1}-${v2}`);
         }),
         settings

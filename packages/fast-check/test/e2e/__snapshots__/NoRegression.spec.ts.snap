@@ -982,7 +982,7 @@ Execution summary:
 . . . . . . . . [32m√[0m ["~"]"
 `;
 
-exports[`NoRegression auto 1`] = `
+exports[`NoRegression gen 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: "0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
 Counterexample: [[0,-1]]
