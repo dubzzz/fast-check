@@ -67,8 +67,7 @@ describe('GeneratorArbitrary', () => {
   describe('shrink', () => {
     it('should re-use previously generated instances for unchanged arbitraries', () => {
       // Arrange
-      const { instance: mrng, clone: cloneMrng } = fakeRandom();
-      cloneMrng.mockReturnValue(mrng); // As we don't touch at all to it except cloning, we just always clone to itself
+      const { instance: mrng } = fakeRandomWithOffset();
       const biasFactor = 5;
       const firstValue = new Value('a', 'ca');
       const { instance: firstArbitrary, generate: firstGenerate, shrink: firstShrink } = fakeArbitrary<string>();
