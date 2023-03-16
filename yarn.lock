@@ -859,7 +859,7 @@ __metadata:
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
     "@npmcli/arborist": ^6.0.0
-    "@types/jest": ^29.4.0
+    "@types/jest": ^29.4.4
     "@types/pacote": ^11.1.5
     "@types/tar": ^6.1.4
     jest: ^29.5.0
@@ -2287,13 +2287,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^29.4.0":
-  version: 29.4.0
-  resolution: "@types/jest@npm:29.4.0"
+"@types/jest@npm:*, @types/jest@npm:^29.4.4":
+  version: 29.4.4
+  resolution: "@types/jest@npm:29.4.4"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 23760282362a252e6690314584d83a47512d4cd61663e957ed3398ecf98195fe931c45606ee2f9def12f8ed7d8aa102d492ec42d26facdaf8b78094a31e6568e
+  checksum: 754c21d996c3457c761e55c4076a2dd14d82e6290c3f57122db17aa07ef59c12af7df50a82a06845ef9ba1fbf75bb024a1fed68426514618856bda7fb90eb773
   languageName: node
   linkType: hard
 
@@ -5160,7 +5160,7 @@ __metadata:
   dependencies:
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": ^7.34.4
-    "@types/jest": ^29.4.0
+    "@types/jest": ^29.4.4
     "@types/node": ^18.15.3
     buffer: ^6.0.3
     cross-env: ^7.0.3
