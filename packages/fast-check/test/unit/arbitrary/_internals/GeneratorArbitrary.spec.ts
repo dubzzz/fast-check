@@ -133,6 +133,7 @@ describe('GeneratorArbitrary', () => {
         seenShrinks.push([firstShrinkValue, thirdShrinkValue]);
 
         expect(third.generate).toHaveBeenCalledTimes(1); // need to call generate on thirdArbitrary
+        expect(third.generate).toHaveBeenCalledWith(expect.anything(), biasFactor);
         expect(third.offsetOnLastCall()).toBe(1); // offset-ed correctly by 1 arbitrary
       }
 
