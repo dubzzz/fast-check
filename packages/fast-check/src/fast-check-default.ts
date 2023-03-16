@@ -285,7 +285,7 @@ export {
   compareFunc,
   func,
   context,
-  gen,
+  gen as __experimentalGen,
   date,
   // web
   ipV4,

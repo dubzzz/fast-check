@@ -1,16 +1,11 @@
 import * as fc from '../../../src/fast-check';
-import { GeneratorArbitrary } from '../../../src/arbitrary/_internals/GeneratorArbitrary';
 import { seed } from '../seed';
-
-function rawGeneratorArb() {
-  return new GeneratorArbitrary();
-}
 
 describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   it('should be able to shrink a single arbitrary', () => {
     const integerArb = fc.integer();
     const out = fc.check(
-      fc.property(rawGeneratorArb(), (gen) => {
+      fc.property(fc.__experimentalGen(), (gen) => {
         const v1 = gen(integerArb);
         expect(v1).toBeLessThanOrEqual(10);
       }),
@@ -23,7 +18,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   it('should be able to shrink two unrelated arbitraries', () => {
     const natArb = fc.nat();
     const out = fc.check(
-      fc.property(rawGeneratorArb(), (gen) => {
+      fc.property(fc.__experimentalGen(), (gen) => {
         const v1 = gen(natArb);
         const v2 = gen(natArb); // unrelated because does not depend on v1
         expect(v1).toBeLessThanOrEqual(v2);
@@ -49,7 +44,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
       return arb;
     };
     const out = fc.check(
-      fc.property(rawGeneratorArb(), (gen) => {
+      fc.property(fc.__experimentalGen(), (gen) => {
         const v1 = gen(natArb);
         const v2 = gen(buildSquareArb(v1));
         const surface = v2.length !== 0 ? v2.length * v2[0].length : 0;
@@ -72,7 +67,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
     const integerArb = fc.integer();
     const stringArb = fc.string();
     const out = fc.check(
-      fc.property(rawGeneratorArb(), (gen) => {
+      fc.property(fc.__experimentalGen(), (gen) => {
         const v1 = gen(integerArb);
         if (v1 < 0) {
           const v2 = gen(integerArb);
@@ -91,7 +86,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   it('should be able to shrink arbitraries generated via for-loops', () => {
     const natArb = fc.nat(100);
     const out = fc.check(
-      fc.property(rawGeneratorArb(), (gen) => {
+      fc.property(fc.__experimentalGen(), (gen) => {
         const width = gen(natArb);
         const height = gen(natArb);
         const grid: number[][] = [];
