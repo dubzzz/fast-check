@@ -28,6 +28,8 @@ export type PreBuiltValue = {
   value: unknown;
   /** The attached context */
   context: unknown;
+  /** The attached Random */
+  mrng: Random;
 };
 
 /**
@@ -53,7 +55,7 @@ export function buildGeneratorValue(
   computePreBuiltValues: () => PreBuiltValue[]
 ): Value<GeneratorValue> {
   const preBuiltValues = computePreBuiltValues();
-  const localMrng = mrng.clone();
+  let localMrng = mrng.clone();
   const context: GeneratorContext = { mrng: mrng.clone(), biasFactor, history: [] };
 
   const valueFunction: GeneratorValueFunction = <T>(arb: Arbitrary<T>): T => {
@@ -62,7 +64,8 @@ export function buildGeneratorValue(
     if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
       // Until it matches we just re-use the originally produced value
       const value = preBuiltValue.value;
-      context.history.push({ arb, value, context: preBuiltValue.context });
+      context.history.push({ arb, value, context: preBuiltValue.context, mrng: preBuiltValue.mrng });
+      localMrng = preBuiltValue.mrng.clone();
       return value as T;
     }
     // Forbid users to diverge on the first generated value
@@ -74,7 +77,7 @@ export function buildGeneratorValue(
     }
     // If we start to mismatch we run a new random value computation
     const g = arb.generate(localMrng, biasFactor);
-    context.history.push({ arb, value: g.value_, context: g.context });
+    context.history.push({ arb, value: g.value_, context: g.context, mrng: localMrng.clone() });
     return g.value;
   };
 

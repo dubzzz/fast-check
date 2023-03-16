@@ -41,6 +41,7 @@ export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
           arb: entry.arb,
           value: subValues[index],
           context: subContexts[index],
+          mrng: entry.mrng,
         }));
       }
       return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues);

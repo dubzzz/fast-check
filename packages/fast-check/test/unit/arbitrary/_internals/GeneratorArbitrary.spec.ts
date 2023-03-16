@@ -149,7 +149,7 @@ describe('GeneratorArbitrary', () => {
       expect(offsetOnCallSecond).toBe(1); // offset-ed correctly by 1 arbitrary
       for (const shrink of g.shrink(gen, genValue.context)) {
         let offsetOnCallThird = -1;
-        const thirdValue = new Value('1', 'cA');
+        const thirdValue = new Value('A', 'cA');
         const { instance: thirdArbitrary, generate: thirdGenerate } = fakeArbitrary<string>();
         thirdGenerate.mockImplementation((mrng) => {
           offsetOnCallThird = (mrng as RandomWithOffset).offset;
