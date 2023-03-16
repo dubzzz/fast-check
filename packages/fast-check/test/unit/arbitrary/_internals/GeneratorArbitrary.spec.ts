@@ -69,38 +69,32 @@ describe('GeneratorArbitrary', () => {
       // Arrange
       const { instance: mrng } = fakeRandomWithOffset();
       const biasFactor = 5;
-      const firstValue = new Value('a', 'ca');
-      const { instance: firstArbitrary, generate: firstGenerate, shrink: firstShrink } = fakeArbitrary<string>();
-      firstGenerate.mockReturnValue(firstValue);
-      firstShrink.mockReturnValue(Stream.of(new Value('b', 'cb'), new Value('c', 'cc'), new Value('d', 'cd')));
-      const secondValue = new Value('1', 'c1');
-      const { instance: secondArbitrary, generate: secondGenerate, shrink: secondShrink } = fakeArbitrary<string>();
-      secondGenerate.mockReturnValue(secondValue);
-      secondShrink.mockReturnValue(Stream.of(new Value('2', 'c2'), new Value('3', 'c3')));
+      const first = buildArbitraryForGen('a', new Map([['a', ['b', 'c', 'd']]]));
+      const second = buildArbitraryForGen('1', new Map([['1', ['2', '3']]]));
 
       // Act
       const seenShrinks: [string, string][] = [];
       const g = new GeneratorArbitrary();
       const genValue = g.generate(mrng, biasFactor);
       const gen = genValue.value;
-      gen(firstArbitrary); // fire-and-forget in the context of this test
-      gen(secondArbitrary); // fire-and-forget in the context of this test
-      expect(firstGenerate).toHaveBeenCalledTimes(1);
-      expect(firstShrink).not.toHaveBeenCalled();
-      expect(secondGenerate).toHaveBeenCalledTimes(1);
-      expect(secondShrink).not.toHaveBeenCalled();
+      gen(first.instance); // fire-and-forget in the context of this test
+      gen(second.instance); // fire-and-forget in the context of this test
+      expect(first.generate).toHaveBeenCalledTimes(1);
+      expect(first.shrink).not.toHaveBeenCalled();
+      expect(second.generate).toHaveBeenCalledTimes(1);
+      expect(second.shrink).not.toHaveBeenCalled();
       for (const shrink of g.shrink(gen, genValue.context)) {
         const genShrink = shrink.value;
-        const firstShrinkValue = genShrink(firstArbitrary);
-        const secondShrinkValue = genShrink(secondArbitrary);
+        const firstShrinkValue = genShrink(first.instance);
+        const secondShrinkValue = genShrink(second.instance);
         seenShrinks.push([firstShrinkValue, secondShrinkValue]);
       }
 
       // Assert
-      expect(firstGenerate).toHaveBeenCalledTimes(1);
-      expect(firstShrink).toHaveBeenCalledTimes(1);
-      expect(secondGenerate).toHaveBeenCalledTimes(1);
-      expect(secondShrink).toHaveBeenCalledTimes(1);
+      expect(first.generate).toHaveBeenCalledTimes(1);
+      expect(first.shrink).toHaveBeenCalledTimes(1);
+      expect(second.generate).toHaveBeenCalledTimes(1);
+      expect(second.shrink).toHaveBeenCalledTimes(1);
       expect(seenShrinks).toEqual([
         ['b', '1'], // current shrink implementation is based on tuples
         ['c', '1'],
@@ -112,64 +106,41 @@ describe('GeneratorArbitrary', () => {
 
     it('should use newly passed instances with mrng offset-ed correctly on diverging arbitraries', () => {
       // Arrange
-      let offsetOnCallFirst = -1;
-      let offsetOnCallSecond = -1;
       const { instance: mrng } = fakeRandomWithOffset();
       const biasFactor = 5;
-      const firstValue = new Value('a', 'ca');
-      const { instance: firstArbitrary, generate: firstGenerate, shrink: firstShrink } = fakeArbitrary<string>();
-      firstGenerate.mockImplementation((mrng) => {
-        offsetOnCallFirst = (mrng as RandomWithOffset).offset;
-        (mrng as RandomWithOffset).offset += 1;
-        return firstValue;
-      });
-      firstShrink.mockReturnValue(Stream.of(new Value('b', 'cb'), new Value('c', 'cc'), new Value('d', 'cd')));
-      const secondValue = new Value('1', 'c1');
-      const { instance: secondArbitrary, generate: secondGenerate, shrink: secondShrink } = fakeArbitrary<string>();
-      secondGenerate.mockImplementation((mrng) => {
-        offsetOnCallSecond = (mrng as RandomWithOffset).offset;
-        (mrng as RandomWithOffset).offset += 1;
-        return secondValue;
-      });
-      secondShrink.mockReturnValue(Stream.of(new Value('2', 'c2'), new Value('3', 'c3')));
+      const first = buildArbitraryForGen('a', new Map([['a', ['b', 'c', 'd']]]));
+      const second = buildArbitraryForGen('1', new Map([['1', ['2', '3']]]));
 
       // Act
       const seenShrinks: [string, string][] = [];
       const g = new GeneratorArbitrary();
       const genValue = g.generate(mrng, biasFactor);
       const gen = genValue.value;
-      gen(firstArbitrary); // fire-and-forget in the context of this test
-      gen(secondArbitrary); // fire-and-forget in the context of this test
-      expect(firstGenerate).toHaveBeenCalledTimes(1);
-      expect(firstShrink).not.toHaveBeenCalled();
-      expect(secondGenerate).toHaveBeenCalledTimes(1);
-      expect(secondShrink).not.toHaveBeenCalled();
-      expect(offsetOnCallFirst).toBe(0); // offset-ed correctly by 0 arbitrary
-      expect(offsetOnCallSecond).toBe(1); // offset-ed correctly by 1 arbitrary
+      gen(first.instance); // fire-and-forget in the context of this test
+      gen(second.instance); // fire-and-forget in the context of this test
+      expect(first.generate).toHaveBeenCalledTimes(1);
+      expect(first.shrink).not.toHaveBeenCalled();
+      expect(second.generate).toHaveBeenCalledTimes(1);
+      expect(second.shrink).not.toHaveBeenCalled();
+      expect(first.offsetOnLastCall()).toBe(0); // offset-ed correctly by 0 arbitrary
+      expect(second.offsetOnLastCall()).toBe(1); // offset-ed correctly by 1 arbitrary
       for (const shrink of g.shrink(gen, genValue.context)) {
-        let offsetOnCallThird = -1;
-        const thirdValue = new Value('A', 'cA');
-        const { instance: thirdArbitrary, generate: thirdGenerate } = fakeArbitrary<string>();
-        thirdGenerate.mockImplementation((mrng) => {
-          offsetOnCallThird = (mrng as RandomWithOffset).offset;
-          (mrng as RandomWithOffset).offset += 1;
-          return thirdValue;
-        });
+        const third = buildArbitraryForGen('A', new Map());
 
         const genShrink = shrink.value;
-        const firstShrinkValue = genShrink(firstArbitrary);
-        const thirdShrinkValue = genShrink(thirdArbitrary);
+        const firstShrinkValue = genShrink(first.instance);
+        const thirdShrinkValue = genShrink(third.instance);
         seenShrinks.push([firstShrinkValue, thirdShrinkValue]);
 
-        expect(thirdGenerate).toHaveBeenCalledTimes(1); // need to call generate on thirdArbitrary
-        expect(offsetOnCallThird).toBe(1); // offset-ed correctly by 1 arbitrary
+        expect(third.generate).toHaveBeenCalledTimes(1); // need to call generate on thirdArbitrary
+        expect(third.offsetOnLastCall()).toBe(1); // offset-ed correctly by 1 arbitrary
       }
 
       // Assert
-      expect(firstGenerate).toHaveBeenCalledTimes(1);
-      expect(firstShrink).toHaveBeenCalledTimes(1);
-      expect(secondGenerate).toHaveBeenCalledTimes(1);
-      expect(secondShrink).toHaveBeenCalledTimes(1);
+      expect(first.generate).toHaveBeenCalledTimes(1);
+      expect(first.shrink).toHaveBeenCalledTimes(1);
+      expect(second.generate).toHaveBeenCalledTimes(1);
+      expect(second.shrink).toHaveBeenCalledTimes(1);
       expect(seenShrinks).toEqual([
         ['b', 'A'], // current shrink implementation is based on tuples
         ['c', 'A'],
@@ -199,4 +170,23 @@ function fakeRandomWithOffset(): {
     instance: instance as RandomWithOffset,
     clone: clone as (() => RandomWithOffset) & MockWithArgs<() => RandomWithOffset>,
   };
+}
+
+function buildArbitraryForGen(value: string, shrinks: Map<string, string[]>) {
+  let offset = -1;
+
+  const { instance, generate, shrink } = fakeArbitrary<string>();
+
+  const firstValue = new Value(value[0], `c${value[0]}`);
+  generate.mockImplementation((mrng) => {
+    offset = (mrng as RandomWithOffset).offset;
+    (mrng as RandomWithOffset).offset += 1;
+    return firstValue;
+  });
+  shrink.mockImplementation((value) => {
+    const subValues = shrinks.get(value) ?? [];
+    return new Stream(subValues.map((v) => new Value(v, `c${v}`))[Symbol.iterator]());
+  });
+
+  return { instance, generate, shrink, offsetOnLastCall: () => offset };
 }
