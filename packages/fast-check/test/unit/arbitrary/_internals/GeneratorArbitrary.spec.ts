@@ -149,6 +149,80 @@ describe('GeneratorArbitrary', () => {
         ['a', 'A'], // the secondArbitrary should come back at this point as same inputs same arbitraries
       ]);
     });
+
+    it('should properly handle complex shrinking cases implying changing arbitraries', () => {
+      // Arrange
+      const { instance: mrng } = fakeRandomWithOffset();
+      const biasFactor = 5;
+      const first = buildArbitraryForGen(
+        'a',
+        new Map([
+          ['a', ['b', 'c', 'd']],
+          ['c', ['e', 'f']],
+          ['d', ['g', 'h']],
+        ])
+      );
+      const second = buildArbitraryForGen('1', new Map([['1', ['2', '3']]]));
+      const third = buildArbitraryForGen('A', new Map([['A', ['B', 'C']]]));
+
+      // Act / Assert
+      const seenValues: string[][] = [];
+      const g = new GeneratorArbitrary();
+      // Generate value
+      const genValueA = g.generate(mrng, biasFactor);
+      const genA = genValueA.value;
+      seenValues.push([genA(first.instance), genA(first.instance), genA(second.instance)]);
+      expect(first.offsetOnLastCall()).toBe(1); // also called with 0
+      expect(second.offsetOnLastCall()).toBe(2);
+      // Shrink first level
+      // a, a, 1
+      // >  b, a, 1
+      // >  c, a, 1
+      // >  d, a, 1
+      // >  a, b, 1
+      // >  a, c, 1
+      const genValueB = g.shrink(genA, genValueA.context).getNthOrLast(4); // a, c, 1
+      const genB = genValueB!.value;
+      seenValues.push([genB(first.instance), genB(first.instance), genB(third.instance)]);
+      expect(third.offsetOnLastCall()).toBe(2);
+      // Shrink second level
+      // a, c, A
+      // >  b, c, A
+      // >  c, c, A
+      // >  d, c, A
+      const genValueC = g.shrink(genB, genValueB!.context).getNthOrLast(2); // d, c, A
+      const genC = genValueC!.value;
+      seenValues.push([genC(first.instance), genC(first.instance), genC(third.instance)]);
+      // Shrink third level
+      // d, c, A
+      // >  g, c, A
+      // >  h, c, A
+      // >  d, e, A
+      // >  d, f, A
+      const genValueD = g.shrink(genC, genValueC!.context).getNthOrLast(3); // d, f, A
+      const genD = genValueD!.value;
+      seenValues.push([genD(first.instance), genD(first.instance)]);
+      // Shrink fourth level
+      // d, f
+      // >  g, f
+      // >  h, f
+      const genValueE = g.shrink(genD, genValueD!.context).getNthOrLast(1); // h, f
+      const genE = genValueE!.value;
+      seenValues.push([genE(first.instance), genE(first.instance), genE(second.instance), genE(third.instance)]);
+      expect(second.offsetOnLastCall()).toBe(2);
+      expect(third.offsetOnLastCall()).toBe(3);
+      // Final assert
+      expect(seenValues).toEqual([
+        ['a', 'a', '1'],
+        ['a', 'c', 'A'],
+        ['d', 'c', 'A'],
+        ['d', 'f'],
+        ['h', 'f', '1', 'A'],
+      ]);
+      expect(first.generate).toHaveBeenCalledTimes(2); // at step "Generate value"
+      expect(second.generate).toHaveBeenCalledTimes(2); // at steps: "Generate value" and "Shrink fourth level"
+      expect(third.generate).toHaveBeenCalledTimes(2); // at steps: "Shrink first level" and "Shrink fourth level"
+    });
   });
 });
 
