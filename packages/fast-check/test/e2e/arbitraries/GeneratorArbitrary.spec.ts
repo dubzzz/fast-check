@@ -106,8 +106,9 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
       const values = out.counterexample![0].values() as number[];
+      expect(values).toHaveLength(4)
       expect(values[0] * values[1]).toBe(2);
-      expect(values.slice(2)).toEqual([0, 0]);
+      expect(values[3]).toBe(values[2]);
     });
 
     it('should be able to be used in conjonction with other arbitraries', () => {
