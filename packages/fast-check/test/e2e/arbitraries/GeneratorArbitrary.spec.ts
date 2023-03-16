@@ -85,7 +85,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
     });
 
     it('should be able to shrink arbitraries built out of for loops', () => {
-      const natArb = fc.nat(10); // Maximum call stack size exceeded for 100
+      const natArb = fc.nat(100);
       const out = fc.check(
         fc.property(fc.gen(), (gen) => {
           const width = gen(natArb);
@@ -106,7 +106,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
       const values = out.counterexample![0].values() as number[];
-      expect(values).toHaveLength(4)
+      expect(values).toHaveLength(4);
       expect(values[0] * values[1]).toBe(2);
       expect(values[3]).toBe(values[2]);
     });
