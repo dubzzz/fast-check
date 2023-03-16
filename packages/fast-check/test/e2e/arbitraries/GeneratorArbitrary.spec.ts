@@ -1,13 +1,13 @@
 import * as fc from '../../../src/fast-check';
 import { seed } from '../seed';
 
-describe(`AutoArbitrary (seed: ${seed})`, () => {
-  describe('auto', () => {
+describe(`GeneratorArbitrary (seed: ${seed})`, () => {
+  describe('gen', () => {
     it('should be able to shrink a single arbitrary', () => {
       const integerArb = fc.integer();
       const out = fc.check(
-        fc.property(fc.auto(), (auto) => {
-          const v1 = auto(integerArb);
+        fc.property(fc.gen(), (gen) => {
+          const v1 = gen(integerArb);
           expect(v1).toBeLessThanOrEqual(10);
         }),
         { seed: seed }
@@ -19,9 +19,9 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
     it('should be able to shrink two unrelated arbitraries', () => {
       const natArb = fc.nat();
       const out = fc.check(
-        fc.property(fc.auto(), (auto) => {
-          const v1 = auto(natArb);
-          const v2 = auto(natArb); // unrelated because does not depend on v1
+        fc.property(fc.gen(), (gen) => {
+          const v1 = gen(natArb);
+          const v2 = gen(natArb); // unrelated because does not depend on v1
           expect(v1).toBeLessThanOrEqual(v2);
         }),
         { seed: seed }
@@ -45,9 +45,9 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
         return arb;
       };
       const out = fc.check(
-        fc.property(fc.auto(), (auto) => {
-          const v1 = auto(natArb);
-          const v2 = auto(buildSquareArb(v1));
+        fc.property(fc.gen(), (gen) => {
+          const v1 = gen(natArb);
+          const v2 = gen(buildSquareArb(v1));
           const surface = v2.length !== 0 ? v2.length * v2[0].length : 0;
           expect(surface).toBeLessThanOrEqual(8);
         }),
@@ -68,14 +68,14 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
       const integerArb = fc.integer();
       const stringArb = fc.string();
       const out = fc.check(
-        fc.property(fc.auto(), (auto) => {
-          const v1 = auto(integerArb);
+        fc.property(fc.gen(), (gen) => {
+          const v1 = gen(integerArb);
           if (v1 < 0) {
-            const v2 = auto(integerArb);
-            const v3 = auto(integerArb);
+            const v2 = gen(integerArb);
+            const v3 = gen(integerArb);
             return typeof v2 === 'number' && typeof v3 === 'number'; // success
           }
-          const v2 = auto(stringArb);
+          const v2 = gen(stringArb);
           expect(v2.length).toBeGreaterThanOrEqual(v1);
         }),
         { seed: seed }
@@ -87,14 +87,14 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
     it('should be able to shrink arbitraries built out of for loops', () => {
       const natArb = fc.nat(10); // Maximum call stack size exceeded for 100
       const out = fc.check(
-        fc.property(fc.auto(), (auto) => {
-          const width = auto(natArb);
-          const height = auto(natArb);
+        fc.property(fc.gen(), (gen) => {
+          const width = gen(natArb);
+          const height = gen(natArb);
           const grid: number[][] = [];
           for (let i = 0; i !== width; ++i) {
             const line: number[] = [];
             for (let j = 0; j !== height; ++j) {
-              line.push(auto(natArb));
+              line.push(gen(natArb));
             }
             grid.push(line);
           }
@@ -122,10 +122,10 @@ describe(`AutoArbitrary (seed: ${seed})`, () => {
         return arb;
       };
       const out = fc.check(
-        fc.property(fc.integer({ min: 0, max: 1000 }), fc.auto(), fc.integer({ min: 0, max: 1000 }), (a, auto, b) => {
+        fc.property(fc.integer({ min: 0, max: 1000 }), fc.gen(), fc.integer({ min: 0, max: 1000 }), (a, gen, b) => {
           const min = Math.min(a, b);
           const max = Math.max(a, b);
-          const value = auto(buildIntegerArb({ min, max }));
+          const value = gen(buildIntegerArb({ min, max }));
           expect(value).toBeGreaterThanOrEqual((min + max) / 2);
         }),
         { seed: seed }

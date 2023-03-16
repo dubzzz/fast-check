@@ -4,9 +4,18 @@ import { cloneMethod } from '../../../check/symbols';
 import { Random } from '../../../random/generator/Random';
 import { stringify, toStringMethod } from '../../../utils/stringify';
 
-export type AutoValueFunction = <T>(arb: Arbitrary<T>) => T;
-export type AutoValueMethods = { values: () => unknown[] };
-export type AutoValue = AutoValueFunction & AutoValueMethods;
+export type GeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
+export type GeneratorValueMethods = { values: () => unknown[] };
+
+/**
+ * An instance of {@link GeneratorValue} can be leveraged within predicates themselves to produce extra random values
+ * while preserving part of the shrinking capabilities on the produced values.
+ *
+ * It can be seen as a way to start property based testing within something looking closer from what users will
+ * think about when thinking about random in tests. But contrary to raw random, it comes with many useful strengths
+ * such as: ability to re-run the test (seeded), shrinking...
+ */
+export type GeneratorValue = GeneratorValueFunction & GeneratorValueMethods;
 
 /**
  * Details related to pre-built values
@@ -22,10 +31,10 @@ export type PreBuiltValue = {
 };
 
 /**
- * Context attached next to AutoValue
+ * Context attached next to {@link GeneratorValue}
  * @internal
  */
-export type AutoContext = {
+export type GeneratorContext = {
   /** Cloned version of the random number generator */
   mrng: Random;
   /** Specified bias factor to be applied */
@@ -35,19 +44,19 @@ export type AutoContext = {
 };
 
 /**
- * An internal builder of values of type AutoValue
+ * An internal builder of values of type {@link GeneratorValue}
  * @internal
  */
-export function buildAutoValue(
+export function buildGeneratorValue(
   mrng: Random,
   biasFactor: number | undefined,
   computePreBuiltValues: () => PreBuiltValue[]
-): Value<AutoValue> {
+): Value<GeneratorValue> {
   const preBuiltValues = computePreBuiltValues();
   const localMrng = mrng.clone();
-  const context: AutoContext = { mrng: mrng.clone(), biasFactor, history: [] };
+  const context: GeneratorContext = { mrng: mrng.clone(), biasFactor, history: [] };
 
-  const valueFunction: AutoValueFunction = <T>(arb: Arbitrary<T>): T => {
+  const valueFunction: GeneratorValueFunction = <T>(arb: Arbitrary<T>): T => {
     // We pull values from our pre-built values until we reach mismatching ones
     const preBuiltValue = preBuiltValues[context.history.length];
     if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
@@ -73,8 +82,8 @@ export function buildAutoValue(
     values(): unknown[] {
       return context.history.map((c) => c.value);
     },
-    [cloneMethod](): AutoValue {
-      return buildAutoValue(mrng, biasFactor, computePreBuiltValues).value;
+    [cloneMethod](): GeneratorValue {
+      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues).value;
     },
     [toStringMethod](): string {
       return stringify(context.history.map((c) => c.value));
