@@ -3,6 +3,7 @@ import { Value } from '../../../check/arbitrary/definition/Value';
 import { cloneMethod } from '../../../check/symbols';
 import { Random } from '../../../random/generator/Random';
 import { stringify, toStringMethod } from '../../../utils/stringify';
+import { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache';
 
 export type InternalGeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
 export type GeneratorValueFunction = <T, TArgs extends unknown[]>(
@@ -57,7 +58,7 @@ export function buildGeneratorValue(
   mrng: Random,
   biasFactor: number | undefined,
   computePreBuiltValues: () => PreBuiltValue[],
-  isEqual: (v1: unknown, v2: unknown) => boolean
+  arbitraryCache: ArbitraryGeneratorCache
 ): Value<GeneratorValue> {
   const preBuiltValues = computePreBuiltValues();
   let localMrng = mrng.clone();
@@ -86,35 +87,11 @@ export function buildGeneratorValue(
     return g.value;
   };
 
-  const previousCallsPerBuilder = new WeakMap<
-    () => Arbitrary<unknown>,
-    { params: unknown[]; value: Arbitrary<unknown> }[]
-  >();
-  const memoedExtractor = <T, TArgs extends unknown[]>(
-    arb: (...params: TArgs) => Arbitrary<T>,
-    ...args: TArgs
-  ): Arbitrary<T> => {
-    const entriesForBuilder = previousCallsPerBuilder.get(arb);
-    if (entriesForBuilder === undefined) {
-      const newValue = arb(...args);
-      previousCallsPerBuilder.set(arb, [{ params: args, value: newValue }]);
-      return newValue;
-    }
-    const safeEntriesForBuilder = entriesForBuilder as { params: unknown[]; value: Arbitrary<T> }[];
-    for (const entry of safeEntriesForBuilder) {
-      if (isEqual(args, entry.params)) {
-        return entry.value;
-      }
-    }
-    const newValue = arb(...args);
-    safeEntriesForBuilder.push({ params: args, value: newValue });
-    return newValue;
-  };
   const memoedValueFunction: GeneratorValueFunction = <T, TArgs extends unknown[]>(
     arb: (...params: TArgs) => Arbitrary<T>,
     ...args: TArgs
   ) => {
-    return valueFunction(memoedExtractor(arb, ...args));
+    return valueFunction(arbitraryCache(arb, args));
   };
 
   const valueMethods = {
@@ -122,7 +99,7 @@ export function buildGeneratorValue(
       return context.history.map((c) => c.value);
     },
     [cloneMethod](): GeneratorValue {
-      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, isEqual).value;
+      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, arbitraryCache).value;
     },
     [toStringMethod](): string {
       return stringify(context.history.map((c) => c.value));

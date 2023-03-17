@@ -3,6 +3,7 @@ import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { GeneratorContext, GeneratorValue, buildGeneratorValue, PreBuiltValue } from './builders/GeneratorValueBuilder';
+import { buildStableArbitraryGeneratorCache, naiveIsEqual } from './builders/StableArbitraryGeneratorCache';
 import { tupleShrink } from './TupleArbitrary';
 
 /**
@@ -11,8 +12,10 @@ import { tupleShrink } from './TupleArbitrary';
  * providing a bit of shrinking capabilities (not all).
  */
 export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
+  private readonly arbitraryCache = buildStableArbitraryGeneratorCache(naiveIsEqual);
+
   generate(mrng: Random, biasFactor: number | undefined): Value<GeneratorValue> {
-    return buildGeneratorValue(mrng, biasFactor, () => [], naiveIsEqual);
+    return buildGeneratorValue(mrng, biasFactor, () => [], this.arbitraryCache);
   }
 
   canShrinkWithoutContext(value: unknown): value is GeneratorValue {
@@ -44,33 +47,7 @@ export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
           mrng: entry.mrng,
         }));
       }
-      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, naiveIsEqual);
+      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, this.arbitraryCache);
     });
-  }
-}
-
-function naiveIsEqual(v1: unknown, v2: unknown): boolean {
-  if (v1 !== null && typeof v1 === 'object' && v2 !== null && typeof v2 === 'object') {
-    if (Array.isArray(v1)) {
-      if (!Array.isArray(v2)) return false;
-      if (v1.length !== v2.length) return false;
-    } else if (Array.isArray(v2)) {
-      return false;
-    }
-
-    if (Object.keys(v1).length !== Object.keys(v2).length) {
-      return false;
-    }
-    for (const index in v1) {
-      if (!(index in v2)) {
-        return false;
-      }
-      if (!naiveIsEqual((v1 as any)[index], (v2 as any)[index])) {
-        return false;
-      }
-    }
-    return true;
-  } else {
-    return Object.is(v1, v2);
   }
 }
