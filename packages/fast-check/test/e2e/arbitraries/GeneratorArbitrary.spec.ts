@@ -99,7 +99,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
     expect(values[3]).toBe(values[2]);
   });
 
-  it('should be able usable in conjonction with other arbitraries', () => {
+  it('should be usable in conjonction with other arbitraries', () => {
     const out = fc.check(
       fc.property(
         fc.integer({ min: 0, max: 1000 }),
