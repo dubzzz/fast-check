@@ -119,4 +119,31 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
     expect(genValues[0]).toBeGreaterThanOrEqual(minBoundary);
     expect(genValues[0]).toBeLessThanOrEqual(maxBoundary);
   });
+
+  it('should be able to rely on cloneable arbitraries', () => {
+    const out = fc.check(
+      fc.property(fc.gen(), (gen) => {
+        const context1 = gen(fc.context); // cloneable
+        const intValueA = gen(fc.integer); // not cloneable
+        const context2 = gen(fc.context); // cloneable
+        const successFunction = gen(fc.compareBooleanFunc); // cloneable
+        const intValueB = gen(fc.integer); // not cloneable
+        context1.log(String(intValueA));
+        context2.log(String(intValueB));
+        return successFunction(intValueA, intValueB);
+      }),
+      { seed: seed }
+    );
+    expect(out.failed).toBe(true);
+    const genValues = out.counterexample![0].values() as [
+      fc.ContextValue,
+      number,
+      fc.ContextValue,
+      (a: number, b: number) => boolean,
+      number
+    ];
+    expect(genValues[0].size()).toBe(1); // context1
+    expect(genValues[2].size()).toBe(1); // context2
+    expect(genValues[3](genValues[1], genValues[4])).toBe(false); // successFunction(intValueA, intValueB)
+  });
 });
