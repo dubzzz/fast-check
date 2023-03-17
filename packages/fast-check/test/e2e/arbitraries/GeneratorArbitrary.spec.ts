@@ -98,4 +98,30 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
     expect(values[0] * values[1]).toBe(2);
     expect(values[3]).toBe(values[2]);
   });
+
+  it('should be able usable in conjonction with other arbitraries', () => {
+    const out = fc.check(
+      fc.property(
+        fc.integer({ min: 0, max: 1000 }),
+        fc.__experimentalGen(),
+        fc.integer({ min: 0, max: 1000 }),
+        (a, gen, b) => {
+          const min = Math.min(a, b);
+          const max = Math.max(a, b);
+          const value = gen(fc.integer, { min, max });
+          expect(value).toBeGreaterThanOrEqual((min + max) / 2);
+        }
+      ),
+      { seed: seed }
+    );
+    expect(out.failed).toBe(true);
+    const boundaryA = out.counterexample![0];
+    const boundaryB = out.counterexample![2];
+    const genValues = out.counterexample![1].values();
+    expect(genValues).toHaveLength(1);
+    const minBoundary = Math.min(boundaryA, boundaryB);
+    const maxBoundary = Math.max(boundaryA, boundaryB);
+    expect(genValues[0]).toBeGreaterThanOrEqual(minBoundary);
+    expect(genValues[0]).toBeLessThanOrEqual(maxBoundary);
+  });
 });

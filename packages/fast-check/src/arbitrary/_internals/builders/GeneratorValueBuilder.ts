@@ -74,13 +74,10 @@ export function buildGeneratorValue(
       localMrng = preBuiltValue.mrng.clone();
       return value as T;
     }
-    // Forbid users to diverge on the first generated value
-    if (preBuiltValue !== undefined && context.history.length === 0) {
-      throw new Error(
-        `Illegal use of fc.gen: ` +
-          `passed arbitraries can only vary between calls based on generated values not on external world`
-      );
-    }
+    // While tempting, one should not "Forbid users to diverge on the first generated value" or any other values
+    // Actually it's legit case when the value is used in conjunction with other arbitraries as each will be shrunk separately
+    // possibly leading from totally different sets of functions.
+    // In other words: `preBuiltValue !== undefined && context.history.length === 0` is a legit case!
     // If we start to mismatch we run a new random value computation
     const g = arb.generate(localMrng, biasFactor);
     context.history.push({ arb, value: g.value_, context: g.context, mrng: localMrng.clone() });
