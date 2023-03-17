@@ -24,8 +24,8 @@ describe('GeneratorArbitrary', () => {
       // Act
       const g = new GeneratorArbitrary();
       const gen = g.generate(mrngSource, biasFactor).value_;
-      const firstOutput = gen(firstArbitrary);
-      const secondOutput = gen(secondArbitrary);
+      const firstOutput = gen(() => firstArbitrary);
+      const secondOutput = gen(() => secondArbitrary);
 
       // Assert
       expect(firstOutput).toBe(firstValue.value_);
@@ -50,9 +50,9 @@ describe('GeneratorArbitrary', () => {
       const g = new GeneratorArbitrary();
       const genValue = g.generate(mrngSource, biasFactor);
       const gen = genValue.value;
-      const firstOutput = gen(firstArbitrary);
+      const firstOutput = gen(() => firstArbitrary);
       const genCloned = genValue.value;
-      const firstClonedOutput = gen(firstArbitrary);
+      const firstClonedOutput = gen(() => firstArbitrary);
 
       // Assert
       expect(genCloned).not.toBe(gen);
@@ -77,16 +77,16 @@ describe('GeneratorArbitrary', () => {
       const g = new GeneratorArbitrary();
       const genValue = g.generate(mrng, biasFactor);
       const gen = genValue.value;
-      gen(first.instance); // fire-and-forget in the context of this test
-      gen(second.instance); // fire-and-forget in the context of this test
+      gen(() => first.instance); // fire-and-forget in the context of this test
+      gen(() => second.instance); // fire-and-forget in the context of this test
       expect(first.generate).toHaveBeenCalledTimes(1);
       expect(first.shrink).not.toHaveBeenCalled();
       expect(second.generate).toHaveBeenCalledTimes(1);
       expect(second.shrink).not.toHaveBeenCalled();
       for (const shrink of g.shrink(gen, genValue.context)) {
         const genShrink = shrink.value;
-        const firstShrinkValue = genShrink(first.instance);
-        const secondShrinkValue = genShrink(second.instance);
+        const firstShrinkValue = genShrink(() => first.instance);
+        const secondShrinkValue = genShrink(() => second.instance);
         seenShrinks.push([firstShrinkValue, secondShrinkValue]);
       }
 
@@ -116,8 +116,8 @@ describe('GeneratorArbitrary', () => {
       const g = new GeneratorArbitrary();
       const genValue = g.generate(mrng, biasFactor);
       const gen = genValue.value;
-      gen(first.instance); // fire-and-forget in the context of this test
-      gen(second.instance); // fire-and-forget in the context of this test
+      gen(() => first.instance); // fire-and-forget in the context of this test
+      gen(() => second.instance); // fire-and-forget in the context of this test
       expect(first.generate).toHaveBeenCalledTimes(1);
       expect(first.shrink).not.toHaveBeenCalled();
       expect(second.generate).toHaveBeenCalledTimes(1);
@@ -128,8 +128,8 @@ describe('GeneratorArbitrary', () => {
         const third = buildArbitraryForGen('A', new Map());
 
         const genShrink = shrink.value;
-        const firstShrinkValue = genShrink(first.instance);
-        const thirdShrinkValue = genShrink(third.instance);
+        const firstShrinkValue = genShrink(() => first.instance);
+        const thirdShrinkValue = genShrink(() => third.instance);
         seenShrinks.push([firstShrinkValue, thirdShrinkValue]);
 
         expect(third.generate).toHaveBeenCalledTimes(1); // need to call generate on thirdArbitrary
@@ -172,7 +172,7 @@ describe('GeneratorArbitrary', () => {
       // Generate value
       const genValueA = g.generate(mrng, biasFactor);
       const genA = genValueA.value;
-      seenValues.push([genA(first.instance), genA(first.instance), genA(second.instance)]);
+      seenValues.push([genA(() => first.instance), genA(() => first.instance), genA(() => second.instance)]);
       expect(first.offsetOnLastCall()).toBe(1); // also called with 0
       expect(second.offsetOnLastCall()).toBe(2);
       // Shrink first level
@@ -184,7 +184,7 @@ describe('GeneratorArbitrary', () => {
       // >  a, c, 1
       const genValueB = g.shrink(genA, genValueA.context).getNthOrLast(4); // a, c, 1
       const genB = genValueB!.value;
-      seenValues.push([genB(first.instance), genB(first.instance), genB(third.instance)]);
+      seenValues.push([genB(() => first.instance), genB(() => first.instance), genB(() => third.instance)]);
       expect(third.offsetOnLastCall()).toBe(2);
       // Shrink second level
       // a, c, A
@@ -193,7 +193,7 @@ describe('GeneratorArbitrary', () => {
       // >  d, c, A
       const genValueC = g.shrink(genB, genValueB!.context).getNthOrLast(2); // d, c, A
       const genC = genValueC!.value;
-      seenValues.push([genC(first.instance), genC(first.instance), genC(third.instance)]);
+      seenValues.push([genC(() => first.instance), genC(() => first.instance), genC(() => third.instance)]);
       // Shrink third level
       // d, c, A
       // >  g, c, A
@@ -202,14 +202,19 @@ describe('GeneratorArbitrary', () => {
       // >  d, f, A
       const genValueD = g.shrink(genC, genValueC!.context).getNthOrLast(3); // d, f, A
       const genD = genValueD!.value;
-      seenValues.push([genD(first.instance), genD(first.instance)]);
+      seenValues.push([genD(() => first.instance), genD(() => first.instance)]);
       // Shrink fourth level
       // d, f
       // >  g, f
       // >  h, f
       const genValueE = g.shrink(genD, genValueD!.context).getNthOrLast(1); // h, f
       const genE = genValueE!.value;
-      seenValues.push([genE(first.instance), genE(first.instance), genE(second.instance), genE(third.instance)]);
+      seenValues.push([
+        genE(() => first.instance),
+        genE(() => first.instance),
+        genE(() => second.instance),
+        genE(() => third.instance),
+      ]);
       expect(second.offsetOnLastCall()).toBe(2);
       expect(third.offsetOnLastCall()).toBe(3);
       // Final assert

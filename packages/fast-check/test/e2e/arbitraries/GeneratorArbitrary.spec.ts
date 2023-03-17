@@ -3,10 +3,9 @@ import { seed } from '../seed';
 
 describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   it('should be able to shrink a single arbitrary', () => {
-    const integerArb = fc.integer();
     const out = fc.check(
       fc.property(fc.__experimentalGen(), (gen) => {
-        const v1 = gen(integerArb);
+        const v1 = gen(fc.integer);
         expect(v1).toBeLessThanOrEqual(10);
       }),
       { seed: seed }
@@ -16,11 +15,10 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   });
 
   it('should be able to shrink two unrelated arbitraries', () => {
-    const natArb = fc.nat();
     const out = fc.check(
       fc.property(fc.__experimentalGen(), (gen) => {
-        const v1 = gen(natArb);
-        const v2 = gen(natArb); // unrelated because does not depend on v1
+        const v1 = gen(fc.nat, {});
+        const v2 = gen(fc.nat, {}); // unrelated because does not depend on v1
         expect(v1).toBeLessThanOrEqual(v2);
       }),
       { seed: seed }
@@ -30,23 +28,17 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   });
 
   it('should be able to shrink two related arbitraries', () => {
-    const natArb = fc.nat(100);
-    const squareArbs = new Map<number, fc.Arbitrary<number[][]>>();
-    const buildSquareArb = (size: number) => {
-      if (squareArbs.has(size)) {
-        return squareArbs.get(size)!;
-      }
+    const squareArb = (size: number) => {
       const arb = fc.array(fc.array(fc.nat(), { minLength: size, maxLength: size }), {
         minLength: size,
         maxLength: size,
       });
-      squareArbs.set(size, arb);
       return arb;
     };
     const out = fc.check(
       fc.property(fc.__experimentalGen(), (gen) => {
-        const v1 = gen(natArb);
-        const v2 = gen(buildSquareArb(v1));
+        const v1 = gen(fc.nat, { max: 100 });
+        const v2 = gen(squareArb, v1);
         const surface = v2.length !== 0 ? v2.length * v2[0].length : 0;
         expect(surface).toBeLessThanOrEqual(8);
       }),
@@ -64,17 +56,15 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   });
 
   it('should be able to shrink two related arbitraries with changing branches', () => {
-    const integerArb = fc.integer();
-    const stringArb = fc.string();
     const out = fc.check(
       fc.property(fc.__experimentalGen(), (gen) => {
-        const v1 = gen(integerArb);
+        const v1 = gen(fc.integer);
         if (v1 < 0) {
-          const v2 = gen(integerArb);
-          const v3 = gen(integerArb);
+          const v2 = gen(fc.integer);
+          const v3 = gen(fc.integer);
           return typeof v2 === 'number' && typeof v3 === 'number'; // success
         }
-        const v2 = gen(stringArb);
+        const v2 = gen(fc.string);
         expect(v2.length).toBeGreaterThanOrEqual(v1);
       }),
       { seed: seed }
@@ -84,16 +74,15 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
   });
 
   it('should be able to shrink arbitraries generated via for-loops', () => {
-    const natArb = fc.nat(100);
     const out = fc.check(
       fc.property(fc.__experimentalGen(), (gen) => {
-        const width = gen(natArb);
-        const height = gen(natArb);
+        const width = gen(fc.nat, { max: 100 });
+        const height = gen(fc.nat, { max: 100 });
         const grid: number[][] = [];
         for (let i = 0; i !== width; ++i) {
           const line: number[] = [];
           for (let j = 0; j !== height; ++j) {
-            line.push(gen(natArb));
+            line.push(gen(fc.nat, { max: 100 }));
           }
           grid.push(line);
         }

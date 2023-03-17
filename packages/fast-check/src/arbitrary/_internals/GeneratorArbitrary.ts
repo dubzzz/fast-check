@@ -12,7 +12,7 @@ import { tupleShrink } from './TupleArbitrary';
  */
 export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
   generate(mrng: Random, biasFactor: number | undefined): Value<GeneratorValue> {
-    return buildGeneratorValue(mrng, biasFactor, () => []);
+    return buildGeneratorValue(mrng, biasFactor, () => [], naiveIsEqual);
   }
 
   canShrinkWithoutContext(value: unknown): value is GeneratorValue {
@@ -44,7 +44,33 @@ export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
           mrng: entry.mrng,
         }));
       }
-      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues);
+      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, naiveIsEqual);
     });
+  }
+}
+
+function naiveIsEqual(v1: unknown, v2: unknown): boolean {
+  if (v1 !== null && typeof v1 === 'object' && v2 !== null && typeof v2 === 'object') {
+    if (Array.isArray(v1)) {
+      if (!Array.isArray(v2)) return false;
+      if (v1.length !== v2.length) return false;
+    } else if (Array.isArray(v2)) {
+      return false;
+    }
+
+    if (Object.keys(v1).length !== Object.keys(v2).length) {
+      return false;
+    }
+    for (const index in v1) {
+      if (!(index in v2)) {
+        return false;
+      }
+      if (!naiveIsEqual((v1 as any)[index], (v2 as any)[index])) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return Object.is(v1, v2);
   }
 }

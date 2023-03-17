@@ -4,7 +4,11 @@ import { cloneMethod } from '../../../check/symbols';
 import { Random } from '../../../random/generator/Random';
 import { stringify, toStringMethod } from '../../../utils/stringify';
 
-export type GeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
+export type InternalGeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
+export type GeneratorValueFunction = <T, TArgs extends unknown[]>(
+  arb: (...params: TArgs) => Arbitrary<T>,
+  ...args: TArgs
+) => T;
 export type GeneratorValueMethods = { values: () => unknown[] };
 
 /**
@@ -52,13 +56,14 @@ export type GeneratorContext = {
 export function buildGeneratorValue(
   mrng: Random,
   biasFactor: number | undefined,
-  computePreBuiltValues: () => PreBuiltValue[]
+  computePreBuiltValues: () => PreBuiltValue[],
+  isEqual: (v1: unknown, v2: unknown) => boolean
 ): Value<GeneratorValue> {
   const preBuiltValues = computePreBuiltValues();
   let localMrng = mrng.clone();
   const context: GeneratorContext = { mrng: mrng.clone(), biasFactor, history: [] };
 
-  const valueFunction: GeneratorValueFunction = <T>(arb: Arbitrary<T>): T => {
+  const valueFunction: InternalGeneratorValueFunction = <T>(arb: Arbitrary<T>): T => {
     // We pull values from our pre-built values until we reach mismatching ones
     const preBuiltValue = preBuiltValues[context.history.length];
     if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
@@ -81,18 +86,49 @@ export function buildGeneratorValue(
     return g.value;
   };
 
+  const previousCallsPerBuilder = new WeakMap<
+    () => Arbitrary<unknown>,
+    { params: unknown[]; value: Arbitrary<unknown> }[]
+  >();
+  const memoedExtractor = <T, TArgs extends unknown[]>(
+    arb: (...params: TArgs) => Arbitrary<T>,
+    ...args: TArgs
+  ): Arbitrary<T> => {
+    const entriesForBuilder = previousCallsPerBuilder.get(arb);
+    if (entriesForBuilder === undefined) {
+      const newValue = arb(...args);
+      previousCallsPerBuilder.set(arb, [{ params: args, value: newValue }]);
+      return newValue;
+    }
+    const safeEntriesForBuilder = entriesForBuilder as { params: unknown[]; value: Arbitrary<T> }[];
+    for (const entry of safeEntriesForBuilder) {
+      if (isEqual(args, entry.params)) {
+        return entry.value;
+      }
+    }
+    const newValue = arb(...args);
+    safeEntriesForBuilder.push({ params: args, value: newValue });
+    return newValue;
+  };
+  const memoedValueFunction: GeneratorValueFunction = <T, TArgs extends unknown[]>(
+    arb: (...params: TArgs) => Arbitrary<T>,
+    ...args: TArgs
+  ) => {
+    return valueFunction(memoedExtractor(arb, ...args));
+  };
+
   const valueMethods = {
     values(): unknown[] {
       return context.history.map((c) => c.value);
     },
     [cloneMethod](): GeneratorValue {
-      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues).value;
+      return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, isEqual).value;
     },
     [toStringMethod](): string {
       return stringify(context.history.map((c) => c.value));
     },
   };
 
-  const value = Object.assign(valueFunction, valueMethods);
+  const value = Object.assign(memoedValueFunction, valueMethods);
   return new Value(value, context);
 }
