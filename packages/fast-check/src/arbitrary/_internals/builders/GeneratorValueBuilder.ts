@@ -76,7 +76,7 @@ export function buildGeneratorValue(
     // Forbid users to diverge on the first generated value
     if (preBuiltValue !== undefined && context.history.length === 0) {
       throw new Error(
-        `Illegal use of fc.auto: ` +
+        `Illegal use of fc.gen: ` +
           `passed arbitraries can only vary between calls based on generated values not on external world`
       );
     }
