@@ -26,6 +26,7 @@ export { GeneratorValue as GeneratorValue };
  * Additionally it cannot run back the test properly when attempting to replay based on a seed and a path.
  * You'll need to limit yourself to the seed and drop the path from the options if you attempt to replay something
  * implying it.
+ * It also does not support custom examples.
  *
  * @remarks Since 3.8.0
  * @public
