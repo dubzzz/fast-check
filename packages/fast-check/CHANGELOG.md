@@ -1,3 +1,39 @@
+# 3.7.1
+
+_Safer declaration of types in package.json_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.7.0...v3.7.1)]
+
+## Fixes
+
+- ([PR#3671](https://github.com/dubzzz/fast-check/pull/3671)) Bug: Declare types field first in exports
+- ([PR#3646](https://github.com/dubzzz/fast-check/pull/3646)) Doc: Fix a typo in Runners.md
+
+# 3.7.0
+
+_Better error reports without duplicated messages_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.3...v3.7.0)]
+
+## Features
+
+- ([PR#3638](https://github.com/dubzzz/fast-check/pull/3638)) Stop repeating the error twice in reports
+
+## Fixes
+
+- ([PR#3637](https://github.com/dubzzz/fast-check/pull/3637)) CI: Update ts-jest configuration files
+
+---
+
+# 3.6.3
+
+_Fix broken replay based on path_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.6.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.6.2...v3.6.3)]
+
+## Fixes
+
+- ([PR#3617](https://github.com/dubzzz/fast-check/pull/3617)) Bug: Fix broken replay based on path
+- ([PR#3583](https://github.com/dubzzz/fast-check/pull/3583)) CI: Do not run publish workflow of fast-check for vitest
+- ([PR#3616](https://github.com/dubzzz/fast-check/pull/3616)) CI: Always build against latest node
+
 # 3.6.2
 
 _Still work in fake timer contexts_

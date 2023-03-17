@@ -180,7 +180,7 @@ interface RunDetails<Ts> {
   failures: Ts[]; // verbose>=1 only: failures that have occurred during the run
   executionSummary: ExecutionTree<Ts>[]; // verbose>=1 only: traces the origin of each value
   // encountered during the test and its status
-  runConfiguration: Parameters<Ts>; // configuration of the run, it includes local and global paramaters
+  runConfiguration: Parameters<Ts>; // configuration of the run, it includes local and global parameters
 }
 ```
 

@@ -46,7 +46,7 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
 
     // Assert
     expect((out as PropertyFailure).errorMessage).toContain('predicate throws');
-    expect((out as PropertyFailure).errorMessage).toContain('\n\nStack trace:');
+    expect((out as PropertyFailure).errorMessage).toContain('at ');
     expect((out as PropertyFailure).error).toBe(originalError);
   });
   it('Should fail if predicate throws a raw string', () => {

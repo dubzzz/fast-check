@@ -119,14 +119,14 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
         ? null
         : {
             error: new Error('Property failed by returning false'),
-            errorMessage: 'Property failed by returning false',
+            errorMessage: 'Error: Property failed by returning false',
           };
     } catch (err) {
       // precondition failure considered as success for the first version
       if (PreconditionFailure.isFailure(err)) return err;
       // exception as PropertyFailure in case of real failure
       if (err instanceof Error && err.stack) {
-        return { error: err, errorMessage: `${err}\n\nStack trace: ${err.stack}` };
+        return { error: err, errorMessage: err.stack }; // stack includes the message
       }
       return { error: err, errorMessage: String(err) };
     } finally {

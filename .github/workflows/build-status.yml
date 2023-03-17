@@ -180,9 +180,10 @@ jobs:
           - '@fast-check/jest'
           - '@fast-check/packaged'
           - '@fast-check/poisoning'
+          - '@fast-check/vitest'
           - '@fast-check/worker'
         script-name: ['test']
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [14.x, 16.x, 18.x, latest]
         os: ['ubuntu-latest']
         include:
           # More platforms and scripts...
@@ -507,7 +508,7 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - if: startsWith(github.ref, 'refs/tags/v')
+      - if: startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/vitest/v')
         name: Publish fast-check
         run: npm publish --access public packages/fast-check/package.tgz
         env:
@@ -530,6 +531,11 @@ jobs:
       - if: startsWith(github.ref, 'refs/tags/poisoning/v')
         name: Publish @fast-check/poisoning
         run: npm publish --access public packages/poisoning/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - if: startsWith(github.ref, 'refs/tags/vitest/v')
+        name: Publish @fast-check/vitest
+        run: npm publish --access public packages/vitest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - if: startsWith(github.ref, 'refs/tags/worker/v')
