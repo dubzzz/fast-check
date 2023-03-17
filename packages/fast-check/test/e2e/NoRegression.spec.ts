@@ -71,7 +71,7 @@ describe(`NoRegression`, () => {
   it('gen', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.__experimentalGen(), (gen) => {
+        fc.property(fc.gen(), (gen) => {
           const v1 = gen(fc.integer);
           const v2 = gen(fc.integer);
           return testFunc(`${v1}-${v2}`);
