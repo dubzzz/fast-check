@@ -19,6 +19,7 @@ import {
 import { assert, check } from './check/runner/Runner';
 import { sample, statistics } from './check/runner/Sampler';
 
+import { gen, GeneratorValue } from './arbitrary/gen';
 import { array, ArrayConstraints } from './arbitrary/array';
 import { bigInt, BigIntConstraints } from './arbitrary/bigInt';
 import { bigIntN } from './arbitrary/bigIntN';
@@ -284,6 +285,7 @@ export {
   compareFunc,
   func,
   context,
+  gen,
   date,
   // web
   ipV4,
@@ -398,6 +400,7 @@ export {
   CloneValue,
   ContextValue,
   FalsyValue,
+  GeneratorValue,
   JsonValue,
   LetrecValue,
   OneOfValue,
