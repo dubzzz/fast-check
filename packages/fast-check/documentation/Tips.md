@@ -1009,5 +1009,3 @@ test('validateMatrix accepts any rectangular matrix', () => {
   );
 });
 ```
-
-
