@@ -1,6 +1,6 @@
 # 3.8.0
 
-_TODO Description_
+_Introduce new `gen` arbitrary_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.7.1...v3.8.0)]
 
 ## Features
