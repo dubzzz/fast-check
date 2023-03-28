@@ -24,6 +24,7 @@ Simple tips to unlock all the power of fast-check with only few changes.
 - [Supported targets from node to deno](#supported-targets-from-node-to-deno)
 - [Override default toString for a given instance](#override-default-toString-for-a-given-instance)
 - [Larger entries by default](#larger-entries-by-default)
+- [Generate random values during the predicate](#generate-random-values-during-the-predicate)
 
 ## Filter invalid combinations using pre-conditions
 
@@ -913,3 +914,98 @@ At global level, there are two main options:
 - `defaultSizeToMaxWhenMaxSpecified` — when set to `true`, any arbitrary being instantiated with an upper bound (such as `maxLength` or `maxDepth`) and no size will see it's size defaulted to `max` / when set to `false`, if not defined the size will be defaulted to `baseSize` (see above)
 
 You may want to read more about ways to configure global settings at [Setup global settings](#setup-global-settings).
+
+## Generate random values during the predicate
+
+Property based testing might not be trivial for people discovering the approach. Indeed, instead of building the values as you go in the test, property based testing asks the tester to think about the inputs before entering the predicate. It makes the technique less approachable than relying onto fake data libraries. In order to cope with that limitation, fast-check came up with a new arbitrary called `fc.gen()` in version 3.8.0. This arbitrary can simplify a lot the adoption of property based testing while offering a fake data -like code structure.
+
+Indeed, relying on purely fake data in tests is rather dangerous. Fake data goes from fake data library to things such as `Date.now()`, `Math.random()` or any other non-deterministic values. When relying on fake data people either seed them or let them fully random.
+
+- Seeded version is equivalent to inlining the value in the test. Indeed `const name = fakerDataLib.firstName()` is just equivalent to `const name = "Tom"`, as if your seed does not change your value won't change neither. In such case, the fake data library hides a value that will not change from one run to another behind something that let think it might change.
+- Fully random version on the other hand is pretty dangerous as in case of failure you won't be able to replay the failure in many cases.
+
+Let's take this example:
+
+```js
+test('validateUser accepts any user', () => {
+  const user = {
+    birthDate: faker.date.birthdate(),
+  };
+  expect(validateUser(user)).toBe(true);
+});
+```
+
+Here we explicitely rely on fake data generator to generate our values. Thing is: if one day it starts to fail because something gets changed into `validateUser`, it might not fail immediately. For instance, it might start to fail for some precise dates. In such cases, reproducing the error would be very hard as the only thing you'll now about your data will be:
+
+```txt
+expect false to be true
+```
+
+Ability to easily reproduce is the core motivation of property based testing. Here is how you could rewrite the test above with `fc.gen()`:
+
+```js
+test('validateUser accepts any user', () => {
+  fc.assert(
+    fc.property(fc.gen(), (g) => {
+      const user = {
+        birthDate: g(fc.date),
+      };
+      expect(validateUser(user)).toBe(true);
+    })
+  );
+});
+```
+
+Please note, that the recommended test would rather be:
+
+```js
+test('validateUser accepts any user', () => {
+  fc.assert(
+    fc.property(fc.record({ birthDate: fc.date() }), (user) => {
+      expect(validateUser(user)).toBe(true);
+    })
+  );
+});
+```
+
+But `fc.gen()` can be really useful for things such as building grids. Indeed, with built-in arbitraries provided by fast-check, building such entity would require a bit of iterations with `.map`, `.filter` and `.chain`. Even if using the built-ins would probably lead to even better replay and shrinking capabilities, it comes with a cost and it's probably not that problematic to go for a `fc.gen()` approach:
+
+```js
+test('validateMatrix accepts any rectangular matrix', () => {
+  fc.assert(
+    fc.property(fc.gen(), (g) => {
+      const width = g(fc.nat, { max: 100 });
+      const height = g(fc.nat, { max: 100 });
+      const matrix = [];
+      for (let j = 0; j !== height; ++j) {
+        const line = [];
+        for (let i = 0; i !== width; ++i) {
+          line.push(g(fc.integer));
+        }
+        matrix.push(line);
+      }
+      expect(validateMatrix(matrix)).toBe(true);
+    })
+  );
+});
+```
+
+The version backed by classical built-ins would be something like:
+
+```js
+test('validateMatrix accepts any rectangular matrix', () => {
+  fc.assert(
+    fc.property(
+      fc.record({ width: fc.nat({ max: 100 }), height: fc.nat({ max: 100 }) }).chain((dims) =>
+        fc.array(fc.array(fc.integer(), { minLength: dims.width, maxLength: dims.width }), {
+          minLength: dims.height,
+          maxLength: dims.height,
+        })
+      ),
+      (matrix) => {
+        expect(validateMatrix(matrix)).toBe(true);
+      }
+    )
+  );
+});
+```
