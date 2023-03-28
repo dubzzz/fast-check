@@ -1,3 +1,18 @@
+# 3.8.0
+
+_Introduce new `gen` arbitrary_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.7.1...v3.8.0)]
+
+## Features
+
+- ([PR#3395](https://github.com/dubzzz/fast-check/pull/3395)) Introduce new `gen` arbitrary
+
+## Fixes
+
+- ([PR#3706](https://github.com/dubzzz/fast-check/pull/3706)) Doc: Document newly added `fc.gen()`
+
+---
+
 # 3.7.1
 
 _Safer declaration of types in package.json_
