@@ -3837,6 +3837,44 @@ Refer to [Model based testing or UI test](./Tips.md#model-based-testing-or-ui-te
 </details>
 
 <details>
+<summary><b>gen</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#gen">api</a>]</summary><br/>
+
+*&#8195;Description*
+
+> This arbitrary has been designed to simplify the usage of Property Based Testing.
+> It helps to easily leverage Property Based Testing capabilities into tests based on fake-data.
+>
+> ⚠️ When replaying failures on properties including a `fc.gen()`, you need to drop the path part.
+>
+> ⚠️ Calls to the produced instance must be done in a determistic order.
+>
+> More details on [Tips](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Tips.md#generate-random-values-during-the-predicate).
+
+*&#8195;Signatures*
+
+- `fc.gen()`
+
+*&#8195;Usages*
+
+```js
+fc.gen()
+// The produced value is a function able to generate random values from arbitraries within the tests themselves.
+//
+// It takes from 1 to N parameters:
+// - the first parameter is a function able to return an arbitrary — ⚠️ this function must be a static function and not be recreated from one run to another
+// - and its parameters as second, third...
+//
+// It can be called as follow:
+// - g(fc.nat) — building a random value during the predicate using the arbitrary fc.nat()
+// - g(fc.nat, {max: 10}) — same but using fc.nat({max: 10})
+//
+// ⚠️ But DO NOT USE: g(() => fc.nat({max: 10})).
+// In the case right above, neither the builder of arbitrary nor the arbitrary itself are stable references. It would make shrinking impossible.
+// If you do need to create a dedicated builder, define it outside of `fc.assert` and use it in your predicate as `g(myBuilder, ...parametersForMyBuilder)`.
+```
+</details>
+
+<details>
 <summary><b>scheduler</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#scheduler">api</a>]</summary><br/>
 
 *&#8195;Description*
