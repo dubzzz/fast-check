@@ -16,6 +16,9 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link className="button button--secondary button--lg" to="/docs/intro">
+            Why Property Based Testing? 📚
+          </Link>
+          <Link className="button button--secondary button--lg" to="/docs/intro">
             Quick Tutorial - 5min ⏱️
           </Link>
         </div>

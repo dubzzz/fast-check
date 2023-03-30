@@ -37,7 +37,10 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: { sidebarPath: require.resolve('./sidebars.js') },
+        docs: {
+          sidebarPath: require.resolve('./sidebars.js'),
+          remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
+        },
         blog: { showReadingTime: true },
         theme: { customCss: require.resolve('./src/css/custom.css') },
       }),

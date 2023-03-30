@@ -4,44 +4,57 @@ sidebar_position: 1
 
 # Tutorial Intro
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Let's discover **fast-check in less than 5 minutes**.
 
 ## Getting Started
 
-Get started by **creating a new site**.
-
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+Get started by **creating a new node project**.
 
 ### What you'll need
 
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+- [Node.js](https://nodejs.org/en/download/) version 16.17.0 or above
 
-## Generate a new site
+## Setup the project
 
-Generate a new Docusaurus site using the **classic template**.
+Create a new directory called `fast-check-tutorial` to start your new project and open a terminal within it.
 
-The classic template will automatically be added to your project after you run the command:
+Initialize the project and install fast-check as a dependency by running the following commands:
 
-```bash
-npm init docusaurus@latest my-website classic
+```bash npm2yarn
+npm init --yes
+npm install --save-dev fast-check
 ```
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+:::tip Usage with test runners
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+fast-check can be used in conjunction with any test runner. If you prefer using [Jest](https://jestjs.io/), [Vitest](https://vitest.dev/), [Ava](https://github.com/avajs/ava#readme) or any other, choice is yours! In this tutorial we will use the default test runner provided in Node since version 16.17.0.
 
-## Start your site
+:::
 
-Run the development server:
+## Write an Hello World test file
 
-```bash
-cd my-website
-npm run start
+Create your first test file with the following content:
+
+```js title="test.mjs"
+import { test } from 'node:test';
+
+test('empty', () => {});
 ```
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+Edit your `package.json` as follow:
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+```json title="package.json"
+{
+  "private": "true",
+  "name": "fast-check-tutorial",
+  "version": "0.0.0",
+  "devDependencies": {
+    "fast-check": "*"
+  },
+  "scripts": {
+    "test": "node test.mjs"
+  }
+}
+```
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+We are now ready to start!
