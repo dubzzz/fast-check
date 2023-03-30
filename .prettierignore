@@ -5,3 +5,4 @@ packages/*/lib/
 packages/*/lib-*/
 packages/fast-check/docs/
 packages/fast-check/documentation/Arbitraries.md
+website/.docusaurus/
