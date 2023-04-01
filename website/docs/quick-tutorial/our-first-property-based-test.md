@@ -1,0 +1,92 @@
+---
+sidebar_position: 2
+---
+
+# Our first Property Based Test
+
+Write your first test.
+
+## What are we testing?
+
+The code under test is a `sortNumbersAscending`: the algorithm takes an array of numbers and returns a sorted copy of it. Resulting values should be ordered from the smallest one to the largest one.
+
+Here are some basic unit tests we could have written for it:
+
+```js
+test('should keep an already sorted array sorted', () => {
+  expect(sortNumbersAscending([1, 2, 3])).toEqual([1, 2, 3]);
+});
+test('should sort an array in random order', () => {
+  expect(sortNumbersAscending([3, 1, 2])).toEqual([1, 2, 3]);
+});
+test('should sort an array in reverse order', () => {
+  expect(sortNumbersAscending([3, 1, 2])).toEqual([1, 2, 3]);
+});
+```
+
+These tests are what we call example based tests. They are based on clearly specified examples that the tester thought about when writing them.
+
+## What is a property?
+
+Contrary to example based tests, we will not explicitely come with predefined values but ask the framework to build them for us. It has several positive impacts:
+
+- We test more inputs over time
+- We test more diverse set of inputs
+- We don't need to think about complex counterexamples
+
+A property can be expressed as follow:
+
+> for any (x, y, ...)  
+> such that precondition(x, y, ...) holds  
+> predicate(x, y, ...) is true
+
+:::info Property based tests
+
+You may want to refer to our [Getting Started](/link-missing) section to know more about the benefits and strengths of property based tests.
+
+:::
+
+## Our first property
+
+When thinking about properties, one may think about what's the algorithm is supposed to do. Here our algorithm is supposed to: "_Sort numeric elements from the smallest to the largest one_". In other words, given two indices in the array, the smallest indices should be attached to a smaller value than the other other and larger indice.
+
+In other words, we could come up with the following property:
+
+> for any
+>
+> - `data`, array of numerical values
+> - `i`, index in `data`
+> - `j`, index in `data`
+>
+> such that `i ≤ j`  
+> `sortedData[i] ≤ sortedData[j]` is true, with `sortedData = sortNumbersAscending(data)`
+
+Which could be summurized as:
+
+> for any `data`, array of numerical values  
+> `sortedData[i-1] ≤ sortedData[i]` is true for any `i` in `[1..data.length-1]`
+
+## Our property written with fast-check
+
+Let's start by adding import statement for fast-check into our test file.
+
+```js title="sort.test.mjs"
+import fc from 'fast-check';
+```
+
+Now that we have our property in mind, let's translate it into a running test:
+
+```js title="sort.test.mjs"
+test('should sort numeric elements from the smallest to the largest one', () => {
+  fc.assert(
+    fc.property(fc.array(fc.integer()), (data) => {
+      const sortedData = sortNumbersAscending(data);
+      for (let i = 1; i < data.length; ++i) {
+        expect(sortedData[i - 1]).toBeLessThanOrEqual(sortedData[i]);
+      }
+    })
+  );
+});
+```
+
+Congratulations, you've written your first property based tests!
