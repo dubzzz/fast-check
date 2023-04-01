@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Basic Setup
+# Getting Started
 
 Setup your environment.
 
@@ -12,15 +12,15 @@ In this tutorial, you'll need to have [Node.js](https://nodejs.org/en/download/)
 
 We will start from an already bootstrapped project to focus on our target: writing our first test.
 
-:::info Setup
-You may want to refer to our [Getting Started](/link-missing) section to setup fast-check in an existing project or without tutorial related code.
-:::
-
 ```bash npm2yarn
 npx degit dubzzz/fast-check/website/templates/fast-check-tutorial fast-check-tutorial
 cd fast-check-tutorial
 npm i
 ```
+
+:::info Setup
+You may want to refer to our [Getting Started](/link-missing) section to setup fast-check in an existing project or without tutorial related code.
+:::
 
 ## Project structure
 

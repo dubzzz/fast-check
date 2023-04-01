@@ -41,9 +41,7 @@ A property can be expressed as follow:
 > predicate(x, y, ...) is true
 
 :::info Property based tests
-
 You may want to refer to our [Getting Started](/link-missing) section to know more about the benefits and strengths of property based tests.
-
 :::
 
 ## Our first property
@@ -89,4 +87,4 @@ test('should sort numeric elements from the smallest to the largest one', () => 
 });
 ```
 
-Congratulations, you've written your first property based tests!
+Congratulations, you've written your first property based tests! 🎉
