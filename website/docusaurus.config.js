@@ -56,9 +56,9 @@ const config = {
         title: 'fast-check',
         logo: { alt: 'fast-check Logo', src: 'img/mug.svg' },
         items: [
-          { to: '/docs/category/introduction', label: 'Guide', position: 'left' },
+          { to: '/docs/category/introduction', label: 'Getting Started', position: 'left' },
           { to: '/docs/category/quick-tutorial', label: 'Quick Tutorial', position: 'left' },
-          { to: '/blog', label: 'Blog', position: 'left' },
+          //{ to: '/blog', label: 'Blog', position: 'left' },
           { href: 'https://github.com/dubzzz/fast-check', label: 'GitHub', position: 'right' },
           { href: 'https://dubzzz.github.io/fast-check/', label: 'API', position: 'right' },
         ],
@@ -69,9 +69,9 @@ const config = {
           {
             title: 'Docs',
             items: [
-              { label: 'Guide', to: '/docs/category/introduction' },
+              { label: 'Getting Started', to: '/docs/category/introduction' },
               { label: 'Quick Tutorial', to: '/docs/category/quick-tutorial' },
-              { label: 'API Reference', href: 'https://dubzzz.github.io/fast-check/' },
+              { label: 'All Tutorials', to: '/docs/category/tutorials' },
             ],
           },
           {
@@ -84,7 +84,8 @@ const config = {
           {
             title: 'More',
             items: [
-              { label: 'Blog', to: '/blog' },
+              //{ label: 'Blog', to: '/blog' },
+              { label: 'API Reference', href: 'https://dubzzz.github.io/fast-check/' },
               { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             ],
           },

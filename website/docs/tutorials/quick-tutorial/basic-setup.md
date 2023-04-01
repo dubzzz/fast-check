@@ -8,11 +8,9 @@ Setup your environment.
 
 ## Setup the project
 
-In this tutorial, you'll need the following tools:
+In this tutorial, you'll need to have [Node.js](https://nodejs.org/en/download/) installed.
 
-- [Node.js](https://nodejs.org/en/download/)
-
-Let's start from an already bootstrapped project:
+We will start from an already bootstrapped project to focus on our target: writing our first test.
 
 ```bash npm2yarn
 npx degit dubzzz/fast-check/website/templates/fast-check-tutorial fast-check-tutorial
@@ -30,11 +28,11 @@ You may want to refer to our [Getting Started](/link-missing) section to setup f
 
 Our tutorial project is rather small, it contains the following files:
 
-- `code.mjs` — the code we want to test
-- `test.mjs` — our test file
 - `package.json` — the dependencies, scripts… used by the project
+- `sort.mjs` — the code we want to test
+- `sort.test.mjs` — our test file
 
-This project is relying on Vitest to run the tests.
+This project is relying on [Vitest](https://vitest.dev/) to run the tests.
 
 :::tip Test runners
 

@@ -20,7 +20,7 @@ Tests should not pass.
 
 The unit tests we wrote in the previous section are fully green. They were not able to detect any issue. The values that have been hardcoded into them all contains the same number of digits and thus do not fall into all the corner cases.
 
-In JavaScript, `sort` orders elements based on their string representation: `sort([1, 10, 2])` is `[1, 10, 2]`. In the past, `sort` suffered from other strange edges cases: it was stable when receiving less than 10 elements, unstable above 10.
+In JavaScript, `sort` orders elements based on their string representation: `sort([1, 10, 2])` is `[1, 10, 2]`. In the past, `sort` suffered from other strange edges cases: it was stable when receiving less than 10 elements, unstable above 10. For all these reasons, property based testing is a powerful ally.
 
 :::
 
@@ -37,13 +37,13 @@ Got error: AssertionError: expected 1000000000 to be less than or equal to 2
 
 ## What failed?
 
-The failure happened for `[data] = [[2,1000000000]]` as explained by the line:
+By reading the error reported above, we get that a failure happened for `[data] = [[2,1000000000]]`. We extract this information from the line:
 
 ```txt
 Counterexample: [[2,1000000000]]
 ```
 
-Given `data = [2,1000000000]`, the predicate fails with the following error:
+We also see that given `data = [2,1000000000]`, the predicate fails with the following error:
 
 ```txt
 AssertionError: expected 1000000000 to be less than or equal to 2
@@ -62,57 +62,59 @@ In the property we wrote, the predicate is:
 };
 ```
 
+It corresponds to a function receiving the randomly generated values coming from fast-check and checking if the expectations are fulfilled.
+
 :::
 
 ## How to re-run?
 
-Whenever failing fast-check should report you everything you need to properly re-run the test. The details to do so are provided by the line:
+Whenever it reports a failure, fast-check provides to properly re-run the test. The details are provided by the line:
 
-```txt
+```js
 { seed: -1819918769, path: "0:...:3", endOnFailure: true }
 ```
 
-Given that line, you have multiple options to replay the error. But the simplest one is just to edit your test as follow:
+Given that line, the simplest option to re-run your predicate on the reported counterexample is to edit your test as follow:
 
-```diff title="sort.test.mjs"
-    test('should sort numeric elements from the smallest to the largest one', () => {
-      fc.assert(
-        fc.property(fc.array(fc.integer()), (data) => {
-          // code...
-        }),
-+++     { seed: -1819918769, path: "0:...:3", endOnFailure: true }
-      );
-    });
+```js title="sort.test.mjs"
+test('should sort numeric elements from the smallest to the largest one', () => {
+  fc.assert(
+    fc.property(fc.array(fc.integer()), (data) => {
+      /* code of the predicate */
+    }),
+    { seed: -1819918769, path: '0:...:3', endOnFailure: true } // <-- added
+  );
+});
 ```
 
-Then you can relaunch the test runner and the test will only run the predicate once for the reported failure.
+Then you can relaunch the test runner. The test will run the predicate directly on the reported failure without passing by all the intermediate values it initially needed to reach it.
 
-The options `path` or `endOnFailure` can be dropped if needed:
+The parameters `path` or `endOnFailure` can be dropped if needed:
 
-- `path` - start the execution directly on the reduced counterexample
-- `endOnFailure` - immediately stop the execution on failure and do not attempt to shrink the case
+- `path` — start the execution directly on the reduced counterexample
+- `endOnFailure` — immediately stop the execution on failure and do not attempt to shrink the case
 
-:::info Case reduction
+:::info Case reduction _aka. shrink_
 
-By default, property based testing framework try to reduce the counterexemple so that users get reported easier to troubleshoot errors.
+By default, property based testing frameworks try to reduce the counterexamples so that users get reported easier to troubleshoot errors. Instead of telling you: "_failed for `stringValue = "abc{...10k more letters}ert"`_", it will come to you with "_failed for `stringValue = "az"`_".
 
 :::
 
 ## How to increase verbosity?
 
-By default, verbosity on failures is minimal. The framework limits the reported data to the bare minimal: the case that failed, the error it caused and the seed needed to reproduce.
+By default, the framework limits the reported data to the bare minimal: the case that failed, the error it caused and the seed needed to reproduce.
 
 But in some cases, it might be interesting to have much more details concerning what failed and what did not. To do so you can pass a verbosity flag to `fc.assert` as follow:
 
-```diff title="sort.test.mjs"
-    test('should sort numeric elements from the smallest to the largest one', () => {
-      fc.assert(
-        fc.property(fc.array(fc.integer()), (data) => {
-          // code...
-        }),
-+++     { verbose: 2 }
-      );
-    });
+```js title="sort.test.mjs"
+test('should sort numeric elements from the smallest to the largest one', () => {
+  fc.assert(
+    fc.property(fc.array(fc.integer()), (data) => {
+      /* code of the predicate */
+    }),
+    { verbose: 2 } // <-- added
+  );
+});
 ```
 
 :::info Verbosity values

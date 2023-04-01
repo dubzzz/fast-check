@@ -16,10 +16,10 @@ Here are some basic unit tests we could have written for it:
 test('should keep an already sorted array sorted', () => {
   expect(sortNumbersAscending([1, 2, 3])).toEqual([1, 2, 3]);
 });
-test('should sort an array in random order', () => {
+test('should sort a randomly ordered array in ascending order', () => {
   expect(sortNumbersAscending([3, 1, 2])).toEqual([1, 2, 3]);
 });
-test('should sort an array in reverse order', () => {
+test('should sort a descending ordered array in ascending order', () => {
   expect(sortNumbersAscending([3, 1, 2])).toEqual([1, 2, 3]);
 });
 ```
@@ -28,11 +28,11 @@ These tests are what we call example based tests. They are based on clearly spec
 
 ## What is a property?
 
-Contrary to example based tests, we will not explicitely come with predefined values but ask the framework to build them for us. It has several positive impacts:
+A property is to property based tests, what an example if to example based tests: it's the core building block of it.Instead of explicitely defining values to test, we will ask the framework to build them for us. Instead of expecting clear values, we will check the shape of the output. And it has several positive impacts:
 
 - We test more inputs over time
-- We test more diverse set of inputs
-- We don't need to think about complex counterexamples
+- We test more diverse inputs
+- We don't need to think about counterexamples
 
 A property can be expressed as follow:
 
@@ -48,7 +48,7 @@ You may want to refer to our [Getting Started](/link-missing) section to know mo
 
 ## Our first property
 
-When thinking about properties, one may think about what's the algorithm is supposed to do. Here our algorithm is supposed to: "_Sort numeric elements from the smallest to the largest one_". In other words, given two indices in the array, the smallest indices should be attached to a smaller value than the other other and larger indice.
+When thinking about properties, one may think about what's the algorithm is supposed to do. Here our algorithm is supposed to: "_Sort numeric elements from the smallest to the largest one_". In other words, given two indices in the array, the smallest index should be attached to value being smaller than the one at the larger index.
 
 In other words, we could come up with the following property:
 
