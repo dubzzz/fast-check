@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+slug: /tutorials/quick-start/read-test-reports
 ---
 
 # Read test reports

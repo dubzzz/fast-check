@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /tutorials/quick-start/basic-setup
 ---
 
 # Basic Setup
