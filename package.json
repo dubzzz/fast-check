@@ -18,7 +18,7 @@
     "format:check": "prettier --list-different .",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
-    "publint:all": "yarn workspaces foreach -pvi --no-private exec publint",
+    "publint:all": "yarn workspaces foreach -pvi --no-private exec publint --prod --level=error",
     "version:bump": "yarn version check --interactive",
     "pack:all": "yarn workspaces foreach -pvi --no-private pack --out package.tgz",
     "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
