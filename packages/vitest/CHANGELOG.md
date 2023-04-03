@@ -1,3 +1,16 @@
+# 0.0.4
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.3...vitest%2Fv0.0.4)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3721](https://github.com/dubzzz/fast-check/pull/3721)) Bug: Proper type declaration
+
 # 0.0.3
 
 _Fix vitest import failing due to TestBuilder_
