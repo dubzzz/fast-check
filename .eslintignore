@@ -6,5 +6,6 @@ packages/*/lib-*/
 packages/test-bundle-*/
 packages/test-minimal-support/
 packages/test-types/
+website/
 jest*.js
 jest*.cjs
