@@ -59,7 +59,7 @@ const config = {
           { to: '/docs/category/introduction', label: 'Getting Started', position: 'right' },
           { to: '/docs/category/quick-start', label: 'Quick Start', position: 'right' },
           //{ to: '/blog', label: 'Blog', position: 'right' },
-          { href: 'https://dubzzz.github.io/fast-check/', label: 'API', position: 'right' },
+          { href: 'https://dubzzz.github.io/fast-check/api-reference/index.html', label: 'API', position: 'right' },
           { href: 'https://github.com/dubzzz/fast-check', label: 'GitHub', position: 'right' },
         ],
       },
@@ -85,7 +85,7 @@ const config = {
             title: 'More',
             items: [
               //{ label: 'Blog', to: '/blog' },
-              { label: 'API Reference', href: 'https://dubzzz.github.io/fast-check/' },
+              { label: 'API Reference', href: 'https://dubzzz.github.io/fast-check/api-reference/index.html' },
               { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             ],
           },
