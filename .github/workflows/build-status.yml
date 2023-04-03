@@ -275,7 +275,11 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Generate documentation
+        run: yarn workspace website build
+      - name: Generate API reference
         run: yarn workspace fast-check docs-ci
+      - name: Copy API reference within documentation
+        run: mv packages/fast-check/docs website/build/api-reference
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
