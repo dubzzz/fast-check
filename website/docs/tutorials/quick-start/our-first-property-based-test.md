@@ -3,7 +3,7 @@ sidebar_position: 2
 slug: /tutorials/quick-start/our-first-property-based-test
 ---
 
-# Our first Property Based Test
+# Our first Property-Based Test
 
 Write your first test.
 
@@ -29,7 +29,7 @@ These tests are what we call example based tests. They are based on clearly spec
 
 ## What is a property?
 
-A property is to property based tests, what an example if to example based tests: it's the core building block of it.Instead of explicitely defining values to test, we will ask the framework to build them for us. Instead of expecting clear values, we will check the shape of the output. And it has several positive impacts:
+A property is to property-based tests, what an example if to example based tests: it's the core building block of it.Instead of explicitely defining values to test, we will ask the framework to build them for us. Instead of expecting clear values, we will check the shape of the output. And it has several positive impacts:
 
 - We test more inputs over time
 - We test more diverse inputs
@@ -41,8 +41,8 @@ A property can be expressed as follow:
 > such that precondition(x, y, ...) holds  
 > predicate(x, y, ...) is true
 
-:::info Property based tests
-You may want to refer to our [Getting Started](/link-missing) section to know more about the benefits and strengths of property based tests.
+:::info Property-based tests
+You may want to refer to our [Getting Started](/link-missing) section to know more about the benefits and strengths of property-based tests.
 :::
 
 ## Our first property
@@ -88,4 +88,4 @@ test('should sort numeric elements from the smallest to the largest one', () => 
 });
 ```
 
-Congratulations, you've written your first property based tests! 🎉
+Congratulations, you've written your first property-based tests! 🎉

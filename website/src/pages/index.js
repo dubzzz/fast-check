@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <Layout
       title={`${siteConfig.title} official documentation`}
-      description="Property based testing for JavaScript and TypeScript"
+      description="Property-based testing for JavaScript and TypeScript"
     >
       <HomepageHeader />
       <main>
