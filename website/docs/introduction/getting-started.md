@@ -16,7 +16,7 @@ npm install --save-dev fast-check
 ```
 
 :::info Integration with test runners
-fast-check is agnostic of the test runner you rely on. It works with any test runner without needing any specific change. More details on [Usage with other test runners](/link-missing).
+fast-check is agnostic of the test runner you rely on. It works with any test runner without needing any specific change.
 :::
 
 ## Simple property
