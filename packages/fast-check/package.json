@@ -77,6 +77,8 @@
     "jscheck",
     "jsverify",
     "faker",
+    "fuzzer",
+    "fuzz",
     "jest"
   ],
   "tsd": {
