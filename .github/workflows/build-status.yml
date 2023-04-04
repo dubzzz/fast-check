@@ -479,13 +479,13 @@ jobs:
       - name: Download documentation
         uses: actions/download-artifact@v3
         with:
-          name: docs
-          path: packages/fast-check/docs/
+          name: build
+          path: website/build/
       - name: Publish to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
-          folder: packages/fast-check/docs/
+          folder: website/build/
           clean: true
   publish_package:
     name: 'Publish package'
