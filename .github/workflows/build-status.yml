@@ -280,11 +280,17 @@ jobs:
         run: yarn workspace fast-check docs-ci
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
+      - name: Sanitize artifacts
+        shell: sh
+        run: |
+          # Taken from https://github.com/actions/upload-pages-artifact/blob/main/action.yml
+          chmod -c -R +rX "website/build/"
+          tar --dereference --hard-dereference --directory "website/build/" -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git --exclude=.github .
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
           name: github-pages
-          path: website/build/
+          path: ${{runner.temp}}/artifact.tar
           if-no-files-found: error
           retention-days: 1
   test_bundle:
