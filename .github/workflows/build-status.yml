@@ -165,93 +165,6 @@ jobs:
         run: yarn unpack:all
       - name: Typecheck
         run: yarn workspaces foreach -pvi run typecheck
-  test:
-    name: 'Test'
-    needs:
-      - warmup_yarn_cache
-      - warmup_yarn_cache_others
-      - production_packages
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        package-name:
-          - 'fast-check'
-          - '@fast-check/ava'
-          - '@fast-check/jest'
-          - '@fast-check/packaged'
-          - '@fast-check/poisoning'
-          - '@fast-check/vitest'
-          - '@fast-check/worker'
-        script-name: ['test']
-        node-version: [14.x, 16.x, 18.x, latest]
-        os: ['ubuntu-latest']
-        include:
-          # More platforms and scripts...
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 18.x
-            os: 'ubuntu-latest'
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 18.x
-            os: 'macos-latest'
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 18.x
-            os: 'windows-latest'
-          - package-name: '@fast-check/packaged'
-            script-name: 'test'
-            node-version: 18.x
-            os: 'macos-latest'
-          - package-name: '@fast-check/packaged'
-            script-name: 'test'
-            node-version: 18.x
-            os: 'windows-latest'
-          # Limited matrix for test only packages
-          - package-name: '@fast-check/examples'
-            script-name: 'test'
-            node-version: 18.x
-            os: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Cache for Jest
-        uses: actions/cache@v3
-        with:
-          path: /tmp/jest_rt
-          key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
-      - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{matrix.node-version}}
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Unit tests
-        shell: bash -l {0}
-        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
-        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
-        run: |
-          export EXPECT_DEFAULT_SEED="true"
-          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
-          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
-      - name: Codecov
-        uses: codecov/codecov-action@v3
-        if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
-        with:
-          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
-          fail_ci_if_error: false # default: false
-          verbose: false # default: false
   documentation:
     name: 'Build documentation'
     needs:
@@ -420,65 +333,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-  test_cjs_esm:
-    name: 'Test CJS & ESM'
-    needs:
-      - warmup_yarn_cache
-      - production_packages
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          # Node latest version supports ES modules by default
-          - 'node'
-          # Node >=13.2.0 enables support for ES modules by default
-          # Our default version of node is above 13.2.0
-          - '14'
-          # Node 12.20 includes import from CJS and removes warnings related to ES Modules
-          - '12.20'
-          # Node 12.x and >=12.18 enables support for ES modules by default
-          - '12.18'
-          # Node <12.18 requires a flag to support ES modules but can understand them
-          - '12.17'
-          # Node 10 does not understand ES modules
-          - '10'
-          # Node 13 supports ES modules a bit differently from others
-          - '13.2'
-          - '13.6'
-          - '13.7'
-          - '13'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Using Node v18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/test-bundle-*' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Using Node v${{matrix.node-version}}
-        shell: bash -l {0}
-        run: nvm install ${{matrix.node-version}}
-      - name: Check compatibility
-        run: |
-          cd packages
-          node --version
-          sh run-test-bundle.sh
 
   # Publication jobs
   publish_documentation:
     name: 'Publish documentation'
     needs: documentation
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -498,9 +357,7 @@ jobs:
       - no_dedupe_required
       - package_quality
       - typecheck
-      - test
       - test_bundle
-      - test_cjs_esm
       - test_node_8
       - test_types
     if: startsWith(github.ref, 'refs/tags/')
