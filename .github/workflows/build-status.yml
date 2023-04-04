@@ -198,7 +198,7 @@ jobs:
         run: |
           # Taken from https://github.com/actions/upload-pages-artifact/blob/main/action.yml
           chmod -c -R +rX "website/build/"
-          tar --dereference --hard-dereference --directory "website/build/" -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git --exclude=.github .
+          tar --dereference --hard-dereference --directory "website/build/" -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git --exclude=.github
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
