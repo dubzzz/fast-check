@@ -283,7 +283,7 @@ jobs:
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
-          name: docs
+          name: github-pages
           path: website/build/
           if-no-files-found: error
           retention-days: 1
@@ -474,19 +474,15 @@ jobs:
     needs: documentation
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
     steps:
-      - uses: actions/checkout@v3
-      - name: Download documentation
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-          path: website/build/
-      - name: Publish to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          branch: gh-pages
-          folder: website/build/
-          clean: true
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
   publish_package:
     name: 'Publish package'
     needs:
