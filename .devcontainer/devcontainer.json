@@ -13,6 +13,12 @@
       }
     }
   },
-  "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "ms-azuretools.vscode-docker", "eamodio.gitlens"],
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-azuretools.vscode-docker",
+    "eamodio.gitlens",
+    "GitHub.vscode-github-actions"
+  ],
   "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
 }
