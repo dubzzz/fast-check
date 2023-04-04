@@ -10,5 +10,5 @@
     "packages/vitest",
     "packages/worker"
   ],
-  "node": "14"
+  "node": "16"
 }

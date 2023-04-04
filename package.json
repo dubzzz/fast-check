@@ -6,7 +6,8 @@
   "workspaces": [
     ".github/actions/*",
     "examples",
-    "packages/*"
+    "packages/*",
+    "website"
   ],
   "scripts": {
     "contributor:add": "all-contributors add",

@@ -275,12 +275,16 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Generate documentation
+        run: yarn workspace website build
+      - name: Generate API reference
         run: yarn workspace fast-check docs-ci
+      - name: Copy API reference within documentation
+        run: mv packages/fast-check/docs website/build/api-reference
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
           name: docs
-          path: packages/fast-check/docs/
+          path: website/build/
           if-no-files-found: error
           retention-days: 1
   test_bundle:
@@ -475,13 +479,13 @@ jobs:
       - name: Download documentation
         uses: actions/download-artifact@v3
         with:
-          name: docs
-          path: packages/fast-check/docs/
+          name: build
+          path: website/build/
       - name: Publish to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
-          folder: packages/fast-check/docs/
+          folder: website/build/
           clean: true
   publish_package:
     name: 'Publish package'
