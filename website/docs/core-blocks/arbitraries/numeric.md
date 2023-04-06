@@ -101,7 +101,7 @@ fc.maxSafeInteger();
 Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/maxSafeInteger.html).  
 Available since 1.11.0.
 
-## maxSafeNat
+### maxSafeNat
 
 All the range of positive integer values (including zero).
 
