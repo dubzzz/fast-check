@@ -1,9 +1,9 @@
 ---
 sidebar_position: 2
-slug: /core-blocks/arbitraries/numeric
+slug: /core-blocks/arbitraries/number
 ---
 
-# Numeric
+# Number
 
 Generate numeric values.
 

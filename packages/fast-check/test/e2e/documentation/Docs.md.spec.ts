@@ -22,7 +22,7 @@ describe('Docs.md', () => {
     filePath
     ${`${fastCheckPackageDir}/documentation/Arbitraries.md`}
     ${`${websitePackageDir}/docs/core-blocks/arbitraries/boolean.md`}
-    ${`${websitePackageDir}/docs/core-blocks/arbitraries/numeric.md`}
+    ${`${websitePackageDir}/docs/core-blocks/arbitraries/number.md`}
     ${`${websitePackageDir}/docs/core-blocks/arbitraries/string.md`}
   `('should check code snippets validity and fix generated values on $filePath', ({ filePath }) => {
     const originalFileContent = fs.readFileSync(filePath).toString();
