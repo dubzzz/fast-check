@@ -465,15 +465,14 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), { minLength: 1, maxLength: 3 });
 Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/stringOf.html).  
 Available since 1.1.3.
 
-### More specific strings
+## More specific strings
 
-<details>
-<summary><b>json</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#json">api</a>]</summary><br/>
+### json
 
-> JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
->
-> The generated values can be parsed by `JSON.parse`.
-> All the string values (from keys to values) are generated using `fc.string()`.
+JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
+
+The generated values can be parsed by `JSON.parse`.
+All the string values (from keys to values) are generated using `fc.string()`.
 
 **Signatures:**
 
@@ -519,15 +518,15 @@ fc.json({ depthSize: 'medium' });
 // • …
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/json.html).  
+Available since 0.0.7.
 
-<details>
-<summary><b>unicodeJson</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#unicodejson">api</a>]</summary><br/>
+### unicodeJson
 
-> JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
->
-> The generated values can be parsed by `JSON.parse`.
-> All the string values (from keys to values) are generated using `fc.unicodeString()`.
+JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
+
+The generated values can be parsed by `JSON.parse`.
+All the string values (from keys to values) are generated using `fc.unicodeString()`.
 
 **Signatures:**
 
@@ -573,12 +572,12 @@ fc.unicodeJson({ depthSize: 'medium' });
 // • …
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/unicodeJson.html).  
+Available since 0.07.
 
-<details>
-<summary><b>lorem</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#lorem">api</a>]</summary><br/>
+### lorem
 
-> Lorem ipsum values
+Lorem ipsum values.
 
 **Signatures:**
 
@@ -616,12 +615,12 @@ fc.lorem({ maxCount: 3, mode: 'sentences' });
 // • …
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/lorem.html).  
+Available since 0.0.1.
 
-<details>
-<summary><b>ipV4</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4">api</a>]</summary><br/>
+### ipV4
 
-> IP v4 addresses
+IP v4 addresses.
 
 **Signatures:**
 
@@ -634,12 +633,12 @@ fc.ipV4();
 // Examples of generated values: "7.149.25.7", "7.7.6.6", "254.21.210.1", "98.5.251.31", "221.2.9.255"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/ipV4.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>ipV4Extended</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv4extended">api</a>]</summary><br/>
+### ipV4Extended
 
-> IP v4 addresses including all the formats supported by WhatWG standard (for instance: 0x6f.9)
+IP v4 addresses including all the formats supported by WhatWG standard (for instance: 0x6f.9).
 
 **Signatures:**
 
@@ -652,12 +651,12 @@ fc.ipV4Extended();
 // Examples of generated values: "160.0372.0x3", "5.031355510", "0x92df1683", "0x85b09ec1", "0x45.0103.03236"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/ipV4Extended.html).  
+Available since 1.17.0.
 
-<details>
-<summary><b>ipV6</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#ipv6">api</a>]</summary><br/>
+### ipV6
 
-> IP v6 addresses
+IP v6 addresses.
 
 **Signatures:**
 
@@ -670,12 +669,12 @@ fc.ipV6();
 // Examples of generated values: "5998:7144:3dc:ff:b:5ae5:3::", "::c1e0:b3a:3:5.249.0.0", "59::9:150.144.165.251", "d::fa8f", "::f3:be0:0c2a:e:252.1.4.153"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/ipV6.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>uuid</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuid">api</a>]</summary><br/>
+### uuid
 
-> UUID values including versions 1 to 5
+UUID values including versions 1 to 5.
 
 **Signatures:**
 
@@ -694,12 +693,12 @@ fc.uuid();
 // • …
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uuid.html).  
+Available since 1.17.0.
 
-<details>
-<summary><b>uuidV</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#uuidv">api</a>]</summary><br/>
+### uuidV
 
-> UUID values for a specific UUID version (only 1 to 5) only digits in 0-9a-f
+UUID values for a specific UUID version (only 1 to 5) only digits in 0-9a-f.
 
 **Signatures:**
 
@@ -731,14 +730,14 @@ fc.uuidV(5);
 // • …
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uuidV.html).  
+Available since 1.17.0.
 
-<details>
-<summary><b>domain</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#domain">api</a>]</summary><br/>
+### domain
 
-> Domain name values with extension
->
-> Following RFC 1034, RFC 1123 and WHATWG URL Standard
+Domain name values with extension.
+
+Following RFC 1034, RFC 1123 and WHATWG URL Standard.
 
 **Signatures:**
 
@@ -770,14 +769,14 @@ fc.domain({ size: '+1' });
 // • …
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/domain.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>webAuthority</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webauthority">api</a>]</summary><br/>
+### webAuthority
 
-> Web authority values
->
-> Following RFC 3986
+Web authority values.
+
+Following RFC 3986.
 
 **Signatures:**
 
@@ -818,14 +817,14 @@ fc.webAuthority({
 // Examples of generated values: "0352.0x89bbdd:3", "154.0372.0xbd3d", "[4522:29:b:fc75:83e:964c:108::]:12037", "250.102.83.229:13", "025:13850"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/webAuthority.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>webFragments</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webfragments">api</a>]</summary><br/>
+### webFragments
 
-> Fragments to build an URI
->
-> Fragment is the optional part right after the # in an URI
+Fragments to build an URI.
+
+Fragment is the optional part right after the # in an URI.
 
 **Signatures:**
 
@@ -843,14 +842,14 @@ fc.webFragments();
 // Examples of generated values: "hip", "c&", "K/z=)RtC", "E7y", "%F0%B5%81%85:w,+"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/webFragments.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>webPath</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webpath">api</a>]</summary><br/>
+### webPath
 
-> Web path
->
-> Following the specs specified by RFC 3986 and WHATWG URL Standard
+Web path.
+
+Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 **Signatures:**
 
@@ -877,14 +876,14 @@ fc.webPath({ size: '+1' });
 // • …
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/webPath.html).  
+Available since 3.3.0.
 
-<details>
-<summary><b>webQueryParameters</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#webqueryparameters">api</a>]</summary><br/>
+### webQueryParameters
 
-> Query parameters to build an URI
->
-> Query parameters part is the optional part right after the ? in an URI
+Query parameters to build an URI.
+
+Query parameters part is the optional part right after the ? in an URI.
 
 **Signatures:**
 
@@ -902,12 +901,12 @@ fc.webQueryParameters();
 // Examples of generated values: "52mi", "L3ns-", "X%F3%AB%BA%8AksM", "bSO", "g"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/webQueryParameters.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>webSegment</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#websegment">api</a>]</summary><br/>
+### webSegment
 
-> Web URL path segment
+Web URL path segment.
 
 **Signatures:**
 
@@ -925,14 +924,14 @@ fc.webSegment();
 // Examples of generated values: "ref", "097", "e", "BgyH", "applyh"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/webSegment.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>webUrl</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#weburl">api</a>]</summary><br/>
+### webUrl
 
-> Web URL values
->
-> Following the specs specified by RFC 3986 and WHATWG URL Standard
+Web URL values.
+
+Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 **Signatures:**
 
@@ -981,14 +980,14 @@ fc.webUrl({ size: '-1' });
 // Examples of generated values: "http://d.zy", "https://h.lp/%F3%A0%B4%9E", "http://6e.9j8.xft/g", "https://b.uq.ll", "https://g26.eow"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/webUrl.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>emailAddress</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#emailaddress">api</a>]</summary><br/>
+### emailAddress
 
-> Email adresses
->
-> Following RFC 1123 and RFC 5322
+Email adresses.
+
+Following RFC 1123 and RFC 5322.
 
 **Signatures:**
 
@@ -1016,12 +1015,12 @@ fc.emailAddress({ size: '-1' });
 // Examples of generated values: "hn@s1v.i9.aw", "%@xa.fe.fd", "{@4hq.d.dn", "kg.kg@5y.zr", "e._t@m5.pw"…
 ```
 
-</details>
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/emailAddress.html).  
+Available since 1.14.0.
 
-<details>
-<summary><b>mixedCase</b> - [<a href="https://dubzzz.github.io/fast-check/index.html#mixedcase">api</a>]</summary><br/>
+### mixedCase
 
-> Switch the case of characters generated by an underlying arbitrary
+Switch the case of characters generated by an underlying arbitrary.
 
 **Signatures:**
 
@@ -1062,7 +1061,5 @@ fc.mixedCase(fc.constant('🐱🐢🐱🐢🐱🐢'), {
 // Examples of generated values: "🐯🐢🐯🐢🐯🐢", "🐯🐇🐯🐇🐯🐢", "🐯🐢🐯🐇🐯🐢", "🐱🐇🐯🐇🐯🐢", "🐱🐇🐯🐇🐯🐇"…
 ```
 
-</details>
-
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/.html).  
-Available since .
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/mixedCase.html).  
+Available since 1.17.0.
