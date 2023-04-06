@@ -110,7 +110,8 @@ Generate any 16 bits character. Be aware the values within `0xd800` and `0xdfff`
 **Signatures:**
 
 - `fc.char16bits()`
-  **Usages:**
+
+**Usages:**
 
 ```js
 fc.char16bits();
