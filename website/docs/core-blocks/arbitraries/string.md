@@ -5,6 +5,8 @@ slug: /core-blocks/arbitraries/string
 
 # String
 
+Generate string values.
+
 ## Single character
 
 ### hexa
