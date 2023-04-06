@@ -18,7 +18,7 @@ Boolean values, either `true` or `false`
 **Usages:**
 
 ```js
-fc.boolean()
+fc.boolean();
 // Examples of generated values: true, false…
 ```
 

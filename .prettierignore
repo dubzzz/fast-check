@@ -6,4 +6,3 @@ packages/*/lib-*/
 packages/fast-check/docs/
 packages/fast-check/documentation/Arbitraries.md
 website/.docusaurus/
-website/docs/core-blocks/arbitraries/*.md

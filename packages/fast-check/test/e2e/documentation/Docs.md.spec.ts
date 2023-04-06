@@ -141,7 +141,11 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         const indexArbitraryPart = refinedSnippet.indexOf(CommentForArbitraryIndicator);
         const preparationPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(0, indexArbitraryPart) : '';
         const arbitraryPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(indexArbitraryPart) : refinedSnippet;
-        const evalCode = `${preparationPart}\nfc.sample(${arbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
+        const santitizeArbitraryPart = arbitraryPart
+          .trim()
+          .replace(/;$/, '')
+          .replace(/;\n\/\/.*$/m, '\n//');
+        const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
         try {
           return eval(evalCode);
         } catch (err) {
