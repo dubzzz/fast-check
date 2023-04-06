@@ -14,9 +14,16 @@ const CommentForGeneratedValues = '// Examples of generated values:';
 const CommentForArbitraryIndicator = '// Use the arbitrary:';
 const CommentForStatistics = '// Computed statistics for 10k generated values:';
 
+const fastCheckPackageDir = `${__dirname}/../../..`;
+const websitePackageDir = `${fastCheckPackageDir}/../../website`;
+
 describe('Docs.md', () => {
-  it('Should check code snippets validity and fix generated values', () => {
-    const originalFileContent = fs.readFileSync(`${__dirname}/../../../documentation/Arbitraries.md`).toString();
+  it.each`
+    filePath
+    ${`${fastCheckPackageDir}/documentation/Arbitraries.md`}
+    ${`${websitePackageDir}/docs/core-blocks/arbitraries/boolean.md`}
+  `('should check code snippets validity and fix generated values on $filePath', ({ filePath }) => {
+    const originalFileContent = fs.readFileSync(filePath).toString();
     const { content: fileContent } = refreshContent(originalFileContent);
 
     if (Number(process.versions.node.split('.')[0]) < 12) {
@@ -41,7 +48,7 @@ describe('Docs.md', () => {
 
     if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
       console.warn(`Updating code snippets defined in the documentation...`);
-      fs.writeFileSync(`${__dirname}/../../../documentation/Arbitraries.md`, fileContent);
+      fs.writeFileSync(filePath, fileContent);
     }
     if (!process.env.UPDATE_CODE_SNIPPETS) {
       expect(fileContent).toEqual(originalFileContent);
