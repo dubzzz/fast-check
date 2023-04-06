@@ -149,7 +149,7 @@ It always generates valid 32-bit floating point values.
 ```js
 fc.float()
 // Note: All possible 32-bit floating point values (including -∞, +∞ and NaN but also -0)
-// Examples of generated values: -1.1428610944376996e+35, -4.923316419364955e-39, 7.923675937604457e-9, 1.0574891476389556e+24, -0.012089259922504425…
+// Examples of generated values: -1.431727070233535e-9, 2.382207389352189e-44, 5.0823187024022785e-34, -2.1889141425620318e+24, -8.17946153261366e-38…
 
 fc.float({min: 0})
 // Note: All possible positive 32-bit floating point values (including +∞ and NaN)
@@ -165,7 +165,7 @@ fc.float({noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POS
 // Examples of generated values: 3.4028190042551758e+38, 76771269105680380, -3.402820018375656e+38, -3.5032461608120427e-44, -3.5804397670816536e-16…
 
 fc.integer({ min: 0, max: (1 << 24) - 1 })
-  .map((v) =v / (1 << 24))
+  .map((v) => v / (1 << 24))
   .noBias()
 // Note: `fc.float` does not uniformly distribute the generated values in the requested range.
 // If you really want a uniform distribution of 32-bit floating point numbers in range 0 (included)
@@ -200,7 +200,7 @@ The lower and upper bounds are included into the range of possible values.
 ```js
 fc.double()
 // Note: All possible floating point values (including -∞, +∞ and NaN but also -0)
-// Examples of generated values: 6.978211330273434e+123, 2.6272140589206812e-53, 947075901019127, -1.3737004055555409e-182, -1.83e-322…
+// Examples of generated values: -1.8249203082227863e+280, -1.5386942765962951e-305, 8.73972315709788e-70, 6.946951851778836e+187, -3.0628860481106885e-16…
 
 fc.double({min: 0})
 // Note: All possible positive floating point values (including +∞ and NaN)
@@ -216,7 +216,7 @@ fc.double({noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.PO
 // Examples of generated values: -2.57e-322, 7.4e-323, 1.4e-322, -1.7976931348623055e+308, -2.131202798475727e-213…
 
 fc.tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
-  .map((v) =(v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53))
+  .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53))
   .noBias()
 // Note: `fc.double` does not uniformly distribute the generated values in the requested range.
 // If you really want a uniform distribution of 64-bit floating point numbers in range 0 (included)
