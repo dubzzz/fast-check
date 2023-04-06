@@ -148,8 +148,6 @@ Hexadecimal string containing characters produced by `fc.hexa()`.
 
 - `fc.hexaString()`
 - `fc.hexaString({minLength?, maxLength?, size?})`
-- _`fc.hexaString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.hexaString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
@@ -189,8 +187,6 @@ Provide valid base64 strings: length always multiple of 4 padded with '=' charac
 
 - `fc.base64String()`
 - `fc.base64String({minLength?, maxLength?, size?})`
-- _`fc.base64String(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.base64String(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
@@ -230,8 +226,6 @@ String containing characters produced by `fc.char()`.
 
 - `fc.string()`
 - `fc.string({minLength?, maxLength?, size?})`
-- _`fc.string(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.string(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
@@ -269,8 +263,6 @@ ASCII string containing characters produced by `fc.ascii()`.
 
 - `fc.asciiString()`
 - `fc.asciiString({minLength?, maxLength?, size?})`
-- _`fc.asciiString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.asciiString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
@@ -308,8 +300,6 @@ Unicode string containing characters produced by `fc.unicode()`.
 
 - `fc.unicodeString()`
 - `fc.unicodeString({minLength?, maxLength?, size?})`
-- _`fc.unicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.unicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
@@ -349,8 +339,6 @@ Be aware that the generated string might appear invalid regarding the unicode st
 
 - `fc.string16bits()`
 - `fc.string16bits({minLength?, maxLength?, size?})`
-- _`fc.string16bits(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.string16bits(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
@@ -388,8 +376,6 @@ Unicode string containing characters produced by `fc.fullUnicode()`.
 
 - `fc.fullUnicodeString()`
 - `fc.fullUnicodeString({minLength?, maxLength?, size?})`
-- _`fc.fullUnicodeString(maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.fullUnicodeString(minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
@@ -429,8 +415,6 @@ String containing characters produced by the passed character generator.
 
 - `fc.stringOf(charArb)`
 - `fc.stringOf(charArb, {minLength?, maxLength?, size?})`
-- _`fc.stringOf(charArb, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
-- _`fc.stringOf(charArb, minLength, maxLength)`_ — _deprecated since v2.6.0 ([#992](https://github.com/dubzzz/fast-check/issues/992))_
 
 **with:**
 
