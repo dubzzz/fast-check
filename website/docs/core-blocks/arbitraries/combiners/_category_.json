@@ -1,0 +1,8 @@
+{
+  "label": "Combiners",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Any arbitrary able to join together multiple other arbitraries to build more complex ones"
+  }
+}

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 4
 slug: /core-blocks/arbitraries/primitives/date
 ---
 

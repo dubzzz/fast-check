@@ -1,5 +1,4 @@
 ---
-sidebar_position: 1
 slug: /core-blocks/arbitraries/primitives/boolean
 ---
 
