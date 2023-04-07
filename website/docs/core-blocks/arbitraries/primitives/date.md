@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-slug: /core-blocks/arbitraries/date
+slug: /core-blocks/arbitraries/primitives/date
 ---
 
 # Date

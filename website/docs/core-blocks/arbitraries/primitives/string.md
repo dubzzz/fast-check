@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-slug: /core-blocks/arbitraries/string
+slug: /core-blocks/arbitraries/primitives/string
 ---
 
 # String

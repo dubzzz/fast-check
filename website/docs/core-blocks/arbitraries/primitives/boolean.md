@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-slug: /core-blocks/arbitraries/boolean
+slug: /core-blocks/arbitraries/primitives/boolean
 ---
 
 # Boolean

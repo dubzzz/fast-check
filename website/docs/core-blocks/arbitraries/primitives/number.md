@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-slug: /core-blocks/arbitraries/number
+slug: /core-blocks/arbitraries/primitives/number
 ---
 
 # Number
