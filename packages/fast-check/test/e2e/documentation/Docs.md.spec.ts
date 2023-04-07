@@ -24,6 +24,7 @@ describe('Docs.md', () => {
     ${`${websitePackageDir}/docs/core-blocks/arbitraries/boolean.md`}
     ${`${websitePackageDir}/docs/core-blocks/arbitraries/number.md`}
     ${`${websitePackageDir}/docs/core-blocks/arbitraries/string.md`}
+    ${`${websitePackageDir}/docs/core-blocks/arbitraries/date.md`}
   `('should check code snippets validity and fix generated values on $filePath', ({ filePath }) => {
     const originalFileContent = fs.readFileSync(filePath).toString();
     const { content: fileContent } = refreshContent(originalFileContent);
