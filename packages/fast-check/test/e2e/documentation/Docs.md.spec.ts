@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import fc from '../../../src/fast-check';
+import { globSync } from 'glob';
 
 // For ES Modules:
 //import { dirname } from 'path';
@@ -14,18 +15,19 @@ const CommentForGeneratedValues = '// Examples of generated values:';
 const CommentForArbitraryIndicator = '// Use the arbitrary:';
 const CommentForStatistics = '// Computed statistics for 10k generated values:';
 
-const fastCheckPackageDir = `${__dirname}/../../..`;
-const websitePackageDir = `${fastCheckPackageDir}/../../website`;
+const allPathsFromWebsite = globSync(`../../website/docs/core-blocks/arbitraries/**/*.md`, {
+  withFileTypes: true,
+  nodir: true,
+}).map((fileDescriptor) => ({
+  filePath: fileDescriptor.fullpath(),
+  shortName: fileDescriptor.name,
+}));
 
 describe('Docs.md', () => {
-  it.each`
-    filePath
-    ${`${fastCheckPackageDir}/documentation/Arbitraries.md`}
-    ${`${websitePackageDir}/docs/core-blocks/arbitraries/boolean.md`}
-    ${`${websitePackageDir}/docs/core-blocks/arbitraries/number.md`}
-    ${`${websitePackageDir}/docs/core-blocks/arbitraries/string.md`}
-    ${`${websitePackageDir}/docs/core-blocks/arbitraries/date.md`}
-  `('should check code snippets validity and fix generated values on $filePath', ({ filePath }) => {
+  it.each([
+    { filePath: `${__dirname}/../../../documentation/Arbitraries.md`, shortName: 'Arbitrary.md' },
+    ...allPathsFromWebsite,
+  ])('should check code snippets validity and fix generated values on $shortName', ({ filePath }) => {
     const originalFileContent = fs.readFileSync(filePath).toString();
     const { content: fileContent } = refreshContent(originalFileContent);
 
