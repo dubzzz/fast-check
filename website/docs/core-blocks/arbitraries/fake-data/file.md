@@ -6,7 +6,7 @@ slug: /core-blocks/arbitraries/fake-data/file
 
 Generate file content values.
 
-### base64String
+## base64String
 
 Base64 string containing characters produced by `fc.base64()`.
 
@@ -47,7 +47,7 @@ fc.base64String({ minLength: 4, maxLength: 12 });
 Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/base64String.html).  
 Available since 0.0.1.
 
-### json
+## json
 
 JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
 
@@ -95,7 +95,113 @@ fc.json({ depthSize: 'medium' });
 Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/json.html).  
 Available since 0.0.7.
 
-### unicodeJson
+## jsonValue
+
+Generate any value eligible to be stringified in JSON and parsed back to itself - _in other words, JSON compatible instances_.
+
+As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
+`jsonValue` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
+
+:::info Note
+`JSON.parse(JSON.stringify(value))` is not the identity as `-0` is changed into `0` by `JSON.stringify`.
+:::
+
+**Signatures:**
+
+- `fc.jsonValue()`
+- `fc.jsonValue({depthSize?, maxDepth?})`
+
+**with:**
+
+- `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
+
+**Usages:**
+
+```js
+fc.jsonValue();
+// Examples of generated values:
+// • true
+// • {"a":false,"&{v%":true,"O}u&;O":"ef","^69fY8G[M":false,"^%":null,"iC":-2.11992523062418e-82,"F%]8l0g6|":null}
+// • [{"^":true,"1Y??Vih":-379313284684773500000,"_5zzvjCE":"B","B561n_":"2","eqHZM9R":null},1.2791945048214157e-72]
+// • false
+// • [null,true,true,"`l+$I","kSros",null]
+// • …
+
+fc.jsonValue({ maxDepth: 0 });
+// Examples of generated values: true, null, false, "prototype", "L4)5M"…
+
+fc.jsonValue({ maxDepth: 1 });
+// Examples of generated values:
+// • 1.1084525170506737e-156
+// • [null,"co",null]
+// • [null,null]
+// • [null,"_",-4.808983581881553e-305,1.3122779113832298e-87,"<tiQ8",null]
+// • true
+// • …
+
+fc.statistics(fc.jsonValue(), (v) => {
+  function size(n) {
+    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
+    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+    return 1;
+  }
+  const s = size(v);
+  let lower = 1;
+  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+  while (next(lower) <= s) {
+    lower = next(lower);
+  }
+  return `${lower} to ${next(lower) - 1} items`;
+});
+// Computed statistics for 10k generated values:
+// For size = "xsmall":
+// • 1 to 4 items..100.00%
+// For size = "small":
+// • 1 to 4 items....43.79%
+// • 10 to 49 items..38.40%
+// • 5 to 9 items....17.64%
+// • 50 to 99 items...0.17%
+// For size = "medium":
+// • 50 to 99 items......35.06%
+// • 1 to 4 items........33.88%
+// • 10 to 49 items......20.48%
+// • 100 to 499 items....10.21%
+// • 500 to 999 items.....0.33%
+
+fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
+  function size(n) {
+    if (Array.isArray(n)) return 1 + n.reduce((acc, child) => acc + size(child), 0);
+    if (typeof n === 'object' && n) return 1 + Object.values(n).reduce((acc, child) => acc + size(child), 0);
+    return 1;
+  }
+  const s = size(v);
+  let lower = 1;
+  const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+  while (next(lower) <= s) {
+    lower = next(lower);
+  }
+  return `${lower} to ${next(lower) - 1} items`;
+});
+// Computed statistics for 10k generated values:
+// For size = "xsmall":
+// • 1 to 4 items..100.00%
+// For size = "small":
+// • 1 to 4 items....44.64%
+// • 5 to 9 items....34.00%
+// • 10 to 49 items..21.36%
+// For size = "medium":
+// • 1 to 4 items......34.60%
+// • 50 to 99 items....33.01%
+// • 10 to 49 items....26.56%
+// • 100 to 499 items...4.49%
+// • 5 to 9 items.......1.34%
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/jsonValue-1.html).  
+Available since 2.20.0.
+
+## unicodeJson
 
 JSON compatible string representations of instances. Can produce string representations of basic primitives but also of deep objects.
 
@@ -147,9 +253,58 @@ fc.unicodeJson({ depthSize: 'medium' });
 ```
 
 Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/unicodeJson.html).  
-Available since 0.07.
+Available since 0.0.7.
 
-### lorem
+## unicodeJsonValue
+
+Generate any value eligible to be stringified in JSON and parsed back to itself - \_in other words, JSON compatible instances.
+
+As `JSON.parse` preserves `-0`, `unicodeJsonValue` can also have `-0` as a value.
+`unicodeJsonValue` must be seen as: any value that could have been built by doing a `JSON.parse` on a given string.
+
+:::info Note
+`JSON.parse(JSON.stringify(value))` is not the identity as `-0` is changed into `0` by `JSON.stringify`.
+:::
+
+**Signatures:**
+
+- `fc.unicodeJsonValue()`
+- `fc.unicodeJsonValue({depthSIze?, maxDepth?})`
+
+**with:**
+
+- `depthSize?` — default: `undefined` [more](#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
+
+**Usages:**
+
+```js
+fc.unicodeJsonValue();
+// Examples of generated values:
+// • null
+// • [-4.295089174387055e-293,false,{"㾆⇈᎒ཱུ紻ﾷ":true,"膩᜸Ⱒᰑ䴿ㅓ붻":true,"㤫勮":null,"常洭":"❀紩푮뗼","":false,"遐伒㖤⩿":null,"쾪ꉱ絿ޒ":-1.6050931064928954e-96},null]
+// • 3.4453237274410463e+71
+// • []
+// • [null,[null,{"鞘":false,"ᚄ秈搉糛힘ﯨ⯞":{"嗙":false,"뚹퐒孵ᱚ鼊":true,"ၓ醦ꨱ鲖䕬⁅蓌碈":false,"⭏횓醉ῂａ艒":null,"ﵦᙏ亚":-1.0765809081688447e-68,"麈껾땀ẚ㖡轹邹":2.7214577245022765e-88,"♔擥է宑놰꼒죵셃芮㱝":true},"ᡟ⽔䞊ɮ뽪":true}],"姖魡",{"죞鹕":null,"":"߸⸷","靄誾Ờꛙ࿠䞵ퟣ":"芓䞧굞늢뺄蹁ᮿ훱","䚬":-6.95950666926601e+110,"⹊꓌䘙࿈倡淕":"䚾忭㋟킛긮倹鷀","☂㰿㛈瓥⸸팭ުꊵ":"鞚꿖磆Ꮄゑꖦ","梣끲":2.609294368689059e-298,"팽":true}]
+// • …
+
+fc.unicodeJsonValue({ maxDepth: 0 });
+// Examples of generated values: "Ĕ讆層ꦍ쩖䊼᛽ꙋ", null, 1.7976931348623047e+308, "", 2e-323…
+
+fc.unicodeJsonValue({ maxDepth: 1 });
+// Examples of generated values:
+// • {"讆層ꦍ쩖䊼":true,"婝㖿ﺚ㔶벑Ἴ¤ﻣ诗":true,"蝌䥶膢瓣䥛䫀姐᥺":true,"ᓘ箜睺閊膛景븃犟":null,"ﯼ⛺㴞撟":true,"":false,"㍋豈漸核":-1.7683978910198014e+45,"玳":null,"境鲖":"뫞ຳ䐀啔"}
+// • 1.7398076905782003e-265
+// • "㩵詫,"
+// • []
+// • {"햧ཧ觌♘䣯Ⓖ崊䏓䵊":"","㋄ǋ膮朲㌦냔ℋፋ":true}
+// • …
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/unicodeJsonValue.html).  
+Available since 2.20.0.
+
+## lorem
 
 Lorem ipsum values.
 
