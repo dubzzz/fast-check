@@ -84,3 +84,75 @@ fc.mapToConstant(
 
 Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/mapToConstant.html).  
 Available since 1.14.0.
+
+## subarray
+
+Generate values corresponding to any possible sub-array of an original array.
+
+Values of the resulting subarray are ordered the same way they were in the original array.
+
+**Signatures:**
+
+- `fc.subarray(originalArray)`
+- `fc.subarray(originalArray, {minLength?, maxLength?})`
+
+**with:**
+
+- `originalArray` — _the array from which we want to extract sub-arrays_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `originalArray.length` — _maximal length (included)_
+
+**Usages:**
+
+```js
+fc.subarray([1, 42, 48, 69, 75, 92]);
+// Examples of generated values: [], [1,48,69,75,92], [48], [1,42,75], [1,48,75,92]…
+
+fc.subarray([1, 42, 48, 69, 75, 92], { minLength: 5 });
+// Examples of generated values: [1,42,48,69,75], [1,42,48,69,92], [1,42,48,75,92], [42,48,69,75,92], [1,42,69,75,92]…
+
+fc.subarray([1, 42, 48, 69, 75, 92], { maxLength: 5 });
+// Examples of generated values: [48,75], [1], [], [48,92], [69,75]…
+
+fc.subarray([1, 42, 48, 69, 75, 92], { minLength: 2, maxLength: 3 });
+// Examples of generated values: [48,75], [48,69,92], [42,75], [69,92], [1,42]…
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/subarray.html).  
+Available since 1.5.0.
+
+## shuffledSubarray
+
+Generate values corresponding to any possible sub-array of an original array.
+
+Values of the resulting subarray are ordered randomly.
+
+**Signatures:**
+
+- `fc.shuffledSubarray(originalArray)`
+- `fc.shuffledSubarray(originalArray, {minLength?, maxLength?})`
+
+**with:**
+
+- `originalArray` — _the array from which we want to extract sub-arrays_
+- `minLength?` — default: `0` — _minimal length (included)_
+- `maxLength?` — default: `originalArray.length` — _maximal length (included)_
+
+**Usages:**
+
+```js
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92]);
+// Examples of generated values: [69,92], [92,69,42,75], [48,69,92,75,42,1], [1,42], [75]…
+
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], { minLength: 5 });
+// Examples of generated values: [48,1,92,69,75,42], [42,1,92,75,69], [69,75,92,48,1], [92,42,48,75,69], [1,69,75,92,42]…
+
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], { maxLength: 5 });
+// Examples of generated values: [48,1,92], [], [75,1,69,92], [42], [75,1,69,48,42]…
+
+fc.shuffledSubarray([1, 42, 48, 69, 75, 92], { minLength: 2, maxLength: 3 });
+// Examples of generated values: [1,92], [92,75], [1,48], [42,75], [48,69]…
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/shuffledSubarray.html).  
+Available since 1.5.0.
