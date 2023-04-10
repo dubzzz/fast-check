@@ -1,8 +1,8 @@
 ---
-slug: /core-blocks/arbitraries/composites/typed-arrays
+slug: /core-blocks/arbitraries/composites/typed-array
 ---
 
-# Typed Arrays
+# Typed Array
 
 Generate typed array values.
 
