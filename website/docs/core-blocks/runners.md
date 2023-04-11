@@ -29,12 +29,21 @@ Available since 0.0.1.
 
 Similar to `assert` except that caller is responsible to handle the output.
 
-In terms of signature, `check` provides the following:
+In terms of signatures, `check` provides the following:
 
 ```ts
 function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
 function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 ```
+
+The structure `RunDetails` provides all the details needed to report what happened. There are four major reasons for `check` to end:
+
+| Reasons                                                 | `failed` | `interrupted`  | `counterexample`/`counterexamplePath`/`error` |
+| ------------------------------------------------------- | :------: | :------------: | :-------------------------------------------: |
+| failure of the predicate                                |  `true`  | `true`/`false` |                  _not null_                   |
+| too many pre-conditions failures                        |  `true`  |    `false`     |                    `null`                     |
+| execution took too long given `interruptAfterTimeLimit` |  `true`  |     `true`     |                    `null`                     |
+| successful run                                          | `false`  | `true`/`false` |                    `null`                     |
 
 :::tip Rewrite `assert` with `check`
 
