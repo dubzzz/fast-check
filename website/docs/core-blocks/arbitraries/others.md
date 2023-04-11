@@ -69,8 +69,8 @@ It relies on commands or operations that a user can run on the system. Those com
 
 - `commandArbs` — _array of arbitraries responsible to generate commands_
 - `disableReplayLog?` — default: `false` — _disable the display of details regarding the replay for commands_
-- `maxCommands?` — default: `0x7fffffff` [more](#size-explained) — _maximal number of commands to generate (included)_
-- `size?` — default: `undefined` [more](#size-explained) — _how large should the generated values be?_
+- `maxCommands?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal number of commands to generate (included)_
+- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 - `replayPath?` — _only used when replaying commands_
 
 **Usages:**
