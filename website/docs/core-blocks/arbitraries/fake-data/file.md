@@ -269,7 +269,7 @@ As `JSON.parse` preserves `-0`, `unicodeJsonValue` can also have `-0` as a value
 **Signatures:**
 
 - `fc.unicodeJsonValue()`
-- `fc.unicodeJsonValue({depthSIze?, maxDepth?})`
+- `fc.unicodeJsonValue({depthSize?, maxDepth?})`
 
 **with:**
 
