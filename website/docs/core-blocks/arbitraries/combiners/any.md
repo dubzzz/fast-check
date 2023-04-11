@@ -132,3 +132,133 @@ fc.clone(fc.nat(), 3);
 
 Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/clone.html).  
 Available since 2.5.0.
+
+## .filter
+
+Filter an existing arbitrary.
+
+**Signatures:**
+
+- `.filter(predicate)`
+
+**with:**
+
+- `predicate` — _only keeps values such as `predicate(value) === true`_
+
+**Usages:**
+
+```js
+fc.integer().filter((n) => n % 2 === 0);
+// Note: Only produce even integer values
+// Examples of generated values: -1582642274, 2147483644, 30, -902884124, -20…
+
+fc.integer().filter((n) => n % 2 !== 0);
+// Note: Only produce odd integer values
+// Examples of generated values: 925226031, -1112273465, 29, -1459401265, 21…
+
+fc.string().filter((s) => s[0] < s[1]);
+// Note: Only produce strings with `s[0] < s[1]`
+// Examples of generated values: "Aa]tp>", "apply", "?E%a$n x", "#l\"/L\"x&S{", "argument"…
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#filter).  
+Available since 0.0.1.
+
+## .map
+
+Map an existing arbitrary.
+
+**Signatures:**
+
+- `.map(mapper)`
+
+**with:**
+
+- `mapper` — _transform the produced value into another one_
+
+**Usages:**
+
+```js
+fc.nat(1024).map((n) => n * n);
+// Note: Produce only square values
+// Examples of generated values: 36, 24336, 49, 186624, 1038361…
+
+fc.nat().map((n) => String(n));
+// Note: Change the type of the produced value from number to string
+// Examples of generated values: "2147483619", "12", "468194571", "14", "5"…
+
+fc.tuple(fc.integer(), fc.integer()).map((t) => (t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]]));
+// Note: Generate a range [min, max]
+// Examples of generated values: [-1915878961,27], [-1997369034,-1], [-1489572084,-370560927], [-2133384365,28], [-1695373349,657254252]…
+
+fc.string().map((s) => `[${s.length}] -> ${s}`);
+// Examples of generated values: "[3] -> ref", "[8] -> xeE:81|z", "[9] -> B{1Z\\sxWa", "[3] -> key", "[1] -> _"…
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#map).  
+Available since 0.0.1.
+
+## .chain
+
+Flat-Map an existing arbitrary.
+
+:::warning Limited shrink
+Be aware that the shrinker of such construct might not be able to shrink as much as possible (more details [here](https://github.com/dubzzz/fast-check/issues/650#issuecomment-648397230))
+:::
+
+**Signatures:**
+
+- `.chain(fmapper)`
+
+**with:**
+
+- `fmapper` — _produce an arbitrary based on a generated value_
+
+**Usages:**
+
+```js
+fc.nat().chain((min) => fc.tuple(fc.constant(min), fc.integer({ min, max: 0xffffffff })));
+// Note: Produce a valid range
+// Examples of generated values: [1211945858,4294967292], [1068058184,2981851306], [2147483626,2147483645], [1592081894,1592081914], [2147483623,2147483639]…
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#chain).  
+Available since 1.2.0.
+
+## .noBias
+
+Drop bias from an existing arbitrary. Instead of being more likely to generate certain values the resulting arbitrary will be close to an equi-probable generator.
+
+**Signatures:**
+
+- `.noBias()`
+
+**Usages:**
+
+```js
+fc.nat().noBias();
+// Note: Compared to fc.nat() alone, the generated values are evenly distributed in
+// the range 0 to 0x7fffffff making small values much more unlikely.
+// Examples of generated values: 422394692, 1060515252, 383444404, 1509445429, 659009523…
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#noBias).  
+Available since 1.1.0.
+
+## .noShrink
+
+Drop shrinking capabilities from an existing arbitrary.
+
+**Signatures:**
+
+- `.noShrink()`
+
+**Usages:**
+
+```js
+fc.nat().noShrink();
+// Examples of generated values: 3, 633829028, 2147483625, 1617246126, 25…
+```
+
+Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#noShrink).  
+Available since 0.0.9.
