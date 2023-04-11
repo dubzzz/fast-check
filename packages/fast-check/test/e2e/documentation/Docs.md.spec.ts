@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import fc from '../../../src/fast-check';
+import { globSync } from 'glob';
 
 // For ES Modules:
 //import { dirname } from 'path';
@@ -14,9 +15,20 @@ const CommentForGeneratedValues = '// Examples of generated values:';
 const CommentForArbitraryIndicator = '// Use the arbitrary:';
 const CommentForStatistics = '// Computed statistics for 10k generated values:';
 
+const allPathsFromWebsite = globSync(`../../website/docs/core-blocks/arbitraries/**/*.md`, {
+  withFileTypes: true,
+  nodir: true,
+}).map((fileDescriptor) => ({
+  filePath: fileDescriptor.fullpath(),
+  shortName: fileDescriptor.name,
+}));
+
 describe('Docs.md', () => {
-  it('Should check code snippets validity and fix generated values', () => {
-    const originalFileContent = fs.readFileSync(`${__dirname}/../../../documentation/Arbitraries.md`).toString();
+  it.each([
+    { filePath: `${__dirname}/../../../documentation/Arbitraries.md`, shortName: 'Arbitrary.md' },
+    ...allPathsFromWebsite,
+  ])('should check code snippets validity and fix generated values on $shortName', ({ filePath }) => {
+    const originalFileContent = fs.readFileSync(filePath).toString();
     const { content: fileContent } = refreshContent(originalFileContent);
 
     if (Number(process.versions.node.split('.')[0]) < 12) {
@@ -41,7 +53,7 @@ describe('Docs.md', () => {
 
     if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
       console.warn(`Updating code snippets defined in the documentation...`);
-      fs.writeFileSync(`${__dirname}/../../../documentation/Arbitraries.md`, fileContent);
+      fs.writeFileSync(filePath, fileContent);
     }
     if (!process.env.UPDATE_CODE_SNIPPETS) {
       expect(fileContent).toEqual(originalFileContent);
@@ -133,7 +145,11 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         const indexArbitraryPart = refinedSnippet.indexOf(CommentForArbitraryIndicator);
         const preparationPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(0, indexArbitraryPart) : '';
         const arbitraryPart = indexArbitraryPart !== -1 ? refinedSnippet.substring(indexArbitraryPart) : refinedSnippet;
-        const evalCode = `${preparationPart}\nfc.sample(${arbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
+        const santitizeArbitraryPart = arbitraryPart
+          .trim()
+          .replace(/;$/, '')
+          .replace(/;\n\/\/.*$/m, '\n//');
+        const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
         try {
           return eval(evalCode);
         } catch (err) {
