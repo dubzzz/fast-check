@@ -73,14 +73,35 @@ Otherwise, depth factor will be defaulted automatically for you.
 
 ## Override the default size
 
-By default all arbitraries have their size defaulted to `"small"`. In other words, it means that whenever you ask the framework to generate array-like entities they will have a _small_ number of items. By _small_, we mean that when you ask for `fc.array(fc.nat())`, you will only see arrays having between `0` and `10` elements.
+By default, all arbitraries have their size set to `baseSize`, which is set to `"small"` by default. This means that when generating array-like entities, the number of items in them will be relatively small. Specifically, when using `fc.array(fc.nat())`, the resulting arrays will have between 0 and 10 elements.
 
-There are two main ways to change this upper bound:
+There are two main ways to adjust this upper bound:
 
-- at instantiation level by passing an explicit size, like in: `fc.array(fc.nat(), {size: '+1'})`
-- at global level
+- At instantiation level by passing an explicit size, as in `fc.array(fc.nat(), {size: '+1'})`
+- At global level
 
 At global level, there are two main options:
 
-- `baseSize` — defaulted to `"small"` — define what should be the default size when nothing has been specified at instantiation level
-- `defaultSizeToMaxWhenMaxSpecified` — when set to `true`, any arbitrary being instantiated with an upper bound (such as `maxLength` or `maxDepth`) and no size will see it's size defaulted to `max` / when set to `false`, if not defined the size will be defaulted to `baseSize`
+- `baseSize`, which defaults to `"small"`, sets the default size when no size is specified at the instantiation level.
+- `defaultSizeToMaxWhenMaxSpecified` determines how to handle cases where an arbitrary has an upper bound (e.g., `maxLength` or `maxDepth`) but no size is specified. When `true`, the size defaults to the maximum value; when `false`, the size defaults to `baseSize` if not defined.
+
+Here's a brief example that demonstrates how to customize both the global and instantiation levels:
+
+```js
+// Override the global size to medium.
+fc.configureGlobal({ baseSize: 'medium' });
+
+// Override the local size of the second string only.
+// Size 'medium' will be used by a and c, while b will be 'large' (=medium+1).
+test('should always contain its substrings', () => {
+  fc.assert(
+    fc.property(fc.string(), fc.string({ size: '+1' }), fc.string(), (a, b, c) => {
+      expect(contains(a + b + c, b)).toBe(true);
+    })
+  );
+});
+```
+
+:::info
+To learn how to customize the size for a particular arbitrary, please refer to the [documentation](/docs/category/arbitraries) provided for that arbitrary.
+:::
