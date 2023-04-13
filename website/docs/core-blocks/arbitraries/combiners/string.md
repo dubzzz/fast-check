@@ -19,8 +19,8 @@ String containing characters produced by the passed character generator.
 
 - `charArb` — _arbitrary able to generate random strings (possibly multiple characters)_
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal number of characters (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 

@@ -1,8 +1,0 @@
-{
-  "label": "Tips",
-  "position": 3,
-  "link": {
-    "type": "generated-index",
-    "description": "Quick tips to master all subtleties of fast-check"
-  }
-}

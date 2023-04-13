@@ -20,8 +20,8 @@ Generate _Int8Array_
 - `min?` — default: `-128` — _minimal value (included)_
 - `max?` — default: `127` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -62,8 +62,8 @@ Generate _Uint8Array_
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -104,8 +104,8 @@ Generate _Uint8ClampedArray_
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `255` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -146,8 +146,8 @@ Generate _Int16Array_
 - `min?` — default: `-32768` — _minimal value (included)_
 - `max?` — default: `32767` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -188,8 +188,8 @@ Generate _Uint16Array_
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `65535` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -230,8 +230,8 @@ Generate _Int32Array_
 - `min?` — default: `-0x80000000` — _minimal value (included)_
 - `max?` — default: `0x7fffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -272,8 +272,8 @@ Generate _Uint32Array_
 - `min?` — default: `0` — _minimal value (included)_
 - `max?` — default: `0xffffffff` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -316,8 +316,8 @@ Generate _Float32Array_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -360,8 +360,8 @@ Generate _Float64Array_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
-- `size?` — default: `undefined` [more](/docs/tips/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -402,7 +402,7 @@ Generate _BigInt64Array_
 - `min?` — default: `-18446744073709551616n` — _minimal value (included)_
 - `max?` — default: `18446744073709551615n` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
 
 **Usages:**
 
@@ -442,7 +442,7 @@ Generate _BigUint64Array_
 - `min?` — default: `0n` — _minimal value (included)_
 - `max?` — default: `36893488147419103231n` — _maximal value (included)_
 - `minLength?` — default: `0` — _minimal length (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/tips/larger-entries-by-default#size-explained) — _maximal length (included)_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal length (included)_
 
 **Usages:**
 
