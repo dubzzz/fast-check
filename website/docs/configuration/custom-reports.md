@@ -22,7 +22,7 @@ Got error: AssertionError: expected 1000000000 to be less than or equal to 2
 While easily redeable, you may want to format it differently. Explaining how you can do that is the aim of this page.
 
 :::info How to read such reports?
-If you want to know more concerning how to read such reports, you may refer to the [Read Test Reports](/tutorials/quick-start/read-test-reports) section of our [Quick Start](/docs/category/quick-start) tutorial.
+If you want to know more concerning how to read such reports, you may refer to the [Read Test Reports](/docs/tutorials/quick-start/read-test-reports) section of our [Quick Start](/docs/category/quick-start) tutorial.
 :::
 
 ## Verbosity
