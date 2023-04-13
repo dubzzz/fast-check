@@ -8,7 +8,7 @@ Share settings cross runners.
 
 ## Introduction
 
-By default, the [runners](/core-blocks/runners) take an [optional argument for extra settings](https://dubzzz.github.io/fast-check/api-reference/interfaces/Parameters.html). Some of these settings will be re-used over-and-over in the same file and across several files.
+By default, the [runners](/core-blocks/runners) take an [optional argument for extra settings](https://dubzzz.github.io/fast-check/api-reference/interfaces/Parameters.html). Some of these settings can be re-used over-and-over in the same file and across several files.
 
 Example:
 
@@ -44,8 +44,12 @@ test('test #3', () => {
 });
 ```
 
+:::warning
+`configureGlobal` fully resets the settings. In other words, it fully drops the previously defined global settings if any even if they applied on other keys.
+:::
+
 :::tip Enrich existing global settings
-`configureGlobal` fully reset the settings: it fully drops the previously defined global settings if any even if they applied on other keys. If you want to only add new options on top of the existing ones you may want to use `readConfigureGlobal` as follow:
+If you want to only add new options on top of the existing ones you may want to use `readConfigureGlobal` as follow:
 
 ```js
 fc.configureGlobal({ ...fc.readConfigureGlobal(), ...myNewOptions });
