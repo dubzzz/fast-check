@@ -44,7 +44,7 @@ fc.base64String({ minLength: 4, maxLength: 12 });
 // Examples of generated values: "YQ7D/IU8fE+2", "tjhMHtq9", "property", "9lm8Vx7bBF==", "roto"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/base64String.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/base64String.html).  
 Available since 0.0.1.
 
 ## json
@@ -92,7 +92,7 @@ fc.json({ depthSize: 'medium' });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/json.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/json.html).  
 Available since 0.0.7.
 
 ## jsonValue
@@ -198,7 +198,7 @@ fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
 // • 5 to 9 items.......1.34%
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/jsonValue-1.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/jsonValue-1.html).  
 Available since 2.20.0.
 
 ## unicodeJson
@@ -252,7 +252,7 @@ fc.unicodeJson({ depthSize: 'medium' });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/unicodeJson.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/unicodeJson.html).  
 Available since 0.0.7.
 
 ## unicodeJsonValue
@@ -301,7 +301,7 @@ fc.unicodeJsonValue({ maxDepth: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/unicodeJsonValue.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/unicodeJsonValue.html).  
 Available since 2.20.0.
 
 ## lorem
@@ -344,5 +344,5 @@ fc.lorem({ maxCount: 3, mode: 'sentences' });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/lorem.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/lorem.html).  
 Available since 0.0.1.

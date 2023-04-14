@@ -44,7 +44,7 @@ fc.hexaString({ minLength: 4, maxLength: 6 });
 // Examples of generated values: "b4ccb", "e51d", "b3e093", "383f", "27bd"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/hexaString.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/hexaString.html).  
 Available since 0.0.1.
 
 ## string
@@ -81,7 +81,7 @@ fc.string({ minLength: 4, maxLength: 6 });
 // Examples of generated values: "Trxall", "&&@%4", "s@IO", "0\"zM", "}#\"$"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/string.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/string.html).  
 Available since 0.0.1.
 
 ## asciiString
@@ -118,7 +118,7 @@ fc.asciiString({ minLength: 4, maxLength: 6 });
 // Examples of generated values: "<&\u001e\u001b ", "bind", "dnGn\\2", "& % !", "__defi"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/asciiString.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/asciiString.html).  
 Available since 0.0.1.
 
 ## unicodeString
@@ -155,7 +155,7 @@ fc.unicodeString({ minLength: 4, maxLength: 6 });
 // Examples of generated values: "뿐噻⪃嫿垈", "ڣۡ觌뱇", "apply", "￹톥薦￾", "namea"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/unicodeString.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/unicodeString.html).  
 Available since 0.0.11.
 
 ## string16bits
@@ -194,7 +194,7 @@ fc.string16bits({ minLength: 4, maxLength: 6 });
 // Examples of generated values: "apply", "鹽\udc68鯻שּׂ", "땺\uda2f熑鉈뗻", "__def", "㓐줫曧ᒢ"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/string16bits.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/string16bits.html).  
 Available since 0.0.11.
 
 ## fullUnicodeString
@@ -233,5 +233,5 @@ fc.fullUnicodeString({ minLength: 4, maxLength: 6 });
 // Examples of generated values: "call", "񛰖񞑑󱈋𨤎", "񉓁򔶍򣵵乀򠍾󢏘", ",valu", "󐣙󼃞񫎢󖫩𫅰𪂀"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/fullUnicodeString.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/fullUnicodeString.html).  
 Available since 0.0.11.

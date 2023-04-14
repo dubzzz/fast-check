@@ -21,7 +21,7 @@ fc.hexa();
 // Examples of generated values: "5", "f", "7", "d", "9"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/hexa.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/hexa.html).  
 Available since 0.0.1.
 
 ## base64
@@ -39,7 +39,7 @@ fc.base64();
 // Examples of generated values: "A", "H", "i", "l", "7"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/base64.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/base64.html).  
 Available since 0.0.1.
 
 ## char
@@ -57,7 +57,7 @@ fc.char();
 // Examples of generated values: "{", "x", "N", "8", "m"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/char.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/char.html).  
 Available since 0.0.1.
 
 ## ascii
@@ -75,7 +75,7 @@ fc.ascii();
 // Examples of generated values: "4", "l", "S", ";", "\u0019"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/ascii.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/ascii.html).  
 Available since 0.0.1.
 
 ## unicode
@@ -95,7 +95,7 @@ fc.unicode();
 // Examples of generated values: "⬑", "￺", "叾", "꟣", "$"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/unicode.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/unicode.html).  
 Available since 0.0.11.
 
 ## char16bits
@@ -115,7 +115,7 @@ fc.char16bits();
 // Examples of generated values: "", "毒", "丬", "縻", "贑"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/char16bits.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/char16bits.html).  
 Available since 0.0.11.
 
 ## fullUnicode
@@ -135,5 +135,5 @@ fc.fullUnicode();
 // Examples of generated values: "􅍫", "#", "󳥰", "񸻩", "񘙠"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/fullUnicode.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/fullUnicode.html).  
 Available since 0.0.11.

@@ -62,5 +62,5 @@ fc.date({ min: new Date('2000-01-01T00:00:00.000Z'), max: new Date('2000-12-31T2
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/date.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/date.html).  
 Available since 1.17.0.

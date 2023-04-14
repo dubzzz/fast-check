@@ -45,7 +45,7 @@ fc.int8Array({ min: 0, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/int8Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/int8Array.html).  
 Available since 2.9.0.
 
 ## uint8Array
@@ -87,7 +87,7 @@ fc.uint8Array({ max: 42, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uint8Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/uint8Array.html).  
 Available since 2.9.0.
 
 ## uint8ClampedArray
@@ -129,7 +129,7 @@ fc.uint8ClampedArray({ max: 42, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uint8ClampedArray.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/uint8ClampedArray.html).  
 Available since 2.9.0.
 
 ## int16Array
@@ -171,7 +171,7 @@ fc.int16Array({ min: 0, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/int16Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/int16Array.html).  
 Available since 2.9.0.
 
 ## uint16Array
@@ -213,7 +213,7 @@ fc.uint16Array({ max: 42, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uint16Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/uint16Array.html).  
 Available since 2.9.0.
 
 ## int32Array
@@ -255,7 +255,7 @@ fc.int32Array({ min: 0, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/int32Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/int32Array.html).  
 Available since 2.9.0.
 
 ## uint32Array
@@ -297,7 +297,7 @@ fc.uint32Array({ max: 42, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uint32Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/uint32Array.html).  
 Available since 2.9.0.
 
 ## float32Array
@@ -341,7 +341,7 @@ fc.float32Array({ minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/float32Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/float32Array.html).  
 Available since 2.9.0.
 
 ## float64Array
@@ -385,7 +385,7 @@ fc.float64Array({ minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/float64Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/float64Array.html).  
 Available since 2.9.0.
 
 ## bigInt64Array
@@ -425,7 +425,7 @@ fc.bigInt64Array({ min: 0n, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/bigInt64Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/bigInt64Array.html).  
 Available since 3.0.0.
 
 ## bigUint64Array
@@ -465,5 +465,5 @@ fc.bigUint64Array({ max: 42n, minLength: 1 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/bigUint64Array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/bigUint64Array.html).  
 Available since 3.0.0.

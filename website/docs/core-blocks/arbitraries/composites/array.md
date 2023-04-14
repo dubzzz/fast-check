@@ -28,7 +28,7 @@ fc.tuple(fc.nat(), fc.string());
 // Examples of generated values: [17,"n"], [1187149108,"{}"], [302474255,"!!]"], [2147483618,"$#"], [21,"lv V!\""]…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/tuple.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/tuple.html).  
 Available since 0.0.1.
 
 ## array
@@ -137,7 +137,7 @@ fc.letrec((tie) => ({
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/array.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/array.html).  
 Available since 0.0.1.
 
 ## uniqueArray
@@ -221,7 +221,7 @@ fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN), { comparator: (a, b) =
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uniqueArray.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/uniqueArray.html).  
 Available since 2.23.0.
 
 ## sparseArray
@@ -296,5 +296,5 @@ fc.sparseArray(fc.nat(), { size: '+1' });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/sparseArray.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/sparseArray.html).  
 Available since 2.13.0.

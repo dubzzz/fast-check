@@ -197,7 +197,7 @@ fc.statistics(
 // • 5 to 9 items.......0.15%
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/letrec.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/letrec.html).  
 Available since 1.16.0.
 
 ## memo
@@ -240,5 +240,5 @@ tree(2);
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/memo-1.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/memo-1.html).  
 Available since 1.16.0.

@@ -55,7 +55,7 @@ fc.dictionary(fc.string(), fc.nat(), { minKeys: 2 });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/dictionary.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/dictionary.html).  
 Available since 1.0.0.
 
 ## record
@@ -142,7 +142,7 @@ fc.record(
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/record.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/record.html).  
 Available since 0.0.12.
 
 ## object
@@ -249,7 +249,7 @@ fc.object({
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/object.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/object.html).  
 Available since 0.0.7.
 
 ## anything
@@ -353,5 +353,5 @@ fc.anything({
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/anything.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/anything.html).  
 Available since 0.0.7.
