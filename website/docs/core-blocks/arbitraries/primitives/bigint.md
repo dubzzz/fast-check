@@ -42,7 +42,7 @@ fc.bigIntN(128);
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/bigIntN.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/bigIntN.html).  
 Available since 1.9.0.
 
 ## bigInt
@@ -94,7 +94,7 @@ fc.bigInt({ min: 1n << 64n });
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/bigInt.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/bigInt.html).  
 Available since 1.9.0.
 
 ## bigUintN
@@ -129,7 +129,7 @@ fc.bigUintN(128);
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/bigUintN.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/bigUintN.html).  
 Available since 1.9.0.
 
 ## bigUint
@@ -165,5 +165,5 @@ fc.bigUint({ max: 12345678901234567890n });
 // Examples of generated values: 7n, 12345678901234567880n, 11096355679684160765n, 12345678901234567877n, 9491461254506145738n…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/bigUint.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/bigUint.html).  
 Available since 1.9.0.

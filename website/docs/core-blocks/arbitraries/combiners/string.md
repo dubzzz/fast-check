@@ -45,7 +45,7 @@ fc.stringOf(fc.constantFrom('Hello', 'World'), { minLength: 1, maxLength: 3 });
 // Examples of generated values: "Hello", "World", "HelloWorld", "WorldWorldHello", "HelloWorldHello"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/stringOf.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/stringOf.html).  
 Available since 1.1.3.
 
 ## mixedCase
@@ -91,5 +91,5 @@ fc.mixedCase(fc.constant('🐱🐢🐱🐢🐱🐢'), {
 // Examples of generated values: "🐯🐇🐱🐢🐯🐢", "🐱🐇🐱🐇🐯🐇", "🐱🐢🐯🐢🐱🐢", "🐱🐢🐱🐇🐯🐢", "🐱🐢🐯🐢🐱🐇"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/mixedCase.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/mixedCase.html).  
 Available since 1.17.0.

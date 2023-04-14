@@ -19,10 +19,10 @@ function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Prom
 ```
 
 :::tip
-Check [`Parameters`](https://dubzzz.github.io/fast-check/api-reference/interfaces/Parameters.html) to run `assert` with advanced options.
+Check [`Parameters`](https://fast-check.dev/api-reference/interfaces/Parameters.html) to run `assert` with advanced options.
 :::
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/assert.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/assert.html).  
 Available since 0.0.1.
 
 ## check
@@ -60,7 +60,7 @@ function assert(property, params) {
 
 :::
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/check.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/check.html).  
 Available since 0.0.1.
 
 ## sample
@@ -73,7 +73,7 @@ Its signature is:
 function sample<Ts>(generator: IRawProperty<Ts, boolean> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/sample.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/sample.html).  
 Available since 0.0.6.
 
 ## statistics
@@ -112,5 +112,5 @@ fc.statistics(
 // >  5 characters...8.68%
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/statistics.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/statistics.html).  
 Available since 0.0.6.

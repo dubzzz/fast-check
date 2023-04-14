@@ -39,7 +39,7 @@ fc.integer({ min: 65536 });
 // Examples of generated values: 487771549, 1460850457, 1601368274, 1623935346, 65541…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/integer.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/integer.html).  
 Available since 0.0.1.
 
 ## nat
@@ -75,7 +75,7 @@ fc.nat({ max: 1000 });
 // Examples of generated values: 917, 60, 599, 696, 7…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/nat.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/nat.html).  
 Available since 0.0.1.
 
 ## maxSafeInteger
@@ -95,7 +95,7 @@ fc.maxSafeInteger();
 // Examples of generated values: 4, -6906426479593829, -9007199254740981, 1468597314308129, -31…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/maxSafeInteger.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/maxSafeInteger.html).  
 Available since 1.11.0.
 
 ## maxSafeNat
@@ -115,7 +115,7 @@ fc.maxSafeNat();
 // Examples of generated values: 8974418498592146, 7152466311278303, 7682568104547082, 5480146126393191, 6062166945524051…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/maxSafeNat.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/maxSafeNat.html).  
 Available since 1.11.0.
 
 ## float
@@ -168,7 +168,7 @@ fc.integer({ min: 0, max: (1 << 24) - 1 })
 // Examples of generated values: 0.06896239519119263, 0.5898661017417908, 0.7715556621551514, 0.4010099768638611, 0.8638045787811279…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/float.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/float.html).  
 Available since 0.0.6.
 
 ## double
@@ -219,5 +219,5 @@ fc.tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (
 // Examples of generated values: 0.4791994496490358, 0.741935957579559, 0.31752046562590686, 0.07995703455612779, 0.2555619122341972…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/double.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/double.html).  
 Available since 0.0.6.

@@ -27,7 +27,7 @@ fc.uuid();
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uuid.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/uuid.html).  
 Available since 1.17.0.
 
 ### uuidV
@@ -64,5 +64,5 @@ fc.uuidV(5);
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/uuidV.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/uuidV.html).  
 Available since 1.17.0.

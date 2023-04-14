@@ -43,7 +43,7 @@ fc.option(fc.string(), { nil: undefined });
 // Examples of such recursive structures are available with fc.letrec.
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/option.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/option.html).  
 Available since 0.0.6.
 
 ## oneof
@@ -96,7 +96,7 @@ fc.oneof({ arbitrary: fc.char(), weight: 5 }, { arbitrary: fc.boolean(), weight:
 // Examples of such recursive structures are available with fc.letrec.
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/oneof.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/oneof.html).  
 Available since 0.0.1.
 
 ## clone
@@ -130,7 +130,7 @@ fc.clone(fc.nat(), 3);
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/clone.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/clone.html).  
 Available since 2.5.0.
 
 ## .filter
@@ -161,7 +161,7 @@ fc.string().filter((s) => s[0] < s[1]);
 // Examples of generated values: "Aa]tp>", "apply", "?E%a$n x", "#l\"/L\"x&S{", "argument"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#filter).  
+Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#filter).  
 Available since 0.0.1.
 
 ## .map
@@ -195,7 +195,7 @@ fc.string().map((s) => `[${s.length}] -> ${s}`);
 // Examples of generated values: "[3] -> ref", "[8] -> xeE:81|z", "[9] -> B{1Z\\sxWa", "[3] -> key", "[1] -> _"…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#map).  
+Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#map).  
 Available since 0.0.1.
 
 ## .chain
@@ -222,7 +222,7 @@ fc.nat().chain((min) => fc.tuple(fc.constant(min), fc.integer({ min, max: 0xffff
 // Examples of generated values: [1211945858,4294967292], [1068058184,2981851306], [2147483626,2147483645], [1592081894,1592081914], [2147483623,2147483639]…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#chain).  
+Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#chain).  
 Available since 1.2.0.
 
 ## .noBias
@@ -242,7 +242,7 @@ fc.nat().noBias();
 // Examples of generated values: 422394692, 1060515252, 383444404, 1509445429, 659009523…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#noBias).  
+Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#noBias).  
 Available since 1.1.0.
 
 ## .noShrink
@@ -260,5 +260,5 @@ fc.nat().noShrink();
 // Examples of generated values: 3, 633829028, 2147483625, 1617246126, 25…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/classes/Arbitrary.html#noShrink).  
+Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#noShrink).  
 Available since 0.0.9.

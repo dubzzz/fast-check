@@ -11,7 +11,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://dubzzz.github.io/',
+  url: 'https://fast-check.dev/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -63,7 +63,7 @@ const config = {
           { to: '/docs/category/introduction', label: 'Getting Started', position: 'right' },
           { to: '/docs/category/quick-start', label: 'Quick Start', position: 'right' },
           //{ to: '/blog', label: 'Blog', position: 'right' },
-          { href: 'https://dubzzz.github.io/fast-check/api-reference/index.html', label: 'API', position: 'right' },
+          { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
           { href: 'https://github.com/dubzzz/fast-check', label: 'GitHub', position: 'right' },
         ],
       },
@@ -89,7 +89,7 @@ const config = {
             title: 'More',
             items: [
               //{ label: 'Blog', to: '/blog' },
-              { label: 'API Reference', href: 'https://dubzzz.github.io/fast-check/api-reference/index.html' },
+              { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
               { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             ],
           },

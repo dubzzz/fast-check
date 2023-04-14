@@ -59,7 +59,7 @@ fc.compareBooleanFunc();
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/compareBooleanFunc.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/compareBooleanFunc.html).  
 Available since 1.6.0.
 
 ## compareFunc
@@ -115,7 +115,7 @@ fc.compareFunc();
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/compareFunc.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/compareFunc.html).  
 Available since 1.6.0.
 
 ## func
@@ -163,5 +163,5 @@ fc.func(fc.nat());
 // • …
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/func.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/func.html).  
 Available since 1.6.0.

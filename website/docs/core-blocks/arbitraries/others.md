@@ -26,12 +26,12 @@ fc.falsy({ withBigInt: true });
 // Examples of generated values: null, Number.NaN, false, undefined, 0n…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/falsy.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/falsy.html).  
 Available since 1.26.0.
 
 ## context
 
-Generate an [instance of `ContextValue`](https://dubzzz.github.io/fast-check/interfaces/contextvalue.html) for each predicate run.
+Generate an [instance of `ContextValue`](https://fast-check.dev/interfaces/contextvalue.html) for each predicate run.
 
 `ContextValue` can be used to log stuff within the run itself. In case of failure, the logs will be attached in the counterexample and visible in the stack trace.
 
@@ -47,7 +47,7 @@ fc.context();
 // It can be called as follow: ctx.log('My log')
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/context.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/context.html).  
 Available since 1.8.0.
 
 ## commands
@@ -103,7 +103,7 @@ fc.assert(
 );
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/commands.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/commands.html).  
 Available since .
 
 ## gen
@@ -142,7 +142,7 @@ fc.gen();
 // If you do need to create a dedicated builder, define it outside of `fc.assert` and use it in your predicate as `g(myBuilder, ...parametersForMyBuilder)`.
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/gen.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/gen.html).  
 Available since 3.8.0.
 
 ## scheduler
@@ -158,5 +158,5 @@ Scheduler for asynchronous tasks.
 
 - `act` — _ensure that all scheduled tasks will be executed in the right context_
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/scheduler-1.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/scheduler-1.html).  
 Available since 1.20.0.

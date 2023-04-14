@@ -27,5 +27,5 @@ fc.infiniteStream(fc.nat(9));
 // Examples of generated values: Stream(…)…
 ```
 
-Resources: [API reference](https://dubzzz.github.io/fast-check/api-reference/functions/infiniteStream.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/infiniteStream.html).  
 Available since 1.8.0.
