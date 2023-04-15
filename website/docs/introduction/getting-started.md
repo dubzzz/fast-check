@@ -15,6 +15,24 @@ fast-check can be installed into any existing project by running the following c
 npm install --save-dev fast-check
 ```
 
+:::tip No install
+You can also directly pull it from a CDN:
+
+```ts
+// deno
+import fc from 'https://cdn.skypack.dev/fast-check';
+```
+
+```html
+<!-- html file -->
+<script type="module">
+  import fc from 'https://cdn.skypack.dev/fast-check';
+  // code...
+</script>
+```
+
+:::
+
 :::info Integration with test runners
 fast-check is agnostic of the test runner you rely on. It works with any test runner without needing any specific change.
 :::

@@ -6,7 +6,7 @@ slug: /configuration/larger-entries-by-default
 
 Customize the default "good enough" size for your tests.
 
-## Introduction
+## What's the best length?
 
 Have you ever thought about what is a good random string? What we usually call strings range from a few characters to thousands or even more characters. When using fast-check to generate random strings, arrays, objects, etc., the question of what constitutes a good length has to be addressed.
 
