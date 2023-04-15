@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/primitives/bigint
+slug: /core-blocks/arbitraries/primitives/bigint/
 ---
 
 # BigInt

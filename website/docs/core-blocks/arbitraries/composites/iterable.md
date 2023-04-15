@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/composites/iterable
+slug: /core-blocks/arbitraries/composites/iterable/
 ---
 
 # Iterable

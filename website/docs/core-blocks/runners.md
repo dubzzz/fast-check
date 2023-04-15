@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-slug: /core-blocks/runners
+slug: /core-blocks/runners/
 ---
 
 # Runners

@@ -1,5 +1,5 @@
 ---
-slug: /configuration/global-settings
+slug: /configuration/global-settings/
 ---
 
 # Global settings
@@ -8,7 +8,7 @@ Share settings cross runners.
 
 ## Per test settings
 
-By default, the [runners](/docs/core-blocks/runners) take an [optional argument for extra settings](https://fast-check.dev/api-reference/interfaces/Parameters.html). Some of these settings can be re-used over-and-over in the same file and across several files.
+By default, the [runners](/docs/core-blocks/runners/) take an [optional argument for extra settings](https://fast-check.dev/api-reference/interfaces/Parameters.html). Some of these settings can be re-used over-and-over in the same file and across several files.
 
 Example:
 

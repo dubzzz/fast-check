@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-slug: /core-blocks/properties
+slug: /core-blocks/properties/
 ---
 
 # Properties
@@ -20,7 +20,7 @@ They can be summarized by:
 :::info Equivalence in fast-check
 Each part of the definition can be achieved directly within fast-check:
 
-- "_for any (x, y, ...)_" via [arbitraries](/docs/category/arbitraries)
+- "_for any (x, y, ...)_" via [arbitraries](/docs/category/arbitraries/)
 - "_such that precondition(x, y, ...) holds_" via `fc.pre` or `.filter`
 - "_predicate(x, y, ...) is true_" via the predicate
 

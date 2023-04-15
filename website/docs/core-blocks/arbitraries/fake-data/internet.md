@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/fake-data/internet
+slug: /core-blocks/arbitraries/fake-data/internet/
 ---
 
 # Internet
@@ -79,7 +79,7 @@ Following RFC 1034, RFC 1123 and WHATWG URL Standard.
 
 **with:**
 
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -123,7 +123,7 @@ Following RFC 3986.
 - `withIPv6?` — default: `false` — _enable ip v6_
 - `withPort?` — default: `false` — _enable port_
 - `withUserInfo?` — default: `false` — _enable user info_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -166,7 +166,7 @@ Fragment is the optional part right after the # in an URI.
 
 **with:**
 
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -191,7 +191,7 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 **with:**
 
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -225,7 +225,7 @@ Query parameters part is the optional part right after the ? in an URI.
 
 **with:**
 
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -248,7 +248,7 @@ Web URL path segment.
 
 **with:**
 
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -277,7 +277,7 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 - `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
 - `withFragments?` — default: `false` — _enable fragments_
 - `withQueryParameters?` — default: `false` — _enable query parameters_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -329,7 +329,7 @@ Following RFC 1123 and RFC 5322.
 
 **with:**
 
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 

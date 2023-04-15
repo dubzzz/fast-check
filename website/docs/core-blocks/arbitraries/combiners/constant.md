@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/combiners/constant
+slug: /core-blocks/arbitraries/combiners/constant/
 ---
 
 # Constant

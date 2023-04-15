@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/composites/object
+slug: /core-blocks/arbitraries/composites/object/
 ---
 
 # Object
@@ -20,8 +20,8 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 - `keyArb` — _arbitrary instance responsible to generate keys_
 - `valueArb` — _arbitrary instance responsible to generate values_
 - `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
-- `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal number of keys in the generated instances (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of keys in the generated instances (included)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
@@ -157,10 +157,10 @@ Generate objects (key/values).
 **with:**
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
-- `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal number of keys in generated objects (Map and Set included into objects)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
 - `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_
@@ -264,10 +264,10 @@ Generate any kind of entities.
 **with:**
 
 - `key?` — default: `fc.string()` — _arbitrary responsible to generate keys used for instances of objects_
-- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
-- `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal number of keys in generated objects (Map and Set included into objects)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of keys in generated objects (Map and Set included into objects)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 - `withBigInt?` — default: `false` — _enable `bigint` - eg.: `1n`_
 - `withBoxedValues?` — default: `false` — _enable boxed values - eg.: `new Number(5)`_
 - `withDate?` — default: `false` — _enable `Date` - eg.: `new Date('2020-10-14T16:52:36.736Z')`_

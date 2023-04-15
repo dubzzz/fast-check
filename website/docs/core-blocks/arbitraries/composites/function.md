@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/composites/function
+slug: /core-blocks/arbitraries/composites/function/
 ---
 
 # Function

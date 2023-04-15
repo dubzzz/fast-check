@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-slug: /introduction/why-property-based
+slug: /introduction/why-property-based/
 ---
 
 # Why Property-Based?

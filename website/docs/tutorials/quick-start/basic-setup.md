@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-slug: /tutorials/quick-start/basic-setup
+slug: /tutorials/quick-start/basic-setup/
 ---
 
 # Basic Setup
@@ -14,7 +14,7 @@ In this tutorial, you'll need to have [Node.js](https://nodejs.org/en/download/)
 We will start from an already bootstrapped project to focus on our target: writing our first test.
 
 :::info Setup
-You may want to refer to our [Getting Started](/docs/introduction/getting-started) section to setup fast-check in an existing project or without tutorial related code.
+You may want to refer to our [Getting Started](/docs/introduction/getting-started/) section to setup fast-check in an existing project or without tutorial related code.
 :::
 
 ```bash npm2yarn

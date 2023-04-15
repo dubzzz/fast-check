@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-slug: /tutorials/quick-start/our-first-property-based-test
+slug: /tutorials/quick-start/our-first-property-based-test/
 ---
 
 # Our first Property-Based Test
@@ -42,7 +42,7 @@ A property can be expressed as follow:
 > predicate(x, y, ...) is true
 
 :::info Property-based tests
-You may want to refer to our [Why Property-Based?](/docs/introduction/why-property-based) section to know more about the benefits and strengths of property-based tests.
+You may want to refer to our [Why Property-Based?](/docs/introduction/why-property-based/) section to know more about the benefits and strengths of property-based tests.
 :::
 
 ## Our first property

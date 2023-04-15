@@ -1,5 +1,5 @@
 ---
-slug: /configuration/custom-reports
+slug: /configuration/custom-reports/
 ---
 
 # Custom reports
@@ -22,14 +22,14 @@ Got error: AssertionError: expected 1000000000 to be less than or equal to 2
 While easily redeable, you may want to format it differently. Explaining how you can do that is the aim of this page.
 
 :::info How to read such reports?
-If you want to know more concerning how to read such reports, you may refer to the [Read Test Reports](/docs/tutorials/quick-start/read-test-reports) section of our [Quick Start](/docs/category/quick-start) tutorial.
+If you want to know more concerning how to read such reports, you may refer to the [Read Test Reports](/docs/tutorials/quick-start/read-test-reports/) section of our [Quick Start](/docs/category/quick-start/) tutorial.
 :::
 
 ## Verbosity
 
 The simplest and built-in way to change how to format the errors in a different way is verbosity. Verbosity can be either 0, 1 or 2 and is defaulted to 1. It can be changed at `assert`'s level, by passing the option `verbose: <your-value>` to it.
 
-You may refer to [Read Test Reports](/docs/tutorials/quick-start/read-test-reports#how-to-increase-verbosity) for more details on it.
+You may refer to [Read Test Reports](/docs/tutorials/quick-start/read-test-reports/#how-to-increase-verbosity) for more details on it.
 
 ## New Reporter
 

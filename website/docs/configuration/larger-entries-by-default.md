@@ -1,5 +1,5 @@
 ---
-slug: /configuration/larger-entries-by-default
+slug: /configuration/larger-entries-by-default/
 ---
 
 # Larger entries by default
@@ -41,7 +41,7 @@ Here is a quick overview of how we use the `size` parameter associated to a mini
 
 ## Depth size explained
 
-Since version 2.25.0, there is a tied link between [size](/docs/configuration/larger-entries-by-default#size-explained) and depth of recursive structures.
+Since version 2.25.0, there is a tied link between [size](/docs/configuration/larger-entries-by-default/#size-explained) and depth of recursive structures.
 
 `depthFactor` (aka `depthSize` since 3.0.0) has been introduced in version 2.14.0 as a numeric floating point value between `0`
 and `+infinity`. It was used to reduce the risk of generating infinite structures when relying on recursive arbitraries.
@@ -103,5 +103,5 @@ test('should always contain its substrings', () => {
 ```
 
 :::info
-To learn how to customize the size for a particular arbitrary, please refer to the [documentation](/docs/category/arbitraries) provided for that arbitrary.
+To learn how to customize the size for a particular arbitrary, please refer to the [documentation](/docs/category/arbitraries/) provided for that arbitrary.
 :::
