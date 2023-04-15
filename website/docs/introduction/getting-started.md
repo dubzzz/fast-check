@@ -71,7 +71,7 @@ describe('properties', () => {
 ```
 
 :::tip Hands on Property-Based Testing
-If you want to quickly get started with property-based testing, you may check our tutorials and our [quick start guide](/docs/category/quick-start).
+If you want to quickly get started with property-based testing, you may check our tutorials and our [quick start guide](/docs/category/quick-start/).
 :::
 
 ## Walk through the test

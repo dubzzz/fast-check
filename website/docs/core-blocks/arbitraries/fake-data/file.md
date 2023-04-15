@@ -20,8 +20,8 @@ Provide valid base64 strings: length always multiple of 4 padded with '=' charac
 **with:**
 
 - `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — _maximal number of characters (included if multiple of 4)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included if multiple of 4)_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 _When using `minLength` and `maxLength` make sure that they are compatible together. For instance: asking for `minLength=2` and `maxLength=3` is impossible for base64 strings as produced by the framework_
 
@@ -61,7 +61,7 @@ All the string values (from keys to values) are generated using `fc.string()`.
 
 **with:**
 
-- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
 
 **Usages:**
@@ -113,7 +113,7 @@ As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
 
 **with:**
 
-- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
 
 **Usages:**
@@ -215,7 +215,7 @@ All the string values (from keys to values) are generated using `fc.unicodeStrin
 
 **with:**
 
-- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
 
 **Usages:**
@@ -273,7 +273,7 @@ As `JSON.parse` preserves `-0`, `unicodeJsonValue` can also have `-0` as a value
 
 **with:**
 
-- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#depth-size-explained) — _how much we allow our recursive structures to be deep?_
+- `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
 
 **Usages:**
@@ -315,9 +315,9 @@ Lorem ipsum values.
 
 **with:**
 
-- `maxCount?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default#size-explained) — if `mode` is `"words"`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words\_
+- `maxCount?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — if `mode` is `"words"`: lorem ipsum sentence containing at most `maxCount` sentences, otherwise: containing at most `maxCount` words\_
 - `mode?` — default: `"words"` — _enable sentence mode by setting its value to `"sentences"`_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default#size-explained) — _how large should the generated values be?_
+- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
 
