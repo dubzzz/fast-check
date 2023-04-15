@@ -273,7 +273,7 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 **with:**
 
-- `authoritySettings?` — default: `{}` — _[constraints](https://fast-check.dev/interfaces/webauthorityconstraints.html) on the web authority_
+- `authoritySettings?` — default: `{}` — _[constraints](https://fast-check.dev/api-reference/interfaces/WebAuthorityConstraints.html) on the web authority_
 - `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
 - `withFragments?` — default: `false` — _enable fragments_
 - `withQueryParameters?` — default: `false` — _enable query parameters_
