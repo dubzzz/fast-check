@@ -2,11 +2,11 @@
 slug: /configuration/global-settings
 ---
 
-# Global Settings
+# Global settings
 
 Share settings cross runners.
 
-## Introduction
+## Per test settings
 
 By default, the [runners](/docs/core-blocks/runners) take an [optional argument for extra settings](https://fast-check.dev/api-reference/interfaces/Parameters.html). Some of these settings can be re-used over-and-over in the same file and across several files.
 
@@ -24,7 +24,7 @@ test('test #3', () => {
 });
 ```
 
-## Share
+## Shared settings
 
 The recommended way to share settings across runners is to use `configureGlobal`.
 

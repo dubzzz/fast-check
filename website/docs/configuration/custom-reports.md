@@ -2,7 +2,7 @@
 slug: /configuration/custom-reports
 ---
 
-# Custom Reports
+# Custom reports
 
 Customize how to report failures.
 
@@ -126,4 +126,46 @@ fc.assert(
 
 :::info CodeSandbox documentation
 The official documentation explaining how to build CodeSandbox environments from an url is available here: https://codesandbox.io/docs/importing#get-request.
+:::
+
+## Customize toString
+
+By default, fast-check serializes generated values using its internal `stringify` helper. Sometimes you may want a better stringified representation of your instances. In such cases, you have several solutions:
+
+1. If your instance defines a `toString` method, it will used to properly report it, unless you've defined one of the following methods, which take precedence.
+2. If defining `toString` method is to intrusive, you can use `toStringMethod` and `asyncToStringMethod`.
+
+In most cases, `toStringMethod` is sufficient. This is the serializer method that fast-check uses to serialize your instance in any context: synchronous or asynchronous.
+
+```ts
+Object.defineProperties(myInstanceWithoutCustomToString, {
+  [fc.toStringMethod]: { value: () => 'my-value' },
+});
+// here your instance defines a custom serializer
+// that will be used by fast-check whenever needed
+```
+
+However, if you're working with asynchronous values, you may need an async method to retrieve the value. For example:
+
+```ts
+Object.defineProperties(myPromisePossiblyResolved, {
+  [fc.asyncToStringMethod]: {
+    value: async () => {
+      const resolved = await myPromisePossiblyResolved;
+      return `My value: ${resolved}`;
+    },
+  },
+});
+```
+
+:::info Limitations of async variant
+Note that:
+
+- `asyncToStringMethod` is only used for asynchronous properties.
+- Although `asyncToStringMethod` is marked as asynchronous, it should resolve almost instantly.
+
+:::
+
+:::tip Test your custom `toString`
+One way to ensure that your instances will be properly stringified is to call the `stringify` function provided by fast-check. This will give you a preview of how your instances will be represented in the output.
 :::
