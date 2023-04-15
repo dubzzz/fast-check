@@ -31,7 +31,7 @@ Available since 1.26.0.
 
 ## context
 
-Generate an [instance of `ContextValue`](https://fast-check.dev/interfaces/contextvalue.html) for each predicate run.
+Generate an [instance of `ContextValue`](https://fast-check.dev/api-reference/interfaces/ContextValue.html) for each predicate run.
 
 `ContextValue` can be used to log stuff within the run itself. In case of failure, the logs will be attached in the counterexample and visible in the stack trace.
 
