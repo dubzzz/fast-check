@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/primitives/string
+slug: /core-blocks/arbitraries/primitives/string/
 ---
 
 # String

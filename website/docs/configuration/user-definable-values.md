@@ -1,5 +1,5 @@
 ---
-slug: /configuration/user-definable-values
+slug: /configuration/user-definable-values/
 ---
 
 # User definable values

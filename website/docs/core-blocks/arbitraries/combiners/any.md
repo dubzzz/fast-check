@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/combiners/any
+slug: /core-blocks/arbitraries/combiners/any/
 ---
 
 # Any

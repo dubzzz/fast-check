@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-slug: /core-blocks/properties
+slug: /core-blocks/properties/
 ---
 
 # Properties

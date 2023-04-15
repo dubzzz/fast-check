@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/combiners/string
+slug: /core-blocks/arbitraries/combiners/string/
 ---
 
 # String

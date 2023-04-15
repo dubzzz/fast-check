@@ -1,5 +1,5 @@
 ---
-slug: /configuration/larger-entries-by-default
+slug: /configuration/larger-entries-by-default/
 ---
 
 # Larger entries by default

@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/fake-data/internet
+slug: /core-blocks/arbitraries/fake-data/internet/
 ---
 
 # Internet

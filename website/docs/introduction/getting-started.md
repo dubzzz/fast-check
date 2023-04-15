@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-slug: /introduction/getting-started
+slug: /introduction/getting-started/
 ---
 
 # Getting Started

@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/composites/array
+slug: /core-blocks/arbitraries/composites/array/
 ---
 
 # Array

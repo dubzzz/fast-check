@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-slug: /tutorials/quick-start/our-first-property-based-test
+slug: /tutorials/quick-start/our-first-property-based-test/
 ---
 
 # Our first Property-Based Test

@@ -1,5 +1,5 @@
 ---
-slug: /configuration/global-settings
+slug: /configuration/global-settings/
 ---
 
 # Global settings

@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/primitives/number
+slug: /core-blocks/arbitraries/primitives/number/
 ---
 
 # Number

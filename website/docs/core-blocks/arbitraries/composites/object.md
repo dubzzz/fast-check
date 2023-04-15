@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/composites/object
+slug: /core-blocks/arbitraries/composites/object/
 ---
 
 # Object

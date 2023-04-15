@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/others
+slug: /core-blocks/arbitraries/others/
 ---
 
 # Others

@@ -1,5 +1,5 @@
 ---
-slug: /configuration/timeouts
+slug: /configuration/timeouts/
 ---
 
 # Timeouts

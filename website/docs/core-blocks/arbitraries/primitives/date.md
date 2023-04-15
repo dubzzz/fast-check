@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/primitives/date
+slug: /core-blocks/arbitraries/primitives/date/
 ---
 
 # Date

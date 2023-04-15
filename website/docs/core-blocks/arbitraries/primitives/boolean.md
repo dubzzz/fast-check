@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/primitives/boolean
+slug: /core-blocks/arbitraries/primitives/boolean/
 ---
 
 # Boolean

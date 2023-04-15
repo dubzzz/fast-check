@@ -60,8 +60,8 @@ const config = {
         title: 'fast-check',
         logo: { alt: 'fast-check Logo', src: 'img/mug.svg', width: '40px' },
         items: [
-          { to: '/docs/category/introduction', label: 'Getting Started', position: 'right' },
-          { to: '/docs/category/quick-start', label: 'Quick Start', position: 'right' },
+          { to: '/docs/category/introduction/', label: 'Getting Started', position: 'right' },
+          { to: '/docs/category/quick-start/', label: 'Quick Start', position: 'right' },
           //{ to: '/blog', label: 'Blog', position: 'right' },
           { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
           { href: 'https://github.com/dubzzz/fast-check', label: 'GitHub', position: 'right' },
@@ -73,9 +73,9 @@ const config = {
           {
             title: 'Docs',
             items: [
-              { label: 'Getting Started', to: '/docs/category/introduction' },
-              { label: 'Quick Start', to: '/docs/category/quick-start' },
-              { label: 'All Tutorials', to: '/docs/category/tutorials' },
+              { label: 'Getting Started', to: '/docs/category/introduction/' },
+              { label: 'Quick Start', to: '/docs/category/quick-start/' },
+              { label: 'All Tutorials', to: '/docs/category/tutorials/' },
             ],
           },
           {

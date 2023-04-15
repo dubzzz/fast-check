@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/combiners/recursive-structure
+slug: /core-blocks/arbitraries/combiners/recursive-structure/
 ---
 
 # Recursive Structure

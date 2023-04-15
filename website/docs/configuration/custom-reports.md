@@ -1,5 +1,5 @@
 ---
-slug: /configuration/custom-reports
+slug: /configuration/custom-reports/
 ---
 
 # Custom reports

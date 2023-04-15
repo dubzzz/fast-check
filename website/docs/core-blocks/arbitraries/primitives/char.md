@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/primitives/char
+slug: /core-blocks/arbitraries/primitives/char/
 ---
 
 # Char

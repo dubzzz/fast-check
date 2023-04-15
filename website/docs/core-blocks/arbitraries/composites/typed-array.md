@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/composites/typed-array
+slug: /core-blocks/arbitraries/composites/typed-array/
 ---
 
 # Typed Array

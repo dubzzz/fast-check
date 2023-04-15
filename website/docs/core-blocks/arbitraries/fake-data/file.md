@@ -1,5 +1,5 @@
 ---
-slug: /core-blocks/arbitraries/fake-data/file
+slug: /core-blocks/arbitraries/fake-data/file/
 ---
 
 # File
