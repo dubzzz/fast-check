@@ -58,7 +58,7 @@ const config = {
       image: 'img/logo.png',
       navbar: {
         title: 'fast-check',
-        logo: { alt: 'fast-check Logo', src: 'img/mug.svg' },
+        logo: { alt: 'fast-check Logo', src: 'img/mug.svg', width: '40px' },
         items: [
           { to: '/docs/category/introduction', label: 'Getting Started', position: 'right' },
           { to: '/docs/category/quick-start', label: 'Quick Start', position: 'right' },
