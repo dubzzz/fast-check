@@ -14,6 +14,10 @@
   margin-bottom: 0px;
 }
 
+.mainTitleLogo {
+  max-width: '100%';
+}
+
 @media screen and (max-width: 996px) {
   .heroBanner {
     padding: 2rem;
