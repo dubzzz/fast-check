@@ -44,7 +44,7 @@ jobs:
         run: git tag --points-at HEAD
       - id: tags_match_package
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^${{matrix.package-name}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: (git tag --points-at HEAD | grep '^${{matrix.package-name}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*') || echo ''
       - if: contains(steps.tags_match_package.outputs, matrix.package-name)
         name: Publish the package
         run: echo "Publishing"
