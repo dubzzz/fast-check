@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   pub_poc:
-    name: 'Pub POC'
+    name: 'Publich pakage tagged via ${{matrix.package-name}}'
     runs-on: ubuntu-latest
     strategy:
       matrix:
