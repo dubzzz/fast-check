@@ -38,9 +38,8 @@ jobs:
         with:
           ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
           fetch-depth: 0
-        name: Check if one tag matches the package
+      - name: Check if one tag matches the package
         run: (git tag --points-at HEAD | grep '^${{matrix.package-name}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*') || echo ''
-      - if: contains(steps.tags_match_package.outputs, matrix.package-name)
+      - if: contains(join(steps.tags_match_package.outputs.*, '\n'), matrix.package-name)
         name: Publish the package
-        # join(steps.run_tests.outputs.*, '\n')
         run: echo "Publishing"
