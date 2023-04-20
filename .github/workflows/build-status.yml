@@ -42,9 +42,12 @@ jobs:
         run: git rev-parse HEAD
       - name: Read tags on commit
         run: git tag --points-at HEAD
+      - name: Read tags on commit
+        run: git tag -l | grep $(git describe HEAD)
       - id: tags_match_package
         name: Check if one tag matches the package
         run: (git tag --points-at HEAD | grep '^${{matrix.package-name}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*') || echo ''
       - if: contains(steps.tags_match_package.outputs, matrix.package-name)
         name: Publish the package
+        # join(steps.run_tests.outputs.*, '\n')
         run: echo "Publishing"
