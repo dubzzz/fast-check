@@ -40,7 +40,11 @@ jobs:
           depth: 0
       - name: Print info on commit
         run: git rev-parse HEAD
-      - name: Read tags on commit
+      - name: Read tags on commit 1
+        run: git tag -l --format="%(refname:strip=2)"
+      - name: Read tags on commit 2
+        run: git tag -l --format="%(refname:strip=2)" | xargs -I % sh -c 'echo -n % && echo -n " "; git rev-parse %'
+      - name: Read tags on commit 3
         run: git tag -l --format="%(refname:strip=2)" | xargs -I % sh -c 'echo -n % && echo -n " "; git rev-parse %' | grep $(git rev-parse HEAD)
       - id: tags_match_package
         name: Check if one tag matches the package
