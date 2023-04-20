@@ -40,6 +40,8 @@ jobs:
           depth: 0
       - name: Print info on commit
         run: git rev-parse HEAD
+      - name: Read tags on commit 0
+        run: git tag -l
       - name: Read tags on commit 1
         run: git tag -l --format="%(refname:strip=2)"
       - name: Read tags on commit 2
