@@ -74,3 +74,25 @@ jobs:
     steps:
       - name: Publish the package
         run: echo "Publishing"
+  pub_poc_vicheck:
+    name: Check publish vifast-check
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  pub_poc_vido:
+    name: Publish vifast-check do
+    runs-on: ubuntu-latest
+    needs: pub_poc_vicheck
+    if: needs.pub_poc_vicheck.outputs.status == 'success'
+    steps:
+      - name: Publish the package
+        run: echo "Publishing"
