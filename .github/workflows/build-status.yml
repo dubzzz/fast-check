@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
+        with:
+          ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
       - name: Read tags on commit
         run: git tag --points-at HEAD
