@@ -67,11 +67,11 @@ jobs:
       - if: steps.check_has_tag.outcome == 'success'
         name: Publish the package
         run: echo "Publishing"
-  pub_poc_do:
-    name: Publish fast-check do
-    runs-on: ubuntu-latest
-    needs: pub_poc_check
-    if: steps.check_has_tag.outcome == 'success'
-    steps:
-      - name: Publish the package
-        run: echo "Publishing"
+  #pub_poc_do:
+  #  name: Publish fast-check do
+  #  runs-on: ubuntu-latest
+  #  needs: pub_poc_check
+  #  if: steps.check_has_tag.outcome == 'success'
+  #  steps:
+  #    - name: Publish the package
+  #      run: echo "Publishing"
