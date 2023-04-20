@@ -31,3 +31,9 @@ jobs:
         run: git rev-parse HEAD
       - name: Read tags on commit
         run: git tag --points-at HEAD
+      - name: Pull missing tags
+        run: git pull --tags
+      - name: Print info on commit
+        run: git rev-parse HEAD
+      - name: Read tags on commit
+        run: git tag --points-at HEAD
