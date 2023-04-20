@@ -3578,8 +3578,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^6.0.0":
-  version: 6.2.7
-  resolution: "@npmcli/arborist@npm:6.2.7"
+  version: 6.2.8
+  resolution: "@npmcli/arborist@npm:6.2.8"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/fs": ^3.1.0
@@ -3613,10 +3613,10 @@ __metadata:
     semver: ^7.3.7
     ssri: ^10.0.1
     treeverse: ^3.0.0
-    walk-up-path: ^1.0.0
+    walk-up-path: ^3.0.1
   bin:
     arborist: bin/index.js
-  checksum: 5dae64addf99b66903ec0b1cc46e4c20156126af22de087633da076b668564a1c66cd96dfe4f01f384eacb985b337c1a5e40135fe9bdcecd1a11ff00e68bc7e9
+  checksum: eff3250821c17159fc85d030c89dd6e6254f108c583e04d3bc58a18aac16568813ddb4a68ebdaa059d57edab16dec4be9e4a4dcf817f0e531efceeeb3adc46f5
   languageName: node
   linkType: hard
 
@@ -17300,10 +17300,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"walk-up-path@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "walk-up-path@npm:1.0.0"
-  checksum: b8019ac4fb9ba1576839ec66d2217f62ab773c1cc4c704bfd1c79b1359fef5366f1382d3ab230a66a14c3adb1bf0fe102d1fdaa3437881e69154dfd1432abd32
+"walk-up-path@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "walk-up-path@npm:3.0.1"
+  checksum: 9ffca02fe30fb65f6db531260582988c5e766f4c739cf86a6109380a7f791236b5d0b92b1dce37a6f73e22dca6bc9d93bf3700413e16251b2bd6bbd1ca2be316
   languageName: node
   linkType: hard
 
