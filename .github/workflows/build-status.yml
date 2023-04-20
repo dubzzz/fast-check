@@ -23,17 +23,28 @@ jobs:
   pub_poc:
     name: 'Pub POC'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package-name:
+          - 'v'
+          - 'ava/v'
+          - 'jest/v'
+          - 'packaged/v'
+          - 'poisoning/v'
+          - 'vitest/v'
+          - 'worker/v'
     steps:
       - uses: actions/checkout@v3
         with:
           ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
+          depth: 0
       - name: Print info on commit
         run: git rev-parse HEAD
       - name: Read tags on commit
         run: git tag --points-at HEAD
-      - name: Pull missing tags
-        run: git pull --tags
-      - name: Print info on commit
-        run: git rev-parse HEAD
-      - name: Read tags on commit
-        run: git tag --points-at HEAD
+      - id: tags_match_package
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^${{matrix.package-name}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+      - if: contains(steps.tags_match_package.outputs, matrix.package-name)
+        name: Publish the package
+        run: echo "Publishing"
