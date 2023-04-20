@@ -27,5 +27,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
+      - name: Print info on commit
+        run: git rev-parse HEAD
       - name: Read tags on commit
         run: git tag --points-at HEAD
