@@ -21,18 +21,25 @@ concurrency:
 
 jobs:
   pub_poc:
-    name: 'Publish package tagged via ${{matrix.package-name}}X.Y.Z'
+    name: 'Publish ${{matrix.package-name}}'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package-name:
-          - 'v'
-          - 'ava/v'
-          - 'jest/v'
-          - 'packaged/v'
-          - 'poisoning/v'
-          - 'vitest/v'
-          - 'worker/v'
+        include:
+          - version-prefix: 'v'
+            package-name: 'fast-check'
+          - version-prefix: 'ava/v'
+            package-name: '@fast-check/ava'
+          - version-prefix: 'jest/v'
+            package-name: '@fast-check/jest'
+          - version-prefix: 'packaged/v'
+            package-name: '@fast-check/packaged'
+          - version-prefix: 'poisoning/v'
+            package-name: '@fast-check/poisoning'
+          - version-prefix: 'vitest/v'
+            package-name: '@fast-check/vitest'
+          - version-prefix: 'worker/v'
+            package-name: '@fast-check/worker'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -40,7 +47,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^${{matrix.package-name}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: git tag --points-at HEAD | grep '^${{matrix.version-prefix}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
         continue-on-error: true
       - if: steps.check_has_tag.outcome == 'success'
         name: Publish the package
