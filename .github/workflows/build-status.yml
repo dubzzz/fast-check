@@ -20,8 +20,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  poc:
-    name: 'Publication attempt POC'
+  pub_poc:
+    name: 'Pub POC'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
