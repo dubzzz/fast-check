@@ -38,9 +38,10 @@ jobs:
         with:
           ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
           fetch-depth: 0
-      - name: Check if one tag matches the package
+      - id: check_has_tag
+        name: Check if one tag matches the package
         run: git tag --points-at HEAD | grep '^${{matrix.package-name}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
         continue-on-error: true
-      - if: success()
+      - if: steps.check_has_tag.outcome == 'success'
         name: Publish the package
         run: echo "Publishing"
