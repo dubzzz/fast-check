@@ -1,3 +1,16 @@
+# 1.1.4
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.3...ava%2Fv1.1.4)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 1.1.3
 
 _Update funding section in package.json_

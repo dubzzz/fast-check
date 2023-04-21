@@ -1,3 +1,16 @@
+# 0.0.5
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.4...vitest%2Fv0.0.5)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.4
 
 _Proper type declaration in package.json_

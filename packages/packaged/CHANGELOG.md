@@ -1,3 +1,16 @@
+# 0.0.8
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.7...packaged%2Fv0.0.8)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.7
 
 _Update funding section in package.json_

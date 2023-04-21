@@ -1,3 +1,16 @@
+# 0.0.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/expect-type%2Fv0.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/expect-type%2Fv0.0.2...expect-type%2Fv0.0.3)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.2
 
 _Fix broken links in README_

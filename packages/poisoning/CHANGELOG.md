@@ -1,3 +1,16 @@
+# 0.0.6
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.5...poisoning%2Fv0.0.6)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.5
 
 _Add support for Node 18_

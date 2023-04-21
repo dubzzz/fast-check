@@ -1,3 +1,16 @@
+# 0.0.5
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.4...worker%2Fv0.0.5)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.0.4
 
 _Terminate workers earlier if they are not used anymore_
