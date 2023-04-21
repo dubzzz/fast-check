@@ -480,8 +480,8 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
-  publish_package:
-    name: 'Publish package'
+  check_any_package:
+    name: 'Check publish any package'
     needs:
       - production_packages
       - documentation
@@ -494,7 +494,38 @@ jobs:
       - test_cjs_esm
       - test_node_8
       - test_types
-    if: startsWith(github.ref, 'refs/tags/')
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      tag_count: ${{steps.tag_count.outputs.count}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: tag_count
+        name: Check if one tag matches the package
+        run: |
+          echo -n "count=" >> "$GITHUB_OUTPUT"
+          git tag --points-at HEAD | wc -l >> "$GITHUB_OUTPUT"
+  check_publish_fc:
+    name: Check publish fast-check
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_fc:
+    name: Publish fast-check
+    needs: check_publish_fc
+    if: needs.check_publish_fc.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -512,43 +543,287 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - if: startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/vitest/v')
-        name: Publish fast-check
+      - name: Publish fast-check
         run: npm publish --provenance --access public packages/fast-check/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: startsWith(github.ref, 'refs/tags/ava/v')
-        name: Publish @fast-check/ava
+  check_publish_ava:
+    name: Check publish @fast-check/ava
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_ava:
+    name: Publish @fast-check/ava
+    needs: check_publish_ava
+    if: needs.check_publish_ava.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm version
+        run: npm install -g npm
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/ava
         run: npm publish --provenance --access public packages/ava/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: startsWith(github.ref, 'refs/tags/jest/v')
-        name: Publish @fast-check/jest
+  check_publish_jest:
+    name: Check publish @fast-check/jest
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_jest:
+    name: Publish @fast-check/jest
+    needs: check_publish_jest
+    if: needs.check_publish_jest.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm version
+        run: npm install -g npm
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/jest
         run: npm publish --provenance --access public packages/jest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: startsWith(github.ref, 'refs/tags/packaged/v')
-        name: Publish @fast-check/packaged
+  check_publish_packaged:
+    name: Check publish @fast-check/packaged
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_packaged:
+    name: Publish @fast-check/packaged
+    needs: check_publish_packaged
+    if: needs.check_publish_packaged.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm version
+        run: npm install -g npm
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/packaged
         run: npm publish --provenance --access public packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: startsWith(github.ref, 'refs/tags/poisoning/v')
-        name: Publish @fast-check/poisoning
+  check_publish_poisoning:
+    name: Check publish @fast-check/poisoning
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_poisoning:
+    name: Publish @fast-check/poisoning
+    needs: check_publish_poisoning
+    if: needs.check_publish_poisoning.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm version
+        run: npm install -g npm
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/poisoning
         run: npm publish --provenance --access public packages/poisoning/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: startsWith(github.ref, 'refs/tags/vitest/v')
-        name: Publish @fast-check/vitest
+  check_publish_vitest:
+    name: Check publish @fast-check/vitest
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_vitest:
+    name: Publish @fast-check/vitest
+    needs: check_publish_vitest
+    if: needs.check_publish_vitest.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm version
+        run: npm install -g npm
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/vitest
         run: npm publish --provenance --access public packages/vitest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: startsWith(github.ref, 'refs/tags/worker/v')
-        name: Publish @fast-check/worker
+  check_publish_worker:
+    name: Check publish @fast-check/worker
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_worker:
+    name: Publish @fast-check/worker
+    needs: check_publish_worker
+    if: needs.check_publish_worker.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm version
+        run: npm install -g npm
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/worker
         run: npm publish --provenance --access public packages/worker/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - if: startsWith(github.ref, 'refs/tags/expect-type/v')
-        name: Publish @fast-check/expect-type
+  check_publish_expect_type:
+    name: Check publish @fast-check/expect-type
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_expect_type:
+    name: Publish @fast-check/expect-type
+    needs: check_publish_expect_type
+    if: needs.check_publish_expect_type.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm version
+        run: npm install -g npm
+      - name: Download production packages
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/expect-type
         run: npm publish --provenance --access public packages/expect-type/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
