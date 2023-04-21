@@ -1,3 +1,35 @@
+# 3.8.1
+
+_New website for the documentation_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.8.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.0...v3.8.1)]
+
+## Fixes
+
+- ([PR#3723](https://github.com/dubzzz/fast-check/pull/3723)) CI: Switch to docusaurus for the documentation
+- ([PR#3729](https://github.com/dubzzz/fast-check/pull/3729)) CI: Pre-setup devcontainer with GH Actions
+- ([PR#3728](https://github.com/dubzzz/fast-check/pull/3728)) CI: Change gh-pages deploy process
+- ([PR#3732](https://github.com/dubzzz/fast-check/pull/3732)) CI: Move back to github-pages-deploy-action
+- ([PR#3735](https://github.com/dubzzz/fast-check/pull/3735)) CI: Add gtag for analytics
+- ([PR#3744](https://github.com/dubzzz/fast-check/pull/3744)) CI: Drop website build on `build:all`
+- ([PR#3751](https://github.com/dubzzz/fast-check/pull/3751)) CI: Update `baseUrl` on the ain documentation
+- ([PR#3754](https://github.com/dubzzz/fast-check/pull/3754)) CI: Drop version from website
+- ([PR#3754](https://github.com/dubzzz/fast-check/pull/3754)) CI: Drop version from website
+- ([PR#3759](https://github.com/dubzzz/fast-check/pull/3759)) CI: Drop the need for a branch on doc
+- ([PR#3775](https://github.com/dubzzz/fast-check/pull/3775)) CI: Publish all packages in one workflow
+- ([PR#3724](https://github.com/dubzzz/fast-check/pull/3724)) Doc: Add fuzz keywords
+- ([PR#3734](https://github.com/dubzzz/fast-check/pull/3734)) Doc: Add search capability to the doc
+- ([PR#3738](https://github.com/dubzzz/fast-check/pull/3738)) Doc: Fix broken links to api-reference
+- ([PR#3745](https://github.com/dubzzz/fast-check/pull/3745)) Doc: Document core building blocks in new documentation
+- ([PR#3750](https://github.com/dubzzz/fast-check/pull/3750)) Doc: More details into tips/larger-entries...
+- ([PR#3753](https://github.com/dubzzz/fast-check/pull/3753)) Doc: Add some more configuration tips in the documentation
+- ([PR#3755](https://github.com/dubzzz/fast-check/pull/3755)) Doc: Update all links to target fast-check.dev
+- ([PR#3757](https://github.com/dubzzz/fast-check/pull/3757)) Doc: Quick a11y pass on the documentation
+- ([PR#3758](https://github.com/dubzzz/fast-check/pull/3758)) Doc: Move missing configuration parts to new doc
+- ([PR#3760](https://github.com/dubzzz/fast-check/pull/3760)) Doc: Link directly to the target page not to 30x ones
+- ([PR#3761](https://github.com/dubzzz/fast-check/pull/3761)) Doc: Fix broken links in new doc
+- ([PR#3774](https://github.com/dubzzz/fast-check/pull/3774)) Security: Attach provenance to the packages
+- ([PR#3719](https://github.com/dubzzz/fast-check/pull/3719)) Script: Ensure proper package definition
+
 # 3.8.0
 
 _Introduce new `gen` arbitrary_

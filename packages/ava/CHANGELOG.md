@@ -1,3 +1,12 @@
+# 1.1.4
+
+_Attach provenance to the packages_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.3...ava%2Fv1.1.4)]
+
+## Fixes
+
+- ([PR#3774](https://github.com/dubzzz/fast-check/pull/3774)) Security: Attach provenance to the packages
+
 # 1.1.3
 
 _Update funding section in package.json_

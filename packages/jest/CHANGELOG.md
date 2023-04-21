@@ -1,3 +1,12 @@
+# 1.6.1
+
+_Attach provenance to the packages_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.6.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.6.0...jest%2Fv1.6.1)]
+
+## Fixes
+
+- ([PR#3774](https://github.com/dubzzz/fast-check/pull/3774)) Security: Attach provenance to the packages
+
 # 1.6.0
 
 _Let fast-check guide timeouts_

@@ -1,3 +1,12 @@
+# 0.0.5
+
+_Attach provenance to the packages_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.4...worker%2Fv0.0.5)]
+
+## Fixes
+
+- ([PR#3774](https://github.com/dubzzz/fast-check/pull/3774)) Security: Attach provenance to the packages
+
 # 0.0.4
 
 _Terminate workers earlier if they are not used anymore_

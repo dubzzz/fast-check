@@ -1,3 +1,12 @@
+# 0.0.5
+
+_Attach provenance to the packages_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.4...vitest%2Fv0.0.5)]
+
+## Fixes
+
+- ([PR#3774](https://github.com/dubzzz/fast-check/pull/3774)) Security: Attach provenance to the packages
+
 # 0.0.4
 
 _Proper type declaration in package.json_
