@@ -6,9 +6,6 @@ on:
       - main
       - 'next-*_*_*'
       - 'fix-v*'
-    tags:
-      - 'v**'
-      - '*/v**'
   pull_request:
     branches:
       - main
