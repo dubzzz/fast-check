@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:18
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:20
 
 # Inspired from https://github.com/microsoft/vscode-dev-containers/blob/main/containers/codespaces-linux/.devcontainer/base.Dockerfile
 
