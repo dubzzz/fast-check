@@ -135,7 +135,7 @@ jobs:
       - id: output
         #if: steps.check_has_tag.outcome == 'success'
         name: Allow next job
-        run: echo "${{matrix.variable-name}}=${{matrix.package-name}}" >> $GITHUB_OUTPUT
+        run: echo "${{matrix.variable-name}}=${{matrix.variable-name}}" >> $GITHUB_OUTPUT
   pub_poc_next_real:
     name: 'Check publish'
     needs: pub_poc_next
