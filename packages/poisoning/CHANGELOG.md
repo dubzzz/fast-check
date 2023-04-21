@@ -1,15 +1,11 @@
 # 0.0.6
 
-_TODO Description_
+_Attach provenance to the packages_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.5...poisoning%2Fv0.0.6)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#3774](https://github.com/dubzzz/fast-check/pull/3774)) Security: Attach provenance to the packages
 
 # 0.0.5
 

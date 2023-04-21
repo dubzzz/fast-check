@@ -1,11 +1,7 @@
 # 3.8.1
 
-_TODO Description_
+_New website for the documentation_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.8.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.0...v3.8.1)]
-
-## Features
-
-
 
 ## Fixes
 
@@ -30,7 +26,8 @@ _TODO Description_
 - ([PR#3757](https://github.com/dubzzz/fast-check/pull/3757)) Doc: Quick a11y pass on the documentation
 - ([PR#3758](https://github.com/dubzzz/fast-check/pull/3758)) Doc: Move missing configuration parts to new doc
 - ([PR#3760](https://github.com/dubzzz/fast-check/pull/3760)) Doc: Link directly to the target page not to 30x ones
-- ([PR#3761](https://github.com/dubzzz/fast-check/pull/3761)) Doc: Fix broken links in new doc 
+- ([PR#3761](https://github.com/dubzzz/fast-check/pull/3761)) Doc: Fix broken links in new doc
+- ([PR#3774](https://github.com/dubzzz/fast-check/pull/3774)) Security: Attach provenance to the packages
 - ([PR#3719](https://github.com/dubzzz/fast-check/pull/3719)) Script: Ensure proper package definition
 
 # 3.8.0
