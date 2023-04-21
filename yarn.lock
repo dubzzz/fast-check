@@ -3898,6 +3898,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sigstore/protobuf-specs@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@sigstore/protobuf-specs@npm:0.1.0"
+  checksum: 9959bc5176906609dda6ad2a1f5226fac1e49fcb4d29f38969d2a2e3a05cba8e2479721ba78c46a507513abacb63f25a991e5e8856c300204cded455f34ba8c5
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.23.3":
   version: 0.23.5
   resolution: "@sinclair/typebox@npm:0.23.5"
@@ -4200,6 +4207,23 @@ __metadata:
   version: 0.2.0
   resolution: "@trysound/sax@npm:0.2.0"
   checksum: 11226c39b52b391719a2a92e10183e4260d9651f86edced166da1d95f39a0a1eaa470e44d14ac685ccd6d3df7e2002433782872c0feeb260d61e80f21250e65c
+  languageName: node
+  linkType: hard
+
+"@tufjs/canonical-json@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@tufjs/canonical-json@npm:1.0.0"
+  checksum: 9ff3bcd12988fb23643690da3e009f9130b7b10974f8e7af4bd8ad230a228119de8609aa76d75264fe80f152b50872dea6ea53def69534436a4c24b4fcf6a447
+  languageName: node
+  linkType: hard
+
+"@tufjs/models@npm:1.0.3":
+  version: 1.0.3
+  resolution: "@tufjs/models@npm:1.0.3"
+  dependencies:
+    "@tufjs/canonical-json": 1.0.0
+    minimatch: ^7.4.6
+  checksum: 4499de770bd1300510971289ea09038945544db4cd4ef56218986f2587cec77a4971d2b519f87cb67f736edc78d590b65ed0cb2c6ce7467249298611ffea83d0
   languageName: node
   linkType: hard
 
@@ -12419,7 +12443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^6.1.0, minimatch@npm:^6.1.6":
+"minimatch@npm:^6.1.6":
   version: 6.2.0
   resolution: "minimatch@npm:6.2.0"
   dependencies:
@@ -12428,12 +12452,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^7.4.2":
-  version: 7.4.3
-  resolution: "minimatch@npm:7.4.3"
+"minimatch@npm:^7.4.2, minimatch@npm:^7.4.6":
+  version: 7.4.6
+  resolution: "minimatch@npm:7.4.6"
   dependencies:
     brace-expansion: ^2.0.1
-  checksum: daa954231b6859e3ba0e5fbd2486986d3cae283bb69acb7ed3833c84a293f8d7edb8514360ea62c01426ba791446b2a1e1cc0d718bed15c0212cef35c59a6b95
+  checksum: 1a6c8d22618df9d2a88aabeef1de5622eb7b558e9f8010be791cb6b0fa6e102d39b11c28d75b855a1e377b12edc7db8ff12a99c20353441caa6a05e78deb5da9
   languageName: node
   linkType: hard
 
@@ -13291,8 +13315,8 @@ __metadata:
   linkType: hard
 
 "pacote@npm:^15.0.0, pacote@npm:^15.0.8":
-  version: 15.1.1
-  resolution: "pacote@npm:15.1.1"
+  version: 15.1.2
+  resolution: "pacote@npm:15.1.2"
   dependencies:
     "@npmcli/git": ^4.0.0
     "@npmcli/installed-package-contents": ^2.0.1
@@ -13309,12 +13333,12 @@ __metadata:
     promise-retry: ^2.0.1
     read-package-json: ^6.0.0
     read-package-json-fast: ^3.0.0
-    sigstore: ^1.0.0
+    sigstore: ^1.3.0
     ssri: ^10.0.0
     tar: ^6.1.11
   bin:
     pacote: lib/bin.js
-  checksum: 109388e873615cdad342f5dbd3639389c00aaac2c84b824dcb1a9460b4cf1c66264387b1d0200b1769abda7feca94165804d1308ca5e59904ae24d489d3bfb13
+  checksum: 5b5597db29da6ad6511358497e162b9f30fcc6b319d5f6502c9abd76b8eec1b8fda2f5458b335ccb5ee032918920442059f65d60230b4ff49cb0ff0ddb442d34
   languageName: node
   linkType: hard
 
@@ -15587,15 +15611,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sigstore@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "sigstore@npm:1.0.0"
+"sigstore@npm:^1.3.0":
+  version: 1.3.2
+  resolution: "sigstore@npm:1.3.2"
   dependencies:
+    "@sigstore/protobuf-specs": ^0.1.0
     make-fetch-happen: ^11.0.1
-    tuf-js: ^1.0.0
+    tuf-js: ^1.1.3
   bin:
     sigstore: bin/sigstore.js
-  checksum: df7c213d018579231231fc1ef34d1850aa46a62d15f23081574a65c3446af48fc1f6cfc80e760020b08a01a1fe52dddfc3bf96337dff32b7186a85d60d480d2c
+  checksum: db919d985f86b5f26f5c33c41f9f11be89c26c08e13f0a0a5d469fd050da9640573c49b0c83d1508235135e2a9225e522f1334bb033de0f2f0ff5c8860385213
   languageName: node
   linkType: hard
 
@@ -16542,13 +16567,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tuf-js@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "tuf-js@npm:1.0.0"
+"tuf-js@npm:^1.1.3":
+  version: 1.1.4
+  resolution: "tuf-js@npm:1.1.4"
   dependencies:
+    "@tufjs/models": 1.0.3
     make-fetch-happen: ^11.0.1
-    minimatch: ^6.1.0
-  checksum: 4ae8eb52af5fc7121f56600af0b17d9911c1c04bd363fcc34ea3338951eaec2bcc593a52895c3ee1f65c1914573d659055090cb8e979dc99363473064092ff87
+  checksum: 73595ac6028dd9cf68a65b88730d47ff88f63e836efc2904476939598480d6625745ca43a8f5bb754f667dfd431b81fc81b0e49fc3fdfc2df0cf271536829af9
   languageName: node
   linkType: hard
 
