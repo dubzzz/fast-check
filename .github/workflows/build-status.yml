@@ -20,38 +20,53 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  #pub_poc:
-  #  name: 'Publish ${{matrix.package-name}}'
-  #  runs-on: ubuntu-latest
-  #  strategy:
-  #    matrix:
-  #      include:
-  #        - version-prefix: 'v'
-  #          package-name: 'fast-check'
-  #        - version-prefix: 'ava/v'
-  #          package-name: '@fast-check/ava'
-  #        - version-prefix: 'jest/v'
-  #          package-name: '@fast-check/jest'
-  #        - version-prefix: 'packaged/v'
-  #          package-name: '@fast-check/packaged'
-  #        - version-prefix: 'poisoning/v'
-  #          package-name: '@fast-check/poisoning'
-  #        - version-prefix: 'vitest/v'
-  #          package-name: '@fast-check/vitest'
-  #        - version-prefix: 'worker/v'
-  #          package-name: '@fast-check/worker'
-  #  steps:
-  #    - uses: actions/checkout@v3
-  #      with:
-  #        ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
-  #        fetch-depth: 0
-  #    - id: check_has_tag
-  #      name: Check if one tag matches the package
-  #      run: git tag --points-at HEAD | grep '^${{matrix.version-prefix}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-  #      continue-on-error: true
-  #    - if: steps.check_has_tag.outcome == 'success'
-  #      name: Publish the package
-  #      run: echo "Publishing"
+  pre_pub_poc:
+    name: 'Publish any'
+    outputs:
+      tag_count: ${{steps.tag_count.outputs}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
+          fetch-depth: 0
+      - id: tag_count
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | wc -l
+  pub_poc:
+    name: 'Publish ${{matrix.package-name}}'
+    runs-on: ubuntu-latest
+    needs: pre_pub_poc
+    if: needs.pre_pub_poc.outputs.tag_count != '0'
+    strategy:
+      matrix:
+        include:
+          - version-prefix: 'v'
+            package-name: 'fast-check'
+          - version-prefix: 'ava/v'
+            package-name: '@fast-check/ava'
+          - version-prefix: 'jest/v'
+            package-name: '@fast-check/jest'
+          - version-prefix: 'packaged/v'
+            package-name: '@fast-check/packaged'
+          - version-prefix: 'poisoning/v'
+            package-name: '@fast-check/poisoning'
+          - version-prefix: 'vitest/v'
+            package-name: '@fast-check/vitest'
+          - version-prefix: 'worker/v'
+            package-name: '@fast-check/worker'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^${{matrix.version-prefix}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+      - if: steps.check_has_tag.outcome == 'success'
+        name: Publish the package
+        run: echo "Publishing"
   #pub_poc_check:
   #  name: Check publish fast-check
   #  runs-on: ubuntu-latest
@@ -96,55 +111,3 @@ jobs:
   #  steps:
   #    - name: Publish the package
   #      run: echo "Publishing"
-  pub_poc_next:
-    name: 'Check publish ${{matrix.package-name}}'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - version-prefix: 'v'
-            package-name: 'fast-check'
-            variable-name: 'fastCheck'
-          - version-prefix: 'ava/v'
-            package-name: '@fast-check/ava'
-            variable-name: 'ava'
-          - version-prefix: 'jest/v'
-            package-name: '@fast-check/jest'
-            variable-name: 'jest'
-          - version-prefix: 'packaged/v'
-            package-name: '@fast-check/packaged'
-            variable-name: 'packaged'
-          - version-prefix: 'poisoning/v'
-            package-name: '@fast-check/poisoning'
-            variable-name: 'poisoning'
-          - version-prefix: 'vitest/v'
-            package-name: '@fast-check/vitest'
-            variable-name: 'vitest'
-          - version-prefix: 'worker/v'
-            package-name: '@fast-check/worker'
-            variable-name: 'worker'
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: '6d8ef6d0585534757f48fba6092cd9943f764406'
-          fetch-depth: 0
-      - id: check_has_tag
-        name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^${{matrix.version-prefix}}[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
-      - id: output
-        #if: steps.check_has_tag.outcome == 'success'
-        name: Allow next job
-        run: echo "${{matrix.variable-name}}=${{matrix.variable-name}}" >> $GITHUB_OUTPUT
-  pub_poc_next_real:
-    name: 'Check publish'
-    needs: pub_poc_next
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        option: ${{needs.pub_poc_next.outputs.*}}
-    steps:
-      - name: Publish
-        run: echo '${{matrix.option}}'
-      - name: Publish
-        run: echo '${{toJSON(needs.pub_poc_next.outputs)}}'
