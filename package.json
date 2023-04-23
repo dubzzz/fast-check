@@ -31,7 +31,7 @@
     "all-contributors-cli": "^6.24.0",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
-    "prettier": "2.8.7",
+    "prettier": "2.8.8",
     "publint": "^0.1.11"
   }
 }
