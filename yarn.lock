@@ -13520,9 +13520,9 @@ __metadata:
   linkType: hard
 
 "pure-rand@npm:^6.0.0, pure-rand@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "pure-rand@npm:6.0.1"
-  checksum: 4bb565399993b815658a72e359f574ce4f04827a42a905105d61163ae86f456d91595a0e4241e7bce04328fae0638ae70ac0428d93ecb55971c465bd084f8648
+  version: 6.0.2
+  resolution: "pure-rand@npm:6.0.2"
+  checksum: 79de33876a4f515d759c48e98d00756bbd916b4ea260cc572d7adfa4b62cace9952e89f0241d0410214554503d25061140fe325c66f845213d2b1728ba8d413e
   languageName: node
   linkType: hard
 
