@@ -350,6 +350,9 @@ jobs:
       - name: Drop @types to avoid failures on legacy versions of TypeScript
         if: matrix.ts-version == '4.1'
         run: mv node_modules/@types node_modules/at-types
+      - name: Drop parse5 to avoid failures on legacy versions of TypeScript
+        if: matrix.ts-version == '4.4'
+        run: rm -rv node_modules/parse5
       - name: TypeScript version
         run: |
           cd packages/test-types
