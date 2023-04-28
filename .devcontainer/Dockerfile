@@ -20,6 +20,10 @@ RUN rm -rf ${NVS_HOME}/.git
 RUN CURRENT_NODE_VERSION=`node --version` && sudo -u ${USERNAME} bash ${NVS_HOME}/nvs.sh add "$CURRENT_NODE_VERSION"
 RUN CURRENT_NODE_VERSION=`node --version` && sudo -u ${USERNAME} bash ${NVS_HOME}/nvs.sh use "$CURRENT_NODE_VERSION"
 
+# Install git-lfs
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+RUN sudo apt-get install git-lfs
+
 # Setup corepack
 RUN corepack enable
 
