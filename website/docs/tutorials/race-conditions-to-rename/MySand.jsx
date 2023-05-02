@@ -52,21 +52,22 @@ test('should resolve in call order', async () => {
   }))
 })`;
 
-export function Sand1() {
-  const [specFile, setSpecFile] = useState({ key: 0, content: queueUnitSpecCode });
+function SetupSandbox(props) {
+  const { startCode, anwserCode, fileName, fileExtension } = props;
+  const [specFile, setSpecFile] = useState({ key: 0, content: startCode });
 
   return (
     <SandpackProvider
       key={specFile.key}
       theme={atomDark}
       files={{
-        '/queue.js': {
+        [`/${fileName}.${fileExtension}`]: {
           code: queueCode,
           readOnly: true,
           active: false,
           hidden: false,
         },
-        '/queue.spec.js': {
+        [`/${fileName}.spec.${fileExtension}`]: {
           code: specFile.content,
           readOnly: false,
           active: true,
@@ -74,7 +75,7 @@ export function Sand1() {
         },
       }}
       customSetup={{
-        entry: '/queue.js',
+        entry: `/${fileName}.${fileExtension}`,
         dependencies: {
           'fast-check': 'latest',
         },
@@ -85,11 +86,11 @@ export function Sand1() {
         <SandpackTests
           actionsChildren={
             <>
-              <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: queueUnitSpecCode }))}>
+              <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: startCode }))}>
                 Reset snippet
               </button>
               {specFile.content !== queueBasicPBTSpecCode && (
-                <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: queueBasicPBTSpecCode }))}>
+                <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: anwserCode }))}>
                   Show answer
                 </button>
               )}
@@ -101,5 +102,16 @@ export function Sand1() {
       </SandpackLayout>
       <UnstyledOpenInCodeSandboxButton>Open in CodeSandbox</UnstyledOpenInCodeSandboxButton>
     </SandpackProvider>
+  );
+}
+
+export function Sand1() {
+  return (
+    <SetupSandbox
+      fileName="queue"
+      fileExtension="js"
+      startCode={queueUnitSpecCode}
+      anwserCode={queueBasicPBTSpecCode}
+    />
   );
 }
