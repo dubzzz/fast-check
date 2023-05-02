@@ -16,6 +16,6 @@ queued(2).then((v) => seenAnswers.push(v));
 await s.waitAll();
 ```
 
-But it makes an implicit assumption: at `s.waitAll` queries would been have launched.
+But it makes an implicit assumption: at `s.waitAll` queries would been have launched. As we know all the fired queries or don't care for missing ones (others) it should be a better proxy.
 
 <DebugPlaygroundsQueue />
