@@ -1,0 +1,21 @@
+---
+sidebar_position: 1
+slug: /tutorials/todo/to-rename/
+---
+
+import { InitialPlaygroundQueue, MoreCallsPlaygroundQueue, DebugPlaygroundsQueue } from './Playgrounds';
+
+# To Rename
+
+We could have went for:
+
+```js
+const queued = queue(s.scheduleFunction(call));
+queued(1).then((v) => seenAnswers.push(v));
+queued(2).then((v) => seenAnswers.push(v));
+await s.waitAll();
+```
+
+But it makes an implicit assumption: at `s.waitAll` queries would been have launched.
+
+<DebugPlaygroundsQueue />
