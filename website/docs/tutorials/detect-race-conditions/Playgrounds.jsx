@@ -209,7 +209,7 @@ export function MoreCallsPlaygroundQueue() {
     <SetupPlayground
       fileName="queue"
       fileExtension="js"
-      fileContent={queueCodeV2}
+      fileContent={queueCodeV1}
       startSpecCode={queueBasicPBTSpecCode}
       anwserSpecCode={queueMoreThan2CallsPBTSpecCode}
     />
