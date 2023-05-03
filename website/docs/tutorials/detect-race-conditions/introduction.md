@@ -1,11 +1,10 @@
 ---
 sidebar_position: 1
 slug: /tutorials/detect-race-conditions/introduction/
+description: What's the plan for this tutorial?
 ---
 
 # Introduction
-
-Small details concerning the tutorial and race conditions before you start
 
 ## Tutorial structure
 

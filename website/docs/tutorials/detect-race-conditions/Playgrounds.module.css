@@ -1,0 +1,21 @@
+.openInCodeSandbox {
+  color: #282c34;
+  border-radius: 0 0 0.5em 0.5em;
+  margin-bottom: 1em;
+}
+.openInCodeSandbox:hover {
+  background: linear-gradient(135deg, #282c3477, #ffffff00 60%, #ffffff00 90%, #282c3477);
+}
+.openInCodeSandbox:hover a,
+.openInCodeSandbox:hover a:focus,
+.openInCodeSandbox:hover a:visited {
+  color: #ffffff;
+}
+
+.openInCodeSandbox a,
+.openInCodeSandbox a:focus,
+.openInCodeSandbox a:hover,
+.openInCodeSandbox a:visited {
+  color: #282c34;
+  text-decoration: none;
+}

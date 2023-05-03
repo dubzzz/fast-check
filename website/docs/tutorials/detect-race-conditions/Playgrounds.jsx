@@ -7,6 +7,7 @@ import {
   UnstyledOpenInCodeSandboxButton,
 } from '@codesandbox/sandpack-react';
 import { atomDark } from '@codesandbox/sandpack-themes';
+import styles from './Playgrounds.module.css';
 
 // Does not queue at all
 const queueCodeV0 = `export function queue(fun) {
@@ -187,7 +188,9 @@ function SetupPlayground(props) {
           style={{ height: 500 }}
         />
       </SandpackLayout>
-      <UnstyledOpenInCodeSandboxButton>Open in CodeSandbox</UnstyledOpenInCodeSandboxButton>
+      <div className={styles.openInCodeSandbox}>
+        <UnstyledOpenInCodeSandboxButton>Open in CodeSandbox</UnstyledOpenInCodeSandboxButton>
+      </div>
     </SandpackProvider>
   );
 }
