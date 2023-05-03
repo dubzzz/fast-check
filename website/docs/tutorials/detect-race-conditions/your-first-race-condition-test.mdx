@@ -1,0 +1,84 @@
+---
+sidebar_position: 2
+slug: /tutorials/detect-race-conditions/your-first-race-condition-test/
+---
+
+import { InitialPlaygroundQueue, queueUnitSpecCode } from './Playgrounds';
+
+# Your first race condition test
+
+Towards our first race condition test
+
+## Code under test
+
+For the next few pages, we will focus on a function called `queue`. Its purpose is to wrap an asynchronous function and queue subsequent calls to it in two ways:
+
+- Promises returned by the function will resolve in order, with the first call resolving before the second one, the second one resolving before the third one, and so on.
+- Concurrent calls are not allowed, meaning that a call will always wait for the previously started one to finish before being fired.
+
+In the context of this tutorial you'll never have to edit `queue`. The function will be provided to you.
+
+## Understand current test
+
+Hopefully, we are not starting from a blank page. The function is already covered with a test to make sure that queries will always resolve in appropriate order. The test looks rather simple and it passes.
+
+```js
+test('should resolve in call order', async () => {
+  // Arrange
+  const seenAnswers = [];
+  const call = jest.fn().mockImplementation((v) => Promise.resolve(v));
+
+  // Act
+  const queued = queue(call);
+  await Promise.all([queued(1).then((v) => seenAnswers.push(v)), queued(2).then((v) => seenAnswers.push(v))]);
+
+  // Assert
+  expect(seenAnswers).toEqual([1, 2]);
+});
+```
+
+If we look closer to the test we can see that the wrapped function is pretty simple as it just returns an already resolved promise whose value is the inputed one.
+
+```js
+const call = jest.fn().mockImplementation((v) => Promise.resolve(v));
+```
+
+We can also see that we assess the order of results by confirming that the values pushed into `seenAnswers` are properly ordered. It's important to note that `seenAnswers` is not equivalent to `await Promise.all([queued(1), queued(2)])`. This other notation would not check the order in which the resolutions are coming but just that each query resolve to its expected value.
+
+## Towards next test
+
+The test above has some limitations. Among them we have the fact that the fake API we defined always resolve instantly. It has one downside: without any `queue`, calling `call(1)` and then `call(2)` would also pass the test. Indeed, when calling `call(1)` it would produce a new promise being `Promise.resolve(1)`. Instantely created, instantly resolved and instantly watched via `.then((v) => seenAnswers.push(v))`. In other words, as soon as we give back the hand to JavaScript runtime, the continuation will be called. The one registered immediately after when calling `call(2)` will have to wait its turn as it has been queued after it.
+
+Our next test has to drop this limitation. Instead of immediately resolving, it should resolve later.
+
+## First glance at schedulers
+
+When adding fast-check onto a race condition related test, the first recommended change is to do:
+
+<!-- prettier-ignore-start -->
+```js
+test('should resolve in call order', async () => {
+  await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => { // <-- added
+    // ...unchanged code...
+  }));                                                            // <-- added
+});
+```
+<!-- prettier-ignore-end -->
+
+It basically consists into running the test within fast-check runner. It means that bug will be intercepted by fast-check if any and that we could start to ask fast-check for some random entries. In the case of race conditions, we want fast-check to provide us with an instance of scheduler able to re-order asynchronous operations as it wants. This is what we did by adding the `fc.scheduler()`. The instance of scheduler is: `s`.
+
+The first important thing to keep in mind for our new test is that we don't want to change the value returned by the API. But we want to change when it gets returned. Basically we want to give to the scheduler the responsability to resolve API calls. For that purpose, the scheduler exposes a method called `scheduleFunction`. It consists into taking a function to wrap it into a scheduled or controlled version of it.
+
+Once we are able to push scheduled calls into the scheduler, we need to execute and release them at some point. Releasing scheduled calls is generally done by using `waitAll` or `waitFor`. The API just consists into waiting `waitX` to resolve. When resolve it means that what we were waiting for has been achieved.
+
+:::info Which wait is the best?
+For this first iteration, both of them will be ok, but we will see later that `waitFor` is probably a better fit in that specific example.
+:::
+
+:::tip More
+For a comprehensive list of methods exposed on the scheduler, you can checkout the [official documentation for race conditions](/docs/advanced/race-conditions/).
+:::
+
+## Your turn!
+
+<InitialPlaygroundQueue />

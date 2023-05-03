@@ -135,7 +135,7 @@ test('should resolve in call order', async () => {
 })`;
 
 function SetupPlayground(props) {
-  const { startSpecCode, anwserSpecCode, fileContent, fileName, fileExtension, specs } = props;
+  const { startSpecCode, anwserSpecCode, fileContent, fileName, fileExtension, specs = [] } = props;
   const [specFile, setSpecFile] = useState({ key: 0, content: startSpecCode });
 
   return (
