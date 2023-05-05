@@ -85,3 +85,30 @@ For a comprehensive list of methods exposed on the scheduler, you can checkout t
 :::info What to expect?
 Your test should help us to detect a bug in our current implementation of `queue`.
 :::
+
+<details>
+<summary>
+Hint #1
+</summary>
+
+You have to run the test via the `assert` runner provided by fast-check. For more details, you may refer to the section [First glance at schedulers](#first-glance-at-schedulers) of this page.
+
+</details>
+
+<details>
+<summary>
+Hint #2
+</summary>
+
+No need to touch `call` itself. The function should always just simply return the inputs in receive. But instead of queueing it, we should queue a scheduled version of it. You may refer to [`scheduleFunction`](/docs/advanced/race-conditions/#schedulefunction) for more details.
+
+</details>
+
+<details>
+<summary>
+Hint #3
+</summary>
+
+Our test should think as a user of the API would think. It has to wait for all queued calls to be resolved before being able to assert of the output. You may want to use pass such condition to `waitFor` so that everything gets properly awaited before running any assertion.
+
+</details>

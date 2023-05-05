@@ -1,0 +1,86 @@
+---
+sidebar_position: 3
+slug: /tutorials/detect-race-conditions/one-step-closer-to-real-usages/
+description: Second iteration, make the test closer and detect even more race conditions
+---
+
+import { MoreCallsPlaygroundQueue } from './Playgrounds';
+
+# One step closer to real usages
+
+## Zoom on previous test
+
+### What to schedule?
+
+The suggested solution for the previous page, is adopting the go to pattern we recommand when connecting scehduler to existing tests: start replacing raw occurences of the aynschrous API by scheduled versions of it. In our case, the code:
+
+```js
+const queued = queue(call);
+```
+
+has been replaced by:
+
+```js
+const queued = queue(s.scheduleFunction(call));
+```
+
+### What to wait?
+
+The next step to fully connect the scheduler is to wait for it. There were multiple ways to achieve that on the previous example. But the one we recommend for it is:
+
+```js
+const queued = queue(s.scheduleFunction(call));
+pendingQueries.push(queued(1).then((v) => seenAnswers.push(v)));
+pendingQueries.push(queued(2).then((v) => seenAnswers.push(v)));
+await s.waitFor(Promise.all(pendingQueries));
+```
+
+An alternative options would have been to use `waitAll` instead of `waitFor` but it comes with a precise requirements being that promise had to be imperatively scehduled by the time we reach it. In other words, if our code delays a little bit the call to `call` it will not wait anything. With the current implementation of `queue` it works, but with next versions of it it might not be the case anymore as queued calls might start queuing themselves behind already started and running promises.
+
+As the fact that `call` has to be fired synchronously when issuing a call on a clean context is not a requirement for our current function, we can relax the constraint in our test to make evolving this implementation easier.
+
+A `waitAll` version of the code above would be:
+
+```js
+const queued = queue(s.scheduleFunction(call));
+queued(1).then((v) => seenAnswers.push(v));
+queued(2).then((v) => seenAnswers.push(v));
+await s.waitAll();
+```
+
+## Towards next test
+
+With fast-check, not only we can detect race conditions on pretty well-defined scenarios, but we can also ask the framework to build some for us. In the current implementation, we still only run two calls but nothing prevents issues from occuring on scenarios implying 3, 4 or even more calls.
+
+In order to capture these scenarios too, you will have to update your test so that it can run an arbitrary number of calls.
+
+## Your turn!
+
+<MoreCallsPlaygroundQueue />
+
+:::info What to expect?
+Your test should help us to detect a bug in our current implementation of `queue`.
+:::
+
+<details>
+<summary>
+Hint #1
+</summary>
+
+`fc.scheduler` alone will not be enough! You'll have to generate another entry to be able to properly control the number of calls ran agains the `call` function.
+
+</details>
+
+<details>
+<summary>
+Hint #2
+</summary>
+
+Various options could make it in order to generate the other entry. Among the options we can have things such as:
+
+- `fc.integer({min: 1, max: 10})` — can be used to generate a variable called `numCalls` responsible to tell our test how many calls it will have to run against `call`. The `max` has to be provided otherwise we would have a extremely high number of calls in many runs.
+- `fc.array(fc.nat(), {minLength: 1})` — can be used to generate the list of calls we will issue to `call`
+
+And some others such as `fc.func(fc.boolean())` being used to generate a function telling when to stop…
+
+</details>

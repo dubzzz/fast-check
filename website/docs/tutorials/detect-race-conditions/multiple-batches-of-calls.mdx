@@ -1,0 +1,103 @@
+---
+sidebar_position: 4
+slug: /tutorials/detect-race-conditions/multiple-batches-of-calls/
+description: Third iteration, not only one batch firing all queries but multiple batches
+---
+
+import { MoreCallsPlaygroundQueue } from './Playgrounds';
+
+# Multiple batches of calls
+
+## Zoom on previous test
+
+### The choice of integer
+
+Our suggested implementation is using an `integer` arbitrary to generate the extra piece of data that was missing to run against an arbitrary number of calls to `call`.
+
+```js
+const queued = queue(s.scheduleFunction(call));
+for (let id = 0; id !== numCalls; ++id) {
+  expectedAnswers.push(id);
+  pendingQueries.push(queued(id).then((v) => seenAnswers.push(v)));
+}
+await s.waitFor(Promise.all(pendingQueries));
+```
+
+We went for that option as from a specification and implementation point of view, the `queue` helper is agnostic of the inputs it receives. In other words calling it only with `0`s or with `0` then `1` then anything is purely there for the sake of the test. As a consequence, the idea has been to consider that reading `0`, `1`… was way simpler for debug purposes than `123`, `0`, `45`… So debugging was easier. In addition to debugging, as inputs are never consummed by the logic of `queue` it made barely no sense to ask fast-check for arrays of inputs.
+
+### The array version
+
+Here is how we could have written the array alternative:
+
+```js
+// ids being the result of fc.array(fc.nat(), {minLength: 1})
+const queued = queue(s.scheduleFunction(call));
+for (const id of ids) {
+  expectedAnswers.push(id);
+  pendingQueries.push(queued(id).then((v) => seenAnswers.push(v)));
+}
+await s.waitFor(Promise.all(pendingQueries));
+```
+
+## Towards next test
+
+But our current test is actually not fully capturing all the possible things that may go wrong. Actually what we wrote in the previous implementation just send all the requests at the same time in a synchronous way. It does not fire some, then wait a bit and fire others.
+
+The aim of this next iteration will be to declare and run multiple batches of calls. Batches have a very important characteristics or at least we will put one for the sake of this tutorial: we want to fire in order. By firing them in order we simplify a bit our expectations.
+
+In order to run things in an ordered way in fast-check, we have to build what we called scehduled sequences. Scheduled sequences can be declared by using the helper [`scheduleSequence`](/docs/advanced/race-conditions/#schedulesequence). When running scheduled tasks, fast-check will also intervleave parts coming from sequences in-between. It will ensure to run and wait items of the sequence in order so that an item of the sequence will never start before the one before it stopped. By stopped, we don't mean that everthing it fired ended but that the item itself give back the hand. A sequence can be declared and used as follow:
+
+```js
+const { task } = s.scheduleSequence([
+  async () => {
+    // 1st item:
+    // Runnning something for the 1st item.
+  },
+  async () => {
+    // 2nd item:
+    // Runnning something for the 2nd item.
+    // Will never start before the end of `await firstItem()`.
+    // Will have to be scheduled by the runner to run, in other words, it may start
+    // very long after the 1st item.
+  },
+]);
+
+// The sequence also provides a `task` that can be awaited in order to know when all items
+// of the sequence have been fully executed. It also provides other values such as done or
+// faulty if you want to know bugs that may have occurred during the sechduling of it.
+```
+
+:::info Non-batched alternative?
+We will discuss about a non batch alternative in the next page. The batch option we suggest here has the benefit to make you use the [`scheduleSequence`](/docs/advanced/race-conditions/#schedulesequence) helper coming with fast-check.
+:::
+
+## Your turn!
+
+<MoreCallsPlaygroundQueue />
+
+:::info What to expect?
+Your test should help us to detect a bug in our current implementation of `queue`.
+:::
+
+<details>
+<summary>
+Hint #1
+</summary>
+
+`fc.scheduler` alone will not be enough! You'll have to generate another entry to be able to properly control the number of calls ran agains the `call` function.
+
+</details>
+
+<details>
+<summary>
+Hint #2
+</summary>
+
+Various options could make it in order to generate the other entry. Among the options we can have things such as:
+
+- `fc.integer({min: 1, max: 10})` — can be used to generate a variable called `numCalls` responsible to tell our test how many calls it will have to run against `call`. The `max` has to be provided otherwise we would have a extremely high number of calls in many runs.
+- `fc.array(fc.nat(), {minLength: 1})` — can be used to generate the list of calls we will issue to `call`
+
+And some others such as `fc.func(fc.boolean())` being used to generate a function telling when to stop…
+
+</details>
