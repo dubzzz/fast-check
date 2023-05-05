@@ -119,12 +119,15 @@ test('should resolve in call order', async () => {
     // Act
     const queued = queue(s.scheduleFunction(call));
     let lastId = 0;
-    const { task } = s.scheduleSequence(batches.map(batch => {
-      return async () => {
-        for (let id = 0 ; id !== batch ; ++id, ++lastId) {
-          expectedAnswers.push(lastId);
-          pendingQueries.push(queued(lastId).then(v => (seenAnswers.push(v))));
-        }
+    const { task } = s.scheduleSequence(batches.map((batch, index) => {
+      return {
+        label: \`Fire batch #\${index + 1} (\${batch} calls)\`,
+        builder: async () => {
+          for (let id = 0 ; id !== batch ; ++id, ++lastId) {
+            expectedAnswers.push(lastId);
+            pendingQueries.push(queued(lastId).then(v => (seenAnswers.push(v))));
+          }
+        },
       }
     }));
     await s.waitFor(task);
