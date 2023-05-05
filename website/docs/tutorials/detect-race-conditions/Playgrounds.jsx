@@ -195,7 +195,7 @@ function SetupPlayground(props) {
   );
 }
 
-export function InitialPlaygroundQueue() {
+export function YourFirstRace() {
   return (
     <SetupPlayground
       fileName="queue"
@@ -207,7 +207,7 @@ export function InitialPlaygroundQueue() {
   );
 }
 
-export function MoreCallsPlaygroundQueue() {
+export function OneStepCloserToRealUsages() {
   return (
     <SetupPlayground
       fileName="queue"
@@ -215,6 +215,18 @@ export function MoreCallsPlaygroundQueue() {
       fileContent={queueCodeV1}
       startSpecCode={queueBasicPBTSpecCode}
       anwserSpecCode={queueMoreThan2CallsPBTSpecCode}
+    />
+  );
+}
+
+export function MultipleBatchesOfCalls() {
+  return (
+    <SetupPlayground
+      fileName="queue"
+      fileExtension="js"
+      fileContent={queueCodeV2}
+      startSpecCode={queueMoreThan2CallsPBTSpecCode}
+      anwserSpecCode={queueFromBatchesPBTSpecCode}
     />
   );
 }
