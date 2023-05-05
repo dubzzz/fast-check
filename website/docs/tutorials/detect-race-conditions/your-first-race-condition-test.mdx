@@ -19,7 +19,7 @@ In the context of this tutorial you'll never have to edit `queue`. The function 
 
 ## Understand current test
 
-Hopefully, we are not starting from a blank page. The function is already covered with a test to make sure that queries will always resolve in appropriate order. The test looks rather simple and it passes.
+Fortunately, we don't have to start from scratch. The function already has a test in place that ensures queries will consistently resolve in the correct order. The test appears rather simple and currently passes.
 
 ```js
 test('should resolve in call order', async () => {
@@ -36,23 +36,25 @@ test('should resolve in call order', async () => {
 });
 ```
 
-If we look closer to the test we can see that the wrapped function is pretty simple as it just returns an already resolved promise whose value is the inputed one.
+If we look closer to the test, we can observe that the wrapped function is relatively straightforward in that it merely returns a resolved promise whose value corresponds to the provided input.
 
 ```js
 const call = jest.fn().mockImplementation((v) => Promise.resolve(v));
 ```
 
-We can also see that we assess the order of results by confirming that the values pushed into `seenAnswers` are properly ordered. It's important to note that `seenAnswers` is not equivalent to `await Promise.all([queued(1), queued(2)])`. This other notation would not check the order in which the resolutions are coming but just that each query resolve to its expected value.
+We can also see that we assess the order of results by confirming that the values pushed into `seenAnswers` are properly ordered. It's worth noting that `seenAnswers` does not represent the same thing as `await Promise.all([queued(1), queued(2)])`. This alternative notation does not evaluate the order in which the resolutions are received, but rather only confirms that each query resolves to its expected value.
 
 ## Towards next test
 
 The test above has some limitations. Among them we have the fact that the fake API we defined always resolve instantly. It has one downside: without any `queue`, calling `call(1)` and then `call(2)` would also pass the test. Indeed, when calling `call(1)` it would produce a new promise being `Promise.resolve(1)`. Instantely created, instantly resolved and instantly watched via `.then((v) => seenAnswers.push(v))`. In other words, as soon as we give back the hand to JavaScript runtime, the continuation will be called. The one registered immediately after when calling `call(2)` will have to wait its turn as it has been queued after it.
 
-Our next test has to drop this limitation. Instead of immediately resolving, it should resolve later.
+While the test we just examined is a good starting point, it comes with some limitations. Specifically, the fake API we established in the test instantly resolves queries. As a result, it does not account for scenarios where we have multiple calls to `call` that need to be queued. For instance, if we were to call `call(1)` followed by `call(2)` without any queue, the test would still pass. This is because `call(1)` produces a new promise that resolves immediately, which is then instantly followed by `.then((v) => seenAnswers.push(v))`. Once the JavaScript runtime relinquishes control, the continuation of `call(1)` is immediately called. Consequently, the continuation registered during the call to `call(2)` will wait until the continuation of `call(1)` ends.
+
+In order to address this limitation, our updated test should ensure that promises resolve later rather than instantly.
 
 ## First glance at schedulers
 
-When adding fast-check onto a race condition related test, the first recommended change is to do:
+When adding fast-check into a race condition test, the recommended initial step is to update the test code as follows:
 
 <!-- prettier-ignore-start -->
 ```js
@@ -64,11 +66,11 @@ test('should resolve in call order', async () => {
 ```
 <!-- prettier-ignore-end -->
 
-It basically consists into running the test within fast-check runner. It means that bug will be intercepted by fast-check if any and that we could start to ask fast-check for some random entries. In the case of race conditions, we want fast-check to provide us with an instance of scheduler able to re-order asynchronous operations as it wants. This is what we did by adding the `fc.scheduler()`. The instance of scheduler is: `s`.
+This modification runs the test using the fast-check runner. By doing so, any bugs that arise during the predicate will be caught by fast-check.
 
-The first important thing to keep in mind for our new test is that we don't want to change the value returned by the API. But we want to change when it gets returned. Basically we want to give to the scheduler the responsability to resolve API calls. For that purpose, the scheduler exposes a method called `scheduleFunction`. It consists into taking a function to wrap it into a scheduled or controlled version of it.
+In the context of race conditions, we want fast-check to provide us with a scheduler instance that is capable of re-ordering asynchronous operations. This is why we added the `fc.scheduler()` argument: it creates an instance of a scheduler that we refer to as `s`. The first important thing to keep in mind for our new test is that we don't want to change the value returned by the API. But we want to change when it gets returned. We want to give the scheduler the responsibility of resolving API calls. To achieve this, the scheduler exposes a method called `scheduleFunction`. This method wraps a function in a scheduled or controlled version of itself.
 
-Once we are able to push scheduled calls into the scheduler, we need to execute and release them at some point. Releasing scheduled calls is generally done by using `waitAll` or `waitFor`. The API just consists into waiting `waitX` to resolve. When resolve it means that what we were waiting for has been achieved.
+After pushing scheduled calls into the scheduler, we must execute and release them at some point. This is typically done using `waitAll` or `waitFor`. These APIs simply wait for `waitX` to resolve, indicating that what we were waiting for has been accomplished.
 
 :::info Which wait is the best?
 For this first iteration, both of them will be ok, but we will see later that `waitFor` is probably a better fit in that specific example.
@@ -100,7 +102,7 @@ You have to run the test via the `assert` runner provided by fast-check. For mor
 Hint #2
 </summary>
 
-No need to touch `call` itself. The function should always just simply return the inputs in receive. But instead of queueing it, we should queue a scheduled version of it. You may refer to [`scheduleFunction`](/docs/advanced/race-conditions/#schedulefunction) for more details.
+No need to touch `call` itself. The function should still return the inputs it received. But, instead of queueing it, we should queue a scheduled version of it. You may refer to [`scheduleFunction`](/docs/advanced/race-conditions/#schedulefunction) for more details.
 
 </details>
 
@@ -109,6 +111,6 @@ No need to touch `call` itself. The function should always just simply return th
 Hint #3
 </summary>
 
-Our test should think as a user of the API would think. It has to wait for all queued calls to be resolved before being able to assert of the output. You may want to use pass such condition to `waitFor` so that everything gets properly awaited before running any assertion.
+Our test should think as a user of the API would think. It has to wait for all queued calls to be resolved before being able to assert anything on the output. You may want to use pass such condition to `waitFor` so that everything gets properly awaited before running any assertion.
 
 </details>

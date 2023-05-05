@@ -18,7 +18,7 @@ Throughout this tutorial, the examples have been crafted to ensure that tests pa
 While this section is fully optional, it has the benefit to make sure that we all align on the definition of race condition throughout this tutorial.
 :::
 
-Taking the Wikipedia definition: _"A race condition […] is the condition […] where the system's substantive behavior is dependent on the sequence or timing of other uncontrollable events."_ (source: https://en.wikipedia.org/wiki/Race_condition). This definition highlights two main reasons why race conditions are prevalent in code:
+Taking the Wikipedia definition: _"A race condition […] is the condition […] where the system's substantive behavior is dependent on the sequence or timing of other uncontrollable events."_ (source: https://en.wikipedia.org/wiki/Race_condition). This definition highlights two main reasons why race conditions are prevalent in JavaScript:
 
 - sequence of events,
 - events being out-of-control.
