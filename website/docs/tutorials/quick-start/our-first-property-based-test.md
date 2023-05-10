@@ -60,7 +60,7 @@ In other words, we could come up with the following property:
 > such that `i ≤ j`  
 > `sortedData[i] ≤ sortedData[j]` is true, with `sortedData = sortNumbersAscending(data)`
 
-Which could be summurized as:
+Which could be summarized as:
 
 > for any `data`, array of numerical values  
 > `sortedData[i-1] ≤ sortedData[i]` is true for any `i` in `[1..data.length-1]`
