@@ -29,7 +29,7 @@ These tests are what we call example based tests. They are based on clearly spec
 
 ## What is a property?
 
-A property is to property-based tests, what an example is to example based tests: it's the core building block of it. Instead of explicitely defining values to test, we will ask the framework to build them for us. Instead of expecting clear values, we will check the shape of the output. And it has several positive impacts:
+A property is to property-based tests, what an example is to example based tests: it's the core building block of it. Instead of explicitly defining values to test, we will ask the framework to build them for us. Instead of expecting clear values, we will check the shape of the output. And it has several positive impacts:
 
 - We test more inputs over time
 - We test more diverse inputs
