@@ -41,7 +41,7 @@ The aim of property-based testing is not to generate random data, but to find bu
 
 ### Designed for users
 
-Property-based is not only about randomizing inputs to find bugs; it's also about helping users to find and to fix the errors. As a consequence, property-based testing frameworks come with what we refer to as: shrinking capabilities. Basically given a failure, they will take it and attempt to report another one much simpler to read and investigate. In general long inputs containing many complex characters or values tend to guide the developper on wrong tracks. With shrinker, this useless noise will be dropped and the failuer being reported will only focus on the minimal input to make the predicate fail.
+Property-based is not only about randomizing inputs to find bugs; it's also about helping users to find and to fix the errors. As a consequence, property-based testing frameworks come with what we refer to as: shrinking capabilities. Basically given a failure, they will take it and attempt to report another one much simpler to read and investigate. In general long inputs containing many complex characters or values tend to guide the developer on wrong tracks. With shrinker, this useless noise will be dropped and the failure being reported will only focus on the minimal input to make the predicate fail.
 
 ### Document the code
 
