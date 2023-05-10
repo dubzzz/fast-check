@@ -4,19 +4,70 @@ slug: /tutorials/detect-race-conditions/wrapping-up/
 description: Key learnings and summary of all our steps
 ---
 
-import { YourFirstRace, OneStepCloserToRealUsages, DebugPlaygroundsQueue } from './Playgrounds';
+import { WrapUpPlaygroundQueue } from './Playgrounds';
 
 # Wrapping up
 
-We could have went for:
+You made it! You have properly covered our `queue` algorithm with dedicated property-based tests.
+
+<WrapUpPlaygroundQueue />
+
+## Going further
+
+While our current test cover most of the issues, we can still push is further by testing subtle parts of our algorithm. This section give some of the extensions you might come up with.
+
+:::info The code
+The suggestions below have been implemented and added into the playground IDE accessible on this page.
+:::
+
+### Synchronous calls
+
+While we rejected the approach for the [first part](/tutorials/detect-race-conditions/your-first-race-condition-test/) of the tutorial, we could have considered that calls are supposed to be fired in a synchronous way. Most of the change would consist into replacing `waitFor` by `waitAll` and not waiting the scheduler at all as `waitAll` will already do that for us.
+
+For the sake of clarity, the snippet below does not fire calls in a synchronous way:
 
 ```js
-const queued = queue(s.scheduleFunction(call));
-queued(1).then((v) => seenAnswers.push(v));
-queued(2).then((v) => seenAnswers.push(v));
-await s.waitAll();
+let previous = Promise.resolve();
+function fireCall(call) {
+  previous = previous.then(() => call());
+}
 ```
 
-But it makes an implicit assumption: at `s.waitAll` queries would been have launched. As we know all the fired queries or don't care for missing ones (others) it should be a better proxy.
+While this one does when nothing on first call, but fails for the ones after:
 
-<DebugPlaygroundsQueue />
+```js
+let previous = undefined;
+function fireCall(call) {
+  if (previous === undefined) {
+    previous = call();
+  } else {
+    previous = previous.then(() => call());
+  }
+}
+```
+
+A corrrect solution being:
+
+```js
+let callId = 0;
+let previous = undefined;
+function fireCall(call) {
+  const currentCallId = ++callId;
+  const next = previous === undefined ? call() : previous.then(() => call());
+  previous = next.then(() => {
+    if (callId === currentCallId) {
+      previous = undefined;
+    }
+  });
+}
+```
+
+:::warning Incomplete snippets
+The snippets above are partially incomplete. They have been given for the sake of the example but misses some cases such as not handling exceptions potentially issued by `call`.
+:::
+
+### Support exceptions
+
+When dealing with asynchronous code, we often have to deal with potentially throwing code. As it may happens in production code, our helper should potentially be tested against it too.
+
+In order to enrich our existing test with such capability we could rework our fake implementation of `call` and either return values for successes or throw them for errors. Our expectations should be updated a bit but the idea should be the same: successes and failures shoud still be received in an ordered way.
