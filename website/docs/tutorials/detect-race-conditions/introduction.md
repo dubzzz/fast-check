@@ -6,6 +6,12 @@ description: What's the plan for this tutorial?
 
 # Introduction
 
+:::tip Already familiar with race conditions?
+This tutorial teaches techniques to detect race conditions in code testing, using specific algorithms and tools related to fast-check. It includes examples designed to initially pass the tests, and each section introduces new concepts.
+
+➡️ You already know what are race conditions? **Let's start immediately with [the first section](/docs/tutorials/detect-race-conditions/your-first-race-condition-test/)!** 🚀
+:::
+
 ## Tutorial structure
 
 This tutorial aims to equip you with techniques to write tests that can detect race conditions. To achieve this, it will cover specific algorithms and introduce helpful concepts and tools related to fast-check and its race condition detection mechanisms. By the end of this tutorial, you will be able to apply these techniques and tools to your own tests.
