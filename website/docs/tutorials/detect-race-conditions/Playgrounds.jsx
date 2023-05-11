@@ -1,3 +1,4 @@
+// @ts-check
 import React, { useState } from 'react';
 import {
   SandpackProvider,
@@ -8,24 +9,9 @@ import {
   UnstyledOpenInCodeSandboxButton,
 } from '@codesandbox/sandpack-react';
 import { atomDark } from '@codesandbox/sandpack-themes';
+// @ts-ignore
 import styles from './Playgrounds.module.css';
-import {
-  queueCodeV0,
-  queueCodeV1,
-  queueCodeV2,
-  queueCodeV3,
-  queueCodeV4,
-  queueCodeV5,
-  queueUnitSpecCode,
-  queueBasicPBTSpecCode,
-  queueBasicPBTWaitAllSpecCode,
-  queueMoreThan2CallsPBTSpecCode,
-  queueFromBatchesPBTSpecCode,
-  queueBatchesAlternativePBTSpecCode,
-  missingPartPBTSpecCode,
-  extendedBackToWaitAllPBTSpecCode,
-  extendedWithExceptionsPBTSpecCode,
-} from './snippets.mjs';
+import * as snippets from './snippets.mjs';
 
 function SetupPlayground(props) {
   const { startSpecCode, anwserSpecCode, fileContent, fileName, fileExtension } = props;
@@ -87,9 +73,9 @@ export function YourFirstRace() {
     <SetupPlayground
       fileName="queue"
       fileExtension="js"
-      fileContent={queueCodeV0}
-      startSpecCode={queueUnitSpecCode}
-      anwserSpecCode={queueBasicPBTSpecCode}
+      fileContent={snippets.queueCodeV0}
+      startSpecCode={snippets.queueUnitSpecCode}
+      anwserSpecCode={snippets.queueBasicPBTSpecCode}
     />
   );
 }
@@ -99,9 +85,9 @@ export function OneStepCloserToRealUsages() {
     <SetupPlayground
       fileName="queue"
       fileExtension="js"
-      fileContent={queueCodeV1}
-      startSpecCode={queueBasicPBTSpecCode}
-      anwserSpecCode={queueMoreThan2CallsPBTSpecCode}
+      fileContent={snippets.queueCodeV1}
+      startSpecCode={snippets.queueBasicPBTSpecCode}
+      anwserSpecCode={snippets.queueMoreThan2CallsPBTSpecCode}
     />
   );
 }
@@ -111,9 +97,9 @@ export function MultipleBatchesOfCalls() {
     <SetupPlayground
       fileName="queue"
       fileExtension="js"
-      fileContent={queueCodeV2}
-      startSpecCode={queueMoreThan2CallsPBTSpecCode}
-      anwserSpecCode={queueFromBatchesPBTSpecCode}
+      fileContent={snippets.queueCodeV2}
+      startSpecCode={snippets.queueMoreThan2CallsPBTSpecCode}
+      anwserSpecCode={snippets.queueFromBatchesPBTSpecCode}
     />
   );
 }
@@ -123,9 +109,9 @@ export function MissingPart() {
     <SetupPlayground
       fileName="queue"
       fileExtension="js"
-      fileContent={queueCodeV3}
-      startSpecCode={queueFromBatchesPBTSpecCode}
-      anwserSpecCode={missingPartPBTSpecCode}
+      fileContent={snippets.queueCodeV3}
+      startSpecCode={snippets.queueFromBatchesPBTSpecCode}
+      anwserSpecCode={snippets.missingPartPBTSpecCode}
     />
   );
 }
@@ -147,34 +133,34 @@ function pastTestSnippet(code, partName, variationName) {
 export function WrapUpPlaygroundQueue() {
   const [reset, setReset] = useState(0);
   const queueImplementations = {
-    'queue.v0.js': pastImplementationSnippet(queueCodeV0, 'Your first race condition test'),
-    'queue.v1.js': pastImplementationSnippet(queueCodeV1, 'One step close to real usages'),
-    'queue.v2.js': pastImplementationSnippet(queueCodeV2, 'Multiple batches of calls'),
-    'queue.v3.js': pastImplementationSnippet(queueCodeV3, 'The missing part'),
-    'queue.v4.js': codeWithComments(queueCodeV4, ['Pass all the tests of the tutorial']),
-    'queue.v5.js': codeWithComments(queueCodeV5, ['Pass all the tests']),
+    'queue.v0.js': pastImplementationSnippet(snippets.queueCodeV0, 'Your first race condition test'),
+    'queue.v1.js': pastImplementationSnippet(snippets.queueCodeV1, 'One step close to real usages'),
+    'queue.v2.js': pastImplementationSnippet(snippets.queueCodeV2, 'Multiple batches of calls'),
+    'queue.v3.js': pastImplementationSnippet(snippets.queueCodeV3, 'The missing part'),
+    'queue.v4.js': codeWithComments(snippets.queueCodeV4, ['Pass all the tests of the tutorial']),
+    'queue.v5.js': codeWithComments(snippets.queueCodeV5, ['Pass all the tests']),
   };
   const defaultQueueImplementation = 'queue.v5.js';
   const queueTests = {
-    'queue.p0.spec.js': queueUnitSpecCode,
-    'queue.p1.spec.js': pastTestSnippet(queueBasicPBTSpecCode, 'Your first race condition test'),
+    'queue.p0.spec.js': snippets.queueUnitSpecCode,
+    'queue.p1.spec.js': pastTestSnippet(snippets.queueBasicPBTSpecCode, 'Your first race condition test'),
     'queue.p1.v2.spec.js': pastTestSnippet(
-      queueBasicPBTWaitAllSpecCode,
+      snippets.queueBasicPBTWaitAllSpecCode,
       'Your first race condition test',
       'With waitAll'
     ),
-    'queue.p2.spec.js': pastTestSnippet(queueMoreThan2CallsPBTSpecCode, 'One step close to real usages'),
-    'queue.p3.spec.js': pastTestSnippet(queueFromBatchesPBTSpecCode, 'Multiple batches of calls'),
+    'queue.p2.spec.js': pastTestSnippet(snippets.queueMoreThan2CallsPBTSpecCode, 'One step close to real usages'),
+    'queue.p3.spec.js': pastTestSnippet(snippets.queueFromBatchesPBTSpecCode, 'Multiple batches of calls'),
     'queue.p3.v2.spec.js': pastTestSnippet(
-      queueBatchesAlternativePBTSpecCode,
+      snippets.queueBatchesAlternativePBTSpecCode,
       'Multiple batches of calls',
       'With delayed calls (no batches)'
     ),
-    'queue.p4.spec.js': pastTestSnippet(missingPartPBTSpecCode, 'The missing part'),
-    'queue.pnext.v1.spec.js': codeWithComments(extendedBackToWaitAllPBTSpecCode, [
+    'queue.p4.spec.js': pastTestSnippet(snippets.missingPartPBTSpecCode, 'The missing part'),
+    'queue.pnext.v1.spec.js': codeWithComments(snippets.extendedBackToWaitAllPBTSpecCode, [
       'Switch back to waitAll in queue.p4.spec',
     ]),
-    'queue.pnext.v2.spec.js': codeWithComments(extendedWithExceptionsPBTSpecCode, ['Also cover error cases']),
+    'queue.pnext.v2.spec.js': codeWithComments(snippets.extendedWithExceptionsPBTSpecCode, ['Also cover error cases']),
   };
   const defaultQueueTest = 'queue.p4.spec.js';
   return (
