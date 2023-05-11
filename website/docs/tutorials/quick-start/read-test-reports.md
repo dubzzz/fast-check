@@ -5,7 +5,7 @@ slug: /tutorials/quick-start/read-test-reports/
 
 # Read test reports
 
-Read and troubleshoot test report.
+Read and troubleshoot test report
 
 ## Run the tests
 

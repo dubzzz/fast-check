@@ -7,7 +7,7 @@ slug: /core-blocks/arbitraries/primitives/string/
 Generate string values.
 
 :::tip
-If you want to join several strings together: refer to our [combiners section](/docs/category/combiners/). We have some [built-in combiners working exclusively on string values](/docs/core-blocks/arbitraries/combiners/string/).
+If you want to join several strings together: refer to our [combiners section](/docs/core-blocks/arbitraries/combiners/). We have some [built-in combiners working exclusively on string values](/docs/core-blocks/arbitraries/combiners/string/).
 :::
 
 ## hexaString

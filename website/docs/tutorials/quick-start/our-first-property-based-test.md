@@ -5,7 +5,7 @@ slug: /tutorials/quick-start/our-first-property-based-test/
 
 # Our first Property-Based Test
 
-Write your first test.
+Write your first test
 
 ## What are we testing?
 
