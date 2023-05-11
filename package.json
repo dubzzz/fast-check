@@ -33,5 +33,8 @@
     "eslint-config-prettier": "^8.8.0",
     "prettier": "2.8.8",
     "publint": "^0.1.11"
+  },
+  "resolutions": {
+    "react@^17.0.2": "patch:react@npm%3A17.0.2#./.yarn/patches/react-npm-17.0.2-99ba37d931.patch"
   }
 }

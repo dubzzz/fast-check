@@ -1,0 +1,70 @@
+---
+sidebar_position: 5
+slug: /tutorials/detect-race-conditions/the-missing-part/
+description: Fourth iteration, check all the points of the specification
+---
+
+import { MissingPart } from './Playgrounds';
+
+# The missing part
+
+## Zoom on previous test
+
+As mentioned earlier, the decision to use sequences was largely driven by the desire to cover most of the scheduler's APIs in this tutorial. However, there are alternative ways of achieving our goals.
+
+One of the issues we wanted to address was the need to trigger queries asynchronously. Although this functionality is not yet built into fast-check, we could use the technique outlined in [scheduling a function call](/docs/advanced/race-conditions/#scheduling-a-function-call). If we were to take this approach, we would update:
+
+```js
+for (let id = 0; id !== numCalls; ++id) {
+  expectedAnswers.push(id);
+  pendingQueries.push(queued(id).then((v) => seenAnswers.push(v)));
+}
+```
+
+into:
+
+```js
+for (let id = 0; id !== numCalls; ++id) {
+  pendingQueries.push(
+    s
+      .schedule(Promise.resolve(`Fire the call for ${id}`))
+      .then(() => {
+        expectedAnswers.push(id);
+        return queued(id);
+      })
+      .then((v) => seenAnswers.push(v))
+  );
+}
+```
+
+:::info Comparison
+Contrary to the batch approach, the ordering of ids will not be ensured. For that reason, we decided to include it in the reports by scheduling a resolved promise with a value featuring this id.
+:::
+
+## Towards next test
+
+Our tests may be incomplete because we are not taking into account all aspects of the specification:
+
+> Its purpose is to wrap an asynchronous function and queue subsequent calls to it in two ways:
+>
+> - Promises returned by the function will resolve in order, with the first call resolving before the second one, the second one resolving before the third one, and so on.
+> - Concurrent calls are not allowed, meaning that a call will always wait for the previously started one to finish before being fired.
+
+Although we thoroughly tested the first point, we may have overlooked the second point in the specification. Therefore, in the final section of this tutorial, we will focus on validating the second requirement.
+
+## Your turn!
+
+<MissingPart />
+
+:::info What to expect?
+Your test should help us to detect a bug in our current implementation of `queue`.
+:::
+
+<details>
+<summary>
+Hint #1
+</summary>
+
+One potential solution is to wrap the scheduled API in an additional layer that sets a flag to `true` when the API is called, directly invokes the scheduled API, and then resets the flag to `false` when the API resolves. If the flag is already set to `true` when the wrapper layer is invoked, it should cause the test to fail.
+
+</details>

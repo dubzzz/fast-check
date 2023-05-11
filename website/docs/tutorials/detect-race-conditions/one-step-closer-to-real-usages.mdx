@@ -1,0 +1,89 @@
+---
+sidebar_position: 3
+slug: /tutorials/detect-race-conditions/one-step-closer-to-real-usages/
+description: Second iteration, make the test closer and detect even more race conditions
+---
+
+import { OneStepCloserToRealUsages } from './Playgrounds';
+
+# One step closer to real usages
+
+## Zoom on previous test
+
+### What to schedule?
+
+One approach to solve the problem we discussed earlier is to follow a common pattern that we recommend when integrating a scheduler into existing tests. This involves replacing the original occurrences of the asynchronous API with scheduled versions of it. In our case, we replaced the line of code:
+
+```js
+const queued = queue(call);
+```
+
+with:
+
+```js
+const queued = queue(s.scheduleFunction(call));
+```
+
+### What to wait?
+
+Once we've replaced raw asynchronous API calls with scheduled versions, the next step is to wait for them to complete. There are several ways to achieve this, but the recommended approach is to use `waitFor` to wait for all queries to resolve:
+
+```js
+const queued = queue(s.scheduleFunction(call));
+pendingQueries.push(queued(1).then((v) => seenAnswers.push(v)));
+pendingQueries.push(queued(2).then((v) => seenAnswers.push(v)));
+await s.waitFor(Promise.all(pendingQueries));
+```
+
+An alternative options would have been to use `waitAll` instead of `waitFor` but it comes with a precise requirements being that promise had to be imperatively scehduled by the time we reach it. In other words, if our code delays a little bit the call to `call` it will not wait anything. With the current implementation of `queue` it works, but with next versions of it it might not be the case anymore as queued calls might start queuing themselves behind already started and running promises.
+
+As the fact that `call` has to be fired synchronously when issuing a call on a clean context is not a requirement for our current function, we can relax the constraint in our test to make evolving this implementation easier.
+
+A `waitAll` version of the code above would be:
+
+Alternatively, we could use `waitAll` instead of `waitFor`, but this approach requires promises to be scheduled by the time we reach `waitAll`. If our code introduces any delays, `waitAll` may not wait for anything. While the current implementation of `queue` works with `waitAll`, future versions may not, as queued calls might start queuing behind already running promises meaning that promises might be scheduled after calling `waitAll`. Therefore, we can relax the requirement that `call` get fired synchronously in our test, to make the implementation easier to evolve.
+
+While not as good as the `waitFor` implementation, here's the `waitAll` version of the code:
+
+```js
+const queued = queue(s.scheduleFunction(call));
+queued(1).then((v) => seenAnswers.push(v));
+queued(2).then((v) => seenAnswers.push(v));
+await s.waitAll();
+```
+
+## Towards next test
+
+The current implementation of our test only involves running two calls, but there may be potential issues that arise when more calls are made. To capture these scenarios, we will update the test to run an arbitrary number of calls. This will allow us to detect race conditions on a wider range of scenarios, including those with 3, 4, or even more calls.
+
+## Your turn!
+
+<OneStepCloserToRealUsages />
+
+:::info What to expect?
+Your test should help us to detect a bug in our current implementation of `queue`.
+:::
+
+<details>
+<summary>
+Hint #1
+</summary>
+
+`fc.scheduler` alone will not be enough! You'll have to generate another entry to be able to properly control the number of calls to `call` function.
+
+</details>
+
+<details>
+<summary>
+Hint #2
+</summary>
+
+Some possible options for generating additional test scenarios include:
+
+- Using `fc.integer({min: 1, max: 10})` to generate a variable `numCalls` that determines how many times to call `call`. It's important to set a maximal value via `max` to prevent an excessively high number of calls.
+- Using `fc.array(fc.nat(), {minLength: 1})` to generate the list of calls to issue against `call`.
+- Using `fc.func(fc.boolean())` to generate a function that determines when to stop issuing calls.
+
+And there are plenty others…
+
+</details>

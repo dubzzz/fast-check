@@ -1,0 +1,156 @@
+---
+sidebar_position: 6
+slug: /tutorials/detect-race-conditions/wrapping-up/
+description: Key learnings and summary of all our steps
+---
+
+import { WrapUpPlaygroundQueue } from './Playgrounds';
+
+# Wrapping up
+
+:::tip Wanna play?
+Want to directly try out the final result? Skip ahead to the [Have fun!](#have-fun) section to play with the code snippets we've created.
+:::
+
+## Zoom on previous test
+
+Congratulations! You have learned how to detect race conditions using fast-check library. We explored the concept of race conditions, discussed their potential dangers, and demonstrated various techniques to identify them. By leveraging the powerful features of fast-check, such as property-based testing and shrinking, you now have a robust tool at your disposal to uncover and fix race conditions in your code. Remember to apply these techniques in your projects to ensure the reliability and stability of your software.
+
+Throughout this tutorial, we gradually added race condition detection and expanded its coverage. The final iteration brings us close to fully addressing all possible edge cases of a `queue`.
+
+One important aspect of the last added test is that it covers a specification point we had overlooked in previous iterations. The main change involved ensuring that we never get called twice simultaneously but always get queued. We accomplished this by replacing:
+
+```js
+//...
+const scheduledCall = s.scheduleFunction(call);
+const queued = queue(scheduledCall);
+//...
+expect(concurrentQueriesDetected).toBe(false);
+//...
+```
+
+with:
+
+```js
+//...
+const scheduledCall = s.scheduleFunction(call);
+let concurrentQueriesDetected = false;
+let queryPending = false;
+const monitoredScheduledCall = (...args) => {
+  concurrentQueriesDetected ||= queryPending;
+  queryPending = true;
+  return scheduledCall(...args).finally(() => (queryPending = false));
+};
+const queued = queue(monitoredScheduledCall);
+//...
+expect(concurrentQueriesDetected).toBe(false);
+//...
+```
+
+The above change ensures that we can detect whenever `scheduledCall` is called before the previous calls to it have resolved.
+
+## Towards next test
+
+Although we have covered the majority of the `queue` algorithm, there are always subtle aspects that we may want to address. In this section, we will provide you with some ideas to ensure that your implementation of `queue` is perfect. All the suggested changes have been implemented in the [CodeSandbox playground below](#have-fun), allowing you to see how they can be achieved. The tests associated with this section have been named `*.pnext.v*` and are stacked on top of each other, with the final test incorporating all the suggestions described in this section.
+
+### Synchronous calls
+
+While we previously rejected the approach in the [first part](/docs/tutorials/detect-race-conditions/your-first-race-condition-test/) of the tutorial, we could have considered that calls are expected to be fired synchronously. To achieve this, we can rely on `waitAll` and eliminate any code responsible to wait for the batch to be executed or for promises to resolve.
+
+Here is what we mean by not firing calls synchronously: this snippet does not execute calls in a synchronous manner. Instead, each call is queued and executed after the previous one has resolved:
+
+```js
+let previous = Promise.resolve();
+function fireCall(call) {
+  previous = previous.then(() => call());
+}
+```
+
+To demonstrate this behavior, you can run the following snippet locally:
+
+```js
+console.log('before fireCall');
+fireCall(async () => console.log('call'));
+console.log('after fireCall');
+
+// Results:
+// >  before fireCall
+// >  after fireCall
+// >  call
+```
+
+Let's explore different iterations attempting to enhance this snippet. Here's a naive attempt that addresses the issue for the first call, but it is still incomplete:
+
+```js
+let previous = undefined;
+function fireCall(call) {
+  if (previous === undefined) {
+    previous = call();
+  } else {
+    previous = previous.then(() => call());
+  }
+}
+```
+
+While the above solution improves the situation for the first call, it doesn't handle subsequent calls properly. The issue on second call is highlighted by the following snippet:
+
+```js
+function runOne() {
+  return new Promise((resolve) => {
+    console.log('before fireCall');
+    fireCall(async () => {
+      console.log('call');
+      resolve();
+    });
+    console.log('after fireCall');
+  });
+}
+await runOne();
+await runOne();
+
+// Results:
+// >  before fireCall
+// >  call
+// >  after fireCall
+// >  before fireCall
+// >  after fireCall
+// >  call
+```
+
+Here is a more advanced but still not perfect implementation of `fireCall`:
+
+```js
+let callId = 0;
+let previous = undefined;
+function fireCall(call) {
+  const currentCallId = ++callId;
+  const next = previous === undefined ? call() : previous.then(() => call());
+  previous = next.then(() => {
+    if (callId === currentCallId) {
+      previous = undefined;
+    }
+  });
+}
+```
+
+This last iteration, implemented in `src/queue.v4.js`, represents the most advanced solution we will show in that section. However, if you examine the CodeSandbox playground](#have-fun), you'll notice that even this implementation misses some cases and can be fixed.
+
+### Support exceptions
+
+When working with asynchronous code, it is common to encounter situations where code can potentially throw errors. As this scenario may occur in production code, it is essential to test our helper against such cases as well.
+
+To enhance our existing tests with this capability, we can modify our mock `call` implementation to simulate both successful executions and error throws. Consequently, our expectations need to be adjusted, but the underlying idea remains the same: both successes and failures should be received in an ordered manner.
+
+## Have fun!
+
+<WrapUpPlaygroundQueue />
+
+:::info The files
+The playground provided includes source files extracted from the previous sections of this tutorial.
+
+Inside the `src` directory, you will find various implementations of the `queue` algorithm that you encountered and attempted to defeat throughout the tutorial. For example, `src/queue.v0.js` represents the initial implementation you encountered in part 1, while `src/queue.v1.js` would pass the tests from part 1 but fail those from part 2.
+
+The `queue` implementation currently running in the playground is expected to pass all the tests. However, if you wish to test one of the legacy versions, you can simply edit the `src/queue.js` file and import the desired legacy implementation.
+
+In the `tests` directory, you will find all the suggested tests and some variations discussed throughout the tutorial. Feel free to explore and experiment with them.
+:::

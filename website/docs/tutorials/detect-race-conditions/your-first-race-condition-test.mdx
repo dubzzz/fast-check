@@ -1,0 +1,116 @@
+---
+sidebar_position: 2
+slug: /tutorials/detect-race-conditions/your-first-race-condition-test/
+description: First iteration, build your first test able to detect race conditions
+---
+
+import { YourFirstRace } from './Playgrounds';
+
+# Your first race condition test
+
+## Code under test
+
+For the next few pages, we will focus on a function called `queue`. Its purpose is to wrap an asynchronous function and queue subsequent calls to it in two ways:
+
+- Promises returned by the function will resolve in order, with the first call resolving before the second one, the second one resolving before the third one, and so on.
+- Concurrent calls are not allowed, meaning that a call will always wait for the previously started one to finish before being fired.
+
+In the context of this tutorial you'll never have to edit `queue`. The function will be provided to you.
+
+## Understand current test
+
+Fortunately, we don't have to start from scratch. The function already has a test in place that ensures queries will consistently resolve in the correct order. The test appears rather simple and currently passes.
+
+```js
+test('should resolve in call order', async () => {
+  // Arrange
+  const seenAnswers = [];
+  const call = jest.fn().mockImplementation((v) => Promise.resolve(v));
+
+  // Act
+  const queued = queue(call);
+  await Promise.all([queued(1).then((v) => seenAnswers.push(v)), queued(2).then((v) => seenAnswers.push(v))]);
+
+  // Assert
+  expect(seenAnswers).toEqual([1, 2]);
+});
+```
+
+If we look closer to the test, we can observe that the wrapped function is relatively straightforward in that it merely returns a resolved promise whose value corresponds to the provided input.
+
+```js
+const call = jest.fn().mockImplementation((v) => Promise.resolve(v));
+```
+
+We can also see that we assess the order of results by confirming that the values pushed into `seenAnswers` are properly ordered. It's worth noting that `seenAnswers` does not represent the same thing as `await Promise.all([queued(1), queued(2)])`. This alternative notation does not evaluate the order in which the resolutions are received, but rather only confirms that each query resolves to its expected value.
+
+## Towards next test
+
+The test above has some limitations. Among them we have the fact that the fake API we defined always resolve instantly. It has one downside: without any `queue`, calling `call(1)` and then `call(2)` would also pass the test. Indeed, when calling `call(1)` it would produce a new promise being `Promise.resolve(1)`. Instantely created, instantly resolved and instantly watched via `.then((v) => seenAnswers.push(v))`. In other words, as soon as we give back the hand to JavaScript runtime, the continuation will be called. The one registered immediately after when calling `call(2)` will have to wait its turn as it has been queued after it.
+
+While the test we just examined is a good starting point, it comes with some limitations. Specifically, the fake API we established in the test instantly resolves queries. As a result, it does not account for scenarios where we have multiple calls to `call` that need to be queued. For instance, if we were to call `call(1)` followed by `call(2)` without any queue, the test would still pass. This is because `call(1)` produces a new promise that resolves immediately, which is then instantly followed by `.then((v) => seenAnswers.push(v))`. Once the JavaScript runtime relinquishes control, the continuation of `call(1)` is immediately called. Consequently, the continuation registered during the call to `call(2)` will wait until the continuation of `call(1)` ends.
+
+In order to address this limitation, our updated test should ensure that promises resolve later rather than instantly.
+
+## First glance at schedulers
+
+When adding fast-check into a race condition test, the recommended initial step is to update the test code as follows:
+
+<!-- prettier-ignore-start -->
+```js
+test('should resolve in call order', async () => {
+  await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => { // <-- added
+    // ...unchanged code...
+  }));                                                            // <-- added
+});
+```
+<!-- prettier-ignore-end -->
+
+This modification runs the test using the fast-check runner. By doing so, any bugs that arise during the predicate will be caught by fast-check.
+
+In the context of race conditions, we want fast-check to provide us with a scheduler instance that is capable of re-ordering asynchronous operations. This is why we added the `fc.scheduler()` argument: it creates an instance of a scheduler that we refer to as `s`. The first important thing to keep in mind for our new test is that we don't want to change the value returned by the API. But we want to change when it gets returned. We want to give the scheduler the responsibility of resolving API calls. To achieve this, the scheduler exposes a method called `scheduleFunction`. This method wraps a function in a scheduled or controlled version of itself.
+
+After pushing scheduled calls into the scheduler, we must execute and release them at some point. This is typically done using `waitAll` or `waitFor`. These APIs simply wait for `waitX` to resolve, indicating that what we were waiting for has been accomplished.
+
+:::info Which wait is the best?
+For this first iteration, both of them will be ok, but we will see later that `waitFor` is probably a better fit in that specific example.
+:::
+
+:::tip More
+For a comprehensive list of methods exposed on the scheduler, you can checkout the [official documentation for race conditions](/docs/advanced/race-conditions/).
+:::
+
+## Your turn!
+
+<YourFirstRace />
+
+:::info What to expect?
+Your test should help us to detect a bug in our current implementation of `queue`.
+:::
+
+<details>
+<summary>
+Hint #1
+</summary>
+
+You have to run the test via the `assert` runner provided by fast-check. For more details, you may refer to the section [First glance at schedulers](#first-glance-at-schedulers) of this page.
+
+</details>
+
+<details>
+<summary>
+Hint #2
+</summary>
+
+No need to touch `call` itself. The function should still return the inputs it received. But, instead of queueing it, we should queue a scheduled version of it. You may refer to [`scheduleFunction`](/docs/advanced/race-conditions/#schedulefunction) for more details.
+
+</details>
+
+<details>
+<summary>
+Hint #3
+</summary>
+
+Our test should think as a user of the API would think. It has to wait for all queued calls to be resolved before being able to assert anything on the output. You may want to use pass such condition to `waitFor` so that everything gets properly awaited before running any assertion.
+
+</details>
