@@ -514,6 +514,33 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "DenisGorbachev",
+      "name": "Denis Gorbachev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/829578?v=4",
+      "profile": "http://denisgorbachev.com/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "senocular",
+      "name": "Trevor McCauley",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3536716?v=4",
+      "profile": "http://senocular.github.io/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "gkiely",
+      "name": "Grant Kiely",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1948935?v=4",
+      "profile": "http://grantkiely.com/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
