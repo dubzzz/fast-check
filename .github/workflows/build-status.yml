@@ -209,6 +209,10 @@ jobs:
             script-name: 'test'
             node-version: 18.x
             os: 'ubuntu-latest'
+          - package-name: 'website'
+            script-name: 'test'
+            node-version: 18.x
+            os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
       - name: Cache for Jest
