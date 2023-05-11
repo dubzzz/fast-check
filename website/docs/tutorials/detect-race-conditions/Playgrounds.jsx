@@ -342,44 +342,63 @@ test('should resolve in call order', async () => {
 })`;
 
 const extendedWithExceptionsPBTSpecCode = `import {queue} from './queue.js';
-import fc from 'fast-check';
+import fc from "fast-check";
 
-test('should resolve in call order', async () => {
-  await fc.assert(fc.asyncProperty(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
-    // Arrange
-    const seenAnswers = [];
-    const expectedAnswers = [];
-    const call = jest.fn()
-      .mockImplementation(v => Promise.resolve(v));
-    const scheduledCall = s.scheduleFunction(call);
-    let concurrentQueriesDetected = false;
-    let queryPending = false;
-    const monitoredScheduledCall = (...args) => {
-      concurrentQueriesDetected ||= queryPending;
-      queryPending = true;
-      return scheduledCall(...args).finally(() => (queryPending = false));
-    };
-  
-    // Act
-    const queued = queue(monitoredScheduledCall);
-    let lastId = 0;
-    s.scheduleSequence(batches.map((batch, index) => {
-      return {
-        label: \`Fire batch #\${index + 1} (\${batch} calls)\`,
-        builder: async () => {
-          for (let id = 0 ; id !== batch ; ++id, ++lastId) {
-            expectedAnswers.push(lastId);
-            queued(lastId).then(v => (seenAnswers.push(v)));
-          }
-        },
+test("should resolve in call order", async () => {
+  await fc.assert(
+    fc.asyncProperty(
+      fc.scheduler(),
+      fc.array(fc.integer({ min: 1, max: 10 }), { minLength: 1 }),
+      fc.func(fc.boolean()),
+      async (s, batches, isFailure) => {
+        // Arrange
+        const seenAnswers = [];
+        const expectedAnswers = [];
+        const call = jest
+          .fn()
+          .mockImplementation((v) =>
+            isFailure(v) ? Promise.reject(v) : Promise.resolve(v)
+          );
+        const scheduledCall = s.scheduleFunction(call);
+        let concurrentQueriesDetected = false;
+        let queryPending = false;
+        const monitoredScheduledCall = (...args) => {
+          concurrentQueriesDetected ||= queryPending;
+          queryPending = true;
+          return scheduledCall(...args).finally(() => (queryPending = false));
+        };
+
+        // Act
+        const queued = queue(monitoredScheduledCall);
+        let lastId = 0;
+        s.scheduleSequence(
+          batches.map((batch, index) => {
+            return {
+              label: \`Fire batch #\${index + 1} (\${batch} calls)\`,
+              builder: async () => {
+                for (let id = 0; id !== batch; ++id, ++lastId) {
+                  expectedAnswers.push(
+                    isFailure(lastId)
+                      ? \`failure:\${lastId}\`
+                      : \`success:\${lastId}\`
+                  );
+                  queued(lastId).then(
+                    (v) => seenAnswers.push(\`success:\${v}\`),
+                    (v) => seenAnswers.push(\`failure:\${v}\`)
+                  );
+                }
+              }
+            };
+          })
+        );
+        await s.waitAll();
+
+        // Assert
+        expect(seenAnswers).toEqual(expectedAnswers);
+        expect(concurrentQueriesDetected).toBe(false);
       }
-    }));
-    await s.waitAll();
-  
-    // Assert
-    expect(seenAnswers).toEqual(expectedAnswers);
-    expect(concurrentQueriesDetected).toBe(false);
-  }))
+    )
+  );
 })`;
 
 function SetupPlayground(props) {
@@ -526,8 +545,10 @@ export function WrapUpPlaygroundQueue() {
       'With delayed calls (no batches)'
     ),
     'queue.p4.spec.js': pastTestSnippet(missingPartPBTSpecCode, 'The missing part'),
-    'queue.pnext.spec.js': extendedBackToWaitAllPBTSpecCode,
-    'queue.pnext.v2.spec.js': extendedWithExceptionsPBTSpecCode,
+    'queue.pnext.v1.spec.js': codeWithComments(extendedBackToWaitAllPBTSpecCode, [
+      'Switch back to waitAll in queue.p4.spec',
+    ]),
+    'queue.pnext.v2.spec.js': codeWithComments(extendedWithExceptionsPBTSpecCode, ['Also cover error cases']),
   };
   const defaultQueueTest = 'queue.p4.spec.js';
   return (
