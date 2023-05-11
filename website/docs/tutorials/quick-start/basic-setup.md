@@ -5,7 +5,7 @@ slug: /tutorials/quick-start/basic-setup/
 
 # Basic Setup
 
-Setup your environment.
+Setup your environment
 
 ## Setup the project
 

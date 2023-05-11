@@ -23,7 +23,7 @@ const config = {
   projectName: 'fast-check', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenMarkdownLinks: 'throw',
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -61,8 +61,8 @@ const config = {
         title: 'fast-check',
         logo: { alt: 'fast-check Logo', src: 'img/mug.svg', width: '40px' },
         items: [
-          { to: '/docs/category/introduction/', label: 'Documentation', position: 'right' },
-          { to: '/docs/category/quick-start/', label: 'Quick Start', position: 'right' },
+          { to: '/docs/introduction/', label: 'Documentation', position: 'right' },
+          { to: '/docs/tutorials/quick-start/', label: 'Quick Start', position: 'right' },
           //{ to: '/blog', label: 'Blog', position: 'right' },
           { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
           { href: 'https://github.com/dubzzz/fast-check', label: 'GitHub', position: 'right' },
@@ -74,9 +74,9 @@ const config = {
           {
             title: 'Guides',
             items: [
-              { label: 'Documentation', to: '/docs/category/introduction/' },
-              { label: 'Quick Start', to: '/docs/category/quick-start/' },
-              { label: 'All Tutorials', to: '/docs/category/tutorials/' },
+              { label: 'Documentation', to: '/docs/introduction/' },
+              { label: 'Quick Start', to: '/docs/tutorials/quick-start/' },
+              { label: 'All Tutorials', to: '/docs/tutorials/' },
             ],
           },
           {

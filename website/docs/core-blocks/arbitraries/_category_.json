@@ -1,8 +1,0 @@
-{
-  "label": "Arbitraries",
-  "position": 1,
-  "link": {
-    "type": "generated-index",
-    "description": "Full listing of all the arbitraries coming in fast-check"
-  }
-}

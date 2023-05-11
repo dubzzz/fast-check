@@ -89,14 +89,14 @@ test('sort users by ascending age', () => {
 
 ## Native ones
 
-Although fast-check is not primarily designed for generating fake data, it does come with a number of [built-in generators](/docs/category/combiners/) doing so. Each built-in generator is designed to produce any acceptable value for the requested data, taking into account any subtleties in the specification.
+Although fast-check is not primarily designed for generating fake data, it does come with a number of [built-in generators](/docs/core-blocks/arbitraries/combiners/) doing so. Each built-in generator is designed to produce any acceptable value for the requested data, taking into account any subtleties in the specification.
 
 For example, while an IPv4 address may be commonly represented as something like `127.0.0.1`, the specification allows for other formats such as `0x4.034`, and fast-check's IPv4 generator is able to generate values accordingly.
 
 However, fast-check does not currently provide generators for names, surnames, or other non-fully constrained values. It is up to the user to provide their own generators for such data types.
 
 :::tip Build your own arbitraries
-If you need to generate custom fake data, such as names and surnames, you can refer to fast-check's [combiners](/docs/category/fake-data/), which are designed to allow users to create their own values according to their specific needs.
+If you need to generate custom fake data, such as names and surnames, you can refer to fast-check's [combiners](/docs/core-blocks/arbitraries/combiners/), which are designed to allow users to create their own values according to their specific needs.
 :::
 
 ## Fake data libraries

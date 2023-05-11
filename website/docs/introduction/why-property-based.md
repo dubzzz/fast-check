@@ -5,7 +5,7 @@ slug: /introduction/why-property-based/
 
 # Why Property-Based?
 
-Learn about the benefits and advantages of property-based testing.
+Learn about the benefits and advantages of property-based testing
 
 ## Testing today
 

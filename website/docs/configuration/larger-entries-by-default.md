@@ -103,5 +103,5 @@ test('should always contain its substrings', () => {
 ```
 
 :::info
-To learn how to customize the size for a particular arbitrary, please refer to the [documentation](/docs/category/arbitraries/) provided for that arbitrary.
+To learn how to customize the size for a particular arbitrary, please refer to the [documentation](/docs/core-blocks/arbitraries/) provided for that arbitrary.
 :::

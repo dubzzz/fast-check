@@ -1,8 +1,0 @@
-{
-  "label": "Core Blocks",
-  "position": 2,
-  "link": {
-    "type": "generated-index",
-    "description": "Deep dive into all the primitives provided by fast-check"
-  }
-}
