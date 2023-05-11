@@ -1,10 +1,12 @@
 ---
-sidebar_position: 1
-slug: /tutorials/detect-race-conditions/introduction/
+sidebar_position: 2
+slug: /tutorials/detect-race-conditions/
 description: What's the plan for this tutorial?
 ---
 
-# Introduction
+# Detect race conditions
+
+Learn how to detect race conditions in your code through clear and instructive examples
 
 :::tip Already familiar with race conditions?
 This tutorial teaches techniques to detect race conditions in code testing, using specific algorithms and tools related to fast-check. It includes examples designed to initially pass the tests, and each section introduces new concepts.
@@ -17,6 +19,12 @@ This tutorial teaches techniques to detect race conditions in code testing, usin
 This tutorial aims to equip you with techniques to write tests that can detect race conditions. To achieve this, it will cover specific algorithms and introduce helpful concepts and tools related to fast-check and its race condition detection mechanisms. By the end of this tutorial, you will be able to apply these techniques and tools to your own tests.
 
 Throughout this tutorial, the examples have been crafted to ensure that tests pass initially on the code being tested. Your objective will be to make the tests fail by implementing the suggested changes. Each section will introduce new concepts and provide the necessary information to apply these learnings to code beyond the scope of this tutorial. Each page will come with its own puzzle.
+
+```mdx-code-block
+import DocCardList from '@theme/DocCardList';
+
+<DocCardList />
+```
 
 ## Definition of a race condition
 
