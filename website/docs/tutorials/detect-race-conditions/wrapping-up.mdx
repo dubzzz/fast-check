@@ -55,7 +55,7 @@ Although we have covered the majority of the `queue` algorithm, there are always
 
 ### Synchronous calls
 
-While we previously rejected the approach in the [first part](/tutorials/detect-race-conditions/your-first-race-condition-test/) of the tutorial, we could have considered that calls are expected to be fired synchronously. To achieve this, we can rely on `waitAll` and eliminate any code responsible to wait for the batch to be executed or for promises to resolve.
+While we previously rejected the approach in the [first part](/docs/tutorials/detect-race-conditions/your-first-race-condition-test/) of the tutorial, we could have considered that calls are expected to be fired synchronously. To achieve this, we can rely on `waitAll` and eliminate any code responsible to wait for the batch to be executed or for promises to resolve.
 
 Here is what we mean by not firing calls synchronously: this snippet does not execute calls in a synchronous manner. Instead, each call is queued and executed after the previous one has resolved:
 
