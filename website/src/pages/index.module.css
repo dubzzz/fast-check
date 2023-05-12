@@ -8,6 +8,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background-color: var(--fc-banner-background-color);
 }
 
 .mainTitle {

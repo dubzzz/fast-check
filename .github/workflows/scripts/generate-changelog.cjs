@@ -90,6 +90,8 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         break;
       case '📝':
       case ':memo:':
+      case '💄':
+      case ':lipstick:':
         maintenanceSection.push({ type: 'Doc', pr, title });
         break;
       case '✏️':
