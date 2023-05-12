@@ -8,6 +8,7 @@
 .featureSvg {
   height: 144px;
   width: 144px;
+  fill: var(--fc-banner-background-color);
 }
 
 .featureName {
