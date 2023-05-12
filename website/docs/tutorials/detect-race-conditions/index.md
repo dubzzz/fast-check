@@ -58,3 +58,7 @@ To zoom in on what happened, we can summarize the issue with the help of this sm
 In other words, the issue occurred as the user performed two searches subsequently: one for 'London' followed immediately by one for 'Paris'. However, the response for 'Paris' (the second request) came back before the response for 'London' (the first request), and our component did not handle it properly. This delay in responses is expected from an API perspective. There could be multiple reasons for this behavior, such as queries not being routed to the same servers with one server being heavily utilized and resulting in longer response times.
 
 As we have seen in this simple example, race conditions are easy to create, as they only require two concurrent events, and can cause significant problems from a user's perspective. It is worth noting that the example we took for this section was only a visual glitch, but race conditions can have much more critical impacts than just a wrong display.
+
+:::tip How to solve them?
+This tutorial is designed to guide you in adding tests to your codebase, ensuring the absence race condition issues in the future. It will not directly focus on giving you keys to solve them. For more in-depth information on solving race conditions and useful techniques for identifying them outsite of tests, refer to the article ["Handling API request race conditions in React" by Sébastien Lorber](https://sebastienlorber.com/handling-api-request-race-conditions-in-react).
+:::
