@@ -13,6 +13,32 @@ import allContributors from './all-contributors.json';
 
 import styles from './index.module.css';
 
+function QuoteBlock(props) {
+  return (
+    <div className={styles.quoteBlock}>
+      <div className={styles.quoteBlockMessage}>
+        <a href={props.messageUrl} target="_blank" rel="noopener">
+          {props.message.split('\\n').map((line, index) => (
+            <React.Fragment key={index}>
+              {index !== 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
+        </a>
+      </div>
+      <div className={styles.quoteBlockAuthor}>
+        <a className={styles.avatar} href={props.profileUrl} target="_blank" rel="noopener noreferrer">
+          <img src={props.avatarUrl} alt={props.name} width={64} height={64} loading="lazy" />
+          <div className={styles.quoteBlockAuthorDetails}>
+            <div>{props.name}</div>
+            <div>{props.jobDescription}</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   return (
@@ -71,10 +97,62 @@ export default function Home() {
             </div>
           </div>
         </section>
+        {/*
+        https://twitter.com/andhaveaniceday/status/1643468822752677888?s=20
+        https://twitter.com/ssalbdivad/status/1643617544475901952?s=20
+        https://twitter.com/AndaristRake/status/1652267691472822273?s=20
+        https://twitter.com/ssalbdivad/status/1652672718381146114?s=20
+        https://twitter.com/calebjasik/status/1657527810766798852?s=20
+        */}
         <section className={styles.whiteBanner}>
           <div className={clsx('container', styles.subsectionContainer)}>
             <h2>They spread their love…</h2>
             <p>Kind messages spreading love around fast-check</p>
+            <div className={styles.allQuotes}>
+              <QuoteBlock
+                avatarUrl="https://github.com/jakebailey.png"
+                profileUrl="https://twitter.com/andhaveaniceday"
+                name="Jake Bailey"
+                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
+                messageUrl="https://twitter.com/andhaveaniceday/status/1643468822752677888?s=20"
+                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/jakebailey.png"
+                profileUrl="https://twitter.com/andhaveaniceday"
+                name="Jake Bailey"
+                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
+                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/jakebailey.png"
+                profileUrl="https://twitter.com/andhaveaniceday"
+                name="Jake Bailey"
+                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
+                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/jakebailey.png"
+                profileUrl="https://twitter.com/andhaveaniceday"
+                name="Jake Bailey"
+                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
+                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/jakebailey.png"
+                profileUrl="https://twitter.com/andhaveaniceday"
+                name="Jake Bailey"
+                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
+                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/jakebailey.png"
+                profileUrl="https://twitter.com/andhaveaniceday"
+                name="Jake Bailey"
+                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
+                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+              />
+            </div>
           </div>
         </section>
         <section className={styles.blueBanner}>

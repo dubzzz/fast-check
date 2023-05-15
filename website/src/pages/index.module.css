@@ -94,3 +94,72 @@
 .allSponsorsWrapper {
   align-self: center;
 }
+
+.allQuotes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 3em;
+}
+
+.quoteBlock {
+  display: flex;
+  flex-direction: column;
+  max-width: 512px;
+  border-radius: 0.5em;
+}
+
+.quoteBlock:hover {
+  background-color: rgba(0,0,0, 0.1);
+}
+
+.quoteBlockMessage {
+  position: relative;
+  margin-bottom: 1em;
+  border-left: 4px solid var(--fc-banner-background-color);
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.quoteBlockMessage a {
+  color: var(--ifm-font-color-base);
+}
+
+.quoteBlockMessage::before {
+  position: absolute;
+  left: 0;
+  top: -0.5em;
+  content: '“';
+  color: var(--fc-banner-background-color);
+  font-size: 5em;
+  opacity: 20%;
+}
+
+.quoteBlockMessage::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.8em;
+  content: '”';
+  color: var(--fc-banner-background-color);
+  font-size: 5em;
+  opacity: 20%;
+}
+
+.quoteBlockAuthor a {
+  display: flex;
+  flex-direction: row;
+  color: var(--fc-banner-background-color);
+}
+
+.quoteBlockAuthorDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  padding-left: 1em;
+}
+
+.quoteBlockAuthorDetails :first-child {
+  font-weight: bold;
+}
