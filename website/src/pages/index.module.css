@@ -25,6 +25,17 @@
   }
 }
 
+.taglineBadges {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.2em;
+}
+
+.taglineBadges a {
+  line-height: 20px;
+}
+
 .buttons {
   display: flex;
   align-items: center;
@@ -164,6 +175,10 @@
   padding-left: 1em;
 }
 
-.quoteBlockAuthorDetails :first-child {
+.quoteBlockAuthorDetails > :first-child {
   font-weight: bold;
+}
+
+.quoteBlockAuthorDetails b {
+  font-weight: 600; /* bold is 700 */
 }

@@ -42,7 +42,24 @@ function HomepageHeader() {
         <h1 className={clsx('hero__title', styles.mainTitle)}>
           <img src={logoDataUri} alt={siteConfig.title} className={styles.mainTitleLogo} width="570px" />
         </h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <p className="hero__subtitle">
+          {siteConfig.tagline}
+          <div className={styles.taglineBadges}>
+            <a href="https://www.npmjs.com/package/fast-check" target="_blank" rel="noopener">
+              <img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" height={20} loading="lazy" />
+            </a>
+            <a href="https://www.npmjs.com/package/fast-check" target="_blank" rel="noopener">
+              <img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" height={20} loading="lazy" />
+            </a>
+            <a href="https://github.com/dubzzz/fast-check/stargazers" target="_blank" rel="noopener">
+              <img
+                src="https://img.shields.io/github/stars/dubzzz/fast-check?style=social"
+                height={20}
+                loading="lazy"
+              />
+            </a>
+          </div>
+        </p>
         <div className={styles.buttons}>
           <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/">
             Quick Start - 5min ⏱️
@@ -69,11 +86,11 @@ export default function Home() {
             <p>These projects have been using fast-check for some time now and have found some issues thanks to it!</p>
             <div className={styles.trustUsLogos}>
               <a className={styles.trustUsSingleLogo} href="https://jestjs.io/" target="_blank" rel="noopener">
-                <img src={jestLogo} alt="Jest Logo" />
+                <img src={jestLogo} alt="Jest Logo" width={128} height={128} loading="lazy" />
                 <span>Jest</span>
               </a>
               <a className={styles.trustUsSingleLogo} href="https://jasmine.github.io/" target="_blank" rel="noopener">
-                <img src={jasmineLogo} alt="Jasmine Logo" />
+                <img src={jasmineLogo} alt="Jasmine Logo" width={128} height={128} loading="lazy" />
                 <span>Jasmine</span>
               </a>
               <a
@@ -82,11 +99,11 @@ export default function Home() {
                 target="_blank"
                 rel="noopener"
               >
-                <img src={fpTsLogo} alt="fp-ts Logo" />
+                <img src={fpTsLogo} alt="fp-ts Logo" width={128} height={128} loading="lazy" />
                 <span>fp-ts</span>
               </a>
               <a className={styles.trustUsSingleLogo} href="https://ramdajs.com/" target="_blank" rel="noopener">
-                <img src={ramdaLogo} alt="Ramda Logo" />
+                <img src={ramdaLogo} alt="Ramda Logo" width={128} height={128} loading="lazy" />
                 <span>Ramda</span>
               </a>
             </div>
@@ -148,7 +165,11 @@ export default function Home() {
                 name="Emilian Bold"
                 jobDescription={'Software engineer'}
                 messageUrl="https://twitter.com/emilianbold/status/1623036880555020300"
-                message={"@ndubien's fast-check is unit testing on steroids."}
+                message={
+                  <>
+                    <b>@ndubien</b>'s fast-check is unit testing on steroids.
+                  </>
+                }
               />
               <QuoteBlock
                 avatarUrl="https://github.com/jakebailey.png"
