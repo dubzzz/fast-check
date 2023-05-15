@@ -129,7 +129,7 @@ export default function Home() {
                 avatarUrl="https://github.com/abrgr.png"
                 profileUrl="https://twitter.com/abrgrBuilds"
                 name="Adam Berger"
-                jobDescription="Founder & CEO, Simply Stated"
+                jobDescription="Founder & CEO, Team Pando"
                 messageUrl="https://twitter.com/abrgrBuilds/status/1587817599001411592"
                 message="Wrote one property based test with @ndubien's fast check and immediately found & fixed 3 bugs. How is generative testing not mainstream yet?"
               />
