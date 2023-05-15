@@ -96,17 +96,21 @@
 }
 
 .allQuotes {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: 50% 50%;
   gap: 3em;
+}
+
+@media screen and (max-width: 996px) {
+  .allQuotes {
+    grid-template-columns: 100%;
+  }
 }
 
 .quoteBlock {
   display: flex;
   flex-direction: column;
-  max-width: 512px;
+  min-width: 512px;
   border-radius: 0.5em;
 }
 

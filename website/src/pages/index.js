@@ -118,20 +118,36 @@ export default function Home() {
                 message="fast-check is too good!"
               />
               <QuoteBlock
-                avatarUrl="https://github.com/jakebailey.png"
-                profileUrl="https://twitter.com/andhaveaniceday"
-                name="Jake Bailey"
-                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
-                messageUrl="https://twitter.com/andhaveaniceday/status/1643468822752677888?s=20"
-                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
-              />
-              <QuoteBlock
                 avatarUrl="https://github.com/ssalbdivad.png"
                 profileUrl="https://twitter.com/ssalbdivad"
                 name="David Blass"
                 messageUrl="https://twitter.com/ssalbdivad/status/1652672718381146114?s=20"
                 jobDescription="Full-time open source dev and author of @arktypeio, TypeScript's 1:1 validator optimized from editor to runtime⛵"
                 message="Can attest, it is awesome!🔥"
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/abrgr.png"
+                profileUrl="https://twitter.com/abrgrBuilds"
+                name="Adam Berger"
+                jobDescription="Founder & CEO, Simply Stated"
+                messageUrl="https://twitter.com/abrgrBuilds/status/1587817599001411592"
+                message="Wrote one property based test with @ndubien's fast check and immediately found & fixed 3 bugs. How is generative testing not mainstream yet?"
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/emilianbold.png"
+                profileUrl="https://twitter.com/emilianbold"
+                name="Emilian Bold"
+                jobDescription="Software engineer"
+                messageUrl="https://twitter.com/emilianbold/status/1623036880555020300"
+                message="@ndubien's fast-check is unit testing on steroids."
+              />
+              <QuoteBlock
+                avatarUrl="https://github.com/jakebailey.png"
+                profileUrl="https://twitter.com/andhaveaniceday"
+                name="Jake Bailey"
+                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
+                messageUrl="https://twitter.com/andhaveaniceday/status/1643468822752677888?s=20"
+                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
               />
               <QuoteBlock
                 avatarUrl="https://github.com/Andarist.png"
