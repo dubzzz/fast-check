@@ -66,7 +66,12 @@ const config = {
           { to: '/docs/tutorials/', label: 'All Tutorials' },
           //{ to: '/blog', label: 'Blog', position: 'right' },
           { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
-          { href: 'https://github.com/dubzzz/fast-check', label: 'GitHub', position: 'right' },
+          {
+            href: 'https://github.com/dubzzz/fast-check',
+            'aria-label': 'GitHub repository',
+            position: 'right',
+            className: 'header-github-link',
+          },
         ],
       },
       docs: {
