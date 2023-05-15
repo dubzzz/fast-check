@@ -206,7 +206,7 @@ export default function Home() {
               <a href="https://github.com/sponsors/dubzzz" target="_blank" rel="noopener">
                 GitHub Sponsors
               </a>{' '}
-              or
+              or{' '}
               <a href="https://opencollective.com/fast-check/contribute" target="_blank" rel="noopener">
                 OpenCollective
               </a>
