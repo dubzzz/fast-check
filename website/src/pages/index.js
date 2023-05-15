@@ -150,7 +150,7 @@ export default function Home() {
                 avatarUrl="https://github.com/abrgr.png"
                 profileUrl="https://twitter.com/abrgrBuilds"
                 name="Adam Berger"
-                jobDescription={'Founder & CEO, Team Pando'}
+                jobDescription={'♥️ Helping product teams build amazing products with Team Pando: your collaborative space for product requierments'}
                 messageUrl="https://twitter.com/abrgrBuilds/status/1587817599001411592"
                 message={
                   <>
