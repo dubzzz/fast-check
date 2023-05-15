@@ -25,10 +25,161 @@
   }
 }
 
+.taglineBadges {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.2em;
+}
+
+.taglineBadges a {
+  line-height: 20px;
+}
+
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.blueBanner {
+  padding: 2rem 0;
+  width: 100%;
+  color: var(--ifm-font-color-base-inverse);
+  background-color: var(--fc-banner-background-color);
+}
+
+.whiteBanner {
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.subsectionContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.subsectionContainer h2 {
+  margin-bottom: 0;
+}
+
+.trustUsLogos {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 4em;
+  max-width: 1024px;
+}
+
+.trustUsLogos a {
+  color: var(--ifm-font-color-base-inverse);
+  font-weight: bold;
+}
+
+.trustUsSingleLogo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.trustUsSingleLogo img {
+  width: 128px;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0 0.5em;
+}
+
+.avatar img {
+  border: 2px solid var(--ifm-font-color-base-inverse);
+  border-radius: 64px;
+}
+
+.allSponsorsWrapper {
+  align-self: center;
+}
+
+.allQuotes {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 3em;
+}
+
+@media screen and (max-width: 996px) {
+  .allQuotes {
+    grid-template-columns: 100%;
+  }
+}
+
+.quoteBlock {
+  display: flex;
+  flex-direction: column;
+  min-width: 512px;
+  border-radius: 0.5em;
+}
+
+.quoteBlock:hover {
+  background-color: rgba(40, 46, 169, 0.1);
+}
+
+.quoteBlockMessage {
+  position: relative;
+  margin-bottom: 1em;
+  border-left: 4px solid var(--fc-banner-background-color);
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.quoteBlockMessage a {
+  color: var(--ifm-font-color-base);
+}
+
+.quoteBlockMessage::before {
+  position: absolute;
+  left: 0;
+  top: -0.5em;
+  content: '“';
+  color: var(--fc-banner-background-color);
+  font-size: 5em;
+  opacity: 20%;
+}
+
+.quoteBlockMessage::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.8em;
+  content: '”';
+  color: var(--fc-banner-background-color);
+  font-size: 5em;
+  opacity: 20%;
+}
+
+.quoteBlockAuthor a {
+  display: flex;
+  flex-direction: row;
+  color: var(--fc-banner-background-color);
+}
+
+.quoteBlockAuthorDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  padding-left: 1em;
+}
+
+.quoteBlockAuthorDetails > :first-child {
+  font-weight: bold;
+}
+
+.quoteBlockAuthorDetails b {
+  font-weight: 600; /* bold is 700 */
 }
