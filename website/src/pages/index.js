@@ -109,13 +109,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-        {/*
-        https://twitter.com/andhaveaniceday/status/1643468822752677888?s=20
-        https://twitter.com/ssalbdivad/status/1643617544475901952?s=20
-        https://twitter.com/AndaristRake/status/1652267691472822273?s=20
-        https://twitter.com/ssalbdivad/status/1652672718381146114?s=20
-        https://twitter.com/calebjasik/status/1657527810766798852?s=20
-        */}
         <section className={styles.whiteBanner}>
           <div className={clsx('container', styles.subsectionContainer)}>
             <h2>They spread their love…</h2>
@@ -150,7 +143,9 @@ export default function Home() {
                 avatarUrl="https://github.com/abrgr.png"
                 profileUrl="https://twitter.com/abrgrBuilds"
                 name="Adam Berger"
-                jobDescription={'♥️ Helping product teams build amazing products with Team Pando: your collaborative space for product requierments'}
+                jobDescription={
+                  '♥️ Helping product teams build amazing products with Team Pando: your collaborative space for product requierments'
+                }
                 messageUrl="https://twitter.com/abrgrBuilds/status/1587817599001411592"
                 message={
                   <>
