@@ -118,39 +118,20 @@ export default function Home() {
                 message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
               />
               <QuoteBlock
-                avatarUrl="https://github.com/jakebailey.png"
-                profileUrl="https://twitter.com/andhaveaniceday"
-                name="Jake Bailey"
-                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
-                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+                avatarUrl="https://github.com/ssalbdivad.png"
+                profileUrl="https://twitter.com/ssalbdivad"
+                name="David Blass"
+                messageUrl="https://twitter.com/ssalbdivad/status/1652672718381146114?s=20"
+                jobDescription="Full-time open source dev and author of @arktypeio, TypeScript's 1:1 validator optimized from editor to runtime⛵"
+                message="Can attest, it is awesome!🔥"
               />
               <QuoteBlock
-                avatarUrl="https://github.com/jakebailey.png"
-                profileUrl="https://twitter.com/andhaveaniceday"
-                name="Jake Bailey"
-                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
-                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
-              />
-              <QuoteBlock
-                avatarUrl="https://github.com/jakebailey.png"
-                profileUrl="https://twitter.com/andhaveaniceday"
-                name="Jake Bailey"
-                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
-                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
-              />
-              <QuoteBlock
-                avatarUrl="https://github.com/jakebailey.png"
-                profileUrl="https://twitter.com/andhaveaniceday"
-                name="Jake Bailey"
-                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
-                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
-              />
-              <QuoteBlock
-                avatarUrl="https://github.com/jakebailey.png"
-                profileUrl="https://twitter.com/andhaveaniceday"
-                name="Jake Bailey"
-                jobDescription="Senior Software Engineer at Microsoft working on @typescript"
-                message="So, TypeScript has had a small epidemic of crashes (both my fault 😅), both were very annoying to find and minimize.\n\nI added a fast-check unittest to fuzz the parser and in seconds it found the same bug."
+                avatarUrl="https://github.com/Andarist.png"
+                profileUrl="https://twitter.com/AndaristRake"
+                name="Mateusz Burzyński"
+                jobDescription="programmer but also a little bit of code-poet wannabe, maintaining XState, Emotion, redux-saga & more, OSS enthusiast, working at @statelyai"
+                messageUrl="https://twitter.com/AndaristRake/status/1652267691472822273?s=20"
+                message="Looks awesome, i need to finally try this out in practice"
               />
             </div>
           </div>
