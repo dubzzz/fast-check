@@ -138,7 +138,7 @@ export default function Home() {
         </section>
         <section className={styles.blueBanner}>
           <div className={clsx('container', styles.subsectionContainer)}>
-            <h2>They contributed to the project…</h2>
+            <h2>They contribute to the project…</h2>
             <p>People involved at some point in the development of fast-check</p>
             <div className={styles.avatarSection}>
               {allContributors.contributors.map((contributor) => (
