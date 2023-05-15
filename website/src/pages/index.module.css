@@ -32,3 +32,65 @@
   flex-direction: column;
   gap: 0.25rem;
 }
+
+.blueBanner {
+  padding: 2rem 0;
+  width: 100%;
+  color: var(--ifm-font-color-base-inverse);
+  background-color: var(--fc-banner-background-color);
+}
+
+.whiteBanner {
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.subsectionContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.subsectionContainer h2 {
+  margin-bottom: 0;
+}
+
+.trustUsLogos {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 4em;
+  max-width: 1024px;
+}
+
+.trustUsLogos a {
+  color: var(--ifm-font-color-base-inverse);
+  font-weight: bold;
+}
+
+.trustUsSingleLogo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.trustUsSingleLogo img {
+  width: 128px;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0 0.5em;
+}
+
+.avatar img {
+  border: 2px solid var(--ifm-font-color-base-inverse);
+  border-radius: 64px;
+}
+
+.allSponsorsWrapper {
+  align-self: center;
+}
