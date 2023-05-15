@@ -110,7 +110,7 @@ export default function Home() {
             <p>Kind messages spreading love around fast-check</p>
             <div className={styles.allQuotes}>
               <QuoteBlock
-                avatarUrl="https://github.com/tomer.png"
+                avatarUrl="https://github.com/TomerAberbach.png"
                 profileUrl="https://twitter.com/TomerAberbach"
                 name="Tomer Aberbach"
                 jobDescription="Working on @Google Docs"
