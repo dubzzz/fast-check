@@ -1,3 +1,12 @@
+# 0.0.6
+
+_Add logo on the README_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.5...worker%2Fv0.0.6)]
+
+## Fixes
+
+- ([PR#3870](https://github.com/dubzzz/fast-check/pull/3870)) Doc: Add worker logo url
+
 # 0.0.5
 
 _Attach provenance to the packages_

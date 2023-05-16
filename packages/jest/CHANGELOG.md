@@ -1,3 +1,12 @@
+# 1.6.2
+
+_Update URL of the logo_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.6.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.6.1...jest%2Fv1.6.2)]
+
+## Fixes
+
+- ([PR#3868](https://github.com/dubzzz/fast-check/pull/3868)) Doc: Update logo url
+
 # 1.6.1
 
 _Attach provenance to the packages_

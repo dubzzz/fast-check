@@ -1,3 +1,34 @@
+# 3.8.2
+
+_Rework documentation_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.8.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.1...v3.8.2)]
+
+## Fixes
+
+- ([PR#3780](https://github.com/dubzzz/fast-check/pull/3780)) CI: Do not relaunch build on new tag
+- ([PR#3792](https://github.com/dubzzz/fast-check/pull/3792)) CI: Remove parse5 when checking types
+- ([PR#3804](https://github.com/dubzzz/fast-check/pull/3804)) CI: Build documentation with LFS enabled
+- ([PR#3800](https://github.com/dubzzz/fast-check/pull/3800)) Doc: Add "advanced" part of the documentation
+- ([PR#3803](https://github.com/dubzzz/fast-check/pull/3803)) Doc: Update our-first-property-based-test.md: typo, punctuation
+- ([PR#3828](https://github.com/dubzzz/fast-check/pull/3828)) Doc: Fix typos in docs
+- ([PR#3820](https://github.com/dubzzz/fast-check/pull/3820)) Doc: First iteration on race conditions tutorial
+- ([PR#3834](https://github.com/dubzzz/fast-check/pull/3834)) Doc: Rework intro of race condition tutorial
+- ([PR#3836](https://github.com/dubzzz/fast-check/pull/3836)) Doc: Merge category and intro for race condition
+- ([PR#3837](https://github.com/dubzzz/fast-check/pull/3837)) Doc: Replace categories by real pages
+- ([PR#3838](https://github.com/dubzzz/fast-check/pull/3838)) Doc: Add video explaining race condition in UI
+- ([PR#3842](https://github.com/dubzzz/fast-check/pull/3842)) Doc: Note about solving race conditions
+- ([PR#3843](https://github.com/dubzzz/fast-check/pull/3843)) Doc: Better colors for dark theme
+- ([PR#3850](https://github.com/dubzzz/fast-check/pull/3850)) Doc: Points to projects in our ecosystem
+- ([PR#3852](https://github.com/dubzzz/fast-check/pull/3852)) Doc: List some bugs found thanks to fast-check
+- ([PR#3860](https://github.com/dubzzz/fast-check/pull/3860)) Doc: Use GitHub logo instead of label
+- ([PR#3858](https://github.com/dubzzz/fast-check/pull/3858)) Doc: Rework homepage page of fast-check.dev
+- ([PR#3863](https://github.com/dubzzz/fast-check/pull/3863)) Doc: Rework display of the homepage for small screens
+- ([PR#3864](https://github.com/dubzzz/fast-check/pull/3864)) Doc: Properly display the quick nav buttons
+- ([PR#3871](https://github.com/dubzzz/fast-check/pull/3871)) Doc: Update all links to new documentation
+- ([PR#3867](https://github.com/dubzzz/fast-check/pull/3867)) Doc: Create proper images in website/
+- ([PR#3872](https://github.com/dubzzz/fast-check/pull/3872)) Doc: Reference image from LFS in README
+- ([PR#3835](https://github.com/dubzzz/fast-check/pull/3835)) Test: Add tests for snippets in the website
+
 # 3.8.1
 
 _New website for the documentation_

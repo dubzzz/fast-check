@@ -1,3 +1,12 @@
+# 1.1.5
+
+_Update URL of the logo_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.5)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.4...ava%2Fv1.1.5)]
+
+## Fixes
+
+- ([PR#3866](https://github.com/dubzzz/fast-check/pull/3866)) Doc: Update logo url
+
 # 1.1.4
 
 _Attach provenance to the packages_

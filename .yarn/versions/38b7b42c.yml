@@ -1,5 +1,0 @@
-releases:
-  "@fast-check/poisoning": patch
-
-declined:
-  - fast-check

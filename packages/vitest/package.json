@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/vitest",
   "description": "Property based testing for Vitest based on fast-check",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "commonjs",
   "main": "lib/vitest-fast-check.js",
   "exports": {

@@ -1,3 +1,12 @@
+# 0.0.6
+
+_Update URL of the logo_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.5...vitest%2Fv0.0.6)]
+
+## Fixes
+
+- ([PR#3869](https://github.com/dubzzz/fast-check/pull/3869)) Doc: Update logo url
+
 # 0.0.5
 
 _Attach provenance to the packages_
