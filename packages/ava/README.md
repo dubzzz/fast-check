@@ -1,6 +1,6 @@
 # `@fast-check/ava`
 
-![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/packages/fast-check/documentation/images/logo.png)
+![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/website/static/img/logo.png)
 
 Bring the power of property based testing framework `fast-check` into AVA.
 `@fast-check/ava` simplifies the integration of `fast-check` into AVA testing framework.
@@ -41,7 +41,7 @@ The property is passed [AVA's `t` argument](https://github.com/avajs/ava/blob/ma
 
 ### `fast-check` Parameters
 
-`testProp` accepts an optional `fc.Parameters` for forwarding custom parameters to `fast-check` ([more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Runners.md#runners)).
+`testProp` accepts an optional `fc.Parameters` for forwarding custom parameters to `fast-check` ([more](https://fast-check.dev/docs/core-blocks/runners/#assert)).
 
 ```typescript
 import { testProp, fc } from '@fast-check/ava';
