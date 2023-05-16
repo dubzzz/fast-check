@@ -3,5 +3,5 @@
   "name": "API Reference | fast-check | Property based testing framework",
   "readme": "none",
   "theme": "default",
-  "customCss": "documentation/css/typedoc.css"
+  "customCss": "typedoc.css"
 }
