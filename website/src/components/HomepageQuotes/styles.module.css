@@ -4,17 +4,21 @@
   gap: 3em;
 }
 
-@media screen and (max-width: 996px) {
-  .allQuotes {
-    grid-template-columns: 100%;
-  }
-}
-
 .quoteBlock {
   display: flex;
   flex-direction: column;
   min-width: 512px;
   border-radius: 0.5em;
+}
+
+@media screen and (max-width: 996px) {
+  .allQuotes {
+    grid-template-columns: 100%;
+  }
+  .quoteBlock {
+    min-width: unset;
+    flex-wrap: wrap;
+  }
 }
 
 .quoteBlock:hover {

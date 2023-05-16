@@ -49,7 +49,7 @@
     no-repeat;
 }
 
-@media (max-width: 996px) {
+@media screen and (max-width: 996px) {
   .header-github-link::after {
     content: 'GitHub';
     padding-left: 0.2em;
