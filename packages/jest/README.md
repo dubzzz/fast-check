@@ -1,6 +1,6 @@
 # `@fast-check/jest`
 
-![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/packages/fast-check/documentation/images/logo.png)
+![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/website/static/img/logo.png)
 
 Bring the power of property based testing framework `fast-check` into Jest.
 `@fast-check/jest` simplifies the integration of `fast-check` into Jest testing framework.
@@ -54,7 +54,7 @@ Please note that the properties accepted by `@fast-check/jest` as input can eith
 
 ### Support for variations of `test` and `it`
 
-If you want to forward custom parameters to `fast-check`, `test.prop` and its variants accept an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Runners.md#runners)).
+If you want to forward custom parameters to `fast-check`, `test.prop` and its variants accept an optional `fc.Parameters` ([more](https://fast-check.dev/docs/core-blocks/runners/#assert)).
 
 `@fast-check/jest` also comes with support for `.only`, `.skip`, `.todo` and `.concurrent` from `jest`. It also accepts more complex ones such as `.concurrent.failing` or `.concurrent.only.failing`.
 
