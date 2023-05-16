@@ -2,12 +2,6 @@ import * as fs from 'fs';
 import fc from '../../../src/fast-check';
 import { globSync } from 'glob';
 
-// For ES Modules:
-//import { dirname } from 'path';
-//import { fileURLToPath } from 'url';
-//const __filename = fileURLToPath(import.meta.url);
-//const __dirname = dirname(__filename);
-
 const TargetNumExamples = 5;
 const JsBlockStart = '```js';
 const JsBlockEnd = '```';
@@ -24,41 +18,41 @@ const allPathsFromWebsite = globSync(`../../website/docs/core-blocks/arbitraries
 }));
 
 describe('Docs.md', () => {
-  it.each([
-    { filePath: `${__dirname}/../../../documentation/Arbitraries.md`, shortName: 'Arbitrary.md' },
-    ...allPathsFromWebsite,
-  ])('should check code snippets validity and fix generated values on $shortName', ({ filePath }) => {
-    const originalFileContent = fs.readFileSync(filePath).toString();
-    const { content: fileContent } = refreshContent(originalFileContent);
+  it.each(allPathsFromWebsite)(
+    'should check code snippets validity and fix generated values on $shortName',
+    ({ filePath }) => {
+      const originalFileContent = fs.readFileSync(filePath).toString();
+      const { content: fileContent } = refreshContent(originalFileContent);
 
-    if (Number(process.versions.node.split('.')[0]) < 12) {
-      // There were some updates regarding how to stringify invalid surrogate pairs
-      // between node 10 and node 12 with JSON.stringify.
-      // It directly impacts fc.stringify.
-      //
-      // In node 10: JSON.stringify("\udff5") === '"\udff5"'
-      // In node 12: JSON.stringify("\udff5") === '"\\udff5"'
-      // You may try with: JSON.stringify("\udff5").split('').map(c => c.charCodeAt(0).toString(16))
+      if (Number(process.versions.node.split('.')[0]) < 12) {
+        // There were some updates regarding how to stringify invalid surrogate pairs
+        // between node 10 and node 12 with JSON.stringify.
+        // It directly impacts fc.stringify.
+        //
+        // In node 10: JSON.stringify("\udff5") === '"\udff5"'
+        // In node 12: JSON.stringify("\udff5") === '"\\udff5"'
+        // You may try with: JSON.stringify("\udff5").split('').map(c => c.charCodeAt(0).toString(16))
 
-      console.warn(`Unable to properly check code snippets defined in the documentation...`);
+        console.warn(`Unable to properly check code snippets defined in the documentation...`);
 
-      const sanitize = (s: string) => s.replace(/(\\)(u[0-9a-f]{4})/g, (c) => JSON.parse('"' + c + '"'));
-      expect(sanitize(fileContent)).toEqual(sanitize(originalFileContent));
+        const sanitize = (s: string) => s.replace(/(\\)(u[0-9a-f]{4})/g, (c) => JSON.parse('"' + c + '"'));
+        expect(sanitize(fileContent)).toEqual(sanitize(originalFileContent));
 
-      if (process.env.UPDATE_CODE_SNIPPETS) {
-        throw new Error('You must use a more recent release of node to update code snippets (>=12)');
+        if (process.env.UPDATE_CODE_SNIPPETS) {
+          throw new Error('You must use a more recent release of node to update code snippets (>=12)');
+        }
+        return;
       }
-      return;
-    }
 
-    if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
-      console.warn(`Updating code snippets defined in the documentation...`);
-      fs.writeFileSync(filePath, fileContent);
+      if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
+        console.warn(`Updating code snippets defined in the documentation...`);
+        fs.writeFileSync(filePath, fileContent);
+      }
+      if (!process.env.UPDATE_CODE_SNIPPETS) {
+        expect(fileContent).toEqual(originalFileContent);
+      }
     }
-    if (!process.env.UPDATE_CODE_SNIPPETS) {
-      expect(fileContent).toEqual(originalFileContent);
-    }
-  });
+  );
 });
 
 // Helpers
