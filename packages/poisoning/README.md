@@ -1,5 +1,7 @@
 # `@fast-check/poisoning`
 
+![fast-check logo](https://media.githubusercontent.com/media/dubzzz/fast-check/main/website/static/img/logo.png)
+
 Set of utilities to ease detection and revert of poisoning
 
 <a href="https://badge.fury.io/js/@fast-check%2Fpoisoning"><img src="https://badge.fury.io/js/@fast-check%2Fpoisoning.svg" alt="npm version" /></a>
