@@ -11,7 +11,7 @@ The story of fast-check's documentation: from markdown files accessible in the r
 
 ## Story
 
-The concept of creating a dedicated website for the fast-check project has been on the radar since day one. In this section, we will dig into the different stages of our documentation journey, starting from the early days when fast-check was a niche project, all the way to its current state where it reaches [nearly 1 million monthly downloads on npmjs](<(https://www.npmjs.com/package/fast-check)>).
+The concept of creating a dedicated website for the fast-check project has been on the radar since day one. In this section, we will dig into the different stages of our documentation journey, starting from the early days when fast-check was a niche project, all the way to its current state where it reaches [nearly 1 million monthly downloads on npmjs](https://www.npmjs.com/package/fast-check).
 
 ### Bring adoption
 
@@ -87,7 +87,7 @@ But behind the scene what makes it so powerful is rather how simple it is to use
 
 Each comes with its set of complexities so having them preconfigured significantly simplifies the process of launching a documentation website. With Docusaurus, there is no need to concern yourself with routing, markdown reading, or any other common choice. They have been thoughtfully made for you, while still providing ample flexibility to tailor the documentation to your specific needs.
 
-And among all the exciting capabilities, I'm happy to be able to offer live playgrounds directly in the documentation. It makes us able to offer tutorials offering users with the ability to directly try the framework without leaving the documentation. You can experiment this new experience on [this tutorial about detection of race conditions](/tutorials/detect-race-conditions/).
+And among all the exciting capabilities, I'm happy to be able to offer live playgrounds directly in the documentation. It makes us able to offer tutorials offering users with the ability to directly try the framework without leaving the documentation. You can experiment this new experience on [this tutorial about detection of race conditions](/docs/tutorials/detect-race-conditions/).
 
 ### Recommendations
 
