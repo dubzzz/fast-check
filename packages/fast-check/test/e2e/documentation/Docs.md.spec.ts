@@ -2,12 +2,6 @@ import * as fs from 'fs';
 import fc from '../../../src/fast-check';
 import { globSync } from 'glob';
 
-// For ES Modules:
-//import { dirname } from 'path';
-//import { fileURLToPath } from 'url';
-//const __filename = fileURLToPath(import.meta.url);
-//const __dirname = dirname(__filename);
-
 const TargetNumExamples = 5;
 const JsBlockStart = '```js';
 const JsBlockEnd = '```';
