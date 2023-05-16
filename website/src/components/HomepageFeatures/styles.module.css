@@ -5,6 +5,27 @@
   width: 100%;
 }
 
+.allFeatureCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 3em;
+}
+
+.featureCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media screen and (max-width: 996px) {
+  .allFeatureCards {
+    grid-template-columns: 100%;
+  }
+  .featureCard {
+    flex-direction: row;
+  }
+}
+
 .featureSvg {
   fill: var(--fc-banner-background-color);
 }

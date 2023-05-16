@@ -8,7 +8,7 @@
 .docusaurus
 .cache-loader
 generated-tests
-src/pages/all-contributors.json
+src/components/HomepageContributors/all-contributors.json
 
 # Misc
 .DS_Store

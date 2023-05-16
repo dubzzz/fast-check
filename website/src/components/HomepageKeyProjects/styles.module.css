@@ -1,0 +1,24 @@
+.trustUsLogos {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 4em;
+  max-width: 1024px;
+}
+
+.trustUsLogos a {
+  color: var(--ifm-font-color-base-inverse);
+  font-weight: bold;
+}
+
+.trustUsSingleLogo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.trustUsSingleLogo img {
+  width: 128px;
+}

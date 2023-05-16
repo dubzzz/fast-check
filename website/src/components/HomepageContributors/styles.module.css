@@ -1,0 +1,12 @@
+.avatarSection {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0 0.5em;
+}
+
+.avatar img {
+  border: 2px solid var(--ifm-font-color-base-inverse);
+  border-radius: 64px;
+}
