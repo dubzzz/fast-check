@@ -32,10 +32,12 @@ export default function HomepageHeader() {
             </a>
           </div>
         </p>
-        <div className={styles.quickNavigationButtons}>
-          <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/">
-            Quick Start - 5min ⏱️
-          </Link>
+        <div>
+          <div className={styles.quickNavigationButtons}>
+            <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/">
+              Quick Start - 5min ⏱️
+            </Link>
+          </div>
         </div>
       </div>
     </header>
