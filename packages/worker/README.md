@@ -1,5 +1,7 @@
 # `@fast-check/worker`
 
+![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/website/static/img/logo.png)
+
 Provide built-ins to run predicates directly within dedicated workers
 
 <a href="https://badge.fury.io/js/@fast-check%2Fworker"><img src="https://badge.fury.io/js/@fast-check%2Fworker.svg" alt="npm version" /></a>
