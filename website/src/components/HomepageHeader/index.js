@@ -26,6 +26,7 @@ export default function HomepageHeader() {
             <a href="https://github.com/dubzzz/fast-check/stargazers" target="_blank" rel="noopener">
               <img
                 src="https://img.shields.io/github/stars/dubzzz/fast-check?style=social"
+                alt="number of stars"
                 height={20}
                 loading="lazy"
               />
