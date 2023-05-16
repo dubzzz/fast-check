@@ -64,7 +64,7 @@ const config = {
           { to: '/docs/introduction/', label: 'Documentation' },
           { to: '/docs/tutorials/quick-start/', label: 'Quick Start' },
           { to: '/docs/tutorials/', label: 'All Tutorials' },
-          //{ to: '/blog', label: 'Blog', position: 'right' },
+          { to: '/blog', label: 'Blog', position: 'right' },
           { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
           {
             href: 'https://github.com/dubzzz/fast-check',
@@ -100,7 +100,7 @@ const config = {
           {
             title: 'More',
             items: [
-              //{ label: 'Blog', to: '/blog' },
+              { label: 'Blog', to: '/blog' },
               { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
               { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             ],
