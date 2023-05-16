@@ -1,0 +1,20 @@
+.blueBanner {
+  padding: 2rem 0;
+  width: 100%;
+  color: var(--ifm-font-color-base-inverse);
+  background-color: var(--fc-banner-background-color);
+}
+
+.whiteBanner {
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.subsectionContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.subsectionContainer h2 {
+  margin-bottom: 0;
+}

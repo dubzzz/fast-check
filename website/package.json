@@ -3,8 +3,8 @@
   "name": "website",
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "cp ../.all-contributorsrc src/pages/all-contributors.json && docusaurus start",
-    "build": "cp ../.all-contributorsrc src/pages/all-contributors.json && docusaurus build",
+    "start": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && docusaurus start",
+    "build": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",

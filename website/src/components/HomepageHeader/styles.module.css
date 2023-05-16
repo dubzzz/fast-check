@@ -1,0 +1,40 @@
+.heroBanner {
+  padding: 3rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--fc-banner-background-color);
+}
+
+.mainTitle {
+  margin-bottom: 0px;
+}
+
+.mainTitleLogo {
+  max-width: '100%';
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.subTitle .taglineBadges {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.2em;
+}
+
+.subTitle .taglineBadges a {
+  line-height: 20px;
+}
+
+.quickNavigationButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.25rem;
+}
