@@ -1,3 +1,16 @@
+# 0.0.7
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.6...poisoning%2Fv0.0.7)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3873](https://github.com/dubzzz/fast-check/pull/3873)) Doc: Add poisoning logo url
+
 # 0.0.6
 
 _Attach provenance to the packages_
