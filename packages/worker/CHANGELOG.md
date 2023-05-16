@@ -1,11 +1,7 @@
 # 0.0.6
 
-_TODO Description_
+_Add logo on the README_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.5...worker%2Fv0.0.6)]
-
-## Features
-
-
 
 ## Fixes
 

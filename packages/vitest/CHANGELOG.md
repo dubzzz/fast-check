@@ -1,11 +1,7 @@
 # 0.0.6
 
-_TODO Description_
+_Update URL of the logo_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.6)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.5...vitest%2Fv0.0.6)]
-
-## Features
-
-
 
 ## Fixes
 

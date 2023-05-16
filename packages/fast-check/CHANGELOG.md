@@ -1,11 +1,7 @@
 # 3.8.2
 
-_TODO Description_
+_Rework documentation_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.8.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.1...v3.8.2)]
-
-## Features
-
-
 
 ## Fixes
 

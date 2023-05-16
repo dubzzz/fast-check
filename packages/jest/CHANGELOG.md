@@ -1,11 +1,7 @@
 # 1.6.2
 
-_TODO Description_
+_Update URL of the logo_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.6.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.6.1...jest%2Fv1.6.2)]
-
-## Features
-
-
 
 ## Fixes
 

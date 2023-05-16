@@ -48,10 +48,10 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
   "dependencies": {
-    "fast-check": "^3.8.2"
+    "fast-check": "^3.0.0"
   },
   "peerDependencies": {
-    "@fast-check/worker": "~0.0.6",
+    "@fast-check/worker": "~0.0.1",
     "@jest/expect": ">=28.0.0",
     "@jest/globals": ">=25.5.2"
   },

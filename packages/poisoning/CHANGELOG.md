@@ -1,11 +1,7 @@
 # 0.0.7
 
-_TODO Description_
+_Add logo on the README_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.6...poisoning%2Fv0.0.7)]
-
-## Features
-
-
 
 ## Fixes
 

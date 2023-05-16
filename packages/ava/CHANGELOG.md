@@ -1,11 +1,7 @@
 # 1.1.5
 
-_TODO Description_
+_Update URL of the logo_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.5)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.4...ava%2Fv1.1.5)]
-
-## Features
-
-
 
 ## Fixes
 
