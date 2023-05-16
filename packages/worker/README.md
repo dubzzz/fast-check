@@ -1,6 +1,6 @@
 # `@fast-check/worker`
 
-![fast-check logo](https://raw.githubusercontent.com/dubzzz/fast-check/main/website/static/img/logo.png)
+![fast-check logo](https://media.githubusercontent.com/media/dubzzz/fast-check/main/website/static/img/logo.png)
 
 Provide built-ins to run predicates directly within dedicated workers
 
