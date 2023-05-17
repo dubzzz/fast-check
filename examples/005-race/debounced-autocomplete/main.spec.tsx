@@ -73,7 +73,7 @@ describe('DebouncedAutocomplete', () => {
 
             // Act
             render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
-            s.scheduleSequence(
+            const { task } = s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
                 builder: async () =>
@@ -82,6 +82,7 @@ describe('DebouncedAutocomplete', () => {
                   }),
               }))
             );
+            await s.waitFor(task);
             await s.waitAll();
 
             // Assert
