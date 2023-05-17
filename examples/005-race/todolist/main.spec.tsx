@@ -14,7 +14,7 @@ describe('TodoList', () => {
     await fc.assert(
       fc
         .asyncProperty(
-          fc.scheduler({ act }),
+          fc.scheduler(),
           TodoListCommands,
           fc.uniqueArray(
             fc.record({ id: fc.hexaString({ minLength: 8, maxLength: 8 }), label: fc.string(), checked: fc.boolean() }),
@@ -36,9 +36,10 @@ describe('TodoList', () => {
         )
         .beforeEach(async () => {
           await cleanup();
-        })
+        }),
+      { interruptAfterTimeLimit: 20000, verbose: 2 }
     );
-  });
+  }, 30000);
 });
 
 // Helpers
@@ -55,67 +56,79 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
   let lastIdx = 0;
   let allTodos = [...initialTodos];
 
-  const fetchAllTodos = s.scheduleFunction(async function fetchAllTodos(): Promise<{
-    status: 'success';
-    response: ApiTodoItem[];
-  }> {
-    return { status: 'success', response: allTodos.slice() };
-  });
+  const fetchAllTodos = s.scheduleFunction(
+    async function fetchAllTodos(): Promise<{
+      status: 'success';
+      response: ApiTodoItem[];
+    }> {
+      return { status: 'success', response: allTodos.slice() };
+    },
+    { act }
+  );
 
-  const addTodo = s.scheduleFunction(async function addTodo(label: string): Promise<
-    | {
-        status: 'success';
-        response: ApiTodoItem;
+  const addTodo = s.scheduleFunction(
+    async function addTodo(label: string): Promise<
+      | {
+          status: 'success';
+          response: ApiTodoItem;
+        }
+      | { status: 'error' }
+    > {
+      const newTodo = {
+        id: `${Math.random().toString(16).substring(2)}-${++lastIdx}`,
+        label,
+        checked: false,
+      };
+      if (allFailures.next().value) {
+        return { status: 'error' };
       }
-    | { status: 'error' }
-  > {
-    const newTodo = {
-      id: `${Math.random().toString(16).substring(2)}-${++lastIdx}`,
-      label,
-      checked: false,
-    };
-    if (allFailures.next().value) {
-      return { status: 'error' };
-    }
-    allTodos.push(newTodo);
-    return { status: 'success', response: newTodo };
-  });
+      allTodos.push(newTodo);
+      return { status: 'success', response: newTodo };
+    },
+    { act }
+  );
 
-  const toggleTodo = s.scheduleFunction(async function toggleTodo(id: string): Promise<
-    | {
-        status: 'success';
-        response: ApiTodoItem;
+  const toggleTodo = s.scheduleFunction(
+    async function toggleTodo(id: string): Promise<
+      | {
+          status: 'success';
+          response: ApiTodoItem;
+        }
+      | { status: 'error' }
+    > {
+      const foundTodo = allTodos.find((t) => t.id === id);
+      if (!foundTodo || allFailures.next().value) {
+        return { status: 'error' };
       }
-    | { status: 'error' }
-  > {
-    const foundTodo = allTodos.find((t) => t.id === id);
-    if (!foundTodo || allFailures.next().value) {
-      return { status: 'error' };
-    }
-    allTodos = allTodos.map((t) => {
-      if (t.id !== id) return t;
-      return { id, label: t.label, checked: !t.checked };
-    });
-    return { status: 'success', response: { ...foundTodo, checked: !foundTodo.checked } };
-  });
+      allTodos = allTodos.map((t) => {
+        if (t.id !== id) return t;
+        return { id, label: t.label, checked: !t.checked };
+      });
+      return { status: 'success', response: { ...foundTodo, checked: !foundTodo.checked } };
+    },
+    { act }
+  );
 
-  const removeTodo = s.scheduleFunction(async function removeTodo(id: string): Promise<
-    | {
-        status: 'success';
-        response: ApiTodoItem;
+  const removeTodo = s.scheduleFunction(
+    async function removeTodo(id: string): Promise<
+      | {
+          status: 'success';
+          response: ApiTodoItem;
+        }
+      | { status: 'error' }
+    > {
+      const foundTodo = allTodos.find((t) => t.id === id);
+      if (!foundTodo || allFailures.next().value) {
+        return { status: 'error' };
       }
-    | { status: 'error' }
-  > {
-    const foundTodo = allTodos.find((t) => t.id === id);
-    if (!foundTodo || allFailures.next().value) {
-      return { status: 'error' };
-    }
-    allTodos = allTodos.filter((t) => {
-      if (t.id !== id) return true;
-      return false;
-    });
-    return { status: 'success', response: foundTodo };
-  });
+      allTodos = allTodos.filter((t) => {
+        if (t.id !== id) return true;
+        return false;
+      });
+      return { status: 'success', response: foundTodo };
+    },
+    { act }
+  );
 
   return {
     mockedApi: {

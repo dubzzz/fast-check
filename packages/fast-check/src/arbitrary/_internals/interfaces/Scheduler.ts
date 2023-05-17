@@ -15,7 +15,8 @@ export interface Scheduler<TMetaData = unknown> {
    * @remarks Since 1.20.0
    */
   scheduleFunction: <TArgs extends any[], T>(
-    asyncFunction: (...args: TArgs) => Promise<T>
+    asyncFunction: (...args: TArgs) => Promise<T>,
+    options?: { act: (f: () => Promise<void>) => Promise<unknown> }
   ) => (...args: TArgs) => Promise<T>;
 
   /**

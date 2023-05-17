@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { RenderResult, fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 export type TodolistModel = {
   todos: { label: string; checked: boolean }[];
@@ -25,10 +26,10 @@ export const listTodos = async (): Promise<ExtractedTodoItem[]> => {
     const toggleHtmlElement = dom.getElementsByTagName('input')[0];
     const removeHtmlElement = dom.getElementsByTagName('button')[0];
     const toggle = () => {
-      fireEvent.click(toggleHtmlElement);
+      userEvent.click(toggleHtmlElement);
     };
     const remove = () => {
-      fireEvent.click(removeHtmlElement);
+      userEvent.click(removeHtmlElement);
     };
     return {
       actions: { toggle, remove },
