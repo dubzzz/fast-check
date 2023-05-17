@@ -67,7 +67,7 @@
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.5.0",
     "@jest/globals": "^29.5.0",
-    "@types/node": "^18.16.10",
+    "@types/node": "^18.16.12",
     "fast-check": "workspace:*",
     "jest": "^29.5.0",
     "jest-jasmine2": "^29.5.0",
