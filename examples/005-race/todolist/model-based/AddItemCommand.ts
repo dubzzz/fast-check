@@ -18,9 +18,10 @@ export class AddItemCommand implements TodolistCommand {
     const todosBefore = await listTodos();
 
     await act(async () => {
-      await userEvent.type(screen.getByTestId('todo-new-item-input'), escapeKeyboardInput(this.label));
-    });
-    await act(async () => {
+      await userEvent.clear(screen.getByTestId('todo-new-item-input'));
+      if (this.label.length !== 0) {
+        await userEvent.type(screen.getByTestId('todo-new-item-input'), escapeKeyboardInput(this.label));
+      }
       await userEvent.click(screen.getByTestId('todo-new-item-button'));
     });
     const todosAfter = await listTodos();
