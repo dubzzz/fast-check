@@ -16,8 +16,8 @@ export class ToggleItemCommand implements TodolistCommand {
 
     const nonLoadingTodos = todosBefore.filter((t) => !t.loading);
     const selectedTodoIndex = todosBefore.indexOf(nonLoadingTodos[this.position % nonLoadingTodos.length]);
-    await act(() => {
-      todosBefore[selectedTodoIndex].actions.toggle();
+    await act(async () => {
+      await todosBefore[selectedTodoIndex].actions.toggle();
     });
     this.runDetails = prettyDetails(todosBefore[selectedTodoIndex]);
 

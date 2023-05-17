@@ -25,11 +25,11 @@ export const listTodos = async (): Promise<ExtractedTodoItem[]> => {
   return allTodoDomItems.map((dom) => {
     const toggleHtmlElement = dom.getElementsByTagName('input')[0];
     const removeHtmlElement = dom.getElementsByTagName('button')[0];
-    const toggle = () => {
-      userEvent.click(toggleHtmlElement);
+    const toggle = async () => {
+      await userEvent.click(toggleHtmlElement);
     };
-    const remove = () => {
-      userEvent.click(removeHtmlElement);
+    const remove = async () => {
+      await userEvent.click(removeHtmlElement);
     };
     return {
       actions: { toggle, remove },

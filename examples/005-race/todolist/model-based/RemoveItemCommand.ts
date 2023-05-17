@@ -17,7 +17,7 @@ export class RemoveItemCommand implements TodolistCommand {
     const nonLoadingTodos = todosBefore.filter((t) => !t.loading);
     const selectedTodoIndex = todosBefore.indexOf(nonLoadingTodos[this.position % nonLoadingTodos.length]);
     await act(async () => {
-      todosBefore[selectedTodoIndex].actions.remove();
+      await todosBefore[selectedTodoIndex].actions.remove();
     });
     this.runDetails = prettyDetails(todosBefore[selectedTodoIndex]);
 
