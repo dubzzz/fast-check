@@ -34,14 +34,14 @@ describe('DebouncedAutocomplete', () => {
 
             // Act
             render(<DebouncedAutocomplete suggestionsFor={suggestionsFor} />);
-            s.scheduleSequence(
+            const { task } = s.scheduleSequence(
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
                 builder: async () =>
                   await userEvent.type(screen.getByRole('textbox'), escapeKeyboardInput(userQuery.substr(idx, 1))),
               }))
             );
-            await waitAllWithTimers(s);
+            await waitAllWithTimers(s, task);
 
             // Assert
             const displayedSuggestions = screen.queryAllByRole('listitem');
@@ -103,7 +103,7 @@ describe('DebouncedAutocomplete', () => {
 
 // Here is a first helper that can be used to mock timers
 // It should be used to replace calls to s.waitAll
-const waitAllWithTimers = async (s: fc.Scheduler) => {
+const waitAllWithTimers = async (s: fc.Scheduler, task: Promise<unknown>) => {
   let alreadyScheduledTaskToUnqueueTimers = false;
   const countWithTimers = () => {
     // Append a scheduled task to unqueue pending timers (if task missing and pending timers)
@@ -116,8 +116,15 @@ const waitAllWithTimers = async (s: fc.Scheduler) => {
     }
     return s.count();
   };
-  while (countWithTimers() !== 0) {
-    await s.waitOne();
+  let resolved = false;
+  while (!resolved) {
+    task.then(
+      () => (resolved = true),
+      () => (resolved = true)
+    );
+    while (countWithTimers() !== 0) {
+      await s.waitOne();
+    }
   }
 };
 
@@ -161,6 +168,16 @@ const withTimers = (s: fc.Scheduler): fc.Scheduler => {
       while (s.count()) {
         await s.waitOne();
         appendScheduledTaskToUnqueueTimersIfNeeded();
+      }
+    },
+    async waitFor(task: Promise<unknown>) {
+      let resolved = false;
+      while (!resolved) {
+        task.then(
+          () => (resolved = true),
+          () => (resolved = true)
+        );
+        await this.waitAll();
       }
     },
   } as fc.Scheduler;
