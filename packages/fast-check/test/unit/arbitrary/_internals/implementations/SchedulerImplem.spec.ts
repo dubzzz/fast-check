@@ -102,6 +102,44 @@ describe('SchedulerImplem', () => {
       expect(waitOneResolved).toBe(true);
     });
 
+    it('should wait the end of the wait-level act before resolving waitOne', async () => {
+      // Arrange
+      const p1 = buildUnresolved();
+      const p2 = buildUnresolved();
+      const globalAct = jest.fn().mockImplementation((f) => f());
+      const act = jest.fn().mockImplementation(async (f) => {
+        await p1.p;
+        await f();
+        await p2.p;
+      });
+      const nextTaskIndex = jest.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+
+      // Act
+      let promiseResolved = false;
+      let waitOneResolved = false;
+      const s = new SchedulerImplem(globalAct, taskSelector);
+      s.schedule(Promise.resolve(1)).then(() => (promiseResolved = true));
+
+      // Assert
+      expect(globalAct).not.toHaveBeenCalled();
+      s.waitOne(act).then(() => (waitOneResolved = true));
+      expect(globalAct).toHaveBeenCalledTimes(1);
+      await delay();
+      expect(promiseResolved).toBe(false);
+      expect(waitOneResolved).toBe(false);
+
+      p1.resolve();
+      await delay();
+      expect(promiseResolved).toBe(true);
+      expect(waitOneResolved).toBe(false);
+
+      p2.resolve();
+      await delay();
+      expect(promiseResolved).toBe(true);
+      expect(waitOneResolved).toBe(true);
+    });
+
     it('should wait the end of the local act before resolving waitOne', async () => {
       // Arrange
       const p1 = buildUnresolved();
