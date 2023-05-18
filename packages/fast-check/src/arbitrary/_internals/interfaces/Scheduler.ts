@@ -7,7 +7,7 @@
  * @remarks Since 3.9.0
  * @public
  */
-export type SchedulerAct = (f: () => Promise<void>) => Promise<unknown>;
+export type SchedulerAct = (f: () => Promise<void>) => Promise<void>;
 
 /**
  * Instance able to reschedule the ordering of promises for a given app

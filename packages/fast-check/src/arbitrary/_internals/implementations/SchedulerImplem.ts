@@ -206,13 +206,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     return this.scheduledTasks.length;
   }
 
-  private async internalWaitOne() {
+  private internalWaitOne() {
     if (this.scheduledTasks.length === 0) {
       throw new Error('No task scheduled');
     }
     const taskIndex = this.taskSelector.nextTaskIndex(this.scheduledTasks);
     const [scheduledTask] = this.scheduledTasks.splice(taskIndex, 1);
-    await scheduledTask.customAct(async () => {
+    return scheduledTask.customAct(async () => {
       scheduledTask.trigger(); // release the promise
       try {
         await scheduledTask.scheduled; // wait for its completion
