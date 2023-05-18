@@ -31,6 +31,8 @@ describe('DebouncedAutocomplete', () => {
               async (query: string) => {
                 return allResults.filter((r) => r.includes(query));
               },
+              // Continuations plugged onto calls to suggestionsFor(...) might perform state updates
+              // as a consequence they need to be fired from an act-context
               { act }
             );
             const expectedResults = allResults.filter((r) => r.includes(userQuery));
@@ -42,9 +44,11 @@ describe('DebouncedAutocomplete', () => {
                 label: `Typing "${c}"`,
                 builder: async () => {
                   await act(async () => {
-                    await userEvent.type(screen.getByRole('textbox'), escapeKeyboardInput(userQuery.substr(idx, 1)), {
-                      delay: null, // we don't want any call to setTimeout
-                    });
+                    // Typing stuff may trigger state updates, thus they have to be wrapped into act
+                    const input = screen.getByRole('textbox');
+                    const character = escapeKeyboardInput(userQuery.substr(idx, 1));
+                    const options = { delay: null }; // we don't want any call to setTimeout
+                    await userEvent.type(input, character, options);
                   });
                 },
               }))
@@ -69,8 +73,13 @@ describe('DebouncedAutocomplete', () => {
 
 // Helpers
 
+/**
+ * Build an act function
+ * able to automatically schedule timers when new ones gets registered
+ */
 function buildWrapWithTimersAct(s: fc.Scheduler) {
   let timersAlreadyScheduled = false;
+
   function scheduleTimersIfNeeded() {
     if (timersAlreadyScheduled || jest.getTimerCount() === 0) {
       return;
@@ -79,13 +88,13 @@ function buildWrapWithTimersAct(s: fc.Scheduler) {
     s.schedule(Promise.resolve('advance timers')).then(() => {
       timersAlreadyScheduled = false;
       act(() => {
+        // Timers may trigger state updates, thus they have to be wrapped into act
         jest.advanceTimersToNextTimer();
       });
       scheduleTimersIfNeeded();
     });
   }
 
-  scheduleTimersIfNeeded();
   return async function wrapWithTimersAct(f: () => Promise<unknown>) {
     try {
       await f();
