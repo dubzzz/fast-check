@@ -1,5 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { Scheduler } from './_internals/interfaces/Scheduler';
+import { Scheduler, SchedulerAct } from './_internals/interfaces/Scheduler';
 import { buildSchedulerFor } from './_internals/helpers/BuildSchedulerFor';
 import { SchedulerArbitrary } from './_internals/SchedulerArbitrary';
 export { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from './_internals/interfaces/Scheduler';
@@ -14,7 +14,7 @@ export interface SchedulerConstraints {
    * Ensure that all scheduled tasks will be executed in the right context (for instance it can be the `act` of React)
    * @remarks Since 1.21.0
    */
-  act: (f: () => Promise<void>) => Promise<unknown>;
+  act: SchedulerAct;
 }
 
 /**

@@ -175,6 +175,7 @@ import {
 } from './arbitrary/_internals/helpers/DepthContext';
 import { bigInt64Array, BigIntArrayConstraints } from './arbitrary/bigInt64Array';
 import { bigUint64Array } from './arbitrary/bigUint64Array';
+import { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -328,6 +329,7 @@ export {
   Scheduler,
   SchedulerSequenceItem,
   SchedulerReportItem,
+  SchedulerAct,
   // extend the framework
   Arbitrary,
   Value,
