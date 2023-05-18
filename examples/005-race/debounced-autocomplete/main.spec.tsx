@@ -17,7 +17,7 @@ function escapeKeyboardInput(value: string): string {
 }
 
 describe('DebouncedAutocomplete', () => {
-  it.only('should autocomplete queries (with mocked timers)', async () => {
+  it('should autocomplete queries (with mocked timers)', async () => {
     await fc.assert(
       fc
         .asyncProperty(
