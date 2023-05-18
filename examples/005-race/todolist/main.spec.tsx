@@ -22,17 +22,6 @@ describe('TodoList', () => {
           ),
           fc.infiniteStream(fc.boolean()),
           async (s, commands, initialTodos, allFailures) => {
-            /*const commands = [
-              new AddItemCommand('a'),
-              new ToggleItemCommand(0),
-              new AddItemCommand('b'),
-              //new RemoveItemCommand(1215116590),
-              //new AddItemCommand('058385e3c'),
-              //new AddItemCommand('8e375f80'),
-              //new ToggleItemCommand(1602903311),
-              //new RemoveItemCommand(341649128),
-            ];
-            const initialTodos: typeof initialTodosRaw = [];*/
             const { mockedApi, expectedTodos } = mockApi(s, initialTodos, allFailures);
 
             // Execute all the commands
