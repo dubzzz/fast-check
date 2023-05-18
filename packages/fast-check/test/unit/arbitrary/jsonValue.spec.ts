@@ -27,7 +27,13 @@ describe('jsonValue (integration)', () => {
   );
 
   const isCorrect = (v: unknown, extra: Extra) => {
-    expect(JSON.parse(fc.stringify(v))).toEqual(v); // JSON.stringify does not handle the -0 properly
+    // JSON.stringify does not handle the -0 properly
+    // And fc.stringify produces '["__proto__"]:' whenever it encounters __proto__ as a key
+    // Our 'safeStringified' should hanlde both of the problems!
+    const intermediateStringified = fc.stringify(v);
+    const safeStringified = intermediateStringified.replace(/\["__proto__"\]:/g, '"__proto__":');
+    expect(JSON.parse(safeStringified)).toEqual(v);
+
     if (extra !== undefined && extra.maxDepth !== undefined) {
       expect(computeObjectDepth(v)).toBeLessThanOrEqual(extra.maxDepth);
     }

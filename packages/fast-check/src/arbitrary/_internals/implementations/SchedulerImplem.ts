@@ -1,7 +1,9 @@
 import { escapeForTemplateString } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
-import { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
+import { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
+
+const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
 
 type Act = (f: () => Promise<void>) => Promise<unknown>;
 const defaultAct: Act = (f) => f();
@@ -25,7 +27,7 @@ export type ScheduledTask<TMetaData> = {
   taskId: number;
   label: string;
   metadata?: TMetaData;
-  act: Act;
+  customAct: SchedulerAct;
 };
 
 /** @internal */
@@ -84,8 +86,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     label: string,
     task: PromiseLike<T>,
     metadata: TMetaData | undefined,
-    thenTaskToBeAwaited: (() => PromiseLike<T>) | undefined,
-    act: Act
+    customAct: SchedulerAct,
+    thenTaskToBeAwaited?: () => PromiseLike<T>
   ): Promise<T> {
     let trigger: (() => void) | null = null;
     const taskId = ++this.lastTaskId;
@@ -113,7 +115,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       taskId,
       label,
       metadata,
-      act,
+      customAct,
     });
     if (this.scheduledWatchers.length !== 0) {
       this.scheduledWatchers[0]();
@@ -121,13 +123,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     return scheduledPromise;
   }
 
-  schedule<T>(task: Promise<T>, label?: string, metadata?: TMetaData): Promise<T> {
-    return this.scheduleInternal('promise', label || '', task, metadata, undefined, defaultAct);
+  schedule<T>(task: Promise<T>, label?: string, metadata?: TMetaData, customAct?: SchedulerAct): Promise<T> {
+    return this.scheduleInternal('promise', label || '', task, metadata, customAct || defaultSchedulerAct);
   }
 
   scheduleFunction<TArgs extends any[], T>(
     asyncFunction: (...args: TArgs) => Promise<T>,
-    options?: { act?: Act }
+    customAct?: SchedulerAct
   ): (...args: TArgs) => Promise<T> {
     const { act = defaultAct } = options || {};
     return (...args: TArgs) =>
@@ -136,12 +138,14 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         `${asyncFunction.name}(${args.map(stringify).join(',')})`,
         asyncFunction(...args),
         undefined,
-        undefined,
-        act
+        customAct || defaultSchedulerAct
       );
   }
 
-  scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetaData>[]): {
+  scheduleSequence(
+    sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
+    customAct?: SchedulerAct
+  ): {
     done: boolean;
     faulty: boolean;
     task: Promise<{ done: boolean; faulty: boolean }>;
@@ -168,8 +172,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
             label,
             dummyResolvedPromise,
             metadata,
-            () => builder(),
-            defaultAct
+            customAct || defaultSchedulerAct,
+            () => builder()
           );
           scheduled.catch(() => {
             status.faulty = true;
@@ -206,13 +210,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     return this.scheduledTasks.length;
   }
 
-  private async internalWaitOne() {
+  private internalWaitOne() {
     if (this.scheduledTasks.length === 0) {
       throw new Error('No task scheduled');
     }
     const taskIndex = this.taskSelector.nextTaskIndex(this.scheduledTasks);
     const [scheduledTask] = this.scheduledTasks.splice(taskIndex, 1);
-    await scheduledTask.act(async () => {
+    return scheduledTask.customAct(async () => {
       scheduledTask.trigger(); // release the promise
       try {
         await scheduledTask.scheduled; // wait for its completion
