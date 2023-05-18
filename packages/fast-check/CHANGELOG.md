@@ -1,3 +1,15 @@
+# 3.8.3
+
+_Ensure scheduled models can wait everything needed_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.8.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.2...v3.8.3)]
+
+## Fixes
+
+- ([PR#3887](https://github.com/dubzzz/fast-check/pull/3887)) Bug: Always schedule models until the end
+- ([PR#3880](https://github.com/dubzzz/fast-check/pull/3880)) CI: Stabilize tests on `jsonValue`
+- ([PR#3876](https://github.com/dubzzz/fast-check/pull/3876)) Clean: Drop legacy documentation
+- ([PR#3875](https://github.com/dubzzz/fast-check/pull/3875)) Doc: First blog post on docusaurus switch
+
 # 3.8.2
 
 _Rework documentation_
