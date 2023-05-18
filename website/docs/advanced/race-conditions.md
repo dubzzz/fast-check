@@ -351,10 +351,10 @@ fc.assert(
   }))
 ```
 
-This pattern can be helpful whenever you need to make sure that continuations attached to your tasks always get called in proper contexts. It can be pretty useful in the case of React applications as whenever testing components, you will have to ensure that updates of states never occur outside of an `act` which can be easily ensured by defining an `act` wrapper.
+This pattern can be helpful whenever you need to make sure that continuations attached to your tasks get called in proper contexts. For instance, when testing React applications, one cannot perform updates of states outside of `act`.
 
 :::tip Finer act
-The `act` function can be defined on case by case basis instead of being defined globally for all tasks.
+The `act` function can be defined on case by case basis instead of being defined globally for all tasks. Check the `act` argument available on the methods of the scheduler.
 :::
 
 ## Model based testing and race conditions
