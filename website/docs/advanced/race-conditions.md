@@ -20,9 +20,9 @@ Identifying and fixing race conditions can be challenging as they can occur unex
 
 The [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) arbitrary is able to generate instances of [`Scheduler`](https://fast-check.dev/api-reference/interfaces/Scheduler.html). They come with following interface:
 
-- `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
-- `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
-- `scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetadata>[]): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
+- `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata, act?: SchedulerAct) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
+- `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>, act: SchedulerAct) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
+- `scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetadata>[], act: SchedulerAct): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
 - `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler.
 - `waitOne: () => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks.
 - `waitAll: () => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - _see CodeSandbox example on userProfile_.
@@ -351,20 +351,11 @@ fc.assert(
   }))
 ```
 
-A simplified implementation for `waitOne` would be:
+This pattern can be helpful whenever you need to make sure that continuations attached to your tasks always get called in proper contexts. It can be pretty useful in the case of React applications as whenever testing components, you will have to ensure that updates of states never occur outside of an `act` which can be easily ensured by defining an `act` wrapper.
 
-```js
-async waitOne() {
-  await act(async () => {
-    await getTaskToBeResolved();
-  })
-}
-async waitAll() {
-  while (count() !== 0) {
-    await waitOne();
-  }
-}
-```
+:::tip Finer act
+The `act` function can be defined on case by case basis instead of being defined globally for all tasks.
+:::
 
 ## Model based testing and race conditions
 
