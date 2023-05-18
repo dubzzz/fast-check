@@ -222,24 +222,25 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     });
   }
 
-  async waitOne(): Promise<void> {
-    await this.act(async () => await this.internalWaitOne());
+  async waitOne(customAct?: SchedulerAct): Promise<void> {
+    const waitAct = customAct || defaultSchedulerAct;
+    await this.act(() => waitAct(async () => await this.internalWaitOne()));
   }
 
-  async waitAll(): Promise<void> {
+  async waitAll(customAct?: SchedulerAct): Promise<void> {
     while (this.scheduledTasks.length > 0) {
-      await this.waitOne();
+      await this.waitOne(customAct);
     }
   }
 
-  async waitFor<T>(unscheduledTask: Promise<T>): Promise<T> {
+  async waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
     let taskResolved = false;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterPromise: Promise<void> | null = null;
     const awaiter = async () => {
       while (!taskResolved && this.scheduledTasks.length > 0) {
-        await this.waitOne();
+        await this.waitOne(customAct);
       }
       awaiterPromise = null;
     };
