@@ -1,3 +1,5 @@
+type Act = (f: () => Promise<void>) => Promise<unknown>;
+
 /**
  * Instance able to reschedule the ordering of promises for a given app
  * @remarks Since 1.20.0
@@ -50,14 +52,14 @@ export interface Scheduler<TMetaData = unknown> {
    * @throws Whenever there is no task scheduled
    * @remarks Since 1.20.0
    */
-  waitOne: () => Promise<void>;
+  waitOne: (options?: { act?: Act }) => Promise<void>;
 
   /**
    * Wait all scheduled tasks,
    * including the ones that might be created by one of the resolved task
    * @remarks Since 1.20.0
    */
-  waitAll: () => Promise<void>;
+  waitAll: (options?: { act?: Act }) => Promise<void>;
 
   /**
    * Wait as many scheduled tasks as need to resolve the received Promise
@@ -75,7 +77,7 @@ export interface Scheduler<TMetaData = unknown> {
    *
    * @remarks Since 2.24.0
    */
-  waitFor: <T>(unscheduledTask: Promise<T>) => Promise<T>;
+  waitFor: <T>(unscheduledTask: Promise<T>, options?: { act?: Act }) => Promise<T>;
 
   /**
    * Produce an array containing all the scheduled tasks so far with their execution status.
