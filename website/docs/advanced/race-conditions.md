@@ -21,7 +21,7 @@ Identifying and fixing race conditions can be challenging as they can occur unex
 The [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) arbitrary is able to generate instances of [`Scheduler`](https://fast-check.dev/api-reference/interfaces/Scheduler.html). They come with following interface:
 
 - `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata, act?: SchedulerAct) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
-- `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>, act: SchedulerAct) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
+- `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>, act?: SchedulerAct) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
 - `scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetadata>[], act: SchedulerAct): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
 - `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler.
 - `waitOne: () => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks.
