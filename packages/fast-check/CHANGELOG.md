@@ -3,10 +3,6 @@
 _TODO Description_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.8.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.2...v3.8.3)]
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#3887](https://github.com/dubzzz/fast-check/pull/3887)) Bug: Always schedule models until the end
