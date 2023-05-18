@@ -1,6 +1,6 @@
 # 3.8.3
 
-_TODO Description_
+_Ensure scheduled models can wait everything needed_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.8.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.2...v3.8.3)]
 
 ## Fixes
