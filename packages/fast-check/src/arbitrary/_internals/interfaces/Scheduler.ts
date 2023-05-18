@@ -1,4 +1,15 @@
 /**
+ * Function responsible to run the passed function and surround it with whatever needed.
+ * The name has been inspired from the `act` function coming with React.
+ *
+ * This wrapper function is not supposed to throw. The received function f will never throw.
+ *
+ * @remarks Since 3.9.0
+ * @public
+ */
+export type SchedulerAct = (f: () => Promise<void>) => Promise<void>;
+
+/**
  * Instance able to reschedule the ordering of promises for a given app
  * @remarks Since 1.20.0
  * @public
@@ -8,14 +19,15 @@ export interface Scheduler<TMetaData = unknown> {
    * Wrap a new task using the Scheduler
    * @remarks Since 1.20.0
    */
-  schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetaData) => Promise<T>;
+  schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetaData, customAct?: SchedulerAct) => Promise<T>;
 
   /**
    * Automatically wrap function output using the Scheduler
    * @remarks Since 1.20.0
    */
   scheduleFunction: <TArgs extends any[], T>(
-    asyncFunction: (...args: TArgs) => Promise<T>
+    asyncFunction: (...args: TArgs) => Promise<T>,
+    customAct?: SchedulerAct
   ) => (...args: TArgs) => Promise<T>;
 
   /**
@@ -32,7 +44,10 @@ export interface Scheduler<TMetaData = unknown> {
    *
    * @remarks Since 1.20.0
    */
-  scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetaData>[]): {
+  scheduleSequence(
+    sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
+    customAct?: SchedulerAct
+  ): {
     done: boolean;
     faulty: boolean;
     task: Promise<{ done: boolean; faulty: boolean }>;
