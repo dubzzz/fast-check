@@ -165,6 +165,6 @@ export async function scheduledModelRun<
 ): Promise<void> {
   const scheduledCommands = scheduleCommands(scheduler, cmds);
   const out = internalAsyncModelRun(s, scheduledCommands, scheduler.schedule(Promise.resolve(), 'startModel'));
+  await scheduler.waitFor(out);
   await scheduler.waitAll();
-  await out;
 }
