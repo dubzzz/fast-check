@@ -5,9 +5,6 @@ import { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } f
 
 const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
 
-type Act = (f: () => Promise<void>) => Promise<unknown>;
-const defaultAct: Act = (f) => f();
-
 /** @internal */
 type TriggeredTask<TMetaData> = {
   status: 'resolved' | 'rejected';
@@ -131,7 +128,6 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     asyncFunction: (...args: TArgs) => Promise<T>,
     customAct?: SchedulerAct
   ): (...args: TArgs) => Promise<T> {
-    const { act = defaultAct } = options || {};
     return (...args: TArgs) =>
       this.scheduleInternal(
         'function',
