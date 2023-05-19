@@ -107,7 +107,7 @@ describe('anyArbitraryBuilder (integration)', () => {
       { requiredKeys: [] }
     )
     .filter((params) => {
-      if (params.depthSize === undefined || params.depthSize <= 2) {
+      if (params.depthSize === undefined || (typeof params.depthSize === 'number' && params.depthSize <= 2)) {
         return true; // 0.5 is equivalent to small, the default
       }
       if (params.maxDepth !== undefined) {
