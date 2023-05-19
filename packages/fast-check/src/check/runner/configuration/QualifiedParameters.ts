@@ -5,6 +5,7 @@ import { RunDetails } from '../reporter/RunDetails';
 import { RandomGenerator } from 'pure-rand';
 
 const safeDateNow = Date.now;
+const safeMathMin = Math.min;
 const safeMathRandom = Math.random;
 
 /** @internal */
@@ -45,9 +46,13 @@ export class QualifiedParameters<T> {
     this.numRuns = QualifiedParameters.readNumRuns(p);
     this.verbose = QualifiedParameters.readVerbose(p);
     this.maxSkipsPerRun = QualifiedParameters.readOrDefault(p, 'maxSkipsPerRun', 100);
-    this.timeout = QualifiedParameters.readOrDefault(p, 'timeout', null);
-    this.skipAllAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null);
-    this.interruptAfterTimeLimit = QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null);
+    this.timeout = QualifiedParameters.safeTimeout(QualifiedParameters.readOrDefault(p, 'timeout', null));
+    this.skipAllAfterTimeLimit = QualifiedParameters.safeTimeout(
+      QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null)
+    );
+    this.interruptAfterTimeLimit = QualifiedParameters.safeTimeout(
+      QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null)
+    );
     this.markInterruptAsFailure = QualifiedParameters.readBoolean(p, 'markInterruptAsFailure');
     this.skipEqualValues = QualifiedParameters.readBoolean(p, 'skipEqualValues');
     this.ignoreEqualValues = QualifiedParameters.readBoolean(p, 'ignoreEqualValues');
@@ -172,6 +177,12 @@ export class QualifiedParameters<T> {
     // value will be non nullable if value != null (even if TypeScript complains about it)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return value != null ? value! : defaultValue;
+  };
+  private static safeTimeout = (value: number | null): number | null => {
+    if (value === null) {
+      return null;
+    }
+    return safeMathMin(value, 0x7fffffff);
   };
 
   /**
