@@ -1,3 +1,19 @@
+# 3.9.0
+
+_Finer definition of `act` to detect race conditions_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.9.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.3...v3.9.0)]
+
+## Features
+
+- ([PR#3889](https://github.com/dubzzz/fast-check/pull/3889)) Add ability to customize `act` per call
+- ([PR#3890](https://github.com/dubzzz/fast-check/pull/3890)) Add ability to customize `act` per wait
+
+## Fixes
+
+- ([PR#3892](https://github.com/dubzzz/fast-check/pull/3892)) Bug: Cap timeout values to 0x7fff_ffff
+
+---
+
 # 3.8.3
 
 _Ensure scheduled models can wait everything needed_
