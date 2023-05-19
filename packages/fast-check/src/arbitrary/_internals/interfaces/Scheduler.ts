@@ -6,6 +6,12 @@ type Act = (f: () => Promise<void>) => Promise<unknown>;
  *
  * This wrapper function is not supposed to throw. The received function f will never throw.
  *
+ * Wrapping order in the following:
+ *
+ * - global act defined on `fc.scheduler` wraps wait level one
+ * - wait act defined on `s.waitX` wraps local one
+ * - local act defined on `s.scheduleX(...)` wraps the trigger function
+ *
  * @remarks Since 3.9.0
  * @public
  */
@@ -66,14 +72,14 @@ export interface Scheduler<TMetaData = unknown> {
    * @throws Whenever there is no task scheduled
    * @remarks Since 1.20.0
    */
-  waitOne: (options?: { act?: Act }) => Promise<void>;
+  waitOne: (customAct?: SchedulerAct) => Promise<void>;
 
   /**
    * Wait all scheduled tasks,
    * including the ones that might be created by one of the resolved task
    * @remarks Since 1.20.0
    */
-  waitAll: (options?: { act?: Act }) => Promise<void>;
+  waitAll: (customAct?: SchedulerAct) => Promise<void>;
 
   /**
    * Wait as many scheduled tasks as need to resolve the received Promise
@@ -91,7 +97,7 @@ export interface Scheduler<TMetaData = unknown> {
    *
    * @remarks Since 2.24.0
    */
-  waitFor: <T>(unscheduledTask: Promise<T>, options?: { act?: Act }) => Promise<T>;
+  waitFor: <T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct) => Promise<T>;
 
   /**
    * Produce an array containing all the scheduled tasks so far with their execution status.
