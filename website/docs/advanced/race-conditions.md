@@ -238,87 +238,6 @@ const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
 };
 ```
 
-### Scheduling native timers
-
-Occasionally, our asynchronous code depends on native timers provided by the JavaScript engine, such as `setTimeout` or `setInterval`. Unlike other asynchronous operations, timers are ordered, meaning that a timer set to wait for 10ms will be executed before a timer set to wait for 100ms. Consequently, they require special handling.
-
-The code snippet below is based on [Jest](https://jestjs.io/), but it can be modified for other testing frameworks if necessary.
-
-```js
-// You should call: `jest.useFakeTimers()` at the beginning of your test
-
-// The method will automatically schedule tasks to enqueue pending timers if needed.
-// Instead of calling: `await s.waitAll()`
-// You can call: `await waitAllWithTimers(s)`
-const waitAllWithTimers = async (s) => {
-  let alreadyScheduledTaskToUnqueueTimers = false;
-  const countWithTimers = () => {
-    // Append a scheduled task to unqueue pending timers (if task missing and pending timers)
-    if (!alreadyScheduledTaskToUnqueueTimers && jest.getTimerCount() !== 0) {
-      alreadyScheduledTaskToUnqueueTimers = true;
-      s.schedule(Promise.resolve('advance timers if any')).then(() => {
-        alreadyScheduledTaskToUnqueueTimers = false;
-        jest.advanceTimersToNextTimer();
-      });
-    }
-    return s.count();
-  };
-  while (countWithTimers() !== 0) {
-    await s.waitOne();
-  }
-};
-```
-
-Alternatively you can wrap the scheduler produced by fast-check to add timer capabilities to it:
-
-```js
-// You should call: `jest.useFakeTimers()` at the beginning of your test
-// You should replace: `fc.scheduler()` by `fc.scheduler().map(withTimers)`
-
-const withTimers = (s) => {
-  let alreadyScheduledTaskToUnqueueTimers = false;
-  const appendScheduledTaskToUnqueueTimersIfNeeded = () => {
-    // Append a scheduled task to unqueue pending timers (if task missing and pending timers)
-    if (!alreadyScheduledTaskToUnqueueTimers && jest.getTimerCount() !== 0) {
-      alreadyScheduledTaskToUnqueueTimers = true;
-      s.schedule(Promise.resolve('advance timers if any')).then(() => {
-        alreadyScheduledTaskToUnqueueTimers = false;
-        jest.advanceTimersToNextTimer();
-      });
-    }
-  };
-
-  return {
-    schedule(...args) {
-      return s.schedule(...args);
-    },
-    scheduleFunction(...args) {
-      return s.scheduleFunction(...args);
-    },
-    scheduleSequence(...args) {
-      return s.scheduleSequence(...args);
-    },
-    count() {
-      return s.count();
-    },
-    toString() {
-      return s.toString();
-    },
-    async waitOne() {
-      appendScheduledTaskToUnqueueTimersIfNeeded();
-      await s.waitOne();
-    },
-    async waitAll() {
-      appendScheduledTaskToUnqueueTimersIfNeeded();
-      while (s.count()) {
-        await s.waitOne();
-        appendScheduledTaskToUnqueueTimersIfNeeded();
-      }
-    },
-  };
-};
-```
-
 ### Wrapping calls automatically using `act`
 
 [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) can be given an `act` function that will be called in order to wrap all the scheduled tasks. A code like the following one:
@@ -356,6 +275,46 @@ This pattern can be helpful whenever you need to make sure that continuations at
 :::tip Finer act
 The `act` function can be defined on case by case basis instead of being defined globally for all tasks. Check the `act` argument available on the methods of the scheduler.
 :::
+
+### Scheduling native timers
+
+Occasionally, our asynchronous code depends on native timers provided by the JavaScript engine, such as `setTimeout` or `setInterval`. Unlike other asynchronous operations, timers are ordered, meaning that a timer set to wait for 10ms will be executed before a timer set to wait for 100ms. Consequently, they require special handling.
+
+The code snippet below defines a custom `act` function able to schedule timers. It uses [Jest](https://jestjs.io/), but it can be modified for other testing frameworks if necessary.
+
+```ts
+// You should call: `jest.useFakeTimers()` at the beginning of your test
+
+// The function below automatically schedules tasks for pending timers.
+// It detects any timer added when tasks get resolved by the scheduler (via the act pattern).
+
+// Instead of calling `await s.waitFor(p)`, you can call `await s.waitFor(p, buildWrapWithTimersAct(s))`.
+// Instead of calling `await s.waitAll()`, you can call `await s.waitAll(buildWrapWithTimersAct(s))`.
+
+function buildWrapWithTimersAct(s: fc.Scheduler) {
+  let timersAlreadyScheduled = false;
+
+  function scheduleTimersIfNeeded() {
+    if (timersAlreadyScheduled || jest.getTimerCount() === 0) {
+      return;
+    }
+    timersAlreadyScheduled = true;
+    s.schedule(Promise.resolve('advance timers')).then(() => {
+      timersAlreadyScheduled = false;
+      jest.advanceTimersToNextTimer();
+      scheduleTimersIfNeeded();
+    });
+  }
+
+  return async function wrapWithTimersAct(f: () => Promise<unknown>) {
+    try {
+      await f();
+    } finally {
+      scheduleTimersIfNeeded();
+    }
+  };
+}
+```
 
 ## Model based testing and race conditions
 
