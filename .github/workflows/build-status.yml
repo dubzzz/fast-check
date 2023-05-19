@@ -185,6 +185,10 @@ jobs:
         include:
           # More platforms and scripts...
           - package-name: 'fast-check'
+            script-name: 'poisoning-test'
+            node-version: 18.x
+            os: 'ubuntu-latest'
+          - package-name: 'fast-check'
             script-name: 'e2e'
             node-version: 18.x
             os: 'ubuntu-latest'

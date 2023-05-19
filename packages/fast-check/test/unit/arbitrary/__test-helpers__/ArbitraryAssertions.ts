@@ -8,15 +8,19 @@ import { Random } from '../../../../src/random/generator/Random';
 import { withConfiguredGlobal } from './GlobalSettingsHelpers';
 import { sizeArb } from './SizeHelpers';
 
-function poisoningAfterEach(nestedAfterEach: () => void) {
-  nestedAfterEach();
-  try {
-    assertNoPoisoning({ ignoredRootRegex: /^(__coverage__|console)$/ });
-  } catch (err) {
-    restoreGlobals({ ignoredRootRegex: /^(__coverage__|console)$/ });
-    throw err;
-  }
-}
+const poisoningAfterEach = process.env.POISONING
+  ? function poisoningAfterEach(nestedAfterEach: () => void) {
+      nestedAfterEach();
+      try {
+        assertNoPoisoning({ ignoredRootRegex: /^(__coverage__|console)$/ });
+      } catch (err) {
+        restoreGlobals({ ignoredRootRegex: /^(__coverage__|console)$/ });
+        throw err;
+      }
+    }
+  : function poisoningAfterEach(nestedAfterEach: () => void) {
+      nestedAfterEach();
+    };
 
 // Minimal requirements
 // > The following assertions are supposed to be fulfilled by any of the arbitraries
