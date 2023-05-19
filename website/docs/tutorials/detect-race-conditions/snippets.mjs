@@ -80,7 +80,7 @@ export const queueCodeV5 = `export function queue(fun) {
         pending = true;
         return new Promise((resolve, reject) => {
           const p = fun(...args);
-          p.then(runNext, runNext)
+          p.then(v => { runNext(); return v; }, e => { runNext(); throw e; })
            .then(resolve, reject);
         });
       }
