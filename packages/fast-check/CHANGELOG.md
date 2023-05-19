@@ -1,6 +1,6 @@
 # 3.9.0
 
-_TODO Description_
+_Finer definition of `act` to detect race conditions_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.9.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.8.3...v3.9.0)]
 
 ## Features
