@@ -62,7 +62,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     }> {
       return { status: 'success', response: allTodos.slice() };
     },
-    { act }
+    act
   );
 
   const addTodo = s.scheduleFunction(
@@ -84,7 +84,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       allTodos.push(newTodo);
       return { status: 'success', response: newTodo };
     },
-    { act }
+    act
   );
 
   const toggleTodo = s.scheduleFunction(
@@ -105,7 +105,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       });
       return { status: 'success', response: { ...foundTodo, checked: !foundTodo.checked } };
     },
-    { act }
+    act
   );
 
   const removeTodo = s.scheduleFunction(
@@ -126,7 +126,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       });
       return { status: 'success', response: foundTodo };
     },
-    { act }
+    act
   );
 
   return {

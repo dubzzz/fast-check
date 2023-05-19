@@ -33,7 +33,7 @@ describe('DebouncedAutocomplete', () => {
               },
               // Continuations plugged onto calls to suggestionsFor(...) might perform state updates
               // as a consequence they need to be fired from an act-context
-              { act }
+              act
             );
             const expectedResults = allResults.filter((r) => r.includes(userQuery));
 
@@ -54,8 +54,8 @@ describe('DebouncedAutocomplete', () => {
               }))
             );
             const customAct = buildWrapWithTimersAct(s);
-            await s.waitFor(task, { act: customAct });
-            await s.waitAll({ act: customAct });
+            await s.waitFor(task, customAct);
+            await s.waitAll(customAct);
 
             // Assert
             const displayedSuggestions = screen.queryAllByRole('listitem');
