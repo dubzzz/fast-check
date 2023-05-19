@@ -14,7 +14,7 @@ export interface SchedulerConstraints {
    * Ensure that all scheduled tasks will be executed in the right context (for instance it can be the `act` of React)
    * @remarks Since 1.21.0
    */
-  act?: (f: () => Promise<void>) => Promise<unknown>;
+  act: (f: () => Promise<void>) => Promise<unknown>;
 }
 
 /**
