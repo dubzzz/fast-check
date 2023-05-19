@@ -80,15 +80,15 @@ export const queueCodeV5 = `export function queue(fun) {
         pending = true;
         return new Promise((resolve, reject) => {
           const p = fun(...args);
-          p.then(runNext, runNext);
-          p.then(resolve, reject);
+          p.then(runNext, runNext)
+           .then(resolve, reject);
         });
       }
       return new Promise((resolve, reject) => {
         onDone.push(() => {
           const p = fun(...args);
-          p.then(runNext, runNext);
-          p.then(resolve, reject);
+          p.then(runNext, runNext)
+           .then(resolve, reject);
         });
       });
     };
