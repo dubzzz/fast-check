@@ -78,9 +78,11 @@ export const queueCodeV5 = `export function queue(fun) {
     return (...args) => {
       if (!pending) {
         pending = true;
-        const p = fun(...args);
-        p.then(runNext, runNext);
-        return p;
+        return new Promise((resolve, reject) => {
+          const p = fun(...args);
+          p.then(runNext, runNext);
+          p.then(resolve, reject);
+        });
       }
       return new Promise((resolve, reject) => {
         onDone.push(() => {
