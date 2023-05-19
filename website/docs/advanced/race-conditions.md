@@ -20,13 +20,13 @@ Identifying and fixing race conditions can be challenging as they can occur unex
 
 The [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) arbitrary is able to generate instances of [`Scheduler`](https://fast-check.dev/api-reference/interfaces/Scheduler.html). They come with following interface:
 
-- `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
-- `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
-- `scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetadata>[]): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
+- `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata, act?: SchedulerAct) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
+- `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>, act?: SchedulerAct) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
+- `scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetadata>[], act?: SchedulerAct): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
 - `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler.
-- `waitOne: () => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks.
-- `waitAll: () => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - _see CodeSandbox example on userProfile_.
-- `waitFor: <T>(unscheduledTask: Promise<T>) => Promise<T>` - Wait as many scheduled tasks as need to resolve the received task. Contrary to `waitOne` or `waitAll` it can be used to wait for calls not yet scheduled when calling it (some test solutions like supertest use such trick not to run any query before the user really calls then on the request itself). Be aware that while this helper will wait eveything to be ready for `unscheduledTask` to resolve, having uncontrolled tasks triggering stuff required for `unscheduledTask` might make replay of failures harder as such asynchronous triggers stay out-of-control for fast-check.
+- `waitOne: (act?: SchedulerAct) => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks.
+- `waitAll: (act?: SchedulerAct) => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - _see CodeSandbox example on userProfile_.
+- `waitFor: <T>(unscheduledTask: Promise<T>, act?: SchedulerAct) => Promise<T>` - Wait as many scheduled tasks as need to resolve the received task. Contrary to `waitOne` or `waitAll` it can be used to wait for calls not yet scheduled when calling it (some test solutions like supertest use such trick not to run any query before the user really calls then on the request itself). Be aware that while this helper will wait eveything to be ready for `unscheduledTask` to resolve, having uncontrolled tasks triggering stuff required for `unscheduledTask` might make replay of failures harder as such asynchronous triggers stay out-of-control for fast-check.
 - `report: () => SchedulerReportItem<TMetaData>[]` - Produce an array containing all the scheduled tasks so far with their execution status. If the task has been executed, it includes a string representation of the associated output or error produced by the task if any. Tasks will be returned in the order they get executed by the scheduler.
 
 With:
@@ -238,87 +238,6 @@ const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
 };
 ```
 
-### Scheduling native timers
-
-Occasionally, our asynchronous code depends on native timers provided by the JavaScript engine, such as `setTimeout` or `setInterval`. Unlike other asynchronous operations, timers are ordered, meaning that a timer set to wait for 10ms will be executed before a timer set to wait for 100ms. Consequently, they require special handling.
-
-The code snippet below is based on [Jest](https://jestjs.io/), but it can be modified for other testing frameworks if necessary.
-
-```js
-// You should call: `jest.useFakeTimers()` at the beginning of your test
-
-// The method will automatically schedule tasks to enqueue pending timers if needed.
-// Instead of calling: `await s.waitAll()`
-// You can call: `await waitAllWithTimers(s)`
-const waitAllWithTimers = async (s) => {
-  let alreadyScheduledTaskToUnqueueTimers = false;
-  const countWithTimers = () => {
-    // Append a scheduled task to unqueue pending timers (if task missing and pending timers)
-    if (!alreadyScheduledTaskToUnqueueTimers && jest.getTimerCount() !== 0) {
-      alreadyScheduledTaskToUnqueueTimers = true;
-      s.schedule(Promise.resolve('advance timers if any')).then(() => {
-        alreadyScheduledTaskToUnqueueTimers = false;
-        jest.advanceTimersToNextTimer();
-      });
-    }
-    return s.count();
-  };
-  while (countWithTimers() !== 0) {
-    await s.waitOne();
-  }
-};
-```
-
-Alternatively you can wrap the scheduler produced by fast-check to add timer capabilities to it:
-
-```js
-// You should call: `jest.useFakeTimers()` at the beginning of your test
-// You should replace: `fc.scheduler()` by `fc.scheduler().map(withTimers)`
-
-const withTimers = (s) => {
-  let alreadyScheduledTaskToUnqueueTimers = false;
-  const appendScheduledTaskToUnqueueTimersIfNeeded = () => {
-    // Append a scheduled task to unqueue pending timers (if task missing and pending timers)
-    if (!alreadyScheduledTaskToUnqueueTimers && jest.getTimerCount() !== 0) {
-      alreadyScheduledTaskToUnqueueTimers = true;
-      s.schedule(Promise.resolve('advance timers if any')).then(() => {
-        alreadyScheduledTaskToUnqueueTimers = false;
-        jest.advanceTimersToNextTimer();
-      });
-    }
-  };
-
-  return {
-    schedule(...args) {
-      return s.schedule(...args);
-    },
-    scheduleFunction(...args) {
-      return s.scheduleFunction(...args);
-    },
-    scheduleSequence(...args) {
-      return s.scheduleSequence(...args);
-    },
-    count() {
-      return s.count();
-    },
-    toString() {
-      return s.toString();
-    },
-    async waitOne() {
-      appendScheduledTaskToUnqueueTimersIfNeeded();
-      await s.waitOne();
-    },
-    async waitAll() {
-      appendScheduledTaskToUnqueueTimersIfNeeded();
-      while (s.count()) {
-        await s.waitOne();
-        appendScheduledTaskToUnqueueTimersIfNeeded();
-      }
-    },
-  };
-};
-```
-
 ### Wrapping calls automatically using `act`
 
 [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) can be given an `act` function that will be called in order to wrap all the scheduled tasks. A code like the following one:
@@ -351,18 +270,49 @@ fc.assert(
   }))
 ```
 
-A simplified implementation for `waitOne` would be:
+This pattern can be helpful whenever you need to make sure that continuations attached to your tasks get called in proper contexts. For instance, when testing React applications, one cannot perform updates of states outside of `act`.
 
-```js
-async waitOne() {
-  await act(async () => {
-    await getTaskToBeResolved();
-  })
-}
-async waitAll() {
-  while (count() !== 0) {
-    await waitOne();
+:::tip Finer act
+The `act` function can be defined on case by case basis instead of being defined globally for all tasks. Check the `act` argument available on the methods of the scheduler.
+:::
+
+### Scheduling native timers
+
+Occasionally, our asynchronous code depends on native timers provided by the JavaScript engine, such as `setTimeout` or `setInterval`. Unlike other asynchronous operations, timers are ordered, meaning that a timer set to wait for 10ms will be executed before a timer set to wait for 100ms. Consequently, they require special handling.
+
+The code snippet below defines a custom `act` function able to schedule timers. It uses [Jest](https://jestjs.io/), but it can be modified for other testing frameworks if necessary.
+
+```ts
+// You should call: `jest.useFakeTimers()` at the beginning of your test
+
+// The function below automatically schedules tasks for pending timers.
+// It detects any timer added when tasks get resolved by the scheduler (via the act pattern).
+
+// Instead of calling `await s.waitFor(p)`, you can call `await s.waitFor(p, buildWrapWithTimersAct(s))`.
+// Instead of calling `await s.waitAll()`, you can call `await s.waitAll(buildWrapWithTimersAct(s))`.
+
+function buildWrapWithTimersAct(s: fc.Scheduler) {
+  let timersAlreadyScheduled = false;
+
+  function scheduleTimersIfNeeded() {
+    if (timersAlreadyScheduled || jest.getTimerCount() === 0) {
+      return;
+    }
+    timersAlreadyScheduled = true;
+    s.schedule(Promise.resolve('advance timers')).then(() => {
+      timersAlreadyScheduled = false;
+      jest.advanceTimersToNextTimer();
+      scheduleTimersIfNeeded();
+    });
   }
+
+  return async function wrapWithTimersAct(f: () => Promise<unknown>) {
+    try {
+      await f();
+    } finally {
+      scheduleTimersIfNeeded();
+    }
+  };
 }
 ```
 

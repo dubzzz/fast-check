@@ -1,3 +1,4 @@
+import { act } from '@testing-library/react';
 import { TodolistCommand, TodolistModel, TodolistReal, listTodos, ExtractedTodoItem, prettyDetails } from './Model';
 
 export class ToggleItemCommand implements TodolistCommand {
@@ -15,7 +16,9 @@ export class ToggleItemCommand implements TodolistCommand {
 
     const nonLoadingTodos = todosBefore.filter((t) => !t.loading);
     const selectedTodoIndex = todosBefore.indexOf(nonLoadingTodos[this.position % nonLoadingTodos.length]);
-    todosBefore[selectedTodoIndex].actions.toggle();
+    await act(async () => {
+      await todosBefore[selectedTodoIndex].actions.toggle();
+    });
     this.runDetails = prettyDetails(todosBefore[selectedTodoIndex]);
 
     const todosAfter = await listTodos();

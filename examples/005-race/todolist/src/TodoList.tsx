@@ -94,7 +94,7 @@ export default function TodoList(props: Props) {
   };
 
   const deleteById = async (id: string) => {
-    // Temporary delete the todo (serevr might still reject the delete)
+    // Temporary delete the todo (server might still reject the delete)
     setAllTodos((allTodos) => allTodos.filter((todo) => todo.id !== id));
 
     const query = await removeTodo(id);

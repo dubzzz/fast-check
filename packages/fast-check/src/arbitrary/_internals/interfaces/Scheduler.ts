@@ -1,4 +1,21 @@
 /**
+ * Function responsible to run the passed function and surround it with whatever needed.
+ * The name has been inspired from the `act` function coming with React.
+ *
+ * This wrapper function is not supposed to throw. The received function f will never throw.
+ *
+ * Wrapping order in the following:
+ *
+ * - global act defined on `fc.scheduler` wraps wait level one
+ * - wait act defined on `s.waitX` wraps local one
+ * - local act defined on `s.scheduleX(...)` wraps the trigger function
+ *
+ * @remarks Since 3.9.0
+ * @public
+ */
+export type SchedulerAct = (f: () => Promise<void>) => Promise<void>;
+
+/**
  * Instance able to reschedule the ordering of promises for a given app
  * @remarks Since 1.20.0
  * @public
@@ -8,14 +25,15 @@ export interface Scheduler<TMetaData = unknown> {
    * Wrap a new task using the Scheduler
    * @remarks Since 1.20.0
    */
-  schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetaData) => Promise<T>;
+  schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetaData, customAct?: SchedulerAct) => Promise<T>;
 
   /**
    * Automatically wrap function output using the Scheduler
    * @remarks Since 1.20.0
    */
   scheduleFunction: <TArgs extends any[], T>(
-    asyncFunction: (...args: TArgs) => Promise<T>
+    asyncFunction: (...args: TArgs) => Promise<T>,
+    customAct?: SchedulerAct
   ) => (...args: TArgs) => Promise<T>;
 
   /**
@@ -32,7 +50,10 @@ export interface Scheduler<TMetaData = unknown> {
    *
    * @remarks Since 1.20.0
    */
-  scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetaData>[]): {
+  scheduleSequence(
+    sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
+    customAct?: SchedulerAct
+  ): {
     done: boolean;
     faulty: boolean;
     task: Promise<{ done: boolean; faulty: boolean }>;
@@ -49,14 +70,14 @@ export interface Scheduler<TMetaData = unknown> {
    * @throws Whenever there is no task scheduled
    * @remarks Since 1.20.0
    */
-  waitOne: () => Promise<void>;
+  waitOne: (customAct?: SchedulerAct) => Promise<void>;
 
   /**
    * Wait all scheduled tasks,
    * including the ones that might be created by one of the resolved task
    * @remarks Since 1.20.0
    */
-  waitAll: () => Promise<void>;
+  waitAll: (customAct?: SchedulerAct) => Promise<void>;
 
   /**
    * Wait as many scheduled tasks as need to resolve the received Promise
@@ -74,7 +95,7 @@ export interface Scheduler<TMetaData = unknown> {
    *
    * @remarks Since 2.24.0
    */
-  waitFor: <T>(unscheduledTask: Promise<T>) => Promise<T>;
+  waitFor: <T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct) => Promise<T>;
 
   /**
    * Produce an array containing all the scheduled tasks so far with their execution status.
