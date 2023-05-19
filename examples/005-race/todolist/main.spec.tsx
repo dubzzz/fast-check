@@ -14,7 +14,7 @@ describe('TodoList', () => {
     await fc.assert(
       fc
         .asyncProperty(
-          fc.scheduler({ act }),
+          fc.scheduler(),
           TodoListCommands,
           fc.uniqueArray(
             fc.record({ id: fc.hexaString({ minLength: 8, maxLength: 8 }), label: fc.string(), checked: fc.boolean() }),
@@ -60,7 +60,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     response: ApiTodoItem[];
   }> {
     return { status: 'success', response: allTodos.slice() };
-  });
+  }, act);
 
   const addTodo = s.scheduleFunction(async function addTodo(label: string): Promise<
     | {
@@ -79,7 +79,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
     }
     allTodos.push(newTodo);
     return { status: 'success', response: newTodo };
-  });
+  }, act);
 
   const toggleTodo = s.scheduleFunction(async function toggleTodo(id: string): Promise<
     | {
@@ -97,7 +97,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       return { id, label: t.label, checked: !t.checked };
     });
     return { status: 'success', response: { ...foundTodo, checked: !foundTodo.checked } };
-  });
+  }, act);
 
   const removeTodo = s.scheduleFunction(async function removeTodo(id: string): Promise<
     | {
@@ -115,7 +115,7 @@ const mockApi = (s: fc.Scheduler, initialTodos: ApiTodoItem[], allFailures: fc.S
       return false;
     });
     return { status: 'success', response: foundTodo };
-  });
+  }, act);
 
   return {
     mockedApi: {
