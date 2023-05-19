@@ -1,5 +1,3 @@
-type Act = (f: () => Promise<void>) => Promise<unknown>;
-
 /**
  * Function responsible to run the passed function and surround it with whatever needed.
  * The name has been inspired from the `act` function coming with React.
