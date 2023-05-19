@@ -222,8 +222,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     });
   }
 
-  async waitOne(): Promise<void> {
-    await this.act(async () => await this.internalWaitOne());
+  waitOne(): Promise<void> {
+    const waitOneResult: Promise<unknown> = this.act(() => this.internalWaitOne());
+    return waitOneResult as Promise<void>;
   }
 
   async waitAll(): Promise<void> {
