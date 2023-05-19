@@ -22,7 +22,12 @@ describe('unicodeJsonValue (integration)', () => {
         },
         { requiredKeys: [] }
       )
-      .filter((ct) => ct.depthSize === undefined || ct.depthSize <= 10 || ct.maxDepth !== undefined),
+      .filter(
+        (ct) =>
+          ct.depthSize === undefined ||
+          (typeof ct.depthSize === 'number' && ct.depthSize <= 10) ||
+          ct.maxDepth !== undefined
+      ),
     { nil: undefined }
   );
 
