@@ -56,8 +56,8 @@ Similar to any other `Promise`, if there is a possibility that the wrapped `Prom
 **Signature**
 
 ```ts
-schedule: <T>(task: Promise<T>) => Promise<T>
-schedule: <T>(task: Promise<T, label: string>) => Promise<T>
+schedule: <T>(task: Promise<T>) => Promise<T>;
+schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata, customAct?: SchedulerAct) => Promise<T>;
 ```
 
 **Usage**
@@ -100,7 +100,7 @@ Many asynchronous codes utilize functions that can produce `Promise` based on in
 **Signature**
 
 ```ts
-scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>) =>
+scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>, customAct?: SchedulerAct) =>
   (...args: TArgs) =>
     Promise<T>;
 ```
@@ -152,7 +152,7 @@ type SchedulerSequenceItem =
     (() => Promise<any>)
 ;
 
-scheduleSequence(sequenceBuilders: SchedulerSequenceItem[]): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }
+scheduleSequence(sequenceBuilders: SchedulerSequenceItem[], customAct?: SchedulerAct): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }
 ```
 
 **Usage**
