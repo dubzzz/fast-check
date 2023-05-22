@@ -7,7 +7,7 @@ tags: [what's new, race conditions]
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-In this release, our primary focus has been to enhance the race condition detection mechanisms, making them stronger and more effective. Additionally, we have made significant updates to the documentation, ensuring it provides comprehensive and up-to-date information.
+In this release, our primary focus has been to enhance the race condition detection mechanisms, making them stronger and more effective. Additionally, we did significant updates of the documentation, ensuring it provides comprehensive and up-to-date information.
 
 Continue reading to explore the detailed updates it brings.
 
