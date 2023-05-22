@@ -357,7 +357,7 @@ export const extendedWithExceptionsPBTSpecCode = `import {queue} from './queue.j
             concurrentQueriesDetected ||= queryPending;
             queryPending = true;
             const out = scheduledCall(...args);
-            out.finally(() => (queryPending = false));
+            out.finally(() => (queryPending = false)).catch(() => {});
             return out;
           };
   
