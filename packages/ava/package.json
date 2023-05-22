@@ -49,11 +49,11 @@
     "ava": ">=4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.16.13",
+    "@types/node": "^18.16.14",
     "ava": "^5.2.0",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.4"
   },
   "keywords": [
     "ava",
