@@ -224,7 +224,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
   async waitOne(customAct?: SchedulerAct): Promise<void> {
     const waitAct = customAct || defaultSchedulerAct;
-    await this.act(() => waitAct(() => this.internalWaitOne()));
+    const waitOneResult: Promise<unknown> = this.act(() => waitAct(() => this.internalWaitOne()));
+    return waitOneResult as Promise<void>;
   }
 
   async waitAll(customAct?: SchedulerAct): Promise<void> {
