@@ -80,13 +80,15 @@ export const queueCodeV5 = `export function queue(fun) {
         pending = true;
         return new Promise((resolve, reject) => {
           const p = fun(...args);
-          p.then(v => { runNext(); resolve(v); }, e => { runNext(); reject(e); });
+          p.then(runNext, runNext);
+          p.then(resolve, reject);
         });
       }
       return new Promise((resolve, reject) => {
         onDone.push(() => {
           const p = fun(...args);
-          p.then(v => { runNext(); resolve(v); }, e => { runNext(); reject(e); });
+          p.then(runNext, runNext);
+          p.then(resolve, reject);
         });
       });
     };
@@ -303,7 +305,9 @@ export const extendedBackToWaitAllPBTSpecCode = `import {queue} from './queue.js
       const monitoredScheduledCall = (...args) => {
         concurrentQueriesDetected ||= queryPending;
         queryPending = true;
-        return scheduledCall(...args).finally(() => (queryPending = false));
+        const out = scheduledCall(...args);
+        out.finally(() => (queryPending = false));
+        return out;
       };
     
       // Act
@@ -352,7 +356,9 @@ export const extendedWithExceptionsPBTSpecCode = `import {queue} from './queue.j
           const monitoredScheduledCall = (...args) => {
             concurrentQueriesDetected ||= queryPending;
             queryPending = true;
-            return scheduledCall(...args).finally(() => (queryPending = false));
+            const out = scheduledCall(...args);
+            out.finally(() => (queryPending = false));
+            return out;
           };
   
           // Act
