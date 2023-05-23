@@ -34,6 +34,7 @@
     "e2e:watch": "jest --config jest.e2e.config.cjs --watch",
     "e2e:debug": "node --inspect ../../node_modules/jest/bin/jest.js --config jest.e2e.config.cjs --watch --runInBand",
     "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
+    "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.cjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
     "docs:serve": "yarn dlx serve docs/"
