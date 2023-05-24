@@ -36,7 +36,7 @@ function Feature({ Svg, title, description }) {
       <div className={styles.featureIllustration}>
         <Svg
           className={styles.featureSvg}
-          alt={`Illustration for ${title}`}
+          title={`Illustration for ${title}`}
           role="img"
           width={144}
           height={144}
