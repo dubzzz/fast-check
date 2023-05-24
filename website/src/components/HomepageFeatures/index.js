@@ -34,7 +34,14 @@ function Feature({ Svg, title, description }) {
   return (
     <div className={styles.featureCard}>
       <div className={styles.featureIllustration}>
-        <Svg className={styles.featureSvg} alt={`Illustration for ${title}`} role="img" width={144} height={144} loading="lazy" />
+        <Svg
+          className={styles.featureSvg}
+          alt={`Illustration for ${title}`}
+          role="img"
+          width={144}
+          height={144}
+          loading="lazy"
+        />
       </div>
       <div className="text--center padding-horiz--md">
         <p className={styles.featureName}>{title}</p>
