@@ -31,6 +31,7 @@ describe('tokenizeRegex', () => {
     //{ regex: /[A-Za-z0-9-/]/ },
     //{ regex: /[ac-ez]/ },
     //{ regex: /[A-Z][a-z]*/ },
+    //{ regex: /[a\-z]/ },
     { regex: /\u{1[81]}/, invalidWithUnicode: true },
     //{ regex: /[\u{1f431}-\u{1f434}]/, invalidWithNonUnicode: true },
     //{ regex: /[🐱-🐴]/, invalidWithNonUnicode: true },

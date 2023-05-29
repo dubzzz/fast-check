@@ -12,6 +12,13 @@ function safePop(tokens: RegexToken[]): RegexToken {
   return previous;
 }
 
+/**
+ * Internal helper checking if a character is a decimal one, ie: 0-9
+ */
+function isDigit(char: string): boolean {
+  return char >= '0' && char <= '9';
+}
+
 type CharRegexToken = {
   type: 'Char';
   kind: 'meta' | 'simple' | 'decimal' | 'hex' | 'unicode';
@@ -46,13 +53,19 @@ type CharacterClassRegexToken = {
   type: 'CharacterClass';
   expressions: RegexToken[];
 };
+type ClassRangeRegexToken = {
+  type: 'ClassRange';
+  from: CharRegexToken;
+  to: CharRegexToken;
+};
 
 type RegexToken =
   | CharRegexToken
   | RepetitionRegexToken
   | QuantifierRegexToken
   | AlternativeRegexToken
-  | CharacterClassRegexToken;
+  | CharacterClassRegexToken
+  | ClassRangeRegexToken;
 
 /**
  * Create a simple char token
@@ -82,37 +95,89 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
 }
 
 /**
- * Internal helper checking if a character is a decimal one, ie: 0-9
+ * Create a character token based on a full block.
+ * This function does not check the block itself, only call it with valid blocks.
  */
-function isDigit(char: string): boolean {
-  return char >= '0' && char <= '9';
+function blockToCharToken(block: string): CharRegexToken {
+  if (block[0] === '\\') {
+    const next = block[1];
+    switch (next) {
+      case 'x': {
+        const allDigits = block.substring(2);
+        const codePoint = Number.parseInt(allDigits, 16);
+        const symbol = String.fromCodePoint(codePoint);
+        return { type: 'Char', kind: 'hex', symbol, value: block, codePoint };
+      }
+      case 'u': {
+        if (block === '\\u') {
+          return simpleChar('u', true);
+        }
+        const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
+        const codePoint = Number.parseInt(allDigits, 16);
+        const symbol = String.fromCodePoint(codePoint);
+        return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint };
+      }
+
+      case '0': {
+        return metaEscapedChar(block, '\0');
+      }
+      case 'n': {
+        return metaEscapedChar(block, '\n');
+      }
+      case 'f': {
+        return metaEscapedChar(block, '\f');
+      }
+      case 'r': {
+        return metaEscapedChar(block, '\r');
+      }
+      case 't': {
+        return metaEscapedChar(block, '\t');
+      }
+      case 'v': {
+        return metaEscapedChar(block, '\v');
+      }
+      case 'w':
+      case 'W':
+      case 'd':
+      case 'D':
+      case 's':
+      case 'S':
+      case 'b':
+      case 'B': {
+        return { type: 'Char', kind: 'meta', symbol: undefined, value: block, codePoint: Number.NaN };
+      }
+      default: {
+        if (isDigit(next)) {
+          const allDigits = block.substring(1);
+          const codePoint = Number(allDigits);
+          const symbol = String.fromCodePoint(codePoint);
+          return { type: 'Char', kind: 'decimal', symbol, value: block, codePoint };
+        }
+        const char = block.substring(1); // TODO - Properly handle unicode
+        return simpleChar(char, true);
+      }
+    }
+  }
+  return simpleChar(block);
 }
 
 /**
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
-function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean, mode: TokenizerBlockMode): void {
+function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean): void {
   for (
-    let index = 0, block = readFrom(regexSource, index, unicodeMode, mode);
+    let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
     index !== regexSource.length;
-    index += block.length, block = readFrom(regexSource, index, unicodeMode, mode)
+    index += block.length, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full)
   ) {
     const firstInBlock = block[0];
     switch (firstInBlock) {
       case '.': {
-        if (mode === TokenizerBlockMode.Character) {
-          tokens.push(simpleChar(block));
-          break;
-        }
         tokens.push({ type: 'Char', kind: 'meta', symbol: block, value: block, codePoint: Number.NaN });
         break;
       }
       case '*':
       case '+': {
-        if (mode === TokenizerBlockMode.Character) {
-          tokens.push(simpleChar(block));
-          break;
-        }
         const previous = safePop(tokens);
         tokens.push({
           type: 'Repetition',
@@ -122,10 +187,6 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         break;
       }
       case '?': {
-        if (mode === TokenizerBlockMode.Character) {
-          tokens.push(simpleChar(block));
-          break;
-        }
         const previous = safePop(tokens);
         if (previous.type === 'Repetition') {
           previous.quantifier.greedy = false;
@@ -162,95 +223,37 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         break;
       }
       case '[': {
-        if (block === '[') {
-          tokens.push(simpleChar(block));
-          break;
+        const blockContent = block.substring(1, block.length - 1);
+        const subTokens: (CharRegexToken | ClassRangeRegexToken)[] = [];
+
+        //let previousWasSimpleDash = false;
+        for (
+          let subIndex = 0, subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character);
+          subIndex !== blockContent.length;
+          subIndex += subBlock.length,
+            subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character)
+        ) {
+          const newToken = blockToCharToken(subBlock);
+          //if (subBlock === '-') {
+          //  subTokens.push(newToken);
+          //  previousWasSimpleDash = true;
+          //} else {
+          //  const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
+          //  if (previousWasSimpleDash && operand1Token !== undefined && operand1Token.type === 'Char') {
+          //    subTokens.pop(); // dash
+          //    subTokens.pop(); // operator 1
+          //    subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
+          //  } else {
+          subTokens.push(newToken);
+          //  }
+          //  previousWasSimpleDash = false;
+          //}
         }
-        const subTokens: RegexToken[] = [];
-        pushTokens(subTokens, block.substring(1, block.length - 1), unicodeMode, TokenizerBlockMode.Character);
         tokens.push({ type: 'CharacterClass', expressions: subTokens });
         break;
       }
-      case '\\': {
-        const next = block[1];
-        switch (next) {
-          case 'x': {
-            const allDigits = block.substring(2);
-            const codePoint = Number.parseInt(allDigits, 16);
-            const symbol = String.fromCodePoint(codePoint);
-            tokens.push({ type: 'Char', kind: 'hex', symbol, value: block, codePoint });
-            break;
-          }
-          case 'u': {
-            if (block === '\\u') {
-              tokens.push(simpleChar('u', true));
-              break;
-            }
-            const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
-            const codePoint = Number.parseInt(allDigits, 16);
-            const symbol = String.fromCodePoint(codePoint);
-            tokens.push({ type: 'Char', kind: 'unicode', symbol, value: block, codePoint });
-            break;
-          }
-
-          case '0': {
-            tokens.push(metaEscapedChar(block, '\0'));
-            break;
-          }
-          case 'n': {
-            tokens.push(metaEscapedChar(block, '\n'));
-            break;
-          }
-          case 'f': {
-            tokens.push(metaEscapedChar(block, '\f'));
-            break;
-          }
-          case 'r': {
-            tokens.push(metaEscapedChar(block, '\r'));
-            break;
-          }
-          case 't': {
-            tokens.push(metaEscapedChar(block, '\t'));
-            break;
-          }
-          case 'v': {
-            tokens.push(metaEscapedChar(block, '\v'));
-            break;
-          }
-          case 'w':
-          case 'W':
-          case 'd':
-          case 'D':
-          case 's':
-          case 'S':
-          case 'b':
-          case 'B': {
-            tokens.push({ type: 'Char', kind: 'meta', symbol: undefined, value: block, codePoint: Number.NaN });
-            break;
-          }
-          default: {
-            if (isDigit(next)) {
-              const allDigits = block.substring(1);
-              const codePoint = Number(allDigits);
-              const symbol = String.fromCodePoint(codePoint);
-              tokens.push({
-                type: 'Char',
-                kind: 'decimal',
-                symbol,
-                value: block,
-                codePoint,
-              });
-              break;
-            }
-            const char = block.substring(1); // TODO - Properly handle unicode
-            tokens.push(simpleChar(char, true));
-            break;
-          }
-        }
-        break;
-      }
       default: {
-        tokens.push(simpleChar(block));
+        tokens.push(blockToCharToken(block));
         break;
       }
     }
@@ -264,7 +267,7 @@ export function tokenizeRegex(regex: RegExp): RegexToken {
   const unicodeMode = regex.flags.includes('u');
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
-  pushTokens(tokens, regexSource, unicodeMode, TokenizerBlockMode.Full);
+  pushTokens(tokens, regexSource, unicodeMode);
   if (tokens.length > 1) {
     return {
       type: 'Alternative',
