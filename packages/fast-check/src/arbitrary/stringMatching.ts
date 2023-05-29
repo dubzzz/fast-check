@@ -26,7 +26,7 @@ export type StringMatchingConstraints = {
 const wordChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
 const digitChars = '0123456789';
 const spaceChars = ' \t\r\n\v\f';
-const newLineAndTerminatorChars = '\r\n\036\025';
+const newLineAndTerminatorChars = '\r\n\x1E\x15';
 
 const defaultChar = char();
 
