@@ -59,7 +59,7 @@ type ClassRangeRegexToken = {
   to: CharRegexToken;
 };
 
-type RegexToken =
+export type RegexToken =
   | CharRegexToken
   | RepetitionRegexToken
   | QuantifierRegexToken
