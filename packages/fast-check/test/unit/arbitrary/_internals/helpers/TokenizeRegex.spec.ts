@@ -23,19 +23,24 @@ describe('tokenizeRegex', () => {
     { regex: /\w/ },
     { regex: /[abc]/ },
     { regex: /[{]/ },
-    //{ regex: /[.*]/ },
+    { regex: /[.*]/ },
     { regex: /[\u{1f431}]/ },
-    //{ regex: /[a-z]/ },
-    //{ regex: /[A-Za-z0-9-]/ },
-    //{ regex: /[A-Za-z0-9-/]/ },
-    //{ regex: /(ab|cd)/ },
+    { regex: /[a-z]/ },
+    { regex: /[A-Za-z0-9-]/ },
+    { regex: /[A-Za-z0-9-/]/ },
+    { regex: /[ac-ez]/ },
     { regex: /\u{1[81]}/, invalidWithUnicode: true },
+    { regex: /[\u{1f431}-\u{1f434}]/, invalidWithNonUnicode: true },
+    { regex: /[🐱-🐴]/, invalidWithNonUnicode: true },
   ];
 
-  it.each(allRegexes)('should properly tokenize the regex $regex', ({ regex }) => {
-    const tokenized = tokenizeRegex(regex);
-    expect(tokenized).toEqual(parse(regex).body);
-  });
+  it.each(allRegexes.filter((i) => !i.invalidWithNonUnicode))(
+    'should properly tokenize the regex $regex',
+    ({ regex }) => {
+      const tokenized = tokenizeRegex(regex);
+      expect(tokenized).toEqual(parse(regex).body);
+    }
+  );
 
   it.each(allRegexes.filter((i) => !i.invalidWithUnicode))(
     'should properly tokenize the regex $regex in unicode mode',
