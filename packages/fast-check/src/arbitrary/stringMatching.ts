@@ -127,6 +127,9 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
         }
       );
     }
+    case 'Group': {
+      return toMatchingArbitrary(astNode.expression, constraints);
+    }
     default: {
       throw raiseUnsupportedASTNode(astNode);
     }
