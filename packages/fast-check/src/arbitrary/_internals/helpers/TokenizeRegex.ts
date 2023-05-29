@@ -100,11 +100,19 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
     const firstInBlock = block[0];
     switch (firstInBlock) {
       case '.': {
+        if (mode === TokenizerBlockMode.Character) {
+          tokens.push(simpleChar(block));
+          break;
+        }
         tokens.push({ type: 'Char', kind: 'meta', symbol: block, value: block, codePoint: Number.NaN });
         break;
       }
       case '*':
       case '+': {
+        if (mode === TokenizerBlockMode.Character) {
+          tokens.push(simpleChar(block));
+          break;
+        }
         const previous = safePop(tokens);
         tokens.push({
           type: 'Repetition',
@@ -114,6 +122,10 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         break;
       }
       case '?': {
+        if (mode === TokenizerBlockMode.Character) {
+          tokens.push(simpleChar(block));
+          break;
+        }
         const previous = safePop(tokens);
         if (previous.type === 'Repetition') {
           previous.quantifier.greedy = false;
@@ -150,6 +162,10 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         break;
       }
       case '[': {
+        if (block === '[') {
+          tokens.push(simpleChar(block));
+          break;
+        }
         const subTokens: RegexToken[] = [];
         pushTokens(subTokens, block.substring(1, block.length - 1), unicodeMode, TokenizerBlockMode.Character);
         tokens.push({ type: 'CharacterClass', expressions: subTokens });
