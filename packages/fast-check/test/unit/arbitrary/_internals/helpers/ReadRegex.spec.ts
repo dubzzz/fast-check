@@ -29,6 +29,9 @@ describe('readFrom', () => {
     ${'[\\u{1f431}]'} | ${'[\\u{1f431}]'}
     ${'[\\]]'}        | ${'[\\]]'}
     ${'(abc|cde)'}    | ${'(abc|cde)'}
+    ${'(\\))'}        | ${'(\\))'}
+    ${'([)])'}        | ${'([)])'}
+    ${'([)\\]])'}     | ${'([)\\]])'}
   `('should properly extract first block of "$source"', ({ source, expected }) => {
     const expectedNonUnicode = typeof expected === 'string' ? expected : expected[0];
     const expectedUnicode = typeof expected === 'string' ? expected : expected[1];

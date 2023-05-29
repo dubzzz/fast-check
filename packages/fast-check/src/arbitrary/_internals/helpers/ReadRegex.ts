@@ -39,6 +39,8 @@ function parenthesisBlockContentEndFrom(text: string, from: number): number {
       index += 1;
     } else if (char === ')') {
       return index;
+    } else if (char === '[') {
+      index = squaredBracketBlockContentEndFrom(text, index);
     }
   }
   throw new Error(`Missing closing ')'`);

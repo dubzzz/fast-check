@@ -52,6 +52,9 @@ describe('tokenizeRegex', () => {
     { regex: /(foo) (?<named>x) (bar)/ }, // named capturing group with anonymous capturing groups
     { regex: /(?:x)/ }, // non-capturing group
     { regex: /(foo) (?:x) (bar)/ }, // non-capturing group with anonymous capturing groups
+    { regex: /(\))/ },
+    { regex: /([)])/ },
+    { regex: /([)\]])/ },
     { regex: /(function\s+)(?<name>[$_A-Z][$_A-Za-z0-9]*)/ },
   ];
 
