@@ -70,15 +70,26 @@ function curlyBracketBlockContentEndFrom(text: string, from: number): number {
   return -1; // no end found
 }
 
+export enum TokenizerBlockMode {
+  Full = 0,
+  Character = 1,
+}
+
 /**
  * Find the index past-one of the last character of the block starting at index "from" in "text"
  */
-function blockEndFrom(text: string, from: number, unicodeMode: boolean): number {
+function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: TokenizerBlockMode): number {
   switch (text[from]) {
     case '[': {
+      if (mode === TokenizerBlockMode.Character) {
+        return from + 1;
+      }
       return squaredBracketBlockContentEndFrom(text, from + 1) + 1;
     }
     case '{': {
+      if (mode === TokenizerBlockMode.Character) {
+        return from + 1;
+      }
       const foundEnd = curlyBracketBlockContentEndFrom(text, from + 1);
       if (foundEnd === -1) {
         return from + 1;
@@ -86,6 +97,9 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean): number 
       return foundEnd + 1;
     }
     case '(': {
+      if (mode === TokenizerBlockMode.Character) {
+        return from + 1;
+      }
       return parenthesisBlockContentEndFrom(text, from + 1) + 1;
     }
     case ']':
@@ -175,7 +189,7 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean): number 
  * Extract the block starting at "from" in "text"
  * @internal
  */
-export function readFrom(text: string, from: number, unicodeMode: boolean): string {
-  const to = blockEndFrom(text, from, unicodeMode);
+export function readFrom(text: string, from: number, unicodeMode: boolean, mode: TokenizerBlockMode): string {
+  const to = blockEndFrom(text, from, unicodeMode, mode);
   return text.substring(from, to);
 }

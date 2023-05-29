@@ -31,8 +31,8 @@ describe('tokenizeRegex', () => {
     { regex: /[ac-ez]/ },
     { regex: /[A-Z][a-z]*/ },
     { regex: /\u{1[81]}/, invalidWithUnicode: true },
-    { regex: /[\u{1f431}-\u{1f434}]/, invalidWithNonUnicode: true },
-    { regex: /[🐱-🐴]/, invalidWithNonUnicode: true },
+    { regex: /[\u{1f431}-\u{1f434}]/u, invalidWithNonUnicode: true },
+    { regex: /[🐱-🐴]/u, invalidWithNonUnicode: true },
   ];
 
   it.each(allRegexes.filter((i) => !i.invalidWithNonUnicode))(

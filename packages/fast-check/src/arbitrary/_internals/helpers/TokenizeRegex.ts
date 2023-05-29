@@ -1,4 +1,4 @@
-import { readFrom } from './ReadRegex';
+import { TokenizerBlockMode, readFrom } from './ReadRegex';
 
 /**
  * Pop the last pushed token and return it,
@@ -91,11 +91,11 @@ function isDigit(char: string): boolean {
 /**
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
-function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean): void {
+function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean, mode: TokenizerBlockMode): void {
   for (
-    let index = 0, block = readFrom(regexSource, index, unicodeMode);
+    let index = 0, block = readFrom(regexSource, index, unicodeMode, mode);
     index !== regexSource.length;
-    index += block.length, block = readFrom(regexSource, index, unicodeMode)
+    index += block.length, block = readFrom(regexSource, index, unicodeMode, mode)
   ) {
     const firstInBlock = block[0];
     switch (firstInBlock) {
@@ -151,7 +151,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
       }
       case '[': {
         const subTokens: RegexToken[] = [];
-        pushTokens(subTokens, block.substring(1, block.length - 1), unicodeMode);
+        pushTokens(subTokens, block.substring(1, block.length - 1), unicodeMode, TokenizerBlockMode.Character);
         tokens.push({ type: 'CharacterClass', expressions: subTokens });
         break;
       }
@@ -248,7 +248,7 @@ export function tokenizeRegex(regex: RegExp): RegexToken {
   const unicodeMode = regex.flags.includes('u');
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
-  pushTokens(tokens, regexSource, unicodeMode);
+  pushTokens(tokens, regexSource, unicodeMode, TokenizerBlockMode.Full);
   if (tokens.length > 1) {
     return {
       type: 'Alternative',

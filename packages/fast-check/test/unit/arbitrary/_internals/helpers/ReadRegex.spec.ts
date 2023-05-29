@@ -1,4 +1,4 @@
-import { readFrom } from '../../../../../src/arbitrary/_internals/helpers/ReadRegex';
+import { TokenizerBlockMode, readFrom } from '../../../../../src/arbitrary/_internals/helpers/ReadRegex';
 
 describe('readFrom', () => {
   it.each`
@@ -32,7 +32,7 @@ describe('readFrom', () => {
   `('should properly extract first block of "$source"', ({ source, expected }) => {
     const expectedNonUnicode = typeof expected === 'string' ? expected : expected[0];
     const expectedUnicode = typeof expected === 'string' ? expected : expected[1];
-    expect(readFrom(source, 0, false)).toBe(expectedNonUnicode);
-    expect(readFrom(source, 0, true)).toBe(expectedUnicode);
+    expect(readFrom(source, 0, false, TokenizerBlockMode.Full)).toBe(expectedNonUnicode);
+    expect(readFrom(source, 0, true, TokenizerBlockMode.Full)).toBe(expectedUnicode);
   });
 });
