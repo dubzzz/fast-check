@@ -72,11 +72,11 @@ fc.stringMatching(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/);
 fc.stringMatching(/[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/);
 // Note: regex matching UUID
 // Examples of generated values:
-// • "1c3d0b9f1d6c9f1f-4a9f0a3e-123452c4c3c-89ab7a9d1a-6c0a1f0e4f0a6c2f0e2a2d3c"
-// • "1a1a0b8a0a0d1d4a-1e7a7c8b-123457e1f1a-89ab9f0a6a-3c3d7d2b6a7f3e3c7a6d2b5c"
-// • "5d7d0d6a3e2b0e1e-0b1c2b5c-123451b4a0f-89ab3f3f8a-7e2d6b0c7c0d5e2d0c2b1a9e"
-// • "9b8b2e3f4f1a2c8d-3a0f2c4c-123458e4f5a-89ab1e9d6a-0c7d0e1e0e0b0a1f0d3c1b2c"
-// • "8a2d1d0b3a0c5f6b-2f8f0a7a-123452d7c0d-89ab8f0d7f-7f3b5f7d2f0c0c8f5d4f1d2b"
+// • "93a1ec6d-7f8c-3ace-8ea7-ac73d142269b"
+// • "11b300d1-dd9e-3ae1-abe9-bdfd61a2e1d0"
+// • "dde3a7b7-3afb-5c23-bacb-7cc7b80ba93a"
+// • "eb1c3b5f-d8b9-5907-a4bc-aacda161bdeb"
+// • "6f3dcbaa-de1c-56ac-9eac-0d1ebf77ba13"
 // • …
 ```
 
