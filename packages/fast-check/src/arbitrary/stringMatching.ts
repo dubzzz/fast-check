@@ -130,6 +130,9 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
     case 'Group': {
       return toMatchingArbitrary(astNode.expression, constraints);
     }
+    case 'Disjunction': {
+      return oneof(toMatchingArbitrary(astNode.left, constraints), toMatchingArbitrary(astNode.right, constraints));
+    }
     default: {
       throw raiseUnsupportedASTNode(astNode);
     }

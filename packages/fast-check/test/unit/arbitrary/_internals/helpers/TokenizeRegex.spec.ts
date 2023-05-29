@@ -56,6 +56,14 @@ describe('tokenizeRegex', () => {
     { regex: /([)])/ },
     { regex: /([)\]])/ },
     { regex: /(function\s+)(?<name>[$_A-Z][$_A-Za-z0-9]*)/ },
+    { regex: /a|b/ }, // 'or' with only two operands containing a single token each
+    { regex: /a|b|c/ }, // 'or' with strictly more than two operands containing a single token each
+    { regex: /abc|def/ }, // 'or' with only two operands containing a multiple tokens each
+    { regex: /abc|def|h|jkl/ }, // 'or' with strictly more than two operands
+    { regex: /abc|[|]/ }, // 'or' with operands having pipe in it
+    { regex: /abc|\|/ }, // 'or' with operands having escaped pipe in it
+    { regex: /a\w+c|d.*|e[f-k]l/ }, // 'or' with complex operands
+    { regex: /(abc|def)/ },
   ];
 
   describe('non-unicode regex', () => {
