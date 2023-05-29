@@ -22,47 +22,40 @@ describe('stringMatching (integration)', () => {
   type Extra = { regex: RegExp };
   const extraParameters: fc.Arbitrary<Extra> = fc
     .array(
-      fc.array(
-        fc.record(
-          {
-            matcher: fc.constantFrom(...regexQuantifiableChunks),
-            quantifier: fc.oneof(
-              fc.constantFrom('?', '*', '+'),
-              fc.nat({ max: 5 }),
-              fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
-            ),
-          },
-          { requiredKeys: ['matcher'] }
-        ),
-        { minLength: 1 }
+      fc.record(
+        {
+          matcher: fc.constantFrom(...regexQuantifiableChunks),
+          quantifier: fc.oneof(
+            fc.constantFrom('?', '*', '+'),
+            fc.nat({ max: 5 }),
+            fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
+          ),
+        },
+        { requiredKeys: ['matcher'] }
       ),
-      { minLength: 1, size: '-1' }
+      { minLength: 1 }
     )
-    .map((disjunctions) => {
+    .map((chunks) => {
       return {
         regex: new RegExp(
-          disjunctions
-            .map((chunks) =>
-              chunks
-                .map((chunk) => {
-                  const quantifier = chunk.quantifier;
-                  const quantifierString =
-                    quantifier === undefined
-                      ? ''
-                      : typeof quantifier === 'string'
-                      ? quantifier
-                      : typeof quantifier === 'number'
-                      ? `{${quantifier}}`
-                      : typeof quantifier[1] === 'number'
-                      ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
-                          ...(quantifier as [number, number])
-                        )}}`
-                      : `{${quantifier[0]},}`;
-                  return chunk.matcher + quantifierString;
-                })
-                .join('')
-            )
-            .join('|')
+          chunks
+            .map((chunk) => {
+              const quantifier = chunk.quantifier;
+              const quantifierString =
+                quantifier === undefined
+                  ? ''
+                  : typeof quantifier === 'string'
+                  ? quantifier
+                  : typeof quantifier === 'number'
+                  ? `{${quantifier}}`
+                  : typeof quantifier[1] === 'number'
+                  ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
+                      ...(quantifier as [number, number])
+                    )}}`
+                  : `{${quantifier[0]},}`;
+              return chunk.matcher + quantifierString;
+            })
+            .join('')
         ),
       };
     });
