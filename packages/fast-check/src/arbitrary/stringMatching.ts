@@ -133,11 +133,18 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
  * @public
  */
 export function stringMatching(regex: RegExp, constraints: StringMatchingConstraints = {}): Arbitrary<string> {
-  if (regex.flags.includes('i')) {
-    throw new Error('Unable to produce string matching case insensitive regexes');
-  }
-  if (regex.flags.includes('u')) {
-    throw new Error('Unable to produce string matching unicode regexes');
+  for (const flag of regex.flags) {
+    // Supported:
+    //   g - all matches, not limited to first match
+    // Not supported:
+    //   i - case-insensitive
+    //   m - multiline
+    //   s - dot matches newline character
+    //   u - unicode support
+    //   y - search at the exact position in the text or sticky mode
+    if (flag !== 'g') {
+      throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
+    }
   }
   const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size };
   const regexRootToken = tokenizeRegex(regex);
