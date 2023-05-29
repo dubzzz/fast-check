@@ -8164,6 +8164,7 @@ __metadata:
     glob: ^10.2.6
     jest: ^29.5.0
     pure-rand: ^6.0.0
+    regexp-tree: ^0.1.27
     replace-in-file: ^7.0.1
     ts-jest: ^29.1.0
     typedoc: ^0.24.7
@@ -13847,6 +13848,15 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.8.4
   checksum: 2d15bdeadbbfb1d12c93f5775493d85874dbe1d405bec323da5c61ec6e701bc9eea36167483e1a5e752de9b2df59ab9a2dfff6bf3784f2b28af2279a673d29a4
+  languageName: node
+  linkType: hard
+
+"regexp-tree@npm:^0.1.27":
+  version: 0.1.27
+  resolution: "regexp-tree@npm:0.1.27"
+  bin:
+    regexp-tree: bin/regexp-tree
+  checksum: 129aebb34dae22d6694ab2ac328be3f99105143737528ab072ef624d599afecbcfae1f5c96a166fa9e5f64fa1ecf30b411c4691e7924c3e11bbaf1712c260c54
   languageName: node
   linkType: hard
 
