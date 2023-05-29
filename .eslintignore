@@ -3,7 +3,6 @@ examples/
 packages/*/dist/
 packages/*/lib/
 packages/*/lib-*/
-packages/test-bundle-*/
 packages/test-minimal-support/
 packages/test-types/
 website/

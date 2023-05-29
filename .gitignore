@@ -6,7 +6,6 @@ packages/*/dist/
 packages/*/lib/
 packages/*/lib-*/
 packages/fast-check/docs/
-packages/test-bundle-*/out.txt
 *.tgz
 deopt.out
 v8.log
