@@ -59,6 +59,26 @@ type ClassRangeRegexToken = {
   from: CharRegexToken;
   to: CharRegexToken;
 };
+type GroupRegexToken =
+  | {
+      type: 'Group';
+      capturing: true;
+      number: number;
+      expression: RegexToken;
+    }
+  | {
+      type: 'Group';
+      capturing: true;
+      nameRaw: string;
+      name: string;
+      number: number;
+      expression: RegexToken;
+    }
+  | {
+      type: 'Group';
+      capturing: false;
+      expression: RegexToken;
+    };
 
 export type RegexToken =
   | CharRegexToken
@@ -66,7 +86,8 @@ export type RegexToken =
   | QuantifierRegexToken
   | AlternativeRegexToken
   | CharacterClassRegexToken
-  | ClassRangeRegexToken;
+  | ClassRangeRegexToken
+  | GroupRegexToken;
 
 /**
  * Create a simple char token
@@ -93,6 +114,16 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
     value: block, // eg.: \\t
     codePoint: symbol.codePointAt(0) || -1,
   };
+}
+
+function toSingleToken(tokens: RegexToken[]): RegexToken {
+  if (tokens.length > 1) {
+    return {
+      type: 'Alternative',
+      expressions: tokens,
+    };
+  }
+  return tokens[0];
 }
 
 /**
@@ -166,6 +197,7 @@ function blockToCharToken(block: string): CharRegexToken {
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
 function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean): void {
+  let capturingGroupIndex = 0;
   for (
     let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
     index !== regexSource.length;
@@ -258,6 +290,44 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         tokens.push({ type: 'CharacterClass', expressions: subTokens, negative });
         break;
       }
+      case '(': {
+        const blockContent = block.substring(1, block.length - 1);
+        const subTokens: RegexToken[] = [];
+        if (blockContent[0] === '?') {
+          if (blockContent[1] === ':') {
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode);
+            tokens.push({
+              type: 'Group',
+              capturing: false,
+              expression: toSingleToken(subTokens),
+            });
+          } else {
+            const chunks = blockContent.split('>', 2);
+            if (chunks.length !== 2 || chunks[0][1] !== '<') {
+              throw new Error(`Unsupported regex content found at ${JSON.stringify(block)}`);
+            }
+            const nameRaw = chunks[0].substring(2);
+            pushTokens(subTokens, chunks[1], unicodeMode);
+            tokens.push({
+              type: 'Group',
+              capturing: true,
+              nameRaw,
+              name: nameRaw,
+              number: ++capturingGroupIndex,
+              expression: toSingleToken(subTokens),
+            });
+          }
+        } else {
+          pushTokens(subTokens, blockContent, unicodeMode);
+          tokens.push({
+            type: 'Group',
+            capturing: true,
+            number: ++capturingGroupIndex,
+            expression: toSingleToken(subTokens),
+          });
+        }
+        break;
+      }
       default: {
         tokens.push(blockToCharToken(block));
         break;
@@ -274,11 +344,5 @@ export function tokenizeRegex(regex: RegExp): RegexToken {
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
   pushTokens(tokens, regexSource, unicodeMode);
-  if (tokens.length > 1) {
-    return {
-      type: 'Alternative',
-      expressions: tokens,
-    };
-  }
-  return tokens[0];
+  return toSingleToken(tokens);
 }

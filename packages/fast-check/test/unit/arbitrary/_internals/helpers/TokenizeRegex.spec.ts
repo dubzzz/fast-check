@@ -26,6 +26,7 @@ describe('tokenizeRegex', () => {
     { regex: /\w/ },
     { regex: /[abc]/ },
     { regex: /[{]/ },
+    { regex: /[(]/ },
     { regex: /[.*]/ },
     { regex: /[.*[\\\](){}?]/ },
     { regex: /[\u{1f431}]/ },
@@ -44,6 +45,17 @@ describe('tokenizeRegex', () => {
     { regex: /[a-z^A-Z]/ },
     { regex: /\u{1[81]}/, invalidWithUnicode: true },
     { regex: /[\u{1f431}-\u{1f434}]/u },
+    { regex: /[\u{1f431}-\u{1f434}]/u },
+    { regex: /(foo)/ }, // capturing group
+    { regex: /(foo) (bar) (baz)/ }, // multiple capturing groups
+    { regex: /(?<named>x)/ }, // named capturing group
+    { regex: /(foo) (?<named>x) (bar)/ }, // named capturing group with anonymous capturing groups
+    { regex: /(?:x)/ }, // non-capturing group
+    { regex: /(foo) (?:x) (bar)/ }, // non-capturing group with anonymous capturing groups
+    { regex: /(\))/ },
+    { regex: /([)])/ },
+    { regex: /([)\]])/ },
+    { regex: /(function\s+)(?<name>[$_A-Z][$_A-Za-z0-9]*)/ },
   ];
 
   describe('non-unicode regex', () => {
