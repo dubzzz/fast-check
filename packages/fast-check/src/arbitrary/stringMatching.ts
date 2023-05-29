@@ -109,13 +109,23 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
       return tuple(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints))).map((vs) => vs.join(''));
     }
     case 'CharacterClass':
-      // TODO - No negative class implemented yet!
+      if (astNode.negative) {
+        const childrenArbitraries = astNode.expressions.map((n) => toMatchingArbitrary(n, constraints));
+        return defaultChar.filter((c) => childrenArbitraries.every((arb) => !arb.canShrinkWithoutContext(c)));
+      }
       return oneof(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints)));
     case 'ClassRange': {
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
-      // TODO - No unmap implemented yet!
-      return integer({ min, max }).map((n) => String.fromCodePoint(n));
+      return integer({ min, max }).map(
+        (n) => String.fromCodePoint(n),
+        (c) => {
+          if (typeof c !== 'string') throw new Error('Invalid type');
+          if ([...c].length !== 1) throw new Error('Invalid length');
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          return c.codePointAt(0)!;
+        }
+      );
     }
     default: {
       throw raiseUnsupportedASTNode(astNode);
