@@ -14,7 +14,7 @@ describe('tokenizeRegex', () => {
     { regex: /.??/ },
     { regex: /.{1,4}?/ },
     { regex: /a/ },
-    { regex: /\125/, noUnicode: true },
+    { regex: /\125/, invalidWithUnicode: true },
     { regex: /\x25/ },
     { regex: /\u0025/ },
     { regex: /\u{1f431}/ },
@@ -26,8 +26,10 @@ describe('tokenizeRegex', () => {
     //{ regex: /[.*]/ },
     { regex: /[\u{1f431}]/ },
     //{ regex: /[a-z]/ },
+    //{ regex: /[A-Za-z0-9-]/ },
+    //{ regex: /[A-Za-z0-9-/]/ },
     //{ regex: /(ab|cd)/ },
-    { regex: /\u{1[81]}/, noUnicode: true },
+    { regex: /\u{1[81]}/, invalidWithUnicode: true },
   ];
 
   it.each(allRegexes)('should properly tokenize the regex $regex', ({ regex }) => {
@@ -35,7 +37,7 @@ describe('tokenizeRegex', () => {
     expect(tokenized).toEqual(parse(regex).body);
   });
 
-  it.each(allRegexes.filter((i) => !i.noUnicode))(
+  it.each(allRegexes.filter((i) => !i.invalidWithUnicode))(
     'should properly tokenize the regex $regex in unicode mode',
     ({ regex }) => {
       const unicodeRegex = new RegExp(regex, 'u');
