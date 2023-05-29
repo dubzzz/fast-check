@@ -79,6 +79,11 @@ type GroupRegexToken =
       capturing: false;
       expression: RegexToken;
     };
+type DisjunctionRegexToken = {
+  type: 'Disjunction';
+  left: RegexToken;
+  right: RegexToken;
+};
 
 export type RegexToken =
   | CharRegexToken
@@ -87,7 +92,8 @@ export type RegexToken =
   | AlternativeRegexToken
   | CharacterClassRegexToken
   | ClassRangeRegexToken
-  | GroupRegexToken;
+  | GroupRegexToken
+  | DisjunctionRegexToken;
 
 /**
  * Create a simple char token
@@ -197,6 +203,7 @@ function blockToCharToken(block: string): CharRegexToken {
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
 function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean): void {
+  let disjunctions: RegexToken[] | null = null;
   let capturingGroupIndex = 0;
   for (
     let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
@@ -205,6 +212,13 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
   ) {
     const firstInBlock = block[0];
     switch (firstInBlock) {
+      case '|': {
+        if (disjunctions === null) {
+          disjunctions = [];
+        }
+        disjunctions.push(toSingleToken(tokens.splice(0)));
+        break;
+      }
       case '.': {
         tokens.push({ type: 'Char', kind: 'meta', symbol: block, value: block, codePoint: Number.NaN });
         break;
@@ -333,6 +347,22 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         break;
       }
     }
+  }
+  if (disjunctions !== null) {
+    disjunctions.push(toSingleToken(tokens.splice(0)));
+    let currentDisjunction: DisjunctionRegexToken = {
+      type: 'Disjunction',
+      left: disjunctions[0],
+      right: disjunctions[1],
+    };
+    for (let index = 2; index < disjunctions.length; ++index) {
+      currentDisjunction = {
+        type: 'Disjunction',
+        left: currentDisjunction,
+        right: disjunctions[index],
+      };
+    }
+    tokens.push(currentDisjunction);
   }
 }
 
