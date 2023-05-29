@@ -10,6 +10,8 @@ describe('stringMatching (integration)', () => {
   const regexQuantifiableChunks = [
     '[s-z]', // any character in range s to z
     '[ace]', // any character from ace
+    '[^s-z]', // any character not in range s to z
+    '[^ace]', // any character not from ace
     '.', // 'any' character
     ...['w', 'd', 's' /*'b'*/].map((v) => `\\${v}`), // lower case meta characters
     ...['w', 'd', 's' /*'b'*/].map((v) => `\\${v.toUpperCase()}`), // upper case meta characters

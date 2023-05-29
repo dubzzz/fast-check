@@ -52,6 +52,7 @@ type AlternativeRegexToken = {
 type CharacterClassRegexToken = {
   type: 'CharacterClass';
   expressions: RegexToken[];
+  negative?: true;
 };
 type ClassRangeRegexToken = {
   type: 'ClassRange';
@@ -226,6 +227,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         const blockContent = block.substring(1, block.length - 1);
         const subTokens: (CharRegexToken | ClassRangeRegexToken)[] = [];
 
+        let negative: true | undefined = undefined;
         let previousWasSimpleDash = false;
         for (
           let subIndex = 0, subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character);
@@ -233,6 +235,10 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
           subIndex += subBlock.length,
             subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character)
         ) {
+          if (subIndex === 0 && subBlock === '^') {
+            negative = true;
+            continue;
+          }
           const newToken = blockToCharToken(subBlock);
           if (subBlock === '-') {
             subTokens.push(newToken);
@@ -249,7 +255,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
             previousWasSimpleDash = false;
           }
         }
-        tokens.push({ type: 'CharacterClass', expressions: subTokens });
+        tokens.push({ type: 'CharacterClass', expressions: subTokens, negative });
         break;
       }
       default: {
