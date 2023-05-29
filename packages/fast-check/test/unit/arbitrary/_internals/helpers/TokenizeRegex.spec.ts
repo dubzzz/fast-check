@@ -39,20 +39,24 @@ describe('tokenizeRegex', () => {
     { regex: /[\u{1f431}-\u{1f434}]/u },
   ];
 
-  it.each(allRegexes.filter((i) => !i.regex.flags.includes('u')))(
-    'should properly tokenize the regex $regex',
-    ({ regex }) => {
-      const tokenized = tokenizeRegex(regex);
-      expect(tokenized).toEqual(parse(regex).body);
-    }
-  );
+  describe('non-unicode regex', () => {
+    it.each(allRegexes.filter((i) => !i.regex.flags.includes('u')))(
+      'should properly tokenize the regex $regex',
+      ({ regex }) => {
+        const tokenized = tokenizeRegex(regex);
+        expect(tokenized).toEqual(parse(regex).body);
+      }
+    );
+  });
 
-  it.each(allRegexes.filter((i) => !i.invalidWithUnicode))(
-    'should properly tokenize the regex $regex in unicode mode',
-    ({ regex }) => {
-      const unicodeRegex = new RegExp(regex, 'u');
-      const tokenized = tokenizeRegex(unicodeRegex);
-      expect(tokenized).toEqual(parse(unicodeRegex).body);
-    }
-  );
+  describe('unicode regex', () => {
+    it.each(allRegexes.filter((i) => !i.invalidWithUnicode))(
+      'should properly tokenize the regex $regex in unicode mode',
+      ({ regex }) => {
+        const unicodeRegex = new RegExp(regex, 'u');
+        const tokenized = tokenizeRegex(unicodeRegex);
+        expect(tokenized).toEqual(parse(unicodeRegex).body);
+      }
+    );
+  });
 });
