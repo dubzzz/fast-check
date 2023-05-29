@@ -176,6 +176,7 @@ import {
 import { bigInt64Array, BigIntArrayConstraints } from './arbitrary/bigInt64Array';
 import { bigUint64Array } from './arbitrary/bigUint64Array';
 import { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler';
+import { stringMatching, StringMatchingConstraints } from './arbitrary/stringMatching';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -258,6 +259,7 @@ export {
   fullUnicodeString,
   hexaString,
   base64String,
+  stringMatching,
   lorem,
   constant,
   constantFrom,
@@ -383,6 +385,7 @@ export {
   UniqueArrayConstraintsCustomCompare,
   UniqueArrayConstraintsCustomCompareSelect,
   SparseArrayConstraints,
+  StringMatchingConstraints,
   StringSharedConstraints,
   SubarrayConstraints,
   ShuffledSubarrayConstraints,
