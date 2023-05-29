@@ -226,7 +226,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         const blockContent = block.substring(1, block.length - 1);
         const subTokens: (CharRegexToken | ClassRangeRegexToken)[] = [];
 
-        //let previousWasSimpleDash = false;
+        let previousWasSimpleDash = false;
         for (
           let subIndex = 0, subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character);
           subIndex !== blockContent.length;
@@ -234,20 +234,20 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
             subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character)
         ) {
           const newToken = blockToCharToken(subBlock);
-          //if (subBlock === '-') {
-          //  subTokens.push(newToken);
-          //  previousWasSimpleDash = true;
-          //} else {
-          //  const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
-          //  if (previousWasSimpleDash && operand1Token !== undefined && operand1Token.type === 'Char') {
-          //    subTokens.pop(); // dash
-          //    subTokens.pop(); // operator 1
-          //    subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
-          //  } else {
-          subTokens.push(newToken);
-          //  }
-          //  previousWasSimpleDash = false;
-          //}
+          if (subBlock === '-') {
+            subTokens.push(newToken);
+            previousWasSimpleDash = true;
+          } else {
+            const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
+            if (previousWasSimpleDash && operand1Token !== undefined && operand1Token.type === 'Char') {
+              subTokens.pop(); // dash
+              subTokens.pop(); // operator 1
+              subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
+            } else {
+              subTokens.push(newToken);
+            }
+            previousWasSimpleDash = false;
+          }
         }
         tokens.push({ type: 'CharacterClass', expressions: subTokens });
         break;

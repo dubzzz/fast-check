@@ -3,6 +3,8 @@ import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/T
 
 describe('tokenizeRegex', () => {
   const allRegexes = [
+    // Regexes declared with the /u flag,
+    // will not be executed against non-unicode tests
     { regex: /./ },
     { regex: /.*/ },
     { regex: /.+/ },
@@ -14,6 +16,7 @@ describe('tokenizeRegex', () => {
     { regex: /.??/ },
     { regex: /.{1,4}?/ },
     { regex: /a/ },
+    { regex: /🐱/ },
     { regex: /\125/, invalidWithUnicode: true },
     { regex: /\x25/ },
     { regex: /\u0025/ },
@@ -26,18 +29,17 @@ describe('tokenizeRegex', () => {
     { regex: /[.*]/ },
     { regex: /[.*[\\\](){}?]/ },
     { regex: /[\u{1f431}]/ },
-    //{ regex: /[a-z]/ },
-    //{ regex: /[A-Za-z0-9-]/ },
-    //{ regex: /[A-Za-z0-9-/]/ },
-    //{ regex: /[ac-ez]/ },
-    //{ regex: /[A-Z][a-z]*/ },
-    //{ regex: /[a\-z]/ },
+    { regex: /[a-z]/ },
+    { regex: /[A-Za-z0-9-]/ },
+    { regex: /[A-Za-z0-9-/]/ },
+    { regex: /[ac-ez]/ },
+    { regex: /[A-Z][a-z]*/ },
+    { regex: /[a\-z]/ },
     { regex: /\u{1[81]}/, invalidWithUnicode: true },
-    //{ regex: /[\u{1f431}-\u{1f434}]/, invalidWithNonUnicode: true },
-    //{ regex: /[🐱-🐴]/, invalidWithNonUnicode: true },
+    { regex: /[\u{1f431}-\u{1f434}]/u },
   ];
 
-  it.each(allRegexes /*.filter((i) => !i.invalidWithNonUnicode)*/)(
+  it.each(allRegexes.filter((i) => !i.regex.flags.includes('u')))(
     'should properly tokenize the regex $regex',
     ({ regex }) => {
       const tokenized = tokenizeRegex(regex);
