@@ -25,8 +25,8 @@ describe('stringMatching (integration)', () => {
           matcher: fc.constantFrom(...regexQuantifiableChunks),
           quantifier: fc.oneof(
             fc.constantFrom('?', '*', '+'),
-            fc.integer({ max: 5 }),
-            fc.tuple(fc.integer({ max: 5 }), fc.option(fc.integer({ max: 5 })))
+            fc.nat({ max: 5 }),
+            fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
           ),
         },
         { requiredKeys: ['matcher'] }
