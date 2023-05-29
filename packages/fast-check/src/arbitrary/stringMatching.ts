@@ -5,6 +5,7 @@ import { char } from './char';
 import { constant } from './constant';
 import { constantFrom } from './constantFrom';
 import { integer } from './integer';
+import { oneof } from './oneof';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
 
@@ -62,28 +63,9 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
           case '\\S': {
             return defaultChar.filter((c) => !spaceChars.includes(c));
           }
-          case '\\b': {
-            // \bTO is equivalent to (^|\W)TO
-            // TO\b is equivalent to TO($|\W)
-            // For the moment, we simply translate it into \W for simplicity.
-            const NotWordAstNode: RegexToken = {
-              type: 'Char',
-              kind: 'meta',
-              symbol: undefined,
-              value: '\\W',
-              codePoint: Number.NaN,
-            };
-            return toMatchingArbitrary(NotWordAstNode, constraints);
-          }
+          case '\\b':
           case '\\B': {
-            const WordAstNode: RegexToken = {
-              type: 'Char',
-              kind: 'meta',
-              symbol: undefined,
-              value: '\\w',
-              codePoint: Number.NaN,
-            };
-            return toMatchingArbitrary(WordAstNode, constraints);
+            throw new Error(`Meta character ${astNode.value} not implemented yet!`);
           }
           case '.': {
             return defaultChar.filter((c) => !newLineAndTerminatorChars.includes(c));
@@ -128,8 +110,7 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
     }
     case 'CharacterClass':
       // TODO - No negative class implemented yet!
-      // TODO - No unmap implemented yet!
-      return tuple(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints))).map((vs) => vs.join(''));
+      return oneof(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints)));
     case 'ClassRange': {
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
