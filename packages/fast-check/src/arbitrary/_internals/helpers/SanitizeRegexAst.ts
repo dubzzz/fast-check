@@ -8,6 +8,9 @@ function raiseUnsupportedASTNode(astNode: never): Error {
 type TraversalResults = { hasStart: boolean; hasEnd: boolean };
 
 function addMissingDotStarTraversalAddMissing(astNode: RegexToken, isFirst: boolean, isLast: boolean): RegexToken {
+  if (!isFirst && !isLast) {
+    return astNode;
+  }
   const traversalResults = { hasStart: false, hasEnd: false };
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const revampedNode = addMissingDotStarTraversal(astNode, isFirst, isLast, traversalResults);
