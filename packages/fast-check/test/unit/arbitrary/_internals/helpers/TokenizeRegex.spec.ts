@@ -83,6 +83,12 @@ describe('tokenizeRegex', () => {
     { regex: /(?=(a+))/ },
     { regex: /(?!(a+)b)/ },
     { regex: /(?<=([ab]+)([bc]+))/ },
+    { regex: /(a(b)c)/ },
+    { regex: /(?<la>a(?<lb>b)c)/ },
+    { regex: /(?<label>[A-Z][a-z]*) \k<label>/ },
+    { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/ },
+    { regex: /\P{Emoji_Presentation}/u, expectThrowUnicode: true }, // not supported for now
+    { regex: /\P{Script_Extensions=Thaana}/u, expectThrowUnicode: true }, // not supported for now
   ];
 
   describe('non-unicode regex', () => {
@@ -98,10 +104,14 @@ describe('tokenizeRegex', () => {
   describe('unicode regex', () => {
     it.each(allRegexes.filter((i) => !i.invalidWithUnicode))(
       'should properly tokenize the regex $regex in unicode mode',
-      ({ regex }) => {
+      ({ regex, expectThrowUnicode }) => {
         const unicodeRegex = new RegExp(regex, 'u');
-        const tokenized = tokenizeRegex(unicodeRegex);
-        expect(tokenized).toEqual(parse(unicodeRegex).body);
+        if (!expectThrowUnicode) {
+          const tokenized = tokenizeRegex(unicodeRegex);
+          expect(tokenized).toEqual(parse(unicodeRegex).body);
+        } else {
+          expect(() => tokenizeRegex(unicodeRegex)).toThrowError();
+        }
       }
     );
   });

@@ -99,12 +99,20 @@ type AssertionRegexToken =
       negative?: true;
       assertion: RegexToken;
     };
-type BackreferenceRegexToken = {
-  type: 'Backreference';
-  kind: 'number';
-  number: number;
-  reference: number;
-};
+type BackreferenceRegexToken =
+  | {
+      type: 'Backreference';
+      kind: 'number';
+      number: number;
+      reference: number;
+    }
+  | {
+      type: 'Backreference';
+      kind: 'name';
+      number: number;
+      referenceRaw: string;
+      reference: string;
+    };
 
 export type RegexToken =
   | CharRegexToken
@@ -214,6 +222,9 @@ function blockToCharToken(block: string): CharRegexToken {
           const symbol = safeStringFromCodePoint(codePoint);
           return { type: 'Char', kind: 'decimal', symbol, value: block, codePoint };
         }
+        if (block.length > 2 && (next === 'p' || next === 'P')) {
+          throw new Error(`UnicodeProperty not implemented yet!`);
+        }
         const char = block.substring(1); // TODO - Properly handle unicode
         return simpleChar(char, true);
       }
@@ -225,9 +236,13 @@ function blockToCharToken(block: string): CharRegexToken {
 /**
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
-function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean): void {
+function pushTokens(
+  tokens: RegexToken[],
+  regexSource: string,
+  unicodeMode: boolean,
+  groups: { lastIndex: number; named: Map<string, number> }
+): void {
   let disjunctions: RegexToken[] | null = null;
-  let capturingGroupIndex = 0;
   for (
     let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
     index !== regexSource.length;
@@ -332,14 +347,14 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         const subTokens: RegexToken[] = [];
         if (blockContent[0] === '?') {
           if (blockContent[1] === ':') {
-            pushTokens(subTokens, blockContent.substring(2), unicodeMode);
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode, groups);
             tokens.push({
               type: 'Group',
               capturing: false,
               expression: toSingleToken(subTokens),
             });
           } else if (blockContent[1] === '=' || blockContent[1] === '!') {
-            pushTokens(subTokens, blockContent.substring(2), unicodeMode);
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode, groups);
             tokens.push({
               type: 'Assertion',
               kind: 'Lookahead',
@@ -347,7 +362,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
               assertion: toSingleToken(subTokens),
             });
           } else if (blockContent[1] === '<' && (blockContent[2] === '=' || blockContent[2] === '!')) {
-            pushTokens(subTokens, blockContent.substring(3), unicodeMode);
+            pushTokens(subTokens, blockContent.substring(3), unicodeMode, groups);
             tokens.push({
               type: 'Assertion',
               kind: 'Lookbehind',
@@ -355,27 +370,30 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
               assertion: toSingleToken(subTokens),
             });
           } else {
-            const chunks = blockContent.split('>', 2);
-            if (chunks.length !== 2 || chunks[0][1] !== '<') {
+            const chunks = blockContent.split('>');
+            if (chunks.length < 2 || chunks[0][1] !== '<') {
               throw new Error(`Unsupported regex content found at ${JSON.stringify(block)}`);
             }
+            const groupIndex = ++groups.lastIndex;
             const nameRaw = chunks[0].substring(2);
-            pushTokens(subTokens, chunks[1], unicodeMode);
+            groups.named.set(nameRaw, groupIndex);
+            pushTokens(subTokens, chunks.slice(1).join('>'), unicodeMode, groups);
             tokens.push({
               type: 'Group',
               capturing: true,
               nameRaw,
               name: nameRaw,
-              number: ++capturingGroupIndex,
+              number: groupIndex,
               expression: toSingleToken(subTokens),
             });
           }
         } else {
-          pushTokens(subTokens, blockContent, unicodeMode);
+          const groupIndex = ++groups.lastIndex;
+          pushTokens(subTokens, blockContent, unicodeMode, groups);
           tokens.push({
             type: 'Group',
             capturing: true,
-            number: ++capturingGroupIndex,
+            number: groupIndex,
             expression: toSingleToken(subTokens),
           });
         }
@@ -388,11 +406,20 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block[0] === '\\' && isDigit(block[1])) {
           const reference = Number(block.substring(1));
-          if (unicodeMode || reference <= capturingGroupIndex) {
+          if (unicodeMode || reference <= groups.lastIndex) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
             tokens.push(blockToCharToken(block));
           }
+        } else if (block[0] === '\\' && block[1] === 'k' && block.length !== 2) {
+          const referenceRaw = block.substring(3, block.length - 1);
+          tokens.push({
+            type: 'Backreference',
+            kind: 'name',
+            number: groups.named.get(referenceRaw) || 0,
+            referenceRaw,
+            reference: referenceRaw,
+          });
         } else {
           tokens.push(blockToCharToken(block));
         }
@@ -425,6 +452,6 @@ export function tokenizeRegex(regex: RegExp): RegexToken {
   const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
-  pushTokens(tokens, regexSource, unicodeMode);
+  pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });
   return toSingleToken(tokens);
 }
