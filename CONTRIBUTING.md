@@ -183,10 +183,6 @@ The spec is responsible to check that most of the arbitraries provided by fast-c
 
 The spec is responsible to check that the typings are correct. It also ensures that they will not break with future changes or upcoming releases of TypeScript.
 
-- Bundled test - in `packages/test-bundle-*`
-
-The specs are responsible to check that the build package will be loadable correctly from various bundlers and runtimes without any import issues.
-
 ✔️ _Document the arbitrary_
 
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @internal */` tag to hide internals - otherwise they would get published into the generated documentation

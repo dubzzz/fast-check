@@ -12,6 +12,7 @@ export default function HomepageSponsors(props) {
           align="center"
           src="https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg"
           alt="all sponsors"
+          loading="lazy"
         />
       </a>
       <p>

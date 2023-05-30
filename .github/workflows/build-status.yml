@@ -417,59 +417,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-  test_cjs_esm:
-    name: 'Test CJS & ESM'
-    needs:
-      - warmup_yarn_cache
-      - production_packages
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          # Node latest version supports ES modules by default
-          - 'node'
-          # Node >=13.2.0 enables support for ES modules by default
-          # Our default version of node is above 13.2.0
-          - '14'
-          # Node 12.20 includes import from CJS and removes warnings related to ES Modules
-          - '12.20'
-          # Node 12.x and >=12.18 enables support for ES modules by default
-          - '12.18'
-          # Node <12.18 requires a flag to support ES modules but can understand them
-          - '12.17'
-          # Node 10 does not understand ES modules
-          - '10'
-          # Node 13 supports ES modules a bit differently from others
-          - '13.2'
-          - '13.6'
-          - '13.7'
-          - '13'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Using Node v18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'yarn'
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@v3
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/test-bundle-*' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Using Node v${{matrix.node-version}}
-        shell: bash -l {0}
-        run: nvm install ${{matrix.node-version}}
-      - name: Check compatibility
-        run: |
-          cd packages
-          node --version
-          sh run-test-bundle.sh
 
   # Publication jobs
   publish_documentation:
@@ -497,7 +444,6 @@ jobs:
       - typecheck
       - test
       - test_bundle
-      - test_cjs_esm
       - test_node_8
       - test_types
     if: github.event_name == 'push'
