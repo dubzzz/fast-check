@@ -1,3 +1,42 @@
+# 3.10.0
+
+_New arbitrary generating strings matching the provided regex: `stringMatching`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.9.0...v3.10.0)]
+
+## Features
+
+- ([PR#3920](https://github.com/dubzzz/fast-check/pull/3920)) Prepare tokenizers for `stringMatching`
+- ([PR#3921](https://github.com/dubzzz/fast-check/pull/3921)) Introduce `stringMatching`
+- ([PR#3924](https://github.com/dubzzz/fast-check/pull/3924)) Add support for negate regex
+- ([PR#3925](https://github.com/dubzzz/fast-check/pull/3925)) Explicit ban of unsupported regex flags in `stringMatching`
+- ([PR#3926](https://github.com/dubzzz/fast-check/pull/3926)) Add support for capturing regexes
+- ([PR#3927](https://github.com/dubzzz/fast-check/pull/3927)) Add support for disjunctions in regexes
+- ([PR#3928](https://github.com/dubzzz/fast-check/pull/3928)) Correctly parse ^ and $ in regex
+- ([PR#3929](https://github.com/dubzzz/fast-check/pull/3929)) Correctly parse numeric backreference
+- ([PR#3930](https://github.com/dubzzz/fast-check/pull/3930)) Correctly parse look{ahead,behind} in regexes
+- ([PR#3932](https://github.com/dubzzz/fast-check/pull/3932)) Support empty disjunctions in regexes
+- ([PR#3933](https://github.com/dubzzz/fast-check/pull/3933)) Add parsing support for \p and \k
+- ([PR#3935](https://github.com/dubzzz/fast-check/pull/3935)) Support generation of strings not constrained by ^ or $
+- ([PR#3938](https://github.com/dubzzz/fast-check/pull/3938)) Support regex flags: d, m and s
+- ([PR#3939](https://github.com/dubzzz/fast-check/pull/3939)) Support unicode regexes
+
+## Fixes
+
+- ([PR#3909](https://github.com/dubzzz/fast-check/pull/3909)) Clean: Drop bundle centric tests
+- ([PR#3902](https://github.com/dubzzz/fast-check/pull/3902)) Doc: Release note page for 3.9.0
+- ([PR#3904](https://github.com/dubzzz/fast-check/pull/3904)) Doc: Fix typo in What's new 3.9.0
+- ([PR#3910](https://github.com/dubzzz/fast-check/pull/3910)) Doc: Lazy load image of sponsors
+- ([PR#3911](https://github.com/dubzzz/fast-check/pull/3911)) Doc: Add alt labels on feature badges
+- ([PR#3912](https://github.com/dubzzz/fast-check/pull/3912)) Doc: Stop lazy images in critical viewport
+- ([PR#3913](https://github.com/dubzzz/fast-check/pull/3913)) Doc: Better a11y on feature badges
+- ([PR#3898](https://github.com/dubzzz/fast-check/pull/3898)) Script: Run publint in strict mode
+- ([PR#3903](https://github.com/dubzzz/fast-check/pull/3903)) Test: Rework race conditions specs in tutorial
+- ([PR#3931](https://github.com/dubzzz/fast-check/pull/3931)) Test: Add some more checks on `stringMatching`
+- ([PR#3936](https://github.com/dubzzz/fast-check/pull/3936)) Test: Test against more regexes in `stringMatching`
+- ([PR#3940](https://github.com/dubzzz/fast-check/pull/3940)) Test: Add some more known regexes in our test suite
+
+---
+
 # 3.9.0
 
 _Finer definition of `act` to detect race conditions_
