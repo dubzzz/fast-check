@@ -148,6 +148,14 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('stringMatching', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.stringMatching(/(^|\s)a+[^a][b-eB-E]+[^b-eB-E](\s|$)/), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('unicodeString', () => {
     expect(() =>
       fc.assert(

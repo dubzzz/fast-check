@@ -1,4 +1,7 @@
+import { safeIndexOf } from '../../../utils/globals';
 import { TokenizerBlockMode, readFrom } from './ReadRegex';
+
+const safeStringFromCodePoint = String.fromCodePoint;
 
 /**
  * Pop the last pushed token and return it,
@@ -148,7 +151,7 @@ function blockToCharToken(block: string): CharRegexToken {
       case 'x': {
         const allDigits = block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
-        const symbol = String.fromCodePoint(codePoint);
+        const symbol = safeStringFromCodePoint(codePoint);
         return { type: 'Char', kind: 'hex', symbol, value: block, codePoint };
       }
       case 'u': {
@@ -157,7 +160,7 @@ function blockToCharToken(block: string): CharRegexToken {
         }
         const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
-        const symbol = String.fromCodePoint(codePoint);
+        const symbol = safeStringFromCodePoint(codePoint);
         return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint };
       }
 
@@ -193,7 +196,7 @@ function blockToCharToken(block: string): CharRegexToken {
         if (isDigit(next)) {
           const allDigits = block.substring(1);
           const codePoint = Number(allDigits);
-          const symbol = String.fromCodePoint(codePoint);
+          const symbol = safeStringFromCodePoint(codePoint);
           return { type: 'Char', kind: 'decimal', symbol, value: block, codePoint };
         }
         const char = block.substring(1); // TODO - Properly handle unicode
@@ -381,7 +384,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = regex.flags.includes('u');
+  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
   pushTokens(tokens, regexSource, unicodeMode);

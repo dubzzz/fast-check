@@ -1,4 +1,7 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { safeEvery, safeJoin } from '../utils/globals';
+import { Error, safeIndexOf, safeMap } from '../utils/globals';
+import { stringify } from '../utils/stringify';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { tokenizeRegex, RegexToken } from './_internals/helpers/TokenizeRegex';
 import { char } from './char';
@@ -8,6 +11,8 @@ import { integer } from './integer';
 import { oneof } from './oneof';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
+
+const safeStringFromCodePoint = String.fromCodePoint;
 
 /**
  * Constraints to be applied on the arbitrary {@link stringMatching}
@@ -24,15 +29,15 @@ export type StringMatchingConstraints = {
 
 // Some predefined chars or groups of chars
 // https://www.w3schools.com/jsref/jsref_regexp_whitespace.asp
-const wordChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
-const digitChars = '0123456789';
-const spaceChars = ' \t\r\n\v\f';
-const newLineAndTerminatorChars = '\r\n\x1E\x15';
+const wordChars = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'];
+const digitChars = [...'0123456789'];
+const spaceChars = [...' \t\r\n\v\f'];
+const newLineAndTerminatorChars = [...'\r\n\x1E\x15'];
 
 const defaultChar = char();
 
 function raiseUnsupportedASTNode(astNode: never): Error {
-  return new Error(`Unsupported AST node! Received: ${JSON.stringify(astNode)}`);
+  return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
 }
 
 /**
@@ -48,32 +53,32 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar.filter((c) => !wordChars.includes(c));
+            return defaultChar.filter((c) => safeIndexOf(wordChars, c) === -1);
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar.filter((c) => !digitChars.includes(c));
+            return defaultChar.filter((c) => safeIndexOf(digitChars, c) === -1);
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar.filter((c) => !spaceChars.includes(c));
+            return defaultChar.filter((c) => safeIndexOf(spaceChars, c) === -1);
           }
           case '\\b':
           case '\\B': {
             throw new Error(`Meta character ${astNode.value} not implemented yet!`);
           }
           case '.': {
-            return defaultChar.filter((c) => !newLineAndTerminatorChars.includes(c));
+            return defaultChar.filter((c) => safeIndexOf(newLineAndTerminatorChars, c) === -1);
           }
         }
       }
       if (astNode.symbol === undefined) {
-        throw new Error(`Unexpected undefined symbol received for non-meta Char! Received: ${JSON.stringify(astNode)}`);
+        throw new Error(`Unexpected undefined symbol received for non-meta Char! Received: ${stringify(astNode)}`);
       }
       return constant(astNode.symbol);
     }
@@ -106,19 +111,21 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
     }
     case 'Alternative': {
       // TODO - No unmap implemented yet!
-      return tuple(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints))).map((vs) => vs.join(''));
+      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints))).map((vs) =>
+        safeJoin(vs, '')
+      );
     }
     case 'CharacterClass':
       if (astNode.negative) {
-        const childrenArbitraries = astNode.expressions.map((n) => toMatchingArbitrary(n, constraints));
-        return defaultChar.filter((c) => childrenArbitraries.every((arb) => !arb.canShrinkWithoutContext(c)));
+        const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints));
+        return defaultChar.filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
       }
-      return oneof(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints)));
+      return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints)));
     case 'ClassRange': {
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
       return integer({ min, max }).map(
-        (n) => String.fromCodePoint(n),
+        (n) => safeStringFromCodePoint(n),
         (c) => {
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
