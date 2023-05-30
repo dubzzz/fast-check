@@ -1,6 +1,6 @@
 # 3.10.0
 
-_TODO Description_
+_New arbitrary generating strings matching the provided regex: `stringMatching`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.10.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.9.0...v3.10.0)]
 
 ## Features
