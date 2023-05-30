@@ -33,14 +33,20 @@ function squaredBracketBlockContentEndFrom(text: string, from: number): number {
  * The returned index corresponds to the one of the ) closing the block.
  */
 function parenthesisBlockContentEndFrom(text: string, from: number): number {
+  let numExtraOpened = 0;
   for (let index = from; index !== text.length; ++index) {
     const char = text[index];
     if (char === '\\') {
       index += 1;
     } else if (char === ')') {
-      return index;
+      if (numExtraOpened === 0) {
+        return index;
+      }
+      numExtraOpened -= 1;
     } else if (char === '[') {
       index = squaredBracketBlockContentEndFrom(text, index);
+    } else if (char === '(') {
+      numExtraOpened += 1;
     }
   }
   throw new Error(`Missing closing ')'`);

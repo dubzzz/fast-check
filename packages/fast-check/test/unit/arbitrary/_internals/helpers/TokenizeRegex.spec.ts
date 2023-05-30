@@ -72,6 +72,13 @@ describe('tokenizeRegex', () => {
     { regex: /a^$b/ },
     { regex: /a*^$b*/ }, // matches '', but not 'aa', seems equivalent to /^$/
     { regex: /\^ab\$/ },
+    { regex: /(?=a)/ },
+    { regex: /(?!a)/ },
+    { regex: /(?<=a)/ },
+    { regex: /(?<!a)/ },
+    { regex: /(?=(a+))/ },
+    { regex: /(?!(a+)b)/ },
+    { regex: /(?<=([ab]+)([bc]+))/ },
   ];
 
   describe('non-unicode regex', () => {
