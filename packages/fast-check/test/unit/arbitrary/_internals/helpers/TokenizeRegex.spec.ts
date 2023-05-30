@@ -119,6 +119,7 @@ describe('tokenizeRegex', () => {
     it.each`
       regex
       ${/🐱/u}
+      ${/🐱+/u}
       ${/[🐱🐴]/u}
       ${/[🐱-🐴]/u}
       ${/[a-🐱b-🐴]/u}
