@@ -32,7 +32,9 @@ export type StringMatchingConstraints = {
 const wordChars = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'];
 const digitChars = [...'0123456789'];
 const spaceChars = [...' \t\r\n\v\f'];
-const newLineAndTerminatorChars = [...'\r\n\x1E\x15'];
+const newLineChars = [...'\r\n'];
+const terminatorChars = [...'\x1E\x15'];
+const newLineAndTerminatorChars = [...newLineChars, ...terminatorChars];
 
 const defaultChar = char();
 
@@ -40,11 +42,20 @@ function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
 }
 
+type RegexFlags = {
+  multiline: boolean;
+  dotAll: boolean;
+};
+
 /**
  * Convert an AST of tokens into an arbitrary able to produce the requested pattern
  * @internal
  */
-function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingConstraints): Arbitrary<string> {
+function toMatchingArbitrary(
+  astNode: RegexToken,
+  constraints: StringMatchingConstraints,
+  flags: RegexFlags
+): Arbitrary<string> {
   switch (astNode.type) {
     case 'Char': {
       if (astNode.kind === 'meta') {
@@ -73,7 +84,8 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
             throw new Error(`Meta character ${astNode.value} not implemented yet!`);
           }
           case '.': {
-            return defaultChar.filter((c) => safeIndexOf(newLineAndTerminatorChars, c) === -1);
+            const forbiddenChars = flags.dotAll ? terminatorChars : newLineAndTerminatorChars;
+            return defaultChar.filter((c) => safeIndexOf(forbiddenChars, c) === -1);
           }
         }
       }
@@ -83,7 +95,7 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
       return constant(astNode.symbol);
     }
     case 'Repetition': {
-      const node = toMatchingArbitrary(astNode.expression, constraints);
+      const node = toMatchingArbitrary(astNode.expression, constraints, flags);
       switch (astNode.quantifier.kind) {
         case '*': {
           return stringOf(node, constraints);
@@ -111,16 +123,16 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
     }
     case 'Alternative': {
       // TODO - No unmap implemented yet!
-      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints))).map((vs) =>
+      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
         safeJoin(vs, '')
       );
     }
     case 'CharacterClass':
       if (astNode.negative) {
-        const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints));
+        const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
         return defaultChar.filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
       }
-      return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints)));
+      return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags)));
     case 'ClassRange': {
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
@@ -135,15 +147,40 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
       );
     }
     case 'Group': {
-      return toMatchingArbitrary(astNode.expression, constraints);
+      return toMatchingArbitrary(astNode.expression, constraints, flags);
     }
     case 'Disjunction': {
-      const left = astNode.left !== null ? toMatchingArbitrary(astNode.left, constraints) : constant('');
-      const right = astNode.right !== null ? toMatchingArbitrary(astNode.right, constraints) : constant('');
+      const left = astNode.left !== null ? toMatchingArbitrary(astNode.left, constraints, flags) : constant('');
+      const right = astNode.right !== null ? toMatchingArbitrary(astNode.right, constraints, flags) : constant('');
       return oneof(left, right);
     }
     case 'Assertion': {
       if (astNode.kind === '^' || astNode.kind === '$') {
+        if (flags.multiline) {
+          if (astNode.kind === '^') {
+            return oneof(
+              constant(''),
+              tuple(stringOf(defaultChar), constantFrom(...newLineChars)).map(
+                (t) => `${t[0]}${t[1]}`,
+                (value) => {
+                  if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
+                  return [value.substring(0, value.length - 1), value[value.length - 1]];
+                }
+              )
+            );
+          } else {
+            return oneof(
+              constant(''),
+              tuple(constantFrom(...newLineChars), stringOf(defaultChar)).map(
+                (t) => `${t[0]}${t[1]}`,
+                (value) => {
+                  if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
+                  return [value[0], value.substring(1)];
+                }
+              )
+            );
+          }
+        }
         return constant('');
       }
       throw new Error(`Assertions of kind ${astNode.kind} not implemented yet!`);
@@ -169,18 +206,20 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
 export function stringMatching(regex: RegExp, constraints: StringMatchingConstraints = {}): Arbitrary<string> {
   for (const flag of regex.flags) {
     // Supported:
+    //   d - generate indices for substring matches
     //   g - all matches, not limited to first match
-    // Not supported:
-    //   i - case-insensitive
     //   m - multiline
     //   s - dot matches newline character
+    // Not supported:
+    //   i - case-insensitive
     //   u - unicode support
     //   y - search at the exact position in the text or sticky mode
-    if (flag !== 'g') {
+    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's') {
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }
   const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size };
+  const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
   const regexRootToken = tokenizeRegex(regex);
-  return toMatchingArbitrary(regexRootToken, sanitizedConstraints);
+  return toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
 }

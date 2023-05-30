@@ -21,28 +21,42 @@ describe('stringMatching (integration)', () => {
   ];
   type Extra = { regex: RegExp };
   const extraParameters: fc.Arbitrary<Extra> = fc
-    .array(
-      fc.record({
-        startAssertion: fc.boolean(),
-        endAssertion: fc.boolean(),
-        chunks: fc.array(
-          fc.record(
-            {
-              matcher: fc.constantFrom(...regexQuantifiableChunks),
-              quantifier: fc.oneof(
-                fc.constantFrom('?', '*', '+'),
-                fc.nat({ max: 5 }),
-                fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
-              ),
-            },
-            { requiredKeys: ['matcher'] }
+    .record({
+      disjunctions: fc.array(
+        fc.record({
+          startAssertion: fc.boolean(),
+          endAssertion: fc.boolean(),
+          chunks: fc.array(
+            fc.record(
+              {
+                matcher: fc.constantFrom(...regexQuantifiableChunks),
+                quantifier: fc.oneof(
+                  fc.constantFrom('?', '*', '+'),
+                  fc.nat({ max: 5 }),
+                  fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
+                ),
+              },
+              { requiredKeys: ['matcher'] }
+            ),
+            { minLength: 1 }
           ),
-          { minLength: 1 }
-        ),
-      }),
-      { minLength: 1, size: '-1' }
-    )
-    .map((disjunctions) => {
+        }),
+        { minLength: 1, size: '-1' }
+      ),
+      flags: fc
+        .record({
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#advanced_searching_with_flags
+          d: fc.boolean(), // indices
+          g: fc.boolean(), // global
+          // i: fc.boolean(), // case-insensitive
+          m: fc.boolean(), // multiline for ^ and $
+          s: fc.boolean(), // multiline for .
+          // u: fc.boolean(), // unicode
+          // y: fc.boolean(), // sticky
+        })
+        .map((flags) => `${flags.d ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}`),
+    })
+    .map(({ disjunctions, flags }) => {
       return {
         regex: new RegExp(
           disjunctions
@@ -69,14 +83,16 @@ describe('stringMatching (integration)', () => {
                 .join('');
               return start + content + end;
             })
-            .join('|')
+            .join('|'),
+          flags
         ),
       };
     });
 
   const stringMatchingBuilder = (extra: Extra) => stringMatching(extra.regex);
 
-  const isCorrect = (value: string, extra: Extra) => extra.regex.test(value);
+  // isCorrect has to clone the instance of RegExp to make sure not to depend on its internal state
+  const isCorrect = (value: string, extra: Extra) => new RegExp(extra.regex.source, extra.regex.flags).test(value);
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(stringMatchingBuilder, { extraParameters });
