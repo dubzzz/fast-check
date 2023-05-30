@@ -83,6 +83,8 @@ describe('tokenizeRegex', () => {
     { regex: /(?=(a+))/ },
     { regex: /(?!(a+)b)/ },
     { regex: /(?<=([ab]+)([bc]+))/ },
+    { regex: /a(2|)b/ },
+    { regex: /a(|2)b/ },
   ];
 
   describe('non-unicode regex', () => {

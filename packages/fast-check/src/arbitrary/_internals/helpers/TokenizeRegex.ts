@@ -81,8 +81,8 @@ type GroupRegexToken =
     };
 type DisjunctionRegexToken = {
   type: 'Disjunction';
-  left: RegexToken;
-  right: RegexToken;
+  left: RegexToken | null;
+  right: RegexToken | null;
 };
 type AssertionRegexToken =
   | {
@@ -142,12 +142,17 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
   };
 }
 
-function toSingleToken(tokens: RegexToken[]): RegexToken {
+function toSingleToken(tokens: RegexToken[], allowEmpty?: false): RegexToken;
+function toSingleToken(tokens: RegexToken[], allowEmpty: true): RegexToken | undefined;
+function toSingleToken(tokens: RegexToken[], allowEmpty?: boolean): RegexToken | undefined {
   if (tokens.length > 1) {
     return {
       type: 'Alternative',
       expressions: tokens,
     };
+  }
+  if (!allowEmpty && tokens.length === 0) {
+    throw new Error(`Unsupported no token`);
   }
   return tokens[0];
 }
@@ -223,7 +228,7 @@ function blockToCharToken(block: string): CharRegexToken {
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
 function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: boolean): void {
-  let disjunctions: RegexToken[] | null = null;
+  let disjunctions: (RegexToken | null)[] | null = null;
   let capturingGroupIndex = 0;
   for (
     let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
@@ -236,7 +241,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         if (disjunctions === null) {
           disjunctions = [];
         }
-        disjunctions.push(toSingleToken(tokens.splice(0)));
+        disjunctions.push(toSingleToken(tokens.splice(0), true) || null);
         break;
       }
       case '.': {
@@ -398,7 +403,7 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
     }
   }
   if (disjunctions !== null) {
-    disjunctions.push(toSingleToken(tokens.splice(0)));
+    disjunctions.push(toSingleToken(tokens.splice(0), true) || null);
     let currentDisjunction: DisjunctionRegexToken = {
       type: 'Disjunction',
       left: disjunctions[0],
