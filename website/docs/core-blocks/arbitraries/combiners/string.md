@@ -65,9 +65,9 @@ String matching the passed regex.
 **Usages:**
 
 ```js
-fc.stringMatching(/html|php|css|java(script)?/);
+fc.stringMatching(/\s(html|php|css|java(script)?)\s/);
 // Note: The regex does not contain ^ or $ assertions, so extra text could be added before and after the match
-// Examples of generated values: "css", "html", "java", "php", "javascript"…
+// Examples of generated values: "ca\rjava U4", "'Kn7&cP<5:\tjava\n", "<NfX\rcss\r*.", "%\u000bjavascript\fname", "#\u000bcss\u000b`&HpS"…
 
 fc.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 // Note: Regex matching UUID
