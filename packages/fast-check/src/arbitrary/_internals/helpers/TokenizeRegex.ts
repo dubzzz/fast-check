@@ -84,10 +84,18 @@ type DisjunctionRegexToken = {
   left: RegexToken;
   right: RegexToken;
 };
-type AssertionRegexToken = {
-  type: 'Assertion';
-  kind: '^' | '$';
-};
+type AssertionRegexToken =
+  | {
+      type: 'Assertion';
+      kind: '^' | '$';
+      negative?: true;
+    }
+  | {
+      type: 'Assertion';
+      kind: 'Lookahead' | 'Lookbehind';
+      negative?: true;
+      assertion: RegexToken;
+    };
 type BackreferenceRegexToken = {
   type: 'Backreference';
   kind: 'number';
@@ -326,6 +334,22 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
               type: 'Group',
               capturing: false,
               expression: toSingleToken(subTokens),
+            });
+          } else if (blockContent[1] === '=' || blockContent[1] === '!') {
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode);
+            tokens.push({
+              type: 'Assertion',
+              kind: 'Lookahead',
+              negative: blockContent[1] === '!' ? true : undefined,
+              assertion: toSingleToken(subTokens),
+            });
+          } else if (blockContent[1] === '<' && (blockContent[2] === '=' || blockContent[2] === '!')) {
+            pushTokens(subTokens, blockContent.substring(3), unicodeMode);
+            tokens.push({
+              type: 'Assertion',
+              kind: 'Lookbehind',
+              negative: blockContent[2] === '!' ? true : undefined,
+              assertion: toSingleToken(subTokens),
             });
           } else {
             const chunks = blockContent.split('>', 2);

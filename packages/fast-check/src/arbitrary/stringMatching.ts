@@ -134,7 +134,10 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
       return oneof(toMatchingArbitrary(astNode.left, constraints), toMatchingArbitrary(astNode.right, constraints));
     }
     case 'Assertion': {
-      return constant('');
+      if (astNode.kind === '^' || astNode.kind === '$') {
+        return constant('');
+      }
+      throw new Error(`Assertions of kind ${astNode.kind} not implemented yet!`);
     }
     case 'Backreference': {
       throw new Error(`Backreference nodes not implemented yet!`);

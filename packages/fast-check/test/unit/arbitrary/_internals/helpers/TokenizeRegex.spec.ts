@@ -76,6 +76,13 @@ describe('tokenizeRegex', () => {
     { regex: /\1000/, invalidWithUnicode: true }, // in non-unicode: \100 then 0
     { regex: /(a)\1/ },
     { regex: /(a)\2/, invalidWithUnicode: true }, // in non-unicode: \2 is considered as an octal
+    { regex: /(?=a)/ },
+    { regex: /(?!a)/ },
+    { regex: /(?<=a)/ },
+    { regex: /(?<!a)/ },
+    { regex: /(?=(a+))/ },
+    { regex: /(?!(a+)b)/ },
+    { regex: /(?<=([ab]+)([bc]+))/ },
   ];
 
   describe('non-unicode regex', () => {
