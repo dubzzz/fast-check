@@ -84,6 +84,10 @@ type DisjunctionRegexToken = {
   left: RegexToken;
   right: RegexToken;
 };
+type AssertionRegexToken = {
+  type: 'Assertion';
+  kind: '^' | '$';
+};
 
 export type RegexToken =
   | CharRegexToken
@@ -93,7 +97,8 @@ export type RegexToken =
   | CharacterClassRegexToken
   | ClassRangeRegexToken
   | GroupRegexToken
-  | DisjunctionRegexToken;
+  | DisjunctionRegexToken
+  | AssertionRegexToken;
 
 /**
  * Create a simple char token
@@ -343,7 +348,13 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
         break;
       }
       default: {
-        tokens.push(blockToCharToken(block));
+        if (block === '^') {
+          tokens.push({ type: 'Assertion', kind: block });
+        } else if (block === '$') {
+          tokens.push({ type: 'Assertion', kind: block });
+        } else {
+          tokens.push(blockToCharToken(block));
+        }
         break;
       }
     }

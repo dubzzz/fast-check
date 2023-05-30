@@ -64,6 +64,14 @@ describe('tokenizeRegex', () => {
     { regex: /abc|\|/ }, // 'or' with operands having escaped pipe in it
     { regex: /a\w+c|d.*|e[f-k]l/ }, // 'or' with complex operands
     { regex: /(abc|def)/ },
+    { regex: /^ab$/ },
+    { regex: /[^a][b$]/ },
+    { regex: /[a^][$b]/ },
+    { regex: /(^|a)(b|$)/ },
+    { regex: /(a|^)($|b)/ },
+    { regex: /a^$b/ },
+    { regex: /a*^$b*/ }, // matches '', but not 'aa', seems equivalent to /^$/
+    { regex: /\^ab\$/ },
   ];
 
   describe('non-unicode regex', () => {
