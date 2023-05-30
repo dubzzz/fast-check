@@ -137,7 +137,7 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
       return constant('');
     }
     case 'Backreference': {
-      throw new Error(`Backreference nodes not implemented yet!`)
+      throw new Error(`Backreference nodes not implemented yet!`);
     }
     default: {
       throw raiseUnsupportedASTNode(astNode);
