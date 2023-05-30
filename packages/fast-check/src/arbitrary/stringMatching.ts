@@ -138,7 +138,9 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
       return toMatchingArbitrary(astNode.expression, constraints);
     }
     case 'Disjunction': {
-      return oneof(toMatchingArbitrary(astNode.left, constraints), toMatchingArbitrary(astNode.right, constraints));
+      const left = astNode.left !== null ? toMatchingArbitrary(astNode.left, constraints) : constant('');
+      const right = astNode.right !== null ? toMatchingArbitrary(astNode.right, constraints) : constant('');
+      return oneof(left, right);
     }
     case 'Assertion': {
       if (astNode.kind === '^' || astNode.kind === '$') {
