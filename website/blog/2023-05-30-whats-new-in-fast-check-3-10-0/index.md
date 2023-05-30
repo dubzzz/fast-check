@@ -42,6 +42,8 @@ In the example above, we explicitly included the `^` and `$` assertions in our r
 Please note that while JavaScript regular expressions allow for the definition of complex constraints on strings, our current implementation in fast-check has some limitations in handling certain regex features. Specifically, the following constructs are not supported: `\b`, `\B`, `(?=`, `(?!`, `(?<=`, `(?<!`…
 :::
 
+More details on this arbitrary at [Arbitraries / Combiners / String](/docs/core-blocks/arbitraries/combiners/string/#stringmatching).
+
 ## Changelog since 3.9.0
 
 The version 3.10.0 is based on version 3.9.0.
