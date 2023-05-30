@@ -96,6 +96,12 @@ type AssertionRegexToken =
       negative?: true;
       assertion: RegexToken;
     };
+type BackreferenceRegexToken = {
+  type: 'Backreference';
+  kind: 'number';
+  number: number;
+  reference: number;
+};
 
 export type RegexToken =
   | CharRegexToken
@@ -106,7 +112,8 @@ export type RegexToken =
   | ClassRangeRegexToken
   | GroupRegexToken
   | DisjunctionRegexToken
-  | AssertionRegexToken;
+  | AssertionRegexToken
+  | BackreferenceRegexToken;
 
 /**
  * Create a simple char token
@@ -376,6 +383,13 @@ function pushTokens(tokens: RegexToken[], regexSource: string, unicodeMode: bool
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block === '$') {
           tokens.push({ type: 'Assertion', kind: block });
+        } else if (block[0] === '\\' && isDigit(block[1])) {
+          const reference = Number(block.substring(1));
+          if (unicodeMode || reference <= capturingGroupIndex) {
+            tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
+          } else {
+            tokens.push(blockToCharToken(block));
+          }
         } else {
           tokens.push(blockToCharToken(block));
         }

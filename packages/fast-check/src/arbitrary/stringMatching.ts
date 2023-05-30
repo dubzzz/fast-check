@@ -139,6 +139,9 @@ function toMatchingArbitrary(astNode: RegexToken, constraints: StringMatchingCon
       }
       throw new Error(`Assertions of kind ${astNode.kind} not implemented yet!`);
     }
+    case 'Backreference': {
+      throw new Error(`Backreference nodes not implemented yet!`);
+    }
     default: {
       throw raiseUnsupportedASTNode(astNode);
     }

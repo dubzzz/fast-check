@@ -1,0 +1,8 @@
+releases:
+  fast-check: minor
+
+declined:
+  - "@fast-check/ava"
+  - "@fast-check/jest"
+  - "@fast-check/vitest"
+  - "@fast-check/worker"

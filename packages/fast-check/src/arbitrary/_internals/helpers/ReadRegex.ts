@@ -179,10 +179,12 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
           throw new Error(`Unexpected token '${text.substring(from, from + 6)}' found`);
         default: {
           if (isDigit(next1)) {
-            if (isDigit(text[from + 2]) && isDigit(text[from + 3])) {
-              return from + 4;
+            const maxIndex = unicodeMode ? text.length : Math.min(from + 4, text.length);
+            let subIndex = from + 2;
+            for (; subIndex < maxIndex && isDigit(text[subIndex]); ++subIndex) {
+              // nothing
             }
-            throw new Error(`Unexpected token '${text.substring(from, from + 4)}' found`);
+            return subIndex;
           }
           return from + 2;
         }

@@ -72,6 +72,10 @@ describe('tokenizeRegex', () => {
     { regex: /a^$b/ },
     { regex: /a*^$b*/ }, // matches '', but not 'aa', seems equivalent to /^$/
     { regex: /\^ab\$/ },
+    { regex: /\1/, invalidWithUnicode: true },
+    { regex: /\1000/, invalidWithUnicode: true }, // in non-unicode: \100 then 0
+    { regex: /(a)\1/ },
+    { regex: /(a)\2/, invalidWithUnicode: true }, // in non-unicode: \2 is considered as an octal
     { regex: /(?=a)/ },
     { regex: /(?!a)/ },
     { regex: /(?<=a)/ },
