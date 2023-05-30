@@ -22,28 +22,34 @@ describe('stringMatching (integration)', () => {
   type Extra = { regex: RegExp };
   const extraParameters: fc.Arbitrary<Extra> = fc
     .array(
-      fc.array(
-        fc.record(
-          {
-            matcher: fc.constantFrom(...regexQuantifiableChunks),
-            quantifier: fc.oneof(
-              fc.constantFrom('?', '*', '+'),
-              fc.nat({ max: 5 }),
-              fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
-            ),
-          },
-          { requiredKeys: ['matcher'] }
+      fc.record({
+        startAssertion: fc.boolean(),
+        endAssertion: fc.boolean(),
+        chunks: fc.array(
+          fc.record(
+            {
+              matcher: fc.constantFrom(...regexQuantifiableChunks),
+              quantifier: fc.oneof(
+                fc.constantFrom('?', '*', '+'),
+                fc.nat({ max: 5 }),
+                fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
+              ),
+            },
+            { requiredKeys: ['matcher'] }
+          ),
+          { minLength: 1 }
         ),
-        { minLength: 1 }
-      ),
+      }),
       { minLength: 1, size: '-1' }
     )
     .map((disjunctions) => {
       return {
         regex: new RegExp(
           disjunctions
-            .map((chunks) =>
-              chunks
+            .map(({ startAssertion, endAssertion, chunks }) => {
+              const start = startAssertion ? '^' : '';
+              const end = endAssertion ? '$' : '';
+              const content = chunks
                 .map((chunk) => {
                   const quantifier = chunk.quantifier;
                   const quantifierString =
@@ -60,8 +66,9 @@ describe('stringMatching (integration)', () => {
                       : `{${quantifier[0]},}`;
                   return chunk.matcher + quantifierString;
                 })
-                .join('')
-            )
+                .join('');
+              return start + content + end;
+            })
             .join('|')
         ),
       };
