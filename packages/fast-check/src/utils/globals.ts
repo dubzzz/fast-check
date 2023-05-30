@@ -83,6 +83,7 @@ const untouchedPop = Array.prototype.pop;
 const untouchedSplice: (start: number, deleteCount?: number | undefined) => any[] = Array.prototype.splice;
 const untouchedSlice = Array.prototype.slice;
 const untouchedSort = Array.prototype.sort;
+const untouchedEvery = Array.prototype.every;
 function extractForEach(instance: unknown[]) {
   try {
     return instance.forEach;
@@ -153,6 +154,13 @@ function extractSort(instance: unknown[]) {
     return undefined;
   }
 }
+function extractEvery(instance: unknown[]) {
+  try {
+    return instance.every;
+  } catch (err) {
+    return undefined;
+  }
+}
 export function safeForEach<T>(instance: T[], fn: (value: T, index: number, array: T[]) => void): void {
   if (extractForEach(instance) === untouchedForEach) {
     return instance.forEach(fn);
@@ -218,6 +226,12 @@ export function safeSort<T>(instance: T[], ...args: [compareFn?: ((a: T, b: T) =
     return instance.sort(...args);
   }
   return safeApply(untouchedSort, instance, args);
+}
+export function safeEvery<T>(instance: T[], ...args: [predicate: (value: T) => boolean]): boolean {
+  if (extractEvery(instance) === untouchedEvery) {
+    return instance.every(...args);
+  }
+  return safeApply(untouchedEvery, instance, args);
 }
 
 // Date

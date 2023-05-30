@@ -65,19 +65,25 @@ String matching the passed regex.
 **Usages:**
 
 ```js
-fc.stringMatching(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/);
-// Note: Buggy IPv4 regex also matching 999.999.999.999
-// Examples of generated values: "422.299.995.55", "2.1.3.6", "0.47.62.53", "45.34.48.3", "768.2.602.560"…
+fc.stringMatching(/html|php|css|java(script)?/);
+// Note: The regex does not contain ^ or $ assertions, so extra text could be added before and after the match
+// Examples of generated values: "css", "html", "java", "php", "javascript"…
 
-fc.stringMatching(/[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/);
-// Note: regex matching UUID
+fc.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+// Note: Regex matching UUID
 // Examples of generated values:
-// • "93a1ec6d-7f8c-3ace-8ea7-ac73d142269b"
-// • "11b300d1-dd9e-3ae1-abe9-bdfd61a2e1d0"
-// • "dde3a7b7-3afb-5c23-bacb-7cc7b80ba93a"
-// • "eb1c3b5f-d8b9-5907-a4bc-aacda161bdeb"
-// • "6f3dcbaa-de1c-56ac-9eac-0d1ebf77ba13"
+// • "fd606aa1-b53b-1c7b-9e2f-1e2c1ff1b8e9"
+// • "e74cec0b-bd5a-4dba-96a9-edbfa9c1a198"
+// • "fcccdcf3-908e-5179-adce-7ebae72c12dc"
+// • "0eab1fab-5bc2-336c-9ccb-a3fecbe72ee2"
+// • "bb3073ee-2283-2538-ba0c-1b976ebb9610"
 // • …
+
+fc.stringMatching(
+  /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+);
+// Note: Regex matching IP v4, we rather recommend you to rely on `fc.ipV4()`
+// Examples of generated values: "003.2.210.06", "253.17.60.12", "250.19.229.08", "3.250.26.253", "200.00.0.254"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/stringMatching.html).  

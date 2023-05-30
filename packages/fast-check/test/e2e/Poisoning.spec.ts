@@ -2,6 +2,9 @@ import { restoreGlobals } from '@fast-check/poisoning';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
+// Building the matcher in a polluted context is not working for now
+const preBuiltStringMatching = fc.stringMatching(/(^|\s)[0-9a-f]{8}-(\w{4})[^abc][^a-u]\D+(\s|$)/);
+
 describe(`Poisoning (seed: ${seed})`, () => {
   it.each<{
     name: string;
@@ -44,6 +47,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'string16bits', arbitraryBuilder: () => fc.string16bits() },
     { name: 'fullUnicodeString', arbitraryBuilder: () => fc.fullUnicodeString() },
     { name: 'stringOf', arbitraryBuilder: () => fc.stringOf(fc.char()) },
+    { name: 'stringMatching', arbitraryBuilder: () => preBuiltStringMatching },
     // : More specific strings
     // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
     //{ name: 'json', arbitraryBuilder: () => fc.json() },
