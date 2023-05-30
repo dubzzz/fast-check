@@ -16,7 +16,7 @@ describe('tokenizeRegex', () => {
     { regex: /.??/ },
     { regex: /.{1,4}?/ },
     { regex: /a/ },
-    { regex: /🐱/ },
+    { regex: /🐱/, invalidWithUnicode: true }, // handled separately
     { regex: /\125/, invalidWithUnicode: true },
     { regex: /\x25/ },
     { regex: /\u0025/ },
@@ -44,7 +44,6 @@ describe('tokenizeRegex', () => {
     { regex: /[abc^def]/ },
     { regex: /[a-z^A-Z]/ },
     { regex: /\u{1[81]}/, invalidWithUnicode: true },
-    { regex: /[\u{1f431}-\u{1f434}]/u },
     { regex: /[\u{1f431}-\u{1f434}]/u },
     { regex: /(foo)/ }, // capturing group
     { regex: /(foo) (bar) (baz)/ }, // multiple capturing groups
@@ -116,5 +115,41 @@ describe('tokenizeRegex', () => {
         }
       }
     );
+
+    it.each`
+      regex
+      ${/🐱/u}
+      ${/🐱+/u}
+      ${/[🐱🐴]/u}
+      ${/[🐱-🐴]/u}
+      ${/[a-🐱b-🐴]/u}
+    `('should consider code-point as any other character when parsing $regex', ({ regex }) => {
+      const catReplacement = '\ufff0';
+      const horseReplacement = '\ufff4';
+      const revampedRegex = new RegExp(
+        regex.source.replace(/🐱/g, catReplacement).replace(/🐴/g, horseReplacement),
+        regex.flag
+      );
+      const tokenized = tokenizeRegex(regex);
+      const tokenizedRevamped = tokenizeRegex(revampedRegex);
+      const tokenizedRevampedUpdated = JSON.parse(
+        JSON.stringify(tokenizedRevamped, (key, value) => {
+          if (value === catReplacement) {
+            return '🐱';
+          }
+          if (value === catReplacement.codePointAt(0)) {
+            return '🐱'.codePointAt(0);
+          }
+          if (value === horseReplacement) {
+            return '🐴';
+          }
+          if (value === horseReplacement.codePointAt(0)) {
+            return '🐴'.codePointAt(0);
+          }
+          return value;
+        })
+      );
+      expect(tokenizedRevampedUpdated).toEqual(tokenized);
+    });
   });
 });

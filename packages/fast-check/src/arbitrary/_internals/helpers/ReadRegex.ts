@@ -1,4 +1,13 @@
 /**
+ * Internal helper used to compute the size in bytes of one character
+ */
+function charSizeAt(text: string, pos: number) {
+  return text[pos] >= '\uD800' && text[pos] <= '\uDBFF' && text[pos + 1] >= '\uDC00' && text[pos + 1] <= '\uDFFF'
+    ? 2
+    : 1;
+}
+
+/**
  * Internal helper checking if a character is an hexadecimal one, ie: a-fA-F0-9
  */
 function isHexaDigit(char: string): boolean {
@@ -37,7 +46,7 @@ function parenthesisBlockContentEndFrom(text: string, from: number): number {
   for (let index = from; index !== text.length; ++index) {
     const char = text[index];
     if (char === '\\') {
-      index += 1;
+      index += 1; // in theory we should offset by charSizeAt, but same behaviour here
     } else if (char === ')') {
       if (numExtraOpened === 0) {
         return index;
@@ -213,12 +222,15 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
             }
             return subIndex;
           }
-          return from + 2;
+          const charSize = unicodeMode ? charSizeAt(text, from + 1) : 1;
+          return from + charSize + 1;
         }
       }
     }
-    default:
-      return from + 1;
+    default: {
+      const charSize = unicodeMode ? charSizeAt(text, from) : 1;
+      return from + charSize;
+    }
   }
 }
 

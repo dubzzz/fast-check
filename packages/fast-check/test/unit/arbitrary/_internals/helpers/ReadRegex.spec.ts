@@ -49,6 +49,8 @@ describe('readFrom', () => {
     ${'\\k<group_name>'}         | ${'\\k<group_name>'}
     ${'\\k<group_name'}          | ${['\\k', null]}
     ${'(?<la>a(?<lb>b)c)'}       | ${'(?<la>a(?<lb>b)c)'}
+    ${'🐱'}                      | ${['\ud83d', '🐱']}
+    ${'\\🐱'}                    | ${['\\\ud83d', '\\🐱']}
   `('should properly extract first block of "$source"', ({ source, expected }) => {
     const expectedNonUnicode = typeof expected === 'string' ? expected : expected[0];
     const expectedUnicode = typeof expected === 'string' ? expected : expected[1];
