@@ -69,6 +69,10 @@ fc.stringMatching(/\s(html|php|css|java(script)?)\s/);
 // Note: The regex does not contain ^ or $ assertions, so extra text could be added before and after the match
 // Examples of generated values: "ca\rjava U4", "'Kn7&cP<5:\tjava\n", "<NfX\rcss\r*.", "%\u000bjavascript\fname", "#\u000bcss\u000b`&HpS"…
 
+fc.stringMatching(/^rgb\((?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\)$/);
+// Note: Regex matching RGB colors
+// Examples of generated values: "rgb(237,6,11)", "rgb(143,160,247)", "rgb(257,213,251)", "rgb(4,185,33)", "rgb(253,230,211)"…
+
 fc.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 // Note: Regex matching UUID
 // Examples of generated values:
@@ -80,10 +84,10 @@ fc.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}
 // • …
 
 fc.stringMatching(
-  /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+  /^(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)$/
 );
 // Note: Regex matching IP v4, we rather recommend you to rely on `fc.ipV4()`
-// Examples of generated values: "003.2.210.06", "253.17.60.12", "250.19.229.08", "3.250.26.253", "200.00.0.254"…
+// Examples of generated values: "157.49.38.2", "216.56.226.213", "154.234.230.187", "6.207.244.214", "54.207.15.189"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/stringMatching.html).  

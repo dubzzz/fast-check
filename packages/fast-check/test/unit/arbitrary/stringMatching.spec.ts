@@ -28,15 +28,24 @@ describe('stringMatching (integration)', () => {
 type Extra = { regex: RegExp };
 
 function hardcodedRegex(): fc.Arbitrary<Extra> {
+  //
   return fc.constantFrom(
+    // Hex Color
+    { regex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/ },
+    // RGB Color
+    {
+      regex:
+        /^rgb\(\s*(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\s*,\s*(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\s*,\s*(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\s*\)$/,
+    },
+    // CSS Color
+    { regex: /^(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})$|^(?:rgb|hsl)a?\([^)]*\)$/ },
     // IPv4
     { regex: /^\d+\.\d+\.\d+\.\d+$/ },
     // IPv4
     { regex: /^([0-9]{1,3}\.){3}\.([0-9]{1,3})$/ },
     // IPv4
     {
-      regex:
-        /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
+      regex: /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/,
     },
     // IPv6
     {
@@ -52,7 +61,13 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
     {
       regex:
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    }
+    },
+    // URL
+    { regex: /^(((http|https|ftp):\/\/)?([[a-zA-Z0-9]-\.])+(\.)([[a-zA-Z0-9]]){2,4}([[a-zA-Z0-9]\/+=%&_\.~?-]*))*$/ },
+    // GitHub profile
+    { regex: /^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9]+$/ },
+    // Twitter profile
+    { regex: /^https?:\/\/twitter.com\/[A-Za-z0-9_]+\/status\/[0-9]+$/ }
   );
 }
 
