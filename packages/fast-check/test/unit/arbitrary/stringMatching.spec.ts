@@ -57,6 +57,14 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
 }
 
 function regexBasedOnChunks(): fc.Arbitrary<Extra> {
+  const supportFlagD = (() => {
+    try {
+      new RegExp('.', 'd'); // Not supported in Node 14
+      return true;
+    } catch (err) {
+      return false;
+    }
+  })();
   const regexQuantifiableChunks = [
     '[s-z]', // any character in range s to z
     '[ace]', // any character from ace
@@ -103,7 +111,10 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
           // u: fc.boolean(), // unicode
           // y: fc.boolean(), // sticky
         })
-        .map((flags) => `${flags.d ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}`),
+        .map(
+          (flags) =>
+            `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}`
+        ),
     })
     .map(({ disjunctions, flags }) => {
       return {
