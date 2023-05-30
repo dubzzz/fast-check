@@ -84,8 +84,8 @@ type GroupRegexToken =
     };
 type DisjunctionRegexToken = {
   type: 'Disjunction';
-  left: RegexToken;
-  right: RegexToken;
+  left: RegexToken | null;
+  right: RegexToken | null;
 };
 type AssertionRegexToken =
   | {
@@ -153,12 +153,17 @@ function metaEscapedChar(block: string, symbol: string): CharRegexToken {
   };
 }
 
-function toSingleToken(tokens: RegexToken[]): RegexToken {
+function toSingleToken(tokens: RegexToken[], allowEmpty?: false): RegexToken;
+function toSingleToken(tokens: RegexToken[], allowEmpty: true): RegexToken | undefined;
+function toSingleToken(tokens: RegexToken[], allowEmpty?: boolean): RegexToken | undefined {
   if (tokens.length > 1) {
     return {
       type: 'Alternative',
       expressions: tokens,
     };
+  }
+  if (!allowEmpty && tokens.length === 0) {
+    throw new Error(`Unsupported no token`);
   }
   return tokens[0];
 }
@@ -242,7 +247,7 @@ function pushTokens(
   unicodeMode: boolean,
   groups: { lastIndex: number; named: Map<string, number> }
 ): void {
-  let disjunctions: RegexToken[] | null = null;
+  let disjunctions: (RegexToken | null)[] | null = null;
   for (
     let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
     index !== regexSource.length;
@@ -254,7 +259,7 @@ function pushTokens(
         if (disjunctions === null) {
           disjunctions = [];
         }
-        disjunctions.push(toSingleToken(tokens.splice(0)));
+        disjunctions.push(toSingleToken(tokens.splice(0), true) || null);
         break;
       }
       case '.': {
@@ -428,7 +433,7 @@ function pushTokens(
     }
   }
   if (disjunctions !== null) {
-    disjunctions.push(toSingleToken(tokens.splice(0)));
+    disjunctions.push(toSingleToken(tokens.splice(0), true) || null);
     let currentDisjunction: DisjunctionRegexToken = {
       type: 'Disjunction',
       left: disjunctions[0],

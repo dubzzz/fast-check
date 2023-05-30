@@ -83,6 +83,8 @@ describe('tokenizeRegex', () => {
     { regex: /(?=(a+))/ },
     { regex: /(?!(a+)b)/ },
     { regex: /(?<=([ab]+)([bc]+))/ },
+    { regex: /a(2|)b/ },
+    { regex: /a(|2)b/ },
     { regex: /(a(b)c)/ },
     { regex: /(?<la>a(?<lb>b)c)/ },
     { regex: /(?<label>[A-Z][a-z]*) \k<label>/ },
