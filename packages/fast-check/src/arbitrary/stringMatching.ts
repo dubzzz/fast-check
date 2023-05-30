@@ -3,6 +3,7 @@ import { safeEvery, safeJoin } from '../utils/globals';
 import { Error, safeIndexOf, safeMap } from '../utils/globals';
 import { stringify } from '../utils/stringify';
 import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst';
 import { tokenizeRegex, RegexToken } from './_internals/helpers/TokenizeRegex';
 import { char } from './char';
 import { constant } from './constant';
@@ -181,6 +182,6 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
     }
   }
   const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size };
-  const regexRootToken = tokenizeRegex(regex);
+  const regexRootToken = addMissingDotStar(tokenizeRegex(regex));
   return toMatchingArbitrary(regexRootToken, sanitizedConstraints);
 }
