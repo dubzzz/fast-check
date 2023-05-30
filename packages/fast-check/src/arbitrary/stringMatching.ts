@@ -215,7 +215,7 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
     //   i - case-insensitive
     //   u - unicode support
     //   y - search at the exact position in the text or sticky mode
-    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's') {
+    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u') {
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }

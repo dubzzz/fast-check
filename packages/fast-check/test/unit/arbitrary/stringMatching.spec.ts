@@ -108,12 +108,14 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
           // i: fc.boolean(), // case-insensitive
           m: fc.boolean(), // multiline for ^ and $
           s: fc.boolean(), // multiline for .
-          // u: fc.boolean(), // unicode
+          u: fc.boolean(), // unicode
           // y: fc.boolean(), // sticky
         })
         .map(
           (flags) =>
-            `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}`
+            `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}${
+              flags.u ? 'u' : ''
+            }`
         ),
     })
     .map(({ disjunctions, flags }) => {
