@@ -177,6 +177,33 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
             return from + 6;
           }
           throw new Error(`Unexpected token '${text.substring(from, from + 6)}' found`);
+        case 'p':
+        case 'P': {
+          if (!unicodeMode) {
+            return from + 2;
+          }
+          let subIndex = from + 2;
+          for (; subIndex < text.length && text[subIndex] !== '}'; subIndex += text[subIndex] === '\\' ? 2 : 1) {
+            // nothing
+          }
+          if (text[subIndex] !== '}') {
+            throw new Error(`Invalid \\P definition`);
+          }
+          return subIndex + 1;
+        }
+        case 'k': {
+          let subIndex = from + 2;
+          for (; subIndex < text.length && text[subIndex] !== '>'; ++subIndex) {
+            // nothing
+          }
+          if (text[subIndex] !== '>') {
+            if (!unicodeMode) {
+              return from + 2;
+            }
+            throw new Error(`Invalid \\k definition`);
+          }
+          return subIndex + 1;
+        }
         default: {
           if (isDigit(next1)) {
             const maxIndex = unicodeMode ? text.length : Math.min(from + 4, text.length);
