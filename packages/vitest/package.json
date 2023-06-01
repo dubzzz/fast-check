@@ -49,7 +49,7 @@
     "fast-check": "workspace:*",
     "jest": "^29.5.0",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.2"
+    "vitest": "^0.31.4"
   },
   "keywords": [
     "vitest",
