@@ -1564,10 +1564,7 @@ describe('SchedulerImplem', () => {
       task.then((v) => (taskResolvedValue = v));
 
       // Assert
-      while (s.count() !== 0) {
-        expect(taskResolvedValue).toBe(null);
-        await s.waitOne();
-      }
+      await s.waitAll();
       expect(taskResolvedValue).toEqual({ done: true, faulty: false });
     });
 
@@ -1588,10 +1585,7 @@ describe('SchedulerImplem', () => {
       task.then((v) => (taskResolvedValue = v));
 
       // Assert
-      while (s.count() !== 0) {
-        expect(taskResolvedValue).toBe(null);
-        await s.waitOne();
-      }
+      await s.waitAll();
       expect(taskResolvedValue).toEqual({ done: false, faulty: true });
     });
 
