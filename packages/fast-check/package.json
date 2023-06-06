@@ -63,7 +63,7 @@
     "@types/node": "^18.16.16",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
-    "glob": "^10.2.6",
+    "glob": "^10.2.7",
     "jest": "^29.5.0",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^7.0.1",
