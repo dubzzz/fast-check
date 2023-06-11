@@ -1,17 +1,5 @@
 import { Worker } from 'node:worker_threads';
-
-export type OnSuccessCallback<TSuccess> = (value: TSuccess) => void;
-export type OnErrorCallback = (error: unknown) => void;
-
-/**
- * Worker API
- */
-export type PooledWorker<TSuccess, TPayload> = {
-  isAvailable: () => boolean;
-  isFaulty: () => boolean;
-  register: (payload: TPayload, onSuccess: OnSuccessCallback<TSuccess>, onFailure: OnErrorCallback) => void;
-  terminateIfStillRunning: () => Promise<void>;
-};
+import type { OnErrorCallback, OnSuccessCallback, IWorkerPool, PooledWorker } from './IWorkerPool.js';
 
 /**
  * Worker internal API
@@ -37,7 +25,7 @@ export type WorkerToPoolMessage<TSuccess> = { runId: number } & (
  * Basic pool for workers, providing the ability to spawn new workers,
  * get the first available one and terminate them all
  */
-export class BasicPool<TSuccess, TPayload> {
+export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPayload> {
   private readonly workers: InternalPooledWorker<TSuccess, TPayload>[] = [];
 
   /**
@@ -47,9 +35,6 @@ export class BasicPool<TSuccess, TPayload> {
    */
   constructor(private readonly workerFileUrl: URL, private readonly workerId: number) {}
 
-  /**
-   * Spawn a new instance of worker ready to handle new tasks
-   */
   public async spawnNewWorker(): Promise<PooledWorker<TSuccess, TPayload>> {
     let runIdInWorker = -1;
     let ready = false;
@@ -161,16 +146,10 @@ export class BasicPool<TSuccess, TPayload> {
     return pooledWorker;
   }
 
-  /**
-   * Get the first available worker of the pool if any
-   */
   public getFirstAvailableWorker(): PooledWorker<TSuccess, TPayload> | undefined {
     return this.workers.find((w) => w.isAvailable());
   }
 
-  /**
-   * Terminate all registered workers and drop them definitely for the pool
-   */
   public terminateAllWorkers(): Promise<void> {
     const dropped = this.workers.splice(0, this.workers.length); // clear all workers
     return Promise.all(dropped.map((w) => w.worker.terminate())).then(() => undefined);

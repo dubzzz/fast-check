@@ -1,4 +1,4 @@
-import { AcquiredLock, Lock } from '../../../src/internals/worker-pool/Lock.js';
+import { AcquiredLock, Lock } from '../../../src/internals/lock/Lock.js';
 
 describe('Lock', () => {
   it('should be able to take the first lock', async () => {
