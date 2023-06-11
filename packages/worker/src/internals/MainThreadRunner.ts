@@ -2,23 +2,26 @@ import fc from 'fast-check';
 import { type PropertyArbitraries, type WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
-import { PooledWorker } from './worker-pool/IWorkerPool.js';
+import { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
+import { OneTimePool } from './worker-pool/OneTimePool.js';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
  *
  * @param workerFileUrl - The URL towards the file holding the worker's code
  * @param workerId - Id of the worker
+ * @param isolationLevel - The kind of isolation to be put in place between two executions of predicates
  * @param arbitraries - The arbitraries used to generate the inputs for the predicate hold within the worker
- * @param onNewWorker - Callback function to be called whenever a new worker gets created
  */
 export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   workerFileUrl: URL,
   workerId: number,
+  isolationLevel: 'property' | 'predicate',
   arbitraries: PropertyArbitraries<Ts>
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
   const lock = new Lock();
-  const pool = new BasicPool<boolean | void, Ts>(workerFileUrl, workerId);
+  const pool: IWorkerPool<boolean | void, Ts> =
+    isolationLevel === 'predicate' ? new OneTimePool(workerFileUrl, workerId) : new BasicPool(workerFileUrl, workerId);
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;

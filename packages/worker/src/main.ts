@@ -47,15 +47,34 @@ export async function assert<Ts>(property: IAsyncProperty<Ts> | IProperty<Ts>, p
   }
 }
 
+/**
+ * Set of options to configure our worker-based properties
+ * @public
+ */
+export type PropertyForOptions = {
+  /**
+   * How to isolate executions of the predicates from each others?
+   * The more isolated they are the less risk if one execution alter shared globals, but the more time it takes.
+   *
+   * - `property`: Re-use workers for each run of the predicate, except in case of faulty worker (not to mix with failing run). Not shared across properties!
+   * - `predicate`: One worker per run of the predicate
+   *
+   * @default "property"
+   */
+  isolationLevel?: 'property' | 'predicate';
+};
+
 function workerProperty<Ts extends [unknown, ...unknown[]]>(
   url: URL,
+  options: PropertyForOptions,
   ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
 ): WorkerProperty<Ts> {
   const currentWorkerId = ++lastWorkerId;
   if (isMainThread) {
     // Main thread code
+    const isolationLevel = options.isolationLevel || 'property';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentWorkerId, arbitraries);
+    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentWorkerId, isolationLevel, arbitraries);
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
     return property;
   } else if (parentPort !== null && currentWorkerId === workerData.currentWorkerId) {
@@ -80,16 +99,18 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
  *
  *
  * @param url - URL towards the worker file: usually `pathToFileURL(__filename)` for commonjs and `new URL(import.meta.url)` for es modules
+ * @param options - Set of options to configure our worker-based properties
  * @public
  */
 export function propertyFor(
-  url: URL
+  url: URL,
+  options?: PropertyForOptions
 ): <Ts extends [unknown, ...unknown[]]>(
   ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
 ) => WorkerProperty<Ts> {
   return function property<Ts extends [unknown, ...unknown[]]>(
     ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
   ): WorkerProperty<Ts> {
-    return workerProperty(url, ...args);
+    return workerProperty(url, options || {}, ...args);
   };
 }

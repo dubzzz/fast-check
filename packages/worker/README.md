@@ -49,6 +49,15 @@ if (isMainThread) {
 
 Refer to the tests defined `test/main.spec.ts` for a living example of how you can use this package with a test runner such as Jest.
 
+## Extra options
+
+The builder of properties `propertyFor` accepts a second parameter to customize how the workers will behave. By default, workers will be shared across runs of predicates linked to the same instance of property. In case you want a full isolation between your runs, you can use:
+
+```js
+const property = propertyFor(new URL(import.meta.url), { isolationLevel: 'predicate' });
+// Other values: 'property' (the default)
+```
+
 ## Minimal requirements
 
 - Node ≥14.18.0<sup>(1)</sup><sup>(2)</sup>
