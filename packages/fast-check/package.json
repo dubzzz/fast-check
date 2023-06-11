@@ -60,7 +60,7 @@
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.35.2",
     "@types/jest": "^29.5.2",
-    "@types/node": "^18.16.16",
+    "@types/node": "^18.16.17",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
     "glob": "^10.2.7",
