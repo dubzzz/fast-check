@@ -4,11 +4,7 @@ import { assert as fcAssert, type IAsyncProperty, type IProperty, type Parameter
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
-import {
-  type PropertyArbitraries,
-  type PropertyPredicate,
-  type WorkerProperty,
-} from './internals/SharedTypes.js';
+import { type PropertyArbitraries, type PropertyPredicate, type WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 
 let lastPredicateId = 0;
@@ -71,7 +67,7 @@ export type PropertyForOptions = {
 
 const registeredPredicates = new Set<number>();
 if (!isMainThread && parentPort !== null && workerData.fastcheckWorker === true) {
-  runNoWorker(parentPort, registeredPredicates)
+  runNoWorker(parentPort, registeredPredicates);
 }
 
 function workerProperty<Ts extends [unknown, ...unknown[]]>(

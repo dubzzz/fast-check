@@ -1,8 +1,5 @@
 import { type MessagePort } from 'node:worker_threads';
-import {
-  type MainThreadToWorkerMessage,
-  type WorkerToMainThreadMessage,
-} from '../SharedTypes.js';
+import { type MainThreadToWorkerMessage, type WorkerToMainThreadMessage } from '../SharedTypes.js';
 
 /**
  * Setup the fallback worker listening to all predicates and rejecting any that has never been registered
