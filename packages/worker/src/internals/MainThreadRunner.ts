@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { type PropertyArbitraries, type WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
-import { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
+import { PooledWorker } from './worker-pool/IWorkerPool.js';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
