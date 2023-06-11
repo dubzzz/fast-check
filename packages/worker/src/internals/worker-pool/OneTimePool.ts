@@ -11,10 +11,9 @@ export class OneTimePool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TP
   /**
    * Instantiate a new pool of workers
    * @param workerFileUrl - URL of the script for workers
-   * @param workerId - Id of the worker to be passed to the worker at launch time
    */
-  constructor(workerFileUrl: URL, workerId: number) {
-    this.internalPool = new BasicPool<TSuccess, TPayload>(workerFileUrl, workerId);
+  constructor(workerFileUrl: URL) {
+    this.internalPool = new BasicPool<TSuccess, TPayload>(workerFileUrl);
   }
 
   spawnNewWorker(): Promise<PooledWorker<TSuccess, TPayload>> {

@@ -1,12 +1,13 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { assert as fcAssert, type IAsyncProperty, type IProperty, type Parameters } from 'fast-check';
-import { runWorker } from './internals/WorkerRunner.js';
+import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
 import { type PropertyArbitraries, type PropertyPredicate, type WorkerProperty } from './internals/SharedTypes.js';
+import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 
-let lastWorkerId = 0;
+let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<
   IAsyncProperty<unknown> | IProperty<unknown>,
   () => Promise<void>
@@ -64,23 +65,29 @@ export type PropertyForOptions = {
   isolationLevel?: 'property' | 'predicate';
 };
 
+const registeredPredicates = new Set<number>();
+if (!isMainThread && parentPort !== null && workerData.fastcheckWorker === true) {
+  runNoWorker(parentPort, registeredPredicates);
+}
+
 function workerProperty<Ts extends [unknown, ...unknown[]]>(
   url: URL,
   options: PropertyForOptions,
   ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
 ): WorkerProperty<Ts> {
-  const currentWorkerId = ++lastWorkerId;
+  const currentPredicateId = ++lastPredicateId;
   if (isMainThread) {
     // Main thread code
     const isolationLevel = options.isolationLevel || 'property';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentWorkerId, isolationLevel, arbitraries);
+    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentPredicateId, isolationLevel, arbitraries);
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
     return property;
-  } else if (parentPort !== null && currentWorkerId === workerData.currentWorkerId) {
+  } else if (parentPort !== null && workerData.fastcheckWorker === true) {
     // Worker code
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
-    runWorker(parentPort, predicate);
+    runWorker(parentPort, currentPredicateId, predicate);
+    registeredPredicates.add(currentPredicateId);
   }
   // Cannot throw for invalid worker at this point as we may not be the only worker for this run
   // so we just return a dummy no-op property

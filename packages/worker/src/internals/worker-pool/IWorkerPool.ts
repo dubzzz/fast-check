@@ -7,14 +7,19 @@ export type OnErrorCallback = (error: unknown) => void;
 export type PooledWorker<TSuccess, TPayload> = {
   isAvailable: () => boolean;
   isFaulty: () => boolean;
-  register: (payload: TPayload, onSuccess: OnSuccessCallback<TSuccess>, onFailure: OnErrorCallback) => void;
+  register: (
+    predicateId: number,
+    payload: TPayload,
+    onSuccess: OnSuccessCallback<TSuccess>,
+    onFailure: OnErrorCallback
+  ) => void;
   terminateIfStillRunning: () => Promise<void>;
 };
 
 /**
  * Message exchanged from the pool to the worker
  */
-export type PoolToWorkerMessage<TPayload> = { runId: number; payload: TPayload };
+export type PoolToWorkerMessage<TPayload> = { targetPredicateId: number; runId: number; payload: TPayload };
 
 /**
  * Message exchanged from the worker to the pool
