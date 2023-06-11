@@ -1,5 +1,5 @@
-import { BasicPool } from './BasicPool';
-import { IWorkerPool, PooledWorker } from './IWorkerPool';
+import { BasicPool } from './BasicPool.js';
+import { IWorkerPool, PooledWorker } from './IWorkerPool.js';
 
 /**
  * Pool never re-using already spawned worker.
