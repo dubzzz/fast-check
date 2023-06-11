@@ -58,7 +58,7 @@ if (isMainThread) {
       async () => {
         // Arrange
         const unregisteredProperty = buildUnregisteredProperty();
-        const expectedError = /Worker stopped with exit code 0/;
+        const expectedError = /Unregistered predicate/;
 
         // Act / Assert
         await expect(assert(unregisteredProperty, defaultOptions)).rejects.toThrowError(expectedError);
@@ -103,7 +103,7 @@ if (isMainThread) {
       'should be able to isolate at predicate level',
       async () => {
         // Arrange
-        const options = { numRuns: 3 }; // predicate level isolation is way longer to run
+        const options = { ...defaultOptions, numRuns: 3 }; // predicate level isolation is way longer to run
 
         // Act / Assert
         await expect(assert(passingPropertyAsIsolatedAtPredicate, options)).resolves.not.toThrow();
@@ -115,7 +115,7 @@ if (isMainThread) {
       'should be able to isolate at property level and thus share workers cross-predicate',
       async () => {
         // Arrange
-        const options = { numRuns: 3 }; // just to rely on same options as the ones of 'predicate level isolation'
+        const options = { ...defaultOptions, numRuns: 3 }; // just to rely on same options as the ones of 'predicate level isolation'
         const expectedError = /Encounter counter different from 0/;
 
         // Act / Assert
@@ -128,7 +128,7 @@ if (isMainThread) {
       'should respawn a new worker when the predicate execution fails',
       async () => {
         // Arrange
-        const options = { verbose: 2 };
+        const options = { ...defaultOptions, verbose: 2 };
 
         // Act / Assert
         try {

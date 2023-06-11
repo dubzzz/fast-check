@@ -3,16 +3,25 @@ import {
   type MainThreadToWorkerMessage,
   type PropertyPredicate,
   type WorkerToMainThreadMessage,
-} from './SharedTypes.js';
+} from '../SharedTypes.js';
 
 /**
- * Setup a worker listenning to parentPort and able to run a single time for a given predicate
+ * Setup a worker listening to parentPort and able to run a single time for a given predicate
  * @param parentPort - the parent to listen to and sending us queries to execute
+ * @param predicateId - the id of the predicate
  * @param predicate - the predicate to assess
  */
-export function runWorker<Ts extends unknown[]>(parentPort: MessagePort, predicate: PropertyPredicate<Ts>): void {
+export function runWorker<Ts extends unknown[]>(
+  parentPort: MessagePort,
+  predicateId: number,
+  predicate: PropertyPredicate<Ts>
+): void {
   parentPort.on('message', (message: MainThreadToWorkerMessage<Ts>) => {
-    const { payload, runId } = message;
+    const { payload, targetPredicateId, runId } = message;
+    if (targetPredicateId !== predicateId) {
+      // The current predicate is not the one targeted by the received message
+      return;
+    }
     Promise.resolve(predicate(...payload)).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { success: true, output, runId };

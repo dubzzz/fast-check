@@ -9,19 +9,19 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
  * Create a property able to run in the main thread and firing workers whenever required
  *
  * @param workerFileUrl - The URL towards the file holding the worker's code
- * @param workerId - Id of the worker
+ * @param predicateId - Id of the predicate
  * @param isolationLevel - The kind of isolation to be put in place between two executions of predicates
  * @param arbitraries - The arbitraries used to generate the inputs for the predicate hold within the worker
  */
 export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   workerFileUrl: URL,
-  workerId: number,
+  predicateId: number,
   isolationLevel: 'property' | 'predicate',
   arbitraries: PropertyArbitraries<Ts>
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
   const lock = new Lock();
   const pool: IWorkerPool<boolean | void, Ts> =
-    isolationLevel === 'predicate' ? new OneTimePool(workerFileUrl, workerId) : new BasicPool(workerFileUrl, workerId);
+    isolationLevel === 'predicate' ? new OneTimePool(workerFileUrl) : new BasicPool(workerFileUrl);
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;
@@ -31,7 +31,7 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
         reject(new Error('Badly initialized worker, unable to run the property'));
         return;
       }
-      worker.register(inputs, resolve, reject);
+      worker.register(predicateId, inputs, resolve, reject);
     });
   });
   property.beforeEach(async (hookFunction) => {
