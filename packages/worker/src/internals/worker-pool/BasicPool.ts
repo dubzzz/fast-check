@@ -1,5 +1,5 @@
 import { Worker } from 'node:worker_threads';
-import type { OnErrorCallback, OnSuccessCallback, IPool, PooledWorker } from './IPool.js';
+import type { OnErrorCallback, OnSuccessCallback, IWorkerPool, PooledWorker } from './IWorkerPool.js';
 
 /**
  * Worker internal API
@@ -25,7 +25,7 @@ export type WorkerToPoolMessage<TSuccess> = { runId: number } & (
  * Basic pool for workers, providing the ability to spawn new workers,
  * get the first available one and terminate them all
  */
-export class BasicPool<TSuccess, TPayload> implements IPool<TSuccess, TPayload> {
+export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPayload> {
   private readonly workers: InternalPooledWorker<TSuccess, TPayload>[] = [];
 
   /**

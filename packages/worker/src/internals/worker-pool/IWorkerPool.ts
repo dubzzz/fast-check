@@ -27,7 +27,7 @@ export type WorkerToPoolMessage<TSuccess> = { runId: number } & (
 /**
  * Worker pool interface
  */
-export interface IPool<TSuccess, TPayload> {
+export interface IWorkerPool<TSuccess, TPayload> {
   /**
    * Spawn a new instance of worker ready to handle new tasks
    */
