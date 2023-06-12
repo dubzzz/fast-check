@@ -57,12 +57,13 @@ export type PropertyForOptions = {
    * How to isolate executions of the predicates from each others?
    * The more isolated they are the less risk if one execution alter shared globals, but the more time it takes.
    *
-   * - `property`: Re-use workers for each run of the predicate, except in case of faulty worker (not to mix with failing run). Not shared across properties!
+   * - `file`: Re-use workers cross properties
+   * - `property`: Re-use workers for each run of the predicate. Not shared across properties!
    * - `predicate`: One worker per run of the predicate
    *
-   * @default "property"
+   * @default "file"
    */
-  isolationLevel?: 'property' | 'predicate';
+  isolationLevel?: 'file' | 'property' | 'predicate';
 };
 
 const registeredPredicates = new Set<number>();
@@ -78,7 +79,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
   const currentPredicateId = ++lastPredicateId;
   if (isMainThread) {
     // Main thread code
-    const isolationLevel = options.isolationLevel || 'property';
+    const isolationLevel = options.isolationLevel || 'file';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
     const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentPredicateId, isolationLevel, arbitraries);
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);

@@ -9,6 +9,10 @@ import {
   buildUnregisteredProperty,
   passingPropertyAsIsolatedAtPredicate,
   failingPropertyAsNotEnoughIsolated,
+  passingPropertyAsIsolatedWarmUp,
+  passingPropertyAsIsolatedRun,
+  passingPropertyButBadlyIsolatedWarmUp,
+  failingPropertyAsBadlyIsolatedRun,
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
 } from './main.properties.cjs';
@@ -154,6 +158,31 @@ if (isMainThread) {
           }
           expect(foundOne).toBe(true);
         }
+      },
+      jestTimeout
+    );
+
+    it(
+      'should be able to isolate at property level',
+      async () => {
+        // Arrange
+        await expect(assert(passingPropertyAsIsolatedWarmUp, defaultOptions)).resolves.not.toThrow();
+
+        // Act / Assert
+        await expect(assert(passingPropertyAsIsolatedRun, defaultOptions)).resolves.not.toThrow();
+      },
+      jestTimeout
+    );
+
+    it(
+      'should be re-use the same worker across several properties when isolated at file level',
+      async () => {
+        // Arrange
+        const expectedError = /Broken isolation, got: warm-up/;
+        await expect(assert(passingPropertyButBadlyIsolatedWarmUp, defaultOptions)).resolves.not.toThrow();
+
+        // Act / Assert
+        await expect(assert(failingPropertyAsBadlyIsolatedRun, defaultOptions)).rejects.toThrowError(expectedError);
       },
       jestTimeout
     );

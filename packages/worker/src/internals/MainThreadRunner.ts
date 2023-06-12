@@ -4,6 +4,7 @@ import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
 import { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
 import { OneTimePool } from './worker-pool/OneTimePool.js';
+import { GlobalPool } from './worker-pool/GlobalPool.js';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -16,12 +17,16 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
 export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   workerFileUrl: URL,
   predicateId: number,
-  isolationLevel: 'property' | 'predicate',
+  isolationLevel: 'file' | 'property' | 'predicate',
   arbitraries: PropertyArbitraries<Ts>
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
   const lock = new Lock();
   const pool: IWorkerPool<boolean | void, Ts> =
-    isolationLevel === 'predicate' ? new OneTimePool(workerFileUrl) : new BasicPool(workerFileUrl);
+    isolationLevel === 'predicate'
+      ? new OneTimePool(workerFileUrl)
+      : isolationLevel === 'property'
+      ? new BasicPool(workerFileUrl)
+      : new GlobalPool(workerFileUrl);
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;

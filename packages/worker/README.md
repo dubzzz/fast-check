@@ -51,11 +51,14 @@ Refer to the tests defined `test/main.spec.ts` for a living example of how you c
 
 ## Extra options
 
-The builder of properties `propertyFor` accepts a second parameter to customize how the workers will behave. By default, workers will be shared across runs of predicates linked to the same instance of property. In case you want a full isolation between your runs, you can use:
+The builder of properties `propertyFor` accepts a second parameter to customize how the workers will behave. By default, workers will be shared across properties. In case you want a more isolation between your runs, you can use:
 
 ```js
 const property = propertyFor(new URL(import.meta.url), { isolationLevel: 'predicate' });
-// Other values: 'property' (the default)
+// Other values:
+// - "file": Re-use workers cross properties (default)
+// - "property": Re-use workers for each run of the predicate. Not shared across properties!
+// - "predicate": One worker per run of the predicate
 ```
 
 ## Minimal requirements
