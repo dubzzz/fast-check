@@ -90,6 +90,7 @@ const { init, fc } = require('@fast-check/jest/worker');
 const { pathToFileURL } = require('node:url');
 
 const { test, expect } = init(pathToFileURL(__filename));
+// can also be passed options such as isolationLevel: init(pathToFileURL(__filename), {})
 
 test.prop([fc.constant(null)])('should pass', (value) => {
   expect(value).toBe(null);
@@ -102,6 +103,7 @@ The ES Modules approach would be:
 import { init, fc } from '@fast-check/jest/worker';
 
 const { test, expect } = await init(new URL(import.meta.url));
+// can also be passed options such as isolationLevel: init(new URL(import.meta.url), {})
 
 test.prop([fc.constant(null)])('should pass', (value) => {
   expect(value).toBe(null);
