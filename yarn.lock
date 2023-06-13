@@ -3265,16 +3265,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.35.2":
-  version: 7.35.2
-  resolution: "@microsoft/api-extractor@npm:7.35.2"
+"@microsoft/api-extractor@npm:^7.35.3":
+  version: 7.35.3
+  resolution: "@microsoft/api-extractor@npm:7.35.3"
   dependencies:
     "@microsoft/api-extractor-model": 7.27.2
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.59.3
     "@rushstack/rig-package": 0.3.20
-    "@rushstack/ts-command-line": 4.14.0
+    "@rushstack/ts-command-line": 4.15.0
     colors: ~1.2.1
     lodash: ~4.17.15
     resolve: ~1.22.1
@@ -3283,7 +3283,7 @@ __metadata:
     typescript: ~5.0.4
   bin:
     api-extractor: bin/api-extractor
-  checksum: eeb1635bec5d8b29b9f2b5712ec7c0d0e4eedb633cc62847dbfc6aa69ba9aa58100b7e93e266774d8946f83f32a60a42b7b9c52f8eed3dad3095bfaf2bcdc8f6
+  checksum: 378f4ff7416ed5e6ecc59afeab04c04aeb68b7ace36c0947cd50300cf285efec5b7676663ce6e80e543f84a80f50acdb0f8492e50d5a298b0ccff5b036da3c68
   languageName: node
   linkType: hard
 
@@ -3600,15 +3600,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/ts-command-line@npm:4.14.0":
-  version: 4.14.0
-  resolution: "@rushstack/ts-command-line@npm:4.14.0"
+"@rushstack/ts-command-line@npm:4.15.0":
+  version: 4.15.0
+  resolution: "@rushstack/ts-command-line@npm:4.15.0"
   dependencies:
     "@types/argparse": 1.0.38
     argparse: ~1.0.9
     colors: ~1.2.1
     string-argv: ~0.3.1
-  checksum: a5a338cac75d0c5ddc347edc00139797a65d4466784c90623344c71a752229c0dd55dd0ccf16be0cd25591d7eebd7ff5c1d9ebdbbf2c335447b3357a6ed574ae
+  checksum: e0113516e04900a71311211a2f4f376f514698c96dca94ffebf2080913b601ca54a1a99556a56d149d3378afa2433c895517e3d12f76cc870bce60b7fac21d9a
   languageName: node
   linkType: hard
 
@@ -8156,7 +8156,7 @@ __metadata:
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": ^7.35.2
+    "@microsoft/api-extractor": ^7.35.3
     "@types/jest": ^29.5.2
     "@types/node": ^18.16.17
     buffer: ^6.0.3
