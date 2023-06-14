@@ -16,7 +16,7 @@ if (isMainThread) {
       'should be able to run two inter-dependent asserts',
       async () => {
         // While this pattern is definitely not recommended, we leverage it in our test suite to make sure
-        // two concurrent worker can be spawn at the same time for default isolation level (file)
+        // two concurrent workers can be spawn at the same time on the default isolation level (file)
         // Arrange
         const options: Parameters<unknown> = { ...defaultOptions, numRuns: 5 };
 
