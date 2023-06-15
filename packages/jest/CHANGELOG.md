@@ -1,3 +1,18 @@
+# 1.7.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.6.2...jest%2Fv1.7.0)]
+
+## Features
+
+- ([PR#3964](https://github.com/dubzzz/fast-check/pull/3964)) Support passing options to worker
+
+## Fixes
+
+
+
+---
+
 # 1.6.2
 
 _Update URL of the logo_

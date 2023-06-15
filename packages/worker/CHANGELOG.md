@@ -1,3 +1,19 @@
+# 0.0.7
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.6...worker%2Fv0.0.7)]
+
+## Features
+
+- ([PR#3960](https://github.com/dubzzz/fast-check/pull/3960)) Introduce levels of isolation
+- ([PR#3963](https://github.com/dubzzz/fast-check/pull/3963)) Add "file" isolation level
+
+## Fixes
+
+- ([PR#3958](https://github.com/dubzzz/fast-check/pull/3958)) Refactor: Introduce internal `IWorkerPool` interface
+- ([PR#3962](https://github.com/dubzzz/fast-check/pull/3962)) Refactor: Allow support for multiple predicates per worker
+- ([PR#3971](https://github.com/dubzzz/fast-check/pull/3971)) Test: Restructure E2E tests
+
 # 0.0.6
 
 _Add logo on the README_
