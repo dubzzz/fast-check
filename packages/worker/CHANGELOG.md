@@ -1,6 +1,6 @@
 # 0.0.7
 
-_TODO Description_
+_Introduce isolation levels on workers_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.6...worker%2Fv0.0.7)]
 
 ## Features
