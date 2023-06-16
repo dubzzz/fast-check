@@ -492,7 +492,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
@@ -532,7 +532,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
@@ -572,7 +572,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
@@ -612,7 +612,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
@@ -652,7 +652,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
@@ -692,7 +692,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
@@ -732,7 +732,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
@@ -772,7 +772,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
-        run: npm install -g npm
+        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
         with:
