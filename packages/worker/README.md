@@ -33,7 +33,7 @@ import { isMainThread } from 'node:worker_threads';
 import { assert, propertyFor } from '@fast-check/worker';
 
 const property = propertyFor(new URL(import.meta.url)); // or propertyFor(pathToFileURL(__filename)) in commonjs
-const p1 = property(workerFileUrl, fc.nat(), fc.nat(), (start, end) => {
+const p1 = property(fc.nat(), fc.nat(), (start, end) => {
   // starting a possibly infinite loop
   for (let i = start; i !== end; ++i) {
     // doing stuff...
