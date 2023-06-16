@@ -8,12 +8,14 @@ on:
 
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   analyse:
     name: Analyse
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
 
     steps:
       - name: Checkout repository
