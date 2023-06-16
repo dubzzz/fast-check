@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:20
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:20@sha256:8918d26858c9c40431ac69ef4daabdaad7d36e6c7179d3335cd68c3919d8f4c6
 
 # Inspired from https://github.com/microsoft/vscode-dev-containers/blob/main/containers/codespaces-linux/.devcontainer/base.Dockerfile
 
