@@ -29,7 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "all-contributors-cli": "^6.26.0",
-    "eslint": "^8.42.0",
+    "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "prettier": "2.8.8",
     "publint": "^0.1.12"
