@@ -25,9 +25,9 @@ jobs:
     name: 'Warm up Yarn cache'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         id: yarn-cache
         with:
           node-version: '18.x'
@@ -45,9 +45,9 @@ jobs:
       matrix:
         os: ['macos-latest', 'windows-latest']
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         id: yarn-cache
         with:
           node-version: '18.x'
@@ -62,11 +62,11 @@ jobs:
     name: 'No dedupe required'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
       - name: Ensure no dedupe required
@@ -76,11 +76,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
       - name: Ensure versions have been properly bumped
@@ -89,9 +89,9 @@ jobs:
     name: 'Package quality'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
       - name: Check package score using skypack
@@ -103,9 +103,9 @@ jobs:
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -120,9 +120,9 @@ jobs:
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -133,7 +133,7 @@ jobs:
       - name: Create bundles
         run: yarn pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # 3.1.2
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -148,16 +148,16 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -217,21 +217,21 @@ jobs:
             node-version: 18.x
             os: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Cache for Jest
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # 3.3.1
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: /tmp/jest_rt
           key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -249,7 +249,7 @@ jobs:
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
       - name: Codecov
-        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # 3.1.4
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
@@ -263,18 +263,18 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           lfs: true
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -297,16 +297,16 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -339,16 +339,16 @@ jobs:
           - 'rc'
           - 'next'
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -388,16 +388,16 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           cache: 'yarn'
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -406,7 +406,7 @@ jobs:
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-minimal-support' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Using Node v8.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '8.x'
       - name: Test packages/test-minimal-support/
@@ -417,7 +417,7 @@ jobs:
       # Re-install node 16, for clean-up related logic as it does not work with node 8
       # The caching logic of actions/setup-node calls yarn to know the version
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
 
@@ -454,7 +454,7 @@ jobs:
     outputs:
       tag_count: ${{steps.tag_count.outputs.count}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: tag_count
@@ -470,7 +470,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -487,14 +487,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -510,7 +510,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -527,14 +527,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -550,7 +550,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -567,14 +567,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -590,7 +590,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -607,14 +607,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -630,7 +630,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -647,14 +647,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -670,7 +670,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -687,14 +687,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -710,7 +710,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -727,14 +727,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
@@ -750,7 +750,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # 3.5.3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -767,14 +767,14 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v18.x
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # 3.6.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install latest npm version
         run: npm install -g npm@9.7.1
       - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # 3.0.2
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bundles
           path: packages/
