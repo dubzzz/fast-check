@@ -1799,22 +1799,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codesandbox/sandpack-client@npm:^2.6.7":
-  version: 2.6.7
-  resolution: "@codesandbox/sandpack-client@npm:2.6.7"
+"@codesandbox/sandpack-client@npm:^2.6.9":
+  version: 2.6.9
+  resolution: "@codesandbox/sandpack-client@npm:2.6.9"
   dependencies:
     "@codesandbox/nodebox": 0.1.8
     buffer: ^6.0.3
     dequal: ^2.0.2
     outvariant: 1.4.0
     static-browser-server: 1.0.3
-  checksum: e7ed1dd2690f1adc7ea91336f57916a3fd16334cea7b464b9a96970cd6f05a3e1fe05b36974c72010aa59519825c4c257154f3a45c050920768de54a5150169b
+  checksum: 9c6323614d268fa9441a6001b66b01fa942da5e956f393eafd1426a684e209cf06df483ff203abbb5fa7318bfc6a194521d76b9c9a0ad3d4a47ca9b8f43052e3
   languageName: node
   linkType: hard
 
 "@codesandbox/sandpack-react@npm:^2.6.1":
-  version: 2.6.7
-  resolution: "@codesandbox/sandpack-react@npm:2.6.7"
+  version: 2.6.9
+  resolution: "@codesandbox/sandpack-react@npm:2.6.9"
   dependencies:
     "@codemirror/autocomplete": ^6.4.0
     "@codemirror/commands": ^6.1.3
@@ -1824,7 +1824,7 @@ __metadata:
     "@codemirror/language": ^6.3.2
     "@codemirror/state": ^6.2.0
     "@codemirror/view": ^6.7.1
-    "@codesandbox/sandpack-client": ^2.6.7
+    "@codesandbox/sandpack-client": ^2.6.9
     "@lezer/highlight": ^1.1.3
     "@react-hook/intersection-observer": ^3.1.1
     "@stitches/core": ^1.2.6
@@ -1839,7 +1839,7 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: 3fbb71d186a6cb4b6f4103be4828449e8db5e9224d471759307f4d761307dcf6f80f93e8bdf9f8c1a1d4bcde639ab3e781b50801bf298418a9d673d142aa85d1
+  checksum: d226a751b1d3aa65a243746cb2e9443511d28c11a1ef54fbdb4da71555462bbc625f171e9e6ff0793c540bb1974849864fab14ee24fb689603076af8e3aa35e0
   languageName: node
   linkType: hard
 
