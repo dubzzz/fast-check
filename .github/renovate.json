@@ -18,5 +18,9 @@
       "rangeStrategy": "bump"
     }
   ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "osvVulnerabilityAlerts": true,
   "postUpdateOptions": ["yarnDedupeHighest"]
 }
