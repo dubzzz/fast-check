@@ -3265,15 +3265,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.35.4":
-  version: 7.35.4
-  resolution: "@microsoft/api-extractor@npm:7.35.4"
+"@microsoft/api-extractor@npm:^7.36.0":
+  version: 7.36.0
+  resolution: "@microsoft/api-extractor@npm:7.36.0"
   dependencies:
     "@microsoft/api-extractor-model": 7.27.3
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.59.4
-    "@rushstack/rig-package": 0.3.21
+    "@rushstack/rig-package": 0.4.0
     "@rushstack/ts-command-line": 4.15.1
     colors: ~1.2.1
     lodash: ~4.17.15
@@ -3283,7 +3283,7 @@ __metadata:
     typescript: ~5.0.4
   bin:
     api-extractor: bin/api-extractor
-  checksum: bcd6b2942f8a21219142b835cae7b05fcac948fa6a0ec9890859fe157893df0f485cf1109ee386df0a2ef0d0b8618a20440e3dce4c80ab25bae179832899dde0
+  checksum: c1c990635ce0cc431e5dcc7758229657ad9b04738b28fafb8b1ed7323e5636b1c705f8a4340623f5a2557af87514e5a74b9bbea920b750bc23ec198a039c7b07
   languageName: node
   linkType: hard
 
@@ -3590,13 +3590,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/rig-package@npm:0.3.21":
-  version: 0.3.21
-  resolution: "@rushstack/rig-package@npm:0.3.21"
+"@rushstack/rig-package@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@rushstack/rig-package@npm:0.4.0"
   dependencies:
     resolve: ~1.22.1
     strip-json-comments: ~3.1.1
-  checksum: 6d60359c254e685f4072f2debe4f455fb664c27c8eb9089cf88e0278df5e0260385a140105ebe1717cb6a27957e7905791a357b96e3a43a304a3688e0486adb5
+  checksum: 376ac9996ee758bf47ab21bd078d71b2180b9342dd8cfbab8bf25e38e706b20bcf933a8548b9a0fd102afbb997deeca75a719da987a96a9d3365f4669d230c53
   languageName: node
   linkType: hard
 
@@ -8156,7 +8156,7 @@ __metadata:
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": ^7.35.4
+    "@microsoft/api-extractor": ^7.36.0
     "@types/jest": ^29.5.2
     "@types/node": ^18.16.18
     buffer: ^6.0.3
