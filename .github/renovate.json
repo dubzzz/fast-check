@@ -22,5 +22,6 @@
     "enabled": true
   },
   "osvVulnerabilityAlerts": true,
-  "postUpdateOptions": ["yarnDedupeHighest"]
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"]
 }
