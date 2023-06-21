@@ -486,13 +486,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -526,13 +524,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -566,13 +562,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -606,13 +600,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -646,13 +638,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -686,13 +676,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -726,13 +714,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -766,13 +752,11 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm version
-        run: npm install -g npm@9.7.1
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
