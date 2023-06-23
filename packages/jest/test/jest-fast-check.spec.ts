@@ -434,7 +434,6 @@ describe.each<DescribeOptions>([
   });
 
   describe('timeout', () => {
-    if (!useWorkers || supportForGlobalLevel()) {
       it.concurrent('should fail as test takes longer than global Jest timeout', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
@@ -451,7 +450,6 @@ describe.each<DescribeOptions>([
         expectTimeout(out, 5000, true, testRunner);
         expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
       });
-    }
 
     if (!useLegacySignatures) {
       it.concurrent('should fail as test takes longer than Jest local timeout', async () => {
@@ -474,9 +472,8 @@ describe.each<DescribeOptions>([
         expectTimeout(out, 1000, false, testRunner);
         expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
       });
-    }
+}
 
-    if (!useWorkers || supportForGlobalLevel()) {
       it.concurrent('should fail as test takes longer than Jest config timeout', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(
@@ -497,7 +494,6 @@ describe.each<DescribeOptions>([
         expectTimeout(out, 1000, true, testRunner);
         expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
       });
-    }
 
     it.concurrent('should fail as test takes longer than Jest setTimeout', async () => {
       // Arrange
@@ -519,7 +515,6 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
     });
 
-    if (!useWorkers || supportForGlobalLevel()) {
       it.concurrent('should fail as test takes longer than Jest CLI timeout', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
@@ -536,7 +531,6 @@ describe.each<DescribeOptions>([
         expectTimeout(out, 1000, true, testRunner);
         expect(out).toMatch(/[×✕] property takes longer than Jest CLI timeout/);
       });
-    }
 
     if (!useLegacySignatures) {
       it.concurrent('should fail but favor local Jest timeout over Jest setTimeout', async () => {
