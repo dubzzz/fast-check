@@ -679,18 +679,13 @@ function expectFail(out: string, specFileName: string): void {
   expect(out).toMatch(new RegExp('FAIL .*/' + specFileName));
 }
 
-function supportForGlobalLevel() {
-  // Related to ticket https://github.com/facebook/jest/issues/13338
-  return !(process.version.startsWith('v18.') || process.version.startsWith('v19.'));
-}
-
 function expectTimeout(
   out: string,
   timeout: number,
   isGlobalInterrupt: boolean,
   testRunner: DescribeOptions['testRunner']
 ): void {
-  if (supportForGlobalLevel() || !isGlobalInterrupt || testRunner === 'jasmine') {
+  if (!isGlobalInterrupt || testRunner === 'jasmine') {
     expect(out).toContain('Property interrupted after 0 tests');
   } else {
     // In such context, interrupt from fast-check will occur after the one caused by Jest.
