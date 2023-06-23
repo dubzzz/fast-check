@@ -370,7 +370,7 @@ jobs:
         run: |
           cd packages/test-types
           yarn dlx -p typescript@${{matrix.ts-version}} tsc
-      - name: Test packages/test-types/ with --moduleResolution nodenext --module nodenext
+      - name: Test packages/test-types/ with --moduleResolution nodenext --module esnext
         if: matrix.ts-version == 'next'
         run: |
           cd packages/test-types
