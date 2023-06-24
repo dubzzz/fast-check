@@ -673,12 +673,7 @@ function expectFail(out: string, specFileName: string): void {
   expect(out).toMatch(new RegExp('FAIL .*/' + specFileName));
 }
 
-function expectTimeout(
-  out: string,
-  timeout: number,
-  isGlobalInterrupt: boolean,
-  testRunner: DescribeOptions['testRunner']
-): void {
+ function expectTimeout(out: string, timeout: number): void {
   expect(out).toContain('Property interrupted after 0 tests');
   const timeRegex = /[×✕] .* \(with seed=-?\d+\) \((\d+) ms\)/;
   expect(out).toMatch(timeRegex);
