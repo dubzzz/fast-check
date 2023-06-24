@@ -679,13 +679,7 @@ function expectTimeout(
   isGlobalInterrupt: boolean,
   testRunner: DescribeOptions['testRunner']
 ): void {
-  if (!isGlobalInterrupt || testRunner === 'jasmine') {
-    expect(out).toContain('Property interrupted after 0 tests');
-  } else {
-    // In such context, interrupt from fast-check will occur after the one caused by Jest.
-    // It implies that we will not be able to see a proper error from fast-check, so no such error.
-    expect(out).not.toContain('Property interrupted after 0 tests');
-  }
+  expect(out).toContain('Property interrupted after 0 tests');
   const timeRegex = /[×✕] .* \(with seed=-?\d+\) \((\d+) ms\)/;
   expect(out).toMatch(timeRegex);
   const time = timeRegex.exec(out)!;
