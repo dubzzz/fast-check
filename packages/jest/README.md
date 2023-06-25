@@ -128,12 +128,11 @@ This API is available in all 1.x versions but may not exist anymore starting at 
 
 ## Minimal requirements
 
-| @fast-check/jest | jest                                 | fast-check | node |
-| ---------------- | ------------------------------------ | ---------- | --- |
+| @fast-check/jest | jest                                    | fast-check | node                                                                                  |
+| ---------------- | --------------------------------------- | ---------- | ------------------------------------------------------------------------------------- |
 | ^1.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.16.1 and &lt;19<sup>(4)</sup>, &gt;=20 |
 
 - (1) any version of `jest` should be greater or equal than 26.5.0 if you are using `commonjs`
 - (2) in order to use `esm` build, you may need to enable experimental features of node, see [here](https://github.com/dubzzz/fast-check/blob/main/packages/test-jest-bundle-esm/package.json)
 - (3) minimal requirements for jest
 - (4) timeout defined on jest might not be properly applied to fast-check for node 18 (until 18.16.1) and node 19, see [#4004](https://github.com/dubzzz/fast-check/pull/4004)
-
