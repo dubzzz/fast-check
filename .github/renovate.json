@@ -22,6 +22,7 @@
     "enabled": true
   },
   "osvVulnerabilityAlerts": true,
+  "dependencyDashboardOSVVulnerabilitySummary": "all",
   "postUpdateOptions": ["yarnDedupeHighest"],
   "ignorePaths": ["**/node_modules/**", "**/bower_components/**"]
 }
