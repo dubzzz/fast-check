@@ -15,6 +15,6 @@
       }
     }
   },
-  "initializeCommand": "./.devcontainer/initializeCommand.sh",
+  "onCreateCommand": "./.devcontainer/initializeCommand.sh",
   "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
 }
