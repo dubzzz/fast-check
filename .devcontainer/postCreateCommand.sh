@@ -6,4 +6,5 @@ git lfs install
 git lfs pull
 
 # Install locked dependencies
+corepack enable
 yarn install --immutable
