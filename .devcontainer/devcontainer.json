@@ -9,7 +9,6 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
-        "ms-vscode-remote.remote-containers",
         "eamodio.gitlens",
         "GitHub.vscode-github-actions"
       ],
