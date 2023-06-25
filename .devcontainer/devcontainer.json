@@ -3,22 +3,24 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "settings": {
-    "terminal.integrated.defaultProfile.linux": "bash"
-  },
   "customizations": {
     "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "eamodio.gitlens",
+        "GitHub.vscode-github-actions"
+      ],
       "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
-  "extensions": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "ms-azuretools.vscode-docker",
-    "eamodio.gitlens",
-    "GitHub.vscode-github-actions"
-  ],
+  "features": {
+    "ghcr.io/devcontainers/features/git-lfs:1.1.0": {}
+  },
   "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
 }
