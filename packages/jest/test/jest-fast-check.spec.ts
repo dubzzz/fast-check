@@ -447,7 +447,7 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out, specFileName);
-      expectTimeout(out, 5000, true, testRunner);
+      expectTimeout(out, 5000);
       expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
     });
 
@@ -469,7 +469,7 @@ describe.each<DescribeOptions>([
 
         // Assert
         expectFail(out, specFileName);
-        expectTimeout(out, 1000, false, testRunner);
+        expectTimeout(out, 1000);
         expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
       });
     }
@@ -491,7 +491,7 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out, specFileName);
-      expectTimeout(out, 1000, true, testRunner);
+      expectTimeout(out, 1000);
       expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
     });
 
@@ -511,7 +511,7 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out, specFileName);
-      expectTimeout(out, 1000, false, testRunner);
+      expectTimeout(out, 1000);
       expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
     });
 
@@ -528,7 +528,7 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out, specFileName);
-      expectTimeout(out, 1000, true, testRunner);
+      expectTimeout(out, 1000);
       expect(out).toMatch(/[×✕] property takes longer than Jest CLI timeout/);
     });
 
@@ -553,7 +553,7 @@ describe.each<DescribeOptions>([
 
         // Assert
         expectFail(out, specFileName);
-        expectTimeout(out, 1000, false, testRunner); // neither 2000 (setTimeout), nor 5000 (default)
+        expectTimeout(out, 1000); // neither 2000 (setTimeout), nor 5000 (default)
         expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
       });
     }
@@ -574,7 +574,7 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out, specFileName);
-      expectTimeout(out, 1000, false, testRunner); // neither 2000 (cli), nor 5000 (default)
+      expectTimeout(out, 1000); // neither 2000 (cli), nor 5000 (default)
       expect(out).toMatch(/[×✕] property favor Jest setTimeout over Jest CLI timeout/);
     });
   });
@@ -673,7 +673,7 @@ function expectFail(out: string, specFileName: string): void {
   expect(out).toMatch(new RegExp('FAIL .*/' + specFileName));
 }
 
- function expectTimeout(out: string, timeout: number): void {
+function expectTimeout(out: string, timeout: number): void {
   expect(out).toContain('Property interrupted after 0 tests');
   const timeRegex = /[×✕] .* \(with seed=-?\d+\) \((\d+) ms\)/;
   expect(out).toMatch(timeRegex);
