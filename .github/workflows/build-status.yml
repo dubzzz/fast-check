@@ -374,7 +374,7 @@ jobs:
         if: matrix.ts-version == 'next'
         run: |
           cd packages/test-types
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext
+          yarn dlx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext --module nodenext
       - name: Test packages/test-types/ with --exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
