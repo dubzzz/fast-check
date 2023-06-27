@@ -13,10 +13,8 @@ type TransitionMap = Map<string | typeof startSymbol, Map<string | typeof endSym
 
 function multiFromToSingleFrom(fromMulti: (string | typeof startSymbol)[]): string | typeof startSymbol {
   const nonStart = fromMulti.filter((i) => i !== startSymbol) as string[];
-  if (nonStart.length === 0) {
-    return startSymbol;
-  }
-  return nonStart.join('');
+  const startCount = fromMulti.length - nonStart.length;
+  return startCount + ':' + nonStart.join('');
 }
 
 function incrementInTransitionMap(
