@@ -44,14 +44,6 @@ function addIntoTransitionMap(transitionMap: TransitionMap, tokenizedCorpusItem:
   incrementInTransitionMap(transitionMap, multiFromToSingleFrom(previousItems), endSymbol);
 }
 
-function buildTransitionMap(tokenizedCorpus: string[][], depth: number): TransitionMap {
-  const transitionMap: TransitionMap = new Map();
-  for (const tokenizedCorpusItem of tokenizedCorpus) {
-    addIntoTransitionMap(transitionMap, tokenizedCorpusItem, depth);
-  }
-  return transitionMap;
-}
-
 class FuzzedString extends Arbitrary<string> {
   private readonly transitionMap: TransitionMap;
 
@@ -73,7 +65,12 @@ class FuzzedString extends Arbitrary<string> {
       throw new Error(`Do not support empty corpus`);
     }
 
-    this.transitionMap = buildTransitionMap(tokenizedCorpus, this.depth);
+    this.transitionMap = new Map();
+    for (let d = 1; d <= this.depth; ++d) {
+      for (const tokenizedCorpusItem of tokenizedCorpus) {
+        addIntoTransitionMap(this.transitionMap, tokenizedCorpusItem, d);
+      }
+    }
   }
 
   private generateInternal(mrng: Random): string {
@@ -86,11 +83,15 @@ class FuzzedString extends Arbitrary<string> {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const transitions = this.transitionMap.get(multiFromToSingleFrom(previousItems));
-      if (transitions === undefined) {
-        throw new Error('Missing transitions, not expected for strictness=2');
+      const allTransitions: [string | typeof endSymbol, number][] = [];
+      for (let d = 1; d <= this.depth; ++d) {
+        const transitions = this.transitionMap.get(
+          multiFromToSingleFrom(previousItems.slice(previousItems.length - d, previousItems.length))
+        );
+        if (transitions !== undefined) {
+          allTransitions.push(...transitions.entries());
+        }
       }
-      const allTransitions = [...transitions.entries()];
       const totalWeight = allTransitions.reduce((acc, transition) => acc + transition[1], 0);
       const selectedWeight = mrng.nextInt(0, totalWeight - 1);
       let postSelected = 1;
