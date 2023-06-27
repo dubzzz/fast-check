@@ -11,6 +11,14 @@ const endSymbol = Symbol('end');
 // from => { to => weight }
 type TransitionMap = Map<string | typeof startSymbol, Map<string | typeof endSymbol, number>>;
 
+function multiFromToSingleFrom(fromMulti: (string | typeof startSymbol)[]): string | typeof startSymbol {
+  const nonStart = fromMulti.filter((i) => i !== startSymbol) as string[];
+  if (nonStart.length === 0) {
+    return startSymbol;
+  }
+  return nonStart.join('');
+}
+
 function incrementInTransitionMap(
   transitionMap: TransitionMap,
   from: string | typeof startSymbol,
@@ -25,20 +33,21 @@ function incrementInTransitionMap(
   }
 }
 
-function addIntoTransitionMap(transitionMap: TransitionMap, tokenizedCorpusItem: string[]): void {
-  let previousItem: string | typeof startSymbol = startSymbol;
+function addIntoTransitionMap(transitionMap: TransitionMap, tokenizedCorpusItem: string[], depth: number): void {
+  const previousItems: (string | typeof startSymbol)[] = Array(depth).fill(startSymbol);
   for (let index = 0; index !== tokenizedCorpusItem.length; ++index) {
     const currentItem = tokenizedCorpusItem[index];
-    incrementInTransitionMap(transitionMap, previousItem, currentItem);
-    previousItem = currentItem;
+    incrementInTransitionMap(transitionMap, multiFromToSingleFrom(previousItems), currentItem);
+    previousItems.shift();
+    previousItems.push(currentItem);
   }
-  incrementInTransitionMap(transitionMap, previousItem, endSymbol);
+  incrementInTransitionMap(transitionMap, multiFromToSingleFrom(previousItems), endSymbol);
 }
 
-function buildTransitionMap(tokenizedCorpus: string[][]): TransitionMap {
+function buildTransitionMap(tokenizedCorpus: string[][], depth: number): TransitionMap {
   const transitionMap: TransitionMap = new Map();
   for (const tokenizedCorpusItem of tokenizedCorpus) {
-    addIntoTransitionMap(transitionMap, tokenizedCorpusItem);
+    addIntoTransitionMap(transitionMap, tokenizedCorpusItem, depth);
   }
   return transitionMap;
 }
@@ -46,7 +55,12 @@ function buildTransitionMap(tokenizedCorpus: string[][]): TransitionMap {
 class FuzzedString extends Arbitrary<string> {
   private readonly transitionMap: TransitionMap;
 
-  constructor(corpus: string[], private readonly charArb: Arbitrary<string>, private readonly strictness: 0 | 1 | 2) {
+  constructor(
+    corpus: string[],
+    private readonly charArb: Arbitrary<string>,
+    private readonly strictness: 0 | 1 | 2,
+    private readonly depth: number
+  ) {
     super();
 
     const tokenizedCorpus: string[][] = [];
@@ -59,11 +73,11 @@ class FuzzedString extends Arbitrary<string> {
       throw new Error(`Do not support empty corpus`);
     }
 
-    this.transitionMap = buildTransitionMap(tokenizedCorpus);
+    this.transitionMap = buildTransitionMap(tokenizedCorpus, this.depth);
   }
 
   private generateInternal(mrng: Random): string {
-    let previousItem: string | typeof startSymbol = startSymbol;
+    const previousItems: (string | typeof startSymbol)[] = Array(this.depth).fill(startSymbol);
     let stringValue = '';
 
     if (this.strictness !== 2) {
@@ -72,7 +86,7 @@ class FuzzedString extends Arbitrary<string> {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const transitions = this.transitionMap.get(previousItem);
+      const transitions = this.transitionMap.get(multiFromToSingleFrom(previousItems));
       if (transitions === undefined) {
         throw new Error('Missing transitions, not expected for strictness=2');
       }
@@ -92,7 +106,8 @@ class FuzzedString extends Arbitrary<string> {
       if (item === endSymbol) {
         return stringValue;
       }
-      previousItem = item;
+      previousItems.shift();
+      previousItems.push(item);
       stringValue += item;
     }
   }
@@ -111,5 +126,5 @@ class FuzzedString extends Arbitrary<string> {
 }
 
 export function fuzzedString(corpus: string[]): Arbitrary<string> {
-  return new FuzzedString(corpus, char(), 2);
+  return new FuzzedString(corpus, char(), 2, 1);
 }
