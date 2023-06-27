@@ -129,3 +129,7 @@ class FuzzedString extends Arbitrary<string> {
 export function fuzzedString(corpus: string[]): Arbitrary<string> {
   return new FuzzedString(corpus, char(), 2, 1);
 }
+
+export function fuzzedString10(corpus: string[]): Arbitrary<string> {
+  return new FuzzedString(corpus, char(), 2, 10);
+}

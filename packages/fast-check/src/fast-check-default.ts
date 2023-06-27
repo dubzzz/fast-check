@@ -177,7 +177,7 @@ import { bigInt64Array, BigIntArrayConstraints } from './arbitrary/bigInt64Array
 import { bigUint64Array } from './arbitrary/bigUint64Array';
 import { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler';
 import { stringMatching, StringMatchingConstraints } from './arbitrary/stringMatching';
-import { fuzzedString } from './arbitrary/fuzzedString';
+import { fuzzedString, fuzzedString10 } from './arbitrary/fuzzedString';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -253,6 +253,7 @@ export {
   base64,
   mixedCase,
   fuzzedString,
+  fuzzedString10,
   string,
   asciiString,
   string16bits,
