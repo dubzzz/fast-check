@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
+    "ts-jest": "^29.1.1",
     "ts-jest-resolver": "^2.0.1",
     "typescript": "^5.0.4"
   },

@@ -71,7 +71,7 @@
     "fast-check": "workspace:*",
     "jest": "^29.5.0",
     "jest-jasmine2": "^29.5.0",
-    "ts-jest": "^29.1.0",
+    "ts-jest": "^29.1.1",
     "typescript": "^5.0.4"
   },
   "keywords": [
