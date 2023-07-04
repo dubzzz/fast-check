@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "fast-check": "workspace:*",
-    "jest": "^29.5.0",
+    "jest": "^29.6.0",
     "typescript": "^5.0.4",
     "vitest": "^0.32.4"
   },
