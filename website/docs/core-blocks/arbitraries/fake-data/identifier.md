@@ -6,6 +6,30 @@ slug: /core-blocks/arbitraries/fake-data/identifier/
 
 Generate identifier values.
 
+### ulid
+
+ULID values.
+
+**Signatures:**
+
+- `fc.ulid()`
+
+**Usages:**
+
+```js
+fc.ulid();
+// Examples of generated values:
+// • "7AVDFZJAXCM0F25E3SZZZZZZYZ"
+// • "7ZZZZZZZYP5XN60H51ZZZZZZZP"
+// • "2VXXEMQ2HWRSNWMP9PZZZZZZZA"
+// • "15RQ23H1M8YB80EVPD2EG8W7K1"
+// • "6QV4RKC7C8ZZZZZZZFSF7PWQF5"
+// • …
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/ulid.html).  
+Available since 3.11.0.
+
 ### uuid
 
 UUID values including versions 1 to 5.
