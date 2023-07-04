@@ -95,6 +95,7 @@ import { unicodeString } from './arbitrary/unicodeString';
 import { subarray, SubarrayConstraints } from './arbitrary/subarray';
 import { shuffledSubarray, ShuffledSubarrayConstraints } from './arbitrary/shuffledSubarray';
 import { tuple } from './arbitrary/tuple';
+import { ulid } from './arbitrary/ulid';
 import { uuid } from './arbitrary/uuid';
 import { uuidV } from './arbitrary/uuidV';
 import { webAuthority, WebAuthorityConstraints } from './arbitrary/webAuthority';
@@ -302,6 +303,7 @@ export {
   webQueryParameters,
   webUrl,
   emailAddress,
+  ulid,
   uuid,
   uuidV,
   int8Array,

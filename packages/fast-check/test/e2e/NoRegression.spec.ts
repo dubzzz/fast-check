@@ -582,6 +582,14 @@ describe(`NoRegression`, () => {
       )
     ).toThrowErrorMatchingSnapshot();
   });
+  it('ulid', () => {
+    expect(() =>
+      fc.assert(
+        fc.property(fc.ulid(), (v) => testFunc(v)),
+        settings
+      )
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('uuid', () => {
     expect(() =>
       fc.assert(
