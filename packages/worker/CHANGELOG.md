@@ -1,3 +1,16 @@
+# 0.0.8
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.7...worker%2Fv0.0.8)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#3977](https://github.com/dubzzz/fast-check/pull/3977)) Doc: Fix API error in README
+
 # 0.0.7
 
 _Introduce isolation levels on workers_
