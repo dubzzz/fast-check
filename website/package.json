@@ -27,9 +27,9 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.1",
-    "@jest/globals": "^29.6.0",
+    "@jest/globals": "^29.6.1",
     "fast-check": "workspace:*",
-    "jest": "^29.6.0"
+    "jest": "^29.6.1"
   },
   "browserslist": {
     "production": [
