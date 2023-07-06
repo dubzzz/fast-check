@@ -1,6 +1,6 @@
 # 3.11.0
 
-_TODO Description_
+_New arbitrary for ulid_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.11.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.10.0...v3.11.0)]
 
 ## Features
