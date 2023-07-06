@@ -3348,8 +3348,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^6.0.0":
-  version: 6.2.10
-  resolution: "@npmcli/arborist@npm:6.2.10"
+  version: 6.3.0
+  resolution: "@npmcli/arborist@npm:6.3.0"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/fs": ^3.1.0
@@ -3358,7 +3358,7 @@ __metadata:
     "@npmcli/metavuln-calculator": ^5.0.0
     "@npmcli/name-from-folder": ^2.0.0
     "@npmcli/node-gyp": ^3.0.0
-    "@npmcli/package-json": ^3.0.0
+    "@npmcli/package-json": ^4.0.0
     "@npmcli/query": ^3.0.0
     "@npmcli/run-script": ^6.0.0
     bin-links: ^4.0.1
@@ -3386,7 +3386,7 @@ __metadata:
     walk-up-path: ^3.0.1
   bin:
     arborist: bin/index.js
-  checksum: bf5488c523f5293450ed8adbbcde63e43f246f1de7e23b8e80be6d36081f862a40496a6e15fbf8bcb8ab1aafbcb4fae23b4a2341af92328ccca15a72986fe5c7
+  checksum: 4f59d5408c0ab7aff4ec2848b7d0bbbd9ba0d5b9d940303f5c1c14d6965a71272566553a7e9977f62ff788838562abe65b45d7c0a300ea624268a8504b9a6f9a
   languageName: node
   linkType: hard
 
@@ -3409,20 +3409,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/git@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "@npmcli/git@npm:4.0.1"
+"@npmcli/git@npm:^4.0.0, @npmcli/git@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@npmcli/git@npm:4.1.0"
   dependencies:
-    "@npmcli/promise-spawn": ^4.0.0
+    "@npmcli/promise-spawn": ^6.0.0
     lru-cache: ^7.4.4
-    mkdirp: ^1.0.4
     npm-pick-manifest: ^8.0.0
     proc-log: ^3.0.0
     promise-inflight: ^1.0.1
     promise-retry: ^2.0.1
     semver: ^7.3.5
-    which: ^2.0.2
-  checksum: 7bd31d4d4e5fb8e7ca7b8e75c213de3f54365bf04e4a8ca03b1d0c7dce31d47e8352a2ca3ff30a9e23bac8c8d4c288795769ccbe2a21f2b0c2b363b8bee0a8c1
+    which: ^3.0.0
+  checksum: 37efb926593f294eb263297cdfffec9141234f977b89a7a6b95ff7a72576c1d7f053f4961bc4b5e79dea6476fe08e0f3c1ed9e4aeb84169e357ff757a6a70073
   languageName: node
   linkType: hard
 
@@ -3486,21 +3485,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/package-json@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@npmcli/package-json@npm:3.0.0"
-  dependencies:
-    json-parse-even-better-errors: ^3.0.0
-  checksum: d7603ec771c365346e39e24a9dda8fdb3918a55f01011d27bf377468c44991092a1fbdaaa580cfd1ff37456a933630b9a99bf3bb08438e1333c2ce559e86398d
-  languageName: node
-  linkType: hard
-
-"@npmcli/promise-spawn@npm:^4.0.0":
+"@npmcli/package-json@npm:^4.0.0":
   version: 4.0.0
-  resolution: "@npmcli/promise-spawn@npm:4.0.0"
+  resolution: "@npmcli/package-json@npm:4.0.0"
   dependencies:
-    infer-owner: ^1.0.4
-  checksum: ee1257d9983f66ce1cd4f83be5c8f36eea5d0bf9836ecb4418c5bdf825c324cb0cb7e9e22c4554c501606634934b7d750006f5ce346963a9ee7cfbbd3c93a09c
+    "@npmcli/git": ^4.1.0
+    glob: ^10.2.2
+    json-parse-even-better-errors: ^3.0.0
+    normalize-package-data: ^5.0.0
+    npm-normalize-package-bin: ^3.0.1
+    proc-log: ^3.0.0
+  checksum: de71349f6428b445520ea281954b3e88523d9100ee9edfcd51dc193dde70ab53fcc88e4bc96f3269874f22b35d048182dfb83d1018a854bf3b5cffb413cee697
   languageName: node
   linkType: hard
 
@@ -8873,7 +8868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.3.1":
+"glob@npm:^10.2.2, glob@npm:^10.3.1":
   version: 10.3.1
   resolution: "glob@npm:10.3.1"
   dependencies:
@@ -12194,10 +12189,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-normalize-package-bin@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "npm-normalize-package-bin@npm:3.0.0"
-  checksum: 6a34886c150b0f5302aad52a9446e5c939aa14eeb462323e75681517b36c6b9eaef83e1f5bc2d7e5154b3b752cbce81bed05e290db3f1f7edf857cbb895e35c0
+"npm-normalize-package-bin@npm:^3.0.0, npm-normalize-package-bin@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "npm-normalize-package-bin@npm:3.0.1"
+  checksum: de416d720ab22137a36292ff8a333af499ea0933ef2320a8c6f56a73b0f0448227fec4db5c890d702e26d21d04f271415eab6580b5546456861cc0c19498a4bf
   languageName: node
   linkType: hard
 
