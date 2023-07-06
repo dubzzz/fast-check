@@ -1,11 +1,7 @@
 # 0.0.8
 
-_TODO Description_
+_Typos in README_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.7...worker%2Fv0.0.8)]
-
-## Features
-
-
 
 ## Fixes
 
