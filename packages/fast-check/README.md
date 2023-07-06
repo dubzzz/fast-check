@@ -217,6 +217,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="http://senocular.github.io/"><img src="https://avatars.githubusercontent.com/u/3536716?v=4?s=100" width="100px;" alt="Trevor McCauley"/><br /><sub><b>Trevor McCauley</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=senocular" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://grantkiely.com/"><img src="https://avatars.githubusercontent.com/u/1948935?v=4?s=100" width="100px;" alt="Grant Kiely"/><br /><sub><b>Grant Kiely</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gkiely" title="Documentation">📖</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vecerek"><img src="https://avatars.githubusercontent.com/u/5737996?v=4?s=100" width="100px;" alt="Attila Večerek"/><br /><sub><b>Attila Večerek</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Tests">⚠️</a></td>
+    </tr>
   </tbody>
 </table>
 
