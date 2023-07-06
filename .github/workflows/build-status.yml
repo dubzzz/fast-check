@@ -32,6 +32,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
@@ -52,6 +53,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
@@ -69,6 +71,8 @@ jobs:
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
       - name: Ensure no dedupe required
         run: yarn dedupe --check
   all_version_bump_declared:
@@ -83,6 +87,8 @@ jobs:
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
       - name: Ensure versions have been properly bumped
         run: yarn version check
   package_quality:
@@ -94,6 +100,8 @@ jobs:
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
       - name: Check package score using skypack
         run: cd packages/fast-check && yarn dlx @skypack/package-check
 
@@ -109,6 +117,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn workspace @fast-check/monorepo install --immutable
       - name: Check format
@@ -126,6 +135,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
       - name: Build production packages
@@ -154,6 +164,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
@@ -228,6 +239,7 @@ jobs:
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
@@ -271,6 +283,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
@@ -303,6 +316,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
@@ -345,6 +359,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
@@ -394,6 +409,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
       - name: Download production packages
@@ -409,6 +425,7 @@ jobs:
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '8.x'
+          check-latest: true
       - name: Test packages/test-minimal-support/
         run: |
           cd packages/test-minimal-support
@@ -420,6 +437,7 @@ jobs:
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: '18.x'
+          check-latest: true
 
   # Publication jobs
   publish_documentation:
@@ -491,6 +509,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -529,6 +548,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -567,6 +587,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -605,6 +626,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -643,6 +665,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -681,6 +704,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -719,6 +743,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -757,6 +782,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+          check-latest: true
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
