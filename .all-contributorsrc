@@ -541,6 +541,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "vecerek",
+      "name": "Attila Večerek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5737996?v=4",
+      "profile": "https://github.com/vecerek",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
