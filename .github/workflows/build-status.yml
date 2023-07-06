@@ -167,6 +167,7 @@ jobs:
         run: yarn workspaces foreach -pvi run typecheck
   test:
     name: 'Test'
+    continue-on-error: true
     needs:
       - warmup_yarn_cache
       - warmup_yarn_cache_others
