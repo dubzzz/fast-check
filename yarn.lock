@@ -2712,7 +2712,7 @@ __metadata:
     eslint: ^8.44.0
     eslint-config-prettier: ^8.8.0
     prettier: 2.8.8
-    publint: ^0.1.15
+    publint: ^0.1.16
   languageName: unknown
   linkType: soft
 
@@ -13588,16 +13588,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"publint@npm:^0.1.15":
-  version: 0.1.15
-  resolution: "publint@npm:0.1.15"
+"publint@npm:^0.1.16":
+  version: 0.1.16
+  resolution: "publint@npm:0.1.16"
   dependencies:
     npm-packlist: ^5.1.3
     picocolors: ^1.0.0
     sade: ^1.8.1
   bin:
     publint: lib/cli.js
-  checksum: 77c9105db6b4b1c71c637d5ed0371087caa12632a0ac06a90ccc271bae1fbfe509605ec5061d1253b4b17740ec95b312d596dd917b16d65cfdcf95feec35f47a
+  checksum: 3b511fb4ae791ae5e9819465a40f5d8feb0da218ebb2aaa4d75d2914a9037cdd8e5503e045e1f8553ee8fb239ec1aa7150efc05f17ed60b95767e76956869bf8
   languageName: node
   linkType: hard
 
