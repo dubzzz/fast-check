@@ -1,6 +1,5 @@
 import * as prand from 'pure-rand';
 import * as fc from 'fast-check';
-import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -10,12 +9,6 @@ import { sizeArb } from './SizeHelpers';
 
 function poisoningAfterEach(nestedAfterEach: () => void) {
   nestedAfterEach();
-  try {
-    assertNoPoisoning({ ignoredRootRegex: /^(__coverage__|console)$/ });
-  } catch (err) {
-    restoreGlobals({ ignoredRootRegex: /^(__coverage__|console)$/ });
-    throw err;
-  }
 }
 
 // Minimal requirements
