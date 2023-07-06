@@ -20,6 +20,13 @@ _New arbitrary for ulid_
 - ([PR#4007](https://github.com/dubzzz/fast-check/pull/4007)) CI: Fix CI tests for types against next
 - ([PR#4008](https://github.com/dubzzz/fast-check/pull/4008)) CI: Show vulnerabilities in renovate
 - ([PR#3976](https://github.com/dubzzz/fast-check/pull/3976)) Doc: Add some OpenSSF badges
+- ([PR#4034](https://github.com/dubzzz/fast-check/pull/4034)) Doc: Add new contributor vecerek
+- ([PR#4010](https://github.com/dubzzz/fast-check/pull/4010)) Security: Move dockerfile content to devcontainer
+- ([PR#4000](https://github.com/dubzzz/fast-check/pull/4000)) Security: Drop raw install of npm
+- ([PR#3987](https://github.com/dubzzz/fast-check/pull/3987)) Security: Pin npm version for publish
+- ([PR#3985](https://github.com/dubzzz/fast-check/pull/3985)) Security: Pin image in Dockerfile of devcontainer
+- ([PR#3983](https://github.com/dubzzz/fast-check/pull/3983)) Security: Safer workflows' permissions
+- ([PR#3957](https://github.com/dubzzz/fast-check/pull/3957)) Security: Lock GH-Actions dependencies
 
 ---
 
