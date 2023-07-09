@@ -1819,7 +1819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codesandbox/sandpack-react@npm:^2.6.1":
+"@codesandbox/sandpack-react@npm:^2.6.9":
   version: 2.6.9
   resolution: "@codesandbox/sandpack-react@npm:2.6.9"
   dependencies:
@@ -16794,7 +16794,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "website@workspace:website"
   dependencies:
-    "@codesandbox/sandpack-react": ^2.6.1
+    "@codesandbox/sandpack-react": ^2.6.9
     "@codesandbox/sandpack-themes": ^2.0.21
     "@docusaurus/core": 2.4.1
     "@docusaurus/module-type-aliases": 2.4.1
