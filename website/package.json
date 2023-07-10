@@ -22,8 +22,8 @@
     "@mdx-js/react": "^1.6.22",
     "clsx": "^1.2.1",
     "prism-react-renderer": "^1.3.5",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.1",
