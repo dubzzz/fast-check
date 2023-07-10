@@ -1,10 +1,55 @@
-import fc from 'fast-check';
+import fc, { type IAsyncPropertyWithHooks } from 'fast-check';
 import { type PropertyArbitraries, type WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
 import { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
+
+class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
+  private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
+  private paramsForGenerate: { randomGeneratorState: number[] | undefined; runId: number | undefined } | undefined;
+
+  constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
+    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
+  }
+
+  isAsync(): true {
+    return this.internalProperty.isAsync();
+  }
+  generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
+    const value = this.internalProperty.generate(mrng, runId);
+    this.paramsForGenerate = { randomGeneratorState: mrng.getState(), runId };
+    return value;
+  }
+  shrink(value: fc.Value<Ts>): fc.Stream<fc.Value<Ts>> {
+    return this.internalProperty.shrink(value);
+  }
+  run(v: Ts, dontRunHook?: boolean | undefined): Promise<fc.PreconditionFailure | fc.PropertyFailure | null> {
+    return this.internalProperty.run(v, dontRunHook);
+  }
+
+  beforeEach(hookFunction: fc.AsyncPropertyHookFunction): fc.IAsyncPropertyWithHooks<Ts> {
+    return this.internalProperty.beforeEach(hookFunction);
+  }
+  afterEach(hookFunction: fc.AsyncPropertyHookFunction): fc.IAsyncPropertyWithHooks<Ts> {
+    return this.internalProperty.afterEach(hookFunction);
+  }
+  runBeforeEach() {
+    return (this.internalProperty as any).runBeforeEach();
+  }
+  runAfterEach() {
+    return (this.internalProperty as any).runAfterEach();
+  }
+
+  getState(): { randomGeneratorState: number[]; runId: number | undefined } | undefined {
+    const state = this.paramsForGenerate;
+    if (state === undefined || state.randomGeneratorState === undefined) {
+      return undefined;
+    }
+    return { randomGeneratorState: state.randomGeneratorState, runId: state.runId };
+  }
+}
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -30,13 +75,13 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;
-  const property = fc.asyncProperty<Ts>(...arbitraries, async (...inputs) => {
+  const property = new CustomAsyncProperty<Ts>(arbitraries, async (...inputs) => {
     return new Promise((resolve, reject) => {
       if (worker === undefined) {
         reject(new Error('Badly initialized worker, unable to run the property'));
         return;
       }
-      worker.register(predicateId, inputs, resolve, reject);
+      worker.register(predicateId, inputs, () => property.getState(), resolve, reject);
     });
   });
   property.beforeEach(async (hookFunction) => {

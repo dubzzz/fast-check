@@ -98,4 +98,11 @@ export class Random {
     const b = this.next(27);
     return (a * Random.DBL_FACTOR + b) * Random.DBL_DIVISOR;
   }
+
+  getState(): number[] | undefined {
+    if ('getState' in this.internalRng && typeof this.internalRng.getState === 'function') {
+      return this.internalRng.getState();
+    }
+    return undefined;
+  }
 }

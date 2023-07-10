@@ -114,7 +114,7 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       worker,
       isAvailable,
       isFaulty,
-      register: (predicateId, payload, onSuccess, onFailure) => {
+      register: (predicateId, payload, getState, onSuccess, onFailure) => {
         if (!isAvailable()) {
           throw new Error('This instance of PooledWorker is currently in use');
         }
@@ -122,10 +122,23 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
         registration = { currentRunId, onSuccess, onFailure };
         const message: PoolToWorkerMessage<TPayload> = {
           targetPredicateId: predicateId,
-          payload,
+          content: { source: 'main', payload },
           runId: currentRunId,
         };
-        worker.postMessage(message);
+        try {
+          worker.postMessage(message);
+        } catch (err) {
+          // Might be a: `DataCloneError: ... could not be cloned`
+          const state = getState();
+          if (state !== undefined) {
+            const message: PoolToWorkerMessage<TPayload> = {
+              targetPredicateId: predicateId,
+              content: { source: 'worker', ...state },
+              runId: currentRunId,
+            };
+            worker.postMessage(message);
+          }
+        }
       },
       terminateIfStillRunning: async () => {
         if (registration !== null) {

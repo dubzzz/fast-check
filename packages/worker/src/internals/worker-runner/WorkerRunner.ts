@@ -14,14 +14,17 @@ import {
 export function runWorker<Ts extends unknown[]>(
   parentPort: MessagePort,
   predicateId: number,
-  predicate: PropertyPredicate<Ts>
+  predicate: PropertyPredicate<Ts>,
+  buildPayload: (state: number[], runId: number | undefined) => Ts
 ): void {
   parentPort.on('message', (message: MainThreadToWorkerMessage<Ts>) => {
-    const { payload, targetPredicateId, runId } = message;
+    const { content, targetPredicateId, runId } = message;
     if (targetPredicateId !== predicateId) {
       // The current predicate is not the one targeted by the received message
       return;
     }
+    const payload =
+      content.source === 'main' ? content.payload : buildPayload(content.randomGeneratorState, content.runId);
     Promise.resolve(predicate(...payload)).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { success: true, output, runId };

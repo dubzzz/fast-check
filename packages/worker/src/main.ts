@@ -1,6 +1,14 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { assert as fcAssert, type IAsyncProperty, type IProperty, type Parameters } from 'fast-check';
+import { xoroshiro128plus } from 'pure-rand';
+import {
+  assert as fcAssert,
+  property as fcProperty,
+  Random,
+  type IAsyncProperty,
+  type IProperty,
+  type Parameters,
+} from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
@@ -87,7 +95,11 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
   } else if (parentPort !== null && workerData.fastcheckWorker === true) {
     // Worker code
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
-    runWorker(parentPort, currentPredicateId, predicate);
+    const property: IProperty<Ts> = (fcProperty as any)(...args.slice(0, args.length - 1), () => true);
+    runWorker(parentPort, currentPredicateId, predicate, (state: number[], runId: number | undefined): Ts => {
+      const mrng = new Random((xoroshiro128plus as any).fromState(state)); // TODO - Support other PRNG
+      return property.generate(mrng, runId).value_;
+    });
     registeredPredicates.add(currentPredicateId);
   }
   // Cannot throw for invalid worker at this point as we may not be the only worker for this run
