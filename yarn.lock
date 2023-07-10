@@ -2637,7 +2637,7 @@ __metadata:
     fast-check: "workspace:*"
     typescript: ^5.0.4
   peerDependencies:
-    ava: ">=4.0.0"
+    ava: ">=4.3.3"
   languageName: unknown
   linkType: soft
 
