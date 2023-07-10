@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/packaged#readme",
   "engines": {
-    "node": ">=14.14.0"
+    "node": ">=v14.21.3"
   },
   "dependencies": {
     "@npmcli/arborist": "^6.0.0",
