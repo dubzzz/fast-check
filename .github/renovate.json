@@ -4,13 +4,17 @@
   "commitMessagePrefix": "⬆️ ",
   "packageRules": [
     {
-      "matchFileNames": ["**/package.json"],
+      "matchFileNames": ["packages/*/package.json"],
       "matchDepTypes": ["dependencies", "peerDependencies", "optionalDependencies"],
       "rangeStrategy": "update-lockfile"
     },
     {
-      "matchFileNames": ["**/package.json"],
+      "matchFileNames": ["packages/*/package.json"],
       "matchDepTypes": ["devDependencies"],
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchFileNames": ["*", "!(packages)/**"],
       "rangeStrategy": "bump"
     }
   ],
