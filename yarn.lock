@@ -2720,7 +2720,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
-    "@npmcli/arborist": ^6.0.0
+    "@npmcli/arborist": ^6.3.0
     "@types/jest": ^29.5.3
     "@types/pacote": ^11.1.5
     "@types/tar": ^6.1.5
@@ -3354,7 +3354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/arborist@npm:^6.0.0":
+"@npmcli/arborist@npm:^6.3.0":
   version: 6.3.0
   resolution: "@npmcli/arborist@npm:6.3.0"
   dependencies:
