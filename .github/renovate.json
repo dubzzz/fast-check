@@ -4,17 +4,13 @@
   "commitMessagePrefix": "⬆️ ",
   "packageRules": [
     {
-      "matchPaths": ["**/package.json"],
+      "matchFileNames": ["**/package.json"],
       "matchDepTypes": ["dependencies", "peerDependencies", "optionalDependencies"],
       "rangeStrategy": "update-lockfile"
     },
     {
-      "matchPaths": ["**/package.json"],
+      "matchFileNames": ["**/package.json"],
       "matchDepTypes": ["devDependencies"],
-      "rangeStrategy": "bump"
-    },
-    {
-      "matchPaths": ["**/!(package.json)"],
       "rangeStrategy": "bump"
     }
   ],
@@ -24,5 +20,9 @@
   "osvVulnerabilityAlerts": true,
   "dependencyDashboardOSVVulnerabilitySummary": "all",
   "postUpdateOptions": ["yarnDedupeHighest"],
-  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"]
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
+  "configMigration": true
 }
