@@ -1,11 +1,15 @@
 {
-  "extends": ["config:base", ":dependencyDashboard"],
+  "extends": ["config:recommended", ":dependencyDashboard"],
   "labels": ["dependencies"],
   "commitMessagePrefix": "⬆️ ",
   "packageRules": [
     {
       "matchFileNames": ["packages/*/package.json"],
-      "matchDepTypes": ["dependencies", "peerDependencies", "optionalDependencies"],
+      "matchDepTypes": [
+        "dependencies",
+        "peerDependencies",
+        "optionalDependencies"
+      ],
       "rangeStrategy": "update-lockfile"
     },
     {
