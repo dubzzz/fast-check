@@ -12,6 +12,14 @@
       "matchFileNames": ["packages/*/package.json"],
       "matchDepTypes": ["devDependencies"],
       "rangeStrategy": "bump"
+    },
+    {
+      "matchFileNames": [
+        "package.json",
+        "examples/package.json",
+        "website/package.json"
+      ],
+      "rangeStrategy": "bump"
     }
   ],
   "vulnerabilityAlerts": {
