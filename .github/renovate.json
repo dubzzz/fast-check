@@ -14,11 +14,7 @@
       "rangeStrategy": "bump"
     },
     {
-      "matchFileNames": [
-        "package.json",
-        "examples/package.json",
-        "website/package.json"
-      ],
+      "matchFileNames": ["package.json", "examples/package.json", "website/package.json"],
       "rangeStrategy": "bump"
     }
   ],
