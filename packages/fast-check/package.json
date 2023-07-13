@@ -69,7 +69,7 @@
     "replace-in-file": "^7.0.1",
     "ts-jest": "^29.1.1",
     "typedoc": "^0.24.8",
-    "typescript": "^5.0.4"
+    "typescript": "~5.1.6"
   },
   "keywords": [
     "property-based testing",
