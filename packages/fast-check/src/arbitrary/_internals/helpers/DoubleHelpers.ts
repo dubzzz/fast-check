@@ -2,7 +2,6 @@ import { ArrayInt64, clone64, isEqual64 } from './ArrayInt64';
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeNaN = Number.NaN;
 const safeEpsilon = Number.EPSILON;
 
 /** @internal */
@@ -10,12 +9,19 @@ const INDEX_POSITIVE_INFINITY: ArrayInt64 = { sign: 1, data: [2146435072, 0] }; 
 /** @internal */
 const INDEX_NEGATIVE_INFINITY: ArrayInt64 = { sign: -1, data: [2146435072, 1] }; // doubleToIndex(-Number.MAX_VALUE) - 1
 
+const f64 = new Float64Array(1);
+const u32 = new Uint32Array(f64.buffer, f64.byteOffset);
+/** @internal */
+function bitCastDoubleToUInt64(f: number): [number, number] {
+  f64[0] = f;
+  return [u32[1], u32[0]];
+}
+
 /**
- * Decompose a 64-bit floating point number into a significand and exponent
- * such that:
- * - significand over 53 bits including sign (also referred as fraction)
- * - exponent over 11 bits including sign
- * - whenever there are multiple possibilities we take the one having the highest significand (in abs)
+ * Decompose a 64-bit floating point number into its interpreted parts:
+ * - 53-bit significand (fraction) with implicit bit and sign included
+ * - 11-bit exponent
+ *
  * - Number.MAX_VALUE = 2**1023    * (1 + (2**52-1)/2**52)
  *                    = 2**1023    * (2 - Number.EPSILON)
  * - Number.MIN_VALUE = 2**(-1022) * 2**(-52)
@@ -26,17 +32,17 @@ const INDEX_NEGATIVE_INFINITY: ArrayInt64 = { sign: -1, data: [2146435072, 1] };
  * @internal
  */
 export function decomposeDouble(d: number): { exponent: number; significand: number } {
-  // 1 => significand 0b1   - exponent 1 (will be preferred)
-  //   => significand 0b0.1 - exponent 2
-  const maxSignificand = 2 - safeEpsilon;
-  for (let exponent = -1022; exponent !== 1024; ++exponent) {
-    const powExponent = 2 ** exponent;
-    const maxForExponent = maxSignificand * powExponent;
-    if (Math.abs(d) <= maxForExponent) {
-      return { exponent, significand: d / powExponent };
-    }
-  }
-  return { exponent: safeNaN, significand: safeNaN };
+  const { 0: hi, 1: lo } = bitCastDoubleToUInt64(d);
+  const signBit = hi >>> 31;
+  const exponentBits = (hi >>> 20) & 0x7ff;
+  const significandBits = (hi & 0xfffff) * 0x100000000 + lo;
+
+  const exponent = exponentBits === 0 ? -1022 : exponentBits - 1023;
+  let significand = exponentBits === 0 ? 0 : 1;
+  significand += significandBits / 2 ** 52;
+  significand *= signBit === 0 ? 1 : -1;
+
+  return { exponent, significand };
 }
 
 /** @internal */

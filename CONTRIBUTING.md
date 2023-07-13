@@ -48,7 +48,7 @@ You should also check for linting by running `yarn lint:check` and fix lint prob
 
 #### GitHub Actions integration
 
-All pull requests will trigger GitHub Actions chekcs.
+All pull requests will trigger GitHub Actions checks.
 It ensures that the pull request follow the code style of the project and do not break existing tests.
 
 #### Notify how impactful your change will be

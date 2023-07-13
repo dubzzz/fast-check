@@ -1,9 +1,5 @@
-const safeNumberIsInteger = Number.isInteger;
-const safeNumberIsNaN = Number.isNaN;
-
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeNaN = Number.NaN;
 
 /** @internal */
 export const MIN_VALUE_32 = 2 ** -126 * 2 ** -23;
@@ -17,12 +13,18 @@ const INDEX_POSITIVE_INFINITY = 2139095040; // floatToIndex(MAX_VALUE_32) + 1;
 /** @internal */
 const INDEX_NEGATIVE_INFINITY = -2139095041; // floatToIndex(-MAX_VALUE_32) - 1
 
+const f32 = new Float32Array(1);
+const u32 = new Uint32Array(f32.buffer, f32.byteOffset);
+/** @internal */
+function bitCastFloatToUInt32(f: number): number {
+  f32[0] = f;
+  return u32[0];
+}
+
 /**
- * Decompose a 32-bit floating point number into a significand and exponent
- * such that:
- * - significand over 24 bits including sign (also referred as fraction)
- * - exponent over 8 bits including sign
- * - whenever there are multiple possibilities we take the one having the highest significand (in abs)
+ * Decompose a 32-bit floating point number into its interpreted parts:
+ * - 24-bit significand (fraction) with implicit bit included
+ * - 8-bit signed exponent after bias subtraction
  *
  * Remark in 64-bit floating point number:
  * - significand is over 53 bits including sign
@@ -36,17 +38,17 @@ const INDEX_NEGATIVE_INFINITY = -2139095041; // floatToIndex(-MAX_VALUE_32) - 1
  * @internal
  */
 export function decomposeFloat(f: number): { exponent: number; significand: number } {
-  // 1 => significand 0b1   - exponent 1 (will be preferred)
-  //   => significand 0b0.1 - exponent 2
-  const maxSignificand = 1 + (2 ** 23 - 1) / 2 ** 23;
-  for (let exponent = -126; exponent !== 128; ++exponent) {
-    const powExponent = 2 ** exponent;
-    const maxForExponent = maxSignificand * powExponent;
-    if (Math.abs(f) <= maxForExponent) {
-      return { exponent, significand: f / powExponent };
-    }
-  }
-  return { exponent: safeNaN, significand: safeNaN };
+  const bits = bitCastFloatToUInt32(f);
+  const signBit = bits >>> 31;
+  const exponentBits = (bits >>> 23) & 0xff;
+  const significandBits = bits & 0x7fffff;
+
+  const exponent = exponentBits === 0 ? -126 : exponentBits - 127;
+  let significand = exponentBits === 0 ? 0 : 1;
+  significand += significandBits / 2 ** 23;
+  significand *= signBit === 0 ? 1 : -1;
+
+  return { exponent, significand };
 }
 
 /** @internal */
@@ -86,9 +88,6 @@ export function floatToIndex(f: number): number {
   const decomp = decomposeFloat(f);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
-  if (safeNumberIsNaN(exponent) || safeNumberIsNaN(significand) || !safeNumberIsInteger(significand * 0x800000)) {
-    return safeNaN;
-  }
   if (f > 0 || (f === 0 && 1 / f === safePositiveInfinity)) {
     return indexInFloatFromDecomp(exponent, significand);
   } else {
