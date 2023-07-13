@@ -18,6 +18,9 @@
       "rangeStrategy": "bump"
     }
   ],
+  "nodenv": {
+    "enabled": false
+  },
   "vulnerabilityAlerts": {
     "enabled": true
   },
