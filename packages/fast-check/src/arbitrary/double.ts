@@ -52,14 +52,14 @@ export interface DoubleConstraints {
 }
 
 /**
- * Same as {@link doubleToIndex} except it throws in case of invalid double
+ * Same as {@link doubleToIndex} except it throws in case of invalid double (NaN)
  *
  * @internal
  */
 function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints) {
   if (safeNumberIsNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
-    throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 32-bit float');
+    throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 64-bit float');
   }
   return doubleToIndex(d);
 }
