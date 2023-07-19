@@ -114,7 +114,7 @@ export function uintToBase32StringUnmapper(value: unknown): number {
   let accumulated = 0;
   let power = 1;
   for (let index = value.length - 1; index >= 0; --index) {
-    const char = value[index].toUpperCase();
+    const char = value[index];
     const numericForChar = decodeSymbolLookupTable[char];
     if (numericForChar === undefined) {
       throw new Error('Unsupported type');
