@@ -6,6 +6,28 @@ import { paddedUintToBase32StringMapper, uintToBase32StringUnmapper } from './_i
 const padded10Mapper = paddedUintToBase32StringMapper(10);
 const padded8Mapper = paddedUintToBase32StringMapper(8);
 
+type MapperIn = [number, number, number];
+type MapperOut = string;
+
+function ulidMapper(parts: MapperIn): MapperOut {
+  return (
+    padded10Mapper(parts[0]) + // 10 chars of base32 -> 48 bits
+    padded8Mapper(parts[1]) + // 8 chars of base32 -> 40 bits
+    padded8Mapper(parts[2])
+  );
+}
+
+function ulidUnmapper(value: unknown): MapperIn {
+  if (typeof value !== 'string' || value.length !== 26) {
+    throw new Error('Unsupported type');
+  }
+  return [
+    uintToBase32StringUnmapper(value.slice(0, 10)),
+    uintToBase32StringUnmapper(value.slice(10, 18)),
+    uintToBase32StringUnmapper(value.slice(18)),
+  ];
+}
+
 /**
  * For ulid
  *
@@ -24,22 +46,7 @@ export function ulid(): Arbitrary<string> {
   const randomnessPartTwoArbitrary = integer({ min: 0, max: 0xffffffffff }); // 40 bits
 
   return tuple(timestampPartArbitrary, randomnessPartOneArbitrary, randomnessPartTwoArbitrary).map(
-    (parts) => {
-      return (
-        padded10Mapper(parts[0]) + // 10 chars of base32 -> 48 bits
-        padded8Mapper(parts[1]) + // 8 chars of base32 -> 40 bits
-        padded8Mapper(parts[2])
-      );
-    },
-    (value) => {
-      if (typeof value !== 'string' || value.length !== 26) {
-        throw new Error('Unsupported type');
-      }
-      return [
-        uintToBase32StringUnmapper(value.slice(0, 10)),
-        uintToBase32StringUnmapper(value.slice(10, 18)),
-        uintToBase32StringUnmapper(value.slice(18)),
-      ];
-    }
+    ulidMapper,
+    ulidUnmapper
   );
 }
