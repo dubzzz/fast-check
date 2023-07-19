@@ -62,11 +62,6 @@ const decodeSymbolLookupTable: Record<string, number> = {
 };
 
 /** @internal */
-function getBaseLog(x: number, y: number) {
-  return Math.log(y) / Math.log(x);
-}
-
-/** @internal */
 function encodeSymbol(symbol: number) {
   return symbol < 10 ? String(symbol) : encodeSymbolLookupTable[symbol];
 }
@@ -82,20 +77,11 @@ function pad(value: string, paddingLength: number) {
 
 /** @internal */
 export function uintToBase32StringMapper(num: number, paddingLength: number): string {
-  if (num === 0) {
-    return pad('0', paddingLength);
-  }
-
   let base32Str = '';
-  let remaining = num;
-  for (let symbolsLeft = Math.floor(getBaseLog(32, num)) + 1; symbolsLeft > 0; symbolsLeft--) {
-    const val = Math.pow(32, symbolsLeft - 1);
-    const symbol = Math.floor(remaining / val);
-
-    base32Str += encodeSymbol(symbol);
-    remaining -= symbol * val;
+  for (let remaining = num; remaining !== 0; remaining = ~~(remaining / 32)) {
+    const current = remaining % 32;
+    base32Str = encodeSymbol(current) + base32Str;
   }
-
   return pad(base32Str, paddingLength);
 }
 
