@@ -27,7 +27,6 @@ const encodeSymbolLookupTable: Record<number, string> = {
 /** @internal */
 const decodeSymbolLookupTable: Record<string, number> = {
   '0': 0,
-  O: 0,
   '1': 1,
   '2': 2,
   '3': 3,
@@ -93,20 +92,21 @@ export function paddedUintToBase32StringMapper(paddingLength: number) {
 }
 
 /** @internal */
-const Base32Regex = /^[0-9A-HJKMNP-TV-Z]+$/;
-
-/** @internal */
 export function uintToBase32StringUnmapper(value: unknown): number {
   if (typeof value !== 'string') {
     throw new Error('Unsupported type');
   }
 
-  const normalizedBase32str = value.toUpperCase();
-  if (!Base32Regex.test(normalizedBase32str)) {
-    throw new Error('Unsupported type');
+  let accumulated = 0;
+  let power = 1;
+  for (let index = value.length - 1; index >= 0; --index) {
+    const char = value[index];
+    const numericForChar = decodeSymbolLookupTable[char];
+    if (numericForChar === undefined) {
+      throw new Error('Unsupported type');
+    }
+    accumulated += numericForChar * power;
+    power *= 32;
   }
-
-  const symbols = normalizedBase32str.split('').map((char) => decodeSymbolLookupTable[char]);
-
-  return symbols.reduce((prev, curr, i) => prev + curr * Math.pow(32, symbols.length - 1 - i), 0);
+  return accumulated;
 }
