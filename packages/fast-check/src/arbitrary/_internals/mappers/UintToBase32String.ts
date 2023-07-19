@@ -1,3 +1,7 @@
+import { Error, String } from '../../../utils/globals';
+
+const safeMathFloor = Math.floor;
+
 /** @internal */
 const encodeSymbolLookupTable: Record<number, string> = {
   10: 'A',
@@ -77,7 +81,7 @@ function pad(value: string, paddingLength: number) {
 /** @internal */
 export function uintToBase32StringMapper(num: number, paddingLength: number): string {
   let base32Str = '';
-  for (let remaining = num; remaining !== 0; remaining = Math.floor(remaining / 32)) {
+  for (let remaining = num; remaining !== 0; remaining = safeMathFloor(remaining / 32)) {
     const current = remaining % 32;
     base32Str = encodeSymbol(current) + base32Str;
   }
