@@ -1,7 +1,5 @@
 import { Error, String } from '../../../utils/globals';
 
-const safeMathFloor = Math.floor;
-
 /** @internal */
 const encodeSymbolLookupTable: Record<number, string> = {
   10: 'A',
@@ -79,13 +77,24 @@ function pad(value: string, paddingLength: number) {
 }
 
 /** @internal */
-export function uintToBase32StringMapper(num: number, paddingLength: number): string {
+function smallUintToBase32StringMapper(num: number): string {
   let base32Str = '';
-  for (let remaining = num; remaining !== 0; remaining = safeMathFloor(remaining / 32)) {
-    const current = remaining % 32;
+  // num must be in 0 (incl.), 0x7fff_ffff (incl.)
+  // >>5 is equivalent to /32 and <<5 to x32
+  for (let remaining = num; remaining !== 0; ) {
+    const next = remaining >> 5;
+    const current = remaining - (next << 5);
     base32Str = encodeSymbol(current) + base32Str;
+    remaining = next;
   }
-  return pad(base32Str, paddingLength);
+  return base32Str;
+}
+
+/** @internal */
+export function uintToBase32StringMapper(num: number, paddingLength: number): string {
+  const head = ~~(num / 0x40000000);
+  const tail = num & 0x3fffffff;
+  return pad(smallUintToBase32StringMapper(head), paddingLength - 6) + pad(smallUintToBase32StringMapper(tail), 6);
 }
 
 /** @internal */
