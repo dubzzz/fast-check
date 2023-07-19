@@ -4214,6 +4214,20 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . [32m√[0m [Uint32Array.from([305109898])]"
 `;
 
+exports[`NoRegression ulid 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: "0:0:0:0", endOnFailure: true }
+Counterexample: ["00000000000000000000000000"]
+Shrunk 3 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[31m×[0m ["7ZZZZZZZZDZ0AWTX6YQCVVJ1XW"]
+. [31m×[0m ["0000000000Z0AWTX6YQCVVJ1XW"]
+. . [31m×[0m ["000000000000000000QCVVJ1XW"]
+. . . [31m×[0m ["00000000000000000000000000"]"
+`;
+
 exports[`NoRegression unicodeJson 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: "1:1:0:1:3:3:4:3:3:3:4:3:3:3:3:4:4:5:3:3:3:3:3:3:4:3:3:3:3:3:4:3:6:4:3:6:3:4:3:3:5:4:3:6:4", endOnFailure: true }

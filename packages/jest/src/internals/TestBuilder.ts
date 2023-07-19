@@ -92,7 +92,7 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
         buildTestWithPropRunner(testFn, testName, arbitraries, prop, params, timeout, jest, fc);
     }
     return (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => {
-      const recordArb = record(arbitraries as ArbitraryRecord<Ts>);
+      const recordArb = record<Ts>(arbitraries);
       const recordParams: FcParameters<[TsParameters]> | undefined =
         params !== undefined
           ? {

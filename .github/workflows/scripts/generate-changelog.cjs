@@ -92,6 +92,8 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       case ':memo:':
       case '💄':
       case ':lipstick:':
+      case '👥':
+      case ':busts_in_silhouette:':
         maintenanceSection.push({ type: 'Doc', pr, title });
         break;
       case '✏️':
@@ -125,6 +127,12 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       case '🚚':
       case ':truck:':
         maintenanceSection.push({ type: 'Move', pr, title });
+        break;
+      case '🔒️':
+      case ':lock:':
+      case '📌':
+      case ':pushpin:':
+        maintenanceSection.push({ type: 'Security', pr, title });
         break;
       case '🎉':
       case ':tada:':

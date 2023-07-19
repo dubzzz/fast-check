@@ -2,9 +2,8 @@ import { integer } from './integer';
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers';
 
-const safeNumberIsFinite = Number.isFinite;
-const safeNumberIsInteger = Number.isInteger;
 const safeNumberIsNaN = Number.isNaN;
+const safeMathFround = Math.fround;
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
@@ -44,24 +43,19 @@ export interface FloatConstraints {
 }
 
 /**
- * Same as {@link floatToIndex} except it throws in case of invalid float 32
+ * Same as {@link floatToIndex} except it throws if f is NaN or not representable as a 32-bit float
  *
  * @internal
  */
 function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
-  const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
+  const conversionTrick = 'you can convert any double to a 32-bit float by using `Math.fround(myDouble)`';
   const errorMessage = 'fc.float constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
-  if (safeNumberIsNaN(f) || (safeNumberIsFinite(f) && (f < -MAX_VALUE_32 || f > MAX_VALUE_32))) {
+  if (safeNumberIsNaN(f) || safeMathFround(f) !== f) {
     // Number.NaN does not have any associated index in the current implementation
-    // Finite values outside of the 32-bit range for floats cannot be 32-bit floats
+    // If the value isn't the same after fround(), it can't be represented as a 32-bit float
     throw new Error(errorMessage);
   }
-  const index = floatToIndex(f);
-  if (!safeNumberIsInteger(index)) {
-    // Index not being an integer means that original value was not a valid 32-bit float
-    throw new Error(errorMessage);
-  }
-  return index;
+  return floatToIndex(f);
 }
 
 /** @internal */

@@ -142,7 +142,7 @@ export class RunExecution<Ts> {
     // SourceValuesIterator automatically ends as soon as we skip too many values
     // so no subsequent values will be pulled from it, so no call to interrupt after this last skip.
     // -- Similarly, when interrupted, RunnerIterator stops everything so no call to skip after being interrupted.
-    return {
+    const out = {
       failed,
       interrupted: this.interrupted,
       numRuns: this.numSuccesses,
@@ -158,5 +158,6 @@ export class RunExecution<Ts> {
       verbose: this.verbosity,
       runConfiguration: qParams.toParameters(),
     };
+    return out;
   }
 }

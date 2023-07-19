@@ -10,7 +10,7 @@
     "fast-check": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.0.4"
+    "typescript": "~5.1.6"
   },
   "license": "MIT"
 }
