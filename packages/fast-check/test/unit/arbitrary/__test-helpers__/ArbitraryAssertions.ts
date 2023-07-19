@@ -55,9 +55,16 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
             const originalG2 = g2!;
             g2 = new Value(originalG2.value_, undefined, () => originalG2.value);
           }
+          let depth = 0;
+          let summedPos = 0;
           while (g1 !== null && g2 !== null) {
+            if (depth > 100 || summedPos > 1e5) {
+              throw new Error(`Depth reached ${depth} and summed reached ${summedPos}`);
+            }
             assertEquality(isEqual, g1.value, g2.value, extraParameters);
             const pos = shrinkPath.next().value;
+            depth += 1;
+            summedPos += pos;
             g1 = arb.shrink(g1.value_, g1.context).getNthOrLast(pos);
             g2 = arb.shrink(g2.value_, g2.context).getNthOrLast(pos);
           }
