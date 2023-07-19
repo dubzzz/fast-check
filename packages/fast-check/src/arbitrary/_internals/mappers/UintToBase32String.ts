@@ -1,3 +1,5 @@
+import { Error, String } from '../../../utils/globals';
+
 /** @internal */
 const encodeSymbolLookupTable: Record<number, string> = {
   10: 'A',
