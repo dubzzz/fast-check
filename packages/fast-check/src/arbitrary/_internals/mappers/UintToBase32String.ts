@@ -72,20 +72,22 @@ function encodeSymbol(symbol: number) {
 }
 
 /** @internal */
-function pad(value: string, constLength: number) {
-  return (
-    Array(constLength - value.length)
-      .fill('0')
-      .join('') + value
-  );
+function pad(value: string, paddingLength: number) {
+  let extraPadding = '';
+  while (value.length + extraPadding.length < paddingLength) {
+    extraPadding += '0';
+  }
+  return extraPadding + value;
 }
 
 /** @internal */
-export function uintToBase32StringMapper(num: number, constLength: number | undefined = undefined): string {
-  if (num === 0) return pad('0', constLength ?? 1);
+export function uintToBase32StringMapper(num: number, paddingLength: number): string {
+  if (num === 0) {
+    return pad('0', paddingLength);
+  }
 
-  let base32Str = '',
-    remaining = num;
+  let base32Str = '';
+  let remaining = num;
   for (let symbolsLeft = Math.floor(getBaseLog(32, num)) + 1; symbolsLeft > 0; symbolsLeft--) {
     const val = Math.pow(32, symbolsLeft - 1);
     const symbol = Math.floor(remaining / val);
@@ -94,12 +96,14 @@ export function uintToBase32StringMapper(num: number, constLength: number | unde
     remaining -= symbol * val;
   }
 
-  return pad(base32Str, constLength ?? base32Str.length);
+  return pad(base32Str, paddingLength);
 }
 
 /** @internal */
-export function paddedUintToBase32StringMapper(constLength: number) {
-  return (num: number): string => uintToBase32StringMapper(num, constLength);
+export function paddedUintToBase32StringMapper(paddingLength: number) {
+  return function padded(num: number): string {
+    return uintToBase32StringMapper(num, paddingLength);
+  };
 }
 
 /** @internal */
