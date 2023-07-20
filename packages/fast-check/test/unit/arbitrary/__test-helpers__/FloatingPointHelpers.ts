@@ -1,6 +1,7 @@
 import * as fc from 'fast-check';
 import { DoubleConstraints } from '../../../../src/arbitrary/double';
 import { FloatConstraints } from '../../../../src/arbitrary/float';
+import { MAX_VALUE_32 } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
@@ -17,6 +18,8 @@ export const defaultFloatRecordConstraints = {
   max: float32raw(),
   noDefaultInfinity: fc.boolean(),
   noNaN: fc.boolean(),
+  minExcluded: fc.boolean(),
+  maxExcluded: fc.boolean(),
 };
 
 export const defaultDoubleRecordConstraints = {
@@ -24,13 +27,18 @@ export const defaultDoubleRecordConstraints = {
   max: float64raw(),
   noDefaultInfinity: fc.boolean(),
   noNaN: fc.boolean(),
+  minExcluded: fc.boolean(),
+  maxExcluded: fc.boolean(),
 };
 
 type ConstraintsInternalOut = FloatConstraints & DoubleConstraints;
 type ConstraintsInternal = {
   [K in keyof ConstraintsInternalOut]?: fc.Arbitrary<ConstraintsInternalOut[K]>;
 };
-function constraintsInternal(recordConstraints: ConstraintsInternal): fc.Arbitrary<ConstraintsInternalOut> {
+function constraintsInternal(
+  recordConstraints: ConstraintsInternal,
+  is32Bits: boolean
+): fc.Arbitrary<ConstraintsInternalOut> {
   return fc
     .record(recordConstraints, { withDeletedKeys: true })
     .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
@@ -38,6 +46,13 @@ function constraintsInternal(recordConstraints: ConstraintsInternal): fc.Arbitra
       if (!ct.noDefaultInfinity) return true;
       if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
       if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
+      return true;
+    })
+    .filter((ct) => {
+      const defaultMax = ct.noDefaultInfinity ? (is32Bits ? MAX_VALUE_32 : Number.MAX_VALUE) : Number.POSITIVE_INFINITY;
+      const min = ct.min !== undefined ? ct.min : -defaultMax;
+      const max = ct.max !== undefined ? ct.max : defaultMax;
+      if ((ct.minExcluded || ct.maxExcluded) && min === max) return false;
       return true;
     })
     .map((ct) => {
@@ -52,13 +67,13 @@ function constraintsInternal(recordConstraints: ConstraintsInternal): fc.Arbitra
 export function floatConstraints(
   recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints
 ): fc.Arbitrary<FloatConstraints> {
-  return constraintsInternal(recordConstraints);
+  return constraintsInternal(recordConstraints, true);
 }
 
 export function doubleConstraints(
   recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints
 ): fc.Arbitrary<DoubleConstraints> {
-  return constraintsInternal(recordConstraints);
+  return constraintsInternal(recordConstraints, false);
 }
 
 export function isStrictlySmaller(fa: number, fb: number): boolean {
