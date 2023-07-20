@@ -22,11 +22,25 @@ export interface FloatConstraints {
    */
   min?: number;
   /**
+   * Should the lower bound (aka min) be excluded?
+   * Note: Excluding min=Number.NEGATIVE_INFINITY would result into having min set to -3.4028234663852886e+38.
+   * @defaultValue false
+   * @remarks Since 3.12.0
+   */
+  minExcluded?: boolean;
+  /**
    * Upper bound for the generated 32-bit floats (included)
    * @defaultValue Number.POSITIVE_INFINITY, 3.4028234663852886e+38 when noDefaultInfinity is true
    * @remarks Since 2.8.0
    */
   max?: number;
+  /**
+   * Should the upper bound (aka max) be excluded?
+   * Note: Excluding max=Number.POSITIVE_INFINITY would result into having max set to 3.4028234663852886e+38.
+   * @defaultValue false
+   * @remarks Since 3.12.0
+   */
+  maxExcluded?: boolean;
   /**
    * By default, lower and upper bounds are -infinity and +infinity.
    * By setting noDefaultInfinity to true, you move those defaults to minimal and maximal finite values.
@@ -82,11 +96,15 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
+    minExcluded = false,
+    maxExcluded = false,
     min = noDefaultInfinity ? -MAX_VALUE_32 : safeNegativeInfinity,
     max = noDefaultInfinity ? MAX_VALUE_32 : safePositiveInfinity,
   } = constraints;
-  const minIndex = safeFloatToIndex(min, 'min');
-  const maxIndex = safeFloatToIndex(max, 'max');
+  const minIndexRaw = safeFloatToIndex(min, 'min');
+  const minIndex = minExcluded ? minIndexRaw + 1 : minIndexRaw;
+  const maxIndexRaw = safeFloatToIndex(max, 'max');
+  const maxIndex = maxExcluded ? maxIndexRaw - 1 : maxIndexRaw;
   if (minIndex > maxIndex) {
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
