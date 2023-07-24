@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
 import { DoubleConstraints } from '../../../../src/arbitrary/double';
 import { FloatConstraints } from '../../../../src/arbitrary/float';
-import { MAX_VALUE_32 } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
+import { EPSILON_32, MAX_VALUE_32 } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
@@ -48,19 +48,26 @@ function constraintsInternal(
       if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
       return true;
     })
-    .filter((ct) => {
-      const defaultMax = ct.noDefaultInfinity ? (is32Bits ? MAX_VALUE_32 : Number.MAX_VALUE) : Number.POSITIVE_INFINITY;
-      const min = ct.min !== undefined ? ct.min : -defaultMax;
-      const max = ct.max !== undefined ? ct.max : defaultMax;
-      if ((ct.minExcluded || ct.maxExcluded) && min === max) return false;
-      return true;
-    })
     .map((ct) => {
       if (ct.min === undefined || ct.max === undefined) return ct;
       const { min, max } = ct;
       if (min < max) return ct;
       if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
       return { ...ct, min: max, max: min };
+    })
+    .filter((ct) => {
+      const defaultMax = ct.noDefaultInfinity ? (is32Bits ? MAX_VALUE_32 : Number.MAX_VALUE) : Number.POSITIVE_INFINITY;
+      const epsilon = is32Bits ? EPSILON_32 : Number.EPSILON;
+      const min = ct.min !== undefined ? ct.min : -defaultMax;
+      const max = ct.max !== undefined ? ct.max : defaultMax;
+      // Illegal range, values cannot be "min < value <= min" or "min <= value < min" or "min < value < min"
+      if ((ct.minExcluded || ct.maxExcluded) && min === max) return false;
+      // Always valid range given min !== max if min=-inf or max=+inf
+      if (ct.max === Number.POSITIVE_INFINITY || ct.min === Number.NEGATIVE_INFINITY) return true
+      const highestAbs = Math.max(Math.abs(max), Math.abs(min));
+      // Illegal range, no value in range if min and max are too close from each others and both excluded
+      if (ct.minExcluded && ct.maxExcluded && max - min <= 2 * epsilon * highestAbs) return false;
+      return true;
     });
 }
 
