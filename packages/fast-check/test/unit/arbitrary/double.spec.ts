@@ -149,9 +149,15 @@ describe('double', () => {
 
   if (typeof BigInt !== 'undefined') {
     it('should properly convert integer value for index between min and max into its associated float value', () => {
+      const withoutExcludedConstraints = {
+        ...defaultDoubleRecordConstraints,
+        minExcluded: fc.constant(false),
+        maxExcluded: fc.constant(false),
+      };
+
       fc.assert(
         fc.property(
-          fc.option(doubleConstraints(), { nil: undefined }),
+          fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
           fc.bigUintN(64),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (ct, mod, biasFactor) => {
