@@ -162,10 +162,16 @@ describe('float', () => {
     expect(integer).not.toHaveBeenCalled();
   });
 
-  it('should properly convert integer value for index between min and max into its associated float value', () =>
+  it('should properly convert integer value for index between min and max into its associated float value', () => {
+    const withoutExcludedConstraints = {
+      ...defaultFloatRecordConstraints,
+      minExcluded: fc.constant(false),
+      maxExcluded: fc.constant(false),
+    };
+
     fc.assert(
       fc.property(
-        fc.option(floatConstraints(), { nil: undefined }),
+        fc.option(floatConstraints(withoutExcludedConstraints), { nil: undefined }),
         fc.maxSafeNat(),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (ct, mod, biasFactor) => {
@@ -185,7 +191,8 @@ describe('float', () => {
           expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
         }
       )
-    ));
+    );
+  });
 
   describe('with NaN', () => {
     const withNaNRecordConstraints = { ...defaultFloatRecordConstraints, noNaN: fc.constant(false) };
