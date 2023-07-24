@@ -187,6 +187,8 @@ The lower and upper bounds are included into the range of possible values.
 
 - `min?` — default: `-∞` and `-Number.MAX_VALUE` when `noDefaultInfinity:true` — _lower bound for the generated 32-bit floats (included)_
 - `max?` — default: `+∞` and `Number.MAX_VALUE` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
+- `minExcluded?` — default: `false` — _do not include `min` in the set of possible values_
+- `maxExcluded?` — default: `false` — _do not include `max` in the set of possible values_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
 
@@ -209,6 +211,10 @@ fc.double({ noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.P
 // Note: Same as fc.double(), noDefaultInfinity just tells that defaults for min and max
 // should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
 // Examples of generated values: 7.593633990222606e-236, -5.74664305820822e+216, -1.243100551492039e-161, 1.797693134862313e+308, -1.7976931348623077e+308…
+
+fc.double({ min: 0, max: 1, maxExcluded: true });
+// Note: All possible floating point values between 0 (included) and 1 (excluded)
+// Examples of generated values: 4.8016271592767985e-73, 4.8825963576686075e-55, 0.9999999999999967, 0.9999999999999959, 2.5e-322…
 
 fc.tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
   .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53))

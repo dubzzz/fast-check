@@ -25,17 +25,31 @@ const safeNaN = Number.NaN;
  */
 export interface DoubleConstraints {
   /**
-   * Lower bound for the generated 64-bit floats (included)
+   * Lower bound for the generated 64-bit floats (included, see minExcluded to exclude it)
    * @defaultValue Number.NEGATIVE_INFINITY, -1.7976931348623157e+308 when noDefaultInfinity is true
    * @remarks Since 2.8.0
    */
   min?: number;
   /**
-   * Upper bound for the generated 64-bit floats (included)
+   * Should the lower bound (aka min) be excluded?
+   * Note: Excluding min=Number.NEGATIVE_INFINITY would result into having min set to -Number.MAX_VALUE.
+   * @defaultValue false
+   * @remarks Since 3.12.0
+   */
+  minExcluded?: boolean;
+  /**
+   * Upper bound for the generated 64-bit floats (included, see maxExcluded to exclude it)
    * @defaultValue Number.POSITIVE_INFINITY, 1.7976931348623157e+308 when noDefaultInfinity is true
    * @remarks Since 2.8.0
    */
   max?: number;
+  /**
+   * Should the upper bound (aka max) be excluded?
+   * Note: Excluding max=Number.POSITIVE_INFINITY would result into having max set to Number.MAX_VALUE.
+   * @defaultValue false
+   * @remarks Since 3.12.0
+   */
+  maxExcluded?: boolean;
   /**
    * By default, lower and upper bounds are -infinity and +infinity.
    * By setting noDefaultInfinity to true, you move those defaults to minimal and maximal finite values.
@@ -85,11 +99,15 @@ export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
+    minExcluded = false,
+    maxExcluded = false,
     min = noDefaultInfinity ? -safeMaxValue : safeNegativeInfinity,
     max = noDefaultInfinity ? safeMaxValue : safePositiveInfinity,
   } = constraints;
-  const minIndex = safeDoubleToIndex(min, 'min');
-  const maxIndex = safeDoubleToIndex(max, 'max');
+  const minIndexRaw = safeDoubleToIndex(min, 'min');
+  const minIndex = minExcluded ? add64(minIndexRaw, Unit64) : minIndexRaw;
+  const maxIndexRaw = safeDoubleToIndex(max, 'max');
+  const maxIndex = maxExcluded ? substract64(maxIndexRaw, Unit64) : maxIndexRaw;
   if (isStrictlySmaller64(maxIndex, minIndex)) {
     // In other words: minIndex > maxIndex
     // Comparing min and max might be problematic in case min=+0 and max=-0
