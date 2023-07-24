@@ -1,7 +1,9 @@
 import * as fc from 'fast-check';
 import { DoubleConstraints } from '../../../../src/arbitrary/double';
 import { FloatConstraints } from '../../../../src/arbitrary/float';
-import { EPSILON_32, MAX_VALUE_32 } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
+import { MAX_VALUE_32, floatToIndex } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
+import { doubleToIndex } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
+import { substract64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
@@ -67,16 +69,27 @@ function constraintsInternal(
     })
     .filter((ct) => {
       const defaultMax = ct.noDefaultInfinity ? (is32Bits ? MAX_VALUE_32 : Number.MAX_VALUE) : Number.POSITIVE_INFINITY;
-      const epsilon = is32Bits ? EPSILON_32 : Number.EPSILON;
       const min = ct.min !== undefined ? ct.min : -defaultMax;
       const max = ct.max !== undefined ? ct.max : defaultMax;
       // Illegal range, values cannot be "min < value <= min" or "min <= value < min" or "min < value < min"
       if ((ct.minExcluded || ct.maxExcluded) && min === max) return false;
       // Always valid range given min !== max if min=-inf or max=+inf
       if (ct.max === Number.POSITIVE_INFINITY || ct.min === Number.NEGATIVE_INFINITY) return true;
-      const highestAbs = Math.max(Math.abs(max), Math.abs(min));
-      // Illegal range, no value in range if min and max are too close from each others and both excluded
-      if (ct.minExcluded && ct.maxExcluded && max - min <= 2 * epsilon * highestAbs) return false;
+      if (ct.minExcluded && ct.maxExcluded) {
+        if (is32Bits) {
+          const minIndex = floatToIndex(min);
+          const maxIndex = floatToIndex(max);
+          const distance = maxIndex - minIndex;
+          // Illegal range, no value in range if min and max are too close from each others and both excluded
+          if (distance === 1) return false;
+        } else {
+          const minIndex = doubleToIndex(min);
+          const maxIndex = doubleToIndex(max);
+          const distance = substract64(maxIndex, minIndex);
+          // Illegal range, no value in range if min and max are too close from each others and both excluded
+          if (distance.data[0] === 0 && distance.data[1] === 1) return false;
+        }
+      }
       return true;
     });
 }
