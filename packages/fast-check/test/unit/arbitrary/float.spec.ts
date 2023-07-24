@@ -80,6 +80,32 @@ describe('float', () => {
     );
   });
 
+  it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', () => {
+    fc.assert(
+      fc.property(
+        float32raw(),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.constantFrom('min', 'max', 'both'),
+        (f, otherCt, exclusiveMode) => {
+          // Arrange
+          fc.pre(isNotNaN32bits(f));
+          spyInteger();
+
+          // Act / Assert
+          expect(() =>
+            float({
+              ...otherCt,
+              min: f,
+              max: f,
+              minExcluded: exclusiveMode === 'min' || exclusiveMode === 'both',
+              maxExcluded: exclusiveMode === 'max' || exclusiveMode === 'both',
+            })
+          ).toThrowError();
+        }
+      )
+    );
+  });
+
   it('should reject non-32-bit or NaN floating point numbers if specified for min', () => {
     fc.assert(
       fc.property(float64raw(), (f64) => {
@@ -136,10 +162,16 @@ describe('float', () => {
     expect(integer).not.toHaveBeenCalled();
   });
 
-  it('should properly convert integer value for index between min and max into its associated float value', () =>
+  it('should properly convert integer value for index between min and max into its associated float value', () => {
+    const withoutExcludedConstraints = {
+      ...defaultFloatRecordConstraints,
+      minExcluded: fc.constant(false),
+      maxExcluded: fc.constant(false),
+    };
+
     fc.assert(
       fc.property(
-        fc.option(floatConstraints(), { nil: undefined }),
+        fc.option(floatConstraints(withoutExcludedConstraints), { nil: undefined }),
         fc.maxSafeNat(),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (ct, mod, biasFactor) => {
@@ -159,7 +191,8 @@ describe('float', () => {
           expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
         }
       )
-    ));
+    );
+  });
 
   describe('with NaN', () => {
     const withNaNRecordConstraints = { ...defaultFloatRecordConstraints, noNaN: fc.constant(false) };
@@ -236,13 +269,15 @@ describe('float', () => {
           const { min, max } = minMaxForConstraints(ct);
           const minIndex = floatToIndex(min);
           const maxIndex = floatToIndex(max);
+          const expectedMinIndex = ct.minExcluded ? minIndex + 1 : minIndex;
+          const expectedMaxIndex = ct.maxExcluded ? maxIndex - 1 : maxIndex;
 
           // Act
           float(ct);
 
           // Assert
           expect(integer).toHaveBeenCalledTimes(1);
-          expect(integer).toHaveBeenCalledWith({ min: minIndex, max: maxIndex });
+          expect(integer).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
         })
       );
     });
