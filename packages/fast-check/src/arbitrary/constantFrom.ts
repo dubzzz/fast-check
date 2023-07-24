@@ -16,7 +16,7 @@ type Elem<T> = T extends any[] ? T[number] : T;
  * @remarks Since 0.0.12
  * @public
  */
-function constantFrom<T = never>(...values: T[]): Arbitrary<T>;
+function constantFrom<const T = never>(...values: T[]): Arbitrary<T>;
 
 /**
  * For one `...values` values - all equiprobable
