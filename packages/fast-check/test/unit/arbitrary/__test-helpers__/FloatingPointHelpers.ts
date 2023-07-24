@@ -41,19 +41,29 @@ function constraintsInternal(
 ): fc.Arbitrary<ConstraintsInternalOut> {
   return fc
     .record(recordConstraints, { withDeletedKeys: true })
-    .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
     .filter((ct) => {
-      if (!ct.noDefaultInfinity) return true;
-      if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
-      if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
-      return true;
+      // Forbid min and max to be NaN
+      return (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max));
     })
     .map((ct) => {
+      // Already valid ct, no min or no max: we just return it as-is
       if (ct.min === undefined || ct.max === undefined) return ct;
       const { min, max } = ct;
+      // Already valid ct, min < max: we just return it as-is
       if (min < max) return ct;
+      // Already valid ct, min <= max with -0 and 0 correctly ordered: we just return it as-is
       if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
+      // We have to exchange min and  max to get an ordered range
       return { ...ct, min: max, max: min };
+    })
+    .filter((ct) => {
+      // No issue when automatically defaulting to +/-inf
+      if (!ct.noDefaultInfinity) return true;
+      // Invalid range, cannot have min==inf if max has to default to +max_value
+      if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
+      // Invalid range, cannot have max=-inf if min has to default to -max_value
+      if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
+      return true;
     })
     .filter((ct) => {
       const defaultMax = ct.noDefaultInfinity ? (is32Bits ? MAX_VALUE_32 : Number.MAX_VALUE) : Number.POSITIVE_INFINITY;
@@ -63,7 +73,7 @@ function constraintsInternal(
       // Illegal range, values cannot be "min < value <= min" or "min <= value < min" or "min < value < min"
       if ((ct.minExcluded || ct.maxExcluded) && min === max) return false;
       // Always valid range given min !== max if min=-inf or max=+inf
-      if (ct.max === Number.POSITIVE_INFINITY || ct.min === Number.NEGATIVE_INFINITY) return true
+      if (ct.max === Number.POSITIVE_INFINITY || ct.min === Number.NEGATIVE_INFINITY) return true;
       const highestAbs = Math.max(Math.abs(max), Math.abs(min));
       // Illegal range, no value in range if min and max are too close from each others and both excluded
       if (ct.minExcluded && ct.maxExcluded && max - min <= 2 * epsilon * highestAbs) return false;
