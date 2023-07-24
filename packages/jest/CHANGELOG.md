@@ -1,3 +1,16 @@
+# 1.7.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.0...jest%2Fv1.7.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4004](https://github.com/dubzzz/fast-check/pull/4004)) Test: Stop ignoring globals for node18
+
 # 1.7.0
 
 _Supporting passing options to worker_
