@@ -1,6 +1,6 @@
 # 3.12.0
 
-_TODO Description_
+_Faster `float`, `double` and `ulid` and excluded min/max_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.12.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.11.0...v3.12.0)]
 
 ## Features
