@@ -1,3 +1,36 @@
+# 3.12.0
+
+_Faster `float`, `double` and `ulid` and excluded min/max_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.12.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.11.0...v3.12.0)]
+
+## Features
+
+- ([PR#4100](https://github.com/dubzzz/fast-check/pull/4100)) Support excluded min/max in `double`
+- ([PR#4105](https://github.com/dubzzz/fast-check/pull/4105)) Support excluded min/max in `float`
+
+## Fixes
+
+- ([PR#4094](https://github.com/dubzzz/fast-check/pull/4094)) Bug: Stop unwrapping `ulid` we cannot build
+- ([PR#4095](https://github.com/dubzzz/fast-check/pull/4095)) Bug: Be resilient to poisoning with `ulid`
+- ([PR#4041](https://github.com/dubzzz/fast-check/pull/4041)) CI: Ensure we use latest node in range
+- ([PR#4062](https://github.com/dubzzz/fast-check/pull/4062)) CI: Update devcontainer configuration
+- ([PR#4065](https://github.com/dubzzz/fast-check/pull/4065)) CI: Better configuration for renovate
+- ([PR#4068](https://github.com/dubzzz/fast-check/pull/4068)) CI: Refine configuration of renovate
+- ([PR#4073](https://github.com/dubzzz/fast-check/pull/4073)) CI: New attempt to configure renovate
+- ([PR#4075](https://github.com/dubzzz/fast-check/pull/4075)) CI: Configure renovate to bump non-package
+- ([PR#4078](https://github.com/dubzzz/fast-check/pull/4078)) CI: Disable nodenv bumps on renovate
+- ([PR#4080](https://github.com/dubzzz/fast-check/pull/4080)) CI: Stop bumping node via renovate
+- ([PR#4040](https://github.com/dubzzz/fast-check/pull/4040)) Doc: Prepare release note for 3.11.0
+- ([PR#4087](https://github.com/dubzzz/fast-check/pull/4087)) Doc: Add new contributor zbjornson
+- ([PR#4059](https://github.com/dubzzz/fast-check/pull/4059)) Performance: Faster `decomposeFloat/Double`
+- ([PR#4088](https://github.com/dubzzz/fast-check/pull/4088)) Performance: Drop some unneeded allocs in `ulid`
+- ([PR#4091](https://github.com/dubzzz/fast-check/pull/4091)) Performance: Faster unmap for `ulid`
+- ([PR#4092](https://github.com/dubzzz/fast-check/pull/4092)) Performance: Faster generation of `ulid`
+- ([PR#4098](https://github.com/dubzzz/fast-check/pull/4098)) Performance: Faster `ulid` mapper function
+- ([PR#4039](https://github.com/dubzzz/fast-check/pull/4039)) Script: Add support for more gitmojis
+
+---
+
 # 3.11.0
 
 _New arbitrary for ulid_
