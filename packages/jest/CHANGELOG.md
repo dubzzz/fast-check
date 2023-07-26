@@ -1,11 +1,7 @@
 # 1.7.1
 
-_TODO Description_
+_Clearer definition of compatible node versions_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.0...jest%2Fv1.7.1)]
-
-## Features
-
-
 
 ## Fixes
 
