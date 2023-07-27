@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [what's new, performance, arbitrary]
 ---
 
-This release comes with some performance optimizations on `float`, `double` and `ulid`. It also adds the ability to define ranges with excluded boundaries in `float` and `double`
+This release introduces performance optimizations for `float`, `double` and `ulid`, along with the ability to define ranges with excluded boundaries for `float` and `double`.
 
 Continue reading to explore the detailed updates it brings.
 
@@ -12,13 +12,43 @@ Continue reading to explore the detailed updates it brings.
 
 ## Performance optimizations
 
+:::info Benchmarks
+When it comes to optimizing JavaScript code, developers have a variety of tricks to choose from. These range from minimizing the number of operations to adopting memory-efficient algorithms and utilizing caches. However, achieving the best performance often involves navigating trade-offs, considering factors such as garbage collection costs, V8 optimization of monomorphic operations, and V8's internal representation of certain data types.
+
+To determine the most effective option, we conducted benchmarks using [tinybench](https://github.com/tinylibs/tinybench). All the following figures are based on measurements from running tinybench with 100k iterations on GitHub Actions workers.
+:::
+
+```txt
+┌─────────┬────────────────────────────┬─────────────┬────────────────────┬───────────┬─────────┐
+│ (index) │         Task Name          │   ops/sec   │ Average Time (ns)  │  Margin   │ Samples │
+├─────────┼────────────────────────────┼─────────────┼────────────────────┼───────────┼─────────┤
+│    0    │       'ulid @3.11.0'       │   '1,774'   │ 563649.2017899173  │ '±0.06%'  │ 100000  │
+│    1    │        'ulid @main'        │   '3,447'   │ 290094.33774995967 │ '±0.10%'  │ 100000  │
+│    2    │   'decomposeFloatOld(1)'   │  '72,067'   │ 13875.81818992563  │ '±0.47%'  │ 100000  │
+│    3    │   'decomposeFloatNew(1)'   │ '4,913,862' │ 203.5058900271542  │ '±3.81%'  │ 100000  │
+│    4    │ 'decomposeFloatOld(2023)'  │  '67,007'   │ 14923.761650064844 │ '±0.58%'  │ 100000  │
+│    5    │ 'decomposeFloatNew(2023)'  │ '5,102,466' │ 195.9836399951018  │ '±0.63%'  │ 100000  │
+│    6    │      "padOld('', 10)"      │ '1,411,410' │ 708.5109299985925  │ '±2.31%'  │ 100000  │
+│    7    │      "padNew('', 10)"      │ '2,385,090' │ 419.2713100125548  │ '±14.86%' │ 100000  │
+│    8    │   "padOld('01234', 10)"    │ '1,627,234' │ 614.5394799974747  │ '±11.54%' │ 100000  │
+│    9    │   "padNew('01234', 10)"    │ '3,817,072' │ 261.9808599894168  │ '±4.11%'  │ 100000  │
+│   10    │ "padOld('0123456789', 10)" │ '3,895,766' │ 256.68890004453715 │ '±2.72%'  │ 100000  │
+│   11    │ "padNew('0123456789', 10)" │ '4,848,174' │  206.263219989487  │ '±3.15%'  │ 100000  │
+│   12    │    "[a, b, c].join('')"    │ '2,507,281' │ 398.8384000089718  │ '±17.68%' │ 100000  │
+│   13    │          'a+b+c'           │ '4,884,371' │ 204.7346400312381  │ '±0.56%'  │ 100000  │
+│   14    │    'split->map->reduce'    │  '677,844'  │ 1475.2650999522302 │ '±4.28%'  │ 100000  │
+│   15    │         'for-loop'         │  '809,730'  │ 1234.9790300289167 │ '±0.94%'  │ 100000  │
+│   16    │       'for-loop bis'       │ '2,198,923' │ 454.7679000918288  │ '±1.46%'  │ 100000  │
+└─────────┴────────────────────────────┴─────────────┴────────────────────┴───────────┴─────────┘
+```
+
 ### Faster decomposition of floating point values
 
-When instanciating arbitraries for `float` and `double`, we rely on an algorithm able to compute the position of any floating point number in the range of all the existing values. For instance, the value 2<sup>-52</sup> is the 629,145,600<sup>th</sup> 32-bits float and the 1,018,167,296<sup>th</sup> 64-bits float.
+When creating arbitraries for `float` and `double`, fast-check relies on an algorithm able to compute the position of any floating-point number within the entire range of existing values. For instance, the value 2<sup>-52</sup> is the 629,145,600<sup>th</sup> 32-bits float and the 1,018,167,296<sup>th</sup> 64-bits float.
 
-This numbering makes us able to enumerate all the possible floating point numbers. For instance, the number right after 1 is 1.0000001192092896 for 32-bits floats and 1.0000009536743164 for 64-bits floats.
+This numbering system enables the enumeration of all possible floating-point numbers. For instance, immediately following 1, the value is 1.0000001192092896 for 32-bit floats and 1.0000009536743164 for 64-bit floats.
 
-The algorithm responsible to find the index of any floating point number depends on a piece of code able to decompose any float into a significand and an exponent. Originally our implementation was made of one loop:
+The algorithm responsible for finding the index of any floating-point number relies on a code snippet capable of decomposing a float into its significand and exponent. Initially, our implementation involved a loop to accomplish this task.
 
 ```ts
 export function decomposeFloat(f: number): { exponent: number; significand: number } {
@@ -36,7 +66,7 @@ export function decomposeFloat(f: number): { exponent: number; significand: numb
 }
 ```
 
-This implementation was pretty inefficient as we had to loop over 253 values. [@zbjornson](https://github.com/zbjornson) came up with an optimized version of it without any loop (see [#4059](https://github.com/dubzzz/fast-check/pull/4059)):
+This implementation relied on iterating over up to 253 values to extract significand and exponent to later find the index of a floating-point number. However, this approach proved to be inefficient. Thanks to the contributions of [@zbjornson](https://github.com/zbjornson), an optimized version has been introduced in the latest release (see [#4059](https://github.com/dubzzz/fast-check/pull/4059)).
 
 ```ts
 const f32 = new Float32Array(1);
@@ -62,17 +92,19 @@ export function decomposeFloat(f: number): { exponent: number; significand: numb
 }
 ```
 
-This optimization will speed-up the instanciation of any instance of `float` or `double` or any arbitrary derived from one of them.
+This optimization will speed-up the instantiation of any instance of `float` or `double` or any arbitrary derived from them.
 
 ### Higher throughput thanks to less allocations
 
-Our initial implementation of `ulid` suffered from some performance issues. With 3.12.0, we are twice as fast with 3,191 ops/sec compared to 1,619 ops/sec on the code:
+The initial implementation of `ulid` in fast-check encountered several performance issues. However, in version 3.12.0, significant improvements have been made, resulting in a twofold increase in performance. In version 3.11.0, the code below performed at 1,774 ops/sec (±0.06%), but after all the optimizations, it now runs at 3,447 ops/sec (±0.10%):
 
 ```ts
 fc.assert(fc.property(fc.ulid(), (_unused) => true));
 ```
 
-A significant part of the optimizations consisted into being more efficient in terms of memory footprint. Code like:
+The first set of optimizations primarily focused on reducing the number of allocations, aiming for a more memory-efficient solution. These optimizations were mainly addressed in [#4088](https://github.com/dubzzz/fast-check/pull/4088) and [#4091](https://github.com/dubzzz/fast-check/pull/4091).
+
+One of the optimizations involved transforming our internal `pad` function to avoid unnecessary array allocations during filling and joining. The original implementation looked like this:
 
 ```ts
 function pad(value: string, constLength: number) {
@@ -84,38 +116,42 @@ function pad(value: string, constLength: number) {
 }
 ```
 
-Got replaced by:
+To achieve a more efficient version, we transformed it as follows:
 
 ```ts
-function pad(value: string, paddingLength: number) {
+function pad(value: string, constLength: number) {
   let extraPadding = '';
-  while (value.length + extraPadding.length < paddingLength) {
+  while (value.length + extraPadding.length < constLength) {
     extraPadding += '0';
   }
   return extraPadding + value;
 }
 ```
 
-Code like:
+With this optimization, the execution time of the function `pad` has been reduced by a factor of 2. The performance improvements can be observed in the following results: `pad('', 10)` improved from 1,411,410 ops/sec (±2.31%) to 2,385,090 ops/sec (±14.86%), `pad('01234', 10)` increased from 1,627,234 ops/s (±11.54%) to 3,817,072 ops/sec (±4.11%) and `pad('0123456789', 10)` saw a rise from 3,895,766 ops/sec (±2.72%) to 4,848,174 ops/sec (±3.15%).
+
+Similar improvements were made in other parts of the code, such as replacing array joins with simple concatenations, replacing the code below:
 
 ```ts
 return [compute(a), compute(b), compute(c)].join('');
 ```
 
-By:
+By a more efficient version of it:
 
 ```ts
 return compute(a) + compute(b) + compute(c);
 ```
 
-Code like:
+This optimization led to significantly faster execution times, approaching a factor of 2 speed-up with: 2,507,281 ops/sec (±17.68%) for `[compute('a'), compute('b'), compute('c')].join('')` compared to 4,884,371 ops/sec (±0.56%) for `compute('a') + compute('b') + compute('c')`.
+
+Not only we addressed memory footprint, but also performed algorithmic optimizations. The code below was responsible for both excessive memory allocations and redundant recomputation of powers of 32:
 
 ```ts
 const symbols = normalizedBase32str.split('').map((char) => decodeSymbolLookupTable[char]);
 return symbols.reduce((prev, curr, i) => prev + curr * Math.pow(32, symbols.length - 1 - i), 0);
 ```
 
-By:
+We first started to drop the unwanted memory allocations and moved from 677,844 ops/sec (±4.28%) to 809,730 ops/sec (±0.94%) with simple for-loop based version:
 
 ```ts
 let sum = 0;
@@ -127,20 +163,32 @@ for (let index = 0; index !== normalizedBase32str.length; ++index) {
 return sum;
 ```
 
-Most of our optimizations on allocations can be seen in [#4088](https://github.com/dubzzz/fast-check/pull/4088) and [#4091](https://github.com/dubzzz/fast-check/pull/4091).
+We continued by addressing the power of 32 part:
 
-While it was probably one of the simplest way to improve our performance, we also went through some optimizations at algorithm level in [#4092](https://github.com/dubzzz/fast-check/pull/4092) and some low level optimizations in [#4098](https://github.com/dubzzz/fast-check/pull/4098).
+```ts
+let sum = 0;
+for (let index = 0, base = 1; index !== normalizedBase32str.length; ++index, base *= 32) {
+  const char = normalizedBase32str[normalizedBase32str.length - index - 1];
+  const symbol = decodeSymbolLookupTable[char];
+  sum += symbol * base;
+}
+return sum;
+```
+
+With this last optimization, the throughput reached an 2,198,923 ops/sec (±1.46%).
+
+For further details on these and other optimizations, you can refer to the pull requests: [#4088](https://github.com/dubzzz/fast-check/pull/4088), [#4091](https://github.com/dubzzz/fast-check/pull/4091),[#4092](https://github.com/dubzzz/fast-check/pull/4092) and [#4098](https://github.com/dubzzz/fast-check/pull/4098). Some of these PRs also address low-level issues by keeping produced values within the int32 range, leveraging slight performance optimizations of V8 on integer values.
 
 ## Excluded min and max
 
-Up-to-now our arbitraries for `float` and `double` were always including the `min` and `max` in the set of values to be generated. In other words when asking for `double({min: 0, max: 1})`, you ask for any value such as `0 ≤ value ≤ 1`. Asking for 1 not to be in the range requires the user to specify manually a value for the max close to 1 but not being 1.
+Until now, when utilizing arbitraries for `float` and `double`, the `min` and `max` values were always included in the set of generated values. This means that requesting `double({min: 0, max: 1})` would produce values such that `0 ≤ value ≤ 1`. If you wanted to exclude the value 1 from the range, you had to manually specify a max value slightly below 1.
 
-In version 3.12.0, we add two new options:
+With version 3.12.0, fast-check now offers two new options
 
-- `minExcluded`: to exclude the min from the set of values
-- `maxExcluded`: to exclude the max from the set of values
+- `minExcluded`: This option excludes the minimum value from the set of generated values.
+- `maxExcluded`: This option excludes the maximum value from the set of generated values.
 
-In other words, if in the example above you don't want to include the 1, you can write: `double({min: 0, max: 1, maxExcluded: true})` and you will get `0 ≤ value < 1`.
+For example, if you want to exclude the value 1 from the range, you can now write: `double({min: 0, max: 1, maxExcluded: true})`, and this will produce values where `0 ≤ value < 1`, effectively excluding the value 1 from the generated set.
 
 ## Changelog since 3.11.0
 
