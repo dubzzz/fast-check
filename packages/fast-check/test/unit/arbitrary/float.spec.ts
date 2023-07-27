@@ -10,7 +10,12 @@ import {
   defaultFloatRecordConstraints,
   is32bits,
 } from './__test-helpers__/FloatingPointHelpers';
-import { floatToIndex, indexToFloat, MAX_VALUE_32 } from '../../../src/arbitrary/_internals/helpers/FloatHelpers';
+import {
+  floatToIndex,
+  indexToFloat,
+  MIN_VALUE_32,
+  MAX_VALUE_32,
+} from '../../../src/arbitrary/_internals/helpers/FloatHelpers';
 
 import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
@@ -212,7 +217,7 @@ describe('float', () => {
           expect(integer).toHaveBeenCalledTimes(2);
           const integerConstraintsNoNaN = integer.mock.calls[0][0]!;
           const integerConstraintsWithNaN = integer.mock.calls[1][0]!;
-          if (max > 0) {
+          if (max > MIN_VALUE_32 || (max > 0 && !ct.maxExcluded)) {
             // max > 0  --> NaN will be added as the greatest value
             expect(integerConstraintsWithNaN.min).toBe(integerConstraintsNoNaN.min);
             expect(integerConstraintsWithNaN.max).toBe(integerConstraintsNoNaN.max! + 1);

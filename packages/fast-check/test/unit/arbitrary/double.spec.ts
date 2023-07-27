@@ -201,7 +201,7 @@ describe('double', () => {
           expect(arrayInt64).toHaveBeenCalledTimes(2);
           const constraintsNoNaN = arrayInt64.mock.calls[0];
           const constraintsWithNaN = arrayInt64.mock.calls[1];
-          if (max > 0) {
+          if (max > Number.MIN_VALUE || (max > 0 && !ct.maxExcluded)) {
             // max > 0  --> NaN will be added as the greatest value
             expect(constraintsWithNaN[0]).toEqual(constraintsNoNaN[0]);
             expect(constraintsWithNaN[1]).toEqual(add64(constraintsNoNaN[1], Unit64));
