@@ -30,7 +30,7 @@
     "@typescript-eslint/parser": "^6.2.0",
     "all-contributors-cli": "^6.26.1",
     "eslint": "^8.45.0",
-    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prettier": "^8.9.0",
     "prettier": "2.8.8",
     "publint": "^0.1.16"
   },
