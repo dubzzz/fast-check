@@ -1,3 +1,5 @@
+import { Error, String } from '../../../utils/globals';
+
 /** @internal */
 const encodeSymbolLookupTable: Record<number, string> = {
   10: 'A',
@@ -27,7 +29,6 @@ const encodeSymbolLookupTable: Record<number, string> = {
 /** @internal */
 const decodeSymbolLookupTable: Record<string, number> = {
   '0': 0,
-  O: 0,
   '1': 1,
   '2': 2,
   '3': 3,
@@ -62,48 +63,46 @@ const decodeSymbolLookupTable: Record<string, number> = {
 };
 
 /** @internal */
-function getBaseLog(x: number, y: number) {
-  return Math.log(y) / Math.log(x);
-}
-
-/** @internal */
 function encodeSymbol(symbol: number) {
   return symbol < 10 ? String(symbol) : encodeSymbolLookupTable[symbol];
 }
 
 /** @internal */
-function pad(value: string, constLength: number) {
-  return (
-    Array(constLength - value.length)
-      .fill('0')
-      .join('') + value
-  );
-}
-
-/** @internal */
-export function uintToBase32StringMapper(num: number, constLength: number | undefined = undefined): string {
-  if (num === 0) return pad('0', constLength ?? 1);
-
-  let base32Str = '',
-    remaining = num;
-  for (let symbolsLeft = Math.floor(getBaseLog(32, num)) + 1; symbolsLeft > 0; symbolsLeft--) {
-    const val = Math.pow(32, symbolsLeft - 1);
-    const symbol = Math.floor(remaining / val);
-
-    base32Str += encodeSymbol(symbol);
-    remaining -= symbol * val;
+function pad(value: string, paddingLength: number) {
+  let extraPadding = '';
+  while (value.length + extraPadding.length < paddingLength) {
+    extraPadding += '0';
   }
-
-  return pad(base32Str, constLength ?? base32Str.length);
+  return extraPadding + value;
 }
 
 /** @internal */
-export function paddedUintToBase32StringMapper(constLength: number) {
-  return (num: number): string => uintToBase32StringMapper(num, constLength);
+function smallUintToBase32StringMapper(num: number): string {
+  let base32Str = '';
+  // num must be in 0 (incl.), 0x7fff_ffff (incl.)
+  // >>5 is equivalent to /32 and <<5 to x32
+  for (let remaining = num; remaining !== 0; ) {
+    const next = remaining >> 5;
+    const current = remaining - (next << 5);
+    base32Str = encodeSymbol(current) + base32Str;
+    remaining = next;
+  }
+  return base32Str;
 }
 
 /** @internal */
-const Base32Regex = /^[0-9A-HJKMNP-TV-Z]+$/;
+export function uintToBase32StringMapper(num: number, paddingLength: number): string {
+  const head = ~~(num / 0x40000000);
+  const tail = num & 0x3fffffff;
+  return pad(smallUintToBase32StringMapper(head), paddingLength - 6) + pad(smallUintToBase32StringMapper(tail), 6);
+}
+
+/** @internal */
+export function paddedUintToBase32StringMapper(paddingLength: number) {
+  return function padded(num: number): string {
+    return uintToBase32StringMapper(num, paddingLength);
+  };
+}
 
 /** @internal */
 export function uintToBase32StringUnmapper(value: unknown): number {
@@ -111,12 +110,16 @@ export function uintToBase32StringUnmapper(value: unknown): number {
     throw new Error('Unsupported type');
   }
 
-  const normalizedBase32str = value.toUpperCase();
-  if (!Base32Regex.test(normalizedBase32str)) {
-    throw new Error('Unsupported type');
+  let accumulated = 0;
+  let power = 1;
+  for (let index = value.length - 1; index >= 0; --index) {
+    const char = value[index];
+    const numericForChar = decodeSymbolLookupTable[char];
+    if (numericForChar === undefined) {
+      throw new Error('Unsupported type');
+    }
+    accumulated += numericForChar * power;
+    power *= 32;
   }
-
-  const symbols = normalizedBase32str.split('').map((char) => decodeSymbolLookupTable[char]);
-
-  return symbols.reduce((prev, curr, i) => prev + curr * Math.pow(32, symbols.length - 1 - i), 0);
+  return accumulated;
 }

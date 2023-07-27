@@ -55,7 +55,7 @@ describe('double', () => {
     );
   });
 
-  it('should accept any constraits defining min (not-NaN) equal to max', () => {
+  it('should accept any constraints defining min (not-NaN) equal to max', () => {
     fc.assert(
       fc.property(
         float64raw(),
@@ -70,6 +70,32 @@ describe('double', () => {
 
           // Assert
           expect(arb).toBeDefined();
+        }
+      )
+    );
+  });
+
+  it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', () => {
+    fc.assert(
+      fc.property(
+        float64raw(),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.constantFrom('min', 'max', 'both'),
+        (f, otherCt, exclusiveMode) => {
+          // Arrange
+          fc.pre(!Number.isNaN(f));
+          spyArrayInt64();
+
+          // Act / Assert
+          expect(() =>
+            double({
+              ...otherCt,
+              min: f,
+              max: f,
+              minExcluded: exclusiveMode === 'min' || exclusiveMode === 'both',
+              maxExcluded: exclusiveMode === 'max' || exclusiveMode === 'both',
+            })
+          ).toThrowError();
         }
       )
     );
@@ -123,9 +149,15 @@ describe('double', () => {
 
   if (typeof BigInt !== 'undefined') {
     it('should properly convert integer value for index between min and max into its associated float value', () => {
+      const withoutExcludedConstraints = {
+        ...defaultDoubleRecordConstraints,
+        minExcluded: fc.constant(false),
+        maxExcluded: fc.constant(false),
+      };
+
       fc.assert(
         fc.property(
-          fc.option(doubleConstraints(), { nil: undefined }),
+          fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
           fc.bigUintN(64),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (ct, mod, biasFactor) => {
@@ -169,7 +201,7 @@ describe('double', () => {
           expect(arrayInt64).toHaveBeenCalledTimes(2);
           const constraintsNoNaN = arrayInt64.mock.calls[0];
           const constraintsWithNaN = arrayInt64.mock.calls[1];
-          if (max > 0) {
+          if (max > Number.MIN_VALUE || (max > 0 && !ct.maxExcluded)) {
             // max > 0  --> NaN will be added as the greatest value
             expect(constraintsWithNaN[0]).toEqual(constraintsNoNaN[0]);
             expect(constraintsWithNaN[1]).toEqual(add64(constraintsNoNaN[1], Unit64));
@@ -227,13 +259,15 @@ describe('double', () => {
           const { min, max } = minMaxForConstraints(ct);
           const minIndex = doubleToIndex(min);
           const maxIndex = doubleToIndex(max);
+          const expectedMinIndex = ct.minExcluded ? add64(minIndex, Unit64) : minIndex;
+          const expectedMaxIndex = ct.maxExcluded ? substract64(maxIndex, Unit64) : maxIndex;
 
           // Act
           double(ct);
 
           // Assert
           expect(arrayInt64).toHaveBeenCalledTimes(1);
-          expect(arrayInt64).toHaveBeenCalledWith(minIndex, maxIndex);
+          expect(arrayInt64).toHaveBeenCalledWith(expectedMinIndex, expectedMaxIndex);
         })
       );
     });
@@ -254,17 +288,31 @@ describe('double (integration)', () => {
       expect(v).not.toBe(Number.NaN); // should not produce NaN if explicitely asked not too
     }
     if (extra.min !== undefined && !Number.isNaN(v)) {
-      expect(v).toBeGreaterThanOrEqual(extra.min); // should always be greater than min when specified
+      if (extra.minExcluded) {
+        expect(v).toBeGreaterThan(extra.min); // should always be strictly greater than min when specified
+      } else {
+        expect(v).toBeGreaterThanOrEqual(extra.min); // should always be greater than min when specified
+      }
     }
     if (extra.max !== undefined && !Number.isNaN(v)) {
-      expect(v).toBeLessThanOrEqual(extra.max); // should always be smaller than max when specified
+      if (extra.maxExcluded) {
+        expect(v).toBeLessThan(extra.max); // should always be strictly smaller than max when specified
+      } else {
+        expect(v).toBeLessThanOrEqual(extra.max); // should always be smaller than max when specified
+      }
     }
     if (extra.noDefaultInfinity) {
       if (extra.min === undefined) {
         expect(v).not.toBe(Number.NEGATIVE_INFINITY); // should not produce -infinity when noInfinity and min unset
+        if (extra.minExcluded) {
+          expect(v).not.toBe(-Number.MAX_VALUE); // nor -max_value
+        }
       }
       if (extra.max === undefined) {
         expect(v).not.toBe(Number.POSITIVE_INFINITY); // should not produce +infinity when noInfinity and max unset
+        if (extra.minExcluded) {
+          expect(v).not.toBe(Number.MAX_VALUE); // nor max_value
+        }
       }
     }
   };

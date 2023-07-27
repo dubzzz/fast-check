@@ -251,7 +251,7 @@ describe('uniqueArray', () => {
           // Act / Assert
           expect(() =>
             withConfiguredGlobal(config, () =>
-              uniqueArray(childInstance, { minLength, maxLength, comparator, selector })
+              uniqueArray(childInstance, { minLength, maxLength, comparator: comparator as any, selector })
             )
           ).toThrowError();
         }

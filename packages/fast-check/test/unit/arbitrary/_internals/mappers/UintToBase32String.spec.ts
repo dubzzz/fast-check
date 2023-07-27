@@ -7,9 +7,9 @@ import {
 describe('uintToBase32StringUnmapper', () => {
   it('should be able to unmap any mapped value', () =>
     fc.assert(
-      fc.property(fc.integer({ min: 0 }), (input) => {
+      fc.property(fc.maxSafeNat(), fc.integer({ min: 6, max: 20 }), (input, length) => {
         // Arrange
-        const mapped = paddedUintToBase32StringMapper(10)(input);
+        const mapped = paddedUintToBase32StringMapper(length)(input);
         // Act
         const out = uintToBase32StringUnmapper(mapped);
         // Assert
