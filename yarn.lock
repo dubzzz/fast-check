@@ -2652,7 +2652,7 @@ __metadata:
     "@types/express": ^4.17.17
     "@types/jest": ^29.5.3
     "@types/lodash": ^4.14.196
-    "@types/react": ^18.2.15
+    "@types/react": ^18.2.17
     "@types/supertest": ^2.0.12
     express: ^4.18.2
     fast-check: "workspace:*"
@@ -4390,14 +4390,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.2.15":
-  version: 18.2.15
-  resolution: "@types/react@npm:18.2.15"
+"@types/react@npm:*, @types/react@npm:^18.2.17":
+  version: 18.2.17
+  resolution: "@types/react@npm:18.2.17"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 36989f638201bfe2f4110b06c119180f6df9c0e13d7060481e82e7a745f81745a01ae543c478a25b61e0767cb52e82da2ad5b0dedacabf99339e523d06176705
+  checksum: 150516b31bd98b635e4a56bcf2af007330b35cccb6e35e902f46a47f0e81e30c46cdacc095e91051bdf2f33e4846e7e62fd51b67e064dc7d15c00e15dfa449d5
   languageName: node
   linkType: hard
 
