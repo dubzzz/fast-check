@@ -18,30 +18,6 @@ When it comes to optimizing JavaScript code, developers have a variety of tricks
 To determine the most effective option, we conducted benchmarks using [tinybench](https://github.com/tinylibs/tinybench). All the following figures are based on measurements from running tinybench with 100k iterations on GitHub Actions workers.
 :::
 
-```txt
-┌─────────┬────────────────────────────┬─────────────┬────────────────────┬───────────┬─────────┐
-│ (index) │         Task Name          │   ops/sec   │ Average Time (ns)  │  Margin   │ Samples │
-├─────────┼────────────────────────────┼─────────────┼────────────────────┼───────────┼─────────┤
-│    0    │       'ulid @3.11.0'       │   '1,774'   │ 563649.2017899173  │ '±0.06%'  │ 100000  │
-│    1    │        'ulid @main'        │   '3,447'   │ 290094.33774995967 │ '±0.10%'  │ 100000  │
-│    2    │   'decomposeFloatOld(1)'   │  '72,067'   │ 13875.81818992563  │ '±0.47%'  │ 100000  │
-│    3    │   'decomposeFloatNew(1)'   │ '4,913,862' │ 203.5058900271542  │ '±3.81%'  │ 100000  │
-│    4    │ 'decomposeFloatOld(2023)'  │  '67,007'   │ 14923.761650064844 │ '±0.58%'  │ 100000  │
-│    5    │ 'decomposeFloatNew(2023)'  │ '5,102,466' │ 195.9836399951018  │ '±0.63%'  │ 100000  │
-│    6    │      "padOld('', 10)"      │ '1,411,410' │ 708.5109299985925  │ '±2.31%'  │ 100000  │
-│    7    │      "padNew('', 10)"      │ '2,385,090' │ 419.2713100125548  │ '±14.86%' │ 100000  │
-│    8    │   "padOld('01234', 10)"    │ '1,627,234' │ 614.5394799974747  │ '±11.54%' │ 100000  │
-│    9    │   "padNew('01234', 10)"    │ '3,817,072' │ 261.9808599894168  │ '±4.11%'  │ 100000  │
-│   10    │ "padOld('0123456789', 10)" │ '3,895,766' │ 256.68890004453715 │ '±2.72%'  │ 100000  │
-│   11    │ "padNew('0123456789', 10)" │ '4,848,174' │  206.263219989487  │ '±3.15%'  │ 100000  │
-│   12    │    "[a, b, c].join('')"    │ '2,507,281' │ 398.8384000089718  │ '±17.68%' │ 100000  │
-│   13    │          'a+b+c'           │ '4,884,371' │ 204.7346400312381  │ '±0.56%'  │ 100000  │
-│   14    │    'split->map->reduce'    │  '677,844'  │ 1475.2650999522302 │ '±4.28%'  │ 100000  │
-│   15    │         'for-loop'         │  '809,730'  │ 1234.9790300289167 │ '±0.94%'  │ 100000  │
-│   16    │       'for-loop bis'       │ '2,198,923' │ 454.7679000918288  │ '±1.46%'  │ 100000  │
-└─────────┴────────────────────────────┴─────────────┴────────────────────┴───────────┴─────────┘
-```
-
 ### Faster decomposition of floating point values
 
 When creating arbitraries for `float` and `double`, fast-check relies on an algorithm able to compute the position of any floating-point number within the entire range of existing values. For instance, the value 2<sup>-52</sup> is the 629,145,600<sup>th</sup> 32-bits float and the 1,018,167,296<sup>th</sup> 64-bits float.
