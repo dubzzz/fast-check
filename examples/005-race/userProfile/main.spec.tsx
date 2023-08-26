@@ -4,7 +4,7 @@ import * as React from 'react';
 import UserProfilePage from './src/UserProfilePage';
 
 import { render, cleanup, act, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@​testing-library/jest-dom/jest-globals';
 
 // If you want to test the behaviour of fast-check in case of a bug:
 const bugId = undefined; // = 1; // to enable bug
