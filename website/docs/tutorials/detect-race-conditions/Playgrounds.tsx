@@ -1,4 +1,3 @@
-// @ts-check
 import React, { useState } from 'react';
 import {
   SandpackProvider,
@@ -13,7 +12,14 @@ import { atomDark } from '@codesandbox/sandpack-themes';
 import styles from './Playgrounds.module.css';
 import * as snippets from './snippets.mjs';
 
-function SetupPlayground(props) {
+type Props = {
+  startSpecCode: string;
+  anwserSpecCode: string;
+  fileContent: string;
+  fileName: string;
+  fileExtension: string;
+};
+function SetupPlayground(props: Props) {
   const { startSpecCode, anwserSpecCode, fileContent, fileName, fileExtension } = props;
   const [specFile, setSpecFile] = useState({ key: 0, content: startSpecCode });
 
@@ -116,13 +122,13 @@ export function MissingPart() {
   );
 }
 
-function codeWithComments(code, comments) {
+function codeWithComments(code: string, comments: string[]): string {
   return `${comments.map((line) => `// ${line}`).join('\n')}\n\n${code}`;
 }
-function pastImplementationSnippet(code, partName) {
+function pastImplementationSnippet(code: string, partName: string): string {
   return codeWithComments(code, ['Implementation used within the part:', '> ' + partName]);
 }
-function pastTestSnippet(code, partName, variationName) {
+function pastTestSnippet(code: string, partName: string, variationName?: string | undefined): string {
   return codeWithComments(code, [
     'Test suggested for the part:',
     '> ' + partName,
