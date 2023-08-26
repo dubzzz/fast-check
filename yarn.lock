@@ -2682,7 +2682,7 @@ __metadata:
   dependencies:
     "@fast-check/worker": "workspace:*"
     "@jest/expect": ^29.6.2
-    "@jest/globals": ^29.6.2
+    "@jest/globals": ^29.6.4
     "@types/node": ^18.17.11
     fast-check: "workspace:*"
     jest: ^29.6.4
@@ -2963,7 +2963,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/globals@npm:^29.6.2, @jest/globals@npm:^29.6.4":
+"@jest/globals@npm:^29.6.4":
   version: 29.6.4
   resolution: "@jest/globals@npm:29.6.4"
   dependencies:
@@ -16981,7 +16981,7 @@ __metadata:
     "@docusaurus/module-type-aliases": 2.4.1
     "@docusaurus/preset-classic": 2.4.1
     "@docusaurus/remark-plugin-npm2yarn": 2.4.1
-    "@jest/globals": ^29.6.2
+    "@jest/globals": ^29.6.4
     "@tsconfig/docusaurus": ^2.0.0
     clsx: ^1.2.1
     fast-check: "workspace:*"
