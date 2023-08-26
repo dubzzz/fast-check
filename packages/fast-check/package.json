@@ -68,7 +68,7 @@
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^7.0.1",
     "ts-jest": "^29.1.1",
-    "typedoc": "^0.24.8",
+    "typedoc": "^0.25.0",
     "typescript": "~5.1.6"
   },
   "keywords": [
