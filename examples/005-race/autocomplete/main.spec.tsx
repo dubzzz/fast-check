@@ -6,7 +6,7 @@ import AutocompleteField from './src/AutocompleteField';
 //import AutocompleteField from './src/AutocompleteFieldSimple';
 
 import { render, cleanup, fireEvent, act, getNodeText, screen } from '@testing-library/react';
-import '@​testing-library/jest-dom/jest-globals';
+import '@​testing-library/jest-dom';
 
 import { search } from './src/Api';
 
