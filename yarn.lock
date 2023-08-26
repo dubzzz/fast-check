@@ -2686,7 +2686,7 @@ __metadata:
     "@types/node": ^18.17.11
     fast-check: "workspace:*"
     jest: ^29.6.4
-    jest-jasmine2: ^29.6.2
+    jest-jasmine2: ^29.6.4
     ts-jest: ^29.1.1
     typescript: ~5.1.6
   peerDependencies:
@@ -2918,7 +2918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment@npm:^29.6.2, @jest/environment@npm:^29.6.4":
+"@jest/environment@npm:^29.6.4":
   version: 29.6.4
   resolution: "@jest/environment@npm:29.6.4"
   dependencies:
@@ -3021,7 +3021,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/source-map@npm:^29.6.0, @jest/source-map@npm:^29.6.3":
+"@jest/source-map@npm:^29.6.3":
   version: 29.6.3
   resolution: "@jest/source-map@npm:29.6.3"
   dependencies:
@@ -3032,7 +3032,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/test-result@npm:^29.6.2, @jest/test-result@npm:^29.6.4":
+"@jest/test-result@npm:^29.6.4":
   version: 29.6.4
   resolution: "@jest/test-result@npm:29.6.4"
   dependencies:
@@ -3079,7 +3079,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/types@npm:^29.6.1, @jest/types@npm:^29.6.3":
+"@jest/types@npm:^29.6.3":
   version: 29.6.3
   resolution: "@jest/types@npm:29.6.3"
   dependencies:
@@ -10498,7 +10498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-each@npm:^29.6.2, jest-each@npm:^29.6.3":
+"jest-each@npm:^29.6.3":
   version: 29.6.3
   resolution: "jest-each@npm:29.6.3"
   dependencies:
@@ -10576,28 +10576,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-jasmine2@npm:^29.6.2":
-  version: 29.6.2
-  resolution: "jest-jasmine2@npm:29.6.2"
+"jest-jasmine2@npm:^29.6.4":
+  version: 29.6.4
+  resolution: "jest-jasmine2@npm:29.6.4"
   dependencies:
-    "@jest/environment": ^29.6.2
-    "@jest/expect": ^29.6.2
-    "@jest/source-map": ^29.6.0
-    "@jest/test-result": ^29.6.2
-    "@jest/types": ^29.6.1
+    "@jest/environment": ^29.6.4
+    "@jest/expect": ^29.6.4
+    "@jest/source-map": ^29.6.3
+    "@jest/test-result": ^29.6.4
+    "@jest/types": ^29.6.3
     "@types/node": "*"
     chalk: ^4.0.0
     co: ^4.6.0
     is-generator-fn: ^2.0.0
-    jest-each: ^29.6.2
-    jest-matcher-utils: ^29.6.2
-    jest-message-util: ^29.6.2
-    jest-runtime: ^29.6.2
-    jest-snapshot: ^29.6.2
-    jest-util: ^29.6.2
+    jest-each: ^29.6.3
+    jest-matcher-utils: ^29.6.4
+    jest-message-util: ^29.6.3
+    jest-runtime: ^29.6.4
+    jest-snapshot: ^29.6.4
+    jest-util: ^29.6.3
     p-limit: ^3.1.0
-    pretty-format: ^29.6.2
-  checksum: c7f5f17837897967d21e039a25d0eca1b9725e4eb9338c5f7c691f89f02f2e91b22f4b9853ce2f8915830b7c3ff0f5d1b385ff9e15eecf12f46cdc84ab37a32f
+    pretty-format: ^29.6.3
+  checksum: 8e98a10b11ed31df0ea4e9e6d80532ab73b1fc9295e0071a74d44841f81ea4752255d6e1e442e95072466da9d0d3cf31bfbdfff10f4ab61bc196f246bde1bf8e
   languageName: node
   linkType: hard
 
@@ -10611,7 +10611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-matcher-utils@npm:^29.6.2, jest-matcher-utils@npm:^29.6.4":
+"jest-matcher-utils@npm:^29.6.4":
   version: 29.6.4
   resolution: "jest-matcher-utils@npm:29.6.4"
   dependencies:
@@ -10623,7 +10623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-message-util@npm:^29.6.2, jest-message-util@npm:^29.6.3":
+"jest-message-util@npm:^29.6.3":
   version: 29.6.3
   resolution: "jest-message-util@npm:29.6.3"
   dependencies:
@@ -10726,7 +10726,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-runtime@npm:^29.6.2, jest-runtime@npm:^29.6.4":
+"jest-runtime@npm:^29.6.4":
   version: 29.6.4
   resolution: "jest-runtime@npm:29.6.4"
   dependencies:
@@ -10756,7 +10756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-snapshot@npm:^29.6.2, jest-snapshot@npm:^29.6.4":
+"jest-snapshot@npm:^29.6.4":
   version: 29.6.4
   resolution: "jest-snapshot@npm:29.6.4"
   dependencies:
@@ -10784,7 +10784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^29.0.0, jest-util@npm:^29.6.2, jest-util@npm:^29.6.3":
+"jest-util@npm:^29.0.0, jest-util@npm:^29.6.3":
   version: 29.6.3
   resolution: "jest-util@npm:29.6.3"
   dependencies:
@@ -13601,7 +13601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^29.0.0, pretty-format@npm:^29.5.0, pretty-format@npm:^29.6.2, pretty-format@npm:^29.6.3":
+"pretty-format@npm:^29.0.0, pretty-format@npm:^29.5.0, pretty-format@npm:^29.6.3":
   version: 29.6.3
   resolution: "pretty-format@npm:29.6.3"
   dependencies:
