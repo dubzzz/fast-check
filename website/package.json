@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.1",
-    "@jest/globals": "^29.6.2",
+    "@jest/globals": "^29.6.4",
     "@tsconfig/docusaurus": "^2.0.0",
     "fast-check": "workspace:*",
     "jest": "^29.6.4",
