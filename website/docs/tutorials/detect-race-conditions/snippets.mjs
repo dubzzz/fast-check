@@ -1,3 +1,4 @@
+// @ts-check
 // Does not queue at all
 export const queueCodeV0 = `export function queue(fun) {
     return fun;
