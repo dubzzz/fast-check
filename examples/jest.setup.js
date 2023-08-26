@@ -1,5 +1,4 @@
 const fc = require('fast-check');
-require('@testing-library/jest-dom');
 
 // Default timeout of 120s
 const JestTimeoutMs = 120000;
