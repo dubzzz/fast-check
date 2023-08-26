@@ -2650,7 +2650,7 @@ __metadata:
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
     "@types/express": ^4.17.17
-    "@types/jest": ^29.5.3
+    "@types/jest": ^29.5.4
     "@types/lodash": ^4.14.197
     "@types/react": ^18.2.20
     "@types/supertest": ^2.0.12
@@ -2721,7 +2721,7 @@ __metadata:
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
     "@npmcli/arborist": ^6.0.0
-    "@types/jest": ^29.5.3
+    "@types/jest": ^29.5.4
     "@types/pacote": ^11.1.5
     "@types/tar": ^6.1.5
     jest: ^29.6.2
@@ -4195,13 +4195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^29.5.3":
-  version: 29.5.3
-  resolution: "@types/jest@npm:29.5.3"
+"@types/jest@npm:*, @types/jest@npm:^29.5.4":
+  version: 29.5.4
+  resolution: "@types/jest@npm:29.5.4"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e36bb92e0b9e5ea7d6f8832baa42f087fc1697f6cd30ec309a07ea4c268e06ec460f1f0cfd2581daf5eff5763475190ec1ad8ac6520c49ccfe4f5c0a48bfa676
+  checksum: 38ed5942f44336452efd0f071eab60aaa57cd8d46530348d0a3aa5a691dcbf1366c4ca8f6ee8364efb45b4413bfefae443e5d4f469246a472a03b21ac11cd4ed
   languageName: node
   linkType: hard
 
@@ -8235,7 +8235,7 @@ __metadata:
   dependencies:
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": ^7.36.4
-    "@types/jest": ^29.5.3
+    "@types/jest": ^29.5.4
     "@types/node": ^18.17.6
     buffer: ^6.0.3
     cross-env: ^7.0.3
