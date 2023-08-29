@@ -7,9 +7,14 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./lib/types/fast-check.d.ts",
-      "require": "./lib/fast-check.js",
-      "default": "./lib/esm/fast-check.js"
+      "require": {
+        "types": "./lib/types/fast-check.d.ts",
+        "default": "./lib/fast-check.js"
+      },
+      "import": {
+        "types": "./lib/esm/types/fast-check.d.ts",
+        "default": "./lib/esm/fast-check.js"
+      }
     }
   },
   "module": "lib/esm/fast-check.js",
@@ -23,7 +28,7 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.cjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm/types",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "typecheck": "tsc --noEmit",
@@ -60,7 +65,7 @@
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.36.4",
     "@types/jest": "^29.5.4",
-    "@types/node": "^18.17.11",
+    "@types/node": "^18.17.12",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
     "glob": "^10.3.3",
@@ -68,8 +73,8 @@
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^7.0.1",
     "ts-jest": "^29.1.1",
-    "typedoc": "^0.24.8",
-    "typescript": "~5.1.6"
+    "typedoc": "^0.25.0",
+    "typescript": "~5.2.2"
   },
   "keywords": [
     "property-based testing",

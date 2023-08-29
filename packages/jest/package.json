@@ -67,12 +67,12 @@
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.6.4",
     "@jest/globals": "^29.6.4",
-    "@types/node": "^18.17.11",
+    "@types/node": "^18.17.12",
     "fast-check": "workspace:*",
     "jest": "^29.6.4",
     "jest-jasmine2": "^29.6.4",
     "ts-jest": "^29.1.1",
-    "typescript": "~5.1.6"
+    "typescript": "~5.2.2"
   },
   "keywords": [
     "jest",
