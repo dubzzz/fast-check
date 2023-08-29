@@ -7,9 +7,14 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./lib/types/fast-check.d.ts",
-      "require": "./lib/fast-check.js",
-      "default": "./lib/esm/fast-check.js"
+      "require": {
+        "types": "./lib/types/fast-check.d.ts",
+        "default": "./lib/fast-check.js"
+      },
+      "import": {
+        "types": "./lib/esm/types/fast-check.d.ts",
+        "default": "./lib/esm/fast-check.js"
+      }
     }
   },
   "module": "lib/esm/fast-check.js",
@@ -23,7 +28,7 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.cjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "typecheck": "tsc --noEmit",
