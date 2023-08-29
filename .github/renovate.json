@@ -1,5 +1,5 @@
 {
-  "extends": ["config:base", ":dependencyDashboard"],
+  "extends": ["config:recommended", ":dependencyDashboard"],
   "labels": ["dependencies"],
   "commitMessagePrefix": "⬆️ ",
   "packageRules": [

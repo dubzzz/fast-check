@@ -3,6 +3,31 @@ import { tuple } from './tuple';
 import { integer } from './integer';
 import { paddedUintToBase32StringMapper, uintToBase32StringUnmapper } from './_internals/mappers/UintToBase32String';
 
+const padded10Mapper = paddedUintToBase32StringMapper(10);
+const padded8Mapper = paddedUintToBase32StringMapper(8);
+
+type MapperIn = [number, number, number];
+type MapperOut = string;
+
+function ulidMapper(parts: MapperIn): MapperOut {
+  return (
+    padded10Mapper(parts[0]) + // 10 chars of base32 -> 48 bits
+    padded8Mapper(parts[1]) + // 8 chars of base32 -> 40 bits
+    padded8Mapper(parts[2])
+  );
+}
+
+function ulidUnmapper(value: unknown): MapperIn {
+  if (typeof value !== 'string' || value.length !== 26) {
+    throw new Error('Unsupported type');
+  }
+  return [
+    uintToBase32StringUnmapper(value.slice(0, 10)),
+    uintToBase32StringUnmapper(value.slice(10, 18)),
+    uintToBase32StringUnmapper(value.slice(18)),
+  ];
+}
+
 /**
  * For ulid
  *
@@ -21,23 +46,7 @@ export function ulid(): Arbitrary<string> {
   const randomnessPartTwoArbitrary = integer({ min: 0, max: 0xffffffffff }); // 40 bits
 
   return tuple(timestampPartArbitrary, randomnessPartOneArbitrary, randomnessPartTwoArbitrary).map(
-    ([date, random1, random2]) => {
-      return [
-        paddedUintToBase32StringMapper(10)(date), // 10 chars of base32 -> 48 bits
-        paddedUintToBase32StringMapper(8)(random1), // 8 chars of base32 -> 40 bits
-        paddedUintToBase32StringMapper(8)(random2),
-      ].join('');
-    },
-    (value) => {
-      if (typeof value !== 'string' || value.length !== 26) {
-        throw new Error('Unsupported type');
-      }
-
-      return [value.slice(0, 10), value.slice(10, 18), value.slice(18)].map(uintToBase32StringUnmapper) as [
-        number,
-        number,
-        number
-      ];
-    }
+    ulidMapper,
+    ulidUnmapper
   );
 }

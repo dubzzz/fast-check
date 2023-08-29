@@ -56,7 +56,7 @@ describe('ulid', () => {
   });
 });
 
-describe('uuid (integration)', () => {
+describe('ulid (integration)', () => {
   const isCorrect = (u: string) => {
     expect(u).toMatch(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
   };
