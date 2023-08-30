@@ -32,7 +32,7 @@ function mapOf<T, U>(
   va: Arbitrary<U>,
   maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier
+  depthIdentifier: DepthIdentifier,
 ) {
   return uniqueArray(tuple(ka, va), {
     maxLength: maxKeys,
@@ -49,7 +49,7 @@ function dictOf<U>(
   va: Arbitrary<U>,
   maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier
+  depthIdentifier: DepthIdentifier,
 ) {
   return uniqueArray(tuple(ka, va), {
     maxLength: maxKeys,
@@ -64,11 +64,11 @@ function setOf<U>(
   va: Arbitrary<U>,
   maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier
+  depthIdentifier: DepthIdentifier,
 ) {
   return uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero', depthIdentifier }).map(
     arrayToSetMapper,
-    arrayToSetUnmapper
+    arrayToSetUnmapper,
   );
 }
 
@@ -89,7 +89,7 @@ function typedArray(constraints: { maxLength: number | undefined; size: SizeForA
     int32Array(constraints),
     uint32Array(constraints),
     float32Array(constraints),
-    float64Array(constraints)
+    float64Array(constraints),
   );
 }
 
@@ -104,7 +104,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
   const baseArb = oneof(
     ...arbitrariesForBase,
     ...(constraints.withBigInt ? [bigInt()] : []),
-    ...(constraints.withDate ? [date()] : [])
+    ...(constraints.withDate ? [date()] : []),
   );
 
   return letrec((tie) => ({
@@ -121,13 +121,13 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
       ...(constraints.withSparseArray
         ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size, depthIdentifier })]
-        : [])
+        : []),
     ),
     // String keys
     keys: constraints.withObjectString
       ? oneof(
           { arbitrary: constraints.key, weight: 10 },
-          { arbitrary: tie('anything').map((o) => stringify(o)), weight: 1 }
+          { arbitrary: tie('anything').map((o) => stringify(o)), weight: 1 },
         )
       : constraints.key,
     // anything[]
@@ -137,7 +137,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
     // Map<key, anything> | Map<anything, anything>
     map: oneof(
       mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
-      mapOf(tie('anything'), tie('anything'), maxKeys, size, depthIdentifier)
+      mapOf(tie('anything'), tie('anything'), maxKeys, size, depthIdentifier),
     ),
     // {[key:string]: anything}
     object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),

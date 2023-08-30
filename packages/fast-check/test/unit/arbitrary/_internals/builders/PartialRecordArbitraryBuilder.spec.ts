@@ -24,14 +24,14 @@ describe('buildPartialRecordArbitrary', () => {
     const mapper = jest.fn();
     const buildValuesAndSeparateKeysToObjectMapper = jest.spyOn(
       ValuesAndSeparateKeysToObjectMock,
-      'buildValuesAndSeparateKeysToObjectMapper'
+      'buildValuesAndSeparateKeysToObjectMapper',
     );
     buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
 
     const unmapper = jest.fn();
     const buildValuesAndSeparateKeysToObjectUnmapper = jest.spyOn(
       ValuesAndSeparateKeysToObjectMock,
-      'buildValuesAndSeparateKeysToObjectUnmapper'
+      'buildValuesAndSeparateKeysToObjectUnmapper',
     );
     buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
 
@@ -77,14 +77,14 @@ describe('buildPartialRecordArbitrary', () => {
     const mapper = jest.fn();
     const buildValuesAndSeparateKeysToObjectMapper = jest.spyOn(
       ValuesAndSeparateKeysToObjectMock,
-      'buildValuesAndSeparateKeysToObjectMapper'
+      'buildValuesAndSeparateKeysToObjectMapper',
     );
     buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
 
     const unmapper = jest.fn();
     const buildValuesAndSeparateKeysToObjectUnmapper = jest.spyOn(
       ValuesAndSeparateKeysToObjectMock,
-      'buildValuesAndSeparateKeysToObjectUnmapper'
+      'buildValuesAndSeparateKeysToObjectUnmapper',
     );
     buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
 
@@ -129,14 +129,14 @@ describe('buildPartialRecordArbitrary', () => {
     const mapper = jest.fn();
     const buildValuesAndSeparateKeysToObjectMapper = jest.spyOn(
       ValuesAndSeparateKeysToObjectMock,
-      'buildValuesAndSeparateKeysToObjectMapper'
+      'buildValuesAndSeparateKeysToObjectMapper',
     );
     buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
 
     const unmapper = jest.fn();
     const buildValuesAndSeparateKeysToObjectUnmapper = jest.spyOn(
       ValuesAndSeparateKeysToObjectMock,
-      'buildValuesAndSeparateKeysToObjectUnmapper'
+      'buildValuesAndSeparateKeysToObjectUnmapper',
     );
     buildValuesAndSeparateKeysToObjectUnmapper.mockReturnValue(unmapper);
 

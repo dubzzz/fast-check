@@ -242,7 +242,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
       run.mockReturnValueOnce(
         new Promise(function (resolve) {
           setTimeout(() => resolve(null), 100);
-        })
+        }),
       );
 
       // Act

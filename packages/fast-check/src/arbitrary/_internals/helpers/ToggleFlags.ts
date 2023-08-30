@@ -49,7 +49,7 @@ export function computeTogglePositions(chars: string[], toggleCase: (rawChar: st
 export function computeFlagsFromChars(
   untoggledChars: string[],
   toggledChars: string[],
-  togglePositions: number[]
+  togglePositions: number[],
 ): bigint {
   let flags = BigInt(0);
   for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
@@ -74,7 +74,7 @@ export function applyFlagsOnChars(
   chars: string[],
   flags: bigint,
   togglePositions: number[],
-  toggleCase: (rawChar: string) => string
+  toggleCase: (rawChar: string) => string,
 ): void {
   for (let idx = 0, mask = BigInt(1); idx !== togglePositions.length; ++idx, mask <<= BigInt(1)) {
     if (flags & mask) chars[togglePositions[idx]] = toggleCase(chars[togglePositions[idx]]);

@@ -21,6 +21,6 @@ export function compareBooleanFunc<T>(): Arbitrary<(a: T, b: T) => boolean> {
         // assigning explicitly a toString representation avoids this issue
         return '(hA, hB) => hA < hB';
       },
-    })
+    }),
   );
 }

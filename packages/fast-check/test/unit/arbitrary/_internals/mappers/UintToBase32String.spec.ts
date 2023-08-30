@@ -14,6 +14,6 @@ describe('uintToBase32StringUnmapper', () => {
         const out = uintToBase32StringUnmapper(mapped);
         // Assert
         expect(out).toEqual(input);
-      })
+      }),
     ));
 });

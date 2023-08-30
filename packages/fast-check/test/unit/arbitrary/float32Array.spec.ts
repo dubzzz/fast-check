@@ -27,7 +27,7 @@ describe('float32Array (integration)', () => {
         noDefaultInfinity: fc.boolean(),
         noNaN: fc.boolean(),
       },
-      { requiredKeys: [] }
+      { requiredKeys: [] },
     )
     .map((rawConstraints) => {
       const constraints = { ...rawConstraints };

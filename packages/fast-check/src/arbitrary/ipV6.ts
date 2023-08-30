@@ -60,39 +60,39 @@ export function ipV6(): Arbitrary<string> {
   return oneof(
     tuple(array(h16Arb, { minLength: 6, maxLength: 6, size: 'max' }), ls32Arb).map(
       fullySpecifiedMapper,
-      fullySpecifiedUnmapper
+      fullySpecifiedUnmapper,
     ),
     tuple(array(h16Arb, { minLength: 5, maxLength: 5, size: 'max' }), ls32Arb).map(
       onlyTrailingMapper,
-      onlyTrailingUnmapper
+      onlyTrailingUnmapper,
     ),
     tuple(
       array(h16Arb, { minLength: 0, maxLength: 1, size: 'max' }),
       array(h16Arb, { minLength: 4, maxLength: 4, size: 'max' }),
-      ls32Arb
+      ls32Arb,
     ).map(multiTrailingMapper, multiTrailingUnmapper),
     tuple(
       array(h16Arb, { minLength: 0, maxLength: 2, size: 'max' }),
       array(h16Arb, { minLength: 3, maxLength: 3, size: 'max' }),
-      ls32Arb
+      ls32Arb,
     ).map(multiTrailingMapper, multiTrailingUnmapper),
     tuple(
       array(h16Arb, { minLength: 0, maxLength: 3, size: 'max' }),
       array(h16Arb, { minLength: 2, maxLength: 2, size: 'max' }),
-      ls32Arb
+      ls32Arb,
     ).map(multiTrailingMapper, multiTrailingUnmapper),
     tuple(array(h16Arb, { minLength: 0, maxLength: 4, size: 'max' }), h16Arb, ls32Arb).map(
       multiTrailingMapperOne,
-      multiTrailingUnmapperOne
+      multiTrailingUnmapperOne,
     ),
     tuple(array(h16Arb, { minLength: 0, maxLength: 5, size: 'max' }), ls32Arb).map(
       singleTrailingMapper,
-      singleTrailingUnmapper
+      singleTrailingUnmapper,
     ),
     tuple(array(h16Arb, { minLength: 0, maxLength: 6, size: 'max' }), h16Arb).map(
       singleTrailingMapper,
-      singleTrailingUnmapper
+      singleTrailingUnmapper,
     ),
-    tuple(array(h16Arb, { minLength: 0, maxLength: 7, size: 'max' })).map(noTrailingMapper, noTrailingUnmapper)
+    tuple(array(h16Arb, { minLength: 0, maxLength: 7, size: 'max' })).map(noTrailingMapper, noTrailingUnmapper),
   );
 }

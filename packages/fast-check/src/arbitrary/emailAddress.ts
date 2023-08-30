@@ -83,9 +83,9 @@ export function emailAddress(constraints: EmailAddressConstraints = {}): Arbitra
         maxLength: 64,
         size: constraints.size,
       }),
-      { minLength: 1, maxLength: 32, size: constraints.size }
+      { minLength: 1, maxLength: 32, size: constraints.size },
     ),
-    dotAdapter
+    dotAdapter,
   ).map(dotMapper, dotUnmapper);
 
   return tuple(localPartArb, domain({ size: constraints.size })).map(atMapper, atUnmapper);

@@ -63,18 +63,21 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
+  constructor(
+    readonly arb: Arbitrary<Ts>,
+    readonly predicate: (t: Ts) => Promise<boolean | void>,
+  ) {
     const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
 
     if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
       throw Error(
-        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties'
+        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties',
       );
     }
 
     if (asyncAfterEach !== undefined && afterEach !== undefined) {
       throw Error(
-        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties'
+        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties',
       );
     }
 

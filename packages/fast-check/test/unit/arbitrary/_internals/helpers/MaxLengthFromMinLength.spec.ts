@@ -26,9 +26,9 @@ describe('maxLengthFromMinLength', () => {
 
         // Act / Assert
         expect(maxLengthFromMinLength(minLength, smallSize)).toBeLessThanOrEqual(
-          maxLengthFromMinLength(minLength, largeSize)
+          maxLengthFromMinLength(minLength, largeSize),
         );
-      })
+      }),
     );
   });
 
@@ -45,10 +45,10 @@ describe('maxLengthFromMinLength', () => {
 
           // Act / Assert
           expect(maxLengthFromMinLength(smallMinLength, size)).toBeLessThanOrEqual(
-            maxLengthFromMinLength(largeMinLength, size)
+            maxLengthFromMinLength(largeMinLength, size),
           );
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -68,14 +68,14 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength),
           );
           const expectedLength = Math.min(maxLengthFromMinLength(minLength, size), maxLength);
 
           // Assert
           expect(computedLength).toBe(expectedLength);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -95,19 +95,19 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength),
           );
           const expectedLength = maxGeneratedLengthFromSizeForArbitrary(
             equivalentSize,
             minLength,
             maxLength,
-            specifiedMaxLength
+            specifiedMaxLength,
           );
 
           // Assert
           expect(computedLength).toBe(expectedLength);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -125,16 +125,16 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false)
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false),
           );
           const expectedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(resolvedSize, minLength, maxLength, false)
+            maxGeneratedLengthFromSizeForArbitrary(resolvedSize, minLength, maxLength, false),
           );
 
           // Assert
           expect(computedLength).toBe(expectedLength);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -152,13 +152,13 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength),
           );
 
           // Assert
           expect(computedLength).toBe(maxLength);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -175,16 +175,16 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false)
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, false),
           );
           const expectedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, true)
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, true),
           );
 
           // Assert
           expect(computedLength).toBe(expectedLength);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -201,16 +201,16 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, true)
+            maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, true),
           );
           const expectedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary('max', minLength, maxLength, true)
+            maxGeneratedLengthFromSizeForArbitrary('max', minLength, maxLength, true),
           );
 
           // Assert
           expect(computedLength).toBe(expectedLength);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -227,14 +227,14 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, false)
+            maxGeneratedLengthFromSizeForArbitrary(undefined, minLength, maxLength, false),
           );
           const expectedLength = maxGeneratedLengthFromSizeForArbitrary(defaultSize, minLength, maxLength, false);
 
           // Assert
           expect(computedLength).toBe(expectedLength);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -252,14 +252,14 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 
           // Act
           const computedLength = withConfiguredGlobal(config, () =>
-            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength)
+            maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength),
           );
 
           // Assert
           expect(computedLength).toBeGreaterThanOrEqual(minLength);
           expect(computedLength).toBeLessThanOrEqual(maxLength);
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -274,13 +274,13 @@ describe('depthSizeFromSizeForArbitrary', () => {
         (config, size, specifiedMaxDepth) => {
           // Arrange / Act
           const computedDepthBias = withConfiguredGlobal(config, () =>
-            depthBiasFromSizeForArbitrary(size, specifiedMaxDepth)
+            depthBiasFromSizeForArbitrary(size, specifiedMaxDepth),
           );
 
           // Assert
           expect(computedDepthBias).toBe(1 / size);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -289,13 +289,13 @@ describe('depthSizeFromSizeForArbitrary', () => {
       fc.property(sizeRelatedGlobalConfigArb, sizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
         // Arrange / Act
         const computedDepthBias = withConfiguredGlobal(config, () =>
-          depthBiasFromSizeForArbitrary(size, specifiedMaxDepth)
+          depthBiasFromSizeForArbitrary(size, specifiedMaxDepth),
         );
         const expectedDepthBias = { xsmall: 1, small: 1 / 2, medium: 1 / 4, large: 1 / 8, xlarge: 1 / 16 }[size];
 
         // Assert
         expect(computedDepthBias).toBe(expectedDepthBias);
-      })
+      }),
     );
   });
 
@@ -308,13 +308,13 @@ describe('depthSizeFromSizeForArbitrary', () => {
 
         // Act
         const computedDepthBias = withConfiguredGlobal(config, () =>
-          depthBiasFromSizeForArbitrary(size, specifiedMaxDepth)
+          depthBiasFromSizeForArbitrary(size, specifiedMaxDepth),
         );
         const expectedDepthBias = depthBiasFromSizeForArbitrary(equivalentSize, false);
 
         // Assert
         expect(computedDepthBias).toBe(expectedDepthBias);
-      })
+      }),
     );
   });
 
@@ -323,12 +323,12 @@ describe('depthSizeFromSizeForArbitrary', () => {
       fc.property(sizeRelatedGlobalConfigArb, fc.boolean(), (config, specifiedMaxDepth) => {
         // Arrange / Act
         const computedDepthBias = withConfiguredGlobal(config, () =>
-          depthBiasFromSizeForArbitrary('max', specifiedMaxDepth)
+          depthBiasFromSizeForArbitrary('max', specifiedMaxDepth),
         );
 
         // Assert
         expect(computedDepthBias).toBe(0);
-      })
+      }),
     );
   });
 
@@ -337,12 +337,12 @@ describe('depthSizeFromSizeForArbitrary', () => {
       fc.property(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange / Act
         const computedDepthBias = withConfiguredGlobal({ ...config, defaultSizeToMaxWhenMaxSpecified: true }, () =>
-          depthBiasFromSizeForArbitrary(undefined, true)
+          depthBiasFromSizeForArbitrary(undefined, true),
         );
 
         // Assert
         expect(computedDepthBias).toBe(0);
-      })
+      }),
     );
   });
 });

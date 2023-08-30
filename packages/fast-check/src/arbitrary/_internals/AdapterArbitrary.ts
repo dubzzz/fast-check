@@ -25,7 +25,10 @@ function toAdapterValue<T>(rawValue: Value<T>, adapter: (value: T) => AdapterOut
  */
 class AdapterArbitrary<T> extends Arbitrary<T> {
   private readonly adaptValue: (rawValue: Value<T>) => Value<T>;
-  constructor(private readonly sourceArb: Arbitrary<T>, private readonly adapter: (value: T) => AdapterOutput<T>) {
+  constructor(
+    private readonly sourceArb: Arbitrary<T>,
+    private readonly adapter: (value: T) => AdapterOutput<T>,
+  ) {
     super();
     this.adaptValue = (rawValue) => toAdapterValue(rawValue, adapter);
   }

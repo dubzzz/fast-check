@@ -26,7 +26,7 @@ describe('UserProfilePage', () => {
 
           // Act
           const { rerender } = render(
-            <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} bug={bugId} />
+            <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} bug={bugId} />,
           );
           s.scheduleSequence([
             async () => {
@@ -42,7 +42,7 @@ describe('UserProfilePage', () => {
         .beforeEach(async () => {
           jest.resetAllMocks();
           await cleanup();
-        })
+        }),
     );
   });
 
@@ -58,7 +58,7 @@ describe('UserProfilePage', () => {
           // Act
           let currentUid = loadedUserIds[0];
           const { rerender } = render(
-            <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} bug={bugId} />
+            <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} bug={bugId} />,
           );
           s.scheduleSequence(
             loadedUserIds.slice(1).map((uid) => ({
@@ -67,7 +67,7 @@ describe('UserProfilePage', () => {
                 currentUid = uid;
                 rerender(<UserProfilePage userId={uid} getUserProfile={getUserProfileImplem} bug={bugId} />);
               },
-            }))
+            })),
           );
 
           // Assert
@@ -86,7 +86,7 @@ describe('UserProfilePage', () => {
         .beforeEach(async () => {
           jest.resetAllMocks();
           await cleanup();
-        })
+        }),
     );
   });
 });

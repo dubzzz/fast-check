@@ -24,6 +24,6 @@ describe('codePointsToStringUnmapper', () => {
 
         // Act / Assert
         expect(codePointsToStringUnmapper(source)).toEqual(data);
-      })
+      }),
     ));
 });

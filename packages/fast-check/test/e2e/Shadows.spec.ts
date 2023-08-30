@@ -14,7 +14,7 @@ class Space {
     private readonly solutionX: number,
     private readonly solutionY: number,
     private readonly initialX: number,
-    private readonly initialY: number
+    private readonly initialY: number,
   ) {
     this.currentX = initialX;
     this.currentY = initialY;
@@ -149,7 +149,7 @@ const SpaceArbitrary = fc
   })
   .filter(({ w, h, cx, cy, sx, sy }) => cx < w && sx < w && cy < h && sy < h)
   .map(({ w, h, cx, cy, sx, sy }) =>
-    new SpaceBuilder().withDimension(w, h).withSolution(cx, cy).withCurrent(sx, sy).build()
+    new SpaceBuilder().withDimension(w, h).withSolution(cx, cy).withCurrent(sx, sy).build(),
   )
   .map((space: Space): [Space, number] => [space, Math.ceil(Math.log(Math.max(space.dimX, space.dimY)) / Math.log(2))]);
 
@@ -164,14 +164,14 @@ describe(`Shadows (seed: ${seed})`, () => {
           locateInSpaceBug(space, maxGuesses);
           return space.solved();
         }),
-        { seed: seed }
+        { seed: seed },
       );
     } catch (err: unknown) {
       failed = true;
       expect(err).toBeInstanceOf(Error);
       expect((err as Error).message).toContain(`seed: ${seed | 0}, path:`);
       expect((err as Error).message).toMatch(
-        /\[Space\(grid\{x:\d+,y:\d+\},solution\{x:\d+,y:\d+\},initial\{x:\d+,y:\d+\}\),\d+\]/
+        /\[Space\(grid\{x:\d+,y:\d+\},solution\{x:\d+,y:\d+\},initial\{x:\d+,y:\d+\}\),\d+\]/,
       );
       expect((err as Error).message).toMatch(/failed after \d+ test/);
     }
@@ -183,7 +183,7 @@ describe(`Shadows (seed: ${seed})`, () => {
         locateInSpace(space, maxGuesses);
         return space.solved();
       }),
-      { seed: seed }
+      { seed: seed },
     );
   });
 });

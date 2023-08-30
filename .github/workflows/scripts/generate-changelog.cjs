@@ -141,7 +141,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       default:
         ++numFailed;
         errors.push(
-          `⚠️ Unhandled type: ${type} on [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`
+          `⚠️ Unhandled type: ${type} on [PR-${pr}](https://github.com/dubzzz/fast-check/pull/${pr}) with title ${title}`,
         );
         break;
     }
@@ -231,13 +231,13 @@ async function run() {
     console.debug(`[debug] Checking ${packageName} between tag ${oldTag} and tag ${newTag}`);
     const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(
       oldTag,
-      packageName
+      packageName,
     );
 
     // Build changelog message
     const codeUrl = `https://github.com/dubzzz/fast-check/tree/${encodeURIComponent(newTag)}`;
     const diffUrl = `https://github.com/dubzzz/fast-check/compare/${encodeURIComponent(oldTag)}...${encodeURIComponent(
-      newTag
+      newTag,
     )}`;
     const breakingBlock = breakingSection
       .reverse()
@@ -297,7 +297,7 @@ async function run() {
     .map((b) => b.cwd.substring(process.cwd().length + 1).replace(/\\/g, '/'))
     .map(
       (packageRelativePath) =>
-        `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`
+        `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`,
     );
 
   // Return useful details

@@ -38,7 +38,7 @@ export interface JsonSharedConstraints {
 
 export function jsonConstraintsBuilder(
   stringArbitrary: Arbitrary<string>,
-  constraints: JsonSharedConstraints
+  constraints: JsonSharedConstraints,
 ): ObjectConstraints {
   const { depthSize, maxDepth } = constraints;
   const key = stringArbitrary;

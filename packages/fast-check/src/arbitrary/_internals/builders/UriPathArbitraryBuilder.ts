@@ -25,6 +25,6 @@ export function buildUriPathArbitrary(resolvedSize: Size): Arbitrary<string> {
   const [segmentSize, numSegmentSize] = sqrtSize(resolvedSize);
   return array(webSegment({ size: segmentSize }), { size: numSegmentSize }).map(
     segmentsToPathMapper,
-    segmentsToPathUnmapper
+    segmentsToPathUnmapper,
   );
 }

@@ -33,7 +33,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
             return true;
           }
         }),
-        { seed: seed, numRuns: 1000 }
+        { seed: seed, numRuns: 1000 },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual(['{}']);
@@ -56,7 +56,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
           };
           return !objectInObject(obj);
         }),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       // Here we can potentially have things like:

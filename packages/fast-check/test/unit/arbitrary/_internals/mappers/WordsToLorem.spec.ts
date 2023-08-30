@@ -11,7 +11,7 @@ import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
 
 const wordArbitraryWithoutComma = fc.stringOf(
   fc.nat({ max: 25 }).map((v) => String.fromCodePoint(97 + v)),
-  { minLength: 1 }
+  { minLength: 1 },
 );
 const wordArbitrary = fc
   .tuple(wordArbitraryWithoutComma, fc.boolean())
@@ -41,7 +41,7 @@ describe('wordsToJoinedStringUnmapperFor', () => {
     // Arrange
     const { instance: wordsArbitrary, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello', 'world', 'winter', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello', 'world', 'winter', 'summer'].includes(value),
     );
 
     // Act
@@ -56,7 +56,7 @@ describe('wordsToJoinedStringUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello,', 'world,', 'winter', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello,', 'world,', 'winter', 'summer'].includes(value),
     );
 
     // Act
@@ -71,7 +71,7 @@ describe('wordsToJoinedStringUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello,', 'world,', 'spring', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello,', 'world,', 'spring', 'summer'].includes(value),
     );
 
     // Act / Assert
@@ -93,7 +93,7 @@ describe('wordsToJoinedStringUnmapperFor', () => {
 
         // Assert
         expect(unmappedValue).toEqual(words);
-      })
+      }),
     ));
 });
 
@@ -119,7 +119,7 @@ describe('wordsToSentenceUnmapperFor', () => {
     // Arrange
     const { instance: wordsArbitrary, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello', 'world', 'winter', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello', 'world', 'winter', 'summer'].includes(value),
     );
 
     // Act
@@ -134,7 +134,7 @@ describe('wordsToSentenceUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello,', 'world,', 'winter', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello,', 'world,', 'winter', 'summer'].includes(value),
     );
 
     // Act
@@ -149,7 +149,7 @@ describe('wordsToSentenceUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello', 'world,', 'spring', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello', 'world,', 'spring', 'summer'].includes(value),
     );
 
     // Act / Assert
@@ -162,7 +162,7 @@ describe('wordsToSentenceUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value),
     );
 
     // Act / Assert
@@ -175,7 +175,7 @@ describe('wordsToSentenceUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value),
     );
 
     // Act / Assert
@@ -188,7 +188,7 @@ describe('wordsToSentenceUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello', 'world,', 'winter', 'summer'].includes(value),
     );
 
     // Act / Assert
@@ -201,7 +201,7 @@ describe('wordsToSentenceUnmapperFor', () => {
     // Arrange
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
     canShrinkWithoutContext.mockImplementation(
-      (value) => typeof value === 'string' && ['hello', 'world,', 'winter,', 'summer'].includes(value)
+      (value) => typeof value === 'string' && ['hello', 'world,', 'winter,', 'summer'].includes(value),
     );
 
     // Act / Assert
@@ -224,7 +224,7 @@ describe('wordsToSentenceUnmapperFor', () => {
 
         // Assert
         expect(unmappedValue).toEqual(words);
-      })
+      }),
     ));
 });
 
@@ -234,7 +234,7 @@ describe('wordsToSentenceUnmapperFor', () => {
       fc.property(
         fc.array(
           wordsArrayArbitrary.map((words) => wordsToSentenceMapper(words)),
-          { minLength: 1 }
+          { minLength: 1 },
         ),
         (sentences) => {
           // Arrange / Act
@@ -243,7 +243,7 @@ describe('wordsToSentenceUnmapperFor', () => {
 
           // Assert
           expect(unmappedValue).toEqual(sentences);
-        }
-      )
+        },
+      ),
     ));
 });

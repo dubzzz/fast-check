@@ -23,7 +23,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
           // will not explode and go too deep.
           { depthSize: 'max' },
           { arbitrary: tie('node'), weight: 45 },
-          { arbitrary: tie('leaf'), weight: 55 }
+          { arbitrary: tie('leaf'), weight: 55 },
         ),
         node: fc.tuple(tie('tree'), tie('tree')),
         leaf: fc.nat(),
@@ -36,7 +36,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
           };
           return depth(t) < 5;
         }),
-        { seed }
+        { seed },
       );
       expect(out.failed).toBe(true); // depth can be greater or equal to 5
     });
@@ -50,7 +50,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
       });
       const out = fc.check(
         fc.property(tree, (t) => typeof t !== 'object'),
-        { seed }
+        { seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample![0]).toEqual([0, 0]);

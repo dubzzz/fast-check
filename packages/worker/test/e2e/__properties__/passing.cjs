@@ -14,5 +14,5 @@ exports.passingProperty = property(
     for (let i = from; i <= to; ++i) {
       // Loop from "from" to "to" ALWAYS finite
     }
-  }
+  },
 );

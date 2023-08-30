@@ -11,7 +11,7 @@ export function patternsToStringMapper(tab: string[]): string {
 /** @internal */
 export function patternsToStringUnmapperFor(
   patternsArb: Arbitrary<string>,
-  constraints: StringSharedConstraints
+  constraints: StringSharedConstraints,
 ): (value: unknown) => string[] {
   return function patternsToStringUnmapper(value: unknown): string[] {
     // First match wins! Possibly not the best match.

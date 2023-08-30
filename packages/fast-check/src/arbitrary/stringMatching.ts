@@ -55,7 +55,7 @@ type RegexFlags = {
 function toMatchingArbitrary(
   astNode: RegexToken,
   constraints: StringMatchingConstraints,
-  flags: RegexFlags
+  flags: RegexFlags,
 ): Arbitrary<string> {
   switch (astNode.type) {
     case 'Char': {
@@ -125,7 +125,7 @@ function toMatchingArbitrary(
     case 'Alternative': {
       // TODO - No unmap implemented yet!
       return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
-        safeJoin(vs, '')
+        safeJoin(vs, ''),
       );
     }
     case 'CharacterClass':
@@ -144,7 +144,7 @@ function toMatchingArbitrary(
           if ([...c].length !== 1) throw new Error('Invalid length');
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           return c.codePointAt(0)!;
-        }
+        },
       );
     }
     case 'Group': {
@@ -166,8 +166,8 @@ function toMatchingArbitrary(
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
                   return [value.substring(0, value.length - 1), value[value.length - 1]];
-                }
-              )
+                },
+              ),
             );
           } else {
             return oneof(
@@ -177,8 +177,8 @@ function toMatchingArbitrary(
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
                   return [value[0], value.substring(1)];
-                }
-              )
+                },
+              ),
             );
           }
         }

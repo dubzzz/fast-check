@@ -30,7 +30,7 @@ describe('option', () => {
             freq: fc.nat(),
             nil: fc.anything(),
           },
-          { requiredKeys: [] }
+          { requiredKeys: [] },
         ),
         (constraints: Partial<OptionConstraints<unknown>>) => {
           // Arrange
@@ -59,11 +59,11 @@ describe('option', () => {
               maxDepth: constraints.maxDepth,
               depthIdentifier: constraints.depthIdentifier,
             },
-            'fc.option'
+            'fc.option',
           );
           expect(out).toBe(expectedArb);
-        }
-      )
+        },
+      ),
     ));
 
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
@@ -92,7 +92,7 @@ describe('option', () => {
         maxDepth: undefined,
         depthIdentifier: undefined,
       },
-      'fc.option'
+      'fc.option',
     );
     expect(out).toBe(expectedArb);
   });

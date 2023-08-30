@@ -7,7 +7,7 @@ const ApplySymbol = Symbol('apply');
  * @internal
  */
 function safeExtractApply<T, TArgs extends unknown[], TReturn>(
-  f: (this: T, ...args: TArgs) => TReturn
+  f: (this: T, ...args: TArgs) => TReturn,
 ): ((thisArg: T) => TReturn) | undefined {
   try {
     return f.apply;
@@ -23,7 +23,7 @@ function safeExtractApply<T, TArgs extends unknown[], TReturn>(
 function safeApplyHacky<T, TArgs extends unknown[], TReturn>(
   f: (this: T, ...args: TArgs) => TReturn,
   instance: T,
-  args: TArgs
+  args: TArgs,
 ): TReturn {
   const ff: typeof f & { [ApplySymbol]?: typeof untouchedApply } = f;
   ff[ApplySymbol] = untouchedApply;
@@ -39,7 +39,7 @@ function safeApplyHacky<T, TArgs extends unknown[], TReturn>(
 export function safeApply<T, TArgs extends unknown[], TReturn>(
   f: (this: T, ...args: TArgs) => TReturn,
   instance: T,
-  args: TArgs
+  args: TArgs,
 ): TReturn {
   // Not as safe as checking the descriptor of the property but much faster
   // Can be by-passed by an appropriate getter property on 'apply'

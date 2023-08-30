@@ -17,7 +17,7 @@ export function int32Array(constraints: IntArrayConstraints = {}): Arbitrary<Int
     -0x80000000,
     0x7fffffff,
     Int32Array,
-    integer
+    integer,
   );
 }
 export { IntArrayConstraints };

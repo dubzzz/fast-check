@@ -58,7 +58,7 @@ export interface OptionConstraints<TNil = null> {
  */
 export function option<T, TNil = null>(
   arb: Arbitrary<T>,
-  constraints: OptionConstraints<TNil> = {}
+  constraints: OptionConstraints<TNil> = {},
 ): Arbitrary<T | TNil> {
   const freq = constraints.freq == null ? 5 : constraints.freq;
   const nilValue = safeHasOwnProperty(constraints, 'nil') ? constraints.nil : (null as any);

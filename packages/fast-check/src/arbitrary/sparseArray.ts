@@ -106,13 +106,13 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
     size,
     minNumElements,
     maxNumElements,
-    constraints.maxNumElements !== undefined
+    constraints.maxNumElements !== undefined,
   );
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(
     size,
     maxGeneratedNumElements,
     maxLength,
-    constraints.maxLength !== undefined
+    constraints.maxLength !== undefined,
   );
 
   if (minNumElements > maxLength) {
@@ -135,7 +135,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       maxLength: resultedMaxNumElements,
       selector: (item) => item[0],
       depthIdentifier,
-    }
+    },
   ).map(
     (items) => {
       // When maxLength=0 (implies resultedMaxNumElements=0) we will have items=[] leading to lastIndex=-1
@@ -151,7 +151,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
         throw new Error('No trailing hole');
       }
       return safeMap(safeObjectEntries(value as T[]), (entry): [number, T] => [Number(entry[0]), entry[1]]);
-    }
+    },
   );
 
   if (noTrailingHole || maxLength === minNumElements) {
@@ -160,7 +160,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
 
   return tuple(
     sparseArrayNoTrailingHole,
-    restrictedIntegerArbitraryBuilder(minNumElements, maxGeneratedLength, maxLength)
+    restrictedIntegerArbitraryBuilder(minNumElements, maxGeneratedLength, maxLength),
   ).map(
     (data) => {
       const sparse = data[0];
@@ -177,6 +177,6 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
         throw new Error('Not supported entry type');
       }
       return [value, value.length];
-    }
+    },
   );
 }

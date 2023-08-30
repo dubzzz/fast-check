@@ -122,7 +122,7 @@ describe('MixedCaseArbitrary (integration)', () => {
           expect(out).toBe(isShrinkable);
           expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
           expect(canShrinkWithoutContext).toHaveBeenCalledWith(rawValue);
-        })
+        }),
       );
     });
 
@@ -148,8 +148,8 @@ describe('MixedCaseArbitrary (integration)', () => {
             expect(out).toBe(isShrinkable);
             expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
             expect(canShrinkWithoutContext).toHaveBeenCalledWith(untoggledValue);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -181,11 +181,11 @@ describe('MixedCaseArbitrary (integration)', () => {
       stringOf(
         nat(mixedCaseBaseChars.length - 1).map(
           (id) => mixedCaseBaseChars[id],
-          (c) => mixedCaseBaseChars.indexOf(c as string)
-        )
+          (c) => mixedCaseBaseChars.indexOf(c as string),
+        ),
       ),
       extra.withoutToggle ? (rawChar) => rawChar : (rawChar) => rawChar.toLowerCase(),
-      (rawString) => rawString.toUpperCase()
+      (rawString) => rawString.toUpperCase(),
     );
 
   it('should produce the same values given the same seed', () => {

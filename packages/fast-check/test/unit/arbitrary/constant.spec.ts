@@ -28,7 +28,7 @@ describe('constant', () => {
         // Assert
         expect(ConstantArbitrary).toHaveBeenCalledWith([c]);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should not throw on cloneable instance', () => {

@@ -222,7 +222,7 @@ function loremWord() {
     h('rutrum', 1),
     h('iaculis,', 1),
     h('augue,', 1),
-    h('lacus', 1)
+    h('lacus', 1),
   );
 }
 
@@ -243,16 +243,16 @@ export function lorem(constraints: LoremConstraints = {}): Arbitrary<string> {
   if (mode === 'sentences') {
     const sentence = array(wordArbitrary, { minLength: 1, size: 'small' }).map(
       wordsToSentenceMapper,
-      wordsToSentenceUnmapperFor(wordArbitrary)
+      wordsToSentenceUnmapperFor(wordArbitrary),
     );
     return array(sentence, { minLength: 1, maxLength: maxCount, size }).map(
       sentencesToParagraphMapper,
-      sentencesToParagraphUnmapper
+      sentencesToParagraphUnmapper,
     );
   } else {
     return array(wordArbitrary, { minLength: 1, maxLength: maxCount, size }).map(
       wordsToJoinedStringMapper,
-      wordsToJoinedStringUnmapperFor(wordArbitrary)
+      wordsToJoinedStringUnmapperFor(wordArbitrary),
     );
   }
 }

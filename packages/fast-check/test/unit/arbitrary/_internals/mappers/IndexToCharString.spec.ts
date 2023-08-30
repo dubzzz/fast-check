@@ -19,7 +19,7 @@ describe('indexToCharStringUnmapper', () => {
       fc.property(fc.fullUnicodeString({ minLength: 2 }), (s) => {
         // Arrange / Act / Assert
         expect(() => indexToCharStringUnmapper(s)).toThrowError();
-      })
+      }),
     ));
 
   it('should accept any 1 code-point string', () =>
@@ -27,7 +27,7 @@ describe('indexToCharStringUnmapper', () => {
       fc.property(fc.fullUnicode(), (c) => {
         // Arrange / Act / Assert
         expect(indexToCharStringUnmapper(c)).toBe(c.codePointAt(0));
-      })
+      }),
     ));
 
   it('should accept any 1 char string (including half-surrogates)', () =>
@@ -35,6 +35,6 @@ describe('indexToCharStringUnmapper', () => {
       fc.property(fc.char16bits(), (c) => {
         // Arrange / Act / Assert
         expect(indexToCharStringUnmapper(c)).toBe(c.charCodeAt(0));
-      })
+      }),
     ));
 });

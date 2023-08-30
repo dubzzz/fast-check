@@ -18,7 +18,7 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   workerFileUrl: URL,
   predicateId: number,
   isolationLevel: 'file' | 'property' | 'predicate',
-  arbitraries: PropertyArbitraries<Ts>
+  arbitraries: PropertyArbitraries<Ts>,
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
   const lock = new Lock();
   const pool: IWorkerPool<boolean | void, Ts> =

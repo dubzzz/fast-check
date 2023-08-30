@@ -129,6 +129,6 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
       if (typeof value !== 'number') throw new Error('Unsupported type');
       if (safeNumberIsNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
       return floatToIndex(value);
-    }
+    },
   );
 }

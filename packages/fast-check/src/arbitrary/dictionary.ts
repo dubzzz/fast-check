@@ -46,7 +46,7 @@ export interface DictionaryConstraints {
 export function dictionary<T>(
   keyArb: Arbitrary<string>,
   valueArb: Arbitrary<T>,
-  constraints: DictionaryConstraints = {}
+  constraints: DictionaryConstraints = {},
 ): Arbitrary<Record<string, T>> {
   return uniqueArray(tuple(keyArb, valueArb), {
     minLength: constraints.minKeys,

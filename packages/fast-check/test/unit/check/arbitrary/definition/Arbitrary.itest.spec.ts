@@ -29,7 +29,7 @@ describe('Arbitrary', () => {
           const nextStep = currentStep + 1;
           return Stream.of(
             ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
-            ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : [])
+            ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : []),
           );
         }
       }
@@ -116,7 +116,7 @@ describe('Arbitrary', () => {
           const value = v.value;
           return Stream.of(
             ...(value - 2 >= 0 ? [new Value(this.create(value - 2), undefined)] : []),
-            ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : [])
+            ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : []),
           );
         }
       }
@@ -158,7 +158,7 @@ describe('Arbitrary', () => {
           const value = v.value;
           return Stream.of(
             ...(value - 2 >= 0 ? [new Value(this.create(value - 2), undefined)] : []),
-            ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : [])
+            ...(value - 1 >= 0 ? [new Value(this.create(value - 1), undefined)] : []),
           );
         }
       }
@@ -206,7 +206,10 @@ describe('Arbitrary', () => {
         }
       }
       class MyChainedArbitrary extends Arbitrary<number[]> {
-        constructor(readonly size: number, readonly value: number) {
+        constructor(
+          readonly size: number,
+          readonly value: number,
+        ) {
           super();
         }
         generate(_mrng: Random): Value<number[]> {
@@ -230,7 +233,7 @@ describe('Arbitrary', () => {
             ...(currentContext.value === value[0]
               ? [new Value(Array(currentContext.size).fill(0), currentContext)]
               : []),
-            ...(value.length > 1 ? [new Value([value[0]], currentContext)] : [])
+            ...(value.length > 1 ? [new Value([value[0]], currentContext)] : []),
           );
         }
       }
@@ -278,7 +281,7 @@ describe('Arbitrary', () => {
           return Stream.of(
             ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
             ...(value - 2 >= 0 ? [new Value(value - 2, { step: nextStep })] : []),
-            ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : [])
+            ...(value - 1 >= 0 ? [new Value(value - 1, { step: nextStep })] : []),
           );
         }
       }

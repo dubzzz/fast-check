@@ -119,7 +119,7 @@ fc.letrec((tie) => ({
     children: fc.oneof(
       { depthSize: 'small', depthIdentifier: 'id:self' },
       fc.constant([]),
-      fc.array(tie('self'), { depthIdentifier: 'id:self' })
+      fc.array(tie('self'), { depthIdentifier: 'id:self' }),
     ),
   }),
 })).self;
@@ -182,7 +182,7 @@ fc.uniqueArray(
     id: fc.nat(),
     name: fc.constantFrom('Anna', 'Paul'),
   }),
-  { selector: (entry) => entry.id }
+  { selector: (entry) => entry.id },
 );
 // Note: Resulting arrays will never contain two entries having the same id
 // Examples of generated values:

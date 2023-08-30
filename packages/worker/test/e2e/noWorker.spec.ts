@@ -21,7 +21,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(property, defaultOptions)).resolves.not.toThrow();
       },
-      jestTimeout
+      jestTimeout,
     );
 
     it.each`
@@ -38,7 +38,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(property, defaultOptions)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

@@ -210,7 +210,7 @@ For instance, suppose you are creating a TODO-list application. In this app, use
 ```ts
 const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
   s: Scheduler,
-  f: (...args: TArgs) => Promise<TOut>
+  f: (...args: TArgs) => Promise<TOut>,
 ) => {
   return (...args: TArgs) => {
     return s.schedule(Promise.resolve('Server received the call')).then(() => f(...args));
@@ -229,7 +229,7 @@ newAddTodo('todo-2'); // .then
 
 const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
   s: Scheduler,
-  f: (...args: TArgs) => Promise<TOut>
+  f: (...args: TArgs) => Promise<TOut>,
 ) => {
   const scheduledF = s.scheduleFunction(f);
   return (...args: TArgs) => {

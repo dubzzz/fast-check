@@ -40,7 +40,7 @@ describe('IntegerArbitrary', () => {
           expect(out.value).toBe(mid);
           expect(nextInt).toHaveBeenCalledTimes(1);
           expect(nextInt).toHaveBeenCalledWith(min, max);
-        })
+        }),
       ));
 
     it('should not always bias values (expect 1 times over biasFreq) and still generate full range when unbiased', () =>
@@ -66,8 +66,8 @@ describe('IntegerArbitrary', () => {
             expect(nextInt).toHaveBeenCalledTimes(2);
             expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
             expect(nextInt).toHaveBeenCalledWith(min, max);
-          }
-        )
+          },
+        ),
       ));
 
     it('should bias values (1 times over biasFreq) by using one of the ranges from biasNumericRange', () =>
@@ -85,7 +85,7 @@ describe('IntegerArbitrary', () => {
             fc
               .tuple(fc.maxSafeInteger(), fc.maxSafeInteger())
               .map(([a, b]) => (a < b ? { min: a, max: b } : { min: b, max: a })),
-            { minLength: 1 }
+            { minLength: 1 },
           ),
           (a, b, c, biasFactor, mod, ranges) => {
             // Arrange
@@ -98,7 +98,7 @@ describe('IntegerArbitrary', () => {
             nextInt.mockReturnValueOnce(mid); // Remark: this value will most of the time be outside of requested range
             const biasNumericRange = jest.spyOn(
               BiasNumericRangeMock,
-              'biasNumericRange'
+              'biasNumericRange',
             ) as unknown as jest.SpyInstance<{ min: number; max: number }[], [number, number, () => number]>;
             biasNumericRange.mockReturnValueOnce(ranges);
 
@@ -125,8 +125,8 @@ describe('IntegerArbitrary', () => {
               const selectedRange = secondNextIntResult < 0 ? 0 : secondNextIntResult + 1;
               expect(nextInt).toHaveBeenCalledWith(ranges[selectedRange].min, ranges[selectedRange].max);
             }
-          }
-        )
+          },
+        ),
       ));
   });
 
@@ -143,7 +143,7 @@ describe('IntegerArbitrary', () => {
 
           // Assert
           expect(out).toBe(true);
-        })
+        }),
       ));
 
     it('should always reject values outside of the requested range', () =>
@@ -165,8 +165,8 @@ describe('IntegerArbitrary', () => {
 
             // Assert
             expect(out).toBe(false);
-          }
-        )
+          },
+        ),
       ));
 
     it.each`
@@ -209,7 +209,7 @@ describe('IntegerArbitrary', () => {
           expect(shrinks).toBe(expectedShrinks);
           expect(shrinkInteger).toHaveBeenCalledTimes(1);
           expect(shrinkInteger).toHaveBeenCalledWith(mid, expect.any(Number), true);
-        })
+        }),
       ));
   });
 });
@@ -281,8 +281,8 @@ describe('IntegerArbitrary (integration)', () => {
             expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
             expect(arbNegate.canShrinkWithoutContext(sourceNegate.value)).toBe(true);
             expect(flatNegate).toEqual(flat);
-          }
-        )
+          },
+        ),
       ));
 
     it('should build an offset version of the shrinking tree if we offset all the values (keep every value >=0)', () =>
@@ -315,8 +315,8 @@ describe('IntegerArbitrary (integration)', () => {
             expect(arb.canShrinkWithoutContext(source.value)).toBe(true);
             expect(arbOffset.canShrinkWithoutContext(sourceOffset.value)).toBe(true);
             expect(flatOffset).toEqual(flat);
-          }
-        )
+          },
+        ),
       ));
 
     it('should shrink strictly positive value for positive range including zero', () => {

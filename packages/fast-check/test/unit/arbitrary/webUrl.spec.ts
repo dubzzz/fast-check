@@ -57,7 +57,7 @@ describe('webUrl', () => {
         if (constraints.withQueryParameters) {
           expect(webQueryParameters.mock.calls[0][0]!.size).toBe(resolvedSizeForPath);
         }
-      })
+      }),
     );
   });
 });
@@ -131,12 +131,12 @@ function webUrlConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebUrlConst
           withPort: fc.boolean(),
           size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
         },
-        { requiredKeys: [] }
+        { requiredKeys: [] },
       ),
       withQueryParameters: fc.boolean(),
       withFragments: fc.boolean(),
       size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
     },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 }

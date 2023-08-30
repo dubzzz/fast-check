@@ -24,7 +24,7 @@ function extractAllDescriptorsDetails(instance: unknown): [string | symbol, Prop
     allDescriptors[MapSymbol]((name): [string | symbol, PropertyDescriptor] => [
       name,
       descriptors[name as keyof typeof descriptors],
-    ])
+    ]),
   );
   return allDescriptorsDetails[SortSymbol](compareKeys);
 }

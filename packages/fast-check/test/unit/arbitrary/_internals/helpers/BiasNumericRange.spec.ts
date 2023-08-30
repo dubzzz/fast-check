@@ -22,8 +22,8 @@ describe('biasNumericRange', () => {
             { min: expect.toBeWithinRange(0, max), max: max }, // close to max
             { min: min, max: expect.toBeWithinRange(min, 0) }, // close to min
           ]);
-        }
-      )
+        },
+      ),
     ));
 
   it('should bias close to extreme values if min and max have same signs', () =>
@@ -48,8 +48,8 @@ describe('biasNumericRange', () => {
           const closeToMax = { min: min, max: expect.toBeWithinRange(min, max - 1) }; // close to min
           if (sign > 0) expect(ranges).toEqual([closeToMax, closeToMin]);
           else expect(ranges).toEqual([closeToMin, closeToMax]);
-        }
-      )
+        },
+      ),
     ));
 
   it('should not bias anything for equal values of min and max', () =>
@@ -61,7 +61,7 @@ describe('biasNumericRange', () => {
         // Assert
         expect(ranges).toHaveLength(1);
         expect(ranges).toEqual([{ min: minMax, max: minMax }]); // no bias, cannot do more
-      })
+      }),
     ));
 
   it('should always bias in valid ranges when using integerLogLike', () =>
@@ -83,7 +83,7 @@ describe('biasNumericRange', () => {
           expect(min).toBeLessThanOrEqual(range.min);
           expect(max).toBeGreaterThanOrEqual(range.min);
         }
-      })
+      }),
     ));
 
   if (typeof BigInt !== 'undefined') {
@@ -106,7 +106,7 @@ describe('biasNumericRange', () => {
             expect(min).toBeLessThanOrEqual(range.min);
             expect(max).toBeGreaterThanOrEqual(range.min);
           }
-        })
+        }),
       ));
   }
 });

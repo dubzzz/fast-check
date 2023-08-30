@@ -28,7 +28,7 @@ describe('bigInt64Array', () => {
       expect.any(BigInt),
       expect.any(BigInt),
       BigInt64Array,
-      expect.anything()
+      expect.anything(),
     );
   });
 

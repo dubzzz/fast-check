@@ -397,7 +397,7 @@ function mockWorker() {
         on,
         postMessage,
         terminate,
-      } as unknown as WorkerThreadsMock.Worker)
+      }) as unknown as WorkerThreadsMock.Worker,
   );
   return { Worker, on, postMessage, terminate };
 }

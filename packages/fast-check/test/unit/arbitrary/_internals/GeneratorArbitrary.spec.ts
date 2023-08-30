@@ -161,7 +161,7 @@ describe('GeneratorArbitrary', () => {
           ['a', ['b', 'c', 'd']],
           ['c', ['e', 'f']],
           ['d', ['g', 'h']],
-        ])
+        ]),
       );
       const second = buildArbitraryForGen('1', new Map([['1', ['2', '3']]]));
       const third = buildArbitraryForGen('A', new Map([['A', ['B', 'C']]]));

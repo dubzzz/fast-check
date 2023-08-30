@@ -31,7 +31,7 @@ describe('CommandsIterable', () => {
         for (let idx = 0; idx !== runFlags.length; ++idx) {
           expect(commands[idx].hasRan).toEqual(runFlags[idx]);
         }
-      })
+      }),
     ));
   it('Should not reset hasRun flag on the original iterable on clone', () =>
     fc.assert(
@@ -42,7 +42,7 @@ describe('CommandsIterable', () => {
         for (let idx = 0; idx !== runFlags.length; ++idx) {
           expect(commands[idx].hasRan).toEqual(runFlags[idx]);
         }
-      })
+      }),
     ));
   it('Should reset hasRun flag for the clone on clone', () =>
     fc.assert(
@@ -51,7 +51,7 @@ describe('CommandsIterable', () => {
         for (let idx = 0; idx !== runFlags.length; ++idx) {
           expect(commands[idx].hasRan).toBe(false);
         }
-      })
+      }),
     ));
   it('Should only print ran commands and metadata if any', () =>
     fc.assert(
@@ -63,6 +63,6 @@ describe('CommandsIterable', () => {
           .join(',');
         const expectedToString = metadata.length !== 0 ? `${expectedCommands} /*${metadata}*/` : expectedCommands;
         expect(commandsIterable.toString()).toEqual(expectedToString);
-      })
+      }),
     ));
 });

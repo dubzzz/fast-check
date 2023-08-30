@@ -77,7 +77,7 @@ Generate non-contiguous ranges of values by mapping integer values to constant.
 ```js
 fc.mapToConstant(
   { num: 26, build: (v) => String.fromCharCode(v + 0x61) },
-  { num: 10, build: (v) => String.fromCharCode(v + 0x30) }
+  { num: 10, build: (v) => String.fromCharCode(v + 0x30) },
 );
 // Examples of generated values: "7", "d", "3", "b", "c"…
 ```

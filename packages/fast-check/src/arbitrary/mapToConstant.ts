@@ -40,6 +40,6 @@ export function mapToConstant<T>(...entries: { num: number; build: (idInGroup: n
   const numChoices = computeNumChoices(entries);
   return nat({ max: numChoices - 1 }).map(
     indexToMappedConstantMapperFor(entries),
-    indexToMappedConstantUnmapperFor(entries)
+    indexToMappedConstantUnmapperFor(entries),
   );
 }

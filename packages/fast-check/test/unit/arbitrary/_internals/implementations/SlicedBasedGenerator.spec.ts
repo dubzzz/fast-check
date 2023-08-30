@@ -34,8 +34,8 @@ describe('SlicedBasedGenerator', () => {
             expect(nextInt).toHaveBeenCalledTimes(2); // only called twice: 1/ to bias to one of the slices 2/ to select which one
             expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
             expect(slices).toContainEqual(readFromGenerator);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -72,8 +72,8 @@ describe('SlicedBasedGenerator', () => {
             // Assert
             expect(generate).toHaveBeenCalledTimes(targetLength);
             expect(readFromGenerator).toEqual(producedValues);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -114,8 +114,8 @@ describe('SlicedBasedGenerator', () => {
 
             // Assert
             expect(generate).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
   });

@@ -88,7 +88,7 @@ describe('captureAllGlobals', () => {
 
     // Assert
     const flattenGlobalsValues = [...globals.values()].flatMap((globalDetails) =>
-      [...globalDetails.properties.values()].map((property) => property.value)
+      [...globalDetails.properties.values()].map((property) => property.value),
     );
     expect(flattenGlobalsValues).toContainEqual(globalValue);
   });
@@ -103,7 +103,7 @@ describe('captureAllGlobals', () => {
       expect(flattenGlobalsNames).toContainEqual(globalName);
     } catch (err) {
       const flattenGlobalsValuesToName = new Map(
-        [...globals.entries()].map(([globalDetailsValue, globalDetails]) => [globalDetailsValue, globalDetails.name])
+        [...globals.entries()].map(([globalDetailsValue, globalDetails]) => [globalDetailsValue, globalDetails.name]),
       );
       if (flattenGlobalsValuesToName.has(globalValue)) {
         const associatedName = flattenGlobalsValuesToName.get(globalValue);
@@ -123,7 +123,7 @@ describe('captureAllGlobals', () => {
 
       // Assert
       expect(globals.get(globalValue)?.depth).toBe(expectedDepth);
-    }
+    },
   );
 
   it.each(expectedGlobalsExcludingSymbols)(
@@ -134,7 +134,7 @@ describe('captureAllGlobals', () => {
 
       // Assert
       expect(globals.get(globalValue)?.rootAncestors).toEqual(expectedRoots);
-    }
+    },
   );
 
   it('should attach the minimal depth from globalThis to each global', () => {

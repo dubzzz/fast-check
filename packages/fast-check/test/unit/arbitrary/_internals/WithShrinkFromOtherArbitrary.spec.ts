@@ -42,8 +42,8 @@ describe('WithShrinkFromOtherArbitrary', () => {
             expect(generateB).not.toHaveBeenCalled();
             expect(shrinkB).not.toHaveBeenCalled();
             expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -84,7 +84,7 @@ describe('WithShrinkFromOtherArbitrary', () => {
         expect(generateB).not.toHaveBeenCalled();
         expect(shrinkB).not.toHaveBeenCalled();
         expect(canShrinkWithoutContextB).toHaveBeenCalledWith(vA);
-      }
+      },
     );
   });
 
@@ -132,8 +132,8 @@ describe('WithShrinkFromOtherArbitrary', () => {
             expect(generateB).not.toHaveBeenCalled();
             expect(shrinkB).not.toHaveBeenCalled();
             expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -186,8 +186,8 @@ describe('WithShrinkFromOtherArbitrary', () => {
             expect(generateB).not.toHaveBeenCalled();
             expect(shrinkB).not.toHaveBeenCalled();
             expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -229,8 +229,8 @@ describe('WithShrinkFromOtherArbitrary', () => {
             expect(generateB).not.toHaveBeenCalled();
             expect(shrinkB).toHaveBeenCalledWith(vA, undefined);
             expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -279,8 +279,8 @@ describe('WithShrinkFromOtherArbitrary', () => {
             expect(shrinkB).toHaveBeenCalledWith(vA, undefined);
             expect(shrinkB).toHaveBeenCalledWith(vAB, cAB);
             expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
   });

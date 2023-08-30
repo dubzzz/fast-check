@@ -11,14 +11,14 @@ describe('filterInvalidSubdomainLabel', () => {
     fc.assert(
       fc.property(fc.stringOf(alphaChar(), { minLength: 1, maxLength: 63 }), (subdomainLabel) => {
         expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(true);
-      })
+      }),
     ));
 
   it('should reject any subdomain with strictly more than 63 characters', () =>
     fc.assert(
       fc.property(fc.stringOf(alphaChar(), { minLength: 64 }), (subdomainLabel) => {
         expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(false);
-      })
+      }),
     ));
 
   it('should reject any subdomain starting by "xn--"', () =>
@@ -26,7 +26,7 @@ describe('filterInvalidSubdomainLabel', () => {
       fc.property(fc.stringOf(alphaChar(), { maxLength: 63 - 'xn--'.length }), (subdomainLabelEnd) => {
         const subdomainLabel = `xn--${subdomainLabelEnd}`;
         expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(false);
-      })
+      }),
     ));
 
   it('should not reject subdomains if they start by a substring of "xn--"', () =>
@@ -37,7 +37,7 @@ describe('filterInvalidSubdomainLabel', () => {
         (subdomainLabelEnd, keep) => {
           const subdomainLabel = `${'xn--'.substring(0, keep)}${subdomainLabelEnd}`;
           expect(filterInvalidSubdomainLabel(subdomainLabel)).toBe(true);
-        }
-      )
+        },
+      ),
     ));
 });

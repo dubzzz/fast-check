@@ -24,6 +24,6 @@ describe('charsToStringUnmapper', () => {
 
         // Act / Assert
         expect(charsToStringUnmapper(source)).toEqual(data);
-      })
+      }),
     ));
 });

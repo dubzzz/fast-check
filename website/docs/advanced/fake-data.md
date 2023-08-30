@@ -51,13 +51,13 @@ test('sort users by ascending age', () => {
               lastName: lastNameArb(),
               birthDate: birthDateArb({ strictlyOlderThan: userA.birthDate }),
             }),
-          })
+          }),
         ),
       ({ userA, userB }) => {
         expect(sortByAge([userA, userB])).toEqual([userA, userB]);
         expect(sortByAge([userB, userA])).toEqual([userA, userB]);
-      }
-    )
+      },
+    ),
   );
 });
 ```
@@ -82,7 +82,7 @@ test('sort users by ascending age', () => {
       };
       expect(sortByAge([userA, userB])).toEqual([userA, userB]);
       expect(sortByAge([userB, userA])).toEqual([userA, userB]);
-    })
+    }),
   );
 });
 ```
@@ -151,7 +151,7 @@ const loremArb = fc
     fc
       .integer({ min: 0, max: (1 << 24) - 1 })
       .map((v) => v / (1 << 24))
-      .noBias()
+      .noBias(),
   )
   .noShrink()
   .map((s) => {

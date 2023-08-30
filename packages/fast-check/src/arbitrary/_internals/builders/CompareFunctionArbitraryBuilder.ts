@@ -12,7 +12,7 @@ const safeObjectKeys = Object.keys;
 
 /** @internal */
 export function buildCompareFunctionArbitrary<T, TOut>(
-  cmp: (hA: number, hB: number) => TOut
+  cmp: (hA: number, hB: number) => TOut,
 ): Arbitrary<(a: T, b: T) => TOut> {
   return tuple(integer().noShrink(), integer({ min: 1, max: 0xffffffff }).noShrink()).map(([seed, hashEnvSize]) => {
     const producer = () => {

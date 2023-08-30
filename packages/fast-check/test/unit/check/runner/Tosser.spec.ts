@@ -36,7 +36,7 @@ describe('Tosser', () => {
           ];
           expect(g1).not.toStrictEqual(g2);
           return true;
-        })
+        }),
       ));
     it('Should produce the same sequence for the same seed', () =>
       fc.assert(
@@ -50,7 +50,7 @@ describe('Tosser', () => {
               .take(num)
               .map((f) => f.value),
           ]);
-        })
+        }),
       ));
     it('Should not depend on the order of iteration', () =>
       fc.assert(
@@ -61,9 +61,9 @@ describe('Tosser', () => {
             onGoingItems2
               .reverse()
               .map((f) => f.value)
-              .reverse()
+              .reverse(),
           ).toStrictEqual(onGoingItems1.map((f) => f.value));
-        })
+        }),
       ));
     it('Should offset toss with the provided examples', () =>
       fc.assert(
@@ -75,7 +75,7 @@ describe('Tosser', () => {
             ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, examples)).take(num),
           ].map((f) => f.value);
           expect([...examples, ...noExamplesProvided].slice(0, num)).toStrictEqual(examplesProvided);
-        })
+        }),
       ));
   });
 });

@@ -34,7 +34,7 @@ describe('compareBooleanFunc (integration)', () => {
         else if (!ab && !bc) expect(f(a, c)).toBe(false);
         // else: neither handled, nor skipped (yet)
       },
-      { extraParameters: fc.tuple(fc.anything(), fc.anything(), fc.anything()) }
+      { extraParameters: fc.tuple(fc.anything(), fc.anything(), fc.anything()) },
     );
   });
 
@@ -44,7 +44,7 @@ describe('compareBooleanFunc (integration)', () => {
       (f, a) => {
         expect(f(a, a)).toBe(false);
       },
-      { extraParameters: fc.anything() }
+      { extraParameters: fc.anything() },
     );
   });
 
@@ -55,7 +55,7 @@ describe('compareBooleanFunc (integration)', () => {
       {
         isEqual: (f, refF, [a, b]) => f(a, b) === refF(a, b),
         extraParameters: fc.tuple(fc.anything(), fc.anything()),
-      }
+      },
     );
   });
 
@@ -81,7 +81,7 @@ describe('compareBooleanFunc (integration)', () => {
         }
         expect(String(clonedF)).toBe(String(f)); // both called with same inputs in the same order
       },
-      { extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything()), { minLength: 1 }) }
+      { extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything()), { minLength: 1 }) },
     );
   });
 });

@@ -32,7 +32,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
       function prettyPrint(stringifiedOuts: string): string {
         const seenValues = safeMap(
           safeMap(safeSort(safeObjectKeys(recorded)), (k) => `${k} => ${stringify(recorded[k])}`),
-          (line) => `/* ${escapeForMultilineComments(line)} */`
+          (line) => `/* ${escapeForMultilineComments(line)} */`,
         );
         return `function(...args) {
   // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}

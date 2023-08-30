@@ -187,7 +187,10 @@ type ChainArbitraryContext<T, U> = {
 
 /** @internal */
 class ChainArbitrary<T, U> extends Arbitrary<U> {
-  constructor(readonly arb: Arbitrary<T>, readonly chainer: (t: T) => Arbitrary<U>) {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly chainer: (t: T) => Arbitrary<U>,
+  ) {
     super();
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
@@ -215,7 +218,7 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
             stoppedForOriginal: true,
           });
           return new Value(dst.value_, newContext);
-        })
+        }),
       );
     }
     // TODO Need unchainer
@@ -225,7 +228,7 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
     v: Value<T>,
     generateMrng: Random,
     clonedMrng: Random,
-    biasFactor: number | undefined
+    biasFactor: number | undefined,
   ): Value<U> {
     const chainedArbitrary = this.chainer(v.value_);
     const dst = chainedArbitrary.generate(generateMrng, biasFactor);
@@ -264,7 +267,11 @@ type MapArbitraryContext<T> = {
 /** @internal */
 class MapArbitrary<T, U> extends Arbitrary<U> {
   readonly bindValueMapper: (v: Value<T>) => Value<U>;
-  constructor(readonly arb: Arbitrary<T>, readonly mapper: (t: T) => U, readonly unmapper?: (possiblyU: unknown) => T) {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly mapper: (t: T) => U,
+    readonly unmapper?: (possiblyU: unknown) => T,
+  ) {
     super();
     this.bindValueMapper = (v: Value<T>): Value<U> => this.valueMapper(v);
   }
@@ -328,7 +335,10 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
 /** @internal */
 class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
   readonly bindRefinementOnValue: (v: Value<T>) => v is Value<U>;
-  constructor(readonly arb: Arbitrary<T>, readonly refinement: (t: T) => t is U) {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly refinement: (t: T) => t is U,
+  ) {
     super();
     this.bindRefinementOnValue = (v: Value<T>): v is Value<U> => this.refinementOnValue(v);
   }

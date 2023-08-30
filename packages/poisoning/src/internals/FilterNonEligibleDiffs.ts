@@ -3,7 +3,7 @@ import { GlobalDetails } from './types/AllGlobals';
 /** Check whether or not a global has to be ignored for diff tracking */
 export function shouldIgnoreGlobal(
   globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
-  ignoredRootRegex: RegExp
+  ignoredRootRegex: RegExp,
 ): boolean {
   switch (globalDetails.depth) {
     case 0:
@@ -25,7 +25,7 @@ export function shouldIgnoreGlobal(
 export function shouldIgnoreProperty(
   globalDetails: Pick<GlobalDetails, 'depth' | 'name' | 'rootAncestors'>,
   propertyName: string,
-  ignoredRootRegex: RegExp
+  ignoredRootRegex: RegExp,
 ): boolean {
   return globalDetails.depth === 0 && ignoredRootRegex.test(propertyName);
 }

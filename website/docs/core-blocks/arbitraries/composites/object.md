@@ -96,7 +96,7 @@ fc.record(
     id: fc.uuidV(4),
     age: fc.nat(99),
   },
-  { requiredKeys: [] }
+  { requiredKeys: [] },
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
@@ -114,7 +114,7 @@ fc.record(
     age: fc.nat(99),
     birthday: fc.date({ min: new Date('1970-01-01T00:00:00.000Z'), max: new Date('2100-12-31T23:59:59.999Z') }),
   },
-  { requiredKeys: ['id'] }
+  { requiredKeys: ['id'] },
 );
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
@@ -130,7 +130,7 @@ fc.record(
     id: fc.uuidV(4),
     age: fc.nat(99),
   },
-  { withDeletedKeys: true }
+  { withDeletedKeys: true },
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:

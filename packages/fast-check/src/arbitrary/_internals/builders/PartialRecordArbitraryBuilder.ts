@@ -14,7 +14,7 @@ type NoKeyType = typeof noKeyValue;
 /** @internal */
 export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  requiredKeys: TKeys[] | undefined
+  requiredKeys: TKeys[] | undefined,
 ): Arbitrary<Partial<T> & Pick<T, TKeys>> {
   const keys = extractEnumerableKeys(recordModel);
   const arbs: Arbitrary<T[keyof T] | NoKeyType>[] = [];
@@ -29,6 +29,6 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
   }
   return tuple(...arbs).map(
     buildValuesAndSeparateKeysToObjectMapper<T, NoKeyType>(keys, noKeyValue),
-    buildValuesAndSeparateKeysToObjectUnmapper<T, NoKeyType>(keys, noKeyValue)
+    buildValuesAndSeparateKeysToObjectUnmapper<T, NoKeyType>(keys, noKeyValue),
   );
 }

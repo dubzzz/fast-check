@@ -39,7 +39,7 @@ type ConstraintsInternal = {
 };
 function constraintsInternal(
   recordConstraints: ConstraintsInternal,
-  is32Bits: boolean
+  is32Bits: boolean,
 ): fc.Arbitrary<ConstraintsInternalOut> {
   return fc
     .record(recordConstraints, { withDeletedKeys: true })
@@ -95,13 +95,13 @@ function constraintsInternal(
 }
 
 export function floatConstraints(
-  recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints
+  recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints,
 ): fc.Arbitrary<FloatConstraints> {
   return constraintsInternal(recordConstraints, true);
 }
 
 export function doubleConstraints(
-  recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints
+  recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints,
 ): fc.Arbitrary<DoubleConstraints> {
   return constraintsInternal(recordConstraints, false);
 }

@@ -39,7 +39,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
    * @remarks Since 1.6.0
    */
   beforeEach(
-    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
+    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>,
   ): 'beforeEach expects a synchronous function but was given a function returning a Promise';
 
   /**
@@ -55,7 +55,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
    * @remarks Since 1.6.0
    */
   afterEach(
-    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>
+    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>,
   ): 'afterEach expects a synchronous function but was given a function returning a Promise';
   /**
    * Define a function that should be called after all calls to the predicate
@@ -78,7 +78,10 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   static dummyHook: GlobalPropertyHookFunction = () => {};
   private beforeEachHook: GlobalPropertyHookFunction;
   private afterEachHook: GlobalPropertyHookFunction;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => boolean | void) {
+  constructor(
+    readonly arb: Arbitrary<Ts>,
+    readonly predicate: (t: Ts) => boolean | void,
+  ) {
     const {
       beforeEach = Property.dummyHook,
       afterEach = Property.dummyHook,

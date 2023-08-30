@@ -79,7 +79,10 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
  */
 class SingleUseArbitrary<T> extends Arbitrary<T> {
   calledOnce = false;
-  constructor(public id: T, public noCallOnceCheck: boolean) {
+  constructor(
+    public id: T,
+    public noCallOnceCheck: boolean,
+  ) {
     super();
   }
   generate(_mrng: Random): Value<T> {

@@ -137,7 +137,7 @@ fc.statistics(
       lower = next(lower);
     }
     return `${lower} to ${next(lower) - 1} items`;
-  }
+  },
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
@@ -163,7 +163,7 @@ fc.statistics(
       children: fc.oneof(
         { depthIdentifier: 'node' },
         fc.constant([]),
-        fc.array(tie('node'), { depthIdentifier: 'node' })
+        fc.array(tie('node'), { depthIdentifier: 'node' }),
       ),
     }),
   })).node,
@@ -179,7 +179,7 @@ fc.statistics(
       lower = next(lower);
     }
     return `${lower} to ${next(lower) - 1} items`;
-  }
+  },
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":

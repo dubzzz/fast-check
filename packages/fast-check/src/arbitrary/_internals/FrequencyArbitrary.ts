@@ -51,7 +51,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
   private constructor(
     readonly warbs: _WeightedArbitrary<T>[],
     readonly constraints: _SanitizedConstraints,
-    readonly context: DepthContext
+    readonly context: DepthContext,
   ) {
     super();
     let currentWeight = 0;
@@ -95,7 +95,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
           safeContext.cachedGeneratedForFirst = this.safeGenerateForIndex(
             safeContext.clonedMrngForFallbackFirst,
             0,
-            originalBias
+            originalBias,
           );
         }
         const valueFromFirst = safeContext.cachedGeneratedForFirst;
@@ -110,7 +110,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     return this.defaultShrinkForFirst(potentialSelectedIndex).join(
       this.warbs[potentialSelectedIndex].arbitrary
         .shrink(value, undefined) // re-checked by canShrinkWithoutContextIndex
-        .map((v) => this.mapIntoValue(potentialSelectedIndex, v, null, undefined))
+        .map((v) => this.mapIntoValue(potentialSelectedIndex, v, null, undefined)),
     );
   }
 
@@ -154,7 +154,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     idx: number,
     value: Value<T>,
     clonedMrngForFallbackFirst: Random | null,
-    biasFactor: number | undefined
+    biasFactor: number | undefined,
   ): Value<T> {
     const context: _FrequencyArbitraryContext<T> = {
       selectedIndex: idx,

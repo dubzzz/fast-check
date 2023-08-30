@@ -8,7 +8,10 @@ import { BigInt } from '../../utils/globals';
 
 /** @internal */
 export class BigIntArbitrary extends Arbitrary<bigint> {
-  constructor(readonly min: bigint, readonly max: bigint) {
+  constructor(
+    readonly min: bigint,
+    readonly max: bigint,
+  ) {
     super();
   }
 

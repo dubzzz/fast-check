@@ -86,7 +86,7 @@ Its signature is:
 function statistics<Ts>(
   generator: IRawProperty<Ts, boolean> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: number | Parameters<Ts>
+  params?: number | Parameters<Ts>,
 ): void;
 ```
 
@@ -96,7 +96,7 @@ Example of usage:
 fc.statistics(
   fc.string(), // source arbitrary
   (v) => `${v.length} characters`, // classifier
-  { numRuns: 100_000 } // extra parameters
+  { numRuns: 100_000 }, // extra parameters
 );
 // Possible output:
 // >  0 characters...9.65%

@@ -31,7 +31,7 @@ describe('ModelRunner', () => {
           });
           modelRun(() => setupData, commands);
           expect(startedRuns).toEqual(expectedRuns);
-        })
+        }),
       ));
   });
   describe('asyncModelRunner', () => {
@@ -65,7 +65,7 @@ describe('ModelRunner', () => {
           const setup = asyncSetup ? async () => setupData : () => setupData;
           await asyncModelRun(setup, commands);
           expect(startedRuns).toEqual(expectedRuns);
-        })
+        }),
       ));
     it('Should wait setup before launching commands', async () => {
       let calledBeforeDataReady = false;
