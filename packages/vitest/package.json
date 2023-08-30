@@ -6,15 +6,15 @@
   "main": "lib/vitest-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
-    ".": { 
-      "require": { 
-        "types": "./lib/vitest-fast-check.d.ts", 
-        "default": "./lib/vitest-fast-check.js" 
-      }, 
-      "import": { 
-        "types": "./lib/esm/vitest-fast-check.d.ts", 
-        "default": "./lib/esm/vitest-fast-check.js" 
-      } 
+    ".": {
+      "require": {
+        "types": "./lib/vitest-fast-check.d.ts",
+        "default": "./lib/vitest-fast-check.js"
+      },
+      "import": {
+        "types": "./lib/esm/vitest-fast-check.d.ts",
+        "default": "./lib/esm/vitest-fast-check.js"
+      }
     }
   },
   "module": "lib/esm/vitest-fast-check.js",
