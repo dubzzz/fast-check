@@ -79,7 +79,7 @@ fc.mapToConstant(
   { num: 26, build: (v) => String.fromCharCode(v + 0x61) },
   { num: 10, build: (v) => String.fromCharCode(v + 0x30) },
 );
-// Examples of generated values: "7", "d", "3", "b", "c"…
+// Examples of generated values: "6", "8", "d", "9", "r"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/mapToConstant.html).  

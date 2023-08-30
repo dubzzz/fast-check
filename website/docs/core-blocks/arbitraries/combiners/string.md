@@ -87,7 +87,7 @@ fc.stringMatching(
   /^(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)$/,
 );
 // Note: Regex matching IP v4, we rather recommend you to rely on `fc.ipV4()`
-// Examples of generated values: "157.49.38.2", "216.56.226.213", "154.234.230.187", "6.207.244.214", "54.207.15.189"…
+// Examples of generated values: "226.4.220.240", "206.2.148.227", "247.32.128.41", "165.252.212.135", "18.225.51.96"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/stringMatching.html).  

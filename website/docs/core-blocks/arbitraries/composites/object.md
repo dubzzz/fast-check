@@ -100,11 +100,11 @@ fc.record(
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {"id":"2e2abe58-e8a4-4d10-a73f-159cffffffef","age":3}
-// • {"id":"0000000e-89b6-4af4-b8e3-20860000000f","age":60}
-// • {"age":4}
-// • {"id":"111fd173-0015-4000-8000-0002fffffff7","age":80}
-// • {"age":0}
+// • {"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
+// • {"id":"ffffffee-ffef-4fff-8000-0015f69788ee","age":21}
+// • {"age":34}
+// • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
+// • {"id":"00000006-0007-4000-8397-86ea00000004"}
 // • …
 
 fc.record(
@@ -118,11 +118,11 @@ fc.record(
 );
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
-// • {"id":"353f1f6d-a3c8-4edb-bb93-fd3d3e9ed455","age":0}
-// • {"id":"00000005-c3c7-446e-8944-b53cfffffffb","name":"Jane","age":0,"birthday":new Date("1970-01-01T00:00:00.034Z")}
-// • {"id":"d1a730bb-fff1-4fff-9128-b8fdfffffffd","name":"Karen","age":83}
-// • {"id":"43d4f5d7-6e17-4e8a-8615-57c1827ba780","name":"Luis","age":6,"birthday":new Date("1970-01-01T00:00:00.033Z")}
-// • {"id":"4878ef64-8ff1-46ee-bfff-fff3ce0e00f3","name":"Luis","birthday":new Date("2089-09-02T00:07:56.667Z")}
+// • {"id":"46045be9-0009-4000-8000-0008ffffffed","name":"Karen","age":11,"birthday":new Date("2100-12-31T23:59:59.996Z")}
+// • {"id":"fffffffe-0015-4000-95a0-f8e9ffffffe7","name":"Karen","birthday":new Date("1970-01-01T00:00:00.018Z")}
+// • {"id":"e2b066ec-000b-4000-bfff-ffe7ccb1828d","name":"Karen","age":17}
+// • {"id":"43b7d8e5-d043-42ef-8000-001a00000005","age":16,"birthday":new Date("2004-10-16T22:01:09.416Z")}
+// • {"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.981Z")}
 // • …
 
 fc.record(
@@ -134,11 +134,11 @@ fc.record(
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {"id":"00000000-ffea-4fff-8dcd-9c140000001f","age":85}
-// • {"id":"00000014-fffa-4fff-8000-00135662280d","age":30}
-// • {"id":"0000000d-d108-4692-8000-000a00000006","age":3}
-// • {"id":"00000002-4b97-4f5a-bfff-fffa0e7b2b56","age":36}
-// • {"id":"84ce9c18-0007-4000-b220-f0cc5899ac88","age":96}
+// • {"id":"ffffffe1-582d-457d-899e-8084fffffff7","age":97}
+// • {"age":96}
+// • {"id":"00000012-bdc2-4b1c-8a2a-245900000006","age":6}
+// • {"id":"8785297a-e305-43bc-bfff-fff1927a3512","age":30}
+// • {"age":17}
 // • …
 ```
 

@@ -129,11 +129,11 @@ fc.letrec((tie) => ({
 // Note: For the moment, `fc.array` cannot stop the recursion alone and need to be combined with `fc.oneof` or any other
 // helper being able to fallback to base cases with an higher probability as we go deeper in the recursion.
 // Examples of generated values:
-// • {"value":23,"children":[]}
-// • {"value":2147483636,"children":[]}
-// • {"value":1940517399,"children":[]}
-// • {"value":6,"children":[{"value":20,"children":[{"value":108168188,"children":[]},{"value":16514636,"children":[]},{"value":297204895,"children":[]}]},{"value":11,"children":[]},{"value":30,"children":[]}]}
-// • {"value":2147483620,"children":[{"value":1414193952,"children":[]},{"value":1378197393,"children":[]},{"value":1351236835,"children":[]},{"value":380499898,"children":[]},{"value":196416342,"children":[]},{"value":27247058,"children":[]},{"value":198034785,"children":[]},{"value":2023465421,"children":[]},{"value":77868225,"children":[]},{"value":2076728263,"children":[]}]}
+// • {"value":424778306,"children":[]}
+// • {"value":27,"children":[{"value":314632820,"children":[]},{"value":494880843,"children":[]},{"value":241922623,"children":[]},{"value":1909847367,"children":[]},{"value":955571083,"children":[]},{"value":96082336,"children":[]},{"value":56407905,"children":[]},{"value":1286754465,"children":[]},{"value":188039153,"children":[]},{"value":853104761,"children":[]}]}
+// • {"value":7,"children":[]}
+// • {"value":2147483619,"children":[]}
+// • {"value":15,"children":[{"value":1009275606,"children":[]},{"value":2147483630,"children":[{"value":1715614519,"children":[]}]}]}
 // • …
 ```
 
@@ -186,11 +186,11 @@ fc.uniqueArray(
 );
 // Note: Resulting arrays will never contain two entries having the same id
 // Examples of generated values:
-// • [{"id":1099491608,"name":"Anna"},{"id":1336761057,"name":"Anna"},{"id":686098746,"name":"Paul"},{"id":164669602,"name":"Paul"}]
-// • []
-// • [{"id":267127045,"name":"Anna"},{"id":19,"name":"Paul"},{"id":20,"name":"Paul"}]
-// • [{"id":1260764815,"name":"Paul"},{"id":1927396028,"name":"Paul"},{"id":1878654382,"name":"Paul"},{"id":2063427046,"name":"Paul"},{"id":1937135057,"name":"Anna"},{"id":689607319,"name":"Anna"},{"id":164838441,"name":"Anna"},{"id":903513378,"name":"Paul"}]
-// • [{"id":31431218,"name":"Paul"},{"id":1527976936,"name":"Paul"},{"id":1980302730,"name":"Anna"},{"id":1359206280,"name":"Anna"},{"id":1006978197,"name":"Paul"},{"id":784180697,"name":"Paul"},{"id":1853605093,"name":"Paul"},{"id":1015415428,"name":"Anna"},{"id":1123929148,"name":"Anna"},{"id":192893069,"name":"Anna"}]
+// • [{"id":8,"name":"Paul"},{"id":4,"name":"Anna"},{"id":71821146,"name":"Paul"}]
+// • [{"id":2049051311,"name":"Anna"},{"id":366741855,"name":"Anna"},{"id":479370052,"name":"Paul"},{"id":1860796933,"name":"Anna"},{"id":1378016577,"name":"Paul"},{"id":337493073,"name":"Paul"},{"id":1057553570,"name":"Paul"},{"id":1232989649,"name":"Anna"}]
+// • [{"id":369913425,"name":"Paul"},{"id":16,"name":"Paul"}]
+// • [{"id":2147483638,"name":"Paul"},{"id":0,"name":"Paul"},{"id":762515963,"name":"Paul"},{"id":2147483634,"name":"Anna"},{"id":961925886,"name":"Anna"},{"id":2147483618,"name":"Paul"}]
+// • [{"id":511407241,"name":"Paul"},{"id":2079170165,"name":"Paul"},{"id":225152957,"name":"Anna"},{"id":777663452,"name":"Paul"},{"id":541492400,"name":"Paul"},{"id":1253009133,"name":"Anna"},{"id":1769176807,"name":"Anna"},{"id":1106486877,"name":"Paul"},{"id":70176060,"name":"Anna"}]
 // • …
 
 fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN));
