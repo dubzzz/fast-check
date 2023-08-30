@@ -6,18 +6,26 @@
   "main": "lib/jest-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "types": "./lib/jest-fast-check.d.ts",
-      "require": "./lib/jest-fast-check.js",
-      "import": "./lib/esm/jest-fast-check.js",
-      "default": "./lib/esm/jest-fast-check.js"
+    ".": { 
+      "require": { 
+        "types": "./lib/jest-fast-check.d.ts", 
+        "default": "./lib/jest-fast-check.js" 
+      }, 
+      "import": { 
+        "types": "./lib/esm/jest-fast-check.d.ts", 
+        "default": "./lib/esm/jest-fast-check.js" 
+      } 
     },
-    "./worker": {
-      "types": "./lib/jest-fast-check-worker.d.ts",
-      "require": "./lib/jest-fast-check-worker.js",
-      "import": "./lib/esm/jest-fast-check-worker.js",
-      "default": "./lib/esm/jest-fast-check-worker.js"
-    }
+    "./worker": { 
+       "require": { 
+         "types": "./lib/jest-fast-check-worker.d.ts", 
+         "default": "./lib/jest-fast-check-worker.js" 
+       }, 
+       "import": { 
+         "types": "./lib/esm/jest-fast-check-worker.d.ts", 
+         "default": "./lib/esm/jest-fast-check-worker.js" 
+       } 
+     }
   },
   "module": "lib/esm/jest-fast-check.js",
   "types": "lib/jest-fast-check.d.ts",
@@ -27,7 +35,7 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
     "build-ci": "yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "test": "jest",
