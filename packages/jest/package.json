@@ -17,15 +17,15 @@
       } 
     },
     "./worker": { 
-       "require": { 
-         "types": "./lib/jest-fast-check-worker.d.ts", 
-         "default": "./lib/jest-fast-check-worker.js" 
-       }, 
-       "import": { 
-         "types": "./lib/esm/jest-fast-check-worker.d.ts", 
-         "default": "./lib/esm/jest-fast-check-worker.js" 
-       } 
-     }
+      "require": { 
+        "types": "./lib/jest-fast-check-worker.d.ts", 
+        "default": "./lib/jest-fast-check-worker.js" 
+      }, 
+      "import": { 
+        "types": "./lib/esm/jest-fast-check-worker.d.ts", 
+        "default": "./lib/esm/jest-fast-check-worker.js" 
+      } 
+    }
   },
   "module": "lib/esm/jest-fast-check.js",
   "types": "lib/jest-fast-check.d.ts",
