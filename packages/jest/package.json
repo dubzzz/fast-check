@@ -6,25 +6,25 @@
   "main": "lib/jest-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
-    ".": { 
-      "require": { 
-        "types": "./lib/jest-fast-check.d.ts", 
-        "default": "./lib/jest-fast-check.js" 
-      }, 
-      "import": { 
-        "types": "./lib/esm/jest-fast-check.d.ts", 
-        "default": "./lib/esm/jest-fast-check.js" 
-      } 
+    ".": {
+      "require": {
+        "types": "./lib/jest-fast-check.d.ts",
+        "default": "./lib/jest-fast-check.js"
+      },
+      "import": {
+        "types": "./lib/esm/jest-fast-check.d.ts",
+        "default": "./lib/esm/jest-fast-check.js"
+      }
     },
-    "./worker": { 
-      "require": { 
-        "types": "./lib/jest-fast-check-worker.d.ts", 
-        "default": "./lib/jest-fast-check-worker.js" 
-      }, 
-      "import": { 
-        "types": "./lib/esm/jest-fast-check-worker.d.ts", 
-        "default": "./lib/esm/jest-fast-check-worker.js" 
-      } 
+    "./worker": {
+      "require": {
+        "types": "./lib/jest-fast-check-worker.d.ts",
+        "default": "./lib/jest-fast-check-worker.js"
+      },
+      "import": {
+        "types": "./lib/esm/jest-fast-check-worker.d.ts",
+        "default": "./lib/esm/jest-fast-check-worker.js"
+      }
     }
   },
   "module": "lib/esm/jest-fast-check.js",
