@@ -14,7 +14,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     it('Should be able to generate bigint above the highest positive double', () => {
       const out = fc.check(
         fc.property(fc.bigIntN(1030), (v) => Number(v) !== Number.POSITIVE_INFINITY),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
 
@@ -25,7 +25,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     it('Should be able to generate bigint below the smallest negative double', () => {
       const out = fc.check(
         fc.property(fc.bigIntN(1030), (v) => Number(v) !== Number.NEGATIVE_INFINITY),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
 
@@ -37,9 +37,9 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.bigIntN(1030),
-          (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER
+          (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER,
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample![0]).toEqual(BigInt(0));
@@ -53,9 +53,9 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
         fc.property(
           fc.bigIntN(1030),
           (v) =>
-            v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500)
+            v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500),
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true); // It found something quite close to min/max
       // Remark: Values, v, satisfying: v < min - 500n || v > max + 500n are pretty improbable in theory
@@ -67,9 +67,9 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.bigIntN(1030).noBias(),
-          (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER
+          (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER,
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(false);
     });
@@ -78,9 +78,9 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
         fc.property(
           fc.bigIntN(1030).noBias(),
           (v) =>
-            v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500)
+            v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500),
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(false);
     });

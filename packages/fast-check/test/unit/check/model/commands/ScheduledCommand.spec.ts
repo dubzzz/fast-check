@@ -30,7 +30,7 @@ function buildFakeScheduler(): Scheduler {
           () => {
             state.faulty = true;
             return state;
-          }
+          },
         ),
       });
     },

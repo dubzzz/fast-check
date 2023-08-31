@@ -83,11 +83,11 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  */
 function record<T, TConstraints extends RecordConstraints<keyof T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints: TConstraints
+  constraints: TConstraints,
 ): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
 function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints?: RecordConstraints<keyof T>
+  constraints?: RecordConstraints<keyof T>,
 ): unknown {
   if (constraints == null) {
     return buildPartialRecordArbitrary(recordModel, undefined);

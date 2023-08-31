@@ -30,7 +30,7 @@ describe('dependencyTree', () => {
           }
           await s.waitOne();
         }
-      })
+      }),
     );
   });
 });
@@ -46,9 +46,9 @@ const AllPackagesArbitrary = fc.integer({ min: 1, max: 5 }).chain((numPackages) 
           fc.constant(pname),
           fc.record({
             dependencies: fc.dictionary(fc.constantFrom(...packageNames), fc.constant('1.0.0')),
-          }) as fc.Arbitrary<PackageDefinition>
-        )
-      )
+          }) as fc.Arbitrary<PackageDefinition>,
+        ),
+      ),
     )
     .map((entries) => Object.fromEntries(entries));
 });

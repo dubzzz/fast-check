@@ -245,7 +245,7 @@ function pushTokens(
   tokens: RegexToken[],
   regexSource: string,
   unicodeMode: boolean,
-  groups: { lastIndex: number; named: Map<string, number> }
+  groups: { lastIndex: number; named: Map<string, number> },
 ): void {
   let disjunctions: (RegexToken | null)[] | null = null;
   for (

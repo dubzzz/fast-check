@@ -17,7 +17,7 @@ export function bigInt64Array(constraints: BigIntArrayConstraints = {}): Arbitra
     BigInt('-9223372036854775808'),
     BigInt('9223372036854775807'),
     BigInt64Array,
-    bigInt
+    bigInt,
   );
 }
 export { BigIntArrayConstraints };

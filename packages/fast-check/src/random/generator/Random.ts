@@ -65,7 +65,7 @@ export class Random {
     return unsafeUniformIntDistribution(
       min == null ? Random.MIN_INT : min,
       max == null ? Random.MAX_INT : max,
-      this.internalRng
+      this.internalRng,
     );
   }
 
@@ -85,7 +85,7 @@ export class Random {
    */
   nextArrayInt(
     min: { sign: 1 | -1; data: number[] },
-    max: { sign: 1 | -1; data: number[] }
+    max: { sign: 1 | -1; data: number[] },
   ): { sign: 1 | -1; data: number[] } {
     return unsafeUniformArrayIntDistribution(min, max, this.internalRng);
   }

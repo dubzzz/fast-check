@@ -37,7 +37,7 @@ describe('date', () => {
         expect(integer).toHaveBeenCalledTimes(1);
         expect(map).toHaveBeenCalledTimes(1);
         expect(map).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
-      })
+      }),
     ));
 
   it('should always map the minimal value of the internal integer to the requested minimal date', () =>
@@ -67,7 +67,7 @@ describe('date', () => {
           expect(minDate.getTime()).not.toBe(Number.NaN);
           expect(new Date(minDate.getTime() - 1).getTime()).toBe(Number.NaN);
         }
-      })
+      }),
     ));
 
   it('should always map the maximal value of the internal integer to the requested maximal date', () =>
@@ -97,7 +97,7 @@ describe('date', () => {
           expect(maxDate.getTime()).not.toBe(Number.NaN);
           expect(new Date(maxDate.getTime() + 1).getTime()).toBe(Number.NaN);
         }
-      })
+      }),
     ));
 
   it('should always generate dates between min and max given the range and the mapper', () =>
@@ -120,7 +120,7 @@ describe('date', () => {
         expect(d.getTime()).not.toBe(Number.NaN);
         if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
         if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
-      })
+      }),
     ));
 
   it('should throw whenever min is an invalid date', () =>
@@ -128,7 +128,7 @@ describe('date', () => {
       fc.property(invalidMinConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
-      })
+      }),
     ));
 
   it('should throw whenever max is an invalid date', () =>
@@ -136,7 +136,7 @@ describe('date', () => {
       fc.property(invalidMaxConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
-      })
+      }),
     ));
 
   it('should throw whenever min is greater than max', () =>
@@ -144,7 +144,7 @@ describe('date', () => {
       fc.property(invalidRangeConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
-      })
+      }),
     ));
 });
 

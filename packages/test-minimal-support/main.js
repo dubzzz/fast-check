@@ -7,7 +7,7 @@ function testArbitrary(arb) {
   fc.assert(
     fc.property(arb, function () {
       return true;
-    })
+    }),
   );
 
   // should be able to detect failing runs and report them correctly
@@ -18,7 +18,7 @@ function testArbitrary(arb) {
     fc.assert(
       fc.property(arb, function () {
         return runId++ % 3 === 0;
-      })
+      }),
     );
     successfulAssert = false;
   } catch (e) {
@@ -32,7 +32,7 @@ function testArbitrary(arb) {
   var details = fc.check(
     fc.property(arb, function () {
       return runId++ % 3 === 0;
-    })
+    }),
   );
   var replay = fc.sample(arb, { seed: details.seed, path: details.counterexamplePath });
   assert.deepEqual(replay[0], details.counterexample[0]);
@@ -48,7 +48,7 @@ function testArbitrary(arb) {
       logger: function (l) {
         stats.push(l);
       },
-    }
+    },
   );
   assert.notEqual(stats.length, 0);
 }
@@ -86,8 +86,8 @@ testArbitrary(
       build: function (v) {
         return String.fromCharCode(v + 0x30);
       },
-    }
-  )
+    },
+  ),
 );
 testArbitrary(
   fc.letrec(function (tie) {
@@ -96,7 +96,7 @@ testArbitrary(
       node: fc.tuple(tie('tree'), tie('tree')),
       leaf: fc.nat(),
     };
-  }).tree
+  }).tree,
 );
 testArbitrary(
   (function () {
@@ -109,7 +109,7 @@ testArbitrary(
     });
     const leaf = fc.nat;
     return tree();
-  })()
+  })(),
 );
 (function testGlobalParameters() {
   // Initial global parameters

@@ -56,7 +56,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           ctx.log('logging stuff');
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -70,7 +70,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           ctx.log('logging stuff');
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -86,7 +86,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           }
           return ctx == null || a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -102,7 +102,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           }
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -119,7 +119,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           ctx.log('logging stuff');
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -135,7 +135,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           }
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -153,7 +153,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           }
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -169,7 +169,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           }
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -183,7 +183,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           ctx.log('logging stuff');
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -200,7 +200,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           }
           return Object.keys(dict).length === 0 || a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
@@ -223,7 +223,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           alwaysWithElements = alwaysWithElements && accessedCtx === 3;
           return a < b;
         }),
-        { seed }
+        { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);

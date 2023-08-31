@@ -21,7 +21,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(failingProperty, defaultOptions)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

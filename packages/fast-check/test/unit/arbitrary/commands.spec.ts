@@ -47,7 +47,7 @@ describe('commands (integration)', () => {
 
         // Assert
         return baseCommands.hasToBeCloned;
-      })
+      }),
     );
   });
   it('should skip skipped commands on shrink', () => {
@@ -73,7 +73,7 @@ describe('commands (integration)', () => {
           [...shrunkCmds.value].forEach((c) => c.check(model));
           expect(logOnCheck.data.every((e) => e !== 'skipped')).toBe(true);
         }
-      })
+      }),
     );
   });
 
@@ -104,7 +104,7 @@ describe('commands (integration)', () => {
             expect(logOnCheck.data[logOnCheck.data.length - 1]).toEqual('failure');
           }
         }
-      })
+      }),
     );
   });
 
@@ -132,7 +132,7 @@ describe('commands (integration)', () => {
           expect(logOnCheck.data.every((e) => e === 'failure' || e === 'success')).toBe(true);
           expect(logOnCheck.data.filter((e) => e === 'failure').length <= 1).toBe(true);
         }
-      })
+      }),
     );
   });
 
@@ -170,7 +170,7 @@ describe('commands (integration)', () => {
           const mrng = new Random(prand.xorshift128plus(seed));
           let currentValue: Value<[number, Iterable<Cmd>, number]> | null = manyArbsIncludingCommandsOne.generate(
             mrng,
-            biasFactor
+            biasFactor,
           );
 
           // Check status and update first Value
@@ -190,8 +190,8 @@ describe('commands (integration)', () => {
               })
               .getNthOrLast(it.next().value);
           }
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -228,8 +228,8 @@ describe('commands (integration)', () => {
               })
               .getNthOrLast(it.next().value);
           }
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -274,7 +274,7 @@ describe('commands (integration)', () => {
               new FakeConstant(new FailureCommand(logOnCheck)),
               nat().map((v) => new SuccessIdCommand(v)),
             ],
-            { replayPath }
+            { replayPath },
           );
           const noExecValue: Value<Iterable<Cmd>> = noExecArbitrary.generate(new Random(rng), biasFactor);
 
@@ -286,8 +286,8 @@ describe('commands (integration)', () => {
               .map((s) => [...s.value_].map((c) => c.toString())),
           ];
           expect(noExecShrinks).toEqual(refShrinks);
-        }
-      )
+        },
+      ),
     );
   });
 });

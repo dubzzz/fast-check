@@ -10,7 +10,7 @@ function internalTestPropFailing(testFn: It['failing'] | It['concurrent']['faili
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<TsParameters>
+    params?: fc.Parameters<TsParameters>,
   ): void {
     buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined, jest, fc);
   }
@@ -26,7 +26,7 @@ function internalTestPropBase(testFn: It['only' | 'skip'] | It['concurrent']['on
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<TsParameters>
+    params?: fc.Parameters<TsParameters>,
   ): void {
     buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined, jest, fc);
   }
@@ -42,7 +42,7 @@ function internalTestPropConcurrent(testFn: It | It['concurrent']) {
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Ts>,
-    params?: fc.Parameters<TsParameters>
+    params?: fc.Parameters<TsParameters>,
   ): void {
     buildTestWithPropRunner(testFn, label, arbitraries, prop, params, undefined, jest, fc);
   }

@@ -47,9 +47,9 @@ describe('sparseArray', () => {
         expect(uniqueArray).toHaveBeenCalledTimes(1);
         expect(uniqueArray).toHaveBeenCalledWith(
           expect.anything(),
-          expect.objectContaining({ minLength: expect.any(Number), maxLength: expect.any(Number) })
+          expect.objectContaining({ minLength: expect.any(Number), maxLength: expect.any(Number) }),
         );
-      })
+      }),
     );
   });
 
@@ -62,7 +62,7 @@ describe('sparseArray', () => {
         const uniqueArray = jest.spyOn(UniqueMock, 'uniqueArray');
         const restrictedIntegerArbitraryBuilder = jest.spyOn(
           RestrictedIntegerArbitraryBuilderMock,
-          'restrictedIntegerArbitraryBuilder'
+          'restrictedIntegerArbitraryBuilder',
         ); // called to build indexes
         const { instance: tupleInstance } = fakeArbitraryStaticValue(() => []);
         const { instance: uniqueArrayInstance } = fakeArbitraryStaticValue(() => []);
@@ -105,7 +105,7 @@ describe('sparseArray', () => {
           expect(maxGenerated).toBe(maxGeneratedIndexes + 1);
           expect(max).toBe(maxRequestedIndexes + 1);
         }
-      })
+      }),
     );
   });
 
@@ -123,8 +123,8 @@ describe('sparseArray', () => {
 
           // Act / Assert
           expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -142,8 +142,8 @@ describe('sparseArray', () => {
 
           // Act / Assert
           expect(() => sparseArray(arb, ct)).toThrowError(/non-hole/);
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -242,7 +242,7 @@ describe('sparseArray (integration)', () => {
 
 function validSparseArrayConstraints(
   removedKeys: (keyof SparseArrayConstraints)[] = [],
-  max: number | undefined = undefined
+  max: number | undefined = undefined,
 ) {
   return fc
     .record(
@@ -254,7 +254,7 @@ function validSparseArrayConstraints(
         maxNumElements: removedKeys.includes('maxNumElements') ? fc.constant(undefined) : fc.nat({ max }),
         noTrailingHole: removedKeys.includes('noTrailingHole') ? fc.constant(undefined) : fc.boolean(),
       },
-      { requiredKeys: [] }
+      { requiredKeys: [] },
     )
     .map((ct) => {
       // We use map there in order not to filter on generated values

@@ -34,8 +34,8 @@ describe('SubarrayArbitrary', () => {
             expect(() => {
               new SubarrayArbitrary(originalArray, isOrdered, minLength, maxLength);
             }).toThrowError(/minimal length to be between 0/);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -55,8 +55,8 @@ describe('SubarrayArbitrary', () => {
             expect(() => {
               new SubarrayArbitrary(originalArray, isOrdered, minLength, maxLength);
             }).toThrowError(/minimal length to be between 0/);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -76,8 +76,8 @@ describe('SubarrayArbitrary', () => {
             expect(() => {
               new SubarrayArbitrary(originalArray, isOrdered, minLength, maxLength);
             }).toThrowError(/maximal length to be between 0/);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -97,8 +97,8 @@ describe('SubarrayArbitrary', () => {
             expect(() => {
               new SubarrayArbitrary(originalArray, isOrdered, minLength, maxLength);
             }).toThrowError(/maximal length to be between 0/);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -120,8 +120,8 @@ describe('SubarrayArbitrary', () => {
             expect(() => {
               new SubarrayArbitrary(originalArray, isOrdered, minLength, maxLength);
             }).toThrowError(/minimal length to be inferior or equal to the maximal length/);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -143,8 +143,8 @@ describe('SubarrayArbitrary', () => {
             expect(() => {
               new SubarrayArbitrary(originalArray, isOrdered, minLength, maxLength);
             }).not.toThrow();
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -223,7 +223,7 @@ function isOrderedSubarray(originalArray: number[], subarray: number[]): boolean
 function isSubarray(originalArray: number[], subarray: number[]): boolean {
   return isOrderedSubarray(
     [...originalArray].sort((a, b) => a - b),
-    [...subarray].sort((a, b) => a - b)
+    [...subarray].sort((a, b) => a - b),
   );
 }
 

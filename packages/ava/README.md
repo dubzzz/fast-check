@@ -52,7 +52,7 @@ testProp(
   (t, a, b, c) => {
     t.true((a + b + c).includes(b));
   },
-  { numRuns: 10 } // Example of parameters
+  { numRuns: 10 }, // Example of parameters
 );
 ```
 
@@ -69,7 +69,7 @@ testProp(
   (t, a, b) => {
     t.is(a + b, b + a);
   },
-  { seed: 4242 }
+  { seed: 4242 },
 );
 
 testProp.skip('should be skipped', [fc.fullUnicodeString()], (t, text) => {

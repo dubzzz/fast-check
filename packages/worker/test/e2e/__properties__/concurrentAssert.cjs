@@ -30,7 +30,7 @@ exports.readerAssert = property(
     const filenameAnswer = nextFilenameAnswer();
     while (!existsSync(filenameAnswer)) {}
     rmSync(filenameAnswer);
-  }
+  },
 );
 
 exports.writerAssert = property(
@@ -45,5 +45,5 @@ exports.writerAssert = property(
     // Send answer
     const filenameAnswer = nextFilenameAnswer();
     writeFileSync(filenameAnswer, 'ok');
-  }
+  },
 );

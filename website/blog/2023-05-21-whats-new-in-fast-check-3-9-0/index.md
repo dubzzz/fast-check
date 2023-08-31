@@ -80,7 +80,7 @@ function usePromiseAsState(promise) {
     setValue(undefined);
     promise.then(
       (value) => !canceled && setValue(value),
-      () => {}
+      () => {},
     );
     return () => (canceled = true);
   }, [promise]);
@@ -115,7 +115,7 @@ test('should update to the value of the last promise', async () => {
 
       await s.waitAll();
       expect(result.current).toBe(2);
-    })
+    }),
   );
 });
 ```

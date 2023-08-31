@@ -77,6 +77,6 @@ describe('unboxedToBoxedUnmapper', () => {
 
         // Act / Assert
         expect(unboxedToBoxedUnmapper(source)).toBe(data);
-      })
+      }),
     ));
 });

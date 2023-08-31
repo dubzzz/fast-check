@@ -22,7 +22,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(propertyIsolation.predicateLevelRun, options)).resolves.not.toThrow();
       },
-      jestTimeout
+      jestTimeout,
     );
 
     it(
@@ -34,7 +34,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(propertyIsolation.propertyLevelRun, defaultOptions)).resolves.not.toThrow();
       },
-      jestTimeout
+      jestTimeout,
     );
 
     it(
@@ -47,7 +47,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(propertyIsolation.fileLevelRun, defaultOptions)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

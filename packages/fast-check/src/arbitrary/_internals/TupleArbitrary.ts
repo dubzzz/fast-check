@@ -49,7 +49,7 @@ function tupleWrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): TupleExten
 export function tupleShrink<Ts extends unknown[]>(
   arbs: ArbsArray<Ts>,
   value: Ts,
-  context?: TupleContext
+  context?: TupleContext,
 ): Stream<TupleExtendedValue<Ts>> {
   // shrinking one by one is the not the most comprehensive
   // but allows a reasonable number of entries in the shrink
@@ -64,12 +64,12 @@ export function tupleShrink<Ts extends unknown[]>(
           .map((v) => {
             const nextValues: Value<unknown>[] = safeMap(
               value,
-              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx])
+              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx]),
             );
             return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
           })
-          .map(tupleWrapper)
-      )
+          .map(tupleWrapper),
+      ),
     );
   }
   return Stream.nil<TupleExtendedValue<Ts>>().join(...shrinks);

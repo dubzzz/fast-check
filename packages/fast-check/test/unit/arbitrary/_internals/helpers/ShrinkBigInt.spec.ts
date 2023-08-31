@@ -17,7 +17,7 @@ describe('shrinkBigInt', () => {
 
         // Assert
         expect(shrinks).toHaveLength(0);
-      })
+      }),
     ));
 
   it('should always starts stream with target when try asap is requested (when current not target)', () =>
@@ -33,7 +33,7 @@ describe('shrinkBigInt', () => {
         expect(shrinks).not.toHaveLength(0);
         expect(shrinks[0].value).toBe(target);
         expect(shrinks[0].context).toBe(undefined);
-      })
+      }),
     ));
 
   it('should only include values between current and target in the stream', () =>
@@ -50,7 +50,7 @@ describe('shrinkBigInt', () => {
           expect(v).toBeGreaterThanOrEqual(min(current, target));
           expect(v).toBeLessThanOrEqual(max(current, target));
         }
-      })
+      }),
     ));
 
   it('should never include current in the stream', () =>
@@ -62,7 +62,7 @@ describe('shrinkBigInt', () => {
 
         // Assert
         expect(values).not.toContain(current);
-      })
+      }),
     ));
 
   it('should never include target in the stream when try asap is not requested', () =>
@@ -74,7 +74,7 @@ describe('shrinkBigInt', () => {
 
         // Assert
         expect(values).not.toContain(target);
-      })
+      }),
     ));
 
   it('should always set context to be the value of previous entry in the stream', () =>
@@ -87,7 +87,7 @@ describe('shrinkBigInt', () => {
         for (let idx = 1; idx < shrinks.length; ++idx) {
           expect(shrinks[idx].context).toBe(shrinks[idx - 1].value);
         }
-      })
+      }),
     ));
 
   it('should specify first context of the stream to target if and only if no try asap, undefined otherwise', () =>
@@ -103,7 +103,7 @@ describe('shrinkBigInt', () => {
         if (first !== null) {
           expect(first.context).toBe(expectedFirstContext);
         }
-      })
+      }),
     ));
 
   it('should always strictly increase distance from target as we move in the stream', () =>
@@ -122,6 +122,6 @@ describe('shrinkBigInt', () => {
           const currentDistance = absDiff(shrinks[idx].value, target);
           expect(currentDistance).toBeGreaterThan(previousDistance);
         }
-      })
+      }),
     ));
 });

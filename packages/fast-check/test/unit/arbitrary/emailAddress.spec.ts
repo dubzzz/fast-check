@@ -44,7 +44,7 @@ describe('emailAddress (integration)', () => {
   type Extra = EmailAddressConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     { size: fc.oneof(sizeArb, relativeSizeArb) },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 
   const isCorrect = (t: string) => {

@@ -21,7 +21,10 @@ import {
 class ArrayInt64Arbitrary extends Arbitrary<ArrayInt64> {
   private biasedRanges: { min: ArrayInt64; max: ArrayInt64 }[] | null = null;
 
-  constructor(readonly min: ArrayInt64, readonly max: ArrayInt64) {
+  constructor(
+    readonly min: ArrayInt64,
+    readonly max: ArrayInt64,
+  ) {
     super();
   }
 

@@ -98,7 +98,7 @@ describe('tokenizeRegex', () => {
       ({ regex }) => {
         const tokenized = tokenizeRegex(regex);
         expect(tokenized).toEqual(parse(regex).body);
-      }
+      },
     );
   });
 
@@ -113,7 +113,7 @@ describe('tokenizeRegex', () => {
         } else {
           expect(() => tokenizeRegex(unicodeRegex)).toThrowError();
         }
-      }
+      },
     );
 
     it.each`
@@ -128,7 +128,7 @@ describe('tokenizeRegex', () => {
       const horseReplacement = '\ufff4';
       const revampedRegex = new RegExp(
         regex.source.replace(/🐱/g, catReplacement).replace(/🐴/g, horseReplacement),
-        regex.flag
+        regex.flag,
       );
       const tokenized = tokenizeRegex(regex);
       const tokenizedRevamped = tokenizeRegex(revampedRegex);
@@ -147,7 +147,7 @@ describe('tokenizeRegex', () => {
             return '🐴'.codePointAt(0);
           }
           return value;
-        })
+        }),
       );
       expect(tokenizedRevampedUpdated).toEqual(tokenized);
     });

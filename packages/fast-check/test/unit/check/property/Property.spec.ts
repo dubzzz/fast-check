@@ -90,7 +90,7 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
 
         // Assert
         expect(out).toEqual({ error: stuff, errorMessage: expect.any(String) });
-      })
+      }),
     );
   });
   it('Should forward failure of runs with failing precondition', async () => {
@@ -137,7 +137,7 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
     const arbs: [
       stubArb.SingleUseArbitrary<number>,
       stubArb.SingleUseArbitrary<string>,
-      stubArb.SingleUseArbitrary<string>
+      stubArb.SingleUseArbitrary<string>,
     ] = [stubArb.single(3), stubArb.single('hello'), stubArb.single('world')];
     const p = property(arbs[0], arbs[1], arbs[2], (arg1: number, _arb2: string, _arg3: string) => {
       if (oneCallToPredicate) {
@@ -265,7 +265,7 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       asyncBeforeEach: () => {},
     });
     expect(() => property(stubArb.single(8), (_arg: number) => {})).toThrowError(
-      '"asyncBeforeEach" can\'t be set when running synchronous properties'
+      '"asyncBeforeEach" can\'t be set when running synchronous properties',
     );
   });
   it('Should execute afterEach after the test on success', () => {
@@ -365,7 +365,7 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       asyncAfterEach: () => {},
     });
     expect(() => property(stubArb.single(8), (_arg: number) => {})).toThrowError(
-      '"asyncAfterEach" can\'t be set when running synchronous properties'
+      '"asyncAfterEach" can\'t be set when running synchronous properties',
     );
   });
   it('should not call shrink on the arbitrary if no context and not unhandled value', () => {

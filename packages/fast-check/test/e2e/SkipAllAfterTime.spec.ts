@@ -14,7 +14,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
           ++numRuns;
           return true;
         }),
-        { skipAllAfterTimeLimit: 0 }
+        { skipAllAfterTimeLimit: 0 },
       );
       const out = await outPromise;
 
@@ -37,7 +37,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
           ++numRuns;
           return true;
         }),
-        { interruptAfterTimeLimit: 0 }
+        { interruptAfterTimeLimit: 0 },
       );
 
       // Assert
@@ -59,7 +59,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
           await delay(LongTimeoutMs);
           return true;
         }),
-        { interruptAfterTimeLimit: ShortTimeoutMs }
+        { interruptAfterTimeLimit: ShortTimeoutMs },
       );
 
       // Assert
@@ -86,7 +86,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
           await delay(numRuns === 1 ? 0 : LongTimeoutMs);
           return true;
         }),
-        { interruptAfterTimeLimit: ShortTimeoutMs, markInterruptAsFailure }
+        { interruptAfterTimeLimit: ShortTimeoutMs, markInterruptAsFailure },
       );
       const out = await outPromise;
 
@@ -116,7 +116,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
             await delay(0);
             return true;
           }),
-          { interruptAfterTimeLimit: LongTimeoutMs, markInterruptAsFailure }
+          { interruptAfterTimeLimit: LongTimeoutMs, markInterruptAsFailure },
         );
 
         // Assert
@@ -127,7 +127,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
         expect(out.numSkips).toBe(0);
         expect(numRuns).toBe(100);
         killAllRunningTasks();
-      }
+      },
     );
   });
 
@@ -139,7 +139,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
           ++numRuns;
           return true;
         }),
-        { interruptAfterTimeLimit: 0, skipAllAfterTimeLimit: 0 }
+        { interruptAfterTimeLimit: 0, skipAllAfterTimeLimit: 0 },
       );
       expect(out.failed).toBe(true); // No success received before interrupt signal
       expect(out.interrupted).toBe(true);

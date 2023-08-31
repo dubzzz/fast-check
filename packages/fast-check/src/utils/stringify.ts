@@ -135,7 +135,7 @@ function isSparseArray(arr: unknown[]): boolean {
 export function stringifyInternal<Ts>(
   value: Ts,
   previousValues: any[],
-  getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent
+  getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
 ): string {
   const currentValues = [...previousValues, value];
   if (typeof value === 'object') {
@@ -182,7 +182,7 @@ export function stringifyInternal<Ts>(
       // stringifiedArray results in: '1,,2' for [1,,2]
       const stringifiedArray = safeJoin(
         safeMap(arr, (v) => stringifyInternal(v, currentValues, getAsyncContent)),
-        ','
+        ',',
       );
       return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
@@ -231,7 +231,7 @@ export function stringifyInternal<Ts>(
             const descriptor = safeObjectGetOwnPropertyDescriptor(value, s);
             return descriptor && descriptor.enumerable;
           }),
-          mapper
+          mapper,
         ),
       ];
       const rawRepr = '{' + safeJoin(stringifiedProperties, ',') + '}';
@@ -313,7 +313,7 @@ export function stringifyInternal<Ts>(
         return `${className}.from(${stringifyInternal(
           safeArrayFrom(valuesFromTypedArr),
           currentValues,
-          getAsyncContent
+          getAsyncContent,
         )})`;
       }
       break;
@@ -406,8 +406,8 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
         (errorValue) => {
           cache.set(cacheKey, { state: 'rejected', value: errorValue });
           delay0.cancel();
-        }
-      )
+        },
+      ),
     );
 
     cache.set(cacheKey, unknownState);

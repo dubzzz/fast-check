@@ -39,7 +39,7 @@ describe('escapeForTemplateString', () => {
       fc.property(fc.fullUnicodeString(), (text) => {
         const escapedText = escapeForTemplateString(text);
         expect(eval('`' + escapedText + '`')).toBe(text);
-      })
+      }),
     ));
 });
 
@@ -63,6 +63,6 @@ describe('escapeForMultilineComments', () => {
       fc.property(fc.fullUnicodeString(), (text) => {
         const escapedText = escapeForMultilineComments(text);
         expect(eval('/*' + escapedText + '*/"success"')).toBe('success');
-      })
+      }),
     ));
 });

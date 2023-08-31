@@ -22,7 +22,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(unregisteredProperty, defaultOptions)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

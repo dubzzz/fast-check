@@ -7,7 +7,7 @@ describe('sort', () => {
     fc.assert(
       fc.property(fc.array(fc.integer()), (data) => {
         expect(sort(data)).toHaveLength(data.length);
-      })
+      }),
     );
   });
 
@@ -16,7 +16,7 @@ describe('sort', () => {
       fc.property(fc.array(fc.integer()), (data) => {
         const sorted = sort(data);
         expect(_.groupBy(sorted)).toEqual(_.groupBy(data));
-      })
+      }),
     );
   });
 
@@ -27,7 +27,7 @@ describe('sort', () => {
         for (let idx = 1; idx < sorted.length; ++idx) {
           expect(sorted[idx - 1]).toBeLessThanOrEqual(sorted[idx]);
         }
-      })
+      }),
     );
   });
 
@@ -45,7 +45,7 @@ describe('sort', () => {
           // a < b means in terms of ordering a comes before b
           // One important property is: a < b and b < c implies a < c
         }
-      })
+      }),
     );
   });
 });

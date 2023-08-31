@@ -20,7 +20,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       const out = fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
       expect(fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })).toEqual(
-        out.counterexample
+        out.counterexample,
       );
     });
     it('Should rebuild the whole shrink path using sample', () => {
@@ -31,7 +31,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
           failuresRecorded.push(data);
           return false;
         }),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
 
@@ -65,7 +65,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
           ++numCalls;
           return propCheck(data);
         }),
-        { seed: seed, path: out.counterexamplePath! }
+        { seed: seed, path: out.counterexamplePath! },
       );
       expect(numValidCalls).toEqual(1);
       expect(validCallIndex).toEqual(0);

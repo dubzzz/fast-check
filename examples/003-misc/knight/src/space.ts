@@ -5,7 +5,7 @@ export class Space {
     private readonly solution_x: number,
     private readonly solution_y: number,
     private current_x: number,
-    private current_y: number
+    private current_y: number,
   ) {}
   readHint(): string {
     let hint = '';

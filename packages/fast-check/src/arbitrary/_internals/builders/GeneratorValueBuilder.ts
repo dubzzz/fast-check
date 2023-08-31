@@ -77,7 +77,7 @@ export function buildGeneratorValue(
   mrng: Random,
   biasFactor: number | undefined,
   computePreBuiltValues: () => PreBuiltValue[],
-  arbitraryCache: ArbitraryGeneratorCache
+  arbitraryCache: ArbitraryGeneratorCache,
 ): Value<GeneratorValue> {
   const preBuiltValues = computePreBuiltValues();
   let localMrng = mrng.clone();

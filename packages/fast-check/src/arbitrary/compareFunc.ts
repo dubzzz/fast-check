@@ -26,6 +26,6 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
         // assigning explicitly a toString representation avoids this issue
         return '(hA, hB) => hA - hB';
       },
-    })
+    }),
   );
 }

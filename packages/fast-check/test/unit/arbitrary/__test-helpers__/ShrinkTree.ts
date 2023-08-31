@@ -9,7 +9,7 @@ export type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 export function buildShrinkTree<T>(
   arb: Arbitrary<T>,
   v: Value<T>,
-  lengthLimiter: { numItems: number } = { numItems: Number.POSITIVE_INFINITY }
+  lengthLimiter: { numItems: number } = { numItems: Number.POSITIVE_INFINITY },
 ): ShrinkTree<T> {
   --lengthLimiter.numItems;
   const value = v.value;

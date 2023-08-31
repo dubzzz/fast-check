@@ -14,5 +14,5 @@ exports.blockEventLoopProperty = property(
     for (let i = from; i !== to; ++i) {
       // Loop from "from" to "to" possibly NEVER ending
     }
-  }
+  },
 );

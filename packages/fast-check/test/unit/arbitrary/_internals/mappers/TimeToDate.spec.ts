@@ -11,6 +11,6 @@ describe('timeToDateUnmapper', () => {
 
         // Assert
         expect(revRev).toEqual(d);
-      })
+      }),
     ));
 });

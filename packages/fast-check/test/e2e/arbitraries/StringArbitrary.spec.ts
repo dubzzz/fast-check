@@ -6,7 +6,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     it('Should shrink on base64 containing no equal signs', () => {
       const out = fc.check(
         fc.property(fc.base64String(), (s: string) => /^\w*$/.exec(s) == null),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual(['']);
@@ -14,7 +14,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     it('Should shrink on base64 containing one equal signs', () => {
       const out = fc.check(
         fc.property(fc.base64String(), (s: string) => /^\w+=$/.exec(s) == null),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual(['AAA=']);
@@ -22,7 +22,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     it('Should shrink on base64 containing two equal signs', () => {
       const out = fc.check(
         fc.property(fc.base64String(), (s: string) => /^\w+==$/.exec(s) == null),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual(['AA==']);
@@ -32,7 +32,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     it('Should produce valid UTF-16 strings', () => {
       fc.assert(
         fc.property(fc.unicodeString(), (s: string) => encodeURIComponent(s) !== null),
-        { seed: seed }
+        { seed: seed },
       );
     });
   });
@@ -40,7 +40,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     it('Should produce valid UTF-16 strings', () => {
       fc.assert(
         fc.property(fc.fullUnicodeString(), (s: string) => encodeURIComponent(s) !== null),
-        { seed: seed }
+        { seed: seed },
       );
     });
   });
@@ -48,7 +48,7 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     it('Should be able to produce invalid UTF-16 strings', () => {
       const out = fc.check(
         fc.property(fc.string16bits(), (s: string) => encodeURIComponent(s) !== null),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual(['\ud800']);

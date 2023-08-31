@@ -192,7 +192,7 @@ describe.each<DescribeOptions>([
 let num = -1;
 async function writeToFile(
   runner: 'test' | 'it',
-  fileContent: () => void
+  fileContent: () => void,
 ): Promise<{ specFileName: string; vitestConfigRelativePath: string }> {
   const specFileSeed = Math.random().toString(16).substring(2);
 
@@ -210,7 +210,7 @@ async function writeToFile(
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
-      fileContentString.substring(fileContentString.indexOf('{') + 1, fileContentString.lastIndexOf('}'))
+      fileContentString.substring(fileContentString.indexOf('{') + 1, fileContentString.lastIndexOf('}')),
     );
 
   // Prepare jest config itself
@@ -224,7 +224,7 @@ async function writeToFile(
     fs.writeFile(
       vitestConfigPath,
       `import { defineConfig } from 'vite';\n` +
-        `export default defineConfig({ test: { include: ['test/${generatedTestsDirectoryName}/${specFileName}'], }, });`
+        `export default defineConfig({ test: { include: ['test/${generatedTestsDirectoryName}/${specFileName}'], }, });`,
     ),
   ]);
 

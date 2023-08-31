@@ -32,10 +32,10 @@ describe(`NoRegression`, () => {
       fc.assert(
         fc.property(
           fc.nat().filter((n) => n % 3 !== 0),
-          (v) => testFunc(v)
+          (v) => testFunc(v),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('.map', () => {
@@ -43,10 +43,10 @@ describe(`NoRegression`, () => {
       fc.assert(
         fc.property(
           fc.nat().map((n) => String(n)),
-          (v) => testFunc(v)
+          (v) => testFunc(v),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('.chain', () => {
@@ -54,18 +54,18 @@ describe(`NoRegression`, () => {
       fc.assert(
         fc.property(
           fc.nat(20).chain((n) => fc.clone(fc.nat(n), n)),
-          (v) => testFunc(v)
+          (v) => testFunc(v),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('float', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.float(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('gen', () => {
@@ -76,64 +76,64 @@ describe(`NoRegression`, () => {
           const v2 = gen(fc.integer);
           return testFunc(`${v1}-${v2}`);
         }),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('double', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.double(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('integer', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.integer(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('nat', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.nat(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('maxSafeInteger', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.maxSafeInteger(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('maxSafeNat', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.maxSafeNat(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('string', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.string(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('asciiString', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.asciiString(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   // // Jest Snapshot seems not to support incomplete surrogate pair correctly
@@ -144,56 +144,56 @@ describe(`NoRegression`, () => {
     expect(() =>
       fc.assert(
         fc.property(fc.stringOf(fc.constantFrom('a', 'b')), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('stringMatching', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.stringMatching(/(^|\s)a+[^a][b-eB-E]+[^b-eB-E](\s|$)/), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('unicodeString', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.unicodeString(), (v) => testFunc(v + v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('fullUnicodeString', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.fullUnicodeString(), (v) => testFunc(v + v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('hexaString', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.hexaString(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('base64String', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.base64String(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('lorem', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.lorem(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('mapToConstant', () => {
@@ -202,70 +202,70 @@ describe(`NoRegression`, () => {
         fc.property(
           fc.mapToConstant({ num: 26, build: (v) => String.fromCharCode(v + 0x61) }),
           fc.mapToConstant({ num: 26, build: (v) => String.fromCharCode(v + 0x61) }),
-          (a, b) => testFunc(a + b)
+          (a, b) => testFunc(a + b),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('option', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.option(fc.nat()), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('oneof', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.oneof<any>(fc.nat(), fc.char()), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('oneof[weighted]', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.oneof<any>({ weight: 1, arbitrary: fc.nat() }, { weight: 5, arbitrary: fc.char() }), testFunc),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('clone', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.clone(fc.nat(), 2), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('shuffledSubarray', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.shuffledSubarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
-          testFunc(v.join(''))
+          testFunc(v.join('')),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('subarray', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.subarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
-          testFunc(v.join(''))
+          testFunc(v.join('')),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.array(fc.nat()), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('sparseArray', () => {
@@ -279,10 +279,10 @@ describe(`NoRegression`, () => {
             Object.entries(v).reduce((acc, [index, cur]) => {
               if (index === '0' || v[Number(index) - 1] !== undefined) return acc;
               else return acc + cur;
-            }, 0) <= 10
+            }, 0) <= 10,
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('sparseArray({noTrailingHole:true})', () => {
@@ -296,314 +296,314 @@ describe(`NoRegression`, () => {
             Object.entries(v).reduce((acc, [index, cur]) => {
               if (index === '0' || v[Number(index) - 1] !== undefined) return acc;
               else return acc + cur;
-            }, 0) <= 10
+            }, 0) <= 10,
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('infiniteStream', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.infiniteStream(fc.nat()), (s) => testFunc([...s.take(10)])),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uniqueArray', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uniqueArray', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('tuple', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.tuple(fc.nat(), fc.nat()), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('int8Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.int8Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uint8Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uint8Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uint8ClampedArray', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uint8ClampedArray(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('int16Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.int16Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uint16Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uint16Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('int32Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.int32Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uint32Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uint32Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('float32Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.float32Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('float64Array', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.float64Array(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('record', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.record({ k1: fc.nat(), k2: fc.nat() }, { withDeletedKeys: true }), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('dictionary', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.dictionary(fc.string(), fc.nat()), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('anything', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.anything(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('object', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.object(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('json', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.json(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('jsonValue', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.jsonValue(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('unicodeJson', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.unicodeJson(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('unicodeJsonValue', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.unicodeJsonValue(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('compareFunc', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.compareFunc(), (f) => testFunc(f(1, 2))),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('func', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.func(fc.nat()), (f) => testFunc(f())),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('ipV4', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.ipV4(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('ipV4Extended', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.ipV4Extended(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('ipV6', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.ipV6(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('domain', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.domain(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('webAuthority', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.webAuthority(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('webSegment', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.webSegment(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('webFragments', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.webFragments(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('webQueryParameters', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.webQueryParameters(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('webPath', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.webPath(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('webUrl', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.webUrl(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('emailAddress', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.emailAddress(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('date', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.date(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('ulid', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.ulid(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uuid', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uuid(), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('uuidV', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.uuidV(4), (v) => testFunc(v)),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('letrec', () => {
@@ -616,10 +616,10 @@ describe(`NoRegression`, () => {
             node: fc.record({ left: tie('tree'), right: tie('tree') }),
             leaf: fc.nat(21),
           })).tree,
-          (v) => testFunc(v)
+          (v) => testFunc(v),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('letrec (oneof:maxDepth)', () => {
@@ -631,10 +631,10 @@ describe(`NoRegression`, () => {
             node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
             leaf: fc.nat(21),
           })).tree,
-          (v) => testFunc(v)
+          (v) => testFunc(v),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('letrec (oneof:depthSize)', () => {
@@ -646,10 +646,10 @@ describe(`NoRegression`, () => {
             node: fc.record({ a: tie('tree'), b: tie('tree'), c: tie('tree') }),
             leaf: fc.nat(21),
           })).tree,
-          (v) => testFunc(v)
+          (v) => testFunc(v),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('commands', () => {
@@ -674,10 +674,10 @@ describe(`NoRegression`, () => {
             } catch (err) {
               return false;
             }
-          }
+          },
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('scheduler', async () => {
@@ -696,8 +696,8 @@ describe(`NoRegression`, () => {
           await s.waitAll();
           return !received.join('').includes('aBc');
         }),
-        settings
-      )
+        settings,
+      ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
   it('context', () => {
@@ -707,8 +707,8 @@ describe(`NoRegression`, () => {
           ctx.log(`Value was ${v}`);
           return testFunc(v);
         }),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
 
@@ -717,18 +717,18 @@ describe(`NoRegression`, () => {
       fc.assert(
         fc.property(
           fc.integer().map((v) => [v, Promise.resolve(v)] as const),
-          ([v, _p]) => testFunc(v)
+          ([v, _p]) => testFunc(v),
         ),
-        settings
-      )
+        settings,
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('user defined examples', () => {
     expect(() =>
       fc.assert(
         fc.property(fc.string(), (v) => testFunc(v)),
-        { ...settings, examples: [['hi'], ['hello'], ['hey']] }
-      )
+        { ...settings, examples: [['hi'], ['hello'], ['hey']] },
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
   it('user defined examples (including not shrinkable values)', () => {
@@ -742,11 +742,11 @@ describe(`NoRegression`, () => {
           // Shrinkable: unmapper provided
           fc.nat().map(
             (v) => String(v),
-            (v) => Number(v)
+            (v) => Number(v),
           ),
           // Shrinkable: filter can shrink given the value to shrink matches the predicate
           fc.nat().filter((v) => v % 2 === 0),
-          (a, b, c, d) => testFunc([a, b, c, d])
+          (a, b, c, d) => testFunc([a, b, c, d]),
         ),
         {
           ...settings,
@@ -757,8 +757,8 @@ describe(`NoRegression`, () => {
             [13, '14', '15', 16],
             [17, '18', '19', 20],
           ],
-        }
-      )
+        },
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
 });
@@ -771,8 +771,8 @@ describe(`NoRegression (async)`, () => {
       async () =>
         await fc.assert(
           fc.asyncProperty(fc.integer(), async (v) => testFunc(v)),
-          settings
-        )
+          settings,
+        ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
@@ -781,8 +781,8 @@ describe(`NoRegression (async)`, () => {
       async () =>
         await fc.assert(
           fc.asyncProperty(asyncNumber, async (v) => testFunc(await v)),
-          settings
-        )
+          settings,
+        ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
@@ -791,8 +791,8 @@ describe(`NoRegression (async)`, () => {
       async () =>
         await fc.assert(
           fc.asyncProperty(fc.func(asyncNumber), async (f) => testFunc(await f())),
-          settings
-        )
+          settings,
+        ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
@@ -801,8 +801,8 @@ describe(`NoRegression (async)`, () => {
       async () =>
         await fc.assert(
           fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
-          settings
-        )
+          settings,
+        ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 });

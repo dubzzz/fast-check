@@ -17,7 +17,7 @@ describe('tryParseStringifiedNat', () => {
 
         // Assert
         expect(out).toBe(n);
-      })
+      }),
     ));
 });
 
@@ -48,6 +48,6 @@ describe('natToStringifiedNatUnmapper', () => {
         // Assert
         expect(out[0]).toBe(base);
         expect(out[1]).toBe(n);
-      })
+      }),
     ));
 });

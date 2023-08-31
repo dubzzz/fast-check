@@ -5,7 +5,7 @@ import { Stream } from '../../../stream/Stream';
 export function pathWalk<Ts>(
   path: string,
   initialValues: Stream<Value<Ts>>,
-  shrink: (value: Value<Ts>) => Stream<Value<Ts>>
+  shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
 ): Stream<Value<Ts>> {
   let values: Stream<Value<Ts>> = initialValues;
   const segments: number[] = path.split(':').map((text: string) => +text);

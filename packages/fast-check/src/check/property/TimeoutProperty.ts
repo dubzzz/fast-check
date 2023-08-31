@@ -33,7 +33,7 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
     readonly property: IRawProperty<Ts>,
     readonly timeMs: number,
     readonly setTimeoutSafe: typeof setTimeout,
-    readonly clearTimeoutSafe: typeof clearTimeout
+    readonly clearTimeoutSafe: typeof clearTimeout,
   ) {
     if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -66,7 +66,7 @@ describe('SameValueZeroSet', () => {
           }
           expect(s.size()).toBe(expectedSize);
         }
-      })
+      }),
     );
   });
 
@@ -88,7 +88,7 @@ describe('SameValueZeroSet', () => {
             expect(isSameValueZero(data[i], data[j])).toBe(false);
           }
         }
-      })
+      }),
     );
   });
 
@@ -112,7 +112,7 @@ describe('SameValueZeroSet', () => {
           expect(indexCurrent).not.toBe(-1);
           expect(indexPrevious).toBeLessThan(indexCurrent);
         }
-      })
+      }),
     );
   });
 });

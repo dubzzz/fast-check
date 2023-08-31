@@ -18,7 +18,7 @@ export const sizeForArbitraryArb = fc.constantFrom<SizeForArbitrary>(...allSizeF
 
 export const sizeRelatedGlobalConfigArb = fc.record(
   { baseSize: sizeArb, defaultSizeToMaxWhenMaxSpecified: fc.boolean() },
-  { requiredKeys: [] }
+  { requiredKeys: [] },
 );
 
 // Type check that helpers are covering all the possibilities

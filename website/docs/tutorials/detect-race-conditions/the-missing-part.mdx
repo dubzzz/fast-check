@@ -32,7 +32,7 @@ for (let id = 0; id !== numCalls; ++id) {
         expectedAnswers.push(id);
         return queued(id);
       })
-      .then((v) => seenAnswers.push(v))
+      .then((v) => seenAnswers.push(v)),
   );
 }
 ```

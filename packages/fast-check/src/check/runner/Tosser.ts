@@ -20,7 +20,7 @@ export function* toss<Ts>(
   generator: IRawProperty<Ts>,
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
-  examples: Ts[]
+  examples: Ts[],
 ): IterableIterator<Value<Ts>> {
   for (let idx = 0; idx !== examples.length; ++idx) {
     yield new Value(examples[idx], undefined);
@@ -40,7 +40,7 @@ export function* lazyToss<Ts>(
   generator: IRawProperty<Ts>,
   seed: number,
   random: (seed: number) => RandomGenerator,
-  examples: Ts[]
+  examples: Ts[],
 ): IterableIterator<() => Value<Ts>> {
   yield* safeMap(examples, (e) => () => new Value(e, undefined));
   let idx = 0;

@@ -18,7 +18,7 @@ if (isMainThread) {
         // Arrange / Act / Assert
         await expect(assert(passingProperty, defaultOptions)).resolves.not.toThrow();
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

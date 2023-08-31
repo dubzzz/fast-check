@@ -134,6 +134,6 @@ export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
       if (typeof value !== 'number') throw new Error('Unsupported type');
       if (safeNumberIsNaN(value)) return !isEqual64(maxIndex, maxIndexWithNaN) ? maxIndexWithNaN : minIndexWithNaN;
       return doubleToIndex(value);
-    }
+    },
   );
 }

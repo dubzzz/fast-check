@@ -9,7 +9,7 @@ const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 /** @internal */
 export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: EnumerableKeyOf<T>[], noKeyValue: TNoKey) {
   return function valuesAndSeparateKeysToObjectMapper(
-    gs: (T[keyof T] | TNoKey)[]
+    gs: (T[keyof T] | TNoKey)[],
   ): Partial<T> & Pick<T, EnumerableKeyOf<T>> {
     const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = {};
     for (let idx = 0; idx !== keys.length; ++idx) {

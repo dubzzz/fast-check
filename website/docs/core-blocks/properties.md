@@ -94,7 +94,7 @@ fc.property(
     .filter(({ maxLength, label }) => label.length <= maxLength),
   ({ maxLength, label }) => {
     expect(crop(label, maxLength)).toBe(label);
-  }
+  },
 );
 ```
 

@@ -13,7 +13,7 @@ import { pathWalk } from './utils/PathWalker';
 /** @internal */
 function toProperty<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
-  qParams: QualifiedParameters<Ts>
+  qParams: QualifiedParameters<Ts>,
 ): IRawProperty<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
@@ -24,7 +24,7 @@ function toProperty<Ts>(
 /** @internal */
 function streamSample<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
-  params?: Parameters<Ts> | number
+  params?: Parameters<Ts> | number,
 ): IterableIterator<Ts> {
   const extendedParams =
     typeof params === 'number'
@@ -34,7 +34,7 @@ function streamSample<Ts>(
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues: Stream<Value<Ts>> = stream(
-    toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
+    toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples),
   );
   if (qParams.path.length === 0) {
     return tossedValues.take(qParams.numRuns).map((s) => s.value_);
@@ -95,7 +95,7 @@ function round2(n: number): string {
 function statistics<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: Parameters<Ts> | number
+  params?: Parameters<Ts> | number,
 ): void {
   const extendedParams =
     typeof params === 'number'

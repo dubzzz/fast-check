@@ -17,7 +17,7 @@ export function uint8ClampedArray(constraints: IntArrayConstraints = {}): Arbitr
     0,
     255,
     Uint8ClampedArray,
-    integer
+    integer,
   );
 }
 export { IntArrayConstraints };

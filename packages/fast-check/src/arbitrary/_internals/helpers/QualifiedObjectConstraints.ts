@@ -151,7 +151,7 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
     key: orDefault(settings.key, string(valueConstraints)),
     values: boxArbitrariesIfNeeded(
       orDefault(settings.values, defaultValues(valueConstraints)),
-      orDefault(settings.withBoxedValues, false)
+      orDefault(settings.withBoxedValues, false),
     ),
     depthSize: settings.depthSize,
     maxDepth: settings.maxDepth,

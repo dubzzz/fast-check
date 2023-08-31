@@ -113,6 +113,6 @@ export function webAuthority(constraints?: WebAuthorityConstraints): Arbitrary<s
   return tuple(
     c.withUserInfo === true ? option(hostUserInfo(size)) : constant(null),
     oneof(...hostnameArbs),
-    c.withPort === true ? option(nat(65535)) : constant(null)
+    c.withPort === true ? option(nat(65535)) : constant(null),
   ).map(userHostPortMapper, userHostPortUnmapper);
 }

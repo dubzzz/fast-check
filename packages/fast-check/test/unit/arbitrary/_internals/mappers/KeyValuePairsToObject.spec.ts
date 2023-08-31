@@ -19,7 +19,7 @@ describe('keyValuePairsToObjectMapper', () => {
         if (!keyValues.some(([k]) => k === '__proto__')) {
           expect(obj.__proto__).toBe(Object.prototype);
         }
-      })
+      }),
     );
   });
 
@@ -35,7 +35,7 @@ describe('keyValuePairsToObjectMapper', () => {
           expect(key in obj).toBe(true);
           expect(obj[key]).toBe(value);
         }
-      })
+      }),
     );
   });
 
@@ -45,9 +45,9 @@ describe('keyValuePairsToObjectMapper', () => {
         fc.uniqueArray(
           fc.tuple(
             fc.string().filter((k) => k !== '__proto__'),
-            fc.anything()
+            fc.anything(),
           ),
-          { selector: (kv) => kv[0] }
+          { selector: (kv) => kv[0] },
         ),
         (keyValues) => {
           // Arrange / Act
@@ -59,8 +59,8 @@ describe('keyValuePairsToObjectMapper', () => {
           expect(Object.keys(obj).sort()).toEqual(Object.keys(refObj).sort());
           expect(Object.getOwnPropertyNames(obj).sort()).toEqual(Object.getOwnPropertyNames(refObj).sort());
           expect(Object.getOwnPropertyDescriptors(obj)).toEqual(Object.getOwnPropertyDescriptors(refObj));
-        }
-      )
+        },
+      ),
     );
   });
 

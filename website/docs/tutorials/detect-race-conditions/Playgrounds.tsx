@@ -153,14 +153,14 @@ export function WrapUpPlaygroundQueue() {
     'queue.p1.v2.spec.js': pastTestSnippet(
       snippets.queueBasicPBTWaitAllSpecCode,
       'Your first race condition test',
-      'With waitAll'
+      'With waitAll',
     ),
     'queue.p2.spec.js': pastTestSnippet(snippets.queueMoreThan2CallsPBTSpecCode, 'One step close to real usages'),
     'queue.p3.spec.js': pastTestSnippet(snippets.queueFromBatchesPBTSpecCode, 'Multiple batches of calls'),
     'queue.p3.v2.spec.js': pastTestSnippet(
       snippets.queueBatchesAlternativePBTSpecCode,
       'Multiple batches of calls',
-      'With delayed calls (no batches)'
+      'With delayed calls (no batches)',
     ),
     'queue.p4.spec.js': pastTestSnippet(snippets.missingPartPBTSpecCode, 'The missing part'),
     'queue.pnext.v1.spec.js': codeWithComments(snippets.extendedBackToWaitAllPBTSpecCode, [
@@ -185,7 +185,7 @@ export function WrapUpPlaygroundQueue() {
                 hidden: true,
               },
             ];
-          })
+          }),
         ),
         ...Object.fromEntries(
           Object.entries(queueTests).map(([fileName, fileContent]) => {
@@ -198,7 +198,7 @@ export function WrapUpPlaygroundQueue() {
                 hidden: fileName !== defaultQueueTest,
               },
             ];
-          })
+          }),
         ),
         'src/queue.js': {
           code: `export {queue} from './${defaultQueueImplementation}'`,

@@ -76,21 +76,21 @@ describe('stringify', () => {
         }),
         (obj) => {
           expect(stringify(obj)).toEqual(JSON.stringify(obj));
-        }
-      )
+        },
+      ),
     ));
   it('Should be readable from eval', () =>
     fc.assert(
       fc.property(fc.anything(anythingEnableAll), (obj) => {
         expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj as any);
-      })
+      }),
     ));
   it('Should stringify differently distinct objects', () =>
     fc.assert(
       fc.property(fc.anything(), fc.anything(), (a, b) => {
         fc.pre(!checkEqual(a, b));
         expect(stringify(a)).not.toEqual(stringify(b));
-      })
+      }),
     ));
   it('Should be able to stringify cyclic object', () => {
     const cyclic: any = { a: 1, b: 2, c: 3 };
@@ -291,10 +291,10 @@ describe('stringify', () => {
   it('Should be able to stringify Object without prototype', () => {
     expect(stringify(Object.create(null))).toEqual('Object.create(null)');
     expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{"a":1})'
+      'Object.assign(Object.create(null),{"a":1})',
     );
     expect(stringify(Object.assign(Object.create(null), { [Symbol.for('a')]: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{[Symbol.for("a")]:1})'
+      'Object.assign(Object.create(null),{[Symbol.for("a")]:1})',
     );
   });
   it('Should be able to stringify Object with custom __proto__ value', () => {
@@ -329,7 +329,7 @@ describe('stringify', () => {
         const stringifiedBuffer = stringify(buffer);
         const bufferFromStringified = eval(stringifiedBuffer);
         return Buffer.isBuffer(bufferFromStringified) && buffer.equals(bufferFromStringified);
-      })
+      }),
     );
   });
   it('Should be able to stringify a polyfill-ed Buffer', () => {
@@ -357,16 +357,16 @@ describe('stringify', () => {
   });
   it('Should be able to stringify Int32Array', () => {
     expect(stringify(Int32Array.from([-2147483648, 5, 2147483647]))).toEqual(
-      'Int32Array.from([-2147483648,5,2147483647])'
+      'Int32Array.from([-2147483648,5,2147483647])',
     );
     assertStringifyTypedArraysProperly(
       fc.integer({ min: -2147483648, max: 2147483647 }),
-      Int32Array.from.bind(Int32Array)
+      Int32Array.from.bind(Int32Array),
     );
   });
   it('Should be able to stringify Uint32Array', () => {
     expect(stringify(Uint32Array.from([4294967295, 0, 5, 2147483647]))).toEqual(
-      'Uint32Array.from([4294967295,0,5,2147483647])'
+      'Uint32Array.from([4294967295,0,5,2147483647])',
     );
     assertStringifyTypedArraysProperly(fc.integer({ min: 0, max: 4294967295 }), Uint32Array.from.bind(Uint32Array));
   });
@@ -381,13 +381,13 @@ describe('stringify', () => {
   if (typeof BigInt !== 'undefined') {
     it('Should be able to stringify BigInt64Array', () => {
       expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigInt64Array.from([-2147483648n,5n,2147483647n])'
+        'BigInt64Array.from([-2147483648n,5n,2147483647n])',
       );
       assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
     });
     it('Should be able to stringify BigUint64Array', () => {
       expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigUint64Array.from([0n,5n,2147483647n])'
+        'BigUint64Array.from([0n,5n,2147483647n])',
       );
       assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
     });
@@ -420,7 +420,7 @@ describe('stringify', () => {
     // prettier-ignore
     const instance3 = { [toStringMethod]: () => { throw new Error('hello3'); } };
     expect(stringify(instance3)).toEqual(
-      '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error(\'hello3\'); }}'
+      '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error(\'hello3\'); }}',
     ); // fallbacking to default
 
     class InProto {
@@ -456,7 +456,7 @@ describe('possiblyAsyncStringify', () => {
         const stringifiedValue = possiblyAsyncStringify(value);
         expect(typeof stringifiedValue).toBe('string');
         expect(stringifiedValue as string).toBe(expectedStringifiedValue);
-      })
+      }),
     ));
   it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
     fc.assert(
@@ -465,7 +465,7 @@ describe('possiblyAsyncStringify', () => {
         const stringifiedValue = possiblyAsyncStringify(Promise.resolve(value));
         expect(typeof stringifiedValue).not.toBe('string');
         expect(await stringifiedValue).toBe(`Promise.resolve(${expectedStringifiedValue})`);
-      })
+      }),
     ));
 });
 
@@ -477,7 +477,7 @@ describe('asyncStringify', () => {
         const stringifiedValue = asyncStringify(value);
         expect(typeof stringifiedValue).not.toBe('string');
         expect(await stringifiedValue).toBe(expectedStringifiedValue);
-      })
+      }),
     ));
   it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
     fc.assert(
@@ -486,7 +486,7 @@ describe('asyncStringify', () => {
         const stringifiedValue = asyncStringify(Promise.resolve(value));
         expect(typeof stringifiedValue).not.toBe('string');
         expect(await stringifiedValue).toBe(`Promise.resolve(${expectedStringifiedValue})`);
-      })
+      }),
     ));
 
   it('Should be able to stringify resolved Promise', async () => {
@@ -520,7 +520,7 @@ describe('asyncStringify', () => {
       }),
     });
     expect(await asyncStringify(nestedPromises)).toEqual(
-      'Promise.resolve({"lvl1":Promise.resolve({"lvl2":Promise.resolve(2)})})'
+      'Promise.resolve({"lvl1":Promise.resolve({"lvl2":Promise.resolve(2)})})',
     );
   });
   it('Should be able to stringify self nested Promise', async () => {
@@ -534,7 +534,7 @@ describe('asyncStringify', () => {
     const nestedPromises = Promise.resolve(resolvedValue);
     resolvedValueChildLvl1.a1 = nestedPromises;
     expect(await asyncStringify(nestedPromises)).toEqual(
-      'Promise.resolve({"a":Promise.resolve({"a1":[cyclic]}),"b":{"b1":Promise.resolve({"a1":[cyclic]})}})'
+      'Promise.resolve({"a":Promise.resolve({"a1":[cyclic]}),"b":{"b1":Promise.resolve({"a1":[cyclic]})}})',
     );
   });
   it('Should use [asyncToStringMethod] if any on the instance or its prototype', async () => {
@@ -556,7 +556,7 @@ describe('asyncStringify', () => {
     // prettier-ignore
     const instance4 = { [asyncToStringMethod]: async () => { throw new Error('hello4'); } };
     expect(await asyncStringify(instance4)).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error(\'hello4\'); }}'
+      '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error(\'hello4\'); }}',
     ); // fallbacking to default
 
     // prettier-ignore
@@ -566,7 +566,7 @@ describe('asyncStringify', () => {
     // prettier-ignore
     const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
     expect(await asyncStringify(instance6)).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error(\'hello6\'); }}'
+      '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error(\'hello6\'); }}',
     ); // fallbacking to default
 
     class InProto {
@@ -599,7 +599,7 @@ describe('asyncStringify', () => {
 
 function assertStringifyTypedArraysProperly<TNumber>(
   arb: fc.Arbitrary<TNumber>,
-  typedArrayProducer: (data: TNumber[]) => { values: () => IterableIterator<TNumber>; [Symbol.toStringTag]: string }
+  typedArrayProducer: (data: TNumber[]) => { values: () => IterableIterator<TNumber>; [Symbol.toStringTag]: string },
 ): void {
   fc.assert(
     fc.property(fc.array(arb), (data) => {
@@ -608,6 +608,6 @@ function assertStringifyTypedArraysProperly<TNumber>(
       const typedArrayFromStringified: typeof typedArray = eval(stringifiedTypedArray);
       expect(typedArrayFromStringified[Symbol.toStringTag]).toEqual(typedArray[Symbol.toStringTag]);
       expect([...typedArrayFromStringified.values()]).toEqual([...typedArray.values()]);
-    })
+    }),
   );
 }

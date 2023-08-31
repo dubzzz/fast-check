@@ -112,7 +112,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
  */
 export function propertyFor(
   url: URL,
-  options?: PropertyForOptions
+  options?: PropertyForOptions,
 ): <Ts extends [unknown, ...unknown[]]>(
   ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
 ) => WorkerProperty<Ts> {

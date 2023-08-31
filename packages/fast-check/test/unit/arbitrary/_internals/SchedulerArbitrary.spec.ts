@@ -33,7 +33,7 @@ describe('SchedulerArbitrary', () => {
       expect(SchedulerImplem).toHaveBeenCalledTimes(1);
       expect(SchedulerImplem).toHaveBeenCalledWith(
         act,
-        expect.objectContaining({ clone: expect.any(Function), nextTaskIndex: expect.any(Function) })
+        expect.objectContaining({ clone: expect.any(Function), nextTaskIndex: expect.any(Function) }),
       );
       expect(clone).toHaveBeenCalledTimes(1);
       expect(clone1).toHaveBeenCalledTimes(1);
@@ -114,7 +114,7 @@ describe('SchedulerArbitrary', () => {
       // Act
       const arb = new SchedulerArbitrary(act);
       const out = arb.canShrinkWithoutContext(
-        new SchedulerImplemMock.SchedulerImplem(act, { clone: jest.fn(), nextTaskIndex: jest.fn() })
+        new SchedulerImplemMock.SchedulerImplem(act, { clone: jest.fn(), nextTaskIndex: jest.fn() }),
       );
 
       // Assert

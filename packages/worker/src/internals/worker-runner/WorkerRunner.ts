@@ -14,7 +14,7 @@ import {
 export function runWorker<Ts extends unknown[]>(
   parentPort: MessagePort,
   predicateId: number,
-  predicate: PropertyPredicate<Ts>
+  predicate: PropertyPredicate<Ts>,
 ): void {
   parentPort.on('message', (message: MainThreadToWorkerMessage<Ts>) => {
     const { payload, targetPredicateId, runId } = message;
@@ -30,7 +30,7 @@ export function runWorker<Ts extends unknown[]>(
       (error) => {
         const message: WorkerToMainThreadMessage = { success: false, error, runId };
         parentPort.postMessage(message);
-      }
+      },
     );
   });
 }

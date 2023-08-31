@@ -28,7 +28,7 @@ describe('base64', () => {
     fc.assert(
       fc.property(fc.integer({ min, max }), (n) => {
         expect(unmapFromCode(mapToCode(n))).toBe(n);
-      })
+      }),
     );
   });
 
@@ -44,7 +44,7 @@ describe('base64', () => {
         fc.pre(!allPossibleValues.has(code)); // not a possible code for our mapper
         const unmapped = unmapFromCode(code);
         expect(unmapped < min || unmapped > max).toBe(true);
-      })
+      }),
     );
   });
 });

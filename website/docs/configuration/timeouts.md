@@ -40,7 +40,7 @@ await fc.assert(
       expect(allPackagesNames).toContain(dependency.name);
     }
   }),
-  { timeout: 1000 }
+  { timeout: 1000 },
 );
 ```
 

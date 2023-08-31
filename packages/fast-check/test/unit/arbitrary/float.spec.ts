@@ -61,7 +61,7 @@ describe('float', () => {
 
         // Assert
         expect(arb).toBeDefined();
-      })
+      }),
     );
   });
 
@@ -80,8 +80,8 @@ describe('float', () => {
 
           // Assert
           expect(arb).toBeDefined();
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -104,10 +104,10 @@ describe('float', () => {
               max: f,
               minExcluded: exclusiveMode === 'min' || exclusiveMode === 'both',
               maxExcluded: exclusiveMode === 'max' || exclusiveMode === 'both',
-            })
+            }),
           ).toThrowError();
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -121,7 +121,7 @@ describe('float', () => {
         // Act / Assert
         expect(() => float({ min: f64 })).toThrowError();
         expect(integer).not.toHaveBeenCalled();
-      })
+      }),
     );
   });
 
@@ -135,7 +135,7 @@ describe('float', () => {
         // Act / Assert
         expect(() => float({ max: f64 })).toThrowError();
         expect(integer).not.toHaveBeenCalled();
-      })
+      }),
     );
   });
 
@@ -153,7 +153,7 @@ describe('float', () => {
         // Act / Assert
         expect(() => float({ min, max })).toThrowError();
         expect(integer).not.toHaveBeenCalled();
-      })
+      }),
     );
   });
 
@@ -194,8 +194,8 @@ describe('float', () => {
 
           // Assert
           expect(f).toBe(indexToFloat(arbitraryGeneratedIndex));
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -226,7 +226,7 @@ describe('float', () => {
             expect(integerConstraintsWithNaN.min).toBe(integerConstraintsNoNaN.min! - 1);
             expect(integerConstraintsWithNaN.max).toBe(integerConstraintsNoNaN.max);
           }
-        })
+        }),
       );
     });
 
@@ -256,8 +256,8 @@ describe('float', () => {
 
             // Assert
             expect(f).toBe(Number.NaN);
-          }
-        )
+          },
+        ),
       ));
   });
 
@@ -283,7 +283,7 @@ describe('float', () => {
           // Assert
           expect(integer).toHaveBeenCalledTimes(1);
           expect(integer).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
-        })
+        }),
       );
     });
   });

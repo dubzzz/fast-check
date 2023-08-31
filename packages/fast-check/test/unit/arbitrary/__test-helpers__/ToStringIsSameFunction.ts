@@ -3,7 +3,7 @@ import { stringify } from '../../../../src/utils/stringify';
 
 export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
   f: (...args: T) => TOut,
-  inputs: T[]
+  inputs: T[],
 ): void {
   let assertionHasBeenExecuted = false;
 

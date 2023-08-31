@@ -12,9 +12,9 @@ describe(`NoRegressionStack`, () => {
               throw new Error('a must be >= b');
             }
           }),
-          settings
-        )
-      )
+          settings,
+        ),
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
 
@@ -25,9 +25,9 @@ describe(`NoRegressionStack`, () => {
           fc.property(fc.nat(), (v) => {
             (v as any)();
           }),
-          settings
-        )
-      )
+          settings,
+        ),
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
 });
@@ -52,9 +52,9 @@ function sanitize(run: () => void) {
             0,
             // internals of jest, subject to regular changes
             // and OS dependent
-            lines.findIndex((line) => line.includes('node_modules/jest-circus'))
+            lines.findIndex((line) => line.includes('node_modules/jest-circus')),
           )
-          .join('\n')
+          .join('\n'),
       );
     }
   };

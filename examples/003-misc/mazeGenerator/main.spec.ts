@@ -9,7 +9,7 @@ describe('mazeGenerator', () => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         expect(maze[ins.startPt.y][ins.startPt.x]).toBe(CellType.Start);
         expect(_.flatten(maze).filter((c) => c === CellType.Start)).toHaveLength(1);
-      })
+      }),
     );
   });
 
@@ -19,7 +19,7 @@ describe('mazeGenerator', () => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         expect(maze[ins.endPt.y][ins.endPt.x]).toBe(CellType.End);
         expect(_.flatten(maze).filter((c) => c === CellType.End)).toHaveLength(1);
-      })
+      }),
     );
   });
 
@@ -28,7 +28,7 @@ describe('mazeGenerator', () => {
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         return hasPathFromStartToEnd(maze, ins.startPt);
-      })
+      }),
     );
   });
 
@@ -56,11 +56,11 @@ describe('mazeGenerator', () => {
                 return cell !== null && cell !== CellType.Wall;
               })
               // Keep the src aka source point in order not to go back on our tracks
-              .map((nPt) => ({ pt: nPt, src: pt }))
+              .map((nPt) => ({ pt: nPt, src: pt })),
           );
         }
         return true;
-      })
+      }),
     );
   });
 
@@ -74,7 +74,7 @@ describe('mazeGenerator', () => {
           else return count + 1;
         }, 0);
         expect(numPathsLeavingEnd).toBe(1);
-      })
+      }),
     );
   });
 
@@ -92,12 +92,12 @@ describe('mazeGenerator', () => {
             ...neighboorsFor(pt).filter((nPt) => {
               const cell = cellTypeAt(maze, nPt);
               return cell !== null && cell !== CellType.Wall && cell !== 'Visited';
-            })
+            }),
           );
         }
         // All cells are either Walls or marked as visited
         expect(_.flatten(maze).filter((c) => c !== CellType.Wall && c !== 'Visited')).toHaveLength(0);
-      })
+      }),
     );
   });
 });

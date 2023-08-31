@@ -15,7 +15,7 @@ type PropertyTest<Context> = <Ts extends NonEmptyArray<any>>(
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Context, Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<Ts>,
 ) => void;
 
 type AvaModifierWhitelist = 'only' | 'failing' | 'skip' | 'serial';
@@ -30,7 +30,7 @@ export type PropertyTestFn<Context> = PropertyTest<Context> & {
 function wrapProp<Context, Ts extends NonEmptyArray<any>>(
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Context, Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<Ts>,
 ): Implementation<Ts, Context> {
   return async (t, ..._args) => {
     let failingTry: undefined | TryResult;
@@ -48,7 +48,7 @@ function wrapProp<Context, Ts extends NonEmptyArray<any>>(
           failingTry = tryResult;
           return false;
         }),
-        params
+        params,
       );
     } catch (error) {
       t.log((error as Error).message);
@@ -64,7 +64,7 @@ function internalTestProp<Context, Ts extends NonEmptyArray<any>>(
   label: string,
   arbitraries: ArbitraryTuple<Ts>,
   prop: Prop<Context, Ts>,
-  params?: fc.Parameters<Ts>
+  params?: fc.Parameters<Ts>,
 ): void {
   const customParams: fc.Parameters<Ts> = { ...params };
   if (customParams.seed === undefined) {
@@ -80,7 +80,7 @@ function internalTestProp<Context, Ts extends NonEmptyArray<any>>(
 }
 
 function exposeModifier<Context, T extends Extract<keyof TestFn, AvaModifierWhitelist>>(
-  modifier: T
+  modifier: T,
 ): PropertyTest<Context> {
   return (label, arbitraries, prop, params) =>
     internalTestProp((test as TestFn<Context>)[modifier], label, arbitraries, prop, params);
@@ -91,7 +91,7 @@ export const testProp: PropertyTestFn<unknown> = Object.assign(
     label: string,
     arbitraries: ArbitraryTuple<Ts>,
     prop: Prop<Context, Ts>,
-    params?: fc.Parameters<Ts>
+    params?: fc.Parameters<Ts>,
   ): void {
     internalTestProp(test as TestFn<Context>, label, arbitraries, prop, params);
   },
@@ -102,5 +102,5 @@ export const testProp: PropertyTestFn<unknown> = Object.assign(
     serial: exposeModifier('serial'),
     before: test.before,
     after: test.after,
-  }
+  },
 );

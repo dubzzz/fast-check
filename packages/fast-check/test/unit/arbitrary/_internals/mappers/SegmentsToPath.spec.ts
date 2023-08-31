@@ -16,6 +16,6 @@ describe('segmentsToPathUnmapper', () => {
 
         // Assert
         expect(out).toEqual(segments);
-      })
+      }),
     ));
 });

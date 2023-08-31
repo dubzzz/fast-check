@@ -43,14 +43,14 @@ describe('uniqueArray', () => {
           0x7fffffff,
           undefined,
           expect.any(Function),
-          []
+          [],
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
         expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
         expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
         expect(arb).toBe(instance);
-      })
+      }),
     );
   });
 
@@ -74,7 +74,7 @@ describe('uniqueArray', () => {
           maxLength,
           undefined,
           expect.any(Function),
-          []
+          [],
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(0);
@@ -88,11 +88,11 @@ describe('uniqueArray', () => {
             maxLength,
             undefined,
             expect.any(Function),
-            []
+            [],
           );
         }
         expect(arb).toBe(instance);
-      })
+      }),
     );
   });
 
@@ -117,7 +117,7 @@ describe('uniqueArray', () => {
           0x7fffffff,
           undefined,
           expect.any(Function),
-          []
+          [],
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         if (minLength !== 2 ** 31 - 1) {
@@ -128,7 +128,7 @@ describe('uniqueArray', () => {
           expect(receivedGeneratedMaxLength).toEqual(minLength);
         }
         expect(arb).toBe(instance);
-      })
+      }),
     );
   });
 
@@ -158,7 +158,7 @@ describe('uniqueArray', () => {
             maxLength,
             undefined,
             expect.any(Function),
-            []
+            [],
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
@@ -172,12 +172,12 @@ describe('uniqueArray', () => {
               maxLength,
               undefined,
               expect.any(Function),
-              []
+              [],
             );
           }
           expect(arb).toBe(instance);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -194,7 +194,7 @@ describe('uniqueArray', () => {
               selector: selectorArbitrary(),
               depthIdentifier: fc.string(),
             },
-            { requiredKeys: [] }
+            { requiredKeys: [] },
           )
           .map((constraints) =>
             constraints.minLength !== undefined &&
@@ -205,7 +205,7 @@ describe('uniqueArray', () => {
                   minLength: constraints.maxLength,
                   maxLength: constraints.minLength,
                 } as UniqueArrayConstraints<unknown, unknown>)
-              : ({ ...constraints } as UniqueArrayConstraints<unknown, unknown>)
+              : ({ ...constraints } as UniqueArrayConstraints<unknown, unknown>),
           ),
         (config, constraints) => {
           // Arrange
@@ -226,11 +226,11 @@ describe('uniqueArray', () => {
             constraints.maxLength !== undefined ? constraints.maxLength : expect.any(Number),
             constraints.depthIdentifier,
             expect.any(Function),
-            []
+            [],
           );
           expect(arb).toBe(instance);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -251,11 +251,11 @@ describe('uniqueArray', () => {
           // Act / Assert
           expect(() =>
             withConfiguredGlobal(config, () =>
-              uniqueArray(childInstance, { minLength, maxLength, comparator: comparator as any, selector })
-            )
+              uniqueArray(childInstance, { minLength, maxLength, comparator: comparator as any, selector }),
+            ),
           ).toThrowError();
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -269,7 +269,7 @@ describe('uniqueArray (integration)', () => {
       fc.boolean(),
       fc.boolean(),
       fc.option(fc.func(fc.integer()), { nil: undefined }),
-      fc.option(comparatorArbitrary(), { nil: undefined })
+      fc.option(comparatorArbitrary(), { nil: undefined }),
     )
     .map(([min, gap, withMin, withMax, selector, comparator]) => {
       // We only apply selector/comparator in case the minimal number of items requested can be reached with the selector/comparator.
@@ -329,7 +329,7 @@ describe('uniqueArray (integration)', () => {
     (v) => {
       if (typeof v !== 'number' || v === -1 || v === -2) throw new Error('');
       return Object.is(v, Number.NaN) ? -2 : Object.is(v, -0) ? -1 : v;
-    }
+    },
   );
   const uniqueArrayBuilder = (extra: Extra) => uniqueArray(integerUpTo10000AndNaNOrMinusZero, extra);
 
@@ -399,12 +399,12 @@ type ComparatorType<T = unknown, U = unknown> = UniqueArrayConstraints<T, U>['co
 function comparatorArbitrary(): fc.Arbitrary<ComparatorType> {
   return fc.oneof(
     fc.constantFrom<ComparatorType>('IsStrictlyEqual', 'SameValue', 'SameValueZero'),
-    fc.compareFunc().map((f) => (a: unknown, b: unknown) => f(a, b) === 0)
+    fc.compareFunc().map((f) => (a: unknown, b: unknown) => f(a, b) === 0),
   );
 }
 
 function resolveComparatorFunction<T, U>(
-  comparator: ComparatorType<T, U> | undefined
+  comparator: ComparatorType<T, U> | undefined,
 ): (a: unknown, b: unknown) => boolean {
   if (comparator === undefined) {
     return (a, b) => Object.is(a, b);

@@ -21,7 +21,7 @@ const mazeGeneratorInternal = (
   mrng: Random,
   dim: Dimension,
   startPt: Point,
-  endPt: Point
+  endPt: Point,
 ): { maze: CellType[][]; hasPathLeadingToTheEnd: boolean } => {
   // Initialize grid
   const maze: CellType[][] = [...Array(dim.height)].map((_) => [...Array(dim.width)].fill(CellType.Wall));
