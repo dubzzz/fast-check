@@ -7,10 +7,14 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./src/main.d.ts",
-      "require": "./src/main.js",
-      "import": "./src/esm/main.js",
-      "default": "./src/esm/main.js"
+      "require": {
+        "types": "./src/main.d.ts",
+        "default": "./src/main.js"
+      },
+      "import": {
+        "types": "./src/esm/main.d.ts",
+        "default": "./src/esm/main.js"
+      }
     }
   },
   "module": "src/esm/main.js",
@@ -19,6 +23,9 @@
     "src"
   ],
   "scripts": {
+    "build": "yarn build:publish-types",
+    "build-ci": "yarn build",
+    "build:publish-types": "cp src/*.d.ts src/esm/",
     "test": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
