@@ -1,3 +1,16 @@
+# 1.7.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.1...jest%2Fv1.7.2)]
+
+## Features
+
+- ([PR#4180](https://github.com/dubzzz/fast-check/pull/4180)) Better declare ESM's types
+
+## Fixes
+
+
+
 # 1.7.1
 
 _Clearer definition of compatible node versions_

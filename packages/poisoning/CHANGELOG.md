@@ -1,3 +1,16 @@
+# 0.0.8
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.7...poisoning%2Fv0.0.8)]
+
+## Features
+
+- ([PR#4176](https://github.com/dubzzz/fast-check/pull/4176)) Better declare ESM's types
+
+## Fixes
+
+
+
 # 0.0.7
 
 _Add logo on the README_

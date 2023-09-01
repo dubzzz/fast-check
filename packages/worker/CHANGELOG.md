@@ -1,3 +1,16 @@
+# 0.0.9
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.9)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.8...worker%2Fv0.0.9)]
+
+## Features
+
+- ([PR#4174](https://github.com/dubzzz/fast-check/pull/4174)) Better declare ESM's types
+
+## Fixes
+
+
+
 # 0.0.8
 
 _Typos in README_

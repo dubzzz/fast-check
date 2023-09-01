@@ -1,3 +1,16 @@
+# 0.0.7
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.6...vitest%2Fv0.0.7)]
+
+## Features
+
+- ([PR#4178](https://github.com/dubzzz/fast-check/pull/4178)) Better declare ESM's types
+
+## Fixes
+
+
+
 # 0.0.6
 
 _Update URL of the logo_

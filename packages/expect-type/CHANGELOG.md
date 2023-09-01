@@ -1,3 +1,16 @@
+# 0.0.4
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/expect-type%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/expect-type%2Fv0.0.3...expect-type%2Fv0.0.4)]
+
+## Features
+
+- ([PR#4175](https://github.com/dubzzz/fast-check/pull/4175)) Better declare ESM's types
+
+## Fixes
+
+
+
 # 0.0.3
 
 _Attach provenance to the packages_
