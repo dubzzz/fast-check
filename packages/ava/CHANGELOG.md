@@ -7,10 +7,6 @@ _TODO Description_
 
 - ([PR#4173](https://github.com/dubzzz/fast-check/pull/4173)) Better declare ESM's types
 
-## Fixes
-
-
-
 # 1.1.5
 
 _Update URL of the logo_

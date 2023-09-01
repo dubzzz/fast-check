@@ -7,10 +7,6 @@ _TODO Description_
 
 - ([PR#4180](https://github.com/dubzzz/fast-check/pull/4180)) Better declare ESM's types
 
-## Fixes
-
-
-
 # 1.7.1
 
 _Clearer definition of compatible node versions_

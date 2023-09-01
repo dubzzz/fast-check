@@ -7,10 +7,6 @@ _TODO Description_
 
 - ([PR#4175](https://github.com/dubzzz/fast-check/pull/4175)) Better declare ESM's types
 
-## Fixes
-
-
-
 # 0.0.3
 
 _Attach provenance to the packages_

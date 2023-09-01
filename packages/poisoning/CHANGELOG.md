@@ -7,10 +7,6 @@ _TODO Description_
 
 - ([PR#4176](https://github.com/dubzzz/fast-check/pull/4176)) Better declare ESM's types
 
-## Fixes
-
-
-
 # 0.0.7
 
 _Add logo on the README_
