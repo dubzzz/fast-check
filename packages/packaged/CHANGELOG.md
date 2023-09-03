@@ -1,15 +1,11 @@
 # 0.1.0
 
-_TODO Description_
+_Update formatting style_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.8...packaged%2Fv0.1.0)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
 
 ---
 

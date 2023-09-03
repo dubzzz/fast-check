@@ -1,11 +1,12 @@
 # 1.1.6
 
-_TODO Description_
+_Better support for types on ESM targets_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.6)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.5...ava%2Fv1.1.6)]
 
-## Features
+## Fixes
 
-- ([PR#4173](https://github.com/dubzzz/fast-check/pull/4173)) Better declare ESM's types
+- ([PR#4173](https://github.com/dubzzz/fast-check/pull/4173)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
 
 # 1.1.5
 

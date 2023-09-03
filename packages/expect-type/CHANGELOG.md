@@ -1,11 +1,12 @@
 # 0.0.4
 
-_TODO Description_
+_Better support for types on ESM targets_
 [[Code](https://github.com/dubzzz/fast-check/tree/expect-type%2Fv0.0.4)][[Diff](https://github.com/dubzzz/fast-check/compare/expect-type%2Fv0.0.3...expect-type%2Fv0.0.4)]
 
-## Features
+## Fixes
 
-- ([PR#4175](https://github.com/dubzzz/fast-check/pull/4175)) Better declare ESM's types
+- ([PR#4175](https://github.com/dubzzz/fast-check/pull/4175)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
 
 # 0.0.3
 

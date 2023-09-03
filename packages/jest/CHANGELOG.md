@@ -1,11 +1,12 @@
 # 1.7.2
 
-_TODO Description_
+_Better support for types on ESM targets_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.1...jest%2Fv1.7.2)]
 
-## Features
+## Fixes
 
-- ([PR#4180](https://github.com/dubzzz/fast-check/pull/4180)) Better declare ESM's types
+- ([PR#4180](https://github.com/dubzzz/fast-check/pull/4180)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
 
 # 1.7.1
 
