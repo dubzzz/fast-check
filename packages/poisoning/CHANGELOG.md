@@ -1,3 +1,13 @@
+# 0.0.8
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.7...poisoning%2Fv0.0.8)]
+
+## Fixes
+
+- ([PR#4176](https://github.com/dubzzz/fast-check/pull/4176)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
 # 0.0.7
 
 _Add logo on the README_

@@ -1,3 +1,14 @@
+# 0.1.0
+
+_Update formatting style and bump dependencies_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.8...packaged%2Fv0.1.0)]
+
+## Fixes
+
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
+---
+
 # 0.0.8
 
 _Attach provenance to the packages_

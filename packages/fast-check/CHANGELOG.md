@@ -1,3 +1,22 @@
+# 3.12.1
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.12.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.12.0...v3.12.1)]
+
+## Fixes
+
+- ([PR#4172](https://github.com/dubzzz/fast-check/pull/4172)) Bug: Better declare ESM's types
+- ([PR#4177](https://github.com/dubzzz/fast-check/pull/4177)) Bug: Replace macros in published esm types
+- ([PR#4156](https://github.com/dubzzz/fast-check/pull/4156)) CI: Stop formatting built website
+- ([PR#4155](https://github.com/dubzzz/fast-check/pull/4155)) CI: Add TypeScript checks on website
+- ([PR#4171](https://github.com/dubzzz/fast-check/pull/4171)) CI: Update Devcontainer settings
+- ([PR#4181](https://github.com/dubzzz/fast-check/pull/4181)) CI: Add exempted labels for stale bot
+- ([PR#4136](https://github.com/dubzzz/fast-check/pull/4136)) Clean: Drop dependency @testing-library/jest-dom
+- ([PR#4107](https://github.com/dubzzz/fast-check/pull/4107)) Doc: What's new article for fast-check 3.12.0
+- ([PR#4118](https://github.com/dubzzz/fast-check/pull/4118)) Doc: Drop raw bench results from release note
+- ([PR#4117](https://github.com/dubzzz/fast-check/pull/4117)) Test: Stabilize test related to NaN in exclusive mode
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
 # 3.12.0
 
 _Faster `float`, `double` and `ulid` and excluded min/max_
