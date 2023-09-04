@@ -17,6 +17,11 @@
       "src": "img/favicon.ico",
       "sizes": "96x96",
       "type": "image/png"
+    },
+    {
+      "src": "img/mug.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }
