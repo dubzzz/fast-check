@@ -138,3 +138,7 @@ import { a } from './other-file.js'; // ← it's another TS file but we import i
 ```
 
 This might seem surprising initially, but by importing the `.js` file, TypeScript understands that it should import the file that will ultimately create the `.js` output, which is the `.ts` file. While this choice might initially appear unconventional, it eliminates the need for custom post-processing steps during the build process.
+
+## Lint your package
+
+While the setup above should be correct, there are so many ways to make it wrong. As it's not the easiest thing to configure, I recommend you to back yourself with tools such as: [publint](https://publint.dev/) or [are the types wrong?](https://arethetypeswrong.github.io/).
