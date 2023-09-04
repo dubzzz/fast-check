@@ -125,7 +125,7 @@ Initially, We attempted to publish only one set of typing files and to reuse it 
 Thanks to [@AndaristRake](https://twitter.com/AndaristRake) for explaining the reasoning behind this logic in [this thread](https://twitter.com/AndaristRake/status/1695549037556949344).
 :::
 
-For the typings, we primarily push the same typings twice. There are multiple ways to accomplish this, including copying and pasting the type files or using the `--outDir lib/esm` option with `tsc`.
+For the typings, we primarily push the same typings twice. There are multiple ways to accomplish this, including copying and pasting the type files or using the `--outDir lib/esm` option with `tsc` to buind into another directory.
 
 For the CommonJS target, there aren't any significant blockers or traps. The key is to instruct `tsc` to compile the code using the CommonJS module system with `--module commonjs`.
 
