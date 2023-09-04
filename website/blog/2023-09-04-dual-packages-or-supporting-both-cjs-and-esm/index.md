@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [retrospective, maintainer]
 ---
 
-As library authors and maintainers, hiding the complexity of the build systems and making it as easy as possible for users to utilize our libraries has always been one of our priorities. From Node to the browser, including Deno, we always wanted our users not to struggle too much into using fast-check wherever they want.
+As library authors and maintainers of fast-check, hiding the complexity of the build systems and making it as easy as possible for users to utilize our libraries has always been one of our priorities. From Node to the browser, including Deno, we always wanted our users not to struggle too much into using fast-check wherever they want.
 
 The rise of ES Modules was both a relief and a pain. It relieved us of the need to consider multiple delivery targets: Asynchronous Module Definition (AMD), CommonJS (CJS), Universal Module Definition (UMD) and others. Instead there is one to rule them all: ES Modules. But, as the ecosystem was and is still late, we were not able to switch in a snap to an ES Modules world and had to keep CJS.
 
