@@ -153,13 +153,22 @@ describe('date (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = constraintsArb();
 
   const isCorrect = (d: Date, extra: Extra) => {
-    expect(d.getTime()).not.toBe(Number.NaN);
+    if (extra.noInvalidDate || noInvalidDate === undefined) {
+      expect(d.getTime()).not.toBe(Number.NaN);
+    }
     if (extra.min) expect(d.getTime()).toBeGreaterThanOrEqual(extra.min.getTime());
     if (extra.max) expect(d.getTime()).toBeLessThanOrEqual(extra.max.getTime());
   };
 
-  const isStrictlySmaller = (d1: Date, d2: Date) =>
-    Math.abs(d1.getTime() - new Date(0).getTime()) < Math.abs(d2.getTime() - new Date(0).getTime());
+  const isStrictlySmaller = (d1: Date, d2: Date) => {
+    if (Number.isNaN(d1.getTime())) {
+      expect(d2.getTime()).not.toBe(Number.NaN);
+    } else if (Number.isNaN(d2.getTime())) {
+      expect(d1.getTime()).not.toBe(Number.NaN);
+    } else {
+      return Math.abs(d1.getTime() - new Date(0).getTime()) < Math.abs(d2.getTime() - new Date(0).getTime());
+    }
+  };
 
   const dateBuilder = (extra: Extra) => date(extra);
 
@@ -187,28 +196,34 @@ describe('date (integration)', () => {
 // Helpers
 
 function constraintsArb() {
-  return fc.tuple(fc.date(), fc.date(), fc.boolean(), fc.boolean()).map(([d1, d2, withMin, withMax]) => {
-    const min = d1 < d2 ? d1 : d2;
-    const max = d1 < d2 ? d2 : d1;
-    return { min: withMin ? min : undefined, max: withMax ? max : undefined };
-  });
+  return fc
+    .tuple(fc.date(), fc.date(), fc.boolean(), fc.boolean(), fc.option(fc.boolean(), { nil: undefined }))
+    .map(([d1, d2, withMin, withMax, noInvalidDate]) => {
+      const min = d1 < d2 ? d1 : d2;
+      const max = d1 < d2 ? d2 : d1;
+      return { min: withMin ? min : undefined, max: withMax ? max : undefined, noInvalidDate };
+    });
 }
 
 function invalidRangeConstraintsArb() {
   return fc
-    .tuple(fc.date(), fc.date())
+    .tuple(fc.date(), fc.date(), fc.option(fc.boolean(), { nil: undefined }))
     .filter(([d1, d2]) => +d1 !== +d2)
-    .map(([d1, d2]) => {
+    .map(([d1, d2, noInvalidDate]) => {
       const min = d1 < d2 ? d1 : d2;
       const max = d1 < d2 ? d2 : d1;
-      return { min: max, max: min };
+      return { min: max, max: min, noInvalidDate };
     });
 }
 
 function invalidMinConstraintsArb() {
-  return fc.option(fc.date(), { freq: 100, nil: undefined }).map((max) => ({ min: new Date(Number.NaN), max }));
+  return fc
+    .tuple(fc.option(fc.date(), { freq: 100, nil: undefined }), fc.option(fc.boolean(), { nil: undefined }))
+    .map(([max, noInvalidDate]) => ({ min: new Date(Number.NaN), max, noInvalidDate }));
 }
 
 function invalidMaxConstraintsArb() {
-  return fc.option(fc.date(), { freq: 100, nil: undefined }).map((min) => ({ min, max: new Date(Number.NaN) }));
+  return fc
+    .tuple(fc.option(fc.date(), { freq: 100, nil: undefined }), fc.option(fc.boolean(), { nil: undefined }))
+    .map(([min, noInvalidDate]) => ({ min, max: new Date(Number.NaN), noInvalidDate }));
 }
