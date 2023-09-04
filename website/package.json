@@ -18,6 +18,7 @@
     "@codesandbox/sandpack-react": "^2.6.9",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@docusaurus/core": "2.4.1",
+    "@docusaurus/plugin-pwa": "2.4.1",
     "@docusaurus/preset-classic": "2.4.1",
     "@docusaurus/remark-plugin-npm2yarn": "2.4.1",
     "clsx": "^2.0.0",

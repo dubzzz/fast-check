@@ -1,0 +1,22 @@
+{
+  "name": "fast-check official documentation",
+  "short_name": "fast-check",
+  "theme_color": "#282ea9",
+  "background_color": "#424242",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./index.html",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://fast-check.dev/manifest.json"
+    }
+  ],
+  "icons": [
+    {
+      "src": "img/favicon.ico",
+      "sizes": "96x96",
+      "type": "image/png"
+    }
+  ]
+}
