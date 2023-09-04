@@ -34,7 +34,7 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
         [fc.nat().map((v) => new IncBy(v)), fc.nat().map((v) => new DecPosBy(v)), fc.constant(new AlwaysPos())],
         {
           replayPath,
-        }
+        },
       ),
       (cmds) => {
         if (alreadyFailed && mrng !== undefined) {
@@ -48,7 +48,7 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
           alreadyFailed = true;
           throw err;
         }
-      }
+      },
     );
   };
   it('Should be able to replay commands by specifying replayPath in fc.commands', () => {

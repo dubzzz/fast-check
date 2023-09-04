@@ -67,7 +67,7 @@ describe('StrictyEqualSet', () => {
           }
           expect(s.size()).toBe(expectedSize);
         }
-      })
+      }),
     );
   });
 
@@ -89,7 +89,7 @@ describe('StrictyEqualSet', () => {
             expect(isStrictlyEqual(data[i], data[j])).toBe(false);
           }
         }
-      })
+      }),
     );
   });
 
@@ -130,7 +130,7 @@ describe('StrictyEqualSet', () => {
             expect(indexPrevious).toBeLessThan(indexCurrent);
           }
         }
-      })
+      }),
     );
   });
 });

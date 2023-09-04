@@ -22,7 +22,7 @@ const buildUnresolved = () => {
       (resolve = () => {
         resolved = true;
         r();
-      })
+      }),
   );
   return { p, resolve, hasBeenResolved: () => resolved };
 };
@@ -214,7 +214,7 @@ describe('SchedulerImplem', () => {
           expect(act).toHaveBeenCalledTimes(3);
           expect(nextTaskIndex).toHaveBeenCalledTimes(3);
           expect(nextTaskIndexLengths).toEqual([3, 2, 1]);
-        })
+        }),
       ));
 
     it('should wait the end of act before moving to the next task', async () =>
@@ -241,7 +241,7 @@ describe('SchedulerImplem', () => {
           // Assert
           await s.waitAll();
           expect(locked).toBe(false);
-        })
+        }),
       ));
   });
 
@@ -615,7 +615,7 @@ describe('SchedulerImplem', () => {
         unscheduled: Promise<unknown>,
         allPs: Promise<unknown>[],
         dependencies: number[],
-        schedulingType: 'none' | 'init'
+        schedulingType: 'none' | 'init',
       ) => {
         const label = `p${allPs.length + 1}:${JSON.stringify(dependencies)}`;
         const deps = dependencies.map((id) => allPs[id]);
@@ -636,7 +636,7 @@ describe('SchedulerImplem', () => {
         p: ReturnType<typeof buildUnresolved>,
         pName: string,
         directResolved: boolean,
-        ctx: fc.ContextValue
+        ctx: fc.ContextValue,
       ): void => {
         if (directResolved) {
           ctx.log(`${pName} resolved (direct)`);
@@ -683,7 +683,7 @@ describe('SchedulerImplem', () => {
             [directResolveB, finalDependenciesB],
             [directResolveC, finalDependenciesC],
             addExtraDelays,
-            ctx
+            ctx,
           ) => {
             // Arrange
             const p1 = buildUnresolved();
@@ -775,8 +775,8 @@ describe('SchedulerImplem', () => {
             expect(multipleTasksReleasedAtTheSameTime).toBe(undefined);
             // Only known tasks could be scheduled
             expect(unknownTaskReleased).toBe(false);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -925,7 +925,7 @@ describe('SchedulerImplem', () => {
             4: true,
             5: true,
           });
-        })
+        }),
       ));
 
     it('should show both resolved, rejected and pending promises in toString', async () => {
@@ -1099,11 +1099,11 @@ describe('SchedulerImplem', () => {
                 name: fc.hexaString({ minLength: 4, maxLength: 4 }).noBias(),
                 children: fc.oneof(
                   fc.constant<ExecutionPlan[]>([]),
-                  fc.array(tie('self') as fc.Arbitrary<ExecutionPlan>)
+                  fc.array(tie('self') as fc.Arbitrary<ExecutionPlan>),
                 ),
               }),
             })).self,
-            { minLength: 1 }
+            { minLength: 1 },
           ),
           fc.infiniteStream(fc.nat()),
           async (plan, seeds) => {
@@ -1132,8 +1132,8 @@ describe('SchedulerImplem', () => {
             await s.waitAll();
             expect(s.count()).toBe(0);
             expect(s.report()).toHaveLength(computeTasksInPlan(plan));
-          }
-        )
+          },
+        ),
       ));
   });
 

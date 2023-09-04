@@ -51,7 +51,7 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               undefined,
-              []
+              [],
             );
             const g = arb.generate(mrng, undefined);
 
@@ -66,8 +66,8 @@ describe('ArrayArbitrary', () => {
             for (const call of generate.mock.calls) {
               expect(call).toEqual([mrng, undefined]);
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -97,7 +97,7 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               setBuilder,
-              []
+              [],
             );
             const g = arb.generate(mrng, undefined);
 
@@ -114,8 +114,8 @@ describe('ArrayArbitrary', () => {
             for (const call of generate.mock.calls) {
               expect(call).toEqual([mrng, undefined]);
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -132,7 +132,7 @@ describe('ArrayArbitrary', () => {
             // Arrange
             const { acceptedValues, instance, setBuilder, generate } = prepareSetBuilderData(
               generatedValues,
-              !withSetBuilder
+              !withSetBuilder,
             );
             const { minLength, maxLength } = extractLengths(seed, aLength, aLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
@@ -149,7 +149,7 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               withSetBuilder ? setBuilder : undefined,
-              []
+              [],
             );
             const g = arb.generate(mrng, biasFactor);
 
@@ -161,7 +161,7 @@ describe('ArrayArbitrary', () => {
               expect(g.value).toEqual([...acceptedValues].map((v) => v.value).slice(0, minLength));
             } else {
               expect(g.value).toEqual(
-                [...acceptedValues].map((v) => v.value).slice(0, Math.min(g.value.length, minLength))
+                [...acceptedValues].map((v) => v.value).slice(0, Math.min(g.value.length, minLength)),
               );
             }
             expect(integer).toHaveBeenCalledTimes(1);
@@ -173,8 +173,8 @@ describe('ArrayArbitrary', () => {
             for (const call of generate.mock.calls) {
               expect(call).toEqual([mrng, biasFactor]); // but bias all sub-values
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -199,7 +199,7 @@ describe('ArrayArbitrary', () => {
               !withSetBuilder,
               () => {
                 seenDepths.add(depthContext.depth);
-              }
+              },
             );
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
@@ -216,7 +216,7 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               withSetBuilder ? setBuilder : undefined,
-              []
+              [],
             );
             arb.generate(mrng, biasFactor);
 
@@ -228,8 +228,8 @@ describe('ArrayArbitrary', () => {
             } else {
               expect([...seenDepths]).toHaveLength(0); // never called on items
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -265,7 +265,7 @@ describe('ArrayArbitrary', () => {
       generate
         .mockReturnValueOnce(new Value(['a'], undefined))
         .mockReturnValueOnce(
-          new Value(Object.defineProperty(['b'], cloneMethod, { value: cloneMethodImpl }), undefined)
+          new Value(Object.defineProperty(['b'], cloneMethod, { value: cloneMethodImpl }), undefined),
         )
         .mockReturnValueOnce(new Value(['c'], undefined))
         .mockReturnValueOnce(new Value(['d'], undefined));
@@ -326,7 +326,7 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               withSetBuilder ? setBuilder : undefined,
-              []
+              [],
             );
             const out = arb.canShrinkWithoutContext(value);
 
@@ -334,8 +334,8 @@ describe('ArrayArbitrary', () => {
             expect(out).toBe(false);
             expect(canShrinkWithoutContext).not.toHaveBeenCalled();
             expect(setBuilder).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -378,15 +378,15 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               withSetBuilder ? setBuilder : undefined,
-              []
+              [],
             );
             const out = arb.canShrinkWithoutContext(value.map((v) => v[0]));
 
             // Assert
             expect(out).toBe(false);
             expect(canShrinkWithoutContext).toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -431,7 +431,7 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               setBuilder,
-              []
+              [],
             );
             const out = arb.canShrinkWithoutContext(value.map((v) => v[0]));
 
@@ -439,8 +439,8 @@ describe('ArrayArbitrary', () => {
             expect(out).toBe(false);
             expect(canShrinkWithoutContext).toHaveBeenCalled();
             expect(setBuilder).toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -479,14 +479,14 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               withSetBuilder ? setBuilder : undefined,
-              []
+              [],
             );
             const out = arb.canShrinkWithoutContext(value);
 
             // Assert
             expect(out).toBe(false);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -524,14 +524,14 @@ describe('ArrayArbitrary', () => {
               maxLength,
               undefined,
               withSetBuilder ? setBuilder : undefined,
-              []
+              [],
             );
             const out = arb.canShrinkWithoutContext(value);
 
             // Assert
             expect(out).toBe(true);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -579,7 +579,7 @@ describe('ArrayArbitrary (integration)', () => {
 function prepareSetBuilderData(
   generatedValues: [value: any, context: any, rejected?: boolean][],
   acceptAll: boolean,
-  onGenerateHook?: () => void
+  onGenerateHook?: () => void,
 ) {
   const acceptedValues = new Set<Value<any>>();
   const { instance, generate } = fakeArbitrary();

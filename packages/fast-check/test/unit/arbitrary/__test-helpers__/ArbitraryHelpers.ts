@@ -44,7 +44,7 @@ export function fakeArbitrary<T = any>(): { instance: Arbitrary<T> } & MaybeMock
  */
 export function fakeArbitraryStaticValue<T>(
   value: () => T,
-  context: () => unknown = () => undefined
+  context: () => unknown = () => undefined,
 ): { instance: Arbitrary<T> } {
   const { instance, generate, map } = fakeArbitrary<T>();
   generate.mockImplementation(() => new Value(value(), context()));
@@ -62,7 +62,10 @@ export function fakeArbitraryStaticValue<T>(
  * - context less shrink like context full (for first iteration only)
  */
 export class FakeIntegerArbitrary extends Arbitrary<number> {
-  constructor(readonly offset: number = 0, readonly rangeLength: number = 100) {
+  constructor(
+    readonly offset: number = 0,
+    readonly rangeLength: number = 100,
+  ) {
     super();
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<number> {
@@ -86,7 +89,7 @@ export class FakeIntegerArbitrary extends Arbitrary<number> {
     const nextStep = currentStep + 1;
     return Stream.of(
       ...(value - currentStep >= this.offset ? [new Value(value - currentStep, { step: nextStep })] : []),
-      ...(value - currentStep + 1 >= this.offset ? [new Value(value - currentStep + 1, { step: nextStep })] : [])
+      ...(value - currentStep + 1 >= this.offset ? [new Value(value - currentStep + 1, { step: nextStep })] : []),
     );
   }
 }

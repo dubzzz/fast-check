@@ -39,7 +39,7 @@ describe('bigUintN', () => {
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(BigInt(0), BigInt(2) ** BigInt(n) - BigInt(1));
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should throw when n value is lower than zero', () =>
@@ -47,6 +47,6 @@ describe('bigUintN', () => {
       fc.property(fc.integer({ min: -1000, max: -1 }), (n) => {
         // Arrange / Act / Assert
         expect(() => bigUintN(n)).toThrowError();
-      })
+      }),
     ));
 });

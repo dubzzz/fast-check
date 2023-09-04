@@ -4,7 +4,7 @@ import { safeJoin, safeMap, safeSplice, safeSplit } from '../../../utils/globals
 export function segmentsToPathMapper(segments: string[]): string {
   return safeJoin(
     safeMap(segments, (v) => `/${v}`),
-    ''
+    '',
   );
 }
 

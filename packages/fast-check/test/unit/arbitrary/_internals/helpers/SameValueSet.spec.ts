@@ -67,7 +67,7 @@ describe('SameValueSet', () => {
           }
           expect(s.size()).toBe(expectedSize);
         }
-      })
+      }),
     );
   });
 
@@ -89,7 +89,7 @@ describe('SameValueSet', () => {
             expect(isSameValue(data[i], data[j])).toBe(false);
           }
         }
-      })
+      }),
     );
   });
 
@@ -113,7 +113,7 @@ describe('SameValueSet', () => {
           expect(indexCurrent).not.toBe(-1);
           expect(indexPrevious).toBeLessThan(indexCurrent);
         }
-      })
+      }),
     );
   });
 });

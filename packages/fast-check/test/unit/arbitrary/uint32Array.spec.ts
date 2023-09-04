@@ -21,7 +21,7 @@ describe('uint32Array', () => {
       expect.any(Number),
       expect.any(Number),
       Uint32Array,
-      expect.anything()
+      expect.anything(),
     );
   });
 

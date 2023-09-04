@@ -47,6 +47,6 @@ export function ulid(): Arbitrary<string> {
 
   return tuple(timestampPartArbitrary, randomnessPartOneArbitrary, randomnessPartTwoArbitrary).map(
     ulidMapper,
-    ulidUnmapper
+    ulidUnmapper,
   );
 }

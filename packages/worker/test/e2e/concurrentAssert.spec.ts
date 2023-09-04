@@ -27,7 +27,7 @@ if (isMainThread) {
         // Assert
         await expect(Promise.all([readerRun, writerRun])).resolves.not.toThrow();
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

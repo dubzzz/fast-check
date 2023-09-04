@@ -14,7 +14,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
   prop: Prop<Ts>,
   params: FcParameters<TsParameters> | undefined,
   timeout: number | undefined,
-  fc: FcExtra
+  fc: FcExtra,
 ): void {
   const customParams: FcParameters<TsParameters> = { ...params };
   // Handle seed
@@ -41,6 +41,6 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     async () => {
       await fc.assert(propertyInstance, customParams);
     },
-    timeout
+    timeout,
   );
 }

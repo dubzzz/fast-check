@@ -24,7 +24,7 @@ describe('dictionary (integration)', () => {
           maxKeys: withMax ? min + gap : undefined,
         })),
     },
-    { requiredKeys: ['keys', 'values'] }
+    { requiredKeys: ['keys', 'values'] },
   );
 
   const isCorrect = (value: Record<string, unknown>, extra: Extra) => {

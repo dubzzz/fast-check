@@ -18,7 +18,7 @@ describe('mapToConstant', () => {
 
         // Act / Assert
         expect(() => mapToConstant(...entries)).toThrowError();
-      })
+      }),
     ));
 
   it('should reject any inputs summing to zero', () =>
@@ -29,7 +29,7 @@ describe('mapToConstant', () => {
 
         // Act / Assert
         expect(() => mapToConstant(...entries)).toThrowError();
-      })
+      }),
     ));
 
   it('should accept any inputs not summing to zero and with positive or null values', () =>
@@ -41,7 +41,7 @@ describe('mapToConstant', () => {
 
         // Act / Assert
         expect(() => mapToConstant(...entries)).not.toThrowError();
-      })
+      }),
     ));
 });
 
@@ -93,7 +93,7 @@ describe('mapToConstant (integration)', () => {
     // Arrange
     const arb = mapToConstant(
       { num: 10, build: (index) => String.fromCodePoint(index + 48) }, // 0-9
-      { num: 6, build: (index) => String.fromCodePoint(index + 97) } // a-f
+      { num: 6, build: (index) => String.fromCodePoint(index + 97) }, // a-f
     );
     const rawValue = 'c';
     const value = new Value(rawValue, undefined);

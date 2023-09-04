@@ -8,7 +8,7 @@ export class NoopSlicedGenerator<T> implements SlicedGenerator<T> {
   constructor(
     private readonly arb: Arbitrary<T>,
     private readonly mrng: Random,
-    private readonly biasFactor: number | undefined
+    private readonly biasFactor: number | undefined,
   ) {}
   attemptExact(): void {
     return;

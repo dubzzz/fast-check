@@ -22,7 +22,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(blockEventLoopProperty, options)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

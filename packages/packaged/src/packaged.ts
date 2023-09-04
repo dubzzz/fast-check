@@ -29,13 +29,13 @@ export async function computePublishedFiles(packageRoot: string): Promise<string
  */
 export async function removeNonPublishedFiles(
   packageRoot: string,
-  opts: { dryRun?: boolean; keepNodeModules?: boolean } = {}
+  opts: { dryRun?: boolean; keepNodeModules?: boolean } = {},
 ): Promise<{ kept: string[]; removed: string[] }> {
   const kept: string[] = [];
   const removed: string[] = [];
   const publishedFiles = await computePublishedFiles(packageRoot);
   const normalizedPublishedFiles = new Set(
-    publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename)))
+    publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename))),
   );
 
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
@@ -72,7 +72,7 @@ export async function removeNonPublishedFiles(
             }
           }
         }
-      })
+      }),
     );
     return content.length === numRemoved;
   }

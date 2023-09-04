@@ -28,7 +28,7 @@ describe('constantFrom', () => {
         // Assert
         expect(ConstantArbitrary).toHaveBeenCalledWith(csts);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should throw when receiving no parameters', () => {

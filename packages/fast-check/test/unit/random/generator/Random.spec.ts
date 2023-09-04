@@ -15,7 +15,7 @@ describe('Random', () => {
             if (v < 0 || v > (((1 << n) - 1) | 0)) return false;
           }
           return true;
-        })
+        }),
       ));
   });
   describe('nextInt', () => {
@@ -30,7 +30,7 @@ describe('Random', () => {
             if (min > v || max < v) return false;
           }
           return true;
-        })
+        }),
       ));
     it('Should produce the same sequences given same seeds', () =>
       fc.assert(
@@ -39,7 +39,7 @@ describe('Random', () => {
           const mrng2 = new Random(prand.xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;
           return true;
-        })
+        }),
       ));
   });
   describe('nextDouble', () => {
@@ -52,7 +52,7 @@ describe('Random', () => {
             if (v < 0 || v >= 1) return false;
           }
           return true;
-        })
+        }),
       ));
   });
   describe('clone', () => {
@@ -63,7 +63,7 @@ describe('Random', () => {
           const mrng2 = mrng1.clone();
           for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;
           return true;
-        })
+        }),
       ));
   });
 });

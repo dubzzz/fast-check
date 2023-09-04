@@ -17,7 +17,7 @@ export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitr
     BigInt(0),
     BigInt('18446744073709551615'),
     BigUint64Array,
-    bigInt
+    bigInt,
   );
 }
 export { BigIntArrayConstraints };

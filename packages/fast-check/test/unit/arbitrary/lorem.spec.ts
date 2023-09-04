@@ -16,8 +16,8 @@ describe('lorem', () => {
         (maxCount, mode) => {
           // Arrange / Act / Assert
           expect(() => lorem({ maxCount, mode })).toThrowError();
-        }
-      )
+        },
+      ),
     ));
 });
 
@@ -28,7 +28,7 @@ describe('lorem (integration)', () => {
       maxCount: fc.integer({ min: 1, max: 100 }),
       mode: fc.constantFrom(...(['words', 'sentences'] as const)),
     },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 
   const isCorrect = (value: string, extra: Extra) => {

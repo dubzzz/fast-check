@@ -137,24 +137,24 @@ fc.statistics(
       lower = next(lower);
     }
     return `${lower} to ${next(lower) - 1} items`;
-  }
+  },
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
-// • 5 to 9 items....44.24%
-// • 10 to 49 items..38.52%
-// • 1 to 4 items....17.24%
+// • 5 to 9 items....43.99%
+// • 10 to 49 items..38.97%
+// • 1 to 4 items....17.04%
 // For size = "small":
-// • 10 to 49 items..85.91%
-// • 5 to 9 items.....5.09%
-// • 1 to 4 items.....4.66%
-// • 50 to 99 items...4.34%
+// • 10 to 49 items..85.92%
+// • 5 to 9 items.....5.12%
+// • 50 to 99 items...4.60%
+// • 1 to 4 items.....4.36%
 // For size = "medium":
-// • 100 to 499 items..82.89%
-// • 50 to 99 items....10.16%
-// • 1 to 4 items.......3.94%
-// • 10 to 49 items.....2.75%
-// • 5 to 9 items.......0.19%
+// • 100 to 499 items..82.79%
+// • 50 to 99 items....10.31%
+// • 1 to 4 items.......3.73%
+// • 10 to 49 items.....2.95%
+// • 5 to 9 items.......0.17%
 
 fc.statistics(
   fc.letrec((tie) => ({
@@ -163,7 +163,7 @@ fc.statistics(
       children: fc.oneof(
         { depthIdentifier: 'node' },
         fc.constant([]),
-        fc.array(tie('node'), { depthIdentifier: 'node' })
+        fc.array(tie('node'), { depthIdentifier: 'node' }),
       ),
     }),
   })).node,
@@ -179,22 +179,21 @@ fc.statistics(
       lower = next(lower);
     }
     return `${lower} to ${next(lower) - 1} items`;
-  }
+  },
 );
 // Computed statistics for 10k generated values:
 // For size = "xsmall":
 // • 1 to 4 items..100.00%
 // For size = "small":
-// • 1 to 4 items....61.53%
-// • 10 to 49 items..23.35%
-// • 5 to 9 items....15.11%
-// • 50 to 99 items...0.01%
+// • 1 to 4 items....60.31%
+// • 10 to 49 items..23.53%
+// • 5 to 9 items....16.16%
 // For size = "medium":
-// • 1 to 4 items......52.28%
-// • 50 to 99 items....25.34%
-// • 10 to 49 items....15.90%
-// • 100 to 499 items...6.24%
-// • 5 to 9 items.......0.15%
+// • 1 to 4 items......51.33%
+// • 50 to 99 items....26.34%
+// • 10 to 49 items....16.25%
+// • 100 to 499 items...5.89%
+// • 5 to 9 items.......0.13%
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/letrec.html).  

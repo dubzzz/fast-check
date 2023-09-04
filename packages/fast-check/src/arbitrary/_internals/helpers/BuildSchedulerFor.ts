@@ -23,7 +23,7 @@ function buildNextTaskIndex<TMetaData>(ordering: number[]): TaskSelector<TMetaDa
 /** @internal */
 export function buildSchedulerFor<TMetaData>(
   act: (f: () => Promise<void>) => Promise<unknown>,
-  ordering: number[]
+  ordering: number[],
 ): Scheduler<TMetaData> {
   return new SchedulerImplem<TMetaData>(act, buildNextTaskIndex(ordering));
 }

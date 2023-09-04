@@ -15,7 +15,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
   params: FcParameters<TsParameters> | undefined,
   timeout: number | undefined,
   jest: JestExtra,
-  fc: FcExtra
+  fc: FcExtra,
 ): void {
   const customParams: FcParameters<TsParameters> = { ...params };
   // Handle seed
@@ -64,7 +64,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     },
     jestTimeout !== undefined
       ? 0x7fffffff // must be 32-bit signed integer
-      : undefined
+      : undefined,
   );
 }
 

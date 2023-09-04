@@ -26,7 +26,10 @@ function toShrinkerValue<T>(value: Value<T>): Value<T> {
 
 /** @internal */
 export class WithShrinkFromOtherArbitrary<T> extends Arbitrary<T> {
-  constructor(private readonly generatorArbitrary: Arbitrary<T>, private readonly shrinkerArbitrary: Arbitrary<T>) {
+  constructor(
+    private readonly generatorArbitrary: Arbitrary<T>,
+    private readonly shrinkerArbitrary: Arbitrary<T>,
+  ) {
     super();
   }
 

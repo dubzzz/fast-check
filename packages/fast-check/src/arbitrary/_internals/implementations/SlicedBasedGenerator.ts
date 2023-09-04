@@ -16,7 +16,7 @@ export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
     private readonly arb: Arbitrary<T>,
     private readonly mrng: Random,
     private readonly slices: T[][],
-    private readonly biasFactor: number
+    private readonly biasFactor: number,
   ) {}
   attemptExact(targetLength: number): void {
     if (targetLength !== 0 && this.mrng.nextInt(1, this.biasFactor) === 1) {

@@ -64,7 +64,7 @@ export function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraint
  * @public
  */
 function schedulerFor<TMetaData = unknown>(
-  constraints?: SchedulerConstraints
+  constraints?: SchedulerConstraints,
 ): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>;
 /**
  * For custom scheduler with predefined resolution order
@@ -84,11 +84,11 @@ function schedulerFor<TMetaData = unknown>(
  */
 function schedulerFor<TMetaData = unknown>(
   customOrdering: number[],
-  constraints?: SchedulerConstraints
+  constraints?: SchedulerConstraints,
 ): Scheduler<TMetaData>;
 function schedulerFor<TMetaData = unknown>(
   customOrderingOrConstraints: number[] | SchedulerConstraints | undefined,
-  constraintsOrUndefined?: SchedulerConstraints
+  constraintsOrUndefined?: SchedulerConstraints,
 ): Scheduler<TMetaData> | ((_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>) {
   // Extract passed constraints
   const { act = (f: () => Promise<void>) => f() } = Array.isArray(customOrderingOrConstraints)

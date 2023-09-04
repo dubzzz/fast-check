@@ -4,7 +4,7 @@ import { safeSubstring } from '../../../utils/globals';
 export function paddedEightsToUuidMapper(t: [string, string, string, string]): string {
   return `${t[0]}-${safeSubstring(t[1], 4)}-${safeSubstring(t[1], 0, 4)}-${safeSubstring(t[2], 0, 4)}-${safeSubstring(
     t[2],
-    4
+    4,
   )}${t[3]}`;
 }
 

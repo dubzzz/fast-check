@@ -46,7 +46,7 @@ function subdomainLabel(size: Size) {
   //    restriction on the first character is relaxed to allow either a letter or a digit. Host software MUST support this more liberal syntax."
   return tuple(
     alphaNumericArb,
-    option(tuple(stringOf(alphaNumericHyphenArb, { size, maxLength: 61 }), alphaNumericArb))
+    option(tuple(stringOf(alphaNumericHyphenArb, { size, maxLength: 61 }), alphaNumericArb)),
   )
     .map(toSubdomainLabelMapper, toSubdomainLabelUnmapper)
     .filter(filterInvalidSubdomainLabel);
@@ -124,9 +124,9 @@ export function domain(constraints: DomainConstraints = {}): Arbitrary<string> {
     adapter(
       tuple(
         array(subdomainLabel(resolvedSize), { size: resolvedSizeMinusOne, minLength: 1, maxLength: 127 }),
-        publicSuffixArb
+        publicSuffixArb,
       ),
-      labelsAdapter
+      labelsAdapter,
     ).map(labelsMapper, labelsUnmapper)
   );
 }

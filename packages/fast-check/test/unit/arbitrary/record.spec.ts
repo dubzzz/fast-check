@@ -38,7 +38,7 @@ describe('record', () => {
           const { instance } = fakeArbitrary<any>();
           const buildPartialRecordArbitrary = jest.spyOn(
             PartialRecordArbitraryBuilderMock,
-            'buildPartialRecordArbitrary'
+            'buildPartialRecordArbitrary',
           );
           buildPartialRecordArbitrary.mockReturnValue(instance);
 
@@ -49,8 +49,8 @@ describe('record', () => {
           expect(arb).toBe(instance);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined);
-        }
-      )
+        },
+      ),
     ));
 
   it('should call buildPartialRecordArbitrary with keys=[] when constraints defines withDeletedKeys=true', () =>
@@ -65,7 +65,7 @@ describe('record', () => {
         const { instance } = fakeArbitrary<any>();
         const buildPartialRecordArbitrary = jest.spyOn(
           PartialRecordArbitraryBuilderMock,
-          'buildPartialRecordArbitrary'
+          'buildPartialRecordArbitrary',
         );
         buildPartialRecordArbitrary.mockReturnValue(instance);
 
@@ -76,7 +76,7 @@ describe('record', () => {
         expect(arb).toBe(instance);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, []);
-      })
+      }),
     ));
 
   it('should call buildPartialRecordArbitrary with keys=requiredKeys when constraints defines valid requiredKeys', () =>
@@ -100,7 +100,7 @@ describe('record', () => {
         const { instance } = fakeArbitrary<any>();
         const buildPartialRecordArbitrary = jest.spyOn(
           PartialRecordArbitraryBuilderMock,
-          'buildPartialRecordArbitrary'
+          'buildPartialRecordArbitrary',
         );
         buildPartialRecordArbitrary.mockReturnValue(instance);
 
@@ -111,7 +111,7 @@ describe('record', () => {
         expect(arb).toBe(instance);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
         expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, requiredKeys);
-      })
+      }),
     ));
 
   it('should reject configurations specifying non existing keys as required', () =>
@@ -129,9 +129,9 @@ describe('record', () => {
         expect(() =>
           record(recordModel, {
             requiredKeys: [requiredKey],
-          })
+          }),
         ).toThrowError();
-      })
+      }),
     ));
 
   it('should reject configurations specifying both requiredKeys and withDeletedKeys (even undefined)', () =>
@@ -156,10 +156,10 @@ describe('record', () => {
             record(recordModel, {
               requiredKeys: withRequiredKeys ? keys.filter((k) => k.required).map((k) => k.name) : undefined,
               withDeletedKeys: withDeletedKeys,
-            })
+            }),
           ).toThrowError();
-        }
-      )
+        },
+      ),
     ));
 
   it('should accept empty keys configurations with empty requiredKeys', () => {
@@ -207,11 +207,11 @@ describe('record (integration)', () => {
       valueStart: fc.nat(1000),
       kept: fc.boolean(),
     }),
-    { selector: (entry) => entry.key }
+    { selector: (entry) => entry.key },
   );
   const constraintsArbitrary = fc.oneof(
     fc.record({ withDeletedKeys: fc.boolean() }, { requiredKeys: [] }),
-    fc.record({ withRequiredKeys: fc.constant<true>(true) }, { requiredKeys: [] })
+    fc.record({ withRequiredKeys: fc.constant<true>(true) }, { requiredKeys: [] }),
   );
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(metaArbitrary, constraintsArbitrary)

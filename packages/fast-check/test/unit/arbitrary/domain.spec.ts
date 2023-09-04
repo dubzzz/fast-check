@@ -42,7 +42,7 @@ describe('domain (integration)', () => {
   type Extra = DomainConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     { size: fc.oneof(sizeArb, relativeSizeArb) },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 
   const isCorrect = isValidDomainWithExtension;

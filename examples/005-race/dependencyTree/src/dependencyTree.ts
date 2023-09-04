@@ -1,7 +1,7 @@
 export const dependencyTree = async (
   initialPackageName: string,
   fetch: (packageName: string) => Promise<PackageDefinition>,
-  withBug: boolean = false
+  withBug: boolean = false,
 ) => {
   const cache: AllPackagesDefinition = {};
   const cachePending = new Set<string>();
@@ -20,7 +20,7 @@ export const dependencyTree = async (
       Object.keys(packageDef.dependencies).map(async (dependencyName) => {
         //if (dependencyName === packageName) return;
         await feedCache(dependencyName);
-      })
+      }),
     );
   };
   await feedCache(initialPackageName);

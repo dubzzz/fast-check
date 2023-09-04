@@ -16,13 +16,13 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
           }
           return true;
         }),
-        { seed: seed }
+        { seed: seed },
       );
     });
     it('Should be able to shrink to the minimal counterexample', () => {
       const out = fc.check(
         fc.property(fc.subarray(src), (arr: number[]) => arr.indexOf(src[0]) === -1 || arr.indexOf(src[3]) === -1),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([[src[0], src[3]]]);
@@ -40,7 +40,7 @@ describe(`SubarrayArbitrary (seed: ${seed})`, () => {
           }
           return true;
         }),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample![0]).toHaveLength(2);

@@ -79,6 +79,6 @@ export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
     authorityArb,
     webPath({ size: resolvedSize }),
     c.withQueryParameters === true ? option(webQueryParameters({ size: resolvedSize })) : constant(null),
-    c.withFragments === true ? option(webFragments({ size: resolvedSize })) : constant(null)
+    c.withFragments === true ? option(webFragments({ size: resolvedSize })) : constant(null),
   ).map(partsToUrlMapper, partsToUrlUnmapper);
 }

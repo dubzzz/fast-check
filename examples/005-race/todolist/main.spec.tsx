@@ -18,7 +18,7 @@ describe('TodoList', () => {
           TodoListCommands,
           fc.uniqueArray(
             fc.record({ id: fc.hexaString({ minLength: 8, maxLength: 8 }), label: fc.string(), checked: fc.boolean() }),
-            { selector: (entry) => entry.id }
+            { selector: (entry) => entry.id },
           ),
           fc.infiniteStream(fc.boolean()),
           async (s, commands, initialTodos, allFailures) => {
@@ -30,13 +30,13 @@ describe('TodoList', () => {
 
             // Check the final state (no more items should be loading)
             expect(
-              sortTodos((await listTodos()).map((t) => ({ label: t.label, checked: t.checked, loading: t.loading })))
+              sortTodos((await listTodos()).map((t) => ({ label: t.label, checked: t.checked, loading: t.loading }))),
             ).toEqual(sortTodos(expectedTodos().map((t) => ({ label: t.label, checked: t.checked, loading: false }))));
-          }
+          },
         )
         .beforeEach(async () => {
           await cleanup();
-        })
+        }),
     );
   });
 });

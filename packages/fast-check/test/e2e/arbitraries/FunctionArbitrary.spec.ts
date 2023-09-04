@@ -8,7 +8,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
         fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
         {
           seed: seed,
-        }
+        },
       );
       expect(out.failed).toBe(true);
     });
@@ -20,8 +20,8 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
             f(42, 1);
             return false;
           }),
-          { seed: seed }
-        )
+          { seed: seed },
+        ),
       ).toThrowError(/\[0,8\] => 0.*\[42,1\] => 0/s);
     });
   });
@@ -35,7 +35,7 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
         {
           seed: seed,
           numRuns: 5000, // increased numRuns to remove flakiness
-        }
+        },
       );
       expect(out.failed).toBe(true);
       const [f, a, b] = out.counterexample!;

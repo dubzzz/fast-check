@@ -25,7 +25,7 @@ function runIt<Ts>(
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
-  interruptedAsFailure: boolean
+  interruptedAsFailure: boolean,
 ): RunExecution<Ts> {
   const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
@@ -50,7 +50,7 @@ async function asyncRunIt<Ts>(
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
-  interruptedAsFailure: boolean
+  interruptedAsFailure: boolean,
 ): Promise<RunExecution<Ts>> {
   const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
@@ -73,7 +73,7 @@ async function asyncRunIt<Ts>(
 function applyPath<Ts>(
   valueProducers: IterableIterator<() => Value<Ts>>,
   shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
-  nonEmptyPath: string
+  nonEmptyPath: string,
 ): IterableIterator<Value<Ts>> {
   const pathPoints = nonEmptyPath.split(':');
   const pathStream = stream(valueProducers)
@@ -130,7 +130,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(
     // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
-    safeObjectAssign(safeObjectAssign({}, readConfigureGlobal() as Parameters<Ts>), params)
+    safeObjectAssign(safeObjectAssign({}, readConfigureGlobal() as Parameters<Ts>), params),
   );
   if (qParams.reporter !== null && qParams.asyncReporter !== null)
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
@@ -149,13 +149,13 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()
     ? asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)
+        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
       )
     : runIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
         qParams.seed,
         qParams.path,
         maxSkips,
-        qParams
+        qParams,
       );
 }
 

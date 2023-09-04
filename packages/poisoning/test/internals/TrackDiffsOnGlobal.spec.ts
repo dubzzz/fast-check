@@ -16,7 +16,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       () => true,
-      () => true
+      () => true,
     );
     expect(globalA).not.toEqual({});
     diff.forEach((d) => d.patch());
@@ -46,7 +46,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       () => true,
-      () => true
+      () => true,
     );
     expect(globalA).not.toEqual({});
     diff.forEach((d) => d.patch());
@@ -75,7 +75,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       () => true,
-      () => true
+      () => true,
     );
     expect('a' in globalA).toBe(true);
     diff.forEach((d) => d.patch());
@@ -104,7 +104,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       () => true,
-      () => true
+      () => true,
     );
     expect(globalA).not.toEqual({ a: 2 });
     diff.forEach((d) => d.patch());
@@ -133,7 +133,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       () => true,
-      () => true
+      () => true,
     );
     expect(globalA).not.toEqual({ a: 2 });
     diff.forEach((d) => d.patch());
@@ -169,7 +169,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       () => true,
-      () => true
+      () => true,
     );
     expect(globalA).not.toEqual({ hello: helloOverride });
     diff.forEach((d) => d.patch());
@@ -201,7 +201,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       (g) => g.name !== 'globalA', // globalA not eligible for tracking
-      () => true
+      () => true,
     );
     expect(globalA).not.toEqual({ a: 2 });
     expect(globalB).not.toEqual({ b: 2 });
@@ -227,7 +227,7 @@ describe('trackDiffsOnGlobals', () => {
     const diff = trackDiffsOnGlobals(
       allGlobals,
       () => true,
-      (_g, p) => p !== 'a' // property a not eligible for tracking
+      (_g, p) => p !== 'a', // property a not eligible for tracking
     );
     expect(globalA).not.toEqual({ a: 2, b: 2 });
     diff.forEach((d) => d.patch());
@@ -249,7 +249,7 @@ function extractGlobalDetailsFor(itemName: string, item: unknown): GlobalDetails
       [...Object.getOwnPropertyNames(item), ...Object.getOwnPropertySymbols(item)].map((keyName) => [
         keyName,
         Object.getOwnPropertyDescriptor(item, keyName)!,
-      ])
+      ]),
     ),
     rootAncestors: PoisoningFreeSet.from(['globalThis']),
   };

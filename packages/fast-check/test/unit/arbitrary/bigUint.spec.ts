@@ -59,7 +59,7 @@ describe('bigUint', () => {
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(BigInt(0), max);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should instantiate BigIntArbitrary(0, max) for bigUint(max)', () =>
@@ -76,7 +76,7 @@ describe('bigUint', () => {
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(BigInt(0), max);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should throw when maximum value is lower than zero', () =>
@@ -84,6 +84,6 @@ describe('bigUint', () => {
       fc.property(fc.bigInt({ max: BigInt(-1) }), (max) => {
         // Arrange / Act / Assert
         expect(() => bigUint({ max })).toThrowError();
-      })
+      }),
     ));
 });

@@ -20,7 +20,7 @@ function biasNumericRange(min: bigint, max: bigint, logLike: (n: bigint) => bigi
 function biasNumericRange<NType extends number | bigint>(
   min: NType,
   max: NType,
-  logLike: (n: NType) => NType
+  logLike: (n: NType) => NType,
 ): { min: NType; max: NType }[] {
   if (min === max) {
     return [{ min: min, max: max }];

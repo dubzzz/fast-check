@@ -90,7 +90,7 @@ export type OneOfConstraints = {
  * @internal
  */
 function isOneOfContraints(
-  param: OneOfConstraints | MaybeWeightedArbitrary<unknown> | undefined
+  param: OneOfConstraints | MaybeWeightedArbitrary<unknown> | undefined,
 ): param is OneOfConstraints {
   return (
     param != null &&

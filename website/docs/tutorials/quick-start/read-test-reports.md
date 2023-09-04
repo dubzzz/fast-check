@@ -79,7 +79,7 @@ test('should sort numeric elements from the smallest to the largest one', () => 
     fc.property(fc.array(fc.integer()), (data) => {
       /* code of the predicate */
     }),
-    { seed: -1819918769, path: '0:...:3', endOnFailure: true } // <-- added
+    { seed: -1819918769, path: '0:...:3', endOnFailure: true }, // <-- added
   );
 });
 ```
@@ -107,7 +107,7 @@ test('should sort numeric elements from the smallest to the largest one', () => 
     fc.property(fc.array(fc.integer()), (data) => {
       /* code of the predicate */
     }),
-    { verbose: 2 } // <-- added
+    { verbose: 2 }, // <-- added
   );
 });
 ```

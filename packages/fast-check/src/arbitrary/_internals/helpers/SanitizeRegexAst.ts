@@ -44,7 +44,7 @@ function addMissingDotStarTraversal(
   astNode: RegexToken,
   isFirst: boolean,
   isLast: boolean,
-  traversalResults: TraversalResults
+  traversalResults: TraversalResults,
 ): RegexToken {
   switch (astNode.type) {
     case 'Char':
@@ -62,8 +62,8 @@ function addMissingDotStarTraversal(
           addMissingDotStarTraversalAddMissing(
             node,
             isFirst && index === 0,
-            isLast && index === astNode.expressions.length - 1
-          )
+            isLast && index === astNode.expressions.length - 1,
+          ),
         ),
       };
     case 'CharacterClass':

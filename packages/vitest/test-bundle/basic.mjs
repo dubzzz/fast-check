@@ -24,5 +24,5 @@ import('@fast-check/vitest').then(
     // When our modules are not properly defined, we receive: err.code === "ERR_MODULE_NOT_FOUND".
     // Or at least, it's one of the possible errors we could receive.
     throw err;
-  }
+  },
 );

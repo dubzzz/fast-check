@@ -51,7 +51,7 @@ describe('double', () => {
 
         // Assert
         expect(arb).toBeDefined();
-      })
+      }),
     );
   });
 
@@ -70,8 +70,8 @@ describe('double', () => {
 
           // Assert
           expect(arb).toBeDefined();
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -94,10 +94,10 @@ describe('double', () => {
               max: f,
               minExcluded: exclusiveMode === 'min' || exclusiveMode === 'both',
               maxExcluded: exclusiveMode === 'max' || exclusiveMode === 'both',
-            })
+            }),
           ).toThrowError();
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -133,7 +133,7 @@ describe('double', () => {
         // Act / Assert
         expect(() => double({ min, max })).toThrowError();
         expect(arrayInt64).not.toHaveBeenCalled();
-      })
+      }),
     );
   });
 
@@ -167,7 +167,7 @@ describe('double', () => {
             const minIndex = doubleToIndex(min);
             const maxIndex = doubleToIndex(max);
             const arbitraryGeneratedIndex = toIndex(
-              (mod % (toBigInt(maxIndex) - toBigInt(minIndex) + BigInt(1))) + toBigInt(minIndex)
+              (mod % (toBigInt(maxIndex) - toBigInt(minIndex) + BigInt(1))) + toBigInt(minIndex),
             );
             spyArrayInt64WithValue(() => arbitraryGeneratedIndex);
 
@@ -177,8 +177,8 @@ describe('double', () => {
 
             // Assert
             expect(f).toBe(indexToDouble(arbitraryGeneratedIndex));
-          }
-        )
+          },
+        ),
       );
     });
   }
@@ -210,7 +210,7 @@ describe('double', () => {
             expect(constraintsWithNaN[0]).toEqual(substract64(constraintsNoNaN[0], Unit64));
             expect(constraintsWithNaN[1]).toEqual(constraintsNoNaN[1]);
           }
-        })
+        }),
       );
     });
 
@@ -240,8 +240,8 @@ describe('double', () => {
 
             // Assert
             expect(f).toBe(Number.NaN);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -268,7 +268,7 @@ describe('double', () => {
           // Assert
           expect(arrayInt64).toHaveBeenCalledTimes(1);
           expect(arrayInt64).toHaveBeenCalledWith(expectedMinIndex, expectedMaxIndex);
-        })
+        }),
       );
     });
   });

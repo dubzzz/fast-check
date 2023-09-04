@@ -40,13 +40,13 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
           c.render();
         }
       }),
-      { seed }
+      { seed },
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].toString()).toEqual(
       'schedulerFor()`\n' +
         '-> [task${2}] function::fetchHeroesById() resolved with value [{"name":"James Bond"}]\n' +
-        '-> [task${1}] function::fetchHeroName() pending`'
+        '-> [task${1}] function::fetchHeroName() pending`',
     );
     // Node  <16: Cannot read property 'toLowerCase' of undefined
     // Node >=16: TypeError: Cannot read properties of undefined (reading 'toLowerCase')
@@ -90,7 +90,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     };
     const buildGraph = async (
       initialPackageName: string,
-      fetch: (packageName: string) => Promise<PackageDefinition>
+      fetch: (packageName: string) => Promise<PackageDefinition>,
     ) => {
       const cache: AllPackagesDefinition = {};
       // // Uncomment to remove the bug
@@ -126,7 +126,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         }
         await handle; // nothing should block now
       }),
-      { seed }
+      { seed },
     );
     expect(out.failed).toBe(true);
   });

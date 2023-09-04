@@ -52,7 +52,7 @@ export class GlobalPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPa
       this.workerFileUrl.toString(),
       setTimeout(() => {
         this.internalPool.terminateAllWorkers();
-      }, 0)
+      }, 0),
     );
     return Promise.resolve();
   }

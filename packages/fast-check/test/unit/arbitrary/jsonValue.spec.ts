@@ -20,15 +20,15 @@ describe('jsonValue (integration)', () => {
           depthSize: fc.oneof(fc.double({ min: 0.1, noNaN: true }), sizeArb),
           maxDepth: fc.nat({ max: 5 }),
         },
-        { requiredKeys: [] }
+        { requiredKeys: [] },
       )
       .filter(
         (ct) =>
           ct.depthSize === undefined ||
           (typeof ct.depthSize === 'number' && ct.depthSize <= 10) ||
-          ct.maxDepth !== undefined
+          ct.maxDepth !== undefined,
       ),
-    { nil: undefined }
+    { nil: undefined },
   );
 
   const isCorrect = (v: unknown, extra: Extra) => {
@@ -65,7 +65,7 @@ describe('jsonValue (integration)', () => {
   it('should be able to shrink to the same values without initial context', () => {
     assertShrinkProducesSameValueWithoutInitialContext(
       (extra) => jsonValueBuilder(extra).filter((o) => !isObjectWithNumericKeys(o)),
-      { extraParameters }
+      { extraParameters },
     );
   });
 });

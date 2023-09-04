@@ -11,7 +11,10 @@ const safeObjectIs = Object.is;
 
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
-  constructor(readonly min: number, readonly max: number) {
+  constructor(
+    readonly min: number,
+    readonly max: number,
+  ) {
     super();
   }
 

@@ -35,7 +35,7 @@ export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
     return tupleShrink(
       history.map((c) => c.arb),
       history.map((c) => c.value),
-      history.map((c) => c.context)
+      history.map((c) => c.context),
     ).map((shrink): Value<GeneratorValue> => {
       function computePreBuiltValues(): PreBuiltValue[] {
         const subValues = shrink.value; // trigger an explicit access to the value in case it needs to be cloned

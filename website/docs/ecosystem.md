@@ -62,7 +62,7 @@ test("User's full name always contains their first and last names", () => {
       const fullName = `${parsedUser.firstName} ${parsedUser.lastName}`;
       expect(fullName).toContain(user.firstName);
       expect(fullName).toContain(user.lastName);
-    })
+    }),
   );
 });
 ```
@@ -257,7 +257,7 @@ test('should detect the substring', () => {
   fc.assert(
     fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
       expect(isSubstring(a + b + c, b)).toBe(true);
-    })
+    }),
   );
 });
 ```

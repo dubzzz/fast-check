@@ -33,17 +33,17 @@ export function ipV4Extended(): Arbitrary<string> {
       buildStringifiedNatArbitrary(255),
       buildStringifiedNatArbitrary(255),
       buildStringifiedNatArbitrary(255),
-      buildStringifiedNatArbitrary(255)
+      buildStringifiedNatArbitrary(255),
     ).map(dotJoinerMapper, dotJoinerUnmapper),
     tuple<string[]>(
       buildStringifiedNatArbitrary(255),
       buildStringifiedNatArbitrary(255),
-      buildStringifiedNatArbitrary(65535)
+      buildStringifiedNatArbitrary(65535),
     ).map(dotJoinerMapper, dotJoinerUnmapper),
     tuple<string[]>(buildStringifiedNatArbitrary(255), buildStringifiedNatArbitrary(16777215)).map(
       dotJoinerMapper,
-      dotJoinerUnmapper
+      dotJoinerUnmapper,
     ),
-    buildStringifiedNatArbitrary(4294967295)
+    buildStringifiedNatArbitrary(4294967295),
   );
 }

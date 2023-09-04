@@ -29,7 +29,7 @@ describe('webAuthority (integration)', () => {
         withUserInfo: fc.boolean(),
         size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
       },
-      { requiredKeys: [] }
+      { requiredKeys: [] },
     );
 
   const isCorrectForURL = (webAuthority: string) => {

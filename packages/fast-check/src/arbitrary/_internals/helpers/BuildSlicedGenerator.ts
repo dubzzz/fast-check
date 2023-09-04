@@ -18,7 +18,7 @@ export function buildSlicedGenerator<T>(
   arb: Arbitrary<T>,
   mrng: Random,
   slices: T[][],
-  biasFactor: number | undefined
+  biasFactor: number | undefined,
 ): SlicedGenerator<T> {
   // We by-pass any slice-based logic if one of:
   // - no bias

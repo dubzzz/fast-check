@@ -46,8 +46,8 @@ describe('ConstantArbitrary', () => {
             expect(nextInt).toHaveBeenCalledTimes(1);
             expect(nextInt).toHaveBeenCalledWith(0, values.length - 1);
             expect(values).toContainEqual(g.value);
-          }
-        )
+          },
+        ),
       ));
 
     it('should be able to generate any of the requested values', () =>
@@ -70,8 +70,8 @@ describe('ConstantArbitrary', () => {
               notSeenValues.splice(index, 1);
             }
             expect(notSeenValues).toEqual([]);
-          }
-        )
+          },
+        ),
       ));
 
     it('should produce a cloneable instance if provided value is cloneable', () => {
@@ -122,7 +122,7 @@ describe('ConstantArbitrary', () => {
 
           // Assert
           expect(out).toBe(true);
-        })
+        }),
       ));
 
     it('should not detect values not equal regarding to Object.is', () => {
@@ -158,7 +158,7 @@ describe('ConstantArbitrary', () => {
           } else {
             expect(shrinks.map((v) => v.value)).toEqual([values[0]]);
           }
-        })
+        }),
       ));
 
     it('should shrink towards the first value if it was not already this one and to nil otherwise even without any context', () =>
@@ -179,7 +179,7 @@ describe('ConstantArbitrary', () => {
           } else {
             expect(shrinks.map((v) => v.value)).toEqual([values[0]]);
           }
-        })
+        }),
       ));
 
     it('should not shrink towards the first value if generated value is equal to the first one regarding `Object.is`', () => {

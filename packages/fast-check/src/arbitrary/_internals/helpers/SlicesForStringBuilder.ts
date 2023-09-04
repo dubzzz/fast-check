@@ -33,7 +33,7 @@ const dangerousStrings = [
 function computeCandidateString(
   dangerous: string,
   charArbitrary: Arbitrary<string>,
-  stringSplitter: (value: string) => string[]
+  stringSplitter: (value: string) => string[],
 ): string[] | undefined {
   let candidate: string[];
   try {
@@ -55,7 +55,7 @@ function computeCandidateString(
 /** @internal */
 export function createSlicesForString(
   charArbitrary: Arbitrary<string>,
-  stringSplitter: (value: string) => string[]
+  stringSplitter: (value: string) => string[],
 ): string[][] {
   const slicesForString: string[][] = [];
   for (const dangerous of dangerousStrings) {

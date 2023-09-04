@@ -140,7 +140,7 @@ async function runPackageTest(runner: (fileSystem: RunnerFileSystem) => Promise<
         const filePath = path.join(packagePath, ...filePathChunks);
         return fs.access(filePath).then(
           () => true,
-          () => false
+          () => false,
         );
       },
     };

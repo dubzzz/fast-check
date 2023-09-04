@@ -11,7 +11,10 @@ const safeObjectIs = Object.is;
 
 /** @internal */
 export class CloneArbitrary<T> extends Arbitrary<T[]> {
-  constructor(readonly arb: Arbitrary<T>, readonly numValues: number) {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly numValues: number,
+  ) {
     super();
   }
 
@@ -51,7 +54,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
       return Stream.nil();
     }
     return new Stream(this.shrinkImpl(value, context !== undefined ? (context as unknown[]) : [])).map((v) =>
-      this.wrapper(v)
+      this.wrapper(v),
     );
   }
 

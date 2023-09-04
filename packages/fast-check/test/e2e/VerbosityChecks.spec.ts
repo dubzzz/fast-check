@@ -18,7 +18,7 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
         {
           seed,
           verbose: fc.VerbosityLevel.Verbose,
-        }
+        },
       );
     } catch (err: unknown) {
       failed = true;
@@ -50,7 +50,7 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
         {
           seed,
           verbose: fc.VerbosityLevel.VeryVerbose,
-        }
+        },
       );
     } catch (err: unknown) {
       failed = true;

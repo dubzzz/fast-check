@@ -11,7 +11,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
       };
       const out = fc.check(
         fc.property(fc.record(recordModel), (obj) => obj.cc.length <= 2),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toStrictEqual([{ aa: 0, bb: {}, cc: '   ' }]);
@@ -26,7 +26,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj) => obj.bb == null),
         {
           seed: seed,
-        }
+        },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toStrictEqual([{ bb: {} }]);
@@ -45,7 +45,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
           if (obj.forcePositiveOutput === true && obj.forceNegativeOutput === true) return false;
           return true;
         }),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toStrictEqual([{ forcePositiveOutput: true, forceNegativeOutput: true }]);

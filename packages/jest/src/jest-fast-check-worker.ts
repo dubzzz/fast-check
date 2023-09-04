@@ -75,7 +75,7 @@ export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
           test: buildTest(test as It, jest, fcExtra),
           it: buildTest(it as It, jest, fcExtra),
           expect: jestExpect,
-        })
+        }),
       ) as any;
     }
   }

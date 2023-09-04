@@ -18,7 +18,7 @@ type MinimalQualifiedParameters<Ts> = Pick<
 /** @internal */
 export function decorateProperty<Ts>(
   rawProperty: IRawProperty<Ts>,
-  qParams: MinimalQualifiedParameters<Ts>
+  qParams: MinimalQualifiedParameters<Ts>,
 ): IRawProperty<Ts> {
   let prop = rawProperty;
   if (rawProperty.isAsync() && qParams.timeout != null) {
@@ -34,7 +34,7 @@ export function decorateProperty<Ts>(
       qParams.skipAllAfterTimeLimit,
       false,
       safeSetTimeout,
-      safeClearTimeout
+      safeClearTimeout,
     );
   }
   if (qParams.interruptAfterTimeLimit != null) {
@@ -44,7 +44,7 @@ export function decorateProperty<Ts>(
       qParams.interruptAfterTimeLimit,
       true,
       safeSetTimeout,
-      safeClearTimeout
+      safeClearTimeout,
     );
   }
   if (qParams.skipEqualValues) {

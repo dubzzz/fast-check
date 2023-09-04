@@ -31,7 +31,7 @@ export const binarySearchTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tre
 export const binarySearchTreeWithMaxDepthOldWay = (
   maxDepth: number,
   minValue: number = Number.MIN_SAFE_INTEGER,
-  maxValue: number = Number.MAX_SAFE_INTEGER
+  maxValue: number = Number.MAX_SAFE_INTEGER,
 ): fc.Arbitrary<Tree<number>> => {
   const valueArbitrary = fc.integer({ min: minValue, max: maxValue });
   if (maxDepth <= 0) {

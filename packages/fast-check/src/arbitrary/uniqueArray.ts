@@ -178,7 +178,7 @@ export type UniqueArrayConstraints<T, U> =
  */
 export function uniqueArray<T, U>(
   arb: Arbitrary<T>,
-  constraints?: UniqueArrayConstraintsRecommended<T, U>
+  constraints?: UniqueArrayConstraintsRecommended<T, U>,
 ): Arbitrary<T[]>;
 /**
  * For arrays of unique values coming from `arb`
@@ -201,7 +201,7 @@ export function uniqueArray<T>(arb: Arbitrary<T>, constraints: UniqueArrayConstr
  */
 export function uniqueArray<T, U>(
   arb: Arbitrary<T>,
-  constraints: UniqueArrayConstraintsCustomCompareSelect<T, U>
+  constraints: UniqueArrayConstraintsCustomCompareSelect<T, U>,
 ): Arbitrary<T[]>;
 /**
  * For arrays of unique values coming from `arb`
@@ -220,7 +220,7 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
     constraints.size,
     minLength,
     maxLength,
-    constraints.maxLength !== undefined
+    constraints.maxLength !== undefined,
   );
   const depthIdentifier = constraints.depthIdentifier;
   const setBuilder = buildUniqueArraySetBuilder(constraints);
@@ -232,7 +232,7 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
     maxLength,
     depthIdentifier,
     setBuilder,
-    []
+    [],
   );
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);

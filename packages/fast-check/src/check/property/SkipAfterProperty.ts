@@ -33,7 +33,7 @@ export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawPrope
     timeLimit: number,
     readonly interruptExecution: boolean,
     readonly setTimeoutSafe: typeof setTimeout,
-    readonly clearTimeoutSafe: typeof clearTimeout
+    readonly clearTimeoutSafe: typeof clearTimeout,
   ) {
     this.skipAfterTime = this.getTime() + timeLimit;
     if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {

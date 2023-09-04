@@ -10,7 +10,7 @@ describe('fibonacci', () => {
     fc.assert(
       fc.property(fc.integer({ min: 2, max: MaxN }), (n) => {
         expect(fibo(n)).toBe(fibo(n - 1) + fibo(n - 2));
-      })
+      }),
     );
   });
 
@@ -21,7 +21,7 @@ describe('fibonacci', () => {
     fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), fc.integer({ min: 0, max: MaxN }), (p, q) => {
         expect(fibo(p + q)).toBe(fibo(p) * fibo(q + 1) + fibo(p - 1) * fibo(q));
-      })
+      }),
     );
   });
 
@@ -30,7 +30,7 @@ describe('fibonacci', () => {
     fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), (p) => {
         expect(fibo(2 * p - 1)).toBe(fibo(p - 1) * fibo(p - 1) + fibo(p) * fibo(p));
-      })
+      }),
     );
   });
 
@@ -40,7 +40,7 @@ describe('fibonacci', () => {
         const [p, q] = a < b ? [b, a] : [a, b];
         const sign = (p - q) % 2 === 0 ? 1n : -1n; // (-1)^(p-q)
         expect(fibo(p) * fibo(p) - fibo(p - q) * fibo(p + q)).toBe(sign * fibo(q) * fibo(q));
-      })
+      }),
     );
   });
 
@@ -49,7 +49,7 @@ describe('fibonacci', () => {
       fc.property(fc.integer({ min: 1, max: MaxN }), (p) => {
         const sign = p % 2 === 0 ? 1n : -1n; // (-1)^p
         expect(fibo(p + 1) * fibo(p - 1) - fibo(p) * fibo(p)).toBe(sign);
-      })
+      }),
     );
   });
 
@@ -57,7 +57,7 @@ describe('fibonacci', () => {
     fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), fc.integer({ min: 0, max: 100 }), (n, k) => {
         expect(fibo(n * k) % fibo(n)).toBe(0n);
-      })
+      }),
     );
   });
 
@@ -81,7 +81,7 @@ describe('fibonacci', () => {
           }
         };
         expect(gcd(fibo(a), fibo(b), 0n)).toBe(fibo(gcd(a, b, 0)));
-      })
+      }),
     );
   });
 });

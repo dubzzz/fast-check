@@ -21,7 +21,7 @@ describe('uint16Array', () => {
       expect.any(Number),
       expect.any(Number),
       Uint16Array,
-      expect.anything()
+      expect.anything(),
     );
   });
 

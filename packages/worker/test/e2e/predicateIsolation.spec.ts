@@ -21,7 +21,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(predicateIsolation.predicateLevel, options)).resolves.not.toThrow();
       },
-      jestTimeout
+      jestTimeout,
     );
 
     it(
@@ -34,7 +34,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(predicateIsolation.propertyLevel, options)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
 
     it(
@@ -47,7 +47,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(predicateIsolation.fileLevel, options)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
 
     it(
@@ -81,7 +81,7 @@ if (isMainThread) {
           expect(foundOne).toBe(true);
         }
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

@@ -12,6 +12,6 @@ export const SpaceArbitrary = fc
   })
   .filter(({ w, h, cx, cy, sx, sy }) => cx < w && sx < w && cy < h && sy < h)
   .map(({ w, h, cx, cy, sx, sy }) =>
-    new SpaceBuilder().withDimension(w, h).withSolution(cx, cy).withCurrent(sx, sy).build()
+    new SpaceBuilder().withDimension(w, h).withSolution(cx, cy).withCurrent(sx, sy).build(),
   )
   .map((space) => [space, Math.ceil(Math.log(Math.max(space.dim_x, space.dim_y)) / Math.log(2))] as [Space, number]);

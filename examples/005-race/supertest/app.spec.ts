@@ -22,7 +22,7 @@ describe('app', () => {
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
-          { selector: (u) => u.id }
+          { selector: (u) => u.id },
         ),
         fc.integer({ min: 1, max: 5 }),
         fc.scheduler({
@@ -43,14 +43,14 @@ describe('app', () => {
           getAllUsers.mockImplementation(
             s.scheduleFunction(async function getAllUsers() {
               return knownUsers;
-            })
+            }),
           );
           removeUsers.mockImplementation(
             s.scheduleFunction(async function removeUsers(ids) {
               const sizeBefore = knownUsers.length;
               knownUsers = knownUsers.filter((u) => !ids.includes(u.id));
               return sizeBefore - knownUsers.length;
-            })
+            }),
           );
 
           // Act
@@ -65,8 +65,8 @@ describe('app', () => {
           for (const outQuery of out) {
             expect(outQuery.body.status).toBe('success');
           }
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -79,7 +79,7 @@ describe('app', () => {
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
-          { selector: (u) => u.id }
+          { selector: (u) => u.id },
         ),
         fc.integer({ min: 1, max: 5 }),
         fc.scheduler(),
@@ -91,14 +91,14 @@ describe('app', () => {
           getAllUsers.mockImplementation(
             s.scheduleFunction(async function getAllUsers() {
               return knownUsers;
-            })
+            }),
           );
           removeUsers.mockImplementation(
             s.scheduleFunction(async function removeUsers(ids) {
               const sizeBefore = knownUsers.length;
               knownUsers = knownUsers.filter((u) => !ids.includes(u.id));
               return sizeBefore - knownUsers.length;
-            })
+            }),
           );
 
           // Act
@@ -112,8 +112,8 @@ describe('app', () => {
           for (const outQuery of out) {
             expect(outQuery.status).toBe('success');
           }
-        }
-      )
+        },
+      ),
     );
   });
 });

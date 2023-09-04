@@ -11,7 +11,7 @@ export type PooledWorker<TSuccess, TPayload> = {
     predicateId: number,
     payload: TPayload,
     onSuccess: OnSuccessCallback<TSuccess>,
-    onFailure: OnErrorCallback
+    onFailure: OnErrorCallback,
   ) => void;
   terminateIfStillRunning: () => Promise<void>;
 };

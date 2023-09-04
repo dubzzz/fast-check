@@ -33,8 +33,8 @@ describe('AdapterArbitrary', () => {
             expect(adapterFunction).toHaveBeenCalledWith(v);
             expect(shrink).not.toHaveBeenCalled();
             expect(canShrinkWithoutContext).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -66,8 +66,8 @@ describe('AdapterArbitrary', () => {
             expect(adapterFunction).toHaveBeenCalledWith(v);
             expect(shrink).not.toHaveBeenCalled();
             expect(canShrinkWithoutContext).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -96,7 +96,7 @@ describe('AdapterArbitrary', () => {
 
         // Assert
         expect(out).toBe(canShrink && !hasToAdapt);
-      }
+      },
     );
   });
 
@@ -161,8 +161,8 @@ describe('AdapterArbitrary', () => {
               expect(shrink).not.toHaveBeenCalled();
               expect(canShrinkWithoutContext).toHaveBeenCalledWith(adaptedA.value); // returned false
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -203,7 +203,7 @@ describe('AdapterArbitrary', () => {
             vABC,
             cABC,
             adaptedABC,
-            canShrinkIfAdapted
+            canShrinkIfAdapted,
           ) => {
             // Arrange
             fc.pre(allUniques(vA, vAA, vAB, vAC, vABC)); // check for adapterFunction
@@ -229,7 +229,7 @@ describe('AdapterArbitrary', () => {
                   ? adaptedAB
                   : Object.is(v, vAC)
                   ? adaptedAC
-                  : adaptedABC
+                  : adaptedABC,
               );
 
             // Act
@@ -262,8 +262,8 @@ describe('AdapterArbitrary', () => {
               expect(shrinks).toHaveLength(0);
               expect(canShrinkWithoutContext).toHaveBeenCalledWith(adaptedAB.value);
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -307,8 +307,8 @@ describe('AdapterArbitrary', () => {
             expect(generate).not.toHaveBeenCalled();
             expect(shrink).toHaveBeenCalledWith(toShrinkvalue, undefined);
             expect(canShrinkWithoutContext).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
   });

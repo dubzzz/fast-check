@@ -29,7 +29,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
     noInitialContext?: boolean;
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   const {
     isEqual,
@@ -63,10 +63,10 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
           }
           expect(g1).toBe(null);
           expect(g2).toBe(null);
-        }
+        },
       )
       .afterEach(poisoningAfterEach),
-    assertParameters
+    assertParameters,
   );
 }
 
@@ -80,7 +80,7 @@ export function assertProduceCorrectValues<T, U = never>(
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
     options;
@@ -103,10 +103,10 @@ export function assertProduceCorrectValues<T, U = never>(
             g = arb.shrink(g.value, g.context).getNthOrLast(pos);
           }
           expect(g).toBe(null);
-        }
+        },
       )
       .afterEach(poisoningAfterEach),
-    assertParameters
+    assertParameters,
   );
 }
 
@@ -118,7 +118,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
     isEqualContext?: (c1: unknown, c2: unknown, extraParameters: U) => void | boolean;
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   const {
     isEqual,
@@ -144,7 +144,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
         }
       })
       .afterEach(poisoningAfterEach),
-    assertParameters
+    assertParameters,
   );
 }
 
@@ -161,7 +161,7 @@ export function assertShrinkProducesSameValueWithoutInitialContext<T, U = never>
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   return assertProduceSameValueGivenSameSeed(arbitraryBuilder, { ...options, noInitialContext: true });
 }
@@ -171,7 +171,7 @@ export function assertProduceValuesShrinkableWithoutContext<T, U = never>(
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   return assertProduceCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canShrinkWithoutContext(v), options);
 }
@@ -182,7 +182,7 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   const previousValue: { value?: T } = {};
   function arbitraryBuilderInternal(...args: Parameters<typeof arbitraryBuilder>) {
@@ -201,7 +201,7 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
         expect(out).not.toBe(false);
       } catch (err) {
         throw new Error(
-          `Expect: ${fc.stringify(vNew)} to be strictly smaller than ${fc.stringify(vOld)}\n\nGot error: ${err}`
+          `Expect: ${fc.stringify(vNew)} to be strictly smaller than ${fc.stringify(vOld)}\n\nGot error: ${err}`,
         );
       }
     } finally {
@@ -217,7 +217,7 @@ export function assertProduceSomeSpecificValues<T, U = never>(
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   let foundOne = false;
   function detectSpecificValue(value: T): boolean {
@@ -246,7 +246,7 @@ export function assertGenerateIndependentOfSize<T, U = never>(
     isEqualContext?: (c1: unknown, c2: unknown, extraParameters: U) => void | boolean;
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
-  } = {}
+  } = {},
 ): void {
   const {
     extraParameters = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
@@ -265,7 +265,7 @@ export function assertGenerateIndependentOfSize<T, U = never>(
       isEqual: isEqual !== undefined ? (a, b, extra) => isEqual(a, b, extra.requested) : undefined,
       isEqualContext: isEqualContext !== undefined ? (a, b, extra) => isEqualContext(a, b, extra.requested) : undefined,
       assertParameters,
-    }
+    },
   );
 }
 
@@ -283,7 +283,7 @@ function assertEquality<T, U>(
   isEqual: ((v1: T, v2: T, extraParameters: U) => void | boolean) | undefined,
   v1: T,
   v2: T,
-  extraParameters: U
+  extraParameters: U,
 ): void {
   try {
     if (isEqual) {
@@ -301,7 +301,7 @@ function assertCorrectness<T, U>(
   isCorrect: (v: T, extraParameters: U, arb: Arbitrary<T>) => void | boolean,
   v: T,
   extraParameters: U,
-  arb: Arbitrary<T>
+  arb: Arbitrary<T>,
 ): void {
   try {
     const out = isCorrect(v, extraParameters, arb);

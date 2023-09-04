@@ -72,7 +72,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
   } else {
     safePush(
       hints,
-      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status'
+      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
     );
   }
 
@@ -113,7 +113,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, st
   } else {
     safePush(
       hints,
-      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status'
+      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
     );
   }
 
@@ -123,7 +123,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, st
 /** @internal */
 function defaultReportMessageInternal<Ts>(
   out: RunDetails<Ts>,
-  stringifyOne: (value: Ts) => string
+  stringifyOne: (value: Ts) => string,
 ): string | undefined {
   if (!out.failed) return;
 
