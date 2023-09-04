@@ -131,6 +131,32 @@ const config = {
         //... other Algolia params
       },
     }),
+
+  plugins: [
+    [
+      '@docusaurus/plugin-pwa',
+      {
+        offlineModeActivationStrategies: ['appInstalled', 'standalone', 'queryString'],
+        pwaHead: [
+          {
+            tagName: 'link',
+            rel: 'icon',
+            href: '/img/favicon.ico',
+          },
+          {
+            tagName: 'link',
+            rel: 'manifest',
+            href: '/manifest.json',
+          },
+          {
+            tagName: 'meta',
+            name: 'theme-color',
+            content: 'rgb(40, 46, 169)',
+          },
+        ],
+      },
+    ],
+  ],
 };
 
 module.exports = config;
