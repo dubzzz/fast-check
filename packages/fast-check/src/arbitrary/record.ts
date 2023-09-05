@@ -31,6 +31,7 @@ export type RecordConstraints<T = unknown> =
        *
        * @defaultValue false
        * @remarks Since 1.0.0
+       * @deprecated Prefer using `requiredKeys: []` instead of `withDeletedKeys: true` as the flag will be removed in the next major
        */
       withDeletedKeys?: boolean;
     };
