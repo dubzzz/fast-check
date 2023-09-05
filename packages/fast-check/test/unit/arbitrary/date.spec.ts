@@ -153,7 +153,7 @@ describe('date (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = constraintsArb();
 
   const isCorrect = (d: Date, extra: Extra) => {
-    if (extra.noInvalidDate || noInvalidDate === undefined) {
+    if (extra.noInvalidDate || extra.noInvalidDate === undefined) {
       expect(d.getTime()).not.toBe(Number.NaN);
     }
     if (extra.min) expect(d.getTime()).toBeGreaterThanOrEqual(extra.min.getTime());
