@@ -15,6 +15,16 @@
         "types": "./lib/esm/vitest-fast-check.d.ts",
         "default": "./lib/esm/vitest-fast-check.js"
       }
+    },
+    "./fuzz": {
+      "require": {
+        "types": "./lib/fuzz.d.ts",
+        "default": "./lib/fuzz.js"
+      },
+      "import": {
+        "types": "./lib/esm/fuzz.d.ts",
+        "default": "./lib/esm/fuzz.js"
+      }
     }
   },
   "module": "lib/esm/vitest-fast-check.js",
