@@ -1,7 +1,10 @@
+type KeyValuePairs<T> = [string, T][];
+type ObjectDefinition<T> = [/*items*/ KeyValuePairs<T>, /*null prototype*/ boolean];
+
 /** @internal */
-export function keyValuePairsToObjectMapper<T>(items: [string, T][]): { [key: string]: T } {
-  const obj: { [key: string]: T } = {};
-  for (const keyValue of items) {
+export function keyValuePairsToObjectMapper<T>(definition: ObjectDefinition<T>): { [key: string]: T } {
+  const obj: { [key: string]: T } = definition[1] ? Object.create(null) : {};
+  for (const keyValue of definition[0]) {
     Object.defineProperty(obj, keyValue[0], {
       enumerable: true,
       configurable: true,
@@ -28,12 +31,14 @@ function buildInvalidPropertyNameFilter(obj: unknown): (key: string) => boolean 
 }
 
 /** @internal */
-export function keyValuePairsToObjectUnmapper<T>(value: unknown): [string, T][] {
+export function keyValuePairsToObjectUnmapper<T>(value: unknown): ObjectDefinition<T> {
   // (partially) Equivalent to Object.entries
   if (typeof value !== 'object' || value === null) {
     throw new Error('Incompatible instance received: should be a non-null object');
   }
-  if (!('constructor' in value) || value.constructor !== Object) {
+  const hasNullPrototype = Object.getPrototypeOf(value) === null;
+  const hasObjectPrototype = 'constructor' in value && value.constructor === Object;
+  if (!hasNullPrototype && !hasObjectPrototype) {
     throw new Error('Incompatible instance received: should be of exact type Object');
   }
   if (Object.getOwnPropertySymbols(value).length > 0) {
@@ -42,5 +47,5 @@ export function keyValuePairsToObjectUnmapper<T>(value: unknown): [string, T][] 
   if (Object.getOwnPropertyNames(value).find(buildInvalidPropertyNameFilter(value)) !== undefined) {
     throw new Error('Incompatible instance received: should contain only c/e/w properties without get/set');
   }
-  return Object.entries(value);
+  return [Object.entries(value), hasNullPrototype];
 }

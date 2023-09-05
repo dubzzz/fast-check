@@ -18,17 +18,30 @@ describe('dictionary (integration)', () => {
       keys: fc.uniqueArray(fc.string(), { minLength: 35 }), // enough keys to respect constraints
       values: fc.uniqueArray(fc.anything(), { minLength: 1 }),
       constraints: fc
-        .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
-        .map(([min, gap, withMin, withMax]) => ({
+        .tuple(
+          fc.nat({ max: 5 }),
+          fc.nat({ max: 30 }),
+          fc.boolean(),
+          fc.boolean(),
+          fc.option(fc.boolean(), { nil: undefined }),
+        )
+        .map(([min, gap, withMin, withMax, noNullPrototype]) => ({
           minKeys: withMin ? min : undefined,
           maxKeys: withMax ? min + gap : undefined,
+          noNullPrototype,
         })),
     },
     { requiredKeys: ['keys', 'values'] },
   );
 
   const isCorrect = (value: Record<string, unknown>, extra: Extra) => {
-    expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
+    if (
+      extra.constraints === undefined ||
+      extra.constraints.noNullPrototype ||
+      extra.constraints.noNullPrototype === undefined
+    ) {
+      expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
+    }
     for (const k of Object.keys(value)) {
       expect(extra.keys).toContain(k);
     }

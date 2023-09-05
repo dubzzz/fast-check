@@ -25,6 +25,7 @@ import { letrec } from '../../letrec';
 import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 import { uniqueArray } from '../../uniqueArray';
 import { createDepthIdentifier, DepthIdentifier } from '../helpers/DepthContext';
+import { constant } from '../../constant';
 
 /** @internal */
 function mapOf<T, U>(
@@ -51,12 +52,15 @@ function dictOf<U>(
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier,
 ) {
-  return uniqueArray(tuple(ka, va), {
-    maxLength: maxKeys,
-    size,
-    selector: (t) => t[0],
-    depthIdentifier,
-  }).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
+  return tuple(
+    uniqueArray(tuple(ka, va), {
+      maxLength: maxKeys,
+      size,
+      selector: (t) => t[0],
+      depthIdentifier,
+    }),
+    constant(false),
+  ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
 }
 
 /** @internal */

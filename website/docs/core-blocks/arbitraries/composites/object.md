@@ -13,7 +13,7 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 **Signatures:**
 
 - `fc.dictionary(keyArb, valueArb)`
-- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?})`
+- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?, noNullPrototype?})`
 
 **with:**
 
@@ -22,6 +22,7 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 - `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
 - `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of keys in the generated instances (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
+- `noNullPrototype?` — default: `true` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
 
 **Usages:**
 
@@ -52,6 +53,16 @@ fc.dictionary(fc.string(), fc.nat(), { minKeys: 2 });
 // • {"NfXclS":815533370,"?":2060844890,"":1862140278,"R":618808229,"N|":25902062,"DGw00u?brK":348863633}
 // • {" R~Own":2147483645,"~":16,"i$#D":1037390287}
 // • {">YTN<Tt":1950414260,"I6":1505301756,"2;]'dH.i!":815067799,":kmC'":1948205418,"g|GTLPe-":2101264769}
+// • …
+
+fc.dictionary(fc.string(), fc.string(), { noNullPrototype: false });
+// Note: Allow generated values to be objects with null prototype
+// Examples of generated values:
+// • {"|^!!\"+.\"%":"LB","]CQxQ":"0/uv","(JH(35e8":":"}
+// • {",>a[":"f&EYz","VR 9JX":"/|hRyU","Nm20AgHq":"b","A1Gb{5nXM":"?B","W;>__":"","G5":"IS"}
+// • {"3{59v":"Tf]hDL2","tj:,Kq9'2":"#o:WpR","":"[4h","e{":"j","!Ws@hZV_":"p1*44.<"}
+// • Object.assign(Object.create(null),{"/\\v":"1ki#1'|#","L":"2o","chGEb'qmi":"hXXU"})
+// • {"Q]8":"JQ=b<ea","@zz\\]oW(*":"uv","w":"\\","X*X":"/2{*wi=d","\"+;P\"tp3n":"LLZ-%}w"}
 // • …
 ```
 
