@@ -70,10 +70,11 @@ describe('date', () => {
       }),
     ));
 
-  it('should always map the maximal value of the internal integer to the requested maximal date', () =>
+  it('should always map the maximal value (minus one if NaN accepted) of the internal integer to the requested maximal date', () =>
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
+        const withInvalidDates = constraints.noInvalidDate === false;
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
@@ -84,7 +85,7 @@ describe('date', () => {
         date(constraints);
         const { max: rangeMax } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
-        const maxDate = mapper(rangeMax!) as Date;
+        const maxDate = mapper(withInvalidDates ? rangeMax! - 1 : rangeMax!) as Date;
 
         // Assert
         if (constraints.max !== undefined) {
