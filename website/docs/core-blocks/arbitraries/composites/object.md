@@ -79,13 +79,11 @@ It comes very useful when dealing with settings.
 
 - `fc.record(recordModel)`
 - `fc.record(recordModel, {requiredKeys?, noNullPrototype?})`
-- `fc.record(recordModel, {withDeletedKeys?, noNullPrototype?})`
 
 **with:**
 
 - `recordModel` — _structure of the resulting instance_
-- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted, remark: cannot be used with `withDeletedKeys`_
-- `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys. `withDeletedKeys: true` is equivalent to `requiredKeys: []`, thus the two options cannot be used at the same time_
+- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted_
 - `noNullPrototype?` — default: `true` — _only generate records based on the Object-prototype, do not generate any record with null-prototype_
 
 **Usages:**
@@ -142,7 +140,7 @@ fc.record(
     id: fc.uuidV(4),
     age: fc.nat(99),
   },
-  { withDeletedKeys: true },
+  { requiredKeys: [] },
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:

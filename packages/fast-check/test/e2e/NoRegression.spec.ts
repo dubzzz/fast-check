@@ -409,7 +409,7 @@ describe(`NoRegression`, () => {
   it('record', () => {
     expect(() =>
       fc.assert(
-        fc.property(fc.record({ k1: fc.nat(), k2: fc.nat() }, { withDeletedKeys: true }), (v) => testFunc(v)),
+        fc.property(fc.record({ k1: fc.nat(), k2: fc.nat() }, { requiredKeys: [] }), (v) => testFunc(v)),
         settings,
       ),
     ).toThrowErrorMatchingSnapshot();
