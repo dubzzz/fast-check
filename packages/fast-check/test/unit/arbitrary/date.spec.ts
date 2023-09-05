@@ -149,7 +149,7 @@ describe('date', () => {
 });
 
 describe('date (integration)', () => {
-  type Extra = { min?: Date; max?: Date };
+  type Extra = { min?: Date; max?: Date; noInvalidDate?: boolean };
   const extraParameters: fc.Arbitrary<Extra> = constraintsArb();
 
   const isCorrect = (d: Date, extra: Extra) => {
