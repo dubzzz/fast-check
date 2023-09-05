@@ -13,7 +13,7 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 **Signatures:**
 
 - `fc.dictionary(keyArb, valueArb)`
-- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?})`
+- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?, noNullPrototype?})`
 
 **with:**
 
@@ -22,6 +22,7 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 - `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
 - `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of keys in the generated instances (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
+- `noNullPrototype?` — default: `true` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
 
 **Usages:**
 
