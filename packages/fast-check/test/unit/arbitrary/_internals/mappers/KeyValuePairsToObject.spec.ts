@@ -154,10 +154,22 @@ describe('keyValuePairsToObjectUnmapper', () => {
     expect(withNullPrototype).toBe(false);
   });
 
+  it('should properly unmap a fake null-prototype instance', () => {
+    // Arrange
+    const obj = { ['__proto__']: null };
+
+    // Act
+    const [keyValues, withNullPrototype] = keyValuePairsToObjectUnmapper(obj);
+
+    // Assert
+    expect(keyValues).toHaveLength(1);
+    expect(keyValues).toContainEqual(['__proto__', null]);
+    expect(withNullPrototype).toBe(false);
+  });
+
   it.each`
     value                                                                | condition
     ${new (class A {})()}                                                | ${'it is not just a simple object but a more complex type'}
-    ${{ ['__proto__']: null }}                                           | ${'it is a fake null-prototype'}
     ${[]}                                                                | ${'it is an Array'}
     ${new Number(0)}                                                     | ${'it is a boxed-Number'}
     ${0}                                                                 | ${'it is a number'}
