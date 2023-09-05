@@ -210,14 +210,20 @@ describe('record (integration)', () => {
     { selector: (entry) => entry.key },
   );
   const constraintsArbitrary = fc.oneof(
-    fc.record({ withDeletedKeys: fc.boolean() }, { requiredKeys: [] }),
-    fc.record({ withRequiredKeys: fc.constant<true>(true) }, { requiredKeys: [] }),
+    fc.record({ withDeletedKeys: fc.boolean(), noNullPrototype: fc.boolean() }, { requiredKeys: [] }),
+    fc.record({ withRequiredKeys: fc.constant<true>(true), noNullPrototype: fc.boolean() }, { requiredKeys: [] }),
   );
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(metaArbitrary, constraintsArbitrary)
     .map(([metas, constraintsMeta]: [Meta[], { withDeletedKeys?: boolean; withRequiredKeys?: true }]) => {
       if ('withRequiredKeys' in constraintsMeta) {
-        return [metas, { requiredKeys: metas.filter((m) => m.kept).map((m) => m.key) }] as [Meta[], RecordConstraints];
+        return [
+          metas,
+          {
+            requiredKeys: metas.filter((m) => m.kept).map((m) => m.key),
+            ...('noNullPrototype' in constraintsMeta ? { noNullPrototype: constraintsMeta.noNullPrototype } : {}),
+          },
+        ] as [Meta[], RecordConstraints];
       }
       return [metas, constraintsMeta] as [Meta[], RecordConstraints];
     });

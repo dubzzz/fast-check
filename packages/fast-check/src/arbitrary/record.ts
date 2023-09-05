@@ -7,7 +7,7 @@ import { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
  * @remarks Since 0.0.12
  * @public
  */
-export type RecordConstraints<T = unknown> =
+export type RecordConstraints<T = unknown> = (
   | {
       /**
        * List keys that should never be deleted.
@@ -34,7 +34,15 @@ export type RecordConstraints<T = unknown> =
        * @deprecated Prefer using `requiredKeys: []` instead of `withDeletedKeys: true` as the flag will be removed in the next major
        */
       withDeletedKeys?: boolean;
-    };
+    }
+) & {
+  /**
+   * Do not generate objects with null prototype
+   * @defaultValue true
+   * @remarks Since 3.13.0
+   */
+  noNullPrototype?: boolean;
+};
 
 /**
  * Infer the type of the Arbitrary produced by record
@@ -90,8 +98,10 @@ function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints?: RecordConstraints<keyof T>,
 ): unknown {
+  const noNullPrototype =
+    constraints === undefined || constraints.noNullPrototype === undefined || constraints.noNullPrototype;
   if (constraints == null) {
-    return buildPartialRecordArbitrary(recordModel, undefined);
+    return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
   if ('withDeletedKeys' in constraints && 'requiredKeys' in constraints) {
@@ -102,7 +112,7 @@ function record<T>(
     ('requiredKeys' in constraints && constraints.requiredKeys !== undefined) ||
     ('withDeletedKeys' in constraints && !!constraints.withDeletedKeys);
   if (!requireDeletedKeys) {
-    return buildPartialRecordArbitrary(recordModel, undefined);
+    return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
@@ -116,7 +126,7 @@ function record<T>(
     }
   }
 
-  return buildPartialRecordArbitrary(recordModel, requiredKeys as EnumerableKeyOf<T>[]);
+  return buildPartialRecordArbitrary(recordModel, requiredKeys as EnumerableKeyOf<T>[], noNullPrototype);
 }
 
 export { record };
