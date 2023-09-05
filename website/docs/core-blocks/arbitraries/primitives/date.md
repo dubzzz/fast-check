@@ -15,12 +15,13 @@ Generate any possible dates in the specified range. Both the lower bound and upp
 **Signatures:**
 
 - `fc.date()`
-- `fc.date({ min?, max? })`
+- `fc.date({ min?, max?, noInvalidDate? })`
 
 **with:**
 
 - `min?` — default: `new Date(-8640000000000000)` — _lower bound of the range (included)_
 - `max?` — default: `new Date(8640000000000000)` — _upper bound of the range (included)_
+- `noInvalidDate?` — default: `true` — _when `true` the Date "Invalid Date" will never be defined_
 
 **Usages:**
 
