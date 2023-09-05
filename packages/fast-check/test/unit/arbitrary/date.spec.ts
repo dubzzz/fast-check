@@ -155,6 +155,8 @@ describe('date (integration)', () => {
   const isCorrect = (d: Date, extra: Extra) => {
     if (extra.noInvalidDate || extra.noInvalidDate === undefined) {
       expect(d.getTime()).not.toBe(Number.NaN);
+    } else if (Number.isNaN(d.getTime())) {
+      return;
     }
     if (extra.min) expect(d.getTime()).toBeGreaterThanOrEqual(extra.min.getTime());
     if (extra.max) expect(d.getTime()).toBeLessThanOrEqual(extra.max.getTime());
