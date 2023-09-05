@@ -160,6 +160,10 @@ describe('date (integration)', () => {
     if (extra.max) expect(d.getTime()).toBeLessThanOrEqual(extra.max.getTime());
   };
 
+  const isEqual = (d1: Date, d2: Date) => {
+    expect(d1.getTime()).toEqual(d2.getTime());
+  };
+
   const isStrictlySmaller = (d1: Date, d2: Date) => {
     if (Number.isNaN(d1.getTime())) {
       expect(d2.getTime()).not.toBe(Number.NaN);
@@ -173,7 +177,7 @@ describe('date (integration)', () => {
   const dateBuilder = (extra: Extra) => date(extra);
 
   it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters });
+    assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters, isEqual });
   });
 
   it('should only produce correct values', () => {
@@ -185,7 +189,7 @@ describe('date (integration)', () => {
   });
 
   it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(dateBuilder, { extraParameters });
+    assertShrinkProducesSameValueWithoutInitialContext(dateBuilder, { extraParameters, isEqual });
   });
 
   it('should preserve strictly smaller ordering in shrink', () => {
