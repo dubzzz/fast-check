@@ -54,6 +54,16 @@ fc.dictionary(fc.string(), fc.nat(), { minKeys: 2 });
 // • {" R~Own":2147483645,"~":16,"i$#D":1037390287}
 // • {">YTN<Tt":1950414260,"I6":1505301756,"2;]'dH.i!":815067799,":kmC'":1948205418,"g|GTLPe-":2101264769}
 // • …
+
+fc.dictionary(fc.string(), fc.string(), { noNullPrototype: false });
+// Note: Allow generated values to be objects with null prototype
+// Examples of generated values:
+// • {"|^!!\"+.\"%":"LB","]CQxQ":"0/uv","(JH(35e8":":"}
+// • {",>a[":"f&EYz","VR 9JX":"/|hRyU","Nm20AgHq":"b","A1Gb{5nXM":"?B","W;>__":"","G5":"IS"}
+// • {"3{59v":"Tf]hDL2","tj:,Kq9'2":"#o:WpR","":"[4h","e{":"j","!Ws@hZV_":"p1*44.<"}
+// • Object.assign(Object.create(null),{"/\\v":"1ki#1'|#","L":"2o","chGEb'qmi":"hXXU"})
+// • {"Q]8":"JQ=b<ea","@zz\\]oW(*":"uv","w":"\\","X*X":"/2{*wi=d","\"+;P\"tp3n":"LLZ-%}w"}
+// • …
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/dictionary.html).  
