@@ -37,7 +37,7 @@ export type RecordConstraints<T = unknown> = (
     }
 ) & {
   /**
-   * Do not generate objects with null prototype
+   * Do not generate records with null prototype
    * @defaultValue true
    * @remarks Since 3.13.0
    */
