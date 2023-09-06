@@ -118,7 +118,7 @@ describe('date', () => {
         const d = mapper(rangeMin! + (mod % (rangeMax! - rangeMin! + 1))) as Date;
 
         // Assert
-        if (constraints.noInvalidDate !== false || Number.isNaN(d.getTime())) {
+        if (constraints.noInvalidDate !== false || !Number.isNaN(d.getTime())) {
           expect(d.getTime()).not.toBe(Number.NaN);
           if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
           if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
