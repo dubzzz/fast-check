@@ -101,7 +101,7 @@ describe('date', () => {
       }),
     ));
 
-  it('should always generate dates between min and max given the range and the mapper', () =>
+  it('should always generate dates between min and max (or invalid ones when accepted) given the range and the mapper', () =>
     fc.assert(
       fc.property(constraintsArb(), fc.maxSafeNat(), (constraints, mod) => {
         // Arrange
@@ -118,9 +118,11 @@ describe('date', () => {
         const d = mapper(rangeMin! + (mod % (rangeMax! - rangeMin! + 1))) as Date;
 
         // Assert
-        expect(d.getTime()).not.toBe(Number.NaN);
-        if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
-        if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
+        if (constraints.noInvalidDate !== false || Number.isNaN(d.getTime())) {
+          expect(d.getTime()).not.toBe(Number.NaN);
+          if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
+          if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
+        }
       }),
     ));
 
