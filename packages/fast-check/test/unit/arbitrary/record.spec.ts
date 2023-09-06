@@ -27,8 +27,39 @@ describe('record', () => {
     fc.assert(
       fc.property(
         fc.uniqueArray(keyArb, { minLength: 1 }),
-        fc.constantFrom(...([undefined, {}] as const)),
+        fc.constantFrom(...([undefined, {}, { noNullPrototype: false }, { noNullPrototype: true }] as const)),
         (keys, constraints) => {
+          // Arrange
+          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+          for (const k of keys) {
+            const { instance } = fakeArbitrary();
+            recordModel[k] = instance;
+          }
+          const { instance } = fakeArbitrary<any>();
+          const buildPartialRecordArbitrary = jest.spyOn(
+            PartialRecordArbitraryBuilderMock,
+            'buildPartialRecordArbitrary',
+          );
+          buildPartialRecordArbitrary.mockReturnValue(instance);
+          const noNullPrototype = constraints !== undefined ? constraints.noNullPrototype : undefined;
+
+          // Act
+          const arb = constraints !== undefined ? record(recordModel, constraints) : record(recordModel);
+
+          // Assert
+          expect(arb).toBe(instance);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined, noNullPrototype !== false);
+        },
+      ),
+    ));
+
+  it('should call buildPartialRecordArbitrary with keys=[] when constraints defines withDeletedKeys=true', () =>
+    fc.assert(
+      fc.property(
+        fc.uniqueArray(keyArb, { minLength: 1 }),
+        fc.option(fc.boolean(), { nil: undefined }),
+        (keys, noNullPrototype) => {
           // Arrange
           const recordModel: Record<string | symbol, Arbitrary<any>> = {};
           for (const k of keys) {
@@ -43,75 +74,58 @@ describe('record', () => {
           buildPartialRecordArbitrary.mockReturnValue(instance);
 
           // Act
-          const arb = constraints !== undefined ? record(recordModel, constraints) : record(recordModel);
+          const arb = record(recordModel, { withDeletedKeys: true, noNullPrototype });
 
           // Assert
           expect(arb).toBe(instance);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, [], noNullPrototype !== false);
         },
       ),
     ));
 
-  it('should call buildPartialRecordArbitrary with keys=[] when constraints defines withDeletedKeys=true', () =>
-    fc.assert(
-      fc.property(fc.uniqueArray(keyArb, { minLength: 1 }), (keys) => {
-        // Arrange
-        const recordModel: Record<string | symbol, Arbitrary<any>> = {};
-        for (const k of keys) {
-          const { instance } = fakeArbitrary();
-          recordModel[k] = instance;
-        }
-        const { instance } = fakeArbitrary<any>();
-        const buildPartialRecordArbitrary = jest.spyOn(
-          PartialRecordArbitraryBuilderMock,
-          'buildPartialRecordArbitrary',
-        );
-        buildPartialRecordArbitrary.mockReturnValue(instance);
-
-        // Act
-        const arb = record(recordModel, { withDeletedKeys: true });
-
-        // Assert
-        expect(arb).toBe(instance);
-        expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-        expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, []);
-      }),
-    ));
-
   it('should call buildPartialRecordArbitrary with keys=requiredKeys when constraints defines valid requiredKeys', () =>
     fc.assert(
-      fc.property(fc.uniqueArray(keyArb, { minLength: 1 }), fc.func(fc.boolean()), (keys, isRequired) => {
-        // Arrange
-        const recordModel: Record<string | symbol, Arbitrary<any>> = {};
-        const requiredKeys: any[] = [];
-        for (const k of keys) {
-          const { instance } = fakeArbitrary();
-          Object.defineProperty(recordModel, k, {
-            value: instance,
-            configurable: true,
-            enumerable: true,
-            writable: true,
-          });
-          if (isRequired(k)) {
-            requiredKeys.push(k);
+      fc.property(
+        fc.uniqueArray(keyArb, { minLength: 1 }),
+        fc.func(fc.boolean()),
+        fc.option(fc.boolean(), { nil: undefined }),
+        (keys, isRequired, noNullPrototype) => {
+          // Arrange
+          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
+          const requiredKeys: any[] = [];
+          for (const k of keys) {
+            const { instance } = fakeArbitrary();
+            Object.defineProperty(recordModel, k, {
+              value: instance,
+              configurable: true,
+              enumerable: true,
+              writable: true,
+            });
+            if (isRequired(k)) {
+              requiredKeys.push(k);
+            }
           }
-        }
-        const { instance } = fakeArbitrary<any>();
-        const buildPartialRecordArbitrary = jest.spyOn(
-          PartialRecordArbitraryBuilderMock,
-          'buildPartialRecordArbitrary',
-        );
-        buildPartialRecordArbitrary.mockReturnValue(instance);
+          const { instance } = fakeArbitrary<any>();
+          const buildPartialRecordArbitrary = jest.spyOn(
+            PartialRecordArbitraryBuilderMock,
+            'buildPartialRecordArbitrary',
+          );
+          buildPartialRecordArbitrary.mockReturnValue(instance);
 
-        // Act
-        const arb = record(recordModel, { requiredKeys });
+          // Act
+          const arb = record(recordModel, { requiredKeys, noNullPrototype });
 
-        // Assert
-        expect(arb).toBe(instance);
-        expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-        expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, requiredKeys);
-      }),
+          // Assert
+          expect(arb).toBe(instance);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(
+            recordModel,
+            requiredKeys,
+            noNullPrototype !== false,
+          );
+        },
+      ),
     ));
 
   it('should reject configurations specifying non existing keys as required', () =>
@@ -210,14 +224,20 @@ describe('record (integration)', () => {
     { selector: (entry) => entry.key },
   );
   const constraintsArbitrary = fc.oneof(
-    fc.record({ withDeletedKeys: fc.boolean() }, { requiredKeys: [] }),
-    fc.record({ withRequiredKeys: fc.constant<true>(true) }, { requiredKeys: [] }),
+    fc.record({ withDeletedKeys: fc.boolean(), noNullPrototype: fc.boolean() }, { requiredKeys: [] }),
+    fc.record({ withRequiredKeys: fc.constant<true>(true), noNullPrototype: fc.boolean() }, { requiredKeys: [] }),
   );
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(metaArbitrary, constraintsArbitrary)
     .map(([metas, constraintsMeta]: [Meta[], { withDeletedKeys?: boolean; withRequiredKeys?: true }]) => {
       if ('withRequiredKeys' in constraintsMeta) {
-        return [metas, { requiredKeys: metas.filter((m) => m.kept).map((m) => m.key) }] as [Meta[], RecordConstraints];
+        return [
+          metas,
+          {
+            requiredKeys: metas.filter((m) => m.kept).map((m) => m.key),
+            ...('noNullPrototype' in constraintsMeta ? { noNullPrototype: constraintsMeta.noNullPrototype } : {}),
+          },
+        ] as [Meta[], RecordConstraints];
       }
       return [metas, constraintsMeta] as [Meta[], RecordConstraints];
     });
@@ -250,6 +270,9 @@ describe('record (integration)', () => {
       if (typeof value[m.key] !== 'number') return false;
       if (value[m.key] < m.valueStart) return false;
       if (value[m.key] > m.valueStart + 10) return false;
+    }
+    if (constraints.noNullPrototype !== false) {
+      expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
     }
     return true;
   };

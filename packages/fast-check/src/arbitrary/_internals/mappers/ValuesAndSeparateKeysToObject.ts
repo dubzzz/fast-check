@@ -1,19 +1,23 @@
 import { safePush } from '../../../utils/globals';
 import { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor';
 
+const safeObjectCreate = Object.create;
 const safeObjectDefineProperty = Object.defineProperty;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 
+type OrderedValues<T, TNoKey> = (T[keyof T] | TNoKey)[];
+type ObjectDefinition<T, TNoKey> = [/*items*/ OrderedValues<T, TNoKey>, /*null prototype*/ boolean];
+
 /** @internal */
 export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: EnumerableKeyOf<T>[], noKeyValue: TNoKey) {
   return function valuesAndSeparateKeysToObjectMapper(
-    gs: (T[keyof T] | TNoKey)[],
+    definition: ObjectDefinition<T, TNoKey>,
   ): Partial<T> & Pick<T, EnumerableKeyOf<T>> {
-    const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = {};
+    const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = definition[1] ? safeObjectCreate(null) : {};
     for (let idx = 0; idx !== keys.length; ++idx) {
-      const valueWrapper = gs[idx];
+      const valueWrapper = definition[0][idx];
       if (valueWrapper !== noKeyValue) {
         safeObjectDefineProperty(obj, keys[idx], {
           value: valueWrapper,
@@ -29,15 +33,17 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
 
 /** @internal */
 export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: EnumerableKeyOf<T>[], noKeyValue: TNoKey) {
-  return function valuesAndSeparateKeysToObjectUnmapper(value: unknown): (T[keyof T] | TNoKey)[] {
+  return function valuesAndSeparateKeysToObjectUnmapper(value: unknown): ObjectDefinition<T, TNoKey> {
     if (typeof value !== 'object' || value === null) {
       throw new Error('Incompatible instance received: should be a non-null object');
     }
-    if (!('constructor' in value) || value.constructor !== Object) {
+    const hasNullPrototype = Object.getPrototypeOf(value) === null;
+    const hasObjectPrototype = 'constructor' in value && value.constructor === Object;
+    if (!hasNullPrototype && !hasObjectPrototype) {
       throw new Error('Incompatible instance received: should be of exact type Object');
     }
     let extractedPropertiesCount = 0;
-    const extractedValues: (T[keyof T] | TNoKey)[] = [];
+    const extractedValues: OrderedValues<T, TNoKey> = [];
     for (let idx = 0; idx !== keys.length; ++idx) {
       const descriptor = safeObjectGetOwnPropertyDescriptor(value, keys[idx]);
       if (descriptor !== undefined) {
@@ -58,6 +64,6 @@ export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: Enum
     if (extractedPropertiesCount !== namePropertiesCount + symbolPropertiesCount) {
       throw new Error('Incompatible instance received: should not contain extra properties');
     }
-    return extractedValues;
+    return [extractedValues, hasNullPrototype];
   };
 }

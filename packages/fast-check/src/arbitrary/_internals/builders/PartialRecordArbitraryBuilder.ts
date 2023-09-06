@@ -1,5 +1,7 @@
 import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { safeIndexOf, safePush } from '../../../utils/globals';
+import { boolean } from '../../boolean';
+import { constant } from '../../constant';
 import { option } from '../../option';
 import { tuple } from '../../tuple';
 import { EnumerableKeyOf, extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor';
@@ -15,6 +17,7 @@ type NoKeyType = typeof noKeyValue;
 export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   requiredKeys: TKeys[] | undefined,
+  noNullPrototype: boolean,
 ): Arbitrary<Partial<T> & Pick<T, TKeys>> {
   const keys = extractEnumerableKeys(recordModel);
   const arbs: Arbitrary<T[keyof T] | NoKeyType>[] = [];
@@ -27,7 +30,7 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
       safePush(arbs, option(requiredArbitrary, { nil: noKeyValue as NoKeyType }));
     }
   }
-  return tuple(...arbs).map(
+  return tuple(tuple(...arbs), noNullPrototype ? constant(false) : boolean()).map(
     buildValuesAndSeparateKeysToObjectMapper<T, NoKeyType>(keys, noKeyValue),
     buildValuesAndSeparateKeysToObjectUnmapper<T, NoKeyType>(keys, noKeyValue),
   );
