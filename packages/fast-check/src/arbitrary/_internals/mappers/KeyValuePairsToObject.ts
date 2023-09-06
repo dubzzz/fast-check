@@ -1,4 +1,4 @@
-import { safeFilter, Error } from '../../../utils/globals';
+import { Error, safeEvery } from '../../../utils/globals';
 
 type KeyValuePairs<T> = [string, T][];
 type ObjectDefinition<T> = [/*items*/ KeyValuePairs<T>, /*null prototype*/ boolean];
@@ -26,16 +26,16 @@ export function keyValuePairsToObjectMapper<T>(definition: ObjectDefinition<T>):
 }
 
 /** @internal */
-function buildInvalidPropertyNameFilter(obj: unknown): (key: string) => boolean {
-  return function invalidPropertyNameFilter(key: string): boolean {
+function buildIsValidPropertyNameFilter(obj: unknown): (key: string) => boolean {
+  return function isValidPropertyNameFilter(key: string): boolean {
     const descriptor = safeObjectGetOwnPropertyDescriptor(obj, key);
     return (
-      descriptor === undefined ||
-      !descriptor.configurable ||
-      !descriptor.enumerable ||
-      !descriptor.writable ||
-      descriptor.get !== undefined ||
-      descriptor.set !== undefined
+      descriptor !== undefined &&
+      !!descriptor.configurable &&
+      !!descriptor.enumerable &&
+      !!descriptor.writable &&
+      descriptor.get === undefined &&
+      descriptor.set === undefined
     );
   };
 }
@@ -54,7 +54,7 @@ export function keyValuePairsToObjectUnmapper<T>(value: unknown): ObjectDefiniti
   if (safeObjectGetOwnPropertySymbols(value).length > 0) {
     throw new Error('Incompatible instance received: should contain symbols');
   }
-  if (safeFilter(safeObjectGetOwnPropertyNames(value), buildInvalidPropertyNameFilter(value)) !== undefined) {
+  if (!safeEvery(safeObjectGetOwnPropertyNames(value), buildIsValidPropertyNameFilter(value))) {
     throw new Error('Incompatible instance received: should contain only c/e/w properties without get/set');
   }
   return [safeObjectEntries(value), hasNullPrototype];
