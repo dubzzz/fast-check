@@ -1,15 +1,11 @@
 # 1.7.3
 
-_TODO Description_
+_Deprecate legacy helpers_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.3)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.2...jest%2Fv1.7.3)]
-
-## Features
-
-- ([PR#4201](https://github.com/dubzzz/fast-check/pull/4201)) Flag `{it,test}Prop` as deprecated
 
 ## Fixes
 
-
+- ([PR#4201](https://github.com/dubzzz/fast-check/pull/4201)) Deprecate: Flag `{it,test}Prop` as deprecated
 
 # 1.7.2
 
