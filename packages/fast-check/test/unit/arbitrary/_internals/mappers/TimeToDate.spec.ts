@@ -7,26 +7,26 @@ import {
 } from '../../../../../src/arbitrary/_internals/mappers/TimeToDate';
 
 describe('timeToDateUnmapper', () => {
-  it('should be able to revert any mapped date correctly', () => {
+  it('should be able to revert any mapped date correctly even invalid ones', () => {
     fc.assert(
-      fc.property(fc.date({ noInvalidDate: true }), (d) => {
+      fc.property(fc.date({ noInvalidDate: false }), (d) => {
         // Arrange / Act
         const rev = timeToDateUnmapper(d);
         const revRev = timeToDateMapper(rev);
 
         // Assert
-        expect(revRev).toEqual(d);
+        expect(revRev.getTime()).toEqual(d.getTime());
       }),
     );
   });
 });
 
 describe('timeToDateUnmapperWithNane', () => {
-  it('should be able to revert any mapped date correctly', () => {
+  it('should be able to revert any mapped date correctly even invalid once', () => {
     fc.assert(
       fc.property(
         fc.date({ noInvalidDate: false }),
-        fc.integer({ min: -8640000000000000, max: 8640000000000000 }),
+        fc.integer({ min: -8640000000000000, max: 8640000000000001 }),
         (d, nanValue) => {
           // Arrange / Act
           const rev = timeToDateUnmapperWithNaN(nanValue)(d);
@@ -35,7 +35,7 @@ describe('timeToDateUnmapperWithNane', () => {
           // Assert
           if (d.getTime() === nanValue) {
             expect(rev).toBe(nanValue);
-            expect(revRev).toEqual(new Date(Number.NaN));
+            expect(revRev.getTime()).toEqual(Number.NaN);
           } else {
             expect(revRev.getTime()).toEqual(d.getTime());
           }
