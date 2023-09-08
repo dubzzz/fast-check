@@ -1,6 +1,6 @@
 # 3.13.0
 
-_TODO Description_
+_New options for `date`, `record` and `dictionary`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.13.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.12.1...v3.13.0)]
 
 ## Features
