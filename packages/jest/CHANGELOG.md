@@ -1,3 +1,16 @@
+# 1.7.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.3)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.2...jest%2Fv1.7.3)]
+
+## Features
+
+- ([PR#4201](https://github.com/dubzzz/fast-check/pull/4201)) Flag `{it,test}Prop` as deprecated
+
+## Fixes
+
+
+
 # 1.7.2
 
 _Better support for types on ESM targets_
