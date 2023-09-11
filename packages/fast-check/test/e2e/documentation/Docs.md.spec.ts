@@ -143,7 +143,9 @@ function refreshContent(originalContent: string): { content: string; numExecuted
           .trim()
           .replace(/;$/, '')
           .replace(/;\n\/\/.*$/m, '\n//');
-        const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${numRuns}, seed: ${seed} }).map(v => fc.stringify(v))`;
+        const evalCode = `${preparationPart}\nfc.sample(${santitizeArbitraryPart}\n, { numRuns: ${
+          santitizeArbitraryPart.includes('fuzzedString') ? 10 * numRuns : numRuns
+        }, seed: ${seed} }).map(v => fc.stringify(v))`;
         try {
           return eval(evalCode);
         } catch (err) {
@@ -151,7 +153,10 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         }
       })(fc);
 
-      const uniqueGeneratedValues = Array.from(new Set(generatedValues)).slice(0, TargetNumExamples);
+      const uniqueGeneratedValues = Array.from(new Set(generatedValues)).slice(
+        0,
+        snippet.includes('fuzzedString') ? 10 * TargetNumExamples : TargetNumExamples
+      );
       // If the display for generated values is too long, we split it into a list of items
       if (
         uniqueGeneratedValues.some((value) => value.includes('\n')) ||
