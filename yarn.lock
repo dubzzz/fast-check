@@ -2810,7 +2810,7 @@ __metadata:
     "@npmcli/arborist": ^7.0.0
     "@types/jest": ^29.5.4
     "@types/pacote": ^11.1.5
-    "@types/tar": ^6.1.5
+    "@types/tar": ^6.1.6
     jest: ^29.6.4
     pacote: ^17.0.0
     tar: ^6.1.11
@@ -4698,13 +4698,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tar@npm:^6.1.5":
-  version: 6.1.5
-  resolution: "@types/tar@npm:6.1.5"
+"@types/tar@npm:^6.1.6":
+  version: 6.1.6
+  resolution: "@types/tar@npm:6.1.6"
   dependencies:
     "@types/node": "*"
     minipass: ^4.0.0
-  checksum: 1efa71c8d72f2b02d16ffecb65c4a96be9dacce000c4207532a686477386524dd99b6e26904319354be3ac9ac4d41296a0cb9cf87d05f8f21ae31c68fe446348
+  checksum: d4bcb5a06d8e4b6eac564f22274d72f6a14c614eaf5f6c6c270f3a43c197da2797a7c707bc0377cd2e6d8c429f277e1ca446121546c86021e9782034a306eafb
   languageName: node
   linkType: hard
 
