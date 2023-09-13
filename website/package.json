@@ -28,10 +28,10 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.4.1",
-    "@jest/globals": "^29.6.4",
+    "@jest/globals": "^29.7.0",
     "@tsconfig/docusaurus": "^2.0.0",
     "fast-check": "workspace:*",
-    "jest": "^29.6.4",
+    "jest": "^29.7.0",
     "typescript": "~5.2.2"
   },
   "browserslist": {
