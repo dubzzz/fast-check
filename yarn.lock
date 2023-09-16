@@ -4082,10 +4082,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/docusaurus@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@tsconfig/docusaurus@npm:2.0.0"
-  checksum: 39adca336d9d8d6838c982212e6661c3d211d02244be17861cae4e16b9b5ee9aa0f2d48099649417794b0c2b7661e53905615f94ffb4b5608a326f5b55194e2f
+"@tsconfig/docusaurus@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@tsconfig/docusaurus@npm:2.0.1"
+  checksum: 63bebda70d83c56f95a90176d2e188e1ea9c08c23b499e5e7b292ebfae0ce7117f712809828ed21ae3b8440daf22191d6bf71bf2575f9bd474a51b1770ca30cc
   languageName: node
   linkType: hard
 
@@ -17518,7 +17518,7 @@ __metadata:
     "@docusaurus/preset-classic": 2.4.1
     "@docusaurus/remark-plugin-npm2yarn": 2.4.1
     "@jest/globals": ^29.7.0
-    "@tsconfig/docusaurus": ^2.0.0
+    "@tsconfig/docusaurus": ^2.0.1
     clsx: ^2.0.0
     fast-check: "workspace:*"
     jest: ^29.7.0
