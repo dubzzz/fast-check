@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [what's new, performance, arbitrary]
 ---
 
-This release introduces some new opt-in options onto `date`, `dictionary` and `record`. They open ways to detect new classes of bugs.
+This release introduces some new opt-in options on `date`, `dictionary` and `record`. They open ways to detect new classes of bugs.
 
 Continue reading to explore the detailed updates it brings.
 
