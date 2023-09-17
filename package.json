@@ -13,7 +13,7 @@
     "contributor:add": "all-contributors add",
     "build:all": "yarn workspaces foreach -pvi --topological-dev --exclude website run build",
     "build-ci:all": "yarn workspaces foreach -pvi --topological-dev --exclude website run build-ci",
-    "test:all": "yarn workspaces foreach -pvi run test && yarn workspaces foreach -pvi run e2e",
+    "test:all": "yarn workspaces foreach -pvi run test -w 4 && yarn workspaces foreach -pvi run e2e -w 4",
     "typecheck:all": "yarn workspaces foreach -pvi run typecheck",
     "format": "prettier --cache --write .",
     "format:check": "prettier --list-different .",
