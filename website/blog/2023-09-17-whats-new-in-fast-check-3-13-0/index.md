@@ -33,7 +33,7 @@ fc.date({ noInvalidDate: false })
 
 ## Null prototype
 
-Most objects inherit from the prototype of `Object` but not all. By inheriting from it, they make users able to call methods such as `toString` or `hasOwnProperty` on them.
+Most objects inherit from the prototype of `Object` but not all. By inheriting from it, they make users able to call methods such as `toString` or `hasOwnProperty` on them (and many others).
 
 You don't have these methods on an instance created using:
 
