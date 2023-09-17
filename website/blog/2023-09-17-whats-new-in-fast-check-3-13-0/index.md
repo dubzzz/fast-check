@@ -24,6 +24,13 @@ This new release goes in the same direction, by preparing the ground for version
 
 In JavaScript, an _invalid date_ is a date. When building dates out of strings, it is common to fall onto invalid dates. If not captured early enough, they might blow your algorithms.
 
+With version 3.13.0, we added the ability to generate such dates directly from the `date` arbitrary:
+
+```ts
+fc.date({ noInvalidDate: false })
+// in v3, you'll have to set the option explicitly to false
+```
+
 ## Null prototype
 
 ## Changelog since 3.12.0
