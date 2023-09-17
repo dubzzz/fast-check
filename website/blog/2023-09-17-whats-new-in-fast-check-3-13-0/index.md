@@ -20,6 +20,12 @@ Since version 3.0.0, we have started to push more and more for defaults enabling
 
 This new release goes in the same direction, by preparing the ground for version 4.0.0 to enable even more defaults immediately. So far they are opt-ins while they will be opt-outs starting in the next major.
 
+## Invalid date
+
+In JavaScript, an _invalid date_ is a date. When building dates out of strings, it is common to fall onto invalid dates. If not captured early enough, they might blow your algorithms.
+
+## Null prototype
+
 ## Changelog since 3.12.0
 
 The version 3.13.0 is based on version 3.12.1.
