@@ -35,6 +35,34 @@ fc.date({ noInvalidDate: false })
 
 Most objects inherit from the prototype of `Object` but not all. By inheriting from it, they make users able to call methods such as `toString` or `hasOwnProperty` on them.
 
+You don't have these methods on an instance created using:
+
+```ts
+const instance = Object.create(null)
+```
+
+Starting at 3.13.0, we want to make our users able to build instances without any prototype for `dictionary` and `record`. Such instances have many benefits over raw objects and being able to deal with them is key.
+
+So you can request `dictionary` and `record` to generate them via:
+
+```ts
+fc.dictionary(
+  fc.string(), // the keys
+  fc.nat(), // the values
+  { noNullPrototype: false },
+)
+// in v3, you'll have to set the option explicitly to false
+
+fc.record(
+  {
+    keyA: fc.nat(), // the keys for our records
+    keyB: fc.string(), // and associated values
+  },
+  { noNullPrototype: false },
+)
+// in v3, you'll have to set the option explicitly to false
+```
+
 ## Changelog since 3.12.0
 
 The version 3.13.0 is based on version 3.12.1.
