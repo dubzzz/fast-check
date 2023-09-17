@@ -43,7 +43,7 @@ const instance = Object.create(null)
 
 Starting at 3.13.0, we want to make our users able to build instances without any prototype for `dictionary` and `record`. Such instances have many benefits over raw objects and being able to deal with them is key.
 
-So you can request `dictionary` and `record` to generate them via:
+Now, you can request `dictionary` and `record` to generate them via:
 
 ```ts
 fc.dictionary(
