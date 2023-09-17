@@ -16,7 +16,9 @@ The main target of fast-check has always been to find bugs without too much help
 
 As such, the more fast-check thinks of nasty things for you, the higher the chance to detect bugs that may happen in production before you.
 
-Since version 3.0.0, we have started to push more and more for defaults enabling everything. For instance, `double` not only generates classical numerical values but they also cover infinities, not-a-number or negative zero. This release prepares the ground for version 4.0.0, to enable even more defaults immediately, but so far they are opt-ins while they will be opt-outs starting in the next major.
+Since version 3.0.0, we have started to push more and more for defaults enabling everything. For instance, `double` not only generates classical numerical values but they also cover infinities, not-a-number or negative zero.
+
+This new release goes in the same direction, by preparing the ground for version 4.0.0 to enable even more defaults immediately. So far they are opt-ins while they will be opt-outs starting in the next major.
 
 ## Changelog since 3.12.0
 
