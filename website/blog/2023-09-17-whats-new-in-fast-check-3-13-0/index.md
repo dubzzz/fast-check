@@ -27,7 +27,7 @@ In JavaScript, an _invalid date_ is a date. When building dates out of strings, 
 With version 3.13.0, we added the ability to generate such dates directly from the `date` arbitrary:
 
 ```ts
-fc.date({ noInvalidDate: false })
+fc.date({ noInvalidDate: false });
 // in v3, you'll have to set the option explicitly to false
 ```
 
@@ -38,7 +38,7 @@ Most objects inherit from the prototype of `Object` but not all. By inheriting f
 You don't have these methods on an instance created using:
 
 ```ts
-const instance = Object.create(null)
+const instance = Object.create(null);
 ```
 
 Starting at 3.13.0, we want to make our users able to build instances without any prototype for `dictionary` and `record`. Such instances have many benefits over raw objects and being able to deal with them is key.
@@ -50,7 +50,7 @@ fc.dictionary(
   fc.string(), // the keys
   fc.nat(), // the values
   { noNullPrototype: false },
-)
+);
 // in v3, you'll have to set the option explicitly to false
 
 fc.record(
@@ -59,7 +59,7 @@ fc.record(
     keyB: fc.string(), // and associated values (here: nat and string)
   },
   { noNullPrototype: false },
-)
+);
 // in v3, you'll have to set the option explicitly to false
 ```
 
