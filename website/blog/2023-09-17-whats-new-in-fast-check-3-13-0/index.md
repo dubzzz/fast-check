@@ -166,32 +166,26 @@ With version 3.12.0, fast-check now offers two new options
 
 For example, if you want to exclude the value 1 from the range, you can now write: `double({min: 0, max: 1, maxExcluded: true})`, and this will produce values where `0 ≤ value < 1`, effectively excluding the value 1 from the generated set.
 
-## Changelog since 3.11.0
+## Changelog since 3.13.0
 
-The version 3.12.0 is based on version 3.11.0.
+The version 3.13.0 is based on version 3.12.1.
 
 ### Features
 
-- ([PR#4100](https://github.com/dubzzz/fast-check/pull/4100)) Support excluded min/max in `double`
-- ([PR#4105](https://github.com/dubzzz/fast-check/pull/4105)) Support excluded min/max in `float`
+- ([PR#4197](https://github.com/dubzzz/fast-check/pull/4197)) Add support for "Invalid Date" in `date`
+- ([PR#4203](https://github.com/dubzzz/fast-check/pull/4203)) Deprecate `withDeletedKeys` on `record`
+- ([PR#4204](https://github.com/dubzzz/fast-check/pull/4204)) Support null-proto in `dictionary`
+- ([PR#4205](https://github.com/dubzzz/fast-check/pull/4205)) Support null-proto in `record`
 
 ### Fixes
 
-- ([PR#4094](https://github.com/dubzzz/fast-check/pull/4094)) Bug: Stop unwrapping `ulid` we cannot build
-- ([PR#4095](https://github.com/dubzzz/fast-check/pull/4095)) Bug: Be resilient to poisoning with `ulid`
-- ([PR#4041](https://github.com/dubzzz/fast-check/pull/4041)) CI: Ensure we use latest node in range
-- ([PR#4062](https://github.com/dubzzz/fast-check/pull/4062)) CI: Update devcontainer configuration
-- ([PR#4065](https://github.com/dubzzz/fast-check/pull/4065)) CI: Better configuration for renovate
-- ([PR#4068](https://github.com/dubzzz/fast-check/pull/4068)) CI: Refine configuration of renovate
-- ([PR#4073](https://github.com/dubzzz/fast-check/pull/4073)) CI: New attempt to configure renovate
-- ([PR#4075](https://github.com/dubzzz/fast-check/pull/4075)) CI: Configure renovate to bump non-package
-- ([PR#4078](https://github.com/dubzzz/fast-check/pull/4078)) CI: Disable nodenv bumps on renovate
-- ([PR#4080](https://github.com/dubzzz/fast-check/pull/4080)) CI: Stop bumping node via renovate
-- ([PR#4040](https://github.com/dubzzz/fast-check/pull/4040)) Doc: Prepare release note for 3.11.0
-- ([PR#4087](https://github.com/dubzzz/fast-check/pull/4087)) Doc: Add new contributor zbjornson
-- ([PR#4059](https://github.com/dubzzz/fast-check/pull/4059)) Performance: Faster `decomposeFloat/Double`
-- ([PR#4088](https://github.com/dubzzz/fast-check/pull/4088)) Performance: Drop some unneeded allocs in `ulid`
-- ([PR#4091](https://github.com/dubzzz/fast-check/pull/4091)) Performance: Faster unmap for `ulid`
-- ([PR#4092](https://github.com/dubzzz/fast-check/pull/4092)) Performance: Faster generation of `ulid`
-- ([PR#4098](https://github.com/dubzzz/fast-check/pull/4098)) Performance: Faster `ulid` mapper function
-- ([PR#4039](https://github.com/dubzzz/fast-check/pull/4039)) Script: Add support for more gitmojis
+- ([PR#4207](https://github.com/dubzzz/fast-check/pull/4207)) Bug: Better poisoning resiliency for `dictionary`
+- ([PR#4194](https://github.com/dubzzz/fast-check/pull/4194)) CI: Add some more details onto the PWA
+- ([PR#4211](https://github.com/dubzzz/fast-check/pull/4211)) CI: Rework broken test on `date`
+- ([PR#4212](https://github.com/dubzzz/fast-check/pull/4212)) CI: Rework broken test on `date` (retry)
+- ([PR#4214](https://github.com/dubzzz/fast-check/pull/4214)) CI: Rework another broken test on date
+- ([PR#4186](https://github.com/dubzzz/fast-check/pull/4186)) Doc: Document our approach to dual package
+- ([PR#4187](https://github.com/dubzzz/fast-check/pull/4187)) Doc: Expose website as PWA too
+- ([PR#4190](https://github.com/dubzzz/fast-check/pull/4190)) Move: Move the manifest in /static
+- ([PR#4206](https://github.com/dubzzz/fast-check/pull/4206)) Refactor: Re-use null-proto helpers of `dictionary` on `anything`
+- ([PR#4189](https://github.com/dubzzz/fast-check/pull/4189)) Test: Drop Node 14.x from the test-chain
