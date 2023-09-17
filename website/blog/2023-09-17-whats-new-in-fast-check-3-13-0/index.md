@@ -14,7 +14,7 @@ Continue reading to explore the detailed updates it brings.
 
 The main target of fast-check has always been to find bugs without too much help of the testers. Instead of forcing you to think about the possible things that can go wrong, fast-check asks you to explain what to expect from your algorithms and it should find what goes wrong for you.
 
-As such, the more fast-check thinks of nasty things for you, the higher the chance to detect bugs that may happen in production before you.
+As such, the more fast-check thinks about nasty things, the higher the chance to detect bugs that may happen in production before you.
 
 Since version 3.0.0, we have started to push more and more for defaults enabling everything. For instance, `double` not only generates classical numerical values but they also cover infinities, not-a-number or negative zero.
 
