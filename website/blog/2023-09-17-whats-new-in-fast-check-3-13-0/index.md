@@ -55,8 +55,8 @@ fc.dictionary(
 
 fc.record(
   {
-    keyA: fc.nat(), // the keys for our records
-    keyB: fc.string(), // and associated values
+    keyA: fc.nat(), // the keys for our records (here: keyA and keyB)
+    keyB: fc.string(), // and associated values (here: nat and string)
   },
   { noNullPrototype: false },
 )
