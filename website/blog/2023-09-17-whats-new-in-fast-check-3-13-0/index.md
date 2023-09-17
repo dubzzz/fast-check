@@ -166,7 +166,7 @@ With version 3.12.0, fast-check now offers two new options
 
 For example, if you want to exclude the value 1 from the range, you can now write: `double({min: 0, max: 1, maxExcluded: true})`, and this will produce values where `0 ≤ value < 1`, effectively excluding the value 1 from the generated set.
 
-## Changelog since 3.13.0
+## Changelog since 3.12.0
 
 The version 3.13.0 is based on version 3.12.1.
 
