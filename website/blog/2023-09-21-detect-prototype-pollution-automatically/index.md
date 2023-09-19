@@ -32,7 +32,7 @@ const maliciousPayload = '{"__proto__": {"isAdmin": true}}';
 merge({}, JSON.parse(maliciousPayload));
 
 // ...a totally unrelated piece code anywhere else
-const newUser = {}; 
+const newUser = {};
 newUser.isAdmin; // true
 ```
 
@@ -70,6 +70,7 @@ const clone = _.cloneDeep(instance);
 _.merge(instance, other);
 assertNoPoisoning();
 ```
+
 :::
 
 By running this code against a vulnerable version of [lodash](https://lodash.com/) you get a working example proving the vulnerability.
