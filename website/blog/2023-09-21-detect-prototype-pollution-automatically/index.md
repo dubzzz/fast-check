@@ -77,11 +77,19 @@ assertNoPoisoning();
 
 By running this code against a vulnerable version of [lodash](https://lodash.com/) you get a working example proving the vulnerability.
 
-:::warning Side notes
+:::info Flaky or not flaky?
 
-As triggering a prototype pollution might be tricky in some cases because library's authors attempted to protect against them, they might not popped immediately in the radar of this test.
+A commonly shared concern regarding property based testing is: How stable will it be in my CI? Can I ensure it will be?
 
-While pretty efficient in many cases, property based tests can take more than a run to detect nasty issues. We recommend not only to launch them once but also to keep them with an unfixed seed in your CI. They are not supposed to be flaky but difficult to find bugs need time, energy and effort and you will probably prefer the bug to be reported in your CI than put of nowhere.
+_How stable will it be in my CI?_
 
-In order to increase your chances to detect the bug if any, you may want to increase the number of runs when you first run this test by playing with `numRuns`.
+The philosophy being: play the test against 100 randomly generated values to find bugs, the deeper the error, the more likely it will not be detected everytime. That's said, property based testing already performs in a stable way even with only a hundred of executions.
+
+_Can I ensure it will be?_
+
+While a seed can be configured, we recommend not to give any: you will probably prefer the bug to be reported in your CI than coming from nowhere. Not providing any seed does not prevent replaying the test.
+
+_Recommended_
+
+In addition, as prototype pollution detection is most of all for vulnerability purposes, we recommend our users to tweak the `numRuns` when they first run the test on their side. It will increase their chance to find a bug if any. But then drop it for CI runs to keep the CI process smooth and quick.
 :::
