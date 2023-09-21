@@ -79,7 +79,7 @@ assertNoPoisoning();
 
 "Running this code against a vulnerable version of [lodash](https://lodash.com/) provides a working example that demonstrates the vulnerability.
 
-:::info Flaky or not flaky?
+:::tip Flaky or not flaky?
 
 A commonly shared concern regarding property based testing is: How stable will it be in my CI? Can I ensure it will be?
 
