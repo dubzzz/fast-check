@@ -55,7 +55,8 @@ test('CVE-2018-3721', () => {
   fc.assert(
     fc
       .property(fc.object(), fc.object(), (instance, other) => {
-        _.merge(instance, other);
+        const clone = _.cloneDeep(instance); // no direct side-effects to instances coming out of fast-check
+        _.merge(clone, other);
         assertNoPoisoning();
       })
       .afterEach(restoreGlobals),
@@ -63,21 +64,7 @@ test('CVE-2018-3721', () => {
 });
 ```
 
-:::info Tips
-Generally speaking, we encourage users not to alter directly the generated instances. By altering them in place you may make the shrinking and replay processes unpredictable.
-
-We would rather recommend a more verbose property:
-
-```diff
-+++ const clone = _.cloneDeep(instance);
-+++ _.merge(clone, other);
---- _.merge(instance, other);
-assertNoPoisoning();
-```
-
-:::
-
-"Running this code against a vulnerable version of [lodash](https://lodash.com/) provides a working example that demonstrates the vulnerability.
+Running this code against a vulnerable version of [lodash](https://lodash.com/) provides a working example that demonstrates the vulnerability.
 
 :::info Flaky or not flaky?
 
