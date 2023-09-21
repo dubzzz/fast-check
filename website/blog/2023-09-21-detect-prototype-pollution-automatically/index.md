@@ -79,7 +79,7 @@ Got error: Poisoning detected on Object.prototype.toString.
     at ...
 ```
 
-:::tip Flaky or not flaky?
+## Flaky or not flaky?
 
 A commonly shared concern regarding property based testing is: How stable will it be in my CI? Can I ensure it will be?
 
@@ -94,4 +94,3 @@ While a seed can be configured, we recommend not to give any: you will probably 
 _Recommended_
 
 In addition, as prototype pollution detection is most of all for vulnerability purposes, we recommend our users to tweak the `numRuns` when they first run the test on their side. It will increase their chance to find a bug if any. But then drop it for CI runs to keep the CI process smooth and quick.
-:::
