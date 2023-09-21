@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [tips, cve, vulnerability]
 ---
 
-Prototype pollution is among the most frequent sources of Common Vulnerabilities and Exposures - aka CVE - in the JavaScript ecosystem. As such detecting them early has always been one of the key challenges of fast-check.
+Prototype pollution is among the most frequent sources of Common Vulnerabilities and Exposures - aka CVE - in the JavaScript ecosystem. "As a result, detecting them early has always been a key challenge for fast-check.
 
 In this post, you will learn what they are and how you can find them easily using fast-check.
 
@@ -12,7 +12,7 @@ In this post, you will learn what they are and how you can find them easily usin
 
 ## Prototype pollution
 
-The root of prototype pollution is that by default - or more precisely: except if precisely stated not to - any instance of object inherit from the Object class in JavaScript.
+The root cause of prototype pollution is that, by default (or more precisely, unless explicitly stated otherwise), any instance of an object inherits from the Object class in JavaScript.
 
 The following piece of code highlights it:
 
@@ -22,7 +22,7 @@ instance.__proto__; // Object
 'toString' in instance; // true
 ```
 
-The idea of prototype pollution resides in the fact that most of the time we forget about the Object base-class and may expose our users.
+The concept of prototype pollution arises from the fact that we often overlook the Object base-class, potentially exposing our users.
 
 Let's imagine an helper function called `merge` responsible to merge two instances together deeply. If not written with prototype pollution in mind it can be easy to fall into the vulnerable scenario below:
 
@@ -40,9 +40,9 @@ This vulnerability has been rated 6.5 and impacted any version of lodash strictl
 
 ## Automatic detection
 
-Starting at [version 3.1.0](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/CHANGELOG.md#310), fast-check worked on making such vulnerabilities easier to detect without the need for extra guidance. Following this version, fast-check started to generate more frequently instances of objects coming with dangerous keys such as `__proto__` or `toString`. It was the first requirement but it only unlocked the ability to trigger the vulnerability, not to detect it.
+Starting at [version 3.1.0](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/CHANGELOG.md#310), fast-check focused on making these vulnerabilities easier to detect without requiring additional guidance. From version 3.1.0 onwards, fast-check began generating instances of objects with potentially dangerous keys like `__proto__` or `toString` more frequently than it used to do before. It was the first requirement but it only unlocked the ability to trigger the vulnerability, not to detect it.
 
-So we launched a new helper package: [@fast-check/poisoning](https://www.npmjs.com/package/@fast-check/poisoning). This add-on is responsible to detect whenever a poisoning occured. When used in conjunction of fast-check it can be an ally to find prototype pollutions.
+So we launched a new helper package: [@fast-check/poisoning](https://www.npmjs.com/package/@fast-check/poisoning). TThis add-on is responsible for detecting whenever a poisoning occurs. When used in conjunction of fast-check it can be an ally to find prototype pollutions.
 
 Let's take back the [CVE-2018-3721](https://github.com/advisories/GHSA-fvqr-27wr-82fm) and see how we could have found it with a test:
 
@@ -53,10 +53,12 @@ import _ from 'lodash';
 
 test('CVE-2018-3721', () => {
   fc.assert(
-    fc.property(fc.object(), fc.object(), (instance, other) => {
-      _.merge(instance, other);
-      assertNoPoisoning();
-    }).afterEach(restoreGlobals)
+    fc
+      .property(fc.object(), fc.object(), (instance, other) => {
+        _.merge(instance, other);
+        assertNoPoisoning();
+      })
+      .afterEach(restoreGlobals),
   );
 });
 ```
@@ -75,7 +77,7 @@ assertNoPoisoning();
 
 :::
 
-By running this code against a vulnerable version of [lodash](https://lodash.com/) you get a working example proving the vulnerability.
+"Running this code against a vulnerable version of [lodash](https://lodash.com/) provides a working example that demonstrates the vulnerability.
 
 :::warning Side notes
 
