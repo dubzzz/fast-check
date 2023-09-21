@@ -66,7 +66,7 @@ test('CVE-2018-3721', () => {
 
 Running this code against a vulnerable version of [lodash](https://lodash.com/) provides a working example that demonstrates the vulnerability.
 
-By running it locally on my side I got an error telling me that if we have `instance = {}` and `other = {toString:{"":0}}` then we have a poisoning on the prototype of Object:
+When I ran this test locally, I encountered an error. Specifically, with `instance = {}` and `other = {toString:{"":0}}`, a poisoning on the prototype of Object was detected. Here's the error output:
 
 ```txt
 Error: Property failed after 9 tests
