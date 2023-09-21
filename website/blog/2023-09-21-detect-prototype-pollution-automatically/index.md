@@ -66,6 +66,19 @@ test('CVE-2018-3721', () => {
 
 Running this code against a vulnerable version of [lodash](https://lodash.com/) provides a working example that demonstrates the vulnerability.
 
+By running it locally on my side I got an error telling me that if we have `instance = {}` and `other = {toString:{"":0}}` then we have a poisoning on the prototype of Object:
+
+```txt
+Error: Property failed after 9 tests
+{ seed: 1874440714, path: "8:0:3:78:79:79:79:80:80:80", endOnFailure: true }
+Counterexample: [{},{"toString":{"":0}}]
+Shrunk 9 time(s)
+Got error: Poisoning detected on Object.prototype.toString.
+    at Object.assertNoPoisoning (/app/available_modules/1695319250000/@fast-check/poisoning/lib/main.js:28:15)
+    at /app/index.js:47:9
+    at ...
+```
+
 :::tip Flaky or not flaky?
 
 A commonly shared concern regarding property based testing is: How stable will it be in my CI? Can I ensure it will be?
