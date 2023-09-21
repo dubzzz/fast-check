@@ -42,7 +42,7 @@ This vulnerability has been rated 6.5 and impacted any version of lodash strictl
 
 Starting at [version 3.1.0](https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/CHANGELOG.md#310), fast-check focused on making these vulnerabilities easier to detect without requiring additional guidance. From version 3.1.0 onwards, fast-check began generating instances of objects with potentially dangerous keys like `__proto__` or `toString` more frequently than it used to do before. It was the first requirement but it only unlocked the ability to trigger the vulnerability, not to detect it.
 
-So we launched a new helper package: [@fast-check/poisoning](https://www.npmjs.com/package/@fast-check/poisoning). TThis add-on is responsible for detecting whenever a poisoning occurs. When used in conjunction of fast-check it can be an ally to find prototype pollutions.
+So we launched a new helper package: [@fast-check/poisoning](https://www.npmjs.com/package/@fast-check/poisoning). This add-on is responsible for detecting whenever a poisoning occurs. When used in conjunction of fast-check it can be an ally to find prototype pollutions.
 
 Let's take back the [CVE-2018-3721](https://github.com/advisories/GHSA-fvqr-27wr-82fm) and see how we could have found it with a test:
 
@@ -74,8 +74,8 @@ Error: Property failed after 9 tests
 Counterexample: [{},{"toString":{"":0}}]
 Shrunk 9 time(s)
 Got error: Poisoning detected on Object.prototype.toString.
-    at Object.assertNoPoisoning (/app/available_modules/1695319250000/@fast-check/poisoning/lib/main.js:28:15)
-    at /app/index.js:47:9
+    at Object.assertNoPoisoning
+    at /app/index.js
     at ...
 ```
 
