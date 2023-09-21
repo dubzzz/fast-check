@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [tips, cve, vulnerability]
 ---
 
-Prototype pollution is among the most frequent sources of Common Vulnerabilities and Exposures - aka CVE - in the JavaScript ecosystem. "As a result, detecting them early has always been a key challenge for fast-check.
+Prototype pollution is among the most frequent sources of Common Vulnerabilities and Exposures - aka CVE - in the JavaScript ecosystem. As a result, detecting them early has always been a key challenge for fast-check.
 
 In this post, you will learn what they are and how you can find them easily using fast-check.
 
