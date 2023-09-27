@@ -1,4 +1,4 @@
-import { IsSame, Extends } from './internals';
+import { IsSame, Extends } from './internals.js';
 export declare function expectType<TExpectedType>(): <TReal>(
   arg: TReal,
   ...noArgs: IsSame<TExpectedType, TReal> extends true ? [string] : [{ expected: TExpectedType; got: TReal }]
