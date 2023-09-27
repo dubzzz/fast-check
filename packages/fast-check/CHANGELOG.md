@@ -1,3 +1,19 @@
+# 3.13.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.13.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.0...v3.13.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4261](https://github.com/dubzzz/fast-check/pull/4261)) Bug: Fix typings for node native esm
+- ([PR#4230](https://github.com/dubzzz/fast-check/pull/4230)) Doc: Release note for 3.13.0
+- ([PR#4240](https://github.com/dubzzz/fast-check/pull/4240)) Doc: Some tips on prototype pollution
+- ([PR#4246](https://github.com/dubzzz/fast-check/pull/4246)) Doc: Fix typo in "Detect prototype pollution automatically"
+
 # 3.13.0
 
 _New options for `date`, `record` and `dictionary`_

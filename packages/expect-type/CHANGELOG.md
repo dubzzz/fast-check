@@ -1,3 +1,16 @@
+# 0.0.5
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/expect-type%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/expect-type%2Fv0.0.4...expect-type%2Fv0.0.5)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4263](https://github.com/dubzzz/fast-check/pull/4263)) Bug: Fix typings for node native esm
+
 # 0.0.4
 
 _Better support for types on ESM targets_
