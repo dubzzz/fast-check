@@ -1,11 +1,7 @@
 # 0.0.8
 
-_TODO Description_
+_Fix typings for node native esm_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.7...vitest%2Fv0.0.8)]
-
-## Features
-
-
 
 ## Fixes
 

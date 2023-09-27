@@ -1,11 +1,7 @@
 # 0.0.5
 
-_TODO Description_
+_Fix typings for node native esm_
 [[Code](https://github.com/dubzzz/fast-check/tree/expect-type%2Fv0.0.5)][[Diff](https://github.com/dubzzz/fast-check/compare/expect-type%2Fv0.0.4...expect-type%2Fv0.0.5)]
-
-## Features
-
-
 
 ## Fixes
 

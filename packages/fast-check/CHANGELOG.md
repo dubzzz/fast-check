@@ -1,11 +1,7 @@
 # 3.13.1
 
-_TODO Description_
+_Fix typings for node native esm_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.13.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.0...v3.13.1)]
-
-## Features
-
-
 
 ## Fixes
 
