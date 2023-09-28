@@ -336,6 +336,7 @@ jobs:
         run: |
           git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs ~/.nvs
           . ~/.nvs/nvs.sh install
+          source ~/.nvs/nvs.sh
           yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
