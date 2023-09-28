@@ -12,7 +12,7 @@ const replace = require('replace-in-file');
 // Append *.js file extension on all local imports
 
 const options = {
-  files: ['lib/**/*.js', 'lib/**/*.d.ts'],
+  files: ['lib/**/*.js'],
   from: [/from '\.(.*)(?<!\.js)'/g, /from "\.(.*)(?<!\.js)"/g],
   to: ["from '.$1.js'", 'from ".$1.js"'],
 };
