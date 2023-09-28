@@ -377,7 +377,7 @@ jobs:
         run: |
           yarn workspaces foreach -pvi --no-private exec "echo \{\"type\": \"commonjs\"\} > test-types/package.json"
       - name: Check in CommonJS mode
-        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict test-types/*.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.ts"
       - name: Check in CommonJS mode with NodeNext
         run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext test-types/*.ts"
       - name: Switch folder to ES Modules
