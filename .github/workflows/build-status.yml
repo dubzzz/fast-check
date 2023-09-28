@@ -390,7 +390,7 @@ jobs:
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
-          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts"
+          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.ts"
           yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes test-types/*.ts"
   test_node_8:
     name: 'Test legacy Node'
