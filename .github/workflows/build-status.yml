@@ -332,6 +332,8 @@ jobs:
         run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check bundles
         run: yarn workspaces foreach -pvi --no-private run test-bundle
+      - name: Check legacy bundles
+        run: yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
   test_types:
@@ -396,48 +398,6 @@ jobs:
           cd packages/test-types
           sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
           yarn dlx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
-  test_node_8:
-    name: 'Test legacy Node'
-    needs:
-      - warmup_yarn_cache
-      - production_packages
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
-      - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: '18.x'
-          cache: 'yarn'
-          check-latest: true
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/test-minimal-support' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Using Node v8.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: '8.x'
-          check-latest: true
-      - name: Test packages/test-minimal-support/
-        run: |
-          cd packages/test-minimal-support
-          node --version
-          node main.js
-      # Re-install node 16, for clean-up related logic as it does not work with node 8
-      # The caching logic of actions/setup-node calls yarn to know the version
-      - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: '18.x'
-          check-latest: true
 
   # Publication jobs
   publish_documentation:
@@ -465,7 +425,6 @@ jobs:
       - typecheck
       - test
       - test_bundle
-      - test_node_8
       - test_types
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
