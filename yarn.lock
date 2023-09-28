@@ -2746,7 +2746,7 @@ __metadata:
     jest: ^29.7.0
     jest-environment-jsdom: ^29.7.0
     lodash: ^4.17.21
-    pure-rand: ^6.0.3
+    pure-rand: ^6.0.4
     react: ^18.2.0
     react-dom: ^18.2.0
     supertest: ^6.3.3
@@ -14118,10 +14118,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^6.0.0, pure-rand@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "pure-rand@npm:6.0.3"
-  checksum: d08701cfd1528c5f9cdca996776c498c92767722561f9b8f9e62645d5025c8a3bf60b90f76f262aaab124e6bb1d58e1b0850722dbca2846a19b708801956e56b
+"pure-rand@npm:^6.0.0, pure-rand@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "pure-rand@npm:6.0.4"
+  checksum: e1c4e69f8bf7303e5252756d67c3c7551385cd34d94a1f511fe099727ccbab74c898c03a06d4c4a24a89b51858781057b83ebbfe740d984240cdc04fead36068
   languageName: node
   linkType: hard
 
