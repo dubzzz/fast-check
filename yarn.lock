@@ -2840,16 +2840,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fast-check/test-types@workspace:packages/test-types":
-  version: 0.0.0-use.local
-  resolution: "@fast-check/test-types@workspace:packages/test-types"
-  dependencies:
-    "@fast-check/expect-type": "workspace:*"
-    fast-check: "workspace:*"
-    typescript: ~5.2.2
-  languageName: unknown
-  linkType: soft
-
 "@fast-check/vitest@workspace:packages/vitest":
   version: 0.0.0-use.local
   resolution: "@fast-check/vitest@workspace:packages/vitest"
@@ -8562,6 +8552,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:
+    "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": ^7.37.1
     "@types/jest": ^29.5.5

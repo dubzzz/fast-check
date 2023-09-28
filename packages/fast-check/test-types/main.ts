@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-empty-function */
 // Just a simple property, compiling a snippet importing fast-check
 // should be enough to ensure that typings will not raise errors regarding incompatible
 // and unknown syntaxes at build time
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import fc from 'fast-check';
 import { expectType, expectTypeAssignable } from '@fast-check/expect-type';
 
@@ -22,24 +23,24 @@ fc.assert(fc.property(fc.nat(), () => {}).afterEach(async () => {}));
 // assert (reporter)
 expectType<void>()(
   fc.assert(
-    fc.property(fc.nat(), fc.string(), (a, b) => {}),
-    { reporter: (out: fc.RunDetails<[number, string]>) => {} },
+    fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
+    { reporter: (_out: fc.RunDetails<[number, string]>) => {} },
   ),
   'Accept a reporter featuring the right types',
 );
 // prettier-ignore
 // @ts-expect-error - Reporter must be compatible with generated values
-fc.assert(fc.property(fc.nat(), () => {}), { reporter: (out: fc.RunDetails<[string, string]>) => {} });
+fc.assert(fc.property(fc.nat(), () => {}), { reporter: (_out: fc.RunDetails<[string, string]>) => {} });
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.property(fc.nat(), fc.string(), async (a: number) => {});
+fc.property(fc.nat(), fc.string(), async (_a: number) => {});
 
 // property
 expectTypeAssignable<fc.IProperty<[number]>>()(
-  fc.property(fc.nat(), (a) => {}),
+  fc.property(fc.nat(), (_a) => {}),
   '"property" instanciates instances compatible with IProperty',
 );
 expectTypeAssignable<fc.IProperty<[number, string]>>()(
-  fc.property(fc.nat(), fc.string(), (a, b) => {}),
+  fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
   '"property" handles tuples',
 );
 expectType<void>()(
@@ -52,35 +53,35 @@ expectType<void>()(
   'Synchronous property accepts synchronous hooks',
 );
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
-fc.property(fc.nat(), fc.string(), (a: number, b: number) => {});
+fc.property(fc.nat(), fc.string(), (_a: number, _b: number) => {});
 
 // asyncProperty
 expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
-  fc.asyncProperty(fc.nat(), async (a) => {}),
+  fc.asyncProperty(fc.nat(), async (_a) => {}),
   '"asyncProperty" instanciates instances compatible with IAsyncProperty',
 );
 expectTypeAssignable<fc.IAsyncProperty<[number, string]>>()(
-  fc.asyncProperty(fc.nat(), fc.string(), async (a, b) => {}),
+  fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {}),
   '"asyncProperty" handles tuples',
 );
 expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
   fc
-    .asyncProperty(fc.nat(), async (a) => {})
+    .asyncProperty(fc.nat(), async (_a) => {})
     .beforeEach(async () => 123)
     .afterEach(async () => 'anything'),
   'Asynchronous property accepts asynchronous hooks',
 );
 expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
   fc
-    .asyncProperty(fc.nat(), async (a) => {})
+    .asyncProperty(fc.nat(), async (_a) => {})
     .beforeEach(() => 123)
     .afterEach(() => 'anything'),
   'Asynchronous property accepts synchronous hooks',
 );
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
-fc.asyncProperty(fc.nat(), fc.string(), async (a: number, b: number) => {});
+fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.asyncProperty(fc.nat(), fc.string(), async (a: number) => {});
+fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {});
 
 // base arbitrary (chain)
 expectType<fc.Arbitrary<string[]>>()(
@@ -175,8 +176,8 @@ fc.uniqueArray(fc.record({ name: fc.string() }), {
 });
 
 // record arbitrary
-const mySymbol1 = Symbol('symbol1');
-const mySymbol2 = Symbol('symbol2');
+declare const mySymbol1: unique symbol;
+declare const mySymbol2: unique symbol;
 expectType<fc.Arbitrary<{ a: number; b: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }),
   '"record" can contain multiple types',
@@ -338,24 +339,23 @@ expectType<fc.Arbitrary<number | 'custom_default'>>()(
 fc.option(1);
 
 // tie arbitrary
-// eslint-disable-next-line @typescript-eslint/ban-types
 expectType<{}>()(
-  fc.letrec((tie) => ({})),
+  fc.letrec((_tie) => ({})),
   'Empty "letrec"',
 );
 expectType<{}>()(
-  fc.letrec<{}>((tie) => ({})),
+  fc.letrec<{}>((_tie) => ({})),
   'Empty "letrec" with types manually defined',
 );
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>()(
-  fc.letrec((tie) => ({
+  fc.letrec((_tie) => ({
     a: fc.nat(),
     b: fc.string(),
   })),
   'No recursion "letrec"',
 );
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>()(
-  fc.letrec<{ a: number; b: string }>((tie) => ({
+  fc.letrec<{ a: number; b: string }>((_tie) => ({
     a: fc.nat(),
     b: fc.string(),
   })),
@@ -390,13 +390,13 @@ expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
   'Invalid recursion "letrec" with types manually defined',
 ); // TODO Even when fully typed we accept undeclared keys from being used on tie (see why PR-2968)
 expectType<{ a: fc.Arbitrary<number> }>()(
-  fc.letrec<{ a: number }>((tie) => ({
+  fc.letrec<{ a: number }>((_tie) => ({
     a: fc.nat(),
     b: fc.nat(),
   })),
   'Accept additional keys within "letrec" but do not expose them outside',
 );
-fc.letrec<{ a: string }>((tie) => ({
+fc.letrec<{ a: string }>((_tie) => ({
   // @ts-expect-error - reject builders implying 'wrongly typed keys' when type declared
   a: fc.nat(),
 }));
@@ -408,7 +408,7 @@ expectType<fc.Arbitrary<[number, number]>>()(fc.clone(fc.nat(), 2), '"clone" 2-t
 expectType<fc.Arbitrary<[number, number, number]>>()(fc.clone(fc.nat(), 3), '"clone" 3-times');
 expectType<fc.Arbitrary<[number, number, number, number]>>()(fc.clone(fc.nat(), 4), '"clone" 4-times');
 expectType<fc.Arbitrary<[number, number, number, number, number]>>()(fc.clone(fc.nat(), 5), '"clone" 5-times');
-const nTimesClone: number = 2;
+declare const nTimesClone: number;
 expectType<fc.Arbitrary<number[]>>()(fc.clone(fc.nat(), nTimesClone), '"clone" with non-precise number of times');
 
 // func arbitrary
@@ -436,7 +436,7 @@ expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>>()(
 
 // configureGlobal
 expectType<void>()(
-  fc.configureGlobal({ reporter: (out: fc.RunDetails<unknown>) => {} }),
+  fc.configureGlobal({ reporter: (_out: fc.RunDetails<unknown>) => {} }),
   '"configureGlobal" with custom reporter',
 );
 // FIXME // @ts-expect-error - reporter cannot be defined with precise type on configureGlobal

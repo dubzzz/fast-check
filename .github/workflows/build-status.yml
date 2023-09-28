@@ -371,31 +371,27 @@ jobs:
         run: yarn unpack:all
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Drop @types to avoid failures on legacy versions of TypeScript
-        if: matrix.ts-version == '4.1'
-        run: mv node_modules/@types node_modules/at-types
-      - name: Drop parse5 to avoid failures on legacy versions of TypeScript
-        if: matrix.ts-version == '4.4'
-        run: rm -rv node_modules/parse5
-      - name: TypeScript version
+      - name: Retrieve dropped test-types
+        run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-types"
+      - name: Switch folder to CommonJS
         run: |
-          cd packages/test-types
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc --version
-      - name: Test packages/test-types/
+          yarn workspaces foreach -pvi --no-private exec "echo \{\"type\": \"commonjs\"\} > test-types/package.json"
+      - name: Check in CommonJS mode
+        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict test-types/*.ts"
+      - name: Check in CommonJS mode with NodeNext
+        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext test-types/*.ts"
+      - name: Switch folder to ES Modules
         run: |
-          cd packages/test-types
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc
-      - name: Test packages/test-types/ with --moduleResolution nodenext
-        if: matrix.ts-version == 'next'
-        run: |
-          cd packages/test-types
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext --module nodenext
-      - name: Test packages/test-types/ with --exactOptionalPropertyTypes
+          yarn workspaces foreach -pvi --no-private exec "echo \{\"type\": \"module\"\} > test-types/package.json"
+      - name: Check in ES Modules mode
+        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict test-types/*.ts"
+      - name: Check in ES Modules mode with NodeNext
+        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext test-types/*.ts"
+      - name: Check in ES Modules mode with exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
-          cd packages/test-types
-          sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
+          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts"
+          yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes test-types/*.ts"
   test_node_8:
     name: 'Test legacy Node'
     needs:
