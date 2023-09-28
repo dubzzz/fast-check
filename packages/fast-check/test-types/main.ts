@@ -73,7 +73,7 @@ expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
 );
 expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
   fc
-    .asyncProperty(fc.nat(), async (_a) => {})
+    .asyncProperty(fc.string(), async (_a) => {})
     .beforeEach(() => 123)
     .afterEach(() => 'anything'),
   'Asynchronous property accepts synchronous hooks',
