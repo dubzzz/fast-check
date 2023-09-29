@@ -336,6 +336,7 @@ jobs:
         run: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/c92adb3c479d70bb29f4399a808c972ef41510e7/install.sh | bash # v0.39.5
           source ~/.bashrc
+          which nvm
           yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
