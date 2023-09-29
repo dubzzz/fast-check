@@ -335,6 +335,7 @@ jobs:
       - name: Check legacy bundles
         run: |
           ls -alh /home/runner/.nvm
+          export PATH=$PATH:/home/runner/.nvm
           echo $PATH
           nvm install 8
           which nvm
