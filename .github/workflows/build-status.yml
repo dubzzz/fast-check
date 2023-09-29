@@ -379,19 +379,19 @@ jobs:
       - name: Check in CommonJS mode
         run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.ts"
       - name: Check in CommonJS mode with NodeNext
-        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext test-types/*.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.ts"
       - name: Switch folder to ES Modules
         run: |
           yarn workspaces foreach -pvi --no-private exec "echo \{\"type\": \"module\"\} > test-types/package.json"
       - name: Check in ES Modules mode
-        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict test-types/*.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.ts"
       - name: Check in ES Modules mode with NodeNext
-        run: yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext test-types/*.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.ts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
           yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.ts"
-          yarn workspaces foreach -pvi --no-private exec "yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes test-types/*.ts"
+          yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.ts"
   test_node_8:
     name: 'Test legacy Node'
     needs:
