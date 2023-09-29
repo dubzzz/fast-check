@@ -13,7 +13,7 @@
     "express": "^4.18.2",
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
-    "pure-rand": "^6.0.3",
+    "pure-rand": "^6.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "supertest": "^6.3.3"
