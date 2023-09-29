@@ -40,7 +40,7 @@
     "e2e:debug": "node --inspect ../../node_modules/jest/bin/jest.js --config jest.e2e.config.cjs --watch --runInBand",
     "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
     "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
-    "test-legacy-bundle": "nvs add 8 && $(nvs which 8) test-bundle/run.cjs && $(nvs which 8) test-bundle/run-advanced.cjs",
+    "test-legacy-bundle": "nvm install 8 && $(nvm which 8) test-bundle/run.cjs && $(nvm which 8) test-bundle/run-advanced.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.cjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
     "docs:serve": "yarn dlx serve docs/"

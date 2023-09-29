@@ -334,27 +334,8 @@ jobs:
         run: yarn workspaces foreach -pvi --no-private run test-bundle
       - name: Check legacy bundles
         run: |
-          echo "1..."
-          git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs ~/.nvs
-          echo "2..."
-          echo $PATH
-          echo "3..."
-          which nvs
-          echo "4..."
-          . ~/.nvs/nvs.sh install
-          echo "5..."
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/c92adb3c479d70bb29f4399a808c972ef41510e7/install.sh | bash # v0.39.5
           source ~/.bashrc
-          echo "6..."
-          echo $PATH
-          echo "7..."
-          which nvs
-          echo "8..."
-          nvs --version
-          echo "9..."
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-          echo "10..."
-          source ~/.bashrc
-          echo "11..."
           yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
