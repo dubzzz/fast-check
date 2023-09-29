@@ -343,7 +343,7 @@ jobs:
           echo "4..."
           . ~/.nvs/nvs.sh install
           echo "5..."
-          source ~/.nvs/nvs.sh
+          source ~/.bashrc
           echo "6..."
           echo $PATH
           echo "7..."
@@ -351,6 +351,10 @@ jobs:
           echo "8..."
           nvs --version
           echo "9..."
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+          echo "10..."
+          source ~/.bashrc
+          echo "11..."
           yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
