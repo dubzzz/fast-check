@@ -28,17 +28,16 @@ jobs:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        id: yarn-cache
         with:
           node-version: '18.x'
           cache: 'yarn'
           check-latest: true
       - name: Update Yarn cache
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
-        run: yarn install --immutable
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn install --immutable --mode=skip-build
   warmup_yarn_cache_others:
     name: 'Warm up Yarn cache (others)'
     runs-on: ${{matrix.os}}
