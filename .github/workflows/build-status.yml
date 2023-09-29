@@ -333,7 +333,10 @@ jobs:
       - name: Check bundles
         run: yarn workspaces foreach -pvi --no-private run test-bundle
       - name: Check legacy bundles
-        run: yarn workspaces foreach -pvi --no-private run test-legacy-bundle
+        run: |
+          ls -alh /home/runner/.nvm
+          alias nvm=/home/runner/.nvm
+          yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
   test_types:
