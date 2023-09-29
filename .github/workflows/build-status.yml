@@ -335,7 +335,7 @@ jobs:
       - name: Check legacy bundles
         run: |
           ls -alh /home/runner/.nvm
-          alias nvm=/home/runner/.nvm
+          bash /home/runner/.nvm/install.sh
           yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
