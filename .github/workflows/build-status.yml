@@ -52,4 +52,6 @@ jobs:
         run: |
           export NVS_HOME="$HOME/.nvs"
           . "$NVS_HOME/nvs.sh" install
-          yarn workspaces foreach -pvi --no-private exec "nvs add 10"
+          echo "1!!!" && cd packages/fast-check
+          echo "2!!!" && yarn test-legacy-bundle
+          echo "3!!!" yarn workspaces foreach -pvi --no-private exec "nvs add 10"
