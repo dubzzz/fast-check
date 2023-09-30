@@ -41,7 +41,7 @@ jobs:
           fi
           . "$NVS_HOME/nvs.sh" install
           echo "0!!!" && nvs add 8
-          echo "5!!!" yarn workspaces foreach -pvi --no-private exec "cat package.json | grep test-legacy-bundle | sed -E 's/\s*"test-legacy-bundle": "(.*)",/\1/g' | bash"
+          echo "5!!!" yarn workspaces foreach -pvi --no-private exec "cat package.json | grep test-legacy-bundle | sed -E 's/\s*\"test-legacy-bundle\": \"(.*)\",/\1/g' | bash"
           echo "4!!!" yarn workspaces foreach -pvi --no-private run test-legacy-bundle
           echo "1!!!" && cd packages/fast-check
           echo "2!!!" && cat package.json | grep test-legacy-bundle | sed -E 's/\s*"test-legacy-bundle": "(.*)",/\1/g' | bash
