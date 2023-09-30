@@ -44,6 +44,7 @@ jobs:
           ls -alh "$NVS_HOME/nvs"
           export PATH="$PATH:$NVS_HOME"
           echo "0!!!" && nvs add $NODE_VERSION
+          yarn
           echo "1!!!" && cd packages/fast-check
           echo "2!!!" && yarn test-legacy-bundle
           echo "3!!!" && cd ../..
