@@ -1,0 +1,5 @@
+declined:
+  - "@fast-check/vitest"
+
+undecided:
+  - "@fast-check/jest"

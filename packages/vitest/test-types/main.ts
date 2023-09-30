@@ -17,5 +17,5 @@ test.prop([fc.nat(), fc.nat()], { seed: 4242 })('should replay the test for the 
 
 // Nested test options
 test.skip.prop([fc.fullUnicodeString()])('should be skipped', (text) => {
-  return text.length === [...text].length;
+  return text.length === text.length;
 });
