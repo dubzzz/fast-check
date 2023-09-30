@@ -332,14 +332,7 @@ jobs:
         run: yarn workspaces foreach -pvi --no-private run test-bundle
       - name: Check legacy bundles
         run: |
-          ls -alh /home/runner/.nvm
-          chmod +x /home/runner/.nvm/nvm.sh
           ln -s /home/runner/.nvm/nvm-exec /home/runner/.nvm/nvm
-          ls -alh /home/runner/.nvm
-          export PATH=$PATH:/home/runner/.nvm
-          echo $PATH
-          nvm install 8
-          which nvm
           yarn workspaces foreach -pvi --no-private run test-legacy-bundle
       - name: Check publication lint
         run: yarn publint:all
