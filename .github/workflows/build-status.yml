@@ -34,10 +34,10 @@ jobs:
       - name: Launch install
         shell: bash
         run: |
-          chmod +x /home/runner/.nvm/install.sh
-          bash /home/runner/.nvm/install.sh
-          alias nvm=/home/runner/.nvm/nvm.sh
-          nvm install 8
+          echo "hey!!!" && chmod +x /home/runner/.nvm/install.sh
+          echo "hey!!!" && bash /home/runner/.nvm/install.sh
+          echo "hey!!!" && bash /home/runner/.nvm/nvm.sh
+          echo "hey!!!" && nvm install 8
       - name: Install
         run: nvm install 8
       - name: Install dependencies
