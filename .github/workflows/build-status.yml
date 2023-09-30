@@ -33,8 +33,8 @@ jobs:
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Create symlink
-        run: ln -s /home/runner/.nvm/nvm-exec /home/runner/.nvm/nvm
+      - name: Launch install
+        run: chmod +x /home/runner/.nvm/install.sh && sh /home/runner/.nvm/install.sh
       - name: Install
         run: nvm install 8
       - name: Which from yarn
