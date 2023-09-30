@@ -20,8 +20,9 @@ permissions:
   contents: read
 
 jobs:
-  test_bundle:
-    name: 'Test bundle'
+  # Root jobs
+  warmup_yarn_cache:
+    name: 'Warm up Yarn cache'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
@@ -31,7 +32,305 @@ jobs:
           node-version: '18.x'
           cache: 'yarn'
           check-latest: true
-      - name: Launch install
+      - name: Update Yarn cache
+        env:
+          # Using PNP linker for better performance
+          YARN_NODE_LINKER: pnp
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn install --immutable --mode=skip-build
+  warmup_yarn_cache_others:
+    name: 'Warm up Yarn cache (others)'
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: ['macos-latest', 'windows-latest']
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Update Yarn cache
+        env:
+          # Using PNP linker for better performance
+          YARN_NODE_LINKER: pnp
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn install --immutable --mode=skip-build
+  no_dedupe_required:
+    name: 'No dedupe required'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Ensure no dedupe required
+        run: yarn dedupe --check
+  all_version_bump_declared:
+    name: 'All version bump declared'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Ensure versions have been properly bumped
+        run: yarn version check
+  package_quality:
+    name: 'Package quality'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Check package score using skypack
+        run: cd packages/fast-check && yarn dlx @skypack/package-check
+
+  # Jobs requesting warmup_yarn_cache
+  format_lint:
+    name: 'Format & Lint'
+    needs: warmup_yarn_cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Install dependencies
+        run: yarn workspace @fast-check/monorepo install --immutable
+      - name: Check format
+        run: yarn format:check
+      - name: Check lint
+        run: yarn lint:check
+  production_packages:
+    name: 'Build production packages'
+    needs: warmup_yarn_cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build production packages
+        run: yarn build-ci:all
+      - name: Create bundles
+        run: yarn pack:all
+      - name: Upload production packages
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+        with:
+          name: bundles
+          path: packages/**/package.tgz
+          if-no-files-found: error
+          retention-days: 1
+
+  # Jobs requesting warmup_yarn_cache AND production_packages
+  typecheck:
+    name: 'Typecheck'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Typecheck
+        run: yarn workspaces foreach -pvi run typecheck
+  test:
+    name: 'Test'
+    needs:
+      - warmup_yarn_cache
+      - warmup_yarn_cache_others
+      - production_packages
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        package-name:
+          - 'fast-check'
+          - '@fast-check/ava'
+          - '@fast-check/jest'
+          - '@fast-check/packaged'
+          - '@fast-check/poisoning'
+          - '@fast-check/vitest'
+          - '@fast-check/worker'
+        script-name: ['test']
+        node-version: [16.x, 18.x, latest]
+        os: ['ubuntu-latest']
+        include:
+          # More platforms and scripts...
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 18.x
+            os: 'ubuntu-latest'
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 18.x
+            os: 'macos-latest'
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 18.x
+            os: 'windows-latest'
+          - package-name: '@fast-check/packaged'
+            script-name: 'test'
+            node-version: 18.x
+            os: 'macos-latest'
+          - package-name: '@fast-check/packaged'
+            script-name: 'test'
+            node-version: 18.x
+            os: 'windows-latest'
+          # Limited matrix for test only packages
+          - package-name: '@fast-check/examples'
+            script-name: 'test'
+            node-version: 18.x
+            os: 'ubuntu-latest'
+          - package-name: 'website'
+            script-name: 'test'
+            node-version: 18.x
+            os: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Cache for Jest
+        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        with:
+          path: /tmp/jest_rt
+          key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: ${{matrix.node-version}}
+          cache: 'yarn'
+          check-latest: true
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Codecov
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
+        if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
+        with:
+          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          fail_ci_if_error: false # default: false
+          verbose: false # default: false
+  documentation:
+    name: 'Build documentation'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          lfs: true
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Generate documentation
+        run: yarn workspace website build
+      - name: Generate API reference
+        run: yarn workspace fast-check docs-ci
+      - name: Copy API reference within documentation
+        run: mv packages/fast-check/docs website/build/api-reference
+      - name: Upload documentation
+        uses: actions/upload-pages-artifact@a753861a5debcf57bf8b404356158c8e1e33150c # v2.0.0
+        with:
+          path: website/build/
+  test_bundle:
+    name: 'Test bundle'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Retrieve potentially dropped test-bundle
+        run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-bundle || true"
+      - name: Check bundles
+        run: yarn workspaces foreach -pvi --no-private run test-bundle
+      - name: Check legacy bundles
         run: |
           export NODE_VERSION="$(node --version)"
           export NVS_HOME="$HOME/.nvs"
@@ -41,12 +340,424 @@ jobs:
               exit 1
           fi
           chmod +x "$NVS_HOME/nvs"
-          ls -alh "$NVS_HOME/nvs"
           export PATH="$PATH:$NVS_HOME"
-          echo "0!!!" && nvs add $NODE_VERSION
-          yarn
-          echo "1!!!" && cd packages/fast-check
-          echo "2!!!" && yarn test-legacy-bundle
-          echo "3!!!" && cd ../..
-          echo "4!!!" && yarn workspaces foreach -pvi --no-private run test-legacy-bundle
-          echo "5!!!" && yarn workspaces foreach -pvi --no-private exec "cat package.json | grep test-legacy-bundle | sed -E 's/\s*\"test-legacy-bundle\": \"(.*)\",/\1/g' | bash"
+          if [ "$(node --version)" != "$NODE_VERSION" ]; then
+              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
+              exit 2
+          fi
+          yarn workspaces foreach -pvi --no-private run test-legacy-bundle
+          if [ "$(node --version)" != "$NODE_VERSION" ]; then
+              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
+              exit 3
+          fi
+      - name: Check publication lint
+        run: yarn publint:all
+  test_types:
+    name: 'Test types'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ts-version:
+          # Latest version of TypeScript
+          - '*'
+          # Various intermediate versions of Typescript
+          - '4.4'
+          # Minimal requirement for TypeScript
+          - '4.1'
+          # Other release channels for TypeScript
+          - 'rc'
+          - 'next'
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Using Node v18.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+          check-latest: true
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Retrieve dropped test-types
+        run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-types"
+      - name: Switch folder to CommonJS
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
+      - name: Check in CommonJS mode
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
+      - name: Check in CommonJS mode with NodeNext
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+      - name: Switch folder to ES Modules
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+      - name: Check in ES Modules mode
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
+      - name: Check in ES Modules mode with NodeNext
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+      - name: Check in ES Modules mode with exactOptionalPropertyTypes
+        if: matrix.ts-version != '4.1'
+        run: |
+          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
+          yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+
+  # Publication jobs
+  publish_documentation:
+    name: 'Publish documentation'
+    needs: documentation
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@9dbe3824824f8a1377b8e298bafde1a50ede43e5 # v2.0.4
+  check_any_package:
+    name: 'Check publish any package'
+    needs:
+      - production_packages
+      - documentation
+      - format_lint
+      - no_dedupe_required
+      - package_quality
+      - typecheck
+      - test
+      - test_bundle
+      - test_types
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      tag_count: ${{steps.tag_count.outputs.count}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: tag_count
+        name: Check if one tag matches the package
+        run: |
+          echo -n "count=" >> "$GITHUB_OUTPUT"
+          git tag --points-at HEAD | wc -l >> "$GITHUB_OUTPUT"
+  check_publish_fc:
+    name: Check publish fast-check
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_fc:
+    name: Publish fast-check
+    needs: check_publish_fc
+    if: needs.check_publish_fc.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish fast-check
+        run: npm publish --provenance --access public packages/fast-check/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  check_publish_ava:
+    name: Check publish @fast-check/ava
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_ava:
+    name: Publish @fast-check/ava
+    needs: check_publish_ava
+    if: needs.check_publish_ava.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/ava
+        run: npm publish --provenance --access public packages/ava/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  check_publish_jest:
+    name: Check publish @fast-check/jest
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_jest:
+    name: Publish @fast-check/jest
+    needs: check_publish_jest
+    if: needs.check_publish_jest.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/jest
+        run: npm publish --provenance --access public packages/jest/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  check_publish_packaged:
+    name: Check publish @fast-check/packaged
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_packaged:
+    name: Publish @fast-check/packaged
+    needs: check_publish_packaged
+    if: needs.check_publish_packaged.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/packaged
+        run: npm publish --provenance --access public packages/packaged/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  check_publish_poisoning:
+    name: Check publish @fast-check/poisoning
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_poisoning:
+    name: Publish @fast-check/poisoning
+    needs: check_publish_poisoning
+    if: needs.check_publish_poisoning.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/poisoning
+        run: npm publish --provenance --access public packages/poisoning/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  check_publish_vitest:
+    name: Check publish @fast-check/vitest
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_vitest:
+    name: Publish @fast-check/vitest
+    needs: check_publish_vitest
+    if: needs.check_publish_vitest.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/vitest
+        run: npm publish --provenance --access public packages/vitest/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  check_publish_worker:
+    name: Check publish @fast-check/worker
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_worker:
+    name: Publish @fast-check/worker
+    needs: check_publish_worker
+    if: needs.check_publish_worker.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/worker
+        run: npm publish --provenance --access public packages/worker/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  check_publish_expect_type:
+    name: Check publish @fast-check/expect-type
+    needs: check_any_package
+    if: needs.check_any_package.outputs.tag_count != '0'
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{steps.check_has_tag.outcome}}
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        with:
+          fetch-depth: 0
+      - id: check_has_tag
+        name: Check if one tag matches the package
+        run: git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        continue-on-error: true
+  publish_package_expect_type:
+    name: Publish @fast-check/expect-type
+    needs: check_publish_expect_type
+    if: needs.check_publish_expect_type.outputs.status == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Using Node v20.x
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          check-latest: true
+      - name: Download production packages
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        with:
+          name: bundles
+          path: packages/
+      - name: Publish @fast-check/expect-type
+        run: npm publish --provenance --access public packages/expect-type/package.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
