@@ -33,13 +33,11 @@ jobs:
           check-latest: true
       - name: Launch install
         run: |
-          echo $SHELL
-          ps
-          echo "hey!!!1" && chmod +x /home/runner/.nvm/install.sh
-          echo "hey!!!2" && bash /home/runner/.nvm/install.sh
-          echo "hey!!!3" && bash /home/runner/.nvm/nvm.sh
-          echo "hey!!!4" && source ~/.bashrc
-          echo "hey!!!6" && nvm install 8
+          export NVS_HOME="$HOME/.nvs"
+          git clone https://github.com/jasongin/nvs "$NVS_HOME"
+          . "$NVS_HOME/nvs.sh" install
+          source ~/.bashrc
+          echo "hey!!!6" && nvs install 8
       - name: Install
         run: nvm install 8
       - name: Install dependencies
