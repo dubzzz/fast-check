@@ -372,24 +372,22 @@ jobs:
       - name: Retrieve dropped test-types
         run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-types"
       - name: Switch folder to CommonJS
-        run: |
-          yarn workspaces foreach -pvi --no-private exec "echo \{\"type\": \"commonjs\"\} > test-types/package.json"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && for file in *.ts; do mv \"$file\" \"${file%.ts}.cts\"; done"
       - name: Check in CommonJS mode
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
-        run: |
-          yarn workspaces foreach -pvi --no-private exec "echo \{\"type\": \"module\"\} > test-types/package.json"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && for file in *.cts; do mv \"$file\" \"${file%.cts}.mts\"; done"
       - name: Check in ES Modules mode
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
       - name: Check in ES Modules mode with NodeNext
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.ts"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
-          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.ts"
-          yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.ts"
+          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
+          yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
   test_node_8:
     name: 'Test legacy Node'
     needs:
