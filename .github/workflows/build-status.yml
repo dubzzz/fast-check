@@ -372,13 +372,13 @@ jobs:
       - name: Retrieve dropped test-types
         run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-types"
       - name: Switch folder to CommonJS
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && for file in *.ts; do mv \"$file\" \"${file%.ts}.cts\"; done"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
         run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
         run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && for file in *.cts; do mv \"$file\" \"${file%.cts}.mts\"; done"
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
         run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
       - name: Check in ES Modules mode with NodeNext
