@@ -35,9 +35,7 @@ jobs:
         run: |
           chmod +x /home/runner/.nvm/install.sh
           bash /home/runner/.nvm/install.sh
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+          nvm install 8
       - name: Install
         run: nvm install 8
       - name: Install dependencies
