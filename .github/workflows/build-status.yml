@@ -43,4 +43,6 @@ jobs:
           echo "0!!!" && nvs add 8
           echo "1!!!" && cd packages/fast-check
           echo "2!!!" && yarn test-legacy-bundle
-          echo "3!!!" yarn workspaces foreach -pvi --no-private exec "nvs add 10"
+          echo "3!!!" && cd ../..
+          echo "4!!!" yarn workspaces foreach -pvi --no-private run test-legacy-bundle
+          echo "5!!!" yarn workspaces foreach -pvi --no-private exec "nvs add 10"
