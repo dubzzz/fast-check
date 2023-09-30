@@ -35,6 +35,10 @@ jobs:
         run: |
           export NVS_HOME="$HOME/.nvs"
           git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
+          if [ "$(git rev-parse HEAD)" != "b87ae9593cd20e7b667e9099240c9befeb50659f" ]; then
+              echo "ERROR: HEAD is not the expected commit hash"
+              exit 1
+          fi
           . "$NVS_HOME/nvs.sh" install
           echo "hey!!!6" && nvs add 8
       - name: Install
