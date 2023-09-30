@@ -40,7 +40,9 @@ jobs:
               echo "ERROR: HEAD is not the expected commit hash"
               exit 1
           fi
-          . "$NVS_HOME/nvs.sh" install
+          chmod +x "$NVS_HOME/nvs"
+          ls -alh "$NVS_HOME/nvs"
+          export PATH="$PATH:$NVS_HOME"
           echo "0!!!" && nvs add $NODE_VERSION && nvs use $NODE_VERSION
           echo "4!!!" && yarn workspaces foreach -pvi --no-private run test-legacy-bundle
           echo "5!!!" && yarn workspaces foreach -pvi --no-private exec "cat package.json | grep test-legacy-bundle | sed -E 's/\s*\"test-legacy-bundle\": \"(.*)\",/\1/g' | bash"
