@@ -33,7 +33,6 @@ jobs:
           check-latest: true
       - name: Launch install
         run: |
-          bash /home/runner/.nvm/install.sh
           bash /home/runner/.nvm/sh.sh
           nvm install 8
       - name: Install
