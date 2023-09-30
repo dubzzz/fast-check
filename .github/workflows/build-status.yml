@@ -33,7 +33,8 @@ jobs:
           check-latest: true
       - name: Launch install
         run: |
-          bash /home/runner/.nvm/nvm.sh
+          chmod +x /home/runner/.nvm/nvm.sh
+          alias nvm=/home/runner/.nvm/nvm.sh
           nvm install 8
       - name: Install
         run: nvm install 8
