@@ -339,7 +339,7 @@ jobs:
               echo "ERROR: HEAD is not the expected commit hash"
               exit 1
           fi
-          mkdir -p "$NVS_HOME/cache" && ln -s "$(which node)" "$NVS_HOME/cache/node" #Faking a node file to avoid bootstraping on first use https://github.com/jasongin/nvs/blob/d1df6ef535df2600177732c5cc446259ffdb94a4/nvs.sh#L77
+          mkdir -p "$NVS_HOME/cache" && ln -s "$(which node)" "$NVS_HOME/cache/node" #Faking a node bootstrap to avoid automatic bootstraping on first use https://github.com/jasongin/nvs/blob/d1df6ef535df2600177732c5cc446259ffdb94a4/nvs.sh#L77
           chmod +x "$NVS_HOME/nvs"
           export PATH="$PATH:$NVS_HOME"
           if [ "$(node --version)" != "$NODE_VERSION" ]; then
