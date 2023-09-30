@@ -34,14 +34,18 @@ jobs:
       - name: Launch install
         run: |
           export NVS_HOME="$HOME/.nvs"
-          git clone https://github.com/jasongin/nvs "$NVS_HOME"
+          git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
           . "$NVS_HOME/nvs.sh" install
           echo "hey!!!6" && nvs add 8
       - name: Install
         run: |
           export NVS_HOME="$HOME/.nvs"
+          . "$NVS_HOME/nvs.sh" install
           nvs add 8
       - name: Install dependencies
         run: yarn install --immutable
       - name: Which from yarn
-        run: yarn workspaces foreach -pvi --no-private exec "nvs add 10"
+        run: |
+          export NVS_HOME="$HOME/.nvs"
+          . "$NVS_HOME/nvs.sh" install
+          yarn workspaces foreach -pvi --no-private exec "nvs add 10"
