@@ -34,10 +34,12 @@ jobs:
       - name: Launch install
         shell: bash
         run: |
-          echo "hey!!!" && chmod +x /home/runner/.nvm/install.sh
-          echo "hey!!!" && bash /home/runner/.nvm/install.sh
-          echo "hey!!!" && bash /home/runner/.nvm/nvm.sh
-          echo "hey!!!" && command -v nvm
+          echo "hey!!!1" && chmod +x /home/runner/.nvm/install.sh
+          echo "hey!!!2" && bash /home/runner/.nvm/install.sh
+          echo "hey!!!3" && bash /home/runner/.nvm/nvm.sh
+          echo "hey!!!4" && source ~/.bashrc
+          echo "hey!!!5" && command -v nvm
+          echo "hey!!!6" && nvm install 8
       - name: Install
         run: nvm install 8
       - name: Install dependencies
