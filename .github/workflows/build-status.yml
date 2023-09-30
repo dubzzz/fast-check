@@ -33,6 +33,7 @@ jobs:
           check-latest: true
       - name: Launch install
         run: |
+          export NODE_VERSION="$(node --version)"
           export NVS_HOME="$HOME/.nvs"
           git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
           if [ "$(git -C "$NVS_HOME" rev-parse HEAD)" != "b87ae9593cd20e7b667e9099240c9befeb50659f" ]; then
@@ -40,7 +41,7 @@ jobs:
               exit 1
           fi
           . "$NVS_HOME/nvs.sh" install
-          echo "0!!!" && nvs add 8
+          echo "0!!!" && nvs add $NODE_VERSION && nvs use $NODE_VERSION
           echo "5!!!" && yarn workspaces foreach -pvi --no-private exec "cat package.json | grep test-legacy-bundle | sed -E 's/\s*\"test-legacy-bundle\": \"(.*)\",/\1/g' | bash"
           echo "4!!!" && yarn workspaces foreach -pvi --no-private run test-legacy-bundle
           echo "1!!!" && cd packages/fast-check
