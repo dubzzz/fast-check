@@ -1,5 +1,7 @@
 // @ts-check
+// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 var assert = require('assert');
+// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 var fc = require('fast-check');
 
 function testArbitrary(arb) {
@@ -12,9 +14,10 @@ function testArbitrary(arb) {
 
   // should be able to detect failing runs and report them correctly
   // should be able to shrink with no crash
+  var runId = 0;
   var successfulAssert = true;
   try {
-    var runId = 0;
+    runId = 0;
     fc.assert(
       fc.property(arb, function () {
         return runId++ % 3 === 0;
@@ -28,7 +31,7 @@ function testArbitrary(arb) {
   assert.ok(successfulAssert, 'Assert failed with an unexpected failure');
 
   // should be able to replay a failing case
-  var runId = 0;
+  runId = 0;
   var details = fc.check(
     fc.property(arb, function () {
       return runId++ % 3 === 0;
@@ -53,6 +56,7 @@ function testArbitrary(arb) {
   assert.notEqual(stats.length, 0);
 }
 
+console.log('Starting ' + __filename + '...');
 testArbitrary(fc.nat());
 testArbitrary(fc.subarray([1, 42, 360]));
 testArbitrary(fc.array(fc.nat()));

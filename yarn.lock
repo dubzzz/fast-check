@@ -2832,14 +2832,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fast-check/test-minimal-support@workspace:packages/test-minimal-support":
-  version: 0.0.0-use.local
-  resolution: "@fast-check/test-minimal-support@workspace:packages/test-minimal-support"
-  dependencies:
-    fast-check: "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@fast-check/vitest@workspace:packages/vitest":
   version: 0.0.0-use.local
   resolution: "@fast-check/vitest@workspace:packages/vitest"
