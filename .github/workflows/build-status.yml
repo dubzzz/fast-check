@@ -43,9 +43,9 @@ jobs:
           chmod +x "$NVS_HOME/nvs"
           ls -alh "$NVS_HOME/nvs"
           export PATH="$PATH:$NVS_HOME"
-          echo "0!!!" && nvs add $NODE_VERSION && nvs use $NODE_VERSION
+          echo "0!!!" && nvs add $NODE_VERSION
+          echo "1!!!" && cd packages/fast-check
+          echo "2!!!" && yarn test-legacy-bundle
+          echo "3!!!" && cd ../..
           echo "4!!!" && yarn workspaces foreach -pvi --no-private run test-legacy-bundle
           echo "5!!!" && yarn workspaces foreach -pvi --no-private exec "cat package.json | grep test-legacy-bundle | sed -E 's/\s*\"test-legacy-bundle\": \"(.*)\",/\1/g' | bash"
-          echo "1!!!" && cd packages/fast-check
-          echo "2!!!" && cat package.json | grep test-legacy-bundle | sed -E 's/\s*"test-legacy-bundle": "(.*)",/\1/g' | bash
-          echo "3!!!" && cd ../..
