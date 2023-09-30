@@ -35,8 +35,6 @@ jobs:
         run: yarn install --immutable
       - name: Create symlink
         run: ln -s /home/runner/.nvm/nvm-exec /home/runner/.nvm/nvm
-      - name: Which
-        run: which nvm
       - name: Install
         run: nvm install 8
       - name: Which from yarn
