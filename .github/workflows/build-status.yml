@@ -32,9 +32,10 @@ jobs:
           cache: 'yarn'
           check-latest: true
       - name: Launch install
-        run: chmod +x /home/runner/.nvm/install.sh && bash /home/runner/.nvm/install.sh
-      #- name: Launch nvm
-      #  run: chmod +x /home/runner/.nvm/nvm.sh && sh /home/runner/.nvm/nvm.sh
+        run: |
+          chmod +x /home/runner/.nvm/install.sh
+          bash /home/runner/.nvm/install.sh
+          bash /home/runner/.nvm/nvm.sh
       - name: Install
         run: nvm install 8
       - name: Install dependencies
