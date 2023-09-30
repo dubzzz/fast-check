@@ -34,6 +34,8 @@ jobs:
       - name: Launch install
         shell: bash
         run: |
+          echo $SHELL
+          ps
           echo "hey!!!1" && chmod +x /home/runner/.nvm/install.sh
           echo "hey!!!2" && bash /home/runner/.nvm/install.sh
           echo "hey!!!3" && bash /home/runner/.nvm/nvm.sh
