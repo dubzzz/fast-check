@@ -40,18 +40,7 @@ jobs:
               exit 1
           fi
           . "$NVS_HOME/nvs.sh" install
-          echo "hey!!!6" && nvs add 8
-      - name: Install
-        run: |
-          export NVS_HOME="$HOME/.nvs"
-          . "$NVS_HOME/nvs.sh" install
-          nvs add 8
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Which from yarn
-        run: |
-          export NVS_HOME="$HOME/.nvs"
-          . "$NVS_HOME/nvs.sh" install
+          echo "0!!!" && nvs add 8
           echo "1!!!" && cd packages/fast-check
           echo "2!!!" && yarn test-legacy-bundle
           echo "3!!!" yarn workspaces foreach -pvi --no-private exec "nvs add 10"
