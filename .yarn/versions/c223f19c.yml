@@ -1,0 +1,5 @@
+declined:
+  - "@fast-check/worker"
+
+undecided:
+  - "@fast-check/jest"
