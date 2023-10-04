@@ -12,7 +12,7 @@ In this post, we will come up with a simple way to foresee such vulnerabilities 
 
 ## The vulnerability
 
-The vulnerability has been categorized as a Regular Expression Denial of Service (ReDOS). It corresponds to a specific class of issues implying regexes suffering from uncontrollable execution time. A more detailed definition of ReDOS and the vulnerability itself can be found on [Snyk](https://security.snyk.io/vuln/SNYK-JS-ZOD-5925617).
+The vulnerability has been categorized as a Regular Expression Denial of Service (ReDOS). It corresponds to a specific class of issues implying regexes suffering from uncontrollable execution time. A more detailed definition of ReDOS can be found on this [blog post](https://www.sonarsource.com/blog/vulnerable-regular-expressions-javascript/). For more details on the vulnerability itself you can refer to [Snyk](https://security.snyk.io/vuln/SNYK-JS-ZOD-5925617).
 
 In the case of Zod, the ReDOS was touching the validator of email addresses and has been fixed by [colinhacks/zod#2824](https://github.com/colinhacks/zod/pull/2824).
 
