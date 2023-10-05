@@ -3419,8 +3419,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^7.0.0":
-  version: 7.1.0
-  resolution: "@npmcli/arborist@npm:7.1.0"
+  version: 7.2.0
+  resolution: "@npmcli/arborist@npm:7.2.0"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/fs": ^3.1.0
@@ -3430,18 +3430,18 @@ __metadata:
     "@npmcli/name-from-folder": ^2.0.0
     "@npmcli/node-gyp": ^3.0.0
     "@npmcli/package-json": ^5.0.0
-    "@npmcli/query": ^3.0.0
+    "@npmcli/query": ^3.0.1
     "@npmcli/run-script": ^7.0.1
     bin-links: ^4.0.1
     cacache: ^18.0.0
     common-ancestor-path: ^1.0.1
-    hosted-git-info: ^7.0.0
+    hosted-git-info: ^7.0.1
     json-parse-even-better-errors: ^3.0.0
     json-stringify-nice: ^1.1.4
     minimatch: ^9.0.0
     nopt: ^7.0.0
     npm-install-checks: ^6.2.0
-    npm-package-arg: ^11.0.0
+    npm-package-arg: ^11.0.1
     npm-pick-manifest: ^9.0.0
     npm-registry-fetch: ^16.0.0
     npmlog: ^7.0.1
@@ -3457,7 +3457,7 @@ __metadata:
     walk-up-path: ^3.0.1
   bin:
     arborist: bin/index.js
-  checksum: 7a5661ca8152200e0debb3b51333d25c2a211e92a6dde5f8b03143c14cbc4785f5ed7ab09a06aa4d8453506adf88505675f537ebab97af38e7976a6327a9fff4
+  checksum: b2ff7e438a2a1959a72a5b43685e27cf9bd4cbf4080053b5836036148e1df7b89c84e0ed842c62bb5228d7c48aec267961274b089309a825087c6b4ce7572a47
   languageName: node
   linkType: hard
 
@@ -3560,7 +3560,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/query@npm:^3.0.0":
+"@npmcli/query@npm:^3.0.1":
   version: 3.0.1
   resolution: "@npmcli/query@npm:3.0.1"
   dependencies:
@@ -9616,7 +9616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hosted-git-info@npm:^7.0.0":
+"hosted-git-info@npm:^7.0.0, hosted-git-info@npm:^7.0.1":
   version: 7.0.1
   resolution: "hosted-git-info@npm:7.0.1"
   dependencies:
@@ -12668,7 +12668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-package-arg@npm:^11.0.0":
+"npm-package-arg@npm:^11.0.0, npm-package-arg@npm:^11.0.1":
   version: 11.0.1
   resolution: "npm-package-arg@npm:11.0.1"
   dependencies:
