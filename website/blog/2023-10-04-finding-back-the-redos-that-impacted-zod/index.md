@@ -153,9 +153,9 @@ The `interruptAfterTimeLimit` guarantees that the time taken to spawn a new work
 
 ### Invalid items
 
-In some cases, DOS might be more likely for cases implying broken entries. In the case of Zod, we proposed to generate only valid email addresses but if we want to make sure that the code will not be mad with any possible user input, we probably want to generate more than just valid email addresses.
+In certain cases, DOS scenarios might be more likely for cases involving faulty inputs. While we initially proposed generating only valid email addresses for Zod, if we want to ensure that the code handles any possible user input without any issue, we may want to generate more than just valid email addresses.
 
-We can for instance replace `fc.emailAddress()` by:
+For instance, we can replace `fc.emailAddress()` with:
 
 ```js
 fc.oneof(fc.emailAddress(), fc.fullUnicodeString());
