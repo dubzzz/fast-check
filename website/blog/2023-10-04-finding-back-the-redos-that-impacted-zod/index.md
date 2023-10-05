@@ -4,33 +4,33 @@ authors: [dubzzz]
 tags: [investigation, tips, cve, vulnerability]
 ---
 
-On the 28th of September 2023, a critical security vulnerability impacting any version of [Zod](https://zod.dev/) got reported as [CVE-2023-4316](https://www.cve.org/CVERecord?id=CVE-2023-4316). Zod defines itself as "TypeScript-first schema validation with static type inference".
+On the 28<sup>th</sup> of September 2023, a critical security vulnerability affecting all versions of [Zod](https://zod.dev/) was reported under the identifier [CVE-2023-4316](https://www.cve.org/CVERecord?id=CVE-2023-4316). Zod is known as "TypeScript-first schema validation with static type inference".
 
-In this post, we will come up with a simple way to foresee such vulnerabilities by leveraging fast-check and its ecosystem.
+This post proposes an approach to anticipate and prevent such vulnerabilities. by leveraging fast-check and its ecosystem.
 
 <!--truncate-->
 
 ## The vulnerability
 
-The vulnerability has been categorized as a Regular Expression Denial of Service (ReDOS). It corresponds to a specific class of issues implying regexes suffering from uncontrollable execution time. A more detailed definition of ReDOS can be found on this [blog post](https://www.sonarsource.com/blog/vulnerable-regular-expressions-javascript/). For more details on the vulnerability itself you can refer to [Snyk](https://security.snyk.io/vuln/SNYK-JS-ZOD-5925617).
+This particular vulnerability has been classified as a Regular Expression Denial of Service (ReDOS).It falls under a specific category of issues where regular expressions suffer from uncontrolled execution time. If you'd like a more in-depth explanation of ReDOS, you can refer to this [blog post](https://www.sonarsource.com/blog/vulnerable-regular-expressions-javascript/). For detailed information on this specific vulnerability, check out the report on [Snyk](https://security.snyk.io/vuln/SNYK-JS-ZOD-5925617).
 
-In the case of Zod, the ReDOS was touching the validator of email addresses and has been fixed by [colinhacks/zod#2824](https://github.com/colinhacks/zod/pull/2824).
+In the case of Zod, the ReDOS vulnerability affected the email address validator and has been addressed through [colinhacks/zod#2824](https://github.com/colinhacks/zod/pull/2824).
 
-## The idea
+## The concept
 
-fast-check has been designed with finding bugs in mind. As such not only it generates random entries for the algorithm under test but also attempts to play on known weaknesses of JavaScript codes. In the context of ReDOS, what we are looking for is neither a crash nor an invariant not being fulfilled. What we are looking for is an input driving our algorithm crazy and uncontrollable in terms of execution time.
+fast-check has been designed for bug detection. It not only generates random inputs for the algorithm under test but also strategically exploits known weaknesses in JavaScript code. In the context of ReDOS, our objective isn't just to identify crashes or unfulfilled invariants. Instead, we aim to pinpoint inputs driving our algorithm into uncontrollable or prolonged executions.
 
-In other words we want fast-check to report us whenever it finds an input that puts our code out-of-control.
+In simpler terms, we want fast-check to alert us whenever it encounters inputs putting our code out-of-control.
 
 ## The basic setup
 
-Our basic setup consists into repharsing our idea in terms of property understandable by fast-check. The skeleton for such test would be:
+Our initial setup consists into repharsing our concept in terms of property understandable by fast-check. The skeleton for such test is as follows:
 
 ```js
 import fc from 'fast-check';
 
-const timeLimitMs = 1_000; // TODO: specify a limit based on the needs of the algorithm
-const arbitraries = []; // TODO: our arbitraries or generators of random data
+const timeLimitMs = 1_000; // TODO: specify a limit based on the algorithm
+const arbitraries = []; // TODO: our arbitraries or generators for random data
 fc.assert(
   fc.property(...arbitraries, (...inputs) => {
     const startTime = performance.now();
@@ -46,7 +46,7 @@ fc.assert(
 );
 ```
 
-If we applied it to the Zod case we would have written:
+Applying this to the Zod case, we would write:
 
 ```js
 import { z } from 'zod';
@@ -69,35 +69,43 @@ fc.assert(
 );
 ```
 
-While it will perfectly works, the proposed approach has several gotchas we will address in the next section.
+While this approach effectively identifies the vulnerability, there are several gotchas to consider, which we'll address in the following section.
 
 ## The advanced setup
 
 ### Input size
 
-In many cases, ReDOS or DOS-like class of issues, rely on large data. By default, fast-check limits itself to rather small entries in order to avoid your tests running for too long. But in the context of our investigations of ReDOS, we want large entries to be generated.
+For many ReDOS or DOS-related issues, large inputs often play a crucial role. By default, fast-check limits itself to relatively small inputs to prevent tests from running excessively long. However, in our investigations of ReDOS, we require the generation of large entries.
 
-It can be unlocked by adding the line:
+To enable this, add the following line:
 
 ```js
 fc.configureGlobal({ baseSize: 'xlarge' });
 ```
 
-Before instanciating any of arbitrary or on arbitrary by arbitrary basis.
+This should be done before instantiating any arbitraries.
+
+:::tip Arbitrary by arbitrary
+Size can also be specified on an arbitrary-by-arbitrary basis. You can for instance use `fc.emailAddress({ size: "xlarge" })` instead of `fc.emailAddress()` if you only want to override the default for size on enmail addresses.
+:::
 
 ### Number of entries
 
-On large, stable and actively maintained and used projects such as Zod, the vulnerabilities might be tricky otherwise they would already have been fixed. As such limiting the number of executions of the property to 100 which is the default in fast-check might probably not be efficient.
+On stable, well-maintained projects like Zod, vulnerabilities can be challenging to pinpoint, as they may have already been addressed. Thus, limiting the number of property executions to the default 100 in fast-check may not be efficient.
 
-The number of runs can be increased by passing an extra argument to `fc.assert`:
+We recommend increasing the number of runs by providing an extra argument to `fc.assert`:
 
 ```js
 fc.assert(property, { numRuns: 1_000_000 });
 ```
 
+:::tip Continous integration
+Remember, this increase may be adjusted when incorporating this test into your continuous integration pipeline.
+:::
+
 ### Shrinker
 
-While shrinking is pretty useful in general, if our aim is to check the existance of an input causing long execution time we probably don't need to shrink the failure immediately. As such we can pass an extra option to `fc.assert` to avoid running into shrinking logic:
+While shrinking is generally useful, if our goal is to identify inputs causing long execution times, immediate shrinking may not be necessary. In this case, we can pass an extra option to `fc.assert` to bypass the shrinking logic:
 
 ```js
 fc.assert(property, { endOnFailure: true });
@@ -105,50 +113,47 @@ fc.assert(property, { endOnFailure: true });
 // fc.assert(property, { numRuns: 1_000_000, endOnFailure: true });
 ```
 
+:::tip Shrinking afterwards
+Omitting the shrinker doesn't mean you won't be able to perform it later. Once you encounter the error and wish to shrink it, you can add the `seed` and `path` and remove the `endOnFailure` option from `fc.assert`.
+:::
+
 ### Time
 
-In such test, nothing prevents the code under test to last for hours or even worst infinitely. By itself fast-check cannot do anything to stop on a synchronously running piece of code except waiting it ends.
+In such tests, there's nothing inherently preventing the code from running for hours or potentially indefinitely. By itself, fast-check can't intervene with a synchronously running piece of code, except waiting for it to conclude.
 
-The package [@fast-check/worker](https://www.npmjs.com/package/@fast-check/worker) has been designed to address that problem. Instead of running the synchronous code in the main thread, it pops a worker and executes the property on the side. As such it makes any piece of synchronous code stoppeable.
+The package [@fast-check/worker](https://www.npmjs.com/package/@fast-check/worker) has been designed to address that problem. Instead of executing the synchronous code in the main thread, it spawns a worker to handle the property on the side. This ensures that any synchronous code can be stopped.
 
-In order to plug it, we have to replace our `fc.property`, `fc.asyncProperty` and `fc.assert` by the helpers it provides. Our skeleton would be updated that way:
+To implement this, we need to replace our `fc.property`, `fc.asyncProperty` and `fc.assert` with the helpers provided by the worker package. Our template would be updated as follows:
 
 ```js
 import fc from 'fast-check';
-import { isMainThread } from 'node:worker_threads';
 import { assert, propertyFor } from '@fast-check/worker';
-
-const timeLimitMs = 1_000; // TODO: specify a limit based on the needs of the algorithm
-const arbitraries = []; // TODO: our arbitraries or generators of random data
 const property = propertyFor(new URL(import.meta.url));
-const propertyDOSCheck = property(...arbitraries, (rawString) => {
-  const startTime = performance.now();
-  try {
-    validator.parse(rawString);
-  } catch (err) {}
-  const endTime = performance.now();
-  const delayMs = endTime - startTime;
-  if (delayMs > timeLimitMs) {
-    throw new Error(`The computation of validator.parse took ${delayMs}ms`);
-  }
-});
-if (isMainThread) {
-  await assert(propertyDOSCheck, {
-    numRuns: 1_000_000,
-    endOnFailure: true,
-    interruptAfterTimeLimit: 60_000, // we want to kill the predicate if it takes more than {interruptAfterTimeLimit}ms
-    markInterruptAsFailure: true, // and mark the run as failed
-  });
-}
+
+const timeLimitMs = 1_000; // TODO: specify a limit based on the algorithm
+const arbitraries = []; // TODO: our arbitraries or generators for random data
+await assert(
+  property(...arbitraries, (rawString) => {
+    const startTime = performance.now();
+    try {
+      validator.parse(rawString);
+    } catch (err) {}
+    const endTime = performance.now();
+    const delayMs = endTime - startTime;
+    if (delayMs > timeLimitMs) {
+      throw new Error(`The computation of validator.parse took ${delayMs}ms`);
+    }
+  }),
+);
 ```
 
-You may have seen that we silently added two extra options to `assert`: `interruptAfterTimeLimit` and `markInterruptAsFailure`. They have been added to make sure that if one run takes more than `interruptAfterTimeLimit`ms, it will be interrupted and marked as failed. But we kept our initial `timeLimitMs` and the `performance.now()` within the predicate. Indeed, the worker runner has to spin a new worker from time to time and it takes time that count for the time limit.
+However, as it stands, the code will not stop anything and will continue to wait indefinitely if the predicate does not conclude on its own. To address this, we need to introduce two extra options to `assert`: `interruptAfterTimeLimit` and `markInterruptAsFailure`. These ensure that if one run exceeds `interruptAfterTimeLimit` milliseconds, it will be terminated and marked as failed. Nevertheless, we will retain our original `timeLimitMs` and its corresponding `performance.now()`. Indeed, the worker runner needs to spin up a new worker periodically, and this process is accounted for in the time limit used by `interruptAfterTimeLimit`.
 
-The `interruptAfterTimeLimit` is making sure that the time to spin a new worker, to send data to it and to run the prediacte will never break the specified limit.
+The `interruptAfterTimeLimit` guarantees that the time taken to spawn a new worker, transmit data to it, and execute the predicate will never exceed the specified limit.
 
 ### Invalid items
 
-In some cases, DOS might be more likely for cases implying broken entries. In the case of Zod, we proposed to generate only valid email addresses but if we want to make sure that the code will not be mad with any possible user input, we probably want to generate more.
+In some cases, DOS might be more likely for cases implying broken entries. In the case of Zod, we proposed to generate only valid email addresses but if we want to make sure that the code will not be mad with any possible user input, we probably want to generate more than just valid email addresses.
 
 We can for instance replace `fc.emailAddress()` by:
 
@@ -168,19 +173,19 @@ const property = propertyFor(new URL(import.meta.url));
 
 const timeLimitMs = 1_000;
 const validator = z.string().email();
-const propertyDOSCheck = property(fc.emailAddress(), (...inputs) => {
-  const startTime = performance.now();
-  try {
-    algorithm(...inputs);
-  } catch (err) {}
-  const endTime = performance.now();
-  const delayMs = endTime - startTime;
-  if (delayMs > timeLimitMs) {
-    throw new Error(`The computation of algorithm(...inputs) took ${delayMs}ms`);
-  }
-});
-if (isMainThread) {
-  await assert(propertyDOSCheck, {
+await assert(
+  property(fc.emailAddress(), (...inputs) => {
+    const startTime = performance.now();
+    try {
+      algorithm(...inputs);
+    } catch (err) {}
+    const endTime = performance.now();
+    const delayMs = endTime - startTime;
+    if (delayMs > timeLimitMs) {
+      throw new Error(`The computation of algorithm(...inputs) took ${delayMs}ms`);
+    }
+  }),
+  {
     // we want to stop immediately on failure to report issues asap, drop it to have shrinking
     endOnFailure: true,
     // we want to kill the predicate if it takes more than {interruptAfterTimeLimit}ms
@@ -189,8 +194,8 @@ if (isMainThread) {
     markInterruptAsFailure: true,
     // fuzzing implies possibly running for longer than usual tests (when we want to look for the issues, not in CI)
     numRuns: 1_000_000,
-  });
-}
+  },
+);
 ```
 
 Let's run it locally and see if we find something... and we do!
@@ -203,3 +208,5 @@ hpcqgdugnhc8ydfjvvcfci4k1adqgnssmkecpqmiabqux08cfrh3su5zkf.binumohcqsyzjjetfbunt
 Shrunk 8 time(s)
 Got error: The computation took 1667.1613000035286ms
 ```
+
+The technique above was able to find a ReDOS but it can be used to cover algorithmic issues not backed by regexes. It can basically be extended to find any accidental algorithmic complexity or infinite loops.
