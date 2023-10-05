@@ -163,7 +163,7 @@ fc.oneof(fc.emailAddress(), fc.fullUnicodeString());
 
 ## The final snippet
 
-Now that we covered the basics and the gotchas of our initial snippet, let's put everything together to find back the issue reported in Zod:
+Now that we've addressed the basics and tackled its potential pitfalls, let's assemble everything to rediscover the issue reported in Zod:
 
 ```js
 import fc from 'fast-check';
@@ -198,7 +198,7 @@ await assert(
 );
 ```
 
-Let's run it locally and see if we find something... and we do!
+Upon running this locally, we promptly identify an issue:
 
 ```txt
 Error: Property failed after 1233 tests
@@ -209,4 +209,4 @@ Shrunk 8 time(s)
 Got error: The computation took 1667.1613000035286ms
 ```
 
-The technique above was able to find a ReDOS but it can be used to cover algorithmic issues not backed by regexes. It can basically be extended to find any accidental algorithmic complexity or infinite loops.
+This technique not only enables us to identify ReDOS, but can also be extended to uncover algorithmic issues unrelated to regular expressions. It essentially provides a framework for identifying accidental algorithmic complexities or infinite loops.
