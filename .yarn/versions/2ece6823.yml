@@ -1,0 +1,7 @@
+declined:
+  - "@fast-check/packaged"
+
+undecided:
+  - "@fast-check/jest"
+  - "@fast-check/poisoning"
+  - "@fast-check/worker"

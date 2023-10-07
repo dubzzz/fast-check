@@ -25,20 +25,19 @@ jobs:
     name: 'Warm up Yarn cache'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        id: yarn-cache
         with:
           node-version: '18.x'
           cache: 'yarn'
           check-latest: true
       - name: Update Yarn cache
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
-        run: yarn install --immutable
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn install --immutable --mode=skip-build
   warmup_yarn_cache_others:
     name: 'Warm up Yarn cache (others)'
     runs-on: ${{matrix.os}}
@@ -46,25 +45,24 @@ jobs:
       matrix:
         os: ['macos-latest', 'windows-latest']
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        id: yarn-cache
         with:
           node-version: '18.x'
           cache: 'yarn'
           check-latest: true
       - name: Update Yarn cache
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
-        run: yarn install --immutable
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn install --immutable --mode=skip-build
   no_dedupe_required:
     name: 'No dedupe required'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - name: Using Node v18.x
@@ -80,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - name: Using Node v18.x
@@ -95,7 +93,7 @@ jobs:
     name: 'Package quality'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
@@ -111,7 +109,7 @@ jobs:
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
@@ -129,7 +127,7 @@ jobs:
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
@@ -143,7 +141,7 @@ jobs:
       - name: Create bundles
         run: yarn pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -158,7 +156,7 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
@@ -228,9 +226,9 @@ jobs:
             node-version: 18.x
             os: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Cache for Jest
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: /tmp/jest_rt
           key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
@@ -275,7 +273,7 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           lfs: true
       - name: Using Node v18.x
@@ -310,7 +308,7 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
@@ -332,6 +330,26 @@ jobs:
         run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check bundles
         run: yarn workspaces foreach -pvi --no-private run test-bundle
+      - name: Check legacy bundles
+        run: |
+          export NODE_VERSION="$(node --version)"
+          export NVS_HOME="$HOME/.nvs"
+          git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
+          if [ "$(git -C "$NVS_HOME" rev-parse HEAD)" != "b87ae9593cd20e7b667e9099240c9befeb50659f" ]; then
+              echo "ERROR: HEAD is not the expected commit hash"
+              exit 1
+          fi
+          chmod +x "$NVS_HOME/nvs"
+          export PATH="$PATH:$NVS_HOME"
+          if [ "$(node --version)" != "$NODE_VERSION" ]; then
+              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
+              exit 2
+          fi
+          yarn workspaces foreach -pvi --no-private run test-legacy-bundle
+          if [ "$(node --version)" != "$NODE_VERSION" ]; then
+              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
+              exit 3
+          fi
       - name: Check publication lint
         run: yarn publint:all
   test_types:
@@ -353,7 +371,7 @@ jobs:
           - 'rc'
           - 'next'
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
@@ -371,73 +389,25 @@ jobs:
         run: yarn unpack:all
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Drop @types to avoid failures on legacy versions of TypeScript
-        if: matrix.ts-version == '4.1'
-        run: mv node_modules/@types node_modules/at-types
-      - name: Drop parse5 to avoid failures on legacy versions of TypeScript
-        if: matrix.ts-version == '4.4'
-        run: rm -rv node_modules/parse5
-      - name: TypeScript version
-        run: |
-          cd packages/test-types
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc --version
-      - name: Test packages/test-types/
-        run: |
-          cd packages/test-types
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc
-      - name: Test packages/test-types/ with --moduleResolution nodenext
-        if: matrix.ts-version == 'next'
-        run: |
-          cd packages/test-types
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc --moduleResolution nodenext --module nodenext
-      - name: Test packages/test-types/ with --exactOptionalPropertyTypes
+      - name: Retrieve dropped test-types
+        run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-types"
+      - name: Switch folder to CommonJS
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
+      - name: Check in CommonJS mode
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
+      - name: Check in CommonJS mode with NodeNext
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+      - name: Switch folder to ES Modules
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+      - name: Check in ES Modules mode
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
+      - name: Check in ES Modules mode with NodeNext
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+      - name: Check in ES Modules mode with exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
-          cd packages/test-types
-          sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' *.ts
-          yarn dlx -p typescript@${{matrix.ts-version}} tsc --exactOptionalPropertyTypes
-  test_node_8:
-    name: 'Test legacy Node'
-    needs:
-      - warmup_yarn_cache
-      - production_packages
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
-      - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: '18.x'
-          cache: 'yarn'
-          check-latest: true
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Download production packages
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: yarn unpack:all
-      - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/test-minimal-support' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-      - name: Using Node v8.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: '8.x'
-          check-latest: true
-      - name: Test packages/test-minimal-support/
-        run: |
-          cd packages/test-minimal-support
-          node --version
-          node main.js
-      # Re-install node 16, for clean-up related logic as it does not work with node 8
-      # The caching logic of actions/setup-node calls yarn to know the version
-      - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: '18.x'
-          check-latest: true
+          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
+          yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Publication jobs
   publish_documentation:
@@ -465,14 +435,13 @@ jobs:
       - typecheck
       - test
       - test_bundle
-      - test_node_8
       - test_types
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
       tag_count: ${{steps.tag_count.outputs.count}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: tag_count
@@ -488,7 +457,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -527,7 +496,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -566,7 +535,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -605,7 +574,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -644,7 +613,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -683,7 +652,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -722,7 +691,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -761,7 +730,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - id: check_has_tag

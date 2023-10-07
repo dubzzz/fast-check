@@ -20,11 +20,12 @@ import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from '../m
 import { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
 import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
 import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
-import { objectToPrototypeLessMapper, objectToPrototypeLessUnmapper } from '../mappers/ObjectToPrototypeLess';
 import { letrec } from '../../letrec';
 import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 import { uniqueArray } from '../../uniqueArray';
 import { createDepthIdentifier, DepthIdentifier } from '../helpers/DepthContext';
+import { constant } from '../../constant';
+import { boolean } from '../../boolean';
 
 /** @internal */
 function mapOf<T, U>(
@@ -50,13 +51,17 @@ function dictOf<U>(
   maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
   depthIdentifier: DepthIdentifier,
+  withNullPrototype: boolean,
 ) {
-  return uniqueArray(tuple(ka, va), {
-    maxLength: maxKeys,
-    size,
-    selector: (t) => t[0],
-    depthIdentifier,
-  }).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
+  return tuple(
+    uniqueArray(tuple(ka, va), {
+      maxLength: maxKeys,
+      size,
+      selector: (t) => t[0],
+      depthIdentifier,
+    }),
+    withNullPrototype ? boolean() : constant(false),
+  ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
 }
 
 /** @internal */
@@ -70,12 +75,6 @@ function setOf<U>(
     arrayToSetMapper,
     arrayToSetUnmapper,
   );
-}
-
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/ban-types
-function prototypeLessOf(objectArb: Arbitrary<object>) {
-  return objectArb.map(objectToPrototypeLessMapper, objectToPrototypeLessUnmapper);
 }
 
 /** @internal */
@@ -116,8 +115,6 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withMap ? [tie('map')] : []),
       ...(constraints.withSet ? [tie('set')] : []),
       ...(constraints.withObjectString ? [tie('anything').map((o) => stringify(o))] : []),
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
       ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
       ...(constraints.withSparseArray
         ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size, depthIdentifier })]
@@ -140,6 +137,13 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       mapOf(tie('anything'), tie('anything'), maxKeys, size, depthIdentifier),
     ),
     // {[key:string]: anything}
-    object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
+    object: dictOf(
+      tie('keys') as Arbitrary<string>,
+      tie('anything'),
+      maxKeys,
+      size,
+      depthIdentifier,
+      constraints.withNullPrototype,
+    ),
   })).anything;
 }
