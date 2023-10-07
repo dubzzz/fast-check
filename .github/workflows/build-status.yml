@@ -186,7 +186,7 @@ jobs:
         package-name:
           - '@fast-check/worker'
         script-name: ['test']
-        node-version: [16.x, 18.x, 20.0, 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8]
+        node-version: ['16.x', '18.x', '20.0', '20.2', '20.4', '20.6', '20.8']
         os: ['ubuntu-latest']
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
