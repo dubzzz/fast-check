@@ -311,6 +311,366 @@ jobs:
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
       - name: Codecov
         uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
