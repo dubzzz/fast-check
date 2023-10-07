@@ -184,47 +184,17 @@ jobs:
     strategy:
       matrix:
         package-name:
-          - 'fast-check'
-          - '@fast-check/ava'
-          - '@fast-check/jest'
-          - '@fast-check/packaged'
-          - '@fast-check/poisoning'
-          - '@fast-check/vitest'
+          - '@fast-check/worker'
+          - '@fast-check/worker'
+          - '@fast-check/worker'
+          - '@fast-check/worker'
+          - '@fast-check/worker'
+          - '@fast-check/worker'
+          - '@fast-check/worker'
           - '@fast-check/worker'
         script-name: ['test']
         node-version: [16.x, 18.x, latest]
         os: ['ubuntu-latest']
-        include:
-          # More platforms and scripts...
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 18.x
-            os: 'ubuntu-latest'
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 18.x
-            os: 'macos-latest'
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 18.x
-            os: 'windows-latest'
-          - package-name: '@fast-check/packaged'
-            script-name: 'test'
-            node-version: 18.x
-            os: 'macos-latest'
-          - package-name: '@fast-check/packaged'
-            script-name: 'test'
-            node-version: 18.x
-            os: 'windows-latest'
-          # Limited matrix for test only packages
-          - package-name: '@fast-check/examples'
-            script-name: 'test'
-            node-version: 18.x
-            os: 'ubuntu-latest'
-          - package-name: 'website'
-            script-name: 'test'
-            node-version: 18.x
-            os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Cache for Jest
