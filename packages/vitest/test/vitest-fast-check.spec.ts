@@ -5,7 +5,7 @@ import { execFile as _execFile } from 'child_process';
 const execFile = promisify(_execFile);
 
 import _fc from 'fast-check';
-import { test as _test, it as _it } from '@fast-check/vitest';
+import { test as _test, it as _it, fuzz } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 
@@ -187,11 +187,167 @@ describe.each<DescribeOptions>([
   });
 });
 
+describe('fuzz', () => {
+  it.concurrent(`should support fuzz`, async () => {
+    // Arrange
+    const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+      fuzz('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        return `${a}${b}${c}`.includes(b);
+      });
+    });
+
+    // Act
+    const out = await runSpec(jestConfigRelativePath);
+
+    // Assert
+    expectPass(out, specFileName);
+  });
+
+  describe('at depth 1', () => {
+    it.concurrent(`should support fuzz.concurrent`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.concurrent('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectPass(out, specFileName);
+    });
+
+    it.concurrent(`should support fuzz.fails`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.fails('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+    });
+
+    it.concurrent.skip(`should support fuzz.only`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.only('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectPass(out, specFileName);
+    });
+
+    it.concurrent(`should support fuzz.skip`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.skip('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+
+    it.concurrent(`should support fuzz.todo`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.todo('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+  });
+
+  describe('at depth strictly above 1', () => {
+    it.concurrent(`should support fuzz.concurrent.fails`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.concurrent.fails('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+    });
+
+    it.concurrent(`should support fuzz.concurrent.fails.only`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.concurrent.fails.only('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectFail(out, specFileName);
+    });
+
+    it.concurrent(`should support fuzz.concurrent.fails.skip`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.concurrent.fails.skip('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+
+    it.concurrent(`should support fuzz.concurrent.fails.todo`, async () => {
+      // Arrange
+      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
+        fuzz.concurrent.fails.todo('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+          return `${a}${b}${c}`.includes(b);
+        });
+      });
+
+      // Act
+      const out = await runSpec(jestConfigRelativePath);
+
+      // Assert
+      expectSkip(out, specFileName);
+    });
+  });
+});
+
 // Helper
 
 let num = -1;
 async function writeToFile(
-  runner: 'test' | 'it',
+  runner: 'test' | 'it' | 'fuzz',
   fileContent: () => void,
 ): Promise<{ specFileName: string; vitestConfigRelativePath: string }> {
   const specFileSeed = Math.random().toString(16).substring(2);

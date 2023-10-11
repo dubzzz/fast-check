@@ -8,7 +8,7 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
 }
 
-export const fuzz = createChainable(['skip', 'only', 'todo'], function fuzz<
+export const fuzz = createChainable(['skip', 'only', 'todo', 'concurrent', 'fails'], function fuzz<
   Ts extends [any] | any[],
   TsParameters extends Ts = Ts,
 >(this: any, name: string, arbitraries: ArbitraryTuple<Ts>, prop: Prop<Ts>, params?: FcParameters<TsParameters>): void {
