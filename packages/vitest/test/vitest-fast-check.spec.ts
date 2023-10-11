@@ -5,9 +5,10 @@ import { execFile as _execFile } from 'child_process';
 const execFile = promisify(_execFile);
 
 import _fc from 'fast-check';
-import { test as _test, it as _it, fuzz } from '@fast-check/vitest';
+import type { test as _test, it as _it, fuzz as _fuzz } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
+declare const fuzz: typeof _fuzz;
 
 const generatedTestsDirectoryName = 'generated-tests';
 const generatedTestsDirectory = path.join(__dirname, generatedTestsDirectoryName);
@@ -191,9 +192,9 @@ describe('fuzz', () => {
   it.concurrent(`should support fuzz`, async () => {
     // Arrange
     const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-      fuzz('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+      fuzz('property', [fc.string(), fc.string(), fc.string()], ((a: string, b: string, c: string) => {
         return `${a}${b}${c}`.includes(b);
-      });
+      }) as any);
     });
 
     // Act
@@ -207,9 +208,9 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.concurrent`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.concurrent('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.concurrent('property', [fc.string(), fc.string(), fc.string()], ((a: string, b: string, c: string) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -222,9 +223,9 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.fails`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.fails('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.fails('property', [fc.string(), fc.string(), fc.string()], ((a: string, b: string, c: string) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -237,9 +238,9 @@ describe('fuzz', () => {
     it.concurrent.skip(`should support fuzz.only`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.only('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.only('property', [fc.string(), fc.string(), fc.string()], ((a: string, b: string, c: string) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -252,9 +253,9 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.skip`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.skip('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.skip('property', [fc.string(), fc.string(), fc.string()], ((a: string, b: string, c: string) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -267,9 +268,9 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.todo`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.todo('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.todo('property', [fc.string(), fc.string(), fc.string()], ((a: string, b: string, c: string) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -284,9 +285,13 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.concurrent.fails`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.concurrent.fails('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.concurrent.fails('property', [fc.string(), fc.string(), fc.string()], ((
+          a: string,
+          b: string,
+          c: string,
+        ) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -299,9 +304,13 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.concurrent.fails.only`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.concurrent.fails.only('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.concurrent.fails.only('property', [fc.string(), fc.string(), fc.string()], ((
+          a: string,
+          b: string,
+          c: string,
+        ) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -314,9 +323,13 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.concurrent.fails.skip`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.concurrent.fails.skip('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.concurrent.fails.skip('property', [fc.string(), fc.string(), fc.string()], ((
+          a: string,
+          b: string,
+          c: string,
+        ) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
@@ -329,9 +342,13 @@ describe('fuzz', () => {
     it.concurrent(`should support fuzz.concurrent.fails.todo`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile('fuzz', () => {
-        fuzz.concurrent.fails.todo('property', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
+        fuzz.concurrent.fails.todo('property', [fc.string(), fc.string(), fc.string()], ((
+          a: string,
+          b: string,
+          c: string,
+        ) => {
           return `${a}${b}${c}`.includes(b);
-        });
+        }) as any);
       });
 
       // Act
