@@ -2,7 +2,7 @@ import { getCurrentSuite, setFn, createChainable } from 'vitest/suite';
 import { assert, asyncProperty, readConfigureGlobal } from 'fast-check';
 
 import type { Parameters as FcParameters } from 'fast-check';
-import type { Prop, PromiseProp, ArbitraryTuple } from './internals/types.js';
+import type { Prop, PromiseProp, ArbitraryTuple } from './types.js';
 
 function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
