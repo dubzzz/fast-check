@@ -26,13 +26,13 @@
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
     "all-contributors-cli": "^6.26.1",
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "3.0.3",
-    "publint": "^0.2.3"
+    "publint": "^0.2.4"
   },
   "resolutions": {
     "react@^17.0.2": "patch:react@npm%3A17.0.2#./.yarn/patches/react-npm-17.0.2-99ba37d931.patch"
