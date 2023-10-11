@@ -47,13 +47,13 @@
     "fast-check": "^3.0.0"
   },
   "peerDependencies": {
-    "vitest": ">=0.28.1"
+    "vitest": "v1.0.0-beta.0"
   },
   "devDependencies": {
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "typescript": "~5.2.2",
-    "vitest": "^0.34.6"
+    "vitest": "v1.0.0-beta.0"
   },
   "keywords": [
     "vitest",

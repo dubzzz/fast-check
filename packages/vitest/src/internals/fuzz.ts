@@ -41,9 +41,8 @@ export const fuzz = createChainable(['skip', 'only', 'todo'], function fuzz<
   }
 
   // Run with Vitest
-  const task = currentSuite.custom.call(this, name);
-  (task.meta as Record<string, unknown>) = { fuzz: true };
-  setFn(task as any, async () => {
+  const task = currentSuite.task(name, { ...this, meta: { fuzz: true } });
+  setFn(task, async () => {
     const promiseProp = wrapProp(prop);
     const propertyInstance = (asyncProperty as any)(...(arbitraries as any), promiseProp);
     await assert(propertyInstance, customParams);
