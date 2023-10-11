@@ -377,7 +377,10 @@ async function writeToFile(
     runner === 'it'
       ? (testCode: string) => `describe('test suite', () => {\n${testCode}\n});`
       : (testCode: string) => testCode;
-  const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
+  const importFromFastCheckVitest =
+    runner === 'fuzz'
+      ? `import {fuzz} from '@fast-check/vitest';\n`
+      : `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
     "import {describe} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
