@@ -49,9 +49,9 @@ function dummyTest(): It {
   });
 }
 
-type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof jestExpect };
+export type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof jestExpect };
 
-export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
+export const init = (url: URL, options?: PropertyForOptions): InitOutput | Promise<InitOutput> => {
   const fcExtra: FcExtra = {
     asyncProperty: propertyFor(url, options),
     assert: assert as FcExtra['assert'],
@@ -68,8 +68,6 @@ export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
     } else {
       // But in ES Modules mode, it cannot be accessed directly, thus users have to directly import it
       // But root import of it is failing in the context of workers, so only dynamic version is acceptable
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       return import('@jest/globals').then(
         ({ jest }): InitOutput => ({
           test: buildTest(test as It, jest, fcExtra),

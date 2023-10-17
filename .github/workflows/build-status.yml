@@ -353,6 +353,7 @@ jobs:
       - name: Check publication lint
         run: yarn publint:all
   test_types:
+    # NOTE: Issues linked to improper module resolutions can be debugged by adding the flag "--traceResolution" to tsc
     name: 'Test types'
     needs:
       - warmup_yarn_cache
@@ -391,23 +392,27 @@ jobs:
         run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Retrieve dropped test-types
         run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-types"
-      - name: Switch folder to CommonJS
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
+      - name: Switch folder to CommonJS except nodenext
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts && ../../../.github/scripts/rename.sh nodenext.cts nodenext.ts"
       - name: Check in CommonJS mode
         run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
+      - name: Switch folder to CommonJS
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode with NodeNext
         run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
-      - name: Switch folder to ES Modules
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+      - name: Switch folder to ES Modules except nodenext
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts && ../../../.github/scripts/rename.sh nodenext.mts nodenext.cts"
       - name: Check in ES Modules mode
         run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
-      - name: Check in ES Modules mode with NodeNext
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
           yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
           yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+      - name: Switch folder to ES Modules
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+      - name: Check in ES Modules mode with NodeNext
+        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
 
   # Publication jobs
   publish_documentation:
