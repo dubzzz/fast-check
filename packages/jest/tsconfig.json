@@ -1,3 +1,4 @@
 {
-  "extends": "../../tsconfig.common.json"
+  "extends": "../../tsconfig.common.json",
+  "exclude": ["test-types/"]
 }
