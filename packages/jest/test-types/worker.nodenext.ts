@@ -2,7 +2,7 @@ import { init, fc } from '@fast-check/jest/worker';
 
 // At the moment, we provide poor typings for the output of init
 // Ideally, we should have a Promise for its ES Module version and a synced value for the CJS one (in terms of typings)
-Promise.resolve(init(new URL('<<import.meta.url>>'))).then(({ test }) => {
+Promise.resolve(init(new URL('{{import.meta.url}}'))).then(({ test }) => {
   // Tuple notation
   test.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', (a, b, c) => {
     return (a + b + c).includes(b);
