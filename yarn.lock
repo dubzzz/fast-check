@@ -1631,7 +1631,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.18.6":
+"@babel/preset-react@npm:^7.18.6, @babel/preset-react@npm:^7.22.15":
   version: 7.22.15
   resolution: "@babel/preset-react@npm:7.22.15"
   dependencies:
@@ -2735,6 +2735,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.23.2
     "@babel/preset-env": ^7.23.2
+    "@babel/preset-react": ^7.22.15
     "@babel/preset-typescript": ^7.23.2
     "@testing-library/dom": ^9.3.3
     "@testing-library/react": ^14.0.0
