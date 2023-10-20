@@ -2743,7 +2743,7 @@ __metadata:
     "@types/express": ^4.17.20
     "@types/jest": ^29.5.6
     "@types/lodash": ^4.14.200
-    "@types/react": ^18.2.28
+    "@types/react": ^18.2.30
     "@types/supertest": ^2.0.15
     babel-jest: ^29.7.0
     express: ^4.18.2
@@ -2820,7 +2820,7 @@ __metadata:
     "@npmcli/arborist": ^7.0.0
     "@types/jest": ^29.5.6
     "@types/pacote": ^11.1.7
-    "@types/tar": ^6.1.6
+    "@types/tar": ^6.1.7
     babel-jest: ^29.7.0
     jest: ^29.7.0
     pacote: ^17.0.0
@@ -4565,14 +4565,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.2.28":
-  version: 18.2.28
-  resolution: "@types/react@npm:18.2.28"
+"@types/react@npm:*, @types/react@npm:^18.2.30":
+  version: 18.2.30
+  resolution: "@types/react@npm:18.2.30"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 81381bedeba83278f4c9febb0b83e0bd3f42a25897a50b9cb36ef53651d34b3d50f87ebf11211ea57ea575131f85d31e93e496ce46478a00b0f9bf7b26b5917a
+  checksum: 962fa67e4ff439a2eb621ad74e58cb975d2882afa06bb7c9e9823606f6dcc3cd37d5cce143ec3c95b3856549f48ee0382e8c4628267cdcc5c5343d979ad9d92f
   languageName: node
   linkType: hard
 
@@ -4698,13 +4698,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tar@npm:^6.1.6":
-  version: 6.1.6
-  resolution: "@types/tar@npm:6.1.6"
+"@types/tar@npm:^6.1.7":
+  version: 6.1.7
+  resolution: "@types/tar@npm:6.1.7"
   dependencies:
     "@types/node": "*"
     minipass: ^4.0.0
-  checksum: d4bcb5a06d8e4b6eac564f22274d72f6a14c614eaf5f6c6c270f3a43c197da2797a7c707bc0377cd2e6d8c429f277e1ca446121546c86021e9782034a306eafb
+  checksum: 74a346c86eb9fd1d7849b675e019ec784accf2f4a2abedc607e5449809f5205db6c31a7c0e7ac34e1ae5beabc3d260dbf82d7829398791397b971a56de4028b9
   languageName: node
   linkType: hard
 
