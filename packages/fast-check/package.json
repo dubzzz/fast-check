@@ -63,18 +63,21 @@
     "pure-rand": "^6.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.38.0",
     "@types/jest": "^29.5.6",
     "@types/node": "^18.18.5",
+    "babel-jest": "^29.7.0",
     "buffer": "^6.0.3",
     "cross-env": "^7.0.3",
     "glob": "^10.3.10",
     "jest": "^29.7.0",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^7.0.1",
-    "ts-jest": "^29.1.1",
     "typedoc": "^0.25.2",
     "typescript": "~5.2.2"
   },
