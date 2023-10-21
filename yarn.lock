@@ -2840,6 +2840,7 @@ __metadata:
     "@babel/preset-typescript": ^7.23.2
     babel-jest: ^29.7.0
     jest: ^29.7.0
+    jest-ts-webcompat-resolver: ^1.0.0
     typescript: ~5.2.2
   languageName: unknown
   linkType: soft
@@ -2871,6 +2872,7 @@ __metadata:
     babel-jest: ^29.7.0
     fast-check: ^3.4.0
     jest: ^29.7.0
+    jest-ts-webcompat-resolver: ^1.0.0
     typescript: ~5.2.2
   languageName: unknown
   linkType: soft
@@ -11165,6 +11167,15 @@ __metadata:
     pretty-format: ^29.7.0
     semver: ^7.5.3
   checksum: 86821c3ad0b6899521ce75ee1ae7b01b17e6dfeff9166f2cf17f012e0c5d8c798f30f9e4f8f7f5bed01ea7b55a6bc159f5eda778311162cbfa48785447c237ad
+  languageName: node
+  linkType: hard
+
+"jest-ts-webcompat-resolver@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "jest-ts-webcompat-resolver@npm:1.0.0"
+  peerDependencies:
+    jest-resolve: "*"
+  checksum: 649984e6b38afe96783316993d75d7385520158ef4bcca67941fe1e96589aa4d612254e3da4046f44df8d067d6a913c0b71daa26b363d560787778d7458d9563
   languageName: node
   linkType: hard
 
