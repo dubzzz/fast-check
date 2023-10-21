@@ -41,16 +41,15 @@ export async function removeNonPublishedFiles(
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
   async function traverse(currentPath: string): Promise<boolean> {
-    const content = await fs.readdir(currentPath);
+    const content = await fs.readdir(currentPath, {withFileTypes: true);
     let numRemoved = 0;
     await Promise.all(
-      content.map(async (itemName) => {
-        const itemPath = path.join(currentPath, itemName);
+      content.map(async (item) => {
+        const itemPath = path.join(currentPath, item.name);
         const normalizedItemPath = path.normalize(itemPath);
-        const itemDetails = await fs.stat(itemPath);
         if (opts.keepNodeModules && itemPath === rootNodeModulesPath) {
           kept.push(normalizedItemPath);
-        } else if (itemDetails.isDirectory()) {
+        } else if (item.isDirectory()) {
           const fullyCleaned = await traverse(itemPath);
           if (!fullyCleaned) {
             kept.push(normalizedItemPath);
@@ -61,7 +60,7 @@ export async function removeNonPublishedFiles(
               await fs.rmdir(itemPath);
             }
           }
-        } else if (itemDetails.isFile()) {
+        } else if (item.isFile()) {
           if (normalizedPublishedFiles.has(normalizedItemPath)) {
             kept.push(normalizedItemPath);
           } else {
