@@ -115,5 +115,22 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
         expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
     });
+    it('Should print the rejected path when unable to replay for path', () => {
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),
+          (internalSeed, path) => {
+            expect(() =>
+              fc.check(
+                fc.property(fc.constant(0), () => {}), // no shrink available on constant, our path should break
+                { seed: internalSeed, path },
+              ),
+            ).toThrowError(new RegExp(`wrong path=${path}`));
+          },
+        ),
+        { seed },
+      );
+    });
   });
 });
