@@ -1,13 +1,12 @@
-import { Stream, stream } from '../../stream/Stream';
+import { stream } from '../../stream/Stream';
 import { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { Value } from '../arbitrary/definition/Value';
 import { IRawProperty } from '../property/IRawProperty';
 import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
 import { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
-import { toss } from './Tosser';
+import { lazyToss, toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
 /** @internal */
@@ -33,15 +32,15 @@ function streamSample<Ts>(
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
-  const tossedValues: Stream<Value<Ts>> = stream(
-    toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples),
-  );
-  if (qParams.path.length === 0) {
-    return tossedValues.take(qParams.numRuns).map((s) => s.value_);
-  }
-  return pathWalk(qParams.path, tossedValues, shrink)
-    .take(qParams.numRuns)
-    .map((s) => s.value_);
+  const tossedValues =
+    qParams.path.length === 0
+      ? stream(toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples))
+      : pathWalk(
+          qParams.path,
+          stream(lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)),
+          shrink,
+        );
+  return tossedValues.take(qParams.numRuns).map((s) => s.value_);
 }
 
 /**

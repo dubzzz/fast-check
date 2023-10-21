@@ -69,20 +69,6 @@ async function asyncRunIt<Ts>(
   return runner.runExecution;
 }
 
-/** @internal */
-function applyPath<Ts>(
-  valueProducers: IterableIterator<() => Value<Ts>>,
-  shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
-  nonEmptyPath: string,
-): IterableIterator<Value<Ts>> {
-  const pathPoints = nonEmptyPath.split(':');
-  const pathStream = stream(valueProducers)
-    .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
-    .map((producer) => producer());
-  const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
-  return pathWalk(adaptedPath, pathStream, shrink);
-}
-
 /**
  * Run the property, do not throw contrary to {@link assert}
  *
@@ -144,7 +130,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const initialValues =
     qParams.path.length === 0
       ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
-      : applyPath(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples), shrink, qParams.path);
+      : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()
