@@ -28,11 +28,14 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        id: yarn-cache
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Update Yarn cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
@@ -51,6 +54,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Update Yarn cache
         env:
@@ -58,8 +62,12 @@ jobs:
           YARN_NODE_LINKER: pnp
           YARN_ENABLE_SCRIPTS: false
         run: yarn install --immutable --mode=skip-build
+
+  # Jobs without any strong requirement on warmup_yarn_cache
+  # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_yarn_cache
   no_dedupe_required:
     name: 'No dedupe required'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -70,11 +78,13 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Ensure no dedupe required
         run: yarn dedupe --check
   all_version_bump_declared:
     name: 'All version bump declared'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
     steps:
@@ -86,11 +96,13 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Ensure versions have been properly bumped
         run: yarn version check
   package_quality:
     name: 'Package quality'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -99,6 +111,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Check package score using skypack
         run: cd packages/fast-check && yarn dlx @skypack/package-check
@@ -115,6 +128,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn workspace @fast-check/monorepo install --immutable
@@ -133,6 +147,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -162,6 +177,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -237,6 +253,7 @@ jobs:
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -281,6 +298,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -314,6 +332,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -377,6 +396,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -409,6 +429,24 @@ jobs:
           yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
           yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
+  # Job to confirm every required job passed
+  all_checks_passed:
+    name: 'All checks passed'
+    needs:
+      - production_packages
+      - documentation
+      - format_lint
+      - no_dedupe_required
+      - package_quality
+      - typecheck
+      - test
+      - test_bundle
+      - test_types
+    runs-on: ubuntu-latest
+    steps:
+      - name: Success
+        run: echo "Success"
+
   # Publication jobs
   publish_documentation:
     name: 'Publish documentation'
@@ -426,16 +464,7 @@ jobs:
         uses: actions/deploy-pages@9dbe3824824f8a1377b8e298bafde1a50ede43e5 # v2.0.4
   check_any_package:
     name: 'Check publish any package'
-    needs:
-      - production_packages
-      - documentation
-      - format_lint
-      - no_dedupe_required
-      - package_quality
-      - typecheck
-      - test
-      - test_bundle
-      - test_types
+    needs: all_checks_passed
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
