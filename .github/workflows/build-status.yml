@@ -423,7 +423,9 @@ jobs:
       - test_bundle
       - test_types
     runs-on: ubuntu-latest
-    steps: []
+    steps:
+      - name: Success
+        run: echo "Success"
 
   # Publication jobs
   publish_documentation:
