@@ -32,6 +32,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
@@ -53,6 +54,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Update Yarn cache
         env:
@@ -72,6 +74,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Ensure no dedupe required
         run: yarn dedupe --check
@@ -88,6 +91,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Ensure versions have been properly bumped
         run: yarn version check
@@ -101,6 +105,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Check package score using skypack
         run: cd packages/fast-check && yarn dlx @skypack/package-check
@@ -117,6 +122,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn workspace @fast-check/monorepo install --immutable
@@ -135,6 +141,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -164,6 +171,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -239,6 +247,7 @@ jobs:
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -283,6 +292,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -316,6 +326,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
@@ -379,6 +390,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
         run: yarn install --immutable
