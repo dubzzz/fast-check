@@ -28,11 +28,13 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        id: yarn-cache
         with:
           node-version: '18.x'
           cache: 'yarn'
           check-latest: true
       - name: Update Yarn cache
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
