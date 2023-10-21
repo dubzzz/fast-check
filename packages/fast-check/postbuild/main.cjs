@@ -70,16 +70,6 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     console.info(`Package details added onto d.ts version for cjs`);
   }
 
-  const dTsReplacement2 = replace.sync({
-    files: 'lib/esm/types/fast-check-default.d.ts',
-    from: [/__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
-    to: [packageVersion, commitHash],
-  });
-  if (dTsReplacement2.length === 1 && dTsReplacement[0].hasChanged) {
-    // eslint-disable-next-line
-    console.info(`Package details added onto d.ts version for esm`);
-  }
-
   function escapeHtml(unsafe) {
     return unsafe
       .replace(/&/g, '&amp;')
