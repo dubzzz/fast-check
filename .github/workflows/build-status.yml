@@ -58,8 +58,12 @@ jobs:
           YARN_NODE_LINKER: pnp
           YARN_ENABLE_SCRIPTS: false
         run: yarn install --immutable --mode=skip-build
+
+  # Jobs without any strong requirement on warmup_yarn_cache
+  # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_yarn_cache
   no_dedupe_required:
     name: 'No dedupe required'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -75,6 +79,7 @@ jobs:
         run: yarn dedupe --check
   all_version_bump_declared:
     name: 'All version bump declared'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
     steps:
@@ -91,6 +96,7 @@ jobs:
         run: yarn version check
   package_quality:
     name: 'Package quality'
+    needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
