@@ -1,9 +1,0 @@
-declined:
-  - "@fast-check/ava"
-  - "@fast-check/expect-type"
-  - fast-check
-  - "@fast-check/jest"
-  - "@fast-check/packaged"
-  - "@fast-check/poisoning"
-  - "@fast-check/vitest"
-  - "@fast-check/worker"

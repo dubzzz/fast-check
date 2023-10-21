@@ -1,3 +1,26 @@
+# 3.13.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.13.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.1...v3.13.2)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4344](https://github.com/dubzzz/fast-check/pull/4344)) Bug: Path wrongly reported when invalid
+- ([PR#4279](https://github.com/dubzzz/fast-check/pull/4279)) CI: Better caching for yarn
+- ([PR#4346](https://github.com/dubzzz/fast-check/pull/4346)) CI: Better yarn caching in CI
+- ([PR#4347](https://github.com/dubzzz/fast-check/pull/4347)) CI: Avoid yarn install on "cache hit"
+- ([PR#4348](https://github.com/dubzzz/fast-check/pull/4348)) CI: Create job to confirm all passed
+- ([PR#4299](https://github.com/dubzzz/fast-check/pull/4299)) Doc: Article around Zod vulnerability
+- ([PR#4306](https://github.com/dubzzz/fast-check/pull/4306)) Doc: Fixing a typos in Zod article
+- ([PR#4338](https://github.com/dubzzz/fast-check/pull/4338)) Script: Faster tests execution with babel
+- ([PR#4270](https://github.com/dubzzz/fast-check/pull/4270)) Test: Check tsc import and types of bundled package
+- ([PR#4271](https://github.com/dubzzz/fast-check/pull/4271)) Test: Typecheck ESM bundle correctly
+- ([PR#4269](https://github.com/dubzzz/fast-check/pull/4269)) Test: Rework checks against legacy node
+
 # 3.13.1
 
 _Fix typings for node native esm_
