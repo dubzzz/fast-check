@@ -409,6 +409,22 @@ jobs:
           yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
           yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
+  # Job to confirm every required job passed
+  all_checks_passed:
+    name: 'All checks passed'
+    needs:
+      - production_packages
+      - documentation
+      - format_lint
+      - no_dedupe_required
+      - package_quality
+      - typecheck
+      - test
+      - test_bundle
+      - test_types
+    runs-on: ubuntu-latest
+    steps: []
+
   # Publication jobs
   publish_documentation:
     name: 'Publish documentation'
@@ -426,16 +442,7 @@ jobs:
         uses: actions/deploy-pages@9dbe3824824f8a1377b8e298bafde1a50ede43e5 # v2.0.4
   check_any_package:
     name: 'Check publish any package'
-    needs:
-      - production_packages
-      - documentation
-      - format_lint
-      - no_dedupe_required
-      - package_quality
-      - typecheck
-      - test
-      - test_bundle
-      - test_types
+    needs: all_checks_passed
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
