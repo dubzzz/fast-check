@@ -41,7 +41,7 @@ export async function removeNonPublishedFiles(
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
   async function traverse(currentPath: string): Promise<boolean> {
-    const content = await fs.readdir(currentPath, {withFileTypes: true);
+    const content = await fs.readdir(currentPath, {withFileTypes: true});
     let numRemoved = 0;
     await Promise.all(
       content.map(async (item) => {
