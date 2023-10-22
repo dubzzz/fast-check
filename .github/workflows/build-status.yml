@@ -152,6 +152,8 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_NODE_LINKER: pnp
         run: yarn install --immutable
       - name: Build production packages
         run: yarn build-ci:all
@@ -182,6 +184,8 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_NODE_LINKER: pnp
         run: yarn install --immutable
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -258,6 +262,8 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_NODE_LINKER: pnp
         run: yarn install --immutable
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -303,6 +309,8 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_NODE_LINKER: pnp
         run: yarn install --immutable
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -337,6 +345,8 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_NODE_LINKER: pnp
         run: yarn install --immutable
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -401,6 +411,8 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_NODE_LINKER: pnp
         run: yarn install --immutable
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
