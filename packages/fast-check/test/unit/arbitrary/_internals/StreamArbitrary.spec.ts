@@ -3,10 +3,7 @@ import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbi
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { cloneIfNeeded, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
@@ -277,11 +274,10 @@ describe('StreamArbitrary (integration)', () => {
 
   const streamBuilder = () => new StreamArbitrary(sourceArb);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(streamBuilder, { isEqual });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(streamBuilder, isCorrect);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(streamBuilder, {
+      sameValueGivenSameSeed: { isEqual },
+      correctValues: { isCorrect },
+    });
   });
 });
