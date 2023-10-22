@@ -39,8 +39,7 @@ jobs:
         env:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
-          YARN_ENABLE_SCRIPTS: false
-        run: yarn install --immutable --mode=skip-build
+        run: yarn install --immutable --mode=skip-build --check-cache
   warmup_yarn_cache_others:
     name: 'Warm up Yarn cache (others)'
     runs-on: ${{matrix.os}}
@@ -62,8 +61,7 @@ jobs:
         env:
           # Using PNP linker for better performance
           YARN_NODE_LINKER: pnp
-          YARN_ENABLE_SCRIPTS: false
-        run: yarn install --immutable --mode=skip-build
+        run: yarn install --immutable --mode=skip-build --check-cache
 
   # Jobs without any strong requirement on warmup_yarn_cache
   # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_yarn_cache
@@ -152,7 +150,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Build production packages
         run: yarn build-ci:all
       - name: Create bundles
@@ -182,7 +180,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -258,7 +256,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -303,7 +301,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -337,7 +335,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -401,7 +399,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
