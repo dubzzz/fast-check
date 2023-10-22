@@ -2,11 +2,7 @@ import fc from 'fast-check';
 import { date } from '../../../src/arbitrary/date';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
@@ -181,24 +177,18 @@ describe('date (integration)', () => {
 
   const dateBuilder = (extra: Extra) => date(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters, isEqual });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(dateBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(dateBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(dateBuilder, { extraParameters, isEqual });
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(dateBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      dateBuilder,
+      {
+        sameValueGivenSameSeed: {isEqual},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {isEqual},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+      { extraParameters },
+    );
   });
 });
 

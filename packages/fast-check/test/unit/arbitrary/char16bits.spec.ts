@@ -4,13 +4,7 @@ import { char16bits } from '../../../src/arbitrary/char16bits';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -57,24 +51,14 @@ describe('char16bits (integration)', () => {
 
   const char16bitsBuilder = () => char16bits();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(char16bitsBuilder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(char16bitsBuilder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(char16bitsBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(char16bitsBuilder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(char16bitsBuilder, isStrictlySmaller);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(char16bitsBuilder, {
+      sameValueGivenSameSeed: {},
+      correctValues: { isCorrect },
+      shrinkableWithoutContext: {},
+      sameValueWithoutInitialContext: {},
+      strictlySmallerValue: { isStrictlySmaller },
+    });
   });
 });
 

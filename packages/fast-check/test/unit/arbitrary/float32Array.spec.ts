@@ -2,10 +2,7 @@ import * as fc from 'fast-check';
 import { float32Array, Float32ArrayConstraints } from '../../../src/arbitrary/float32Array';
 
 import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
@@ -52,20 +49,17 @@ describe('float32Array (integration)', () => {
 
   const float32ArrayBuilder = (extra: Extra) => float32Array(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(float32ArrayBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(float32ArrayBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(float32ArrayBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(float32ArrayBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      float32ArrayBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 });
 

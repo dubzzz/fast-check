@@ -1,11 +1,6 @@
 import fc from 'fast-check';
 import { lorem, LoremConstraints } from '../../../src/arbitrary/lorem';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 
 describe('lorem', () => {
   it('should reject any negative or zero maxCount whatever the mode', () =>
@@ -66,19 +61,16 @@ describe('lorem (integration)', () => {
 
   const loremBuilder = (extra: Extra) => lorem(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(loremBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(loremBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(loremBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(loremBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      loremBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 });

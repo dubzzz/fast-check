@@ -4,13 +4,7 @@ import { ascii } from '../../../src/arbitrary/ascii';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -56,24 +50,14 @@ describe('ascii (integration)', () => {
 
   const asciiBuilder = () => ascii();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(asciiBuilder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(asciiBuilder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(asciiBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(asciiBuilder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(asciiBuilder, isStrictlySmaller);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(asciiBuilder, {
+      sameValueGivenSameSeed: {},
+      correctValues: { isCorrect },
+      shrinkableWithoutContext: {},
+      sameValueWithoutInitialContext: {},
+      strictlySmallerValue: { isStrictlySmaller },
+    });
   });
 });
 

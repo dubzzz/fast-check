@@ -2,10 +2,7 @@ import * as fc from 'fast-check';
 import { hexaString } from '../../../src/arbitrary/hexaString';
 
 import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 describe('hexaString (integration)', () => {
@@ -31,19 +28,16 @@ describe('hexaString (integration)', () => {
 
   const hexaStringBuilder = (extra: Extra) => hexaString(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(hexaStringBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(hexaStringBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(hexaStringBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(hexaStringBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      hexaStringBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 });

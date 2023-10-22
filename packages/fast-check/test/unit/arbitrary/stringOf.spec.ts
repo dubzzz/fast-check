@@ -5,10 +5,7 @@ import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
-import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('stringOf (integration)', () => {
@@ -30,17 +27,19 @@ describe('stringOf (integration)', () => {
 
   const stringOfBuilder = (extra: Extra) => stringOf(new PatternsArbitrary(extra.patterns), extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(stringOfBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      stringOfBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        shrinkableWithoutContext: {},
+        // sameValueWithoutInitialContext is not fully supported by stringOf
+        // Indeed depending how much the source strings overlaps there are possibly many possible ways to build a given string
+        // so also many possible ways to shrink it.
+      },
+      { extraParameters },
+    );
   });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(stringOfBuilder, { extraParameters });
-  });
-
-  // assertShrinkProducesSameValueWithoutInitialContext is not fully supported by stringOf
-  // Indeed depending how much the source strings overlaps there are possibly many possible ways to build a given string
-  // so also many possible ways to shrink it.
 
   it.each`
     source                             | patterns        | constraints

@@ -2,12 +2,7 @@ import fc from 'fast-check';
 import { emailAddress, EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 
-import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceCorrectValues,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
@@ -55,20 +50,17 @@ describe('emailAddress (integration)', () => {
 
   const emailAddressBuilder = () => emailAddress();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(emailAddressBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(emailAddressBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(emailAddressBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(emailAddressBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      emailAddressBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 
   it.each`

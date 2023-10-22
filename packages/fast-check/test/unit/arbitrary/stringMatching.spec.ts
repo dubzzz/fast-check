@@ -1,9 +1,7 @@
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching';
 
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
+import {assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 describe('stringMatching (integration)', () => {
@@ -14,12 +12,15 @@ describe('stringMatching (integration)', () => {
   // isCorrect has to clone the instance of RegExp to make sure not to depend on its internal state
   const isCorrect = (value: string, extra: Extra) => new RegExp(extra.regex.source, extra.regex.flags).test(value);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(stringMatchingBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      stringMatchingBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+      },
+      { extraParameters },
+    );
   });
 });
 

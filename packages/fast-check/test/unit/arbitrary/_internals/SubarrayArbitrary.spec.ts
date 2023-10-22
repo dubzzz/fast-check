@@ -1,13 +1,7 @@
 import * as fc from 'fast-check';
 import { SubarrayArbitrary } from '../../../../src/arbitrary/_internals/SubarrayArbitrary';
 
-import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceCorrectValues,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -185,24 +179,18 @@ describe('SubarrayArbitrary (integration)', () => {
   const SubarrayArbitraryBuilder = (extra: Extra) =>
     new SubarrayArbitrary(extra.data, extra.isOrdered, extra.minLength, extra.maxLength);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(SubarrayArbitraryBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(SubarrayArbitraryBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(SubarrayArbitraryBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(SubarrayArbitraryBuilder, { extraParameters });
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(SubarrayArbitraryBuilder, isStrictlySmallerValue, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      SubarrayArbitraryBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        strictlySmallerValue: { isStrictlySmaller: isStrictlySmallerValue },
+      },
+      { extraParameters },
+    );
   });
 });
 

@@ -4,13 +4,7 @@ import { hexa } from '../../../src/arbitrary/hexa';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -60,24 +54,14 @@ describe('hexa (integration)', () => {
 
   const hexaBuilder = () => hexa();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(hexaBuilder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(hexaBuilder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(hexaBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(hexaBuilder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(hexaBuilder, isStrictlySmaller);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(hexaBuilder, {
+      sameValueGivenSameSeed: {},
+      correctValues: { isCorrect },
+      shrinkableWithoutContext: {},
+      sameValueWithoutInitialContext: {},
+      strictlySmallerValue: { isStrictlySmaller },
+    });
   });
 });
 

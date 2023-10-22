@@ -5,11 +5,7 @@ import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
 import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
@@ -56,24 +52,17 @@ describe('char (integration)', () => {
 
   const charBuilder = () => char();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(charBuilder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(charBuilder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(charBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(charBuilder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(charBuilder, isStrictlySmaller);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      charBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+    );
   });
 });
 

@@ -3,12 +3,7 @@ import { domain, DomainConstraints } from '../../../src/arbitrary/domain';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { URL } from 'url';
 
-import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceCorrectValues,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
@@ -45,32 +40,23 @@ describe('domain (integration)', () => {
     { requiredKeys: [] },
   );
 
-  const isCorrect = isValidDomainWithExtension;
-
-  const isCorrectForURL = (domain: string) => {
+  const isCorrect = (domain: string) => {
+    expect(isValidDomainWithExtension(domain)).toBe(true);
     expect(() => new URL(`http://${domain}`)).not.toThrow();
   };
 
   const domainBuilder = (extra: Extra) => domain(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(domainBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(domainBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should only produce correct values regarding `new URL`', () => {
-    assertProduceCorrectValues(domainBuilder, isCorrectForURL, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(domainBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(domainBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      domainBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+      },
+      { extraParameters },
+    );
   });
 
   it.each`

@@ -1,11 +1,5 @@
 import fc from 'fast-check';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCaseArbitrary';
 import { stringOf } from '../../../../src/arbitrary/stringOf';
 import { nat } from '../../../../src/arbitrary/nat';
@@ -188,24 +182,18 @@ describe('MixedCaseArbitrary (integration)', () => {
       (rawString) => rawString.toUpperCase(),
     );
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(mixedCaseBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(mixedCaseBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(mixedCaseBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(mixedCaseBuilder, { extraParameters });
-  });
-
-  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(mixedCaseBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      mixedCaseBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {}, // if underlyings do
+        strictlySmallerValue: { isStrictlySmaller }, // if underlyings do
+      },
+      { extraParameters },
+    );
   });
 });
 

@@ -3,12 +3,7 @@ import { FrequencyArbitrary, _Constraints } from '../../../../src/arbitrary/_int
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesStrictlySmallerValue,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 import { Stream } from '../../../../src/stream/Stream';
 import { sizeArb } from '../__test-helpers__/SizeHelpers';
@@ -753,19 +748,16 @@ describe('FrequencyArbitrary (integration)', () => {
       'test',
     );
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(frequencyBuilder, { extraParameters });
-  });
-
-  it('should shrink towards strictly smaller values (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(frequencyBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      frequencyBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+      { extraParameters },
+    );
   });
 });

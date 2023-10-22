@@ -6,13 +6,7 @@ import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayIn
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { buildShrinkTree, renderTree } from '../__test-helpers__/ShrinkTree';
-import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceCorrectValues,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 
 describe('arrayInt64', () => {
   if (typeof BigInt === 'undefined') {
@@ -396,24 +390,18 @@ describe('arrayInt64 (integration)', () => {
   const arrayInt64Builder = (extra: Extra) =>
     arrayInt64(toArrayInt64(extra.min, false), toArrayInt64(extra.max, false));
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(arrayInt64Builder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(arrayInt64Builder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(arrayInt64Builder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(arrayInt64Builder, { extraParameters });
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(arrayInt64Builder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      arrayInt64Builder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+      { extraParameters },
+    );
   });
 });
 

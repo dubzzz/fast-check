@@ -4,12 +4,7 @@ import { typedIntArrayArbitraryArbitraryBuilder } from '../../../../../src/arbit
 import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '../../__test-helpers__/ArbitraryHelpers';
 
 import * as ArrayMock from '../../../../../src/arbitrary/array';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../../__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -164,22 +159,17 @@ describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
       ({ min = 0, max = min }) => new FakeIntegerArbitrary(min, max - min),
     );
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(typedIntArrayArbitraryArbitraryBuilderBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
-      extraParameters,
-    });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      typedIntArrayArbitraryArbitraryBuilderBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 });
 

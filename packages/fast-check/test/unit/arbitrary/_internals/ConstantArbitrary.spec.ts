@@ -2,12 +2,7 @@ import fc from 'fast-check';
 import { ConstantArbitrary } from '../../../../src/arbitrary/_internals/ConstantArbitrary';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { cloneMethod } from '../../../../src/check/symbols';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
 describe('ConstantArbitrary', () => {
@@ -214,20 +209,17 @@ describe('ConstantArbitrary (integration)', () => {
 
   const constantBuilder = (extra: Extra) => new ConstantArbitrary(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(constantBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(constantBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(constantBuilder, { extraParameters });
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(constantBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      constantBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+      { extraParameters },
+    );
   });
 
   it('should not re-use twice the same instance of cloneable', () => {

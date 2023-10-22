@@ -7,11 +7,7 @@ import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '.
 import * as RestrictedIntegerArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/RestrictedIntegerArbitraryBuilder';
 import * as TupleMock from '../../../src/arbitrary/tuple';
 import * as UniqueMock from '../../../src/arbitrary/uniqueArray';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { MaxLengthUpperBound } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
@@ -184,20 +180,20 @@ describe('sparseArray (integration)', () => {
 
   const sparseArrayBuilder = (extra: Extra) => sparseArray(new FakeIntegerArbitrary(), extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(sparseArrayBuilder, { extraParameters, isEqual });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(sparseArrayBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    // Remark: It will not shrink towards the exact same values for various reasons,
-    // - when noTrailingHole=false, there is no real way to buid back the targetLength
-    // - the key-value pairs will most of the time not be in the same ordered as the build order,
-    //   thus it will lead to a different shrink order
-    assertProduceValuesShrinkableWithoutContext(sparseArrayBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      sparseArrayBuilder,
+      {
+        sameValueGivenSameSeed: { isEqual },
+        correctValues: { isCorrect },
+        // Remark: It will not shrink towards the exact same values for various reasons,
+        // - when noTrailingHole=false, there is no real way to buid back the targetLength
+        // - the key-value pairs will most of the time not be in the same ordered as the build order,
+        //   thus it will lead to a different shrink order
+        shrinkableWithoutContext: {},
+      },
+      { extraParameters },
+    );
   });
 
   it.each`

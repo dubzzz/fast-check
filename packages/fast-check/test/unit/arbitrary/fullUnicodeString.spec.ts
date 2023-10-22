@@ -2,12 +2,7 @@ import * as fc from 'fast-check';
 import { fullUnicodeString } from '../../../src/arbitrary/fullUnicodeString';
 
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('fullUnicodeString (integration)', () => {
@@ -41,20 +36,17 @@ describe('fullUnicodeString (integration)', () => {
 
   const fullUnicodeStringBuilder = (extra: Extra) => fullUnicodeString(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(fullUnicodeStringBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(fullUnicodeStringBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(fullUnicodeStringBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(fullUnicodeStringBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      fullUnicodeStringBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 
   it.each`

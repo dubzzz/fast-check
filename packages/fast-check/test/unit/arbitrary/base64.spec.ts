@@ -4,13 +4,7 @@ import { base64 } from '../../../src/arbitrary/base64';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
   jest.resetModules();
@@ -70,24 +64,14 @@ describe('base64 (integration)', () => {
 
   const base64Builder = () => base64();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(base64Builder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(base64Builder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(base64Builder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(base64Builder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(base64Builder, isStrictlySmaller);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(base64Builder, {
+      sameValueGivenSameSeed: {},
+      correctValues: { isCorrect },
+      shrinkableWithoutContext: {},
+      sameValueWithoutInitialContext: {},
+      strictlySmallerValue: { isStrictlySmaller },
+    });
   });
 });
 

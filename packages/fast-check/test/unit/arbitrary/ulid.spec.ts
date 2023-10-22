@@ -5,12 +5,7 @@ import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import * as _IntegerMock from '../../../src/arbitrary/integer';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
-import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceCorrectValues,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
 function beforeEachHook() {
@@ -61,19 +56,12 @@ describe('ulid (integration)', () => {
     expect(u).toMatch(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
   };
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(ulid);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(ulid, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(ulid);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(ulid);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(ulid, {
+      sameValueGivenSameSeed: {},
+      correctValues: { isCorrect },
+      shrinkableWithoutContext: {},
+      sameValueWithoutInitialContext: {},
+    });
   });
 });

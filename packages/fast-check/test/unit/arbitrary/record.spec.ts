@@ -3,10 +3,7 @@ import { record, RecordConstraints } from '../../../src/arbitrary/record';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
@@ -292,19 +289,16 @@ describe('record (integration)', () => {
     return record(recordModel, constraints);
   };
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(recordBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(recordBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(recordBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(recordBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      recordBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {}, // if underlyings do
+        sameValueWithoutInitialContext: {}, // if underlyings do
+      },
+      { extraParameters },
+    );
   });
 });

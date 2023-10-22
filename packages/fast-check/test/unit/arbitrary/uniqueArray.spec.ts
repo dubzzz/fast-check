@@ -4,12 +4,7 @@ import { uniqueArray, UniqueArrayConstraints } from '../../../src/arbitrary/uniq
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
@@ -333,27 +328,23 @@ describe('uniqueArray (integration)', () => {
   );
   const uniqueArrayBuilder = (extra: Extra) => uniqueArray(integerUpTo10000AndNaNOrMinusZero, extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(uniqueArrayBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      uniqueArrayBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        // Property: should preserve strictly smaller ordering in shrink
+        // Is not applicable in the case of `set` as some values may not be in the "before" version
+        // of the array while they can suddenly appear on shrink. They might have been hidden because
+        // another value inside the array shadowed them. While on shrink those entries shadowing others
+        // may have disappear.
+      },
+      { extraParameters },
+    );
   });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(uniqueArrayBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(uniqueArrayBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(uniqueArrayBuilder, { extraParameters });
-  });
-
-  // Property: should preserve strictly smaller ordering in shrink
-  // Is not applicable in the case of `set` as some values may not be in the "before" version
-  // of the array while they can suddenly appear on shrink. They might have been hidden because
-  // another value inside the array shadowed them. While on shrink those entries shadowing others
-  // may have disappear.
 
   it.each`
     source                                       | constraints

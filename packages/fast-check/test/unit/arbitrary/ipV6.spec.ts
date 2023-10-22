@@ -2,11 +2,7 @@ import { ipV6 } from '../../../src/arbitrary/ipV6';
 
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertGenerateIndependentOfSize,
+  assertGenerateIndependentOfSize,assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
@@ -54,20 +50,16 @@ describe('ipV6 (integration)', () => {
 
   const ipV6Builder = () => ipV6();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(ipV6Builder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(ipV6Builder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(ipV6Builder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(ipV6Builder);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      ipV6Builder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+    );
   });
 
   it('should be independent of global settings overriding defaults on size', () => {

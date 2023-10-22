@@ -2,12 +2,7 @@ import fc from 'fast-check';
 import { webUrl, WebUrlConstraints } from '../../../src/arbitrary/webUrl';
 import { URL } from 'url';
 
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
@@ -65,7 +60,7 @@ describe('webUrl', () => {
 describe('webUrl (integration)', () => {
   type Extra = WebUrlConstraints;
 
-  const extraParametersBuilder = webUrlConstraintsBuilder;
+  const extraParameters = webUrlConstraintsBuilder();
 
   const isCorrect = (t: string) => {
     // Valid url given the specs defined by WHATWG URL Standard: https://url.spec.whatwg.org/
@@ -75,22 +70,17 @@ describe('webUrl (integration)', () => {
 
   const webUrlBuilder = (extra: Extra) => webUrl(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters: extraParametersBuilder() });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(webUrlBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(webUrlBuilder, { extraParameters: extraParametersBuilder(true) });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, {
-      extraParameters: extraParametersBuilder(true),
-    });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      webUrlBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 
   it.each`
@@ -118,7 +108,7 @@ describe('webUrl (integration)', () => {
 
 // Helpers
 
-function webUrlConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebUrlConstraints> {
+function webUrlConstraintsBuilder(): fc.Arbitrary<WebUrlConstraints> {
   return fc.record(
     {
       validSchemes: fc.constant(['ftp']),
@@ -129,13 +119,13 @@ function webUrlConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebUrlConst
           withIPv4Extended: fc.boolean(),
           withUserInfo: fc.boolean(),
           withPort: fc.boolean(),
-          size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+          size: fc.oneof(sizeArb, relativeSizeArb),
         },
         { requiredKeys: [] },
       ),
       withQueryParameters: fc.boolean(),
       withFragments: fc.boolean(),
-      size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+      size: fc.oneof(sizeArb, relativeSizeArb),
     },
     { requiredKeys: [] },
   );

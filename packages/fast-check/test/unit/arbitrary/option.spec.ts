@@ -3,12 +3,7 @@ import { option, OptionConstraints } from '../../../src/arbitrary/option';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
@@ -107,19 +102,16 @@ describe('option (integration)', () => {
 
   const optionBuilder = (extra: Extra) => option(new FakeIntegerArbitrary(), { ...extra, nil: null });
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(optionBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(optionBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(optionBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(optionBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      optionBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 });

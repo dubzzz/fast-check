@@ -2,10 +2,7 @@ import { ipV4 } from '../../../src/arbitrary/ipV4';
 
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
@@ -21,20 +18,16 @@ describe('ipV4 (integration)', () => {
 
   const ipV4Builder = () => ipV4();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(ipV4Builder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(ipV4Builder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(ipV4Builder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(ipV4Builder);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      ipV4Builder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+    );
   });
 
   it.each`

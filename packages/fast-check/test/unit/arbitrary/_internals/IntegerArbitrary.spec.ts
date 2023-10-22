@@ -3,11 +3,7 @@ import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerAr
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
+  assertValidArbitrary
 } from '../__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 
@@ -231,24 +227,18 @@ describe('IntegerArbitrary (integration)', () => {
 
   const integerBuilder = (extra: Extra) => new IntegerArbitrary(extra.min, extra.max);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(integerBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(integerBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(integerBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(integerBuilder, { extraParameters });
-  });
-
-  it('should shrink towards strictly smaller values', () => {
-    assertShrinkProducesStrictlySmallerValue(integerBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      integerBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+      { extraParameters },
+    );
   });
 
   describe('shrink', () => {

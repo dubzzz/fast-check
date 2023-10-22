@@ -6,10 +6,7 @@ import * as _IntegerMock from '../../../src/arbitrary/integer';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceCorrectValues,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
@@ -61,21 +58,17 @@ describe('uuid (integration)', () => {
     expect(u).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
   };
 
-  const uuidVBuilder = () => uuid();
+  const uuidBuilder = () => uuid();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(uuidVBuilder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(uuidVBuilder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(uuidVBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(uuidVBuilder);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      uuidBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+    );
   });
 });

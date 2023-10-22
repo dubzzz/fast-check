@@ -2,13 +2,7 @@ import * as fc from 'fast-check';
 import { BigIntArbitrary } from '../../../../src/arbitrary/_internals/BigIntArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import { Stream } from '../../../../src/stream/Stream';
 
@@ -241,24 +235,18 @@ describe('BigIntArbitrary (integration)', () => {
 
   const bigIntBuilder = (extra: Extra) => new BigIntArbitrary(extra.min, extra.max);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(bigIntBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(bigIntBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(bigIntBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(bigIntBuilder, { extraParameters });
-  });
-
-  it('should shrink towards strictly smaller values', () => {
-    assertShrinkProducesStrictlySmallerValue(bigIntBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      bigIntBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+      { extraParameters },
+    );
   });
 
   describe('shrink', () => {

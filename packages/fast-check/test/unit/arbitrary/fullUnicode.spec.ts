@@ -5,11 +5,7 @@ import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
 import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
@@ -59,24 +55,17 @@ describe('fullUnicode (integration)', () => {
 
   const fullUnicodeBuilder = () => fullUnicode();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(fullUnicodeBuilder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(fullUnicodeBuilder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(fullUnicodeBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(fullUnicodeBuilder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(fullUnicodeBuilder, isStrictlySmaller);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      fullUnicodeBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+    );
   });
 });
 

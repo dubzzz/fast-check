@@ -2,12 +2,7 @@ import fc from 'fast-check';
 import { webPath, WebPathConstraints } from '../../../src/arbitrary/webPath';
 import { URL } from 'url';
 
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
@@ -22,7 +17,7 @@ beforeEach(beforeEachHook);
 describe('webPath (integration)', () => {
   type Extra = WebPathConstraints;
 
-  const extraParametersBuilder = webPathConstraintsBuilder;
+  const extraParameters = fc.record({ size: fc.oneof(sizeArb, relativeSizeArb) }, { requiredKeys: [] });
 
   const isCorrect = (path: string) => {
     // Valid path given the specs defined by WHATWG URL Standard: https://url.spec.whatwg.org/
@@ -35,22 +30,17 @@ describe('webPath (integration)', () => {
 
   const webPathBuilder = (extra: Extra) => webPath(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(webPathBuilder, { extraParameters: extraParametersBuilder() });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(webPathBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(webPathBuilder, { extraParameters: extraParametersBuilder(true) });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(webPathBuilder, {
-      extraParameters: extraParametersBuilder(true),
-    });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      webPathBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+      },
+      { extraParameters },
+    );
   });
 
   it.each`
@@ -70,12 +60,3 @@ describe('webPath (integration)', () => {
     expect(renderedTree).toMatchSnapshot();
   });
 });
-
-// Helpers
-
-function webPathConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebPathConstraints> {
-  return fc.record(
-    { size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb) },
-    { requiredKeys: [] },
-  );
-}

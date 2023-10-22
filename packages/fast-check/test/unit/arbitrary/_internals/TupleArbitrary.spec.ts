@@ -4,13 +4,7 @@ import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/Arbitra
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Random } from '../../../../src/random/generator/Random';
@@ -258,24 +252,14 @@ describe('TupleArbitrary (integration)', () => {
   const tupleBuilder = () =>
     new TupleArbitrary([new FakeIntegerArbitrary(), new FakeIntegerArbitrary(), new FakeIntegerArbitrary()]);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(tupleBuilder);
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(tupleBuilder, isCorrect);
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(tupleBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(tupleBuilder);
-  });
-
-  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(tupleBuilder, isStrictlySmaller);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(tupleBuilder, {
+      sameValueGivenSameSeed: {},
+      correctValues: { isCorrect },
+      shrinkableWithoutContext: {},
+      sameValueWithoutInitialContext: {}, // if underlyings do
+      strictlySmallerValue: { isStrictlySmaller }, // if underlyings do
+    });
   });
 
   it('should produce the right shrinking tree', () => {

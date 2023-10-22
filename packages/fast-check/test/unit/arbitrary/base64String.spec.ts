@@ -1,11 +1,7 @@
 import * as fc from 'fast-check';
 import { base64String } from '../../../src/arbitrary/base64String';
 
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 
 import * as ArrayMock from '../../../src/arbitrary/array';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -160,16 +156,16 @@ describe('base64String (integration)', () => {
 
   const base64StringBuilder = (extra: Extra) => base64String(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(base64StringBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(base64StringBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(base64StringBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      base64StringBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+      },
+      { extraParameters },
+    );
   });
 
   // assertShrinkProducesSameValueWithoutInitialContext is not applicable for base64String has some values will not shrink exactly the same way.

@@ -6,9 +6,7 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
-  assertProduceSameValueGivenSameSeed,
-  assertProduceCorrectValues,
-  assertProduceValuesShrinkableWithoutContext,
+  assertValidArbitrary
 } from './__test-helpers__/ArbitraryAssertions';
 
 describe('dictionary (integration)', () => {
@@ -66,16 +64,16 @@ describe('dictionary (integration)', () => {
     return dictionary(keyArb, valueArb, constraints);
   };
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(dictionaryBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(dictionaryBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(dictionaryBuilder, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      dictionaryBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+      },
+      { extraParameters },
+    );
   });
 });
 

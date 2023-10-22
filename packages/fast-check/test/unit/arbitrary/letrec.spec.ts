@@ -4,12 +4,7 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../src/stream/Stream';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
-import {
-  assertGenerateEquivalentTo,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 
 describe('letrec', () => {
   describe('builder', () => {
@@ -326,23 +321,18 @@ describe('letrec (integration)', () => {
     return a;
   };
 
-  it('should generate the values as-if we directly called the target arbitrary', () => {
-    assertGenerateEquivalentTo(letrecBuilder, () => new FakeIntegerArbitrary(), {
-      isEqualContext: (c1, c2) => {
-        expect(c2).toEqual(c1);
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(letrecBuilder, {
+      sameValueGivenSameSeed: {},
+      shrinkableWithoutContext: {},
+      sameValueWithoutInitialContext: {},
+      equivalentTo: {
+        // generate the values as-if we directly called the target arbitrary
+        otherArbitrary: () => new FakeIntegerArbitrary(),
+        isEqualContext: (c1, c2) => {
+          expect(c2).toEqual(c1);
+        },
       },
     });
-  });
-
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(letrecBuilder);
-  });
-
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(letrecBuilder);
-  });
-
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(letrecBuilder);
   });
 });
