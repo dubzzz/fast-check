@@ -4,13 +4,7 @@ import { array } from '../../../src/arbitrary/array';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
@@ -271,24 +265,18 @@ describe('array (integration)', () => {
 
   const arrayBuilder = (extra: Extra) => array(new FakeIntegerArbitrary(), extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(arrayBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(arrayBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(arrayBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(arrayBuilder, { extraParameters });
-  });
-
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(arrayBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      arrayBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        sameValueWithoutInitialContext: {},
+        strictlySmallerValue: { isStrictlySmaller },
+      },
+      { extraParameters },
+    );
   });
 
   it.each`
