@@ -6,12 +6,7 @@ import {
   ObjectConstraints,
 } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
 
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceSomeSpecificValues,
-  assertProduceValuesShrinkableWithoutContext,
-} from '../../__test-helpers__/ArbitraryAssertions';
+import { assertProduceSomeSpecificValues, assertValidArbitrary } from '../../__test-helpers__/ArbitraryAssertions';
 import { computeObjectDepth } from '../../__test-helpers__/ComputeObjectDepth';
 import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKeys';
 import { sizeArb } from '../../__test-helpers__/SizeHelpers';
@@ -155,21 +150,19 @@ describe('anyArbitraryBuilder (integration)', () => {
 
   const anyArbitraryBuilderBuilder = (extra: Extra) => anyArbitraryBuilder(toQualifiedObjectConstraints(extra));
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(anyArbitraryBuilderBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(anyArbitraryBuilderBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(anyArbitraryBuilderBuilder, {
-      // For the moment, we are not able to reverse "object-string" values.
-      // In the future our fc.string() should be able to shrink them given it does not receive any constraint on the length
-      // but for the moment it somehow assume that it cannot shrink strings having strictly more than 10 characters (value of maxLength when not specified).
-      extraParameters: extraParameters.map((extra) => ({ ...extra, withObjectString: false })),
-    });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      anyArbitraryBuilderBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        // For the moment, we are not able to reverse "object-string" values.
+        // In the future our fc.string() should be able to shrink them given it does not receive any constraint on the length
+        // but for the moment it somehow assume that it cannot shrink strings having strictly more than 10 characters (value of maxLength when not specified).
+        shrinkableWithoutContext: { isNotApplicable: (_v, extra) => !!extra.withObjectString },
+      },
+      { extraParameters },
+    );
   });
 });
 

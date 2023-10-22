@@ -44,9 +44,11 @@ type Checks<T, U> = {
   // > assertShrinkProducesCorrectValues with option (v, _, arb) => arb.canShrinkWithoutContext(v)
   sameValueWithoutInitialContext?: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
-    isNotApplicable?: (v: T) => boolean;
+    isNotApplicable?: (v: T, extraParameters: U) => boolean;
   };
-  shrinkableWithoutContext?: Record<string, never>;
+  shrinkableWithoutContext?: {
+    isNotApplicable?: (v: T, extraParameters: U) => boolean;
+  };
   strictlySmallerValue?: {
     isStrictlySmaller: (vNew: T, vOld: T, extraParameters: U) => void | boolean;
   };
@@ -96,7 +98,11 @@ export function assertValidArbitrary<T, U = never>(
           const sameValueWithoutInitialContextApplicable =
             sameValueWithoutInitialContext !== undefined &&
             (sameValueWithoutInitialContext.isNotApplicable === undefined ||
-              !sameValueWithoutInitialContext.isNotApplicable(g1.value_));
+              !sameValueWithoutInitialContext.isNotApplicable(g1.value_, extraParameters));
+          const shrinkableWithoutContextApplicable =
+            shrinkableWithoutContext !== undefined &&
+            (shrinkableWithoutContext.isNotApplicable === undefined ||
+              !shrinkableWithoutContext.isNotApplicable(g1.value_, extraParameters));
           while (g1 !== null && g2 !== null) {
             // Extract relevant values
             const v1 = g1.value;
@@ -117,7 +123,7 @@ export function assertValidArbitrary<T, U = never>(
             if (sameValueWithoutInitialContext !== undefined && sameValueWithoutInitialContextApplicable) {
               assertEquality(sameValueWithoutInitialContext.isEqual, v1, v3, extraParameters);
             }
-            if (shrinkableWithoutContext !== undefined) {
+            if (shrinkableWithoutContext !== undefined && shrinkableWithoutContextApplicable) {
               assertCorrectness((v, _, arb) => arb.canShrinkWithoutContext(v), v1, extraParameters, arb);
             }
             if (strictlySmallerValue) {
