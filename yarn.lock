@@ -2807,6 +2807,7 @@ __metadata:
     eslint-config-prettier: ^9.0.0
     prettier: 3.0.3
     publint: ^0.2.5
+    typescript: ~5.2.2
   languageName: unknown
   linkType: soft
 
