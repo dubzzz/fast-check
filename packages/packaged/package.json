@@ -35,16 +35,15 @@
   },
   "dependencies": {
     "@npmcli/arborist": "^7.0.0",
-    "pacote": "^17.0.0",
-    "tar": "^6.1.11"
+    "npm-packlist": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-typescript": "^7.23.2",
     "@types/jest": "^29.5.6",
-    "@types/pacote": "^11.1.7",
-    "@types/tar": "^6.1.7",
+    "@types/npm-packlist": "^7.0.2",
+    "@types/npmcli__arborist": "^5.6.4",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "typescript": "~5.2.2"

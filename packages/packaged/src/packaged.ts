@@ -1,26 +1,19 @@
 import { promises as fs } from 'fs';
-import { tarball } from 'pacote';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+import packlist from 'npm-packlist';
 import { Arborist } from '@npmcli/arborist';
 import * as path from 'path';
-import { list } from 'tar';
 
 /**
  * Compute the list of all files that will be part of the package if published
  * @param packageRoot - The path to the root of the package, eg.: .
  */
 export async function computePublishedFiles(packageRoot: string): Promise<string[]> {
-  const publishedFiles: string[] = [];
-  const tarBuffer = await tarball(`file:${packageRoot}`, { dryRun: true, Arborist });
-  const stream = list({
-    onentry: (entry) => {
-      const entryPath: string = entry.path as any;
-      publishedFiles.push(entryPath.substring(8)); // dropping 'package/'
-    },
-  });
-  stream.end(tarBuffer);
-  return publishedFiles;
+  const arborist: typeof Arborist = new (Arborist as any)({ path: packageRoot });
+  const tree = await arborist.loadActual();
+  const files = await packlist(tree);
+  return files;
 }
 
 /**

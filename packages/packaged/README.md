@@ -55,6 +55,7 @@ const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, ke
 
 | @fast-check/packaged | node                   |
 | -------------------- | ---------------------- |
+| **0.2.x**            | ≥16.14.0               |
 | **0.1.x**            | ≥16.14.0<sup>(2)</sup> |
 | **0.0.x**            | ≥14.17.0<sup>(1)</sup> |
 
