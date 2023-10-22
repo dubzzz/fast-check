@@ -22,7 +22,7 @@
     "publint:all": "yarn workspaces foreach -pvi --no-private exec publint --strict",
     "version:bump": "yarn version check --interactive",
     "pack:all": "yarn workspaces foreach -pvi --no-private pack --out package.tgz",
-    "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
+    "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --keep-old-files"
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
