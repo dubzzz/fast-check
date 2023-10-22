@@ -1,12 +1,7 @@
 import fc from 'fast-check';
 
 import { unicodeJsonValue, JsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-  assertProduceValuesShrinkableWithoutContext,
-  assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth';
 import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKeys';
 import { sizeArb } from './__test-helpers__/SizeHelpers';
@@ -46,25 +41,19 @@ describe('unicodeJsonValue (integration)', () => {
 
   const unicodeJsonValueBuilder = (extra: Extra) => unicodeJsonValue(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(unicodeJsonValueBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(unicodeJsonValueBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(unicodeJsonValueBuilder, { extraParameters });
-  });
-
-  // Property: should be able to shrink to the same values without initial context
-  // Is partially applicable given the fact that: Object.keys() has a specific handling of integer keys over string ones.
-  // eg.: Object.keys({"2": "2", "0": "0", "C": "C", "A": "A", "B": "B", "1": "1"}) -> ["0", "1", "2", "C", "A", "B"]
-  // As a consequence there is no way to rebuild the source array of tuples (key, value) in the right order in such case (when numerics).
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(
-      (extra) => unicodeJsonValueBuilder(extra).filter((o) => !isObjectWithNumericKeys(o)),
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      unicodeJsonValueBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {},
+        // Property: should be able to shrink to the same values without initial context
+        // Is partially applicable given the fact that: Object.keys() has a specific handling of integer keys over string ones.
+        // eg.: Object.keys({"2": "2", "0": "0", "C": "C", "A": "A", "B": "B", "1": "1"}) -> ["0", "1", "2", "C", "A", "B"]
+        // As a consequence there is no way to rebuild the source array of tuples (key, value) in the right order in such case (when numerics).
+        sameValueWithoutInitialContext: { isNotApplicable: isObjectWithNumericKeys },
+      },
       { extraParameters },
     );
   });

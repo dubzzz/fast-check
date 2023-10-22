@@ -44,6 +44,7 @@ type Checks<T, U> = {
   // > assertShrinkProducesCorrectValues with option (v, _, arb) => arb.canShrinkWithoutContext(v)
   sameValueWithoutInitialContext?: {
     isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
+    isNotApplicable?: (v: T) => boolean;
   };
   shrinkableWithoutContext?: Record<string, never>;
   strictlySmallerValue?: {
@@ -92,6 +93,10 @@ export function assertValidArbitrary<T, U = never>(
           let g4: Value<T> | null = requiresG4
             ? equivalentTo!.otherArbitrary(extraParameters).generate(randomFromSeed(seed), biasFactor)
             : null;
+          const sameValueWithoutInitialContextApplicable =
+            sameValueWithoutInitialContext !== undefined &&
+            (sameValueWithoutInitialContext.isNotApplicable === undefined ||
+              !sameValueWithoutInitialContext.isNotApplicable(g1.value_));
           while (g1 !== null && g2 !== null) {
             // Extract relevant values
             const v1 = g1.value;
@@ -109,7 +114,7 @@ export function assertValidArbitrary<T, U = never>(
                 assertEquality(equivalentTo.isEqualContext, v1, v4, extraParameters);
               }
             }
-            if (sameValueWithoutInitialContext !== undefined) {
+            if (sameValueWithoutInitialContext !== undefined && sameValueWithoutInitialContextApplicable) {
               assertEquality(sameValueWithoutInitialContext.isEqual, v1, v3, extraParameters);
             }
             if (shrinkableWithoutContext !== undefined) {
