@@ -1,3 +1,13 @@
+# 0.1.1
+
+_Faster directory traversal_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.1.0...packaged%2Fv0.1.1)]
+
+## Fixes
+
+- ([PR#4353](https://github.com/dubzzz/fast-check/pull/4353)) Performance: Faster directory traversal
+- ([PR#4285](https://github.com/dubzzz/fast-check/pull/4285)) Test: Confirm basic typings work well
+
 # 0.1.0
 
 _Update formatting style and bump dependencies_
