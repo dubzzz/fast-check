@@ -1,11 +1,7 @@
 # 3.13.2
 
-_TODO Description_
+_Better reporting for invalid paths_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.13.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.1...v3.13.2)]
-
-## Features
-
-
 
 ## Fixes
 
@@ -17,6 +13,7 @@ _TODO Description_
 - ([PR#4352](https://github.com/dubzzz/fast-check/pull/4352)) CI: Skip install on hot cache (win/mac)
 - ([PR#4299](https://github.com/dubzzz/fast-check/pull/4299)) Doc: Article around Zod vulnerability
 - ([PR#4306](https://github.com/dubzzz/fast-check/pull/4306)) Doc: Fixing a typos in Zod article
+- ([PR#4307](https://github.com/dubzzz/fast-check/pull/4307)) Doc: Add missing robots.txt
 - ([PR#4356](https://github.com/dubzzz/fast-check/pull/4356)) Doc: Better document limitations of `gen`
 - ([PR#4338](https://github.com/dubzzz/fast-check/pull/4338)) Script: Faster tests execution with babel
 - ([PR#4270](https://github.com/dubzzz/fast-check/pull/4270)) Test: Check tsc import and types of bundled package
