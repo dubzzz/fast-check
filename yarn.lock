@@ -17520,8 +17520,11 @@ __metadata:
     "@docusaurus/plugin-pwa": 2.4.3
     "@docusaurus/preset-classic": 2.4.3
     "@docusaurus/remark-plugin-npm2yarn": 2.4.3
+    "@docusaurus/theme-classic": 2.4.3
+    "@docusaurus/types": 2.4.3
     "@jest/globals": ^29.7.0
     "@tsconfig/docusaurus": ^2.0.2
+    "@types/node": ^18.18.6
     clsx: ^2.0.0
     fast-check: "workspace:*"
     jest: ^29.7.0
