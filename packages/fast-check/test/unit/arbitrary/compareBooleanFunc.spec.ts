@@ -3,12 +3,9 @@ import { compareBooleanFunc } from '../../../src/arbitrary/compareBooleanFunc';
 import { compareFunc } from '../../../src/arbitrary/compareFunc';
 
 import { hasCloneMethod, cloneIfNeeded } from '../../../src/check/symbols';
-import {
-  assertGenerateEquivalentTo,
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
 describe('compareBooleanFunc (integration)', () => {
   const compareBooleanFuncBuilder = () => compareBooleanFunc();
@@ -85,3 +82,55 @@ describe('compareBooleanFunc (integration)', () => {
     );
   });
 });
+
+// Helpers
+
+function assertProduceSameValueGivenSameSeed<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
+  options: {
+    isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {},
+): void {
+  assertValidArbitrary(arbitraryBuilder, { sameValueGivenSameSeed: { isEqual: options.isEqual } }, options);
+}
+
+function assertProduceCorrectValues<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
+  isCorrect: (v: T, extraParameters: U, arb: Arbitrary<T>) => void | boolean,
+  options: {
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {},
+): void {
+  assertValidArbitrary(
+    arbitraryBuilder,
+    { sameValueGivenSameSeed: { isEqual: () => true }, correctValues: { isCorrect } },
+    options,
+  );
+}
+
+function assertGenerateEquivalentTo<T, U = never>(
+  arbitraryBuilderA: (extraParameters: U) => Arbitrary<T>,
+  arbitraryBuilderB: (extraParameters: U) => Arbitrary<T>,
+  options: {
+    isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
+    isEqualContext?: (c1: unknown, c2: unknown, extraParameters: U) => void | boolean;
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {},
+): void {
+  assertValidArbitrary(
+    arbitraryBuilderA,
+    {
+      sameValueGivenSameSeed: { isEqual: () => true },
+      equivalentTo: {
+        otherArbitrary: arbitraryBuilderB,
+        isEqual: options.isEqual,
+        isEqualContext: options.isEqualContext,
+      },
+    },
+    options,
+  );
+}

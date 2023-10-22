@@ -2,11 +2,9 @@ import * as fc from 'fast-check';
 import { compareFunc } from '../../../src/arbitrary/compareFunc';
 
 import { hasCloneMethod, cloneIfNeeded } from '../../../src/check/symbols';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 
 describe('compareFunc (integration)', () => {
   const compareFuncBuilder = () => compareFunc();
@@ -86,3 +84,31 @@ describe('compareFunc (integration)', () => {
     );
   });
 });
+
+// Helpers
+
+function assertProduceSameValueGivenSameSeed<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
+  options: {
+    isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {},
+): void {
+  assertValidArbitrary(arbitraryBuilder, { sameValueGivenSameSeed: { isEqual: options.isEqual } }, options);
+}
+
+function assertProduceCorrectValues<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
+  isCorrect: (v: T, extraParameters: U, arb: Arbitrary<T>) => void | boolean,
+  options: {
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {},
+): void {
+  assertValidArbitrary(
+    arbitraryBuilder,
+    { sameValueGivenSameSeed: { isEqual: () => true }, correctValues: { isCorrect } },
+    options,
+  );
+}

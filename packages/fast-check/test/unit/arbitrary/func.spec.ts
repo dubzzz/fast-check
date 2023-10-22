@@ -6,10 +6,7 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols';
 import { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
-import {
-  assertProduceCorrectValues,
-  assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from './__test-helpers__/ArbitraryAssertions';
 import { FakeIntegerArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
 
@@ -134,3 +131,31 @@ describe('func (integration)', () => {
     );
   });
 });
+
+// Helpers
+
+function assertProduceSameValueGivenSameSeed<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
+  options: {
+    isEqual?: (v1: T, v2: T, extraParameters: U) => void | boolean;
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {},
+): void {
+  assertValidArbitrary(arbitraryBuilder, { sameValueGivenSameSeed: { isEqual: options.isEqual } }, options);
+}
+
+function assertProduceCorrectValues<T, U = never>(
+  arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
+  isCorrect: (v: T, extraParameters: U, arb: Arbitrary<T>) => void | boolean,
+  options: {
+    extraParameters?: fc.Arbitrary<U>;
+    assertParameters?: fc.Parameters<unknown>;
+  } = {},
+): void {
+  assertValidArbitrary(
+    arbitraryBuilder,
+    { sameValueGivenSameSeed: { isEqual: () => true }, correctValues: { isCorrect } },
+    options,
+  );
+}
