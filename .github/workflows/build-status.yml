@@ -37,8 +37,6 @@ jobs:
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
-          # Using PNP linker for better performance
-          YARN_NODE_LINKER: pnp
           YARN_ENABLE_SCRIPTS: false
         run: yarn install --immutable --mode=skip-build
   warmup_yarn_cache_others:
@@ -60,8 +58,6 @@ jobs:
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
-          # Using PNP linker for better performance
-          YARN_NODE_LINKER: pnp
           YARN_ENABLE_SCRIPTS: false
         run: yarn install --immutable --mode=skip-build
 
