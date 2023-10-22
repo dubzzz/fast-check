@@ -1,3 +1,4 @@
+import "@types/jest" // to avoid fallbacking on jasmine
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
