@@ -1,3 +1,16 @@
+# 0.1.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.1.0...packaged%2Fv0.1.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4285](https://github.com/dubzzz/fast-check/pull/4285)) Test: Confirm basic typings work well
+
 # 0.1.0
 
 _Update formatting style and bump dependencies_
