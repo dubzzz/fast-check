@@ -1,6 +1,4 @@
 import { promises as fs } from 'fs';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import packlist from 'npm-packlist';
 import { Arborist } from '@npmcli/arborist';
 import * as path from 'path';
