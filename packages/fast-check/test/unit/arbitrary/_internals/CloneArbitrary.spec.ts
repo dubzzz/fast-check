@@ -5,13 +5,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
-import {
-  assertProduceValuesShrinkableWithoutContext,
-  assertProduceCorrectValues,
-  assertShrinkProducesSameValueWithoutInitialContext,
-  assertShrinkProducesStrictlySmallerValue,
-  assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
+import { assertValidArbitrary } from '../__test-helpers__/ArbitraryAssertions';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
@@ -159,25 +153,18 @@ describe('CloneArbitrary (integration)', () => {
 
   const cloneBuilder = (extra: Extra) => new CloneArbitrary(new FakeIntegerArbitrary(), extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(cloneBuilder, { extraParameters });
-  });
-
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(cloneBuilder, isCorrect, { extraParameters });
-  });
-
-  it('should produce values seen as shrinkable without any context', () => {
-    // Only when equal regarding Object.is
-    assertProduceValuesShrinkableWithoutContext(cloneBuilder, { extraParameters });
-  });
-
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(cloneBuilder, { extraParameters });
-  });
-
-  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(cloneBuilder, isStrictlySmaller, { extraParameters });
+  it('should be a valid arbitrary', () => {
+    assertValidArbitrary(
+      cloneBuilder,
+      {
+        sameValueGivenSameSeed: {},
+        correctValues: { isCorrect },
+        shrinkableWithoutContext: {}, // Only when equal regarding Object.is
+        sameValueWithoutInitialContext: {}, // if underlyings do
+        strictlySmallerValue: { isStrictlySmaller }, // if underlyings do
+      },
+      { extraParameters },
+    );
   });
 
   it('should produce the right shrinking tree', () => {
