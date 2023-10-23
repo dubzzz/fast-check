@@ -470,7 +470,7 @@ jobs:
   job3:
     name: 'J3'
     needs:
-      - j2
+      - job2
     if: always()
     runs-on: ubuntu-latest
     steps:
