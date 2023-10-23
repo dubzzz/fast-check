@@ -345,7 +345,7 @@ jobs:
         run: yarn workspaces foreach -pvi --no-private run test-bundle
       - name: Check legacy bundles
         env: 
-           YARN_NODE_LINKER: node_modules
+           YARN_NODE_LINKER: "node-modules"
         run: |
           yarn install --immutable --immutable-cache --mode=skip-build
           export NODE_VERSION="$(node --version)"
