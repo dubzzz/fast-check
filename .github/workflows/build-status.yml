@@ -449,6 +449,38 @@ jobs:
       - name: Success
         run: echo "Success"
 
+  job1:
+    name: 'J1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep
+        run: sleep 10
+      - name: Failure
+        run: exit 1
+
+  job2:
+    name: 'J2'
+    needs:
+      - job1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Success
+        run: echo "Success"
+
+  job3:
+    name: 'J3'
+    needs:
+      - j2
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - if: needs.job1.result == 'success'
+        name: Success
+        run: echo "Success"
+      - if: needs.job1.result != 'success'
+        name: Failure
+        run: exit 1
+
   # Publication jobs
   publish_documentation:
     name: 'Publish documentation'
