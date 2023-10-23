@@ -306,7 +306,11 @@ jobs:
       - name: Generate documentation
         run: yarn workspace website build
       - name: Generate API reference
-        run: yarn workspace fast-check docs-ci
+        env: 
+           YARN_NODE_LINKER: "node-modules"
+        run: |
+          yarn install --immutable --immutable-cache --mode=skip-build
+          yarn workspace fast-check docs-ci
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
       - name: Upload documentation
