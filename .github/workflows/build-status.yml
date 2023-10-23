@@ -344,7 +344,10 @@ jobs:
       - name: Check bundles
         run: yarn workspaces foreach -pvi --no-private run test-bundle
       - name: Check legacy bundles
+        env: 
+           YARN_NODE_LINKER: node_modules
         run: |
+          yarn install --immutable --immutable-cache --mode=skip-build
           export NODE_VERSION="$(node --version)"
           export NVS_HOME="$HOME/.nvs"
           git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
