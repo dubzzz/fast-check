@@ -2777,7 +2777,6 @@ __metadata:
     "@fast-check/worker": "workspace:*"
     "@jest/expect": ^29.7.0
     "@jest/globals": ^29.7.0
-    "@types/jasmine": ^5.1.1
     "@types/jest": ^29.5.6
     "@types/node": ^18.18.6
     babel-jest: ^29.7.0
@@ -4384,13 +4383,6 @@ __metadata:
   dependencies:
     "@types/istanbul-lib-report": "*"
   checksum: f1ad54bc68f37f60b30c7915886b92f86b847033e597f9b34f2415acdbe5ed742fa559a0a40050d74cdba3b6a63c342cac1f3a64dba5b68b66a6941f4abd7903
-  languageName: node
-  linkType: hard
-
-"@types/jasmine@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@types/jasmine@npm:5.1.1"
-  checksum: 76f0de21314db192e165cbb56229ca74d685ff6c8d233af21723a7bf8848b9e50b70bc321929194a7cda713c48b794e53a80363e02b54e1375dcd4ac1186c7f9
   languageName: node
   linkType: hard
 
