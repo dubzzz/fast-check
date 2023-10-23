@@ -430,8 +430,8 @@ jobs:
           yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Job to confirm every required job passed
-  all_checks_passed:
-    name: 'All checks passed'
+  pre_all_checks_passed:
+    name: 'Pre All checks passed'
     needs:
       - production_packages
       - documentation
@@ -446,6 +446,18 @@ jobs:
     steps:
       - name: Success
         run: echo "Success"
+  all_checks_passed:
+    name: 'All checks passed'
+    needs: pre_all_checks_passed
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - if: needs.pre_all_checks_passed.result == 'success'
+        name: Success
+        run: echo "Success"
+      - if: needs.pre_all_checks_passed.result != 'success'
+        name: Failure
+        run: exit 1
 
   # Publication jobs
   publish_documentation:
