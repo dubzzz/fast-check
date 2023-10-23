@@ -474,10 +474,10 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - if: needs.job1.result == 'success'
+      - if: needs.job2.result == 'success'
         name: Success
         run: echo "Success"
-      - if: needs.job1.result != 'success'
+      - if: needs.job2.result != 'success'
         name: Failure
         run: exit 1
 
