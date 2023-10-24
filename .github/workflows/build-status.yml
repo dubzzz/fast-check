@@ -263,7 +263,8 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: yarn unpack:all
+        # untar seems to fail on Windows when untaring already existing files
+        run: yarn unpack:all || true
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Unit tests
