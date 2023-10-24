@@ -263,6 +263,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
+        if: runner.os != 'windows-latest'
+        run: yarn unpack:all
+      - name: Unpack production packages (Windows only)
+        if: runner.os == 'windows-latest'
         # untar seems to fail on Windows when untaring already existing files
         run: yarn unpack:all || true
       - name: Alter internals to behave as if published
