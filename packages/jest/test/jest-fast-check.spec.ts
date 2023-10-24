@@ -633,11 +633,7 @@ async function writeToFile(
       jestConfigPath,
       `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
         options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
-      }${
-        options.testRunner !== undefined
-          ? `testRunner: '<rootDir>/../../../../node_modules/jest-jasmine2/build/index.js',`
-          : ''
-      } };`,
+      }${options.testRunner !== undefined ? `testRunner: 'jest-jasmine2',` : ''} };`,
     ),
   ]);
 
