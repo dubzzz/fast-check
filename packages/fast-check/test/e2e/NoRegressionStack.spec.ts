@@ -44,7 +44,7 @@ function sanitize(run: () => void) {
         .replace(/\\/g, '/')
         .replace(/at [^(]*fast-check\/(packages|node_modules)(.*)/g, 'at $1$2')
         .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*)\)/g, 'at $1 ($2$3)')
-        .replace(/at (.*) \(.*\/\.yarn\/.*\/(node_modules\/.*):\d+:\d+\)/g, 'at $1 ($2:?:?)') // reducing risks of changes on bumps
+        .replace(/at (.*) \(.*\/(\.yarn|Yarn)\/.*\/(node_modules\/.*):\d+:\d+\)/g, 'at $1 ($3:?:?)') // reducing risks of changes on bumps: .yarn (Linux and Mac), Yarn (Windows)
         .split('\n');
       throw new Error(
         lines
