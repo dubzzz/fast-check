@@ -36,9 +36,6 @@ jobs:
           check-latest: true
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        env:
-          # Using PNP linker for better performance
-          YARN_NODE_LINKER: pnp
         run: yarn install --immutable --mode=skip-build --check-cache
   warmup_yarn_cache_others:
     name: 'Warm up Yarn cache (others)'
@@ -58,9 +55,6 @@ jobs:
           check-latest: true
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        env:
-          # Using PNP linker for better performance
-          YARN_NODE_LINKER: pnp
         run: yarn install --immutable --mode=skip-build --check-cache
 
   # Jobs without any strong requirement on warmup_yarn_cache
@@ -317,7 +311,11 @@ jobs:
       - name: Generate documentation
         run: yarn workspace website build
       - name: Generate API reference
-        run: yarn workspace fast-check docs-ci
+        env:
+          YARN_NODE_LINKER: 'node-modules'
+        run: |
+          yarn install --immutable --immutable-cache --mode=skip-build
+          yarn workspace fast-check docs-ci
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
       - name: Upload documentation
@@ -352,10 +350,15 @@ jobs:
         run: yarn workspaces foreach -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Retrieve potentially dropped test-bundle
         run: yarn workspaces foreach -pvi --no-private exec "git restore -s@ -SW -- test-bundle || true"
+      - name: Check publication lint
+        run: yarn publint:all
       - name: Check bundles
         run: yarn workspaces foreach -pvi --no-private run test-bundle
       - name: Check legacy bundles
+        env:
+          YARN_NODE_LINKER: 'node-modules'
         run: |
+          yarn install --immutable --immutable-cache --mode=skip-build
           export NODE_VERSION="$(node --version)"
           export NVS_HOME="$HOME/.nvs"
           git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
@@ -374,8 +377,6 @@ jobs:
               echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
               exit 3
           fi
-      - name: Check publication lint
-        run: yarn publint:all
   test_types:
     name: 'Test types'
     needs:
