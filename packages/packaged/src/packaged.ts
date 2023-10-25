@@ -25,15 +25,26 @@ export async function removeNonPublishedFiles(
   const kept: string[] = [];
   const removed: string[] = [];
   const publishedFiles = await computePublishedFiles(packageRoot);
-  const normalizedPublishedFiles = new Set(
+  const normalizedPublishedFilesSet = new Set(
     publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename))),
+  );
+  const normalizedPublishedDirectoriesSet = new Set(
+    publishedFiles.flatMap((filePath) => {
+      const directorySegments = path.normalize(filePath).split(path.sep).slice(0, -1);
+      let currentAggregatedSegment = path.normalize(packageRoot);
+      const directoryAggregatedSegments: string[] = [];
+      for (const segment of directorySegments) {
+        currentAggregatedSegment = path.join(currentAggregatedSegment, segment);
+        directoryAggregatedSegments.push(currentAggregatedSegment);
+      }
+      return directoryAggregatedSegments;
+    }),
   );
 
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
-  async function traverse(currentPath: string): Promise<boolean> {
+  async function traverse(currentPath: string): Promise<void> {
     const content = await fs.readdir(currentPath, { withFileTypes: true });
-    let numRemoved = 0;
     await Promise.all(
       content.map(async (item) => {
         const itemPath = path.join(currentPath, item.name);
@@ -41,21 +52,19 @@ export async function removeNonPublishedFiles(
         if (opts.keepNodeModules && itemPath === rootNodeModulesPath) {
           kept.push(normalizedItemPath);
         } else if (item.isDirectory()) {
-          const fullyCleaned = await traverse(itemPath);
-          if (!fullyCleaned) {
+          if (normalizedPublishedDirectoriesSet.has(normalizedItemPath)) {
             kept.push(normalizedItemPath);
+            await traverse(itemPath);
           } else {
-            ++numRemoved;
             removed.push(normalizedItemPath);
             if (!opts.dryRun) {
-              await fs.rmdir(itemPath);
+              await fs.rm(itemPath, { recursive: true });
             }
           }
         } else if (item.isFile()) {
-          if (normalizedPublishedFiles.has(normalizedItemPath)) {
+          if (normalizedPublishedFilesSet.has(normalizedItemPath)) {
             kept.push(normalizedItemPath);
           } else {
-            ++numRemoved;
             removed.push(normalizedItemPath);
             if (!opts.dryRun) {
               await fs.rm(itemPath);
@@ -64,7 +73,6 @@ export async function removeNonPublishedFiles(
         }
       }),
     );
-    return content.length === numRemoved;
   }
   await traverse(packageRoot);
   return { kept, removed };
