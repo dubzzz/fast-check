@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         id: yarn-cache
         with:
           node-version: '18.x'
@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         id: yarn-cache
         with:
           node-version: '18.x'
@@ -68,7 +68,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -86,7 +86,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -101,7 +101,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -118,7 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -137,7 +137,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -167,7 +167,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -243,7 +243,7 @@ jobs:
           path: /tmp/jest_rt
           key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
@@ -257,7 +257,12 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
+        if: matrix.os != 'windows-latest'
         run: yarn unpack:all
+      - name: Unpack production packages (Windows only)
+        if: matrix.os == 'windows-latest'
+        # untar seems to fail on Windows when untaring already existing files
+        run: yarn unpack:all || true
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Unit tests
@@ -288,7 +293,7 @@ jobs:
         with:
           lfs: true
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -326,7 +331,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -393,7 +398,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Using Node v18.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '18.x'
           cache: 'yarn'
@@ -431,8 +436,8 @@ jobs:
           yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Job to confirm every required job passed
-  all_checks_passed:
-    name: 'All checks passed'
+  pre_all_checks_passed:
+    name: 'Pre All checks passed'
     needs:
       - production_packages
       - documentation
@@ -447,6 +452,18 @@ jobs:
     steps:
       - name: Success
         run: echo "Success"
+  all_checks_passed:
+    name: 'All checks passed'
+    needs: pre_all_checks_passed
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - if: needs.pre_all_checks_passed.result == 'success'
+        name: Success
+        run: echo "Success"
+      - if: needs.pre_all_checks_passed.result != 'success'
+        name: Failure
+        run: exit 1
 
   # Publication jobs
   publish_documentation:
@@ -504,7 +521,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -543,7 +560,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -582,7 +599,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -621,7 +638,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -660,7 +677,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -699,7 +716,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -738,7 +755,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -777,7 +794,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
