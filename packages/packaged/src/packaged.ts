@@ -21,6 +21,10 @@ export async function computePublishedFiles(packageRoot: string): Promise<string
 function tryAdd<T>(set: Set<T>, value: T): boolean {
   const sizeBefore = set.size;
   set.add(value);
+  if (set.size !== sizeBefore)
+    console.log('++ ' + value);
+  else
+    console.log('xx ' + value);
   return set.size !== sizeBefore;
 }
 
@@ -31,6 +35,7 @@ function buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles: string
   // Scanning published files one by one to add our their directories as "directories to be preserved/published"
   for (const filePath of normalizedPublishedFiles) {
     // Dropping one directory at a time from the path until we already know about thi precise directory to stop the scan earlier
+    console.log('scanning: ' + filePath);
     let directory = path.dirname(filePath); // already normalized
     while (directory !== '' && !tryAdd(normalizedPublishedDirectoriesSet, directory)) {
       const lastSep = directory.lastIndexOf(path.sep);
