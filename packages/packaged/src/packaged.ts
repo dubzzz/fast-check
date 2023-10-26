@@ -61,35 +61,35 @@ export async function removeNonPublishedFiles(
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
   async function traverse(currentPath: string): Promise<void> {
+    const awaitedTasks: Promise<unknown>[] = [];
     const content = await fs.readdir(currentPath, { withFileTypes: true });
-    await Promise.all(
-      content.map(async (item) => {
-        const itemPath = path.join(currentPath, item.name);
-        const normalizedItemPath = path.normalize(itemPath);
-        if (opts.keepNodeModules && itemPath === rootNodeModulesPath) {
+    for (const item of content) {
+      const itemPath = path.join(currentPath, item.name);
+      const normalizedItemPath = path.normalize(itemPath);
+      if (opts.keepNodeModules && itemPath === rootNodeModulesPath) {
+        kept.push(normalizedItemPath);
+      } else if (item.isDirectory()) {
+        if (normalizedPublishedDirectoriesSet.has(normalizedItemPath)) {
           kept.push(normalizedItemPath);
-        } else if (item.isDirectory()) {
-          if (normalizedPublishedDirectoriesSet.has(normalizedItemPath)) {
-            kept.push(normalizedItemPath);
-            await traverse(itemPath);
-          } else {
-            removed.push(normalizedItemPath);
-            if (!opts.dryRun) {
-              await fs.rm(itemPath, { recursive: true });
-            }
-          }
-        } else if (item.isFile()) {
-          if (normalizedPublishedFilesSet.has(normalizedItemPath)) {
-            kept.push(normalizedItemPath);
-          } else {
-            removed.push(normalizedItemPath);
-            if (!opts.dryRun) {
-              await fs.rm(itemPath);
-            }
+          awaitedTasks.push(traverse(itemPath));
+        } else {
+          removed.push(normalizedItemPath);
+          if (!opts.dryRun) {
+            awaitedTasks.push(fs.rm(itemPath, { recursive: true }));
           }
         }
-      }),
-    );
+      } else if (item.isFile()) {
+        if (normalizedPublishedFilesSet.has(normalizedItemPath)) {
+          kept.push(normalizedItemPath);
+        } else {
+          removed.push(normalizedItemPath);
+          if (!opts.dryRun) {
+            awaitedTasks.push(fs.rm(itemPath));
+          }
+        }
+      }
+    }
+    await Promise.all(awaitedTasks);
   }
   await traverse(packageRoot);
   return { kept, removed };
