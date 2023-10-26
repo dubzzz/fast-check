@@ -72,6 +72,7 @@ async function traverseAndRemoveNonPublishedFiles(
       } else {
         out.removed.push(normalizedItemPath);
         if (!opts.dryRun) {
+          console.log('rm -r: ' + itemPath);
           awaitedTasks.push(fs.rm(itemPath, { recursive: true }));
         }
       }
@@ -81,6 +82,7 @@ async function traverseAndRemoveNonPublishedFiles(
       } else {
         out.removed.push(normalizedItemPath);
         if (!opts.dryRun) {
+          console.log('rm: ' + itemPath);
           awaitedTasks.push(fs.rm(itemPath));
         }
       }
