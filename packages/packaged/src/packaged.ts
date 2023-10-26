@@ -14,6 +14,22 @@ export async function computePublishedFiles(packageRoot: string): Promise<string
   return files;
 }
 
+/** @internal */
+function buildNormalizedPublishedDirectoriesSet(packageRoot: string, publishedFiles: string[]): Set<string> {
+  const normalizedPublishedDirectoriesSet = new Set<string>()
+  for (const filePath of publishedFiles) {
+    const directorySegments = path.normalize(filePath).split(path.sep).slice(0, -1);
+      let currentAggregatedSegment = path.normalize(packageRoot);
+      const directoryAggregatedSegments: string[] = [];
+      for (const segment of directorySegments) {
+        currentAggregatedSegment = path.join(currentAggregatedSegment, segment);
+        directoryAggregatedSegments.push(currentAggregatedSegment);
+      normalizedPublishedDirectoriesSet.add(currentAggregatedSegment);
+      }
+  }
+  return normalizedPublishedDirectoriesSet
+}
+
 /**
  * Remove from the filesystem any file that will not be published
  * @param packageRoot - The path to the root of the package, eg.: .
@@ -28,18 +44,7 @@ export async function removeNonPublishedFiles(
   const normalizedPublishedFilesSet = new Set(
     publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename))),
   );
-  const normalizedPublishedDirectoriesSet = new Set(
-    publishedFiles.flatMap((filePath) => {
-      const directorySegments = path.normalize(filePath).split(path.sep).slice(0, -1);
-      let currentAggregatedSegment = path.normalize(packageRoot);
-      const directoryAggregatedSegments: string[] = [];
-      for (const segment of directorySegments) {
-        currentAggregatedSegment = path.join(currentAggregatedSegment, segment);
-        directoryAggregatedSegments.push(currentAggregatedSegment);
-      }
-      return directoryAggregatedSegments;
-    }),
-  );
+  const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(packageRoot,publishedFiles)
 
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
