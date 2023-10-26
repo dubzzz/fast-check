@@ -14,19 +14,25 @@ export async function computePublishedFiles(packageRoot: string): Promise<string
   return files;
 }
 
+/**
+ * @returns true if add was successful
+ * @internal
+ */
+function tryAdd<T>(set: Set<T>, value: T): boolean {
+  const sizeBefore = set.size;
+  set.add(value);
+  return set.size !== sizeBefore;
+}
+
 /** @internal */
 function buildNormalizedPublishedDirectoriesSet(packageRoot: string, publishedFiles: string[]): Set<string> {
   const normalizedPublishedDirectoriesSet = new Set<string>();
-  const normalizedPublishedDirectoriesSetWithRoot = new Set<string>();
-  const packageRootNormalized = path.normalize(packageRoot);
 
   // Scanning published files one by one to add our their directories as "directories to be preserved/published"
   for (const filePath of publishedFiles) {
     // Dropping one directory at a time from the path until we already know about thi precise directory to stop the scan earlier
-    let directory = path.normalize(path.dirname(filePath));
-    while (directory !== '' && !normalizedPublishedDirectoriesSet.has(directory)) {
-      normalizedPublishedDirectoriesSet.add(directory);
-      normalizedPublishedDirectoriesSetWithRoot.add(path.join(packageRootNormalized, directory));
+    let directory = path.normalize(path.join(packageRoot, path.dirname(filePath)));
+    while (directory !== '' && !tryAdd(normalizedPublishedDirectoriesSet, directory)) {
       const lastSep = directory.lastIndexOf(path.sep);
       if (lastSep === -1) {
         break;
@@ -34,7 +40,7 @@ function buildNormalizedPublishedDirectoriesSet(packageRoot: string, publishedFi
       directory = directory.substring(0, lastSep);
     }
   }
-  return normalizedPublishedDirectoriesSetWithRoot;
+  return normalizedPublishedDirectoriesSet;
 }
 
 /**
