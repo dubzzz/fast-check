@@ -25,13 +25,13 @@ function tryAdd<T>(set: Set<T>, value: T): boolean {
 }
 
 /** @internal */
-function buildNormalizedPublishedDirectoriesSet(packageRoot: string, publishedFiles: string[]): Set<string> {
+function buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles: string[]): Set<string> {
   const normalizedPublishedDirectoriesSet = new Set<string>();
 
   // Scanning published files one by one to add our their directories as "directories to be preserved/published"
-  for (const filePath of publishedFiles) {
+  for (const filePath of normalizedPublishedFiles) {
     // Dropping one directory at a time from the path until we already know about thi precise directory to stop the scan earlier
-    let directory = path.normalize(path.join(packageRoot, path.dirname(filePath)));
+    let directory = path.dirname(filePath); // already normalized
     while (directory !== '' && !tryAdd(normalizedPublishedDirectoriesSet, directory)) {
       const lastSep = directory.lastIndexOf(path.sep);
       if (lastSep === -1) {
@@ -54,10 +54,9 @@ export async function removeNonPublishedFiles(
   const kept: string[] = [];
   const removed: string[] = [];
   const publishedFiles = await computePublishedFiles(packageRoot);
-  const normalizedPublishedFilesSet = new Set(
-    publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename))),
-  );
-  const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(packageRoot, publishedFiles);
+  const normalizedPublishedFiles = publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename)));
+  const normalizedPublishedFilesSet = new Set(normalizedPublishedFiles);
+  const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
 
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
