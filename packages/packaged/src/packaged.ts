@@ -44,6 +44,52 @@ function buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles: string
 }
 
 /**
+ * Traverse all files starting from children of currentPath and drop any file or directory not belonging
+ * to the set of published elements.
+ * @internal
+ */
+async function traverseAndRemoveNonPublishedFiles(
+  currentPath: string,
+  out: { kept: string[]; removed: string[] },
+  opts: {
+    rootNodeModulesPath: string | undefined;
+    dryRun: boolean;
+    publishedDirectories: Set<string>;
+    publishedFiles: Set<string>;
+  },
+): Promise<void> {
+  const awaitedTasks: Promise<unknown>[] = [];
+  const content = await fs.readdir(currentPath, { withFileTypes: true });
+  for (const item of content) {
+    const itemPath = path.join(currentPath, item.name);
+    const normalizedItemPath = path.normalize(itemPath);
+    if (itemPath === opts.rootNodeModulesPath) {
+      out.kept.push(normalizedItemPath);
+    } else if (item.isDirectory()) {
+      if (opts.publishedDirectories.has(normalizedItemPath)) {
+        out.kept.push(normalizedItemPath);
+        awaitedTasks.push(traverseAndRemoveNonPublishedFiles(itemPath, out, opts));
+      } else {
+        out.removed.push(normalizedItemPath);
+        if (!opts.dryRun) {
+          awaitedTasks.push(fs.rm(itemPath, { recursive: true }));
+        }
+      }
+    } else if (item.isFile()) {
+      if (opts.publishedFiles.has(normalizedItemPath)) {
+        out.kept.push(normalizedItemPath);
+      } else {
+        out.removed.push(normalizedItemPath);
+        if (!opts.dryRun) {
+          awaitedTasks.push(fs.rm(itemPath));
+        }
+      }
+    }
+  }
+  await Promise.all(awaitedTasks);
+}
+
+/**
  * Remove from the filesystem any file that will not be published
  * @param packageRoot - The path to the root of the package, eg.: .
  */
@@ -51,46 +97,18 @@ export async function removeNonPublishedFiles(
   packageRoot: string,
   opts: { dryRun?: boolean; keepNodeModules?: boolean } = {},
 ): Promise<{ kept: string[]; removed: string[] }> {
-  const kept: string[] = [];
-  const removed: string[] = [];
   const publishedFiles = await computePublishedFiles(packageRoot);
+
+  const out: { kept: string[]; removed: string[] } = { kept: [], removed: [] };
   const normalizedPublishedFiles = publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename)));
   const normalizedPublishedFilesSet = new Set(normalizedPublishedFiles);
   const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
-
-  const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
-
-  async function traverse(currentPath: string): Promise<void> {
-    const awaitedTasks: Promise<unknown>[] = [];
-    const content = await fs.readdir(currentPath, { withFileTypes: true });
-    for (const item of content) {
-      const itemPath = path.join(currentPath, item.name);
-      const normalizedItemPath = path.normalize(itemPath);
-      if (opts.keepNodeModules && itemPath === rootNodeModulesPath) {
-        kept.push(normalizedItemPath);
-      } else if (item.isDirectory()) {
-        if (normalizedPublishedDirectoriesSet.has(normalizedItemPath)) {
-          kept.push(normalizedItemPath);
-          awaitedTasks.push(traverse(itemPath));
-        } else {
-          removed.push(normalizedItemPath);
-          if (!opts.dryRun) {
-            awaitedTasks.push(fs.rm(itemPath, { recursive: true }));
-          }
-        }
-      } else if (item.isFile()) {
-        if (normalizedPublishedFilesSet.has(normalizedItemPath)) {
-          kept.push(normalizedItemPath);
-        } else {
-          removed.push(normalizedItemPath);
-          if (!opts.dryRun) {
-            awaitedTasks.push(fs.rm(itemPath));
-          }
-        }
-      }
-    }
-    await Promise.all(awaitedTasks);
-  }
-  await traverse(packageRoot);
-  return { kept, removed };
+  const traverseOpts = {
+    rootNodeModulesPath: opts.keepNodeModules ? path.join(packageRoot, 'node_modules') : undefined,
+    dryRun: !!opts.dryRun,
+    publishedDirectories: normalizedPublishedDirectoriesSet,
+    publishedFiles: normalizedPublishedFilesSet,
+  };
+  await traverseAndRemoveNonPublishedFiles(packageRoot, out, traverseOpts);
+  return out;
 }
