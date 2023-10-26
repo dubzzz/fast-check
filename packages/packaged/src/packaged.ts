@@ -16,18 +16,25 @@ export async function computePublishedFiles(packageRoot: string): Promise<string
 
 /** @internal */
 function buildNormalizedPublishedDirectoriesSet(packageRoot: string, publishedFiles: string[]): Set<string> {
-  const normalizedPublishedDirectoriesSet = new Set<string>()
+  const normalizedPublishedDirectoriesSet = new Set<string>();
+  const normalizedPublishedDirectoriesSetWithRoot = new Set<string>();
+  const packageRootNormalized = path.normalize(packageRoot);
+
+  // Scanning published files one by one to add our their directories as "directories to be preserved/published"
   for (const filePath of publishedFiles) {
-    const directorySegments = path.normalize(filePath).split(path.sep).slice(0, -1);
-      let currentAggregatedSegment = path.normalize(packageRoot);
-      const directoryAggregatedSegments: string[] = [];
-      for (const segment of directorySegments) {
-        currentAggregatedSegment = path.join(currentAggregatedSegment, segment);
-        directoryAggregatedSegments.push(currentAggregatedSegment);
-      normalizedPublishedDirectoriesSet.add(currentAggregatedSegment);
+    // Dropping one directory at a time from the path until we already know about thi precise directory to stop the scan earlier
+    let directory = path.normalize(path.dirname(filePath));
+    while (directory !== '' && !normalizedPublishedDirectoriesSet.has(directory)) {
+      normalizedPublishedDirectoriesSet.add(directory);
+      normalizedPublishedDirectoriesSetWithRoot.add(path.join(packageRootNormalized, directory));
+      const lastSep = directory.lastIndexOf(path.sep);
+      if (lastSep === -1) {
+        break;
       }
+      directory = directory.substring(0, lastSep);
+    }
   }
-  return normalizedPublishedDirectoriesSet
+  return normalizedPublishedDirectoriesSetWithRoot;
 }
 
 /**
@@ -44,7 +51,7 @@ export async function removeNonPublishedFiles(
   const normalizedPublishedFilesSet = new Set(
     publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename))),
   );
-  const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(packageRoot,publishedFiles)
+  const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(packageRoot, publishedFiles);
 
   const rootNodeModulesPath = path.join(packageRoot, 'node_modules');
 
