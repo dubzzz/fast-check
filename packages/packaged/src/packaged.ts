@@ -59,30 +59,21 @@ async function traverseAndRemoveNonPublishedFiles(
   },
 ): Promise<void> {
   const awaitedTasks: Promise<unknown>[] = [];
-  const content = await fs.readdir(currentPath, { withFileTypes: true });
-  for (const item of content) {
-    const itemPath = path.join(currentPath, item.name);
+  const content = await fs.readdir(currentPath);
+  for (const itemName of content) {
+    const itemPath = path.join(currentPath, itemName);
     const normalizedItemPath = path.normalize(itemPath);
     if (itemPath === opts.rootNodeModulesPath) {
       out.kept.push(normalizedItemPath);
-    } else if (item.isDirectory()) {
-      if (opts.publishedDirectories.has(normalizedItemPath)) {
+    } else if (opts.publishedDirectories.has(normalizedItemPath)) {
+      out.kept.push(normalizedItemPath);
+      awaitedTasks.push(traverseAndRemoveNonPublishedFiles(itemPath, out, opts));
+    } else if (opts.publishedFiles.has(normalizedItemPath)) {
         out.kept.push(normalizedItemPath);
-        awaitedTasks.push(traverseAndRemoveNonPublishedFiles(itemPath, out, opts));
-      } else {
-        out.removed.push(normalizedItemPath);
-        if (!opts.dryRun) {
-          awaitedTasks.push(fs.rm(itemPath, { recursive: true }));
-        }
-      }
-    } else if (item.isFile()) {
-      if (opts.publishedFiles.has(normalizedItemPath)) {
-        out.kept.push(normalizedItemPath);
-      } else {
-        out.removed.push(normalizedItemPath);
-        if (!opts.dryRun) {
-          awaitedTasks.push(fs.rm(itemPath));
-        }
+    } else {
+      out.removed.push(normalizedItemPath);
+      if (!opts.dryRun) {
+        awaitedTasks.push(fs.rm(itemPath, { recursive: true }));
       }
     }
   }
