@@ -63,7 +63,7 @@ async function traverseAndRemoveNonPublishedFiles(
   for (const itemName of content) {
     const itemPath = path.join(currentPath, itemName);
     if (itemPath === opts.rootNodeModulesPath) {
-      out.kept.push(normalizedItemPath);
+      out.kept.push(itemPath);
     } else if (opts.publishedDirectories.has(itemPath)) {
       out.kept.push(itemPath);
       awaitedTasks.push(traverseAndRemoveNonPublishedFiles(itemPath, out, opts));
