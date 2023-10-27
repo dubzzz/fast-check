@@ -87,7 +87,9 @@ export async function removeNonPublishedFiles(
   packageRoot: string,
   opts: { dryRun?: boolean; keepNodeModules?: boolean } = {},
 ): Promise<{ kept: string[]; removed: string[] }> {
+  const a1 = performance.now();
   const publishedFiles = await computePublishedFiles(packageRoot);
+  const a2 = performance.now();
 
   const out: { kept: string[]; removed: string[] } = { kept: [], removed: [] };
   const normalizedPackageRoot = path.normalize(packageRoot);
@@ -100,6 +102,9 @@ export async function removeNonPublishedFiles(
     publishedDirectories: normalizedPublishedDirectoriesSet,
     publishedFiles: normalizedPublishedFilesSet,
   };
+  const a3 = performance.now();
   await traverseAndRemoveNonPublishedFiles(normalizedPackageRoot, out, traverseOpts);
+  const a4 = performance.now();
+  console.log(a2 - a1, a3 - a2, a4 - a3);
   return out;
 }
