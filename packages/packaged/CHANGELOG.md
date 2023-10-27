@@ -5,10 +5,6 @@ _TODO Description_
 
 ## Features
 
-
-
-## Fixes
-
 - ([PR#4358](https://github.com/dubzzz/fast-check/pull/4358)) Performance: No intermediate tarball
 - ([PR#4388](https://github.com/dubzzz/fast-check/pull/4388)) Performance: Bulk delete directory and content
 
