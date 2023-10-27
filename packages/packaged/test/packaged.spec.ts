@@ -197,6 +197,52 @@ describe('removeNonPublishedFiles', () => {
       expect(await fileSystem.exists(['test', 'index.spec.js'])).toBe(false);
     });
   });
+
+  it('should preserve deeply nested file when published', async () => {
+    await runPackageTest(async (fileSystem) => {
+      // Arrange
+      const packageJsonContent = {
+        name: 'my-package',
+        version: '0.0.0',
+        files: ['lib'],
+        license: 'MIT',
+      };
+      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
+      await fileSystem.createFile(['lib', 'a', 'b', 'c', 'd', 'main.js'], '// empty main.js');
+
+      // Act
+      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath);
+
+      // Assert
+      expect(kept).toHaveLength(7); // package.json, lib, lib/a, lib/a/b, lib/a/b/c, lib/a/b/c/d, lib/a/b/c/d/main.js
+      expect(removed).toHaveLength(0);
+      expect(await fileSystem.exists(['package.json'])).toBe(true);
+      expect(await fileSystem.exists(['lib', 'a', 'b', 'c', 'd', 'main.js'])).toBe(true);
+    });
+  });
+
+  it('should drop deeply nested file when unpublished', async () => {
+    await runPackageTest(async (fileSystem) => {
+      // Arrange
+      const packageJsonContent = {
+        name: 'my-package',
+        version: '0.0.0',
+        files: ['lib'],
+        license: 'MIT',
+      };
+      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
+      await fileSystem.createFile(['src', 'a', 'b', 'c', 'd', 'main.js'], '// empty main.js');
+
+      // Act
+      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath);
+
+      // Assert
+      expect(kept).toHaveLength(1); // package.json
+      expect(removed).toHaveLength(1); // src
+      expect(await fileSystem.exists(['package.json'])).toBe(true);
+      expect(await fileSystem.exists(['src', 'a', 'b', 'c', 'd', 'main.js'])).toBe(false);
+    });
+  });
 });
 
 // Helpers

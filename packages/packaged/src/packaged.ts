@@ -68,7 +68,7 @@ async function traverseAndRemoveNonPublishedFiles(
       out.kept.push(itemPath);
       awaitedTasks.push(traverseAndRemoveNonPublishedFiles(itemPath, out, opts));
     } else if (opts.publishedFiles.has(itemPath)) {
-        out.kept.push(itemPath);
+      out.kept.push(itemPath);
     } else {
       out.removed.push(itemPath);
       if (!opts.dryRun) {
@@ -91,7 +91,9 @@ export async function removeNonPublishedFiles(
 
   const out: { kept: string[]; removed: string[] } = { kept: [], removed: [] };
   const normalizedPackageRoot = path.normalize(packageRoot);
-  const normalizedPublishedFiles = publishedFiles.map((filename) => path.normalize(path.join(normalizedPackageRoot, filename)));
+  const normalizedPublishedFiles = publishedFiles.map((filename) =>
+    path.normalize(path.join(normalizedPackageRoot, filename)),
+  );
   const normalizedPublishedFilesSet = new Set(normalizedPublishedFiles);
   const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
   const traverseOpts = {
