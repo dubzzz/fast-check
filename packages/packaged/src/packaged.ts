@@ -62,16 +62,15 @@ async function traverseAndRemoveNonPublishedFiles(
   const content = await fs.readdir(currentPath);
   for (const itemName of content) {
     const itemPath = path.join(currentPath, itemName);
-    const normalizedItemPath = path.normalize(itemPath);
     if (itemPath === opts.rootNodeModulesPath) {
       out.kept.push(normalizedItemPath);
-    } else if (opts.publishedDirectories.has(normalizedItemPath)) {
-      out.kept.push(normalizedItemPath);
+    } else if (opts.publishedDirectories.has(itemPath)) {
+      out.kept.push(itemPath);
       awaitedTasks.push(traverseAndRemoveNonPublishedFiles(itemPath, out, opts));
-    } else if (opts.publishedFiles.has(normalizedItemPath)) {
-        out.kept.push(normalizedItemPath);
+    } else if (opts.publishedFiles.has(itemPath)) {
+        out.kept.push(itemPath);
     } else {
-      out.removed.push(normalizedItemPath);
+      out.removed.push(itemPath);
       if (!opts.dryRun) {
         awaitedTasks.push(fs.rm(itemPath, { recursive: true }));
       }
@@ -91,15 +90,16 @@ export async function removeNonPublishedFiles(
   const publishedFiles = await computePublishedFiles(packageRoot);
 
   const out: { kept: string[]; removed: string[] } = { kept: [], removed: [] };
-  const normalizedPublishedFiles = publishedFiles.map((filename) => path.normalize(path.join(packageRoot, filename)));
+  const normalizedPackageRoot = path.normalize(packageRoot);
+  const normalizedPublishedFiles = publishedFiles.map((filename) => path.normalize(path.join(normalizedPackageRoot, filename)));
   const normalizedPublishedFilesSet = new Set(normalizedPublishedFiles);
   const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
   const traverseOpts = {
-    rootNodeModulesPath: opts.keepNodeModules ? path.join(packageRoot, 'node_modules') : undefined,
+    rootNodeModulesPath: opts.keepNodeModules ? path.join(normalizedPackageRoot, 'node_modules') : undefined,
     dryRun: !!opts.dryRun,
     publishedDirectories: normalizedPublishedDirectoriesSet,
     publishedFiles: normalizedPublishedFilesSet,
   };
-  await traverseAndRemoveNonPublishedFiles(packageRoot, out, traverseOpts);
+  await traverseAndRemoveNonPublishedFiles(normalizePackageRoot, out, traverseOpts);
   return out;
 }
