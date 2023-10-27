@@ -91,9 +91,7 @@ export async function removeNonPublishedFiles(
 
   const out: { kept: string[]; removed: string[] } = { kept: [], removed: [] };
   const normalizedPackageRoot = path.normalize(packageRoot);
-  const normalizedPublishedFiles = publishedFiles.map((filename) =>
-    path.normalize(path.join(normalizedPackageRoot, filename)),
-  );
+  const normalizedPublishedFiles = publishedFiles.map((filename) => path.join(normalizedPackageRoot, filename));
   const normalizedPublishedFilesSet = new Set(normalizedPublishedFiles);
   const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
   const traverseOpts = {
