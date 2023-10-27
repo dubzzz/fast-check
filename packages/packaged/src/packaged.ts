@@ -100,6 +100,6 @@ export async function removeNonPublishedFiles(
     publishedDirectories: normalizedPublishedDirectoriesSet,
     publishedFiles: normalizedPublishedFilesSet,
   };
-  await traverseAndRemoveNonPublishedFiles(normalizePackageRoot, out, traverseOpts);
+  await traverseAndRemoveNonPublishedFiles(normalizedPackageRoot, out, traverseOpts);
   return out;
 }
