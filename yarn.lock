@@ -3454,8 +3454,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^7.0.0":
-  version: 7.2.0
-  resolution: "@npmcli/arborist@npm:7.2.0"
+  version: 7.2.1
+  resolution: "@npmcli/arborist@npm:7.2.1"
   dependencies:
     "@isaacs/string-locale-compare": ^1.1.0
     "@npmcli/fs": ^3.1.0
@@ -3466,7 +3466,7 @@ __metadata:
     "@npmcli/node-gyp": ^3.0.0
     "@npmcli/package-json": ^5.0.0
     "@npmcli/query": ^3.0.1
-    "@npmcli/run-script": ^7.0.1
+    "@npmcli/run-script": ^7.0.2
     bin-links: ^4.0.1
     cacache: ^18.0.0
     common-ancestor-path: ^1.0.1
@@ -3492,7 +3492,7 @@ __metadata:
     walk-up-path: ^3.0.1
   bin:
     arborist: bin/index.js
-  checksum: b2ff7e438a2a1959a72a5b43685e27cf9bd4cbf4080053b5836036148e1df7b89c84e0ed842c62bb5228d7c48aec267961274b089309a825087c6b4ce7572a47
+  checksum: ff92906abfcc5160a5b8b97cf4f22540a9dc4701cd3d715bb2871695e3beecc27711af373449811e351e5c954dd9146144317249a1424b5e50f7d48b6c64e2d5
   languageName: node
   linkType: hard
 
@@ -3604,16 +3604,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/run-script@npm:^7.0.0, @npmcli/run-script@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@npmcli/run-script@npm:7.0.1"
+"@npmcli/run-script@npm:^7.0.0, @npmcli/run-script@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "@npmcli/run-script@npm:7.0.2"
   dependencies:
     "@npmcli/node-gyp": ^3.0.0
     "@npmcli/promise-spawn": ^7.0.0
-    node-gyp: ^9.0.0
+    node-gyp: ^10.0.0
     read-package-json-fast: ^3.0.0
     which: ^4.0.0
-  checksum: 1713dda8bfe8e6ed0c82ca1f061d4deea5e87f4de5595e109d12d3fc1a0a9ada71d42ee5fc436d72c59d6ab3503ef8178a84a425edd355e4cc9c839d095554b8
+  checksum: 15bf62b7bbe2dd5f619c445dc32f0f5af2be512dbb09d40b2dabbf9c4fa00c2c3e653834352d3c5e28a9df93800165d8b4236af6ffe896efd075b9685dcc766d
   languageName: node
   linkType: hard
 
@@ -12683,7 +12683,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^9.0.0, node-gyp@npm:latest":
+"node-gyp@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "node-gyp@npm:10.0.0"
+  dependencies:
+    env-paths: ^2.2.0
+    exponential-backoff: ^3.1.1
+    glob: ^10.3.10
+    graceful-fs: ^4.2.6
+    make-fetch-happen: ^13.0.0
+    nopt: ^7.0.0
+    proc-log: ^3.0.0
+    semver: ^7.3.5
+    tar: ^6.1.2
+    which: ^4.0.0
+  bin:
+    node-gyp: bin/node-gyp.js
+  checksum: 65fa5d9f8ef03fa22c5f2d34da23435a63d3743400ca941a4394eb943cf340796456697a7797af1451606dbbeecb663be9328995dadc0b99e58dd583dc3a7a0f
+  languageName: node
+  linkType: hard
+
+"node-gyp@npm:latest":
   version: 9.4.0
   resolution: "node-gyp@npm:9.4.0"
   dependencies:
