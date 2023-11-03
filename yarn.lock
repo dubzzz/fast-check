@@ -2719,7 +2719,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
-    "@types/node": ^20.8.9
+    "@types/node": ^20.8.10
     ava: ^5.3.1
     esm: ^3.2.25
     fast-check: "workspace:*"
@@ -2778,7 +2778,7 @@ __metadata:
     "@jest/expect": ^29.7.0
     "@jest/globals": ^29.7.0
     "@types/jest": ^29.5.6
-    "@types/node": ^20.8.9
+    "@types/node": ^20.8.10
     babel-jest: ^29.7.0
     fast-check: "workspace:*"
     jest: ^29.7.0
@@ -2840,7 +2840,7 @@ __metadata:
     "@babel/preset-env": ^7.23.2
     "@babel/preset-typescript": ^7.23.2
     "@types/jest": ^29.5.6
-    "@types/node": ^20.8.9
+    "@types/node": ^20.8.10
     babel-jest: ^29.7.0
     jest: ^29.7.0
     jest-ts-webcompat-resolver: ^1.0.0
@@ -2875,7 +2875,7 @@ __metadata:
     "@babel/preset-env": ^7.23.2
     "@babel/preset-typescript": ^7.23.2
     "@types/jest": ^29.5.6
-    "@types/node": ^20.8.9
+    "@types/node": ^20.8.10
     babel-jest: ^29.7.0
     fast-check: ^3.4.0
     jest: ^29.7.0
@@ -4548,12 +4548,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.8.9":
-  version: 20.8.9
-  resolution: "@types/node@npm:20.8.9"
+"@types/node@npm:*, @types/node@npm:^20.8.10":
+  version: 20.8.10
+  resolution: "@types/node@npm:20.8.10"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 0c05f3502a9507ff27e91dd6fd574fa6f391b3fafedcfe8e0c8d33351fb22d02c0121f854e5b6b3ecb9a8a468407ddf6e7ac0029fb236d4c7e1361ffc758a01f
+  checksum: 7c61190e43e8074a1b571e52ff14c880bc67a0447f2fe5ed0e1a023eb8a23d5f815658edb98890f7578afe0f090433c4a635c7c87311762544e20dd78723e515
   languageName: node
   linkType: hard
 
@@ -8706,7 +8706,7 @@ __metadata:
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": ^7.38.0
     "@types/jest": ^29.5.6
-    "@types/node": ^20.8.9
+    "@types/node": ^20.8.10
     babel-jest: ^29.7.0
     cross-env: ^7.0.3
     glob: ^10.3.10
@@ -17666,7 +17666,7 @@ __metadata:
     "@jest/globals": ^29.7.0
     "@mdx-js/react": ^1.6.22
     "@tsconfig/docusaurus": ^2.0.2
-    "@types/node": ^20.8.9
+    "@types/node": ^20.8.10
     clsx: ^2.0.0
     fast-check: "workspace:*"
     jest: ^29.7.0
