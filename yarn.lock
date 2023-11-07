@@ -2821,7 +2821,7 @@ __metadata:
     "@babel/preset-typescript": ^7.23.2
     "@npmcli/arborist": ^7.0.0
     "@types/jest": ^29.5.8
-    "@types/npm-packlist": ^7.0.2
+    "@types/npm-packlist": ^7.0.3
     "@types/npmcli__arborist": ^5.6.4
     babel-jest: ^29.7.0
     jest: ^29.7.0
@@ -4571,13 +4571,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/npm-packlist@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@types/npm-packlist@npm:7.0.2"
+"@types/npm-packlist@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "@types/npm-packlist@npm:7.0.3"
   dependencies:
     "@types/ignore-walk": "*"
     "@types/npmcli__arborist": "*"
-  checksum: 0d259d061fe4a166ed3bda19bff75c71e0b02f192bc335a7f50c4e4daabac7d970a15304bd8ad7e9632fdc130d0c35fb532ff291ba66a637eb5e07452ab63ce7
+  checksum: 30af21432b2c881d3dbdfa43c9a9108e96db2ac2d116c662c9847ee75b03968aede7b6b1aa3acf0de280eac0a3850cfedb6764606fdfb860aa2dc11359e711c8
   languageName: node
   linkType: hard
 
