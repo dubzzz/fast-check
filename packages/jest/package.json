@@ -78,7 +78,7 @@
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
-    "@types/jest": "^29.5.7",
+    "@types/jest": "^29.5.8",
     "@types/node": "^20.8.10",
     "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",
