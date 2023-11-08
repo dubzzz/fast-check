@@ -2822,7 +2822,7 @@ __metadata:
     "@npmcli/arborist": ^7.0.0
     "@types/jest": ^29.5.8
     "@types/npm-packlist": ^7.0.3
-    "@types/npmcli__arborist": ^5.6.4
+    "@types/npmcli__arborist": ^5.6.5
     babel-jest: ^29.7.0
     jest: ^29.7.0
     npm-packlist: ^8.0.0
@@ -4594,15 +4594,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/npmcli__arborist@npm:*, @types/npmcli__arborist@npm:^5.6.4":
-  version: 5.6.4
-  resolution: "@types/npmcli__arborist@npm:5.6.4"
+"@types/npmcli__arborist@npm:*, @types/npmcli__arborist@npm:^5.6.5":
+  version: 5.6.5
+  resolution: "@types/npmcli__arborist@npm:5.6.5"
   dependencies:
     "@npm/types": "*"
     "@types/cacache": "*"
     "@types/npmcli__package-json": "*"
     "@types/pacote": "*"
-  checksum: e4dfd8294154ce4c2110a093fb9a47fc9257566d6d6cf565b1136e7c6d2aee1ec3e2753c70ab721fe31cb46caa46b4d9da44004ab4d0317c381dc80943aa2dd9
+  checksum: 54c5b221caf8046e9c3a3526e9dee68f95047f734b4d377cdba22f8117942a519614071b96f1624e0c6d330858192aa7f85f508822f1254d5ef5a85e4560903c
   languageName: node
   linkType: hard
 
