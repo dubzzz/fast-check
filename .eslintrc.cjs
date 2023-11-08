@@ -29,4 +29,7 @@ module.exports = {
       },
     },
   ],
+  parserOptions: {
+    project: 'tsconfig.common.json',
+  },
 };
