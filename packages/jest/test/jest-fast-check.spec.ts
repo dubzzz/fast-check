@@ -4,8 +4,8 @@ import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 const execFile = promisify(_execFile);
 
-import _fc from 'fast-check';
-import { test as _test, it as _it } from '@fast-check/jest';
+import type _fc from 'fast-check';
+import type { test as _test, it as _it } from '@fast-check/jest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 
