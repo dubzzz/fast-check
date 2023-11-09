@@ -1,8 +1,8 @@
-import { type MessagePort } from 'node:worker_threads';
-import {
-  type MainThreadToWorkerMessage,
-  type PropertyPredicate,
-  type WorkerToMainThreadMessage,
+import type { MessagePort } from 'node:worker_threads';
+import type {
+  MainThreadToWorkerMessage,
+  PropertyPredicate,
+  WorkerToMainThreadMessage,
 } from '../SharedTypes.js';
 
 /**

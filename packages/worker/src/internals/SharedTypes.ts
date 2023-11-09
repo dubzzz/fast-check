@@ -1,5 +1,5 @@
 import type { Arbitrary, IAsyncPropertyWithHooks } from 'fast-check';
-import { type PoolToWorkerMessage, type WorkerToPoolMessage } from './worker-pool/IWorkerPool.js';
+import type { PoolToWorkerMessage, WorkerToPoolMessage } from './worker-pool/IWorkerPool.js';
 
 export type PropertyArbitraries<Ts extends unknown[]> = {
   [K in keyof Ts]: Arbitrary<Ts[K]>;

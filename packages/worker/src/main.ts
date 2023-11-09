@@ -4,7 +4,7 @@ import { assert as fcAssert, type IAsyncProperty, type IProperty, type Parameter
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
-import { type PropertyArbitraries, type PropertyPredicate, type WorkerProperty } from './internals/SharedTypes.js';
+import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 
 let lastPredicateId = 0;

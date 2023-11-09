@@ -1,5 +1,5 @@
 import { BasicPool } from './BasicPool.js';
-import { IWorkerPool, PooledWorker } from './IWorkerPool.js';
+import type { IWorkerPool, PooledWorker } from './IWorkerPool.js';
 
 const poolPerFile = new Map<string, BasicPool<unknown, unknown>>();
 const pendingTerminationPerFile = new Map<string, ReturnType<typeof setTimeout>>();
