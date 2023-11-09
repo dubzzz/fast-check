@@ -1,4 +1,4 @@
-import { PoolToWorkerMessage, WorkerToPoolMessage } from '../../../src/internals/worker-pool/IWorkerPool.js';
+import type { PoolToWorkerMessage, WorkerToPoolMessage } from '../../../src/internals/worker-pool/IWorkerPool.js';
 import { BasicPool } from '../../../src/internals/worker-pool/BasicPool.js';
 // @ts-expect-error - It should normally be "* as WorkerThreadsMock" but it does not work anymore since we switched to babel (instead of ts-jest)
 import WorkerThreadsMock from 'node:worker_threads';
