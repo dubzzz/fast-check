@@ -1,7 +1,7 @@
 import { captureAllGlobals } from '../../src/internals/CaptureAllGlobals.js';
-import { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
+import type { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
 import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
-import { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
+import type { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
 describe('captureAllGlobals', () => {
   const expectedGlobals = [
