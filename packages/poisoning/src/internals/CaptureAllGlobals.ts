@@ -1,7 +1,7 @@
 import { PoisoningFreeArray, MapSymbol, SortSymbol, ShiftSymbol, PushSymbol } from './PoisoningFreeArray.js';
 import { GetSymbol, HasSymbol, SetSymbol, PoisoningFreeMap } from './PoisoningFreeMap.js';
 import { AddSymbol, HasSymbol as SetHasSymbol, PoisoningFreeSet } from './PoisoningFreeSet.js';
-import { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
+import type { AllGlobals, GlobalDetails } from './types/AllGlobals.js';
 
 const SString = String;
 const safeObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;

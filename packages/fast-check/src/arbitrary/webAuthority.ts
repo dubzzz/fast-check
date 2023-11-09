@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
 import { constant } from './constant';
 import { domain } from './domain';
@@ -10,7 +10,7 @@ import { oneof } from './oneof';
 import { option } from './option';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
-import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /** @internal */
 function hostUserInfo(size: SizeForArbitrary): Arbitrary<string> {

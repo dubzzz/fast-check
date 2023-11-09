@@ -1,6 +1,6 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
-import { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
+import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
 
 /**
  * Constraints to be applied on {@link record}

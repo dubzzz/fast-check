@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeJoin, safeSplit } from '../utils/globals';
 import { oneof } from './oneof';
 import { tuple } from './tuple';

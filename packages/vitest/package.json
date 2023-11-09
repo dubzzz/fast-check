@@ -50,9 +50,9 @@
     "vitest": ">=0.28.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.2",
-    "@babel/preset-env": "^7.23.2",
-    "@babel/preset-typescript": "^7.23.2",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@types/jest": "^29.5.8",
     "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",

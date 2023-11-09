@@ -1,5 +1,5 @@
 import { integer } from './integer';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers';
 
 const safeNumberIsNaN = Number.isNaN;

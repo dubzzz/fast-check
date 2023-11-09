@@ -1,8 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { jsonValue } from './jsonValue';
-import { JsonSharedConstraints } from './_internals/helpers/JsonConstraintsBuilder';
+import type { JsonSharedConstraints } from './_internals/helpers/JsonConstraintsBuilder';
 
-export { JsonSharedConstraints };
+export type { JsonSharedConstraints };
 
 /**
  * For any JSON strings

@@ -3,7 +3,7 @@ import { stringOf } from '../../../src/arbitrary/stringOf';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceSameValueGivenSameSeed,

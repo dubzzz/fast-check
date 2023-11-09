@@ -1,6 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Stream } from '../../stream/Stream';
 import { safeMap, safePush, safeSlice, safeSort, safeSplice } from '../../utils/globals';

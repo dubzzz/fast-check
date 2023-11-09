@@ -2,7 +2,7 @@ import { SchedulerArbitrary } from '../../../../src/arbitrary/_internals/Schedul
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 import * as SchedulerImplemMock from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
-import { ScheduledTask } from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import type { ScheduledTask } from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 
 function beforeEachHook() {
   jest.resetModules();

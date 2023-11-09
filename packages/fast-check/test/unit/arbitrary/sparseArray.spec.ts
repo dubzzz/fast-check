@@ -1,6 +1,7 @@
 /* eslint-disable no-sparse-arrays */
 import * as fc from 'fast-check';
-import { sparseArray, SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
+import type { SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
+import { sparseArray } from '../../../src/arbitrary/sparseArray';
 
 import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 

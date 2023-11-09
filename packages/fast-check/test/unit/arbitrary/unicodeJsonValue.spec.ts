@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
-import { unicodeJsonValue, JsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
+import type { JsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
+import { unicodeJsonValue } from '../../../src/arbitrary/unicodeJsonValue';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,

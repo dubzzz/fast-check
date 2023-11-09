@@ -1,5 +1,5 @@
 import { cloneMethod } from '../../symbols';
-import { CommandWrapper } from './CommandWrapper';
+import type { CommandWrapper } from './CommandWrapper';
 
 /**
  * Iterable datastructure accepted as input for asyncModelRun and modelRun

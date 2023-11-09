@@ -1,0 +1,5 @@
+releases:
+  "@fast-check/expect-type": minor
+
+declined:
+  - fast-check

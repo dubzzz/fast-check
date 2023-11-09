@@ -1,8 +1,8 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { Random } from '../../../random/generator/Random';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Random } from '../../../random/generator/Random';
 import { NoopSlicedGenerator } from '../implementations/NoopSlicedGenerator';
 import { SlicedBasedGenerator } from '../implementations/SlicedBasedGenerator';
-import { SlicedGenerator } from '../interfaces/SlicedGenerator';
+import type { SlicedGenerator } from '../interfaces/SlicedGenerator';
 
 /**
  * Build a {@link SlicedGenerator}

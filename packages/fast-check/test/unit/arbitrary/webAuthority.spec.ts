@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { webAuthority, WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority';
+import type { WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority';
+import { webAuthority } from '../../../src/arbitrary/webAuthority';
 import { URL } from 'url';
 
 import {

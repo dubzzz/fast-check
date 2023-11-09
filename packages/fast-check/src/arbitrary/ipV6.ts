@@ -1,5 +1,5 @@
 import { array } from './array';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { oneof } from './oneof';
 import { hexaString } from './hexaString';
 import { tuple } from './tuple';

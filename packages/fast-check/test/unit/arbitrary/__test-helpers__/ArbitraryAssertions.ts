@@ -2,7 +2,7 @@ import * as prand from 'pure-rand';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Random } from '../../../../src/random/generator/Random';
 import { withConfiguredGlobal } from './GlobalSettingsHelpers';

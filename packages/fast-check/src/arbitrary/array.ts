@@ -1,11 +1,11 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import {
   MaxLengthUpperBound,
-  SizeForArbitrary,
   maxGeneratedLengthFromSizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength';
-import { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /**
  * Constraints to be applied on {@link array}

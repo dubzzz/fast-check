@@ -1,9 +1,11 @@
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
-import { depthBiasFromSizeForArbitrary, DepthSize } from './helpers/MaxLengthFromMinLength';
+import type { DepthContext, DepthIdentifier } from './helpers/DepthContext';
+import { getDepthContextFor } from './helpers/DepthContext';
+import type { DepthSize } from './helpers/MaxLengthFromMinLength';
+import { depthBiasFromSizeForArbitrary } from './helpers/MaxLengthFromMinLength';
 import { safePush } from '../../utils/globals';
 
 const safePositiveInfinity = Number.POSITIVE_INFINITY;

@@ -6,10 +6,12 @@ import {
 import { option } from './option';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter';
-import { resolveSize, relativeSizeToSize, Size, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { adapter, AdapterOutput } from './_internals/AdapterArbitrary';
+import type { Size, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { resolveSize, relativeSizeToSize } from './_internals/helpers/MaxLengthFromMinLength';
+import type { AdapterOutput } from './_internals/AdapterArbitrary';
+import { adapter } from './_internals/AdapterArbitrary';
 import { safeJoin, safeSlice, safeSplit, safeSubstring } from '../utils/globals';
 
 /** @internal */

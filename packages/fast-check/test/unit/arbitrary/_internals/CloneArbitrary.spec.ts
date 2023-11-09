@@ -3,7 +3,7 @@ import { CloneArbitrary } from '../../../../src/arbitrary/_internals/CloneArbitr
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
-import { Random } from '../../../../src/random/generator/Random';
+import type { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
 import {
   assertProduceValuesShrinkableWithoutContext,

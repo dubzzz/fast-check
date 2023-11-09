@@ -1,8 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { AsyncCommand } from '../check/model/command/AsyncCommand';
-import { Command } from '../check/model/command/Command';
-import { ICommand } from '../check/model/command/ICommand';
-import { CommandsContraints } from '../check/model/commands/CommandsContraints';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { AsyncCommand } from '../check/model/command/AsyncCommand';
+import type { Command } from '../check/model/command/Command';
+import type { ICommand } from '../check/model/command/ICommand';
+import type { CommandsContraints } from '../check/model/commands/CommandsContraints';
 import { CommandsArbitrary } from './_internals/CommandsArbitrary';
 import {
   maxGeneratedLengthFromSizeForArbitrary,

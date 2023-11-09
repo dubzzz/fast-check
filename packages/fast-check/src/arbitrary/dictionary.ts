@@ -1,7 +1,7 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { tuple } from './tuple';
 import { uniqueArray } from './uniqueArray';
-import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject';
 import { constant } from './constant';
 import { boolean } from './boolean';

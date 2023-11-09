@@ -1,9 +1,9 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
-import { DepthSize } from './MaxLengthFromMinLength';
-import { ObjectConstraints } from './QualifiedObjectConstraints';
+import type { DepthSize } from './MaxLengthFromMinLength';
+import type { ObjectConstraints } from './QualifiedObjectConstraints';
 
 /**
  * Shared constraints for:

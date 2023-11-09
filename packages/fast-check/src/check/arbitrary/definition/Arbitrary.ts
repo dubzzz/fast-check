@@ -1,4 +1,4 @@
-import { Random } from '../../../random/generator/Random';
+import type { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { Value } from './Value';

@@ -1,6 +1,7 @@
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols';
+import type { WithCloneMethod } from '../../check/symbols';
+import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';
