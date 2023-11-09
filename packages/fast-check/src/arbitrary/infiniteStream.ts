@@ -1,5 +1,5 @@
-import { Stream } from '../stream/Stream';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Stream } from '../stream/Stream';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { StreamArbitrary } from './_internals/StreamArbitrary';
 
 /**

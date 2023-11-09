@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 type ArbitraryBuilder = () => Arbitrary<unknown>;
 type MemoedEntry<T = unknown> = { args: unknown[]; value: Arbitrary<T> };

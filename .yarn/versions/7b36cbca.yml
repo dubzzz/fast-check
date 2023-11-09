@@ -1,0 +1,3 @@
+releases:
+  "@fast-check/jest": patch
+  "@fast-check/worker": minor

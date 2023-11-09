@@ -1,5 +1,5 @@
 import { stringify } from '../../../utils/stringify';
-import { RegexToken } from './TokenizeRegex';
+import type { RegexToken } from './TokenizeRegex';
 
 function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);

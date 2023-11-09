@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { tuple } from './tuple';
 import { buildPaddedNumberArbitrary } from './_internals/builders/PaddedNumberArbitraryBuilder';
 import { paddedEightsToUuidMapper, paddedEightsToUuidUnmapper } from './_internals/mappers/PaddedEightsToUuid';

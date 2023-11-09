@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 import { stringify } from '../../../utils/stringify';
 import { array } from '../../array';
@@ -17,13 +17,14 @@ import { uint8Array } from '../../uint8Array';
 import { uint8ClampedArray } from '../../uint8ClampedArray';
 import { sparseArray } from '../../sparseArray';
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from '../mappers/KeyValuePairsToObject';
-import { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
+import type { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
 import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
 import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
 import { letrec } from '../../letrec';
-import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 import { uniqueArray } from '../../uniqueArray';
-import { createDepthIdentifier, DepthIdentifier } from '../helpers/DepthContext';
+import type { DepthIdentifier } from '../helpers/DepthContext';
+import { createDepthIdentifier } from '../helpers/DepthContext';
 import { constant } from '../../constant';
 import { boolean } from '../../boolean';
 

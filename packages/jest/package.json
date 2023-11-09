@@ -59,7 +59,7 @@
     "fast-check": "^3.0.0"
   },
   "peerDependencies": {
-    "@fast-check/worker": "~0.0.7",
+    "@fast-check/worker": "~0.0.7 || ~0.1.0",
     "@jest/expect": ">=28.0.0",
     "@jest/globals": ">=25.5.2"
   },
@@ -72,14 +72,14 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.23.2",
-    "@babel/preset-env": "^7.23.2",
-    "@babel/preset-typescript": "^7.23.2",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
-    "@types/jest": "^29.5.6",
-    "@types/node": "^20.8.9",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
     "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",

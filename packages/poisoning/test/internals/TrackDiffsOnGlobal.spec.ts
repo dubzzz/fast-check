@@ -1,7 +1,7 @@
 import { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
 import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 import { trackDiffsOnGlobals } from '../../src/internals/TrackDiffsOnGlobal.js';
-import { AllGlobals, GlobalDetails } from '../../src/internals/types/AllGlobals.js';
+import type { AllGlobals, GlobalDetails } from '../../src/internals/types/AllGlobals.js';
 
 describe('trackDiffsOnGlobals', () => {
   it('should detect added entries', () => {

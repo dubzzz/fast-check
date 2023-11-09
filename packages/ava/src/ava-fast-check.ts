@@ -1,4 +1,5 @@
-import test, { AfterFn, BeforeFn, Implementation, ImplementationFn, TestFn, TryResult } from 'ava';
+import type { AfterFn, BeforeFn, Implementation, ImplementationFn, TestFn, TryResult } from 'ava';
+import test from 'ava';
 import * as fc from 'fast-check';
 
 export { fc, test };

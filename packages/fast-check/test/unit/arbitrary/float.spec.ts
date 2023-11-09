@@ -1,6 +1,7 @@
 import * as fc from 'fast-check';
 
-import { float, FloatConstraints } from '../../../src/arbitrary/float';
+import type { FloatConstraints } from '../../../src/arbitrary/float';
+import { float } from '../../../src/arbitrary/float';
 import {
   floatConstraints,
   float32raw,

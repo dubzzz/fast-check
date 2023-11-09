@@ -1,5 +1,5 @@
-import { PoisoningFreeMap } from '../PoisoningFreeMap.js';
-import { PoisoningFreeSet } from '../PoisoningFreeSet.js';
+import type { PoisoningFreeMap } from '../PoisoningFreeMap.js';
+import type { PoisoningFreeSet } from '../PoisoningFreeSet.js';
 
 export type GlobalDetails = {
   /**

@@ -1,3 +1,15 @@
+# 0.2.0
+
+_Faster execution with bulk removals_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.1.1...packaged%2Fv0.2.0)]
+
+## Features
+
+- ([PR#4358](https://github.com/dubzzz/fast-check/pull/4358)) Performance: No intermediate tarball
+- ([PR#4388](https://github.com/dubzzz/fast-check/pull/4388)) Performance: Bulk delete directory and content
+
+---
+
 # 0.1.1
 
 _Faster directory traversal_

@@ -1,10 +1,11 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array, ArrayConstraintsInternal } from './array';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { ArrayConstraintsInternal } from './array';
+import { array } from './array';
 import { hexa } from './hexa';
-import { StringSharedConstraints } from './_shared/StringSharedConstraints';
+import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
-export { StringSharedConstraints } from './_shared/StringSharedConstraints';
+export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 const safeObjectAssign = Object.assign;
 

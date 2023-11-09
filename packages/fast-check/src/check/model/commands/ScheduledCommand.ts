@@ -1,6 +1,6 @@
-import { ICommand } from '../command/ICommand';
-import { AsyncCommand } from '../command/AsyncCommand';
-import { Scheduler } from '../../../arbitrary/scheduler';
+import type { ICommand } from '../command/ICommand';
+import type { AsyncCommand } from '../command/AsyncCommand';
+import type { Scheduler } from '../../../arbitrary/scheduler';
 
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/ban-types

@@ -2,7 +2,7 @@ import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitra
 
 import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
-import { Random } from '../../../../../src/random/generator/Random';
+import type { Random } from '../../../../../src/random/generator/Random';
 import { Stream } from '../../../../../src/stream/Stream';
 
 import * as stubRng from '../../../stubs/generators';

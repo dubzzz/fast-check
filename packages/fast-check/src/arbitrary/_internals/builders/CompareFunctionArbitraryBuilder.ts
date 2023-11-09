@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { escapeForMultilineComments } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
 import { hash } from '../../../utils/hash';

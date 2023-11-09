@@ -1,5 +1,5 @@
-import { Size } from '../../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import { Parameters } from './Parameters';
+import type { Size } from '../../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import type { Parameters } from './Parameters';
 
 /** @internal */
 let globalParameters: GlobalParameters = {};

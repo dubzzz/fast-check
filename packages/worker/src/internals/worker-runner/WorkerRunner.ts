@@ -1,9 +1,5 @@
-import { type MessagePort } from 'node:worker_threads';
-import {
-  type MainThreadToWorkerMessage,
-  type PropertyPredicate,
-  type WorkerToMainThreadMessage,
-} from '../SharedTypes.js';
+import type { MessagePort } from 'node:worker_threads';
+import type { MainThreadToWorkerMessage, PropertyPredicate, WorkerToMainThreadMessage } from '../SharedTypes.js';
 
 /**
  * Setup a worker listening to parentPort and able to run a single time for a given predicate

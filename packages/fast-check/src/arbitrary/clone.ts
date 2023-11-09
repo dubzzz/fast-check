@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { CloneArbitrary } from './_internals/CloneArbitrary';
 
 /**

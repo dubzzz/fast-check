@@ -1,12 +1,13 @@
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
 import { integer } from '../integer';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { CustomSetBuilder } from './interfaces/CustomSet';
-import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
+import type { CustomSetBuilder } from './interfaces/CustomSet';
+import type { DepthContext, DepthIdentifier } from './helpers/DepthContext';
+import { getDepthContextFor } from './helpers/DepthContext';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';
 

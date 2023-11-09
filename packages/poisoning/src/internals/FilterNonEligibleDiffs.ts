@@ -1,4 +1,4 @@
-import { GlobalDetails } from './types/AllGlobals';
+import type { GlobalDetails } from './types/AllGlobals';
 
 /** Check whether or not a global has to be ignored for diff tracking */
 export function shouldIgnoreGlobal(

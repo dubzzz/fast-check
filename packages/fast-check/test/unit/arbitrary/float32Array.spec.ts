@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { float32Array, Float32ArrayConstraints } from '../../../src/arbitrary/float32Array';
+import type { Float32ArrayConstraints } from '../../../src/arbitrary/float32Array';
+import { float32Array } from '../../../src/arbitrary/float32Array';
 
 import {
   assertProduceCorrectValues,

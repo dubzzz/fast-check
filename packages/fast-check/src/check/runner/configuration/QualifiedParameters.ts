@@ -1,8 +1,8 @@
 import prand, { unsafeSkipN } from 'pure-rand';
-import { Parameters } from './Parameters';
+import type { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
-import { RunDetails } from '../reporter/RunDetails';
-import { RandomGenerator } from 'pure-rand';
+import type { RunDetails } from '../reporter/RunDetails';
+import type { RandomGenerator } from 'pure-rand';
 
 const safeDateNow = Date.now;
 const safeMathMin = Math.min;

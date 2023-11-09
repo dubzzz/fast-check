@@ -1,9 +1,9 @@
-import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
+import type { Random } from '../../random/generator/Random';
+import type { Stream } from '../../stream/Stream';
 import { Error } from '../../utils/globals';
-import { Value } from '../arbitrary/definition/Value';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { PropertyFailure, IRawProperty } from './IRawProperty';
+import type { Value } from '../arbitrary/definition/Value';
+import type { PreconditionFailure } from '../precondition/PreconditionFailure';
+import type { PropertyFailure, IRawProperty } from './IRawProperty';
 
 /** @internal */
 const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) => {
