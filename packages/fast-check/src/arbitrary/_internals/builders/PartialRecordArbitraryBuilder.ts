@@ -1,10 +1,11 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { safeIndexOf, safePush } from '../../../utils/globals';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { option } from '../../option';
 import { tuple } from '../../tuple';
-import { EnumerableKeyOf, extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor';
+import type { EnumerableKeyOf} from '../helpers/EnumerableKeysExtractor';
+import { extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor';
 import {
   buildValuesAndSeparateKeysToObjectMapper,
   buildValuesAndSeparateKeysToObjectUnmapper,

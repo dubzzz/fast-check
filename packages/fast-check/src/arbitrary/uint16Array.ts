@@ -1,8 +1,9 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { Uint16Array } from '../utils/globals';
 import { integer } from './integer';
+import type {
+  IntArrayConstraints} from './_internals/builders/TypedIntArrayArbitraryBuilder';
 import {
-  IntArrayConstraints,
   typedIntArrayArbitraryArbitraryBuilder,
 } from './_internals/builders/TypedIntArrayArbitraryBuilder';
 
@@ -14,4 +15,4 @@ import {
 export function uint16Array(constraints: IntArrayConstraints = {}): Arbitrary<Uint16Array> {
   return typedIntArrayArbitraryArbitraryBuilder<Uint16Array, number>(constraints, 0, 65535, Uint16Array, integer);
 }
-export { IntArrayConstraints };
+export type { IntArrayConstraints };

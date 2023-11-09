@@ -1,8 +1,9 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { BigInt, BigUint64Array } from '../utils/globals';
 import { bigInt } from './bigInt';
+import type {
+  BigIntArrayConstraints} from './_internals/builders/TypedIntArrayArbitraryBuilder';
 import {
-  BigIntArrayConstraints,
   typedIntArrayArbitraryArbitraryBuilder,
 } from './_internals/builders/TypedIntArrayArbitraryBuilder';
 
@@ -20,4 +21,4 @@ export function bigUint64Array(constraints: BigIntArrayConstraints = {}): Arbitr
     bigInt,
   );
 }
-export { BigIntArrayConstraints };
+export type { BigIntArrayConstraints };

@@ -1,7 +1,7 @@
 import { escapeForTemplateString } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
-import { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
+import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
 
 const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
 

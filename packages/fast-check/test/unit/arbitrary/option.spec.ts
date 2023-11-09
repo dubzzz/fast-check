@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { option, OptionConstraints } from '../../../src/arbitrary/option';
+import type { OptionConstraints } from '../../../src/arbitrary/option';
+import { option } from '../../../src/arbitrary/option';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';

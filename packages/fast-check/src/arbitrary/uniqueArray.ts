@@ -1,17 +1,18 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type {
+  SizeForArbitrary} from './_internals/helpers/MaxLengthFromMinLength';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
-  MaxLengthUpperBound,
-  SizeForArbitrary,
+  MaxLengthUpperBound
 } from './_internals/helpers/MaxLengthFromMinLength';
-import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
+import type { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
-import { Value } from '../check/arbitrary/definition/Value';
+import type { Value } from '../check/arbitrary/definition/Value';
 import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 import { SameValueSet } from './_internals/helpers/SameValueSet';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
-import { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /** @internal */
 function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<Value<T>> {

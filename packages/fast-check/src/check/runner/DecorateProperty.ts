@@ -1,8 +1,8 @@
-import { IRawProperty } from '../property/IRawProperty';
+import type { IRawProperty } from '../property/IRawProperty';
 import { SkipAfterProperty } from '../property/SkipAfterProperty';
 import { TimeoutProperty } from '../property/TimeoutProperty';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
-import { QualifiedParameters } from './configuration/QualifiedParameters';
+import type { QualifiedParameters } from './configuration/QualifiedParameters';
 import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty';
 
 const safeDateNow = Date.now;

@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { FrequencyArbitrary, _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
+import type { _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
+import { FrequencyArbitrary } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';

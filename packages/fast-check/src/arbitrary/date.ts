@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeGetTime } from '../utils/globals';
 import { integer } from './integer';
 import {

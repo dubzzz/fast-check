@@ -1,10 +1,11 @@
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
+import type {
+  ArrayInt64} from './helpers/ArrayInt64';
 import {
   add64,
-  ArrayInt64,
   halve64,
   isEqual64,
   isStrictlyNegative64,

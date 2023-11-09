@@ -1,8 +1,8 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../check/arbitrary/definition/Value';
-import { Random } from '../../../random/generator/Random';
+import type { Random } from '../../../random/generator/Random';
 import { safePush } from '../../../utils/globals';
-import { SlicedGenerator } from '../interfaces/SlicedGenerator';
+import type { SlicedGenerator } from '../interfaces/SlicedGenerator';
 
 const safeMathMin = Math.min;
 const safeMathMax = Math.max;

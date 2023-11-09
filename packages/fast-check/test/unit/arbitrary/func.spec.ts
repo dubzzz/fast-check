@@ -4,7 +4,7 @@ import { func } from '../../../src/arbitrary/func';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceCorrectValues,

@@ -1,4 +1,5 @@
-import { Stream, stream } from '../../../stream/Stream';
+import type { Stream} from '../../../stream/Stream';
+import { stream } from '../../../stream/Stream';
 import { Value } from '../../../check/arbitrary/definition/Value';
 import { BigInt } from '../../../utils/globals';
 

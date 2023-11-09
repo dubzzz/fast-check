@@ -13,7 +13,7 @@ import {
 } from '../__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Random } from '../../../../src/random/generator/Random';
+import type { Random } from '../../../../src/random/generator/Random';
 
 describe('TupleArbitrary', () => {
   describe('generate', () => {

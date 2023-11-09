@@ -1,7 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { float, FloatConstraints } from './float';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { FloatConstraints } from './float';
+import { float } from './float';
 import { array } from './array';
-import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { Float32Array } from '../utils/globals';
 
 /**

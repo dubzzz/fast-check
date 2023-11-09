@@ -1,8 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { GeneratorArbitrary } from './_internals/GeneratorArbitrary';
-import { GeneratorValue } from './_internals/builders/GeneratorValueBuilder';
+import type { GeneratorValue } from './_internals/builders/GeneratorValueBuilder';
 
-export { GeneratorValue as GeneratorValue };
+export type { GeneratorValue as GeneratorValue };
 
 /**
  * Generate values within the test execution itself by leveraging the strength of `gen`

@@ -1,6 +1,7 @@
+import type {
+  ArrayInt64} from './_internals/helpers/ArrayInt64';
 import {
   add64,
-  ArrayInt64,
   isEqual64,
   isStrictlyPositive64,
   isStrictlySmaller64,
@@ -8,7 +9,7 @@ import {
   Unit64,
 } from './_internals/helpers/ArrayInt64';
 import { arrayInt64 } from './_internals/ArrayInt64Arbitrary';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers';
 
 const safeNumberIsNaN = Number.isNaN;

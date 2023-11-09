@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 
 import { anyArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/AnyArbitraryBuilder';
+import type {
+  ObjectConstraints} from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
 import {
-  toQualifiedObjectConstraints,
-  ObjectConstraints,
+  toQualifiedObjectConstraints
 } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
 
 import {

@@ -1,7 +1,7 @@
-import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { Value } from '../arbitrary/definition/Value';
-import { IRawProperty } from './IRawProperty';
+import type { Random } from '../../random/generator/Random';
+import type { Stream } from '../../stream/Stream';
+import type { Value } from '../arbitrary/definition/Value';
+import type { IRawProperty } from './IRawProperty';
 
 /** @internal */
 export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {

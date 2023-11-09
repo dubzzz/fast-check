@@ -1,5 +1,5 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { Size } from '../helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Size } from '../helpers/MaxLengthFromMinLength';
 import { webSegment } from '../../webSegment';
 import { array } from '../../array';
 import { segmentsToPathMapper, segmentsToPathUnmapper } from '../mappers/SegmentsToPath';

@@ -1,7 +1,7 @@
-import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { Value } from '../arbitrary/definition/Value';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
+import type { Random } from '../../random/generator/Random';
+import type { Stream } from '../../stream/Stream';
+import type { Value } from '../arbitrary/definition/Value';
+import type { PreconditionFailure } from '../precondition/PreconditionFailure';
 
 const safeMathLog = Math.log;
 

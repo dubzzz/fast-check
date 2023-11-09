@@ -1,6 +1,7 @@
+import type {
+  GlobalParameters} from '../../../../src/check/runner/configuration/GlobalParameters';
 import {
   configureGlobal,
-  GlobalParameters,
   readConfigureGlobal,
 } from '../../../../src/check/runner/configuration/GlobalParameters';
 

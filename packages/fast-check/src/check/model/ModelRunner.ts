@@ -1,7 +1,7 @@
-import { AsyncCommand } from './command/AsyncCommand';
-import { Command } from './command/Command';
-import { ICommand } from './command/ICommand';
-import { Scheduler } from '../../arbitrary/scheduler';
+import type { AsyncCommand } from './command/AsyncCommand';
+import type { Command } from './command/Command';
+import type { ICommand } from './command/ICommand';
+import type { Scheduler } from '../../arbitrary/scheduler';
 import { scheduleCommands } from './commands/ScheduledCommand';
 
 /**

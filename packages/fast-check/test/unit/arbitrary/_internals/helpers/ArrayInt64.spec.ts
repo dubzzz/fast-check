@@ -1,8 +1,9 @@
 import * as fc from 'fast-check';
 
+import type {
+  ArrayInt64} from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import {
   add64,
-  ArrayInt64,
   halve64,
   isEqual64,
   isStrictlySmaller64,

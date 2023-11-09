@@ -1,8 +1,8 @@
-import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { Value } from '../arbitrary/definition/Value';
+import type { Random } from '../../random/generator/Random';
+import type { Stream } from '../../stream/Stream';
+import type { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { IRawProperty } from './IRawProperty';
+import type { IRawProperty } from './IRawProperty';
 
 /** @internal */
 function interruptAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) {

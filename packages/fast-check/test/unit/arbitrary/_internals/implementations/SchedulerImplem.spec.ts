@@ -1,10 +1,11 @@
 import fc from 'fast-check';
-import {
+import type {
   ScheduledTask,
-  SchedulerImplem,
-  TaskSelector,
+  TaskSelector} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import {
+  SchedulerImplem
 } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
-import { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
+import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
 
 function beforeEachHook() {

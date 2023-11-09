@@ -2,7 +2,7 @@ import * as fc from 'fast-check';
 
 import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
 import { CommandsIterable } from '../../../../../src/check/model/commands/CommandsIterable';
-import { Command } from '../../../../../src/check/model/command/Command';
+import type { Command } from '../../../../../src/check/model/command/Command';
 import { cloneMethod } from '../../../../../src/check/symbols';
 
 type Model = Record<string, unknown>;
