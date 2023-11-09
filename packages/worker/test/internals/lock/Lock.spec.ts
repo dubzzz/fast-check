@@ -1,4 +1,4 @@
-import type { AcquiredLock} from '../../../src/internals/lock/Lock.js';
+import type { AcquiredLock } from '../../../src/internals/lock/Lock.js';
 import { Lock } from '../../../src/internals/lock/Lock.js';
 
 describe('Lock', () => {

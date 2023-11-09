@@ -1,10 +1,4 @@
-import type {
-  IAsyncPropertyWithHooks,
-  Value,
-  Stream,
-  PreconditionFailure,
-  PropertyFailure,
-} from 'fast-check';
+import type { IAsyncPropertyWithHooks, Value, Stream, PreconditionFailure, PropertyFailure } from 'fast-check';
 import type { WorkerProperty } from './SharedTypes.js';
 
 /**
