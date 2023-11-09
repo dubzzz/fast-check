@@ -23,7 +23,7 @@ export function pathWalk<Ts>(
   let values: Stream<Value<Ts>> = producers.drop(segments[0]).map(produce);
   for (const s of segments.slice(1)) {
     const valueToShrink = values.getNthOrLast(0);
-    if (valueToShrink == null) {
+    if (valueToShrink === null) {
       throw new Error(`Unable to replay, got wrong path=${path}`);
     }
     values = shrink(valueToShrink).drop(s);
