@@ -26,11 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         id: yarn-cache
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -45,11 +45,11 @@ jobs:
         os: ['macos-latest', 'windows-latest']
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         id: yarn-cache
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -67,10 +67,10 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -85,10 +85,10 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -100,10 +100,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -117,10 +117,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -136,10 +136,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -166,10 +166,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -202,38 +202,38 @@ jobs:
           - '@fast-check/vitest'
           - '@fast-check/worker'
         script-name: ['test']
-        node-version: [16.x, 18.x, latest]
+        node-version: [18.x, 20.x, latest]
         os: ['ubuntu-latest']
         include:
           # More platforms and scripts...
           - package-name: 'fast-check'
             script-name: 'e2e'
-            node-version: 18.x
+            node-version: 20.x
             os: 'ubuntu-latest'
           - package-name: 'fast-check'
             script-name: 'e2e'
-            node-version: 18.x
+            node-version: 20.x
             os: 'macos-latest'
           - package-name: 'fast-check'
             script-name: 'e2e'
-            node-version: 18.x
+            node-version: 20.x
             os: 'windows-latest'
           - package-name: '@fast-check/packaged'
             script-name: 'test'
-            node-version: 18.x
+            node-version: 20.x
             os: 'macos-latest'
           - package-name: '@fast-check/packaged'
             script-name: 'test'
-            node-version: 18.x
+            node-version: 20.x
             os: 'windows-latest'
           # Limited matrix for test only packages
           - package-name: '@fast-check/examples'
             script-name: 'test'
-            node-version: 18.x
+            node-version: 20.x
             os: 'ubuntu-latest'
           - package-name: 'website'
             script-name: 'test'
-            node-version: 18.x
+            node-version: 20.x
             os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -292,10 +292,10 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           lfs: true
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -330,10 +330,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
@@ -397,10 +397,10 @@ jobs:
           - 'next'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v18.x
+      - name: Using Node v20.x
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: '18.x'
+          node-version: '20.x'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
           check-latest: true
