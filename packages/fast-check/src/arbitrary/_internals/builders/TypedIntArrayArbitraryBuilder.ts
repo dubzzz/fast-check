@@ -1,6 +1,6 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { array } from '../../array';
-import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 
 /** @internal */
 type TypedIntArrayBuilderConstraints<TValue> = {

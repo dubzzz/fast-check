@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { webPath, WebPathConstraints } from '../../../src/arbitrary/webPath';
+import type { WebPathConstraints } from '../../../src/arbitrary/webPath';
+import { webPath } from '../../../src/arbitrary/webPath';
 import { URL } from 'url';
 
 import {

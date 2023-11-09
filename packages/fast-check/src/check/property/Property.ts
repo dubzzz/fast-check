@@ -1,6 +1,8 @@
-import { Arbitrary, assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import { assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
 import { tuple } from '../../arbitrary/tuple';
-import { Property, IProperty, IPropertyWithHooks, PropertyHookFunction } from './Property.generic';
+import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './Property.generic';
+import { Property } from './Property.generic';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
 import { safeForEach, safeMap, safeSlice } from '../../utils/globals';
 
@@ -23,4 +25,5 @@ function property<Ts extends [unknown, ...unknown[]]>(
   return new Property(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 
-export { property, IProperty, IPropertyWithHooks, PropertyHookFunction };
+export type { IProperty, IPropertyWithHooks, PropertyHookFunction };
+export { property };

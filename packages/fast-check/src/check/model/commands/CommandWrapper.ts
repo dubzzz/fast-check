@@ -5,7 +5,7 @@ import {
   toStringMethod,
 } from '../../../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
-import { ICommand } from '../command/ICommand';
+import type { ICommand } from '../command/ICommand';
 
 /**
  * Wrapper around commands used internally by fast-check to wrap existing commands

@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { lorem, LoremConstraints } from '../../../src/arbitrary/lorem';
+import type { LoremConstraints } from '../../../src/arbitrary/lorem';
+import { lorem } from '../../../src/arbitrary/lorem';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,

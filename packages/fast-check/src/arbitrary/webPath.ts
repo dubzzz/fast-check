@@ -1,5 +1,6 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { resolveSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { resolveSize } from './_internals/helpers/MaxLengthFromMinLength';
 import { buildUriPathArbitrary } from './_internals/builders/UriPathArbitraryBuilder';
 
 /**

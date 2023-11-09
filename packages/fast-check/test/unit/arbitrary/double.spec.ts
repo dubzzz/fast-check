@@ -1,13 +1,9 @@
 import * as fc from 'fast-check';
 
-import { double, DoubleConstraints } from '../../../src/arbitrary/double';
-import {
-  add64,
-  ArrayInt64,
-  isEqual64,
-  substract64,
-  Unit64,
-} from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import type { DoubleConstraints } from '../../../src/arbitrary/double';
+import { double } from '../../../src/arbitrary/double';
+import type { ArrayInt64 } from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import { add64, isEqual64, substract64, Unit64 } from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import {
   defaultDoubleRecordConstraints,
   doubleConstraints,

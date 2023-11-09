@@ -4,7 +4,7 @@ import prand from 'pure-rand';
 import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { MaxLengthUpperBound } from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/CustomSet';
+import type { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/CustomSet';
 import { Stream } from '../../../../src/stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';

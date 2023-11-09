@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildCompareFunctionArbitrary } from './_internals/builders/CompareFunctionArbitraryBuilder';
 
 const safeObjectAssign = Object.assign;

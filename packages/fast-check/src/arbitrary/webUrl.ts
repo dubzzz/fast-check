@@ -2,12 +2,14 @@ import { constantFrom } from './constantFrom';
 import { constant } from './constant';
 import { option } from './option';
 import { tuple } from './tuple';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { webQueryParameters } from './webQueryParameters';
 import { webFragments } from './webFragments';
-import { webAuthority, WebAuthorityConstraints } from './webAuthority';
+import type { WebAuthorityConstraints } from './webAuthority';
+import { webAuthority } from './webAuthority';
 import { partsToUrlMapper, partsToUrlUnmapper } from './_internals/mappers/PartsToUrl';
-import { relativeSizeToSize, resolveSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { relativeSizeToSize, resolveSize } from './_internals/helpers/MaxLengthFromMinLength';
 import { webPath } from './webPath';
 
 const safeObjectAssign = Object.assign;

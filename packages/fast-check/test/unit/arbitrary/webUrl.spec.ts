@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { webUrl, WebUrlConstraints } from '../../../src/arbitrary/webUrl';
+import type { WebUrlConstraints } from '../../../src/arbitrary/webUrl';
+import { webUrl } from '../../../src/arbitrary/webUrl';
 import { URL } from 'url';
 
 import {

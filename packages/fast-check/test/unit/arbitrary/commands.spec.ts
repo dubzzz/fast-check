@@ -2,7 +2,7 @@ import * as fc from 'fast-check';
 import { commands } from '../../../src/arbitrary/commands';
 
 import prand from 'pure-rand';
-import { Command } from '../../../src/check/model/command/Command';
+import type { Command } from '../../../src/check/model/command/Command';
 import { Random } from '../../../src/random/generator/Random';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';

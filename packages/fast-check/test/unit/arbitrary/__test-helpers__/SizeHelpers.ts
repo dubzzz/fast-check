@@ -1,6 +1,6 @@
 import { assert } from 'console';
 import fc from 'fast-check';
-import {
+import type {
   RelativeSize,
   Size,
   SizeForArbitrary,

@@ -2,7 +2,7 @@ import * as fc from 'fast-check';
 import * as prand from 'pure-rand';
 
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
-import { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
+import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';
 
 const parametersArbitrary = fc.record(

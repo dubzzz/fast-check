@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary';
 
 const safeMinSafeInteger = Number.MIN_SAFE_INTEGER;
