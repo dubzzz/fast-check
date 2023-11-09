@@ -1,6 +1,0 @@
-declined:
-  - "@fast-check/poisoning"
-
-undecided:
-  - "@fast-check/jest"
-  - "@fast-check/worker"
