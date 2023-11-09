@@ -1,9 +1,11 @@
-import { Random } from '../../random/generator/Random';
-import { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import type { Random } from '../../random/generator/Random';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { PropertyFailure, IRawProperty, runIdToFrequency } from './IRawProperty';
-import { readConfigureGlobal, GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { Value } from '../arbitrary/definition/Value';
+import type { PropertyFailure, IRawProperty } from './IRawProperty';
+import { runIdToFrequency } from './IRawProperty';
+import type { GlobalPropertyHookFunction } from '../runner/configuration/GlobalParameters';
+import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
+import type { Value } from '../arbitrary/definition/Value';
 import { Stream } from '../../stream/Stream';
 import {
   noUndefinedAsContext,

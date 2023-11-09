@@ -1,7 +1,8 @@
 import { array } from './array';
 import { constant } from './constant';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { MaybeWeightedArbitrary, oneof } from './oneof';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { MaybeWeightedArbitrary } from './oneof';
+import { oneof } from './oneof';
 import {
   sentencesToParagraphMapper,
   sentencesToParagraphUnmapper,
@@ -10,7 +11,7 @@ import {
   wordsToSentenceMapper,
   wordsToSentenceUnmapperFor,
 } from './_internals/mappers/WordsToLorem';
-import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Constraints to be applied on {@link lorem}

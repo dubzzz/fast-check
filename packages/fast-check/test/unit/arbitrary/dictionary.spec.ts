@@ -1,9 +1,10 @@
 import * as fc from 'fast-check';
-import { dictionary, DictionaryConstraints } from '../../../src/arbitrary/dictionary';
+import type { DictionaryConstraints } from '../../../src/arbitrary/dictionary';
+import { dictionary } from '../../../src/arbitrary/dictionary';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceSameValueGivenSameSeed,

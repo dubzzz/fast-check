@@ -1,4 +1,4 @@
-import { ExecutionStatus } from './ExecutionStatus';
+import type { ExecutionStatus } from './ExecutionStatus';
 
 /**
  * Summary of the execution process

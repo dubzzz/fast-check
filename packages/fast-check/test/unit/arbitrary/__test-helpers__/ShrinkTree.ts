@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import type { Value } from '../../../../src/check/arbitrary/definition/Value';
 
 const truncatedSignal: any = Symbol();
 

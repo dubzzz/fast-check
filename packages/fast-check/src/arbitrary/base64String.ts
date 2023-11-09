@@ -1,12 +1,13 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array, ArrayConstraintsInternal } from './array';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { ArrayConstraintsInternal } from './array';
+import { array } from './array';
 import { base64 } from './base64';
 import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength';
-import { StringSharedConstraints } from './_shared/StringSharedConstraints';
+import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { stringToBase64Mapper, stringToBase64Unmapper } from './_internals/mappers/StringToBase64';
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
-export { StringSharedConstraints } from './_shared/StringSharedConstraints';
+export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
  * For base64 strings

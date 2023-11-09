@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { emailAddress, EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
+import type { EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
+import { emailAddress } from '../../../src/arbitrary/emailAddress';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 
 import {

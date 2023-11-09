@@ -1,11 +1,8 @@
-import { Arbitrary, assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import { assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
 import { tuple } from '../../arbitrary/tuple';
-import {
-  AsyncProperty,
-  IAsyncProperty,
-  IAsyncPropertyWithHooks,
-  AsyncPropertyHookFunction,
-} from './AsyncProperty.generic';
+import type { IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction } from './AsyncProperty.generic';
+import { AsyncProperty } from './AsyncProperty.generic';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
 import { safeForEach, safeMap, safeSlice } from '../../utils/globals';
 
@@ -28,4 +25,5 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   return new AsyncProperty(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 
-export { asyncProperty, IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction };
+export type { IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction };
+export { asyncProperty };

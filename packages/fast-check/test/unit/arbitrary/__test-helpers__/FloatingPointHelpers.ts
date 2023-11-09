@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
-import { DoubleConstraints } from '../../../../src/arbitrary/double';
-import { FloatConstraints } from '../../../../src/arbitrary/float';
+import type { DoubleConstraints } from '../../../../src/arbitrary/double';
+import type { FloatConstraints } from '../../../../src/arbitrary/float';
 import { MAX_VALUE_32, floatToIndex } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
 import { doubleToIndex } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 import { substract64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';

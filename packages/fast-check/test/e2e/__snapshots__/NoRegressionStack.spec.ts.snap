@@ -7,8 +7,8 @@ Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
     at v (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:26:14)
-    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:23:56)
-    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:136:27)
+    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:25:56)
+    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:138:27)
     at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:140:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:192:15)
@@ -28,8 +28,8 @@ Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: a must be >= b
     at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:12:21
-    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:23:56)
-    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:136:27)
+    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:25:56)
+    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:138:27)
     at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:140:7)
     at Object.check (packages/fast-check/src/check/runner/Runner.ts:192:15)

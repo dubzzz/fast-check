@@ -1,10 +1,11 @@
-import { RandomGenerator, skipN } from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand';
+import { skipN } from 'pure-rand';
 
 import { Random } from '../../random/generator/Random';
-import { IRawProperty } from '../property/IRawProperty';
+import type { IRawProperty } from '../property/IRawProperty';
 import { Value } from '../arbitrary/definition/Value';
 import { safeMap } from '../../utils/globals';
-import { QualifiedRandomGenerator } from './configuration/QualifiedParameters';
+import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters';
 
 /**
  * Extracting tossNext out of toss was dropping some bailout reasons on v8 side

@@ -2,8 +2,8 @@ import { Error, safePush, safeReplace } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
-import { ExecutionTree } from '../reporter/ExecutionTree';
-import {
+import type { ExecutionTree } from '../reporter/ExecutionTree';
+import type {
   RunDetails,
   RunDetailsFailureInterrupted,
   RunDetailsFailureProperty,

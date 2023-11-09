@@ -1,6 +1,7 @@
 import fc from 'fast-check';
-import { record, RecordConstraints } from '../../../src/arbitrary/record';
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import type { RecordConstraints } from '../../../src/arbitrary/record';
+import { record } from '../../../src/arbitrary/record';
+import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import {
   assertProduceCorrectValues,

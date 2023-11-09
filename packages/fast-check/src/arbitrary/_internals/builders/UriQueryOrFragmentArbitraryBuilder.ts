@@ -1,7 +1,7 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { buildAlphaNumericPercentArbitrary } from './CharacterRangeArbitraryBuilder';
 import { stringOf } from '../../stringOf';
-import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 
 /** @internal */
 export function buildUriQueryOrFragmentArbitrary(size: Exclude<SizeForArbitrary, 'max'>): Arbitrary<string> {

@@ -1,4 +1,4 @@
-import { SizeForArbitrary } from '../../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Parameters for {@link commands}

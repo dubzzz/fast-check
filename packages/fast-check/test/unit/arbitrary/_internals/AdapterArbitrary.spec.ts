@@ -1,4 +1,5 @@
-import { adapter, AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
+import type { AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
+import { adapter } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';

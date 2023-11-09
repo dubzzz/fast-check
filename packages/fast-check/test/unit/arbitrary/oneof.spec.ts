@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { oneof, OneOfConstraints } from '../../../src/arbitrary/oneof';
+import type { OneOfConstraints } from '../../../src/arbitrary/oneof';
+import { oneof } from '../../../src/arbitrary/oneof';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import { sizeArb } from './__test-helpers__/SizeHelpers';

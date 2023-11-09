@@ -1,9 +1,10 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { array, ArrayConstraintsInternal } from './array';
-import { StringSharedConstraints } from './_shared/StringSharedConstraints';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { ArrayConstraintsInternal } from './array';
+import { array } from './array';
+import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString';
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
-export { StringSharedConstraints } from './_shared/StringSharedConstraints';
+export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 const safeObjectAssign = Object.assign;
 
