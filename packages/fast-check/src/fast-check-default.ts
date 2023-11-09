@@ -2,10 +2,9 @@ import { pre } from './check/precondition/Pre';
 import type {
   IAsyncProperty,
   IAsyncPropertyWithHooks,
-  AsyncPropertyHookFunction} from './check/property/AsyncProperty';
-import {
-  asyncProperty
+  AsyncPropertyHookFunction,
 } from './check/property/AsyncProperty';
+import { asyncProperty } from './check/property/AsyncProperty';
 import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './check/property/Property';
 import { property } from './check/property/Property';
 import type { IRawProperty, PropertyFailure } from './check/property/IRawProperty';
@@ -76,10 +75,9 @@ import type {
   LetrecLooselyTypedBuilder,
   LetrecLooselyTypedTie,
   LetrecTypedBuilder,
-  LetrecTypedTie} from './arbitrary/letrec';
-import {
-  letrec
+  LetrecTypedTie,
 } from './arbitrary/letrec';
+import { letrec } from './arbitrary/letrec';
 import type { LoremConstraints } from './arbitrary/lorem';
 import { lorem } from './arbitrary/lorem';
 import { mapToConstant } from './arbitrary/mapToConstant';
@@ -107,10 +105,9 @@ import type {
   UniqueArraySharedConstraints,
   UniqueArrayConstraintsRecommended,
   UniqueArrayConstraintsCustomCompare,
-  UniqueArrayConstraintsCustomCompareSelect} from './arbitrary/uniqueArray';
-import {
-  uniqueArray
+  UniqueArrayConstraintsCustomCompareSelect,
 } from './arbitrary/uniqueArray';
+import { uniqueArray } from './arbitrary/uniqueArray';
 import { infiniteStream } from './arbitrary/infiniteStream';
 import { asciiString } from './arbitrary/asciiString';
 import { base64String } from './arbitrary/base64String';
@@ -146,21 +143,16 @@ import type { AsyncCommand } from './check/model/command/AsyncCommand';
 import type { Command } from './check/model/command/Command';
 import type { ICommand } from './check/model/command/ICommand';
 import { commands } from './arbitrary/commands';
-import type {
-  ModelRunSetup,
-  ModelRunAsyncSetup} from './check/model/ModelRunner';
-import {
-  asyncModelRun,
-  modelRun,
-  scheduledModelRun
-} from './check/model/ModelRunner';
+import type { ModelRunSetup, ModelRunAsyncSetup } from './check/model/ModelRunner';
+import { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelRunner';
 
 import { Random } from './random/generator/Random';
 
 import type {
   GlobalParameters,
   GlobalAsyncPropertyHookFunction,
-  GlobalPropertyHookFunction} from './check/runner/configuration/GlobalParameters';
+  GlobalPropertyHookFunction,
+} from './check/runner/configuration/GlobalParameters';
 import {
   configureGlobal,
   readConfigureGlobal,
@@ -173,26 +165,22 @@ import type { WithCloneMethod } from './check/symbols';
 import { cloneMethod, cloneIfNeeded, hasCloneMethod } from './check/symbols';
 import { Stream, stream } from './stream/Stream';
 import { hash } from './utils/hash';
-import type {
-  WithToStringMethod,
-  WithAsyncToStringMethod} from './utils/stringify';
+import type { WithToStringMethod, WithAsyncToStringMethod } from './utils/stringify';
 import {
   stringify,
   asyncStringify,
   toStringMethod,
   hasToStringMethod,
   asyncToStringMethod,
-  hasAsyncToStringMethod
+  hasAsyncToStringMethod,
 } from './utils/stringify';
 import type {
   Scheduler,
   SchedulerSequenceItem,
   SchedulerReportItem,
-  SchedulerConstraints} from './arbitrary/scheduler';
-import {
-  scheduler,
-  schedulerFor
+  SchedulerConstraints,
 } from './arbitrary/scheduler';
+import { scheduler, schedulerFor } from './arbitrary/scheduler';
 import { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
 import type { CommandsContraints } from './check/model/commands/CommandsContraints';
 import { PreconditionFailure } from './check/precondition/PreconditionFailure';
@@ -214,13 +202,8 @@ import { sparseArray } from './arbitrary/sparseArray';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
 import { Value } from './check/arbitrary/definition/Value';
 import type { Size, SizeForArbitrary, DepthSize } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import type {
-  DepthContext,
-  DepthIdentifier} from './arbitrary/_internals/helpers/DepthContext';
-import {
-  createDepthIdentifier,
-  getDepthContextFor,
-} from './arbitrary/_internals/helpers/DepthContext';
+import type { DepthContext, DepthIdentifier } from './arbitrary/_internals/helpers/DepthContext';
+import { createDepthIdentifier, getDepthContextFor } from './arbitrary/_internals/helpers/DepthContext';
 import type { BigIntArrayConstraints } from './arbitrary/bigInt64Array';
 import { bigInt64Array } from './arbitrary/bigInt64Array';
 import { bigUint64Array } from './arbitrary/bigUint64Array';
@@ -255,5 +238,225 @@ const __commitHash = '__COMMIT_HASH__' as string;
 // strings
 // combination of others
 // complex combinations
-export type { IRawProperty, IProperty, IPropertyWithHooks, IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction, PropertyHookFunction, PropertyFailure, AsyncCommand, Command, ICommand, ModelRunSetup, ModelRunAsyncSetup, Scheduler, SchedulerSequenceItem, SchedulerReportItem, SchedulerAct, WithCloneMethod, WithToStringMethod, WithAsyncToStringMethod, DepthContext, ArrayConstraints, BigIntConstraints, BigIntArrayConstraints, BigUintConstraints, CommandsContraints, DateConstraints, DictionaryConstraints, DomainConstraints, DoubleConstraints, EmailAddressConstraints, FalsyContraints, Float32ArrayConstraints, Float64ArrayConstraints, FloatConstraints, IntArrayConstraints, IntegerConstraints, JsonSharedConstraints, LoremConstraints, MixedCaseConstraints, NatConstraints, ObjectConstraints, OneOfConstraints, OptionConstraints, RecordConstraints, SchedulerConstraints, UniqueArrayConstraints, UniqueArraySharedConstraints, UniqueArrayConstraintsRecommended, UniqueArrayConstraintsCustomCompare, UniqueArrayConstraintsCustomCompareSelect, SparseArrayConstraints, StringMatchingConstraints, StringSharedConstraints, SubarrayConstraints, ShuffledSubarrayConstraints, WebAuthorityConstraints, WebFragmentsConstraints, WebPathConstraints, WebQueryParametersConstraints, WebSegmentConstraints, WebUrlConstraints, MaybeWeightedArbitrary, WeightedArbitrary, LetrecTypedTie, LetrecTypedBuilder, LetrecLooselyTypedTie, LetrecLooselyTypedBuilder, CloneValue, ContextValue, FalsyValue, GeneratorValue, JsonValue, LetrecValue, OneOfValue, RecordValue, Memo, Size, SizeForArbitrary, DepthSize, GlobalParameters, GlobalAsyncPropertyHookFunction, GlobalPropertyHookFunction, Parameters, RandomType, ExecutionTree, RunDetails, RunDetailsFailureProperty, RunDetailsFailureTooManySkips, RunDetailsFailureInterrupted, RunDetailsSuccess, RunDetailsCommon, DepthIdentifier };
-export { __type, __version, __commitHash, sample, statistics, check, assert, pre, PreconditionFailure, property, asyncProperty, boolean, falsy, float, double, integer, nat, maxSafeInteger, maxSafeNat, bigIntN, bigUintN, bigInt, bigUint, char, ascii, char16bits, unicode, fullUnicode, hexa, base64, mixedCase, string, asciiString, string16bits, stringOf, unicodeString, fullUnicodeString, hexaString, base64String, stringMatching, lorem, constant, constantFrom, mapToConstant, option, oneof, clone, shuffledSubarray, subarray, array, sparseArray, infiniteStream, uniqueArray, tuple, record, dictionary, anything, object, json, jsonValue, unicodeJson, unicodeJsonValue, letrec, memo, compareBooleanFunc, compareFunc, func, context, gen, date, ipV4, ipV4Extended, ipV6, domain, webAuthority, webSegment, webFragments, webPath, webQueryParameters, webUrl, emailAddress, ulid, uuid, uuidV, int8Array, uint8Array, uint8ClampedArray, int16Array, uint16Array, int32Array, uint32Array, float32Array, float64Array, bigInt64Array, bigUint64Array, asyncModelRun, modelRun, scheduledModelRun, commands, scheduler, schedulerFor, Arbitrary, Value, cloneMethod, cloneIfNeeded, hasCloneMethod, toStringMethod, hasToStringMethod, asyncToStringMethod, hasAsyncToStringMethod, getDepthContextFor, stringify, asyncStringify, defaultReportMessage, asyncDefaultReportMessage, hash, VerbosityLevel, configureGlobal, readConfigureGlobal, resetConfigureGlobal, ExecutionStatus, Random, Stream, stream, createDepthIdentifier };
+export type {
+  IRawProperty,
+  IProperty,
+  IPropertyWithHooks,
+  IAsyncProperty,
+  IAsyncPropertyWithHooks,
+  AsyncPropertyHookFunction,
+  PropertyHookFunction,
+  PropertyFailure,
+  AsyncCommand,
+  Command,
+  ICommand,
+  ModelRunSetup,
+  ModelRunAsyncSetup,
+  Scheduler,
+  SchedulerSequenceItem,
+  SchedulerReportItem,
+  SchedulerAct,
+  WithCloneMethod,
+  WithToStringMethod,
+  WithAsyncToStringMethod,
+  DepthContext,
+  ArrayConstraints,
+  BigIntConstraints,
+  BigIntArrayConstraints,
+  BigUintConstraints,
+  CommandsContraints,
+  DateConstraints,
+  DictionaryConstraints,
+  DomainConstraints,
+  DoubleConstraints,
+  EmailAddressConstraints,
+  FalsyContraints,
+  Float32ArrayConstraints,
+  Float64ArrayConstraints,
+  FloatConstraints,
+  IntArrayConstraints,
+  IntegerConstraints,
+  JsonSharedConstraints,
+  LoremConstraints,
+  MixedCaseConstraints,
+  NatConstraints,
+  ObjectConstraints,
+  OneOfConstraints,
+  OptionConstraints,
+  RecordConstraints,
+  SchedulerConstraints,
+  UniqueArrayConstraints,
+  UniqueArraySharedConstraints,
+  UniqueArrayConstraintsRecommended,
+  UniqueArrayConstraintsCustomCompare,
+  UniqueArrayConstraintsCustomCompareSelect,
+  SparseArrayConstraints,
+  StringMatchingConstraints,
+  StringSharedConstraints,
+  SubarrayConstraints,
+  ShuffledSubarrayConstraints,
+  WebAuthorityConstraints,
+  WebFragmentsConstraints,
+  WebPathConstraints,
+  WebQueryParametersConstraints,
+  WebSegmentConstraints,
+  WebUrlConstraints,
+  MaybeWeightedArbitrary,
+  WeightedArbitrary,
+  LetrecTypedTie,
+  LetrecTypedBuilder,
+  LetrecLooselyTypedTie,
+  LetrecLooselyTypedBuilder,
+  CloneValue,
+  ContextValue,
+  FalsyValue,
+  GeneratorValue,
+  JsonValue,
+  LetrecValue,
+  OneOfValue,
+  RecordValue,
+  Memo,
+  Size,
+  SizeForArbitrary,
+  DepthSize,
+  GlobalParameters,
+  GlobalAsyncPropertyHookFunction,
+  GlobalPropertyHookFunction,
+  Parameters,
+  RandomType,
+  ExecutionTree,
+  RunDetails,
+  RunDetailsFailureProperty,
+  RunDetailsFailureTooManySkips,
+  RunDetailsFailureInterrupted,
+  RunDetailsSuccess,
+  RunDetailsCommon,
+  DepthIdentifier,
+};
+export {
+  __type,
+  __version,
+  __commitHash,
+  sample,
+  statistics,
+  check,
+  assert,
+  pre,
+  PreconditionFailure,
+  property,
+  asyncProperty,
+  boolean,
+  falsy,
+  float,
+  double,
+  integer,
+  nat,
+  maxSafeInteger,
+  maxSafeNat,
+  bigIntN,
+  bigUintN,
+  bigInt,
+  bigUint,
+  char,
+  ascii,
+  char16bits,
+  unicode,
+  fullUnicode,
+  hexa,
+  base64,
+  mixedCase,
+  string,
+  asciiString,
+  string16bits,
+  stringOf,
+  unicodeString,
+  fullUnicodeString,
+  hexaString,
+  base64String,
+  stringMatching,
+  lorem,
+  constant,
+  constantFrom,
+  mapToConstant,
+  option,
+  oneof,
+  clone,
+  shuffledSubarray,
+  subarray,
+  array,
+  sparseArray,
+  infiniteStream,
+  uniqueArray,
+  tuple,
+  record,
+  dictionary,
+  anything,
+  object,
+  json,
+  jsonValue,
+  unicodeJson,
+  unicodeJsonValue,
+  letrec,
+  memo,
+  compareBooleanFunc,
+  compareFunc,
+  func,
+  context,
+  gen,
+  date,
+  ipV4,
+  ipV4Extended,
+  ipV6,
+  domain,
+  webAuthority,
+  webSegment,
+  webFragments,
+  webPath,
+  webQueryParameters,
+  webUrl,
+  emailAddress,
+  ulid,
+  uuid,
+  uuidV,
+  int8Array,
+  uint8Array,
+  uint8ClampedArray,
+  int16Array,
+  uint16Array,
+  int32Array,
+  uint32Array,
+  float32Array,
+  float64Array,
+  bigInt64Array,
+  bigUint64Array,
+  asyncModelRun,
+  modelRun,
+  scheduledModelRun,
+  commands,
+  scheduler,
+  schedulerFor,
+  Arbitrary,
+  Value,
+  cloneMethod,
+  cloneIfNeeded,
+  hasCloneMethod,
+  toStringMethod,
+  hasToStringMethod,
+  asyncToStringMethod,
+  hasAsyncToStringMethod,
+  getDepthContextFor,
+  stringify,
+  asyncStringify,
+  defaultReportMessage,
+  asyncDefaultReportMessage,
+  hash,
+  VerbosityLevel,
+  configureGlobal,
+  readConfigureGlobal,
+  resetConfigureGlobal,
+  ExecutionStatus,
+  Random,
+  Stream,
+  stream,
+  createDepthIdentifier,
+};

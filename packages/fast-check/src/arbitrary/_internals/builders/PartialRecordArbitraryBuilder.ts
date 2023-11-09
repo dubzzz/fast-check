@@ -4,7 +4,7 @@ import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { option } from '../../option';
 import { tuple } from '../../tuple';
-import type { EnumerableKeyOf} from '../helpers/EnumerableKeysExtractor';
+import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor';
 import { extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor';
 import {
   buildValuesAndSeparateKeysToObjectMapper,

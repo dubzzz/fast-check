@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
-import type {
-  SizeForArbitrary} from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import {
   MaxLengthUpperBound,
   maxGeneratedLengthFromSizeForArbitrary,

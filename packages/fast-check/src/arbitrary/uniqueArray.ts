@@ -1,10 +1,9 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type {
-  SizeForArbitrary} from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
-  MaxLengthUpperBound
+  MaxLengthUpperBound,
 } from './_internals/helpers/MaxLengthFromMinLength';
 import type { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';

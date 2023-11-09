@@ -1,4 +1,4 @@
-import type { RandomGenerator} from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand';
 import { skipN } from 'pure-rand';
 
 import { Random } from '../../random/generator/Random';

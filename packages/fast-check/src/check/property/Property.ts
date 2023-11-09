@@ -1,4 +1,4 @@
-import type { Arbitrary} from '../arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
 import { tuple } from '../../arbitrary/tuple';
 import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './Property.generic';

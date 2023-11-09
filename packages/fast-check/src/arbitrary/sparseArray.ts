@@ -4,11 +4,10 @@ import { tuple } from './tuple';
 import { uniqueArray } from './uniqueArray';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext';
-import type {
-  SizeForArbitrary} from './_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
-  MaxLengthUpperBound
+  MaxLengthUpperBound,
 } from './_internals/helpers/MaxLengthFromMinLength';
 
 const safeMathMin = Math.min;

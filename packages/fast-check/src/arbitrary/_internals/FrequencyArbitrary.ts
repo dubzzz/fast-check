@@ -2,7 +2,7 @@ import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import type { DepthContext, DepthIdentifier} from './helpers/DepthContext';
+import type { DepthContext, DepthIdentifier } from './helpers/DepthContext';
 import { getDepthContextFor } from './helpers/DepthContext';
 import type { DepthSize } from './helpers/MaxLengthFromMinLength';
 import { depthBiasFromSizeForArbitrary } from './helpers/MaxLengthFromMinLength';

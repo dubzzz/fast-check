@@ -1,4 +1,4 @@
-import type { Arbitrary} from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { isArbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeMap, safeSlice } from '../utils/globals';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';

@@ -1,7 +1,7 @@
 import { array } from './array';
 import { constant } from './constant';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { MaybeWeightedArbitrary} from './oneof';
+import type { MaybeWeightedArbitrary } from './oneof';
 import { oneof } from './oneof';
 import {
   sentencesToParagraphMapper,

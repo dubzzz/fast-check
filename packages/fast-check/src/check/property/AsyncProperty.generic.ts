@@ -1,7 +1,7 @@
 import type { Random } from '../../random/generator/Random';
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import type { PropertyFailure, IRawProperty} from './IRawProperty';
+import type { PropertyFailure, IRawProperty } from './IRawProperty';
 import { runIdToFrequency } from './IRawProperty';
 import type { GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
 import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';

@@ -1,13 +1,8 @@
-import type { Arbitrary} from '../arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
 import { tuple } from '../../arbitrary/tuple';
-import type {
-  IAsyncProperty,
-  IAsyncPropertyWithHooks,
-  AsyncPropertyHookFunction} from './AsyncProperty.generic';
-import {
-  AsyncProperty
-} from './AsyncProperty.generic';
+import type { IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction } from './AsyncProperty.generic';
+import { AsyncProperty } from './AsyncProperty.generic';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
 import { safeForEach, safeMap, safeSlice } from '../../utils/globals';
 

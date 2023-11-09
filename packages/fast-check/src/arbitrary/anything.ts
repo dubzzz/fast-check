@@ -1,6 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { anyArbitraryBuilder } from './_internals/builders/AnyArbitraryBuilder';
-import type { ObjectConstraints} from './_internals/helpers/QualifiedObjectConstraints';
+import type { ObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
 import { toQualifiedObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
 
 export type { ObjectConstraints };

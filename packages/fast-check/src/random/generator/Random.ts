@@ -1,5 +1,4 @@
-import type {
-  RandomGenerator} from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand';
 import {
   unsafeUniformArrayIntDistribution,
   unsafeUniformBigIntDistribution,

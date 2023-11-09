@@ -1,5 +1,4 @@
-import type {
-  ArrayInt64} from './_internals/helpers/ArrayInt64';
+import type { ArrayInt64 } from './_internals/helpers/ArrayInt64';
 import {
   add64,
   isEqual64,

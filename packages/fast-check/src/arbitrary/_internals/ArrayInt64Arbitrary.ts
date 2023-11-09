@@ -2,8 +2,7 @@ import type { Random } from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import type {
-  ArrayInt64} from './helpers/ArrayInt64';
+import type { ArrayInt64 } from './helpers/ArrayInt64';
 import {
   add64,
   halve64,

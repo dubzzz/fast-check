@@ -1,10 +1,9 @@
 import fc from 'fast-check';
 import type {
   ScheduledTask,
-  TaskSelector} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
-import {
-  SchedulerImplem
+  TaskSelector,
 } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import { SchedulerImplem } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
 

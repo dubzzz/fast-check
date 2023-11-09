@@ -6,7 +6,7 @@ import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import type { CustomSetBuilder } from './interfaces/CustomSet';
-import type { DepthContext, DepthIdentifier} from './helpers/DepthContext';
+import type { DepthContext, DepthIdentifier } from './helpers/DepthContext';
 import { getDepthContextFor } from './helpers/DepthContext';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';

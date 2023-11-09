@@ -1,12 +1,8 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { dictionary } from './dictionary';
 import { anyArbitraryBuilder } from './_internals/builders/AnyArbitraryBuilder';
-import type {
-  QualifiedObjectConstraints,
-  ObjectConstraints} from './_internals/helpers/QualifiedObjectConstraints';
-import {
-  toQualifiedObjectConstraints
-} from './_internals/helpers/QualifiedObjectConstraints';
+import type { QualifiedObjectConstraints, ObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
+import { toQualifiedObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
 
 export type { ObjectConstraints };
 

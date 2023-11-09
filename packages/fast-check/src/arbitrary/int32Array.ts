@@ -1,11 +1,8 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { Int32Array } from '../utils/globals';
 import { integer } from './integer';
-import type {
-  IntArrayConstraints} from './_internals/builders/TypedIntArrayArbitraryBuilder';
-import {
-  typedIntArrayArbitraryArbitraryBuilder,
-} from './_internals/builders/TypedIntArrayArbitraryBuilder';
+import type { IntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder';
+import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder';
 
 /**
  * For Int32Array

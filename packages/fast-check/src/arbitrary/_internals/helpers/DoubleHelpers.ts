@@ -1,4 +1,4 @@
-import type { ArrayInt64} from './ArrayInt64';
+import type { ArrayInt64 } from './ArrayInt64';
 import { clone64, isEqual64 } from './ArrayInt64';
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
