@@ -36,6 +36,8 @@ jobs:
           check-latest: true
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
+        env:
+          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today on GH CI
         run: yarn install --immutable --mode=skip-build --check-cache
   warmup_yarn_cache_others:
     name: 'Warm up Yarn cache (others)'
@@ -55,6 +57,8 @@ jobs:
           check-latest: true
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
+        env:
+          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today on GH CI
         run: yarn install --immutable --mode=skip-build --check-cache
 
   # Jobs without any strong requirement on warmup_yarn_cache
@@ -144,6 +148,9 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Build production packages
         run: yarn build-ci:all
@@ -174,6 +181,9 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -183,7 +193,7 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Typecheck
-        run: yarn workspaces foreach -pvi run typecheck
+        run: yarn workspaces foreach --all -pvi run typecheck
   test:
     name: 'Test'
     needs:
@@ -250,6 +260,9 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -264,7 +277,7 @@ jobs:
         # untar seems to fail on Windows when untaring already existing files
         run: yarn unpack:all || true
       - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
+        run: yarn workspaces foreach --recursive -pvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Unit tests
         shell: bash -l {0}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
@@ -300,6 +313,9 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -312,6 +328,8 @@ jobs:
         run: yarn workspace website build
       - name: Generate API reference
         env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
           YARN_NODE_LINKER: 'node-modules'
         run: |
           yarn install --immutable --immutable-cache --mode=skip-build
@@ -338,6 +356,9 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -347,15 +368,17 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+        run: yarn workspaces foreach --all -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Retrieve potentially dropped test-bundle
-        run: yarn workspaces foreach -vi --no-private exec "git restore -s@ -SW -- test-bundle || true"
+        run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check publication lint
         run: yarn publint:all
       - name: Check bundles
-        run: yarn workspaces foreach -pvi --no-private run test-bundle
+        run: yarn workspaces foreach --all -pvi --no-private run test-bundle
       - name: Check legacy bundles
         env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
           YARN_NODE_LINKER: 'node-modules'
         run: |
           yarn install --immutable --immutable-cache --mode=skip-build
@@ -372,7 +395,7 @@ jobs:
               echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
               exit 2
           fi
-          yarn workspaces foreach -pvi --no-private run test-legacy-bundle
+          yarn workspaces foreach --all -pvi --no-private run test-legacy-bundle
           if [ "$(node --version)" != "$NODE_VERSION" ]; then
               echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
               exit 3
@@ -405,6 +428,9 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -414,26 +440,26 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Alter internals to behave as if published
-        run: yarn workspaces foreach -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+        run: yarn workspaces foreach --recursive -pvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Retrieve dropped test-types
-        run: yarn workspaces foreach -vi --no-private exec "git restore -s@ -SW -- test-types"
+        run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
       - name: Switch folder to CommonJS
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
       - name: Check in ES Modules mode with NodeNext
-        run: yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
         if: matrix.ts-version != '4.1'
         run: |
-          yarn workspaces foreach -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
-          yarn workspaces foreach -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+          yarn workspaces foreach --all -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
+          yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Job to confirm every required job passed
   pre_all_checks_passed:

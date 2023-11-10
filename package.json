@@ -2,7 +2,7 @@
   "private": true,
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
-  "packageManager": "yarn@3.6.4",
+  "packageManager": "yarn@4.0.0",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -11,18 +11,18 @@
   ],
   "scripts": {
     "contributor:add": "all-contributors add",
-    "build:all": "yarn workspaces foreach -pvi --topological-dev --exclude website run build",
-    "build-ci:all": "yarn workspaces foreach -pvi --topological-dev --exclude website run build-ci",
-    "test:all": "yarn workspaces foreach -pvi run test && yarn workspaces foreach -pvi run e2e",
-    "typecheck:all": "yarn workspaces foreach -pvi run typecheck",
+    "build:all": "yarn workspaces foreach --all -pvi --topological-dev --exclude website run build",
+    "build-ci:all": "yarn workspaces foreach --all -pvi --topological-dev --exclude website run build-ci",
+    "test:all": "yarn workspaces foreach --all -pvi run test && yarn workspaces foreach --all -pvi run e2e",
+    "typecheck:all": "yarn workspaces foreach --all -pvi run typecheck",
     "format": "prettier --cache --write .",
     "format:check": "prettier --list-different .",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
-    "publint:all": "yarn workspaces foreach -pvi --no-private exec publint --strict",
+    "publint:all": "yarn workspaces foreach --all -pvi --no-private exec publint --strict",
     "version:bump": "yarn version check --interactive",
-    "pack:all": "yarn workspaces foreach -pvi --no-private pack --out package.tgz",
-    "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
+    "pack:all": "yarn workspaces foreach --all -pvi --no-private pack --out package.tgz",
+    "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
