@@ -146,6 +146,7 @@ jobs:
       - name: Install dependencies
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Build production packages
         run: yarn build-ci:all
@@ -178,6 +179,7 @@ jobs:
       - name: Install dependencies
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -256,6 +258,7 @@ jobs:
       - name: Install dependencies
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -308,6 +311,7 @@ jobs:
       - name: Install dependencies
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -321,6 +325,7 @@ jobs:
       - name: Generate API reference
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
           YARN_NODE_LINKER: 'node-modules'
         run: |
           yarn install --immutable --immutable-cache --mode=skip-build
@@ -349,6 +354,7 @@ jobs:
       - name: Install dependencies
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
@@ -368,6 +374,7 @@ jobs:
       - name: Check legacy bundles
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
           YARN_NODE_LINKER: 'node-modules'
         run: |
           yarn install --immutable --immutable-cache --mode=skip-build
@@ -419,6 +426,7 @@ jobs:
       - name: Install dependencies
         env:
           YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
