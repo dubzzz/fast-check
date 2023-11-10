@@ -144,7 +144,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        with:
+        env:
           YARN_ENABLE_OFFLINE_MODE: 1
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Build production packages
@@ -176,7 +176,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        with:
+        env:
           YARN_ENABLE_OFFLINE_MODE: 1
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
@@ -254,7 +254,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        with:
+        env:
           YARN_ENABLE_OFFLINE_MODE: 1
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
@@ -306,7 +306,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        with:
+        env:
           YARN_ENABLE_OFFLINE_MODE: 1
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
@@ -347,7 +347,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        with:
+        env:
           YARN_ENABLE_OFFLINE_MODE: 1
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
@@ -417,7 +417,7 @@ jobs:
           cache-dependency-path: yarn.lock
           check-latest: true
       - name: Install dependencies
-        with:
+        env:
           YARN_ENABLE_OFFLINE_MODE: 1
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
