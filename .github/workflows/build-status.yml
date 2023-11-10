@@ -37,7 +37,7 @@ jobs:
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
-          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today
+          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today on GH CI
         run: yarn install --immutable --mode=skip-build --check-cache
   warmup_yarn_cache_others:
     name: 'Warm up Yarn cache (others)'
@@ -58,7 +58,7 @@ jobs:
       - name: Update Yarn cache
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         env:
-          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today
+          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today on GH CI
         run: yarn install --immutable --mode=skip-build --check-cache
 
   # Jobs without any strong requirement on warmup_yarn_cache
