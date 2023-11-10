@@ -264,7 +264,7 @@ jobs:
         # untar seems to fail on Windows when untaring already existing files
         run: yarn unpack:all || true
       - name: Alter internals to behave as if published
-        run: yarn workspaces foreach --all -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
+        run: yarn workspaces foreach --worktree -pRvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Unit tests
         shell: bash -l {0}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
@@ -414,7 +414,7 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Alter internals to behave as if published
-        run: yarn workspaces foreach --all -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+        run: yarn workspaces foreach --worktree -pRvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Retrieve dropped test-types
         run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
       - name: Switch folder to CommonJS
