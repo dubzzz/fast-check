@@ -612,8 +612,8 @@ async function writeToFile(
   const importFromFastCheckJest = useLegacySignatures
     ? `const {${runner}Prop: runnerProp} = require('@fast-check/jest');\n`
     : useWorkers
-    ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
-    : `const {${runner}: runner} = require('@fast-check/jest');\n`;
+      ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
+      : `const {${runner}: runner} = require('@fast-check/jest');\n`;
   const specContent =
     "const fc = require('fast-check');\n" +
     importFromFastCheckJest +
