@@ -1,3 +1,18 @@
+# 0.1.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.8...poisoning%2Fv0.1.0)]
+
+## Features
+
+- ([PR#4421](https://github.com/dubzzz/fast-check/pull/4421)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4286](https://github.com/dubzzz/fast-check/pull/4286)) Test: Confirm basic typings work well
+
+---
+
 # 0.0.8
 
 _Better support for types on ESM targets_
