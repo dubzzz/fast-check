@@ -2751,7 +2751,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.23.3"
     "@babel/preset-typescript": "npm:^7.23.3"
     "@testing-library/dom": "npm:^9.3.3"
-    "@testing-library/react": "npm:^14.1.0"
+    "@testing-library/react": "npm:^14.1.2"
     "@testing-library/user-event": "npm:^14.5.1"
     "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^29.5.8"
@@ -4159,9 +4159,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^14.1.0":
-  version: 14.1.0
-  resolution: "@testing-library/react@npm:14.1.0"
+"@testing-library/react@npm:^14.1.2":
+  version: 14.1.2
+  resolution: "@testing-library/react@npm:14.1.2"
   dependencies:
     "@babel/runtime": "npm:^7.12.5"
     "@testing-library/dom": "npm:^9.0.0"
@@ -4169,7 +4169,7 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
     react-dom: ^18.0.0
-  checksum: 357ad80b11bdd4b6d10d2fb1bf86d5b39fb457cf09293033cf42bcc7a95738a86a2b12b760ae15bad326da0b9c074ca015d2bbf0baae7da38fdbc7c808925820
+  checksum: b5b0990d3aa0ea8b37c55804e0d5d584fc638a5c7d4df90da9a0fdb00bc981b27b6991468b2dc719982a5d0b0107a41596063ce51ad519eeab47b22bc04d6779
   languageName: node
   linkType: hard
 
