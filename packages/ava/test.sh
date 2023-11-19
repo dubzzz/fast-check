@@ -26,6 +26,9 @@ for expectedContent in \
          "not ok [0-9]* - should fail on not followed plan" \
          "ok [0-9]* - should pass kitchen sink" \
          "not ok [0-9]* - should fail kitchen sink" \
+         "ok [0-9]* - should ignore the result when fc.pre interrupted the execution on synchronous properties" \
+         "ok [0-9]* - should ignore the result when fc.pre interrupted the execution on asynchronous properties" \
+         "ok [0-9]* - should ignore the result when fc.pre interrupted the execution on properties backed by Observables" \
          "ok [0-9]* - should pass as the property fails" \
          "not ok [0-9]* - should fail as the property passes"
 do

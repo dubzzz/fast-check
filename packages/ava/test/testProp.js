@@ -140,6 +140,40 @@ testProp('should fail kitchen sink', [fc.array(fc.nat())], (t, array) => {
   t.falsy(array.reduce((a, b) => a + (b < 0), 0));
   t.notThrows(() => array());
 });
+testProp(
+  'should ignore the result when fc.pre interrupted the execution on synchronous properties',
+  [fc.nat()],
+  (t, c) => {
+    t.plan(1);
+    fc.pre(c % 2 === 0); // ignore cases with c % 2 === 1
+    t.is(c % 2, 0); // no assertion executed if c % 2 ===1, but given the reason it fc.pre, we want the test to pass
+  },
+);
+testProp(
+  'should ignore the result when fc.pre interrupted the execution on asynchronous properties',
+  [fc.nat()],
+  async (t, c) => {
+    t.plan(1);
+    fc.pre(c % 2 === 0); // ignore cases with c % 2 === 1
+    t.is(c % 2, 0); // no assertion executed if c % 2 ===1, but given the reason it fc.pre, we want the test to pass
+  },
+);
+testProp(
+  'should ignore the result when fc.pre interrupted the execution on properties backed by Observables',
+  [fc.array(fc.nat())],
+  (t, data) => {
+    t.plan(data.length);
+    return new Observable((observer) => {
+      data.forEach((value) => observer.next(value));
+      observer.complete();
+    }).pipe(
+      map((v) => {
+        fc.pre(v % data.length !== 0);
+        t.pass();
+      }),
+    );
+  },
+);
 
 // testProp.failing
 

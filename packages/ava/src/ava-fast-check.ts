@@ -46,6 +46,14 @@ function wrapProp<Context, Ts extends NonEmptyArray<any>>(
             return true;
           }
 
+          const encounteredPreconditionFailure = tryResult.errors.some((error) =>
+            fc.PreconditionFailure.isFailure(error.savedError),
+          );
+          if (encounteredPreconditionFailure) {
+            tryResult.discard();
+            fc.pre(false); // precondition failed
+          }
+
           failingTry = tryResult;
           return false;
         }),
