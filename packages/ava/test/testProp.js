@@ -28,21 +28,25 @@ testProp('should fail on failing asserts asynchronous property', [fc.nat()], asy
   t.true(typeof a === 'string');
 });
 testProp(
+  // WARINING: Diverge from fast-check's official behaviour
   'should fail on synchronous property not running any assertions even if returning undefined',
   [fc.constant(undefined)],
   (_t, c) => c,
 );
 testProp(
+  // WARINING: Diverge from fast-check's official behaviour
   'should fail on asynchronous property not running any assertions even if returning undefined',
   [fc.constant(undefined)],
   async (_t, c) => c,
 );
 testProp(
+  // WARINING: Diverge from fast-check's official behaviour
   'should fail on synchronous property not running any assertions even if returning true',
   [fc.constant(true)],
   (_t, c) => c,
 );
 testProp(
+  // WARINING: Diverge from fast-check's official behaviour
   'should fail on asynchronous property not running any assertions even if returning true',
   [fc.constant(true)],
   async (_t, c) => c,
@@ -56,6 +60,24 @@ testProp(
   'should fail on asynchronous property not running any assertions returning false',
   [fc.constant(false)],
   async (_t, c) => c,
+);
+testProp(
+  // WARINING: Diverge from fast-check's official behaviour
+  'should pass on synchronous properties having only successful assertions even if returning false',
+  [fc.nat()],
+  (t, c) => {
+    t.is(typeof c, 'number');
+    return false;
+  },
+);
+testProp(
+  // WARINING: Diverge from fast-check's official behaviour
+  'should pass on asynchronous properties having only successful assertions even if returning false',
+  [fc.nat()],
+  async (t, c) => {
+    t.is(typeof c, 'number');
+    return false;
+  },
 );
 testProp('should pass on property returning passing Observable', [fc.array(fc.nat(), { minLength: 1 })], (t, data) => {
   t.plan(data.length);

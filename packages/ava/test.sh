@@ -17,6 +17,8 @@ for expectedContent in \
          "not ok [0-9]* - should fail on asynchronous property not running any assertions even if returning true" \
          "not ok [0-9]* - should fail on synchronous property not running any assertions returning false" \
          "not ok [0-9]* - should fail on asynchronous property not running any assertions returning false" \
+         "ok [0-9]* - should pass on synchronous properties having only successful assertions even if returning false" \
+         "ok [0-9]* - should pass on asynchronous properties having only successful assertions even if returning false" \
          "ok [0-9]* - should pass on property returning passing Observable" \
          "not ok [0-9]* - should fail on property returning failing Observable" \
          "not ok [0-9]* - should fail with seed=4242 and path=\"25\" (with seed=4242)" \
