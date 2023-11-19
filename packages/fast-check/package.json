@@ -70,7 +70,7 @@
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.38.3",
     "@types/jest": "^29.5.8",
-    "@types/node": "^20.9.0",
+    "@types/node": "^20.9.2",
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
     "glob": "^10.3.10",
