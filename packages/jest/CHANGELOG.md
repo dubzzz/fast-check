@@ -1,6 +1,6 @@
 # 1.8.0
 
-_Drop unneeded internal imports_
+_Lighter import with less internals to load_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.3...jest%2Fv1.8.0)]
 
 ## Features

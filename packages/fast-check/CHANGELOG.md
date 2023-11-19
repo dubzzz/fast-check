@@ -1,6 +1,6 @@
 # 3.14.0
 
-_TODO Description_
+_Lighter import with less internals to load_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.14.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.2...v3.14.0)]
 
 ## Features

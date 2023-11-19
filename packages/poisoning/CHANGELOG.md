@@ -1,6 +1,6 @@
 # 0.1.0
 
-_Drop unneeded internal imports_
+_Lighter import with less internals to load_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.8...poisoning%2Fv0.1.0)]
 
 ## Features
