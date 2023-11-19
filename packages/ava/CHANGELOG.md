@@ -1,6 +1,6 @@
 # 1.2.0
 
-_TODO Description_
+_Support pre-condition failures_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.6...ava%2Fv1.2.0)]
 
 ## Features

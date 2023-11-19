@@ -1,6 +1,6 @@
 # 0.1.0
 
-_TODO Description_
+_Drop unneeded internal imports_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.9...worker%2Fv0.1.0)]
 
 ## Features
