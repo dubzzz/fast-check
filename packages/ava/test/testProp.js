@@ -1,5 +1,7 @@
 // eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
 const { testProp, fc } = require('../lib/ava-fast-check');
+// eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
+const { Observable, map } = require('rxjs');
 
 const delay = (duration) =>
   new Promise((resolve) => {
@@ -9,17 +11,65 @@ const delay = (duration) =>
 
 // testProp
 
-testProp('should pass on truthy synchronous property', [fc.string(), fc.string(), fc.string()], (t, a, b, c) => {
-  t.true(`${a}${b}${c}`.includes(b));
-});
-testProp('should pass on truthy asynchronous property', [fc.nat(), fc.string()], async (t, a, b) => {
+testProp(
+  'should pass on no-failed asserts synchronous property',
+  [fc.string(), fc.string(), fc.string()],
+  (t, a, b, c) => {
+    t.true(`${a}${b}${c}`.includes(b));
+  },
+);
+testProp('should pass on no-failed asserts asynchronous property', [fc.nat(), fc.string()], async (t, a, b) => {
   await delay(0);
   t.true(typeof a === 'number' && typeof b === 'string');
 });
-testProp('should fail on falsy synchronous property', [fc.boolean()], (t, a) => t.true(a));
-testProp('should fail on falsy asynchronous property', [fc.nat()], async (t, a) => {
+testProp('should fail on failing asserts synchronous property', [fc.boolean()], (t, a) => t.true(a));
+testProp('should fail on failing asserts asynchronous property', [fc.nat()], async (t, a) => {
   await delay(0);
   t.true(typeof a === 'string');
+});
+testProp(
+  'should fail on synchronous property not running any assertions even if returning undefined',
+  [fc.constant(undefined)],
+  (_t, c) => c,
+);
+testProp(
+  'should fail on asynchronous property not running any assertions even if returning undefined',
+  [fc.constant(undefined)],
+  async (_t, c) => c,
+);
+testProp(
+  'should fail on synchronous property not running any assertions even if returning true',
+  [fc.constant(true)],
+  (_t, c) => c,
+);
+testProp(
+  'should fail on asynchronous property not running any assertions even if returning true',
+  [fc.constant(true)],
+  async (_t, c) => c,
+);
+testProp(
+  'should fail on synchronous property not running any assertions returning false',
+  [fc.constant(false)],
+  (_t, c) => c,
+);
+testProp(
+  'should fail on asynchronous property not running any assertions returning false',
+  [fc.constant(false)],
+  async (_t, c) => c,
+);
+testProp('should pass on property returning passing Observable', [fc.array(fc.nat(), { minLength: 1 })], (t, data) => {
+  t.plan(data.length);
+  return new Observable((observer) => {
+    data.forEach((value) => observer.next(value));
+    observer.complete();
+  }).pipe(map(() => t.pass()));
+});
+testProp('should fail on property returning failing Observable', [fc.array(fc.nat(), { minLength: 1 })], (t, data) => {
+  t.plan(data.length + 1);
+  return new Observable((observer) => {
+    data.forEach((value) => observer.next(value));
+    observer.complete();
+  }).pipe(map(() => t.pass()));
 });
 testProp('should fail with seed=4242 and path="25"', [fc.constant(null)], (t) => t.fail(), { seed: 4242, path: '25' });
 testProp('should pass on followed plan', [fc.array(fc.nat())], (t, array) => {
