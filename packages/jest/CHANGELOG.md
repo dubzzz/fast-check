@@ -1,3 +1,20 @@
+# 1.8.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.3...jest%2Fv1.8.0)]
+
+## Features
+
+- ([PR#4425](https://github.com/dubzzz/fast-check/pull/4425)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4452](https://github.com/dubzzz/fast-check/pull/4452)) CI: Stabilize CI with higher timeout for test-bundle tests
+- ([PR#4288](https://github.com/dubzzz/fast-check/pull/4288)) Test: Confirm basic typings work well
+- ([PR#4382](https://github.com/dubzzz/fast-check/pull/4382)) Test: Declare jest-jasmine2 by name not path
+
+---
+
 # 1.7.3
 
 _Deprecate legacy helpers_
