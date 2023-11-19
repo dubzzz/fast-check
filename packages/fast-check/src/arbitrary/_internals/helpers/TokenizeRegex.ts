@@ -303,8 +303,8 @@ function pushTokens(
           quantifierTokens.length === 1
             ? from // to = from, only {from} characters accepted, not less not more
             : quantifierTokens[1].length !== 0
-            ? Number(quantifierTokens[1]) // from and to may diverge
-            : undefined; // to is accepting anything >=from
+              ? Number(quantifierTokens[1]) // from and to may diverge
+              : undefined; // to is accepting anything >=from
         tokens.push({
           type: 'Repetition',
           expression: previous,

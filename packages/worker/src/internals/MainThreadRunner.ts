@@ -25,8 +25,8 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
     isolationLevel === 'predicate'
       ? new OneTimePool(workerFileUrl)
       : isolationLevel === 'property'
-      ? new BasicPool(workerFileUrl)
-      : new GlobalPool(workerFileUrl);
+        ? new BasicPool(workerFileUrl)
+        : new GlobalPool(workerFileUrl);
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;

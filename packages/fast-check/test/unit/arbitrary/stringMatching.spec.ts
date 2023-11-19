@@ -147,14 +147,14 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
                     quantifier === undefined
                       ? ''
                       : typeof quantifier === 'string'
-                      ? quantifier
-                      : typeof quantifier === 'number'
-                      ? `{${quantifier}}`
-                      : typeof quantifier[1] === 'number'
-                      ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
-                          ...(quantifier as [number, number]),
-                        )}}`
-                      : `{${quantifier[0]},}`;
+                        ? quantifier
+                        : typeof quantifier === 'number'
+                          ? `{${quantifier}}`
+                          : typeof quantifier[1] === 'number'
+                            ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
+                                ...(quantifier as [number, number]),
+                              )}}`
+                            : `{${quantifier[0]},}`;
                   return chunk.matcher + quantifierString;
                 })
                 .join('');

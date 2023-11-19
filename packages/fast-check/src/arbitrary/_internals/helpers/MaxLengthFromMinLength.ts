@@ -111,8 +111,8 @@ export function relativeSizeToSize(size: Size | RelativeSize, defaultSize: Size)
   return resultingSizeInSize < 0
     ? orderedSize[0]
     : resultingSizeInSize >= orderedSize.length
-    ? orderedSize[orderedSize.length - 1]
-    : orderedSize[resultingSizeInSize];
+      ? orderedSize[orderedSize.length - 1]
+      : orderedSize[resultingSizeInSize];
 }
 
 /**
@@ -161,8 +161,8 @@ export function depthBiasFromSizeForArbitrary(depthSizeOrSize: DepthSize, specif
     depthSizeOrSize !== undefined
       ? depthSizeOrSize
       : specifiedMaxDepth && defaultSizeToMaxWhenMaxSpecified
-      ? 'max'
-      : defaultSize;
+        ? 'max'
+        : defaultSize;
   if (definedSize === 'max') {
     return 0; // 1 / +infinity
   }
