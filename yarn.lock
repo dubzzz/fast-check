@@ -2735,6 +2735,7 @@ __metadata:
     ava: "npm:^5.3.1"
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
+    rxjs: "npm:^7.8.1"
     typescript: "npm:~5.2.2"
   peerDependencies:
     ava: ">=4.0.0"
@@ -15075,7 +15076,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.4":
+"rxjs@npm:^7.5.4, rxjs@npm:^7.8.1":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
   dependencies:

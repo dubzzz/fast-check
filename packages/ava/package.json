@@ -57,6 +57,7 @@
     "ava": "^5.3.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
+    "rxjs": "^7.8.1",
     "typescript": "~5.2.2"
   },
   "keywords": [
