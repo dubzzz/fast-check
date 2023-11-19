@@ -37,6 +37,8 @@ The property is passed [AVA's `t` argument](https://github.com/avajs/ava/blob/ma
 
 `@fast-check/ava` supports all of [AVA's assertions](https://github.com/avajs/ava/blob/main/docs/03-assertions.md#assertions) and like AVA, it supports synchronous and asynchronous functions, including promises, observables, and callbacks. See [AVA's documentation](https://github.com/avajs/ava/blob/main/docs/01-writing-tests.md#declaring-test) for more information.
 
+⚠️ **WARNING:** When relying on `@fast-check/ava`, returning `true` or `false` in your predicates is not taken into account. The library wants assertions or plans to be defined as `ava` itself does. Nonetheless you can still use primitives such as `fc.pre` to cut runs at the middle if some invariants are unmeet: the started plan (if any) will just be ignored.
+
 ## Advanced
 
 ### `fast-check` Parameters
