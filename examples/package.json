@@ -25,7 +25,7 @@
     "@babel/preset-typescript": "^7.23.3",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.9",
-    "@types/lodash": "^4.14.201",
+    "@types/lodash": "^4.14.202",
     "@types/react": "^18.2.37",
     "@types/supertest": "^2.0.16",
     "babel-jest": "^29.7.0",
