@@ -52,7 +52,7 @@
     "@babel/core": "^7.23.3",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@types/jest": "^29.5.9",
+    "@types/jest": "^29.5.10",
     "@types/node": "^20.9.4",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
