@@ -79,7 +79,7 @@
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.9",
-    "@types/node": "^20.9.3",
+    "@types/node": "^20.9.4",
     "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
