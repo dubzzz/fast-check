@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { FrequencyArbitrary, _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
+import type { _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
+import { FrequencyArbitrary } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
@@ -24,7 +25,7 @@ const frequencyValidInputsArb = fc
   .tuple(
     fc.record({ weight: fc.integer({ min: 1 }), arbitraryValue: fc.integer() }),
     fc.array(fc.record({ weight: fc.integer({ min: 1 }), arbitraryValue: fc.integer() })),
-    fc.array(fc.record({ weight: fc.integer({ min: 1 }), arbitraryValue: fc.integer() }))
+    fc.array(fc.record({ weight: fc.integer({ min: 1 }), arbitraryValue: fc.integer() })),
   )
   .map(([positiveWeightMeta, headingWeightsMeta, traillingWeightsMeta]) => [
     ...headingWeightsMeta,
@@ -61,7 +62,7 @@ const frequencyConstraintsArbFor = (keys: {
       ...(!forbidden.includes('maxDepth') ? { maxDepth: fc.nat() } : {}),
       ...(!forbidden.includes('withCrossShrink') ? { withCrossShrink: fc.boolean() } : {}),
     },
-    { requiredKeys: required }
+    { requiredKeys: required },
   );
 };
 
@@ -85,8 +86,8 @@ describe('FrequencyArbitrary', () => {
 
             // Assert
             expect(arb).toBeInstanceOf(FrequencyArbitrary);
-          }
-        )
+          },
+        ),
       ));
 
     it('should always use the context coming from getDepthContextFor', () =>
@@ -110,8 +111,8 @@ describe('FrequencyArbitrary', () => {
             expect(getDepthContextFor).toHaveBeenCalledTimes(1);
             expect(getDepthContextFor).toHaveBeenCalledWith(constraints.depthIdentifier);
             expect(typedArb.context).toBe(depthContext);
-          }
-        )
+          },
+        ),
       ));
 
     it('should reject calls without any weighted arbitraries', () => {
@@ -122,14 +123,14 @@ describe('FrequencyArbitrary', () => {
     it('should reject calls without weight', () => {
       // Arrange / Act / Assert
       expect(() =>
-        FrequencyArbitrary.from([{ arbitrary: fakeArbitrary(), weight: undefined! }], {}, 'test')
+        FrequencyArbitrary.from([{ arbitrary: fakeArbitrary(), weight: undefined! }], {}, 'test'),
       ).toThrowError(/expects weights to be integer values/);
     });
 
     it('should reject calls without arbitrary', () => {
       // Arrange / Act / Assert
       expect(() => FrequencyArbitrary.from([{ arbitrary: undefined!, weight: 1 }], {}, 'test')).toThrowError(
-        /expects arbitraries to be specified/
+        /expects arbitraries to be specified/,
       );
     });
 
@@ -148,8 +149,8 @@ describe('FrequencyArbitrary', () => {
 
             // Act / Assert
             expect(() => FrequencyArbitrary.from(weightedArbs, {}, 'test')).toThrowError();
-          }
-        )
+          },
+        ),
       ));
 
     it('should reject calls having a total weight of zero', () =>
@@ -165,7 +166,7 @@ describe('FrequencyArbitrary', () => {
           // Combined with: 'Should reject calls including at one strictly negative weight'
           // it means that we have: 'Should reject calls having a total weight inferior or equal to zero'
           expect(() => FrequencyArbitrary.from(weightedArbs, {}, 'test')).toThrowError();
-        })
+        }),
       ));
 
     it('should not reject calls defining a strictly positive total weight without any negative weights', () =>
@@ -183,8 +184,8 @@ describe('FrequencyArbitrary', () => {
 
             // Act / Assert
             expect(() => FrequencyArbitrary.from(weightedArbs, {}, 'test')).not.toThrowError();
-          }
-        )
+          },
+        ),
       ));
   });
 
@@ -211,8 +212,8 @@ describe('FrequencyArbitrary', () => {
             // Assert
             expect(nextInt).toHaveBeenCalledTimes(1);
             expect(nextInt).toHaveBeenCalledWith(0, totalWeight - 1);
-          }
-        )
+          },
+        ),
       ));
 
     it('should call the right arbitrary to generate the value', () =>
@@ -243,8 +244,8 @@ describe('FrequencyArbitrary', () => {
             expect(g).toBe(selectedArbitrary.expectedValue);
             expect(selectedArbitrary.arbitraryMeta.generate).toHaveBeenCalledTimes(1);
             expect(selectedArbitrary.arbitraryMeta.generate).toHaveBeenCalledWith(mrng, biasFactor);
-          }
-        )
+          },
+        ),
       ));
 
     it('should always call the first arbitrary to generate the value when maxDepth has been reached', () =>
@@ -269,8 +270,8 @@ describe('FrequencyArbitrary', () => {
             // Assert
             expect(nextInt).not.toHaveBeenCalled();
             expect(g).toBe(warbs[0].expectedValue);
-          }
-        )
+          },
+        ),
       ));
 
     it('should increment received depth context when going deeper in the generate-tree then reset it', () =>
@@ -306,8 +307,8 @@ describe('FrequencyArbitrary', () => {
             // Assert
             expect(calledOnce).toBe(true);
             expect(depthContext).toEqual({ depth: initialDepth });
-          }
-        )
+          },
+        ),
       ));
 
     it('should ask ranges containing negative values as we go deeper in the structure if depthSize and first arbitrary has weight >0', () =>
@@ -347,8 +348,8 @@ describe('FrequencyArbitrary', () => {
             expect([...distinctMax]).toHaveLength(1);
             const distinctMin = new Set(nextInt.mock.calls.map(([min, _max]) => min));
             expect([...distinctMin]).toHaveLength(2);
-          }
-        )
+          },
+        ),
       ));
 
     it('should never ask ranges containing negative values as we go deeper in the structure if first arbitrary has weight of zero', () =>
@@ -377,8 +378,8 @@ describe('FrequencyArbitrary', () => {
             expect([...distinctMin]).toHaveLength(1);
             const distinctMax = new Set(nextInt.mock.calls.map(([_min, max]) => max));
             expect([...distinctMax]).toHaveLength(1);
-          }
-        )
+          },
+        ),
       ));
   });
 
@@ -401,7 +402,7 @@ describe('FrequencyArbitrary', () => {
 
           // Assert
           expect(arb.canShrinkWithoutContext(value)).toBe(false);
-        })
+        }),
       ));
 
     it('should ignore arbitraries with weight of zero when maxDepth not reached', () =>
@@ -432,8 +433,8 @@ describe('FrequencyArbitrary', () => {
 
             // Assert
             expect(arb.canShrinkWithoutContext(value)).toBe(false);
-          }
-        )
+          },
+        ),
       ));
 
     it('should tell it can generate the value if one of the sub-arbitraries can generate the value (maxDepth not reached)', () =>
@@ -463,8 +464,8 @@ describe('FrequencyArbitrary', () => {
             // Assert
             expect(arb.canShrinkWithoutContext(value)).toBe(true);
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
-          }
-        )
+          },
+        ),
       ));
 
     it('should only consider the first arbitrary when maxDepth has been reached', () =>
@@ -485,7 +486,7 @@ describe('FrequencyArbitrary', () => {
             const value = Symbol();
             for (let index = 0; index !== warbs.length; ++index) {
               warbs[index].arbitraryMeta.canShrinkWithoutContext.mockReturnValue(
-                index === 0 ? firstCanOrNot : allOthersCanOrNot
+                index === 0 ? firstCanOrNot : allOthersCanOrNot,
               );
             }
 
@@ -498,8 +499,8 @@ describe('FrequencyArbitrary', () => {
             for (let index = 1; index < warbs.length; ++index) {
               expect(warbs[index].arbitraryMeta.canShrinkWithoutContext).not.toHaveBeenCalled();
             }
-          }
-        )
+          },
+        ),
       ));
   });
 
@@ -524,7 +525,7 @@ describe('FrequencyArbitrary', () => {
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
             selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
-              Stream.of(new Value(1, undefined), new Value(42, undefined))
+              Stream.of(new Value(1, undefined), new Value(42, undefined)),
             );
 
             // Act
@@ -537,10 +538,10 @@ describe('FrequencyArbitrary', () => {
             expect(selectedArbitrary.arbitraryMeta.shrink).toHaveBeenCalledTimes(1);
             expect(selectedArbitrary.arbitraryMeta.shrink).toHaveBeenCalledWith(
               value.value,
-              selectedArbitrary.expectedContext
+              selectedArbitrary.expectedContext,
             );
-          }
-        )
+          },
+        ),
       ));
 
     it('should generate a new value using first arbitrary when cross-shrink enabled', () =>
@@ -567,7 +568,7 @@ describe('FrequencyArbitrary', () => {
             clone.mockReturnValue(anotherMrng);
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
             selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
-              Stream.of(new Value(1, undefined), new Value(42, undefined))
+              Stream.of(new Value(1, undefined), new Value(42, undefined)),
             );
 
             // Act
@@ -581,10 +582,10 @@ describe('FrequencyArbitrary', () => {
             expect(selectedArbitrary.arbitraryMeta.shrink).toHaveBeenCalledTimes(1);
             expect(selectedArbitrary.arbitraryMeta.shrink).toHaveBeenCalledWith(
               value.value,
-              selectedArbitrary.expectedContext
+              selectedArbitrary.expectedContext,
             );
-          }
-        )
+          },
+        ),
       ));
 
     it('should not call generate on first arbitrary when cross-shrink enabled and first generate already used it', () =>
@@ -612,8 +613,8 @@ describe('FrequencyArbitrary', () => {
             expect(shrinks.map((v) => v.value)).toEqual([1, 42]);
             expect(warbs[0].arbitraryMeta.shrink).toHaveBeenCalledTimes(1);
             expect(warbs[0].arbitraryMeta.shrink).toHaveBeenCalledWith(value.value, warbs[0].expectedContext);
-          }
-        )
+          },
+        ),
       ));
 
     it('should be able to shrink without context if one of the sub-arbitrary can generate the value', () =>
@@ -637,7 +638,7 @@ describe('FrequencyArbitrary', () => {
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(
-                Stream.of(new Value(42, undefined), new Value(index, undefined))
+                Stream.of(new Value(42, undefined), new Value(index, undefined)),
               );
             }
 
@@ -649,8 +650,8 @@ describe('FrequencyArbitrary', () => {
             expect(shrinks.map((v) => v.value)).toEqual([42, selectedIndex]);
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
             expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value, undefined);
-          }
-        )
+          },
+        ),
       ));
 
     it('should be able to shrink without context if one of the sub-arbitrary can generate the value plus prepend fallback of first (whenever possible)', () =>
@@ -674,7 +675,7 @@ describe('FrequencyArbitrary', () => {
               const can = index === selectedIndex;
               input.arbitraryMeta.canShrinkWithoutContext.mockReturnValue(can);
               input.arbitraryMeta.shrink.mockReturnValue(
-                Stream.of(new Value(42, undefined), new Value(index, undefined))
+                Stream.of(new Value(42, undefined), new Value(index, undefined)),
               );
             }
             warbs[0].fallbackValue = { default: 48 };
@@ -695,8 +696,8 @@ describe('FrequencyArbitrary', () => {
             }
             expect(warbs[selectedIndex].arbitraryMeta.canShrinkWithoutContext).toHaveBeenCalledWith(value);
             expect(warbs[selectedIndex].arbitraryMeta.shrink).toHaveBeenCalledWith(value, undefined);
-          }
-        )
+          },
+        ),
       ));
   });
 });
@@ -713,9 +714,9 @@ describe('FrequencyArbitrary (integration)', () => {
               offset: fc.nat(),
               weight: fc.nat(),
             },
-            { requiredKeys: ['offset', 'weight'] }
+            { requiredKeys: ['offset', 'weight'] },
           ),
-          { minLength: 1 }
+          { minLength: 1 },
         )
         .filter((inputs) => inputs.reduce((summedWeight, current) => summedWeight + current.weight, 0) > 0),
       constraints: fc.record(
@@ -724,10 +725,10 @@ describe('FrequencyArbitrary (integration)', () => {
           depthSize: fc.oneof(fc.double({ min: 0, max: Number.MAX_VALUE, noNaN: true }), sizeArb),
           maxDepth: fc.nat(),
         },
-        { requiredKeys: [] }
+        { requiredKeys: [] },
       ),
     },
-    { requiredKeys: ['data', 'constraints'] }
+    { requiredKeys: ['data', 'constraints'] },
   );
 
   const isCorrect = (value: number, extra: Extra) =>
@@ -750,7 +751,7 @@ describe('FrequencyArbitrary (integration)', () => {
     FrequencyArbitrary.from(
       extra.data.map((m) => ({ weight: m.weight, arbitrary: new FakeIntegerArbitrary(m.offset, maxRangeLength) })),
       extra.constraints,
-      'test'
+      'test',
     );
 
   it('should produce the same values given the same seed', () => {

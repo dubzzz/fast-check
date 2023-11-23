@@ -32,7 +32,7 @@ describe('compareFunc (integration)', () => {
         else if (ab > 0 && bc > 0) expect(f(a, c)).toBeGreaterThan(0);
         // else: neither handled, nor skipped (yet)
       },
-      { extraParameters: fc.tuple(fc.anything(), fc.anything(), fc.anything()) }
+      { extraParameters: fc.tuple(fc.anything(), fc.anything(), fc.anything()) },
     );
   });
 
@@ -42,7 +42,7 @@ describe('compareFunc (integration)', () => {
       (f, a) => {
         expect(f(a, a)).toBe(0);
       },
-      { extraParameters: fc.anything() }
+      { extraParameters: fc.anything() },
     );
   });
 
@@ -56,7 +56,7 @@ describe('compareFunc (integration)', () => {
         else if (ab < 0) expect(ba).toBeGreaterThan(0);
         else expect(ba).toBeLessThan(0);
       },
-      { extraParameters: fc.tuple(fc.anything(), fc.anything()) }
+      { extraParameters: fc.tuple(fc.anything(), fc.anything()) },
     );
   });
 
@@ -82,7 +82,7 @@ describe('compareFunc (integration)', () => {
         }
         expect(String(clonedF)).toBe(String(f)); // both called with same inputs in the same order
       },
-      { extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything()), { minLength: 1 }) }
+      { extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything()), { minLength: 1 }) },
     );
   });
 });

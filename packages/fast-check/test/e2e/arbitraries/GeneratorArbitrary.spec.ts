@@ -8,7 +8,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
         const v1 = gen(fc.integer);
         expect(v1).toBeLessThanOrEqual(10);
       }),
-      { seed: seed }
+      { seed: seed },
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].values()).toEqual([11]);
@@ -21,7 +21,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
         const v2 = gen(fc.nat, {}); // unrelated because does not depend on v1
         expect(v1).toBeLessThanOrEqual(v2);
       }),
-      { seed: seed }
+      { seed: seed },
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].values()).toEqual([1, 0]);
@@ -42,7 +42,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
         const surface = v2.length !== 0 ? v2.length * v2[0].length : 0;
         expect(surface).toBeLessThanOrEqual(8);
       }),
-      { seed: seed }
+      { seed: seed },
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].values()).toEqual([
@@ -67,7 +67,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
         const v2 = gen(fc.string);
         expect(v2.length).toBeGreaterThanOrEqual(v1);
       }),
-      { seed: seed }
+      { seed: seed },
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0].values()).toEqual([1, '']);
@@ -90,7 +90,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
         const allValuesUnique = [...new Set(allValues)];
         expect(allValuesUnique).toEqual(allValues);
       }),
-      { seed: seed }
+      { seed: seed },
     );
     expect(out.failed).toBe(true);
     const values = out.counterexample![0].values() as number[];
@@ -107,7 +107,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
         const value = gen(fc.integer, { min, max });
         expect(value).toBeGreaterThanOrEqual((min + max) / 2);
       }),
-      { seed: seed }
+      { seed: seed },
     );
     expect(out.failed).toBe(true);
     const boundaryA = out.counterexample![0];
@@ -132,7 +132,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
         context2.log(String(intValueB));
         return successFunction(intValueA, intValueB);
       }),
-      { seed: seed }
+      { seed: seed },
     );
     expect(out.failed).toBe(true);
     const genValues = out.counterexample![0].values() as [
@@ -140,7 +140,7 @@ describe(`GeneratorArbitrary (seed: ${seed})`, () => {
       number,
       fc.ContextValue,
       (a: number, b: number) => boolean,
-      number
+      number,
     ];
     expect(genValues[0].size()).toBe(1); // context1
     expect(genValues[2].size()).toBe(1); // context2

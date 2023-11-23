@@ -12,9 +12,9 @@ describe(`NoRegressionStack`, () => {
               throw new Error('a must be >= b');
             }
           }),
-          settings
-        )
-      )
+          settings,
+        ),
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
 
@@ -25,9 +25,9 @@ describe(`NoRegressionStack`, () => {
           fc.property(fc.nat(), (v) => {
             (v as any)();
           }),
-          settings
-        )
-      )
+          settings,
+        ),
+      ),
     ).toThrowErrorMatchingSnapshot();
   });
 });
@@ -44,7 +44,7 @@ function sanitize(run: () => void) {
         .replace(/\\/g, '/')
         .replace(/at [^(]*fast-check\/(packages|node_modules)(.*)/g, 'at $1$2')
         .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*)\)/g, 'at $1 ($2$3)')
-        .replace(/at (.*) \((node_modules\/.*):\d+:\d+\)/g, 'at $1 ($2:?:?)') // reducing risks of changes on bumps
+        .replace(/at (.*) \(.*\/(\.yarn|Yarn)\/.*\/(node_modules\/.*):\d+:\d+\)/g, 'at $1 ($3:?:?)') // reducing risks of changes on bumps: .yarn (Linux and Mac), Yarn (Windows)
         .split('\n');
       throw new Error(
         lines
@@ -52,9 +52,9 @@ function sanitize(run: () => void) {
             0,
             // internals of jest, subject to regular changes
             // and OS dependent
-            lines.findIndex((line) => line.includes('node_modules/jest-circus'))
+            lines.findIndex((line) => line.includes('node_modules/jest-circus')),
           )
-          .join('\n')
+          .join('\n'),
       );
     }
   };

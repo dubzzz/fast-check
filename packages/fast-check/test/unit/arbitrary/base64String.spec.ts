@@ -34,8 +34,8 @@ describe('base64String', () => {
 
           // Act / Assert
           expect(() => base64String(constraints)).not.toThrowError();
-        }
-      )
+        },
+      ),
     ));
 
   it('should reject any constraints not accepting at least one length multiple of 4', () =>
@@ -51,7 +51,7 @@ describe('base64String', () => {
 
         // Act / Assert
         expect(() => base64String(constraints)).toThrowError();
-      })
+      }),
     ));
 
   it('should always query for arrays that will produce length fitting the requested range', () =>
@@ -98,8 +98,8 @@ describe('base64String', () => {
           if (constraintsOnArray.minLength !== undefined && constraintsOnArray.maxLength !== undefined) {
             expect(constraintsOnArray.maxLength).toBeGreaterThanOrEqual(constraintsOnArray.minLength);
           }
-        }
-      )
+        },
+      ),
     ));
 
   it('should always forward constraints on size to the underlying arbitrary when provided', () =>
@@ -127,8 +127,8 @@ describe('base64String', () => {
 
           // Assert
           expect(array).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ size }));
-        }
-      )
+        },
+      ),
     ));
 });
 

@@ -11,7 +11,7 @@ describe('decompPrime', () => {
         const factors = decompPrime(n);
         const productOfFactors = factors.reduce((a, b) => a * b, 1);
         return productOfFactors === n;
-      })
+      }),
     );
   });
 
@@ -21,7 +21,7 @@ describe('decompPrime', () => {
         const n = a * b;
         const factors = decompPrime(n);
         return factors.length >= 2;
-      })
+      }),
     );
   });
 
@@ -33,7 +33,7 @@ describe('decompPrime', () => {
         const factorsAB = decompPrime(a * b);
         const reorder = (arr: number[]) => [...arr].sort((a, b) => a - b);
         expect(reorder(factorsAB)).toEqual(reorder([...factorsA, ...factorsB]));
-      })
+      }),
     );
   });
 });

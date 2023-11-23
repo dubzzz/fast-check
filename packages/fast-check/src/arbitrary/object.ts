@@ -1,13 +1,10 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { dictionary } from './dictionary';
 import { anyArbitraryBuilder } from './_internals/builders/AnyArbitraryBuilder';
-import {
-  QualifiedObjectConstraints,
-  toQualifiedObjectConstraints,
-  ObjectConstraints,
-} from './_internals/helpers/QualifiedObjectConstraints';
+import type { QualifiedObjectConstraints, ObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
+import { toQualifiedObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
 
-export { ObjectConstraints };
+export type { ObjectConstraints };
 
 /** @internal */
 function objectInternal(constraints: QualifiedObjectConstraints): Arbitrary<Record<string, unknown>> {

@@ -1,5 +1,5 @@
 import { Set, safeAdd, safePush } from '../../../utils/globals';
-import { CustomSet } from '../interfaces/CustomSet';
+import type { CustomSet } from '../interfaces/CustomSet';
 
 /**
  * CustomSet based on "SameValueZero" as defined by:

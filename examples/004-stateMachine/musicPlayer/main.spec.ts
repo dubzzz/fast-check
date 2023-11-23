@@ -15,6 +15,6 @@ describe('MusicPlayer', () => {
           model.tracksAlreadySeen[t] = true;
         }
         fc.modelRun(() => ({ model, real }), commands);
-      })
+      }),
     ));
 });

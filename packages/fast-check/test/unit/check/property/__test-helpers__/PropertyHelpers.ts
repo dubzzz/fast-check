@@ -1,11 +1,11 @@
-import { MaybeMocked } from '../../../__test-helpers__/Mocked';
-import { IRawProperty } from '../../../../../src/check/property/IRawProperty';
+import type { MaybeMocked } from '../../../__test-helpers__/Mocked';
+import type { IRawProperty } from '../../../../../src/check/property/IRawProperty';
 
 /**
  * Generate a fake instance inheriting from IRawProperty with all methods being mocked
  */
 export function fakeProperty<T = unknown, TIsAsync extends boolean = boolean>(
-  isAsyncResponse?: TIsAsync
+  isAsyncResponse?: TIsAsync,
 ): { instance: IRawProperty<T, TIsAsync> } & MaybeMocked<Required<IRawProperty<T, TIsAsync>>> {
   const isAsync = jest.fn();
   if (isAsyncResponse !== undefined) {

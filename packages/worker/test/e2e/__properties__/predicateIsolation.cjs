@@ -15,7 +15,7 @@ function buildProperty(isolationLevel) {
         throw new Error(`Encounter counters: ${Object.keys(counters)}, for isolation level: ${isolationLevel}`);
       }
       counters[isolationLevel] = true;
-    }
+    },
   );
 }
 

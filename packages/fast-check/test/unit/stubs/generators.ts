@@ -1,4 +1,4 @@
-import { RandomGenerator } from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand';
 import { Random } from '../../../src/random/generator/Random';
 
 /**

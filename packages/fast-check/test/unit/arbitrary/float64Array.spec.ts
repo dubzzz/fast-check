@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { float64Array, Float64ArrayConstraints } from '../../../src/arbitrary/float64Array';
+import type { Float64ArrayConstraints } from '../../../src/arbitrary/float64Array';
+import { float64Array } from '../../../src/arbitrary/float64Array';
 
 import {
   assertProduceCorrectValues,
@@ -27,7 +28,7 @@ describe('float64Array (integration)', () => {
         noDefaultInfinity: fc.boolean(),
         noNaN: fc.boolean(),
       },
-      { requiredKeys: [] }
+      { requiredKeys: [] },
     )
     .map((rawConstraints) => {
       const constraints = { ...rawConstraints };

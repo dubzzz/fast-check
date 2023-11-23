@@ -28,12 +28,12 @@ function trackDiffsOnGlobalsBasedOnOptions(options: ExtraOptions | undefined) {
     ? trackDiffsOnGlobals(
         initialGlobals,
         (globalDetails) => !shouldIgnoreGlobal(globalDetails, ignoredRootRegex),
-        (globalDetails, propertyName) => !shouldIgnoreProperty(globalDetails, propertyName, ignoredRootRegex)
+        (globalDetails, propertyName) => !shouldIgnoreProperty(globalDetails, propertyName, ignoredRootRegex),
       )
     : trackDiffsOnGlobals(
         initialGlobals,
         () => true,
-        () => true
+        () => true,
       );
 }
 

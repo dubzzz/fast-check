@@ -83,7 +83,7 @@ test('should sort numeric elements from the smallest to the largest one', () => 
       for (let i = 1; i < data.length; ++i) {
         expect(sortedData[i - 1]).toBeLessThanOrEqual(sortedData[i]);
       }
-    })
+    }),
   );
 });
 ```

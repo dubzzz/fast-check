@@ -1,9 +1,10 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { unicodeString } from './unicodeString';
-import { jsonConstraintsBuilder, JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
+import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
+import { jsonConstraintsBuilder } from './_internals/helpers/JsonConstraintsBuilder';
 import { anything } from './anything';
 
-export { JsonSharedConstraints, JsonValue };
+export type { JsonSharedConstraints, JsonValue };
 
 /**
  * For any JSON compliant values with unicode support

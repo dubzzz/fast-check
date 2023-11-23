@@ -1,10 +1,11 @@
-import { RandomGenerator, skipN } from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand';
+import { skipN } from 'pure-rand';
 
 import { Random } from '../../random/generator/Random';
-import { IRawProperty } from '../property/IRawProperty';
+import type { IRawProperty } from '../property/IRawProperty';
 import { Value } from '../arbitrary/definition/Value';
 import { safeMap } from '../../utils/globals';
-import { QualifiedRandomGenerator } from './configuration/QualifiedParameters';
+import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters';
 
 /**
  * Extracting tossNext out of toss was dropping some bailout reasons on v8 side
@@ -20,7 +21,7 @@ export function* toss<Ts>(
   generator: IRawProperty<Ts>,
   seed: number,
   random: (seed: number) => QualifiedRandomGenerator,
-  examples: Ts[]
+  examples: Ts[],
 ): IterableIterator<Value<Ts>> {
   for (let idx = 0; idx !== examples.length; ++idx) {
     yield new Value(examples[idx], undefined);
@@ -40,7 +41,7 @@ export function* lazyToss<Ts>(
   generator: IRawProperty<Ts>,
   seed: number,
   random: (seed: number) => RandomGenerator,
-  examples: Ts[]
+  examples: Ts[],
 ): IterableIterator<() => Value<Ts>> {
   yield* safeMap(examples, (e) => () => new Value(e, undefined));
   let idx = 0;

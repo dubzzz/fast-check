@@ -1,8 +1,9 @@
 import { constant } from './constant';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
-import { DepthIdentifier } from './_internals/helpers/DepthContext';
-import { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
+import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
 import { safeHasOwnProperty } from '../utils/globals';
 
 /**
@@ -58,7 +59,7 @@ export interface OptionConstraints<TNil = null> {
  */
 export function option<T, TNil = null>(
   arb: Arbitrary<T>,
-  constraints: OptionConstraints<TNil> = {}
+  constraints: OptionConstraints<TNil> = {},
 ): Arbitrary<T | TNil> {
   const freq = constraints.freq == null ? 5 : constraints.freq;
   const nilValue = safeHasOwnProperty(constraints, 'nil') ? constraints.nil : (null as any);

@@ -1,6 +1,6 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { MaxLengthUpperBound } from '../helpers/MaxLengthFromMinLength';
-import { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
+import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
 import { safeJoin, safePop, safePush, safeSubstring } from '../../../utils/globals';
 
 /** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
@@ -11,7 +11,7 @@ export function patternsToStringMapper(tab: string[]): string {
 /** @internal */
 export function patternsToStringUnmapperFor(
   patternsArb: Arbitrary<string>,
-  constraints: StringSharedConstraints
+  constraints: StringSharedConstraints,
 ): (value: unknown) => string[] {
   return function patternsToStringUnmapper(value: unknown): string[] {
     // First match wins! Possibly not the best match.

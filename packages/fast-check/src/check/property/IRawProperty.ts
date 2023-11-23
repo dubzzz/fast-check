@@ -1,7 +1,7 @@
-import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { Value } from '../arbitrary/definition/Value';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
+import type { Random } from '../../random/generator/Random';
+import type { Stream } from '../../stream/Stream';
+import type { Value } from '../arbitrary/definition/Value';
+import type { PreconditionFailure } from '../precondition/PreconditionFailure';
 
 const safeMathLog = Math.log;
 
@@ -70,7 +70,7 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    */
   run(
     v: Ts,
-    dontRunHook?: boolean
+    dontRunHook?: boolean,
   ):
     | (IsAsync extends true ? Promise<PreconditionFailure | PropertyFailure | null> : never)
     | (IsAsync extends false ? PreconditionFailure | PropertyFailure | null : never);

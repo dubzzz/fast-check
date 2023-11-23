@@ -1,17 +1,17 @@
 import { ArrayArbitrary } from './_internals/ArrayArbitrary';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
   MaxLengthUpperBound,
-  SizeForArbitrary,
 } from './_internals/helpers/MaxLengthFromMinLength';
-import { CustomSetBuilder } from './_internals/interfaces/CustomSet';
+import type { CustomSetBuilder } from './_internals/interfaces/CustomSet';
 import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
-import { Value } from '../check/arbitrary/definition/Value';
+import type { Value } from '../check/arbitrary/definition/Value';
 import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
 import { SameValueSet } from './_internals/helpers/SameValueSet';
 import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
-import { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /** @internal */
 function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<Value<T>> {
@@ -178,7 +178,7 @@ export type UniqueArrayConstraints<T, U> =
  */
 export function uniqueArray<T, U>(
   arb: Arbitrary<T>,
-  constraints?: UniqueArrayConstraintsRecommended<T, U>
+  constraints?: UniqueArrayConstraintsRecommended<T, U>,
 ): Arbitrary<T[]>;
 /**
  * For arrays of unique values coming from `arb`
@@ -201,7 +201,7 @@ export function uniqueArray<T>(arb: Arbitrary<T>, constraints: UniqueArrayConstr
  */
 export function uniqueArray<T, U>(
   arb: Arbitrary<T>,
-  constraints: UniqueArrayConstraintsCustomCompareSelect<T, U>
+  constraints: UniqueArrayConstraintsCustomCompareSelect<T, U>,
 ): Arbitrary<T[]>;
 /**
  * For arrays of unique values coming from `arb`
@@ -220,7 +220,7 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
     constraints.size,
     minLength,
     maxLength,
-    constraints.maxLength !== undefined
+    constraints.maxLength !== undefined,
   );
   const depthIdentifier = constraints.depthIdentifier;
   const setBuilder = buildUniqueArraySetBuilder(constraints);
@@ -232,7 +232,7 @@ export function uniqueArray<T, U>(arb: Arbitrary<T>, constraints: UniqueArrayCon
     maxLength,
     depthIdentifier,
     setBuilder,
-    []
+    [],
   );
   if (minLength === 0) return arrayArb;
   return arrayArb.filter((tab) => tab.length >= minLength);

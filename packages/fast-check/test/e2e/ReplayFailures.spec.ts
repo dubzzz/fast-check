@@ -20,7 +20,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       const out = fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
       expect(fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })).toEqual(
-        out.counterexample
+        out.counterexample,
       );
     });
     it('Should rebuild the whole shrink path using sample', () => {
@@ -31,7 +31,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
           failuresRecorded.push(data);
           return false;
         }),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
 
@@ -65,7 +65,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
           ++numCalls;
           return propCheck(data);
         }),
-        { seed: seed, path: out.counterexamplePath! }
+        { seed: seed, path: out.counterexamplePath! },
       );
       expect(numValidCalls).toEqual(1);
       expect(validCallIndex).toEqual(0);
@@ -114,6 +114,40 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
         expect(outMiddlePath.counterexamplePath).toEqual(out.counterexamplePath);
         expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
+    });
+    it('Should print the rejected path when unable to replay for path', () => {
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),
+          (internalSeed, path) => {
+            expect(() =>
+              fc.check(
+                fc.property(fc.constant(0), () => {}), // no shrink available on constant, our path should break
+                { seed: internalSeed, path },
+              ),
+            ).toThrowError(new RegExp(`wrong path=${path}`));
+          },
+        ),
+        { seed },
+      );
+    });
+    it('Should print the rejected path when unable to replay for path on sample', () => {
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),
+          (internalSeed, path) => {
+            expect(() =>
+              fc.sample(
+                fc.constant(0), // no shrink available on constant, our path should break
+                { seed: internalSeed, path },
+              ),
+            ).toThrowError(new RegExp(`wrong path=${path}`));
+          },
+        ),
+        { seed },
+      );
     });
   });
 });

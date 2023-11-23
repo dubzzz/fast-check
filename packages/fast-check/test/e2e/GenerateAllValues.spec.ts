@@ -23,8 +23,8 @@ describe(`Generate all values (seed: ${seed})`, () => {
     it('Should be able to produce all integer values within the range', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(100), (from, gap) =>
-          lookForMissing(fc.integer({ min: from, max: from + gap }), gap + 1)
-        )
+          lookForMissing(fc.integer({ min: from, max: from + gap }), gap + 1),
+        ),
       ));
   });
   describe('fc.char()', () => {
@@ -51,8 +51,8 @@ describe(`Generate all values (seed: ${seed})`, () => {
     it('Should be able to produce all the constants', () =>
       fc.assert(
         fc.property(fc.uniqueArray(fc.string(), { minLength: 1, maxLength: 40 }), (csts) =>
-          lookForMissing(fc.constantFrom(...csts), csts.length)
-        )
+          lookForMissing(fc.constantFrom(...csts), csts.length),
+        ),
       ));
   });
   describe('fc.anything()', () => {
@@ -60,7 +60,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
       label: string,
       typeofLabel: string,
       toStringLabel: string,
-      additionalCheck?: (v: unknown) => boolean
+      additionalCheck?: (v: unknown) => boolean,
     ) => {
       it(`should be able to generate ${label}`, () => {
         let numTries = 0;

@@ -59,12 +59,12 @@ describe('bigInt', () => {
         // Assert
         expect(BigIntArbitrary).toHaveBeenCalledWith(
           withMin ? min : expect.any(BigInt),
-          withMax ? max : expect.any(BigInt)
+          withMax ? max : expect.any(BigInt),
         );
         const argumentsForCall = BigIntArbitrary.mock.calls[0];
         expect(argumentsForCall[0]).toBeLessThanOrEqual(argumentsForCall[1]);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('[legacy] should instantiate the same BigIntArbitrary as constraints-based for bigInt(min, max)', () =>
@@ -85,7 +85,7 @@ describe('bigInt', () => {
         expect(BigIntArbitrary.mock.calls[1]).toEqual(BigIntArbitrary.mock.calls[0]); // same arguments
         expect(arb).toBe(instance);
         expect(arbConstraints).toBe(instance);
-      })
+      }),
     ));
 
   it('should throw when minimum value is greater than maximum one', () =>
@@ -97,6 +97,6 @@ describe('bigInt', () => {
 
         // Act / Assert
         expect(() => bigInt({ min: high, max: low })).toThrowError();
-      })
+      }),
     ));
 });

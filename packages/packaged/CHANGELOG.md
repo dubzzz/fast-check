@@ -1,3 +1,36 @@
+# 0.2.0
+
+_Faster execution with bulk removals_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.1.1...packaged%2Fv0.2.0)]
+
+## Features
+
+- ([PR#4358](https://github.com/dubzzz/fast-check/pull/4358)) Performance: No intermediate tarball
+- ([PR#4388](https://github.com/dubzzz/fast-check/pull/4388)) Performance: Bulk delete directory and content
+
+---
+
+# 0.1.1
+
+_Faster directory traversal_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.1.0...packaged%2Fv0.1.1)]
+
+## Fixes
+
+- ([PR#4353](https://github.com/dubzzz/fast-check/pull/4353)) Performance: Faster directory traversal
+- ([PR#4285](https://github.com/dubzzz/fast-check/pull/4285)) Test: Confirm basic typings work well
+
+# 0.1.0
+
+_Update formatting style and bump dependencies_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.0.8...packaged%2Fv0.1.0)]
+
+## Fixes
+
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
+---
+
 # 0.0.8
 
 _Attach provenance to the packages_

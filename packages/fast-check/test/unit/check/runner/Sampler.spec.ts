@@ -16,7 +16,7 @@ describe('Sampler', () => {
           const out1 = sample(stubArb.forward(), { seed: seed });
           const out2 = sample(stubArb.forward(), { seed: seed });
           expect(out2).toEqual(out1);
-        })
+        }),
       ));
     it('Should produce the same sequence given the same seed and different lengths', () =>
       fc.assert(
@@ -25,7 +25,7 @@ describe('Sampler', () => {
           const out2 = sample(stubArb.forward(), { seed: seed, numRuns: l2 });
           const lmin = Math.min(l1, l2);
           expect(out2.slice(0, lmin)).toEqual(out1.slice(0, lmin));
-        })
+        }),
       ));
     it('Should produce exactly the number of outputs', () =>
       fc.assert(
@@ -35,7 +35,7 @@ describe('Sampler', () => {
           expect(out).toHaveLength(num);
           expect(out).toEqual(arb.generatedValues.slice(0, num)); // give back the values in order
           // ::generate might have been called one time more than expected depending on its implementation
-        })
+        }),
       ));
     it('Should produce exactly the number of outputs when called with number', () =>
       fc.assert(
@@ -44,7 +44,7 @@ describe('Sampler', () => {
           const out = sample(arb, num);
           expect(out).toHaveLength(num);
           expect(out).toEqual(arb.generatedValues.slice(0, num)); // give back the values in order
-        })
+        }),
       ));
     it('Should not call arbitrary more times than the number of values required', () =>
       fc.assert(
@@ -52,7 +52,7 @@ describe('Sampler', () => {
           const arb = stubArb.counter(start);
           sample(arb, num);
           expect(arb.generatedValues).toHaveLength(num);
-        })
+        }),
       ));
     it('Should throw on wrong path (too deep)', () => {
       const arb = stubArb.forward().noShrink();
@@ -84,7 +84,7 @@ describe('Sampler', () => {
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, numRuns: runs, logger: (v: string) => logs.push(v) });
           expect(logs.length).not.toEqual(0); // at least one log
-        })
+        }),
       ));
     it('Should produce the same statistics given the same seed', () =>
       fc.assert(
@@ -95,7 +95,7 @@ describe('Sampler', () => {
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs1.push(v) });
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs2.push(v) });
           expect(logs2).toEqual(logs1);
-        })
+        }),
       ));
     it('Should start log lines with labels', () =>
       fc.assert(
@@ -106,7 +106,7 @@ describe('Sampler', () => {
           for (const l of logs) {
             expect(l).toMatch(/^my_label_(\d+)!\.+\d+\.\d+%$/); // my_label_123!.....DD%
           }
-        })
+        }),
       ));
     it('Should end log lines with percentage', () =>
       fc.assert(
@@ -117,7 +117,7 @@ describe('Sampler', () => {
           for (const l of logs) {
             expect(l).toMatch(rePercent); // end by the measured percentage
           }
-        })
+        }),
       ));
     it('Should sum to 100% when provided a single classifier', () =>
       fc.assert(
@@ -130,7 +130,7 @@ describe('Sampler', () => {
           const upperBound = extractedPercents.reduce((p, c) => p + c + 0.01);
           expect(lowerBound).toBeLessThanOrEqual(100);
           expect(upperBound).toBeGreaterThanOrEqual(100);
-        })
+        }),
       ));
     it('Should order percentages from the highest to the lowest', () =>
       fc.assert(
@@ -142,7 +142,7 @@ describe('Sampler', () => {
           for (let idx = 1; idx < extractedPercents.length; ++idx) {
             expect(extractedPercents[idx - 1]).toBeGreaterThanOrEqual(extractedPercents[idx]);
           }
-        })
+        }),
       ));
     it('Should be able to handle multiple classifiers', () =>
       fc.assert(
@@ -164,7 +164,7 @@ describe('Sampler', () => {
             .map((l) => l.slice(1))
             .sort();
           expect(associatedWithB).toEqual(associatedWithA); // same logs for a:: and b::
-        })
+        }),
       ));
     it('Should not produce more logs than the number of classified values', () =>
       fc.assert(
@@ -174,7 +174,7 @@ describe('Sampler', () => {
           statistics(customGen(mod), classify, { seed: seed, logger: (v: string) => logs.push(v) });
           expect(logs.length).toBeGreaterThanOrEqual(1); // at least one log
           expect(logs.length).toBeLessThanOrEqual(mod); // aggregate classified values together
-        })
+        }),
       ));
     it('Should not call arbitrary more times than the number of values required', () =>
       fc.assert(
@@ -183,7 +183,7 @@ describe('Sampler', () => {
           const arb = stubArb.counter(start);
           statistics(arb, classify, { numRuns: num, logger: (_v: string) => {} });
           expect(arb.generatedValues).toHaveLength(num); // only call the arbitrary once per asked value
-        })
+        }),
       ));
   });
 });

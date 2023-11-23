@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import {
   safeJoin,
   safeMap,
@@ -14,7 +14,7 @@ export function wordsToJoinedStringMapper(words: string[]): string {
   // Strip any comma
   return safeJoin(
     safeMap(words, (w) => (w[w.length - 1] === ',' ? safeSubstring(w, 0, w.length - 1) : w)),
-    ' '
+    ' ',
   );
 }
 

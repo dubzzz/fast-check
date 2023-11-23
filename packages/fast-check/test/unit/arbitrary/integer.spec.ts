@@ -60,7 +60,7 @@ describe('integer', () => {
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(min, 0x7fffffff);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should instantiate IntegerArbitrary(-0x80000000, max) for integer({max})', () =>
@@ -77,7 +77,7 @@ describe('integer', () => {
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(-0x80000000, max);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should instantiate IntegerArbitrary(min, max) for integer({min, max})', () =>
@@ -95,7 +95,7 @@ describe('integer', () => {
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(min, max);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should throw when minimum value is greater than default maximum one', () =>
@@ -103,7 +103,7 @@ describe('integer', () => {
       fc.property(fc.integer({ min: 0x80000000, max: Number.MAX_SAFE_INTEGER }), (min) => {
         // Arrange / Act / Assert
         expect(() => integer({ min })).toThrowError();
-      })
+      }),
     ));
 
   it('should throw when maximum value is lower than default minimum one', () =>
@@ -111,7 +111,7 @@ describe('integer', () => {
       fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: -0x80000001 }), (max) => {
         // Arrange / Act / Assert
         expect(() => integer({ max })).toThrowError();
-      })
+      }),
     ));
 
   it('should throw when minimum value is greater than maximum one', () =>
@@ -123,7 +123,7 @@ describe('integer', () => {
 
         // Act / Assert
         expect(() => integer({ min: high, max: low })).toThrowError();
-      })
+      }),
     ));
 
   it('should throw when minimum value or maximum value is not an integer', () => {
@@ -138,8 +138,8 @@ describe('integer', () => {
 
           // Act / Assert
           expect(() => integer({ min: low, max: high })).toThrowError();
-        }
-      )
+        },
+      ),
     );
   });
 });

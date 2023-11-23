@@ -1,13 +1,13 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
-import { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
+import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
 
 /**
  * Constraints to be applied on {@link record}
  * @remarks Since 0.0.12
  * @public
  */
-export type RecordConstraints<T = unknown> =
+export type RecordConstraints<T = unknown> = (
   | {
       /**
        * List keys that should never be deleted.
@@ -31,9 +31,18 @@ export type RecordConstraints<T = unknown> =
        *
        * @defaultValue false
        * @remarks Since 1.0.0
+       * @deprecated Prefer using `requiredKeys: []` instead of `withDeletedKeys: true` as the flag will be removed in the next major
        */
       withDeletedKeys?: boolean;
-    };
+    }
+) & {
+  /**
+   * Do not generate records with null prototype
+   * @defaultValue true
+   * @remarks Since 3.13.0
+   */
+  noNullPrototype?: boolean;
+};
 
 /**
  * Infer the type of the Arbitrary produced by record
@@ -46,10 +55,10 @@ export type RecordConstraints<T = unknown> =
 export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDeletedKeys: boolean; requiredKeys: any[] }
   ? never
   : TConstraints extends { withDeletedKeys: true }
-  ? Partial<T>
-  : TConstraints extends { requiredKeys: (infer TKeys)[] }
-  ? Partial<T> & Pick<T, TKeys & keyof T>
-  : T;
+    ? Partial<T>
+    : TConstraints extends { requiredKeys: (infer TKeys)[] }
+      ? Partial<T> & Pick<T, TKeys & keyof T>
+      : T;
 
 /**
  * For records following the `recordModel` schema
@@ -83,14 +92,16 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  */
 function record<T, TConstraints extends RecordConstraints<keyof T>>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints: TConstraints
+  constraints: TConstraints,
 ): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
 function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints?: RecordConstraints<keyof T>
+  constraints?: RecordConstraints<keyof T>,
 ): unknown {
+  const noNullPrototype =
+    constraints === undefined || constraints.noNullPrototype === undefined || constraints.noNullPrototype;
   if (constraints == null) {
-    return buildPartialRecordArbitrary(recordModel, undefined);
+    return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
   if ('withDeletedKeys' in constraints && 'requiredKeys' in constraints) {
@@ -101,7 +112,7 @@ function record<T>(
     ('requiredKeys' in constraints && constraints.requiredKeys !== undefined) ||
     ('withDeletedKeys' in constraints && !!constraints.withDeletedKeys);
   if (!requireDeletedKeys) {
-    return buildPartialRecordArbitrary(recordModel, undefined);
+    return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
   const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
@@ -115,7 +126,7 @@ function record<T>(
     }
   }
 
-  return buildPartialRecordArbitrary(recordModel, requiredKeys as EnumerableKeyOf<T>[]);
+  return buildPartialRecordArbitrary(recordModel, requiredKeys as EnumerableKeyOf<T>[], noNullPrototype);
 }
 
 export { record };

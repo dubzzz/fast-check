@@ -1,3 +1,145 @@
+# 3.14.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.14.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.2...v3.14.0)]
+
+## Features
+
+- ([PR#4426](https://github.com/dubzzz/fast-check/pull/4426)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4364](https://github.com/dubzzz/fast-check/pull/4364)) CI: Toggle more immutable on yarn
+- ([PR#4369](https://github.com/dubzzz/fast-check/pull/4369)) CI: Do not override existing on untar
+- ([PR#4372](https://github.com/dubzzz/fast-check/pull/4372)) CI: REVERT Do not override existing on untar
+- ([PR#4371](https://github.com/dubzzz/fast-check/pull/4371)) CI: Mark final check as failed and not skipped
+- ([PR#4375](https://github.com/dubzzz/fast-check/pull/4375)) CI: Attempt to patch untar step
+- ([PR#4378](https://github.com/dubzzz/fast-check/pull/4378)) CI: Attempt to patch untar step
+- ([PR#4380](https://github.com/dubzzz/fast-check/pull/4380)) CI: Add missing but directly called dependencies
+- ([PR#4384](https://github.com/dubzzz/fast-check/pull/4384)) CI: Attempt to patch untar step
+- ([PR#4368](https://github.com/dubzzz/fast-check/pull/4368)) CI: Attempt to switch to pnp linker
+- ([PR#4407](https://github.com/dubzzz/fast-check/pull/4407)) CI: No parallel "git" command
+- ([PR#4419](https://github.com/dubzzz/fast-check/pull/4419)) CI: Prefer "import type" via linter
+- ([PR#4428](https://github.com/dubzzz/fast-check/pull/4428)) CI: Default to Node 20 for CI
+- ([PR#4441](https://github.com/dubzzz/fast-check/pull/4441)) CI: Add support for PnP on VSCode
+- ([PR#4345](https://github.com/dubzzz/fast-check/pull/4345)) Performance: Faster replay: drop loose compare
+- ([PR#4381](https://github.com/dubzzz/fast-check/pull/4381)) Test: Import buffer via aliased name
+
+---
+
+# 3.13.2
+
+_Better reporting for invalid paths_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.13.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.1...v3.13.2)]
+
+## Fixes
+
+- ([PR#4344](https://github.com/dubzzz/fast-check/pull/4344)) Bug: Path wrongly reported when invalid
+- ([PR#4279](https://github.com/dubzzz/fast-check/pull/4279)) CI: Better caching for yarn
+- ([PR#4346](https://github.com/dubzzz/fast-check/pull/4346)) CI: Better yarn caching in CI
+- ([PR#4347](https://github.com/dubzzz/fast-check/pull/4347)) CI: Avoid yarn install on "cache hit"
+- ([PR#4348](https://github.com/dubzzz/fast-check/pull/4348)) CI: Create job to confirm all passed
+- ([PR#4352](https://github.com/dubzzz/fast-check/pull/4352)) CI: Skip install on hot cache (win/mac)
+- ([PR#4299](https://github.com/dubzzz/fast-check/pull/4299)) Doc: Article around Zod vulnerability
+- ([PR#4306](https://github.com/dubzzz/fast-check/pull/4306)) Doc: Fixing a typos in Zod article
+- ([PR#4307](https://github.com/dubzzz/fast-check/pull/4307)) Doc: Add missing robots.txt
+- ([PR#4356](https://github.com/dubzzz/fast-check/pull/4356)) Doc: Better document limitations of `gen`
+- ([PR#4338](https://github.com/dubzzz/fast-check/pull/4338)) Script: Faster tests execution with babel
+- ([PR#4270](https://github.com/dubzzz/fast-check/pull/4270)) Test: Check tsc import and types of bundled package
+- ([PR#4271](https://github.com/dubzzz/fast-check/pull/4271)) Test: Typecheck ESM bundle correctly
+- ([PR#4269](https://github.com/dubzzz/fast-check/pull/4269)) Test: Rework checks against legacy node
+
+# 3.13.1
+
+_Fix typings for node native esm_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.13.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.0...v3.13.1)]
+
+## Fixes
+
+- ([PR#4261](https://github.com/dubzzz/fast-check/pull/4261)) Bug: Fix typings for node native esm
+- ([PR#4230](https://github.com/dubzzz/fast-check/pull/4230)) Doc: Release note for 3.13.0
+- ([PR#4240](https://github.com/dubzzz/fast-check/pull/4240)) Doc: Some tips on prototype pollution
+- ([PR#4246](https://github.com/dubzzz/fast-check/pull/4246)) Doc: Fix typo in "Detect prototype pollution automatically"
+
+# 3.13.0
+
+_New options for `date`, `record` and `dictionary`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.13.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.12.1...v3.13.0)]
+
+## Features
+
+- ([PR#4197](https://github.com/dubzzz/fast-check/pull/4197)) Add support for "Invalid Date" in `date`
+- ([PR#4203](https://github.com/dubzzz/fast-check/pull/4203)) Deprecate `withDeletedKeys` on `record`
+- ([PR#4204](https://github.com/dubzzz/fast-check/pull/4204)) Support null-proto in `dictionary`
+- ([PR#4205](https://github.com/dubzzz/fast-check/pull/4205)) Support null-proto in `record`
+
+## Fixes
+
+- ([PR#4207](https://github.com/dubzzz/fast-check/pull/4207)) Bug: Better poisoning resiliency for `dictionary`
+- ([PR#4194](https://github.com/dubzzz/fast-check/pull/4194)) CI: Add some more details onto the PWA
+- ([PR#4211](https://github.com/dubzzz/fast-check/pull/4211)) CI: Rework broken test on `date`
+- ([PR#4212](https://github.com/dubzzz/fast-check/pull/4212)) CI: Rework broken test on `date` (retry)
+- ([PR#4214](https://github.com/dubzzz/fast-check/pull/4214)) CI: Rework another broken test on date
+- ([PR#4186](https://github.com/dubzzz/fast-check/pull/4186)) Doc: Document our approach to dual package
+- ([PR#4187](https://github.com/dubzzz/fast-check/pull/4187)) Doc: Expose website as PWA too
+- ([PR#4190](https://github.com/dubzzz/fast-check/pull/4190)) Move: Move the manifest in /static
+- ([PR#4206](https://github.com/dubzzz/fast-check/pull/4206)) Refactor: Re-use null-proto helpers of `dictionary` on `anything`
+- ([PR#4189](https://github.com/dubzzz/fast-check/pull/4189)) Test: Drop Node 14.x from the test-chain
+
+---
+
+# 3.12.1
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.12.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.12.0...v3.12.1)]
+
+## Fixes
+
+- ([PR#4172](https://github.com/dubzzz/fast-check/pull/4172)) Bug: Better declare ESM's types
+- ([PR#4177](https://github.com/dubzzz/fast-check/pull/4177)) Bug: Replace macros in published esm types
+- ([PR#4156](https://github.com/dubzzz/fast-check/pull/4156)) CI: Stop formatting built website
+- ([PR#4155](https://github.com/dubzzz/fast-check/pull/4155)) CI: Add TypeScript checks on website
+- ([PR#4171](https://github.com/dubzzz/fast-check/pull/4171)) CI: Update Devcontainer settings
+- ([PR#4181](https://github.com/dubzzz/fast-check/pull/4181)) CI: Add exempted labels for stale bot
+- ([PR#4136](https://github.com/dubzzz/fast-check/pull/4136)) Clean: Drop dependency @testing-library/jest-dom
+- ([PR#4107](https://github.com/dubzzz/fast-check/pull/4107)) Doc: What's new article for fast-check 3.12.0
+- ([PR#4118](https://github.com/dubzzz/fast-check/pull/4118)) Doc: Drop raw bench results from release note
+- ([PR#4117](https://github.com/dubzzz/fast-check/pull/4117)) Test: Stabilize test related to NaN in exclusive mode
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
+# 3.12.0
+
+_Faster `float`, `double` and `ulid` and excluded min/max_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.12.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.11.0...v3.12.0)]
+
+## Features
+
+- ([PR#4100](https://github.com/dubzzz/fast-check/pull/4100)) Support excluded min/max in `double`
+- ([PR#4105](https://github.com/dubzzz/fast-check/pull/4105)) Support excluded min/max in `float`
+
+## Fixes
+
+- ([PR#4094](https://github.com/dubzzz/fast-check/pull/4094)) Bug: Stop unwrapping `ulid` we cannot build
+- ([PR#4095](https://github.com/dubzzz/fast-check/pull/4095)) Bug: Be resilient to poisoning with `ulid`
+- ([PR#4041](https://github.com/dubzzz/fast-check/pull/4041)) CI: Ensure we use latest node in range
+- ([PR#4062](https://github.com/dubzzz/fast-check/pull/4062)) CI: Update devcontainer configuration
+- ([PR#4065](https://github.com/dubzzz/fast-check/pull/4065)) CI: Better configuration for renovate
+- ([PR#4068](https://github.com/dubzzz/fast-check/pull/4068)) CI: Refine configuration of renovate
+- ([PR#4073](https://github.com/dubzzz/fast-check/pull/4073)) CI: New attempt to configure renovate
+- ([PR#4075](https://github.com/dubzzz/fast-check/pull/4075)) CI: Configure renovate to bump non-package
+- ([PR#4078](https://github.com/dubzzz/fast-check/pull/4078)) CI: Disable nodenv bumps on renovate
+- ([PR#4080](https://github.com/dubzzz/fast-check/pull/4080)) CI: Stop bumping node via renovate
+- ([PR#4040](https://github.com/dubzzz/fast-check/pull/4040)) Doc: Prepare release note for 3.11.0
+- ([PR#4087](https://github.com/dubzzz/fast-check/pull/4087)) Doc: Add new contributor zbjornson
+- ([PR#4059](https://github.com/dubzzz/fast-check/pull/4059)) Performance: Faster `decomposeFloat/Double`
+- ([PR#4088](https://github.com/dubzzz/fast-check/pull/4088)) Performance: Drop some unneeded allocs in `ulid`
+- ([PR#4091](https://github.com/dubzzz/fast-check/pull/4091)) Performance: Faster unmap for `ulid`
+- ([PR#4092](https://github.com/dubzzz/fast-check/pull/4092)) Performance: Faster generation of `ulid`
+- ([PR#4098](https://github.com/dubzzz/fast-check/pull/4098)) Performance: Faster `ulid` mapper function
+- ([PR#4039](https://github.com/dubzzz/fast-check/pull/4039)) Script: Add support for more gitmojis
+
+---
+
 # 3.11.0
 
 _New arbitrary for ulid_

@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
 
 import { arrayInt64 } from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
-import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import type { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
@@ -52,8 +52,8 @@ describe('arrayInt64', () => {
             expect(nextArrayInt).toHaveBeenCalledTimes(1);
             expect(nextArrayInt).toHaveBeenCalledWith(min64, max64);
             expect(nextInt).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -86,8 +86,8 @@ describe('arrayInt64', () => {
             expect(nextArrayInt).toHaveBeenCalledWith(min64, max64);
             expect(nextInt).toHaveBeenCalledTimes(1);
             expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -126,8 +126,8 @@ describe('arrayInt64', () => {
             expect(receivedMin).toBeLessThanOrEqual(max);
             expect(receivedMax).toBeGreaterThanOrEqual(min);
             expect(receivedMax).toBeLessThanOrEqual(max);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -152,8 +152,8 @@ describe('arrayInt64', () => {
 
             // Assert
             expect(out).toBe(true);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -180,8 +180,8 @@ describe('arrayInt64', () => {
 
             // Assert
             expect(out).toBe(false);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -367,7 +367,7 @@ describe('arrayInt64 (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(
       fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
-      fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue })
+      fc.bigInt({ min: -MaxArrayIntValue, max: MaxArrayIntValue }),
     )
     .map((vs) => ({
       min: vs[0] <= vs[1] ? vs[0] : vs[1],

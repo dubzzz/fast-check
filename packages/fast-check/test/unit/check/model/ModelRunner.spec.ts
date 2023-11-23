@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
 
-import { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand';
-import { Command } from '../../../../src/check/model/command/Command';
+import type { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand';
+import type { Command } from '../../../../src/check/model/command/Command';
 import { modelRun, asyncModelRun } from '../../../../src/check/model/ModelRunner';
 
 type Model = Record<string, unknown>;
@@ -31,7 +31,7 @@ describe('ModelRunner', () => {
           });
           modelRun(() => setupData, commands);
           expect(startedRuns).toEqual(expectedRuns);
-        })
+        }),
       ));
   });
   describe('asyncModelRunner', () => {
@@ -65,7 +65,7 @@ describe('ModelRunner', () => {
           const setup = asyncSetup ? async () => setupData : () => setupData;
           await asyncModelRun(setup, commands);
           expect(startedRuns).toEqual(expectedRuns);
-        })
+        }),
       ));
     it('Should wait setup before launching commands', async () => {
       let calledBeforeDataReady = false;

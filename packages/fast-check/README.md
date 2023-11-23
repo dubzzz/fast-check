@@ -53,7 +53,7 @@ describe('properties', () => {
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
-      })
+      }),
     );
   });
 });

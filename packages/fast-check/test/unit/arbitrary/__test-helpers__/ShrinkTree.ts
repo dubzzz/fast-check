@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import type { Value } from '../../../../src/check/arbitrary/definition/Value';
 
 const truncatedSignal: any = Symbol();
 
@@ -9,7 +9,7 @@ export type ShrinkTree<T> = [T, ShrinkTree<T>[]];
 export function buildShrinkTree<T>(
   arb: Arbitrary<T>,
   v: Value<T>,
-  lengthLimiter: { numItems: number } = { numItems: Number.POSITIVE_INFINITY }
+  lengthLimiter: { numItems: number } = { numItems: Number.POSITIVE_INFINITY },
 ): ShrinkTree<T> {
   --lengthLimiter.numItems;
   const value = v.value;

@@ -7,9 +7,9 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
-          (v: [number, number]) => !(v[0] > 100 && v[1] > 100)
+          (v: [number, number]) => !(v[0] > 100 && v[1] > 100),
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
     });
@@ -17,9 +17,9 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
-          (v: [number, number]) => !(v[0] <= 100 && v[1] > 100)
+          (v: [number, number]) => !(v[0] <= 100 && v[1] > 100),
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
     });
@@ -27,9 +27,9 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
-          (v: [number, number]) => !(v[0] > 100 && v[1] <= 100)
+          (v: [number, number]) => !(v[0] > 100 && v[1] <= 100),
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
     });
@@ -37,11 +37,11 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
-          (v: [number, number]) => !(v[0] <= 100 && v[1] <= 100)
+          (v: [number, number]) => !(v[0] <= 100 && v[1] <= 100),
         ),
         // Number of runs has been artificially increased to reduce the flakiness of this test
         // The default (100) was not so bad, but from time to time it led to red runs in the CI
-        { seed: seed, numRuns: 500 }
+        { seed: seed, numRuns: 500 },
       );
       expect(out.failed).toBe(true);
     });
@@ -49,9 +49,9 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.nat().chain((v) => fc.constant(v)),
-          (v: number) => v < 1
+          (v: number) => v < 1,
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([1]);
@@ -60,9 +60,9 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       const out = fc.check(
         fc.property(
           fc.constant(42).chain((_v) => fc.nat()),
-          (v: number) => v < 1
+          (v: number) => v < 1,
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([1]);

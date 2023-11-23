@@ -18,7 +18,7 @@ describe('RunExecution', () => {
             error: fc.fullUnicodeString().map((message) => new Error(message)),
             message: fc.fullUnicodeString(), // Why they are most of the time linked, let's check as if they were independant
           }),
-          { minLength: 1 }
+          { minLength: 1 },
         ),
         (seed, verbosityLevel, failuresDesc) => {
           // Simulate the run
@@ -45,14 +45,14 @@ describe('RunExecution', () => {
           expect(details.errorInstance).toBe(lastFailure.error);
           expect(details.verbose).toBe(verbosityLevel);
           expect(details.failures).toEqual(
-            verbosityLevel >= VerbosityLevel.Verbose ? failuresDesc.map((f) => f.value) : []
+            verbosityLevel >= VerbosityLevel.Verbose ? failuresDesc.map((f) => f.value) : [],
           );
           if (verbosityLevel === VerbosityLevel.None) expect(details.executionSummary).toHaveLength(0);
           else if (verbosityLevel === VerbosityLevel.Verbose) expect(details.executionSummary).toHaveLength(1);
           else if (verbosityLevel === VerbosityLevel.VeryVerbose)
             expect(details.executionSummary).toHaveLength(details.numRuns + details.numSkips);
-        }
-      )
+        },
+      ),
     ));
   it('Should generate correct counterexamplePath with no initial offset', () =>
     fc.assert(
@@ -67,9 +67,9 @@ describe('RunExecution', () => {
         }
         // Assert the value
         expect(run.toRunDetails(seed, '', 10000, QualifiedParameters.read({})).counterexamplePath).toEqual(
-          path.join(':')
+          path.join(':'),
         );
-      })
+      }),
     ));
   it('Should generate correct counterexamplePath given initial offset', () =>
     fc.assert(
@@ -91,10 +91,10 @@ describe('RunExecution', () => {
           joinedPath[offsetPath.length - 1] += addedPath[0];
           // Assert the value
           expect(
-            run.toRunDetails(seed, offsetPath.join(':'), 10000, QualifiedParameters.read({})).counterexamplePath
+            run.toRunDetails(seed, offsetPath.join(':'), 10000, QualifiedParameters.read({})).counterexamplePath,
           ).toEqual(joinedPath.join(':'));
-        }
-      )
+        },
+      ),
     ));
   it('Should produce an execution summary corresponding to the execution', () =>
     fc.assert(
@@ -107,7 +107,7 @@ describe('RunExecution', () => {
           {
             minLength: 1,
             maxLength: 100,
-          }
+          },
         ),
         (executionStatuses) => {
           // Simulate the run
@@ -147,9 +147,9 @@ describe('RunExecution', () => {
             }
           }
           expect(details.failures).toEqual(
-            executionStatuses.filter((v) => v.status === ExecutionStatus.Failure).map((v) => v.value)
+            executionStatuses.filter((v) => v.status === ExecutionStatus.Failure).map((v) => v.value),
           );
-        }
-      )
+        },
+      ),
     ));
 });

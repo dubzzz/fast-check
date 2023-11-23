@@ -97,7 +97,7 @@ test('should always contain its substrings', () => {
   fc.assert(
     fc.property(fc.string(), fc.string({ size: '+1' }), fc.string(), (a, b, c) => {
       expect(contains(a + b + c, b)).toBe(true);
-    })
+    }),
   );
 });
 ```

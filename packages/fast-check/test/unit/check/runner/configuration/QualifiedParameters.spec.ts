@@ -2,7 +2,7 @@ import * as fc from 'fast-check';
 import * as prand from 'pure-rand';
 
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
-import { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
+import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';
 
 const parametersArbitrary = fc.record(
@@ -27,7 +27,7 @@ const parametersArbitrary = fc.record(
     asyncReporter: fc.func(fc.constant(Promise.resolve(undefined))),
     errorWithCause: fc.boolean(),
   },
-  { requiredKeys: [] }
+  { requiredKeys: [] },
 );
 
 const hardCodedRandomTypeWithJump = fc.constantFrom(
@@ -35,7 +35,7 @@ const hardCodedRandomTypeWithJump = fc.constantFrom(
   'congruential',
   'congruential32',
   'xorshift128plus',
-  'xoroshiro128plus'
+  'xoroshiro128plus',
 ) as fc.Arbitrary<RandomType>;
 
 describe('QualifiedParameters', () => {
@@ -51,7 +51,7 @@ describe('QualifiedParameters', () => {
               expect((qualifiedParams as any)[key]).toEqual((params as any)[key]);
             }
           }
-        })
+        }),
       ));
     it('Should transform verbose boolean to its corresponding VerbosityLevel', () =>
       fc.assert(
@@ -59,7 +59,7 @@ describe('QualifiedParameters', () => {
           const expectedVerbosityLevel = verbose ? VerbosityLevel.Verbose : VerbosityLevel.None;
           const qparams = QualifiedParameters.read({ ...params, verbose });
           return qparams.verbose === expectedVerbosityLevel;
-        })
+        }),
       ));
     it('Should transform correctly hardcoded randomType', () =>
       fc.assert(
@@ -78,28 +78,28 @@ describe('QualifiedParameters', () => {
             } else {
               expect(qparams.randomType).toBe(prand[resolvedRandomType]);
             }
-          }
-        )
+          },
+        ),
       ));
     it('Should throw on invalid randomType', () =>
       fc.assert(
         fc.property(parametersArbitrary, (params) => {
           expect(() => QualifiedParameters.read({ ...params, randomType: 'invalid' as RandomType })).toThrowError();
-        })
+        }),
       ));
     describe('Seeds outside of 32 bits range', () => {
       const seedsOutsideRangeArb = fc.oneof(
         fc.double(),
         fc.double({ min: Number.MIN_VALUE, max: Number.MAX_VALUE }),
         fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }),
-        fc.constantFrom(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN)
+        fc.constantFrom(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN),
       );
       it('Should produce 32 bits signed seed', () =>
         fc.assert(
           fc.property(seedsOutsideRangeArb, (unsafeSeed) => {
             const qparams = QualifiedParameters.read({ seed: unsafeSeed });
             return (qparams.seed | 0) === qparams.seed;
-          })
+          }),
         ));
       it('Should produce the same seed given the same input', () =>
         fc.assert(
@@ -107,7 +107,7 @@ describe('QualifiedParameters', () => {
             const qparams1 = QualifiedParameters.read({ seed: unsafeSeed });
             const qparams2 = QualifiedParameters.read({ seed: unsafeSeed });
             return qparams1.seed === qparams2.seed;
-          })
+          }),
         ));
       it('Should transform distinct values between 0 and 1 into distinct seeds', () =>
         fc.assert(
@@ -119,15 +119,15 @@ describe('QualifiedParameters', () => {
               const qparams1 = QualifiedParameters.read({ seed: unsafeSeed1 });
               const qparams2 = QualifiedParameters.read({ seed: unsafeSeed2 });
               return qparams1.seed !== qparams2.seed;
-            }
-          )
+            },
+          ),
         ));
       it('Should truncate integer values into a 32 signed bits seed', () =>
         fc.assert(
           fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (unsafeSeed) => {
             const qparams = QualifiedParameters.read({ seed: unsafeSeed });
             return qparams.seed === (unsafeSeed | 0);
-          })
+          }),
         ));
     });
   });

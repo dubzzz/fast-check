@@ -1,3 +1,28 @@
+# 0.1.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.9...worker%2Fv0.1.0)]
+
+## Features
+
+- ([PR#4420](https://github.com/dubzzz/fast-check/pull/4420)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4287](https://github.com/dubzzz/fast-check/pull/4287)) Test: Confirm basic typings work well
+
+---
+
+# 0.0.9
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.9)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.8...worker%2Fv0.0.9)]
+
+## Fixes
+
+- ([PR#4174](https://github.com/dubzzz/fast-check/pull/4174)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
 # 0.0.8
 
 _Typos in README_

@@ -6,7 +6,7 @@ describe('indexOf', () => {
     fc.assert(
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         return indexOf(a + b + c, b) !== -1;
-      })
+      }),
     );
   });
 
@@ -17,7 +17,7 @@ describe('indexOf', () => {
         const pattern = b;
         const index = indexOf(text, pattern);
         return index === -1 || text.substr(index, pattern.length) === pattern;
-      })
+      }),
     );
   });
 });

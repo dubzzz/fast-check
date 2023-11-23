@@ -1,5 +1,5 @@
 import { fullUnicode } from '../../fullUnicode';
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
 import { safeCharCodeAt, safeNumberToString, encodeURIComponent } from '../../../utils/globals';

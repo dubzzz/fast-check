@@ -35,7 +35,7 @@ describe('Counter', () => {
 
         // Assert
         expect(dbValue).toBe(2);
-      })
+      }),
     );
   });
 
@@ -64,7 +64,7 @@ describe('Counter', () => {
 
         // Assert
         expect(dbValue).toBe(numCalls);
-      })
+      }),
     );
   });
 
@@ -98,7 +98,7 @@ describe('Counter', () => {
 
         // Assert
         expect(dbValue).toBe(expectedNumCalls);
-      })
+      }),
     );
   });
 });

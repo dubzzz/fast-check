@@ -1,6 +1,7 @@
-import { PoolToWorkerMessage, WorkerToPoolMessage } from '../../../src/internals/worker-pool/IWorkerPool.js';
+import type { PoolToWorkerMessage, WorkerToPoolMessage } from '../../../src/internals/worker-pool/IWorkerPool.js';
 import { BasicPool } from '../../../src/internals/worker-pool/BasicPool.js';
-import * as WorkerThreadsMock from 'node:worker_threads';
+// @ts-expect-error - It should normally be "* as WorkerThreadsMock" but it does not work anymore since we switched to babel (instead of ts-jest)
+import WorkerThreadsMock from 'node:worker_threads';
 
 describe('BasicPool', () => {
   it('should instantly register handlers when spawning workers', () => {
@@ -397,7 +398,7 @@ function mockWorker() {
         on,
         postMessage,
         terminate,
-      } as unknown as WorkerThreadsMock.Worker)
+      }) as unknown as WorkerThreadsMock.Worker,
   );
   return { Worker, on, postMessage, terminate };
 }

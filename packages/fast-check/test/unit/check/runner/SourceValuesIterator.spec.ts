@@ -45,7 +45,7 @@ describe('SourceValuesIterator', () => {
 
         expect(generatedValues).toHaveLength(askedValues);
         expect(generatedValues).toEqual(svValues);
-      })
+      }),
     ));
   describe('Not enough skipped values', () => {
     it('Should return the first eligible askedValues values if infinite source', () =>
@@ -61,7 +61,7 @@ describe('SourceValuesIterator', () => {
           ];
           expect(svValues).toHaveLength(askedValues);
           expect(svValues).toEqual(expectedValues);
-        })
+        }),
       ));
     it('Should return the first eligible askedValues values if larger source', () =>
       fc.assert(
@@ -81,8 +81,8 @@ describe('SourceValuesIterator', () => {
             ];
             expect(svValues).toHaveLength(askedValues);
             expect(svValues).toEqual(expectedValues);
-          }
-        )
+          },
+        ),
       ));
     it('Should return the first eligible values among sourceValues values if smaller source', () =>
       fc.assert(
@@ -103,8 +103,8 @@ describe('SourceValuesIterator', () => {
             ];
             expect(svValues).toHaveLength(sourceValues - numSkippedValues);
             expect(svValues).toEqual(expectedValues);
-          }
-        )
+          },
+        ),
       ));
   });
   describe('Too many skipped values', () => {
@@ -121,8 +121,8 @@ describe('SourceValuesIterator', () => {
 
             const expectedValues = [...iotaN(lastSkip).filter((v) => !skippedValues.includes(v))];
             expect(svValues).toEqual(expectedValues);
-          }
-        )
+          },
+        ),
       ));
   });
 });

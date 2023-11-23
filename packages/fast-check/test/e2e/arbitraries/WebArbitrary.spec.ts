@@ -10,7 +10,7 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
         const u = new URL(p);
         expect(u.hostname).toEqual(domain);
       }),
-      { seed: seed }
+      { seed: seed },
     );
   });
   it('Should produce valid authorities', () => {
@@ -27,9 +27,9 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
           const p = `http://${authority}`;
           const u = new URL(p);
           expect(u.hostname).toEqual(domain);
-        }
+        },
       ),
-      { seed: seed }
+      { seed: seed },
     );
   });
   it('Should produce valid URL parts', () => {
@@ -66,9 +66,9 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
               .replace(/\/\.$/, '/'); // replace trailing /. by / if any
             expect(u.pathname).toEqual(sanitizedPath === '' ? '/' : sanitizedPath);
           }
-        }
+        },
       ),
-      { seed: seed }
+      { seed: seed },
     );
   });
 });

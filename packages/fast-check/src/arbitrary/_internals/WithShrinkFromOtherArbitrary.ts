@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
+import type { Random } from '../../random/generator/Random';
+import type { Stream } from '../../stream/Stream';
 
 /** @internal */
 function isSafeContext(context: unknown): context is { generatorContext: unknown } | { shrinkerContext: unknown } {
@@ -26,7 +26,10 @@ function toShrinkerValue<T>(value: Value<T>): Value<T> {
 
 /** @internal */
 export class WithShrinkFromOtherArbitrary<T> extends Arbitrary<T> {
-  constructor(private readonly generatorArbitrary: Arbitrary<T>, private readonly shrinkerArbitrary: Arbitrary<T>) {
+  constructor(
+    private readonly generatorArbitrary: Arbitrary<T>,
+    private readonly shrinkerArbitrary: Arbitrary<T>,
+  ) {
     super();
   }
 

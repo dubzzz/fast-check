@@ -1,8 +1,9 @@
-import { Arbitrary, isArbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { isArbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeMap, safeSlice } from '../utils/globals';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
-import { DepthIdentifier } from './_internals/helpers/DepthContext';
-import { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
  * Conjonction of a weight and an arbitrary used by {@link oneof}
@@ -90,7 +91,7 @@ export type OneOfConstraints = {
  * @internal
  */
 function isOneOfContraints(
-  param: OneOfConstraints | MaybeWeightedArbitrary<unknown> | undefined
+  param: OneOfConstraints | MaybeWeightedArbitrary<unknown> | undefined,
 ): param is OneOfConstraints {
   return (
     param != null &&

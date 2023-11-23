@@ -112,7 +112,7 @@ This arbitrary has been designed to simplify the usage of Property Based Testing
 It helps to easily leverage Property Based Testing capabilities into tests based on fake-data.
 
 :::warning No replay capabilities
-When replaying failures on properties including a `fc.gen()`, you need to drop the path part.
+When replaying failures on properties including a `fc.gen()`, you need to drop the path part. More precisely, you may keep the very first part but have to drop anything after the first ":".
 :::
 
 :::warning Must be called in a deterministic order

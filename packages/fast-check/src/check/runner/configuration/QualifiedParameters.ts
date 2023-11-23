@@ -1,8 +1,8 @@
 import prand, { unsafeSkipN } from 'pure-rand';
-import { Parameters } from './Parameters';
+import type { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
-import { RunDetails } from '../reporter/RunDetails';
-import { RandomGenerator } from 'pure-rand';
+import type { RunDetails } from '../reporter/RunDetails';
+import type { RandomGenerator } from 'pure-rand';
 
 const safeDateNow = Date.now;
 const safeMathMin = Math.min;
@@ -48,10 +48,10 @@ export class QualifiedParameters<T> {
     this.maxSkipsPerRun = QualifiedParameters.readOrDefault(p, 'maxSkipsPerRun', 100);
     this.timeout = QualifiedParameters.safeTimeout(QualifiedParameters.readOrDefault(p, 'timeout', null));
     this.skipAllAfterTimeLimit = QualifiedParameters.safeTimeout(
-      QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null)
+      QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null),
     );
     this.interruptAfterTimeLimit = QualifiedParameters.safeTimeout(
-      QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null)
+      QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null),
     );
     this.markInterruptAsFailure = QualifiedParameters.readBoolean(p, 'markInterruptAsFailure');
     this.skipEqualValues = QualifiedParameters.readBoolean(p, 'skipEqualValues');
@@ -96,7 +96,7 @@ export class QualifiedParameters<T> {
   }
 
   private static createQualifiedRandomGenerator = (
-    random: (seed: number) => RandomGenerator
+    random: (seed: number) => RandomGenerator,
   ): ((seed: number) => QualifiedRandomGenerator) => {
     return (seed) => {
       const rng = random(seed);
@@ -171,7 +171,7 @@ export class QualifiedParameters<T> {
   private static readOrDefault = <T, K extends keyof Parameters<T>, V>(
     p: Parameters<T>,
     key: K,
-    defaultValue: V
+    defaultValue: V,
   ): NonNullable<Parameters<T>[K]> | V => {
     const value = p[key];
     // value will be non nullable if value != null (even if TypeScript complains about it)

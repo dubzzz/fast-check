@@ -1,4 +1,4 @@
-import { GlobalDetails } from '../../src/internals/types/AllGlobals';
+import type { GlobalDetails } from '../../src/internals/types/AllGlobals';
 import { shouldIgnoreGlobal, shouldIgnoreProperty } from '../../src/internals/FilterNonEligibleDiffs';
 import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet';
 

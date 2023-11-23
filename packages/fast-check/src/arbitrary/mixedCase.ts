@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeToUpperCase, safeToLowerCase, BigInt, Error } from '../utils/globals';
 import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary';
 

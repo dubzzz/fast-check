@@ -1,10 +1,10 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { ICommand } from '../../check/model/command/ICommand';
+import type { ICommand } from '../../check/model/command/ICommand';
 import { CommandsIterable } from '../../check/model/commands/CommandsIterable';
 import { CommandWrapper } from '../../check/model/commands/CommandWrapper';
 import { ReplayPath } from '../../check/model/ReplayPath';
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Stream } from '../../stream/Stream';
 import { oneof } from '../oneof';
@@ -30,7 +30,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
     maxGeneratedCommands: number,
     maxCommands: number,
     readonly sourceReplayPath: string | null,
-    readonly disableReplayLog: boolean
+    readonly disableReplayLog: boolean,
   ) {
     super();
     this.oneCommandArb = oneof(...commandArbs).map((c) => new CommandWrapper(c));
@@ -105,7 +105,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
 
   shrink(
     _value: CommandsIterable<Model, Real, RunResult, CheckAsync>,
-    context: unknown
+    context: unknown,
   ): Stream<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>> {
     if (context === undefined) {
       return Stream.nil<Value<CommandsIterable<Model, Real, RunResult, CheckAsync>>>();
@@ -143,7 +143,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
           return this.lengthArb
             .shrink(items.length - 1 - numToKeep, undefined)
             .map((l) => fixedStart.concat(items.slice(items.length - (l.value + 1))));
-        })
+        }),
       );
     }
 
@@ -153,15 +153,15 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
         makeLazy(() =>
           this.oneCommandArb
             .shrink(items[itemAt].value_, items[itemAt].context)
-            .map((v) => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1)))
-        )
+            .map((v) => items.slice(0, itemAt).concat([v], items.slice(itemAt + 1))),
+        ),
       );
     }
 
     return rootShrink.join(...nextShrinks).map((shrinkables) => {
       return this.buildValueFor(
         shrinkables.map((c) => new Value(c.value_.clone(), c.context)),
-        true
+        true,
       );
     });
   }
