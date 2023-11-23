@@ -1,5 +1,5 @@
 releases:
-  fast-check: minor
+  fast-check: major
 
 declined:
   - "@fast-check/ava"
