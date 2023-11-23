@@ -3,7 +3,7 @@
 // test case, we make sure that the package is correct from a Node point of view.
 
 // eslint-disable-next-line no-undef
-globalThis.__vitest_worker__ = { config: { fakeTimers: undefined } };
+globalThis.__vitest_worker__ = { config: { fakeTimers: undefined }, environment: { name: 'node' } };
 
 import('@fast-check/vitest').then(
   () => {
@@ -24,5 +24,5 @@ import('@fast-check/vitest').then(
     // When our modules are not properly defined, we receive: err.code === "ERR_MODULE_NOT_FOUND".
     // Or at least, it's one of the possible errors we could receive.
     throw err;
-  }
+  },
 );

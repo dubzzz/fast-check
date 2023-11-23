@@ -12,7 +12,7 @@ describe(`WithProvidedExamples (seed: ${seed})`, () => {
           [1, 100],
         ],
         endOnFailure: true,
-      }
+      },
     );
     expect(out.failed).toBe(true);
     expect(out.numRuns).toBe(2);
@@ -27,7 +27,7 @@ describe(`WithProvidedExamples (seed: ${seed})`, () => {
           [42, 42],
           [1, 100],
         ],
-      }
+      },
     );
     expect(out.failed).toBe(true);
     expect(out.numRuns).toBe(2);
@@ -42,7 +42,7 @@ describe(`WithProvidedExamples (seed: ${seed})`, () => {
           [42, 43],
           [1, 100],
         ],
-      }
+      },
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0]).toBeGreaterThanOrEqual(out.counterexample![1]);

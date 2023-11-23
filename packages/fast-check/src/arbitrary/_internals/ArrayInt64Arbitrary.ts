@@ -1,10 +1,10 @@
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { stream, Stream } from '../../stream/Stream';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
+import type { ArrayInt64 } from './helpers/ArrayInt64';
 import {
   add64,
-  ArrayInt64,
   halve64,
   isEqual64,
   isStrictlyNegative64,
@@ -21,7 +21,10 @@ import {
 class ArrayInt64Arbitrary extends Arbitrary<ArrayInt64> {
   private biasedRanges: { min: ArrayInt64; max: ArrayInt64 }[] | null = null;
 
-  constructor(readonly min: ArrayInt64, readonly max: ArrayInt64) {
+  constructor(
+    readonly min: ArrayInt64,
+    readonly max: ArrayInt64,
+  ) {
     super();
   }
 

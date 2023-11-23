@@ -11,5 +11,5 @@ fc.assert(
     // For any a, b, c strings
     // b is a substring of a + b + c
     return isSubstring(b, a + b + c);
-  })
+  }),
 );

@@ -13,7 +13,7 @@ describe('knight', () => {
         const [space, max_guesses] = inputs;
         knight(space, max_guesses);
         return space.solved();
-      })
+      }),
     );
   });
 

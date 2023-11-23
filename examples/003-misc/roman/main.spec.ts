@@ -6,7 +6,7 @@ describe('toRoman', () => {
     fc.assert(
       fc.property(romanNumberArb, (n) => {
         expect(fromRoman(toRoman(n))).toBe(n);
-      })
+      }),
     );
   });
 
@@ -14,7 +14,7 @@ describe('toRoman', () => {
     fc.assert(
       fc.property(romanNumberArb, (n) => {
         expect(toRoman(n)).not.toBe('');
-      })
+      }),
     );
   });
 
@@ -23,7 +23,7 @@ describe('toRoman', () => {
       fc.property(romanNumberArb, romanNumberArb, (n1, n2) => {
         fc.pre(n1 !== n2);
         expect(toRoman(n2)).not.toBe(toRoman(n1));
-      })
+      }),
     );
   });
 
@@ -31,7 +31,7 @@ describe('toRoman', () => {
     fc.assert(
       fc.property(fc.integer({ min: -MaxRoman, max: -1 }), (n) => {
         expect(toRoman(n)[0]).toBe('-');
-      })
+      }),
     );
   });
 
@@ -39,7 +39,7 @@ describe('toRoman', () => {
     fc.assert(
       fc.property(posRomanNumberArb, (n) => {
         expect(toRoman(-n)).toBe(`-${toRoman(n)}`);
-      })
+      }),
     );
   });
 
@@ -48,7 +48,7 @@ describe('toRoman', () => {
     fc.assert(
       fc.property(posRomanNumberArb, (n) => {
         expect([...toRoman(n)].every((c) => letters.includes(c))).toBe(true);
-      })
+      }),
     );
   });
 
@@ -61,10 +61,10 @@ describe('toRoman', () => {
           expect([...repr].filter((c) => c === letters[idx]).length).toBeLessThanOrEqual(
             idx % 2
               ? 1 // 5 * 10^N appear at most 1 time
-              : 4 // 10^N appear at most 4 times
+              : 4, // 10^N appear at most 4 times
           );
         }
-      })
+      }),
     );
   });
 
@@ -73,7 +73,7 @@ describe('toRoman', () => {
     fc.assert(
       fc.property(romanNumberArb, (n) => {
         expect(toRoman(n).length).toBeLessThanOrEqual(MaxRomanReprLength);
-      })
+      }),
     );
   });
 });
@@ -93,7 +93,7 @@ describe('fromRoman', () => {
           expected += num * LettersValue[idx][0];
         }
         expect(fromRoman(romanRepr)).toBe(expected);
-      })
+      }),
     );
   });
 });

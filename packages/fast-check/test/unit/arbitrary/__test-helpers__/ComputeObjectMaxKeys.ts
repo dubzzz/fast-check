@@ -29,6 +29,6 @@ export function computeObjectMaxKeys(o: unknown): number {
   return Math.max(
     keys.length,
     ...keys.map((v) => computeObjectMaxKeys(v)),
-    ...values.map((v) => computeObjectMaxKeys(v))
+    ...values.map((v) => computeObjectMaxKeys(v)),
   );
 }

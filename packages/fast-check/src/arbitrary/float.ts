@@ -1,10 +1,9 @@
 import { integer } from './integer';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers';
 
-const safeNumberIsFinite = Number.isFinite;
-const safeNumberIsInteger = Number.isInteger;
 const safeNumberIsNaN = Number.isNaN;
+const safeMathFround = Math.fround;
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
@@ -23,11 +22,25 @@ export interface FloatConstraints {
    */
   min?: number;
   /**
+   * Should the lower bound (aka min) be excluded?
+   * Note: Excluding min=Number.NEGATIVE_INFINITY would result into having min set to -3.4028234663852886e+38.
+   * @defaultValue false
+   * @remarks Since 3.12.0
+   */
+  minExcluded?: boolean;
+  /**
    * Upper bound for the generated 32-bit floats (included)
    * @defaultValue Number.POSITIVE_INFINITY, 3.4028234663852886e+38 when noDefaultInfinity is true
    * @remarks Since 2.8.0
    */
   max?: number;
+  /**
+   * Should the upper bound (aka max) be excluded?
+   * Note: Excluding max=Number.POSITIVE_INFINITY would result into having max set to 3.4028234663852886e+38.
+   * @defaultValue false
+   * @remarks Since 3.12.0
+   */
+  maxExcluded?: boolean;
   /**
    * By default, lower and upper bounds are -infinity and +infinity.
    * By setting noDefaultInfinity to true, you move those defaults to minimal and maximal finite values.
@@ -44,24 +57,19 @@ export interface FloatConstraints {
 }
 
 /**
- * Same as {@link floatToIndex} except it throws in case of invalid float 32
+ * Same as {@link floatToIndex} except it throws if f is NaN or not representable as a 32-bit float
  *
  * @internal
  */
 function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
-  const conversionTrick = 'you can convert any double to a 32-bit float by using `new Float32Array([myDouble])[0]`';
+  const conversionTrick = 'you can convert any double to a 32-bit float by using `Math.fround(myDouble)`';
   const errorMessage = 'fc.float constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
-  if (safeNumberIsNaN(f) || (safeNumberIsFinite(f) && (f < -MAX_VALUE_32 || f > MAX_VALUE_32))) {
+  if (safeNumberIsNaN(f) || safeMathFround(f) !== f) {
     // Number.NaN does not have any associated index in the current implementation
-    // Finite values outside of the 32-bit range for floats cannot be 32-bit floats
+    // If the value isn't the same after fround(), it can't be represented as a 32-bit float
     throw new Error(errorMessage);
   }
-  const index = floatToIndex(f);
-  if (!safeNumberIsInteger(index)) {
-    // Index not being an integer means that original value was not a valid 32-bit float
-    throw new Error(errorMessage);
-  }
-  return index;
+  return floatToIndex(f);
 }
 
 /** @internal */
@@ -88,11 +96,15 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
+    minExcluded = false,
+    maxExcluded = false,
     min = noDefaultInfinity ? -MAX_VALUE_32 : safeNegativeInfinity,
     max = noDefaultInfinity ? MAX_VALUE_32 : safePositiveInfinity,
   } = constraints;
-  const minIndex = safeFloatToIndex(min, 'min');
-  const maxIndex = safeFloatToIndex(max, 'max');
+  const minIndexRaw = safeFloatToIndex(min, 'min');
+  const minIndex = minExcluded ? minIndexRaw + 1 : minIndexRaw;
+  const maxIndexRaw = safeFloatToIndex(max, 'max');
+  const maxIndex = maxExcluded ? maxIndexRaw - 1 : maxIndexRaw;
   if (minIndex > maxIndex) {
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
@@ -117,6 +129,6 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
       if (typeof value !== 'number') throw new Error('Unsupported type');
       if (safeNumberIsNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
       return floatToIndex(value);
-    }
+    },
   );
 }

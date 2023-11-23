@@ -1,3 +1,53 @@
+# 0.1.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.9...worker%2Fv0.1.0)]
+
+## Features
+
+- ([PR#4420](https://github.com/dubzzz/fast-check/pull/4420)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4287](https://github.com/dubzzz/fast-check/pull/4287)) Test: Confirm basic typings work well
+
+---
+
+# 0.0.9
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.9)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.8...worker%2Fv0.0.9)]
+
+## Fixes
+
+- ([PR#4174](https://github.com/dubzzz/fast-check/pull/4174)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
+# 0.0.8
+
+_Typos in README_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.7...worker%2Fv0.0.8)]
+
+## Fixes
+
+- ([PR#3977](https://github.com/dubzzz/fast-check/pull/3977)) Doc: Fix API error in README
+
+# 0.0.7
+
+_Introduce isolation levels on workers_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.6...worker%2Fv0.0.7)]
+
+## Features
+
+- ([PR#3960](https://github.com/dubzzz/fast-check/pull/3960)) Introduce levels of isolation
+- ([PR#3963](https://github.com/dubzzz/fast-check/pull/3963)) Add "file" isolation level
+
+## Fixes
+
+- ([PR#3958](https://github.com/dubzzz/fast-check/pull/3958)) Refactor: Introduce internal `IWorkerPool` interface
+- ([PR#3962](https://github.com/dubzzz/fast-check/pull/3962)) Refactor: Allow support for multiple predicates per worker
+- ([PR#3971](https://github.com/dubzzz/fast-check/pull/3971)) Test: Restructure E2E tests
+
 # 0.0.6
 
 _Add logo on the README_

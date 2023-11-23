@@ -103,7 +103,7 @@ describe('NextArbitrary', () => {
           expect(predicate).not.toHaveBeenCalledWith(requestedValue);
           expect(predicate).not.toHaveBeenCalled();
         }
-      }
+      },
     );
   });
 
@@ -349,7 +349,7 @@ describe('NextArbitrary', () => {
         expect(unmapper).toHaveBeenCalledWith(originalValue);
         expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
         expect(canShrinkWithoutContext).toHaveBeenCalledWith(unmapperOutput);
-      }
+      },
     );
 
     it('should try to unmap the value and stop on error in case of failing unmapper function', () => {
@@ -383,7 +383,7 @@ describe('NextArbitrary', () => {
       const expectedStreamValuesFromSource = Stream.of(
         new Value('titi', undefined),
         new Value('toto', undefined),
-        new Value('tutu', undefined)
+        new Value('tutu', undefined),
       );
       const generate = jest.fn();
       const canShrinkWithoutContext = jest.fn();

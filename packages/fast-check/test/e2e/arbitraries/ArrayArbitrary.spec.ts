@@ -8,7 +8,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     it('Should shrink on the size of the array', () => {
       const out = fc.check(
         fc.property(fc.array(fc.nat()), (arr: number[]) => arr.length < 2),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).not.toBe(null);
@@ -17,7 +17,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     it('Should shrink on the content of the array', () => {
       const out = fc.check(
         fc.property(fc.array(fc.integer({ min: 3, max: 10 })), (arr: number[]) => arr.length < 2),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([[3, 3]]);
@@ -25,7 +25,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
     it('Should shrink removing unecessary entries in the array', () => {
       const out = fc.check(
         fc.property(fc.array(fc.integer({ min: 0, max: 10 })), (arr: number[]) => arr.filter((v) => v >= 5).length < 2),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([[5, 5]]);
@@ -49,7 +49,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates (but will find some)
       }),
-      { seed, numRuns: 10000 } // increased numRuns to remove flakiness
+      { seed, numRuns: 10000 }, // increased numRuns to remove flakiness
     );
     expect(out.failed).toBe(true);
     expect(out.counterexample![0]).toHaveLength(2);
@@ -64,7 +64,7 @@ function biasIts<T>(label: string, arb: fc.Arbitrary<T>) {
         const filtered = removeDuplicates(arr);
         expect(filtered).toHaveLength(new Set(filtered).size); // expect no duplicates
       }),
-      { seed, unbiased: true }
+      { seed, unbiased: true },
     );
     expect(out.failed).toBe(false);
   });

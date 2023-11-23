@@ -2,12 +2,18 @@ name: Generate Changelog
 
 on: workflow_dispatch
 
+permissions:
+  contents: read
+
 jobs:
   generate_changelog:
     name: 'Generate Changelog'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
       - name: Configure GIT
@@ -15,7 +21,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Generate Changelog
-        uses: actions/github-script@v6
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
             const {run} = require('./.github/workflows/scripts/generate-changelog.cjs');

@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { webPath, WebPathConstraints } from '../../../src/arbitrary/webPath';
+import type { WebPathConstraints } from '../../../src/arbitrary/webPath';
+import { webPath } from '../../../src/arbitrary/webPath';
 import { URL } from 'url';
 
 import {
@@ -76,6 +77,6 @@ describe('webPath (integration)', () => {
 function webPathConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebPathConstraints> {
   return fc.record(
     { size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb) },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 }

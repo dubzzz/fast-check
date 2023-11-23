@@ -1,5 +1,5 @@
 import { safeAdd, safePush, Set } from '../../../utils/globals';
-import { CustomSet } from '../interfaces/CustomSet';
+import type { CustomSet } from '../interfaces/CustomSet';
 
 const safeNumberIsNaN = Number.isNaN;
 

@@ -1,8 +1,8 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { Random } from '../../../random/generator/Random';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Random } from '../../../random/generator/Random';
 import { NoopSlicedGenerator } from '../implementations/NoopSlicedGenerator';
 import { SlicedBasedGenerator } from '../implementations/SlicedBasedGenerator';
-import { SlicedGenerator } from '../interfaces/SlicedGenerator';
+import type { SlicedGenerator } from '../interfaces/SlicedGenerator';
 
 /**
  * Build a {@link SlicedGenerator}
@@ -18,7 +18,7 @@ export function buildSlicedGenerator<T>(
   arb: Arbitrary<T>,
   mrng: Random,
   slices: T[][],
-  biasFactor: number | undefined
+  biasFactor: number | undefined,
 ): SlicedGenerator<T> {
   // We by-pass any slice-based logic if one of:
   // - no bias

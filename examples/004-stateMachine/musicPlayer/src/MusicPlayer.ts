@@ -17,7 +17,10 @@ export class MusicPlayerImplem implements MusicPlayer {
   private isPlaying: boolean;
   private playingId: number;
 
-  constructor(tracks: string[], readonly buggy: boolean = false) {
+  constructor(
+    tracks: string[],
+    readonly buggy: boolean = false,
+  ) {
     this.tracks = [...tracks];
     this.isPlaying = false;
     this.playingId = 0;

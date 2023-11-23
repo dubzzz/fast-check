@@ -33,12 +33,12 @@ export class ToggleItemCommand implements TodolistCommand {
     // We expect other items not to have been impacted
     expect(
       [...todosAfter.slice(0, selectedTodoIndex), ...todosAfter.slice(selectedTodoIndex + 1)].map(
-        extractItemDataExtended
-      )
+        extractItemDataExtended,
+      ),
     ).toEqual(
       [...todosBefore.slice(0, selectedTodoIndex), ...todosBefore.slice(selectedTodoIndex + 1)].map(
-        extractItemDataExtended
-      )
+        extractItemDataExtended,
+      ),
     );
   }
 

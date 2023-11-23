@@ -1,6 +1,7 @@
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { cloneIfNeeded, cloneMethod, WithCloneMethod } from '../../check/symbols';
+import type { WithCloneMethod } from '../../check/symbols';
+import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';
@@ -49,7 +50,7 @@ function tupleWrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): TupleExten
 export function tupleShrink<Ts extends unknown[]>(
   arbs: ArbsArray<Ts>,
   value: Ts,
-  context?: TupleContext
+  context?: TupleContext,
 ): Stream<TupleExtendedValue<Ts>> {
   // shrinking one by one is the not the most comprehensive
   // but allows a reasonable number of entries in the shrink
@@ -64,12 +65,12 @@ export function tupleShrink<Ts extends unknown[]>(
           .map((v) => {
             const nextValues: Value<unknown>[] = safeMap(
               value,
-              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx])
+              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx]),
             );
             return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
           })
-          .map(tupleWrapper)
-      )
+          .map(tupleWrapper),
+      ),
     );
   }
   return Stream.nil<TupleExtendedValue<Ts>>().join(...shrinks);

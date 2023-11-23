@@ -1,5 +1,5 @@
 import { cloneMethod } from '../../symbols';
-import { CommandWrapper } from './CommandWrapper';
+import type { CommandWrapper } from './CommandWrapper';
 
 /**
  * Iterable datastructure accepted as input for asyncModelRun and modelRun
@@ -10,7 +10,7 @@ export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync 
 {
   constructor(
     readonly commands: CommandWrapper<Model, Real, RunResult, CheckAsync>[],
-    readonly metadataForReplay: () => string
+    readonly metadataForReplay: () => string,
   ) {}
   [Symbol.iterator](): Iterator<CommandWrapper<Model, Real, RunResult, CheckAsync>> {
     return this.commands[Symbol.iterator]();
@@ -18,7 +18,7 @@ export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync 
   [cloneMethod](): CommandsIterable<Model, Real, RunResult, CheckAsync> {
     return new CommandsIterable(
       this.commands.map((c) => c.clone()),
-      this.metadataForReplay
+      this.metadataForReplay,
     );
   }
   toString(): string {

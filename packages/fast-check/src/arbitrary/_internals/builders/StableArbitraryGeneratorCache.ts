@@ -1,14 +1,14 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 type ArbitraryBuilder = () => Arbitrary<unknown>;
 type MemoedEntry<T = unknown> = { args: unknown[]; value: Arbitrary<T> };
 export type ArbitraryGeneratorCache = <T, TArgs extends unknown[]>(
   builder: (...params: TArgs) => Arbitrary<T>,
-  args: TArgs
+  args: TArgs,
 ) => Arbitrary<T>;
 
 export function buildStableArbitraryGeneratorCache(
-  isEqual: (v1: unknown, v2: unknown) => boolean
+  isEqual: (v1: unknown, v2: unknown) => boolean,
 ): ArbitraryGeneratorCache {
   // No need to choose a weak container (such as WeakMap) as the recommendation
   // would be to pass a stable builder function so the ref might never die and
@@ -17,7 +17,7 @@ export function buildStableArbitraryGeneratorCache(
 
   return function stableArbitraryGeneratorCache<T, TArgs extends unknown[]>(
     builder: (...args: TArgs) => Arbitrary<T>,
-    args: TArgs
+    args: TArgs,
   ): Arbitrary<T> {
     const entriesForBuilder = previousCallsPerBuilder.get(builder);
     if (entriesForBuilder === undefined) {

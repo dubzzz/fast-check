@@ -1,17 +1,12 @@
 import { Worker } from 'node:worker_threads';
-
-export type OnSuccessCallback<TSuccess> = (value: TSuccess) => void;
-export type OnErrorCallback = (error: unknown) => void;
-
-/**
- * Worker API
- */
-export type PooledWorker<TSuccess, TPayload> = {
-  isAvailable: () => boolean;
-  isFaulty: () => boolean;
-  register: (payload: TPayload, onSuccess: OnSuccessCallback<TSuccess>, onFailure: OnErrorCallback) => void;
-  terminateIfStillRunning: () => Promise<void>;
-};
+import type {
+  OnErrorCallback,
+  OnSuccessCallback,
+  IWorkerPool,
+  PooledWorker,
+  WorkerToPoolMessage,
+  PoolToWorkerMessage,
+} from './IWorkerPool.js';
 
 /**
  * Worker internal API
@@ -21,35 +16,18 @@ type InternalPooledWorker<TSuccess, TPayload> = PooledWorker<TSuccess, TPayload>
 };
 
 /**
- * Message exchanged from the pool to the worker
- */
-export type PoolToWorkerMessage<TPayload> = { runId: number; payload: TPayload };
-
-/**
- * Message exchanged from the worker to the pool
- */
-export type WorkerToPoolMessage<TSuccess> = { runId: number } & (
-  | { success: true; output: TSuccess }
-  | { success: false; error: unknown }
-);
-
-/**
  * Basic pool for workers, providing the ability to spawn new workers,
  * get the first available one and terminate them all
  */
-export class BasicPool<TSuccess, TPayload> {
+export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPayload> {
   private readonly workers: InternalPooledWorker<TSuccess, TPayload>[] = [];
 
   /**
    * Instantiate a new pool of workers
    * @param workerFileUrl - URL of the script for workers
-   * @param workerId - Id of the worker to be passed to the worker at launch time
    */
-  constructor(private readonly workerFileUrl: URL, private readonly workerId: number) {}
+  constructor(private readonly workerFileUrl: URL) {}
 
-  /**
-   * Spawn a new instance of worker ready to handle new tasks
-   */
   public async spawnNewWorker(): Promise<PooledWorker<TSuccess, TPayload>> {
     let runIdInWorker = -1;
     let ready = false;
@@ -59,7 +37,7 @@ export class BasicPool<TSuccess, TPayload> {
       onSuccess: OnSuccessCallback<TSuccess>;
       onFailure: OnErrorCallback;
     } | null = null;
-    const worker = new Worker(this.workerFileUrl, { workerData: { currentWorkerId: this.workerId } });
+    const worker = new Worker(this.workerFileUrl, { workerData: { fastcheckWorker: true } });
 
     let resolveOnline: () => void = () => undefined;
     let rejectOnline: (error: unknown) => void = () => undefined;
@@ -136,13 +114,17 @@ export class BasicPool<TSuccess, TPayload> {
       worker,
       isAvailable,
       isFaulty,
-      register: (payload, onSuccess, onFailure) => {
+      register: (predicateId, payload, onSuccess, onFailure) => {
         if (!isAvailable()) {
           throw new Error('This instance of PooledWorker is currently in use');
         }
         const currentRunId = ++runIdInWorker;
         registration = { currentRunId, onSuccess, onFailure };
-        const message: PoolToWorkerMessage<TPayload> = { payload, runId: currentRunId };
+        const message: PoolToWorkerMessage<TPayload> = {
+          targetPredicateId: predicateId,
+          payload,
+          runId: currentRunId,
+        };
         worker.postMessage(message);
       },
       terminateIfStillRunning: async () => {
@@ -161,16 +143,10 @@ export class BasicPool<TSuccess, TPayload> {
     return pooledWorker;
   }
 
-  /**
-   * Get the first available worker of the pool if any
-   */
   public getFirstAvailableWorker(): PooledWorker<TSuccess, TPayload> | undefined {
     return this.workers.find((w) => w.isAvailable());
   }
 
-  /**
-   * Terminate all registered workers and drop them definitely for the pool
-   */
   public terminateAllWorkers(): Promise<void> {
     const dropped = this.workers.splice(0, this.workers.length); // clear all workers
     return Promise.all(dropped.map((w) => w.worker.terminate())).then(() => undefined);

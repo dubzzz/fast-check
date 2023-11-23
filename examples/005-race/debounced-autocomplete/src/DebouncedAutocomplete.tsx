@@ -23,7 +23,7 @@ export default function DebouncedAutocomplete(props: Props) {
             setSuggestions(suggestions);
           }
         }),
-      500
+      500,
     );
     return () => {
       canceled = true;

@@ -23,7 +23,7 @@ describe('buildSchedulerFor', () => {
     expect(s).toBe(instance);
     expect(SchedulerImplem).toHaveBeenCalledWith(
       act,
-      expect.objectContaining({ clone: expect.any(Function), nextTaskIndex: expect.any(Function) })
+      expect.objectContaining({ clone: expect.any(Function), nextTaskIndex: expect.any(Function) }),
     );
   });
 
@@ -77,7 +77,7 @@ describe('buildSchedulerFor', () => {
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[1]);
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[2]);
     expect(() => taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toThrowErrorMatchingInlineSnapshot(
-      `"Invalid schedulerFor defined: unable to find next task"`
+      `"Invalid schedulerFor defined: unable to find next task"`,
     );
   });
 
@@ -105,7 +105,7 @@ describe('buildSchedulerFor', () => {
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[1]);
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[2]);
     expect(() => taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toThrowErrorMatchingInlineSnapshot(
-      `"Invalid schedulerFor defined: too many tasks have been scheduled"`
+      `"Invalid schedulerFor defined: too many tasks have been scheduled"`,
     );
   });
 

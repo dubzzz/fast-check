@@ -1,8 +1,8 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../check/arbitrary/definition/Value';
-import { Random } from '../../../random/generator/Random';
+import type { Random } from '../../../random/generator/Random';
 import { safePush } from '../../../utils/globals';
-import { SlicedGenerator } from '../interfaces/SlicedGenerator';
+import type { SlicedGenerator } from '../interfaces/SlicedGenerator';
 
 const safeMathMin = Math.min;
 const safeMathMax = Math.max;
@@ -16,7 +16,7 @@ export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
     private readonly arb: Arbitrary<T>,
     private readonly mrng: Random,
     private readonly slices: T[][],
-    private readonly biasFactor: number
+    private readonly biasFactor: number,
   ) {}
   attemptExact(targetLength: number): void {
     if (targetLength !== 0 && this.mrng.nextInt(1, this.biasFactor) === 1) {

@@ -1,8 +1,8 @@
 import * as fc from 'fast-check';
 
+import type { ArrayInt64 } from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import {
   add64,
-  ArrayInt64,
   halve64,
   isEqual64,
   isStrictlySmaller64,
@@ -60,7 +60,7 @@ describe('ArrayInt64', () => {
 
           // Assert
           expect(out).toBe(true);
-        })
+        }),
       );
     });
 
@@ -82,8 +82,8 @@ describe('ArrayInt64', () => {
 
             // Assert
             expect(out).toBe(false);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -113,8 +113,8 @@ describe('ArrayInt64', () => {
 
             // Assert
             expect(out).toBe(a < b);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -149,8 +149,8 @@ describe('ArrayInt64', () => {
             expectValidArrayInt(result64);
             expectValidZeroIfAny(result64);
             expect(toBigInt(result64)).toBe(expectedResult);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -172,8 +172,8 @@ describe('ArrayInt64', () => {
             expectValidArrayInt(result64);
             expectValidZeroIfAny(result64);
             expect(result64).toEqual(toArrayInt64(a, false)); // toArrayInt64(a, false): sign must be + for 0
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -195,8 +195,8 @@ describe('ArrayInt64', () => {
             expectValidArrayInt(result64);
             expectValidZeroIfAny(result64);
             expect(result64).toEqual(toArrayInt64(-a, false)); // toArrayInt64(-a, false): sign must be + for 0
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -224,7 +224,7 @@ describe('ArrayInt64', () => {
           // Assert
           expectValidArrayInt(result64);
           expect(toBigInt(result64)).toBe(expectedResult);
-        })
+        }),
       );
     });
   });
@@ -252,8 +252,8 @@ describe('ArrayInt64', () => {
             expectValidArrayInt(result64);
             expectValidZeroIfAny(result64);
             expect(toBigInt(result64)).toBe(expectedResult);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -275,8 +275,8 @@ describe('ArrayInt64', () => {
             expectValidArrayInt(result64);
             expectValidZeroIfAny(result64);
             expect(result64).toEqual(toArrayInt64(a, false)); // toArrayInt64(a, false): sign must be + for 0
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -298,8 +298,8 @@ describe('ArrayInt64', () => {
             expectValidArrayInt(result64);
             expectValidZeroIfAny(result64);
             expect(result64).toEqual(toArrayInt64(a, false)); // toArrayInt64(a, false): sign must be + for 0
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -327,7 +327,7 @@ describe('ArrayInt64', () => {
           // Assert
           expectValidArrayInt(result64);
           expect(toBigInt(result64)).toBe(expectedResult);
-        })
+        }),
       );
     });
   });
@@ -346,7 +346,7 @@ describe('ArrayInt64', () => {
           // Assert
           expectValidArrayInt(result64);
           expect(toBigInt(result64)).toBe(BigInt(expectedResult));
-        })
+        }),
       );
     });
 
@@ -363,7 +363,7 @@ describe('ArrayInt64', () => {
           // Assert
           expectValidArrayInt(result64);
           expect(toBigInt(result64)).toBe(BigInt(expectedResult));
-        })
+        }),
       );
     });
   });

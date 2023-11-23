@@ -1,9 +1,10 @@
 import * as fc from 'fast-check';
-import { dictionary, DictionaryConstraints } from '../../../src/arbitrary/dictionary';
+import type { DictionaryConstraints } from '../../../src/arbitrary/dictionary';
+import { dictionary } from '../../../src/arbitrary/dictionary';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceSameValueGivenSameSeed,
@@ -18,17 +19,30 @@ describe('dictionary (integration)', () => {
       keys: fc.uniqueArray(fc.string(), { minLength: 35 }), // enough keys to respect constraints
       values: fc.uniqueArray(fc.anything(), { minLength: 1 }),
       constraints: fc
-        .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
-        .map(([min, gap, withMin, withMax]) => ({
+        .tuple(
+          fc.nat({ max: 5 }),
+          fc.nat({ max: 30 }),
+          fc.boolean(),
+          fc.boolean(),
+          fc.option(fc.boolean(), { nil: undefined }),
+        )
+        .map(([min, gap, withMin, withMax, noNullPrototype]) => ({
           minKeys: withMin ? min : undefined,
           maxKeys: withMax ? min + gap : undefined,
+          noNullPrototype,
         })),
     },
-    { requiredKeys: ['keys', 'values'] }
+    { requiredKeys: ['keys', 'values'] },
   );
 
   const isCorrect = (value: Record<string, unknown>, extra: Extra) => {
-    expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
+    if (
+      extra.constraints === undefined ||
+      extra.constraints.noNullPrototype ||
+      extra.constraints.noNullPrototype === undefined
+    ) {
+      expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
+    }
     for (const k of Object.keys(value)) {
       expect(extra.keys).toContain(k);
     }

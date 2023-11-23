@@ -1,6 +1,9 @@
 import * as fc from 'fast-check';
-import { DoubleConstraints } from '../../../../src/arbitrary/double';
-import { FloatConstraints } from '../../../../src/arbitrary/float';
+import type { DoubleConstraints } from '../../../../src/arbitrary/double';
+import type { FloatConstraints } from '../../../../src/arbitrary/float';
+import { MAX_VALUE_32, floatToIndex } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
+import { doubleToIndex } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
+import { substract64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
@@ -17,6 +20,8 @@ export const defaultFloatRecordConstraints = {
   max: float32raw(),
   noDefaultInfinity: fc.boolean(),
   noNaN: fc.boolean(),
+  minExcluded: fc.boolean(),
+  maxExcluded: fc.boolean(),
 };
 
 export const defaultDoubleRecordConstraints = {
@@ -24,41 +29,81 @@ export const defaultDoubleRecordConstraints = {
   max: float64raw(),
   noDefaultInfinity: fc.boolean(),
   noNaN: fc.boolean(),
+  minExcluded: fc.boolean(),
+  maxExcluded: fc.boolean(),
 };
 
 type ConstraintsInternalOut = FloatConstraints & DoubleConstraints;
 type ConstraintsInternal = {
   [K in keyof ConstraintsInternalOut]?: fc.Arbitrary<ConstraintsInternalOut[K]>;
 };
-function constraintsInternal(recordConstraints: ConstraintsInternal): fc.Arbitrary<ConstraintsInternalOut> {
+function constraintsInternal(
+  recordConstraints: ConstraintsInternal,
+  is32Bits: boolean,
+): fc.Arbitrary<ConstraintsInternalOut> {
   return fc
     .record(recordConstraints, { withDeletedKeys: true })
-    .filter((ct) => (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max)))
     .filter((ct) => {
+      // Forbid min and max to be NaN
+      return (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max));
+    })
+    .map((ct) => {
+      // Already valid ct, no min or no max: we just return it as-is
+      if (ct.min === undefined || ct.max === undefined) return ct;
+      const { min, max } = ct;
+      // Already valid ct, min < max: we just return it as-is
+      if (min < max) return ct;
+      // Already valid ct, min <= max with -0 and 0 correctly ordered: we just return it as-is
+      if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
+      // We have to exchange min and  max to get an ordered range
+      return { ...ct, min: max, max: min };
+    })
+    .filter((ct) => {
+      // No issue when automatically defaulting to +/-inf
       if (!ct.noDefaultInfinity) return true;
+      // Invalid range, cannot have min==inf if max has to default to +max_value
       if (ct.min === Number.POSITIVE_INFINITY && ct.max === undefined) return false;
+      // Invalid range, cannot have max=-inf if min has to default to -max_value
       if (ct.min === undefined && ct.max === Number.NEGATIVE_INFINITY) return false;
       return true;
     })
-    .map((ct) => {
-      if (ct.min === undefined || ct.max === undefined) return ct;
-      const { min, max } = ct;
-      if (min < max) return ct;
-      if (min === max && (min !== 0 || 1 / min <= 1 / max)) return ct;
-      return { ...ct, min: max, max: min };
+    .filter((ct) => {
+      const defaultMax = ct.noDefaultInfinity ? (is32Bits ? MAX_VALUE_32 : Number.MAX_VALUE) : Number.POSITIVE_INFINITY;
+      const min = ct.min !== undefined ? ct.min : -defaultMax;
+      const max = ct.max !== undefined ? ct.max : defaultMax;
+      // Illegal range, values cannot be "min < value <= min" or "min <= value < min" or "min < value < min"
+      if ((ct.minExcluded || ct.maxExcluded) && min === max) return false;
+      // Always valid range given min !== max if min=-inf or max=+inf
+      if (ct.max === Number.POSITIVE_INFINITY || ct.min === Number.NEGATIVE_INFINITY) return true;
+      if (ct.minExcluded && ct.maxExcluded) {
+        if (is32Bits) {
+          const minIndex = floatToIndex(min);
+          const maxIndex = floatToIndex(max);
+          const distance = maxIndex - minIndex;
+          // Illegal range, no value in range if min and max are too close from each others and both excluded
+          if (distance === 1) return false;
+        } else {
+          const minIndex = doubleToIndex(min);
+          const maxIndex = doubleToIndex(max);
+          const distance = substract64(maxIndex, minIndex);
+          // Illegal range, no value in range if min and max are too close from each others and both excluded
+          if (distance.data[0] === 0 && distance.data[1] === 1) return false;
+        }
+      }
+      return true;
     });
 }
 
 export function floatConstraints(
-  recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints
+  recordConstraints: Partial<typeof defaultFloatRecordConstraints> = defaultFloatRecordConstraints,
 ): fc.Arbitrary<FloatConstraints> {
-  return constraintsInternal(recordConstraints);
+  return constraintsInternal(recordConstraints, true);
 }
 
 export function doubleConstraints(
-  recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints
+  recordConstraints: Partial<typeof defaultDoubleRecordConstraints> = defaultDoubleRecordConstraints,
 ): fc.Arbitrary<DoubleConstraints> {
-  return constraintsInternal(recordConstraints);
+  return constraintsInternal(recordConstraints, false);
 }
 
 export function isStrictlySmaller(fa: number, fb: number): boolean {

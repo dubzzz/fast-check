@@ -1,10 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { Int32Array } from '../utils/globals';
 import { integer } from './integer';
-import {
-  IntArrayConstraints,
-  typedIntArrayArbitraryArbitraryBuilder,
-} from './_internals/builders/TypedIntArrayArbitraryBuilder';
+import type { IntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder';
+import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder';
 
 /**
  * For Int32Array
@@ -17,7 +15,7 @@ export function int32Array(constraints: IntArrayConstraints = {}): Arbitrary<Int
     -0x80000000,
     0x7fffffff,
     Int32Array,
-    integer
+    integer,
   );
 }
-export { IntArrayConstraints };
+export type { IntArrayConstraints };

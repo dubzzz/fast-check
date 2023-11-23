@@ -91,7 +91,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
       } finally {
         fc.configureGlobal(initialGlobal);
       }
-    }
+    },
   );
 
   it.each`
@@ -118,7 +118,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
       } finally {
         fc.configureGlobal(initialGlobal);
       }
-    }
+    },
   );
 });
 

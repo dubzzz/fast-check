@@ -2,7 +2,7 @@ import { hash } from '../utils/hash';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../check/symbols';
 import { array } from './array';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { integer } from './integer';
 import { tuple } from './tuple';
 import { escapeForMultilineComments } from './_internals/helpers/TextEscaper';
@@ -32,7 +32,7 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
       function prettyPrint(stringifiedOuts: string): string {
         const seenValues = safeMap(
           safeMap(safeSort(safeObjectKeys(recorded)), (k) => `${k} => ${stringify(recorded[k])}`),
-          (line) => `/* ${escapeForMultilineComments(line)} */`
+          (line) => `/* ${escapeForMultilineComments(line)} */`,
         );
         return `function(...args) {
   // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}

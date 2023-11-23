@@ -21,7 +21,7 @@ describe('int8Array', () => {
       expect.any(Number),
       expect.any(Number),
       Int8Array,
-      expect.anything()
+      expect.anything(),
     );
   });
 

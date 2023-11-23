@@ -1,7 +1,7 @@
 import { escapeForTemplateString } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
-import { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
+import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
 
 const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
 
@@ -43,7 +43,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
   constructor(
     readonly act: (f: () => Promise<void>) => Promise<unknown>,
-    private readonly taskSelector: TaskSelector<TMetaData>
+    private readonly taskSelector: TaskSelector<TMetaData>,
   ) {
     this.lastTaskId = 0;
     this.sourceTaskSelector = taskSelector.clone();
@@ -66,7 +66,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     label: string,
     metadata: TMetaData | undefined,
     status: 'resolved' | 'rejected',
-    data: unknown
+    data: unknown,
   ) {
     this.triggeredTasks.push({
       status,
@@ -84,7 +84,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     task: PromiseLike<T>,
     metadata: TMetaData | undefined,
     customAct: SchedulerAct,
-    thenTaskToBeAwaited?: () => PromiseLike<T>
+    thenTaskToBeAwaited?: () => PromiseLike<T>,
   ): Promise<T> {
     let trigger: (() => void) | null = null;
     const taskId = ++this.lastTaskId;
@@ -98,7 +98,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           (err) => {
             this.log(schedulingType, taskId, label, metadata, 'rejected', err);
             return reject(err);
-          }
+          },
         );
       };
     });
@@ -126,7 +126,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
   scheduleFunction<TArgs extends any[], T>(
     asyncFunction: (...args: TArgs) => Promise<T>,
-    customAct?: SchedulerAct
+    customAct?: SchedulerAct,
   ): (...args: TArgs) => Promise<T> {
     return (...args: TArgs) =>
       this.scheduleInternal(
@@ -134,13 +134,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         `${asyncFunction.name}(${args.map(stringify).join(',')})`,
         asyncFunction(...args),
         undefined,
-        customAct || defaultSchedulerAct
+        customAct || defaultSchedulerAct,
       );
   }
 
   scheduleSequence(
     sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
-    customAct?: SchedulerAct
+    customAct?: SchedulerAct,
   ): {
     done: boolean;
     faulty: boolean;
@@ -169,7 +169,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
             dummyResolvedPromise,
             metadata,
             customAct || defaultSchedulerAct,
-            () => builder()
+            () => builder(),
           );
           scheduled.catch(() => {
             status.faulty = true;
@@ -186,7 +186,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         () => {
           /* Discarding UnhandledPromiseRejectionWarning */
           /* No need to call resolveSequenceTask as it should already have been triggered */
-        }
+        },
       );
 
     // TODO Prefer getter instead of sharing the variable itself
@@ -286,7 +286,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           clearAndReplaceWatcher();
           throw err;
         });
-      }
+      },
     );
 
     // Simulate `handleNotified` is the number of waiting tasks is not zero
@@ -310,7 +310,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           taskId: t.taskId,
           label: t.label,
           metadata: t.metadata,
-        })
+        }),
       ),
     ];
   }

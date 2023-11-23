@@ -1,9 +1,9 @@
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from './ExecutionStatus';
-import { ExecutionTree } from './ExecutionTree';
-import { RunDetails } from './RunDetails';
-import { QualifiedParameters } from '../configuration/QualifiedParameters';
-import { PropertyFailure } from '../../property/IRawProperty';
+import type { ExecutionTree } from './ExecutionTree';
+import type { RunDetails } from './RunDetails';
+import type { QualifiedParameters } from '../configuration/QualifiedParameters';
+import type { PropertyFailure } from '../../property/IRawProperty';
 import { safeSplit } from '../../../utils/globals';
 
 /**
@@ -23,7 +23,10 @@ export class RunExecution<Ts> {
   numSuccesses: number;
   interrupted: boolean;
 
-  constructor(readonly verbosity: VerbosityLevel, readonly interruptedAsFailure: boolean) {
+  constructor(
+    readonly verbosity: VerbosityLevel,
+    readonly interruptedAsFailure: boolean,
+  ) {
     this.rootExecutionTrees = [];
     this.currentLevelExecutionTrees = this.rootExecutionTrees;
     this.failure = null;
@@ -142,7 +145,7 @@ export class RunExecution<Ts> {
     // SourceValuesIterator automatically ends as soon as we skip too many values
     // so no subsequent values will be pulled from it, so no call to interrupt after this last skip.
     // -- Similarly, when interrupted, RunnerIterator stops everything so no call to skip after being interrupted.
-    return {
+    const out = {
       failed,
       interrupted: this.interrupted,
       numRuns: this.numSuccesses,
@@ -158,5 +161,6 @@ export class RunExecution<Ts> {
       verbose: this.verbosity,
       runConfiguration: qParams.toParameters(),
     };
+    return out;
   }
 }

@@ -1,8 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { AsyncCommand } from '../check/model/command/AsyncCommand';
-import { Command } from '../check/model/command/Command';
-import { ICommand } from '../check/model/command/ICommand';
-import { CommandsContraints } from '../check/model/commands/CommandsContraints';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { AsyncCommand } from '../check/model/command/AsyncCommand';
+import type { Command } from '../check/model/command/Command';
+import type { ICommand } from '../check/model/command/ICommand';
+import type { CommandsContraints } from '../check/model/commands/CommandsContraints';
 import { CommandsArbitrary } from './_internals/CommandsArbitrary';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
@@ -23,7 +23,7 @@ import {
  */
 function commands<Model extends object, Real, CheckAsync extends boolean>(
   commandArbs: Arbitrary<AsyncCommand<Model, Real, CheckAsync>>[],
-  constraints?: CommandsContraints
+  constraints?: CommandsContraints,
 ): Arbitrary<Iterable<AsyncCommand<Model, Real, CheckAsync>>>;
 /**
  * For arrays of {@link Command} to be executed by {@link modelRun}
@@ -39,11 +39,11 @@ function commands<Model extends object, Real, CheckAsync extends boolean>(
  */
 function commands<Model extends object, Real>(
   commandArbs: Arbitrary<Command<Model, Real>>[],
-  constraints?: CommandsContraints
+  constraints?: CommandsContraints,
 ): Arbitrary<Iterable<Command<Model, Real>>>;
 function commands<Model extends object, Real, RunResult, CheckAsync extends boolean>(
   commandArbs: Arbitrary<ICommand<Model, Real, RunResult, CheckAsync>>[],
-  constraints: CommandsContraints = {}
+  constraints: CommandsContraints = {},
 ): Arbitrary<Iterable<ICommand<Model, Real, RunResult, CheckAsync>>> {
   const { size, maxCommands = MaxLengthUpperBound, disableReplayLog = false, replayPath = null } = constraints;
   const specifiedMaxCommands = constraints.maxCommands !== undefined;

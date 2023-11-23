@@ -26,7 +26,7 @@ export default function TodoList(props: Props) {
   const [allTodos, setAllTodos] = useState(
     [] as ((TodoItem | DraftTodoItem) & {
       loading: boolean;
-    })[]
+    })[],
   );
 
   useEffect(() => {
@@ -71,14 +71,14 @@ export default function TodoList(props: Props) {
     setAllTodos((allTodos) =>
       allTodos.map((todo) => {
         return todo !== draftTodo ? todo : { ...query.response, loading: false };
-      })
+      }),
     );
   };
 
   const toggleById = async (id: string) => {
     // Temporary toggle the todo (serevr might still reject the toggle)
     setAllTodos((allTodos) =>
-      allTodos.map((todo) => (todo.id !== id ? todo : { ...todo, checked: !todo.checked, loading: true }))
+      allTodos.map((todo) => (todo.id !== id ? todo : { ...todo, checked: !todo.checked, loading: true })),
     );
 
     const query = await toggleTodo(id);

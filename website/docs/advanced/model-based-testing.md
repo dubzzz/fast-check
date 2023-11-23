@@ -148,7 +148,7 @@ fc.assert(
   fc.property(fc.commands(allCommands, { size: '+1' }), (cmds) => {
     const s = () => ({ model: { num: 0 }, real: new List() });
     fc.modelRun(s, cmds);
-  })
+  }),
 );
 ```
 

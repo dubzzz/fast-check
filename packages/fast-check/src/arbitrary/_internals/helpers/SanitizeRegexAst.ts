@@ -1,5 +1,5 @@
 import { stringify } from '../../../utils/stringify';
-import { RegexToken } from './TokenizeRegex';
+import type { RegexToken } from './TokenizeRegex';
 
 function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
@@ -44,7 +44,7 @@ function addMissingDotStarTraversal(
   astNode: RegexToken,
   isFirst: boolean,
   isLast: boolean,
-  traversalResults: TraversalResults
+  traversalResults: TraversalResults,
 ): RegexToken {
   switch (astNode.type) {
     case 'Char':
@@ -62,8 +62,8 @@ function addMissingDotStarTraversal(
           addMissingDotStarTraversalAddMissing(
             node,
             isFirst && index === 0,
-            isLast && index === astNode.expressions.length - 1
-          )
+            isLast && index === astNode.expressions.length - 1,
+          ),
         ),
       };
     case 'CharacterClass':

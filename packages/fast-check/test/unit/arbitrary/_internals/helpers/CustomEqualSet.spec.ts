@@ -33,7 +33,7 @@ describe('CustomEqualSet', () => {
           }
           expect(s.size()).toBe(expectedSize);
         }
-      })
+      }),
     );
   });
 
@@ -55,7 +55,7 @@ describe('CustomEqualSet', () => {
             expect(isEqual(data[i], data[j])).toBe(false);
           }
         }
-      })
+      }),
     );
   });
 
@@ -79,7 +79,7 @@ describe('CustomEqualSet', () => {
           expect(indexCurrent).not.toBe(-1);
           expect(indexPrevious).toBeLessThan(indexCurrent);
         }
-      })
+      }),
     );
   });
 });

@@ -39,7 +39,7 @@ describe('patternsToStringUnmapperFor', () => {
 
       // Assert
       expect(chunks).toEqual(expectedChunks);
-    }
+    },
   );
 
   it.each`
@@ -83,8 +83,8 @@ describe('patternsToStringUnmapperFor', () => {
           // >  sourceChunks = ["ToTo", "To"]
           // >  sourceMods   = [0]
           // >  chunks might be ["To", "To"] or ["ToTo"] and both are valid ones
-        }
-      )
+        },
+      ),
     ));
 
   it('should be able to split strings built out of chunks into chunks while respecting constraints in size', () =>
@@ -113,7 +113,7 @@ describe('patternsToStringUnmapperFor', () => {
           expect(chunks.join('')).toBe(source);
           expect(chunks.length).toBeGreaterThanOrEqual(constraints.minLength);
           expect(chunks.length).toBeLessThanOrEqual(constraints.maxLength);
-        }
-      )
+        },
+      ),
     ));
 });

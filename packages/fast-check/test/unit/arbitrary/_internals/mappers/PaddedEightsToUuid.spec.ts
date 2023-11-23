@@ -22,7 +22,7 @@ describe('paddedEightsToUuidUnmapper', () => {
 
           // Assert
           expect(out).toEqual(ins);
-        }
-      )
+        },
+      ),
     ));
 });

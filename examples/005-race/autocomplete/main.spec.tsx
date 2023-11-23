@@ -6,7 +6,6 @@ import AutocompleteField from './src/AutocompleteField';
 //import AutocompleteField from './src/AutocompleteFieldSimple';
 
 import { render, cleanup, fireEvent, act, getNodeText, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 
 import { search } from './src/Api';
 
@@ -47,7 +46,7 @@ describe('AutocompleteField', () => {
             const suggestions = (screen.queryAllByRole('listitem') as HTMLElement[]).map(getNodeText);
             if (!suggestions.every((suggestion) => suggestion.includes(autocompletionValue))) {
               throw new Error(
-                `Invalid suggestions for ${JSON.stringify(autocompletionValue)}, got: ${JSON.stringify(suggestions)}`
+                `Invalid suggestions for ${JSON.stringify(autocompletionValue)}, got: ${JSON.stringify(suggestions)}`,
               );
             }
           }
@@ -55,7 +54,7 @@ describe('AutocompleteField', () => {
         .beforeEach(async () => {
           jest.resetAllMocks();
           await cleanup();
-        })
+        }),
     );
   });
 
@@ -104,7 +103,7 @@ describe('AutocompleteField', () => {
         .beforeEach(async () => {
           jest.resetAllMocks();
           await cleanup();
-        })
+        }),
     );
   });
 });

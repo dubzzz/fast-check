@@ -1,9 +1,9 @@
-import { Value } from '../arbitrary/definition/Value';
+import type { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { PropertyFailure } from '../property/IRawProperty';
-import { VerbosityLevel } from './configuration/VerbosityLevel';
+import type { PropertyFailure } from '../property/IRawProperty';
+import type { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunExecution } from './reporter/RunExecution';
-import { SourceValuesIterator } from './SourceValuesIterator';
+import type { SourceValuesIterator } from './SourceValuesIterator';
 
 /**
  * Responsible for the iteration logic
@@ -24,7 +24,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     readonly sourceValues: SourceValuesIterator<Value<Ts>>,
     readonly shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
     verbose: VerbosityLevel,
-    interruptedAsFailure: boolean
+    interruptedAsFailure: boolean,
   ) {
     this.runExecution = new RunExecution<Ts>(verbose, interruptedAsFailure);
     this.currentIdx = -1;

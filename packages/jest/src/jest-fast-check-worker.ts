@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import type { PropertyForOptions } from '@fast-check/worker';
 import { assert, propertyFor } from '@fast-check/worker';
 import { jestExpect } from '@jest/expect';
 import { buildTest } from './internals/TestBuilder.js';
@@ -51,9 +52,9 @@ function dummyTest(): It {
 
 type InitOutput = { test: FastCheckItBuilder<It>; it: FastCheckItBuilder<It>; expect: typeof jestExpect };
 
-export const init = (url: URL): InitOutput => {
+export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
   const fcExtra: FcExtra = {
-    asyncProperty: propertyFor(url),
+    asyncProperty: propertyFor(url, options),
     assert: assert as FcExtra['assert'],
     readConfigureGlobal: fc.readConfigureGlobal,
   };
@@ -75,7 +76,7 @@ export const init = (url: URL): InitOutput => {
           test: buildTest(test as It, jest, fcExtra),
           it: buildTest(it as It, jest, fcExtra),
           expect: jestExpect,
-        })
+        }),
       ) as any;
     }
   }

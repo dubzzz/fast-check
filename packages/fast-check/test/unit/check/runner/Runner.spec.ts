@@ -2,10 +2,10 @@ import * as fc from 'fast-check';
 
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { char } from '../../../../src/arbitrary/char';
-import { IRawProperty } from '../../../../src/check/property/IRawProperty';
+import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
-import { Random } from '../../../../src/random/generator/Random';
-import { RunDetails } from '../../../../src/check/runner/reporter/RunDetails';
+import type { Random } from '../../../../src/random/generator/Random';
+import type { RunDetails } from '../../../../src/check/runner/reporter/RunDetails';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { Stream } from '../../../../src/stream/Stream';
 import { VerbosityLevel } from '../../../../src/check/runner/configuration/VerbosityLevel';
@@ -151,7 +151,7 @@ describe('Runner', () => {
         gaps.reduce((prev: number[], cur: number) => {
           prev.push(prev.length === 0 ? cur : prev[prev.length - 1] + cur + 1);
           return prev;
-        }, [])
+        }, []),
       );
       await fc.assert(
         fc.asyncProperty(
@@ -191,8 +191,8 @@ describe('Runner', () => {
               expect(out.numSkips).toEqual(expectedSkips);
               expect(out.failed).toBe(true);
             }
-          }
-        )
+          },
+        ),
       );
     });
     it('Should fail on too many precondition failures', async () => {
@@ -220,8 +220,8 @@ describe('Runner', () => {
             expect(numPreconditionFailures).toEqual(expectedSkips);
             expect(out.numSkips).toEqual(expectedSkips);
             expect(out.failed).toBe(true);
-          }
-        )
+          },
+        ),
       );
     });
     it('Should never call shrink on success', () => {
@@ -269,7 +269,7 @@ describe('Runner', () => {
           expect(out.numRuns).toEqual(num);
           expect(out.seed).toEqual(seed);
           return true;
-        })
+        }),
       ));
     it('Should alter the number of runs when asked to', () =>
       fc.assert(
@@ -293,7 +293,7 @@ describe('Runner', () => {
           expect(numCallsRun).toEqual(num);
           expect(out.failed).toBe(false);
           return true;
-        })
+        }),
       ));
     it('Should generate the same values given the same seeds', () =>
       fc.assert(
@@ -318,7 +318,7 @@ describe('Runner', () => {
           check(buildPropertyFor(data2), { seed: seed });
           expect(data2).toEqual(data1);
           return true;
-        })
+        }),
       ));
     it('Should never call shrink if endOnFailure', () => {
       const p: IRawProperty<[number]> = {
@@ -418,7 +418,7 @@ describe('Runner', () => {
           expect(out.numRuns).toEqual(failurePoints[0] + 1);
           expect(out.numShrinks).toEqual(failurePoints.length - 1);
           expect(out.counterexamplePath).toEqual(expectedFailurePath);
-        })
+        }),
       ));
     it('Should wait on async properties to complete', async () =>
       fc.assert(
@@ -467,7 +467,7 @@ describe('Runner', () => {
           expect(out.seed).toEqual(seed);
           expect(out.counterexample).toEqual([42]);
           return true;
-        })
+        }),
       ));
     it('Should not timeout if no timeout defined', async () => {
       const p: IRawProperty<[number]> = {
@@ -561,7 +561,7 @@ describe('Runner', () => {
     });
     it('Should pretty print the failing complex example in error message', () => {
       expect(() => rAssert(failingComplexProperty, { seed: 42 })).toThrowError(
-        `[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`
+        `[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`,
       );
     });
     it('Should put the orginal error in error message', () => {
@@ -604,7 +604,7 @@ describe('Runner', () => {
       });
       it('Should throw without list of failures in very verbose mode', () => {
         expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
-          'Encountered failures were:'
+          'Encountered failures were:',
         );
       });
       it('Should throw with execution tree in very verbose mode', () => {
@@ -642,7 +642,7 @@ describe('Runner', () => {
       });
       it('Should throw without list of failures in very verbose mode', () => {
         expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
-          'Encountered failures were:'
+          'Encountered failures were:',
         );
       });
       it('Should throw with execution tree in very verbose mode', () => {

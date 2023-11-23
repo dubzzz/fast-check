@@ -1,3 +1,22 @@
+# 0.0.8
+
+_Fix typings for node native esm_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.7...vitest%2Fv0.0.8)]
+
+## Fixes
+
+- ([PR#4262](https://github.com/dubzzz/fast-check/pull/4262)) Bug: Fix typings for node native esm
+
+# 0.0.7
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.6...vitest%2Fv0.0.7)]
+
+## Fixes
+
+- ([PR#4178](https://github.com/dubzzz/fast-check/pull/4178)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
 # 0.0.6
 
 _Update URL of the logo_

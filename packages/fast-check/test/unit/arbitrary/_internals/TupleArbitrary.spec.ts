@@ -13,7 +13,7 @@ import {
 } from '../__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Random } from '../../../../src/random/generator/Random';
+import type { Random } from '../../../../src/random/generator/Random';
 
 describe('TupleArbitrary', () => {
   describe('generate', () => {
@@ -83,7 +83,7 @@ describe('TupleArbitrary', () => {
       const cloneMethodImpl = jest.fn();
       generateA.mockReturnValue(new Value([], undefined));
       generateB.mockReturnValue(
-        new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
+        new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
       );
       const { instance: mrng } = fakeRandom();
 
@@ -129,7 +129,7 @@ describe('TupleArbitrary', () => {
         else expect(canShrinkWithoutContextB).not.toHaveBeenCalled();
         if (canA && canB) expect(canShrinkWithoutContextC).toHaveBeenCalledWith(vC);
         else expect(canShrinkWithoutContextC).not.toHaveBeenCalled();
-      }
+      },
     );
 
     it('should not call underlyings on canShrinkWithoutContext if size is invalid', () => {
@@ -178,8 +178,8 @@ describe('TupleArbitrary', () => {
         Stream.of(
           new Value(shrinkC1 as symbol, undefined),
           new Value(shrinkC2, undefined),
-          new Value(shrinkC3, undefined)
-        )
+          new Value(shrinkC3, undefined),
+        ),
       );
       const { instance: mrng } = fakeRandom();
 
@@ -215,14 +215,14 @@ describe('TupleArbitrary', () => {
       generateA.mockReturnValue(new Value([], undefined));
       shrinkA.mockReturnValue(Stream.of(new Value([], undefined), new Value([], undefined)));
       generateB.mockReturnValue(
-        new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
+        new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
       );
       shrinkB.mockReturnValue(
         Stream.of(
           new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
           new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
-          new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined)
-        )
+          new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
+        ),
       );
       generateC.mockReturnValue(new Value([], undefined));
       shrinkC.mockReturnValue(
@@ -230,8 +230,8 @@ describe('TupleArbitrary', () => {
           new Value([], undefined),
           new Value([], undefined),
           new Value([], undefined),
-          new Value([], undefined)
-        )
+          new Value([], undefined),
+        ),
       );
       const { instance: mrng } = fakeRandom();
 
@@ -400,7 +400,7 @@ class FirstArbitrary extends Arbitrary<number> {
     const nextStep = currentStep + 1;
     return Stream.of(
       ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
-      ...(value - currentStep + 1 >= 0 ? [new Value(value - currentStep + 1, { step: nextStep })] : [])
+      ...(value - currentStep + 1 >= 0 ? [new Value(value - currentStep + 1, { step: nextStep })] : []),
     );
   }
 }
@@ -422,7 +422,7 @@ class SecondArbitrary extends Arbitrary<number> {
     const nextStep = currentStep + 1;
     return Stream.of(
       ...(value + currentStep <= 100 ? [new Value(value + currentStep, { step: nextStep })] : []),
-      ...(value + currentStep - 1 <= 100 ? [new Value(value + currentStep - 1, { step: nextStep })] : [])
+      ...(value + currentStep - 1 <= 100 ? [new Value(value + currentStep - 1, { step: nextStep })] : []),
     );
   }
 }

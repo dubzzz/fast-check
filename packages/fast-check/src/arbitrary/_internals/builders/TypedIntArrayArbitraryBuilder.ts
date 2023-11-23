@@ -1,6 +1,6 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { array } from '../../array';
-import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 
 /** @internal */
 type TypedIntArrayBuilderConstraints<TValue> = {
@@ -17,7 +17,7 @@ export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType extends I
   defaultMin: TValue,
   defaultMax: TValue,
   TypedArrayClass: (new () => TTypedArrayType) & { from: (data: TValue[]) => TTypedArrayType },
-  arbitraryBuilder: (constraints: { min?: TValue; max?: TValue }) => Arbitrary<TValue>
+  arbitraryBuilder: (constraints: { min?: TValue; max?: TValue }) => Arbitrary<TValue>,
 ): Arbitrary<TTypedArrayType> {
   const generatorName = TypedArrayClass.name;
   const { min = defaultMin, max = defaultMax, ...arrayConstraints } = constraints;
@@ -35,7 +35,7 @@ export function typedIntArrayArbitraryArbitraryBuilder<TTypedArrayType extends I
     (value: unknown): TValue[] => {
       if (!(value instanceof TypedArrayClass)) throw new Error('Invalid type');
       return [...(value as TTypedArrayType)];
-    }
+    },
   );
 }
 

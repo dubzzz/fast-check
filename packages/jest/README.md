@@ -90,6 +90,7 @@ const { init, fc } = require('@fast-check/jest/worker');
 const { pathToFileURL } = require('node:url');
 
 const { test, expect } = init(pathToFileURL(__filename));
+// can also be passed options such as isolationLevel: init(pathToFileURL(__filename), {})
 
 test.prop([fc.constant(null)])('should pass', (value) => {
   expect(value).toBe(null);
@@ -102,6 +103,7 @@ The ES Modules approach would be:
 import { init, fc } from '@fast-check/jest/worker';
 
 const { test, expect } = await init(new URL(import.meta.url));
+// can also be passed options such as isolationLevel: init(new URL(import.meta.url), {})
 
 test.prop([fc.constant(null)])('should pass', (value) => {
   expect(value).toBe(null);
@@ -126,9 +128,11 @@ This API is available in all 1.x versions but may not exist anymore starting at 
 
 ## Minimal requirements
 
-| @fast-check/jest | jest                                 | fast-check |
-| ---------------- | ------------------------------------ | ---------- |
-| ^1.0.0           | >=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     |
+| @fast-check/jest | jest                                    | fast-check | node                                                                                  |
+| ---------------- | --------------------------------------- | ---------- | ------------------------------------------------------------------------------------- |
+| ^1.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20 |
 
 - (1) any version of `jest` should be greater or equal than 26.5.0 if you are using `commonjs`
 - (2) in order to use `esm` build, you may need to enable experimental features of node, see [here](https://github.com/dubzzz/fast-check/blob/main/packages/test-jest-bundle-esm/package.json)
+- (3) minimal requirements for jest
+- (4) timeout defined on jest might not be properly applied to fast-check for node 18 (until 18.17.0) and node 19, see [#4004](https://github.com/dubzzz/fast-check/pull/4004)

@@ -40,13 +40,13 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
             defaultMin,
             defaultMax,
             TypedArrayClass,
-            arbitraryBuilder
+            arbitraryBuilder,
           );
 
           // Assert
           expect(arbitraryBuilder).toHaveBeenLastCalledWith({ min: defaultMin, max: defaultMax });
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -74,7 +74,7 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
             defaultMin,
             defaultMax,
             TypedArrayClass,
-            arbitraryBuilder
+            arbitraryBuilder,
           );
 
           // Assert
@@ -83,8 +83,8 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
             max: defaultMax,
             ...integerConstraints,
           });
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -113,11 +113,11 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
               defaultMin,
               defaultMax,
               TypedArrayClass,
-              arbitraryBuilder
-            )
+              arbitraryBuilder,
+            ),
           ).toThrowError();
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -132,7 +132,7 @@ describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
         min: fc.integer({ min: -128, max: 127 }),
         max: fc.integer({ min: -128, max: 127 }),
       },
-      { requiredKeys: [] }
+      { requiredKeys: [] },
     )
     .map((rawConstraints) => {
       const constraints = { ...rawConstraints };
@@ -161,7 +161,7 @@ describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
       -128,
       127,
       Int8Array,
-      ({ min = 0, max = min }) => new FakeIntegerArbitrary(min, max - min)
+      ({ min = 0, max = min }) => new FakeIntegerArbitrary(min, max - min),
     );
 
   it('should produce the same values given the same seed', () => {
@@ -227,6 +227,6 @@ function invalidIntegerConstraintsArb(min: number, max: number) {
     fc.record({ min: fc.integer({ min: Number.MIN_SAFE_INTEGER, max: min - 1 }), max: fc.integer({ min, max }) }),
     // max > highest
     fc.record({ min: fc.integer({ min, max }), max: fc.integer({ min: max + 1, max: Number.MAX_SAFE_INTEGER }) }),
-    fc.record({ max: fc.integer({ min: max + 1, max: Number.MAX_SAFE_INTEGER }) })
+    fc.record({ max: fc.integer({ min: max + 1, max: Number.MAX_SAFE_INTEGER }) }),
   );
 }

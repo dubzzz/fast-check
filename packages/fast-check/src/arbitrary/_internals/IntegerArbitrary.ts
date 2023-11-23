@@ -1,6 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange';
 import { shrinkInteger } from './helpers/ShrinkInteger';
@@ -11,7 +11,10 @@ const safeObjectIs = Object.is;
 
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
-  constructor(readonly min: number, readonly max: number) {
+  constructor(
+    readonly min: number,
+    readonly max: number,
+  ) {
     super();
   }
 

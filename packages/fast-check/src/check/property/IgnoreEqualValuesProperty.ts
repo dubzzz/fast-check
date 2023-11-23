@@ -1,13 +1,13 @@
-import { IRawProperty } from './IRawProperty';
-import { Random } from '../../random/generator/Random';
+import type { IRawProperty } from './IRawProperty';
+import type { Random } from '../../random/generator/Random';
 import { stringify } from '../../utils/stringify';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { Value } from '../arbitrary/definition/Value';
-import { Stream } from '../../stream/Stream';
+import type { Value } from '../arbitrary/definition/Value';
+import type { Stream } from '../../stream/Stream';
 
 /** @internal */
 function fromSyncCached<Ts>(
-  cachedValue: ReturnType<IRawProperty<Ts, false>['run']>
+  cachedValue: ReturnType<IRawProperty<Ts, false>['run']>,
 ): ReturnType<IRawProperty<Ts, false>['run']> {
   return cachedValue === null ? new PreconditionFailure() : cachedValue;
 }
@@ -15,12 +15,12 @@ function fromSyncCached<Ts>(
 /** @internal */
 function fromCached<Ts>(
   cachedValue: ReturnType<IRawProperty<Ts, false>['run']>,
-  isAsync: false
+  isAsync: false,
 ): ReturnType<IRawProperty<Ts, false>['run']>;
 /** @internal */
 function fromCached<Ts>(
   cachedValue: ReturnType<IRawProperty<Ts, true>['run']>,
-  isAsync: true
+  isAsync: true,
 ): ReturnType<IRawProperty<Ts, true>['run']>;
 function fromCached<Ts>(
   ...data: [ReturnType<IRawProperty<Ts, true>['run']>, true] | [ReturnType<IRawProperty<Ts, false>['run']>, false]
@@ -32,7 +32,7 @@ function fromCached<Ts>(
 /** @internal */
 function fromCachedUnsafe<Ts, IsAsync extends boolean>(
   cachedValue: ReturnType<IRawProperty<Ts, IsAsync>['run']>,
-  isAsync: IsAsync
+  isAsync: IsAsync,
 ): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
   return fromCached(cachedValue as any, isAsync as any) as any;
 }
@@ -43,7 +43,10 @@ export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements I
   runAfterEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
   private coveredCases: Map<string, ReturnType<IRawProperty<Ts, IsAsync>['run']>> = new Map();
 
-  constructor(readonly property: IRawProperty<Ts, IsAsync>, readonly skipRuns: boolean) {
+  constructor(
+    readonly property: IRawProperty<Ts, IsAsync>,
+    readonly skipRuns: boolean,
+  ) {
     if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.runBeforeEach = () => this.property.runBeforeEach!();

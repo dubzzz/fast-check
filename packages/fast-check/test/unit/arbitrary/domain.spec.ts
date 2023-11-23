@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { domain, DomainConstraints } from '../../../src/arbitrary/domain';
+import type { DomainConstraints } from '../../../src/arbitrary/domain';
+import { domain } from '../../../src/arbitrary/domain';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { URL } from 'url';
 
@@ -42,7 +43,7 @@ describe('domain (integration)', () => {
   type Extra = DomainConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     { size: fc.oneof(sizeArb, relativeSizeArb) },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 
   const isCorrect = isValidDomainWithExtension;

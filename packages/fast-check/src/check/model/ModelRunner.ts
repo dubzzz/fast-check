@@ -1,7 +1,7 @@
-import { AsyncCommand } from './command/AsyncCommand';
-import { Command } from './command/Command';
-import { ICommand } from './command/ICommand';
-import { Scheduler } from '../../arbitrary/scheduler';
+import type { AsyncCommand } from './command/AsyncCommand';
+import type { Command } from './command/Command';
+import type { ICommand } from './command/ICommand';
+import type { Scheduler } from '../../arbitrary/scheduler';
 import { scheduleCommands } from './commands/ScheduledCommand';
 
 /**
@@ -32,7 +32,7 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
   cmds: Iterable<ICommand<Model, Real, P, CheckAsync>>,
   initialValue: P,
   runCmd: (cmd: ICommand<Model, Real, P, CheckAsync>, m: Model, r: Real) => P,
-  then: (p: P, c: () => P | undefined) => P
+  then: (p: P, c: () => P | undefined) => P,
 ): P => {
   return s.then((o: { model: Model; real: Real }) => {
     const { model, real } = o;
@@ -52,7 +52,7 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
 // eslint-disable-next-line @typescript-eslint/ban-types
 const internalModelRun = <Model extends object, Real>(
   s: ModelRunSetup<Model, Real>,
-  cmds: Iterable<Command<Model, Real>>
+  cmds: Iterable<Command<Model, Real>>,
 ): void => {
   const then = (_p: undefined, c: () => undefined) => c();
   const setupProducer: SetupProducer<Model, Real, undefined> = {
@@ -70,13 +70,13 @@ const internalModelRun = <Model extends object, Real>(
     cmds as Iterable<ICommand<Model, Real, undefined, false>>,
     undefined,
     runSync,
-    then
+    then,
   );
 };
 
 /** @internal */
 const isAsyncSetup = <Model, Real>(
-  s: ReturnType<ModelRunSetup<Model, Real>> | ReturnType<ModelRunAsyncSetup<Model, Real>>
+  s: ReturnType<ModelRunSetup<Model, Real>> | ReturnType<ModelRunAsyncSetup<Model, Real>>,
 ): s is ReturnType<ModelRunAsyncSetup<Model, Real>> => {
   return typeof (s as any).then === 'function';
 };
@@ -86,7 +86,7 @@ const isAsyncSetup = <Model, Real>(
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: ModelRunSetup<Model, Real> | ModelRunAsyncSetup<Model, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,
-  defaultPromise = Promise.resolve()
+  defaultPromise = Promise.resolve(),
 ): Promise<void> => {
   const then = (p: Promise<void>, c: () => Promise<void> | undefined) => p.then(c);
   const setupProducer = {
@@ -116,7 +116,7 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function modelRun<Model extends object, Real, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real>,
-  cmds: Iterable<Command<Model, Real>>
+  cmds: Iterable<Command<Model, Real>>,
 ): void {
   internalModelRun(s, cmds);
 }
@@ -135,7 +135,7 @@ export function modelRun<Model extends object, Real, InitialModel extends Model>
 // eslint-disable-next-line @typescript-eslint/ban-types
 export async function asyncModelRun<Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real> | ModelRunAsyncSetup<InitialModel, Real>,
-  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,
 ): Promise<void> {
   await internalAsyncModelRun(s, cmds);
 }
@@ -157,11 +157,11 @@ export async function scheduledModelRun<
   Model extends object,
   Real,
   CheckAsync extends boolean,
-  InitialModel extends Model
+  InitialModel extends Model,
 >(
   scheduler: Scheduler,
   s: ModelRunSetup<InitialModel, Real> | ModelRunAsyncSetup<InitialModel, Real>,
-  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>
+  cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,
 ): Promise<void> {
   const scheduledCommands = scheduleCommands(scheduler, cmds);
   const out = internalAsyncModelRun(s, scheduledCommands, scheduler.schedule(Promise.resolve(), 'startModel'));

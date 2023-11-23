@@ -1,12 +1,13 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { assert as fcAssert, type IAsyncProperty, type IProperty, type Parameters } from 'fast-check';
-import { runWorker } from './internals/WorkerRunner.js';
+import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
-import { type PropertyArbitraries, type PropertyPredicate, type WorkerProperty } from './internals/SharedTypes.js';
+import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
+import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 
-let lastWorkerId = 0;
+let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<
   IAsyncProperty<unknown> | IProperty<unknown>,
   () => Promise<void>
@@ -47,21 +48,47 @@ export async function assert<Ts>(property: IAsyncProperty<Ts> | IProperty<Ts>, p
   }
 }
 
+/**
+ * Set of options to configure our worker-based properties
+ * @public
+ */
+export type PropertyForOptions = {
+  /**
+   * How to isolate executions of the predicates from each others?
+   * The more isolated they are the less risk if one execution alter shared globals, but the more time it takes.
+   *
+   * - `file`: Re-use workers cross properties
+   * - `property`: Re-use workers for each run of the predicate. Not shared across properties!
+   * - `predicate`: One worker per run of the predicate
+   *
+   * @default "file"
+   */
+  isolationLevel?: 'file' | 'property' | 'predicate';
+};
+
+const registeredPredicates = new Set<number>();
+if (!isMainThread && parentPort !== null && workerData.fastcheckWorker === true) {
+  runNoWorker(parentPort, registeredPredicates);
+}
+
 function workerProperty<Ts extends [unknown, ...unknown[]]>(
   url: URL,
+  options: PropertyForOptions,
   ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
 ): WorkerProperty<Ts> {
-  const currentWorkerId = ++lastWorkerId;
+  const currentPredicateId = ++lastPredicateId;
   if (isMainThread) {
     // Main thread code
+    const isolationLevel = options.isolationLevel || 'file';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentWorkerId, arbitraries);
+    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentPredicateId, isolationLevel, arbitraries);
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
     return property;
-  } else if (parentPort !== null && currentWorkerId === workerData.currentWorkerId) {
+  } else if (parentPort !== null && workerData.fastcheckWorker === true) {
     // Worker code
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
-    runWorker(parentPort, predicate);
+    runWorker(parentPort, currentPredicateId, predicate);
+    registeredPredicates.add(currentPredicateId);
   }
   // Cannot throw for invalid worker at this point as we may not be the only worker for this run
   // so we just return a dummy no-op property
@@ -80,16 +107,18 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
  *
  *
  * @param url - URL towards the worker file: usually `pathToFileURL(__filename)` for commonjs and `new URL(import.meta.url)` for es modules
+ * @param options - Set of options to configure our worker-based properties
  * @public
  */
 export function propertyFor(
-  url: URL
+  url: URL,
+  options?: PropertyForOptions,
 ): <Ts extends [unknown, ...unknown[]]>(
   ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
 ) => WorkerProperty<Ts> {
   return function property<Ts extends [unknown, ...unknown[]]>(
     ...args: [...arbitraries: PropertyArbitraries<Ts>, predicate: PropertyPredicate<Ts>]
   ): WorkerProperty<Ts> {
-    return workerProperty(url, ...args);
+    return workerProperty(url, options || {}, ...args);
   };
 }

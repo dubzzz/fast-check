@@ -1,6 +1,6 @@
 /** @internal */
 export function indexToMappedConstantMapperFor<T>(
-  entries: { num: number; build: (idInGroup: number) => T }[]
+  entries: { num: number; build: (idInGroup: number) => T }[],
 ): (choiceIndex: number) => T {
   return function indexToMappedConstantMapper(choiceIndex: number): T {
     let idx = -1;
@@ -44,7 +44,7 @@ function buildReverseMapping(entries: { num: number; build: (idInGroup: number) 
 
 /** @internal */
 export function indexToMappedConstantUnmapperFor<T>(
-  entries: { num: number; build: (idInGroup: number) => T }[]
+  entries: { num: number; build: (idInGroup: number) => T }[],
 ): (value: unknown) => number {
   let reverseMapping: ReverseMapping | null = null;
   return function indexToMappedConstantUnmapper(value: unknown): number {

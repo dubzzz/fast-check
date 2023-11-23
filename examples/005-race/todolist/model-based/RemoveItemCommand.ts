@@ -27,8 +27,8 @@ export class RemoveItemCommand implements TodolistCommand {
     // At least for the moment, if the server request fails then it might re-appear
     expect(todosAfter.map(extractItemDataExtended)).toEqual(
       [...todosBefore.slice(0, selectedTodoIndex), ...todosBefore.slice(selectedTodoIndex + 1)].map(
-        extractItemDataExtended
-      )
+        extractItemDataExtended,
+      ),
     );
   }
 

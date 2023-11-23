@@ -3,7 +3,7 @@ import { CloneArbitrary } from '../../../../src/arbitrary/_internals/CloneArbitr
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
-import { Random } from '../../../../src/random/generator/Random';
+import type { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -79,7 +79,7 @@ describe('CloneArbitrary', () => {
           // Assert
           expect(out).toBe(false);
           expect(canShrinkWithoutContext).not.toHaveBeenCalled();
-        })
+        }),
       ));
 
     it('should return false if values are not equal regarding Object.is', () => {
@@ -115,7 +115,7 @@ describe('CloneArbitrary', () => {
         expect(out).toBe(canShrinkWithoutContextValue);
         expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
         expect(canShrinkWithoutContext).toHaveBeenCalledWith(value);
-      }
+      },
     );
   });
 
@@ -245,7 +245,7 @@ class FirstArbitrary extends Arbitrary<number> {
     const nextStep = currentStep + 1;
     return Stream.of(
       ...(value - currentStep >= 0 ? [new Value(value - currentStep, { step: nextStep })] : []),
-      ...(value - currentStep + 1 >= 0 ? [new Value(value - currentStep + 1, { step: nextStep })] : [])
+      ...(value - currentStep + 1 >= 0 ? [new Value(value - currentStep + 1, { step: nextStep })] : []),
     );
   }
 }

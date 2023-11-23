@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { oneof, OneOfConstraints } from '../../../src/arbitrary/oneof';
+import type { OneOfConstraints } from '../../../src/arbitrary/oneof';
+import { oneof } from '../../../src/arbitrary/oneof';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import { sizeArb } from './__test-helpers__/SizeHelpers';
@@ -22,7 +23,7 @@ describe('oneof', () => {
             depthSize: fc.oneof(fc.double({ min: 0, noNaN: true }), sizeArb),
             maxDepth: fc.nat(),
           },
-          { requiredKeys: [] }
+          { requiredKeys: [] },
         ),
         fc.option(fc.nat()),
         fc.option(fc.nat()),
@@ -41,7 +42,7 @@ describe('oneof', () => {
             constraints,
             weight1 !== null ? { arbitrary: arb1, weight: weight1 } : arb1,
             weight2 !== null ? { arbitrary: arb2, weight: weight2 } : arb2,
-            weight3 !== null ? { arbitrary: arb3, weight: weight3 } : arb3
+            weight3 !== null ? { arbitrary: arb3, weight: weight3 } : arb3,
           );
 
           // Assert
@@ -52,11 +53,11 @@ describe('oneof', () => {
               { arbitrary: arb3, weight: weight3 !== null ? weight3 : 1 },
             ],
             constraints,
-            'fc.oneof'
+            'fc.oneof',
           );
           expect(out).toBe(expectedArb);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -75,7 +76,7 @@ describe('oneof', () => {
         const out = oneof(
           weight1 !== null ? { arbitrary: arb1, weight: weight1 } : arb1,
           weight2 !== null ? { arbitrary: arb2, weight: weight2 } : arb2,
-          weight3 !== null ? { arbitrary: arb3, weight: weight3 } : arb3
+          weight3 !== null ? { arbitrary: arb3, weight: weight3 } : arb3,
         );
 
         // Assert
@@ -86,10 +87,10 @@ describe('oneof', () => {
             { arbitrary: arb3, weight: weight3 !== null ? weight3 : 1 },
           ],
           {}, // empty constraints
-          'fc.oneof'
+          'fc.oneof',
         );
         expect(out).toBe(expectedArb);
-      })
+      }),
     );
   });
 });

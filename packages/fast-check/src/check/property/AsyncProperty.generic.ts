@@ -1,9 +1,11 @@
-import { Random } from '../../random/generator/Random';
-import { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import type { Random } from '../../random/generator/Random';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { PropertyFailure, IRawProperty, runIdToFrequency } from './IRawProperty';
-import { readConfigureGlobal, GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { Value } from '../arbitrary/definition/Value';
+import type { PropertyFailure, IRawProperty } from './IRawProperty';
+import { runIdToFrequency } from './IRawProperty';
+import type { GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
+import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
+import type { Value } from '../arbitrary/definition/Value';
 import { Stream } from '../../stream/Stream';
 import {
   noUndefinedAsContext,
@@ -63,18 +65,21 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
-  constructor(readonly arb: Arbitrary<Ts>, readonly predicate: (t: Ts) => Promise<boolean | void>) {
+  constructor(
+    readonly arb: Arbitrary<Ts>,
+    readonly predicate: (t: Ts) => Promise<boolean | void>,
+  ) {
     const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
 
     if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
       throw Error(
-        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties'
+        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties',
       );
     }
 
     if (asyncAfterEach !== undefined && afterEach !== undefined) {
       throw Error(
-        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties'
+        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties',
       );
     }
 

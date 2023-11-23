@@ -69,7 +69,7 @@ describe('GlobalParameters', () => {
       fc.property(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
-      { ...globalConfig, numRuns: overridenNumRuns }
+      { ...globalConfig, numRuns: overridenNumRuns },
     );
 
     fc.configureGlobal(globalConfig);
@@ -78,7 +78,7 @@ describe('GlobalParameters', () => {
       fc.property(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
-      { numRuns: overridenNumRuns }
+      { numRuns: overridenNumRuns },
     );
 
     expect(withGlobalConfigurationOverriden).toEqual(withLocalConfiguration);
@@ -94,7 +94,7 @@ describe('GlobalParameters', () => {
       fc.property(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
-      { ...globalConfig, numRuns: overridenNumRuns }
+      { ...globalConfig, numRuns: overridenNumRuns },
     );
 
     fc.configureGlobal(globalConfig);
@@ -103,7 +103,7 @@ describe('GlobalParameters', () => {
       fc.property(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
-      { numRuns: overridenNumRuns }
+      { numRuns: overridenNumRuns },
     );
 
     expect(withGlobalConfigurationOverriden).toEqual(withLocalConfiguration);

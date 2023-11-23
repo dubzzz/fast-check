@@ -70,7 +70,7 @@ describe('computeNextFlags', () => {
         const nextSize = sourceToggled + offset; // anything >= sourceToggled
         const nextFlags = computeNextFlags(flags, nextSize);
         expect(countToggledBits(nextFlags)).toBe(sourceToggled);
-      })
+      }),
     );
   });
 
@@ -81,7 +81,7 @@ describe('computeNextFlags', () => {
         for (let idx = 0, mask = BigInt(1); idx !== nextSize; ++idx, mask <<= BigInt(1)) {
           if (flags & mask) expect(!!(nextFlags & mask)).toBe(true);
         }
-      })
+      }),
     );
   });
 
@@ -90,7 +90,7 @@ describe('computeNextFlags', () => {
       fc.property(fc.bigUint(), fc.nat(100), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         expect(nextFlags < BigInt(1) << BigInt(nextSize)).toBe(true);
-      })
+      }),
     );
   });
 });
@@ -106,7 +106,7 @@ describe('computeTogglePositions', () => {
         for (const p of positions) {
           expect(toggleCase(chars[p])).not.toBe(chars[p]);
         }
-      })
+      }),
     );
   });
 
@@ -122,7 +122,7 @@ describe('computeTogglePositions', () => {
             expect(toggleCase(chars[index])).toBe(chars[index]);
           }
         }
-      })
+      }),
     );
   });
 });
@@ -150,7 +150,7 @@ describe('computeFlagsFromChars', () => {
 
         // Assert
         expect(out).toBe(flags);
-      })
+      }),
     );
   });
 });

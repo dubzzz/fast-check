@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 import { stringify } from '../../../utils/stringify';
 import { array } from '../../array';
@@ -17,14 +17,16 @@ import { uint8Array } from '../../uint8Array';
 import { uint8ClampedArray } from '../../uint8ClampedArray';
 import { sparseArray } from '../../sparseArray';
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from '../mappers/KeyValuePairsToObject';
-import { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
+import type { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
 import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
 import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
-import { objectToPrototypeLessMapper, objectToPrototypeLessUnmapper } from '../mappers/ObjectToPrototypeLess';
 import { letrec } from '../../letrec';
-import { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 import { uniqueArray } from '../../uniqueArray';
-import { createDepthIdentifier, DepthIdentifier } from '../helpers/DepthContext';
+import type { DepthIdentifier } from '../helpers/DepthContext';
+import { createDepthIdentifier } from '../helpers/DepthContext';
+import { constant } from '../../constant';
+import { boolean } from '../../boolean';
 
 /** @internal */
 function mapOf<T, U>(
@@ -32,7 +34,7 @@ function mapOf<T, U>(
   va: Arbitrary<U>,
   maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier
+  depthIdentifier: DepthIdentifier,
 ) {
   return uniqueArray(tuple(ka, va), {
     maxLength: maxKeys,
@@ -49,14 +51,18 @@ function dictOf<U>(
   va: Arbitrary<U>,
   maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier
+  depthIdentifier: DepthIdentifier,
+  withNullPrototype: boolean,
 ) {
-  return uniqueArray(tuple(ka, va), {
-    maxLength: maxKeys,
-    size,
-    selector: (t) => t[0],
-    depthIdentifier,
-  }).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
+  return tuple(
+    uniqueArray(tuple(ka, va), {
+      maxLength: maxKeys,
+      size,
+      selector: (t) => t[0],
+      depthIdentifier,
+    }),
+    withNullPrototype ? boolean() : constant(false),
+  ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
 }
 
 /** @internal */
@@ -64,18 +70,12 @@ function setOf<U>(
   va: Arbitrary<U>,
   maxKeys: number | undefined,
   size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier
+  depthIdentifier: DepthIdentifier,
 ) {
   return uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero', depthIdentifier }).map(
     arrayToSetMapper,
-    arrayToSetUnmapper
+    arrayToSetUnmapper,
   );
-}
-
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/ban-types
-function prototypeLessOf(objectArb: Arbitrary<object>) {
-  return objectArb.map(objectToPrototypeLessMapper, objectToPrototypeLessUnmapper);
 }
 
 /** @internal */
@@ -89,7 +89,7 @@ function typedArray(constraints: { maxLength: number | undefined; size: SizeForA
     int32Array(constraints),
     uint32Array(constraints),
     float32Array(constraints),
-    float64Array(constraints)
+    float64Array(constraints),
   );
 }
 
@@ -104,7 +104,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
   const baseArb = oneof(
     ...arbitrariesForBase,
     ...(constraints.withBigInt ? [bigInt()] : []),
-    ...(constraints.withDate ? [date()] : [])
+    ...(constraints.withDate ? [date()] : []),
   );
 
   return letrec((tie) => ({
@@ -116,18 +116,16 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withMap ? [tie('map')] : []),
       ...(constraints.withSet ? [tie('set')] : []),
       ...(constraints.withObjectString ? [tie('anything').map((o) => stringify(o))] : []),
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      ...(constraints.withNullPrototype ? [prototypeLessOf(tie('object') as Arbitrary<object>)] : []),
       ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
       ...(constraints.withSparseArray
         ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size, depthIdentifier })]
-        : [])
+        : []),
     ),
     // String keys
     keys: constraints.withObjectString
       ? oneof(
           { arbitrary: constraints.key, weight: 10 },
-          { arbitrary: tie('anything').map((o) => stringify(o)), weight: 1 }
+          { arbitrary: tie('anything').map((o) => stringify(o)), weight: 1 },
         )
       : constraints.key,
     // anything[]
@@ -137,9 +135,16 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
     // Map<key, anything> | Map<anything, anything>
     map: oneof(
       mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
-      mapOf(tie('anything'), tie('anything'), maxKeys, size, depthIdentifier)
+      mapOf(tie('anything'), tie('anything'), maxKeys, size, depthIdentifier),
     ),
     // {[key:string]: anything}
-    object: dictOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
+    object: dictOf(
+      tie('keys') as Arbitrary<string>,
+      tie('anything'),
+      maxKeys,
+      size,
+      depthIdentifier,
+      constraints.withNullPrototype,
+    ),
   })).anything;
 }

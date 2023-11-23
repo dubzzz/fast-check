@@ -1,3 +1,59 @@
+# 1.8.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.3...jest%2Fv1.8.0)]
+
+## Features
+
+- ([PR#4425](https://github.com/dubzzz/fast-check/pull/4425)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4452](https://github.com/dubzzz/fast-check/pull/4452)) CI: Stabilize CI with higher timeout for test-bundle tests
+- ([PR#4288](https://github.com/dubzzz/fast-check/pull/4288)) Test: Confirm basic typings work well
+- ([PR#4382](https://github.com/dubzzz/fast-check/pull/4382)) Test: Declare jest-jasmine2 by name not path
+
+---
+
+# 1.7.3
+
+_Deprecate legacy helpers_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.3)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.2...jest%2Fv1.7.3)]
+
+## Fixes
+
+- ([PR#4201](https://github.com/dubzzz/fast-check/pull/4201)) Deprecate: Flag `{it,test}Prop` as deprecated
+
+# 1.7.2
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.1...jest%2Fv1.7.2)]
+
+## Fixes
+
+- ([PR#4180](https://github.com/dubzzz/fast-check/pull/4180)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
+# 1.7.1
+
+_Clearer definition of compatible node versions_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.7.0...jest%2Fv1.7.1)]
+
+## Fixes
+
+- ([PR#4004](https://github.com/dubzzz/fast-check/pull/4004)) Test: Stop ignoring globals for node18
+
+# 1.7.0
+
+_Supporting passing options to worker_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.6.2...jest%2Fv1.7.0)]
+
+## Features
+
+- ([PR#3964](https://github.com/dubzzz/fast-check/pull/3964)) Support passing options to worker
+
+---
+
 # 1.6.2
 
 _Update URL of the logo_

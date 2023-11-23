@@ -3,7 +3,10 @@ import { MusicPlayer } from '../src/MusicPlayer';
 import * as assert from 'assert';
 
 export class AddTrackCommand implements MusicPlayerCommand {
-  constructor(readonly position: number, readonly trackName: string) {}
+  constructor(
+    readonly position: number,
+    readonly trackName: string,
+  ) {}
   check(m: MusicPlayerModel) {
     return !m.tracksAlreadySeen[this.trackName];
   }

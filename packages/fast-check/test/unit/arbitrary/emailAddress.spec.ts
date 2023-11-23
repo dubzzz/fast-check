@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { emailAddress, EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
+import type { EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
+import { emailAddress } from '../../../src/arbitrary/emailAddress';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 
 import {
@@ -44,7 +45,7 @@ describe('emailAddress (integration)', () => {
   type Extra = EmailAddressConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     { size: fc.oneof(sizeArb, relativeSizeArb) },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 
   const isCorrect = (t: string) => {

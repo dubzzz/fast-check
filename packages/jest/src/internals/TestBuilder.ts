@@ -9,7 +9,7 @@ import type { ArbitraryTuple, Prop, ArbitraryRecord, PropRecord, It, JestExtra, 
  */
 type TestPropTuple<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
   arbitraries: ArbitraryTuple<Ts>,
-  params?: FcParameters<TsParameters>
+  params?: FcParameters<TsParameters>,
 ) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
 
 /**
@@ -17,7 +17,7 @@ type TestPropTuple<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
  */
 type TestPropRecord<Ts, TsParameters extends Ts = Ts> = (
   arbitraries: ArbitraryRecord<Ts>,
-  params?: FcParameters<TsParameters>
+  params?: FcParameters<TsParameters>,
 ) => (testName: string, prop: PropRecord<Ts>, timeout?: number | undefined) => void;
 
 /**
@@ -26,16 +26,16 @@ type TestPropRecord<Ts, TsParameters extends Ts = Ts> = (
  */
 declare const prop: <Ts, TsParameters extends Ts = Ts>(
   arbitraries: Ts extends [any] | any[] ? ArbitraryTuple<Ts> : ArbitraryRecord<Ts>,
-  params?: FcParameters<TsParameters>
+  params?: FcParameters<TsParameters>,
 ) => (
   testName: string,
   prop: Ts extends [any] | any[] ? Prop<Ts> : PropRecord<Ts>,
-  timeout?: number | undefined
+  timeout?: number | undefined,
 ) => void;
 
 function adaptParametersForRecord<Ts>(
   parameters: FcParameters<[Ts]>,
-  originalParamaters: FcParameters<Ts>
+  originalParamaters: FcParameters<Ts>,
 ): FcParameters<Ts> {
   return {
     ...(parameters as Required<FcParameters<[Ts]>>),
@@ -55,7 +55,7 @@ function adaptExecutionTreeForRecord<Ts>(executionSummary: ExecutionTree<[Ts]>[]
 
 function adaptRunDetailsForRecord<Ts>(
   runDetails: RunDetails<[Ts]>,
-  originalParamaters: FcParameters<Ts>
+  originalParamaters: FcParameters<Ts>,
 ): RunDetails<Ts> {
   const adaptedRunDetailsCommon: RunDetailsCommon<Ts> = {
     ...(runDetails as Required<RunDetailsCommon<[Ts]>>),
@@ -74,17 +74,17 @@ function adaptRunDetailsForRecord<Ts>(
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing'],
   jest: JestExtra,
-  fc: FcExtra
+  fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters>;
 function buildTestProp<Ts, TsParameters extends Ts = Ts>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing'],
   jest: JestExtra,
-  fc: FcExtra
+  fc: FcExtra,
 ): TestPropRecord<Ts, TsParameters>;
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   testFn: It | It['only' | 'skip' | 'failing' | 'concurrent'] | It['concurrent']['only' | 'skip' | 'failing'],
   jest: JestExtra,
-  fc: FcExtra
+  fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters> | TestPropRecord<Ts, TsParameters> {
   return (arbitraries, params?: FcParameters<TsParameters>) => {
     if (Array.isArray(arbitraries)) {
@@ -92,7 +92,7 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
         buildTestWithPropRunner(testFn, testName, arbitraries, prop, params, timeout, jest, fc);
     }
     return (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => {
-      const recordArb = record(arbitraries as ArbitraryRecord<Ts>);
+      const recordArb = record<Ts>(arbitraries);
       const recordParams: FcParameters<[TsParameters]> | undefined =
         params !== undefined
           ? {
@@ -121,7 +121,7 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
         recordParams,
         timeout,
         jest,
-        fc
+        fc,
       );
     };
   };
@@ -141,7 +141,7 @@ export type FastCheckItBuilder<T> = T &
 function enrichWithTestProp<T extends (...args: any[]) => any>(
   testFn: T,
   jest: JestExtra,
-  fc: FcExtra
+  fc: FcExtra,
 ): FastCheckItBuilder<T> {
   let atLeastOneExtra = false;
   const extraKeys: Partial<FastCheckItBuilder<T>> = {};

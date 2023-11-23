@@ -23,7 +23,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
               fc.constant(new OddCommand()),
               fc.nat().map((n) => new CheckLessThanCommand(n + 1)),
             ],
-            { disableReplayLog: true, size: '+2' }
+            { disableReplayLog: true, size: '+2' },
           ),
           (cmds) => {
             const setup = () => ({
@@ -31,9 +31,9 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
               real: {},
             });
             fc.modelRun(setup, cmds);
-          }
+          },
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
 
@@ -51,7 +51,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
           fc.modelRun(setup, cmds);
           return false; // fails after the model, no matter the commands
         }),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect([...out.counterexample![0]]).toHaveLength(0);
@@ -79,9 +79,9 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
               real: {},
             });
             fc.modelRun(setup, cmds);
-          }
+          },
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample![1].toString()).toEqual('failure');
@@ -109,9 +109,9 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
               real: {},
             });
             fc.modelRun(setup, cmds);
-          }
+          },
         ),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(unexpectedPartiallyExecuted).toEqual([]);

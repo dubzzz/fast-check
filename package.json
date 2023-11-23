@@ -2,7 +2,7 @@
   "private": true,
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
-  "packageManager": "yarn@3.5.1",
+  "packageManager": "yarn@4.0.2",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -11,28 +11,29 @@
   ],
   "scripts": {
     "contributor:add": "all-contributors add",
-    "build:all": "yarn workspaces foreach -pvi --topological-dev --exclude website run build",
-    "build-ci:all": "yarn workspaces foreach -pvi --topological-dev --exclude website run build-ci",
-    "test:all": "yarn workspaces foreach -pvi run test && yarn workspaces foreach -pvi run e2e",
-    "typecheck:all": "yarn workspaces foreach -pvi run typecheck",
+    "build:all": "yarn workspaces foreach --all -pvi --topological-dev --exclude website run build",
+    "build-ci:all": "yarn workspaces foreach --all -pvi --topological-dev --exclude website run build-ci",
+    "test:all": "yarn workspaces foreach --all -pvi run test && yarn workspaces foreach --all -pvi run e2e",
+    "typecheck:all": "yarn workspaces foreach --all -pvi run typecheck",
     "format": "prettier --cache --write .",
     "format:check": "prettier --list-different .",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
-    "publint:all": "yarn workspaces foreach -pvi --no-private exec publint --strict",
+    "publint:all": "yarn workspaces foreach --all -pvi --no-private exec publint --strict",
     "version:bump": "yarn version check --interactive",
-    "pack:all": "yarn workspaces foreach -pvi --no-private pack --out package.tgz",
-    "unpack:all": "yarn workspaces foreach -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
+    "pack:all": "yarn workspaces foreach --all -pvi --no-private pack --out package.tgz",
+    "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
-    "@typescript-eslint/eslint-plugin": "^5.59.8",
-    "@typescript-eslint/parser": "^5.59.8",
-    "all-contributors-cli": "^6.26.0",
-    "eslint": "^8.41.0",
-    "eslint-config-prettier": "^8.8.0",
-    "prettier": "2.8.8",
-    "publint": "^0.1.12"
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "all-contributors-cli": "^6.26.1",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "3.1.0",
+    "publint": "^0.2.5",
+    "typescript": "~5.2.2"
   },
   "resolutions": {
     "react@^17.0.2": "patch:react@npm%3A17.0.2#./.yarn/patches/react-npm-17.0.2-99ba37d931.patch"

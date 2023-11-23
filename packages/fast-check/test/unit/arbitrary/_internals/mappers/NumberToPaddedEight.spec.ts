@@ -16,7 +16,7 @@ describe('numberToPaddedEightUnmapper', () => {
 
         // Assert
         expect(out).toBe(n);
-      })
+      }),
     ));
 
   it('should reject the value whenever it has an invalid length', () => {

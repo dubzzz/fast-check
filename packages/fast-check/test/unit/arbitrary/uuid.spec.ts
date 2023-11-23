@@ -3,7 +3,7 @@ import { uuid } from '../../../src/arbitrary/uuid';
 import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertProduceSameValueGivenSameSeed,

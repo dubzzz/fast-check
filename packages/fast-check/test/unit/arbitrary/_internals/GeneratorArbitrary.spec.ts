@@ -1,8 +1,8 @@
 import { GeneratorArbitrary } from '../../../../src/arbitrary/_internals/GeneratorArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { Random } from '../../../../src/random/generator/Random';
+import type { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
-import { MockWithArgs } from '../../__test-helpers__/Mocked';
+import type { MockWithArgs } from '../../__test-helpers__/Mocked';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
@@ -161,7 +161,7 @@ describe('GeneratorArbitrary', () => {
           ['a', ['b', 'c', 'd']],
           ['c', ['e', 'f']],
           ['d', ['g', 'h']],
-        ])
+        ]),
       );
       const second = buildArbitraryForGen('1', new Map([['1', ['2', '3']]]));
       const third = buildArbitraryForGen('A', new Map([['A', ['B', 'C']]]));

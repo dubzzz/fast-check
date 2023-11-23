@@ -16,6 +16,8 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/main"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/main/graph/badge.svg" alt="Coverage Status (unit tests)" /></a>
   <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
   <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
+  <a href="https://securityscorecards.dev/viewer/?platform=github.com&org=dubzzz&repo=fast-check"><img src="https://api.securityscorecards.dev/projects/github.com/dubzzz/fast-check/badge" alt="OpenSSF Scorecard" /></a>
+  <a href="https://bestpractices.coreinfrastructure.org/projects/7450"><img src="https://bestpractices.coreinfrastructure.org/projects/7450/badge" alt="OpenSSF Best Practices" /></a>
 </p>
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/labels/good%20first%20issue"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
@@ -51,7 +53,7 @@ describe('properties', () => {
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
-      })
+      }),
     );
   });
 });
@@ -214,6 +216,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="http://denisgorbachev.com/"><img src="https://avatars.githubusercontent.com/u/829578?v=4?s=100" width="100px;" alt="Denis Gorbachev"/><br /><sub><b>Denis Gorbachev</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=DenisGorbachev" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://senocular.github.io/"><img src="https://avatars.githubusercontent.com/u/3536716?v=4?s=100" width="100px;" alt="Trevor McCauley"/><br /><sub><b>Trevor McCauley</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=senocular" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://grantkiely.com/"><img src="https://avatars.githubusercontent.com/u/1948935?v=4?s=100" width="100px;" alt="Grant Kiely"/><br /><sub><b>Grant Kiely</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gkiely" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vecerek"><img src="https://avatars.githubusercontent.com/u/5737996?v=4?s=100" width="100px;" alt="Attila Večerek"/><br /><sub><b>Attila Večerek</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.zachbjornson.com/"><img src="https://avatars.githubusercontent.com/u/469365?v=4?s=100" width="100px;" alt="Zach Bjornson"/><br /><sub><b>Zach Bjornson</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

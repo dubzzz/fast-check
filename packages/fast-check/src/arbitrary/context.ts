@@ -1,5 +1,5 @@
 import { cloneMethod } from '../check/symbols';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { constant } from './constant';
 
 /**

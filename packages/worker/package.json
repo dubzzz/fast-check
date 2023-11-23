@@ -1,16 +1,20 @@
 {
   "name": "@fast-check/worker",
   "description": "Provide built-ins to run predicates directly within dedicated workers",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "type": "commonjs",
   "main": "lib/main.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./lib/main.d.ts",
-      "require": "./lib/main.js",
-      "import": "./lib/esm/main.js",
-      "default": "./lib/esm/main.js"
+      "require": {
+        "types": "./lib/main.d.ts",
+        "default": "./lib/main.js"
+      },
+      "import": {
+        "types": "./lib/esm/main.d.ts",
+        "default": "./lib/esm/main.js"
+      }
     }
   },
   "module": "lib/esm/main.js",
@@ -21,7 +25,7 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
     "build-ci": "yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "test": "jest",
@@ -45,10 +49,15 @@
     "fast-check": "^3.4.0"
   },
   "devDependencies": {
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
-    "ts-jest-resolver": "^2.0.1",
-    "typescript": "^5.0.4"
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.2",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-ts-webcompat-resolver": "^1.0.0",
+    "typescript": "~5.2.2"
   },
   "keywords": [
     "worker",
