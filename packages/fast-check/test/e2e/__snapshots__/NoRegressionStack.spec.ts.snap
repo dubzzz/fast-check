@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`NoRegressionStack not a function (with cause) 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: "0:0", endOnFailure: true }
+Counterexample: [0]
+Shrunk 1 time(s)
+"
+`;
+
 exports[`NoRegressionStack not a function 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: "0:0", endOnFailure: true }
@@ -19,6 +27,14 @@ Got TypeError: v is not a function
     at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
     at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
     at Object.toThrowErrorMatchingSnapshot (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)"
+`;
+
+exports[`NoRegressionStack throw (with cause) 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
+Counterexample: [0,1]
+Shrunk 32 time(s)
+"
 `;
 
 exports[`NoRegressionStack throw 1`] = `
