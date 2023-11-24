@@ -1,6 +1,8 @@
 releases:
-  "@fast-check/ava": patch
-  "@fast-check/jest": patch
-  "@fast-check/vitest": patch
-  "@fast-check/worker": patch
   fast-check: major
+
+declined:
+  - "@fast-check/ava"
+  - "@fast-check/jest"
+  - "@fast-check/vitest"
+  - "@fast-check/worker"
