@@ -27,18 +27,11 @@ function runIt<Ts>(
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
 ): RunExecution<Ts> {
-  const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      property.runBeforeEach!();
-    }
-    const out = property.run(v, isModernProperty) as PreconditionFailure | PropertyFailure | null;
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      property.runAfterEach!();
-    }
+    property.runBeforeEach();
+    const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
+    property.runAfterEach();
     runner.handleResult(out);
   }
   return runner.runExecution;
@@ -52,18 +45,11 @@ async function asyncRunIt<Ts>(
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
 ): Promise<RunExecution<Ts>> {
-  const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await property.runBeforeEach!();
-    }
-    const out = await property.run(v, isModernProperty);
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await property.runAfterEach!();
-    }
+    await property.runBeforeEach();
+    const out = await property.run(v);
+    await property.runAfterEach();
     runner.handleResult(out);
   }
   return runner.runExecution;

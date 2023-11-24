@@ -15,12 +15,7 @@ export function fakeProperty<T = unknown, TIsAsync extends boolean = boolean>(
   const shrink = jest.fn();
   const runBeforeEach = jest.fn();
   const runAfterEach = jest.fn();
-  const run = jest.fn().mockImplementation((_, dontRunHooks) => {
-    if (!dontRunHooks) {
-      runBeforeEach();
-      runAfterEach();
-    }
-  });
+  const run = jest.fn();
   class MyProperty implements IRawProperty<unknown, boolean> {
     isAsync = isAsync;
     generate = generate;
