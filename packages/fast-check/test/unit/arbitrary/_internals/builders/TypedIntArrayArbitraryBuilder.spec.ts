@@ -193,7 +193,7 @@ function defaultsMinMaxTypedInt8Arb() {
 }
 
 function validArrayConstraintsArb() {
-  return fc.record({ minLength: fc.nat(), maxLength: fc.nat() }, { withDeletedKeys: true }).map((ct) => {
+  return fc.record({ minLength: fc.nat(), maxLength: fc.nat() }, { requiredKeys: [] }).map((ct) => {
     if (ct.minLength !== undefined && ct.maxLength !== undefined && ct.minLength > ct.maxLength) {
       return { minLength: ct.maxLength, maxLength: ct.minLength };
     }
@@ -202,14 +202,12 @@ function validArrayConstraintsArb() {
 }
 
 function validIntegerConstraintsArb(min: number, max: number) {
-  return fc
-    .record({ min: fc.integer({ min, max }), max: fc.integer({ min, max }) }, { withDeletedKeys: true })
-    .map((ct) => {
-      if (ct.min !== undefined && ct.max !== undefined && ct.min > ct.max) {
-        return { min: ct.max, max: ct.min };
-      }
-      return ct;
-    });
+  return fc.record({ min: fc.integer({ min, max }), max: fc.integer({ min, max }) }, { requiredKeys: [] }).map((ct) => {
+    if (ct.min !== undefined && ct.max !== undefined && ct.min > ct.max) {
+      return { min: ct.max, max: ct.min };
+    }
+    return ct;
+  });
 }
 
 function invalidIntegerConstraintsArb(min: number, max: number) {
