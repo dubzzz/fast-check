@@ -124,9 +124,6 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       // precondition failure considered as success for the first version
       if (PreconditionFailure.isFailure(err)) return err;
       // exception as PropertyFailure in case of real failure
-      if (err instanceof Error && err.stack) {
-        return { error: err }; // stack includes the message
-      }
       return { error: err };
     }
   }
