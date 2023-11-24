@@ -16,12 +16,7 @@ export function fakeProperty<T = unknown, TIsAsync extends boolean = boolean>(
   const shrink = vi.fn();
   const runBeforeEach = vi.fn();
   const runAfterEach = vi.fn();
-  const run = vi.fn().mockImplementation((_, dontRunHooks) => {
-    if (!dontRunHooks) {
-      runBeforeEach();
-      runAfterEach();
-    }
-  });
+  const run = vi.fn();
   class MyProperty implements IRawProperty<unknown, boolean> {
     isAsync = isAsync;
     generate = generate;
