@@ -137,7 +137,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     }
     try {
       const output = this.predicate(v);
-      return output == null || output === true
+      return output === undefined || output === true
         ? null
         : {
             error: new Error('Property failed by returning false'),
