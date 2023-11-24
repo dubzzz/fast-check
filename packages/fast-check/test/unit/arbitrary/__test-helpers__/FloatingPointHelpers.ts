@@ -46,7 +46,7 @@ function constraintsInternal(
   is32Bits: boolean,
 ): fc.Arbitrary<ConstraintsInternalOut> {
   return fc
-    .record(recordConstraints, { withDeletedKeys: true })
+    .record(recordConstraints, { requiredKeys: [] })
     .filter((ct) => {
       // Forbid min and max to be NaN
       return (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max));
