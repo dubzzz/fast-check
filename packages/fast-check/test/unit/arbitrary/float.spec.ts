@@ -70,7 +70,7 @@ describe('float', () => {
     fc.assert(
       fc.property(
         float32raw(),
-        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         (f, otherCt) => {
           // Arrange
           fc.pre(isNotNaN32bits(f));
@@ -90,7 +90,7 @@ describe('float', () => {
     fc.assert(
       fc.property(
         float32raw(),
-        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         fc.constantFrom('min', 'max', 'both'),
         (f, otherCt, exclusiveMode) => {
           // Arrange
