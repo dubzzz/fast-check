@@ -1,4 +1,4 @@
-import { Error, safePush, safeReplace } from '../../../utils/globals';
+import { Error, safePush, safeReplace, String } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
@@ -80,9 +80,19 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
 }
 
 /** @internal */
+function prettyError(errorInstance: unknown) {
+  if (errorInstance instanceof Error && errorInstance.stack) {
+    return errorInstance.stack; // stack includes the message
+  }
+  return String(errorInstance);
+}
+
+/** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const noErrorInMessage = out.runConfiguration.errorWithCause;
-  const messageErrorPart = noErrorInMessage ? '' : `\nGot ${safeReplace(out.error, /^Error: /, 'error: ')}`;
+  const messageErrorPart = noErrorInMessage
+    ? ''
+    : `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}`;
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${
