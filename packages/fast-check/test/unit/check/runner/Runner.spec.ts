@@ -480,7 +480,7 @@ describe('Runner', () => {
               await new Promise<void>((resolve) => {
                 waitingResolve.push(resolve);
               });
-              return ++numCallsRun < num ? null : { error: new Error(), errorMessage: 'error' };
+              return ++numCallsRun < num ? null : { error: new Error('error'),   };
             },
             runAfterEach: async () => {},
           };
@@ -568,7 +568,7 @@ describe('Runner', () => {
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
-      run: (_v: [any, any]) => ({ error: new Error(), errorMessage: 'error in failingProperty' }),
+      run: (_v: [any, any]) => ({ error: new Error('error in failingProperty'),  }),
       runAfterEach: () => {},
     };
     const failingComplexProperty: IRawProperty<[any, any, any]> = {
@@ -576,7 +576,7 @@ describe('Runner', () => {
       generate: () => new Value([[v1, v2], v2, v1], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
-      run: (_v: [any, any, any]) => ({ error: new Error(), errorMessage: 'error in failingComplexProperty' }),
+      run: (_v: [any, any, any]) => ({ error: new Error('error in failingComplexProperty'),  }),
       runAfterEach: () => {},
     };
     const successProperty: IRawProperty<[any, any]> = {

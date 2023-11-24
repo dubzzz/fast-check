@@ -71,7 +71,7 @@ describe('Property', () => {
         p.runAfterEach();
 
         // Assert
-        expect(out).toEqual({ error: stuff, errorMessage: expect.any(String) });
+        expect(out).toEqual({ error: stuff });
       }),
     );
   });
