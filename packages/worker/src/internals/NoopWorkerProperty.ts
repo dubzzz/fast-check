@@ -25,4 +25,10 @@ export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
   run(): Promise<PreconditionFailure | PropertyFailure | null> {
     throw new Error('Method not implemented.');
   }
+  runBeforeEach(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  runAfterEach(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 }
