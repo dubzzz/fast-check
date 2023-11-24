@@ -39,21 +39,12 @@ function fromCachedUnsafe<Ts, IsAsync extends boolean>(
 
 /** @internal */
 export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
-  runBeforeEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
-  runAfterEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
   private coveredCases: Map<string, ReturnType<IRawProperty<Ts, IsAsync>['run']>> = new Map();
 
   constructor(
     readonly property: IRawProperty<Ts, IsAsync>,
     readonly skipRuns: boolean,
-  ) {
-    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runBeforeEach = () => this.property.runBeforeEach!();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runAfterEach = () => this.property.runAfterEach!();
-    }
-  }
+  ) {}
 
   isAsync(): IsAsync {
     return this.property.isAsync();
@@ -67,7 +58,7 @@ export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements I
     return this.property.shrink(value);
   }
 
-  run(v: Ts, dontRunHook: boolean): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
+  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
     const stringifiedValue = stringify(v);
     if (this.coveredCases.has(stringifiedValue)) {
       const lastOutput = this.coveredCases.get(stringifiedValue) as ReturnType<IRawProperty<Ts, IsAsync>['run']>;
@@ -76,8 +67,16 @@ export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements I
       }
       return fromCachedUnsafe(lastOutput, this.property.isAsync());
     }
-    const out = this.property.run(v, dontRunHook);
+    const out = this.property.run(v);
     this.coveredCases.set(stringifiedValue, out);
     return out;
+  }
+
+  runBeforeEach(): ReturnType<IRawProperty<Ts, IsAsync>['runBeforeEach']> {
+    return this.property.runBeforeEach();
+  }
+
+  runAfterEach(): ReturnType<IRawProperty<Ts, IsAsync>['runAfterEach']> {
+    return this.property.runAfterEach();
   }
 }

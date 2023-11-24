@@ -19,7 +19,9 @@ function buildProperty(asyncProp: boolean) {
     isAsync: () => asyncProp,
     generate: () => new Value({}, undefined),
     shrink: () => Stream.nil(),
+    runBeforeEach: () => {},
     run: () => null,
+    runAfterEach: () => {},
   } as IRawProperty<any>;
 }
 
