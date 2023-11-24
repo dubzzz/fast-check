@@ -20,7 +20,9 @@ const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
     isAsync = () => false;
     generate = (rng: Random) => new Value(this.arb.generate(rng, undefined).value_, undefined);
     shrink = () => Stream.nil<Value<T>>();
+    runBeforeEach = () => {};
     run = () => ({ error: new Error(), errorMessage: 'failure' });
+    runAfterEach = () => {};
   })(arb);
 
 describe('Tosser', () => {

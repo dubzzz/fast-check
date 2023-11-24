@@ -26,22 +26,12 @@ const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTi
 
 /** @internal */
 export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
-  runBeforeEach?: () => Promise<void>;
-  runAfterEach?: () => Promise<void>;
-
   constructor(
     readonly property: IRawProperty<Ts>,
     readonly timeMs: number,
     readonly setTimeoutSafe: typeof setTimeout,
     readonly clearTimeoutSafe: typeof clearTimeout,
-  ) {
-    if (this.property.runBeforeEach !== undefined && this.property.runAfterEach !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runBeforeEach = () => Promise.resolve(this.property.runBeforeEach!());
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.runAfterEach = () => Promise.resolve(this.property.runAfterEach!());
-    }
-  }
+  ) {}
 
   isAsync(): true {
     return true;
@@ -55,10 +45,18 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
     return this.property.shrink(value);
   }
 
-  async run(v: Ts, dontRunHook: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
+  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
     const t = timeoutAfter(this.timeMs, this.setTimeoutSafe, this.clearTimeoutSafe);
-    const propRun = Promise.race([this.property.run(v, dontRunHook), t.promise]);
+    const propRun = Promise.race([this.property.run(v), t.promise]);
     propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
     return propRun;
+  }
+
+  runBeforeEach(): ReturnType<IRawProperty<Ts, true>['runBeforeEach']> {
+    return Promise.resolve(this.property.runBeforeEach());
+  }
+
+  runAfterEach(): ReturnType<IRawProperty<Ts, true>['runAfterEach']> {
+    return Promise.resolve(this.property.runAfterEach());
   }
 }
