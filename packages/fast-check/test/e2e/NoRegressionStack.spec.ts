@@ -18,6 +18,21 @@ describe(`NoRegressionStack`, () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('throw (with cause)', () => {
+    expect(
+      sanitize(() =>
+        fc.assert(
+          fc.property(fc.nat(), fc.nat(), (a, b) => {
+            if (a < b) {
+              throw new Error('a must be >= b');
+            }
+          }),
+          { ...settings, errorWithCause: true },
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('not a function', () => {
     expect(
       sanitize(() =>
@@ -26,6 +41,19 @@ describe(`NoRegressionStack`, () => {
             (v as any)();
           }),
           settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('not a function (with cause)', () => {
+    expect(
+      sanitize(() =>
+        fc.assert(
+          fc.property(fc.nat(), (v) => {
+            (v as any)();
+          }),
+          { ...settings, errorWithCause: true },
         ),
       ),
     ).toThrowErrorMatchingSnapshot();
