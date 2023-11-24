@@ -144,11 +144,11 @@ fc.record(
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {"id":"ffffffe1-582d-457d-899e-8084fffffff7","age":97}
-// • {"age":96}
-// • {"id":"00000012-bdc2-4b1c-8a2a-245900000006","age":6}
-// • {"id":"8785297a-e305-43bc-bfff-fff1927a3512","age":30}
-// • {"age":17}
+// • {"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
+// • {"id":"ffffffee-ffef-4fff-8000-0015f69788ee","age":21}
+// • {"age":34}
+// • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
+// • {"id":"00000006-0007-4000-8397-86ea00000004"}
 // • …
 ```
 
