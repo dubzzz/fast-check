@@ -131,10 +131,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     this.afterEachHook();
   }
 
-  run(v: Ts, dontRunHook?: boolean): PreconditionFailure | PropertyFailure | null {
-    if (!dontRunHook) {
-      this.beforeEachHook();
-    }
+  run(v: Ts): PreconditionFailure | PropertyFailure | null {
     try {
       const output = this.predicate(v);
       return output == null || output === true
@@ -151,10 +148,6 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
         return { error: err, errorMessage: err.stack }; // stack includes the message
       }
       return { error: err, errorMessage: String(err) };
-    } finally {
-      if (!dontRunHook) {
-        this.afterEachHook();
-      }
     }
   }
 

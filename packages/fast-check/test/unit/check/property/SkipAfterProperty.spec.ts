@@ -8,7 +8,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 const startTimeMs = 200;
 const timeLimitMs = 100;
 
-describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRunHook) => {
+describe('SkipAfterProperty', () => {
   it('should call timer at construction', async () => {
     // Arrange
     const timerMock = vi.fn();
@@ -86,13 +86,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(2);
@@ -114,14 +110,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
-    let out: ReturnType<typeof p.run>;
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      out = p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      out = p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    const out = p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -130,14 +121,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
-    if (dontRunHook) {
-      // We may not want to run them in such context, but so far we do
-      expect(runBeforeEach).toHaveBeenCalledTimes(1);
-      expect(runAfterEach).toHaveBeenCalledTimes(1);
-    } else {
-      expect(runBeforeEach).not.toHaveBeenCalled();
-      expect(runAfterEach).not.toHaveBeenCalled();
-    }
+    // We may not want to run hooks in such context, but so far we do
+    expect(runBeforeEach).toHaveBeenCalledTimes(1);
+    expect(runAfterEach).toHaveBeenCalledTimes(1);
   });
 
   it('should forward falsy interrupt flag to the precondition failure', async () => {
@@ -150,14 +136,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
-    let out: ReturnType<typeof p.run>;
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      out = p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      out = p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    const out = p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -174,14 +155,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, true, setTimeout, clearTimeout);
-    let out: ReturnType<typeof p.run>;
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      out = p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      out = p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    const out = p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -199,13 +175,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
       // Act
       const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
-      if (dontRunHook) {
-        await timeoutProp.runBeforeEach!();
-        await timeoutProp.run({}, true);
-        await timeoutProp.runAfterEach!();
-      } else {
-        await timeoutProp.run({}, false);
-      }
+      await timeoutProp.runBeforeEach();
+      await timeoutProp.run({});
+      await timeoutProp.runAfterEach();
 
       // Assert
       expect(setTimeout).toBeCalledTimes(1);
@@ -223,13 +195,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
       // Act
       const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
-      if (dontRunHook) {
-        await timeoutProp.runBeforeEach!();
-        await timeoutProp.run({}, true);
-        await timeoutProp.runAfterEach!();
-      } else {
-        await timeoutProp.run({}, false);
-      }
+      await timeoutProp.runBeforeEach();
+      await timeoutProp.run({});
+      await timeoutProp.runAfterEach();
 
       // Assert
       expect(setTimeout).toBeCalledTimes(1);
@@ -248,20 +216,15 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
       // Act
       const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
-      let runPromise: ReturnType<typeof timeoutProp.run>;
-      if (dontRunHook) {
-        await timeoutProp.runBeforeEach!();
-        runPromise = timeoutProp.run({}, true);
-      } else {
-        runPromise = timeoutProp.run({}, false);
-      }
+      await timeoutProp.runBeforeEach();
+      const runPromise = timeoutProp.run({});
       vi.advanceTimersByTime(10);
 
       // Assert
       const out = await runPromise;
       expect(PreconditionFailure.isFailure(out)).toBe(true);
       expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
-      await timeoutProp.runAfterEach!();
+      await timeoutProp.runAfterEach();
     });
   });
 });

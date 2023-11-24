@@ -88,8 +88,8 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return fc.Stream.nil();
   }
 
-  run(v: Ts, dontRunHook?: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
-    return this.internalProperty.run(v, dontRunHook);
+  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+    return this.internalProperty.run(v);
   }
 
   beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {

@@ -65,12 +65,10 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   /**
    * Check the predicate for v
    * @param v - Value of which we want to check the predicate
-   * @param dontRunHook - Do not run beforeEach and afterEach hooks within run
    * @remarks Since 0.0.7
    */
   run(
     v: Ts,
-    dontRunHook?: boolean,
   ):
     | (IsAsync extends true ? Promise<PreconditionFailure | PropertyFailure | null> : never)
     | (IsAsync extends false ? PreconditionFailure | PropertyFailure | null : never);
@@ -79,13 +77,13 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    * Run before each hook
    * @remarks Since 3.4.0
    */
-  runBeforeEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runBeforeEach: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
 
   /**
    * Run after each hook
    * @remarks Since 3.4.0
    */
-  runAfterEach?: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runAfterEach: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
 }
 
 /**
