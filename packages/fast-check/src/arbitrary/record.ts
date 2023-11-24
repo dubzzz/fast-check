@@ -35,11 +35,9 @@ export type RecordConstraints<T = unknown> = {
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type RecordValue<T, TConstraints = {}> = TConstraints extends { requiredKeys: any[] }
-  ? never
-  : TConstraints extends { requiredKeys: (infer TKeys)[] }
-    ? Partial<T> & Pick<T, TKeys & keyof T>
-    : T;
+export type RecordValue<T, TConstraints = {}> = TConstraints extends { requiredKeys: (infer TKeys)[] }
+  ? Partial<T> & Pick<T, TKeys & keyof T>
+  : T;
 
 /**
  * For records following the `recordModel` schema
