@@ -197,14 +197,6 @@ expectType<fc.Arbitrary<{ a: number; b: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, {}),
   '"record" accepts empty constraints',
 );
-expectType<fc.Arbitrary<{ a: number; b: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: false }),
-  '"record" understands withDeletedKeys=false',
-);
-expectType<fc.Arbitrary<{ a?: number; b?: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true }),
-  '"record" understands withDeletedKeys=true',
-);
 expectType<fc.Arbitrary<{ a?: number; b?: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] }),
   '"record" only applies optional on keys declared within requiredKeys even when empty',
@@ -240,12 +232,6 @@ expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string; a: number; 
     { requiredKeys: [mySymbol1, 'a'] as [typeof mySymbol1, 'a'] },
   ),
   '"record" only applies optional on keys declared within requiredKeys even if it contains symbols and normal keys',
-);
-expectType<fc.Arbitrary<never>>()(
-  // requiredKeys and withDeletedKeys cannot be used together
-  // typings are not perfect but at least they build a value that cannot be used
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: [] }),
-  '"record" receiving both withDeletedKeys and requiredKeys is invalid',
 );
 type Query = { data: { field: 'X' } };
 expectType<fc.Arbitrary<Query>>()(
