@@ -27,3 +27,14 @@ export function runWithSanitizedStack(run: () => void) {
     }
   };
 }
+
+/** Wrap a potentially throwing code within a caller that would sanitize the returned Error */
+export function asyncRunWithSanitizedStack(run: () => Promise<void>) {
+  return async (): Promise<void> => {
+    try {
+      await run();
+    } catch (err) {
+      throw new Error(sanitizeStack((err as Error).message));
+    }
+  };
+}
