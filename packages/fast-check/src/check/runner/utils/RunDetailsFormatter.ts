@@ -87,7 +87,7 @@ function prettyError(errorInstance: unknown) {
   try {
     return String(errorInstance);
   } catch (err) {
-    return `Failed to serialize errorInstance`;
+    return 'Failed to serialize errorInstance';
   }
 }
 
