@@ -3361,7 +3361,7 @@ Execution summary:
 . . . . . . . . . . . . . . . . [32m√[0m [{"k1":210974298}]"
 `;
 
-exports[`NoRegression scheduler 1`] = `
+exports[`NoRegression (async) scheduler 1`] = `
 "Property failed after 74 tests
 { seed: 42, path: "73", endOnFailure: true }
 Counterexample: [schedulerFor()\`
