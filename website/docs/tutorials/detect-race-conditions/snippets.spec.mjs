@@ -43,7 +43,7 @@ const allQueueSnippets = {
   },
   v4: {
     code: snippets.queueCodeV4,
-    greenTests: ['unit', 'part1', 'part2', 'part3', 'part3NoBatch', 'part4', 'extendedWaitAll'],
+    greenTests: ['unit', 'part1', 'part1WaitAll', 'part2', 'part3', 'part3NoBatch', 'part4'],
   },
   v5: {
     code: snippets.queueCodeV5,
