@@ -1,11 +1,37 @@
 import fc from '../../src/fast-check';
+import { runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
 
 const settings = { seed: 42, verbose: 0 };
 
 describe(`NoRegressionStack`, () => {
+  it('return false', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.nat(), fc.nat(), (a, b) => {
+            return a >= b;
+          }),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('return false (with cause)', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.nat(), fc.nat(), (a, b) => {
+            return a >= b;
+          }),
+          { ...settings, errorWithCause: true },
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('throw', () => {
     expect(
-      sanitize(() =>
+      runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             if (a < b) {
@@ -20,7 +46,7 @@ describe(`NoRegressionStack`, () => {
 
   it('throw (with cause)', () => {
     expect(
-      sanitize(() =>
+      runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             if (a < b) {
@@ -35,7 +61,7 @@ describe(`NoRegressionStack`, () => {
 
   it('not a function', () => {
     expect(
-      sanitize(() =>
+      runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.nat(), (v) => {
             (v as any)();
@@ -48,7 +74,7 @@ describe(`NoRegressionStack`, () => {
 
   it('not a function (with cause)', () => {
     expect(
-      sanitize(() =>
+      runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.nat(), (v) => {
             (v as any)();
@@ -59,31 +85,3 @@ describe(`NoRegressionStack`, () => {
     ).toThrowErrorMatchingSnapshot();
   });
 });
-
-// Helpers
-
-function sanitize(run: () => void) {
-  return () => {
-    try {
-      run();
-    } catch (err) {
-      const initialMessage = (err as Error).message;
-      const lines = initialMessage
-        .replace(/\\/g, '/')
-        .replace(/at [^(]*fast-check\/(packages|node_modules)(.*):\d+:\d+/g, 'at $1$2:?:?') // line for the spec file itself
-        .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*):\d+:\d+\)/g, 'at $1 ($2$3:?:?)') // any import linked to internals of fast-check
-        .replace(/at (.*) \(.*\/(\.yarn|Yarn)\/.*\/(node_modules\/.*):\d+:\d+\)/g, 'at $1 ($3:?:?)') // reducing risks of changes on bumps: .yarn (Linux and Mac), Yarn (Windows)
-        .split('\n');
-      throw new Error(
-        lines
-          .slice(
-            0,
-            // internals of jest, subject to regular changes
-            // and OS dependent
-            lines.findIndex((line) => line.includes('node_modules/jest-circus')),
-          )
-          .join('\n'),
-      );
-    }
-  };
-}
