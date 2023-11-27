@@ -37,7 +37,7 @@ await s.waitFor(Promise.all(pendingQueries));
 
 An alternative would have been to use `waitAll` instead of `waitFor` but it comes with a precise requirement: promises have to be already scheduled by the time we request the scheduler. In other words, if our code delays a little bit the call to `call`, the scheduler might not wait enough.
 
-Given the fact that `call` should be fired synchronously is not a requirement for our current function, we can relax the constraint in our test to make evolving this implementation easier.
+Given the fact that `call` being fired synchronously is not a requirement for our current function, we can relax the constraint in our test to make evolving this implementation easier.
 
 A `waitAll` version of the code above would be:
 
