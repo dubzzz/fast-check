@@ -120,8 +120,6 @@ export class RunExecution<Ts> {
         // Rq: Same as this.value
         // =>  this.failure !== undefined
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        error: this.failure!.errorMessage,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         errorInstance: this.failure!.error,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,

@@ -448,3 +448,10 @@ export function safeHasOwnProperty(instance: unknown, v: PropertyKey): boolean {
 export function safeToString(instance: unknown): string {
   return safeApply(untouchedToString, instance, []);
 }
+
+// Error
+
+const untouchedErrorToString = Error.prototype.toString;
+export function safeErrorToString(instance: Error): string {
+  return safeApply(untouchedErrorToString, instance, []);
+}

@@ -186,7 +186,7 @@ describe('SkipAfterProperty', () => {
 
     it('should clear all started timeouts on failure', async () => {
       // Arrange
-      const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
+      const errorFromUnderlying = { error: new Error('plop') };
       vi.useFakeTimers();
       vi.spyOn(global, 'setTimeout');
       vi.spyOn(global, 'clearTimeout');
