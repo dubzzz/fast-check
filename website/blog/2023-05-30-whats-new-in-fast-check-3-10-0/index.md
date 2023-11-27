@@ -58,7 +58,7 @@ The version 3.10.0 is based on version 3.9.0.
 - ([PR#3927](https://github.com/dubzzz/fast-check/pull/3927)) Add support for disjunctions in regexes
 - ([PR#3928](https://github.com/dubzzz/fast-check/pull/3928)) Correctly parse ^ and $ in regex
 - ([PR#3929](https://github.com/dubzzz/fast-check/pull/3929)) Correctly parse numeric backreference
-- ([PR#3930](https://github.com/dubzzz/fast-check/pull/3930)) Correctly parse look{ahead,behind} in regexes
+- ([PR#3930](https://github.com/dubzzz/fast-check/pull/3930)) Correctly parse look\{ahead,behind\} in regexes
 - ([PR#3932](https://github.com/dubzzz/fast-check/pull/3932)) Support empty disjunctions in regexes
 - ([PR#3933](https://github.com/dubzzz/fast-check/pull/3933)) Add parsing support for \p and \k
 - ([PR#3935](https://github.com/dubzzz/fast-check/pull/3935)) Support generation of strings not constrained by ^ or $
