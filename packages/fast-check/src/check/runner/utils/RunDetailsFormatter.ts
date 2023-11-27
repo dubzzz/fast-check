@@ -1,4 +1,4 @@
-import { Error, safePush, safeReplace } from '../../../utils/globals';
+import { Error, safeErrorToString, safePush, safeReplace, safeToString, String } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
@@ -80,9 +80,47 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
 }
 
 /** @internal */
+function prettyError(errorInstance: unknown) {
+  // Print the Error message and its associated stacktrace
+  if (errorInstance instanceof Error && errorInstance.stack !== undefined) {
+    return errorInstance.stack; // stack includes the message
+  }
+
+  // First fallback: String(.)
+  try {
+    return String(errorInstance);
+  } catch (_err) {
+    // no-op
+  }
+
+  // Second fallback: Error::toString()
+  if (errorInstance instanceof Error) {
+    try {
+      return safeErrorToString(errorInstance);
+    } catch (_err) {
+      // no-op
+    }
+  }
+
+  // Third fallback: Object::toString()
+  if (errorInstance !== null && typeof errorInstance === 'object') {
+    try {
+      return safeToString(errorInstance);
+    } catch (_err) {
+      // no-op
+    }
+  }
+
+  // Final fallback: Hardcoded string
+  return 'Failed to serialize errorInstance';
+}
+
+/** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const noErrorInMessage = out.runConfiguration.errorWithCause;
-  const messageErrorPart = noErrorInMessage ? '' : `\nGot ${safeReplace(out.error, /^Error: /, 'error: ')}`;
+  const messageErrorPart = noErrorInMessage
+    ? ''
+    : `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}`;
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${

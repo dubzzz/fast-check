@@ -38,8 +38,6 @@ describe('AsyncProperty', () => {
     await p.runAfterEach();
 
     // Assert
-    expect((out as PropertyFailure).errorMessage).toContain('predicate throws');
-    expect((out as PropertyFailure).errorMessage).toContain('at ');
     expect((out as PropertyFailure).error).toBe(originalError);
   });
   it('Should fail if predicate throws a raw string', async () => {
@@ -56,7 +54,6 @@ describe('AsyncProperty', () => {
     // Assert
     expect(out).toEqual({
       error: 'predicate throws', // the original error is a string in this test
-      errorMessage: 'predicate throws', // the original error results in this message
     });
   });
   it('Should fail if predicate throws anything', () => {
@@ -74,7 +71,7 @@ describe('AsyncProperty', () => {
         await p.runAfterEach();
 
         // Assert
-        expect(out).toEqual({ error: stuff, errorMessage: expect.any(String) });
+        expect(out).toEqual({ error: stuff });
       }),
     );
   });
