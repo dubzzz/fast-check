@@ -618,7 +618,7 @@ describe('Runner', () => {
       );
     });
     it('Should put the orginal error in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`Got error in failingProperty`);
+      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`Got error: error in failingProperty`);
     });
     describe('Impact of VerbosityLevel in case of failure', () => {
       const baseErrorMessage = '';
