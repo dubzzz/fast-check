@@ -1,4 +1,4 @@
-import { Error, safePush, safeReplace, String } from '../../../utils/globals';
+import { Error, safeErrorToString, safePush, safeReplace, safeToString, String } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
@@ -81,14 +81,38 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
 
 /** @internal */
 function prettyError(errorInstance: unknown) {
-  if (errorInstance instanceof Error && errorInstance.stack) {
+  // Print the Error message and its associated stacktrace
+  if (errorInstance instanceof Error && errorInstance.stack !== undefined) {
     return errorInstance.stack; // stack includes the message
   }
+
+  // First fallback: String(.)
   try {
     return String(errorInstance);
-  } catch (err) {
-    return 'Failed to serialize errorInstance';
+  } catch (_err) {
+    // no-op
   }
+
+  // Second fallback: Error::toString()
+  if (errorInstance instanceof Error) {
+    try {
+      return safeErrorToString(errorInstance);
+    } catch (_err) {
+      // no-op
+    }
+  }
+
+  // Third fallback: Object::toString()
+  if (errorInstance !== null && typeof errorInstance === 'object') {
+    try {
+      return safeToString(errorInstance);
+    } catch (_err) {
+      // no-op
+    }
+  }
+
+  // Final fallback: Hardcoded string
+  return 'Failed to serialize errorInstance';
 }
 
 /** @internal */
