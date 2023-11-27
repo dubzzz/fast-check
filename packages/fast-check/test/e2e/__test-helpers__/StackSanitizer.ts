@@ -14,7 +14,7 @@ function sanitizeStack(initialMessage: string) {
       lines.length - 1 - [...lines].reverse().findIndex((line) => line.includes('node_modules/vitest'));
     lines.splice(firstLineWithVitest, lastLineWithVitest - firstLineWithVitest + 1);
   }
-  return lines.join('\n');
+  return lines.filter((line) => !line.includes('node:internal')).join('\n');
 }
 
 /** Wrap a potentially throwing code within a caller that would sanitize the returned Error */
