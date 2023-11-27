@@ -2412,6 +2412,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@docusaurus/tsconfig@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@docusaurus/tsconfig@npm:3.0.0"
+  checksum: 06a9b33b438c482057a1e4f1654cc350dd1a838a81510e7564f7b1eab6615c63465d39859592a89394e7070d8d523421a80dee6ffb625bb71c158c3c9f4c8098
+  languageName: node
+  linkType: hard
+
 "@docusaurus/types@npm:3.0.0":
   version: 3.0.0
   resolution: "@docusaurus/types@npm:3.0.0"
@@ -3308,15 +3315,6 @@ __metadata:
     unist-util-visit: ^5.0.0
     vfile: ^6.0.0
   checksum: da4305dcfd9012521170e0ed439eb336900fb84a5784e5e3dac2144855fa603325477855e17a04b7c673cc24699cf2bfd611c958f591bb3a9afb5608c259bbd3
-  languageName: node
-  linkType: hard
-
-"@mdx-js/react@npm:^1.6.22":
-  version: 1.6.22
-  resolution: "@mdx-js/react@npm:1.6.22"
-  peerDependencies:
-    react: ^16.13.1 || ^17.0.0
-  checksum: bc84bd514bc127f898819a0c6f1a6915d9541011bd8aefa1fcc1c9bea8939f31051409e546bdec92babfa5b56092a16d05ef6d318304ac029299df5181dc94c8
   languageName: node
   linkType: hard
 
@@ -4218,13 +4216,6 @@ __metadata:
   version: 0.2.0
   resolution: "@trysound/sax@npm:0.2.0"
   checksum: 11226c39b52b391719a2a92e10183e4260d9651f86edced166da1d95f39a0a1eaa470e44d14ac685ccd6d3df7e2002433782872c0feeb260d61e80f21250e65c
-  languageName: node
-  linkType: hard
-
-"@tsconfig/docusaurus@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "@tsconfig/docusaurus@npm:2.0.2"
-  checksum: 129f2532172496c108f53a15082e410b418e664c1761902664558059541a6cf7faff2b3d2953e2d507a7e3688afacf2479e17adcb35b89cae04ddb0415d0397a
   languageName: node
   linkType: hard
 
@@ -15010,24 +15001,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prism-react-renderer@npm:^1.3.5":
-  version: 1.3.5
-  resolution: "prism-react-renderer@npm:1.3.5"
-  peerDependencies:
-    react: ">=0.14.9"
-  checksum: c18806dcbc4c0b4fd6fd15bd06b4f7c0a6da98d93af235c3e970854994eb9b59e23315abb6cfc29e69da26d36709a47e25da85ab27fed81b6812f0a52caf6dfa
-  languageName: node
-  linkType: hard
-
-"prism-react-renderer@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "prism-react-renderer@npm:2.1.0"
+"prism-react-renderer@npm:^2.1.0, prism-react-renderer@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "prism-react-renderer@npm:2.3.0"
   dependencies:
     "@types/prismjs": ^1.26.0
-    clsx: ^1.2.1
+    clsx: ^2.0.0
   peerDependencies:
     react: ">=16.0.0"
-  checksum: 61b4eb22bdbf01005a0d7ec2a24a27b69e28f124a1fbbfc2adb4d7d41a7929ea94d5ce506a361dd5a230728402f02595d521d9a5286d74ec9b34be0896c513a5
+  checksum: 29b24eb5015c09e1b7e3fa2941584ead6fceb5556fdfbe7c34548d96886e0b291290bda93a421aab8b26ce6aae677387aac294982d11349a050843f6dbbc7449
   languageName: node
   linkType: hard
 
@@ -18586,15 +18568,15 @@ __metadata:
     "@docusaurus/preset-classic": 3.0.0
     "@docusaurus/remark-plugin-npm2yarn": 3.0.0
     "@docusaurus/theme-classic": 3.0.0
+    "@docusaurus/tsconfig": 3.0.0
     "@docusaurus/types": 3.0.0
     "@jest/globals": ^29.7.0
-    "@mdx-js/react": ^1.6.22
-    "@tsconfig/docusaurus": ^2.0.2
+    "@mdx-js/react": ^3.0.0
     "@types/node": ^20.9.0
     clsx: ^2.0.0
     fast-check: "workspace:*"
     jest: ^29.7.0
-    prism-react-renderer: ^1.3.5
+    prism-react-renderer: ^2.3.0
     react: ^18.2.0
     react-dom: ^18.2.0
     typescript: ~5.2.2
