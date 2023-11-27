@@ -84,7 +84,11 @@ function prettyError(errorInstance: unknown) {
   if (errorInstance instanceof Error && errorInstance.stack) {
     return errorInstance.stack; // stack includes the message
   }
-  return String(errorInstance);
+  try {
+    return String(errorInstance);
+  } catch (err) {
+    return `Failed to serialize errorInstance`;
+  }
 }
 
 /** @internal */
