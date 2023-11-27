@@ -18,6 +18,7 @@ describe(`NoRegressionStack`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+
   it('not a function', () => {
     expect(
       runWithSanitizedStack(() =>
