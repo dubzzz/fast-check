@@ -53,7 +53,6 @@ describe('Property', () => {
     // Assert
     expect(out).toEqual({
       error: 'predicate throws', // the original error is a string in this test
-      errorMessage: 'predicate throws', // the original error results in this message
     });
   });
   it('Should fail if predicate throws anything', () => {
