@@ -185,7 +185,7 @@ describe('SkipAfterProperty', () => {
 
     it('should clear all started timeouts on failure', async () => {
       // Arrange
-      const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
+      const errorFromUnderlying = { error: new Error('plop') };
       jest.useFakeTimers();
       jest.spyOn(global, 'setTimeout');
       jest.spyOn(global, 'clearTimeout');
