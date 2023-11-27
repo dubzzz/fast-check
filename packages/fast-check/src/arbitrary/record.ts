@@ -55,10 +55,10 @@ export type RecordConstraints<T = unknown> = (
 export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDeletedKeys: boolean; requiredKeys: any[] }
   ? never
   : TConstraints extends { withDeletedKeys: true }
-  ? Partial<T>
-  : TConstraints extends { requiredKeys: (infer TKeys)[] }
-  ? Partial<T> & Pick<T, TKeys & keyof T>
-  : T;
+    ? Partial<T>
+    : TConstraints extends { requiredKeys: (infer TKeys)[] }
+      ? Partial<T> & Pick<T, TKeys & keyof T>
+      : T;
 
 /**
  * For records following the `recordModel` schema

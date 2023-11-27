@@ -36,7 +36,7 @@ Install the module with: `yarn add fast-check --dev` or `npm install fast-check 
 Example of integration in [mocha](http://mochajs.org/):
 
 ```js
-const fc = require('fast-check');
+import fc from 'fast-check';
 
 // Code under test
 const contains = (text, pattern) => text.indexOf(pattern) >= 0;

@@ -225,12 +225,12 @@ describe('AdapterArbitrary', () => {
                 Object.is(v, vA)
                   ? adaptedA
                   : Object.is(v, vAA)
-                  ? adaptedAA
-                  : Object.is(v, vAB)
-                  ? adaptedAB
-                  : Object.is(v, vAC)
-                  ? adaptedAC
-                  : adaptedABC,
+                    ? adaptedAA
+                    : Object.is(v, vAB)
+                      ? adaptedAB
+                      : Object.is(v, vAC)
+                        ? adaptedAC
+                        : adaptedABC,
               );
 
             // Act

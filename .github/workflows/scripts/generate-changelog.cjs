@@ -202,8 +202,8 @@ function extractReleaseKind(oldTagName, newTagName) {
     newTagVersion.major !== oldTagVersion.major
       ? 'major'
       : newTagVersion.minor !== oldTagVersion.minor
-      ? 'minor'
-      : 'patch';
+        ? 'minor'
+        : 'patch';
   return releaseKind;
 }
 

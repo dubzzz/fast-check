@@ -1,3 +1,32 @@
+# 3.14.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.14.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.13.2...v3.14.0)]
+
+## Features
+
+- ([PR#4426](https://github.com/dubzzz/fast-check/pull/4426)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4364](https://github.com/dubzzz/fast-check/pull/4364)) CI: Toggle more immutable on yarn
+- ([PR#4369](https://github.com/dubzzz/fast-check/pull/4369)) CI: Do not override existing on untar
+- ([PR#4372](https://github.com/dubzzz/fast-check/pull/4372)) CI: REVERT Do not override existing on untar
+- ([PR#4371](https://github.com/dubzzz/fast-check/pull/4371)) CI: Mark final check as failed and not skipped
+- ([PR#4375](https://github.com/dubzzz/fast-check/pull/4375)) CI: Attempt to patch untar step
+- ([PR#4378](https://github.com/dubzzz/fast-check/pull/4378)) CI: Attempt to patch untar step
+- ([PR#4380](https://github.com/dubzzz/fast-check/pull/4380)) CI: Add missing but directly called dependencies
+- ([PR#4384](https://github.com/dubzzz/fast-check/pull/4384)) CI: Attempt to patch untar step
+- ([PR#4368](https://github.com/dubzzz/fast-check/pull/4368)) CI: Attempt to switch to pnp linker
+- ([PR#4407](https://github.com/dubzzz/fast-check/pull/4407)) CI: No parallel "git" command
+- ([PR#4419](https://github.com/dubzzz/fast-check/pull/4419)) CI: Prefer "import type" via linter
+- ([PR#4428](https://github.com/dubzzz/fast-check/pull/4428)) CI: Default to Node 20 for CI
+- ([PR#4441](https://github.com/dubzzz/fast-check/pull/4441)) CI: Add support for PnP on VSCode
+- ([PR#4345](https://github.com/dubzzz/fast-check/pull/4345)) Performance: Faster replay: drop loose compare
+- ([PR#4381](https://github.com/dubzzz/fast-check/pull/4381)) Test: Import buffer via aliased name
+
+---
+
 # 3.13.2
 
 _Better reporting for invalid paths_
