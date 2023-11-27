@@ -10,10 +10,7 @@ const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTi
   let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   const promise = new Promise<PropertyFailure>((resolve) => {
     timeoutHandle = setTimeoutSafe(() => {
-      resolve({
-        error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`),
-        errorMessage: `Property timeout: exceeded limit of ${timeMs} milliseconds`,
-      });
+      resolve({ error: new Error(`Property timeout: exceeded limit of ${timeMs} milliseconds`) });
     }, timeMs);
   });
   return {

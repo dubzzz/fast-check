@@ -1,5 +1,5 @@
 import fc from '../../src/fast-check';
-import { runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
+import { asyncRunWithSanitizedStack, runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
 import {
   IncreaseCommand,
   DecreaseCommand,
@@ -823,26 +823,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('scheduler', async () => {
-    await expect(
-      fc.assert(
-        fc.asyncProperty(fc.scheduler(), async (s) => {
-          const received = [] as string[];
-          for (const v of ['a', 'b', 'c']) {
-            s.schedule(Promise.resolve(v)).then((out) => {
-              received.push(out);
-              s.schedule(Promise.resolve(out.toUpperCase())).then((out2) => {
-                received.push(out2);
-              });
-            });
-          }
-          await s.waitAll();
-          return !received.join('').includes('aBc');
-        }),
-        settings,
-      ),
-    ).rejects.toThrowErrorMatchingSnapshot();
-  });
   it('context', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -917,43 +897,74 @@ describe(`NoRegression`, () => {
 describe(`NoRegression (async)`, () => {
   const asyncNumber = fc.integer().map((v) => Promise.resolve(v));
 
+  it('scheduler', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(
+        async () =>
+          await fc.assert(
+            fc.asyncProperty(fc.scheduler(), async (s) => {
+              const received = [] as string[];
+              for (const v of ['a', 'b', 'c']) {
+                s.schedule(Promise.resolve(v)).then((out) => {
+                  received.push(out);
+                  s.schedule(Promise.resolve(out.toUpperCase())).then((out2) => {
+                    received.push(out2);
+                  });
+                });
+              }
+              await s.waitAll();
+              return !received.join('').includes('aBc');
+            }),
+            settings,
+          ),
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
   it('number', async () => {
     await expect(
-      async () =>
-        await fc.assert(
-          fc.asyncProperty(fc.integer(), async (v) => testFunc(v)),
-          settings,
-        ),
+      asyncRunWithSanitizedStack(
+        async () =>
+          await fc.assert(
+            fc.asyncProperty(fc.integer(), async (v) => testFunc(v)),
+            settings,
+          ),
+      ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
   it('.map (to Promise)', async () => {
     await expect(
-      async () =>
-        await fc.assert(
-          fc.asyncProperty(asyncNumber, async (v) => testFunc(await v)),
-          settings,
-        ),
+      asyncRunWithSanitizedStack(
+        async () =>
+          await fc.assert(
+            fc.asyncProperty(asyncNumber, async (v) => testFunc(await v)),
+            settings,
+          ),
+      ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
   it('func (to Promise)', async () => {
     await expect(
-      async () =>
-        await fc.assert(
-          fc.asyncProperty(fc.func(asyncNumber), async (f) => testFunc(await f())),
-          settings,
-        ),
+      asyncRunWithSanitizedStack(
+        async () =>
+          await fc.assert(
+            fc.asyncProperty(fc.func(asyncNumber), async (f) => testFunc(await f())),
+            settings,
+          ),
+      ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
   it('infiniteStream (to Promise)', async () => {
     await expect(
-      async () =>
-        await fc.assert(
-          fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
-          settings,
-        ),
+      asyncRunWithSanitizedStack(
+        async () =>
+          await fc.assert(
+            fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+            settings,
+          ),
+      ),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
