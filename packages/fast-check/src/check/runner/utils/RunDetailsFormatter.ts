@@ -118,7 +118,9 @@ function prettyError(errorInstance: unknown) {
 /** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const includeErrorInReport = out.runConfiguration.includeErrorInReport;
-  const messageErrorPart = includeErrorInReport ? `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}` : '';
+  const messageErrorPart = includeErrorInReport
+    ? `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}`
+    : '';
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${
