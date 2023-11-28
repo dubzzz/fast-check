@@ -74,7 +74,7 @@ describe('date', () => {
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
-        const withInvalidDates = constraints.noInvalidDate === false;
+        const withInvalidDates = !constraints.noInvalidDate;
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
@@ -118,7 +118,7 @@ describe('date', () => {
         const d = mapper(rangeMin! + (mod % (rangeMax! - rangeMin! + 1))) as Date;
 
         // Assert
-        if (constraints.noInvalidDate !== false || !Number.isNaN(d.getTime())) {
+        if (constraints.noInvalidDate || !Number.isNaN(d.getTime())) {
           expect(d.getTime()).not.toBe(Number.NaN);
           if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
           if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
@@ -156,7 +156,7 @@ describe('date (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = constraintsArb();
 
   const isCorrect = (d: Date, extra: Extra) => {
-    if (extra.noInvalidDate || extra.noInvalidDate === undefined) {
+    if (extra.noInvalidDate) {
       expect(d.getTime()).not.toBe(Number.NaN);
     } else if (Number.isNaN(d.getTime())) {
       return;
