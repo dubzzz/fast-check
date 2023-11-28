@@ -21,7 +21,7 @@ Generate any possible dates in the specified range. Both the lower bound and upp
 
 - `min?` — default: `new Date(-8640000000000000)` — _lower bound of the range (included)_
 - `max?` — default: `new Date(8640000000000000)` — _upper bound of the range (included)_
-- `noInvalidDate?` — default: `true` — _when `true` the Date "Invalid Date" will never be defined_
+- `noInvalidDate?` — default: `false` — _when `true` the Date "Invalid Date" will never be defined_
 
 **Usages:**
 
@@ -41,7 +41,7 @@ fc.date({ min: new Date('2000-01-01T00:00:00.000Z') });
 // • new Date("2000-01-01T00:00:00.039Z")
 // • new Date("2000-01-01T00:00:00.047Z")
 // • new Date("2000-01-01T00:00:00.003Z")
-// • new Date("+275760-09-12T23:59:59.981Z")
+// • new Date("+275760-09-12T23:59:59.982Z")
 // • …
 
 fc.date({ max: new Date('2000-01-01T00:00:00.000Z') });
@@ -58,8 +58,17 @@ fc.date({ min: new Date('2000-01-01T00:00:00.000Z'), max: new Date('2000-12-31T2
 // • new Date("2000-05-15T03:02:40.263Z")
 // • new Date("2000-10-22T03:00:45.936Z")
 // • new Date("2000-02-25T19:00:10.679Z")
-// • new Date("2000-12-31T23:59:59.996Z")
+// • new Date("2000-12-31T23:59:59.997Z")
 // • new Date("2000-01-04T14:12:03.484Z")
+// • …
+
+fc.date({ noInvalidDate: true });
+// Examples of generated values:
+// • new Date("-043663-07-08T11:17:34.486Z")
+// • new Date("-169183-12-11T00:28:46.358Z")
+// • new Date("1969-12-31T23:59:59.988Z")
+// • new Date("1969-12-31T23:59:59.984Z")
+// • new Date("-271821-04-20T00:00:00.033Z")
 // • …
 ```
 
