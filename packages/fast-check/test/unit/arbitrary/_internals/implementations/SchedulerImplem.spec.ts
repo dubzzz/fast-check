@@ -886,27 +886,40 @@ describe('SchedulerImplem', () => {
             4: false,
             5: false,
           };
+          const everythingResolved = {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true,
+          };
           const resolved = { ...nothingResolved };
           const act = jest.fn().mockImplementation((f) => f());
           const nextTaskIndex = buildSeededNextTaskIndex(seeds);
           const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+          const order: number[] = [];
 
           // Act
           const s = new SchedulerImplem(act, taskSelector);
           s.schedule(Promise.resolve(1)).then(() => {
+            order.push(1);
             resolved[1] = true;
             Promise.all([
               s.schedule(Promise.resolve(2)).then(() => {
+                order.push(2);
                 resolved[2] = true;
               }),
               s.schedule(Promise.resolve(3)).then(() => {
+                order.push(3);
                 resolved[3] = true;
                 s.schedule(Promise.resolve(4)).then(() => {
+                  order.push(4);
                   resolved[4] = true;
                 });
               }),
             ]).then(() => {
               s.schedule(Promise.resolve(5)).then(() => {
+                order.push(5);
                 resolved[5] = true;
                 status.done = true;
               });
@@ -917,14 +930,26 @@ describe('SchedulerImplem', () => {
           expect(status.done).toBe(false);
           expect(resolved).toEqual(nothingResolved);
           await s.waitAll();
+          if (status.done) {
+            // There are only a few cases that could make 5 resolved via waitAll. Scheduling 5 is the consequence of Promise.all([2, 3]) being resolved.
+            // Promise.all is nasty as it costs an extra await. Meaning that if 3 and 4 (a task scheduled when 3 succeeds) have already been resolved,
+            // resolving 2 would not be enought to schedule 5 in a visible way for waitAll.
+            expect([
+              // The following orders should work to include 5 within the waitAll:
+              [1, 2, 3, 4, 5],
+              [1, 3, 2, 4, 5],
+            ]).toContainEqual(order);
+          } else {
+            expect([
+              // But these ones will not work:
+              [1, 3, 4, 2],
+            ]).toContainEqual(order);
+
+            expect(resolved).toEqual({ ...everythingResolved, 5: false });
+            await s.waitAll(); // extra waitAll should make it pass
+          }
           expect(status.done).toBe(true);
-          expect(resolved).toEqual({
-            1: true,
-            2: true,
-            3: true,
-            4: true,
-            5: true,
-          });
+          expect(resolved).toEqual(everythingResolved);
         }),
       ));
 
