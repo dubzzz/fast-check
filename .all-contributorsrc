@@ -413,6 +413,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/469365?v=4",
       "profile": "http://www.zachbjornson.com/",
       "contributions": ["code", "doc"]
+    },
+    {
+      "login": "bennettp123",
+      "name": "Bennett Perkins",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1610227?v=4",
+      "profile": "https://github.com/bennettp123",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
