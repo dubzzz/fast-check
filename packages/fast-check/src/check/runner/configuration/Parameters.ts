@@ -192,13 +192,15 @@ export interface Parameters<T = void> {
    */
   asyncReporter?: (runDetails: RunDetails<T>) => Promise<void>;
   /**
-   * Should the thrown Error include a cause leading to the original Error?
+   * By default the Error causing the failure of the predicate will not be directly exposed within the message
+   * of the Error thown by fast-check. It will be exposed by a cause field attached to the Error.
    *
-   * In such case the original Error will disappear from the message of the Error thrown by fast-check
-   * and only appear within the cause part of it.
+   * The Error with cause has been supported by Node since 16.14.0 and is properly supported in many test runners.
    *
-   * Remark: At the moment, only node (≥16.14.0) and vitest seem to properly display such errors.
-   * Others will just discard the cause at display time.
+   * But if the original Error fails to appear within your test runner,
+   * Or if you prefer the Error to be included directly as part of the message of the resulted Error,
+   * you can toggle this flag and the Error produced by fast-check in case of failure will expose the source Error
+   * as part of the message and not as a cause.
    */
-  errorWithCause?: boolean;
+  includeErrorInReport?: boolean;
 }
