@@ -117,10 +117,10 @@ function prettyError(errorInstance: unknown) {
 
 /** @internal */
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
-  const noErrorInMessage = out.runConfiguration.errorWithCause;
-  const messageErrorPart = noErrorInMessage
-    ? ''
-    : `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}`;
+  const includeErrorInReport = out.runConfiguration.includeErrorInReport;
+  const messageErrorPart = includeErrorInReport
+    ? `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}`
+    : '';
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
   }", endOnFailure: true }\nCounterexample: ${stringifyOne(out.counterexample)}\nShrunk ${
@@ -279,7 +279,7 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
 
 /** @internal */
 function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & { failed: true }) {
-  if (!out.runConfiguration.errorWithCause) {
+  if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
   const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;

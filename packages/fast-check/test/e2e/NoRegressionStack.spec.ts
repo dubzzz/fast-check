@@ -11,7 +11,7 @@ describe(`NoRegressionStack`, () => {
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             return a >= b;
           }),
-          settings,
+          { ...settings, includeErrorInReport: true },
         ),
       ),
     ).toThrowErrorMatchingSnapshot();
@@ -24,7 +24,7 @@ describe(`NoRegressionStack`, () => {
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             return a >= b;
           }),
-          { ...settings, errorWithCause: true },
+          settings,
         ),
       ),
     ).toThrowErrorMatchingSnapshot();
@@ -38,7 +38,7 @@ describe(`NoRegressionStack`, () => {
               throw new Error('a must be >= b');
             }
           }),
-          settings,
+          { ...settings, includeErrorInReport: true },
         ),
       ),
     ).toThrowErrorMatchingSnapshot();
@@ -53,7 +53,7 @@ describe(`NoRegressionStack`, () => {
               throw new Error('a must be >= b');
             }
           }),
-          { ...settings, errorWithCause: true },
+          settings,
         ),
       ),
     ).toThrowErrorMatchingSnapshot();
@@ -66,7 +66,7 @@ describe(`NoRegressionStack`, () => {
           fc.property(fc.nat(), (v) => {
             (v as any)();
           }),
-          settings,
+          { ...settings, includeErrorInReport: true },
         ),
       ),
     ).toThrowErrorMatchingSnapshot();
@@ -79,7 +79,7 @@ describe(`NoRegressionStack`, () => {
           fc.property(fc.nat(), (v) => {
             (v as any)();
           }),
-          { ...settings, errorWithCause: true },
+          settings,
         ),
       ),
     ).toThrowErrorMatchingSnapshot();
