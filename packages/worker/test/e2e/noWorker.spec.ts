@@ -1,6 +1,7 @@
 import { isMainThread } from 'node:worker_threads';
 import fc, { type Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -36,7 +37,7 @@ if (isMainThread) {
         const expectedError = /Property failed by returning false/;
 
         // Act / Assert
-        await expect(assert(property, defaultOptions)).rejects.toThrowError(expectedError);
+        await expectThrowWithCause(assert(property, defaultOptions), expectedError);
       },
       jestTimeout,
     );
