@@ -15,7 +15,7 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const jestTimeout = 10000;
     const assertTimeout = 1000;
-    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
+    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout, includeErrorInReport: true };
 
     it(
       'should produce the same data in worker and main thread',

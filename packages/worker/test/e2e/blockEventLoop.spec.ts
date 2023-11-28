@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { blockEventLoopProperty } from './__properties__/blockEventLoop.cjs';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -21,7 +22,7 @@ if (isMainThread) {
         const expectedError = /Property timeout: exceeded limit of 1000 milliseconds/;
 
         // Act / Assert
-        await expect(assert(blockEventLoopProperty, options)).rejects.toThrowError(expectedError);
+        await expectThrowWithCause(assert(blockEventLoopProperty, options), expectedError);
       },
       jestTimeout,
     );

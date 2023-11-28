@@ -24,13 +24,15 @@ if (isMainThread) {
           await assert(asyncThrowProperty, defaultOptions);
         } catch (err) {
           failed = true;
-          const message = String(err);
+          const rootMessage = String(err);
           const mainValueRegex = /Counterexample: \[(-?\d+),(-?\d+)\]/;
-          expect(message).toMatch(mainValueRegex);
-          expect(message).toContain('Out of range, asynchronously');
-          const fromValue = +mainValueRegex.exec(message)![1];
-          const toValue = +mainValueRegex.exec(message)![2];
+          expect(rootMessage).toMatch(mainValueRegex);
+          const fromValue = +mainValueRegex.exec(rootMessage)![1];
+          const toValue = +mainValueRegex.exec(rootMessage)![2];
           expect(Math.abs(fromValue - toValue)).toBeGreaterThanOrEqual(100);
+          expect(err).toHaveProperty('cause');
+          const nestedMessage = String((err as any).cause);
+          expect(nestedMessage).toContain('Out of range, asynchronously');
         }
         expect(failed).toBe(true);
       },
