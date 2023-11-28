@@ -5,6 +5,7 @@ import { assert } from '@fast-check/worker';
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { failingProperty } from './__properties__/failing.cjs';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -19,7 +20,7 @@ if (isMainThread) {
         const expectedError = /I'm a failing property/;
 
         // Act / Assert
-        await expect(assert(failingProperty, defaultOptions)).rejects.toThrowError(expectedError);
+        await expectThrowWithCause(assert(failingProperty, defaultOptions), expectedError);
       },
       jestTimeout,
     );
