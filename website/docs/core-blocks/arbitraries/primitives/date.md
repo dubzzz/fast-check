@@ -4,7 +4,7 @@ slug: /core-blocks/arbitraries/primitives/date/
 
 # Date
 
-Generate Date values.
+Generate date values.
 
 ## date
 
