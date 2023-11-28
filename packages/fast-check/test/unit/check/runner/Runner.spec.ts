@@ -618,8 +618,19 @@ describe('Runner', () => {
         `[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`,
       );
     });
-    it('Should put the orginal error in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`Got error: error in failingProperty`);
+    it('Should put the original error as cause', () => {
+      expect(() => {
+        try {
+          rAssert(failingProperty, { seed: 42 });
+        } catch (err) {
+          throw (err as any).cause;
+        }
+      }).toThrowError('error in failingProperty');
+    });
+    it('Should put the original error in error message when includeErrorInReport', () => {
+      expect(() => rAssert(failingProperty, { seed: 42, includeErrorInReport: true })).toThrowError(
+        `Got error: error in failingProperty`,
+      );
     });
     describe('Impact of VerbosityLevel in case of failure', () => {
       const baseErrorMessage = '';
