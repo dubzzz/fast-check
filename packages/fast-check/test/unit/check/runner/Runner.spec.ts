@@ -624,7 +624,7 @@ describe('Runner', () => {
         } catch (err) {
           throw (err as any).cause;
         }
-      }).toThrowError(`Got error: error in failingProperty`);
+      }).toThrowError('error in failingProperty');
     });
     it('Should put the original error in error message when includeErrorInReport', () => {
       expect(() => rAssert(failingProperty, { seed: 42, includeErrorInReport: true })).toThrowError(
