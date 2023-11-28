@@ -129,11 +129,11 @@ fc.record(
 );
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
-// • {"id":"46045be9-0009-4000-8000-0008ffffffed","name":"Karen","age":11,"birthday":new Date("2100-12-31T23:59:59.996Z")}
+// • {"id":"46045be9-0009-4000-8000-0008ffffffed","name":"Karen","age":11,"birthday":new Date("2100-12-31T23:59:59.997Z")}
 // • {"id":"fffffffe-0015-4000-95a0-f8e9ffffffe7","name":"Karen","birthday":new Date("1970-01-01T00:00:00.018Z")}
 // • {"id":"e2b066ec-000b-4000-bfff-ffe7ccb1828d","name":"Karen","age":17}
 // • {"id":"43b7d8e5-d043-42ef-8000-001a00000005","age":16,"birthday":new Date("2004-10-16T22:01:09.416Z")}
-// • {"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.981Z")}
+// • {"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.982Z")}
 // • …
 
 fc.record(
