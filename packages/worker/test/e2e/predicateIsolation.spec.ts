@@ -5,6 +5,7 @@ import { assert } from '@fast-check/worker';
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { predicateIsolation } from './__properties__/predicateIsolation.cjs';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -32,7 +33,7 @@ if (isMainThread) {
         const expectedError = /Encounter counters: property, for isolation level: property/;
 
         // Act / Assert
-        await expect(assert(predicateIsolation.propertyLevel, options)).rejects.toThrowError(expectedError);
+        await expectThrowWithCause(assert(predicateIsolation.propertyLevel, options), expectedError);
       },
       jestTimeout,
     );
@@ -45,7 +46,7 @@ if (isMainThread) {
         const expectedError = /Encounter counters: file, for isolation level: file/;
 
         // Act / Assert
-        await expect(assert(predicateIsolation.fileLevel, options)).rejects.toThrowError(expectedError);
+        await expectThrowWithCause(assert(predicateIsolation.fileLevel, options), expectedError);
       },
       jestTimeout,
     );
