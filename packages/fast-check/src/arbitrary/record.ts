@@ -21,7 +21,7 @@ export type RecordConstraints<T = unknown> = {
   requiredKeys?: T[];
   /**
    * Do not generate records with null prototype
-   * @defaultValue true
+   * @defaultValue false
    * @remarks Since 3.13.0
    */
   noNullPrototype?: boolean;
@@ -77,8 +77,7 @@ function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints?: RecordConstraints<keyof T>,
 ): unknown {
-  const noNullPrototype =
-    constraints === undefined || constraints.noNullPrototype === undefined || constraints.noNullPrototype;
+  const noNullPrototype = !!(constraints !== undefined && constraints.noNullPrototype);
   if (constraints == null) {
     return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }

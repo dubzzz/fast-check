@@ -39,7 +39,7 @@ describe('record', () => {
             'buildPartialRecordArbitrary',
           );
           buildPartialRecordArbitrary.mockReturnValue(instance);
-          const noNullPrototype = constraints !== undefined ? constraints.noNullPrototype : undefined;
+          const noNullPrototype = constraints !== undefined && constraints.noNullPrototype;
 
           // Act
           const arb = constraints !== undefined ? record(recordModel, constraints) : record(recordModel);
@@ -47,7 +47,7 @@ describe('record', () => {
           // Assert
           expect(arb).toBe(instance);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined, noNullPrototype !== false);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined, !!noNullPrototype);
         },
       ),
     ));
@@ -87,11 +87,7 @@ describe('record', () => {
           // Assert
           expect(arb).toBe(instance);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(
-            recordModel,
-            requiredKeys,
-            noNullPrototype !== false,
-          );
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, requiredKeys, !!noNullPrototype);
         },
       ),
     ));
@@ -204,7 +200,7 @@ describe('record (integration)', () => {
       if (value[m.key] < m.valueStart) return false;
       if (value[m.key] > m.valueStart + 10) return false;
     }
-    if (constraints.noNullPrototype !== false) {
+    if (constraints.noNullPrototype) {
       expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
     }
     return true;
