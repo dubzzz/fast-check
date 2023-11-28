@@ -30,7 +30,7 @@ const delay = () => new Promise((r) => setTimeout(r, 0));
 
 describe('SchedulerImplem', () => {
   describe('waitOne', () => {
-    it('should throw when there is no scheduled promise in the pipe', async () => {
+    it('should throw synchronously when there is no scheduled promise in the pipe', () => {
       // Arrange
       const act = jest.fn().mockImplementation((f) => f());
       const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
@@ -39,7 +39,7 @@ describe('SchedulerImplem', () => {
       const s = new SchedulerImplem(act, taskSelector);
 
       // Assert
-      await expect(s.waitOne()).rejects.toMatchInlineSnapshot(`[Error: No task scheduled]`);
+      expect(() => s.waitOne()).toThrowErrorMatchingInlineSnapshot(`"No task scheduled"`);
     });
 
     it('should wrap waitOne call using act whenever specified', async () => {
