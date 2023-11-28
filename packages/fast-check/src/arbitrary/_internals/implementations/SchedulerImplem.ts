@@ -157,37 +157,34 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let resolveSequenceTask = () => {};
     const sequenceTask = new Promise<void>((resolve) => (resolveSequenceTask = resolve));
 
-    sequenceBuilders
-      .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem<TMetaData>) => {
-        const [builder, label, metadata] =
-          typeof item === 'function' ? [item, item.name, undefined] : [item.builder, item.label, item.metadata];
-        return previouslyScheduled.then(() => {
-          // We schedule a successful promise that will trigger builder directly when triggered
-          const scheduled = this.scheduleInternal(
-            'sequence',
-            label,
-            dummyResolvedPromise,
-            metadata,
-            customAct || defaultSchedulerAct,
-            () => builder(),
-          );
-          scheduled.catch(() => {
-            status.faulty = true;
-            resolveSequenceTask();
-          });
-          return scheduled;
-        });
-      }, dummyResolvedPromise)
-      .then(
-        () => {
-          status.done = true;
-          resolveSequenceTask();
-        },
-        () => {
-          /* Discarding UnhandledPromiseRejectionWarning */
-          /* No need to call resolveSequenceTask as it should already have been triggered */
-        },
-      );
+    const onDone = () => {
+      status.done = true;
+      resolveSequenceTask();
+    };
+    const onFaulty = () => {
+      status.faulty = true;
+      resolveSequenceTask();
+    };
+
+    let previouslyScheduled = dummyResolvedPromise;
+    for (const item of sequenceBuilders) {
+      const [builder, label, metadata] =
+        typeof item === 'function' ? [item, item.name, undefined] : [item.builder, item.label, item.metadata];
+      const onNext = () => {
+        // We schedule a successful promise that will trigger builder directly when triggered
+        const scheduled = this.scheduleInternal(
+          'sequence',
+          label,
+          dummyResolvedPromise,
+          metadata,
+          customAct || defaultSchedulerAct,
+          () => builder(),
+        );
+        return scheduled;
+      };
+      previouslyScheduled = previouslyScheduled.then(onNext, onFaulty);
+    }
+    previouslyScheduled.then(onDone, onFaulty);
 
     // TODO Prefer getter instead of sharing the variable itself
     //      Would need to stop supporting <es5
