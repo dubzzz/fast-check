@@ -1,6 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NoRegressionStack not a function 1`] = `
+exports[`NoRegressionStack (includeErrorInReport: false) not a function 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: "0:0", endOnFailure: true }
+Counterexample: [0]
+Shrunk 1 time(s)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: false) return false 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
+Counterexample: [0,1]
+Shrunk 32 time(s)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: false) throw 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
+Counterexample: [0,1]
+Shrunk 32 time(s)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: true) not a function 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: "0:0", endOnFailure: true }
 Counterexample: [0]
@@ -18,7 +45,23 @@ Got TypeError: v is not a function
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
 `;
 
-exports[`NoRegressionStack throw 1`] = `
+exports[`NoRegressionStack (includeErrorInReport: true) return false 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
+Counterexample: [0,1]
+Shrunk 32 time(s)
+Got error: Property failed by returning false
+    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
+    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
+    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: true) throw 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
 Counterexample: [0,1]

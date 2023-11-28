@@ -5,11 +5,6 @@ exports[`NoRegression (async) .map (to Promise) 1`] = `
 { seed: 42, path: "1:4:0:0:0:0:3:0:0:3:0:1:1:0:2", endOnFailure: true }
 Counterexample: [Promise.resolve(-873632988)]
 Shrunk 14 time(s)
-Got error: Property failed by returning false
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
 
 Execution summary:
 [32m√[0m [Promise.resolve(9)]
@@ -57,11 +52,6 @@ Counterexample: [function(...args) {
   return outs[hash('19' + stringify(args)) % outs.length];
 }]
 Shrunk 20 time(s)
-Got error: Property failed by returning false
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
 
 Execution summary:
 [32m√[0m [function(...args) {
@@ -659,11 +649,6 @@ exports[`NoRegression (async) infiniteStream (to Promise) 1`] = `
 { seed: 42, path: "0", endOnFailure: true }
 Counterexample: [Stream(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
 
 Execution summary:
 [31m×[0m [Stream(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]"
@@ -674,11 +659,6 @@ exports[`NoRegression (async) number 1`] = `
 { seed: 42, path: "1:4:0:0:0:0:3:0:0:3:0:1:1:0:2", endOnFailure: true }
 Counterexample: [-873632988]
 Shrunk 14 time(s)
-Got error: Property failed by returning false
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
 
 Execution summary:
 [32m√[0m [9]
@@ -727,11 +707,6 @@ Counterexample: [schedulerFor()\`
 -> [task\${6}] promise resolved with value "C"
 -> [task\${5}] promise resolved with value "A"\`]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Object.<anonymous> (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
 
 Execution summary:
 [32m√[0m [schedulerFor()\`
@@ -1259,13 +1234,6 @@ exports[`NoRegression .chain 1`] = `
 { seed: 42, path: "36", endOnFailure: true }
 Counterexample: [[11,11,11,11,11,11,11,11,11,11,11,11,11,11]]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
@@ -1320,13 +1288,6 @@ exports[`NoRegression .filter 1`] = `
 { seed: 42, path: "1:1:3:2:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
 Counterexample: [855209260]
 Shrunk 17 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [2147483626]
@@ -1361,13 +1322,6 @@ exports[`NoRegression .map 1`] = `
 { seed: 42, path: "1:2:4:3:1:1:0:1:6:0:2", endOnFailure: true }
 Counterexample: ["854975880"]
 Shrunk 10 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["2147483626"]
@@ -1410,13 +1364,6 @@ exports[`NoRegression Promise<number> 1`] = `
 { seed: 42, path: "1:4:0:0:0:0:3:0:0:3:0:1:1:0:2", endOnFailure: true }
 Counterexample: [[-873632988,new Promise(() => {/*unknown*/})]]
 Shrunk 14 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[9,new Promise(() => {/*unknown*/})]]
@@ -1459,13 +1406,6 @@ exports[`NoRegression anything 1`] = `
 { seed: 42, path: "0", endOnFailure: true }
 Counterexample: [[null]]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [[null]]
@@ -1477,13 +1417,6 @@ exports[`NoRegression array 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:5:4:3:3:1:1:2:1:1:1:1:1", endOnFailure: true }
 Counterexample: [[53219899]]
 Shrunk 18 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[]]
@@ -1545,13 +1478,6 @@ exports[`NoRegression asciiString 1`] = `
 { seed: 42, path: "1:1:1:4:1:1:1:2", endOnFailure: true }
 Counterexample: ["\\u0000"]
 Shrunk 7 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -1583,13 +1509,6 @@ exports[`NoRegression base64String 1`] = `
 { seed: 42, path: "2:3:5:5", endOnFailure: true }
 Counterexample: ["AA=="]
 Shrunk 3 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -1620,13 +1539,6 @@ exports[`NoRegression clone 1`] = `
 { seed: 42, path: "1:2:4:3:1:1:0:1:6:0:2", endOnFailure: true }
 Counterexample: [[854975880,854975880]]
 Shrunk 10 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[2147483626,2147483626]]
@@ -1669,13 +1581,6 @@ exports[`NoRegression commands 1`] = `
 { seed: 42, path: "0:3:2:2:1:2:1:1:2:3:1:5:3:1:1:2:3:1:1:1:1:2:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1", endOnFailure: true }
 Counterexample: [inc[1],check[1] /*replayPath="CC/d:N"*/]
 Shrunk 47 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [inc[456875496],check[2014944499],check[129750014] /*replayPath="CC/d:N"*/]
@@ -1807,13 +1712,6 @@ Counterexample: [function(a, b) {
   return cmp(hA, hB);
 }]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [function(a, b) {
@@ -1863,13 +1761,6 @@ exports[`NoRegression context 1`] = `
 { seed: 42, path: "1:2:4:3:1:1:0:1:6:0:2", endOnFailure: true }
 Counterexample: [{"logs":["Value was 854975880"]},854975880]
 Shrunk 10 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [{"logs":["Value was 2147483626"]},2147483626]
@@ -1912,13 +1803,6 @@ exports[`NoRegression date 1`] = `
 { seed: 42, path: "0:0", endOnFailure: true }
 Counterexample: [new Date("1970-01-01T00:00:00.000Z")]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [new Date("1969-12-31T23:59:59.992Z")]
@@ -1930,13 +1814,6 @@ exports[`NoRegression dictionary 1`] = `
 { seed: 42, path: "1:1:1:1:3:1:1:3:1:1:1:1:1:1:2:3:5:7", endOnFailure: true }
 Counterexample: [{"":548742166}]
 Shrunk 17 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [{}]
@@ -2006,13 +1883,6 @@ exports[`NoRegression domain 1`] = `
 { seed: 42, path: "4:0:3:0:0:1:2:1:0:0:0:0", endOnFailure: true }
 Counterexample: ["aa.aa"]
 Shrunk 11 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["s.qf"]
@@ -2045,13 +1915,6 @@ exports[`NoRegression double 1`] = `
 { seed: 42, path: "0:1:1:1", endOnFailure: true }
 Counterexample: [-1e-322]
 Shrunk 3 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [-2.9e-322]
@@ -2069,13 +1932,6 @@ exports[`NoRegression emailAddress 1`] = `
 { seed: 42, path: "0:0:0:0:0:0:5:3:0", endOnFailure: true }
 Counterexample: ["a@a.aa"]
 Shrunk 8 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["8i_p#6u@3.ch99e2ux9i70.ccz"]
@@ -2102,13 +1958,6 @@ exports[`NoRegression float 1`] = `
 { seed: 42, path: "0:1:0:1", endOnFailure: true }
 Counterexample: [-4.203895392974451e-45]
 Shrunk 3 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [-2.382207389352189e-44]
@@ -2125,13 +1974,6 @@ exports[`NoRegression float32Array 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:1:1:2:1:1:1:1:1:1:2:1:3:1:2:1:1:1:1:1:1:1", endOnFailure: true }
 Counterexample: [Float32Array.from([9.87484798330909e-39])]
 Shrunk 27 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Float32Array.from([])]
@@ -2203,13 +2045,6 @@ exports[`NoRegression float64Array 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:2:1:1:1:2:1:1:1:2:1:1:1:1:2:1:1:3:1:1:1:1:1:2:3:1:1:1:1:2:1:2:1:1:4:2:4:2:2:1", endOnFailure: true }
 Counterexample: [Float64Array.from([8.584968169854399e-278])]
 Shrunk 45 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Float64Array.from([])]
@@ -2332,13 +2167,6 @@ exports[`NoRegression fullUnicodeString 1`] = `
 { seed: 42, path: "25:6:3:1:1:1:1", endOnFailure: true }
 Counterexample: [" "]
 Shrunk 6 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -2399,13 +2227,6 @@ Counterexample: [function(...args) {
   return outs[hash('-27' + stringify(args)) % outs.length];
 }]
 Shrunk 12 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [function(...args) {
@@ -2607,13 +2428,6 @@ exports[`NoRegression gen 1`] = `
 { seed: 42, path: "0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
 Counterexample: [[0,-1]]
 Shrunk 28 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [[9,-132539150]]
@@ -2654,13 +2468,6 @@ exports[`NoRegression hexaString 1`] = `
 { seed: 42, path: "5:1:1:10:1:5:0", endOnFailure: true }
 Counterexample: ["66"]
 Shrunk 6 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -2707,13 +2514,6 @@ exports[`NoRegression infiniteStream 1`] = `
 { seed: 42, path: "0", endOnFailure: true }
 Counterexample: [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]"
@@ -2724,13 +2524,6 @@ exports[`NoRegression int8Array 1`] = `
 { seed: 42, path: "1:1:0:0:2:1", endOnFailure: true }
 Counterexample: [Int8Array.from([-11])]
 Shrunk 5 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Int8Array.from([])]
@@ -2755,13 +2548,6 @@ exports[`NoRegression int16Array 1`] = `
 { seed: 42, path: "1:1:0:2:3:2:7", endOnFailure: true }
 Counterexample: [Int16Array.from([2110])]
 Shrunk 6 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Int16Array.from([])]
@@ -2801,13 +2587,6 @@ exports[`NoRegression int32Array 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:5:4:3:3:1:1:2:1:1:1:1:1", endOnFailure: true }
 Counterexample: [Int32Array.from([53219899])]
 Shrunk 18 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Int32Array.from([])]
@@ -2869,13 +2648,6 @@ exports[`NoRegression integer 1`] = `
 { seed: 42, path: "1:4:0:0:0:0:3:0:0:3:0:1:1:0:2", endOnFailure: true }
 Counterexample: [-873632988]
 Shrunk 14 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [9]
@@ -2918,13 +2690,6 @@ exports[`NoRegression ipV4 1`] = `
 { seed: 42, path: "8:0:0:1:5:1", endOnFailure: true }
 Counterexample: ["0.0.110.0"]
 Shrunk 5 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["248.242.2.252"]
@@ -2956,13 +2721,6 @@ exports[`NoRegression ipV4Extended 1`] = `
 { seed: 42, path: "0:0:0:1:0:0:1:1:1:0:2:0:8", endOnFailure: true }
 Counterexample: ["0.1287199"]
 Shrunk 12 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["0x2.15541234"]
@@ -3000,13 +2758,6 @@ exports[`NoRegression ipV6 1`] = `
 { seed: 42, path: "0:0:0:0", endOnFailure: true }
 Counterexample: ["::0"]
 Shrunk 3 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["31::4a"]
@@ -3020,13 +2771,6 @@ exports[`NoRegression json 1`] = `
 { seed: 42, path: "0:10", endOnFailure: true }
 Counterexample: ["[\\"\\\\\\\\\\"]"]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["[\\"\\\\\\\\;mRs\\"]"]
@@ -3056,13 +2800,6 @@ exports[`NoRegression jsonValue 1`] = `
 { seed: 42, path: "0:10", endOnFailure: true }
 Counterexample: [["\\\\"]]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [["\\\\;mRs"]]
@@ -3092,13 +2829,6 @@ exports[`NoRegression letrec (oneof:depthSize) 1`] = `
 { seed: 42, path: "38:1:0:2:0:0:4:4:4", endOnFailure: true }
 Counterexample: [{"a":0,"b":0,"c":{"a":{"a":0,"b":0,"c":11},"b":0,"c":0}}]
 Shrunk 8 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [21]
@@ -3174,13 +2904,6 @@ exports[`NoRegression letrec (oneof:maxDepth) 1`] = `
 { seed: 42, path: "13:1:0:0:1", endOnFailure: true }
 Counterexample: [{"a":0,"b":0,"c":{"a":0,"b":11,"c":0}}]
 Shrunk 4 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [21]
@@ -3214,13 +2937,6 @@ exports[`NoRegression letrec 1`] = `
 { seed: 42, path: "0:1:3:0:4:4:4:4:4:4", endOnFailure: true }
 Counterexample: [{"left":0,"right":{"left":{"left":{"left":0,"right":11},"right":0},"right":0}}]
 Shrunk 9 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [Object.assign(Object.create(null),{"left":4,"right":{"left":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":{"left":Object.assign(Object.create(null),{"left":4,"right":18}),"right":Object.assign(Object.create(null),{"left":2,"right":Object.assign(Object.create(null),{"left":18,"right":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":0,"right":19}),"right":Object.assign(Object.create(null),{"left":20,"right":{"left":{"left":13,"right":{"left":{"left":Object.assign(Object.create(null),{"left":2,"right":{"left":20,"right":{"left":3,"right":Object.assign(Object.create(null),{"left":12,"right":{"left":Object.assign(Object.create(null),{"left":{"left":3,"right":8},"right":12}),"right":15}})}}}),"right":17},"right":17}},"right":{"left":{"left":{"left":13,"right":{"left":10,"right":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":{"left":{"left":7,"right":Object.assign(Object.create(null),{"left":{"left":0,"right":6},"right":Object.assign(Object.create(null),{"left":8,"right":Object.assign(Object.create(null),{"left":19,"right":2})})})},"right":17},"right":Object.assign(Object.create(null),{"left":{"left":{"left":Object.assign(Object.create(null),{"left":1,"right":Object.assign(Object.create(null),{"left":{"left":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":{"left":3,"right":3},"right":1}),"right":{"left":3,"right":Object.assign(Object.create(null),{"left":{"left":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":3,"right":20}),"right":1}),"right":2},"right":7})}}),"right":Object.assign(Object.create(null),{"left":3,"right":Object.assign(Object.create(null),{"left":{"left":1,"right":20},"right":18})})},"right":18})}),"right":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":0,"right":{"left":{"left":{"left":Object.assign(Object.create(null),{"left":21,"right":20}),"right":{"left":17,"right":{"left":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":7,"right":{"left":2,"right":{"left":0,"right":2}}}),"right":{"left":{"left":7,"right":18},"right":{"left":{"left":18,"right":2},"right":3}}}),"right":0}}},"right":{"left":{"left":4,"right":Object.assign(Object.create(null),{"left":{"left":{"left":20,"right":21},"right":Object.assign(Object.create(null),{"left":Object.assign(Object.create(null),{"left":19,"right":{"left":Object.assign(Object.create(null),{"left":2,"right":21}),"right":{"left":17,"right":14}}}),"right":16})},"right":21})},"right":1}},"right":0}}),"right":2})},"right":21},"right":13})}),"right":{"left":0,"right":3}})}},"right":4},"right":{"left":19,"right":3}}}})}),"right":Object.assign(Object.create(null),{"left":{"left":0,"right":9},"right":1})})})})},"right":11}),"right":16}),"right":Object.assign(Object.create(null),{"left":0,"right":Object.assign(Object.create(null),{"left":{"left":{"left":3,"right":13},"right":21},"right":{"left":0,"right":19}})})}})]
@@ -3272,13 +2988,6 @@ exports[`NoRegression lorem 1`] = `
 { seed: 42, path: "1:1:0:0:0", endOnFailure: true }
 Counterexample: ["ullamcorper leo"]
 Shrunk 4 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["tristique"]
@@ -3296,13 +3005,6 @@ exports[`NoRegression mapToConstant 1`] = `
 { seed: 42, path: "3", endOnFailure: true }
 Counterexample: ["a","a"]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["z","i"]
@@ -3316,13 +3018,6 @@ exports[`NoRegression maxSafeInteger 1`] = `
 { seed: 42, path: "0:1:0", endOnFailure: true }
 Counterexample: [-11]
 Shrunk 2 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [-44]
@@ -3339,13 +3034,6 @@ exports[`NoRegression maxSafeNat 1`] = `
 { seed: 42, path: "0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:3:2:0:0:3:0:0:0:0:0:0:1:2:0:1:2:2:0:3", endOnFailure: true }
 Counterexample: [253873198799]
 Shrunk 34 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [9007199254740940]
@@ -3411,13 +3099,6 @@ exports[`NoRegression nat 1`] = `
 { seed: 42, path: "1:2:4:3:1:1:0:1:6:0:2", endOnFailure: true }
 Counterexample: [854975880]
 Shrunk 10 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [2147483626]
@@ -3460,13 +3141,6 @@ exports[`NoRegression object 1`] = `
 { seed: 42, path: "1:1:0:0:1:2:2:5:3:3:3:3:5:4:3:3:4:3:3:3:3:3:4:3:3:3:3:3:3:3:3:3:3:4:4:5:3:4:3:3:3:3:6:3:7:3:3:3", endOnFailure: true }
 Counterexample: [{"":{"":[-6.8158624976587944e-192]}}]
 Shrunk 47 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [{}]
@@ -3678,13 +3352,6 @@ exports[`NoRegression oneof 1`] = `
 { seed: 42, path: "4:1:2:0:0:3:0:1:0:1:0:0:0:1:7", endOnFailure: true }
 Counterexample: [210974299]
 Shrunk 14 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [2147483646]
@@ -3730,13 +3397,6 @@ exports[`NoRegression oneof[weighted] 1`] = `
 { seed: 42, path: "23:1:0:0:0:0:5:8:4:0:0:0:1:0", endOnFailure: true }
 Counterexample: [57429880]
 Shrunk 13 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["{"]
@@ -3803,13 +3463,6 @@ exports[`NoRegression option 1`] = `
 { seed: 42, path: "3", endOnFailure: true }
 Counterexample: [null]
 Shrunk 0 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [2147483646]
@@ -3823,13 +3476,6 @@ exports[`NoRegression record 1`] = `
 { seed: 42, path: "4:2:2:0:0:3:0:1:0:1:0:0:0:1:7:1", endOnFailure: true }
 Counterexample: [{"k1":210974299}]
 Shrunk 15 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [{"k1":2147483646}]
@@ -3878,13 +3524,6 @@ exports[`NoRegression shuffledSubarray 1`] = `
 { seed: 42, path: "1:2:0:5", endOnFailure: true }
 Counterexample: [[2,2]]
 Shrunk 3 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[]]
@@ -3909,13 +3548,6 @@ exports[`NoRegression sparseArray 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:1:3:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:3:3:3", endOnFailure: true }
 Counterexample: [[,11]]
 Shrunk 36 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[,,,,,,,,,,,,,,,,,,,]]
@@ -4034,13 +3666,6 @@ exports[`NoRegression sparseArray({noTrailingHole:true}) 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:1:3:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:2:3:3", endOnFailure: true }
 Counterexample: [[,11]]
 Shrunk 35 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[]]
@@ -4155,13 +3780,6 @@ exports[`NoRegression string 1`] = `
 { seed: 42, path: "9:1", endOnFailure: true }
 Counterexample: ["CC"]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -4197,13 +3815,6 @@ exports[`NoRegression stringMatching 1`] = `
 { seed: 42, path: "0:1:1:1:1:0", endOnFailure: true }
 Counterexample: ["a B  "]
 Shrunk 5 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["aa!cBcBx\\t"]
@@ -4223,13 +3834,6 @@ exports[`NoRegression stringOf 1`] = `
 { seed: 42, path: "1:1:0", endOnFailure: true }
 Counterexample: ["aa"]
 Shrunk 2 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -4246,13 +3850,6 @@ exports[`NoRegression subarray 1`] = `
 { seed: 42, path: "46:4", endOnFailure: true }
 Counterexample: [[4,4]]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[]]
@@ -4317,13 +3914,6 @@ exports[`NoRegression tuple 1`] = `
 { seed: 42, path: "0:0:1:1:4:1:0:0:0:2:0:0:1:1", endOnFailure: true }
 Counterexample: [[0,743987633]]
 Shrunk 13 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m [[2147483626,2014944498]]
@@ -4366,13 +3956,6 @@ exports[`NoRegression uint8Array 1`] = `
 { seed: 42, path: "2:7:2:3:3", endOnFailure: true }
 Counterexample: [Uint8Array.from([110])]
 Shrunk 4 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Uint8Array.from([])]
@@ -4406,13 +3989,6 @@ exports[`NoRegression uint8ClampedArray 1`] = `
 { seed: 42, path: "2:7:2:3:3", endOnFailure: true }
 Counterexample: [Uint8ClampedArray.from([110])]
 Shrunk 4 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Uint8ClampedArray.from([])]
@@ -4446,13 +4022,6 @@ exports[`NoRegression uint16Array 1`] = `
 { seed: 42, path: "1:1:0:2:1:4:1:6:1:1:2", endOnFailure: true }
 Counterexample: [Uint16Array.from([8550])]
 Shrunk 10 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Uint16Array.from([])]
@@ -4495,13 +4064,6 @@ exports[`NoRegression uint32Array 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:5:1:1:2:4:1:2:1:3:1:4:2:1", endOnFailure: true }
 Counterexample: [Uint32Array.from([305109899])]
 Shrunk 19 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [Uint32Array.from([])]
@@ -4567,13 +4129,6 @@ exports[`NoRegression ulid 1`] = `
 { seed: 42, path: "0:0:0:0", endOnFailure: true }
 Counterexample: ["00000000000000000000000000"]
 Shrunk 3 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["7ZZZZZZZZDZ0AWTX6YQCVVJ1XW"]
@@ -4587,13 +4142,6 @@ exports[`NoRegression unicodeJson 1`] = `
 { seed: 42, path: "1:1:0:1:3:3:4:3:3:3:4:3:3:3:3:4:4:5:3:3:3:3:3:3:4:3:3:3:3:3:4:3:6:4:3:6:3:4:3:3:5:4:3:6:4", endOnFailure: true }
 Counterexample: ["{\\"\\":{\\"\\":5.9196851432654755e-210}}"]
 Shrunk 44 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["[\\"⾼㥤ⱓ巡\\"]"]
@@ -4800,13 +4348,6 @@ exports[`NoRegression unicodeJsonValue 1`] = `
 { seed: 42, path: "1:1:0:1:3:3:4:3:3:3:4:3:3:3:3:4:4:5:3:3:3:3:3:3:4:3:3:3:3:3:4:3:6:4:3:6:3:4:3:3:5:4:3:6:4", endOnFailure: true }
 Counterexample: [{"":{"":5.9196851432654755e-210}}]
 Shrunk 44 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [["⾼㥤ⱓ巡"]]
@@ -5013,13 +4554,6 @@ exports[`NoRegression unicodeString 1`] = `
 { seed: 42, path: "25:6:3:1:1:1:1", endOnFailure: true }
 Counterexample: [" "]
 Shrunk 6 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -5075,13 +4609,6 @@ exports[`NoRegression uniqueArray 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:5:4:3:3:1:1:2:1:1:1:1:1", endOnFailure: true }
 Counterexample: [[53219899]]
 Shrunk 18 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[]]
@@ -5143,13 +4670,6 @@ exports[`NoRegression uniqueArray 2`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:5:4:3:3:1:1:2:1:1:1:1:1", endOnFailure: true }
 Counterexample: [[53219899]]
 Shrunk 18 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [[]]
@@ -5211,13 +4731,6 @@ exports[`NoRegression user defined examples (including not shrinkable values) 1`
 { seed: 42, path: "2:0:4", endOnFailure: true }
 Counterexample: [0,"10","11",0]
 Shrunk 2 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [1,"2","3",4]
@@ -5240,13 +4753,6 @@ exports[`NoRegression user defined examples 1`] = `
 { seed: 42, path: "1:1:17", endOnFailure: true }
 Counterexample: ["ll"]
 Shrunk 2 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["hi"]
@@ -5294,13 +4800,6 @@ exports[`NoRegression uuid 1`] = `
 { seed: 42, path: "0:0:0:0:0", endOnFailure: true }
 Counterexample: ["00000000-0000-1000-8000-000000000000"]
 Shrunk 4 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["ffffffe8-9cf2-3819-8000-0004ffffffe4"]
@@ -5315,13 +4814,6 @@ exports[`NoRegression uuidV 1`] = `
 { seed: 42, path: "0:0:0:0:0", endOnFailure: true }
 Counterexample: ["00000000-0000-4000-8000-000000000000"]
 Shrunk 4 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["ffffffe8-9cf2-4819-8000-0004ffffffe4"]
@@ -5336,13 +4828,6 @@ exports[`NoRegression webAuthority 1`] = `
 { seed: 42, path: "1:0", endOnFailure: true }
 Counterexample: ["a.cc"]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m ["bz089axab-ea.ia"]
@@ -5359,13 +4844,6 @@ exports[`NoRegression webFragments 1`] = `
 { seed: 42, path: "10:1:5:2:2:1:1:4:2:2:1:2", endOnFailure: true }
 Counterexample: ["%F1%BB%80%80"]
 Shrunk 11 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -5422,13 +4900,6 @@ exports[`NoRegression webPath 1`] = `
 { seed: 42, path: "38:3:1:8:7:3:3:4:3:3:4", endOnFailure: true }
 Counterexample: ["/%F0%AA%80%80"]
 Shrunk 10 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -5529,13 +5000,6 @@ exports[`NoRegression webQueryParameters 1`] = `
 { seed: 42, path: "10:1:5:2:2:1:1:4:2:2:1:2", endOnFailure: true }
 Counterexample: ["%F1%BB%80%80"]
 Shrunk 11 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -5592,13 +5056,6 @@ exports[`NoRegression webSegment 1`] = `
 { seed: 42, path: "2:2:0:17", endOnFailure: true }
 Counterexample: ["::"]
 Shrunk 3 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [32m√[0m [""]
@@ -5649,13 +5106,6 @@ exports[`NoRegression webUrl 1`] = `
 { seed: 42, path: "0:0:0:0:0", endOnFailure: true }
 Counterexample: ["http://a.aa"]
 Shrunk 4 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at assert (packages/fast-check/test/e2e/NoRegression.spec.ts:?:?)
-    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
 Execution summary:
 [31m×[0m ["http://e.pv/p%EF%8D%9D"]
