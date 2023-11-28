@@ -1,43 +1,80 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NoRegressionStack not a function 1`] = `
+exports[`NoRegressionStack (includeErrorInReport: false) not a function 1`] = `
+"Property failed after 1 tests
+{ seed: 42, path: "0:0", endOnFailure: true }
+Counterexample: [0]
+Shrunk 1 time(s)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: false) return false 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
+Counterexample: [0,1]
+Shrunk 32 time(s)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: false) throw 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
+Counterexample: [0,1]
+Shrunk 32 time(s)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: true) not a function 1`] = `
 "Property failed after 1 tests
 { seed: 42, path: "0:0", endOnFailure: true }
 Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
-    at v (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:26:14)
-    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:25:56)
-    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:138:27)
-    at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:140:7)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:192:15)
-    at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:24:12)
-    at run (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:40:7)
-    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
-    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
-    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
-    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
-    at Object.toThrowErrorMatchingSnapshot (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:31:7)"
+    at v (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
+    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:?:?)
+    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:?:?)
+    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
+    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
 `;
 
-exports[`NoRegressionStack throw 1`] = `
+exports[`NoRegressionStack (includeErrorInReport: true) return false 1`] = `
+"Property failed after 2 tests
+{ seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
+Counterexample: [0,1]
+Shrunk 32 time(s)
+Got error: Property failed by returning false
+    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
+    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
+    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
+`;
+
+exports[`NoRegressionStack (includeErrorInReport: true) throw 1`] = `
 "Property failed after 2 tests
 { seed: 42, path: "1:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }
 Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: a must be >= b
-    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:12:21
-    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:25:56)
-    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:138:27)
-    at run (packages/fast-check/src/check/runner/Runner.ts:37:26)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:140:7)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:192:15)
-    at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:9:12)
-    at run (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:40:7)
-    at _toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
-    at Object.toThrowErrorMatchingSnapshot (node_modules/jest-snapshot/build/index.js:?:?)
-    at __EXTERNAL_MATCHER_TRAP__ (node_modules/expect/build/index.js:?:?)
-    at Object.throwingMatcher [as toThrowErrorMatchingSnapshot] (node_modules/expect/build/index.js:?:?)
-    at Object.toThrowErrorMatchingSnapshot (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:18:7)"
+    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?
+    at Property.p [as predicate] (packages/fast-check/src/check/property/Property.ts:?:?)
+    at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:?:?)
+    at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
+    at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
+
+Hint: Enable verbose mode in order to have the list of all failing values encountered during the run"
 `;

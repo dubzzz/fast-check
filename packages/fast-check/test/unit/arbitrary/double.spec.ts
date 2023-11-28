@@ -55,7 +55,7 @@ describe('double', () => {
     fc.assert(
       fc.property(
         float64raw(),
-        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         (f, otherCt) => {
           // Arrange
           fc.pre(!Number.isNaN(f));
@@ -75,7 +75,7 @@ describe('double', () => {
     fc.assert(
       fc.property(
         float64raw(),
-        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         fc.constantFrom('min', 'max', 'both'),
         (f, otherCt, exclusiveMode) => {
           // Arrange
