@@ -21,7 +21,7 @@ describe('timeToDateUnmapper', () => {
   });
 });
 
-describe('timeToDateUnmapperWithNane', () => {
+describe('timeToDateUnmapperWithNaN', () => {
   it('should be able to revert any mapped date correctly even invalid once', () => {
     fc.assert(
       fc.property(fc.date(), fc.integer({ min: -8640000000000000, max: 8640000000000001 }), (d, nanValue) => {

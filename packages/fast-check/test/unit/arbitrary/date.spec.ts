@@ -206,7 +206,13 @@ describe('date (integration)', () => {
 
 function constraintsArb() {
   return fc
-    .tuple(fc.date(), fc.date(), fc.boolean(), fc.boolean(), fc.option(fc.boolean(), { nil: undefined }))
+    .tuple(
+      fc.date({ noInvalidDate: true }),
+      fc.date({ noInvalidDate: true }),
+      fc.boolean(),
+      fc.boolean(),
+      fc.option(fc.boolean(), { nil: undefined }),
+    )
     .map(([d1, d2, withMin, withMax, noInvalidDate]) => {
       const min = d1 < d2 ? d1 : d2;
       const max = d1 < d2 ? d2 : d1;
@@ -216,7 +222,11 @@ function constraintsArb() {
 
 function invalidRangeConstraintsArb() {
   return fc
-    .tuple(fc.date(), fc.date(), fc.option(fc.boolean(), { nil: undefined }))
+    .tuple(
+      fc.date({ noInvalidDate: true }),
+      fc.date({ noInvalidDate: true }),
+      fc.option(fc.boolean(), { nil: undefined }),
+    )
     .filter(([d1, d2]) => +d1 !== +d2)
     .map(([d1, d2, noInvalidDate]) => {
       const min = d1 < d2 ? d1 : d2;
