@@ -130,10 +130,10 @@ fc.letrec((tie) => ({
 // helper being able to fallback to base cases with an higher probability as we go deeper in the recursion.
 // Examples of generated values:
 // • {"value":424778306,"children":[]}
-// • Object.assign(Object.create(null),{"value":27,"children":[Object.assign(Object.create(null),{"value":314632820,"children":[]}),Object.assign(Object.create(null),{"value":2142687698,"children":[]}),Object.assign(Object.create(null),{"value":1909847367,"children":[]}),{"value":1255067999,"children":[]},Object.assign(Object.create(null),{"value":56407905,"children":[]}),{"value":1877308594,"children":[]},{"value":853104761,"children":[]},Object.assign(Object.create(null),{"value":365629946,"children":[]}),{"value":1657598129,"children":[]},{"value":110427542,"children":[]}]})
-// • Object.assign(Object.create(null),{"value":7,"children":[]})
+// • {__proto__:null,"value":27,"children":[{__proto__:null,"value":314632820,"children":[]},{__proto__:null,"value":2142687698,"children":[]},{__proto__:null,"value":1909847367,"children":[]},{"value":1255067999,"children":[]},{__proto__:null,"value":56407905,"children":[]},{"value":1877308594,"children":[]},{"value":853104761,"children":[]},{__proto__:null,"value":365629946,"children":[]},{"value":1657598129,"children":[]},{"value":110427542,"children":[]}]}
+// • {__proto__:null,"value":7,"children":[]}
 // • {"value":2147483619,"children":[]}
-// • Object.assign(Object.create(null),{"value":15,"children":[{"value":1009275606,"children":[]},Object.assign(Object.create(null),{"value":1086795967,"children":[{"value":1715614519,"children":[]}]})]})
+// • {__proto__:null,"value":15,"children":[{"value":1009275606,"children":[]},{__proto__:null,"value":1086795967,"children":[{"value":1715614519,"children":[]}]}]}
 // • …
 ```
 
@@ -186,11 +186,11 @@ fc.uniqueArray(
 );
 // Note: Resulting arrays will never contain two entries having the same id
 // Examples of generated values:
-// • [{"id":8,"name":"Paul"},Object.assign(Object.create(null),{"id":1716584425,"name":"Anna"}),{"id":16,"name":"Paul"}]
-// • [Object.assign(Object.create(null),{"id":2049051311,"name":"Anna"}),Object.assign(Object.create(null),{"id":1283697894,"name":"Anna"}),Object.assign(Object.create(null),{"id":1860796933,"name":"Anna"}),Object.assign(Object.create(null),{"id":920772045,"name":"Paul"}),Object.assign(Object.create(null),{"id":1057553570,"name":"Paul"}),{"id":101460318,"name":"Anna"},Object.assign(Object.create(null),{"id":1879148481,"name":"Anna"}),{"id":1138488825,"name":"Anna"}]
-// • [{"id":369913425,"name":"Paul"},Object.assign(Object.create(null),{"id":397480404,"name":"Paul"})]
-// • [{"id":2147483638,"name":"Paul"},Object.assign(Object.create(null),{"id":23,"name":"Paul"}),{"id":1559153908,"name":"Anna"},{"id":1,"name":"Paul"},{"id":961925886,"name":"Anna"},Object.assign(Object.create(null),{"id":13,"name":"Paul"})]
-// • [Object.assign(Object.create(null),{"id":511407241,"name":"Paul"}),{"id":192887817,"name":"Paul"},{"id":777663452,"name":"Paul"},{"id":83639041,"name":"Paul"},Object.assign(Object.create(null),{"id":1769176807,"name":"Anna"}),{"id":1954098657,"name":"Anna"},Object.assign(Object.create(null),{"id":895746379,"name":"Anna"}),{"id":1674827795,"name":"Anna"},Object.assign(Object.create(null),{"id":462597371,"name":"Anna"})]
+// • [{"id":8,"name":"Paul"},{__proto__:null,"id":1716584425,"name":"Anna"},{"id":16,"name":"Paul"}]
+// • [{__proto__:null,"id":2049051311,"name":"Anna"},{__proto__:null,"id":1283697894,"name":"Anna"},{__proto__:null,"id":1860796933,"name":"Anna"},{__proto__:null,"id":920772045,"name":"Paul"},{__proto__:null,"id":1057553570,"name":"Paul"},{"id":101460318,"name":"Anna"},{__proto__:null,"id":1879148481,"name":"Anna"},{"id":1138488825,"name":"Anna"}]
+// • [{"id":369913425,"name":"Paul"},{__proto__:null,"id":397480404,"name":"Paul"}]
+// • [{"id":2147483638,"name":"Paul"},{__proto__:null,"id":23,"name":"Paul"},{"id":1559153908,"name":"Anna"},{"id":1,"name":"Paul"},{"id":961925886,"name":"Anna"},{__proto__:null,"id":13,"name":"Paul"}]
+// • [{__proto__:null,"id":511407241,"name":"Paul"},{"id":192887817,"name":"Paul"},{"id":777663452,"name":"Paul"},{"id":83639041,"name":"Paul"},{__proto__:null,"id":1769176807,"name":"Anna"},{"id":1954098657,"name":"Anna"},{__proto__:null,"id":895746379,"name":"Anna"},{"id":1674827795,"name":"Anna"},{__proto__:null,"id":462597371,"name":"Anna"}]
 // • …
 
 fc.uniqueArray(fc.constantFrom(-1, -0, 0, 1, Number.NaN));
