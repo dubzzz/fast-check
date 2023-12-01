@@ -46,7 +46,7 @@ export interface DictionaryConstraints {
   depthIdentifier?: DepthIdentifier | string;
   /**
    * Do not generate objects with null prototype
-   * @defaultValue true
+   * @defaultValue false
    * @remarks Since 3.13.0
    */
   noNullPrototype?: boolean;
@@ -66,7 +66,7 @@ export function dictionary<T>(
   valueArb: Arbitrary<T>,
   constraints: DictionaryConstraints = {},
 ): Arbitrary<Record<string, T>> {
-  const noNullPrototype = constraints.noNullPrototype !== false;
+  const noNullPrototype = !!constraints.noNullPrototype;
   return tuple(
     uniqueArray(tuple(keyArb, valueArb), {
       minLength: constraints.minKeys,
