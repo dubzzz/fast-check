@@ -505,7 +505,7 @@ jobs:
       url: ${{steps.deployment.outputs.page_url}}
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@de14547edc9944350dc0481aa5b7afb08e75f254 # v2.0.5
+        uses: actions/deploy-pages@77d7344265e1f960dab5c00dbff52287a70b0d4f # v3.0.0
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
