@@ -3341,9 +3341,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.38.3":
-  version: 7.38.3
-  resolution: "@microsoft/api-extractor@npm:7.38.3"
+"@microsoft/api-extractor@npm:^7.38.4":
+  version: 7.38.4
+  resolution: "@microsoft/api-extractor@npm:7.38.4"
   dependencies:
     "@microsoft/api-extractor-model": "npm:7.28.2"
     "@microsoft/tsdoc": "npm:0.14.2"
@@ -3359,7 +3359,7 @@ __metadata:
     typescript: "npm:~5.0.4"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 0b05e3865864d36f69356c137144fac85884596768f63fd69f78e87a486476e443f29f93cd687fde6137bc4a92527544c281a283b62a5217e9a0d478c8f67182
+  checksum: ae7691c31eb28a4da6b279c2d1e8ae6c2d6a3c26b73c08b1554705249c56dc0ab482734e7037f516bbd7b0408ac177ac5e247d8f08096fea199b6b2301dee9cc
   languageName: node
   linkType: hard
 
@@ -8756,7 +8756,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.38.3"
+    "@microsoft/api-extractor": "npm:^7.38.4"
     "@types/jest": "npm:^29.5.10"
     "@types/node": "npm:^20.10.3"
     babel-jest: "npm:^29.7.0"
