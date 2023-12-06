@@ -2836,7 +2836,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     typescript: "npm:~5.3.2"
-    vite: "npm:^5.0.4"
+    vite: "npm:^5.0.5"
     vitest: "npm:^0.34.6"
   peerDependencies:
     vitest: ">=0.28.1"
@@ -17830,7 +17830,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^3.0.0 || ^4.0.0 || ^5.0.0-0, vite@npm:^3.1.0 || ^4.0.0 || ^5.0.0-0, vite@npm:^5.0.4":
+"vite@npm:^3.0.0 || ^4.0.0 || ^5.0.0-0, vite@npm:^3.1.0 || ^4.0.0 || ^5.0.0-0, vite@npm:^5.0.5":
   version: 5.0.5
   resolution: "vite@npm:5.0.5"
   dependencies:
