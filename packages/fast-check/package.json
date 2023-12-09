@@ -79,7 +79,7 @@
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^7.0.2",
     "typedoc": "^0.25.4",
-    "typescript": "~5.3.2"
+    "typescript": "~5.3.3"
   },
   "keywords": [
     "property-based testing",
