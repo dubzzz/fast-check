@@ -2,12 +2,12 @@ import { test, fc } from '@fast-check/vitest';
 
 // Tuple notation
 test.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', (a, b, c) => {
-  return (a + b + c).includes(b);
+  return (a + b + c).indexOf(b) !== -1;
 });
 
 // Record notation
 test.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('should detect the substring', ({ a, b, c }) => {
-  return (a + b + c).includes(b);
+  return (a + b + c).indexOf(b) !== -1;
 });
 
 // With advanced options
