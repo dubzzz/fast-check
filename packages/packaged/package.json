@@ -38,8 +38,8 @@
     "npm-packlist": "^8.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.5",
-    "@babel/preset-env": "^7.23.5",
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
     "@babel/preset-typescript": "^7.23.3",
     "@types/jest": "^29.5.11",
     "@types/npm-packlist": "^7.0.3",
