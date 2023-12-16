@@ -5,6 +5,7 @@ import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLeng
 import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject';
 import { constant } from './constant';
 import { boolean } from './boolean';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /** @internal */
 function dictionaryKeyExtractor(entry: [string, unknown]): string {
@@ -35,6 +36,15 @@ export interface DictionaryConstraints {
    */
   size?: SizeForArbitrary;
   /**
+   * Depth identifier can be used to share the current depth between several instances.
+   *
+   * By default, if not specified, each instance of dictionary will have its own depth.
+   * In other words: you can have depth=1 in one while you have depth=100 in another one.
+   *
+   * @remarks Since 3.15.0
+   */
+  depthIdentifier?: DepthIdentifier | string;
+  /**
    * Do not generate objects with null prototype
    * @defaultValue true
    * @remarks Since 3.13.0
@@ -63,6 +73,7 @@ export function dictionary<T>(
       maxLength: constraints.maxKeys,
       size: constraints.size,
       selector: dictionaryKeyExtractor,
+      depthIdentifier: constraints.depthIdentifier,
     }),
     noNullPrototype ? constant(false) : boolean(),
   ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
