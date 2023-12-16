@@ -28,7 +28,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "ava-test": "ava -s -t",
+    "ava-test": "ava --config test/ava.config.cjs -s -t",
     "test": "sh test.sh",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
-    "ava": "^5.3.1",
+    "ava": "^6.0.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "rxjs": "^7.8.1",
