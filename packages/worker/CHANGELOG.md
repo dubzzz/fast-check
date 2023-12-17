@@ -1,11 +1,7 @@
 # 0.1.1
 
-_TODO Description_
+_Implement missing methods for future v4 of fast-check_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.1.0...worker%2Fv0.1.1)]
-
-## Features
-
-
 
 ## Fixes
 

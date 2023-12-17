@@ -1,6 +1,6 @@
 # 3.15.0
 
-_TODO Description_
+_Add support for `depthIdentifier` to `dictionary`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.15.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.14.0...v3.15.0)]
 
 ## Features

@@ -1,6 +1,6 @@
 # 0.0.9
 
-_TODO Description_
+_Stricter declaration of peers and better imports_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.9)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.8...vitest%2Fv0.0.9)]
 
 ## Features
