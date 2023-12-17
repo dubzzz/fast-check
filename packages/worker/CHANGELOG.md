@@ -1,3 +1,16 @@
+# 0.1.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.1.0...worker%2Fv0.1.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4467](https://github.com/dubzzz/fast-check/pull/4467)) Refactor: Prepare worker's internals to Property type of fast-check 4
+
 # 0.1.0
 
 _Lighter import with less internals to load_

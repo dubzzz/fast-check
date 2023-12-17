@@ -1,3 +1,17 @@
+# 1.2.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.2.0...ava%2Fv1.2.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4543](https://github.com/dubzzz/fast-check/pull/4543)) Bug: Stricter (peer) range definition for ava
+- ([PR#4542](https://github.com/dubzzz/fast-check/pull/4542)) Bug: Add support for `pre` on AVA v6
+
 # 1.2.0
 
 _Support pre-condition failures_
