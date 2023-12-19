@@ -14955,15 +14955,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prism-react-renderer@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "prism-react-renderer@npm:2.3.0"
+"prism-react-renderer@npm:^2.3.0, prism-react-renderer@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "prism-react-renderer@npm:2.3.1"
   dependencies:
     "@types/prismjs": "npm:^1.26.0"
     clsx: "npm:^2.0.0"
   peerDependencies:
     react: ">=16.0.0"
-  checksum: aa8fb176e156ebb1f8ca46d82966d37176f46545e03669ddab7d56479f915b41e95b02accc16af9e2e95c7fcd57ce6222d8eac08977c757d9c49c32c7b0e03ff
+  checksum: 566932127ca18049a651aa038a8f8c7c1ca15950d21b659c2ce71fd95bd03bef2b5d40c489e7aa3453eaf15d984deef542a609d7842e423e6a13427dd90bd371
   languageName: node
   linkType: hard
 
@@ -18449,7 +18449,7 @@ __metadata:
     clsx: "npm:^2.0.0"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
-    prism-react-renderer: "npm:^2.3.0"
+    prism-react-renderer: "npm:^2.3.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     typescript: "npm:~5.3.3"
