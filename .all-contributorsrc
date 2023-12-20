@@ -420,7 +420,15 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1610227?v=4",
       "profile": "https://github.com/bennettp123",
       "contributions": ["doc"]
+    },
+    {
+      "login": "nielk",
+      "name": "Alexandre Oger",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4980521?v=4",
+      "profile": "https://github.com/nielk",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
 }
+
