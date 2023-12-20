@@ -148,6 +148,17 @@ More details on the [package itself](https://www.npmjs.com/package/jsverify-to-f
 Convert [io-ts validators](https://gcanti.github.io/io-ts/) into arbitraries for fast-check.  
 More details on the [package itself](https://www.npmjs.com/package/mock-data-gen)!
 
+### `idonttrustlikethat-fast-check` ⚠️
+
+![npm version](https://badge.fury.io/js/idonttrustlikethat-fast-check.svg)
+![monthly downloads](https://img.shields.io/npm/dm/idonttrustlikethat-fast-check)
+![last commit](https://img.shields.io/github/last-commit/nielk/idonttrustlikethat-fast-check)
+![license](https://img.shields.io/npm/l/idonttrustlikethat-fast-check.svg)
+![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
+
+Convert [idonttrustlikethat validators](https://github.com/AlexGalays/idonttrustlikethat) into arbitraries for fast-check.  
+More details on the [package itself](https://www.npmjs.com/package/idonttrustlikethat-fast-check)!
+
 ## Test runners
 
 Although not designed for any particular test runners, some users prefer to have complete integration of fast-check within their preferred test runner. To meet these needs, we have compiled a list of packages that serve as the bridge between your favorite test runner and fast-check.
