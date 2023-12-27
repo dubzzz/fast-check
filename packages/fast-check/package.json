@@ -77,7 +77,7 @@
     "jest": "^29.7.0",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
-    "replace-in-file": "^7.0.2",
+    "replace-in-file": "^7.1.0",
     "typedoc": "^0.25.4",
     "typescript": "~5.3.3"
   },
