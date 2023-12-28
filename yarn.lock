@@ -2728,7 +2728,7 @@ __metadata:
     "@types/jest": "npm:^29.5.11"
     "@types/lodash": "npm:^4.14.202"
     "@types/react": "npm:^18.2.45"
-    "@types/supertest": "npm:^6.0.1"
+    "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.7.0"
     express: "npm:^4.18.2"
     fast-check: "workspace:*"
@@ -4938,13 +4938,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@types/supertest@npm:6.0.1"
+"@types/supertest@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@types/supertest@npm:6.0.2"
   dependencies:
     "@types/methods": "npm:^1.1.4"
     "@types/superagent": "npm:^8.1.0"
-  checksum: a3046028a82d00e040a5191d9e632b6340542eeaf14d5fa6b1d0ae1acfc8424ca365363006040941138a88933a4becea8594bc2e5b018685d0e60642127d1871
+  checksum: 44a28f9b35b65800f4c7bcc23748e71c925098aa74ea504d14c98385c36d00de2a4f5aca15d7dc4514bc80533e0af21f985a4ab9f5f317c7266e9e75836aef39
   languageName: node
   linkType: hard
 
