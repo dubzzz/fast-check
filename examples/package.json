@@ -9,7 +9,7 @@
   "dependencies": {
     "@testing-library/dom": "^9.3.3",
     "@testing-library/react": "^14.1.2",
-    "@testing-library/user-event": "^14.5.1",
+    "@testing-library/user-event": "^14.5.2",
     "express": "^4.18.2",
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
