@@ -1,5 +1,5 @@
 /* global process, console */
-import { removeNonPublishedFiles }  from '../lib/packaged.js';
+import { removeNonPublishedFiles } from '../lib/packaged.js';
 
 const args = process.argv.slice(2);
 const help = args.includes('--help') || args.includes('-h');
