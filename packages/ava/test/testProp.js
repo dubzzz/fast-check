@@ -1,4 +1,4 @@
-import { testProp, fc }  from '../lib/ava-fast-check';
+import { testProp, fc } from '../lib/ava-fast-check.js';
 import { Observable, map } from 'rxjs';
 
 const delay = (duration) =>
