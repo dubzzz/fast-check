@@ -117,18 +117,20 @@ It also proved useful in finding bugs among major open source projects such as [
 
 Here are the minimal requirements to use fast-check properly without any polyfills:
 
-| fast-check | node                | ECMAScript version | _TypeScript (optional)_ |
-| ---------- | ------------------- | ------------------ | ----------------------- |
-| **3.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥4.1<sup>(2)</sup>      |
-| **2.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥3.2<sup>(3)</sup>      |
-| **1.x**    | ≥0.12<sup>(1)</sup> | ES3                | ≥3.0<sup>(3)</sup>      |
+| fast-check | node                 | ECMAScript version | _TypeScript (optional)_ |
+| ---------- | -------------------- | ------------------ | ----------------------- |
+| **4.x**    | ≥12.17<sup>(1)</sup> | ES2017             | ≥4.1<sup>(3)</sup>      |
+| **3.x**    | ≥8<sup>(2)</sup>     | ES2017             | ≥4.1<sup>(3)</sup>      |
+| **2.x**    | ≥8<sup>(2)</sup>     | ES2017             | ≥3.2<sup>(4)</sup>      |
+| **1.x**    | ≥0.12<sup>(2)</sup>  | ES3                | ≥3.0<sup>(4)</sup>      |
 
 <details>
 <summary>More details...</summary>
 
-1. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
-2. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
-3. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
+1. Support for `package.json#exports` is required.
+2. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
+3. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
+4. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
 
 </details>
 
