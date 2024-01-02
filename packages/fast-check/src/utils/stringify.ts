@@ -133,7 +133,7 @@ function isSparseArray(arr: unknown[]): boolean {
 }
 
 /** @internal */
-export function stringifyInternal<Ts>(
+function stringifyInternal<Ts>(
   value: Ts,
   previousValues: any[],
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
