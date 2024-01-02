@@ -1,7 +1,5 @@
-// eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
-const { testProp, fc } = require('../lib/ava-fast-check');
-// eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
-const { Observable, map } = require('rxjs');
+import { testProp, fc } from '../lib/ava-fast-check.js';
+import { Observable, map } from 'rxjs';
 
 const delay = (duration) =>
   new Promise((resolve) => {
