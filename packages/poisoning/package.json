@@ -2,22 +2,22 @@
   "name": "@fast-check/poisoning",
   "description": "Set of utilities to ease detection and revert of poisoning",
   "version": "0.1.0",
-  "type": "commonjs",
+  "type": "module",
   "main": "lib/main.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "require": {
-        "types": "./lib/main.d.ts",
-        "default": "./lib/main.js"
+        "types": "./lib/cjs/main.d.ts",
+        "default": "./lib/cjs/main.js"
       },
       "import": {
-        "types": "./lib/esm/main.d.ts",
-        "default": "./lib/esm/main.js"
+        "types": "./lib/main.d.ts",
+        "default": "./lib/main.js"
       }
     }
   },
-  "module": "lib/esm/main.js",
+  "module": "lib/main.js",
   "types": "lib/main.d.ts",
   "files": [
     "lib"
@@ -25,10 +25,10 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
     "build-ci": "yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "test": "jest",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "test": "yarn node --experimental-vm-modules $(yarn bin jest)",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
