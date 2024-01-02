@@ -63,9 +63,11 @@ const property = propertyFor(new URL(import.meta.url), { isolationLevel: 'predic
 
 ## Minimal requirements
 
-- Node ≥14.18.0<sup>(1)</sup><sup>(2)</sup>
+- Node ≥14.18.0<sup>(1)</sup><sup>(2)</sup><sup>(3)</sup>
 - TypeScript ≥4.1 (optional)
 
 _(1): `worker_threads` alone would only require Node ≥10.5.0, but our usage of `require(node:*)` forces us to request at least Node ≥14.18.0_
 
 _(2): this package targets ES2020 specification which is quite well supported (more than 94%) by any Node ≥14.5.0_
+
+_(3): this package requires a version of node able to understand `package.json#exports`, supported by any Node ≥12.17.0_
