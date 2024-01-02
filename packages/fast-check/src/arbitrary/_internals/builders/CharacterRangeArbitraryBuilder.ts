@@ -41,7 +41,7 @@ export const buildLowerAlphaNumericArbitrary = (others: string[]): Arbitrary<str
   mapToConstant(lowerCaseMapper, numericMapper, { num: others.length, build: (v) => others[v] });
 
 /** @internal */
-export const buildAlphaNumericArbitrary = (others: string[]): Arbitrary<string> =>
+const buildAlphaNumericArbitrary = (others: string[]): Arbitrary<string> =>
   mapToConstant(lowerCaseMapper, upperCaseMapper, numericMapper, { num: others.length, build: (v) => others[v] });
 
 /** @internal */
