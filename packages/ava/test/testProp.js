@@ -1,5 +1,5 @@
-const { testProp, fc } = require('../lib/ava-fast-check');
-const { Observable, map } = require('rxjs');
+import { testProp, fc } from '../lib/ava-fast-check.js';
+import { Observable, map } from 'rxjs';
 
 const delay = (duration) =>
   new Promise((resolve) => {
