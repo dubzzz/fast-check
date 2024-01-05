@@ -24,6 +24,7 @@ const config: Config = {
   organizationName: 'dubzzz', // Usually your GitHub org/user name.
   projectName: 'fast-check', // Usually your repo name.
 
+  onBrokenAnchors: 'throw',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
 
