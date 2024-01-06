@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { assertNoPoisoning, restoreGlobals } from '../src/main.js';
 
 describe('assertNoPoisoning', () => {
