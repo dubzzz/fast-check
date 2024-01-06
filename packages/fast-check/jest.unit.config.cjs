@@ -1,6 +1,6 @@
-const conf = require('./jest.config.cjs');
+import conf from './jest.config.js';
 
-module.exports = Object.assign(conf, {
+export default Object.assign(conf, {
   testMatch: ['<rootDir>/test/unit/**/*.spec.ts'],
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: ['<rootDir>/lib/', '<rootDir>/test/'],
