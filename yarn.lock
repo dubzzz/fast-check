@@ -2821,8 +2821,8 @@ __metadata:
   resolution: "@fast-check/poisoning@workspace:packages/poisoning"
   dependencies:
     "@babel/core": "npm:^7.23.7"
-    "@babel/preset-env": "npm:^7.23.7"
     "@babel/preset-typescript": "npm:^7.23.3"
+    "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.11"
     "@types/node": "npm:^20.10.6"
     babel-jest: "npm:^29.7.0"
