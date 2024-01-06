@@ -47,7 +47,7 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if global altered via globalThis and be able to revert the change', () => {
     // Arrange
     const F = globalThis.Function;
-    globalThis.Function = jest.fn();
+    globalThis.Function = jest.fn() as any;
 
     // Act / Assert
     try {
@@ -63,7 +63,7 @@ describe('assertNoPoisoning', () => {
     // Arrange
     const F = Function;
     // eslint-disable-next-line no-global-assign
-    Function = jest.fn();
+    Function = jest.fn() as any;
 
     // Act / Assert
     try {
