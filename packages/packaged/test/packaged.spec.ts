@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as url from 'url';
 import { removeNonPublishedFiles } from '../src/packaged';
 
+// @ts-expect-error --module must be higher
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 describe('removeNonPublishedFiles', () => {
