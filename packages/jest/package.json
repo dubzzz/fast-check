@@ -73,7 +73,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
-    "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.24.1",
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.7.0",
