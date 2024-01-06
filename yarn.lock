@@ -2802,7 +2802,6 @@ __metadata:
   resolution: "@fast-check/packaged@workspace:packages/packaged"
   dependencies:
     "@babel/core": "npm:^7.23.7"
-    "@babel/preset-env": "npm:^7.23.7"
     "@babel/preset-typescript": "npm:^7.23.3"
     "@npmcli/arborist": "npm:^7.0.0"
     "@types/jest": "npm:^29.5.11"
