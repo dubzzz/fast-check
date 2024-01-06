@@ -1,3 +1,4 @@
-module.exports = {
+export default {
   testPathIgnorePatterns: ['/generated-tests/'],
+  extensionsToTreatAsEsm: ['.ts'],
 };
