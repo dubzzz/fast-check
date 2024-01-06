@@ -20,7 +20,7 @@ Got TypeError: v is not a function
     at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Module.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
     at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
@@ -45,7 +45,7 @@ Got error: Property failed by returning false
     at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Module.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
     at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
@@ -72,7 +72,7 @@ Got error: a must be >= b
     at Property.predicate [as run] (packages/fast-check/src/check/property/Property.generic.ts:?:?)
     at run (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Object.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Module.check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at assert (packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?)
     at run (packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?)
 
