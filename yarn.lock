@@ -8853,7 +8853,7 @@ __metadata:
     pure-rand: "npm:^6.0.0"
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^7.1.0"
-    typedoc: "npm:^0.25.6"
+    typedoc: "npm:^0.25.7"
     typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
@@ -17611,9 +17611,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.25.6":
-  version: 0.25.6
-  resolution: "typedoc@npm:0.25.6"
+"typedoc@npm:^0.25.7":
+  version: 0.25.7
+  resolution: "typedoc@npm:0.25.7"
   dependencies:
     lunr: "npm:^2.3.9"
     marked: "npm:^4.3.0"
@@ -17623,7 +17623,7 @@ __metadata:
     typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x
   bin:
     typedoc: bin/typedoc
-  checksum: 4819d118d7795f237ae9ddc8cb0b2fd12493ea0a3c11d47114a2fa90700a0425233ea7e75f364d35663d9076af1e022caa04f6cbf7a999d19f0dc868b575d508
+  checksum: e663be0534dd56f45f041a478ee0613a1bf96cad7208a5cfc771981c904d0f30d8dca51956486f125f8004237264acc5dd45920fa6a0a32e351e36d74279abb1
   languageName: node
   linkType: hard
 
