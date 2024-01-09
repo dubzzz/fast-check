@@ -1,3 +1,20 @@
+# 3.15.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.15.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.15.0...v3.15.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4591](https://github.com/dubzzz/fast-check/pull/4591)) CI: Move build chain to ESM
+- ([PR#4598](https://github.com/dubzzz/fast-check/pull/4598)) CI: Add `onBrokenAnchors`'check on Docusaurus
+- ([PR#4606](https://github.com/dubzzz/fast-check/pull/4606)) CI: Configuration files for VSCode
+- ([PR#4554](https://github.com/dubzzz/fast-check/pull/4554)) Doc: Add `idonttrustlikethat-fast-check` in ecosystem.md
+- ([PR#4563](https://github.com/dubzzz/fast-check/pull/4563)) Doc: Add new contributor nielk
+
 # 3.15.0
 
 _Add support for `depthIdentifier` to `dictionary`_

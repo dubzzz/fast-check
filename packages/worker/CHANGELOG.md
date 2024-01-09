@@ -1,3 +1,18 @@
+# 0.2.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.1.1...worker%2Fv0.2.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4585](https://github.com/dubzzz/fast-check/pull/4585)) CI: Move build chain to ESM
+
+---
+
 # 0.1.1
 
 _Implement missing methods for future v4 of fast-check_

@@ -1,3 +1,19 @@
+# 0.3.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.2.0...packaged%2Fv0.3.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4588](https://github.com/dubzzz/fast-check/pull/4588)) CI: Move build chain to ESM
+- ([PR#4599](https://github.com/dubzzz/fast-check/pull/4599)) CI: Migrate jest to esm
+
+---
+
 # 0.2.0
 
 _Faster execution with bulk removals_
