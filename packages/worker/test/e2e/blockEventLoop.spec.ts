@@ -4,7 +4,7 @@ import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import { blockEventLoopProperty } from './__properties__/blockEventLoop.cjs';
+import { blockEventLoopProperty } from './__properties__/blockEventLoop.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
