@@ -54,7 +54,7 @@ if (isMainThread) {
       'should respawn a new worker when the predicate execution fails',
       async () => {
         // Arrange
-        const options: Parameters<unknown> = { ...defaultOptions, verbose: 2, endOnFailure: true };
+        const options: Parameters<unknown> = { ...defaultOptions, verbose: 2 };
 
         // Act / Assert
         try {
