@@ -32,7 +32,7 @@
     "test-bundle:cjs": "node test-bundle/main.cjs",
     "test-bundle:mjs": "node test-bundle/main.mjs",
     "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --module nodenext --moduleResolution nodenext"
   },
   "repository": {
     "type": "git",
