@@ -1,13 +1,13 @@
 // @ts-check
-import fc from 'fast-check';
-import { propertyFor } from '@fast-check/worker';
-import { writeFileSync, existsSync, rmSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* global __filename, exports, require, __dirname */
+const { pathToFileURL } = require('node:url');
+const fc = require('fast-check');
+const { propertyFor } = require('@fast-check/worker');
+const { writeFileSync, existsSync, rmSync } = require('fs');
+const path = require('path');
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-
-const property = propertyFor(new URL(import.meta.url));
+const property = propertyFor(pathToFileURL(__filename));
 
 let index = 0;
 function nextFilenameQuestion() {

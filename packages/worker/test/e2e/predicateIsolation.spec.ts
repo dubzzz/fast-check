@@ -4,7 +4,7 @@ import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import { predicateIsolation } from './__properties__/predicateIsolation.mjs';
+import { predicateIsolation } from './__properties__/predicateIsolation.cjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {

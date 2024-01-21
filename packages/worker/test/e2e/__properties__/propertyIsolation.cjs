@@ -1,10 +1,13 @@
 // @ts-check
-import fc from 'fast-check';
-import { propertyFor } from '@fast-check/worker';
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* global __filename, exports, require */
+const { pathToFileURL } = require('node:url');
+const fc = require('fast-check');
+const { propertyFor } = require('@fast-check/worker');
 
 const counters = {};
 function buildPropertyWarmUp(isolationLevel) {
-  return propertyFor(new URL(import.meta.url), { isolationLevel })(
+  return propertyFor(pathToFileURL(__filename), { isolationLevel })(
     fc.integer({ min: -1000, max: 1000 }),
     fc.integer({ min: -1000, max: 1000 }),
     (_from, _to) => {
@@ -16,7 +19,7 @@ function buildPropertyWarmUp(isolationLevel) {
   );
 }
 function buildPropertyRun(isolationLevel) {
-  return propertyFor(new URL(import.meta.url), { isolationLevel })(
+  return propertyFor(pathToFileURL(__filename), { isolationLevel })(
     fc.integer({ min: -1000, max: 1000 }),
     fc.integer({ min: -1000, max: 1000 }),
     (_from, _to) => {
@@ -28,7 +31,7 @@ function buildPropertyRun(isolationLevel) {
   );
 }
 
-export const propertyIsolation = {
+exports.propertyIsolation = {
   predicateLevelWarmUp: buildPropertyWarmUp('predicate'),
   predicateLevelRun: buildPropertyRun('predicate'),
   propertyLevelWarmUp: buildPropertyWarmUp('property'),

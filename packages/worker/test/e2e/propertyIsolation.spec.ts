@@ -4,7 +4,7 @@ import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import { propertyIsolation } from './__properties__/propertyIsolation.mjs';
+import { propertyIsolation } from './__properties__/propertyIsolation.cjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
