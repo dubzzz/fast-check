@@ -2703,7 +2703,7 @@ __metadata:
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
     "@types/node": "npm:^20.11.5"
-    ava: "npm:^6.0.1"
+    ava: "npm:^6.1.0"
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
     rxjs: "npm:^7.8.1"
@@ -5896,9 +5896,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ava@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "ava@npm:6.0.1"
+"ava@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "ava@npm:6.1.0"
   dependencies:
     "@vercel/nft": "npm:^0.24.4"
     acorn: "npm:^8.11.2"
@@ -5947,7 +5947,7 @@ __metadata:
       optional: true
   bin:
     ava: entrypoints/cli.mjs
-  checksum: dce43b360013ef8bc78cb6215c58640cd91fbd3c9a4059105556653e5de9728590159719e382ff95d205b973e00b8d050aa3fcf31f4a2298c4fb652d89b3c7df
+  checksum: c804be55fded708635f78ff5a2e99dabcc7ccc03c04daf9a7433f1de3eb1c3133b1609a0593ad7717c7f51b866e2e4e893eabb980576715a342a1abf47cb8d20
   languageName: node
   linkType: hard
 
