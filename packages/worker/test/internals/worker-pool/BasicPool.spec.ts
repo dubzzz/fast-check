@@ -8,6 +8,10 @@ jest.unstable_mockModule('node:worker_threads', () => ({
 const { BasicPool } = await import('../../../src/internals/worker-pool/BasicPool.js');
 const WorkerThreadsMock = await import('node:worker_threads');
 
+beforeEach(() => {
+  jest.resetAllMocks();
+});
+
 describe('BasicPool', () => {
   it('should instantly register handlers when spawning workers', () => {
     // Arrange
