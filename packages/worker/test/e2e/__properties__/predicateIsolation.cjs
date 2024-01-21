@@ -22,5 +22,6 @@ function buildProperty(isolationLevel) {
 exports.predicateIsolation = {
   predicateLevel: buildProperty('predicate'),
   propertyLevel: buildProperty('property'),
+  propertyLevel2: buildProperty('property2'),
   fileLevel: buildProperty('file'),
 };
