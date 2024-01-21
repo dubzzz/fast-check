@@ -58,7 +58,7 @@ if (isMainThread) {
 
         // Act / Assert
         try {
-          await assert(predicateIsolation.propertyLevel, options);
+          await assert(predicateIsolation.propertyLevel2, options);
           expect('It should have thrown').toBe(null);
         } catch (err) {
           const summary = (err as Error).message.split('Execution summary:')[1];

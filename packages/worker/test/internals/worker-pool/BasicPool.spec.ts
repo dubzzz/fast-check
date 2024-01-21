@@ -1,7 +1,16 @@
 import type { PoolToWorkerMessage, WorkerToPoolMessage } from '../../../src/internals/worker-pool/IWorkerPool.js';
-import { BasicPool } from '../../../src/internals/worker-pool/BasicPool.js';
-// @ts-expect-error - It should normally be "* as WorkerThreadsMock" but it does not work anymore since we switched to babel (instead of ts-jest)
-import WorkerThreadsMock from 'node:worker_threads';
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('node:worker_threads', () => ({
+  Worker: jest.fn(),
+}));
+
+const { BasicPool } = await import('../../../src/internals/worker-pool/BasicPool.js');
+const WorkerThreadsMock = await import('node:worker_threads');
+
+beforeEach(() => {
+  jest.resetAllMocks();
+});
 
 describe('BasicPool', () => {
   it('should instantly register handlers when spawning workers', () => {
@@ -388,22 +397,22 @@ describe('BasicPool', () => {
 // Helpers
 
 function mockWorker() {
-  const Worker = jest.spyOn(WorkerThreadsMock, 'Worker');
-  const on = jest.fn();
-  const postMessage = jest.fn();
-  const terminate = jest.fn();
+  const Worker = WorkerThreadsMock.Worker as jest.Mocked<typeof WorkerThreadsMock.Worker>;
+  const on = jest.fn<typeof WorkerThreadsMock.Worker.prototype.on>();
+  const postMessage = jest.fn<typeof WorkerThreadsMock.Worker.prototype.postMessage>();
+  const terminate = jest.fn<typeof WorkerThreadsMock.Worker.prototype.terminate>();
   Worker.mockImplementation(
     () =>
       ({
         on,
         postMessage,
         terminate,
-      }) as unknown as WorkerThreadsMock.Worker,
+      }) as any,
   );
   return { Worker, on, postMessage, terminate };
 }
 
-function fireOnlineEvent(on: jest.Mock<any, any>) {
+function fireOnlineEvent(on: jest.Mock<typeof WorkerThreadsMock.Worker.prototype.on>) {
   const onOnlineHandler = on.mock.calls.find(([eventName]) => eventName === 'online')![1];
   onOnlineHandler();
 }
