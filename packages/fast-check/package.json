@@ -64,13 +64,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.7",
-    "@babel/preset-env": "^7.23.7",
+    "@babel/preset-env": "^7.23.8",
     "@babel/preset-typescript": "^7.23.3",
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.39.1",
     "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.11.5",
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
     "glob": "^10.3.10",
@@ -78,7 +78,7 @@
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^7.1.0",
-    "typedoc": "^0.25.6",
+    "typedoc": "^0.25.7",
     "typescript": "~5.3.3"
   },
   "keywords": [
