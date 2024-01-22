@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { sort } from './src/sort';
 
 describe('sort', () => {
