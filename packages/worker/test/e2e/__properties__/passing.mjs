@@ -2,7 +2,6 @@
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 
-console.log(new URL(import.meta.url))
 const property = propertyFor(new URL(import.meta.url));
 
 export const passingProperty = property(
