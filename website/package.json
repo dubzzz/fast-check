@@ -1,6 +1,7 @@
 {
   "private": true,
   "name": "website",
+  "type": "module",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && docusaurus start",
