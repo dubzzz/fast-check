@@ -3474,8 +3474,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^7.0.0":
-  version: 7.3.0
-  resolution: "@npmcli/arborist@npm:7.3.0"
+  version: 7.3.1
+  resolution: "@npmcli/arborist@npm:7.3.1"
   dependencies:
     "@isaacs/string-locale-compare": "npm:^1.1.0"
     "@npmcli/fs": "npm:^3.1.0"
@@ -3504,7 +3504,7 @@ __metadata:
     parse-conflict-json: "npm:^3.0.0"
     proc-log: "npm:^3.0.0"
     promise-all-reject-late: "npm:^1.0.0"
-    promise-call-limit: "npm:^1.0.2"
+    promise-call-limit: "npm:^3.0.1"
     read-package-json-fast: "npm:^3.0.2"
     semver: "npm:^7.3.7"
     ssri: "npm:^10.0.5"
@@ -3512,7 +3512,7 @@ __metadata:
     walk-up-path: "npm:^3.0.1"
   bin:
     arborist: bin/index.js
-  checksum: fee675c4f17c23f337813aa41e168a115dbe78363fb03c03933288db5e93f4abc9f34846ffba125a63e17891bcba2e32c247847974f6c9da45d85764a173b014
+  checksum: c50fdcc0ffa0e35c1a3a309bd831ec6461d90bc697e4d58c9e389d820427e59a36f96d15806e27f9c1ebd14d2f760b2792c383d19e6321416ad8772d8238192c
   languageName: node
   linkType: hard
 
@@ -15050,10 +15050,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"promise-call-limit@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "promise-call-limit@npm:1.0.2"
-  checksum: 500aed321d7b9212da403db369551d7190c96c8937c3b2d15c6097d1037b17fb802c7decfbc8ba6bb937f1cc1ea291e5eba10ed9ea76adc0f398ab9f7d174a58
+"promise-call-limit@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "promise-call-limit@npm:3.0.1"
+  checksum: 2bf66a7238b9986c9b1ae0b3575c1446485b85b4befd9ee359d8386d26050d053cb2aaa57e0fc5d91e230a77e29ad546640b3afe3eb86bcfc204aa0d330f49b4
   languageName: node
   linkType: hard
 
