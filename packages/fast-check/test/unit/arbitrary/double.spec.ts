@@ -297,7 +297,7 @@ describe('double (integration)', () => {
     }
     if (extra.max !== undefined && !Number.isNaN(v)) {
       if (extra.maxExcluded) {
-        if (Object.is(extra.min, +0)) {
+        if (Object.is(extra.max, +0)) {
           expect(v).not.toBe(+0);
           expect(v).toBeLessThanOrEqual(extra.max);
         } else {
