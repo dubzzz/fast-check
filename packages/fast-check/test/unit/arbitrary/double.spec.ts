@@ -335,7 +335,7 @@ describe('double (integration)', () => {
   });
 
   it('should only produce correct values', () => {
-    assertProduceCorrectValues(doubleBuilder, isCorrect, { extraParameters, assertParameters: { seed: 339726521 } });
+    assertProduceCorrectValues(doubleBuilder, isCorrect, { extraParameters });
   });
 
   it('should produce values seen as shrinkable without any context', () => {
