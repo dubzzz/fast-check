@@ -2780,6 +2780,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
+    jest-ts-webcompat-resolver: "npm:^1.0.0"
     lodash-es: "npm:^4.17.21"
     pure-rand: "npm:^6.0.4"
     react: "npm:^18.2.0"
