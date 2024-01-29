@@ -2,8 +2,9 @@
   "private": true,
   "name": "@fast-check/examples",
   "description": "Examples of usage of fast-check",
+  "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "yarn node --experimental-vm-modules $(yarn bin jest)",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -20,9 +21,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@jest/globals": "^29.7.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
     "@types/lodash": "^4.14.202",

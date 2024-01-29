@@ -1,5 +1,5 @@
 import { TodolistCommand, TodolistModel, TodolistReal, listTodos, sortTodos, ExtractedTodoItem } from './Model';
-import { screen, fireEvent, act } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Copied from https://github.com/testing-library/user-event/issues/586
