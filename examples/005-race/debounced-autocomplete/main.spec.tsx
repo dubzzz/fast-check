@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+import { jest } from '@jest/globals';
 import React from 'react';
 import DebouncedAutocomplete from './src/DebouncedAutocomplete';
 
