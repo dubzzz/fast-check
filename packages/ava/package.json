@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.10",
-    "ava": "^6.1.0",
+    "ava": "^6.1.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "rxjs": "^7.8.1",
