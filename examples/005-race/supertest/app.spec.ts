@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import request from 'supertest';
 import type { User } from './src/db';
 
-jest.unstable_mockModule('./src/db', () => ({
+jest.unstable_mockModule('./005-race/supertest/src/db', () => ({
   getAllUsers: jest.fn(),
   removeUsers: jest.fn(),
 }));
