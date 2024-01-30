@@ -1,3 +1,17 @@
+# 0.1.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.9...vitest%2Fv0.1.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4586](https://github.com/dubzzz/fast-check/pull/4586)) CI: Move build chain to ESM
+- ([PR#4603](https://github.com/dubzzz/fast-check/pull/4603)) CI: Migrate jest to esm
+
 # 0.0.9
 
 _Stricter declaration of peers and better imports_

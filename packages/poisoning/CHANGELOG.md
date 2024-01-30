@@ -1,3 +1,19 @@
+# 0.2.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.1.0...poisoning%2Fv0.2.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4584](https://github.com/dubzzz/fast-check/pull/4584)) CI: Move build chain to ESM
+- ([PR#4602](https://github.com/dubzzz/fast-check/pull/4602)) CI: Migrate jest to esm
+
+---
+
 # 0.1.0
 
 _Lighter import with less internals to load_
