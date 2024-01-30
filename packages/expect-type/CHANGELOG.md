@@ -3,7 +3,7 @@
 _Declare root of the package as ESM_
 [[Code](https://github.com/dubzzz/fast-check/tree/expect-type%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/expect-type%2Fv0.1.0...expect-type%2Fv0.2.0)]
 
-## Fixes
+## Breaking changes
 
 - ([PR#4587](https://github.com/dubzzz/fast-check/pull/4587)) CI: Move build chain to ESM
 
