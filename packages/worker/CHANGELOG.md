@@ -3,9 +3,12 @@
 _Declare root of the package as ESM_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.1.1...worker%2Fv0.2.0)]
 
-## Fixes
+## Breaking changes
 
 - ([PR#4585](https://github.com/dubzzz/fast-check/pull/4585)) CI: Move build chain to ESM
+
+## Fixes
+
 - ([PR#4604](https://github.com/dubzzz/fast-check/pull/4604)) CI: Migrate jest to esm
 
 ---
