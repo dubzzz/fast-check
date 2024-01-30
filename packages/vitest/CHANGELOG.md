@@ -1,11 +1,7 @@
 # 0.1.0
 
-_TODO Description_
+_Declare root of the package as ESM_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.9...vitest%2Fv0.1.0)]
-
-## Features
-
-
 
 ## Fixes
 

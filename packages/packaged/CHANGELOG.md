@@ -1,11 +1,7 @@
 # 0.3.0
 
-_TODO Description_
+_Declare root of the package as ESM_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.2.0...packaged%2Fv0.3.0)]
-
-## Features
-
-
 
 ## Fixes
 
