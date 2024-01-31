@@ -147,3 +147,17 @@ YAML.parse(YAML.stringify([{ k: `!""""""""""""""""""""""""""""""""""#"\\ '` }]))
 **Issue detected:** `-0` was not stringified correctly \[[more](https://github.com/blakeembrey/javascript-stringify/pull/20)\]
 
 **Code example:** `stringify(-0)` produces `"0"` instead of `"-0"`
+
+### `auth0/node-jsonwebtoken`
+
+![GitHub stars](https://img.shields.io/github/stars/auth0/node-jsonwebtoken?style=flat)
+![monthly downloads](https://img.shields.io/npm/dm/jsonwebtoken)
+
+**Issue detected:** signing an object with specific keys (`toString`, `valueOf`, `hasOwnProperty`, `__proto__`...) crashes with an error \[[more](https://github.com/auth0/node-jsonwebtoken/issues/945)\]
+
+**Code example:**
+
+```js
+jwt.sign({ valueOf: 0 }, 'some-key');
+//=> throws TypeError `validator.isValid is not a function`
+```
