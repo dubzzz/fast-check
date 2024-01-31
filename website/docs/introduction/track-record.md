@@ -158,6 +158,6 @@ YAML.parse(YAML.stringify([{ k: `!""""""""""""""""""""""""""""""""""#"\\ '` }]))
 **Code example:**
 
 ```js
-jwt.sign({ valueOf: 0 }, "some-key");
+jwt.sign({ valueOf: 0 }, 'some-key');
 //=> throws TypeError `validator.isValid is not a function`
 ```
