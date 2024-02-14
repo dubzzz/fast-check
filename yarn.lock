@@ -2843,7 +2843,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     typescript: "npm:~5.3.3"
-    vite: "npm:^5.1.1"
+    vite: "npm:^5.1.2"
     vitest: "npm:^1.2.2"
   peerDependencies:
     vitest: ">=0.28.1 <1.0.0 || ^1"
@@ -18116,9 +18116,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.0.0, vite@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "vite@npm:5.1.1"
+"vite@npm:^5.0.0, vite@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "vite@npm:5.1.2"
   dependencies:
     esbuild: "npm:^0.19.3"
     fsevents: "npm:~2.3.3"
@@ -18152,7 +18152,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/d7c23284aeb3a8333e0ea208fab7da4dd4f69134f22ff959d865f56d48c3afd04fbc548368c15a5fbc0c6453ee950db42bd3532aa0dd50b85464eabefaa51396
+  checksum: 10c0/3f114553abcb1006abf82b023f8de4af8fde9670325b34812d47f5c385eef8c3a20eed3d5f17b27ad7e506ea305649757147c84b134ada9606966b0771983ae3
   languageName: node
   linkType: hard
 
