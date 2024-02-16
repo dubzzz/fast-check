@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.11.3",
+    "@codesandbox/sandpack-react": "^2.12.1",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@docusaurus/core": "3.1.1",
     "@docusaurus/plugin-pwa": "3.1.1",
@@ -32,8 +32,8 @@
     "@docusaurus/tsconfig": "3.1.1",
     "@docusaurus/types": "3.1.1",
     "@jest/globals": "^29.7.0",
-    "@mdx-js/react": "^3.0.0",
-    "@types/node": "^20.11.16",
+    "@mdx-js/react": "^3.0.1",
+    "@types/node": "^20.11.19",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "typescript": "~5.3.3"
