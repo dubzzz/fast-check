@@ -53,8 +53,8 @@
     "ava": "^4 || ^5 || ^6"
   },
   "devDependencies": {
-    "@types/node": "^20.11.5",
-    "ava": "^6.0.1",
+    "@types/node": "^20.11.17",
+    "ava": "^6.1.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "rxjs": "^7.8.1",

@@ -12,7 +12,7 @@ Bring additional capabilities to fast-check by leveraging its rich ecosystem of 
 This page provides a list of packages available in the fast-check ecosystem. It includes both official and third-party packages. While we can ensure the stability, usage, and maintenance of the official packages, we cannot provide any specific details or guarantees regarding the non-official packages.
 
 <details>
-<summary>Follow the emojis — <i>last update May 2023</i></summary>
+<summary>Follow the emojis — <i>last update January 2024</i></summary>
 
 - ⭐ official package
 - 🌗 official package with limited support
@@ -36,6 +36,39 @@ For instance:
 
 - Many data validators enable you to define and sometimes validate runtime values and obtain accurate TypeScript types. With these packages, they can also be utilized to derive arbitraries that can be seamlessly plugged within fast-check.
 - Many fake data libraries come with powerful random and seeded generators, why don't you use them as arbitraries to ease migration path to full property-based testing?
+
+### `@effect/schema` 🥇
+
+![npm version](https://badge.fury.io/js/@effect%2Fschema.svg)
+![monthly downloads](https://img.shields.io/npm/dm/@effect%2Fschema)
+![last commit](https://img.shields.io/github/last-commit/effect-ts/effect)
+![license](https://img.shields.io/npm/l/@effect%2Fschema.svg)
+![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
+
+Generate random values that conform to a given `Schema`. It allows you to generate random test data that is guaranteed to be valid according to the `Schema`.
+
+```ts
+import * as Arbitrary from '@effect/schema/Arbitrary';
+import * as S from '@effect/schema/Schema';
+import * as fc from 'fast-check';
+
+const Person = S.struct({
+  name: S.string,
+  age: S.string.pipe(S.compose(S.NumberFromString), S.int()),
+});
+const isPerson = S.is(Person);
+const personArbitrary = Arbitrary.make(Person)(fc);
+
+test('Only generating valid Person', () => {
+  fc.assert(
+    fc.property(personArbitrary, (person) => {
+      expect(isPerson(person)).toBe(true);
+    }),
+  );
+});
+```
+
+More details on the [package itself](https://www.npmjs.com/package/@effect/schema)!
 
 ### `zod-fast-check` 🥇
 
@@ -69,7 +102,7 @@ test("User's full name always contains their first and last names", () => {
 
 More details on the [package itself](https://www.npmjs.com/package/zod-fast-check)!
 
-### `fast-check-io-ts` ⚠️
+### `fast-check-io-ts` 🥈
 
 ![npm version](https://badge.fury.io/js/fast-check-io-ts.svg)
 ![monthly downloads](https://img.shields.io/npm/dm/fast-check-io-ts)
@@ -101,6 +134,28 @@ More details on the [package itself](https://www.npmjs.com/package/graphql-codeg
 
 Convert [JSON Schemas](https://json-schema.org/) into arbitraries for fast-check.  
 More details on the [package itself](https://www.npmjs.com/package/json-schema-fast-check)!
+
+### `idonttrustlikethat-fast-check` ⚠️
+
+![npm version](https://badge.fury.io/js/idonttrustlikethat-fast-check.svg)
+![monthly downloads](https://img.shields.io/npm/dm/idonttrustlikethat-fast-check)
+![last commit](https://img.shields.io/github/last-commit/nielk/idonttrustlikethat-fast-check)
+![license](https://img.shields.io/npm/l/idonttrustlikethat-fast-check.svg)
+![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
+
+Convert [idonttrustlikethat validators](https://github.com/AlexGalays/idonttrustlikethat) into arbitraries for fast-check.  
+More details on the [package itself](https://www.npmjs.com/package/idonttrustlikethat-fast-check)!
+
+### `mock-data-gen` ⚠️
+
+![npm version](https://badge.fury.io/js/mock-data-gen.svg)
+![monthly downloads](https://img.shields.io/npm/dm/mock-data-gen)
+![last commit](https://img.shields.io/github/last-commit/kaeluka/mock-data-gen)
+![license](https://img.shields.io/npm/l/mock-data-gen.svg)
+![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
+
+Convert [io-ts validators](https://gcanti.github.io/io-ts/) into arbitraries for fast-check.  
+More details on the [package itself](https://www.npmjs.com/package/mock-data-gen)!
 
 ### `jsverify-to-fast-check` 🌗
 
@@ -136,28 +191,6 @@ const fcArbitrary = jsc2fc(jscArbitrary);
 ```
 
 More details on the [package itself](https://www.npmjs.com/package/jsverify-to-fast-check)!
-
-### `mock-data-gen` ⚠️
-
-![npm version](https://badge.fury.io/js/mock-data-gen.svg)
-![monthly downloads](https://img.shields.io/npm/dm/mock-data-gen)
-![last commit](https://img.shields.io/github/last-commit/kaeluka/mock-data-gen)
-![license](https://img.shields.io/npm/l/mock-data-gen.svg)
-![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
-
-Convert [io-ts validators](https://gcanti.github.io/io-ts/) into arbitraries for fast-check.  
-More details on the [package itself](https://www.npmjs.com/package/mock-data-gen)!
-
-### `idonttrustlikethat-fast-check` ⚠️
-
-![npm version](https://badge.fury.io/js/idonttrustlikethat-fast-check.svg)
-![monthly downloads](https://img.shields.io/npm/dm/idonttrustlikethat-fast-check)
-![last commit](https://img.shields.io/github/last-commit/nielk/idonttrustlikethat-fast-check)
-![license](https://img.shields.io/npm/l/idonttrustlikethat-fast-check.svg)
-![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
-
-Convert [idonttrustlikethat validators](https://github.com/AlexGalays/idonttrustlikethat) into arbitraries for fast-check.  
-More details on the [package itself](https://www.npmjs.com/package/idonttrustlikethat-fast-check)!
 
 ## Test runners
 
@@ -313,7 +346,7 @@ More details on the [package itself](https://www.npmjs.com/package/@fast-check/w
 
 External libraries leveraging fast-check, its properties and predicates to validate userland extensions.
 
-### `fp-ts-laws` ⚠️
+### `fp-ts-laws` 🥇
 
 ![npm version](https://badge.fury.io/js/fp-ts-laws.svg)
 ![monthly downloads](https://img.shields.io/npm/dm/fp-ts-laws)
@@ -328,7 +361,7 @@ More details on the [package itself](https://www.npmjs.com/package/fp-ts-laws)!
 
 Wanna run fast-check in non-JavaScript environments? The following packages offer some bindings making it possible.
 
-### `rescript-fast-check` 🥈
+### `rescript-fast-check` ⚠️
 
 ![npm version](https://badge.fury.io/js/rescript-fast-check.svg)
 ![monthly downloads](https://img.shields.io/npm/dm/rescript-fast-check)

@@ -285,14 +285,24 @@ describe('double (integration)', () => {
     }
     if (extra.min !== undefined && !Number.isNaN(v)) {
       if (extra.minExcluded) {
-        expect(v).toBeGreaterThan(extra.min); // should always be strictly greater than min when specified
+        if (Object.is(extra.min, -0)) {
+          expect(v).not.toBe(-0);
+          expect(v).toBeGreaterThanOrEqual(extra.min);
+        } else {
+          expect(v).toBeGreaterThan(extra.min); // should always be strictly greater than min when specified
+        }
       } else {
         expect(v).toBeGreaterThanOrEqual(extra.min); // should always be greater than min when specified
       }
     }
     if (extra.max !== undefined && !Number.isNaN(v)) {
       if (extra.maxExcluded) {
-        expect(v).toBeLessThan(extra.max); // should always be strictly smaller than max when specified
+        if (Object.is(extra.max, +0)) {
+          expect(v).not.toBe(+0);
+          expect(v).toBeLessThanOrEqual(extra.max);
+        } else {
+          expect(v).toBeLessThan(extra.max); // should always be strictly smaller than max when specified
+        }
       } else {
         expect(v).toBeLessThanOrEqual(extra.max); // should always be smaller than max when specified
       }

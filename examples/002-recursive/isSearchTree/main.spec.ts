@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { binarySearchTreeWithMaxDepth } from './arbitraries/BinarySearchTreeArbitrary';
 import { isSearchTree, Tree } from './src/isSearchTree';
 import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary';

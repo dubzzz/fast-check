@@ -61,14 +61,20 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
             .replace(/\/(%2e|%2E)($|\/)/g, '/.$2')
             .replace(/\/(%2e|%2E|\.)(%2e|%2E|\.)($|\/)/g, '/..$3');
           if (!dotSanitizedPath.includes('/..')) {
-            const sanitizedPath = dotSanitizedPath
-              .replace(/\/\.\/(\.\/)*/g, '/') // replace /./, /././, etc.. by /
-              .replace(/\/\.$/, '/'); // replace trailing /. by / if any
-            expect(u.pathname).toEqual(sanitizedPath === '' ? '/' : sanitizedPath);
+            const sanitizedPath = dropAnySelfInPath(dotSanitizedPath);
+
+            // We also have to sanitize the output of URL as Node might fail to simplify some URLs: new URL("http://domain.me/J/.5/./y/")
+            expect(dropAnySelfInPath(u.pathname)).toEqual(sanitizedPath === '' ? '/' : sanitizedPath);
           }
         },
       ),
-      { seed: seed },
+      { seed },
     );
   });
 });
+
+function dropAnySelfInPath(path: string): string {
+  return path
+    .replace(/\/\.\/(\.\/)*/g, '/') // replace /./, /././, etc.. by /
+    .replace(/(\/\.)+$/, '/'); // replace trailing /. by / if any
+}

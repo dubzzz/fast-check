@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/packaged",
   "description": "Utility package removing any files that will not be part of the final bundle",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "main": "lib/packaged.js",
   "types": "lib/packaged.d.ts",
@@ -38,9 +38,9 @@
     "npm-packlist": "^8.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.7",
+    "@babel/core": "^7.23.9",
     "@babel/preset-typescript": "^7.23.3",
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.12",
     "@types/npm-packlist": "^7.0.3",
     "@types/npmcli__arborist": "^5.6.5",
     "babel-jest": "^29.7.0",

@@ -1,6 +1,6 @@
 import { mazeGenerator, CellType, Point } from './src/mazeGenerator';
 import fc from 'fast-check';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 describe('mazeGenerator', () => {
   it('should contain a single start point located at the specified point', () => {

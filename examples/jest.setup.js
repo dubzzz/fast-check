@@ -1,4 +1,5 @@
-const fc = require('fast-check');
+import { jest } from '@jest/globals';
+import fc from 'fast-check';
 
 // Default timeout of 120s
 const JestTimeoutMs = 120000;

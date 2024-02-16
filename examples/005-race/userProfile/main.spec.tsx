@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import fc from 'fast-check';
 import * as React from 'react';
 
