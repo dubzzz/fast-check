@@ -193,7 +193,7 @@ describe('SchedulerImplem', () => {
       expect(s.count()).toBe(1); // The promise returning 2 should be queued into the scheduler
     });
 
-    it('should schedule for next waitOne anything scheduled even after an intermadiate await', async () => {
+    it('should not schedule for next waitOne something scheduled after an intermadiate await', async () => {
       // Arrange
       const act = jest.fn().mockImplementation((f) => f());
       const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
@@ -208,7 +208,9 @@ describe('SchedulerImplem', () => {
       // Assert
       expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
       await s.waitOne();
-      expect(s.count()).toBe(1); // The promise returning 2 should be queued into the scheduler
+      expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
+      await 'just awaiting something';
+      expect(s.count()).toBe(1); // ...but it will after a simple await
     });
 
     it('should not schedule for next waitOne something scheduled after two intermediate await', async () => {
@@ -229,7 +231,9 @@ describe('SchedulerImplem', () => {
       await s.waitOne();
       expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
       await 'just awaiting something';
-      expect(s.count()).toBe(1); // ...but it will after a simple await
+      expect(s.count()).toBe(0);
+      await 'just awaiting one more time';
+      expect(s.count()).toBe(1); // ...but it will after two simple await
     });
   });
 
