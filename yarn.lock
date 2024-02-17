@@ -3358,27 +3358,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.28.9":
-  version: 7.28.9
-  resolution: "@microsoft/api-extractor-model@npm:7.28.9"
+"@microsoft/api-extractor-model@npm:7.28.10":
+  version: 7.28.10
+  resolution: "@microsoft/api-extractor-model@npm:7.28.10"
   dependencies:
     "@microsoft/tsdoc": "npm:0.14.2"
     "@microsoft/tsdoc-config": "npm:~0.16.1"
-    "@rushstack/node-core-library": "npm:3.66.0"
-  checksum: 10c0/fd66f910e71539a18e4ef78016204b958264810ad42af9480588c5c3d00bc8572623c62fdc5567b9ea9e48f2218bb86903526d7fb4acc54536ac58f569a78f39
+    "@rushstack/node-core-library": "npm:3.66.1"
+  checksum: 10c0/5c16a77f2eabb660e2db76f56bb5a8b33c390b2e2887b238f4db3cadf9e57e8b01635fa1e8f0d4ff619273a179ee8763b7c1788e0dbd7a0df0665d7546750aa6
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.40.1":
-  version: 7.40.1
-  resolution: "@microsoft/api-extractor@npm:7.40.1"
+"@microsoft/api-extractor@npm:^7.40.2":
+  version: 7.40.2
+  resolution: "@microsoft/api-extractor@npm:7.40.2"
   dependencies:
-    "@microsoft/api-extractor-model": "npm:7.28.9"
+    "@microsoft/api-extractor-model": "npm:7.28.10"
     "@microsoft/tsdoc": "npm:0.14.2"
     "@microsoft/tsdoc-config": "npm:~0.16.1"
-    "@rushstack/node-core-library": "npm:3.66.0"
-    "@rushstack/rig-package": "npm:0.5.1"
-    "@rushstack/ts-command-line": "npm:4.17.1"
+    "@rushstack/node-core-library": "npm:3.66.1"
+    "@rushstack/rig-package": "npm:0.5.2"
+    "@rushstack/ts-command-line": "npm:4.17.2"
     colors: "npm:~1.2.1"
     lodash: "npm:~4.17.15"
     resolve: "npm:~1.22.1"
@@ -3387,7 +3387,7 @@ __metadata:
     typescript: "npm:5.3.3"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 10c0/c86aaafd2a30278ffd399bca6412fcf2da6a864429e56c6a408e79248bc56a48b40bef28ee7fed19bf5b1901d30f56e56bcf44285b006c6b95fe2438f518d0a9
+  checksum: 10c0/04c7fb8cfef9c9ba7a6e7b0330a5e901a0930bca68244294e7d995651df2a94b06c8fa373e8d46770fe25cba969507f512af104b1f68e4e5aab681eda36cf5e3
   languageName: node
   linkType: hard
 
@@ -3849,9 +3849,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/node-core-library@npm:3.66.0":
-  version: 3.66.0
-  resolution: "@rushstack/node-core-library@npm:3.66.0"
+"@rushstack/node-core-library@npm:3.66.1":
+  version: 3.66.1
+  resolution: "@rushstack/node-core-library@npm:3.66.1"
   dependencies:
     colors: "npm:~1.2.1"
     fs-extra: "npm:~7.0.1"
@@ -3865,29 +3865,29 @@ __metadata:
   peerDependenciesMeta:
     "@types/node":
       optional: true
-  checksum: 10c0/e0556e37998c27a0313a67ad5be5bec60bbfa34bb2b60db0e8dbe68dd42affd92d523846643f39d2aca14d890e52b0e9ce74fa35232cc286f2dd41b7f37ba614
+  checksum: 10c0/af9c4ad4153cd8e4bf45126a7f0baead294aebc839d48dbaf62bf8a98c917f6db377e7b042b4375f22f37591e8b9eb2d20261b35d7e0138281b613b9c2862ce7
   languageName: node
   linkType: hard
 
-"@rushstack/rig-package@npm:0.5.1":
-  version: 0.5.1
-  resolution: "@rushstack/rig-package@npm:0.5.1"
+"@rushstack/rig-package@npm:0.5.2":
+  version: 0.5.2
+  resolution: "@rushstack/rig-package@npm:0.5.2"
   dependencies:
     resolve: "npm:~1.22.1"
     strip-json-comments: "npm:~3.1.1"
-  checksum: 10c0/a296125a5170dd11c37c3d679eb6e61db4d0c0741b3947902d9eab34e9ff34d5d8e94fbf6b45757141ea077029490198b7eb35d311ba46eaac5e1d4145e9780c
+  checksum: 10c0/7bff460eb8407a68de20681b6354703c0fdb7a325c58060a2c4591b86dd3b83b95b651ccba3cc833f8d1a94c3a19638091b447c03d89eaa9df57bc9de7abb29d
   languageName: node
   linkType: hard
 
-"@rushstack/ts-command-line@npm:4.17.1":
-  version: 4.17.1
-  resolution: "@rushstack/ts-command-line@npm:4.17.1"
+"@rushstack/ts-command-line@npm:4.17.2":
+  version: 4.17.2
+  resolution: "@rushstack/ts-command-line@npm:4.17.2"
   dependencies:
     "@types/argparse": "npm:1.0.38"
     argparse: "npm:~1.0.9"
     colors: "npm:~1.2.1"
     string-argv: "npm:~0.3.1"
-  checksum: 10c0/4fd27d2450a6e71139e67b33d5ecba7abbf3497e7479ab3a96666cf79f207c5a7d4ad4f8de17f43e09bed65a0f28115160a4c5486c8e64f8b472c7145a31c2d2
+  checksum: 10c0/b7f679d95c141678fc93aa789140fac48dcf12ba886be1b2e6d932006dfa04d974cc7de08b54fca414f229533af26fc43fd103c7a6b7e320b53fa963fbe1f79a
   languageName: node
   linkType: hard
 
@@ -8876,7 +8876,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.40.1"
+    "@microsoft/api-extractor": "npm:^7.40.2"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.19"
     babel-jest: "npm:^29.7.0"
