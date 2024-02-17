@@ -1,3 +1,5 @@
+import { writeFileSync } from 'fs';
+import * as process from 'process';
 import { BasicPool } from './BasicPool.js';
 import type { IWorkerPool, PooledWorker } from './IWorkerPool.js';
 
@@ -37,6 +39,7 @@ export class GlobalPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPa
   }
 
   spawnNewWorker(): Promise<PooledWorker<TSuccess, TPayload>> {
+    writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] GlobalPool::spawnNewWorker\n`, { flag: 'a' });
     cancelPendingTerminationIfAny(this.workerFileUrl);
     return this.internalPool.spawnNewWorker();
   }
@@ -47,10 +50,20 @@ export class GlobalPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPa
   }
 
   terminateAllWorkers(): Promise<void> {
+    writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] GlobalPool::terminateAllWorkers -> START\n`, {
+      flag: 'a',
+    });
     cancelPendingTerminationIfAny(this.workerFileUrl);
     pendingTerminationPerFile.set(
       this.workerFileUrl.toString(),
       setTimeout(() => {
+        writeFileSync(
+          '/workspaces/fast-check/debug.log',
+          `[${process.pid}] GlobalPool::terminateAllWorkers -> In timer\n`,
+          {
+            flag: 'a',
+          },
+        );
         this.internalPool.terminateAllWorkers();
       }, 0),
     );

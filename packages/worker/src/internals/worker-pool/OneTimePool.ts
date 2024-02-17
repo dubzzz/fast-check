@@ -1,3 +1,5 @@
+import { writeFileSync } from 'fs';
+import * as process from 'process';
 import { BasicPool } from './BasicPool.js';
 import type { IWorkerPool, PooledWorker } from './IWorkerPool.js';
 
@@ -17,6 +19,7 @@ export class OneTimePool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TP
   }
 
   spawnNewWorker(): Promise<PooledWorker<TSuccess, TPayload>> {
+    writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] OneTimePool::spawnNewWorker\n`, { flag: 'a' });
     return this.internalPool.spawnNewWorker();
   }
 
@@ -25,6 +28,13 @@ export class OneTimePool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TP
   }
 
   terminateAllWorkers(): Promise<void> {
-    return this.internalPool.terminateAllWorkers();
+    writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] OneTimePool::terminateAllWorkers -> START\n`, {
+      flag: 'a',
+    });
+    const p = this.internalPool.terminateAllWorkers();
+    writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] OneTimePool::terminateAllWorkers -> END\n`, {
+      flag: 'a',
+    });
+    return p;
   }
 }
