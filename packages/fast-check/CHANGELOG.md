@@ -1,3 +1,29 @@
+# 3.15.0
+
+_Add support for `depthIdentifier` to `dictionary`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.15.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.14.0...v3.15.0)]
+
+## Features
+
+- ([PR#4548](https://github.com/dubzzz/fast-check/pull/4548)) Add support for `depthIdentifier` to `dictionary`
+
+## Fixes
+
+- ([PR#4502](https://github.com/dubzzz/fast-check/pull/4502)) Bug: Also produce null-prototype at root level of generated `object` when requested to
+- ([PR#4481](https://github.com/dubzzz/fast-check/pull/4481)) CI: Migrate configuration of Docusaurus to TS
+- ([PR#4463](https://github.com/dubzzz/fast-check/pull/4463)) Doc: Blog post for 3.14.0
+- ([PR#4464](https://github.com/dubzzz/fast-check/pull/4464)) Doc: Prefer import notation over require for README
+- ([PR#4482](https://github.com/dubzzz/fast-check/pull/4482)) Doc: Rework section on `waitAll` in the tutorial
+- ([PR#4477](https://github.com/dubzzz/fast-check/pull/4477)) Doc: Fix typo in date.md
+- ([PR#4494](https://github.com/dubzzz/fast-check/pull/4494)) Doc: Add new contributor bennettp123
+- ([PR#4541](https://github.com/dubzzz/fast-check/pull/4541)) Refactor: Rely on `dictionary` for `object` instead of inlined reimplementation
+- ([PR#4469](https://github.com/dubzzz/fast-check/pull/4469)) Test: More stable snapshot tests on stack traces
+- ([PR#4470](https://github.com/dubzzz/fast-check/pull/4470)) Test: Add cause flag onto snapshot tests checking stack traces
+- ([PR#4478](https://github.com/dubzzz/fast-check/pull/4478)) Test: Better snapshots tests implying stacktraces
+- ([PR#4483](https://github.com/dubzzz/fast-check/pull/4483)) Test: Wrap async no-regression snapshots within a sanitizer for stacktraces
+
+---
+
 # 3.14.0
 
 _Lighter import with less internals to load_

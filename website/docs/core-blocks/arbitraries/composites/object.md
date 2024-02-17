@@ -13,7 +13,7 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 **Signatures:**
 
 - `fc.dictionary(keyArb, valueArb)`
-- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?, noNullPrototype?})`
+- `fc.dictionary(keyArb, valueArb, {minKeys?, maxKeys?, size?, noNullPrototype?, depthIdentifier?})`
 
 **with:**
 
@@ -22,25 +22,26 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 - `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
 - `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of keys in the generated instances (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-- `noNullPrototype?` — default: `true` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
+- `noNullPrototype?` — default: `false` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
+- `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
 **Usages:**
 
 ```js
 fc.dictionary(fc.string(), fc.string());
 // Examples of generated values:
-// • {"<H":"`D? &7A","T>X0Aa]tp>":":5+|","8{0.mI>8R,":"j._[Xi&.[","!83F]'E1_":"y[bB,G$_S}","NnY,!{":"6NZ4,G'}","Y&>Uj":"gg@eTi","e>QDNvD/gz":"Bt0&oV;","ULLW1":"F6i_","?&I":"lPd7}"}
-// • {"_":" y|","Yo+\"O@q+j":"cI{H","":"3#$}9{5!z","?^~k ":"w$defipro","[fa4c":"J"}
-// • {"~":""}
+// • {__proto__:null,"<H":"`D? &7A","T>X0Aa]tp>":":5+|","8{0.mI>8R,":"j._[Xi&.[","!83F]'E1_":"y[bB,G$_S}","NnY,!{":"6NZ4,G'}","Y&>Uj":"gg@eTi","e>QDNvD/gz":"Bt0&oV;","ULLW1":"F6i_","?&I":"lPd7}"}
+// • {__proto__:null,"_":" y|","Yo+\"O@q+j":"cI{H","":"3#$}9{5!z","?^~k ":"w$defipro","[fa4c":"J"}
+// • {__proto__:null,"~":""}
 // • {"lzproperty":"?"}
 // • {"hOIY\"R q}":"W","l__defineG":"8x`:H0?T"}
 // • …
 
 fc.dictionary(fc.string(), fc.nat());
 // Examples of generated values:
-// • {"":11,".[hM+$+:?N":30,"%{":59342696,"|_":29,"E":670852246,"pl_":2147483639,">":2147483630,"M7cU?#9":1072636200,"ot":1627183273}
+// • {__proto__:null,"":11,".[hM+$+:?N":30,"%{":59342696,"|_":29,"E":670852246,"pl_":2147483639,">":2147483630,"M7cU?#9":1072636200,"ot":1627183273}
 // • {"_G@>x":461241683,"@9c=&6H:c0":105089967,"c_)r66nwK":1355210745}
-// • {"#1O;mZ1":1005073225}
+// • {__proto__:null,"#1O;mZ1":1005073225}
 // • {}
 // • {"6":144134225,".9":437743867,"tR?j$Hat3X":1920000943,"DQTd":324814916}
 // • …
@@ -49,20 +50,20 @@ fc.dictionary(fc.string(), fc.nat(), { minKeys: 2 });
 // Note: Generate instances with at least 2 keys
 // Examples of generated values:
 // • {"%{":11,"4cH":12,"ke":2147483622,"rqM~i'":485910780}
-// • {"K":1498847755,"&cP<5:e(y\"":1430281549,"!\"2a":1631161561,"dY+g":1880545446,"M2+^,Yq7~t":1437539188}
-// • {"NfXclS":815533370,"?":2060844890,"":1862140278,"R":618808229,"N|":25902062,"DGw00u?brK":348863633}
+// • {__proto__:null,"K":1498847755,"&cP<5:e(y\"":1430281549,"!\"2a":1631161561,"dY+g":1880545446,"M2+^,Yq7~t":1437539188}
+// • {__proto__:null,"NfXclS":815533370,"?":2060844890,"":1862140278,"R":618808229,"N|":25902062,"DGw00u?brK":348863633}
 // • {" R~Own":2147483645,"~":16,"i$#D":1037390287}
-// • {">YTN<Tt":1950414260,"I6":1505301756,"2;]'dH.i!":815067799,":kmC'":1948205418,"g|GTLPe-":2101264769}
+// • {__proto__:null,">YTN<Tt":1950414260,"I6":1505301756,"2;]'dH.i!":815067799,":kmC'":1948205418,"g|GTLPe-":2101264769}
 // • …
 
-fc.dictionary(fc.string(), fc.string(), { noNullPrototype: false });
-// Note: Allow generated values to be objects with null prototype
+fc.dictionary(fc.string(), fc.string(), { noNullPrototype: true });
+// Note: Do not generate any object with null prototype, always define them with Object prototype
 // Examples of generated values:
-// • {"|^!!\"+.\"%":"LB","]CQxQ":"0/uv","(JH(35e8":":"}
-// • {",>a[":"f&EYz","VR 9JX":"/|hRyU","Nm20AgHq":"b","A1Gb{5nXM":"?B","W;>__":"","G5":"IS"}
-// • {"3{59v":"Tf]hDL2","tj:,Kq9'2":"#o:WpR","":"[4h","e{":"j","!Ws@hZV_":"p1*44.<"}
-// • Object.assign(Object.create(null),{"/\\v":"1ki#1'|#","L":"2o","chGEb'qmi":"hXXU"})
-// • {"Q]8":"JQ=b<ea","@zz\\]oW(*":"uv","w":"\\","X*X":"/2{*wi=d","\"+;P\"tp3n":"LLZ-%}w"}
+// • {"~}P-T{^H`":"X~bd\"T","3Y,I8B\\*":"i;vLI(7R|","_":"o>|L~","RIUht":"x>?!**l:\\o","8oV?LkD@LD":"E%leQ*Q}4O"}
+// • {}
+// • {"zQD\"x!p":"V<GfsgU","q1RH0sG":"rXM>>","Eo3iTH4f":"","sU3":"FJ-"}
+// • {"iY7s.{?":"&i>","V`x?~qpp4C":"3+u$","I!z{na":",0D^g/G5"}
+// • {"Vo=AG":"0D%{Mv2c>w","_~dC3=@D":"f-","=":"vluzcJ"}
 // • …
 ```
 
@@ -84,7 +85,7 @@ It comes very useful when dealing with settings.
 
 - `recordModel` — _structure of the resulting instance_
 - `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted_
-- `noNullPrototype?` — default: `true` — _only generate records based on the Object-prototype, do not generate any record with null-prototype_
+- `noNullPrototype?` — default: `false` — _only generate records based on the Object-prototype, do not generate any record with null-prototype_
 
 **Usages:**
 
@@ -94,11 +95,11 @@ fc.record({
   age: fc.nat(99),
 });
 // Examples of generated values:
-// • {"id":"0000001b-000b-4000-8000-0000ab45c359","age":1}
+// • {__proto__:null,"id":"0000001b-000b-4000-8000-0000ab45c359","age":1}
 // • {"id":"9de2ca04-dc68-4c3f-87e4-e878407827d6","age":98}
 // • {"id":"12bb661f-b57a-4d8c-8407-719100000002","age":99}
 // • {"id":"ffffffe3-0013-4000-a7d5-d5734251f8d2","age":0}
-// • {"id":"00000007-000a-4000-8000-00170000000e","age":5}
+// • {__proto__:null,"id":"00000007-000a-4000-8000-00170000000e","age":5}
 // • …
 
 fc.record(
@@ -110,11 +111,11 @@ fc.record(
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
+// • {__proto__:null,"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
 // • {"id":"ffffffee-ffef-4fff-8000-0015f69788ee","age":21}
-// • {"age":34}
-// • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
-// • {"id":"00000006-0007-4000-8397-86ea00000004"}
+// • {__proto__:null,"age":34}
+// • {__proto__:null,"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
+// • {__proto__:null,"id":"00000006-0007-4000-8397-86ea00000004"}
 // • …
 
 fc.record(
@@ -129,10 +130,10 @@ fc.record(
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
 // • {"id":"46045be9-0009-4000-8000-0008ffffffed","name":"Karen","age":11,"birthday":new Date("2100-12-31T23:59:59.997Z")}
-// • {"id":"fffffffe-0015-4000-95a0-f8e9ffffffe7","name":"Karen","birthday":new Date("1970-01-01T00:00:00.018Z")}
+// • {__proto__:null,"id":"fffffffe-0015-4000-95a0-f8e9ffffffe7","name":"Karen","birthday":new Date("1970-01-01T00:00:00.018Z")}
 // • {"id":"e2b066ec-000b-4000-bfff-ffe7ccb1828d","name":"Karen","age":17}
 // • {"id":"43b7d8e5-d043-42ef-8000-001a00000005","age":16,"birthday":new Date("2004-10-16T22:01:09.416Z")}
-// • {"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.982Z")}
+// • {__proto__:null,"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.982Z")}
 // • …
 
 fc.record(
@@ -144,11 +145,28 @@ fc.record(
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
+// • {__proto__:null,"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
 // • {"id":"ffffffee-ffef-4fff-8000-0015f69788ee","age":21}
-// • {"age":34}
-// • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
-// • {"id":"00000006-0007-4000-8397-86ea00000004"}
+// • {__proto__:null,"age":34}
+// • {__proto__:null,"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
+// • {__proto__:null,"id":"00000006-0007-4000-8397-86ea00000004"}
+// • …
+
+fc.record(
+  {
+    id: fc.uuidV(4),
+    age: fc.nat(99),
+  },
+  { noNullPrototype: true },
+);
+// Note: If you only want instances coming with the prototype of Object, you can toggle the flag noNullPrototype.
+// The prototype of Object carry some extra functions with it: `generatedInstance.toString()` can be achieved on it, it "cannot" without a prototype if no toString was explicitely defined.
+// Examples of generated values:
+// • {"id":"b635cdb8-001b-4000-bd7a-8cbfffffffeb","age":79}
+// • {"id":"ffffffec-5522-4356-bc7e-9b14ffffffe5","age":69}
+// • {"id":"00000010-000a-4000-8a2a-245900000006","age":34}
+// • {"id":"56829181-0005-4000-bfff-fff1927a3512","age":27}
+// • {"id":"0000001b-1825-4e4d-8000-000c00000003","age":5}
 // • …
 ```
 
@@ -239,10 +257,10 @@ fc.object({
 });
 // Examples of generated values:
 // • {}
-// • {"!}~":{"9&*>":9494705766050126970059458547134765572232472890999989593960442554603045184030n,"36196779627093044303215052719752706352981292536045008449906200395046789418178n":true,"__:^bAM'":new Boolean(true),"u k%":1596443377842537,"new Number(-7049375787334476)":new Number(7.470701818813003e+220),"<":"PW#NZ]>__$","?,f+":30002898913267044193974323334546082038810289464813171141565449175457493043927n,"vj`:X\\a":new Date("+046542-01-18T09:38:40.580Z")},"N$":Uint8Array.from([194,106,58,62,115,212,177,55,196]),"x":{".I&N":false,"as":32401686191943328701373790805636534760611537151552234790087877880448748089108n,"x":new Map([[false,-7406733250570661812141992739047378682862933477383691956802999676905441418611n],[undefined,new Set(["Jwf !j7F4f",new Number(-5372309718894610),"-6724167660149972",-1.9948743032786002e-277])],[new Boolean(false),Object.assign(Object.create(null),{"%1g`":true,")QsA":new Date("+255151-05-07T04:49:18.548Z"),"=KL":undefined,"68gc/{U":undefined,"~(>G@7G":new String("i*IT@x16")})],["X|-lm`","o_KVZ"]]),"k% D-$y":undefined}}
-// • {"6":{"Y7MR0U]5q":new Set([new Boolean(false),5.140011582069296e-68,null,3.17393404674175e-299,new String("~b2+K,L"),34112792392140757735808259705664111791041643531782909535770237858684045298587n,3894376903563633,new Boolean(true),new Number(1.543040772123217e-149)])},"~OSo:":[{".+,":new Boolean(false),"'9uoS":"TzFF;2`o7y","is>Sh":"L4_5KAGVf","#}[(":null,"@+b4A{:":new Number(-9.605721374229465e-150),"6[C":6409654348829291,"UvM+6>Wp":new Number(6.944713497662369e-35),"9H`=yg+rA<":8711584371832775,"":false},[null,new String(":/:4=<&ty1"),new Boolean(true),undefined,new Number(6858384934457673),"\"H72Hg{WFqX\"",38]],"C":Object.assign(Object.create(null),{"NLm":"8023815702534817"}),"":Int8Array.from([-86,-28,74,-25,79,-86,51,78,13,-56]),"tkpIncs":"\"null\""," \"p;,\"":new Set([Object.assign(Object.create(null),{"g_uQ;":[new Number(2667295261136719),new Map([[-1.0669097125271472e+264,new Number(1.0618252726663204e+65)],[new Number(8654070824677589),null],[3159424422455611,new String(" ")],[new Number(1158494439593465),5700000001244861],[-29042696710262469346962418539718822780439690717113028500860986284724661139269n,new Boolean(false)],[new Number(-6848593877876571),new String("oTpL5~se,@")],[new Number(-5.919717713853319e+138),"N`#DfMj:m"],[new String("4.t.\\sy8."),new Boolean(true)]])],"=z":"new Boolean(false)","^N I?g:YW":null})])," %":new Map([[-2.6e-322,""],[-1.5e-323,new Boolean(false)],[8327751921859515,new Number(1.7976931348623135e+308)],[Uint8Array.from([251]),false],[new Boolean(true),new Boolean(true)],[4.802419269746338e+179,[1.7976931348623151e+308]],[new Number(-3192953574037226),-1.0406846166032024e-112]])}
-// • {"m":Object.assign(Object.create(null),{"GdKtb5":undefined,"":new Boolean(true),"D0!MW%a,U?":4176690198074207,"\\":5.564651422369171e+236,"^\\Gf>s":-1.1954513864585612e+266,"m};\"h":"5->","\"\\\"[JOf^7c\\\\\\\\\\\"\"":new String("#\\h-S|6"),"+*q2E,zx|":"Ve2P@nw","QU81JO":new String("|x}.YY")}),"8#3AOzyS(>":new String("8!G"),"":-2.1615999946830344e+292,"OroZ]J":{"0VDF\"t":new Date("-182412-10-23T22:25:42.883Z"),"4*Y0{^":new Map([["RXjxH7*+m}",new Number(-7159956608542526)],["($",false],["B':\\",false],["(",new Boolean(false)],["^j<k@b",2.685696651450261e-189],["jEW;\"[ ",true],["f_0V(2V",new Number(7823265476841677)],["new String(\"w7e)\")",null],["]=",undefined],["",new Number(-4.510648064964525e+40)]]),"?dO|m!RyV*":undefined,"SUzc7":true,"s":"-4480044991819688","!'":26965990478611254070362096579217614443873443446601768674179954355077271179487n,"\"}%vkZLo\"":undefined},"fs>y,f8:s":"\"\"","Oryb(&xIAc":new Number(-7241425187310123),"@jrh*F":[null,new String("1WA3-Q.dfh"),1.1499097510701588e+108,null,new Boolean(false),new Number(3.1953519717235633e+159),{"oAa)al":[new String("<;Y@89&")],"^":new Number(2.2068933757652113e-250),"":2505140018000971},-4987526382048941,new Boolean(true),new Boolean(false)],"wc":new Map([[new Set([undefined,-27145322609286573418141121110338331814276874986634281531336096736878349004657n]),new Number(5.594206087802421e+269)]])}
-// • {"K]+.i1?8":Object.assign(Object.create(null),{"":new String("gn5>okAG"),"Z":new Number(-2.8857611508988743e+276),"6{;":new Number(8248181823478789),"o\"u":"$@ ","}":"aMbtvs7C=/","T":"","de9@I1lMI":-2.8706407111120148e-269,"*":false,"mC":new Number(7.989425170759711e+195),"?GwV~":new Number(-457340909318629)}),"Kvs&8B2v":[{"^N":new Boolean(true),".:!A(qP":20528038146198208162650887930259608015981242728679994658945084604661485478002n,"HcddA":-5713290637700537700172208589046419850544142694893963903333467061831764879366n,"\"mTz $A\"":new Date("-080532-11-25T17:27:38.927Z"),"s.-2{PG]44":new Number(-6992011241268997),",":Int32Array.from([58354526,-349223904,-1863496096,-600565121,-439317198,1388408886,831319902,1571202305])}],"[I_3xDKk":new Set([Uint8Array.from([176,242,118,161,221,129,76,90]),new String("u-U"),null,"{Gy5k",new Date("-047592-12-06T02:45:52.378Z")]),",U'O/B4":new Map([[{"\"2":-51120958619614452207272888046562414099114012250112258213669353230651915934280n,"!Xj&HZ&z]":6825529460871025,"":undefined,"X":new Boolean(false),"zNN:~/?y<":-4521242514669030657275831943389670117392295466914227726932809412670219147594n,"RFxS5":new String("n~r6"),"H<S@)>":new Boolean(false),"FOJ.%u9D!":new String("_")},[new Number(-2.7383636506170423e+215),"S",-7.869980401122065e-149,new Boolean(true),new Boolean(false),new Date("8703-10-31T01:27:12.885Z")]],[new String(",Go \\\"rh<S"),"w~k"],[new Map([["%q9",new Date("-094517-01-27T16:39:05.074Z")],["XbdqsH_U>~",-5878537952870667228898116266453647481605446718907285116441390047947761144481n],[")djk",new Number(-9.378305640451206e-219)],["dH2",new String("^gaOh2/jFn")],["`D",false],["jW7",new Boolean(true)]]),new Number(3546419723802637)],[-3939708498905839,-7829211939997425],[true,new Boolean(true)],[[new Date("+189728-11-11T04:13:57.162Z"),-2866832410423399],-4535254984610130]]),"BN5*[3U4'*":new Set([[[1.0577165562424638e+130,true,false],2623502132149017],{"SA+C.;S":Uint8ClampedArray.from([181]),"":Uint32Array.from([1055394060,3754698713]),"=":new String("a2`")},Float64Array.from([])])}
+// • {"!}~":{"9&*>":9494705766050126970059458547134765572232472890999989593960442554603045184030n,"36196779627093044303215052719752706352981292536045008449906200395046789418178n":true,"__:^bAM'":new Boolean(true),"u k%":1596443377842537,"new Number(-7049375787334476)":new Number(7.470701818813003e+220),"<":"PW#NZ]>__$","?,f+":30002898913267044193974323334546082038810289464813171141565449175457493043927n,"vj`:X\\a":new Date("+046542-01-18T09:38:40.580Z")},"N$":Uint8Array.from([194,106,58,62,115,212,177,55,196]),"x":{".I&N":false,"as":32401686191943328701373790805636534760611537151552234790087877880448748089108n,"x":new Map([[false,-7406733250570661812141992739047378682862933477383691956802999676905441418611n],[undefined,new Set(["Jwf !j7F4f",new Number(-5372309718894610),"-6724167660149972",-1.9948743032786002e-277])],[new Boolean(false),{__proto__:null,"%1g`":true,")QsA":new Date("+255151-05-07T04:49:18.548Z"),"=KL":undefined,"68gc/{U":undefined,"~(>G@7G":new String("i*IT@x16")}],["X|-lm`","o_KVZ"]]),"k% D-$y":undefined}}
+// • {"6":{"Y7MR0U]5q":new Set([new Boolean(false),5.140011582069296e-68,null,3.17393404674175e-299,new String("~b2+K,L"),34112792392140757735808259705664111791041643531782909535770237858684045298587n,3894376903563633,new Boolean(true),new Number(1.543040772123217e-149)])},"~OSo:":[{".+,":new Boolean(false),"'9uoS":"TzFF;2`o7y","is>Sh":"L4_5KAGVf","#}[(":null,"@+b4A{:":new Number(-9.605721374229465e-150),"6[C":6409654348829291,"UvM+6>Wp":new Number(6.944713497662369e-35),"9H`=yg+rA<":8711584371832775,"":false},[null,new String(":/:4=<&ty1"),new Boolean(true),undefined,new Number(6858384934457673),"\"H72Hg{WFqX\"",38]],"C":{__proto__:null,"NLm":"8023815702534817"},"":Int8Array.from([-86,-28,74,-25,79,-86,51,78,13,-56]),"tkpIncs":"\"null\""," \"p;,\"":new Set([{__proto__:null,"g_uQ;":[new Number(2667295261136719),new Map([[-1.0669097125271472e+264,new Number(1.0618252726663204e+65)],[new Number(8654070824677589),null],[3159424422455611,new String(" ")],[new Number(1158494439593465),5700000001244861],[-29042696710262469346962418539718822780439690717113028500860986284724661139269n,new Boolean(false)],[new Number(-6848593877876571),new String("oTpL5~se,@")],[new Number(-5.919717713853319e+138),"N`#DfMj:m"],[new String("4.t.\\sy8."),new Boolean(true)]])],"=z":"new Boolean(false)","^N I?g:YW":null}])," %":new Map([[-2.6e-322,""],[-1.5e-323,new Boolean(false)],[8327751921859515,new Number(1.7976931348623135e+308)],[Uint8Array.from([251]),false],[new Boolean(true),new Boolean(true)],[4.802419269746338e+179,[1.7976931348623151e+308]],[new Number(-3192953574037226),-1.0406846166032024e-112]])}
+// • {"m":{__proto__:null,"GdKtb5":undefined,"":new Boolean(true),"D0!MW%a,U?":4176690198074207,"\\":5.564651422369171e+236,"^\\Gf>s":-1.1954513864585612e+266,"m};\"h":"5->","\"\\\"[JOf^7c\\\\\\\\\\\"\"":new String("#\\h-S|6"),"+*q2E,zx|":"Ve2P@nw","QU81JO":new String("|x}.YY")},"8#3AOzyS(>":new String("8!G"),"":-2.1615999946830344e+292,"OroZ]J":{"0VDF\"t":new Date("-182412-10-23T22:25:42.883Z"),"4*Y0{^":new Map([["RXjxH7*+m}",new Number(-7159956608542526)],["($",false],["B':\\",false],["(",new Boolean(false)],["^j<k@b",2.685696651450261e-189],["jEW;\"[ ",true],["f_0V(2V",new Number(7823265476841677)],["new String(\"w7e)\")",null],["]=",undefined],["",new Number(-4.510648064964525e+40)]]),"?dO|m!RyV*":undefined,"SUzc7":true,"s":"-4480044991819688","!'":26965990478611254070362096579217614443873443446601768674179954355077271179487n,"\"}%vkZLo\"":undefined},"fs>y,f8:s":"\"\"","Oryb(&xIAc":new Number(-7241425187310123),"@jrh*F":[null,new String("1WA3-Q.dfh"),1.1499097510701588e+108,null,new Boolean(false),new Number(3.1953519717235633e+159),{"oAa)al":[new String("<;Y@89&")],"^":new Number(2.2068933757652113e-250),"":2505140018000971},-4987526382048941,new Boolean(true),new Boolean(false)],"wc":new Map([[new Set([undefined,-27145322609286573418141121110338331814276874986634281531336096736878349004657n]),new Number(5.594206087802421e+269)]])}
+// • {"K]+.i1?8":{__proto__:null,"":new String("gn5>okAG"),"Z":new Number(-2.8857611508988743e+276),"6{;":new Number(8248181823478789),"o\"u":"$@ ","}":"aMbtvs7C=/","T":"","de9@I1lMI":-2.8706407111120148e-269,"*":false,"mC":new Number(7.989425170759711e+195),"?GwV~":new Number(-457340909318629)},"Kvs&8B2v":[{"^N":new Boolean(true),".:!A(qP":20528038146198208162650887930259608015981242728679994658945084604661485478002n,"HcddA":-5713290637700537700172208589046419850544142694893963903333467061831764879366n,"\"mTz $A\"":new Date("-080532-11-25T17:27:38.927Z"),"s.-2{PG]44":new Number(-6992011241268997),",":Int32Array.from([58354526,-349223904,-1863496096,-600565121,-439317198,1388408886,831319902,1571202305])}],"[I_3xDKk":new Set([Uint8Array.from([176,242,118,161,221,129,76,90]),new String("u-U"),null,"{Gy5k",new Date("-047592-12-06T02:45:52.378Z")]),",U'O/B4":new Map([[{"\"2":-51120958619614452207272888046562414099114012250112258213669353230651915934280n,"!Xj&HZ&z]":6825529460871025,"":undefined,"X":new Boolean(false),"zNN:~/?y<":-4521242514669030657275831943389670117392295466914227726932809412670219147594n,"RFxS5":new String("n~r6"),"H<S@)>":new Boolean(false),"FOJ.%u9D!":new String("_")},[new Number(-2.7383636506170423e+215),"S",-7.869980401122065e-149,new Boolean(true),new Boolean(false),new Date("8703-10-31T01:27:12.885Z")]],[new String(",Go \\\"rh<S"),"w~k"],[new Map([["%q9",new Date("-094517-01-27T16:39:05.074Z")],["XbdqsH_U>~",-5878537952870667228898116266453647481605446718907285116441390047947761144481n],[")djk",new Number(-9.378305640451206e-219)],["dH2",new String("^gaOh2/jFn")],["`D",false],["jW7",new Boolean(true)]]),new Number(3546419723802637)],[-3939708498905839,-7829211939997425],[true,new Boolean(true)],[[new Date("+189728-11-11T04:13:57.162Z"),-2866832410423399],-4535254984610130]]),"BN5*[3U4'*":new Set([[[1.0577165562424638e+130,true,false],2623502132149017],{"SA+C.;S":Uint8ClampedArray.from([181]),"":Uint32Array.from([1055394060,3754698713]),"=":new String("a2`")},Float64Array.from([])])}
 // • …
 
 fc.object({
@@ -342,9 +360,9 @@ fc.anything({
   withSparseArray: true,
 });
 // Examples of generated values:
-// • [,,Object.assign(Object.create(null),{"5":undefined,"(_?C7pt":"","^E7Gyxv:":null," HX-,!#Y!":-24433665101126154577412974031256147490766030447807202673488877375171078490361n,"null":null,"|eR":15583747497214338238720970206332670685084374564290428276551032661271014257363n,"e":undefined}),,,true,,,,,,5614966592543699,,,,,,,-1.5581783079152344e-75,,,,,,,,,,new Map([[new Number(9.566807827285406e-250),new String("<@TD")],[2491797154642901,-7904776594405027],[new String("xtPJh"),new Number(7780679868790257)],[-4171412755646164,new Number(8899365920362973)],[true,-4.882087257668938e+289],[-8663561749600801083696605312122003123296678442665780054937383503975435354810n,"T'm\"O"],["_MkX!",undefined],[null,new Number(1766504482939761)],[new Number(2.020531818014619e-245),new String(")")]])]
+// • [,,{__proto__:null,"5":undefined,"(_?C7pt":"","^E7Gyxv:":null," HX-,!#Y!":-24433665101126154577412974031256147490766030447807202673488877375171078490361n,"null":null,"|eR":15583747497214338238720970206332670685084374564290428276551032661271014257363n,"e":undefined},,,true,,,,,,5614966592543699,,,,,,,-1.5581783079152344e-75,,,,,,,,,,new Map([[new Number(9.566807827285406e-250),new String("<@TD")],[2491797154642901,-7904776594405027],[new String("xtPJh"),new Number(7780679868790257)],[-4171412755646164,new Number(8899365920362973)],[true,-4.882087257668938e+289],[-8663561749600801083696605312122003123296678442665780054937383503975435354810n,"T'm\"O"],["_MkX!",undefined],[null,new Number(1766504482939761)],[new Number(2.020531818014619e-245),new String(")")]])]
 // • [Int8Array.from([-3,0,-122,-126,-1,121,50,5]),"new Map([[new Map([[[,,,\"|`z!Y)\",true,,,,,,,,,,,,,,,,,,,,,\"a>ZU,@5j\"],\"1-\"],[-2423755478426117729073867301605745182670178056886961917272887542626910784966n,new Boolean(true)],[new String(\"z\"),new Number(1.7976931348623127e+308)]]),2.7226918179210657]])",new Set([])]
-// • Object.assign(Object.create(null),{"f_SrN@":[false,,,,new Number(-634812710160603),3.0663015536568686e+105,,,,,"hTp]s?odUE",new Number(5881062065201437),new Boolean(false),"N\\26@kd<C@",,,,,,undefined,new String("Q*"),,,,,,,true],"DuO6X":-17079045849399134868919326812879434403723034428735708929180685890576412414276n})
+// • {__proto__:null,"f_SrN@":[false,,,,new Number(-634812710160603),3.0663015536568686e+105,,,,,"hTp]s?odUE",new Number(5881062065201437),new Boolean(false),"N\\26@kd<C@",,,,,,undefined,new String("Q*"),,,,,,,true],"DuO6X":-17079045849399134868919326812879434403723034428735708929180685890576412414276n}
 // • {"":"new Map([[new Number(-44),new Number(45)],[new Set([\"a3_!+:e@B\",new Boolean(true),new Number(-4.504603124150223e-138),null,new String(\"n6)issv~Y\"),\"new Date(\\\"+103978-12-31T17:20:44.968Z\\\")\",7261094492388469,new Number(6768782654138533),1.928782552745785e-102]),[,,[,,,true,,,,,,,,,,,,new Map([])],,,,,,,,]]])"}
 // • "new Set([])"
 // • …

@@ -16,7 +16,6 @@ import { uint32Array } from '../../uint32Array';
 import { uint8Array } from '../../uint8Array';
 import { uint8ClampedArray } from '../../uint8ClampedArray';
 import { sparseArray } from '../../sparseArray';
-import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from '../mappers/KeyValuePairsToObject';
 import type { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
 import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
 import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
@@ -25,8 +24,7 @@ import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 import { uniqueArray } from '../../uniqueArray';
 import type { DepthIdentifier } from '../helpers/DepthContext';
 import { createDepthIdentifier } from '../helpers/DepthContext';
-import { constant } from '../../constant';
-import { boolean } from '../../boolean';
+import { dictionary } from '../../dictionary';
 
 /** @internal */
 function mapOf<T, U>(
@@ -54,15 +52,12 @@ function dictOf<U>(
   depthIdentifier: DepthIdentifier,
   withNullPrototype: boolean,
 ) {
-  return tuple(
-    uniqueArray(tuple(ka, va), {
-      maxLength: maxKeys,
-      size,
-      selector: (t) => t[0],
-      depthIdentifier,
-    }),
-    withNullPrototype ? boolean() : constant(false),
-  ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);
+  return dictionary(ka, va, {
+    maxKeys,
+    noNullPrototype: !withNullPrototype,
+    size,
+    depthIdentifier,
+  });
 }
 
 /** @internal */
