@@ -177,6 +177,60 @@ describe('SchedulerImplem', () => {
       expect(promiseResolved).toBe(true);
       expect(waitOneResolved).toBe(true);
     });
+
+    it('should schedule for next waitOne anything immediately scheduled', async () => {
+      // Arrange
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(() => s.schedule(Promise.resolve(2)));
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(1); // The promise returning 2 should be queued into the scheduler
+    });
+
+    it('should schedule for next waitOne anything scheduled even after an intermadiate await', async () => {
+      // Arrange
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        s.schedule(Promise.resolve(2));
+      });
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(1); // The promise returning 2 should be queued into the scheduler
+    });
+
+    it('should not schedule for next waitOne something scheduled after two intermediate await', async () => {
+      // Arrange
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        await 'another something already resolved';
+        s.schedule(Promise.resolve(2));
+      });
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
+      await 'just awaiting something';
+      expect(s.count()).toBe(1); // ...but it will after a simple await
+    });
   });
 
   describe('waitAll', () => {
