@@ -439,10 +439,9 @@ describe('SchedulerImplem', () => {
 
       // Act
       const s = new SchedulerImplem((f) => f(), taskSelector);
-      const sp1 = s.schedule(p1.p);
+      const awaitedTask = s.schedule(p1.p);
       s.schedule(p2.p);
       s.schedule(p3.p);
-      const awaitedTask = sp1.then(() => Symbol());
 
       // Assert
       let waitForEnded = false;
