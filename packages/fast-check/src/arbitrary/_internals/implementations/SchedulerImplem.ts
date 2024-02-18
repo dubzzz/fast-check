@@ -158,24 +158,24 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let resolveSequenceTask = () => {};
     const sequenceTask = new Promise<void>((resolve) => (resolveSequenceTask = resolve));
 
-    const onDone = () => {
-      status.done = true;
-      resolveSequenceTask();
-    };
-    const onFaulty = () => {
+    const onFaultyItemNoThrow = () => {
       status.faulty = true;
       resolveSequenceTask();
     };
-    const onFaultyNoop = () => {
-      /* Discarding UnhandledPromiseRejectionWarning */
-      /* No need to call resolveSequenceTask as it should already have been triggered */
+    const onFaultyItem = (error: unknown) => {
+      onFaultyItemNoThrow(); // Faulty must resolve sequence as soon as possible without any extra then
+      throw error; // Faulty must stay faulty to avoid calling next items
+    };
+    const onDone = () => {
+      status.done = true;
+      resolveSequenceTask();
     };
 
     let previouslyScheduled = dummyResolvedPromise;
     for (const item of sequenceBuilders) {
       const [builder, label, metadata] =
         typeof item === 'function' ? [item, item.name, undefined] : [item.builder, item.label, item.metadata];
-      const onNext = () => {
+      const onNextItem = () => {
         // We schedule a successful promise that will trigger builder directly when triggered
         const scheduled = this.scheduleInternal(
           'sequence',
@@ -185,12 +185,16 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           customAct || defaultSchedulerAct,
           () => builder(),
         );
-        scheduled.catch(onFaulty);
         return scheduled;
       };
-      previouslyScheduled = previouslyScheduled.then(onNext);
+      // We will run current item if and only if the one preceeding it succeeds
+      // Otherwise, we mark the run as "failed" and ignore any subsequent item (including this one)
+      previouslyScheduled = previouslyScheduled.then(onNextItem, onFaultyItem);
     }
-    previouslyScheduled.then(onDone, onFaultyNoop);
+    // Once last item is done, the full sequence can be considered as successful
+    // If it failed (or any preceeding one failed), then the sequence should be marked as failed (already marked for others)
+    // We always handle Promise rejection of previouslyScheduled internally, in other words no error will bubble outside
+    previouslyScheduled.then(onDone, onFaultyItemNoThrow);
 
     // TODO Prefer getter instead of sharing the variable itself
     //      Would need to stop supporting <es5
