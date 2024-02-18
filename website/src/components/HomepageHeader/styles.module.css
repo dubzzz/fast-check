@@ -20,6 +20,10 @@
   }
 }
 
+.subTitle {
+  margin-bottom: 1.25rem;
+}
+
 .subTitle .taglineBadges {
   display: flex;
   flex-direction: row;
