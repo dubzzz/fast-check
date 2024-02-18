@@ -163,6 +163,10 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       status.faulty = true;
       resolveSequenceTask();
     };
+    const onFaultyNoop = () => {
+      /* Discarding UnhandledPromiseRejectionWarning */
+      /* No need to call resolveSequenceTask as it should already have been triggered */
+    };
 
     let previouslyScheduled = dummyResolvedPromise;
     for (const item of sequenceBuilders) {
@@ -178,11 +182,12 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           customAct || defaultSchedulerAct,
           () => builder(),
         );
+        scheduled.catch(onFaulty);
         return scheduled;
       };
-      previouslyScheduled = previouslyScheduled.then(onNext, onFaulty);
+      previouslyScheduled = previouslyScheduled.then(onNext);
     }
-    previouslyScheduled.then(onDone, onFaulty);
+    previouslyScheduled.then(onDone, onFaultyNoop);
 
     // TODO Prefer getter instead of sharing the variable itself
     //      Would need to stop supporting <es5
