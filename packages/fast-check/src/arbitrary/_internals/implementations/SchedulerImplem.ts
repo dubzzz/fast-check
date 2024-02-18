@@ -153,7 +153,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     // Placeholder resolver, immediately replaced by the one retrieved in `new Promise`
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     let resolveSequenceTask = () => {};
-    const sequenceTask = new Promise<void>((resolve) => (resolveSequenceTask = resolve));
+    const sequenceTask = new Promise<{ done: boolean; faulty: boolean }>((resolve) => {
+      resolveSequenceTask = () => resolve({ done: status.done, faulty: status.faulty });
+    });
 
     const onFaultyItemNoThrow = () => {
       status.faulty = true;
@@ -195,11 +197,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     //   get done() { return status.done },
     //   get faulty() { return status.faulty }
     // };
-    return Object.assign(status, {
-      task: Promise.resolve(sequenceTask).then(() => {
-        return { done: status.done, faulty: status.faulty };
-      }),
-    });
+    return Object.assign(status, { task: sequenceTask });
   }
 
   count(): number {
