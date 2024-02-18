@@ -165,9 +165,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       status.faulty = true;
       resolveSequenceTask();
     };
-    const onFaultyNoop = () => {
-      
-    };
+    const onFaultyNoop = () => {};
 
     let previouslyScheduled = dummyResolvedPromise;
     for (const item of sequenceBuilders) {
@@ -183,7 +181,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           customAct || defaultSchedulerAct,
           () => builder(),
         );
-        scheduled.catch(onFaulty)
+        scheduled.catch(onFaulty);
         return scheduled;
       };
       previouslyScheduled = previouslyScheduled.then(onNext);
