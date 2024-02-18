@@ -1419,7 +1419,7 @@ describe('SchedulerImplem', () => {
         return a;
       });
       for (const ins of calls) {
-        scheduledFun(...ins);
+        scheduledFun(...ins).catch(() => {});
       }
 
       // Assert
