@@ -31,7 +31,7 @@ const allQueueSnippets = {
   },
   v1: {
     code: snippets.queueCodeV1,
-    greenTests: ['unit', 'part1', 'part1WaitAll'],
+    greenTests: ['unit', 'part1'],
   },
   v2: {
     code: snippets.queueCodeV2,
@@ -43,7 +43,7 @@ const allQueueSnippets = {
   },
   v4: {
     code: snippets.queueCodeV4,
-    greenTests: ['unit', 'part1', 'part1WaitAll', 'part2', 'part3', 'part3NoBatch', 'part4', 'extendedWaitAll'],
+    greenTests: ['unit', 'part1', 'part1WaitAll', 'part2', 'part3', 'part3NoBatch', 'part4'],
   },
   v5: {
     code: snippets.queueCodeV5,
