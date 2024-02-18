@@ -316,7 +316,7 @@ describe('SchedulerImplem', () => {
       expect(s.report()).toEqual([
         expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
       ]);
-      expect(s.count()).toBe(1) // just confirming "count" is aligned with "report"
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
       expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
       await s.waitAll();
       expect(s.report()).toEqual([
@@ -348,7 +348,7 @@ describe('SchedulerImplem', () => {
         expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed...
         expect.objectContaining({ status: 'pending' }), // ...and the one returning 2 has already been scehduled but not executed yet
       ]);
-      expect(s.count()).toBe(1) // just confirming "count" is aligned with "report"
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
       expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
       await s.waitAll();
       expect(s.report()).toEqual([
@@ -386,7 +386,7 @@ describe('SchedulerImplem', () => {
         expect.objectContaining({ status: 'resolved', outputValue: '1' }),
         expect.objectContaining({ status: 'pending' }), // ...but it will after a simple await
       ]);
-      expect(s.count()).toBe(1) // just confirming "count" is aligned with "report"
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
       expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
       await s.waitAll();
       expect(s.report()).toEqual([
