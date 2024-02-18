@@ -1098,6 +1098,9 @@ describe('SchedulerImplem', () => {
             ]).toContainEqual(order);
 
             expect(resolved).toEqual({ ...everythingResolved, 5: false });
+            expect(s.count()).toBe(0); // Well, Promise.all just received the last completion it was waiting for...
+            await 'just awaiting to get the proper count'; // It needs one extra await to move forward and schedule the item 5
+            expect(s.count()).not.toBe(0);
             await s.waitAll(); // extra waitAll should make it pass
           }
           expect(status.done).toBe(true);
