@@ -1812,6 +1812,49 @@ describe('SchedulerImplem', () => {
       expect(report[0].status).toBe('pending');
       expect(report[0].metadata).toBe(expectedMetadataFirst);
     });
+
+    it('should execute a whole scheduled sequence made of async long steps using a single waitAll', async () => {
+      // Arrange
+      const b1 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b2 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b3 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b4 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.scheduleSequence([
+        { label: 'exec #1', builder: b1 },
+        { label: 'exec #2', builder: b2 },
+        { label: 'exec #3', builder: b3 },
+        { label: 'exec #4', builder: b4 },
+      ]);
+
+      // Assert
+      await s.waitAll();
+      expect(s.report()).toHaveLength(4);
+      expect(b1).toHaveBeenCalled();
+      expect(b2).toHaveBeenCalled();
+      expect(b3).toHaveBeenCalled();
+      expect(b4).toHaveBeenCalled();
+    });
   });
 });
 
