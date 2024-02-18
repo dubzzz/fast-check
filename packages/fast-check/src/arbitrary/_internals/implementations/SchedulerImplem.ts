@@ -165,7 +165,10 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       status.faulty = true;
       resolveSequenceTask();
     };
-    const onFaultyNoop = () => {};
+    const onFaultyNoop = () => {
+      /* Discarding UnhandledPromiseRejectionWarning */
+      /* No need to call resolveSequenceTask as it should already have been triggered */
+    };
 
     let previouslyScheduled = dummyResolvedPromise;
     for (const item of sequenceBuilders) {
