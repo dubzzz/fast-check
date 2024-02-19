@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { makeLazy } from '../../../src/stream/LazyIterableIterator';
 
 describe('makeLazy', () => {
