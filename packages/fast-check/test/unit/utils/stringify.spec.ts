@@ -1,4 +1,5 @@
 import * as fc from 'fast-check';
+import { jest } from '@jest/globals';
 
 // Importing 'buffer' imports the real implementation from node
 // Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side
