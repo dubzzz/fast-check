@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';

@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { ScheduledCommand } from '../../../../../src/check/model/commands/ScheduledCommand';
 import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
 import type { Scheduler, SchedulerSequenceItem } from '../../../../../src/arbitrary/scheduler';

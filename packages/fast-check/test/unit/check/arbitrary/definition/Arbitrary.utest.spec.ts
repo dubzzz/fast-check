@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../../src/stream/Stream';

@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
