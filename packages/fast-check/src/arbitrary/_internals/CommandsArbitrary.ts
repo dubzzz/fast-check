@@ -1,10 +1,10 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { ICommand } from '../../check/model/command/ICommand';
+import type { ICommand } from '../../check/model/command/ICommand';
 import { CommandsIterable } from '../../check/model/commands/CommandsIterable';
 import { CommandWrapper } from '../../check/model/commands/CommandWrapper';
 import { ReplayPath } from '../../check/model/ReplayPath';
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Stream } from '../../stream/Stream';
 import { oneof } from '../oneof';

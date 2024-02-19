@@ -1,9 +1,9 @@
-import { Value } from '../arbitrary/definition/Value';
+import type { Value } from '../arbitrary/definition/Value';
 import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { PropertyFailure } from '../property/IRawProperty';
-import { VerbosityLevel } from './configuration/VerbosityLevel';
+import type { PropertyFailure } from '../property/IRawProperty';
+import type { VerbosityLevel } from './configuration/VerbosityLevel';
 import { RunExecution } from './reporter/RunExecution';
-import { SourceValuesIterator } from './SourceValuesIterator';
+import type { SourceValuesIterator } from './SourceValuesIterator';
 
 /**
  * Responsible for the iteration logic

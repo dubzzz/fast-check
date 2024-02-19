@@ -1,8 +1,9 @@
 import { constant } from './constant';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { FrequencyArbitrary, _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
-import { DepthIdentifier } from './_internals/helpers/DepthContext';
-import { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
+import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
 import { safeHasOwnProperty } from '../utils/globals';
 
 /**

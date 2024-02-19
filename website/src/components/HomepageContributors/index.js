@@ -11,6 +11,7 @@ export default function HomepageContributors(props) {
       <div className={styles.avatarSection}>
         {allContributors.contributors.map((contributor) => (
           <a
+            key={contributor.login}
             className={styles.avatar}
             href={contributor.profile}
             title={`${contributor.name} (${contributor.login})`}

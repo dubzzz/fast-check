@@ -1,5 +1,5 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeHasOwnProperty } from '../utils/globals';
 
 const safeObjectCreate = Object.create;

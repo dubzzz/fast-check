@@ -1,23 +1,23 @@
 {
   "name": "@fast-check/expect-type",
   "description": "Make sure your types are the ones you expect (similar to tsd)",
-  "version": "0.0.5",
-  "type": "commonjs",
+  "version": "0.2.0",
+  "type": "module",
   "main": "src/main.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "require": {
-        "types": "./src/main.d.ts",
-        "default": "./src/main.js"
+        "types": "./src/cjs/main.d.ts",
+        "default": "./src/cjs/main.js"
       },
       "import": {
-        "types": "./src/esm/main.d.ts",
-        "default": "./src/esm/main.js"
+        "types": "./src/main.d.ts",
+        "default": "./src/main.js"
       }
     }
   },
-  "module": "src/esm/main.js",
+  "module": "src/main.js",
   "types": "src/main.d.ts",
   "files": [
     "src"
@@ -25,7 +25,7 @@
   "scripts": {
     "build": "yarn build:publish-types",
     "build-ci": "yarn build",
-    "build:publish-types": "cp src/*.d.ts src/esm/",
+    "build:publish-types": "cp src/*.d.ts src/cjs/",
     "test": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
   "devDependencies": {
-    "typescript": "~5.2.2"
+    "typescript": "~5.3.3"
   },
   "keywords": [
     "type",

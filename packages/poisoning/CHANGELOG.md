@@ -1,3 +1,33 @@
+# 0.2.0
+
+_Declare root of the package as ESM_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.1.0...poisoning%2Fv0.2.0)]
+
+## Breaking changes
+
+- ([PR#4584](https://github.com/dubzzz/fast-check/pull/4584)) CI: Move build chain to ESM
+
+## Fixes
+
+- ([PR#4602](https://github.com/dubzzz/fast-check/pull/4602)) CI: Migrate jest to esm
+
+---
+
+# 0.1.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.0.8...poisoning%2Fv0.1.0)]
+
+## Features
+
+- ([PR#4421](https://github.com/dubzzz/fast-check/pull/4421)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4286](https://github.com/dubzzz/fast-check/pull/4286)) Test: Confirm basic typings work well
+
+---
+
 # 0.0.8
 
 _Better support for types on ESM targets_

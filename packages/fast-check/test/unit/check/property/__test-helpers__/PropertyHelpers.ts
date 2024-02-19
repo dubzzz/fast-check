@@ -1,5 +1,5 @@
-import { MaybeMocked } from '../../../__test-helpers__/Mocked';
-import { IRawProperty } from '../../../../../src/check/property/IRawProperty';
+import type { MaybeMocked } from '../../../__test-helpers__/Mocked';
+import type { IRawProperty } from '../../../../../src/check/property/IRawProperty';
 
 /**
  * Generate a fake instance inheriting from IRawProperty with all methods being mocked

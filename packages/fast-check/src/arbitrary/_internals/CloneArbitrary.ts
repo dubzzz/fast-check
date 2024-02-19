@@ -1,7 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { cloneMethod } from '../../check/symbols';
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { safeMap, safePush } from '../../utils/globals';
 

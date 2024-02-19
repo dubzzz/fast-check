@@ -210,7 +210,6 @@ function dropMainGlobals(): void {
     BigInt64Array,
     DataView,
     TextEncoder,
-    TextDecoder,
     AbortController,
     AbortSignal,
     EventTarget,
@@ -262,6 +261,7 @@ function dropMainGlobals(): void {
     'Headers', // Unknown in CI against macOS
     'Request', // Unknown in CI against macOS
     'Response', // Unknown in CI against macOS
+    'TextDecoder', // Leveraged by @jridgewell/sourcemap-codec which is used by babel
   ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>

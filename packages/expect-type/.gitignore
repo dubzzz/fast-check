@@ -1,1 +1,1 @@
-src/esm/**/*.d.ts
+src/cjs/**/*.d.ts

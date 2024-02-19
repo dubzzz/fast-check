@@ -2,7 +2,7 @@ import { hash } from '../utils/hash';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../check/symbols';
 import { array } from './array';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { integer } from './integer';
 import { tuple } from './tuple';
 import { escapeForMultilineComments } from './_internals/helpers/TextEscaper';

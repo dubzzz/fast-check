@@ -1,8 +1,0 @@
-declined:
-  - "@fast-check/expect-type"
-
-undecided:
-  - "@fast-check/jest"
-  - "@fast-check/packaged"
-  - "@fast-check/poisoning"
-  - "@fast-check/worker"

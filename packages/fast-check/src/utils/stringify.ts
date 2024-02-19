@@ -220,8 +220,8 @@ export function stringifyInternal<Ts>(
           k === '__proto__'
             ? '["__proto__"]'
             : typeof k === 'symbol'
-            ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
-            : safeJsonStringify(k)
+              ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
+              : safeJsonStringify(k)
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [

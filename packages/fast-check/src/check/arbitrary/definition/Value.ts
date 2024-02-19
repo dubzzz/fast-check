@@ -1,4 +1,5 @@
-import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../symbols';
+import type { WithCloneMethod } from '../../symbols';
+import { cloneMethod, hasCloneMethod } from '../../symbols';
 
 const safeObjectDefineProperty = Object.defineProperty;
 

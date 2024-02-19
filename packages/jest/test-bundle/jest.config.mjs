@@ -1,1 +1,4 @@
-export default { testMatch: ['<rootDir>/*.spec.mjs'] };
+export default {
+  testMatch: ['<rootDir>/*.spec.mjs'],
+  testTimeout: 20_000,
+};

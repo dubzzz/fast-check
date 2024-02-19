@@ -1,3 +1,42 @@
+# 0.2.0
+
+_Declare root of the package as ESM_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.1.1...worker%2Fv0.2.0)]
+
+## Breaking changes
+
+- ([PR#4585](https://github.com/dubzzz/fast-check/pull/4585)) CI: Move build chain to ESM
+
+## Fixes
+
+- ([PR#4604](https://github.com/dubzzz/fast-check/pull/4604)) CI: Migrate jest to esm
+
+---
+
+# 0.1.1
+
+_Implement missing methods for future v4 of fast-check_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.1.0...worker%2Fv0.1.1)]
+
+## Fixes
+
+- ([PR#4467](https://github.com/dubzzz/fast-check/pull/4467)) Refactor: Prepare worker's internals to Property type of fast-check 4
+
+# 0.1.0
+
+_Lighter import with less internals to load_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.0.9...worker%2Fv0.1.0)]
+
+## Features
+
+- ([PR#4420](https://github.com/dubzzz/fast-check/pull/4420)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4287](https://github.com/dubzzz/fast-check/pull/4287)) Test: Confirm basic typings work well
+
+---
+
 # 0.0.9
 
 _Better support for types on ESM targets_

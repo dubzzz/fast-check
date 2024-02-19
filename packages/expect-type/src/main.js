@@ -1,10 +1,8 @@
-/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-empty-function */
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.expectType = function expectType() {
+export function expectType() {
   return function () {};
-};
-exports.expectTypeAssignable = function expectTypeAssignable() {
+}
+export function expectTypeAssignable() {
   return function () {};
-};
+}

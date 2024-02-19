@@ -1,8 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { Scheduler } from './_internals/interfaces/Scheduler';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Scheduler } from './_internals/interfaces/Scheduler';
 import { buildSchedulerFor } from './_internals/helpers/BuildSchedulerFor';
 import { SchedulerArbitrary } from './_internals/SchedulerArbitrary';
-export { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from './_internals/interfaces/Scheduler';
+export type { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from './_internals/interfaces/Scheduler';
 
 /**
  * Constraints to be applied on {@link scheduler}

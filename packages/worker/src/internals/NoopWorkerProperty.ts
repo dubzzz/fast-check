@@ -1,11 +1,5 @@
-import {
-  type IAsyncPropertyWithHooks,
-  type Value,
-  type Stream,
-  type PreconditionFailure,
-  type PropertyFailure,
-} from 'fast-check';
-import { type WorkerProperty } from './SharedTypes.js';
+import type { IAsyncPropertyWithHooks, Value, Stream, PreconditionFailure, PropertyFailure } from 'fast-check';
+import type { WorkerProperty } from './SharedTypes.js';
 
 /**
  * NoopWorkerProperty is a placeholder instance of property returned
@@ -29,6 +23,12 @@ export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
     throw new Error('Method not implemented.');
   }
   run(): Promise<PreconditionFailure | PropertyFailure | null> {
+    throw new Error('Method not implemented.');
+  }
+  runBeforeEach(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  runAfterEach(): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }

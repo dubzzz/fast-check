@@ -1,5 +1,5 @@
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
-import { IRawProperty } from '../../../../src/check/property/IRawProperty';
+import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../src/stream/Stream';
 

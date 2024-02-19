@@ -1,11 +1,16 @@
 import * as path from 'path';
+import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
-const execFile = promisify(_execFile);
+import { jest } from '@jest/globals';
 
-import _fc from 'fast-check';
-import { test as _test, it as _it } from '@fast-check/vitest';
+const execFile = promisify(_execFile);
+// @ts-expect-error --module must be higher
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+import type _fc from 'fast-check';
+import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 

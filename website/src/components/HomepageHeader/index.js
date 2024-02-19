@@ -14,7 +14,7 @@ export default function HomepageHeader() {
         <h1 className={clsx('hero__title', styles.mainTitle)}>
           <img src={logoDataUri} alt={siteConfig.title} className={styles.mainTitleLogo} width="570px" />
         </h1>
-        <p className={clsx('hero__subtitle', styles.subTitle)}>
+        <div className={clsx('hero__subtitle', styles.subTitle)}>
           {siteConfig.tagline}
           <div className={styles.taglineBadges}>
             <a href="https://www.npmjs.com/package/fast-check" target="_blank" rel="noopener">
@@ -31,7 +31,7 @@ export default function HomepageHeader() {
               />
             </a>
           </div>
-        </p>
+        </div>
         <div>
           <div className={styles.quickNavigationButtons}>
             <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/">

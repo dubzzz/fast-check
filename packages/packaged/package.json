@@ -1,8 +1,8 @@
 {
   "name": "@fast-check/packaged",
   "description": "Utility package removing any files that will not be part of the final bundle",
-  "version": "0.1.0",
-  "type": "commonjs",
+  "version": "0.3.0",
+  "type": "module",
   "main": "lib/packaged.js",
   "types": "lib/packaged.d.ts",
   "bin": "./bin/packaged.js",
@@ -12,11 +12,11 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "yarn build:publish-cjs && yarn build:publish-types",
+    "build": "yarn build:publish-esm && yarn build:publish-types",
     "build-ci": "yarn build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json",
-    "test": "jest --verbose",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "test": "yarn node --experimental-vm-modules $(yarn bin jest) --verbose",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -35,16 +35,17 @@
   },
   "dependencies": {
     "@npmcli/arborist": "^7.0.0",
-    "pacote": "^17.0.0",
-    "tar": "^6.1.11"
+    "npm-packlist": "^8.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.5",
-    "@types/pacote": "^11.1.6",
-    "@types/tar": "^6.1.6",
+    "@babel/core": "^7.23.9",
+    "@babel/preset-typescript": "^7.23.3",
+    "@types/jest": "^29.5.12",
+    "@types/npm-packlist": "^7.0.3",
+    "@types/npmcli__arborist": "^5.6.5",
+    "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "~5.2.2"
+    "typescript": "~5.3.3"
   },
   "keywords": [],
   "funding": [

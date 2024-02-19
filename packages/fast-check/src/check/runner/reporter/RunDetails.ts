@@ -1,6 +1,6 @@
-import { VerbosityLevel } from '../configuration/VerbosityLevel';
-import { ExecutionTree } from './ExecutionTree';
-import { Parameters } from '../configuration/Parameters';
+import type { VerbosityLevel } from '../configuration/VerbosityLevel';
+import type { ExecutionTree } from './ExecutionTree';
+import type { Parameters } from '../configuration/Parameters';
 
 /**
  * Post-run details produced by {@link check}

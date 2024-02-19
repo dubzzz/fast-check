@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/jest",
   "description": "Property based testing for Jest based on fast-check",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "type": "commonjs",
   "main": "lib/jest-fast-check.js",
   "exports": {
@@ -59,7 +59,7 @@
     "fast-check": "^3.0.0"
   },
   "peerDependencies": {
-    "@fast-check/worker": "~0.0.7",
+    "@fast-check/worker": "~0.0.7 || ~0.1.0",
     "@jest/expect": ">=28.0.0",
     "@jest/globals": ">=25.5.2"
   },
@@ -72,15 +72,19 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
+    "@babel/preset-typescript": "^7.23.3",
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
-    "@types/node": "^18.18.5",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.19",
+    "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jest-jasmine2": "^29.7.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "~5.2.2"
+    "typescript": "~5.3.3"
   },
   "keywords": [
     "jest",

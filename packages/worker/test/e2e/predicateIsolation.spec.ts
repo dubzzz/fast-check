@@ -1,5 +1,5 @@
 import { isMainThread } from 'node:worker_threads';
-import { type Parameters } from 'fast-check';
+import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -58,7 +58,7 @@ if (isMainThread) {
 
         // Act / Assert
         try {
-          await assert(predicateIsolation.propertyLevel, options);
+          await assert(predicateIsolation.propertyLevel2, options);
           expect('It should have thrown').toBe(null);
         } catch (err) {
           const summary = (err as Error).message.split('Execution summary:')[1];

@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
 
 import { arrayInt64 } from '../../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
-import { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import type { ArrayInt64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';

@@ -1,4 +1,5 @@
-import { adapter, AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
+import type { AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
+import { adapter } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
@@ -224,12 +225,12 @@ describe('AdapterArbitrary', () => {
                 Object.is(v, vA)
                   ? adaptedA
                   : Object.is(v, vAA)
-                  ? adaptedAA
-                  : Object.is(v, vAB)
-                  ? adaptedAB
-                  : Object.is(v, vAC)
-                  ? adaptedAC
-                  : adaptedABC,
+                    ? adaptedAA
+                    : Object.is(v, vAB)
+                      ? adaptedAB
+                      : Object.is(v, vAC)
+                        ? adaptedAC
+                        : adaptedABC,
               );
 
             // Act

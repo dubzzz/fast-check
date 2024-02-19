@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty';
 import { pre } from '../../../../src/check/precondition/Pre';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
@@ -9,7 +9,7 @@ import * as stubRng from '../../stubs/generators';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
 import { Stream } from '../../../../src/stream/Stream';
-import { PropertyFailure } from '../../../../src/check/property/IRawProperty';
+import type { PropertyFailure } from '../../../../src/check/property/IRawProperty';
 import fc from 'fast-check';
 
 describe.each([[true], [false]])('AsyncProperty (dontRunHook: %p)', (dontRunHook) => {

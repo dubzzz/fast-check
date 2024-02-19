@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { assert, propertyFor, PropertyForOptions } from '@fast-check/worker';
+import type { PropertyForOptions } from '@fast-check/worker';
+import { assert, propertyFor } from '@fast-check/worker';
 import { jestExpect } from '@jest/expect';
 import { buildTest } from './internals/TestBuilder.js';
 

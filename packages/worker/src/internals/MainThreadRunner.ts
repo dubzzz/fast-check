@@ -1,8 +1,8 @@
 import fc from 'fast-check';
-import { type PropertyArbitraries, type WorkerProperty } from './SharedTypes.js';
+import type { PropertyArbitraries, WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
-import { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
+import type { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 
@@ -25,8 +25,8 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
     isolationLevel === 'predicate'
       ? new OneTimePool(workerFileUrl)
       : isolationLevel === 'property'
-      ? new BasicPool(workerFileUrl)
-      : new GlobalPool(workerFileUrl);
+        ? new BasicPool(workerFileUrl)
+        : new GlobalPool(workerFileUrl);
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;

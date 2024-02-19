@@ -4,8 +4,8 @@ import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 const execFile = promisify(_execFile);
 
-import _fc from 'fast-check';
-import { test as _test, it as _it } from '@fast-check/jest';
+import type _fc from 'fast-check';
+import type { test as _test, it as _it } from '@fast-check/jest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 
@@ -612,8 +612,8 @@ async function writeToFile(
   const importFromFastCheckJest = useLegacySignatures
     ? `const {${runner}Prop: runnerProp} = require('@fast-check/jest');\n`
     : useWorkers
-    ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
-    : `const {${runner}: runner} = require('@fast-check/jest');\n`;
+      ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
+      : `const {${runner}: runner} = require('@fast-check/jest');\n`;
   const specContent =
     "const fc = require('fast-check');\n" +
     importFromFastCheckJest +
@@ -633,11 +633,7 @@ async function writeToFile(
       jestConfigPath,
       `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
         options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
-      }${
-        options.testRunner !== undefined
-          ? `testRunner: '<rootDir>/../../../../node_modules/jest-jasmine2/build/index.js',`
-          : ''
-      } };`,
+      }${options.testRunner !== undefined ? `testRunner: 'jest-jasmine2',` : ''} };`,
     ),
   ]);
 

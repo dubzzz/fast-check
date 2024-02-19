@@ -1,5 +1,5 @@
 import { safePush } from '../../../utils/globals';
-import { CustomSet } from '../interfaces/CustomSet';
+import type { CustomSet } from '../interfaces/CustomSet';
 
 /**
  * CustomSet based on a fully custom equality function

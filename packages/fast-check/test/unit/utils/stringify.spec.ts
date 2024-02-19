@@ -2,7 +2,7 @@ import * as fc from 'fast-check';
 
 // Importing 'buffer' imports the real implementation from node
 // Instead we want 'buffer' from our node_modules - the most used polyfill for Buffer on browser-side
-import { Buffer as NotNodeBuffer } from '../../../../../node_modules/buffer';
+import { Buffer as NotNodeBuffer } from 'not-node-buffer';
 
 import {
   asyncStringify,
@@ -419,7 +419,8 @@ describe('stringify', () => {
 
     // prettier-ignore
     const instance3 = { [toStringMethod]: () => { throw new Error('hello3'); } };
-    expect(stringify(instance3)).toEqual(
+    const stringified3 = stringify(instance3);
+    expect(stringified3.replace(/[\s\n]+/g, ' ')).toEqual(
       '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error(\'hello3\'); }}',
     ); // fallbacking to default
 
@@ -555,7 +556,8 @@ describe('asyncStringify', () => {
 
     // prettier-ignore
     const instance4 = { [asyncToStringMethod]: async () => { throw new Error('hello4'); } };
-    expect(await asyncStringify(instance4)).toEqual(
+    const stringified4 = await asyncStringify(instance4);
+    expect(stringified4.replace(/[\s\n]+/g, ' ')).toEqual(
       '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error(\'hello4\'); }}',
     ); // fallbacking to default
 
@@ -565,7 +567,8 @@ describe('asyncStringify', () => {
 
     // prettier-ignore
     const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
-    expect(await asyncStringify(instance6)).toEqual(
+    const stringified6 = await asyncStringify(instance6);
+    expect(stringified6.replace(/[\s\n]+/g, ' ')).toEqual(
       '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error(\'hello6\'); }}',
     ); // fallbacking to default
 

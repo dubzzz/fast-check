@@ -1,3 +1,40 @@
+# 0.3.0
+
+_Declare root of the package as ESM_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.2.0...packaged%2Fv0.3.0)]
+
+## Breaking changes
+
+- ([PR#4588](https://github.com/dubzzz/fast-check/pull/4588)) CI: Move build chain to ESM
+
+## Fixes
+
+- ([PR#4599](https://github.com/dubzzz/fast-check/pull/4599)) CI: Migrate jest to esm
+
+---
+
+# 0.2.0
+
+_Faster execution with bulk removals_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.1.1...packaged%2Fv0.2.0)]
+
+## Features
+
+- ([PR#4358](https://github.com/dubzzz/fast-check/pull/4358)) Performance: No intermediate tarball
+- ([PR#4388](https://github.com/dubzzz/fast-check/pull/4388)) Performance: Bulk delete directory and content
+
+---
+
+# 0.1.1
+
+_Faster directory traversal_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.1.0...packaged%2Fv0.1.1)]
+
+## Fixes
+
+- ([PR#4353](https://github.com/dubzzz/fast-check/pull/4353)) Performance: Faster directory traversal
+- ([PR#4285](https://github.com/dubzzz/fast-check/pull/4285)) Test: Confirm basic typings work well
+
 # 0.1.0
 
 _Update formatting style and bump dependencies_

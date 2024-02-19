@@ -1,21 +1,21 @@
 import { Stream, stream } from '../../stream/Stream';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import { PropertyFailure, IRawProperty } from '../property/IRawProperty';
+import type { PreconditionFailure } from '../precondition/PreconditionFailure';
+import type { PropertyFailure, IRawProperty } from '../property/IRawProperty';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
-import { Parameters } from './configuration/Parameters';
+import type { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
-import { VerbosityLevel } from './configuration/VerbosityLevel';
+import type { VerbosityLevel } from './configuration/VerbosityLevel';
 import { decorateProperty } from './DecorateProperty';
-import { RunDetails } from './reporter/RunDetails';
-import { RunExecution } from './reporter/RunExecution';
+import type { RunDetails } from './reporter/RunDetails';
+import type { RunExecution } from './reporter/RunExecution';
 import { RunnerIterator } from './RunnerIterator';
 import { SourceValuesIterator } from './SourceValuesIterator';
 import { lazyToss, toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
-import { IAsyncProperty } from '../property/AsyncProperty';
-import { IProperty } from '../property/Property';
-import { Value } from '../arbitrary/definition/Value';
+import type { IAsyncProperty } from '../property/AsyncProperty';
+import type { IProperty } from '../property/Property';
+import type { Value } from '../arbitrary/definition/Value';
 
 const safeObjectAssign = Object.assign;
 
@@ -67,20 +67,6 @@ async function asyncRunIt<Ts>(
     runner.handleResult(out);
   }
   return runner.runExecution;
-}
-
-/** @internal */
-function applyPath<Ts>(
-  valueProducers: IterableIterator<() => Value<Ts>>,
-  shrink: (value: Value<Ts>) => Stream<Value<Ts>>,
-  nonEmptyPath: string,
-): IterableIterator<Value<Ts>> {
-  const pathPoints = nonEmptyPath.split(':');
-  const pathStream = stream(valueProducers)
-    .drop(pathPoints.length > 0 ? +pathPoints[0] : 0)
-    .map((producer) => producer());
-  const adaptedPath = ['0', ...pathPoints.slice(1)].join(':');
-  return pathWalk(adaptedPath, pathStream, shrink);
 }
 
 /**
@@ -144,7 +130,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const initialValues =
     qParams.path.length === 0
       ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
-      : applyPath(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples), shrink, qParams.path);
+      : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()

@@ -1,4 +1,5 @@
-import test, { AfterFn, BeforeFn, Implementation, ImplementationFn, TestFn, TryResult } from 'ava';
+import type { AfterFn, BeforeFn, Implementation, ImplementationFn, TestFn, TryResult } from 'ava';
+import test from 'ava';
 import * as fc from 'fast-check';
 
 export { fc, test };
@@ -43,6 +44,15 @@ function wrapProp<Context, Ts extends NonEmptyArray<any>>(
           if (tryResult.passed) {
             tryResult.commit();
             return true;
+          }
+
+          const encounteredPreconditionFailure = tryResult.errors.some(
+            (error) =>
+              fc.PreconditionFailure.isFailure(error.savedError) || fc.PreconditionFailure.isFailure(error.cause),
+          );
+          if (encounteredPreconditionFailure) {
+            tryResult.discard();
+            fc.pre(false); // precondition failed
           }
 
           failingTry = tryResult;
