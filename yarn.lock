@@ -2749,7 +2749,6 @@ __metadata:
   resolution: "@fast-check/jest@workspace:packages/jest"
   dependencies:
     "@babel/core": "npm:^7.23.6"
-    "@babel/preset-env": "npm:^7.23.6"
     "@babel/preset-typescript": "npm:^7.23.3"
     "@fast-check/worker": "workspace:*"
     "@jest/expect": "npm:^29.7.0"

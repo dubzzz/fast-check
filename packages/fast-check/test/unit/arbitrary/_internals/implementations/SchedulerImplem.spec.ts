@@ -30,7 +30,7 @@ const delay = () => new Promise((r) => setTimeout(r, 0));
 
 describe('SchedulerImplem', () => {
   describe('waitOne', () => {
-    it('should throw when there is no scheduled promise in the pipe', async () => {
+    it('should throw synchronously when there is no scheduled promise in the pipe', () => {
       // Arrange
       const act = jest.fn().mockImplementation((f) => f());
       const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
@@ -39,7 +39,7 @@ describe('SchedulerImplem', () => {
       const s = new SchedulerImplem(act, taskSelector);
 
       // Assert
-      await expect(s.waitOne()).rejects.toMatchInlineSnapshot(`[Error: No task scheduled]`);
+      expect(() => s.waitOne()).toThrowErrorMatchingInlineSnapshot(`"No task scheduled"`);
     });
 
     it('should wrap waitOne call using act whenever specified', async () => {
@@ -177,6 +177,64 @@ describe('SchedulerImplem', () => {
       expect(promiseResolved).toBe(true);
       expect(waitOneResolved).toBe(true);
     });
+
+    it('should schedule for next waitOne anything immediately scheduled', async () => {
+      // Arrange
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(() => s.schedule(Promise.resolve(2)));
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(1); // The promise returning 2 should be queued into the scheduler
+    });
+
+    it('should not schedule for next waitOne something scheduled after an intermadiate await', async () => {
+      // Arrange
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        s.schedule(Promise.resolve(2));
+      });
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
+      await 'just awaiting something';
+      expect(s.count()).toBe(1); // ...but it will after a simple await
+    });
+
+    it('should not schedule for next waitOne something scheduled after two intermediate await', async () => {
+      // Arrange
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        await 'another something already resolved';
+        s.schedule(Promise.resolve(2));
+      });
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
+      await 'just awaiting something';
+      expect(s.count()).toBe(0);
+      await 'just awaiting one more time';
+      expect(s.count()).toBe(1); // ...but it will after two simple await
+    });
   });
 
   describe('waitAll', () => {
@@ -243,6 +301,100 @@ describe('SchedulerImplem', () => {
           expect(locked).toBe(false);
         }),
       ));
+
+    it('should schedule for the same waitAll anything immediately scheduled', async () => {
+      // Arrange
+      const f2 = jest.fn();
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(() => s.schedule(Promise.resolve(2)).then(f2));
+
+      // Assert
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
+      ]);
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
+      expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
+        expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
+      ]);
+      expect(f2).toHaveBeenCalled(); // and completions have been called
+    });
+
+    it('should not schedule for the same waitAll (but for next one) something scheduled after an intermadiate await', async () => {
+      // Arrange
+      const f2 = jest.fn();
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        s.schedule(Promise.resolve(2)).then(f2);
+      });
+
+      // Assert
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
+      ]);
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed...
+        expect.objectContaining({ status: 'pending' }), // ...and the one returning 2 has already been scehduled but not executed yet
+      ]);
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
+      expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
+        expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
+      ]);
+      expect(f2).toHaveBeenCalled(); // and completions have been called
+    });
+
+    it('should not schedule for the same waitAll (nor next one) something scheduled after two intermadiate await', async () => {
+      // Arrange
+      const f2 = jest.fn();
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        await 'another something already resolved';
+        s.schedule(Promise.resolve(2)).then(f2);
+      });
+
+      // Assert
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
+      ]);
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed...
+        // ...but the promise returning 2 has not even been scheduled...
+      ]);
+      await 'just awaiting something';
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }),
+        expect.objectContaining({ status: 'pending' }), // ...but it will after a simple await
+      ]);
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
+      expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
+        expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
+      ]);
+      expect(f2).toHaveBeenCalled(); // and completions have been called
+    });
   });
 
   describe('waitFor', () => {
@@ -287,10 +439,9 @@ describe('SchedulerImplem', () => {
 
       // Act
       const s = new SchedulerImplem((f) => f(), taskSelector);
-      const sp1 = s.schedule(p1.p);
+      const awaitedTask = s.schedule(p1.p);
       s.schedule(p2.p);
       s.schedule(p3.p);
-      const awaitedTask = sp1.then(() => Symbol());
 
       // Assert
       let waitForEnded = false;
@@ -566,12 +717,10 @@ describe('SchedulerImplem', () => {
 
       // Act
       const s = new SchedulerImplem((f) => f(), taskSelector);
-      const sp1 = s.schedule(p1.p);
-      const sp2 = s.schedule(p2.p);
+      const awaitedTask1 = s.schedule(p1.p);
+      const awaitedTask2 = s.schedule(p2.p);
       s.schedule(p3.p);
       s.schedule(p4.p);
-      const awaitedTask1 = sp1.then(() => Symbol());
-      const awaitedTask2 = sp2.then(() => Symbol());
 
       // Assert
       let waitForEnded1 = false;
@@ -886,27 +1035,40 @@ describe('SchedulerImplem', () => {
             4: false,
             5: false,
           };
+          const everythingResolved = {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true,
+          };
           const resolved = { ...nothingResolved };
           const act = jest.fn().mockImplementation((f) => f());
           const nextTaskIndex = buildSeededNextTaskIndex(seeds);
           const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+          const order: number[] = [];
 
           // Act
           const s = new SchedulerImplem(act, taskSelector);
           s.schedule(Promise.resolve(1)).then(() => {
+            order.push(1);
             resolved[1] = true;
             Promise.all([
               s.schedule(Promise.resolve(2)).then(() => {
+                order.push(2);
                 resolved[2] = true;
               }),
               s.schedule(Promise.resolve(3)).then(() => {
+                order.push(3);
                 resolved[3] = true;
                 s.schedule(Promise.resolve(4)).then(() => {
+                  order.push(4);
                   resolved[4] = true;
                 });
               }),
             ]).then(() => {
               s.schedule(Promise.resolve(5)).then(() => {
+                order.push(5);
                 resolved[5] = true;
                 status.done = true;
               });
@@ -917,14 +1079,29 @@ describe('SchedulerImplem', () => {
           expect(status.done).toBe(false);
           expect(resolved).toEqual(nothingResolved);
           await s.waitAll();
+          if (status.done) {
+            // There are only a few cases that could make 5 resolved via waitAll. Scheduling 5 is the consequence of Promise.all([2, 3]) being resolved.
+            // Promise.all is nasty as it costs an extra await. Meaning that if 3 and 4 (a task scheduled when 3 succeeds) have already been resolved,
+            // resolving 2 would not be enought to schedule 5 in a visible way for waitAll.
+            expect([
+              // The following orders should work to include 5 within the waitAll:
+              [1, 2, 3, 4, 5],
+              [1, 3, 2, 4, 5],
+            ]).toContainEqual(order);
+          } else {
+            expect([
+              // But these ones will not work:
+              [1, 3, 4, 2],
+            ]).toContainEqual(order);
+
+            expect(resolved).toEqual({ ...everythingResolved, 5: false });
+            expect(s.count()).toBe(0); // Well, Promise.all just received the last completion it was waiting for...
+            await 'just awaiting to get the proper count'; // It needs one extra await to move forward and schedule the item 5
+            expect(s.count()).not.toBe(0);
+            await s.waitAll(); // extra waitAll should make it pass
+          }
           expect(status.done).toBe(true);
-          expect(resolved).toEqual({
-            1: true,
-            2: true,
-            3: true,
-            4: true,
-            5: true,
-          });
+          expect(resolved).toEqual(everythingResolved);
         }),
       ));
 
@@ -949,7 +1126,7 @@ describe('SchedulerImplem', () => {
       const s = new SchedulerImplem(act, taskSelector);
       for (let idx = 0; idx !== 10; ++idx) {
         if (idx % 2 === 0) s.schedule(Promise.resolve(idx));
-        else s.schedule(Promise.reject(idx));
+        else s.schedule(Promise.reject(idx)).catch(() => {});
       }
 
       // Assert
@@ -1239,7 +1416,7 @@ describe('SchedulerImplem', () => {
         return a;
       });
       for (const ins of calls) {
-        scheduledFun(...ins);
+        scheduledFun(...ins).catch(() => {});
       }
 
       // Assert
@@ -1564,10 +1741,7 @@ describe('SchedulerImplem', () => {
       task.then((v) => (taskResolvedValue = v));
 
       // Assert
-      while (s.count() !== 0) {
-        expect(taskResolvedValue).toBe(null);
-        await s.waitOne();
-      }
+      await s.waitAll();
       expect(taskResolvedValue).toEqual({ done: true, faulty: false });
     });
 
@@ -1588,10 +1762,7 @@ describe('SchedulerImplem', () => {
       task.then((v) => (taskResolvedValue = v));
 
       // Assert
-      while (s.count() !== 0) {
-        expect(taskResolvedValue).toBe(null);
-        await s.waitOne();
-      }
+      await s.waitAll();
       expect(taskResolvedValue).toEqual({ done: false, faulty: true });
     });
 
@@ -1640,6 +1811,49 @@ describe('SchedulerImplem', () => {
       expect(report).toHaveLength(1); // second task cannot be scheduled as first one is still pending
       expect(report[0].status).toBe('pending');
       expect(report[0].metadata).toBe(expectedMetadataFirst);
+    });
+
+    it('should execute a whole scheduled sequence made of async long steps using a single waitAll', async () => {
+      // Arrange
+      const b1 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b2 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b3 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b4 = jest.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const act = jest.fn().mockImplementation((f) => f());
+      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.scheduleSequence([
+        { label: 'exec #1', builder: b1 },
+        { label: 'exec #2', builder: b2 },
+        { label: 'exec #3', builder: b3 },
+        { label: 'exec #4', builder: b4 },
+      ]);
+
+      // Assert
+      await s.waitAll();
+      expect(s.report()).toHaveLength(4);
+      expect(b1).toHaveBeenCalled();
+      expect(b2).toHaveBeenCalled();
+      expect(b3).toHaveBeenCalled();
+      expect(b4).toHaveBeenCalled();
     });
   });
 });
