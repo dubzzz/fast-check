@@ -27,8 +27,8 @@
   },
   "devDependencies": {
     "@fast-check/packaged": "*",
-    "@typescript-eslint/eslint-plugin": "^7.0.1",
-    "@typescript-eslint/parser": "^7.0.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
     "all-contributors-cli": "^6.26.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
