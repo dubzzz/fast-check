@@ -288,11 +288,12 @@ jobs:
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
       - name: Codecov
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3.1.6
+        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4.0.1
         if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
           flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          token: ${{secrets.CODECOV_TOKEN}}
           fail_ci_if_error: false # default: false
           verbose: false # default: false
   documentation:
