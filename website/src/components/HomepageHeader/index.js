@@ -18,7 +18,7 @@ export default function HomepageHeader() {
           {siteConfig.tagline}
           <div className={styles.taglineBadges}>
             <a href="https://www.npmjs.com/package/fast-check" target="_blank" rel="noopener">
-              <img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" height={20} />
+              <img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" width={133} height={20} />
             </a>
             <a href="https://www.npmjs.com/package/fast-check" target="_blank" rel="noopener">
               <img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" height={20} />
