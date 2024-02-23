@@ -1,4 +1,3 @@
-// @ts-check
 import jimp from 'jimp';
 import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
