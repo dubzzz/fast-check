@@ -3,8 +3,8 @@
   "name": "website",
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && docusaurus start",
-    "build": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && docusaurus build",
+    "start": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus start",
+    "build": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -36,6 +36,7 @@
     "@types/node": "^20.11.19",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
+    "jimp": "^0.22.12",
     "typescript": "~5.3.3"
   },
   "browserslist": {

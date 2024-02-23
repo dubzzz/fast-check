@@ -1,6 +1,7 @@
 import React from 'react';
 import BannerSection from '@site/src/components/BannerSection';
 import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 function QuoteBlock(props) {
   return (
@@ -30,7 +31,7 @@ export default function HomepageQuotes(props) {
       <p>Kind messages spreading love around fast-check</p>
       <div className={styles.allQuotes}>
         <QuoteBlock
-          avatarUrl="https://github.com/TomerAberbach.png"
+          avatarUrl={useBaseUrl('/img/_/avatar_64_TomerAberbach.jpg')}
           profileUrl="https://twitter.com/TomerAberbach"
           name="Tomer Aberbach"
           jobDescription={
@@ -42,7 +43,7 @@ export default function HomepageQuotes(props) {
           message={'fast-check is too good!'}
         />
         <QuoteBlock
-          avatarUrl="https://github.com/ssalbdivad.png"
+          avatarUrl={useBaseUrl('/img/_/avatar_64_ssalbdivad.jpg')}
           profileUrl="https://twitter.com/ssalbdivad"
           name="David Blass"
           jobDescription={
@@ -55,7 +56,7 @@ export default function HomepageQuotes(props) {
           message={'Can attest, it is awesome!🔥'}
         />
         <QuoteBlock
-          avatarUrl="https://github.com/abrgr.png"
+          avatarUrl={useBaseUrl('/img/_/avatar_64_abrgr.jpg')}
           profileUrl="https://twitter.com/abrgrBuilds"
           name="Adam Berger"
           jobDescription={
@@ -70,7 +71,7 @@ export default function HomepageQuotes(props) {
           }
         />
         <QuoteBlock
-          avatarUrl="https://github.com/emilianbold.png"
+          avatarUrl={useBaseUrl('/img/_/avatar_64_emilianbold.jpg')}
           profileUrl="https://twitter.com/emilianbold"
           name="Emilian Bold"
           jobDescription={'Software engineer'}
@@ -82,7 +83,7 @@ export default function HomepageQuotes(props) {
           }
         />
         <QuoteBlock
-          avatarUrl="https://github.com/jakebailey.png"
+          avatarUrl={useBaseUrl('/img/_/avatar_64_jakebailey.jpg')}
           profileUrl="https://twitter.com/andhaveaniceday"
           name="Jake Bailey"
           jobDescription={
@@ -101,7 +102,7 @@ export default function HomepageQuotes(props) {
           }
         />
         <QuoteBlock
-          avatarUrl="https://github.com/Andarist.png"
+          avatarUrl={useBaseUrl('/img/_/avatar_64_Andarist.jpg')}
           profileUrl="https://twitter.com/AndaristRake"
           name="Mateusz Burzyński"
           jobDescription={
