@@ -36,7 +36,7 @@ for (const avatar of allAvatars) {
   const { url, login, size } = avatar;
   const pathFinalImage = join(__dirname, '..', 'static', 'img', '_', `avatar_${size}_${login}.jpg`);
   if (!existsSync(pathFinalImage)) {
-    console.log(`Importing avatar ${size}x${size} for ${url}...`);
+    console.log(`Importing avatar ${size}x${size} for ${url}`);
     collectImage(url, pathFinalImage, 64);
   } else {
     console.log(`Skipped import of avatar ${size}x${size} for ${url}`);
