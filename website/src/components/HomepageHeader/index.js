@@ -21,12 +21,13 @@ export default function HomepageHeader() {
               <img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" width={133} height={20} />
             </a>
             <a href="https://www.npmjs.com/package/fast-check" target="_blank" rel="noopener">
-              <img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" height={20} />
+              <img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" width={136} height={20} />
             </a>
             <a href="https://github.com/dubzzz/fast-check/stargazers" target="_blank" rel="noopener">
               <img
                 src="https://img.shields.io/github/stars/dubzzz/fast-check?style=social"
                 alt="number of stars"
+                width={82}
                 height={20}
               />
             </a>
