@@ -12,6 +12,8 @@
 
 .mainTitleLogo {
   max-width: '100%';
+  width: auto;
+  height: auto;
 }
 
 @media screen and (max-width: 996px) {
