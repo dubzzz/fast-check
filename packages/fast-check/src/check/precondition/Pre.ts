@@ -6,7 +6,7 @@ import { PreconditionFailure } from './PreconditionFailure';
  * @remarks Since 1.3.0
  * @public
  */
-export function pre(expectTruthy: boolean): void {
+export function pre(expectTruthy: boolean): asserts expectTruthy {
   if (!expectTruthy) {
     throw new PreconditionFailure();
   }
