@@ -68,7 +68,7 @@
     "@babel/preset-typescript": "^7.23.3",
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.40.6",
+    "@microsoft/api-extractor": "^7.41.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.20",
     "babel-jest": "^29.7.0",
