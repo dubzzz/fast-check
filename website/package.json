@@ -7,7 +7,6 @@
     "build": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
-    "netlify-deploy": "netlify deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
