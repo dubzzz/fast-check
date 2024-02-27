@@ -38,7 +38,6 @@
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jimp": "^0.22.12",
-    "netlify-cli": "^17.17.1",
     "typescript": "~5.3.3"
   },
   "browserslist": {
