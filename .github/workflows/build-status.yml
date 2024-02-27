@@ -547,11 +547,14 @@ jobs:
         with:
           name: website
           path: artifacts/
+      - name: Compress artifacts as zip
+        run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
         run: |
-          prod_flag=""
-          if [ "$BRANCH_NAME" = "main" ]; then prod_flag="--prod"; fi
-          cd website/ && yarn netlify-deploy --dir ../artifacts --site ${{secrets.NETLIFY_SITE_ID}} --auth ${{secrets.NETLIFY_AUTH_TOKEN}} $prod_flag
+          is_draft_flag="true"
+          if [ "$BRANCH_NAME" = "main" ]; then is_draft_flag="false"; fi
+          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${is_draft_flag}
+
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
