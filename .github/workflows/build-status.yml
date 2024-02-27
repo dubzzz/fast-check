@@ -528,6 +528,8 @@ jobs:
     name: 'Publish documentation on Netlify'
     needs: documentation
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     env:
       DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
