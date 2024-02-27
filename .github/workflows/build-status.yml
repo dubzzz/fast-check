@@ -536,11 +536,11 @@ jobs:
         with:
           name: website
           path: artifacts/
-      - name: Alter robots.txt for draft build
-        if: env.DRAFT_BUILD == 'false'
-        run: |
-          echo "User-agent: *" > artifacts/robots.txt
-          echo "Disallow: /" > artifacts/robots.txt
+      #- name: Alter robots.txt for draft build
+      #  if: env.DRAFT_BUILD == 'false'
+      #  run: |
+      #    echo "User-agent: *" > artifacts/robots.txt
+      #    echo "Disallow: /" > artifacts/robots.txt
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
