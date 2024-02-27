@@ -28,6 +28,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "deploy": "netlify deploy",
     "test": "yarn node --experimental-vm-modules $(yarn bin jest)",
     "test-bundle:cjs": "node test-bundle/main.cjs",
     "test-bundle:mjs": "node test-bundle/main.mjs",
@@ -57,6 +58,7 @@
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-ts-webcompat-resolver": "^1.0.0",
+    "netlify-cli": "^17.17.1",
     "typescript": "~5.3.3"
   },
   "keywords": [

@@ -351,6 +351,13 @@ jobs:
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: website/build/
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+        with:
+          name: website
+          path: website/build/
+          if-no-files-found: error
+          retention-days: 1
   test_bundle:
     name: 'Test bundle'
     needs:
@@ -503,8 +510,8 @@ jobs:
         run: exit 1
 
   # Publication jobs
-  publish_documentation:
-    name: 'Publish documentation'
+  publish_documentation_gh_pages:
+    name: 'Publish documentation on GitHub Pages'
     needs: documentation
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -517,6 +524,36 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@decdde0ac072f6dcbe43649d82d9c635fff5b4e4 # v4.0.4
+  publish_documentation_netlify:
+    name: 'Publish documentation on Netlify'
+    needs: documentation
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Using Node v20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
+        run: yarn install --immutable --immutable-cache --mode=skip-build
+      - name: Download documentation artifacts
+        uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+        with:
+          name: website
+          path: artifacts/
+      - name: List files
+        run: ls -alhR artifacts/
+      #- name: Deploy to Netlify
+      #  uses: actions/deploy-pages@decdde0ac072f6dcbe43649d82d9c635fff5b4e4 # v4.0.4
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
