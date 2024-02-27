@@ -528,19 +528,19 @@ jobs:
     name: 'Publish documentation on Netlify'
     needs: documentation
     runs-on: ubuntu-latest
-    #env:
-    #  DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
+    env:
+      DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
         uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
         with:
           name: website
           path: artifacts/
-      #- name: Alter robots.txt for draft build
-      #  if: env.DRAFT_BUILD == 'false'
-      #  run: |
-      #    echo "User-agent: *" > artifacts/robots.txt
-      #    echo "Disallow: /" > artifacts/robots.txt
+      - name: Alter robots.txt for draft build
+        if: env.DRAFT_BUILD == 'false'
+        run: |
+          echo "User-agent: *" > artifacts/robots.txt
+          echo "Disallow: /" > artifacts/robots.txt
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       #- name: Deploy to Netlify
