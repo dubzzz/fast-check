@@ -528,8 +528,8 @@ jobs:
     name: 'Publish documentation on Netlify'
     needs: documentation
     runs-on: ubuntu-latest
-    env:
-      DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
+    #env:
+    #  DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
         uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
