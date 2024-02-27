@@ -347,10 +347,6 @@ jobs:
           yarn workspace fast-check docs-ci
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
-      - name: Upload documentation
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
-        with:
-          path: website/build/
       - name: Upload documentation artifacts
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
@@ -510,20 +506,6 @@ jobs:
         run: exit 1
 
   # Publication jobs
-  publish_documentation_gh_pages:
-    name: 'Publish documentation on GitHub Pages'
-    needs: documentation
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@decdde0ac072f6dcbe43649d82d9c635fff5b4e4 # v4.0.4
   publish_documentation_netlify:
     name: 'Publish documentation on Netlify'
     needs: documentation
