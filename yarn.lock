@@ -3142,7 +3142,6 @@ __metadata:
     fast-check: "npm:^3.4.0"
     jest: "npm:^29.7.0"
     jest-ts-webcompat-resolver: "npm:^1.0.0"
-    netlify-cli: "npm:^17.17.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
@@ -25364,6 +25363,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jimp: "npm:^0.22.12"
+    netlify-cli: "npm:^17.17.1"
     prism-react-renderer: "npm:^2.3.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
