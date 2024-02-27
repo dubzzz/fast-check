@@ -537,7 +537,7 @@ jobs:
           name: website
           path: artifacts/
       - name: Alter robots.txt for draft build
-        if: env.DRAFT_BUILD == 'false'
+        if: env.DRAFT_BUILD == 'true'
         run: |
           echo "User-agent: *" > artifacts/robots.txt
           echo "Disallow: /" > artifacts/robots.txt
