@@ -543,9 +543,9 @@ jobs:
           echo "Disallow: /" > artifacts/robots.txt
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
-      #- name: Deploy to Netlify
-      #  run: |
-      #    curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{DRAFT_BUILD}}
+      - name: Deploy to Netlify
+        run: |
+          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}}
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
