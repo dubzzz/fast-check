@@ -534,6 +534,10 @@ jobs:
         with:
           name: website
           path: artifacts/
+      - name: Alter robots.txt
+        run: |
+          is_draft_flag="true"
+          if [ "$BRANCH_NAME" = "main" ]; then echo "Not draft"; else echo "User-agent: *" > artifacts/robots.txt; echo "Disallow: /" > artifacts/robots.txt; fi
       - name: Compress artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
