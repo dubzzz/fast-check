@@ -529,19 +529,6 @@ jobs:
     needs: documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-        with:
-          node-version: '20.x'
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
-          check-latest: true
-      - name: Install dependencies
-        env:
-          YARN_ENABLE_OFFLINE_MODE: 1
-          YARN_ENABLE_HARDENED_MODE: 0
-        run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download documentation artifacts
         uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
         with:
