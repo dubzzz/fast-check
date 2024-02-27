@@ -528,23 +528,24 @@ jobs:
     name: 'Publish documentation on Netlify'
     needs: documentation
     runs-on: ubuntu-latest
+    env:
+      DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
         uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
         with:
           name: website
           path: artifacts/
-      - name: Alter robots.txt
+      - name: Alter robots.txt for draft build
+        if: env.DRAFT_BUILD == 'false'
         run: |
-          is_draft_flag="true"
-          if [ "$BRANCH_NAME" = "main" ]; then echo "Not draft"; else echo "User-agent: *" > artifacts/robots.txt; echo "Disallow: /" > artifacts/robots.txt; fi
-      - name: Compress artifacts as zip
+          echo "User-agent: *" > artifacts/robots.txt
+          echo "Disallow: /" > artifacts/robots.txt
+      - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
         run: |
-          is_draft_flag="true"
-          if [ "$BRANCH_NAME" = "main" ]; then is_draft_flag="false"; fi
-          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${is_draft_flag}
+          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{DRAFT_BUILD}}
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
