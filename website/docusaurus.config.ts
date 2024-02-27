@@ -46,10 +46,6 @@ const config: Config = {
         },
         blog: { showReadingTime: true },
         theme: { customCss: require.resolve('./src/css/custom.css') },
-        gtag: {
-          trackingID: 'G-PHXW2XCMCL',
-          anonymizeIP: true,
-        },
       } satisfies Preset.Options,
     ],
   ],
