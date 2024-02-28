@@ -534,7 +534,7 @@ jobs:
       - name: Deploy to Netlify
         id: deployment_to_netlify
         run: |
-          curl -H "Content-Type: application/zip" -H "Authorization: Bearer aa${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}} > deploy.json
+          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}} > deploy.json
           cat deploy.json
           deploy_url=$(jq -r '.deploy_url' --exit-status deploy.json)
           echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
