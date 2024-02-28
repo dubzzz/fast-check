@@ -104,7 +104,7 @@ const config: Config = {
             { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             {
-              html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" alt="Deploys by Netlify" width="114" height="51" /></a>`,
+              html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" loading="lazy" /></a>`,
             },
           ],
         },
