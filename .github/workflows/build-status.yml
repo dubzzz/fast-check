@@ -525,6 +525,10 @@ jobs:
         run: |
           echo "User-agent: *" > artifacts/robots.txt
           echo "Disallow: /" > artifacts/robots.txt
+      - name: Configure custom headers
+        run: |
+          echo "/*" > artifacts/_headers
+          echo "  Content-Security-Policy-Report-Only: default-src 'none'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com; script-src 'self' www.googletagmanager.com; style-src 'self'; manifest-src 'self'; base-uri fast-check.dev;" > artifacts/_headers
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
