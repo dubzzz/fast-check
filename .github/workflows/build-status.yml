@@ -535,7 +535,7 @@ jobs:
         id: deployment_to_netlify
         run: |
           curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}} > deploy.json
-          echo deploy.json
+          cat deploy.json
           echo "deploy_url=$(jq -r '.deploy_url' deploy.json)" >> $GITHUB_OUTPUT
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         name: Notify the user of the preview
