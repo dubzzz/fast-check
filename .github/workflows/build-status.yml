@@ -524,7 +524,7 @@ jobs:
         if: env.DRAFT_BUILD == 'true'
         run: |
           echo "User-agent: *" > artifacts/robots.txt
-          echo "Disallow: /" > artifacts/robots.txt
+          echo "Disallow: /" >> artifacts/robots.txt
       - name: Configure custom headers
         run: |
           echo "/*" > artifacts/_headers
