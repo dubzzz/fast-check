@@ -524,14 +524,18 @@ jobs:
         if: env.DRAFT_BUILD == 'true'
         run: |
           echo "User-agent: *" > artifacts/robots.txt
-          echo "Disallow: /" > artifacts/robots.txt
+          echo "Disallow: /" >> artifacts/robots.txt
+      - name: Configure custom headers
+        run: |
+          echo "/*" > artifacts/_headers
+          echo "  Content-Security-Policy-Report-Only: default-src 'none'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com; script-src 'self' www.googletagmanager.com; style-src 'self'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
         id: deployment_to_netlify
         run: |
           curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}} > deploy.json
-          echo deploy.json
+          cat deploy.json
           echo "deploy_url=$(jq -r '.deploy_url' deploy.json)" >> $GITHUB_OUTPUT
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         name: Notify the user of the preview
