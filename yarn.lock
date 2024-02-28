@@ -2701,7 +2701,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
-    "@types/node": "npm:^20.11.20"
+    "@types/node": "npm:^20.11.21"
     ava: "npm:^6.1.1"
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
@@ -2761,7 +2761,7 @@ __metadata:
     "@jest/expect": "npm:^29.7.0"
     "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.20"
+    "@types/node": "npm:^20.11.21"
     babel-jest: "npm:^29.7.0"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
@@ -2822,7 +2822,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.20"
+    "@types/node": "npm:^20.11.21"
     babel-jest: "npm:^29.7.0"
     jest: "npm:^29.7.0"
     jest-ts-webcompat-resolver: "npm:^1.0.0"
@@ -2838,7 +2838,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.20"
+    "@types/node": "npm:^20.11.21"
     babel-jest: "npm:^29.7.0"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
@@ -2858,7 +2858,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.20"
+    "@types/node": "npm:^20.11.21"
     babel-jest: "npm:^29.7.0"
     fast-check: "npm:^3.4.0"
     jest: "npm:^29.7.0"
@@ -5091,12 +5091,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.11.20":
-  version: 20.11.20
-  resolution: "@types/node@npm:20.11.20"
+"@types/node@npm:*, @types/node@npm:^20.11.21":
+  version: 20.11.21
+  resolution: "@types/node@npm:20.11.21"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/8e8de211e6d54425c603388a9b5cc9c434101985d0a1c88aabbf65d10df2b1fccd71855c20e61ae8a75c7aea56cb0f64e722cf7914cff1247d0b62ce21996ac4
+  checksum: 10c0/52b1cdfe8b14a67ab98c01b2e9621994b34a2537368e108fb925121a9d5958eb7344a2fb81ff36964932d5e5a093de8897f021bded10cad3536fd31e932b3000
   languageName: node
   linkType: hard
 
@@ -9374,7 +9374,7 @@ __metadata:
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": "npm:^7.41.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.20"
+    "@types/node": "npm:^20.11.21"
     babel-jest: "npm:^29.7.0"
     cross-env: "npm:^7.0.3"
     glob: "npm:^10.3.10"
@@ -19275,7 +19275,7 @@ __metadata:
     "@docusaurus/types": "npm:3.1.1"
     "@jest/globals": "npm:^29.7.0"
     "@mdx-js/react": "npm:^3.0.1"
-    "@types/node": "npm:^20.11.20"
+    "@types/node": "npm:^20.11.21"
     clsx: "npm:^2.1.0"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
