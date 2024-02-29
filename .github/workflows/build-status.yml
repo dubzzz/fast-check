@@ -63,23 +63,23 @@ jobs:
 
   # Jobs without any strong requirement on warmup_yarn_cache
   # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_yarn_cache
-  #no_dedupe_required:
-  #  name: 'No dedupe required'
-  #  needs: warmup_yarn_cache
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-  #      with:
-  #        fetch-depth: 0
-  #    - name: Using Node v20.x
-  #      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-  #      with:
-  #        node-version: '20.x'
-  #        cache: 'yarn'
-  #        cache-dependency-path: yarn.lock
-  #        check-latest: true
-  #    - name: Ensure no dedupe required
-  #      run: yarn dedupe --check
+  no_dedupe_required:
+    name: 'No dedupe required'
+    needs: warmup_yarn_cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          fetch-depth: 0
+      - name: Using Node v20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Ensure no dedupe required
+        run: yarn dedupe --check
   all_version_bump_declared:
     name: 'All version bump declared'
     needs: warmup_yarn_cache
@@ -98,42 +98,42 @@ jobs:
           check-latest: true
       - name: Ensure versions have been properly bumped
         run: yarn version check
-  #package_quality:
-  #  name: 'Package quality'
-  #  needs: warmup_yarn_cache
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-  #    - name: Using Node v20.x
-  #      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-  #      with:
-  #        node-version: '20.x'
-  #        cache: 'yarn'
-  #        cache-dependency-path: yarn.lock
-  #        check-latest: true
-  #    - name: Check package score using skypack
-  #      run: cd packages/fast-check && yarn dlx @skypack/package-check
+  package_quality:
+    name: 'Package quality'
+    needs: warmup_yarn_cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Using Node v20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Check package score using skypack
+        run: cd packages/fast-check && yarn dlx @skypack/package-check
 
   # Jobs requesting warmup_yarn_cache
-  #format_lint:
-  #  name: 'Format & Lint'
-  #  needs: warmup_yarn_cache
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-  #    - name: Using Node v20.x
-  #      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-  #      with:
-  #        node-version: '20.x'
-  #        cache: 'yarn'
-  #        cache-dependency-path: yarn.lock
-  #        check-latest: true
-  #    - name: Install dependencies
-  #      run: yarn workspace @fast-check/monorepo install --immutable
-  #    - name: Check format
-  #      run: yarn format:check
-  #    - name: Check lint
-  #      run: yarn lint:check
+  format_lint:
+    name: 'Format & Lint'
+    needs: warmup_yarn_cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Using Node v20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Install dependencies
+        run: yarn workspace @fast-check/monorepo install --immutable
+      - name: Check format
+        run: yarn format:check
+      - name: Check lint
+        run: yarn lint:check
   production_packages:
     name: 'Build production packages'
     needs: warmup_yarn_cache
@@ -165,137 +165,137 @@ jobs:
           retention-days: 1
 
   # Jobs requesting warmup_yarn_cache AND production_packages
-  #typecheck:
-  #  name: 'Typecheck'
-  #  needs:
-  #    - warmup_yarn_cache
-  #    - production_packages
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-  #    - name: Using Node v20.x
-  #      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-  #      with:
-  #        node-version: '20.x'
-  #        cache: 'yarn'
-  #        cache-dependency-path: yarn.lock
-  #        check-latest: true
-  #    - name: Install dependencies
-  #      env:
-  #        YARN_ENABLE_OFFLINE_MODE: 1
-  #        YARN_ENABLE_HARDENED_MODE: 0
-  #      run: yarn install --immutable --immutable-cache --mode=skip-build
-  #    - name: Download production packages
-  #      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
-  #      with:
-  #        name: bundles
-  #        path: packages/
-  #    - name: Unpack production packages
-  #      run: yarn unpack:all
-  #    - name: Typecheck
-  #      run: yarn workspaces foreach --all -pvi run typecheck
-  #test:
-  #  name: 'Test'
-  #  needs:
-  #    - warmup_yarn_cache
-  #    - warmup_yarn_cache_others
-  #    - production_packages
-  #  runs-on: ${{matrix.os}}
-  #  strategy:
-  #    matrix:
-  #      package-name:
-  #        - 'fast-check'
-  #        - '@fast-check/ava'
-  #        - '@fast-check/jest'
-  #        - '@fast-check/packaged'
-  #        - '@fast-check/poisoning'
-  #        - '@fast-check/vitest'
-  #        - '@fast-check/worker'
-  #      script-name: ['test']
-  #      node-version: [18.x, 20.x, latest]
-  #      os: ['ubuntu-latest']
-  #      include:
-  #        # More platforms and scripts...
-  #        - package-name: 'fast-check'
-  #          script-name: 'e2e'
-  #          node-version: 20.x
-  #          os: 'ubuntu-latest'
-  #        - package-name: 'fast-check'
-  #          script-name: 'e2e'
-  #          node-version: 20.x
-  #          os: 'macos-latest'
-  #        - package-name: 'fast-check'
-  #          script-name: 'e2e'
-  #          node-version: 20.x
-  #          os: 'windows-latest'
-  #        - package-name: '@fast-check/packaged'
-  #          script-name: 'test'
-  #          node-version: 20.x
-  #          os: 'macos-latest'
-  #        - package-name: '@fast-check/packaged'
-  #          script-name: 'test'
-  #          node-version: 20.x
-  #          os: 'windows-latest'
-  #        # Limited matrix for test only packages
-  #        - package-name: '@fast-check/examples'
-  #          script-name: 'test'
-  #          node-version: 20.x
-  #          os: 'ubuntu-latest'
-  #        - package-name: 'website'
-  #          script-name: 'test'
-  #          node-version: 20.x
-  #          os: 'ubuntu-latest'
-  #  steps:
-  #    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-  #    - name: Cache for Jest
-  #      uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-  #      with:
-  #        path: /tmp/jest_rt
-  #        key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
-  #    - name: Using Node v${{matrix.node-version}}
-  #      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-  #      with:
-  #        node-version: ${{matrix.node-version}}
-  #        cache: 'yarn'
-  #        cache-dependency-path: yarn.lock
-  #        check-latest: true
-  #    - name: Install dependencies
-  #      env:
-  #        YARN_ENABLE_OFFLINE_MODE: 1
-  #        YARN_ENABLE_HARDENED_MODE: 0
-  #      run: yarn install --immutable --immutable-cache --mode=skip-build
-  #    - name: Download production packages
-  #      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
-  #      with:
-  #        name: bundles
-  #        path: packages/
-  #    - name: Unpack production packages
-  #      if: matrix.os != 'windows-latest'
-  #      run: yarn unpack:all
-  #    - name: Unpack production packages (Windows only)
-  #      if: matrix.os == 'windows-latest'
-  #      # untar seems to fail on Windows when untaring already existing files
-  #      run: yarn unpack:all || true
-  #    - name: Alter internals to behave as if published
-  #      run: yarn workspaces foreach --recursive -pvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
-  #    - name: Unit tests
-  #      shell: bash -l {0}
-  #      # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
-  #      # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
-  #      run: |
-  #        export EXPECT_DEFAULT_SEED="true"
-  #        export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
-  #        echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-  #        yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
-  #    - name: Codecov
-  #      uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab # v4.1.0
-  #      if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
-  #      with:
-  #        name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-  #        flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
-  #        token: ${{secrets.CODECOV_TOKEN}}
-  #        fail_ci_if_error: false # default: false
-  #        verbose: false # default: false
+  typecheck:
+    name: 'Typecheck'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Using Node v20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
+        run: yarn install --immutable --immutable-cache --mode=skip-build
+      - name: Download production packages
+        uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Typecheck
+        run: yarn workspaces foreach --all -pvi run typecheck
+  test:
+    name: 'Test'
+    needs:
+      - warmup_yarn_cache
+      - warmup_yarn_cache_others
+      - production_packages
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        package-name:
+          - 'fast-check'
+          - '@fast-check/ava'
+          - '@fast-check/jest'
+          - '@fast-check/packaged'
+          - '@fast-check/poisoning'
+          - '@fast-check/vitest'
+          - '@fast-check/worker'
+        script-name: ['test']
+        node-version: [18.x, 20.x, latest]
+        os: ['ubuntu-latest']
+        include:
+          # More platforms and scripts...
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 20.x
+            os: 'ubuntu-latest'
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 20.x
+            os: 'macos-latest'
+          - package-name: 'fast-check'
+            script-name: 'e2e'
+            node-version: 20.x
+            os: 'windows-latest'
+          - package-name: '@fast-check/packaged'
+            script-name: 'test'
+            node-version: 20.x
+            os: 'macos-latest'
+          - package-name: '@fast-check/packaged'
+            script-name: 'test'
+            node-version: 20.x
+            os: 'windows-latest'
+          # Limited matrix for test only packages
+          - package-name: '@fast-check/examples'
+            script-name: 'test'
+            node-version: 20.x
+            os: 'ubuntu-latest'
+          - package-name: 'website'
+            script-name: 'test'
+            node-version: 20.x
+            os: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Cache for Jest
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: /tmp/jest_rt
+          key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
+      - name: Using Node v${{matrix.node-version}}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: ${{matrix.node-version}}
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
+        run: yarn install --immutable --immutable-cache --mode=skip-build
+      - name: Download production packages
+        uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        if: matrix.os != 'windows-latest'
+        run: yarn unpack:all
+      - name: Unpack production packages (Windows only)
+        if: matrix.os == 'windows-latest'
+        # untar seems to fail on Windows when untaring already existing files
+        run: yarn unpack:all || true
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach --recursive -pvi --from '${{matrix.package-name}}' --no-private --exclude '${{matrix.package-name}}' exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Unit tests
+        shell: bash -l {0}
+        # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
+        # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
+          yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
+      - name: Codecov
+        uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab # v4.1.0
+        if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
+        with:
+          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
+          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          token: ${{secrets.CODECOV_TOKEN}}
+          fail_ci_if_error: false # default: false
+          verbose: false # default: false
   documentation:
     name: 'Build documentation'
     needs:
@@ -354,126 +354,126 @@ jobs:
           path: website/build/
           if-no-files-found: error
           retention-days: 1
-  #test_bundle:
-  #  name: 'Test bundle'
-  #  needs:
-  #    - warmup_yarn_cache
-  #    - production_packages
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-  #    - name: Using Node v20.x
-  #      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-  #      with:
-  #        node-version: '20.x'
-  #        cache: 'yarn'
-  #        cache-dependency-path: yarn.lock
-  #        check-latest: true
-  #    - name: Install dependencies
-  #      env:
-  #        YARN_ENABLE_OFFLINE_MODE: 1
-  #        YARN_ENABLE_HARDENED_MODE: 0
-  #      run: yarn install --immutable --immutable-cache --mode=skip-build
-  #    - name: Download production packages
-  #      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
-  #      with:
-  #        name: bundles
-  #        path: packages/
-  #    - name: Unpack production packages
-  #      run: yarn unpack:all
-  #    - name: Alter internals to behave as if published
-  #      run: yarn workspaces foreach --all -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-  #    - name: Retrieve potentially dropped test-bundle
-  #      run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-bundle || true"
-  #    - name: Check publication lint
-  #      run: yarn publint:all
-  #    - name: Check bundles
-  #      run: yarn workspaces foreach --all -pvi --no-private run test-bundle
-  #    - name: Check legacy bundles
-  #      env:
-  #        YARN_ENABLE_OFFLINE_MODE: 1
-  #        YARN_ENABLE_HARDENED_MODE: 0
-  #        YARN_NODE_LINKER: 'node-modules'
-  #      run: |
-  #        yarn install --immutable --immutable-cache --mode=skip-build
-  #        export NODE_VERSION="$(node --version)"
-  #        export NVS_HOME="$HOME/.nvs"
-  #        git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
-  #        if [ "$(git -C "$NVS_HOME" rev-parse HEAD)" != "b87ae9593cd20e7b667e9099240c9befeb50659f" ]; then
-  #            echo "ERROR: HEAD is not the expected commit hash"
-  #            exit 1
-  #        fi
-  #        chmod +x "$NVS_HOME/nvs"
-  #        export PATH="$PATH:$NVS_HOME"
-  #        if [ "$(node --version)" != "$NODE_VERSION" ]; then
-  #            echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
-  #            exit 2
-  #        fi
-  #        yarn workspaces foreach --all -pvi --no-private run test-legacy-bundle
-  #        if [ "$(node --version)" != "$NODE_VERSION" ]; then
-  #            echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
-  #            exit 3
-  #        fi
-  #test_types:
-  #  name: 'Test types'
-  #  needs:
-  #    - warmup_yarn_cache
-  #    - production_packages
-  #  runs-on: ubuntu-latest
-  #  strategy:
-  #    matrix:
-  #      ts-version:
-  #        # Latest version of TypeScript
-  #        - '*'
-  #        # Various intermediate versions of Typescript
-  #        - '4.4'
-  #        # Minimal requirement for TypeScript
-  #        - '4.1'
-  #        # Other release channels for TypeScript
-  #        - 'rc'
-  #        - 'next'
-  #  steps:
-  #    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-  #    - name: Using Node v20.x
-  #      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-  #      with:
-  #        node-version: '20.x'
-  #        cache: 'yarn'
-  #        cache-dependency-path: yarn.lock
-  #        check-latest: true
-  #    - name: Install dependencies
-  #      env:
-  #        YARN_ENABLE_OFFLINE_MODE: 1
-  #        YARN_ENABLE_HARDENED_MODE: 0
-  #      run: yarn install --immutable --immutable-cache --mode=skip-build
-  #    - name: Download production packages
-  #      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
-  #      with:
-  #        name: bundles
-  #        path: packages/
-  #    - name: Unpack production packages
-  #      run: yarn unpack:all
-  #    - name: Alter internals to behave as if published
-  #      run: yarn workspaces foreach --recursive -pvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
-  #    - name: Retrieve dropped test-types
-  #      run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
-  #    - name: Switch folder to CommonJS
-  #      run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
-  #    - name: Check in CommonJS mode
-  #      run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
-  #    - name: Check in CommonJS mode with NodeNext
-  #      run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
-  #    - name: Switch folder to ES Modules
-  #      run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
-  #    - name: Check in ES Modules mode
-  #      run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
-  #    - name: Check in ES Modules mode with NodeNext
-  #      run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
-  #    - name: Check in ES Modules mode with exactOptionalPropertyTypes
-  #      if: matrix.ts-version != '4.1'
-  #      run: |
-  #        yarn workspaces foreach --all -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
-  #        yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+  test_bundle:
+    name: 'Test bundle'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Using Node v20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
+        run: yarn install --immutable --immutable-cache --mode=skip-build
+      - name: Download production packages
+        uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach --all -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Retrieve potentially dropped test-bundle
+        run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-bundle || true"
+      - name: Check publication lint
+        run: yarn publint:all
+      - name: Check bundles
+        run: yarn workspaces foreach --all -pvi --no-private run test-bundle
+      - name: Check legacy bundles
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
+          YARN_NODE_LINKER: 'node-modules'
+        run: |
+          yarn install --immutable --immutable-cache --mode=skip-build
+          export NODE_VERSION="$(node --version)"
+          export NVS_HOME="$HOME/.nvs"
+          git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
+          if [ "$(git -C "$NVS_HOME" rev-parse HEAD)" != "b87ae9593cd20e7b667e9099240c9befeb50659f" ]; then
+              echo "ERROR: HEAD is not the expected commit hash"
+              exit 1
+          fi
+          chmod +x "$NVS_HOME/nvs"
+          export PATH="$PATH:$NVS_HOME"
+          if [ "$(node --version)" != "$NODE_VERSION" ]; then
+              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
+              exit 2
+          fi
+          yarn workspaces foreach --all -pvi --no-private run test-legacy-bundle
+          if [ "$(node --version)" != "$NODE_VERSION" ]; then
+              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
+              exit 3
+          fi
+  test_types:
+    name: 'Test types'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ts-version:
+          # Latest version of TypeScript
+          - '*'
+          # Various intermediate versions of Typescript
+          - '4.4'
+          # Minimal requirement for TypeScript
+          - '4.1'
+          # Other release channels for TypeScript
+          - 'rc'
+          - 'next'
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Using Node v20.x
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
+        run: yarn install --immutable --immutable-cache --mode=skip-build
+      - name: Download production packages
+        uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Alter internals to behave as if published
+        run: yarn workspaces foreach --recursive -pvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+      - name: Retrieve dropped test-types
+        run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
+      - name: Switch folder to CommonJS
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
+      - name: Check in CommonJS mode
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
+      - name: Check in CommonJS mode with NodeNext
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+      - name: Switch folder to ES Modules
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+      - name: Check in ES Modules mode
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
+      - name: Check in ES Modules mode with NodeNext
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+      - name: Check in ES Modules mode with exactOptionalPropertyTypes
+        if: matrix.ts-version != '4.1'
+        run: |
+          yarn workspaces foreach --all -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
+          yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Job to confirm every required job passed
   pre_all_checks_passed:
@@ -481,6 +481,13 @@ jobs:
     needs:
       - production_packages
       - documentation
+      - format_lint
+      - no_dedupe_required
+      - package_quality
+      - typecheck
+      - test
+      - test_bundle
+      - test_types
     runs-on: ubuntu-latest
     steps:
       - name: Success
