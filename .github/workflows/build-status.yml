@@ -528,7 +528,9 @@ jobs:
       - name: Configure custom headers
         run: |
           echo "/*" > artifacts/_headers
-          echo "  Content-Security-Policy-Report-Only: default-src 'none'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com; script-src 'self' www.googletagmanager.com; style-src 'self'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
+          echo "  Content-Security-Policy: default-src 'none'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com api.securityscorecards.dev bestpractices.coreinfrastructure.org www.bestpractices.dev;connect-src *.google-analytics.com;script-src 'self' 'unsafe-inline' 'unsafe-eval' www.googletagmanager.com;frame-src *.codesandbox.io www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
+          echo "/api-reference/*" >> artifacts/_headers
+          echo "  Content-Security-Policy: default-src 'none'; img-src 'self' data:; connect-src data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" >> artifacts/_headers
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
