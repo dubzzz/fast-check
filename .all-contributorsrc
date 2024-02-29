@@ -427,6 +427,20 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/4980521?v=4",
       "profile": "https://github.com/nielk",
       "contributions": ["doc"]
+    },
+    {
+      "login": "ej-shafran",
+      "name": "ej shafran",
+      "avatar_url": "https://avatars.githubusercontent.com/u/116496520?v=4",
+      "profile": "https://github.com/ej-shafran",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "gruhn",
+      "name": "Niklas Gruhn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26570572?v=4",
+      "profile": "https://github.com/gruhn",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7
