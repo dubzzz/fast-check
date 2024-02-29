@@ -19,6 +19,7 @@ const quotes = [
   'https://github.com/jakebailey.png',
   'https://github.com/Andarist.png',
 ];
+const authorsOfPosts = ['https://github.com/dubzzz.png'];
 const allAvatars = [
   ...allContributors.contributors.map((contributor) => ({
     url: contributor.avatar_url,
@@ -26,6 +27,11 @@ const allAvatars = [
     size: 64,
   })),
   ...quotes.map((quote) => ({
+    url: quote,
+    login: quote.split('/').at(-1).split('.').slice(0, -1).join('.'),
+    size: 64,
+  })),
+  ...authorsOfPosts.map((quote) => ({
     url: quote,
     login: quote.split('/').at(-1).split('.').slice(0, -1).join('.'),
     size: 64,
