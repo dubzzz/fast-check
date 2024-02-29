@@ -35,8 +35,5 @@
     "prettier": "3.2.5",
     "publint": "^0.2.7",
     "typescript": "~5.3.3"
-  },
-  "resolutions": {
-    "react@^17.0.2": "patch:react@npm%3A17.0.2#./.yarn/patches/react-npm-17.0.2-99ba37d931.patch"
   }
 }
