@@ -34,7 +34,7 @@ const allAvatars = [
   ...authorsOfPosts.map((quote) => ({
     url: quote,
     login: quote.split('/').at(-1).split('.').slice(0, -1).join('.'),
-    size: 64,
+    size: 48,
   })),
 ];
 
