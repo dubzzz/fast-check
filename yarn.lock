@@ -3760,9 +3760,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.41.1":
-  version: 7.41.1
-  resolution: "@microsoft/api-extractor@npm:7.41.1"
+"@microsoft/api-extractor@npm:^7.42.0":
+  version: 7.42.0
+  resolution: "@microsoft/api-extractor@npm:7.42.0"
   dependencies:
     "@microsoft/api-extractor-model": "npm:7.28.13"
     "@microsoft/tsdoc": "npm:0.14.2"
@@ -3772,13 +3772,14 @@ __metadata:
     "@rushstack/terminal": "npm:0.10.0"
     "@rushstack/ts-command-line": "npm:4.18.0"
     lodash: "npm:~4.17.15"
+    minimatch: "npm:~3.0.3"
     resolve: "npm:~1.22.1"
     semver: "npm:~7.5.4"
     source-map: "npm:~0.6.1"
     typescript: "npm:5.3.3"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 10c0/924d7645aa2dc987e05d3d0c10fdfec21ac3494245b3361a6db7f2db7c067f1141e9787422ae768888f73888efb0a647c8b21201457505c6d3acf98262eb4bc8
+  checksum: 10c0/975179ccc19dd4f9a5d11834c745fb0e5aec35956e8129b2324e04299cfbd88c3ae8f47fac295c1d2c90f21076d99b024e9a4812e95cb9c4992cf16fe00bfe14
   languageName: node
   linkType: hard
 
@@ -9372,7 +9373,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.41.1"
+    "@microsoft/api-extractor": "npm:^7.42.0"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.22"
     babel-jest: "npm:^29.7.0"
@@ -13898,6 +13899,15 @@ __metadata:
   dependencies:
     brace-expansion: "npm:^2.0.1"
   checksum: 10c0/3defdfd230914f22a8da203747c42ee3c405c39d4d37ffda284dac5e45b7e1f6c49aa8be606509002898e73091ff2a3bbfc59c2c6c71d4660609f63aa92f98e3
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:~3.0.3":
+  version: 3.0.8
+  resolution: "minimatch@npm:3.0.8"
+  dependencies:
+    brace-expansion: "npm:^1.1.7"
+  checksum: 10c0/72b226f452dcfb5075255f53534cb83fc25565b909e79b9be4fad463d735cb1084827f7013ff41d050e77ee6e474408c6073473edd2fb72c2fd630cfb0acc6ad
   languageName: node
   linkType: hard
 
