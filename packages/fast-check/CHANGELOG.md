@@ -1,3 +1,32 @@
+# 3.16.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.16.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.15.1...v3.16.0)]
+
+## Features
+
+- ([PR#4709](https://github.com/dubzzz/fast-check/pull/4709)) Make `fc.pre` an assertion function
+
+## Fixes
+
+- ([PR#4736](https://github.com/dubzzz/fast-check/pull/4736)) Bug: Wrong logo ratio on small screen
+- ([PR#4747](https://github.com/dubzzz/fast-check/pull/4747)) CI: Deploy website on Netlify
+- ([PR#4751](https://github.com/dubzzz/fast-check/pull/4751)) CI: Drop configuration of GitHub Pages
+- ([PR#4756](https://github.com/dubzzz/fast-check/pull/4756)) CI: Make CI fail on invalid deploy
+- ([PR#4769](https://github.com/dubzzz/fast-check/pull/4769)) Clean: Drop legacy patch on React 17
+- ([PR#4677](https://github.com/dubzzz/fast-check/pull/4677)) Doc: Add `jsonwebtoken` to track record
+- ([PR#4713](https://github.com/dubzzz/fast-check/pull/4713)) Doc: Add extra spacing on top of CTA
+- ([PR#4750](https://github.com/dubzzz/fast-check/pull/4750)) Doc: Add link to Netlify
+- ([PR#4754](https://github.com/dubzzz/fast-check/pull/4754)) Doc: Better assets on the homepage of the website
+- ([PR#4768](https://github.com/dubzzz/fast-check/pull/4768)) Doc: Add new contributors ej-shafran and gruhn
+- ([PR#4771](https://github.com/dubzzz/fast-check/pull/4771)) Doc: Blog post for 3.15.0
+- ([PR#4730](https://github.com/dubzzz/fast-check/pull/4730)) Performance: Optimize image assets on homepage
+- ([PR#4753](https://github.com/dubzzz/fast-check/pull/4753)) Security: Configure CSP for fast-check.dev
+- ([PR#4761](https://github.com/dubzzz/fast-check/pull/4761)) Security: Enforce Content-Security-Policy on our website
+- ([PR#4772](https://github.com/dubzzz/fast-check/pull/4772)) Security: Relax CSP policy to support Algolia
+
+---
+
 # 3.15.1
 
 _Prepare the monorepo for ESM build-chain_
