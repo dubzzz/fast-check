@@ -3760,9 +3760,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.42.0":
-  version: 7.42.0
-  resolution: "@microsoft/api-extractor@npm:7.42.0"
+"@microsoft/api-extractor@npm:^7.42.2":
+  version: 7.42.2
+  resolution: "@microsoft/api-extractor@npm:7.42.2"
   dependencies:
     "@microsoft/api-extractor-model": "npm:7.28.13"
     "@microsoft/tsdoc": "npm:0.14.2"
@@ -3770,7 +3770,7 @@ __metadata:
     "@rushstack/node-core-library": "npm:4.0.2"
     "@rushstack/rig-package": "npm:0.5.2"
     "@rushstack/terminal": "npm:0.10.0"
-    "@rushstack/ts-command-line": "npm:4.18.0"
+    "@rushstack/ts-command-line": "npm:4.19.0"
     lodash: "npm:~4.17.15"
     minimatch: "npm:~3.0.3"
     resolve: "npm:~1.22.1"
@@ -3779,7 +3779,7 @@ __metadata:
     typescript: "npm:5.3.3"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 10c0/975179ccc19dd4f9a5d11834c745fb0e5aec35956e8129b2324e04299cfbd88c3ae8f47fac295c1d2c90f21076d99b024e9a4812e95cb9c4992cf16fe00bfe14
+  checksum: 10c0/49b4691c892d0866d8077699b0fff3366675151244de0d69c75f5c25808e9de4efbcf48b5f9fe90c1766abcb2e83c29461925f0dc2dada2e533ddc2bdbd6a58c
   languageName: node
   linkType: hard
 
@@ -4285,15 +4285,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/ts-command-line@npm:4.18.0":
-  version: 4.18.0
-  resolution: "@rushstack/ts-command-line@npm:4.18.0"
+"@rushstack/ts-command-line@npm:4.19.0":
+  version: 4.19.0
+  resolution: "@rushstack/ts-command-line@npm:4.19.0"
   dependencies:
     "@rushstack/terminal": "npm:0.10.0"
     "@types/argparse": "npm:1.0.38"
     argparse: "npm:~1.0.9"
     string-argv: "npm:~0.3.1"
-  checksum: 10c0/5326734ae373d613601c79605093e0e30915866ff8f27271d4e49a91dc053e0314b6da8288de9ebef0c9f8be6c86dbb674f5e74feaba7d912a9db319110185b6
+  checksum: 10c0/e7a9a43a112916f46b3fbae4ead16fa4736412881ea1a06c01a8bb0af0dbc96b72f974f7d60cefd17b1adeeae544e56b7b13e47d1edd44a38886850abf43351a
   languageName: node
   linkType: hard
 
@@ -9373,7 +9373,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.42.0"
+    "@microsoft/api-extractor": "npm:^7.42.2"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.24"
     babel-jest: "npm:^29.7.0"
