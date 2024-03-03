@@ -1,6 +1,6 @@
 # 3.16.0
 
-_TODO Description_
+_Type assert on assertions linked to `fc.pre`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.16.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.15.1...v3.16.0)]
 
 ## Features
