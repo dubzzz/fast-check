@@ -18,13 +18,13 @@ _Type assert on assertions linked to `fc.pre`_
 - ([PR#4677](https://github.com/dubzzz/fast-check/pull/4677)) Doc: Add `jsonwebtoken` to track record
 - ([PR#4712](https://github.com/dubzzz/fast-check/pull/4712)) Doc: Fix console errors of website
 - ([PR#4713](https://github.com/dubzzz/fast-check/pull/4713)) Doc: Add extra spacing on top of CTA
+- ([PR#4730](https://github.com/dubzzz/fast-check/pull/4730)) Doc: Optimize image assets on homepage
 - ([PR#4732](https://github.com/dubzzz/fast-check/pull/4732)) Doc: Optimize SVG assets
 - ([PR#4735](https://github.com/dubzzz/fast-check/pull/4735)) Doc: Less layout shift with proper sizes
 - ([PR#4750](https://github.com/dubzzz/fast-check/pull/4750)) Doc: Add link to Netlify
 - ([PR#4754](https://github.com/dubzzz/fast-check/pull/4754)) Doc: Better assets on the homepage of the website
 - ([PR#4768](https://github.com/dubzzz/fast-check/pull/4768)) Doc: Add new contributors ej-shafran and gruhn
 - ([PR#4771](https://github.com/dubzzz/fast-check/pull/4771)) Doc: Blog post for 3.15.0
-- ([PR#4730](https://github.com/dubzzz/fast-check/pull/4730)) Performance: Optimize image assets on homepage
 - ([PR#4753](https://github.com/dubzzz/fast-check/pull/4753)) Security: Configure CSP for fast-check.dev
 - ([PR#4761](https://github.com/dubzzz/fast-check/pull/4761)) Security: Enforce Content-Security-Policy on our website
 - ([PR#4772](https://github.com/dubzzz/fast-check/pull/4772)) Security: Relax CSP policy to support Algolia
