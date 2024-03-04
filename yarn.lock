@@ -3760,7 +3760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.42.2":
+"@microsoft/api-extractor@npm:^7.42.3":
   version: 7.42.3
   resolution: "@microsoft/api-extractor@npm:7.42.3"
   dependencies:
@@ -9373,7 +9373,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.42.2"
+    "@microsoft/api-extractor": "npm:^7.42.3"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.24"
     babel-jest: "npm:^29.7.0"
