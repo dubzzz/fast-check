@@ -1,18 +1,27 @@
 import { jest } from '@jest/globals';
-import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../../src/stream/Stream';
+
+jest.unstable_mockModule('./src/check/property/SkipAfterProperty', () => ({
+  SkipAfterProperty: jest.fn(),
+}));
+jest.unstable_mockModule('./src/check/property/TimeoutProperty', () => ({
+  TimeoutProperty: jest.fn(),
+}));
+jest.unstable_mockModule('./src/check/property/UnbiasedProperty', () => ({
+  UnbiasedProperty: jest.fn(),
+}));
+jest.unstable_mockModule('./src/check/property/IgnoreEqualValuesProperty', () => ({
+  IgnoreEqualValuesProperty: jest.fn(),
+}));
+const { decorateProperty } = await import('../../../../src/check/runner/DecorateProperty');
+const { Value } = await import('../../../../src/check/arbitrary/definition/Value');
+const { Stream } = await import('../../../../src/stream/Stream');
 
 // Mocks
-import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
-import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
-import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
-import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
-jest.mock('../../../../src/check/property/SkipAfterProperty');
-jest.mock('../../../../src/check/property/TimeoutProperty');
-jest.mock('../../../../src/check/property/UnbiasedProperty');
-jest.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
+const { SkipAfterProperty } = await import('../../../../src/check/property/SkipAfterProperty');
+const { TimeoutProperty } = await import('../../../../src/check/property/TimeoutProperty');
+const { UnbiasedProperty } = await import('../../../../src/check/property/UnbiasedProperty');
+const { IgnoreEqualValuesProperty } = await import('../../../../src/check/property/IgnoreEqualValuesProperty');
 
 function buildProperty(asyncProp: boolean) {
   return {
