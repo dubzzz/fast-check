@@ -1,24 +1,33 @@
+import { jest } from '@jest/globals';
 import * as fc from 'fast-check';
-import { typedIntArrayArbitraryArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
 
-import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '../../__test-helpers__/ArbitraryHelpers';
+jest.unstable_mockModule('./src/arbitrary/array', () => ({
+  array: jest.fn(),
+}));
 
-import * as ArrayMock from '../../../../../src/arbitrary/array';
-import {
+const { typedIntArrayArbitraryArbitraryBuilder } = await import(
+  '../../../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder'
+);
+
+const { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } = await import(
+  '../../__test-helpers__/ArbitraryHelpers'
+);
+const {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from '../../__test-helpers__/ArbitraryAssertions';
+} = await import('../../__test-helpers__/ArbitraryAssertions');
 
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+const ArrayMock = await import('../../../../../src/arbitrary/array');
 
 describe('typedIntArrayArbitraryArbitraryBuilder', () => {
+  function beforeEachHook() {
+    jest.resetAllMocks();
+  }
+  fc.configureGlobal({ beforeEach: beforeEachHook });
+  beforeEach(beforeEachHook);
+
   it('should default constraints for arbitraryBuilder to defaultMin/Max when not specified', () => {
     fc.assert(
       fc.property(
@@ -123,6 +132,13 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
 });
 
 describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
+  function beforeEachHook() {
+    jest.resetAllMocks();
+    jest.spyOn(ArrayMock, 'array').mockImplementation(jest.requireActual('./lib/cjs/arbitrary/array').array);
+  }
+  fc.configureGlobal({ beforeEach: beforeEachHook });
+  beforeEach(beforeEachHook);
+
   type Extra = { minLength?: number; maxLength?: number; min?: number; max?: number };
   const extraParameters: fc.Arbitrary<Extra> = fc
     .record(
