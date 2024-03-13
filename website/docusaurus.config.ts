@@ -89,8 +89,11 @@ const config: Config = {
         {
           title: 'Community',
           items: [
+            { label: 'Bluesky', href: 'https://bsky.app/profile/ndubien.bsky.social' },
             { label: 'Mastodon', href: 'https://fosstodon.org/@ndubien' },
-            { label: 'Twitter', href: 'https://twitter.com/ndubien' },
+            { label: 'X (Twitter)', href: 'https://twitter.com/ndubien' },
+            { label: 'Become a contributor', href: 'https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md' },
+            { label: 'Sponsor us', href: 'https://github.com/sponsors/dubzzz' },
           ],
         },
         {
@@ -99,6 +102,7 @@ const config: Config = {
             { label: 'Blog', to: '/blog' },
             { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
+            { label: 'Work with me @Pigment', href: 'https://refer.hellotrusty.io/kz48qf0nh7' },
             {
               html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" loading="lazy" /></a>`,
             },
