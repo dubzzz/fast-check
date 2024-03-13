@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { safeApply } from '../../../src/utils/apply';
 
 describe('safeApply', () => {

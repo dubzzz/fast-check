@@ -1,5 +1,6 @@
 import type { MaybeMocked } from '../../__test-helpers__/Mocked';
 import { Random } from '../../../../src/random/generator/Random';
+import { jest } from '@jest/globals';
 
 export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
   const clone = jest.fn();

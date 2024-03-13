@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { property } from '../../../../src/check/property/Property';
 import { pre } from '../../../../src/check/precondition/Pre';

@@ -3,6 +3,7 @@ import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary'
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import type { Random } from '../../../../src/random/generator/Random';
 import { Stream } from '../../../../src/stream/Stream';
+import { jest } from '@jest/globals';
 
 /**
  * Generate a fake Class inheriting from Arbitrary with all methods being mocked

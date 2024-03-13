@@ -1,5 +1,6 @@
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
+import { jest } from '@jest/globals';
 
 describe(`Timeout (seed: ${seed})`, () => {
   it('should always run beforeEach and afterEach even in case of timeout', async () => {

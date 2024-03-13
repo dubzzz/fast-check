@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod } from '../../../../../src/check/symbols';
 
