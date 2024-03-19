@@ -3775,9 +3775,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.42.3":
-  version: 7.42.3
-  resolution: "@microsoft/api-extractor@npm:7.42.3"
+"@microsoft/api-extractor@npm:^7.43.0":
+  version: 7.43.0
+  resolution: "@microsoft/api-extractor@npm:7.43.0"
   dependencies:
     "@microsoft/api-extractor-model": "npm:7.28.13"
     "@microsoft/tsdoc": "npm:0.14.2"
@@ -3791,10 +3791,10 @@ __metadata:
     resolve: "npm:~1.22.1"
     semver: "npm:~7.5.4"
     source-map: "npm:~0.6.1"
-    typescript: "npm:5.3.3"
+    typescript: "npm:5.4.2"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 10c0/513d710ce1a13ea2260442eb9bdf66805f585794c1dfffc7840c6b87e0764b4b8af996cd3dbe8e45cc84328c7cae5ecc88ce16842a0ba88322af438a8544a27a
+  checksum: 10c0/1bbd1866508db2c5c0ad771e4aeccef95201319879b5cd2b00c5177cfdedb1ad5bc35a452be9d14ac3cfcdf7c9b7c3a737bc2ada9bdcc48eb0e6e11214169b52
   languageName: node
   linkType: hard
 
@@ -9425,7 +9425,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.42.3"
+    "@microsoft/api-extractor": "npm:^7.43.0"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.28"
     babel-jest: "npm:^29.7.0"
@@ -18520,7 +18520,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.3.3, typescript@npm:~5.3.3":
+"typescript@npm:5.4.2":
+  version: 5.4.2
+  resolution: "typescript@npm:5.4.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/583ff68cafb0c076695f72d61df6feee71689568179fb0d3a4834dac343df6b6ed7cf7b6f6c801fa52d43cd1d324e2f2d8ae4497b09f9e6cfe3d80a6d6c9ca52
+  languageName: node
+  linkType: hard
+
+"typescript@npm:~5.3.3":
   version: 5.3.3
   resolution: "typescript@npm:5.3.3"
   bin:
@@ -18530,7 +18540,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.3.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>":
+  version: 5.4.2
+  resolution: "typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/fcf6658073d07283910d9a0e04b1d5d0ebc822c04dbb7abdd74c3151c7aa92fcddbac7d799404e358197222006ccdc4c0db219d223d2ee4ccd9e2b01333b49be
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A~5.3.3#optional!builtin<compat/typescript>":
   version: 5.3.3
   resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
   bin:
