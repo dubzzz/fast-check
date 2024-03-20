@@ -4,7 +4,7 @@ import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import { readerAssert, writerAssert } from './__properties__/concurrentAssert.cjs';
+import { readerAssert, writerAssert } from './__properties__/concurrentAssert.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {

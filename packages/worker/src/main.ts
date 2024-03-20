@@ -1,4 +1,4 @@
-import { isMainThread, parentPort, workerData } from 'node:worker_threads';
+import { isMainThread, parentPort, workerData, threadId } from 'node:worker_threads';
 
 import { assert as fcAssert, type IAsyncProperty, type IProperty, type Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
@@ -6,6 +6,8 @@ import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
 import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
+import { writeFileSync } from 'fs';
+import * as process from 'process';
 
 let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<
@@ -15,8 +17,18 @@ const allKnownTerminateAllWorkersPerProperty = new Map<
 async function clearAllWorkersFor(property: IAsyncProperty<unknown> | IProperty<unknown>): Promise<void> {
   const terminateAllWorkers = allKnownTerminateAllWorkersPerProperty.get(property);
   if (terminateAllWorkers === undefined) {
+    writeFileSync(
+      '/workspaces/fast-check/debug.log',
+      `[${process.pid}][${threadId}] No cleaning found for property, found ${allKnownTerminateAllWorkersPerProperty.size} other cleanings\n`,
+      { flag: 'a' },
+    );
     return;
   }
+  writeFileSync(
+    '/workspaces/fast-check/debug.log',
+    `[${process.pid}][${threadId}] Executing cleaning for property, found ${allKnownTerminateAllWorkersPerProperty.size - 1} other cleanings\n`,
+    { flag: 'a' },
+  );
   await terminateAllWorkers();
 }
 
@@ -38,9 +50,37 @@ export async function assert<Ts>(property: IAsyncProperty<Ts> | IProperty<Ts>, p
   if (isMainThread) {
     // Main thread code
     try {
+      writeFileSync(
+        '/workspaces/fast-check/debug.log',
+        `[${process.pid}][${threadId}] worker::assert -> BEFORE fc.assert\n`,
+        {
+          flag: 'a',
+        },
+      );
       await fcAssert(property, params);
+      writeFileSync(
+        '/workspaces/fast-check/debug.log',
+        `[${process.pid}][${threadId}] worker::assert -> AFTER fc.assert\n`,
+        {
+          flag: 'a',
+        },
+      );
     } finally {
+      writeFileSync(
+        '/workspaces/fast-check/debug.log',
+        `[${process.pid}][${threadId}] worker::assert -> BEFORE cleaning for workers\n`,
+        {
+          flag: 'a',
+        },
+      );
       await clearAllWorkersFor(property);
+      writeFileSync(
+        '/workspaces/fast-check/debug.log',
+        `[${process.pid}][${threadId}] worker::assert -> AFTER cleaning for workers\n`,
+        {
+          flag: 'a',
+        },
+      );
     }
   } else {
     // Worker code
@@ -82,6 +122,13 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     const isolationLevel = options.isolationLevel || 'file';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
     const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentPredicateId, isolationLevel, arbitraries);
+    writeFileSync(
+      '/workspaces/fast-check/debug.log',
+      `[${process.pid}][${threadId}] Registering cleaning for property\n`,
+      {
+        flag: 'a',
+      },
+    );
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
     return property;
   } else if (parentPort !== null && workerData.fastcheckWorker === true) {
