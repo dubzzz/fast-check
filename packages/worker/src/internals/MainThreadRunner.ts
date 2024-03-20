@@ -25,14 +25,23 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
     return this.internalProperty.isAsync();
   }
   generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
-    // Extracting and cloning the state of Random before altering it
-    const state = this.captureRandomState ? mrng.getState() : undefined;
-    this.paramsForGenerate = { randomGeneratorState: state !== undefined ? state.slice() : undefined, runId };
+    if (this.captureRandomState) {
+      // Extracting and cloning the state of Random before altering it
+      const state = this.captureRandomState ? mrng.getState() : undefined;
+      this.paramsForGenerate = { randomGeneratorState: state !== undefined ? state.slice() : undefined, runId };
+
+      // The value will never be consummed by the main-thread except for reporting in case of error
+      return new fc.Value(undefined as unknown as Ts, undefined);
+    }
 
     const value = this.internalProperty.generate(mrng, runId);
     return value;
   }
   shrink(value: fc.Value<Ts>): fc.Stream<fc.Value<Ts>> {
+    if (this.captureRandomState) {
+      // No shrink on worker-based generations
+      return fc.Stream.nil();
+    }
     return this.internalProperty.shrink(value);
   }
   run(v: Ts, dontRunHook?: boolean | undefined): Promise<fc.PreconditionFailure | fc.PropertyFailure | null> {
