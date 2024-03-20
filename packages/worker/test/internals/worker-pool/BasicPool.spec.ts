@@ -51,7 +51,6 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
@@ -60,7 +59,7 @@ describe('BasicPool', () => {
       const worker = await workerPromise;
 
       // Act
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
 
       // Assert
       expect(worker.isAvailable()).toBe(false);
@@ -75,7 +74,6 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const successMessage = 'success!';
@@ -83,7 +81,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
 
       // Act
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
@@ -106,7 +104,6 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const errorMessage = 'oups there was an error!';
@@ -114,7 +111,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
 
       // Act
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
@@ -137,14 +134,13 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
 
       // Act
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
@@ -170,14 +166,13 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
 
       // Act
       const onErrorHandler = on.mock.calls.find(([eventName]) => eventName === 'messageerror')![1];
@@ -196,14 +191,13 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
 
       // Act
       const onErrorHandler = on.mock.calls.find(([eventName]) => eventName === 'error')![1];
@@ -222,14 +216,13 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
 
       // Act
       const exitCode = 101;
@@ -318,14 +311,13 @@ describe('BasicPool', () => {
       const { on, postMessage, terminate } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
       const receivedRunId = receivedMessage.runId;
       const message: WorkerToPoolMessage<string> = { runId: receivedRunId, success: true, output: 'successMessage' };
@@ -349,14 +341,13 @@ describe('BasicPool', () => {
       const { on, postMessage, terminate } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
       const receivedRunId = receivedMessage.runId;
       const message: WorkerToPoolMessage<string> = { runId: receivedRunId, success: false, error: 'errorMessage' };
@@ -380,14 +371,13 @@ describe('BasicPool', () => {
       const { on, terminate } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const getState = jest.fn(() => undefined);
       const onSuccess = jest.fn();
       const onFailure = jest.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', getState, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
       expect(terminate).not.toHaveBeenCalled();
 
       // Act

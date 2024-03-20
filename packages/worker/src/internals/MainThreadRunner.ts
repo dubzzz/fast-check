@@ -9,10 +9,16 @@ import { GlobalPool } from './worker-pool/GlobalPool.js';
 
 class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
   private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
+  private readonly captureRandomState: boolean;
   private paramsForGenerate: { randomGeneratorState: number[] | undefined; runId: number | undefined } | undefined;
 
-  constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
+  constructor(
+    arbitraries: PropertyArbitraries<Ts>,
+    predicate: (...args: Ts) => Promise<boolean | void>,
+    captureRandomeState: boolean,
+  ) {
     this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
+    this.captureRandomState = captureRandomeState;
   }
 
   isAsync(): true {
@@ -20,7 +26,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
   }
   generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
     // Extracting and cloning the state of Random before altering it
-    const state = mrng.getState();
+    const state = this.captureRandomState ? mrng.getState() : undefined;
     this.paramsForGenerate = { randomGeneratorState: state !== undefined ? state.slice() : undefined, runId };
 
     const value = this.internalProperty.generate(mrng, runId);
@@ -67,12 +73,14 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
  * @param workerFileUrl - The URL towards the file holding the worker's code
  * @param predicateId - Id of the predicate
  * @param isolationLevel - The kind of isolation to be put in place between two executions of predicates
+ * @param randomSource - Where should we generate the random values?
  * @param arbitraries - The arbitraries used to generate the inputs for the predicate hold within the worker
  */
 export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   workerFileUrl: URL,
   predicateId: number,
   isolationLevel: 'file' | 'property' | 'predicate',
+  randomSource: 'main-thread' | 'worker',
   arbitraries: PropertyArbitraries<Ts>,
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
   const lock = new Lock();
@@ -85,15 +93,19 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;
-  const property = new CustomAsyncProperty<Ts>(arbitraries, async (...inputs) => {
-    return new Promise((resolve, reject) => {
-      if (worker === undefined) {
-        reject(new Error('Badly initialized worker, unable to run the property'));
-        return;
-      }
-      worker.register(predicateId, inputs, () => property.getState(), resolve, reject);
-    });
-  });
+  const property = new CustomAsyncProperty<Ts>(
+    arbitraries,
+    async (...inputs) => {
+      return new Promise((resolve, reject) => {
+        if (worker === undefined) {
+          reject(new Error('Badly initialized worker, unable to run the property'));
+          return;
+        }
+        worker.register(predicateId, inputs, property.getState(), resolve, reject);
+      });
+    },
+    randomSource === 'worker',
+  );
   property.beforeEach(async (hookFunction) => {
     await hookFunction(); // run outside of the worker, can throw
     const acquired = await lock.acquire();

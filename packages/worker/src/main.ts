@@ -66,6 +66,18 @@ export type PropertyForOptions = {
    * @default "file"
    */
   isolationLevel?: 'file' | 'property' | 'predicate';
+
+  /**
+   * Where should we generate the random values?
+   *
+   * - `main-thread`: The main thread will be responsible to generate the random values and send them to the worker thread.
+   *    It unfortunately cannot send any value that cannot be serialized between threads.
+   * - `worker`: The worker is responsible to generate its own values based on the instructions provided by the main thread.
+   *    Switching to a worker mode allows to support non-serializable values, unfortunately it drops all shrinking capabilities.
+   *
+   * @default "main-thread"
+   */
+  randomSource?: 'main-thread' | 'worker';
 };
 
 const registeredPredicates = new Set<number>();
@@ -82,8 +94,15 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
   if (isMainThread) {
     // Main thread code
     const isolationLevel = options.isolationLevel || 'file';
+    const randomSource = options.randomSource || 'main-thread';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentPredicateId, isolationLevel, arbitraries);
+    const { property, terminateAllWorkers } = runMainThread<Ts>(
+      url,
+      currentPredicateId,
+      isolationLevel,
+      randomSource,
+      arbitraries,
+    );
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
     return property;
   } else if (parentPort !== null && workerData.fastcheckWorker === true) {
