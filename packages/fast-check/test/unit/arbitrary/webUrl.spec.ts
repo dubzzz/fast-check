@@ -130,13 +130,17 @@ function webUrlConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebUrlConst
           withIPv4Extended: fc.boolean(),
           withUserInfo: fc.boolean(),
           withPort: fc.boolean(),
-          size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+          size: onlySmall
+            ? fc.constantFrom(...(['-1', '=', 'xsmall', 'small'] as const))
+            : fc.oneof(sizeArb, relativeSizeArb),
         },
         { requiredKeys: [] },
       ),
       withQueryParameters: fc.boolean(),
       withFragments: fc.boolean(),
-      size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+      size: onlySmall
+        ? fc.constantFrom(...(['-1', '=', 'xsmall', 'small'] as const))
+        : fc.oneof(sizeArb, relativeSizeArb),
     },
     { requiredKeys: [] },
   );

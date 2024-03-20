@@ -76,7 +76,11 @@ describe('webPath (integration)', () => {
 
 function webPathConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebPathConstraints> {
   return fc.record(
-    { size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb) },
+    {
+      size: onlySmall
+        ? fc.constantFrom(...(['-1', '=', 'xsmall', 'small'] as const))
+        : fc.oneof(sizeArb, relativeSizeArb),
+    },
     { requiredKeys: [] },
   );
 }
