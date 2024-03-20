@@ -60,7 +60,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^6.0.0"
+    "pure-rand": "^6.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.3",
