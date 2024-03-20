@@ -11,7 +11,7 @@ export function runWorker<Ts extends unknown[]>(
   parentPort: MessagePort,
   predicateId: number,
   predicate: PropertyPredicate<Ts>,
-  buildPayload: (state: readonly number[], runId: number | undefined) => Ts,
+  buildPayload: (state: number[], runId: number | undefined) => Ts,
 ): void {
   parentPort.on('message', (message: MainThreadToWorkerMessage<Ts>) => {
     const { content, targetPredicateId, runId } = message;

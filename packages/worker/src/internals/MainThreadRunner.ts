@@ -9,9 +9,7 @@ import { GlobalPool } from './worker-pool/GlobalPool.js';
 
 class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
   private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
-  private paramsForGenerate:
-    | { randomGeneratorState: readonly number[] | undefined; runId: number | undefined }
-    | undefined;
+  private paramsForGenerate: { randomGeneratorState: number[] | undefined; runId: number | undefined } | undefined;
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
@@ -21,8 +19,10 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
     return this.internalProperty.isAsync();
   }
   generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
+    // Extracting and cloning the state of Random before altering it
+    this.paramsForGenerate = { randomGeneratorState: mrng.getState().slice(), runId };
+
     const value = this.internalProperty.generate(mrng, runId);
-    this.paramsForGenerate = { randomGeneratorState: mrng.getState(), runId };
     return value;
   }
   shrink(value: fc.Value<Ts>): fc.Stream<fc.Value<Ts>> {
@@ -51,7 +51,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
     return Promise.resolve();
   }
 
-  getState(): { readonly randomGeneratorState: readonly number[]; runId: number | undefined } | undefined {
+  getState(): { readonly randomGeneratorState: number[]; runId: number | undefined } | undefined {
     const state = this.paramsForGenerate;
     if (state === undefined || state.randomGeneratorState === undefined) {
       return undefined;

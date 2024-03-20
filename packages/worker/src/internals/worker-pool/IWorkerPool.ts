@@ -10,7 +10,7 @@ export type PooledWorker<TSuccess, TPayload> = {
   register: (
     predicateId: number,
     payload: TPayload,
-    getState: () => { randomGeneratorState: readonly number[]; runId: number | undefined } | undefined,
+    getState: () => { randomGeneratorState: number[]; runId: number | undefined } | undefined,
     onSuccess: OnSuccessCallback<TSuccess>,
     onFailure: OnErrorCallback,
   ) => void;
@@ -25,7 +25,7 @@ export type PoolToWorkerMessage<TPayload> = {
   runId: number;
   content:
     | { source: 'main'; payload: TPayload }
-    | { source: 'worker'; randomGeneratorState: readonly number[]; runId: number | undefined };
+    | { source: 'worker'; randomGeneratorState: number[]; runId: number | undefined };
 };
 
 /**
