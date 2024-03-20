@@ -39,10 +39,16 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
     return this.internalProperty.afterEach(hookFunction);
   }
   runBeforeEach() {
-    return (this.internalProperty as any).runBeforeEach();
+    if (this.internalProperty.runBeforeEach !== undefined) {
+      return this.internalProperty.runBeforeEach();
+    }
+    return Promise.resolve();
   }
   runAfterEach() {
-    return (this.internalProperty as any).runAfterEach();
+    if (this.internalProperty.runAfterEach !== undefined) {
+      return this.internalProperty.runAfterEach();
+    }
+    return Promise.resolve();
   }
 
   getState(): { readonly randomGeneratorState: readonly number[]; runId: number | undefined } | undefined {
