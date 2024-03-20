@@ -1,6 +1,6 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { xoroshiro128plus } from 'pure-rand';
+import { xorshift128plus } from 'pure-rand';
 import { assert as fcAssert, property as fcProperty, Random } from 'fast-check';
 import type { IAsyncProperty, IProperty, Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
@@ -92,8 +92,8 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     const property: IProperty<Ts> = (fcProperty as any)(...args.slice(0, args.length - 1), () => true);
     runWorker(parentPort, currentPredicateId, predicate, (state: number[], runId: number | undefined): Ts => {
       // TODO - Support other PRNG
-      // TODO - Reject if not xoroshiro128plus
-      const mrng = new Random(xoroshiro128plus.fromState(state));
+      // TODO - Reject if not xorshift128plus
+      const mrng = new Random(xorshift128plus.fromState(state));
       return property.generate(mrng, runId).value_;
     });
     registeredPredicates.add(currentPredicateId);
