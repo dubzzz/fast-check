@@ -96,7 +96,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     // Worker code
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
     const property: IProperty<Ts> = (fcProperty as any)(...args.slice(0, args.length - 1), () => true);
-    runWorker(parentPort, currentPredicateId, predicate, (state: number[], runId: number | undefined): Ts => {
+    runWorker(parentPort, currentPredicateId, predicate, (state: readonly number[], runId: number | undefined): Ts => {
       const mrng = new Random((xoroshiro128plus as any).fromState(state)); // TODO - Support other PRNG
       return property.generate(mrng, runId).value_;
     });
