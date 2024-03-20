@@ -99,7 +99,10 @@ export class Random {
     return (a * Random.DBL_FACTOR + b) * Random.DBL_DIVISOR;
   }
 
-  getState(): number[] | undefined {
+  /**
+   * Extract the internal state of the internal RandomGenerator backing the current instance of Random
+   */
+  getState(): readonly number[] | undefined {
     if ('getState' in this.internalRng && typeof this.internalRng.getState === 'function') {
       return this.internalRng.getState();
     }
