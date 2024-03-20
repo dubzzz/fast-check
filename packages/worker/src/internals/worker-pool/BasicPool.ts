@@ -137,7 +137,9 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
               runId: currentRunId,
             };
             worker.postMessage(message);
+            return;
           }
+          throw err;
         }
       },
       terminateIfStillRunning: async () => {
