@@ -2744,7 +2744,7 @@ __metadata:
     "@types/react": "npm:^18.2.66"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.7.0"
-    express: "npm:^4.18.3"
+    express: "npm:^4.19.0"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
@@ -7594,10 +7594,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:0.5.0":
-  version: 0.5.0
-  resolution: "cookie@npm:0.5.0"
-  checksum: 10c0/c01ca3ef8d7b8187bae434434582288681273b5a9ed27521d4d7f9f7928fe0c920df0decd9f9d3bbd2d14ac432b8c8cf42b98b3bdd5bfe0e6edddeebebe8b61d
+"cookie@npm:0.6.0":
+  version: 0.6.0
+  resolution: "cookie@npm:0.6.0"
+  checksum: 10c0/f2318b31af7a31b4ddb4a678d024514df5e705f9be5909a192d7f116cfb6d45cbacf96a473fa733faa95050e7cff26e7832bb3ef94751592f1387b71c8956686
   languageName: node
   linkType: hard
 
@@ -9374,16 +9374,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.3, express@npm:^4.18.3":
-  version: 4.18.3
-  resolution: "express@npm:4.18.3"
+"express@npm:^4.17.3, express@npm:^4.19.0":
+  version: 4.19.0
+  resolution: "express@npm:4.19.0"
   dependencies:
     accepts: "npm:~1.3.8"
     array-flatten: "npm:1.1.1"
     body-parser: "npm:1.20.2"
     content-disposition: "npm:0.5.4"
     content-type: "npm:~1.0.4"
-    cookie: "npm:0.5.0"
+    cookie: "npm:0.6.0"
     cookie-signature: "npm:1.0.6"
     debug: "npm:2.6.9"
     depd: "npm:2.0.0"
@@ -9409,7 +9409,7 @@ __metadata:
     type-is: "npm:~1.6.18"
     utils-merge: "npm:1.0.1"
     vary: "npm:~1.1.2"
-  checksum: 10c0/0b9eeafbac549e3c67d92d083bf1773e358359f41ad142b92121935c6348d29079b75054555b3f62de39263fffc8ba06898b09fdd3e213e28e714c03c5d9f44c
+  checksum: 10c0/cf4be4838f154491da059bb2fb11f7186211a66b232e7f2e460eba634c8bcf0af330a067ea02ad33f8782f66114038e4bb23c0a53aca463da092d5495a5d11bf
   languageName: node
   linkType: hard
 
