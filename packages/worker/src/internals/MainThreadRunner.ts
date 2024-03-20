@@ -31,7 +31,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
       this.paramsForGenerate = { randomGeneratorState: state !== undefined ? state.slice() : undefined, runId };
 
       // The value will never be consummed by the main-thread except for reporting in case of error
-      return new fc.Value(undefined as unknown as Ts, undefined);
+      return new fc.Value([] as unknown as Ts, undefined);
     }
 
     const value = this.internalProperty.generate(mrng, runId);
