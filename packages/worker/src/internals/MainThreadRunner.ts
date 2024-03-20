@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { xorshift128plus } from 'pure-rand';
 import type { IAsyncPropertyWithHooks } from 'fast-check';
 import type { PropertyArbitraries, WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
@@ -8,6 +9,7 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 
 class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
+  private readonly numArbitraries: number;
   private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
   private readonly captureRandomState: boolean;
   private paramsForGenerate: { randomGeneratorState: number[] | undefined; runId: number | undefined } | undefined;
@@ -17,6 +19,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
     predicate: (...args: Ts) => Promise<boolean | void>,
     captureRandomeState: boolean,
   ) {
+    this.numArbitraries = arbitraries.length;
     this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
     this.captureRandomState = captureRandomeState;
   }
@@ -27,11 +30,26 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
   generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
     if (this.captureRandomState) {
       // Extracting and cloning the state of Random before altering it
-      const state = this.captureRandomState ? mrng.getState() : undefined;
-      this.paramsForGenerate = { randomGeneratorState: state !== undefined ? state.slice() : undefined, runId };
+      const state = mrng.getState()!;
+      this.paramsForGenerate = { randomGeneratorState: state.slice(), runId };
 
       // The value will never be consummed by the main-thread except for reporting in case of error
-      return new fc.Value([] as unknown as Ts, undefined);
+      const internalProperty = this.internalProperty;
+      let value: Ts | undefined = undefined;
+      // eslint-disable-next-line no-inner-declarations
+      function getValue(): Ts {
+        if (value === undefined) {
+          const mrng = new fc.Random(xorshift128plus.fromState(state));
+          value = internalProperty.generate(mrng, runId).value_;
+        }
+        return value;
+      }
+      return new fc.Value(
+        [...Array(this.numArbitraries)].map((_, index) => ({
+          toString: () => fc.stringify(getValue()[index]),
+        })) as unknown as Ts,
+        undefined,
+      );
     }
 
     const value = this.internalProperty.generate(mrng, runId);
