@@ -3,9 +3,10 @@ import { buildLowerAlphaNumericArbitrary } from './_internals/builders/Character
 import { domain } from './domain';
 import { stringOf } from './stringOf';
 import { tuple } from './tuple';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { adapter, AdapterOutput } from './_internals/AdapterArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { AdapterOutput } from './_internals/AdapterArbitrary';
+import { adapter } from './_internals/AdapterArbitrary';
 import { safeJoin, safeSlice, safeSplit } from '../utils/globals';
 
 /** @internal */
@@ -83,9 +84,9 @@ export function emailAddress(constraints: EmailAddressConstraints = {}): Arbitra
         maxLength: 64,
         size: constraints.size,
       }),
-      { minLength: 1, maxLength: 32, size: constraints.size }
+      { minLength: 1, maxLength: 32, size: constraints.size },
     ),
-    dotAdapter
+    dotAdapter,
   ).map(dotMapper, dotUnmapper);
 
   return tuple(localPartArb, domain({ size: constraints.size })).map(atMapper, atUnmapper);

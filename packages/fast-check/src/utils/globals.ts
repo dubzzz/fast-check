@@ -190,7 +190,7 @@ export function safeMap<T, U>(instance: T[], fn: (value: T, index: number, array
 }
 export function safeFilter<T, U extends T>(
   instance: T[],
-  predicate: ((value: T, index: number, array: T[]) => value is U) | ((value: T, index: number, array: T[]) => unknown)
+  predicate: ((value: T, index: number, array: T[]) => value is U) | ((value: T, index: number, array: T[]) => unknown),
 ): U[] {
   if (extractFilter(instance) === untouchedFilter) {
     return instance.filter(predicate as (value: T, index: number, array: T[]) => value is U);

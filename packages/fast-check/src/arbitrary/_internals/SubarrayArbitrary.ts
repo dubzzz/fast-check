@@ -1,6 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Stream } from '../../stream/Stream';
 import { safeMap, safePush, safeSlice, safeSort, safeSplice } from '../../utils/globals';
@@ -19,16 +19,16 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     readonly originalArray: T[],
     readonly isOrdered: boolean,
     readonly minLength: number,
-    readonly maxLength: number
+    readonly maxLength: number,
   ) {
     super();
     if (minLength < 0 || minLength > originalArray.length)
       throw new Error(
-        'fc.*{s|S}ubarrayOf expects the minimal length to be between 0 and the size of the original array'
+        'fc.*{s|S}ubarrayOf expects the minimal length to be between 0 and the size of the original array',
       );
     if (maxLength < 0 || maxLength > originalArray.length)
       throw new Error(
-        'fc.*{s|S}ubarrayOf expects the maximal length to be between 0 and the size of the original array'
+        'fc.*{s|S}ubarrayOf expects the maximal length to be between 0 and the size of the original array',
       );
     if (minLength > maxLength)
       throw new Error('fc.*{s|S}ubarrayOf expects the minimal length to be inferior or equal to the maximal length');
@@ -38,7 +38,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       minLength !== maxLength
         ? new IntegerArbitrary(
             minLength,
-            minLength + safeMathFloor(safeMathLog(maxLength - minLength) / safeMathLog(2))
+            minLength + safeMathFloor(safeMathLog(maxLength - minLength) / safeMathLog(2)),
           )
         : this.lengthArb;
   }
@@ -62,7 +62,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
 
     return new Value(
       safeMap(ids, (i) => this.originalArray[i]),
-      size.context
+      size.context,
     );
   }
 
@@ -87,7 +87,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       .map((newSize) => {
         return new Value(
           safeSlice(value, value.length - newSize.value), // array of length newSize.value
-          newSize.context // integer context for value newSize.value (the length)
+          newSize.context, // integer context for value newSize.value (the length)
         );
       })
       .join(
@@ -95,9 +95,9 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
           ? makeLazy(() =>
               this.shrink(safeSlice(value, 1), undefined)
                 .filter((newValue) => this.minLength <= newValue.value.length + 1)
-                .map((newValue) => new Value([value[0], ...newValue.value], undefined))
+                .map((newValue) => new Value([value[0], ...newValue.value], undefined)),
             )
-          : Stream.nil<Value<T[]>>()
+          : Stream.nil<Value<T[]>>(),
       );
   }
 }

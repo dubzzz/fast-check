@@ -8,7 +8,7 @@ export class SourceValuesIterator<Ts> implements IterableIterator<Ts> {
   constructor(
     readonly initialValues: IterableIterator<Ts>,
     private maxInitialIterations: number,
-    private remainingSkips: number
+    private remainingSkips: number,
   ) {}
   [Symbol.iterator](): IterableIterator<Ts> {
     return this;

@@ -12,8 +12,9 @@
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
+        "editor.stickyScroll.enabled": true,
         "terminal.integrated.defaultProfile.linux": "bash",
-        "workbench.colorTheme": "Default Dark+"
+        "workbench.colorTheme": "Dark+"
       }
     }
   },

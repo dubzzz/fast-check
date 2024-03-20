@@ -1,3 +1,50 @@
+# 0.1.0
+
+_Declare root of the package as ESM_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.9...vitest%2Fv0.1.0)]
+
+## Breaking changes
+
+- ([PR#4586](https://github.com/dubzzz/fast-check/pull/4586)) CI: Move build chain to ESM
+
+## Fixes
+
+- ([PR#4603](https://github.com/dubzzz/fast-check/pull/4603)) CI: Migrate jest to esm
+
+# 0.0.9
+
+_Stricter declaration of peers and better imports_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.9)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.8...vitest%2Fv0.0.9)]
+
+## Features
+
+- ([PR#4423](https://github.com/dubzzz/fast-check/pull/4423)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4544](https://github.com/dubzzz/fast-check/pull/4544)) Bug: Stricter (peer) range definition for vitest
+- ([PR#4289](https://github.com/dubzzz/fast-check/pull/4289)) CI: Fix broken typing checks in CI
+- ([PR#4282](https://github.com/dubzzz/fast-check/pull/4282)) Test: Confirm typings work well
+
+# 0.0.8
+
+_Fix typings for node native esm_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.8)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.7...vitest%2Fv0.0.8)]
+
+## Fixes
+
+- ([PR#4262](https://github.com/dubzzz/fast-check/pull/4262)) Bug: Fix typings for node native esm
+
+# 0.0.7
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.0.7)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.6...vitest%2Fv0.0.7)]
+
+## Fixes
+
+- ([PR#4178](https://github.com/dubzzz/fast-check/pull/4178)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
 # 0.0.6
 
 _Update URL of the logo_

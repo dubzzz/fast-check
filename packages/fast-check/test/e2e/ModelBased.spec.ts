@@ -56,7 +56,7 @@ describe(`Model Based (seed: ${seed})`, () => {
         }
         const s = () => ({ model: { num: 0 }, real: new BuiltinList() });
         fc.modelRun(s, cmds);
-      })
+      }),
     );
   });
   it('should detect an issue on fixed size circular list', () => {
@@ -81,7 +81,7 @@ describe(`Model Based (seed: ${seed})`, () => {
         }
         const s = () => ({ model: { num: 0 }, real: new CircularList(size) });
         fc.modelRun(s, cmds);
-      })
+      }),
     );
     expect(out.failed).toBe(true);
   });

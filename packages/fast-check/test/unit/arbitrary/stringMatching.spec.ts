@@ -67,7 +67,7 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
     // GitHub profile
     { regex: /^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9]+$/ },
     // Twitter profile
-    { regex: /^https?:\/\/twitter.com\/[A-Za-z0-9_]+\/status\/[0-9]+$/ }
+    { regex: /^https?:\/\/twitter.com\/[A-Za-z0-9_]+\/status\/[0-9]+$/ },
   );
 }
 
@@ -105,15 +105,15 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
                 quantifier: fc.oneof(
                   fc.constantFrom('?', '*', '+'),
                   fc.nat({ max: 5 }),
-                  fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 })))
+                  fc.tuple(fc.nat({ max: 5 }), fc.option(fc.nat({ max: 5 }))),
                 ),
               },
-              { requiredKeys: ['matcher'] }
+              { requiredKeys: ['matcher'] },
             ),
-            { minLength: 1 }
+            { minLength: 1 },
           ),
         }),
-        { minLength: 1, size: '-1' }
+        { minLength: 1, size: '-1' },
       ),
       flags: fc
         .record({
@@ -130,7 +130,7 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
           (flags) =>
             `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}${
               flags.u ? 'u' : ''
-            }`
+            }`,
         ),
     })
     .map(({ disjunctions, flags }) => {
@@ -147,21 +147,21 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
                     quantifier === undefined
                       ? ''
                       : typeof quantifier === 'string'
-                      ? quantifier
-                      : typeof quantifier === 'number'
-                      ? `{${quantifier}}`
-                      : typeof quantifier[1] === 'number'
-                      ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
-                          ...(quantifier as [number, number])
-                        )}}`
-                      : `{${quantifier[0]},}`;
+                        ? quantifier
+                        : typeof quantifier === 'number'
+                          ? `{${quantifier}}`
+                          : typeof quantifier[1] === 'number'
+                            ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
+                                ...(quantifier as [number, number]),
+                              )}}`
+                            : `{${quantifier[0]},}`;
                   return chunk.matcher + quantifierString;
                 })
                 .join('');
               return start + content + end;
             })
             .join('|'),
-          flags
+          flags,
         ),
       };
     });

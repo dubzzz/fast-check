@@ -46,7 +46,7 @@ describe('decomposeFloat', () => {
 
         // Assert
         expect(significand * 2 ** exponent).toBe(f32);
-      })
+      }),
     );
   });
 });
@@ -99,7 +99,7 @@ describe('floatToIndex', () => {
 
         // Assert
         expect(indexNeg).toEqual(-indexPos - 1);
-      })
+      }),
     );
   });
 
@@ -117,8 +117,8 @@ describe('floatToIndex', () => {
 
           // Act / Assert
           expect(floatToIndex(next)).toEqual(floatToIndex(current) + 1);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -131,7 +131,7 @@ describe('floatToIndex', () => {
         // Act / Assert
         if (isStrictlySmaller(fa32, fb32)) expect(floatToIndex(fa32)).toBeLessThan(floatToIndex(fb32));
         else expect(floatToIndex(fa32)).toBeGreaterThanOrEqual(floatToIndex(fb32));
-      })
+      }),
     );
   });
 });
@@ -155,7 +155,7 @@ describe('indexToFloat', () => {
 
         // Assert
         expect(f).toBe(new Float32Array([f])[0]);
-      })
+      }),
     );
   });
 
@@ -167,7 +167,7 @@ describe('indexToFloat', () => {
 
         // Act / Assert
         expect(indexToFloat(floatToIndex(f32))).toBe(f32);
-      })
+      }),
     );
   });
 
@@ -177,7 +177,7 @@ describe('indexToFloat', () => {
         // The test below checks that indexToFloat(floatToIndex) is identity
         // It does not confirm that floatToIndex(indexToFloat)) is identity
         expect(floatToIndex(indexToFloat(index))).toBe(index);
-      })
+      }),
     );
   });
 });

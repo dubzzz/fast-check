@@ -27,7 +27,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
           };
           return depth(t) < maxDepth;
         }),
-        { seed }
+        { seed },
       );
       expect(out.failed).toBe(true);
     });
@@ -48,7 +48,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
           };
           return depth(t) <= maxDepth;
         }),
-        { seed }
+        { seed },
       );
       expect(out.failed).toBe(false);
     });
@@ -62,7 +62,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
 
       const out = fc.check(
         fc.property(tree(), (t) => typeof t !== 'object'),
-        { seed }
+        { seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample![0]).toEqual({ left: 0, right: 0 });

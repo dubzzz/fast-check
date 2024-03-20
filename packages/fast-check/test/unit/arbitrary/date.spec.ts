@@ -37,7 +37,7 @@ describe('date', () => {
         expect(integer).toHaveBeenCalledTimes(1);
         expect(map).toHaveBeenCalledTimes(1);
         expect(map).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
-      })
+      }),
     ));
 
   it('should always map the minimal value of the internal integer to the requested minimal date', () =>
@@ -67,13 +67,14 @@ describe('date', () => {
           expect(minDate.getTime()).not.toBe(Number.NaN);
           expect(new Date(minDate.getTime() - 1).getTime()).toBe(Number.NaN);
         }
-      })
+      }),
     ));
 
-  it('should always map the maximal value of the internal integer to the requested maximal date', () =>
+  it('should always map the maximal value (minus one if NaN accepted) of the internal integer to the requested maximal date', () =>
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
+        const withInvalidDates = constraints.noInvalidDate === false;
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
         const integer = jest.spyOn(IntegerMock, 'integer');
@@ -84,7 +85,7 @@ describe('date', () => {
         date(constraints);
         const { max: rangeMax } = integer.mock.calls[0][0]!;
         const [mapper] = map.mock.calls[0];
-        const maxDate = mapper(rangeMax!) as Date;
+        const maxDate = mapper(withInvalidDates ? rangeMax! - 1 : rangeMax!) as Date;
 
         // Assert
         if (constraints.max !== undefined) {
@@ -97,10 +98,10 @@ describe('date', () => {
           expect(maxDate.getTime()).not.toBe(Number.NaN);
           expect(new Date(maxDate.getTime() + 1).getTime()).toBe(Number.NaN);
         }
-      })
+      }),
     ));
 
-  it('should always generate dates between min and max given the range and the mapper', () =>
+  it('should always generate dates between min and max (or invalid ones when accepted) given the range and the mapper', () =>
     fc.assert(
       fc.property(constraintsArb(), fc.maxSafeNat(), (constraints, mod) => {
         // Arrange
@@ -117,10 +118,12 @@ describe('date', () => {
         const d = mapper(rangeMin! + (mod % (rangeMax! - rangeMin! + 1))) as Date;
 
         // Assert
-        expect(d.getTime()).not.toBe(Number.NaN);
-        if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
-        if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
-      })
+        if (constraints.noInvalidDate !== false || !Number.isNaN(d.getTime())) {
+          expect(d.getTime()).not.toBe(Number.NaN);
+          if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
+          if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
+        }
+      }),
     ));
 
   it('should throw whenever min is an invalid date', () =>
@@ -128,7 +131,7 @@ describe('date', () => {
       fc.property(invalidMinConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
-      })
+      }),
     ));
 
   it('should throw whenever max is an invalid date', () =>
@@ -136,7 +139,7 @@ describe('date', () => {
       fc.property(invalidMaxConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
-      })
+      }),
     ));
 
   it('should throw whenever min is greater than max', () =>
@@ -144,27 +147,42 @@ describe('date', () => {
       fc.property(invalidRangeConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
-      })
+      }),
     ));
 });
 
 describe('date (integration)', () => {
-  type Extra = { min?: Date; max?: Date };
+  type Extra = { min?: Date; max?: Date; noInvalidDate?: boolean };
   const extraParameters: fc.Arbitrary<Extra> = constraintsArb();
 
   const isCorrect = (d: Date, extra: Extra) => {
-    expect(d.getTime()).not.toBe(Number.NaN);
+    if (extra.noInvalidDate || extra.noInvalidDate === undefined) {
+      expect(d.getTime()).not.toBe(Number.NaN);
+    } else if (Number.isNaN(d.getTime())) {
+      return;
+    }
     if (extra.min) expect(d.getTime()).toBeGreaterThanOrEqual(extra.min.getTime());
     if (extra.max) expect(d.getTime()).toBeLessThanOrEqual(extra.max.getTime());
   };
 
-  const isStrictlySmaller = (d1: Date, d2: Date) =>
-    Math.abs(d1.getTime() - new Date(0).getTime()) < Math.abs(d2.getTime() - new Date(0).getTime());
+  const isEqual = (d1: Date, d2: Date) => {
+    expect(d1.getTime()).toEqual(d2.getTime());
+  };
+
+  const isStrictlySmaller = (d1: Date, d2: Date) => {
+    if (Number.isNaN(d1.getTime())) {
+      expect(d2.getTime()).not.toBe(Number.NaN);
+    } else if (Number.isNaN(d2.getTime())) {
+      expect(d1.getTime()).not.toBe(Number.NaN);
+    } else {
+      return Math.abs(d1.getTime() - new Date(0).getTime()) < Math.abs(d2.getTime() - new Date(0).getTime());
+    }
+  };
 
   const dateBuilder = (extra: Extra) => date(extra);
 
   it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters });
+    assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters, isEqual });
   });
 
   it('should only produce correct values', () => {
@@ -176,7 +194,7 @@ describe('date (integration)', () => {
   });
 
   it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(dateBuilder, { extraParameters });
+    assertShrinkProducesSameValueWithoutInitialContext(dateBuilder, { extraParameters, isEqual });
   });
 
   it('should preserve strictly smaller ordering in shrink', () => {
@@ -187,28 +205,34 @@ describe('date (integration)', () => {
 // Helpers
 
 function constraintsArb() {
-  return fc.tuple(fc.date(), fc.date(), fc.boolean(), fc.boolean()).map(([d1, d2, withMin, withMax]) => {
-    const min = d1 < d2 ? d1 : d2;
-    const max = d1 < d2 ? d2 : d1;
-    return { min: withMin ? min : undefined, max: withMax ? max : undefined };
-  });
+  return fc
+    .tuple(fc.date(), fc.date(), fc.boolean(), fc.boolean(), fc.option(fc.boolean(), { nil: undefined }))
+    .map(([d1, d2, withMin, withMax, noInvalidDate]) => {
+      const min = d1 < d2 ? d1 : d2;
+      const max = d1 < d2 ? d2 : d1;
+      return { min: withMin ? min : undefined, max: withMax ? max : undefined, noInvalidDate };
+    });
 }
 
 function invalidRangeConstraintsArb() {
   return fc
-    .tuple(fc.date(), fc.date())
+    .tuple(fc.date(), fc.date(), fc.option(fc.boolean(), { nil: undefined }))
     .filter(([d1, d2]) => +d1 !== +d2)
-    .map(([d1, d2]) => {
+    .map(([d1, d2, noInvalidDate]) => {
       const min = d1 < d2 ? d1 : d2;
       const max = d1 < d2 ? d2 : d1;
-      return { min: max, max: min };
+      return { min: max, max: min, noInvalidDate };
     });
 }
 
 function invalidMinConstraintsArb() {
-  return fc.option(fc.date(), { freq: 100, nil: undefined }).map((max) => ({ min: new Date(Number.NaN), max }));
+  return fc
+    .tuple(fc.option(fc.date(), { freq: 100, nil: undefined }), fc.option(fc.boolean(), { nil: undefined }))
+    .map(([max, noInvalidDate]) => ({ min: new Date(Number.NaN), max, noInvalidDate }));
 }
 
 function invalidMaxConstraintsArb() {
-  return fc.option(fc.date(), { freq: 100, nil: undefined }).map((min) => ({ min, max: new Date(Number.NaN) }));
+  return fc
+    .tuple(fc.option(fc.date(), { freq: 100, nil: undefined }), fc.option(fc.boolean(), { nil: undefined }))
+    .map(([min, noInvalidDate]) => ({ min, max: new Date(Number.NaN), noInvalidDate }));
 }

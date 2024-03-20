@@ -1,12 +1,13 @@
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
 import { integer } from '../integer';
 import { makeLazy } from '../../stream/LazyIterableIterator';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { CustomSetBuilder } from './interfaces/CustomSet';
-import { DepthContext, DepthIdentifier, getDepthContextFor } from './helpers/DepthContext';
+import type { CustomSetBuilder } from './interfaces/CustomSet';
+import type { DepthContext, DepthIdentifier } from './helpers/DepthContext';
+import { getDepthContextFor } from './helpers/DepthContext';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator';
 import { safeMap, safePush, safeSlice } from '../../utils/globals';
 
@@ -45,7 +46,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
     readonly setBuilder: CustomSetBuilder<Value<T>> | undefined,
-    readonly customSlices: T[][]
+    readonly customSlices: T[][],
   ) {
     super();
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
@@ -79,7 +80,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     setBuilder: CustomSetBuilder<Value<T>>,
     N: number,
     mrng: Random,
-    biasFactorItems: number | undefined
+    biasFactorItems: number | undefined,
   ): Value<T>[] {
     let numSkippedInRow = 0;
     const s = setBuilder();
@@ -104,7 +105,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     setBuilder: CustomSetBuilder<Value<T>>,
     N: number,
     mrng: Random,
-    biasFactorItems: number | undefined
+    biasFactorItems: number | undefined,
   ): Value<T>[] {
     const depthImpact = safeMathMax(0, N - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
     this.depthContext.depth += depthImpact; // increase depth
@@ -140,7 +141,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     itemsRaw: Value<T>[],
     shrunkOnce: boolean,
     itemsRawLengthContext: unknown,
-    startIndex: number
+    startIndex: number,
   ): Value<T[]> {
     // We need to explicitly apply filtering on shrink items
     // has they might have duplicates (on non shrunk it is not the case by construct)
@@ -227,7 +228,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   private shrinkItemByItem(
     value: T[],
     safeContext: ArrayArbitraryContext,
-    endIndex: number
+    endIndex: number,
   ): IterableIterator<[Value<T>[], unknown, number]> {
     const shrinks: IterableIterator<[Value<T>[], unknown, number]>[] = [];
     for (let index = safeContext.startIndex; index < endIndex; ++index) {
@@ -237,19 +238,19 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
           this.arb.shrink(value[index], safeContext.itemsContexts[index]).map((v): [Value<T>[], unknown, number] => {
             const beforeCurrent = safeMap(
               safeSlice(value, 0, index),
-              (v, i) => new Value(cloneIfNeeded(v), safeContext.itemsContexts[i])
+              (v, i) => new Value(cloneIfNeeded(v), safeContext.itemsContexts[i]),
             );
             const afterCurrent = safeMap(
               safeSlice(value, index + 1),
-              (v, i) => new Value(cloneIfNeeded(v), safeContext.itemsContexts[i + index + 1])
+              (v, i) => new Value(cloneIfNeeded(v), safeContext.itemsContexts[i + index + 1]),
             );
             return [
               [...beforeCurrent, v, ...afterCurrent],
               undefined, // no length context
               index, // avoid shrinking entries before index in sub-shrinks
             ];
-          })
-        )
+          }),
+        ),
       );
     }
     return Stream.nil<[Value<T>[], unknown, number]>().join(...shrinks);
@@ -271,19 +272,21 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
           value.length,
           // lengthContext is a context returned by a previous call to the integer
           // arbitrary and the integer value items.length.
-          safeContext.lengthContext
+          safeContext.lengthContext,
         )
         // in case we already shrunk once but don't have any dedicated context to help the shrinker, we drop the first item
         // except if reached we have the minimal size +1, in that case we apply a last chance try policy
         .drop(
-          safeContext.shrunkOnce && safeContext.lengthContext === undefined && value.length > this.minLength + 1 ? 1 : 0
+          safeContext.shrunkOnce && safeContext.lengthContext === undefined && value.length > this.minLength + 1
+            ? 1
+            : 0,
         )
         .map((lengthValue): [Value<T>[], unknown, number] => {
           const sliceStart = value.length - lengthValue.value;
           return [
             safeMap(
               safeSlice(value, sliceStart),
-              (v, index) => new Value(cloneIfNeeded(v), safeContext.itemsContexts[index + sliceStart])
+              (v, index) => new Value(cloneIfNeeded(v), safeContext.itemsContexts[index + sliceStart]),
             ), // array of length lengthValue.value
             lengthValue.context, // integer context for value lengthValue.value (the length)
             0,
@@ -296,8 +299,8 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
           makeLazy(() =>
             value.length > this.minLength
               ? this.shrinkItemByItem(value, safeContext, 1)
-              : this.shrinkItemByItem(value, safeContext, value.length)
-          )
+              : this.shrinkItemByItem(value, safeContext, value.length),
+          ),
         )
         .join(
           value.length > this.minLength
@@ -316,14 +319,14 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
                     return [[new Value(cloneIfNeeded(value[0]), safeContext.itemsContexts[0]), ...v[0]], undefined, 0];
                   });
               })
-            : Stream.nil()
+            : Stream.nil(),
         )
     );
   }
 
   shrink(value: T[], context?: unknown): Stream<Value<T[]>> {
     return this.shrinkImpl(value, context).map((contextualValue) =>
-      this.wrapper(contextualValue[0], true, contextualValue[1], contextualValue[2])
+      this.wrapper(contextualValue[0], true, contextualValue[1], contextualValue[2]),
     );
   }
 }

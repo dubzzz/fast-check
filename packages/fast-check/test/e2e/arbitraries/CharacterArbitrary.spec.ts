@@ -6,7 +6,7 @@ describe(`CharacterArbitrary (seed: ${seed})`, () => {
     it('Should shrink towards a character of size greater than one', () => {
       const out = fc.check(
         fc.property(fc.fullUnicode(), (s: string) => s.length === 1),
-        { seed: seed }
+        { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample![0]).toHaveLength(2);

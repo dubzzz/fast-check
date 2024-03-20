@@ -1,6 +1,6 @@
 import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
-import { Command } from '../../../../../src/check/model/command/Command';
-import { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
+import type { Command } from '../../../../../src/check/model/command/Command';
+import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
 import { cloneMethod } from '../../../../../src/check/symbols';
 import { asyncToStringMethod, toStringMethod } from '../../../../../src/utils/stringify';
 

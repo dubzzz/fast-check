@@ -1,5 +1,5 @@
-import { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
+import type { Random } from '../../random/generator/Random';
+import type { Stream } from '../../stream/Stream';
 import { bigUintN } from '../bigUintN';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
@@ -26,7 +26,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
   constructor(
     private readonly stringArb: Arbitrary<string>,
     private readonly toggleCase: (rawChar: string) => string,
-    private readonly untoggleAll: ((toggledString: string) => string) | undefined
+    private readonly untoggleAll: ((toggledString: string) => string) | undefined,
   ) {
     super();
   }
@@ -121,10 +121,10 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
               applyFlagsOnChars(nChars, nFlagsValue.value, togglePositions, this.toggleCase);
               return new Value(
                 safeJoin(nChars, ''),
-                this.buildContextFor(new Value(rawString, contextSafe.rawStringContext), nFlagsValue)
+                this.buildContextFor(new Value(rawString, contextSafe.rawStringContext), nFlagsValue),
               );
             });
-        })
+        }),
       );
   }
 }

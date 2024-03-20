@@ -1,4 +1,4 @@
-import { Not, And, Or, IsNever, IsUnknown, IsAny, IsSame } from '../src/internals';
+import type { Not, And, Or, IsNever, IsUnknown, IsAny, IsSame } from '../src/internals';
 
 export const Test_Not_true: Not<true> = false;
 export const Test_Not_false: Not<false> = true;

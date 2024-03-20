@@ -4,8 +4,8 @@ import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 const execFile = promisify(_execFile);
 
-import _fc from 'fast-check';
-import { test as _test, it as _it } from '@fast-check/jest';
+import type _fc from 'fast-check';
+import type { test as _test, it as _it } from '@fast-check/jest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 
@@ -222,7 +222,7 @@ describe.each<DescribeOptions>([
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() }, { seed: 4869 })(
           'property fail record seeded',
-          (_unused) => false
+          (_unused) => false,
         );
       });
 
@@ -401,7 +401,7 @@ describe.each<DescribeOptions>([
           const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
             runner.concurrent.failing.prop([fc.constant(null)])(
               'property pass because failing',
-              async (_unused) => false
+              async (_unused) => false,
             );
           });
 
@@ -418,7 +418,7 @@ describe.each<DescribeOptions>([
           const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
             runner.concurrent.failing.prop([fc.constant(null)])(
               'property fail because passing',
-              async (_unused) => true
+              async (_unused) => true,
             );
           });
 
@@ -460,7 +460,7 @@ describe.each<DescribeOptions>([
             async () => {
               await new Promise(() => {}); // never resolving
             },
-            1000
+            1000,
           );
         });
 
@@ -483,7 +483,7 @@ describe.each<DescribeOptions>([
           runner.prop([fc.nat()])('property takes longer than Jest config timeout', async () => {
             await new Promise(() => {}); // never resolving
           });
-        }
+        },
       );
 
       // Act
@@ -544,7 +544,7 @@ describe.each<DescribeOptions>([
             async () => {
               await new Promise(() => {}); // never resolving
             },
-            1000
+            1000,
           );
         });
 
@@ -586,7 +586,7 @@ let num = -1;
 async function writeToFile(
   runner: 'test' | 'it',
   options: { useLegacySignatures: boolean; useWorkers: boolean; testTimeoutConfig?: number; testRunner?: 'jasmine' },
-  fileContent: () => void
+  fileContent: () => void,
 ): Promise<{ specFileName: string; jestConfigRelativePath: string }> {
   const { useLegacySignatures, useWorkers } = options;
   const specFileSeed = Math.random().toString(16).substring(2);
@@ -612,13 +612,13 @@ async function writeToFile(
   const importFromFastCheckJest = useLegacySignatures
     ? `const {${runner}Prop: runnerProp} = require('@fast-check/jest');\n`
     : useWorkers
-    ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
-    : `const {${runner}: runner} = require('@fast-check/jest');\n`;
+      ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
+      : `const {${runner}: runner} = require('@fast-check/jest');\n`;
   const specContent =
     "const fc = require('fast-check');\n" +
     importFromFastCheckJest +
     wrapInDescribeIfNeeded(
-      toLegacy(fileContentString.substring(fileContentString.indexOf('{') + 1, fileContentString.lastIndexOf('}')))
+      toLegacy(fileContentString.substring(fileContentString.indexOf('{') + 1, fileContentString.lastIndexOf('}'))),
     );
 
   // Prepare jest config itself
@@ -633,11 +633,7 @@ async function writeToFile(
       jestConfigPath,
       `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
         options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
-      }${
-        options.testRunner !== undefined
-          ? `testRunner: '<rootDir>/../../../../node_modules/jest-jasmine2/build/index.js',`
-          : ''
-      } };`
+      }${options.testRunner !== undefined ? `testRunner: 'jest-jasmine2',` : ''} };`,
     ),
   ]);
 
@@ -646,7 +642,7 @@ async function writeToFile(
 
 async function runSpec(
   jestConfigRelativePath: string,
-  opts: { jestSeed?: number; testTimeoutCLI?: number } = {}
+  opts: { jestSeed?: number; testTimeoutCLI?: number } = {},
 ): Promise<string> {
   const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin', 'jest'], { shell: true });
   const jestBinaryPath = jestBinaryPathCommand.split('\n')[0];

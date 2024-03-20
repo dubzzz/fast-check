@@ -1,19 +1,18 @@
-import { Stream, stream } from '../../stream/Stream';
-import { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { Value } from '../arbitrary/definition/Value';
-import { IRawProperty } from '../property/IRawProperty';
+import { stream } from '../../stream/Stream';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
+import type { IRawProperty } from '../property/IRawProperty';
 import { Property } from '../property/Property.generic';
 import { UnbiasedProperty } from '../property/UnbiasedProperty';
 import { readConfigureGlobal } from './configuration/GlobalParameters';
-import { Parameters } from './configuration/Parameters';
+import type { Parameters } from './configuration/Parameters';
 import { QualifiedParameters } from './configuration/QualifiedParameters';
-import { toss } from './Tosser';
+import { lazyToss, toss } from './Tosser';
 import { pathWalk } from './utils/PathWalker';
 
 /** @internal */
 function toProperty<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
-  qParams: QualifiedParameters<Ts>
+  qParams: QualifiedParameters<Ts>,
 ): IRawProperty<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
     ? new Property(generator as Arbitrary<Ts>, () => true)
@@ -24,7 +23,7 @@ function toProperty<Ts>(
 /** @internal */
 function streamSample<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
-  params?: Parameters<Ts> | number
+  params?: Parameters<Ts> | number,
 ): IterableIterator<Ts> {
   const extendedParams =
     typeof params === 'number'
@@ -33,15 +32,15 @@ function streamSample<Ts>(
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
-  const tossedValues: Stream<Value<Ts>> = stream(
-    toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)
-  );
-  if (qParams.path.length === 0) {
-    return tossedValues.take(qParams.numRuns).map((s) => s.value_);
-  }
-  return pathWalk(qParams.path, tossedValues, shrink)
-    .take(qParams.numRuns)
-    .map((s) => s.value_);
+  const tossedValues =
+    qParams.path.length === 0
+      ? stream(toss(nextProperty, qParams.seed, qParams.randomType, qParams.examples))
+      : pathWalk(
+          qParams.path,
+          stream(lazyToss(nextProperty, qParams.seed, qParams.randomType, qParams.examples)),
+          shrink,
+        );
+  return tossedValues.take(qParams.numRuns).map((s) => s.value_);
 }
 
 /**
@@ -95,7 +94,7 @@ function round2(n: number): string {
 function statistics<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
-  params?: Parameters<Ts> | number
+  params?: Parameters<Ts> | number,
 ): void {
   const extendedParams =
     typeof params === 'number'

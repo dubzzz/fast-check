@@ -1,8 +1,10 @@
 import * as fc from 'fast-check';
-import { context, ContextValue } from '../../../src/arbitrary/context';
+import type { ContextValue } from '../../../src/arbitrary/context';
+import { context } from '../../../src/arbitrary/context';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { cloneMethod, hasCloneMethod, WithCloneMethod } from '../../../src/check/symbols';
+import type { WithCloneMethod } from '../../../src/check/symbols';
+import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantMock from '../../../src/arbitrary/constant';
 

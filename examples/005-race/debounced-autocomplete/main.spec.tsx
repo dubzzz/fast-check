@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+import { jest } from '@jest/globals';
 import React from 'react';
 import DebouncedAutocomplete from './src/DebouncedAutocomplete';
 
@@ -33,7 +33,7 @@ describe('DebouncedAutocomplete', () => {
               },
               // Continuations plugged onto calls to suggestionsFor(...) might perform state updates
               // as a consequence they need to be fired from an act-context
-              act
+              act,
             );
             const expectedResults = allResults.filter((r) => r.includes(userQuery));
 
@@ -51,7 +51,7 @@ describe('DebouncedAutocomplete', () => {
                     await userEvent.type(input, character, options);
                   });
                 },
-              }))
+              })),
             );
             const customAct = buildWrapWithTimersAct(s);
             await s.waitFor(task, customAct);
@@ -60,13 +60,13 @@ describe('DebouncedAutocomplete', () => {
             // Assert
             const displayedSuggestions = screen.queryAllByRole('listitem');
             expect(displayedSuggestions.map((el) => el.textContent)).toEqual(expectedResults);
-          }
+          },
         )
         .beforeEach(async () => {
           jest.clearAllTimers();
           jest.resetAllMocks();
           await cleanup();
-        })
+        }),
     );
   });
 });

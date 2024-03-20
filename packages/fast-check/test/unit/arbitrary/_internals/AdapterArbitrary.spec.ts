@@ -1,4 +1,5 @@
-import { adapter, AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
+import type { AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
+import { adapter } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
@@ -33,8 +34,8 @@ describe('AdapterArbitrary', () => {
             expect(adapterFunction).toHaveBeenCalledWith(v);
             expect(shrink).not.toHaveBeenCalled();
             expect(canShrinkWithoutContext).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -66,8 +67,8 @@ describe('AdapterArbitrary', () => {
             expect(adapterFunction).toHaveBeenCalledWith(v);
             expect(shrink).not.toHaveBeenCalled();
             expect(canShrinkWithoutContext).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -96,7 +97,7 @@ describe('AdapterArbitrary', () => {
 
         // Assert
         expect(out).toBe(canShrink && !hasToAdapt);
-      }
+      },
     );
   });
 
@@ -161,8 +162,8 @@ describe('AdapterArbitrary', () => {
               expect(shrink).not.toHaveBeenCalled();
               expect(canShrinkWithoutContext).toHaveBeenCalledWith(adaptedA.value); // returned false
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -203,7 +204,7 @@ describe('AdapterArbitrary', () => {
             vABC,
             cABC,
             adaptedABC,
-            canShrinkIfAdapted
+            canShrinkIfAdapted,
           ) => {
             // Arrange
             fc.pre(allUniques(vA, vAA, vAB, vAC, vABC)); // check for adapterFunction
@@ -224,12 +225,12 @@ describe('AdapterArbitrary', () => {
                 Object.is(v, vA)
                   ? adaptedA
                   : Object.is(v, vAA)
-                  ? adaptedAA
-                  : Object.is(v, vAB)
-                  ? adaptedAB
-                  : Object.is(v, vAC)
-                  ? adaptedAC
-                  : adaptedABC
+                    ? adaptedAA
+                    : Object.is(v, vAB)
+                      ? adaptedAB
+                      : Object.is(v, vAC)
+                        ? adaptedAC
+                        : adaptedABC,
               );
 
             // Act
@@ -262,8 +263,8 @@ describe('AdapterArbitrary', () => {
               expect(shrinks).toHaveLength(0);
               expect(canShrinkWithoutContext).toHaveBeenCalledWith(adaptedAB.value);
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -307,8 +308,8 @@ describe('AdapterArbitrary', () => {
             expect(generate).not.toHaveBeenCalled();
             expect(shrink).toHaveBeenCalledWith(toShrinkvalue, undefined);
             expect(canShrinkWithoutContext).not.toHaveBeenCalled();
-          }
-        )
+          },
+        ),
       );
     });
   });

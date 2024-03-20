@@ -1,3 +1,39 @@
+# 1.2.1
+
+_Better support for `pre` on AVA 6_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.2.0...ava%2Fv1.2.1)]
+
+## Fixes
+
+- ([PR#4543](https://github.com/dubzzz/fast-check/pull/4543)) Bug: Stricter (peer) range definition for ava
+- ([PR#4542](https://github.com/dubzzz/fast-check/pull/4542)) Bug: Add support for `pre` on AVA v6
+
+# 1.2.0
+
+_Support pre-condition failures_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.6...ava%2Fv1.2.0)]
+
+## Features
+
+- ([PR#4424](https://github.com/dubzzz/fast-check/pull/4424)) Prefer "import type" over raw "import"
+
+## Fixes
+
+- ([PR#4450](https://github.com/dubzzz/fast-check/pull/4450)) Bug: Properly support `fc.pre`, allow unsuccessful plans on unmatched preconditions
+- ([PR#4451](https://github.com/dubzzz/fast-check/pull/4451)) Doc: Document distinctions with raw fast-check
+- ([PR#4283](https://github.com/dubzzz/fast-check/pull/4283)) Test: Confirm basic typings work well
+- ([PR#4449](https://github.com/dubzzz/fast-check/pull/4449)) Test: Extend test coverage to no-assertions cases and observables
+
+# 1.1.6
+
+_Better support for types on ESM targets_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv1.1.6)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv1.1.5...ava%2Fv1.1.6)]
+
+## Fixes
+
+- ([PR#4173](https://github.com/dubzzz/fast-check/pull/4173)) Bug: Better declare ESM's types
+- ([PR#4033](https://github.com/dubzzz/fast-check/pull/4033)) Tooling: Update formatting
+
 # 1.1.5
 
 _Update URL of the logo_

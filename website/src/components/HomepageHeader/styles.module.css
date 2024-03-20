@@ -12,6 +12,8 @@
 
 .mainTitleLogo {
   max-width: '100%';
+  width: auto;
+  height: auto;
 }
 
 @media screen and (max-width: 996px) {
@@ -20,10 +22,15 @@
   }
 }
 
+.subTitle {
+  margin-bottom: 1.25rem;
+}
+
 .subTitle .taglineBadges {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.2em;
 }
 

@@ -14,7 +14,7 @@ describe(`Timeout (seed: ${seed})`, () => {
         })
         .beforeEach(beforeEach)
         .afterEach(afterEach),
-      { timeout: 0 }
+      { timeout: 0 },
     );
     expect(out.failed).toBe(true);
     expect(out.interrupted).toBe(false);

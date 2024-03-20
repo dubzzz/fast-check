@@ -1,6 +1,10 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import * as url from 'url';
 import { removeNonPublishedFiles } from '../src/packaged';
+
+// @ts-expect-error --module must be higher
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 describe('removeNonPublishedFiles', () => {
   it.each`
@@ -62,10 +66,10 @@ describe('removeNonPublishedFiles', () => {
       // Returns arrays having the expected sizes
       if (!keepNodeModules) {
         expect(kept).toHaveLength(3); // package.json, lib/main.js, lib
-        expect(removed).toHaveLength(10); // src/main.js, src, test/main.js, test, node_modules/dep-a/main.js, node_modules/dep-a, node_modules, src/node_modules/wtf/main.js, src/node_modules/wtf, src/node_modules
+        expect(removed).toHaveLength(3); // src, test, node_modules
       } else {
         expect(kept).toHaveLength(4); // package.json, lib/main.js, lib, node_modules/*
-        expect(removed).toHaveLength(7); // src/main.js, src, test/main.js, test, src/node_modules/wtf/main.js, src/node_modules/wtf, src/node_modules
+        expect(removed).toHaveLength(2); //  src, test
       }
       // Remove unpublished files and keep published ones
       expect(await fileSystem.exists(['package.json'])).toBe(true);
@@ -102,13 +106,145 @@ describe('removeNonPublishedFiles', () => {
       const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath);
 
       // Assert
-      expect(kept).toHaveLength(5); // package.sjon, lib/main.js, lib, src2/main.js, src2
-      expect(removed).toHaveLength(3); // .npmignore, src/main.js, src
+      expect(kept).toHaveLength(5); // package.json, lib/main.js, lib, src2/main.js, src2
+      expect(removed).toHaveLength(2); // .npmignore, src
       expect(await fileSystem.exists(['package.json'])).toBe(true);
       expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
       expect(await fileSystem.exists(['src2', 'main.js'])).toBe(true);
       expect(await fileSystem.exists(['src'])).toBe(false);
       expect(await fileSystem.exists(['.npmignore'])).toBe(false);
+    });
+  });
+
+  it('should handle TypeScript-like packages having source, build and test files next to each others', async () => {
+    await runPackageTest(async (fileSystem) => {
+      // Arrange
+      const packageJsonContent = {
+        name: 'my-package',
+        version: '0.0.0',
+        files: ['**/*.js', '**/*.d.ts', '!**/*.spec.js', '!**/*.spec.d.ts'],
+        license: 'MIT',
+      };
+      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
+      await fileSystem.createFile(['tsconfig.json'], '// empty tsconfig.json');
+      await fileSystem.createFile(['main.ts'], '// empty main.ts');
+      await fileSystem.createFile(['main.d.ts'], '// empty main.d.ts');
+      await fileSystem.createFile(['main.js'], '// empty main.js');
+      await fileSystem.createFile(['main.spec.ts'], '// empty main.spec.ts');
+      await fileSystem.createFile(['main.spec.d.ts'], '// empty main.spec.d.ts');
+      await fileSystem.createFile(['main.spec.js'], '// empty main.spec.js');
+      await fileSystem.createFile(['internals', 'index.ts'], '// empty internals/index.ts');
+      await fileSystem.createFile(['internals', 'index.d.ts'], '// empty internals/index.d.ts');
+      await fileSystem.createFile(['internals', 'index.js'], '// empty internals/index.js');
+      await fileSystem.createFile(['internals', 'index.spec.ts'], '// empty internals/index.spec.ts');
+      await fileSystem.createFile(['internals', 'index.spec.d.ts'], '// empty internals/index.spec.d.ts');
+      await fileSystem.createFile(['internals', 'index.spec.js'], '// empty internals/index.spec.js');
+      await fileSystem.createFile(['internals', 'a', 'item.ts'], '// empty internals/a/item.ts');
+      await fileSystem.createFile(['internals', 'a', 'item.d.ts'], '// empty internals/a/item.d.ts');
+      await fileSystem.createFile(['internals', 'a', 'item.js'], '// empty internals/a/item.js');
+      await fileSystem.createFile(['internals', 'a', 'item.spec.ts'], '// empty internals/a/item.spec.ts');
+      await fileSystem.createFile(['internals', 'a', 'item.spec.d.ts'], '// empty internals/a/item.spec.d.ts');
+      await fileSystem.createFile(['internals', 'a', 'item.spec.js'], '// empty internals/a/item.spec.js');
+      await fileSystem.createFile(['internals', 'b', 'item.ts'], '// empty internals/b/item.ts');
+      await fileSystem.createFile(['internals', 'b', 'item.d.ts'], '// empty internals/b/item.d.ts');
+      await fileSystem.createFile(['internals', 'b', 'item.js'], '// empty internals/b/item.js');
+      await fileSystem.createFile(['internals', 'b', 'item.spec.ts'], '// empty internals/b/item.spec.ts');
+      await fileSystem.createFile(['internals', 'b', 'item.spec.d.ts'], '// empty internals/b/item.spec.d.ts');
+      await fileSystem.createFile(['internals', 'b', 'item.spec.js'], '// empty internals/b/item.spec.js');
+      await fileSystem.createFile(['test', 'index.spec.ts'], '// empty test/index.spec.ts');
+      await fileSystem.createFile(['test', 'index.spec.d.ts'], '// empty test/index.spec.d.ts');
+      await fileSystem.createFile(['test', 'index.spec.js'], '// empty test/index.spec.js');
+
+      // Act
+      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath);
+
+      // Assert
+      expect(kept).toHaveLength(12);
+      // package.json, main.d.ts, main.js,
+      // internals, internals/index.d.ts, internals/index.js,
+      // internals/a, internals/a/item.d.ts, internals/a/item.js,
+      // internals/b, internals/b/item.d.ts, internals/b/item.js
+      expect(removed).toHaveLength(18);
+      // tsconfig.json, main.ts, main.spec.ts, main.spec.d.ts, main.spec.js,
+      // internals/index.ts, internals/index.spec.ts, internals/index.spec.d.ts, internals/index.spec.js,
+      // internals/a/item.ts, internals/a/item.spec.ts, internals/a/item.spec.d.ts, internals/a/item.spec.js,
+      // internals/b/item.ts, internals/b/item.spec.ts, internals/b/item.spec.d.ts, internals/b/item.spec.js,
+      // test
+      expect(await fileSystem.exists(['package.json'])).toBe(true);
+      expect(await fileSystem.exists(['tsconfig.json'])).toBe(false);
+      expect(await fileSystem.exists(['main.ts'])).toBe(false);
+      expect(await fileSystem.exists(['main.d.ts'])).toBe(true);
+      expect(await fileSystem.exists(['main.js'])).toBe(true);
+      expect(await fileSystem.exists(['main.spec.ts'])).toBe(false);
+      expect(await fileSystem.exists(['main.spec.d.ts'])).toBe(false);
+      expect(await fileSystem.exists(['main.spec.js'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'index.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'index.d.ts'])).toBe(true);
+      expect(await fileSystem.exists(['internals', 'index.js'])).toBe(true);
+      expect(await fileSystem.exists(['internals', 'index.spec.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'index.spec.d.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'index.spec.js'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'a', 'item.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'a', 'item.d.ts'])).toBe(true);
+      expect(await fileSystem.exists(['internals', 'a', 'item.js'])).toBe(true);
+      expect(await fileSystem.exists(['internals', 'a', 'item.spec.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'a', 'item.spec.d.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'a', 'item.spec.js'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'b', 'item.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'b', 'item.d.ts'])).toBe(true);
+      expect(await fileSystem.exists(['internals', 'b', 'item.js'])).toBe(true);
+      expect(await fileSystem.exists(['internals', 'b', 'item.spec.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'b', 'item.spec.d.ts'])).toBe(false);
+      expect(await fileSystem.exists(['internals', 'b', 'item.spec.js'])).toBe(false);
+      expect(await fileSystem.exists(['test', 'index.spec.ts'])).toBe(false);
+      expect(await fileSystem.exists(['test', 'index.spec.d.ts'])).toBe(false);
+      expect(await fileSystem.exists(['test', 'index.spec.js'])).toBe(false);
+    });
+  });
+
+  it('should preserve deeply nested file when published', async () => {
+    await runPackageTest(async (fileSystem) => {
+      // Arrange
+      const packageJsonContent = {
+        name: 'my-package',
+        version: '0.0.0',
+        files: ['lib'],
+        license: 'MIT',
+      };
+      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
+      await fileSystem.createFile(['lib', 'a', 'b', 'c', 'd', 'main.js'], '// empty main.js');
+
+      // Act
+      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath);
+
+      // Assert
+      expect(kept).toHaveLength(7); // package.json, lib, lib/a, lib/a/b, lib/a/b/c, lib/a/b/c/d, lib/a/b/c/d/main.js
+      expect(removed).toHaveLength(0);
+      expect(await fileSystem.exists(['package.json'])).toBe(true);
+      expect(await fileSystem.exists(['lib', 'a', 'b', 'c', 'd', 'main.js'])).toBe(true);
+    });
+  });
+
+  it('should drop deeply nested file when unpublished', async () => {
+    await runPackageTest(async (fileSystem) => {
+      // Arrange
+      const packageJsonContent = {
+        name: 'my-package',
+        version: '0.0.0',
+        files: ['lib'],
+        license: 'MIT',
+      };
+      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
+      await fileSystem.createFile(['src', 'a', 'b', 'c', 'd', 'main.js'], '// empty main.js');
+
+      // Act
+      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath);
+
+      // Assert
+      expect(kept).toHaveLength(1); // package.json
+      expect(removed).toHaveLength(1); // src
+      expect(await fileSystem.exists(['package.json'])).toBe(true);
+      expect(await fileSystem.exists(['src', 'a', 'b', 'c', 'd', 'main.js'])).toBe(false);
     });
   });
 });
@@ -140,7 +276,7 @@ async function runPackageTest(runner: (fileSystem: RunnerFileSystem) => Promise<
         const filePath = path.join(packagePath, ...filePathChunks);
         return fs.access(filePath).then(
           () => true,
-          () => false
+          () => false,
         );
       },
     };

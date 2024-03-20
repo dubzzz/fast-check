@@ -2,6 +2,7 @@ import React from 'react';
 import BannerSection from '@site/src/components/BannerSection';
 import allContributors from './all-contributors.json';
 import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export default function HomepageContributors(props) {
   return (
@@ -11,6 +12,7 @@ export default function HomepageContributors(props) {
       <div className={styles.avatarSection}>
         {allContributors.contributors.map((contributor) => (
           <a
+            key={contributor.login}
             className={styles.avatar}
             href={contributor.profile}
             title={`${contributor.name} (${contributor.login})`}
@@ -18,7 +20,7 @@ export default function HomepageContributors(props) {
             rel="noopener noreferrer"
           >
             <img
-              src={contributor.avatar_url}
+              src={useBaseUrl(`/img/_/avatar_64_${contributor.login}.jpg`)}
               alt={`Avatar for ${contributor.name} (${contributor.login})`}
               width={64}
               height={64}

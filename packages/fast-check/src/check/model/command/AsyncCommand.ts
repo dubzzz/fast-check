@@ -1,4 +1,4 @@
-import { ICommand } from './ICommand';
+import type { ICommand } from './ICommand';
 
 /**
  * Interface that should be implemented in order to define

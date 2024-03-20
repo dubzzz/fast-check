@@ -1,6 +1,6 @@
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 
 /**
@@ -79,7 +79,10 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
  */
 class SingleUseArbitrary<T> extends Arbitrary<T> {
   calledOnce = false;
-  constructor(public id: T, public noCallOnceCheck: boolean) {
+  constructor(
+    public id: T,
+    public noCallOnceCheck: boolean,
+  ) {
     super();
   }
   generate(_mrng: Random): Value<T> {

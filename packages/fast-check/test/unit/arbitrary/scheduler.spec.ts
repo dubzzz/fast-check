@@ -1,4 +1,5 @@
-import { scheduler, Scheduler, schedulerFor } from '../../../src/arbitrary/scheduler';
+import type { Scheduler } from '../../../src/arbitrary/scheduler';
+import { scheduler, schedulerFor } from '../../../src/arbitrary/scheduler';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as BuildSchedulerForMock from '../../../src/arbitrary/_internals/helpers/BuildSchedulerFor';

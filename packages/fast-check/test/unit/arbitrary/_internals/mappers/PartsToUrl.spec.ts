@@ -40,7 +40,7 @@ describe('partsToUrlUnmapper', () => {
           } else {
             expect([null, '']).toContain(fragments);
           }
-        }
-      )
+        },
+      ),
     ));
 });

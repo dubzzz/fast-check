@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { lorem, LoremConstraints } from '../../../src/arbitrary/lorem';
+import type { LoremConstraints } from '../../../src/arbitrary/lorem';
+import { lorem } from '../../../src/arbitrary/lorem';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -16,8 +17,8 @@ describe('lorem', () => {
         (maxCount, mode) => {
           // Arrange / Act / Assert
           expect(() => lorem({ maxCount, mode })).toThrowError();
-        }
-      )
+        },
+      ),
     ));
 });
 
@@ -28,7 +29,7 @@ describe('lorem (integration)', () => {
       maxCount: fc.integer({ min: 1, max: 100 }),
       mode: fc.constantFrom(...(['words', 'sentences'] as const)),
     },
-    { requiredKeys: [] }
+    { requiredKeys: [] },
   );
 
   const isCorrect = (value: string, extra: Extra) => {

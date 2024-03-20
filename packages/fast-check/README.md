@@ -36,7 +36,7 @@ Install the module with: `yarn add fast-check --dev` or `npm install fast-check 
 Example of integration in [mocha](http://mochajs.org/):
 
 ```js
-const fc = require('fast-check');
+import fc from 'fast-check';
 
 // Code under test
 const contains = (text, pattern) => text.indexOf(pattern) >= 0;
@@ -53,7 +53,7 @@ describe('properties', () => {
       fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
-      })
+      }),
     );
   });
 });
@@ -220,6 +220,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/vecerek"><img src="https://avatars.githubusercontent.com/u/5737996?v=4?s=100" width="100px;" alt="Attila Večerek"/><br /><sub><b>Attila Večerek</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://www.zachbjornson.com/"><img src="https://avatars.githubusercontent.com/u/469365?v=4?s=100" width="100px;" alt="Zach Bjornson"/><br /><sub><b>Zach Bjornson</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/bennettp123"><img src="https://avatars.githubusercontent.com/u/1610227?v=4?s=100" width="100px;" alt="Bennett Perkins"/><br /><sub><b>Bennett Perkins</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=bennettp123" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nielk"><img src="https://avatars.githubusercontent.com/u/4980521?v=4?s=100" width="100px;" alt="Alexandre Oger"/><br /><sub><b>Alexandre Oger</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ej-shafran"><img src="https://avatars.githubusercontent.com/u/116496520?v=4?s=100" width="100px;" alt="ej shafran"/><br /><sub><b>ej shafran</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=ej-shafran" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gruhn"><img src="https://avatars.githubusercontent.com/u/26570572?v=4?s=100" width="100px;" alt="Niklas Gruhn"/><br /><sub><b>Niklas Gruhn</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gruhn" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

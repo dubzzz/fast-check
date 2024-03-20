@@ -1,9 +1,9 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../check/arbitrary/definition/Value';
 import { cloneMethod } from '../../../check/symbols';
-import { Random } from '../../../random/generator/Random';
+import type { Random } from '../../../random/generator/Random';
 import { stringify, toStringMethod } from '../../../utils/stringify';
-import { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache';
+import type { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache';
 
 export type InternalGeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
 
@@ -77,7 +77,7 @@ export function buildGeneratorValue(
   mrng: Random,
   biasFactor: number | undefined,
   computePreBuiltValues: () => PreBuiltValue[],
-  arbitraryCache: ArbitraryGeneratorCache
+  arbitraryCache: ArbitraryGeneratorCache,
 ): Value<GeneratorValue> {
   const preBuiltValues = computePreBuiltValues();
   let localMrng = mrng.clone();

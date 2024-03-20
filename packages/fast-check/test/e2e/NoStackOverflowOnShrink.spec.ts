@@ -59,7 +59,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
 
     const out = fc.check(
       fc.property(new InfiniteShrinkingDepth(), (_n) => false),
-      { seed }
+      { seed },
     );
     expect(out.failed).toBe(true);
     expect(out.counterexamplePath).toBe([...Array(maxDepthForArrays + 1)].map(() => '0').join(':'));

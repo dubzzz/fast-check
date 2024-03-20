@@ -1,8 +1,8 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { Scheduler } from './_internals/interfaces/Scheduler';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Scheduler } from './_internals/interfaces/Scheduler';
 import { buildSchedulerFor } from './_internals/helpers/BuildSchedulerFor';
 import { SchedulerArbitrary } from './_internals/SchedulerArbitrary';
-export { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from './_internals/interfaces/Scheduler';
+export type { Scheduler, SchedulerReportItem, SchedulerSequenceItem } from './_internals/interfaces/Scheduler';
 
 /**
  * Constraints to be applied on {@link scheduler}
@@ -64,7 +64,7 @@ export function scheduler<TMetaData = unknown>(constraints?: SchedulerConstraint
  * @public
  */
 function schedulerFor<TMetaData = unknown>(
-  constraints?: SchedulerConstraints
+  constraints?: SchedulerConstraints,
 ): (_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>;
 /**
  * For custom scheduler with predefined resolution order
@@ -84,11 +84,11 @@ function schedulerFor<TMetaData = unknown>(
  */
 function schedulerFor<TMetaData = unknown>(
   customOrdering: number[],
-  constraints?: SchedulerConstraints
+  constraints?: SchedulerConstraints,
 ): Scheduler<TMetaData>;
 function schedulerFor<TMetaData = unknown>(
   customOrderingOrConstraints: number[] | SchedulerConstraints | undefined,
-  constraintsOrUndefined?: SchedulerConstraints
+  constraintsOrUndefined?: SchedulerConstraints,
 ): Scheduler<TMetaData> | ((_strs: TemplateStringsArray, ...ordering: number[]) => Scheduler<TMetaData>) {
   // Extract passed constraints
   const { act = (f: () => Promise<void>) => f() } = Array.isArray(customOrderingOrConstraints)

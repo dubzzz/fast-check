@@ -37,7 +37,7 @@ describe.each([[true], [false]])('IgnoreEqualValuesProperty (dontRunHook: %p)', 
         expect(runBeforeEach).toHaveBeenCalledTimes(1);
         expect(runAfterEach).toHaveBeenCalledTimes(1);
       }
-    }
+    },
   );
 
   it.each`
@@ -76,7 +76,7 @@ describe.each([[true], [false]])('IgnoreEqualValuesProperty (dontRunHook: %p)', 
 
       // Assert
       expect(secondRunOutput).toBe(initialRunOutput);
-    }
+    },
   );
 
   it.each`
@@ -122,7 +122,7 @@ describe.each([[true], [false]])('IgnoreEqualValuesProperty (dontRunHook: %p)', 
         // failure or skip
         expect(secondRunOutput).toBe(initialRunOutput);
       }
-    }
+    },
   );
 
   it.each`

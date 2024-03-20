@@ -1,16 +1,28 @@
+import { jest } from '@jest/globals';
 import fc from 'fast-check';
 import request from 'supertest';
+import type { User } from './src/db';
 
-import { app, dropDeactivatedInternal } from './src/app';
-//import { app, dropDeactivatedInternal } from './src/appBug';
-import * as DbMock from './src/db';
-import { User } from './src/db';
+jest.unstable_mockModule('./005-race/supertest/src/db', () => ({
+  getAllUsers: jest.fn(),
+  removeUsers: jest.fn(),
+}));
+
+const { app, dropDeactivatedInternal } = await import('./src/app');
+// const { app, dropDeactivatedInternal } = await import('./src/appBug');
+const DbMock = await import('./src/db');
 
 if (!fc.readConfigureGlobal()) {
   // Global config of Jest has been ignored, we will have a timeout after 5000ms
   // (CodeSandbox falls in this category)
   fc.configureGlobal({ interruptAfterTimeLimit: 4000 });
 }
+
+const beforeEachHook = () => {
+  jest.resetAllMocks();
+};
+beforeEach(beforeEachHook);
+fc.configureGlobal({ ...fc.readConfigureGlobal(), beforeEach: beforeEachHook });
 
 describe('app', () => {
   it('should be able to call multiple /drop-deactivated at the same time', async () => {
@@ -22,7 +34,7 @@ describe('app', () => {
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
-          { selector: (u) => u.id }
+          { selector: (u) => u.id },
         ),
         fc.integer({ min: 1, max: 5 }),
         fc.scheduler({
@@ -38,19 +50,19 @@ describe('app', () => {
         async (allUsers, num, s) => {
           // Arrange
           let knownUsers = allUsers;
-          const getAllUsers = jest.spyOn(DbMock, 'getAllUsers');
-          const removeUsers = jest.spyOn(DbMock, 'removeUsers');
+          const getAllUsers = DbMock.getAllUsers as jest.Mocked<typeof DbMock.getAllUsers>;
+          const removeUsers = DbMock.removeUsers as jest.Mocked<typeof DbMock.removeUsers>;
           getAllUsers.mockImplementation(
             s.scheduleFunction(async function getAllUsers() {
               return knownUsers;
-            })
+            }),
           );
           removeUsers.mockImplementation(
             s.scheduleFunction(async function removeUsers(ids) {
               const sizeBefore = knownUsers.length;
               knownUsers = knownUsers.filter((u) => !ids.includes(u.id));
               return sizeBefore - knownUsers.length;
-            })
+            }),
           );
 
           // Act
@@ -65,8 +77,8 @@ describe('app', () => {
           for (const outQuery of out) {
             expect(outQuery.body.status).toBe('success');
           }
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -79,26 +91,26 @@ describe('app', () => {
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
-          { selector: (u) => u.id }
+          { selector: (u) => u.id },
         ),
         fc.integer({ min: 1, max: 5 }),
         fc.scheduler(),
         async (allUsers, num, s) => {
           // Arrange
           let knownUsers = allUsers;
-          const getAllUsers = jest.spyOn(DbMock, 'getAllUsers');
-          const removeUsers = jest.spyOn(DbMock, 'removeUsers');
+          const getAllUsers = DbMock.getAllUsers as jest.Mocked<typeof DbMock.getAllUsers>;
+          const removeUsers = DbMock.removeUsers as jest.Mocked<typeof DbMock.removeUsers>;
           getAllUsers.mockImplementation(
             s.scheduleFunction(async function getAllUsers() {
               return knownUsers;
-            })
+            }),
           );
           removeUsers.mockImplementation(
             s.scheduleFunction(async function removeUsers(ids) {
               const sizeBefore = knownUsers.length;
               knownUsers = knownUsers.filter((u) => !ids.includes(u.id));
               return sizeBefore - knownUsers.length;
-            })
+            }),
           );
 
           // Act
@@ -112,8 +124,8 @@ describe('app', () => {
           for (const outQuery of out) {
             expect(outQuery.status).toBe('success');
           }
-        }
-      )
+        },
+      ),
     );
   });
 });

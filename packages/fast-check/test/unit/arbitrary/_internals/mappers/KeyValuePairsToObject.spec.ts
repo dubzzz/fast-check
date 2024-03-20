@@ -5,11 +5,11 @@ import {
 import fc from '../../../../../src/fast-check';
 
 describe('keyValuePairsToObjectMapper', () => {
-  it('should create instances with Object prototype', () => {
+  it('should create instances with Object prototype when requested to', () => {
     fc.assert(
       fc.property(fc.uniqueArray(fc.tuple(fc.string(), fc.anything()), { selector: (kv) => kv[0] }), (keyValues) => {
         // Arrange / Act
-        const obj = keyValuePairsToObjectMapper(keyValues);
+        const obj = keyValuePairsToObjectMapper([keyValues, false]);
 
         // Assert
         expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
@@ -19,39 +19,62 @@ describe('keyValuePairsToObjectMapper', () => {
         if (!keyValues.some(([k]) => k === '__proto__')) {
           expect(obj.__proto__).toBe(Object.prototype);
         }
-      })
+      }),
+    );
+  });
+
+  it('should create instances with null prototype when requested to', () => {
+    fc.assert(
+      fc.property(fc.uniqueArray(fc.tuple(fc.string(), fc.anything()), { selector: (kv) => kv[0] }), (keyValues) => {
+        // Arrange / Act
+        const obj = keyValuePairsToObjectMapper([keyValues, true]);
+
+        // Assert
+        expect(Object.getPrototypeOf(obj)).toBe(null);
+        if (!keyValues.some(([k]) => k === 'constructor')) {
+          expect('constructor' in obj).toBe(false);
+        }
+        if (!keyValues.some(([k]) => k === '__proto__')) {
+          expect('__proto__' in obj).toBe(false);
+        }
+      }),
     );
   });
 
   it('should create instances with all requested keys', () => {
     fc.assert(
-      fc.property(fc.uniqueArray(fc.tuple(fc.string(), fc.anything()), { selector: (kv) => kv[0] }), (keyValues) => {
-        // Arrange / Act
-        const obj = keyValuePairsToObjectMapper(keyValues);
+      fc.property(
+        fc.uniqueArray(fc.tuple(fc.string(), fc.anything()), { selector: (kv) => kv[0] }),
+        fc.boolean(),
+        (keyValues, withNullPrototype) => {
+          // Arrange / Act
+          const obj = keyValuePairsToObjectMapper([keyValues, withNullPrototype]);
 
-        // Assert
-        expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
-        for (const [key, value] of keyValues) {
-          expect(key in obj).toBe(true);
-          expect(obj[key]).toBe(value);
-        }
-      })
+          // Assert
+          expect(Object.getPrototypeOf(obj)).toBe(withNullPrototype ? null : Object.prototype);
+          for (const [key, value] of keyValues) {
+            expect(key in obj).toBe(true);
+            expect(obj[key]).toBe(value);
+          }
+        },
+      ),
     );
   });
 
-  it('should create the same instances as-if we used bracket-based assignment', () => {
+  it('should create the same instances as-if we used bracket-based assignment (except proto for null case)', () => {
     fc.assert(
       fc.property(
         fc.uniqueArray(
           fc.tuple(
             fc.string().filter((k) => k !== '__proto__'),
-            fc.anything()
+            fc.anything(),
           ),
-          { selector: (kv) => kv[0] }
+          { selector: (kv) => kv[0] },
         ),
-        (keyValues) => {
+        fc.boolean(),
+        (keyValues, withNullPrototype) => {
           // Arrange / Act
-          const obj = keyValuePairsToObjectMapper(keyValues);
+          const obj = keyValuePairsToObjectMapper([keyValues, withNullPrototype]);
           const refObj = Object.fromEntries(keyValues); // will miss __proto__ if passed as keys
 
           // Assert
@@ -59,21 +82,28 @@ describe('keyValuePairsToObjectMapper', () => {
           expect(Object.keys(obj).sort()).toEqual(Object.keys(refObj).sort());
           expect(Object.getOwnPropertyNames(obj).sort()).toEqual(Object.getOwnPropertyNames(refObj).sort());
           expect(Object.getOwnPropertyDescriptors(obj)).toEqual(Object.getOwnPropertyDescriptors(refObj));
-        }
-      )
+        },
+      ),
     );
   });
 
-  it('should be able to build instances with dangerous keys', () => {
+  it.each`
+    name        | withNullPrototype
+    ${'Object'} | ${false}
+    ${'null'}   | ${true}
+  `('should be able to build instances with dangerous keys in $name-proto case', ({ withNullPrototype }) => {
     // Arrange / Act
     const obj = keyValuePairsToObjectMapper([
-      ['__proto__', '1'],
-      ['constructor', '2'],
-      ['toString', '3'],
+      [
+        ['__proto__', '1'],
+        ['constructor', '2'],
+        ['toString', '3'],
+      ],
+      withNullPrototype,
     ]);
 
     // Assert
-    expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
+    expect(Object.getPrototypeOf(obj)).toBe(withNullPrototype ? null : Object.prototype);
     // Valid values
     expect(obj.__proto__).toBe('1');
     expect(obj.constructor).toBe('2');
@@ -90,10 +120,23 @@ describe('keyValuePairsToObjectUnmapper', () => {
     const obj = {};
 
     // Act
-    const keyValues = keyValuePairsToObjectUnmapper(obj);
+    const [keyValues, withNullPrototype] = keyValuePairsToObjectUnmapper(obj);
 
     // Assert
     expect(keyValues).toEqual([]);
+    expect(withNullPrototype).toBe(false);
+  });
+
+  it('should properly unmap basic instances of null-proto Object without keys', () => {
+    // Arrange
+    const obj = Object.create(null);
+
+    // Act
+    const [keyValues, withNullPrototype] = keyValuePairsToObjectUnmapper(obj);
+
+    // Assert
+    expect(keyValues).toEqual([]);
+    expect(withNullPrototype).toBe(true);
   });
 
   it('should properly unmap basic instances of Object with multiple keys', () => {
@@ -101,18 +144,31 @@ describe('keyValuePairsToObjectUnmapper', () => {
     const obj = { a: 'e', 1: 'hello', b: undefined };
 
     // Act
-    const keyValues = keyValuePairsToObjectUnmapper(obj);
+    const [keyValues, withNullPrototype] = keyValuePairsToObjectUnmapper(obj);
 
     // Assert
     expect(keyValues).toHaveLength(3);
     expect(keyValues).toContainEqual(['a', 'e']);
     expect(keyValues).toContainEqual(['1', 'hello']);
     expect(keyValues).toContainEqual(['b', undefined]);
+    expect(withNullPrototype).toBe(false);
+  });
+
+  it('should properly unmap a fake null-prototype instance', () => {
+    // Arrange
+    const obj = { ['__proto__']: null };
+
+    // Act
+    const [keyValues, withNullPrototype] = keyValuePairsToObjectUnmapper(obj);
+
+    // Assert
+    expect(keyValues).toHaveLength(1);
+    expect(keyValues).toContainEqual(['__proto__', null]);
+    expect(withNullPrototype).toBe(false);
   });
 
   it.each`
     value                                                                | condition
-    ${Object.create(null)}                                               | ${'it has no prototype'}
     ${new (class A {})()}                                                | ${'it is not just a simple object but a more complex type'}
     ${[]}                                                                | ${'it is an Array'}
     ${new Number(0)}                                                     | ${'it is a boxed-Number'}

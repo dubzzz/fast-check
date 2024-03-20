@@ -48,7 +48,7 @@ describe('decomposeDouble', () => {
 
         // Assert
         expect(significand * 2 ** exponent).toBe(f64);
-      })
+      }),
     );
   });
 });
@@ -70,7 +70,7 @@ describe('doubleToIndex', () => {
         expect(index.data[1]).toBeGreaterThanOrEqual(0);
         expect(index.data[1]).toBeLessThanOrEqual(0xffffffff);
         expect(Number.isInteger(index.data[1])).toBe(true);
-      })
+      }),
     );
   });
 
@@ -120,10 +120,10 @@ describe('doubleToIndex', () => {
 
   it('should properly compute indexes for infinity', () => {
     expect(doubleToIndex(Number.NEGATIVE_INFINITY)).toEqual(
-      toIndex(toBigInt(doubleToIndex(-Number.MAX_VALUE)) - BigInt(1))
+      toIndex(toBigInt(doubleToIndex(-Number.MAX_VALUE)) - BigInt(1)),
     );
     expect(doubleToIndex(Number.POSITIVE_INFINITY)).toEqual(
-      toIndex(toBigInt(doubleToIndex(Number.MAX_VALUE)) + BigInt(1))
+      toIndex(toBigInt(doubleToIndex(Number.MAX_VALUE)) + BigInt(1)),
     );
   });
 
@@ -140,7 +140,7 @@ describe('doubleToIndex', () => {
 
         // Assert
         expect(bigIntIndexNeg).toEqual(-bigIntIndexPos - BigInt(1));
-      })
+      }),
     );
   });
 
@@ -162,8 +162,8 @@ describe('doubleToIndex', () => {
 
           // Assert
           expect(bigIntIndexNext).toEqual(bigIntIndexCurrent + BigInt(1));
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -179,7 +179,7 @@ describe('doubleToIndex', () => {
         } else {
           expect(toBigInt(doubleToIndex(fa64))).toBeGreaterThanOrEqual(toBigInt(doubleToIndex(fb64)));
         }
-      })
+      }),
     );
   });
 });
@@ -190,7 +190,7 @@ describe('indexToDouble', () => {
       fc.property(float64raw(), (f64) => {
         fc.pre(!Number.isNaN(f64));
         expect(indexToDouble(doubleToIndex(f64))).toBe(f64);
-      })
+      }),
     ));
 
   if (typeof BigInt === 'undefined') {
@@ -223,8 +223,8 @@ describe('indexToDouble', () => {
 
           // Act / Assert
           expect(doubleToIndex(indexToDouble(index))).toEqual(index);
-        }
-      )
+        },
+      ),
     );
   });
 });

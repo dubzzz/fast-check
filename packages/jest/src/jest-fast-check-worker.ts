@@ -1,5 +1,6 @@
 import * as fc from 'fast-check';
-import { assert, propertyFor, PropertyForOptions } from '@fast-check/worker';
+import type { PropertyForOptions } from '@fast-check/worker';
+import { assert, propertyFor } from '@fast-check/worker';
 import { jestExpect } from '@jest/expect';
 import { buildTest } from './internals/TestBuilder.js';
 
@@ -75,7 +76,7 @@ export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
           test: buildTest(test as It, jest, fcExtra),
           it: buildTest(it as It, jest, fcExtra),
           expect: jestExpect,
-        })
+        }),
       ) as any;
     }
   }

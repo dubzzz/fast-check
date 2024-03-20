@@ -8,6 +8,10 @@ import type { It } from './internals/types.js';
 
 export const test: FastCheckItBuilder<It> = buildTest(testJest, jest, fc);
 export const it: FastCheckItBuilder<It> = buildTest(itJest, jest, fc);
+
+/** @deprecated Will be dropped in the next major, switch to `test.prop` */
 export const testProp = buildTestProp(testJest);
+/** @deprecated Will be dropped in the next major, switch to `it.prop` */
 export const itProp = buildTestProp(itJest);
+
 export { fc };

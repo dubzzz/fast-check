@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { BigInt } from '../utils/globals';
 import { constantFrom } from './constantFrom';
 
@@ -46,7 +46,7 @@ export type FalsyValue<TConstraints extends FalsyContraints = {}> =
  * @public
  */
 export function falsy<TConstraints extends FalsyContraints>(
-  constraints?: TConstraints
+  constraints?: TConstraints,
 ): Arbitrary<FalsyValue<TConstraints>> {
   if (!constraints || !constraints.withBigInt) {
     return constantFrom<FalsyValue[]>(false, null, undefined, 0, '', NaN);

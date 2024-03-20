@@ -47,7 +47,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
         return b - a >= 1000;
       }),
       // We increase numRuns to avoid flakiness in the CI
-      { seed, numRuns: 5000 }
+      { seed, numRuns: 5000 },
     );
 
     // > should find the failure
@@ -76,7 +76,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
         return Math.abs(a - b) >= 1000;
       }),
       // We increase numRuns to avoid flakiness in the CI
-      { seed, numRuns: 5000 }
+      { seed, numRuns: 5000 },
     );
 
     // > should find the failure
@@ -110,7 +110,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
         fc.property(fc.array(fc.integer()), (ls) => {
           return new Set(ls).size < 3;
         }),
-        { seed }
+        { seed },
       );
 
       // > should find the failure
@@ -134,7 +134,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
         fc.property(fc.array(fc.array(fc.integer())), (ls) => {
           return new Set(flat(ls)).size < 5;
         }),
-        { seed }
+        { seed },
       );
 
       // > should find the failure
@@ -158,7 +158,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
         fc.property(fc.array(fc.array(fc.constant(0))), (ls) => {
           return ls.map((l) => l.length).reduce((a, b) => a + b, 0) <= 10;
         }),
-        { seed }
+        { seed },
       );
 
       // > should find the failure
@@ -179,7 +179,7 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
           const rev = [...ls].reverse();
           expect(rev).toEqual(ls);
         }),
-        { seed }
+        { seed },
       );
 
       // > should find the failure

@@ -51,7 +51,7 @@ describe('Docs.md', () => {
       if (!process.env.UPDATE_CODE_SNIPPETS) {
         expect(fileContent).toEqual(originalFileContent);
       }
-    }
+    },
   );
 });
 

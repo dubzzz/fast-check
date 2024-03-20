@@ -1,4 +1,4 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildCompareFunctionArbitrary } from './_internals/builders/CompareFunctionArbitraryBuilder';
 
 const safeObjectAssign = Object.assign;
@@ -26,6 +26,6 @@ export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
         // assigning explicitly a toString representation avoids this issue
         return '(hA, hB) => hA - hB';
       },
-    })
+    }),
   );
 }

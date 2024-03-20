@@ -13,7 +13,6 @@ v8.out
 
 # IDE related files
 .idea
-.vscode
 
 # https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
 .pnp.*

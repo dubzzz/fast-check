@@ -1,10 +1,8 @@
 import fc from 'fast-check';
 
 import { anyArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/AnyArbitraryBuilder';
-import {
-  toQualifiedObjectConstraints,
-  ObjectConstraints,
-} from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
+import type { ObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
+import { toQualifiedObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
 
 import {
   assertProduceCorrectValues,
@@ -20,70 +18,70 @@ describe('anyArbitraryBuilder (integration)', () => {
   it('should be able to produce Set (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSet: true })),
-      isSet
+      isSet,
     );
   });
 
   it('should be able to produce Map (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withMap: true })),
-      isMap
+      isMap,
     );
   });
 
   it('should be able to produce Date (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withDate: true })),
-      isDate
+      isDate,
     );
   });
 
   it('should be able to produce typed arrays (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withTypedArray: true })),
-      isTypedArray
+      isTypedArray,
     );
   });
 
   it('should be able to produce sparse array (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSparseArray: true })),
-      isSparseArray
+      isSparseArray,
     );
   });
 
   it('should be able to produce stringified representations of objects (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true })),
-      isStringified
+      isStringified,
     );
   });
 
   it('should be able to produce stringified representations of objects as keys (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true })),
-      isStringifiedAsKeys
+      isStringifiedAsKeys,
     );
   });
 
   it('should be able to produce boxed values (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBoxedValues: true })),
-      isBoxed
+      isBoxed,
     );
   });
 
   it('should be able to produce objects without any prototype values (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withNullPrototype: true })),
-      isNullPrototype
+      isNullPrototype,
     );
   });
 
   it('should be able to produce bigint (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBigInt: true })),
-      isBigInt
+      isBigInt,
     );
   });
 
@@ -104,7 +102,7 @@ describe('anyArbitraryBuilder (integration)', () => {
         withSparseArray: fc.boolean(),
         withTypedArray: fc.boolean(),
       },
-      { requiredKeys: [] }
+      { requiredKeys: [] },
     )
     .filter((params) => {
       if (params.depthSize === undefined || (typeof params.depthSize === 'number' && params.depthSize <= 2)) {

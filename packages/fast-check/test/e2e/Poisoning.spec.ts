@@ -140,7 +140,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     try {
       fc.assert(
         fc.property(arbitraryBuilder(), (_v) => testResult()),
-        { seed }
+        { seed },
       );
     } catch (err) {
       interceptedException = err;
@@ -210,7 +210,6 @@ function dropMainGlobals(): void {
     BigInt64Array,
     DataView,
     TextEncoder,
-    TextDecoder,
     AbortController,
     AbortSignal,
     EventTarget,
@@ -262,12 +261,13 @@ function dropMainGlobals(): void {
     'Headers', // Unknown in CI against macOS
     'Request', // Unknown in CI against macOS
     'Response', // Unknown in CI against macOS
+    'TextDecoder', // Leveraged by @jridgewell/sourcemap-codec which is used by babel
   ]);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
       globalName[0] >= 'A' &&
       globalName[0] <= 'Z' &&
-      (typeof (globalThis as any)[globalName] === 'function' || typeof (globalThis as any)[globalName] === 'object')
+      (typeof (globalThis as any)[globalName] === 'function' || typeof (globalThis as any)[globalName] === 'object'),
   );
   const mainGlobalsSet = new Set<unknown>(mainGlobals);
   const missingGlobals: string[] = [];
@@ -302,7 +302,7 @@ class NoopArbitrary extends fc.Arbitrary<number> {
     return fc.Stream.of(
       new fc.Value<number>(value + 1, undefined), // emulate a shrinker using bare minimal primitives
       new fc.Value<number>(value + 2, undefined),
-      new fc.Value<number>(value + 3, undefined)
+      new fc.Value<number>(value + 3, undefined),
     );
   }
 }
@@ -324,7 +324,7 @@ class BasicArbitrary extends fc.Arbitrary<number> {
     }
     return fc.Stream.of(
       new fc.Value<number>((3 * value) / 4, undefined), // emulate a shrinker using bare minimal primitives
-      new fc.Value<number>(value / 2, undefined)
+      new fc.Value<number>(value / 2, undefined),
     );
   }
 }

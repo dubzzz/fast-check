@@ -1,15 +1,20 @@
 {
   "name": "fast-check",
-  "version": "3.12.0",
+  "version": "3.16.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "commonjs",
   "main": "lib/fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./lib/types/fast-check.d.ts",
-      "require": "./lib/fast-check.js",
-      "default": "./lib/esm/fast-check.js"
+      "require": {
+        "types": "./lib/types/fast-check.d.ts",
+        "default": "./lib/fast-check.js"
+      },
+      "import": {
+        "types": "./lib/esm/types/fast-check.d.ts",
+        "default": "./lib/esm/fast-check.js"
+      }
     }
   },
   "module": "lib/esm/fast-check.js",
@@ -23,7 +28,7 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.cjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm/types",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
     "typecheck": "tsc --noEmit",
@@ -34,7 +39,8 @@
     "e2e:watch": "jest --config jest.e2e.config.cjs --watch",
     "e2e:debug": "node --inspect ../../node_modules/jest/bin/jest.js --config jest.e2e.config.cjs --watch --runInBand",
     "update:examples": "cross-env UPDATE_CODE_SNIPPETS=true jest --config jest.examples.config.cjs",
-    "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs",
+    "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
+    "test-legacy-bundle": "nvs add 8 && $(nvs which 8) test-bundle/run.cjs && $(nvs which 8) test-bundle/run-advanced.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.cjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
     "docs:serve": "yarn dlx serve docs/"
@@ -57,19 +63,23 @@
     "pure-rand": "^6.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.24.3",
+    "@babel/preset-env": "^7.24.3",
+    "@babel/preset-typescript": "^7.24.1",
+    "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.36.3",
-    "@types/jest": "^29.5.3",
-    "@types/node": "^18.17.1",
-    "buffer": "^6.0.3",
+    "@microsoft/api-extractor": "^7.43.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.30",
+    "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
-    "glob": "^10.3.3",
-    "jest": "^29.6.2",
+    "glob": "^10.3.10",
+    "jest": "^29.7.0",
+    "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
-    "replace-in-file": "^7.0.1",
-    "ts-jest": "^29.1.1",
-    "typedoc": "^0.24.8",
-    "typescript": "~5.1.6"
+    "replace-in-file": "^7.1.0",
+    "typedoc": "^0.25.12",
+    "typescript": "~5.4.2"
   },
   "keywords": [
     "property-based testing",

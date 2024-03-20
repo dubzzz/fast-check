@@ -2,14 +2,14 @@ import * as fc from 'fast-check';
 
 import { toss } from '../../../../src/check/runner/Tosser';
 import { Stream, stream } from '../../../../src/stream/Stream';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { IRawProperty } from '../../../../src/check/property/IRawProperty';
-import { Random } from '../../../../src/random/generator/Random';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
+import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
+import type { Random } from '../../../../src/random/generator/Random';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 
 import * as stubArb from '../../stubs/arbitraries';
 import prand from 'pure-rand';
-import { QualifiedRandomGenerator } from '../../../../src/check/runner/configuration/QualifiedParameters';
+import type { QualifiedRandomGenerator } from '../../../../src/check/runner/configuration/QualifiedParameters';
 
 const rngProducer = prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
 
@@ -36,7 +36,7 @@ describe('Tosser', () => {
           ];
           expect(g1).not.toStrictEqual(g2);
           return true;
-        })
+        }),
       ));
     it('Should produce the same sequence for the same seed', () =>
       fc.assert(
@@ -50,7 +50,7 @@ describe('Tosser', () => {
               .take(num)
               .map((f) => f.value),
           ]);
-        })
+        }),
       ));
     it('Should not depend on the order of iteration', () =>
       fc.assert(
@@ -61,9 +61,9 @@ describe('Tosser', () => {
             onGoingItems2
               .reverse()
               .map((f) => f.value)
-              .reverse()
+              .reverse(),
           ).toStrictEqual(onGoingItems1.map((f) => f.value));
-        })
+        }),
       ));
     it('Should offset toss with the provided examples', () =>
       fc.assert(
@@ -75,7 +75,7 @@ describe('Tosser', () => {
             ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, examples)).take(num),
           ].map((f) => f.value);
           expect([...examples, ...noExamplesProvided].slice(0, num)).toStrictEqual(examplesProvided);
-        })
+        }),
       ));
   });
 });

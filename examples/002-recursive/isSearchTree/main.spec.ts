@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { binarySearchTreeWithMaxDepth } from './arbitraries/BinarySearchTreeArbitrary';
 import { isSearchTree, Tree } from './src/isSearchTree';
 import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary';
@@ -9,7 +9,7 @@ describe('isSearchTree', () => {
     fc.assert(
       fc.property(binarySearchTreeWithMaxDepth(3), (tree) => {
         return isSearchTree(tree);
-      })
+      }),
     );
   });
 
@@ -18,7 +18,7 @@ describe('isSearchTree', () => {
       fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
-      })
+      }),
     );
   });
 
@@ -27,7 +27,7 @@ describe('isSearchTree', () => {
       fc.property(binaryTreeWithoutMaxDepth(), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
-      })
+      }),
     );
   });
 
@@ -36,11 +36,11 @@ describe('isSearchTree', () => {
       fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(
           traversal(tree, (t) => t).some(
-            (t) => (t.left && t.left.value > t.value) || (t.right && t.right.value <= t.value)
-          )
+            (t) => (t.left && t.left.value > t.value) || (t.right && t.right.value <= t.value),
+          ),
         );
         return !isSearchTree(tree);
-      })
+      }),
     );
   });
 });
@@ -57,6 +57,6 @@ function traversal<TOut>(t: Tree<number>, extract: (node: Tree<number>) => TOut,
 function isSorted(d: number[]): boolean {
   return _.isEqual(
     d,
-    [...d].sort((a, b) => a - b)
+    [...d].sort((a, b) => a - b),
   );
 }

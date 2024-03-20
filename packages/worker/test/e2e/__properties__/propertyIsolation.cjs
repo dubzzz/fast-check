@@ -15,7 +15,7 @@ function buildPropertyWarmUp(isolationLevel) {
         throw new Error(`Broken isolation, got: ${counters[isolationLevel]}, for isolation level: ${isolationLevel}`);
       }
       counters[isolationLevel] = 'warm-up';
-    }
+    },
   );
 }
 function buildPropertyRun(isolationLevel) {
@@ -27,7 +27,7 @@ function buildPropertyRun(isolationLevel) {
         throw new Error(`Broken isolation, got: ${counters[isolationLevel]}, for isolation level: ${isolationLevel}`);
       }
       counters[isolationLevel] = 'run';
-    }
+    },
   );
 }
 

@@ -1,5 +1,5 @@
 import { isMainThread } from 'node:worker_threads';
-import { type Parameters } from 'fast-check';
+import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -21,7 +21,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(failingProperty, defaultOptions)).rejects.toThrowError(expectedError);
       },
-      jestTimeout
+      jestTimeout,
     );
   });
 }

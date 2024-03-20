@@ -1,10 +1,10 @@
+import { jest } from '@jest/globals';
 import fc from 'fast-check';
 import * as React from 'react';
 
 import UserProfilePage from './src/UserProfilePage';
 
 import { render, cleanup, act, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 
 // If you want to test the behaviour of fast-check in case of a bug:
 const bugId = undefined; // = 1; // to enable bug
@@ -27,7 +27,7 @@ describe('UserProfilePage', () => {
 
           // Act
           const { rerender } = render(
-            <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} bug={bugId} />
+            <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} bug={bugId} />,
           );
           s.scheduleSequence([
             async () => {
@@ -43,7 +43,7 @@ describe('UserProfilePage', () => {
         .beforeEach(async () => {
           jest.resetAllMocks();
           await cleanup();
-        })
+        }),
     );
   });
 
@@ -59,7 +59,7 @@ describe('UserProfilePage', () => {
           // Act
           let currentUid = loadedUserIds[0];
           const { rerender } = render(
-            <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} bug={bugId} />
+            <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} bug={bugId} />,
           );
           s.scheduleSequence(
             loadedUserIds.slice(1).map((uid) => ({
@@ -68,7 +68,7 @@ describe('UserProfilePage', () => {
                 currentUid = uid;
                 rerender(<UserProfilePage userId={uid} getUserProfile={getUserProfileImplem} bug={bugId} />);
               },
-            }))
+            })),
           );
 
           // Assert
@@ -87,7 +87,7 @@ describe('UserProfilePage', () => {
         .beforeEach(async () => {
           jest.resetAllMocks();
           await cleanup();
-        })
+        }),
     );
   });
 });

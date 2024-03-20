@@ -1,5 +1,5 @@
 // @ts-check
-import { jest } from '@jest/globals';
+import { jest, beforeAll, afterAll, describe, it, expect } from '@jest/globals';
 import * as path from 'path';
 import * as url from 'url';
 import { promises as fs } from 'fs';

@@ -81,7 +81,7 @@ fc.assert(
       // the user definable corner case to reduce
       [[], '__proto__'],
     ],
-  }
+  },
 );
 ```
 
@@ -102,15 +102,15 @@ fc.assert(
         if (typeof raw !== 'string') throw new Error('Unsupported');
         // remaining is supported
         return raw.split(',');
-      }
+      },
     ),
-    myCheckFunction
+    myCheckFunction,
   ),
   {
     examples: [
       // the user definable corner case to reduce
       ['__,proto,__'],
     ],
-  }
+  },
 );
 ```

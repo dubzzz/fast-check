@@ -1,13 +1,9 @@
 import * as fc from 'fast-check';
 
-import { double, DoubleConstraints } from '../../../src/arbitrary/double';
-import {
-  add64,
-  ArrayInt64,
-  isEqual64,
-  substract64,
-  Unit64,
-} from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import type { DoubleConstraints } from '../../../src/arbitrary/double';
+import { double } from '../../../src/arbitrary/double';
+import type { ArrayInt64 } from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import { add64, isEqual64, substract64, Unit64 } from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import {
   defaultDoubleRecordConstraints,
   doubleConstraints,
@@ -51,7 +47,7 @@ describe('double', () => {
 
         // Assert
         expect(arb).toBeDefined();
-      })
+      }),
     );
   });
 
@@ -70,8 +66,8 @@ describe('double', () => {
 
           // Assert
           expect(arb).toBeDefined();
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -94,10 +90,10 @@ describe('double', () => {
               max: f,
               minExcluded: exclusiveMode === 'min' || exclusiveMode === 'both',
               maxExcluded: exclusiveMode === 'max' || exclusiveMode === 'both',
-            })
+            }),
           ).toThrowError();
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -133,7 +129,7 @@ describe('double', () => {
         // Act / Assert
         expect(() => double({ min, max })).toThrowError();
         expect(arrayInt64).not.toHaveBeenCalled();
-      })
+      }),
     );
   });
 
@@ -167,7 +163,7 @@ describe('double', () => {
             const minIndex = doubleToIndex(min);
             const maxIndex = doubleToIndex(max);
             const arbitraryGeneratedIndex = toIndex(
-              (mod % (toBigInt(maxIndex) - toBigInt(minIndex) + BigInt(1))) + toBigInt(minIndex)
+              (mod % (toBigInt(maxIndex) - toBigInt(minIndex) + BigInt(1))) + toBigInt(minIndex),
             );
             spyArrayInt64WithValue(() => arbitraryGeneratedIndex);
 
@@ -177,8 +173,8 @@ describe('double', () => {
 
             // Assert
             expect(f).toBe(indexToDouble(arbitraryGeneratedIndex));
-          }
-        )
+          },
+        ),
       );
     });
   }
@@ -210,7 +206,7 @@ describe('double', () => {
             expect(constraintsWithNaN[0]).toEqual(substract64(constraintsNoNaN[0], Unit64));
             expect(constraintsWithNaN[1]).toEqual(constraintsNoNaN[1]);
           }
-        })
+        }),
       );
     });
 
@@ -240,8 +236,8 @@ describe('double', () => {
 
             // Assert
             expect(f).toBe(Number.NaN);
-          }
-        )
+          },
+        ),
       );
     });
   });
@@ -268,7 +264,7 @@ describe('double', () => {
           // Assert
           expect(arrayInt64).toHaveBeenCalledTimes(1);
           expect(arrayInt64).toHaveBeenCalledWith(expectedMinIndex, expectedMaxIndex);
-        })
+        }),
       );
     });
   });
@@ -289,14 +285,24 @@ describe('double (integration)', () => {
     }
     if (extra.min !== undefined && !Number.isNaN(v)) {
       if (extra.minExcluded) {
-        expect(v).toBeGreaterThan(extra.min); // should always be strictly greater than min when specified
+        if (Object.is(extra.min, -0)) {
+          expect(v).not.toBe(-0);
+          expect(v).toBeGreaterThanOrEqual(extra.min);
+        } else {
+          expect(v).toBeGreaterThan(extra.min); // should always be strictly greater than min when specified
+        }
       } else {
         expect(v).toBeGreaterThanOrEqual(extra.min); // should always be greater than min when specified
       }
     }
     if (extra.max !== undefined && !Number.isNaN(v)) {
       if (extra.maxExcluded) {
-        expect(v).toBeLessThan(extra.max); // should always be strictly smaller than max when specified
+        if (Object.is(extra.max, +0)) {
+          expect(v).not.toBe(+0);
+          expect(v).toBeLessThanOrEqual(extra.max);
+        } else {
+          expect(v).toBeLessThan(extra.max); // should always be strictly smaller than max when specified
+        }
       } else {
         expect(v).toBeLessThanOrEqual(extra.max); // should always be smaller than max when specified
       }

@@ -1,9 +1,5 @@
-import { type MessagePort } from 'node:worker_threads';
-import {
-  type MainThreadToWorkerMessage,
-  type PropertyPredicate,
-  type WorkerToMainThreadMessage,
-} from '../SharedTypes.js';
+import type { MessagePort } from 'node:worker_threads';
+import type { MainThreadToWorkerMessage, PropertyPredicate, WorkerToMainThreadMessage } from '../SharedTypes.js';
 
 /**
  * Setup a worker listening to parentPort and able to run a single time for a given predicate
@@ -15,7 +11,7 @@ export function runWorker<Ts extends unknown[]>(
   parentPort: MessagePort,
   predicateId: number,
   predicate: PropertyPredicate<Ts>,
-  buildPayload: (state: number[], runId: number | undefined) => Ts
+  buildPayload: (state: number[], runId: number | undefined) => Ts,
 ): void {
   parentPort.on('message', (message: MainThreadToWorkerMessage<Ts>) => {
     const { content, targetPredicateId, runId } = message;
@@ -33,7 +29,7 @@ export function runWorker<Ts extends unknown[]>(
       (error) => {
         const message: WorkerToMainThreadMessage = { success: false, error, runId };
         parentPort.postMessage(message);
-      }
+      },
     );
   });
 }

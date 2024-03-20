@@ -45,14 +45,14 @@ describe('array', () => {
           0x7fffffff,
           undefined,
           undefined,
-          []
+          [],
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
         expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(2 ** 31 - 1);
         expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
         expect(arb).toBe(instance);
-      })
+      }),
     );
   });
 
@@ -76,7 +76,7 @@ describe('array', () => {
           maxLength,
           undefined,
           undefined,
-          []
+          [],
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(0);
@@ -86,7 +86,7 @@ describe('array', () => {
           expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, undefined, undefined, []);
         }
         expect(arb).toBe(instance);
-      })
+      }),
     );
   });
 
@@ -110,7 +110,7 @@ describe('array', () => {
           0x7fffffff,
           undefined,
           undefined,
-          []
+          [],
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         if (minLength !== 2 ** 31 - 1) {
@@ -121,7 +121,7 @@ describe('array', () => {
           expect(receivedGeneratedMaxLength).toEqual(minLength);
         }
         expect(arb).toBe(instance);
-      })
+      }),
     );
   });
 
@@ -150,7 +150,7 @@ describe('array', () => {
             maxLength,
             undefined,
             undefined,
-            []
+            [],
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
@@ -164,12 +164,12 @@ describe('array', () => {
               maxLength,
               undefined,
               undefined,
-              []
+              [],
             );
           }
           expect(arb).toBe(instance);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -190,7 +190,7 @@ describe('array', () => {
 
           // Act
           const arb = withConfiguredGlobal(config, () =>
-            array(childInstance, { minLength, maxLength, depthIdentifier })
+            array(childInstance, { minLength, maxLength, depthIdentifier }),
           );
 
           // Assert
@@ -201,7 +201,7 @@ describe('array', () => {
             maxLength,
             depthIdentifier,
             undefined,
-            []
+            [],
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
@@ -215,12 +215,12 @@ describe('array', () => {
               maxLength,
               depthIdentifier,
               undefined,
-              []
+              [],
             );
           }
           expect(arb).toBe(instance);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -238,10 +238,10 @@ describe('array', () => {
 
           // Act / Assert
           expect(() =>
-            withConfiguredGlobal(config, () => array(childInstance, { minLength, maxLength }))
+            withConfiguredGlobal(config, () => array(childInstance, { minLength, maxLength })),
           ).toThrowError();
-        }
-      )
+        },
+      ),
     );
   });
 });

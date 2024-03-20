@@ -61,7 +61,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(null), 10);
-      })
+      }),
     );
 
     // Act
@@ -91,7 +91,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
       runBeforeEach.mockReturnValueOnce(
         new Promise(function (resolve) {
           setTimeout(() => resolve(), 100);
-        })
+        }),
       );
 
       // Act / After
@@ -110,7 +110,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
       runAfterEach.mockReturnValueOnce(
         new Promise(function (resolve) {
           setTimeout(() => resolve(), 100);
-        })
+        }),
       );
 
       // Act / Assert
@@ -132,7 +132,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
       new Promise(function (resolve) {
         // underlying property is not supposed to throw (reject)
         setTimeout(() => resolve(errorFromUnderlying), 10);
-      })
+      }),
     );
 
     // Act
@@ -208,7 +208,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(null), 100);
-      })
+      }),
     );
 
     // Act

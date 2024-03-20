@@ -4,7 +4,7 @@ import { func } from '../../../src/arbitrary/func';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceCorrectValues,
@@ -65,7 +65,7 @@ describe('func (integration)', () => {
           noiseCallsA: fc.array(fc.array(fc.anything())),
           noiseCallsB: fc.array(fc.array(fc.anything())),
         }),
-      }
+      },
     );
   });
 
@@ -91,7 +91,7 @@ describe('func (integration)', () => {
         }
         expect(String(clonedF)).toBe(String(f)); // both called with same inputs in the same order
       },
-      { extraParameters: fc.array(fc.array(fc.anything()), { minLength: 1 }) }
+      { extraParameters: fc.array(fc.array(fc.anything()), { minLength: 1 }) },
     );
   });
 
@@ -130,7 +130,7 @@ describe('func (integration)', () => {
         expect(hasCloneMethod(out1)).toBe(cloneable);
         expect(hasCloneMethod(out2)).toBe(cloneable);
       },
-      { extraParameters: fc.array(fc.anything()) }
+      { extraParameters: fc.array(fc.anything()) },
     );
   });
 });

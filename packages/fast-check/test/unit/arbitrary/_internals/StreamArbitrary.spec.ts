@@ -170,7 +170,7 @@ describe('StreamArbitrary', () => {
           if (expectedValues.length > 0) {
             expect(generate).toHaveBeenCalledWith(mrngCloned, undefined);
           }
-        })
+        }),
       ));
 
     it('should create independant Stream even in terms of toString', () => {

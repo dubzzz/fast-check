@@ -33,7 +33,7 @@ export interface Scheduler<TMetaData = unknown> {
    */
   scheduleFunction: <TArgs extends any[], T>(
     asyncFunction: (...args: TArgs) => Promise<T>,
-    customAct?: SchedulerAct
+    customAct?: SchedulerAct,
   ) => (...args: TArgs) => Promise<T>;
 
   /**
@@ -52,7 +52,7 @@ export interface Scheduler<TMetaData = unknown> {
    */
   scheduleSequence(
     sequenceBuilders: SchedulerSequenceItem<TMetaData>[],
-    customAct?: SchedulerAct
+    customAct?: SchedulerAct,
   ): {
     done: boolean;
     faulty: boolean;

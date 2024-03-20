@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
@@ -6,7 +6,7 @@ import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';
 import { boxedArbitraryBuilder } from '../builders/BoxedArbitraryBuilder';
-import { DepthSize, SizeForArbitrary } from './MaxLengthFromMinLength';
+import type { DepthSize, SizeForArbitrary } from './MaxLengthFromMinLength';
 
 /**
  * Constraints for {@link anything} and {@link object}
@@ -151,7 +151,7 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
     key: orDefault(settings.key, string(valueConstraints)),
     values: boxArbitrariesIfNeeded(
       orDefault(settings.values, defaultValues(valueConstraints)),
-      orDefault(settings.withBoxedValues, false)
+      orDefault(settings.withBoxedValues, false),
     ),
     depthSize: settings.depthSize,
     maxDepth: settings.maxDepth,

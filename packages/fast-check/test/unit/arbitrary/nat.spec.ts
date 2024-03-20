@@ -60,7 +60,7 @@ describe('nat', () => {
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(0, max);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should instantiate IntegerArbitrary(0, max) for nat(max)', () =>
@@ -77,7 +77,7 @@ describe('nat', () => {
         // Assert
         expect(IntegerArbitrary).toHaveBeenCalledWith(0, max);
         expect(arb).toBe(instance);
-      })
+      }),
     ));
 
   it('should throw when maximum value is lower than zero', () =>
@@ -85,7 +85,7 @@ describe('nat', () => {
       fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: -1 }), (max) => {
         // Arrange / Act / Assert
         expect(() => nat({ max })).toThrowError();
-      })
+      }),
     ));
 
   it('should throw when maximum value is not an integer', () => {
@@ -96,7 +96,7 @@ describe('nat', () => {
 
         // Act / Assert
         expect(() => nat({ max })).toThrowError();
-      })
+      }),
     );
   });
 });

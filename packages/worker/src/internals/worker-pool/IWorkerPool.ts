@@ -12,7 +12,7 @@ export type PooledWorker<TSuccess, TPayload> = {
     payload: TPayload,
     getState: () => { randomGeneratorState: number[]; runId: number | undefined } | undefined,
     onSuccess: OnSuccessCallback<TSuccess>,
-    onFailure: OnErrorCallback
+    onFailure: OnErrorCallback,
   ) => void;
   terminateIfStillRunning: () => Promise<void>;
 };

@@ -3,7 +3,7 @@ import { stringOf } from '../../../src/arbitrary/stringOf';
 
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 import {
   assertProduceSameValueGivenSameSeed,
@@ -20,7 +20,7 @@ describe('stringOf (integration)', () => {
       fc.boolean(),
       fc.boolean(),
       // empty string not supported when trying to recognize stuff geenrated by this precise arbitrary
-      fc.array(fc.fullUnicodeString({ minLength: 1 }), { minLength: 1 })
+      fc.array(fc.fullUnicodeString({ minLength: 1 }), { minLength: 1 }),
     )
     .map(([min, gap, withMin, withMax, patterns]) => ({
       minLength: withMin ? min : undefined,
@@ -56,7 +56,7 @@ describe('stringOf (integration)', () => {
 
       // Assert
       expect(out).toBe(false);
-    }
+    },
   );
 
   it.each`
