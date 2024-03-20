@@ -28,7 +28,9 @@ describe('webAuthority (integration)', () => {
         withIPv6: fc.boolean(),
         withPort: fc.boolean(),
         withUserInfo: fc.boolean(),
-        size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+        size: onlySmall
+          ? fc.constantFrom(...(['-1', '=', 'xsmall', 'small'] as const))
+          : fc.oneof(sizeArb, relativeSizeArb),
       },
       { requiredKeys: [] },
     );
