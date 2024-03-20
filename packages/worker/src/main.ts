@@ -1,14 +1,8 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { xoroshiro128plus } from 'pure-rand';
-import {
-  assert as fcAssert,
-  property as fcProperty,
-  Random,
-  type IAsyncProperty,
-  type IProperty,
-  type Parameters,
-} from 'fast-check';
+import { assert as fcAssert, property as fcProperty, Random } from 'fast-check';
+import type { IAsyncProperty, IProperty, Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
