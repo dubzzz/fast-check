@@ -9381,7 +9381,7 @@ __metadata:
     glob: "npm:^10.3.10"
     jest: "npm:^29.7.0"
     not-node-buffer: "npm:buffer@^6.0.3"
-    pure-rand: "npm:^6.0.0"
+    pure-rand: "npm:^6.1.0"
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^7.1.0"
     typedoc: "npm:^0.25.10"
@@ -15886,10 +15886,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^6.0.0, pure-rand@npm:^6.0.4":
-  version: 6.0.4
-  resolution: "pure-rand@npm:6.0.4"
-  checksum: 10c0/0fe7b12f25b10ea5b804598a6f37e4bcf645d2be6d44fe963741f014bf0095bdb6ff525106d6da6e76addc8142358fd380f1a9b8c62ea4d5516bf26a96a37c95
+"pure-rand@npm:^6.0.0, pure-rand@npm:^6.0.4, pure-rand@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "pure-rand@npm:6.1.0"
+  checksum: 10c0/1abe217897bf74dcb3a0c9aba3555fe975023147b48db540aa2faf507aee91c03bf54f6aef0eb2bf59cc259a16d06b28eca37f0dc426d94f4692aeff02fb0e65
   languageName: node
   linkType: hard
 
