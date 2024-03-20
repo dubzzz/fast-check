@@ -11,7 +11,7 @@
     "@testing-library/dom": "^9.3.4",
     "@testing-library/react": "^14.2.2",
     "@testing-library/user-event": "^14.5.2",
-    "express": "^4.18.3",
+    "express": "^4.19.0",
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
     "pure-rand": "^6.0.4",
