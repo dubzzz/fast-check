@@ -2878,6 +2878,7 @@ __metadata:
     fast-check: "npm:^3.4.0"
     jest: "npm:^29.7.0"
     jest-ts-webcompat-resolver: "npm:^1.0.0"
+    pure-rand: "npm:^6.1.0"
     typescript: "npm:~5.4.2"
   languageName: unknown
   linkType: soft
