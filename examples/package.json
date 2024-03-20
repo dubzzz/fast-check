@@ -20,7 +20,7 @@
     "supertest": "^6.3.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.1",
+    "@babel/core": "^7.24.3",
     "@babel/preset-react": "^7.24.1",
     "@babel/preset-typescript": "^7.24.1",
     "@jest/globals": "^29.7.0",
