@@ -10,7 +10,7 @@ if (isMainThread) {
   describe('@fast-check/worker', () => {
     const jestTimeout = 10000;
     const assertTimeout = 1000;
-    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout, verbose: 1 };
+    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(
       'should produce the same data in worker and main thread',
@@ -25,7 +25,7 @@ if (isMainThread) {
           failed = true;
           const message = String(err);
           expect(message).toContain('Shrunk 0 time(s)'); // no shrink when fallbacking to worker-based values
-          const mainValueRegex = /Encountered failures were:\n- \[(.*)\]/;
+          const mainValueRegex = /Counterexample: \[(.*)\]/;
           const workerValueRegex = />>>nonSerializableButSameDataProperty=(.*)<<</;
           expect(message).toMatch(mainValueRegex);
           expect(message).toMatch(workerValueRegex);
