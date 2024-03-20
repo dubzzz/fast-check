@@ -20,7 +20,8 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
   }
   generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
     // Extracting and cloning the state of Random before altering it
-    this.paramsForGenerate = { randomGeneratorState: mrng.getState().slice(), runId };
+    const state = mrng.getState();
+    this.paramsForGenerate = { randomGeneratorState: state !== undefined ? state.slice() : undefined, runId };
 
     const value = this.internalProperty.generate(mrng, runId);
     return value;
