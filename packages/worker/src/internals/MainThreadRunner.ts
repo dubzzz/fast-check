@@ -3,7 +3,7 @@ import type { IAsyncPropertyWithHooks } from 'fast-check';
 import type { PropertyArbitraries, WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
-import type { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
+import type { IWorkerPool, Payload, PooledWorker } from './worker-pool/IWorkerPool.js';
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { generateValueFromState } from './ValueFromState.js';
@@ -12,7 +12,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
   private readonly numArbitraries: number;
   private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
   private readonly captureRandomState: boolean;
-  private paramsForGenerate: { randomGeneratorState: number[] | undefined; runId: number | undefined } | undefined;
+  private valueStatePayload: Omit<Payload<Ts> & { source: 'worker' }, 'source'> | undefined;
 
   constructor(
     arbitraries: PropertyArbitraries<Ts>,
@@ -30,8 +30,8 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
   generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
     if (this.captureRandomState) {
       // Extracting and cloning the state of Random before altering it
-      const state = mrng.getState()!;
-      this.paramsForGenerate = { randomGeneratorState: state.slice(), runId };
+      const valueState = { rngState: mrng.getState()!.slice(), runId };
+      this.valueStatePayload = valueState;
 
       // The value will never be consummed by the main-thread except for reporting in case of error
       const internalProperty = this.internalProperty;
@@ -39,7 +39,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
       // eslint-disable-next-line no-inner-declarations
       function getValue(): Ts {
         if (value === undefined) {
-          value = generateValueFromState(internalProperty, { rngState: state, runId });
+          value = generateValueFromState(internalProperty, valueState);
         }
         return value;
       }
@@ -84,12 +84,14 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
     return Promise.resolve();
   }
 
-  getState(): { readonly randomGeneratorState: number[]; runId: number | undefined } | undefined {
-    const state = this.paramsForGenerate;
-    if (state === undefined || state.randomGeneratorState === undefined) {
-      return undefined;
+  getPayload(inputs: Ts): Payload<Ts> {
+    if (this.captureRandomState) {
+      if (this.valueStatePayload === undefined) {
+        throw new Error('');
+      }
+      return { source: 'worker', ...this.valueStatePayload };
     }
-    return { randomGeneratorState: state.randomGeneratorState, runId: state.runId };
+    return { source: 'main', value: inputs };
   }
 }
 
@@ -110,15 +112,14 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   arbitraries: PropertyArbitraries<Ts>,
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
   const lock = new Lock();
-  const pool: IWorkerPool<boolean | void, Ts> =
-    isolationLevel === 'predicate'
-      ? new OneTimePool(workerFileUrl)
-      : isolationLevel === 'property'
-        ? new BasicPool(workerFileUrl)
-        : new GlobalPool(workerFileUrl);
+  const pool: IWorkerPool<boolean | void, Payload<Ts>> = isolationLevel === 'predicate'
+    ? new OneTimePool(workerFileUrl)
+    : isolationLevel === 'property'
+      ? new BasicPool(workerFileUrl)
+      : new GlobalPool(workerFileUrl);
 
   let releaseLock: (() => void) | undefined = undefined;
-  let worker: PooledWorker<boolean | void, Ts> | undefined = undefined;
+  let worker: PooledWorker<boolean | void, Payload<Ts>> | undefined = undefined;
   const property = new CustomAsyncProperty<Ts>(
     arbitraries,
     async (...inputs) => {
@@ -127,7 +128,7 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
           reject(new Error('Badly initialized worker, unable to run the property'));
           return;
         }
-        worker.register(predicateId, inputs, property.getState(), resolve, reject);
+        worker.register(predicateId, property.getPayload(inputs), resolve, reject);
       });
     },
     randomSource === 'worker',

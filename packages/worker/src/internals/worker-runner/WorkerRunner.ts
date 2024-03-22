@@ -1,6 +1,7 @@
 import type { MessagePort } from 'node:worker_threads';
 import type { MainThreadToWorkerMessage, PropertyPredicate, WorkerToMainThreadMessage } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
+import type { Payload } from '../worker-pool/IWorkerPool.js';
 
 /**
  * Setup a worker listening to parentPort and able to run a single time for a given predicate
@@ -12,16 +13,16 @@ export function runWorker<Ts extends unknown[]>(
   parentPort: MessagePort,
   predicateId: number,
   predicate: PropertyPredicate<Ts>,
-  buildPayload: (state: ValueState) => Ts,
+  buildInputs: (state: ValueState) => Ts,
 ): void {
-  parentPort.on('message', (message: MainThreadToWorkerMessage<Ts>) => {
-    const { content, targetPredicateId, runId } = message;
+  parentPort.on('message', (message: MainThreadToWorkerMessage<Payload<Ts>>) => {
+    const { payload, targetPredicateId, runId } = message;
     if (targetPredicateId !== predicateId) {
       // The current predicate is not the one targeted by the received message
       return;
     }
-    const payload = content.source === 'main' ? content.payload : buildPayload(content);
-    Promise.resolve(predicate(...payload)).then(
+    const inputs = payload.source === 'main' ? payload.value : buildInputs(payload);
+    Promise.resolve(predicate(...inputs)).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { success: true, output, runId };
         parentPort.postMessage(message);

@@ -114,7 +114,7 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       worker,
       isAvailable,
       isFaulty,
-      register: (predicateId, payload, state, onSuccess, onFailure) => {
+      register: (predicateId, payload, onSuccess, onFailure) => {
         if (!isAvailable()) {
           throw new Error('This instance of PooledWorker is currently in use');
         }
@@ -122,7 +122,7 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
         registration = { currentRunId, onSuccess, onFailure };
         const message: PoolToWorkerMessage<TPayload> = {
           targetPredicateId: predicateId,
-          content: state !== undefined ? { source: 'worker', ...state } : { source: 'main', payload },
+          payload,
           runId: currentRunId,
         };
         worker.postMessage(message);

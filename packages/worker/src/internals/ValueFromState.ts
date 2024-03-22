@@ -5,7 +5,7 @@ import type { IRawProperty } from 'fast-check';
 /**
  * Definition of the Value
  */
-export type ValueState = { rngState: number[]; runId: number };
+export type ValueState = { rngState: number[]; runId: number | undefined };
 
 /**
  * Build the appropriate Value based on the provided state
