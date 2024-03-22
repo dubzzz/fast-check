@@ -4,7 +4,10 @@ import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import { nonSerializableDataProperty } from './__properties__/nonSerializableData.cjs';
+import {
+  nonSerializableDataProperty,
+  nonSerializableDataPropertyMainThread,
+} from './__properties__/nonSerializableData.cjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -17,6 +20,15 @@ if (isMainThread) {
       async () => {
         // Arrange / Act / Assert
         await expect(assert(nonSerializableDataProperty, defaultOptions)).resolves.not.toThrow();
+      },
+      jestTimeout,
+    );
+
+    it(
+      'should refuse to execute on non-serializable data for main-thread',
+      async () => {
+        // Arrange / Act / Assert
+        await expect(assert(nonSerializableDataPropertyMainThread, defaultOptions)).rejects.toThrow(/DataCloneError/);
       },
       jestTimeout,
     );
