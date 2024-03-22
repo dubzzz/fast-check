@@ -1,5 +1,4 @@
 import fc from 'fast-check';
-import { xorshift128plus } from 'pure-rand';
 import type { IAsyncPropertyWithHooks } from 'fast-check';
 import type { PropertyArbitraries, WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
@@ -7,6 +6,7 @@ import { Lock } from './lock/Lock.js';
 import type { IWorkerPool, PooledWorker } from './worker-pool/IWorkerPool.js';
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
+import { generateValueFromState } from './ValueFromState.js';
 
 class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
   private readonly numArbitraries: number;
@@ -39,8 +39,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
       // eslint-disable-next-line no-inner-declarations
       function getValue(): Ts {
         if (value === undefined) {
-          const mrng = new fc.Random(xorshift128plus.fromState(state));
-          value = internalProperty.generate(mrng, runId).value_;
+          value = generateValueFromState(internalProperty, { rngState: state, runId });
         }
         return value;
       }

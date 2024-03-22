@@ -1,13 +1,13 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { xorshift128plus } from 'pure-rand';
-import { assert as fcAssert, property as fcProperty, Random } from 'fast-check';
+import { assert as fcAssert, property as fcProperty } from 'fast-check';
 import type { IAsyncProperty, IProperty, Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
 import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
+import { generateValueFromState } from './internals/ValueFromState.js';
 
 let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<
@@ -109,11 +109,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     // Worker code
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
     const property: IProperty<Ts> = (fcProperty as any)(...args.slice(0, args.length - 1), () => true);
-    runWorker(parentPort, currentPredicateId, predicate, (state: number[], runId: number | undefined): Ts => {
-      // TODO - Support other PRNG
-      const mrng = new Random(xorshift128plus.fromState(state));
-      return property.generate(mrng, runId).value_;
-    });
+    runWorker(parentPort, currentPredicateId, predicate, (state) => generateValueFromState(property, state));
     registeredPredicates.add(currentPredicateId);
   }
   // Cannot throw for invalid worker at this point as we may not be the only worker for this run

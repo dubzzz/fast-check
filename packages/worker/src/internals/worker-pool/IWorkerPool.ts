@@ -1,3 +1,5 @@
+import type { ValueState } from '../ValueFromState';
+
 export type OnSuccessCallback<TSuccess> = (value: TSuccess) => void;
 export type OnErrorCallback = (error: unknown) => void;
 
@@ -23,9 +25,7 @@ export type PooledWorker<TSuccess, TPayload> = {
 export type PoolToWorkerMessage<TPayload> = {
   targetPredicateId: number;
   runId: number;
-  content:
-    | { source: 'main'; payload: TPayload }
-    | { source: 'worker'; randomGeneratorState: number[]; runId: number | undefined };
+  content: { source: 'main'; payload: TPayload } | ({ source: 'worker' } & ValueState);
 };
 
 /**
