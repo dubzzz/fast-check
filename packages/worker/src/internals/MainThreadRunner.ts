@@ -6,13 +6,14 @@ import { Lock } from './lock/Lock.js';
 import type { IWorkerPool, Payload, PooledWorker } from './worker-pool/IWorkerPool.js';
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
+import type { ValueState } from './ValueFromState.js';
 import { generateValueFromState } from './ValueFromState.js';
 
 class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
   private readonly numArbitraries: number;
   private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
   private readonly captureRandomState: boolean;
-  private valueStatePayload: Omit<Payload<Ts> & { source: 'worker' }, 'source'> | undefined;
+  private valueState: ValueState | undefined;
 
   constructor(
     arbitraries: PropertyArbitraries<Ts>,
@@ -31,7 +32,7 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
     if (this.captureRandomState) {
       // Extracting and cloning the state of Random before altering it
       const valueState = { rngState: mrng.getState()!.slice(), runId };
-      this.valueStatePayload = valueState;
+      this.valueState = valueState;
 
       // The value will never be consummed by the main-thread except for reporting in case of error
       const internalProperty = this.internalProperty;
@@ -86,10 +87,10 @@ class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncP
 
   getPayload(inputs: Ts): Payload<Ts> {
     if (this.captureRandomState) {
-      if (this.valueStatePayload === undefined) {
+      if (this.valueState === undefined) {
         throw new Error('');
       }
-      return { source: 'worker', ...this.valueStatePayload };
+      return { source: 'worker', ...this.valueState };
     }
     return { source: 'main', value: inputs };
   }
