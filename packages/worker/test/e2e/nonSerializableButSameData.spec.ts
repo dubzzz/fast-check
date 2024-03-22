@@ -52,14 +52,18 @@ if (isMainThread) {
           failed = true;
           const message = String(err);
           const seedRegex = /seed: (-?\d+),/;
+          const pathRegex = /path: "(\d+)",/;
           const workerValueRegex = />>>nonSerializableButSameDataProperty=(.*)<<</;
           expect(message).toMatch(seedRegex);
+          expect(message).toMatch(pathRegex);
           expect(message).toMatch(workerValueRegex);
           const seed = seedRegex.exec(message)![1];
+          const path = pathRegex.exec(message)![1];
           const workerValue = workerValueRegex.exec(message)![1];
           const sampledValues = sample(nonSerializableButSameDataProperty, {
             ...defaultOptions,
             seed: +seed,
+            path,
             numRuns: 1,
           }) as symbol[][];
           const sampledValue = sampledValues[0][0];
