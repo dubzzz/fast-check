@@ -1,5 +1,6 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
+import { sample, stringify } from 'fast-check';
 import { assert } from '@fast-check/worker';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -32,6 +33,37 @@ if (isMainThread) {
           const mainValue = mainValueRegex.exec(message)![1];
           const workerValue = workerValueRegex.exec(message)![1];
           expect(workerValue).toBe(mainValue);
+        }
+        expect(failed).toBe(true);
+      },
+      jestTimeout,
+    );
+
+    it(
+      'should produce the same data in worker and on separate on the side sample',
+      async () => {
+        // Arrange
+        let failed = false;
+
+        // Act / Assert
+        try {
+          await assert(nonSerializableButSameDataProperty, defaultOptions);
+        } catch (err) {
+          failed = true;
+          const message = String(err);
+          const seedRegex = /seed: (-?\d+),/;
+          const workerValueRegex = />>>nonSerializableButSameDataProperty=(.*)<<</;
+          expect(message).toMatch(seedRegex);
+          expect(message).toMatch(workerValueRegex);
+          const seed = seedRegex.exec(message)![1];
+          const workerValue = workerValueRegex.exec(message)![1];
+          const sampledValues = sample(nonSerializableButSameDataProperty, {
+            ...defaultOptions,
+            seed: +seed,
+            numRuns: 1,
+          }) as symbol[][];
+          const sampledValue = sampledValues[0][0];
+          expect(stringify(sampledValue)).toBe(workerValue);
         }
         expect(failed).toBe(true);
       },
