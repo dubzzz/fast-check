@@ -59,7 +59,7 @@ describe('BasicPool', () => {
       const worker = await workerPromise;
 
       // Act
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
 
       // Assert
       expect(worker.isAvailable()).toBe(false);
@@ -81,7 +81,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
 
       // Act
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
@@ -111,7 +111,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
 
       // Act
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
@@ -140,7 +140,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
 
       // Act
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
@@ -172,7 +172,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
 
       // Act
       const onErrorHandler = on.mock.calls.find(([eventName]) => eventName === 'messageerror')![1];
@@ -197,7 +197,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
 
       // Act
       const onErrorHandler = on.mock.calls.find(([eventName]) => eventName === 'error')![1];
@@ -222,7 +222,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
 
       // Act
       const exitCode = 101;
@@ -317,7 +317,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
       const receivedRunId = receivedMessage.runId;
       const message: WorkerToPoolMessage<string> = { runId: receivedRunId, success: true, output: 'successMessage' };
@@ -347,7 +347,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
       const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
       const receivedRunId = receivedMessage.runId;
       const message: WorkerToPoolMessage<string> = { runId: receivedRunId, success: false, error: 'errorMessage' };
@@ -377,7 +377,7 @@ describe('BasicPool', () => {
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
       const worker = await workerPromise;
-      worker.register(predicateId, 'to-worker', undefined, onSuccess, onFailure);
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure);
       expect(terminate).not.toHaveBeenCalled();
 
       // Act

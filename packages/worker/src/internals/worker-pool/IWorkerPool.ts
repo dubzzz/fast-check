@@ -1,4 +1,4 @@
-import type { ValueState } from '../ValueFromState';
+import type { ValueState } from '../ValueFromState.js';
 
 export type OnSuccessCallback<TSuccess> = (value: TSuccess) => void;
 export type OnErrorCallback = (error: unknown) => void;
