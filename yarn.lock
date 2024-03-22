@@ -2721,7 +2721,7 @@ __metadata:
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
     rxjs: "npm:^7.8.1"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   peerDependencies:
     ava: ^4 || ^5 || ^6
   languageName: unknown
@@ -2744,16 +2744,16 @@ __metadata:
     "@types/react": "npm:^18.2.67"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.7.0"
-    express: "npm:^4.19.0"
+    express: "npm:^4.19.1"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
-    pure-rand: "npm:^6.0.4"
+    pure-rand: "npm:^6.1.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     supertest: "npm:^6.3.4"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   languageName: unknown
   linkType: soft
 
@@ -2761,7 +2761,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/expect-type@workspace:packages/expect-type"
   dependencies:
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   languageName: unknown
   linkType: soft
 
@@ -2781,7 +2781,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-jasmine2: "npm:^29.7.0"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   peerDependencies:
     "@fast-check/worker": ~0.0.7 || ~0.1.0
     "@jest/expect": ">=28.0.0"
@@ -2806,7 +2806,7 @@ __metadata:
     eslint-config-prettier: "npm:^9.1.0"
     prettier: "npm:3.2.5"
     publint: "npm:^0.2.7"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   languageName: unknown
   linkType: soft
 
@@ -2823,7 +2823,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     jest: "npm:^29.7.0"
     npm-packlist: "npm:^8.0.0"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   bin:
     packaged: ./bin/packaged.js
   languageName: unknown
@@ -2841,7 +2841,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     jest: "npm:^29.7.0"
     jest-ts-webcompat-resolver: "npm:^1.0.0"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   languageName: unknown
   linkType: soft
 
@@ -2857,7 +2857,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
     vite: "npm:^5.2.2"
     vitest: "npm:^1.4.0"
   peerDependencies:
@@ -2879,7 +2879,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-ts-webcompat-resolver: "npm:^1.0.0"
     pure-rand: "npm:^6.1.0"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   languageName: unknown
   linkType: soft
 
@@ -9375,9 +9375,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.3, express@npm:^4.19.0":
-  version: 4.19.0
-  resolution: "express@npm:4.19.0"
+"express@npm:^4.17.3, express@npm:^4.19.1":
+  version: 4.19.1
+  resolution: "express@npm:4.19.1"
   dependencies:
     accepts: "npm:~1.3.8"
     array-flatten: "npm:1.1.1"
@@ -9410,7 +9410,7 @@ __metadata:
     type-is: "npm:~1.6.18"
     utils-merge: "npm:1.0.1"
     vary: "npm:~1.1.2"
-  checksum: 10c0/cf4be4838f154491da059bb2fb11f7186211a66b232e7f2e460eba634c8bcf0af330a067ea02ad33f8782f66114038e4bb23c0a53aca463da092d5495a5d11bf
+  checksum: 10c0/1cf6d3c095131f0d730105fac23a713083604d4f3ad9364df53cade50662abcfee2f6f8a955fdf164a5ee63f09f457da0b70cbed435ad302fa6f14162a9757f9
   languageName: node
   linkType: hard
 
@@ -9471,7 +9471,7 @@ __metadata:
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^7.1.0"
     typedoc: "npm:^0.25.12"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   languageName: unknown
   linkType: soft
 
@@ -15981,7 +15981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^6.0.0, pure-rand@npm:^6.0.4, pure-rand@npm:^6.1.0":
+"pure-rand@npm:^6.0.0, pure-rand@npm:^6.1.0":
   version: 6.1.0
   resolution: "pure-rand@npm:6.1.0"
   checksum: 10c0/1abe217897bf74dcb3a0c9aba3555fe975023147b48db540aa2faf507aee91c03bf54f6aef0eb2bf59cc259a16d06b28eca37f0dc426d94f4692aeff02fb0e65
@@ -18555,7 +18555,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.4.2, typescript@npm:~5.4.2":
+"typescript@npm:5.4.2":
   version: 5.4.2
   resolution: "typescript@npm:5.4.2"
   bin:
@@ -18565,13 +18565,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.4.2#optional!builtin<compat/typescript>":
+"typescript@npm:~5.4.3":
+  version: 5.4.3
+  resolution: "typescript@npm:5.4.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/22443a8760c3668e256c0b34b6b45c359ef6cecc10c42558806177a7d500ab1a7d7aac1f976d712e26989ddf6731d2fbdd3212b7c73290a45127c1c43ba2005a
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>":
   version: 5.4.2
   resolution: "typescript@patch:typescript@npm%3A5.4.2#optional!builtin<compat/typescript>::version=5.4.2&hash=5adc0c"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/fcf6658073d07283910d9a0e04b1d5d0ebc822c04dbb7abdd74c3151c7aa92fcddbac7d799404e358197222006ccdc4c0db219d223d2ee4ccd9e2b01333b49be
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A~5.4.3#optional!builtin<compat/typescript>":
+  version: 5.4.3
+  resolution: "typescript@patch:typescript@npm%3A5.4.3#optional!builtin<compat/typescript>::version=5.4.3&hash=5adc0c"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/6e51f8b7e6ec55b897b9e56b67e864fe8f44e30f4a14357aad5dc0f7432db2f01efc0522df0b6c36d361c51f2dc3dcac5c832efd96a404cfabf884e915d38828
   languageName: node
   linkType: hard
 
@@ -19382,7 +19402,7 @@ __metadata:
     prism-react-renderer: "npm:^2.3.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    typescript: "npm:~5.4.2"
+    typescript: "npm:~5.4.3"
   languageName: unknown
   linkType: soft
 
