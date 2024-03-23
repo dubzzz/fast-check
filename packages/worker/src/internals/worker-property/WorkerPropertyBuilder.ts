@@ -7,7 +7,7 @@ import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
 
 /**
  * Property tailored for usage with workers
- * it's able to produce payload to be sent to the workers
+ * it produces the payload to be sent to the workers
  */
 type WorkerProperty<Ts> = IAsyncPropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
 
