@@ -1,6 +1,6 @@
 # 3.17.0
 
-_TODO Description_
+_Allow access to some internals details linked to the underlying random generator_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.17.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.16.0...v3.17.0)]
 
 ## Features
