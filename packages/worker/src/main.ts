@@ -4,7 +4,7 @@ import { assert as fcAssert, property as fcProperty } from 'fast-check';
 import type { IAsyncProperty, IProperty, Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
-import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
+import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
 import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 import { generateValueFromState } from './internals/ValueFromState.js';

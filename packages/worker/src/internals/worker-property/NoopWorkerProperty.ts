@@ -1,5 +1,5 @@
 import type { IAsyncPropertyWithHooks, Value, Stream, PreconditionFailure, PropertyFailure } from 'fast-check';
-import type { WorkerProperty } from './SharedTypes.js';
+import type { WorkerProperty } from '../SharedTypes.js';
 
 /**
  * NoopWorkerProperty is a placeholder instance of property returned
