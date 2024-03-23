@@ -6,6 +6,12 @@ import fc from 'fast-check';
 import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
 
 /**
+ * Property tailored for usage with workers
+ * it's able to produce payload to be sent to the workers
+ */
+type WorkerProperty<Ts> = IAsyncPropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
+
+/**
  * Build an async property tailored for workers
  * @param arbitraries - Arbitraries supposed to generate our values
  * @param predicate - Predicate for the property
@@ -15,7 +21,7 @@ export function buildWorkerProperty<Ts extends [unknown, ...unknown[]]>(
   arbitraries: PropertyArbitraries<Ts>,
   predicate: (...args: Ts) => Promise<boolean | void>,
   generateValuesInMainThread: boolean,
-): IAsyncPropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> } {
+): WorkerProperty<Ts> {
   if (!generateValuesInMainThread) {
     return Object.assign(fc.asyncProperty<Ts>(...arbitraries, predicate), {
       getPayload: (inputs: Ts): Payload<Ts> => ({ source: 'main', value: inputs }),
