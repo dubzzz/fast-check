@@ -12,6 +12,8 @@ class WorkerPropertyFromWorkerError extends Error {
   }
 }
 
+const WorkerPropertyFromWorkerCache = new WeakMap<unknown[], ValueState>();
+
 /**
  * A WorkerProperty delegating generating the values to the Worker thread
  * instead of running it into the main thread
@@ -49,12 +51,11 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
       }
       return value;
     }
-    return new fc.Value(
-      [...Array(this.numArbitraries)].map((_, index) => ({
+    const inputs = [...Array(this.numArbitraries)].map((_, index) => ({
         toString: () => fc.stringify(getValue()[index]),
-      })) as unknown as Ts,
-      undefined,
-    );
+      })) as unknown as Ts;
+    WorkerPropertyFromWorkerCache.set(inputs, valueState);
+    return new fc.Value(inputs, undefined);
   }
 
   shrink(_value: fc.Value<Ts>): fc.Stream<fc.Value<Ts>> {
@@ -88,10 +89,11 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return Promise.resolve();
   }
 
-  getPayload(_inputs: Ts): Payload<Ts> {
-    if (this.valueState === undefined) {
+  getPayload(inputs: Ts): Payload<Ts> {
+    const valueState = WorkerPropertyFromWorkerCache.get(inputs);
+    if (valueState === undefined) {
       throw new WorkerPropertyFromWorkerError('Cannot get a relevant payload to execute this run');
     }
-    return { source: 'worker', ...this.valueState };
+    return { source: 'worker', ...valueState };
   }
 }
