@@ -1,3 +1,20 @@
+# 3.17.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.17.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.16.0...v3.17.0)]
+
+## Features
+
+- ([PR#4817](https://github.com/dubzzz/fast-check/pull/4817)) Expose internal state of the PRNG from `Random`
+
+## Fixes
+
+- ([PR#4781](https://github.com/dubzzz/fast-check/pull/4781)) Doc: Official release note of 3.16.0
+- ([PR#4799](https://github.com/dubzzz/fast-check/pull/4799)) Doc: Add more links in the footer
+- ([PR#4800](https://github.com/dubzzz/fast-check/pull/4800)) Doc: Better colors for footer and dark mode
+
+---
+
 # 3.16.0
 
 _Type assert on assertions linked to `fc.pre`_
