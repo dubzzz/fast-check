@@ -56,6 +56,35 @@ describe('WorkerPropertyFromWorker', () => {
     expect(generate).toHaveBeenCalledTimes(1);
     expect(stringified).toBe('[{"hello":"world"}]');
   });
+
+  it('should support delayed and out-of-order calls to print the values', () => {
+    // Arrange
+    const orderedValues = [
+      new fc.Value({ hello: 'world' }, undefined),
+      new fc.Value({ how: 'are you?' }, undefined),
+      new fc.Value({ tell: 'me' }, undefined),
+    ];
+    const mrng = buildMrng();
+    const { arbitrary, generate } = buildTrackedArbitrary();
+    generate.mockImplementation(() => orderedValues[0]);
+    const arbitraries: [fc.Arbitrary<unknown>] = [arbitrary];
+    const predicate = jest.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
+
+    // Act
+    const property = new WorkerPropertyFromWorker(arbitraries, predicate);
+    const value1 = property.generate(mrng, 0);
+    const value2 = property.generate(mrng, 0);
+    const value3 = property.generate(mrng, 0);
+    const stringified2 = fc.stringify(value2.value_);
+    const stringified3 = fc.stringify(value3.value_);
+    const stringified1 = fc.stringify(value1.value_);
+
+    // Assert
+    expect(generate).toHaveBeenCalledTimes(3);
+    expect(stringified1).toBe('[{"hello":"world"}]');
+    expect(stringified2).toBe('[{"how":"are you?"}]');
+    expect(stringified3).toBe('[{"tell":"me"}]');
+  });
 });
 
 // Helpers
