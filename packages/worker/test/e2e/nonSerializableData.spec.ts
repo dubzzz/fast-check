@@ -2,10 +2,12 @@ import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
 import {
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore
   nonSerializableDataProperty,
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore
   nonSerializableDataPropertyMainThread,
 } from './__properties__/nonSerializableData.cjs';
 
