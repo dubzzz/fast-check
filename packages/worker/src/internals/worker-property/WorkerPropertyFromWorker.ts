@@ -1,4 +1,13 @@
-import type { IAsyncPropertyWithHooks } from 'fast-check';
+import type {
+  AsyncPropertyHookFunction,
+  IAsyncPropertyWithHooks,
+  IRawProperty,
+  PreconditionFailure,
+  PropertyFailure,
+  Random,
+  Stream,
+  Value,
+} from 'fast-check';
 import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
@@ -12,6 +21,16 @@ class WorkerPropertyFromWorkerError extends Error {
   }
 }
 
+function lazyGenerateValueFromState<Ts>(property: IRawProperty<Ts>, state: ValueState): () => Ts {
+  let value: Ts | undefined = undefined;
+  return function getValue(): Ts {
+    if (value === undefined) {
+      value = generateValueFromState(property, state);
+    }
+    return value;
+  };
+}
+
 const WorkerPropertyFromWorkerCache = new WeakMap<unknown[], ValueState>();
 
 /**
@@ -21,7 +40,6 @@ const WorkerPropertyFromWorkerCache = new WeakMap<unknown[], ValueState>();
 export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
   private readonly numArbitraries: number;
   private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
-  private valueState: ValueState | undefined;
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
@@ -32,46 +50,38 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return this.internalProperty.isAsync();
   }
 
-  generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
+  generate(mrng: Random, runId?: number | undefined): Value<Ts> {
     // Extracting and cloning the state of Random before altering it
     const rawRngState = mrng.getState();
     if (rawRngState === undefined) {
       throw new WorkerPropertyFromWorkerError('Cannot extract any state from the provided instance of Random');
     }
     const valueState = { rngState: rawRngState.slice(), runId };
-    this.valueState = valueState;
-
-    // The value will never be consummed by the main-thread except for reporting in case of error
-    const internalProperty = this.internalProperty;
-    let value: Ts | undefined = undefined;
-    // eslint-disable-next-line no-inner-declarations
-    function getValue(): Ts {
-      if (value === undefined) {
-        value = generateValueFromState(internalProperty, valueState);
-      }
-      return value;
-    }
+    const getValue = lazyGenerateValueFromState(this.internalProperty, valueState);
+    // WARNING: The type for inputs variable is obviously not the one the caller expects!
+    // But in the context of WorkerPropertyFromWorker, caller knows that the inputs returned by generate
+    // should not be consummed as-is and that they will be re-created on worker's side.
     const inputs = [...Array(this.numArbitraries)].map((_, index) => ({
-        toString: () => fc.stringify(getValue()[index]),
-      })) as unknown as Ts;
+      toString: () => fc.stringify(getValue()[index]),
+    })) as unknown as Ts;
     WorkerPropertyFromWorkerCache.set(inputs, valueState);
     return new fc.Value(inputs, undefined);
   }
 
-  shrink(_value: fc.Value<Ts>): fc.Stream<fc.Value<Ts>> {
+  shrink(_value: Value<Ts>): Stream<Value<Ts>> {
     // No shrink on worker-based generations
     return fc.Stream.nil();
   }
 
-  run(v: Ts, dontRunHook?: boolean | undefined): Promise<fc.PreconditionFailure | fc.PropertyFailure | null> {
+  run(v: Ts, dontRunHook?: boolean | undefined): Promise<PreconditionFailure | PropertyFailure | null> {
     return this.internalProperty.run(v, dontRunHook);
   }
 
-  beforeEach(hookFunction: fc.AsyncPropertyHookFunction): fc.IAsyncPropertyWithHooks<Ts> {
+  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
     return this.internalProperty.beforeEach(hookFunction);
   }
 
-  afterEach(hookFunction: fc.AsyncPropertyHookFunction): fc.IAsyncPropertyWithHooks<Ts> {
+  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
     return this.internalProperty.afterEach(hookFunction);
   }
 
