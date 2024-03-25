@@ -1,100 +1,10 @@
-import fc from 'fast-check';
-import type { IAsyncPropertyWithHooks } from 'fast-check';
 import type { PropertyArbitraries, WorkerProperty } from './SharedTypes.js';
 import { BasicPool } from './worker-pool/BasicPool.js';
 import { Lock } from './lock/Lock.js';
 import type { IWorkerPool, Payload, PooledWorker } from './worker-pool/IWorkerPool.js';
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
-import type { ValueState } from './ValueFromState.js';
-import { generateValueFromState } from './ValueFromState.js';
-
-class CustomAsyncProperty<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
-  private readonly numArbitraries: number;
-  private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
-  private readonly captureRandomState: boolean;
-  private valueState: ValueState | undefined;
-
-  constructor(
-    arbitraries: PropertyArbitraries<Ts>,
-    predicate: (...args: Ts) => Promise<boolean | void>,
-    captureRandomeState: boolean,
-  ) {
-    this.numArbitraries = arbitraries.length;
-    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
-    this.captureRandomState = captureRandomeState;
-  }
-
-  isAsync(): true {
-    return this.internalProperty.isAsync();
-  }
-  generate(mrng: fc.Random, runId?: number | undefined): fc.Value<Ts> {
-    if (this.captureRandomState) {
-      // Extracting and cloning the state of Random before altering it
-      const valueState = { rngState: mrng.getState()!.slice(), runId };
-      this.valueState = valueState;
-
-      // The value will never be consummed by the main-thread except for reporting in case of error
-      const internalProperty = this.internalProperty;
-      let value: Ts | undefined = undefined;
-      // eslint-disable-next-line no-inner-declarations
-      function getValue(): Ts {
-        if (value === undefined) {
-          value = generateValueFromState(internalProperty, valueState);
-        }
-        return value;
-      }
-      return new fc.Value(
-        [...Array(this.numArbitraries)].map((_, index) => ({
-          toString: () => fc.stringify(getValue()[index]),
-        })) as unknown as Ts,
-        undefined,
-      );
-    }
-
-    const value = this.internalProperty.generate(mrng, runId);
-    return value;
-  }
-  shrink(value: fc.Value<Ts>): fc.Stream<fc.Value<Ts>> {
-    if (this.captureRandomState) {
-      // No shrink on worker-based generations
-      return fc.Stream.nil();
-    }
-    return this.internalProperty.shrink(value);
-  }
-  run(v: Ts, dontRunHook?: boolean | undefined): Promise<fc.PreconditionFailure | fc.PropertyFailure | null> {
-    return this.internalProperty.run(v, dontRunHook);
-  }
-
-  beforeEach(hookFunction: fc.AsyncPropertyHookFunction): fc.IAsyncPropertyWithHooks<Ts> {
-    return this.internalProperty.beforeEach(hookFunction);
-  }
-  afterEach(hookFunction: fc.AsyncPropertyHookFunction): fc.IAsyncPropertyWithHooks<Ts> {
-    return this.internalProperty.afterEach(hookFunction);
-  }
-  runBeforeEach() {
-    if (this.internalProperty.runBeforeEach !== undefined) {
-      return this.internalProperty.runBeforeEach();
-    }
-    return Promise.resolve();
-  }
-  runAfterEach() {
-    if (this.internalProperty.runAfterEach !== undefined) {
-      return this.internalProperty.runAfterEach();
-    }
-    return Promise.resolve();
-  }
-
-  getPayload(inputs: Ts): Payload<Ts> {
-    if (this.captureRandomState) {
-      if (this.valueState === undefined) {
-        throw new Error('');
-      }
-      return { source: 'worker', ...this.valueState };
-    }
-    return { source: 'main', value: inputs };
-  }
-}
+import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -121,7 +31,7 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
 
   let releaseLock: (() => void) | undefined = undefined;
   let worker: PooledWorker<boolean | void, Payload<Ts>> | undefined = undefined;
-  const property = new CustomAsyncProperty<Ts>(
+  const property = buildWorkerProperty(
     arbitraries,
     async (...inputs) => {
       return new Promise((resolve, reject) => {
