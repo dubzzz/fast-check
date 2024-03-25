@@ -107,8 +107,9 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     return property;
   } else if (parentPort !== null && workerData.fastcheckWorker === true) {
     // Worker code
+    const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
-    const property: IProperty<Ts> = (fcProperty as any)(...args.slice(0, args.length - 1), () => true);
+    const property: IProperty<Ts> = fcProperty(...arbitraries, () => true);
     runWorker(parentPort, currentPredicateId, predicate, (state) => generateValueFromState(property, state));
     registeredPredicates.add(currentPredicateId);
   }
