@@ -64,7 +64,7 @@ const property = propertyFor(new URL(import.meta.url), { isolationLevel: 'predic
 By default, workers will receive the generated values from their parent thread. In some cases, such sending is made impossible as the generated values include non-serializable pieces. In such cases, you can opt-in to generate the values directly within the workers by using:
 
 ```js
-const property = propertyFor(new URL(import.meta.url), { randomSource: 'predicate' });
+const property = propertyFor(new URL(import.meta.url), { randomSource: 'worker' });
 // Other values:
 // - "main-thread": The main thread will be responsible to generate the random values and send them to the worker thread. It unfortunately cannot send any value that cannot be serialized between threads. (default)
 // - "worker": The worker is responsible to generate its own values based on the instructions provided by the main thread. Switching to a worker mode allows to support non-serializable values, unfortunately it drops all shrinking. capabilities.
