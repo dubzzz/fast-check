@@ -3,12 +3,10 @@ import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 
 import {
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
   nonSerializableDataProperty,
+  nonSerializableDataPropertyMainThread,
   /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore
-  nonSerializableDataPropertyMainThread,
 } from './__properties__/nonSerializableData.cjs';
 
 if (isMainThread) {
