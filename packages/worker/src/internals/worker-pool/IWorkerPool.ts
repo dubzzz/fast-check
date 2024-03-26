@@ -1,3 +1,5 @@
+import type { ValueState } from '../ValueFromState.js';
+
 export type OnSuccessCallback<TSuccess> = (value: TSuccess) => void;
 export type OnErrorCallback = (error: unknown) => void;
 
@@ -19,7 +21,16 @@ export type PooledWorker<TSuccess, TPayload> = {
 /**
  * Message exchanged from the pool to the worker
  */
-export type PoolToWorkerMessage<TPayload> = { targetPredicateId: number; runId: number; payload: TPayload };
+export type PoolToWorkerMessage<TPayload> = {
+  targetPredicateId: number;
+  runId: number;
+  payload: TPayload;
+};
+
+/**
+ * Payload being sent to the worker to control it
+ */
+export type Payload<TValue> = { source: 'main'; value: TValue } | ({ source: 'worker' } & ValueState);
 
 /**
  * Message exchanged from the worker to the pool
