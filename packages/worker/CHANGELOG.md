@@ -1,6 +1,6 @@
 # 0.3.0
 
-_TODO Description_
+_Support generating inputs in workers_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.2.0...worker%2Fv0.3.0)]
 
 ## Features
