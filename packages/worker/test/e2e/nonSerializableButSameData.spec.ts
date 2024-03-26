@@ -1,11 +1,14 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
-import { sample, stringify } from 'fast-check';
+import { check, stringify } from 'fast-check';
 import { assert } from '@fast-check/worker';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import { nonSerializableButSameDataProperty } from './__properties__/nonSerializableButSameData.cjs';
+import {
+  nonSerializableButSameDataProperty,
+  nonSerializableButSameDataRawProperty,
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore
+} from './__properties__/nonSerializableButSameData.cjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -60,14 +63,16 @@ if (isMainThread) {
           const seed = seedRegex.exec(message)![1];
           const path = pathRegex.exec(message)![1];
           const workerValue = workerValueRegex.exec(message)![1];
-          const sampledValues = sample(nonSerializableButSameDataProperty, {
+          const out = await check(nonSerializableButSameDataRawProperty, {
             ...defaultOptions,
             seed: +seed,
             path,
             numRuns: 1,
-          }) as symbol[][];
-          const sampledValue = sampledValues[0][0];
-          expect(stringify(sampledValue)).toBe(workerValue);
+            endOnFailure: true,
+          });
+          const sampledValue = (out.counterexample as [symbol])[0];
+          const extraDetails = { seed, path };
+          expect({ ...extraDetails, value: stringify(sampledValue) }).toEqual({ ...extraDetails, value: workerValue });
         }
         expect(failed).toBe(true);
       },
