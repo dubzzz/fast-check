@@ -1819,22 +1819,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codesandbox/sandpack-client@npm:^2.13.6":
-  version: 2.13.6
-  resolution: "@codesandbox/sandpack-client@npm:2.13.6"
+"@codesandbox/sandpack-client@npm:^2.13.7":
+  version: 2.13.7
+  resolution: "@codesandbox/sandpack-client@npm:2.13.7"
   dependencies:
     "@codesandbox/nodebox": "npm:0.1.8"
     buffer: "npm:^6.0.3"
     dequal: "npm:^2.0.2"
     outvariant: "npm:1.4.0"
     static-browser-server: "npm:1.0.3"
-  checksum: 10c0/d40b3829fab5a8b8bebe7322aeb8278c74038c1aeade077f3dc898a2a020d70d457c93f6237c6cf61f69bcb090dae1b70a4fa263d5fe5841eecdcba6aa4b2581
+  checksum: 10c0/c493a10b912266e0650394fe4aba5ffe579b1ebbb8514b2055d1921eac58a1860250487942209cf739ebf9a4819dab224a25c2cc58228c7a102e890d589900fc
   languageName: node
   linkType: hard
 
-"@codesandbox/sandpack-react@npm:^2.13.6":
-  version: 2.13.6
-  resolution: "@codesandbox/sandpack-react@npm:2.13.6"
+"@codesandbox/sandpack-react@npm:^2.13.7":
+  version: 2.13.7
+  resolution: "@codesandbox/sandpack-react@npm:2.13.7"
   dependencies:
     "@codemirror/autocomplete": "npm:^6.4.0"
     "@codemirror/commands": "npm:^6.1.3"
@@ -1844,7 +1844,7 @@ __metadata:
     "@codemirror/language": "npm:^6.3.2"
     "@codemirror/state": "npm:^6.2.0"
     "@codemirror/view": "npm:^6.7.1"
-    "@codesandbox/sandpack-client": "npm:^2.13.6"
+    "@codesandbox/sandpack-client": "npm:^2.13.7"
     "@lezer/highlight": "npm:^1.1.3"
     "@react-hook/intersection-observer": "npm:^3.1.1"
     "@stitches/core": "npm:^1.2.6"
@@ -1858,7 +1858,7 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: 10c0/8fed65f1a76d8e9540bb04d8349adf993a04a212498e23350780c413042ab1ca602fd8a64fc94f10378a4dbbe33c6a2712b82b130015adffabbf3ec23fd7644b
+  checksum: 10c0/5a8f0b0de260a7756df3770fb09e931627657bf7afc44d722569e476bdee8f1516ec36d389714750ba69acfc51c086e5a6157f5f437e300d0beca4860ae23c59
   languageName: node
   linkType: hard
 
@@ -19347,7 +19347,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "website@workspace:website"
   dependencies:
-    "@codesandbox/sandpack-react": "npm:^2.13.6"
+    "@codesandbox/sandpack-react": "npm:^2.13.7"
     "@codesandbox/sandpack-themes": "npm:^2.0.21"
     "@docusaurus/core": "npm:3.1.1"
     "@docusaurus/module-type-aliases": "npm:3.1.1"
