@@ -2729,7 +2729,7 @@ __metadata:
     "@types/react": "npm:^18.2.70"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.7.0"
-    express: "npm:^4.19.1"
+    express: "npm:^4.19.2"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
@@ -9337,7 +9337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.3, express@npm:^4.19.1":
+"express@npm:^4.17.3, express@npm:^4.19.2":
   version: 4.19.2
   resolution: "express@npm:4.19.2"
   dependencies:
