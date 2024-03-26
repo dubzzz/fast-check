@@ -15,6 +15,8 @@ import type { Payload } from '../worker-pool/IWorkerPool.js';
 import fc from 'fast-check';
 import { generateValueFromState } from '../ValueFromState.js';
 
+const WorkerPropertyFromWorkerCache = new WeakMap<object, ValueState>();
+
 class WorkerPropertyFromWorkerError extends Error {
   constructor(...args: Parameters<typeof Error>) {
     super(...args);
@@ -31,7 +33,27 @@ function lazyGenerateValueFromState<Ts>(property: IRawProperty<Ts>, state: Value
   };
 }
 
-const WorkerPropertyFromWorkerCache = new WeakMap<unknown[], ValueState>();
+function extractCacheKey(inputs: [unknown, ...unknown[]]): object {
+  return inputs[0] as object;
+}
+
+function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
+  property: IRawProperty<Ts>,
+  valueState: ValueState,
+  numArbitraries: number,
+): Ts {
+  const getValue = lazyGenerateValueFromState(property, valueState);
+  const inputs: object[] = [...Array(numArbitraries)].map((_, index) => ({
+    toString: () => fc.stringify(getValue()[index]),
+  }));
+
+  WorkerPropertyFromWorkerCache.set(extractCacheKey(inputs as [object, ...object[]]), valueState);
+
+  // WARNING: The type for inputs variable is obviously not the one the caller expects!
+  // But in the context of WorkerPropertyFromWorker, caller knows that the inputs returned by generate
+  // should not be consummed as-is and that they will be re-created on worker's side.
+  return inputs as Ts;
+}
 
 /**
  * A WorkerProperty delegating generating the values to the Worker thread
@@ -57,14 +79,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
       throw new WorkerPropertyFromWorkerError('Cannot extract any state from the provided instance of Random');
     }
     const valueState = { rngState: rawRngState.slice(), runId };
-    const getValue = lazyGenerateValueFromState(this.internalProperty, valueState);
-    // WARNING: The type for inputs variable is obviously not the one the caller expects!
-    // But in the context of WorkerPropertyFromWorker, caller knows that the inputs returned by generate
-    // should not be consummed as-is and that they will be re-created on worker's side.
-    const inputs = [...Array(this.numArbitraries)].map((_, index) => ({
-      toString: () => fc.stringify(getValue()[index]),
-    })) as unknown as Ts;
-    WorkerPropertyFromWorkerCache.set(inputs, valueState);
+    const inputs = buildInputsAndRegister(this.internalProperty, valueState, this.numArbitraries);
     return new fc.Value(inputs, undefined);
   }
 
@@ -100,7 +115,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
   }
 
   getPayload(inputs: Ts): Payload<Ts> {
-    const valueState = WorkerPropertyFromWorkerCache.get(inputs);
+    const valueState = WorkerPropertyFromWorkerCache.get(extractCacheKey(inputs));
     if (valueState === undefined) {
       throw new WorkerPropertyFromWorkerError('Cannot get a relevant payload to execute this run');
     }
