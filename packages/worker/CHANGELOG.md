@@ -1,3 +1,18 @@
+# 0.3.0
+
+_Support generating inputs in workers_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.2.0...worker%2Fv0.3.0)]
+
+## Features
+
+- ([PR#4063](https://github.com/dubzzz/fast-check/pull/4063)) Add support for non-serializable data in workers
+
+## Fixes
+
+- ([PR#4837](https://github.com/dubzzz/fast-check/pull/4837)) CI: Stabilize tests on worker
+
+---
+
 # 0.2.0
 
 _Declare root of the package as ESM_
