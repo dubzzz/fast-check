@@ -3,10 +3,6 @@
 _Relax range of versions for worker_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.8.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.8.0...jest%2Fv1.8.1)]
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#4840](https://github.com/dubzzz/fast-check/pull/4840)) CI: Wider dependency range for worker
