@@ -9,9 +9,11 @@ declare const depthIdentifierSymbol: unique symbol;
  * what they contain internally
  *
  * @remarks Since 2.25.0
- * @internal
  */
-export type DepthIdentifier = { [depthIdentifierSymbol]: true };
+export type DepthIdentifier = {
+  /** @internal */
+  [depthIdentifierSymbol]: true
+};
 
 /**
  * Instance of depth, can be used to alter the depth perceived by an arbitrary
