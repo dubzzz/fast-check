@@ -12,7 +12,7 @@ declare const depthIdentifierSymbol: unique symbol;
  */
 export type DepthIdentifier = {
   /** @internal */
-  [depthIdentifierSymbol]: true
+  [depthIdentifierSymbol]: true;
 };
 
 /**
