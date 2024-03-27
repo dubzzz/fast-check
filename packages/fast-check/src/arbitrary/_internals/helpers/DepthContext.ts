@@ -1,6 +1,6 @@
 /**
  * Internal symbol used to declare an opaque type for DepthIdentifier
- * @public
+ * @internal
  */
 declare const depthIdentifierSymbol: unique symbol;
 
@@ -9,7 +9,7 @@ declare const depthIdentifierSymbol: unique symbol;
  * what they contain internally
  *
  * @remarks Since 2.25.0
- * @public
+ * @internal
  */
 export type DepthIdentifier = { [depthIdentifierSymbol]: true };
 

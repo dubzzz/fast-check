@@ -18,6 +18,7 @@ export class Value<T> {
    */
   readonly hasToBeCloned: boolean;
   /**
+   * @internal
    * Flag indicating whether or not the this.value has already been called once
    * If so, the underlying will be cloned
    * Only set when hasToBeCloned = true
