@@ -1,3 +1,12 @@
+# 1.8.1
+
+_Relax range of versions for worker_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.8.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.8.0...jest%2Fv1.8.1)]
+
+## Fixes
+
+- ([PR#4840](https://github.com/dubzzz/fast-check/pull/4840)) CI: Wider dependency range for worker
+
 # 1.8.0
 
 _Lighter import with less internals to load_
