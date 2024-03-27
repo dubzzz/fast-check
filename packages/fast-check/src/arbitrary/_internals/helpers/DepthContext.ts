@@ -9,6 +9,7 @@ declare const depthIdentifierSymbol: unique symbol;
  * what they contain internally
  *
  * @remarks Since 2.25.0
+ * @public
  */
 export type DepthIdentifier = {
   /** @internal */
