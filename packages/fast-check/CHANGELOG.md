@@ -1,11 +1,7 @@
 # 3.17.1
 
-_TODO Description_
+_Better interrupt CJS/MJS regarding types_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.17.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.0...v3.17.1)]
-
-## Features
-
-
 
 ## Fixes
 
