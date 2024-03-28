@@ -73,7 +73,7 @@
     "@types/node": "^20.11.30",
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
-    "glob": "^10.3.10",
+    "glob": "^10.3.12",
     "jest": "^29.7.0",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
