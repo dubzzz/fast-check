@@ -1,6 +1,6 @@
 /**
  * Internal symbol used to declare an opaque type for DepthIdentifier
- * @public
+ * @internal
  */
 declare const depthIdentifierSymbol: unique symbol;
 
@@ -11,7 +11,10 @@ declare const depthIdentifierSymbol: unique symbol;
  * @remarks Since 2.25.0
  * @public
  */
-export type DepthIdentifier = { [depthIdentifierSymbol]: true };
+export type DepthIdentifier = {
+  /** @internal */
+  [depthIdentifierSymbol]: true;
+} & DepthContext;
 
 /**
  * Instance of depth, can be used to alter the depth perceived by an arbitrary

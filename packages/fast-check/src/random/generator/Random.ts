@@ -17,6 +17,7 @@ export class Random {
   private static DBL_FACTOR: number = Math.pow(2, 27);
   private static DBL_DIVISOR: number = Math.pow(2, -53);
 
+  /** @internal */
   private internalRng: RandomGenerator;
 
   /**
