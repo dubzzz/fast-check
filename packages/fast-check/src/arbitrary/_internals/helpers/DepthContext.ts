@@ -14,7 +14,7 @@ declare const depthIdentifierSymbol: unique symbol;
 export type DepthIdentifier = {
   /** @internal */
   [depthIdentifierSymbol]: true;
-};
+} & DepthContext;
 
 /**
  * Instance of depth, can be used to alter the depth perceived by an arbitrary
