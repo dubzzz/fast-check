@@ -12,8 +12,8 @@ import {
 import * as IntegerMock from '../../../src/arbitrary/integer';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -25,7 +25,7 @@ describe('date', () => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
@@ -46,7 +46,7 @@ describe('date', () => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
@@ -77,7 +77,7 @@ describe('date', () => {
         const withInvalidDates = constraints.noInvalidDate === false;
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
@@ -107,7 +107,7 @@ describe('date', () => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 

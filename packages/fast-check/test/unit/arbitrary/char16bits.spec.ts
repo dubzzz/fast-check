@@ -13,8 +13,8 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -82,7 +82,7 @@ describe('char16bits (integration)', () => {
 
 function extractArgumentsForBuildCharacter(build: () => void) {
   const { instance } = fakeArbitrary();
-  const buildCharacterArbitrary = jest.spyOn(CharacterArbitraryBuilderMock, 'buildCharacterArbitrary');
+  const buildCharacterArbitrary = vi.spyOn(CharacterArbitraryBuilderMock, 'buildCharacterArbitrary');
   buildCharacterArbitrary.mockImplementation(() => instance);
 
   build();

@@ -114,7 +114,7 @@ describe('biasNumericRange', () => {
 // Helpers
 
 expect.extend({
-  toBeWithinRange(received, floor, ceiling): jest.CustomMatcherResult {
+  toBeWithinRange(received, floor, ceiling): vi.CustomMatcherResult {
     const pass = received >= floor && received <= ceiling && !Number.isNaN(received);
     return {
       message: () => `expected ${received} ${pass ? 'not ' : ''} to be within range ${floor} - ${ceiling}`,

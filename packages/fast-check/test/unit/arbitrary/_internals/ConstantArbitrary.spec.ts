@@ -77,7 +77,7 @@ describe('ConstantArbitrary', () => {
     it('should produce a cloneable instance if provided value is cloneable', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const cloneable = Object.defineProperty([], cloneMethod, { value: jest.fn() });
+      const cloneable = Object.defineProperty([], cloneMethod, { value: vi.fn() });
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -91,7 +91,7 @@ describe('ConstantArbitrary', () => {
     it('should clone cloneable instances for each access', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const cloneMethodImpl = jest.fn();
+      const cloneMethodImpl = vi.fn();
       const cloneable = Object.defineProperty([], cloneMethod, { value: cloneMethodImpl });
       cloneMethodImpl.mockReturnValue(cloneable); // in reality it should be a clone of it, not itself
       const { instance: mrng } = fakeRandom();

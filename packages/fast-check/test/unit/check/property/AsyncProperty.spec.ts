@@ -215,7 +215,7 @@ describe.each([[true], [false]])('AsyncProperty (dontRunHook: %p)', (dontRunHook
     }
   });
   it('Should execute both global and local beforeEach hooks before the test', async () => {
-    const globalAsyncBeforeEach = jest.fn();
+    const globalAsyncBeforeEach = vi.fn();
     const prob = { beforeEachCalled: false };
     configureGlobal({
       asyncBeforeEach: globalAsyncBeforeEach,
@@ -416,7 +416,7 @@ describe.each([[true], [false]])('AsyncProperty (dontRunHook: %p)', (dontRunHook
     const value = Symbol();
 
     // Act
-    const p = asyncProperty(arb, jest.fn());
+    const p = asyncProperty(arb, vi.fn());
     const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
     expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
     const shrinks = [...shrinksStream];
@@ -437,7 +437,7 @@ describe.each([[true], [false]])('AsyncProperty (dontRunHook: %p)', (dontRunHook
     const value = Symbol();
 
     // Act
-    const p = asyncProperty(arb, jest.fn());
+    const p = asyncProperty(arb, vi.fn());
     const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
     expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
     expect(shrink).not.toHaveBeenCalled();

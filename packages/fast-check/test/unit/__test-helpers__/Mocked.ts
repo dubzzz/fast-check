@@ -4,7 +4,7 @@ type MockableFunction = (...args: any[]) => any;
 type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never;
 type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never;
 
-export interface MockWithArgs<T extends MockableFunction> extends jest.MockInstance<ReturnType<T>, ArgumentsOf<T>> {
+export interface MockWithArgs<T extends MockableFunction> extends vi.MockInstance<ReturnType<T>, ArgumentsOf<T>> {
   new (...args: ConstructorArgumentsOf<T>): T;
   (...args: ArgumentsOf<T>): ReturnType<T>;
 }
@@ -16,7 +16,7 @@ type PropertyKeysOf<T> = {
   [K in keyof T]: T[K] extends MockableFunction ? never : K;
 }[keyof T];
 type MaybeMockedConstructor<T> = T extends new (...args: any[]) => infer R
-  ? jest.MockInstance<R, ConstructorArgumentsOf<T>>
+  ? vi.MockInstance<R, ConstructorArgumentsOf<T>>
   : T;
 type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & {
   [K in keyof T]: T[K];

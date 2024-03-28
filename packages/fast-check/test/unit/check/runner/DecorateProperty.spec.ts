@@ -8,10 +8,10 @@ import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterPrope
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
 import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
-jest.mock('../../../../src/check/property/SkipAfterProperty');
-jest.mock('../../../../src/check/property/TimeoutProperty');
-jest.mock('../../../../src/check/property/UnbiasedProperty');
-jest.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
+vi.mock('../../../../src/check/property/SkipAfterProperty');
+vi.mock('../../../../src/check/property/TimeoutProperty');
+vi.mock('../../../../src/check/property/UnbiasedProperty');
+vi.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
 
 function buildProperty(asyncProp: boolean) {
   return {

@@ -4,7 +4,10 @@ import rootConfig from './vitest.config.mjs';
 
 export default defineConfig({
   ...rootConfig,
-  test: { ...rootConfig.test, include: ['test/unit/**/*.spec.?(c|m)[jt]s?(x)'] },
+  test: {
+    ...rootConfig.test,
+    include: ['test/unit/**/*.spec.?(c|m)[jt]s?(x)'],
+  },
   coverage: {
     ...rootConfig.coverage,
     enabled: true,

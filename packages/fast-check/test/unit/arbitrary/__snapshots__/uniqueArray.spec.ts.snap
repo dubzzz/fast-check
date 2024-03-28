@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`uniqueArray (integration) should be able to shrink [2, 4, 8, 16, 32, 64] with fc.uniqueArray(arb, {}) 1`] = `
 "[2,4,8,16,32,64]

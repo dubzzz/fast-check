@@ -15,8 +15,8 @@ import { Stream } from '../../../../src/stream/Stream';
 import { sizeArb } from '../__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -78,7 +78,7 @@ describe('FrequencyArbitrary', () => {
             // Arrange
             const warbs = fromValidInputs(validInputs);
             const depthContext = { depth };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
 
             // Act
@@ -100,7 +100,7 @@ describe('FrequencyArbitrary', () => {
             // Arrange
             const warbs = fromValidInputs(validInputs);
             const depthContext = { depth };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
 
             // Act
@@ -260,7 +260,7 @@ describe('FrequencyArbitrary', () => {
             const warbs = fromValidInputs(validInputs);
             const requestedMaxDepth = constraints.maxDepth!;
             const { instance: mrng, nextInt } = fakeRandom();
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue({ depth: requestedMaxDepth + overflowFromMaxDepth });
 
             // Act
@@ -289,7 +289,7 @@ describe('FrequencyArbitrary', () => {
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockImplementation((a = 0, b = 0) => a + (generateSeed % (b - a + 1)));
             const depthContext = { depth: initialDepth };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
             for (const { arbitraryMeta, expectedValue } of warbs) {
               arbitraryMeta.generate.mockReset();
@@ -324,7 +324,7 @@ describe('FrequencyArbitrary', () => {
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockReturnValue(0);
             const depthContext = { depth: 0 };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValueOnce(depthContext);
 
             // Act / Assert
@@ -364,7 +364,7 @@ describe('FrequencyArbitrary', () => {
             const { instance: mrng, nextInt } = fakeRandom();
             nextInt.mockReturnValue(0);
             const depthContext = { depth: 0 };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValueOnce(depthContext);
 
             // Act / Assert
@@ -390,7 +390,7 @@ describe('FrequencyArbitrary', () => {
           // Arrange
           const warbs = fromValidInputs(validInputs);
           const depthContext = { depth: 0 };
-          const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+          const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
           getDepthContextFor.mockReturnValue(depthContext);
           const value = Symbol();
           for (const input of warbs) {
@@ -420,7 +420,7 @@ describe('FrequencyArbitrary', () => {
               ...validInputs.slice(position % validInputs.length),
             ]);
             const depthContext = { depth: 0 };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
             const value = Symbol();
             for (const input of warbs) {
@@ -448,7 +448,7 @@ describe('FrequencyArbitrary', () => {
             fc.pre(constraints.maxDepth !== 0);
             const warbs = fromValidInputs(validInputs);
             const depthContext = { depth: 0 };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
             const value = Symbol();
             const selectedIndex = mod % warbs.length;
@@ -481,7 +481,7 @@ describe('FrequencyArbitrary', () => {
             const warbs = fromValidInputs(validInputs);
             const maxDepth = constraints.maxDepth!;
             const depthContext = { depth: maxDepth + overflowFromMaxDepth };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
             const value = Symbol();
             for (let index = 0; index !== warbs.length; ++index) {
@@ -628,7 +628,7 @@ describe('FrequencyArbitrary', () => {
             fc.pre(constraints.maxDepth !== 0);
             const warbs = fromValidInputs(validInputs);
             const depthContext = { depth: 0 };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
             const value = Symbol();
             const selectedIndex = mod % warbs.length;
@@ -665,7 +665,7 @@ describe('FrequencyArbitrary', () => {
             fc.pre(constraints.maxDepth !== 0);
             const warbs = fromValidInputs(validInputs);
             const depthContext = { depth: 0 };
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
             const value = Symbol();
             const selectedIndex = mod % warbs.length;

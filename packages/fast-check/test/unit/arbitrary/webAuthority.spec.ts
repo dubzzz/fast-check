@@ -12,8 +12,8 @@ import {
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);

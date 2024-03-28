@@ -21,8 +21,8 @@ import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -33,13 +33,13 @@ describe('webUrl', () => {
       fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
         // Arrange
         const { instance } = fakeArbitrary();
-        const webAuthority = jest.spyOn(WebAuthorityMock, 'webAuthority');
+        const webAuthority = vi.spyOn(WebAuthorityMock, 'webAuthority');
         webAuthority.mockReturnValue(instance);
-        const webFragments = jest.spyOn(WebFragmentsMock, 'webFragments');
+        const webFragments = vi.spyOn(WebFragmentsMock, 'webFragments');
         webFragments.mockReturnValue(instance);
-        const webQueryParameters = jest.spyOn(WebQueryParametersMock, 'webQueryParameters');
+        const webQueryParameters = vi.spyOn(WebQueryParametersMock, 'webQueryParameters');
         webQueryParameters.mockReturnValue(instance);
-        const webPath = jest.spyOn(WebPathMock, 'webPath');
+        const webPath = vi.spyOn(WebPathMock, 'webPath');
         webPath.mockReturnValue(instance);
 
         // Act

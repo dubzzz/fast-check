@@ -11,8 +11,8 @@ function fakeIntegerArbitrary() {
 }
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -21,7 +21,7 @@ describe('integer', () => {
   it('should instantiate IntegerArbitrary(-0x80000000, 0x7fffffff) for integer()', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
-    const IntegerArbitrary = jest.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+    const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
     IntegerArbitrary.mockImplementation(() => instance);
 
     // Act
@@ -35,7 +35,7 @@ describe('integer', () => {
   it('should instantiate IntegerArbitrary(-0x80000000, 0x7fffffff) for integer({})', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
-    const IntegerArbitrary = jest.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+    const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
     IntegerArbitrary.mockImplementation(() => instance);
 
     // Act
@@ -51,7 +51,7 @@ describe('integer', () => {
       fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: 0x7fffffff }), (min) => {
         // Arrange
         const instance = fakeIntegerArbitrary();
-        const IntegerArbitrary = jest.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+        const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(() => instance);
 
         // Act
@@ -68,7 +68,7 @@ describe('integer', () => {
       fc.property(fc.integer({ min: -0x80000000, max: Number.MAX_SAFE_INTEGER }), (max) => {
         // Arrange
         const instance = fakeIntegerArbitrary();
-        const IntegerArbitrary = jest.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+        const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(() => instance);
 
         // Act
@@ -86,7 +86,7 @@ describe('integer', () => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeIntegerArbitrary();
-        const IntegerArbitrary = jest.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+        const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(() => instance);
 
         // Act

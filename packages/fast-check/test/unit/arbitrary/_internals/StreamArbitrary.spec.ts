@@ -13,8 +13,8 @@ import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import * as StringifyMock from '../../../../src/utils/stringify';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -154,7 +154,7 @@ describe('StreamArbitrary', () => {
           const { instance: mrngCloned } = fakeRandom();
           clone.mockReturnValueOnce(mrngCloned);
           const fakeStringify = (v: unknown) => '<' + String(v) + '>';
-          const stringify = jest.spyOn(StringifyMock, 'stringify');
+          const stringify = vi.spyOn(StringifyMock, 'stringify');
           stringify.mockImplementation(fakeStringify);
 
           // Act
@@ -183,7 +183,7 @@ describe('StreamArbitrary', () => {
       nextInt.mockReturnValueOnce(2); // for no bias
       const { instance: mrngCloned } = fakeRandom();
       clone.mockReturnValueOnce(mrngCloned);
-      const stringify = jest.spyOn(StringifyMock, 'stringify');
+      const stringify = vi.spyOn(StringifyMock, 'stringify');
       stringify.mockImplementation((v) => '<' + String(v) + '>');
 
       // Act

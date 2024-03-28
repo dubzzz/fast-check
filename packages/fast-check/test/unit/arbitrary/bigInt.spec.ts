@@ -11,8 +11,8 @@ function fakeBigIntArbitrary() {
 }
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -28,7 +28,7 @@ describe('bigInt', () => {
   it('should instantiate the same BigIntArbitrary as empty constraints for no arguments', () => {
     // Arrange
     const instance = fakeBigIntArbitrary();
-    const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+    const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
     BigIntArbitrary.mockImplementation(() => instance);
 
     // Act
@@ -50,7 +50,7 @@ describe('bigInt', () => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
-        const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+        const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
         BigIntArbitrary.mockImplementation(() => instance);
 
         // Act
@@ -73,7 +73,7 @@ describe('bigInt', () => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
-        const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+        const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
         BigIntArbitrary.mockImplementation(() => instance);
 
         // Act

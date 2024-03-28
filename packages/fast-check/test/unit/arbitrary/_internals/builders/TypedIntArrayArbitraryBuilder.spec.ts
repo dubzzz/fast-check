@@ -12,8 +12,8 @@ import {
 } from '../../__test-helpers__/ArbitraryAssertions';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -26,11 +26,11 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         validArrayConstraintsArb(),
         ({ defaultMin, defaultMax, TypedArrayClass }, arrayConstraints) => {
           // Arrange
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints };
-          const arbitraryBuilder = jest.fn();
+          const arbitraryBuilder = vi.fn();
           const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
@@ -57,14 +57,14 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         validIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {
           // Arrange
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints, ...integerConstraints };
           const defaultMin = -128;
           const defaultMax = 127;
           const TypedArrayClass = Int8Array;
-          const arbitraryBuilder = jest.fn();
+          const arbitraryBuilder = vi.fn();
           const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
@@ -95,14 +95,14 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         invalidIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {
           // Arrange
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints, ...integerConstraints };
           const defaultMin = -128;
           const defaultMax = 127;
           const TypedArrayClass = Int8Array;
-          const arbitraryBuilder = jest.fn();
+          const arbitraryBuilder = vi.fn();
           const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 

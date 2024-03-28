@@ -11,8 +11,8 @@ function fakeBigIntArbitrary() {
 }
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -30,7 +30,7 @@ describe('bigUintN', () => {
       fc.property(fc.integer({ min: 0, max: 1000 }), (n) => {
         // Arrange
         const instance = fakeBigIntArbitrary();
-        const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+        const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
         BigIntArbitrary.mockImplementation(() => instance);
 
         // Act

@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { safeApply } from '../../../src/utils/apply';
 
 describe('safeApply', () => {
@@ -27,7 +28,7 @@ describe('safeApply', () => {
       }
     }
     const n = new Nominal(5);
-    const poisoned = jest.fn();
+    const poisoned = vi.fn();
     Nominal.prototype.doStuff.apply = poisoned;
 
     // Act
@@ -47,7 +48,7 @@ describe('safeApply', () => {
       }
     }
     const n = new Nominal(5);
-    const poisoned = jest.fn();
+    const poisoned = vi.fn();
     const sourceFunctionApply = Function.prototype.apply;
     Function.prototype.apply = poisoned;
 

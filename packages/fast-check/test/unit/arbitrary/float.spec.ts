@@ -32,8 +32,8 @@ import {
 import * as IntegerMock from '../../../src/arbitrary/integer';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 fc.configureGlobal({
@@ -353,7 +353,7 @@ describe('float (integration)', () => {
 function spyInteger() {
   const { instance, map } = fakeArbitrary<number>();
   const { instance: mappedInstance } = fakeArbitrary();
-  const integer = jest.spyOn(IntegerMock, 'integer');
+  const integer = vi.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   return integer;
@@ -361,7 +361,7 @@ function spyInteger() {
 
 function spyIntegerWithValue(value: () => number) {
   const { instance } = fakeArbitraryStaticValue<number>(value);
-  const integer = jest.spyOn(IntegerMock, 'integer');
+  const integer = vi.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   return integer;
 }

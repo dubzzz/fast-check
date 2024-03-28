@@ -7,8 +7,8 @@ import { cloneMethod } from '../../../src/check/symbols';
 import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -19,7 +19,7 @@ describe('constantFrom', () => {
       fc.property(fc.array(fc.anything(), { minLength: 1 }), (csts) => {
         // Arrange
         const { instance } = fakeArbitrary();
-        const ConstantArbitrary = jest.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');
+        const ConstantArbitrary = vi.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');
         ConstantArbitrary.mockImplementation(() => instance as ConstantArbitraryMock.ConstantArbitrary<unknown>);
 
         // Act
