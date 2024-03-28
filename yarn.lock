@@ -9408,18 +9408,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "fast-check@workspace:packages/fast-check"
   dependencies:
-    "@babel/core": "npm:^7.24.3"
-    "@babel/preset-env": "npm:^7.24.3"
-    "@babel/preset-typescript": "npm:^7.24.1"
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": "npm:^7.43.0"
-    "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.30"
-    babel-jest: "npm:^29.7.0"
     cross-env: "npm:^7.0.3"
     glob: "npm:^10.3.10"
-    jest: "npm:^29.7.0"
     not-node-buffer: "npm:buffer@^6.0.3"
     pure-rand: "npm:^6.1.0"
     regexp-tree: "npm:^0.1.27"
