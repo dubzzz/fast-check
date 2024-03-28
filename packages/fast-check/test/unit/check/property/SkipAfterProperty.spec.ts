@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
@@ -105,7 +106,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should call timer on run and fail after time limit', () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -141,7 +142,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should forward falsy interrupt flag to the precondition failure', async () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -165,7 +166,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should forward truthy interrupt flag to the precondition failure', () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);

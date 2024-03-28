@@ -1,3 +1,4 @@
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { property } from '../../../../src/check/property/Property';
 import { pre } from '../../../../src/check/precondition/Pre';

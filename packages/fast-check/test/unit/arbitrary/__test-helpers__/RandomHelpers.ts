@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import type { MaybeMocked } from '../../__test-helpers__/Mocked';
 import { Random } from '../../../../src/random/generator/Random';
 

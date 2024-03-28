@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 import type { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand';

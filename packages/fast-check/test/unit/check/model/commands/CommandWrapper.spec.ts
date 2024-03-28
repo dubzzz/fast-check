@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
 import type { Command } from '../../../../../src/check/model/command/Command';
 import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';

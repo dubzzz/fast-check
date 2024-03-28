@@ -1,3 +1,4 @@
+import { describe, it, expect,  } from 'vitest';
 import { pre } from '../../../../src/check/precondition/Pre';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import * as fc from 'fast-check';

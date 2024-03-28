@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { cloneMethod } from '../../../../../src/check/symbols';
 
