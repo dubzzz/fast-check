@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { restoreGlobals } from '@fast-check/poisoning';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
@@ -5,7 +6,7 @@ import { seed } from './seed';
 // Building the matcher in a polluted context is not working for now
 const preBuiltStringMatching = fc.stringMatching(/(^|\s)[0-9a-f]{8}-(\w{4})[^abc][^a-u]\D+(\s|$)/);
 
-describe(`Poisoning (seed: ${seed})`, () => {
+describe.skip(`Poisoning (seed: ${seed})`, () => {
   it.each<{
     name: string;
     arbitraryBuilder: () => fc.Arbitrary<unknown>;

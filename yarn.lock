@@ -9426,6 +9426,7 @@ __metadata:
     replace-in-file: "npm:^7.1.0"
     typedoc: "npm:^0.25.12"
     typescript: "npm:~5.4.3"
+    vitest: "npm:^1.4.0"
   languageName: unknown
   linkType: soft
 

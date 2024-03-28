@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import fc from '../../../src/fast-check';
 import { globSync } from 'glob';

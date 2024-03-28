@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from '../../src/fast-check';
 import { runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
 
