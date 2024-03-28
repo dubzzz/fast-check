@@ -1,3 +1,18 @@
+# 3.17.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.17.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.0...v3.17.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#4842](https://github.com/dubzzz/fast-check/pull/4842)) Bug: Fix dual-packages hazard and types incompatibility
+- ([PR#4836](https://github.com/dubzzz/fast-check/pull/4836)) Doc: Release note for 3.17.0
+- ([PR#4844](https://github.com/dubzzz/fast-check/pull/4844)) Doc: Add new contributor patroza
+
 # 3.17.0
 
 _Allow access to some internals details linked to the underlying random generator_
