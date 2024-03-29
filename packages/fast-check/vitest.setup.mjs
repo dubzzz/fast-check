@@ -1,9 +1,5 @@
 import process from 'process';
 import fc from 'fast-check';
-import { vi } from 'vitest';
-
-// Default timeout of 120s
-vi.setTimeout(120000);
 
 // Setup fast-check
 const defaultSeedRaw = process.env.DEFAULT_SEED;

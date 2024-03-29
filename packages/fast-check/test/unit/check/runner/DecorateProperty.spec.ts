@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
