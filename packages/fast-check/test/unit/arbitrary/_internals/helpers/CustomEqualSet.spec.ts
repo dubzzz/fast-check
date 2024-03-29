@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { CustomEqualSet } from '../../../../../src/arbitrary/_internals/helpers/CustomEqualSet';
 

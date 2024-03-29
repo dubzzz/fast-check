@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
 import { buildPartialRecordArbitrary } from '../../../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
 

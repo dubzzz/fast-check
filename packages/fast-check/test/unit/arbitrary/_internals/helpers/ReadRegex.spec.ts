@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { TokenizerBlockMode, readFrom } from '../../../../../src/arbitrary/_internals/helpers/ReadRegex';
 
 describe('readFrom', () => {

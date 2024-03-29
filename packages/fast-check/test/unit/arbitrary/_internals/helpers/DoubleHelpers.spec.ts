@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 import { float64raw, isStrictlySmaller } from '../../__test-helpers__/FloatingPointHelpers';

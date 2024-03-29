@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import {
   biasNumericRange,
@@ -114,7 +115,7 @@ describe('biasNumericRange', () => {
 // Helpers
 
 expect.extend({
-  toBeWithinRange(received, floor, ceiling): vi.CustomMatcherResult {
+  toBeWithinRange(received, floor, ceiling) {
     const pass = received >= floor && received <= ceiling && !Number.isNaN(received);
     return {
       message: () => `expected ${received} ${pass ? 'not ' : ''} to be within range ${floor} - ${ceiling}`,
@@ -123,11 +124,11 @@ expect.extend({
   },
 });
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Expect {
-      toBeWithinRange(a: number, b: number): CustomMatcherResult;
-    }
-  }
+interface CustomMatchers<R = unknown> {
+  toBeWithinRange(a: number, b: number): R;
+}
+
+declare module 'vitest' {
+  interface Assertion<T = any> extends CustomMatchers<T> {}
+  interface AsymmetricMatchersContaining extends CustomMatchers {}
 }

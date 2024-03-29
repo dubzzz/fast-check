@@ -1,4 +1,4 @@
-import { parse } from 'regexp-tree';
+import {  describe, it, expect,  } from 'vitest';import { parse } from 'regexp-tree';
 import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex';
 
 describe('tokenizeRegex', () => {

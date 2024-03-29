@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type {
   ScheduledTask,
@@ -273,7 +274,7 @@ describe('SchedulerImplem', () => {
       const p2 = buildUnresolved();
       const p3 = buildUnresolved();
       const nextTaskIndexParams: unknown[] = [];
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockImplementationOnce((scheduledTasks) => {
           nextTaskIndexParams.push([...scheduledTasks]); // need to clone it as it will be altered
@@ -557,7 +558,7 @@ describe('SchedulerImplem', () => {
       const p2 = buildUnresolved();
       const p3 = buildUnresolved();
       const p4 = buildUnresolved();
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(1) // releasing p2 in [p1,p2,p3,p4]
         .mockReturnValueOnce(2) // releasing p4 in [p1,p3,p4]
@@ -835,7 +836,7 @@ describe('SchedulerImplem', () => {
       // Arrange
       const tasks = [Promise.resolve(1), Promise.resolve(8), Promise.resolve(2)];
       const act = vi.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockImplementationOnce((scheduledTasks) => {
           expect(scheduledTasks).toEqual([
@@ -931,7 +932,7 @@ describe('SchedulerImplem', () => {
     it('should show both resolved, rejected and pending promises in toString', async () => {
       // Arrange
       const act = vi.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(5) // task#6 resolved, state was: [0,1,2,3,4,5,6,7,8,9]
         .mockReturnValueOnce(5) // task#7 resolved, state was: [0,1,2,3,4,6,7,8,9]
@@ -1171,7 +1172,7 @@ describe('SchedulerImplem', () => {
       const thenFunction = vi.fn();
       const then2Function = vi.fn();
       const act = vi.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(1) // resolving then2Function first
         .mockReturnValueOnce(0); // resolving thenFunction second
@@ -1225,7 +1226,7 @@ describe('SchedulerImplem', () => {
         [6, 0],
       ];
       const act = vi.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(2) // task#3 resolved, state was: [0,1,2]
         .mockReturnValueOnce(0) // task#1 resolved, state was: [0,1]
@@ -1271,7 +1272,7 @@ describe('SchedulerImplem', () => {
     it('should show function name if any in toString', async () => {
       // Arrange
       const act = vi.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(2) // task#3 resolved, state was: [0,1,2]
         .mockReturnValueOnce(0) // task#1 resolved, state was: [0,1]
