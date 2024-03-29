@@ -78,7 +78,7 @@ describe('buildSchedulerFor', () => {
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[1]);
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[2]);
     expect(() => taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toThrowErrorMatchingInlineSnapshot(
-      `"Invalid schedulerFor defined: unable to find next task"`,
+      `[Error: Invalid schedulerFor defined: unable to find next task]`,
     );
   });
 
@@ -106,7 +106,7 @@ describe('buildSchedulerFor', () => {
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[1]);
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[2]);
     expect(() => taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toThrowErrorMatchingInlineSnapshot(
-      `"Invalid schedulerFor defined: too many tasks have been scheduled"`,
+      `[Error: Invalid schedulerFor defined: too many tasks have been scheduled]`,
     );
   });
 
