@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { BigIntArbitrary } from '../../../../src/arbitrary/_internals/BigIntArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -96,10 +97,7 @@ describe('BigIntArbitrary', () => {
               nextInt.mockImplementationOnce((min, max) => min + (mod % (max - min + 1)));
             }
             nextBigInt.mockReturnValueOnce(mid); // Remark: this value will most of the time be outside of requested range
-            const biasNumericRange = vi.spyOn(BiasNumericRangeMock, 'biasNumericRange') as unknown as vi.SpyInstance<
-              { min: bigint; max: bigint }[],
-              [bigint, bigint, () => bigint]
-            >;
+            const biasNumericRange = vi.spyOn(BiasNumericRangeMock, 'biasNumericRange');
             biasNumericRange.mockReturnValueOnce(ranges);
 
             // Act

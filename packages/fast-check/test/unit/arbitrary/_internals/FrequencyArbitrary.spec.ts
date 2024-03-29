@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
 import { FrequencyArbitrary } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';

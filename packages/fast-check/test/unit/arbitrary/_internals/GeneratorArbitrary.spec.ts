@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { GeneratorArbitrary } from '../../../../src/arbitrary/_internals/GeneratorArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import type { Random } from '../../../../src/random/generator/Random';

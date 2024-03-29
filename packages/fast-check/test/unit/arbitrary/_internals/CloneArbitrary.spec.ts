@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { CloneArbitrary } from '../../../../src/arbitrary/_internals/CloneArbitrary';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';

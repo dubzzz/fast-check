@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { TupleArbitrary } from '../../../../src/arbitrary/_internals/TupleArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { stringToBase64Unmapper } from '../../../../../src/arbitrary/_internals/mappers/StringToBase64';
 
 describe('stringToBase64Unmapper', () => {
