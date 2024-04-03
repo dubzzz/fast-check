@@ -63,8 +63,8 @@
     "pure-rand": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.3",
-    "@babel/preset-env": "^7.24.3",
+    "@babel/core": "^7.24.4",
+    "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.24.1",
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
