@@ -20,7 +20,7 @@ function beforeEachHook() {
 }
 beforeEach(beforeEachHook);
 
-describe.skip('StreamArbitrary', () => {
+describe('StreamArbitrary', () => {
   describe('generate', () => {
     it('should produce a cloneable instance of Stream', () => {
       // Arrange
@@ -267,7 +267,7 @@ describe.skip('StreamArbitrary', () => {
   });
 });
 
-describe.skip('StreamArbitrary (integration)', () => {
+describe('StreamArbitrary (integration)', () => {
   const sourceArb = new FakeIntegerArbitrary();
 
   const isEqual = (s1: Stream<number>, s2: Stream<number>) => {

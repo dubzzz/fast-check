@@ -67,7 +67,7 @@ const frequencyConstraintsArbFor = (keys: {
   );
 };
 
-describe.skip('FrequencyArbitrary', () => {
+describe('FrequencyArbitrary', () => {
   describe('from', () => {
     it('should build instances of FrequencyArbitrary', () =>
       fc.assert(
@@ -703,7 +703,7 @@ describe.skip('FrequencyArbitrary', () => {
   });
 });
 
-describe.skip('FrequencyArbitrary (integration)', () => {
+describe('FrequencyArbitrary (integration)', () => {
   type Extra = { data: { offset: number; weight: number }[]; constraints: Partial<_Constraints> };
   const maxRangeLength = 10;
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
