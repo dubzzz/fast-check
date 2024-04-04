@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as prand from 'pure-rand';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
@@ -85,7 +85,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
             }
           }
         }
-        fail(`Was not able to generate ${label}`);
+        expect(`Was not able to generate ${label}`).toBe(null);
       });
     };
     checkCanProduce('null', 'object', '[object Null]');

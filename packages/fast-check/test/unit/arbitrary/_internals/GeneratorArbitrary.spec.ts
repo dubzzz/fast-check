@@ -249,7 +249,7 @@ function fakeRandomWithOffset(): {
 
   return {
     instance: instance as RandomWithOffset,
-    clone: clone as (() => RandomWithOffset) & MockWithArgs<() => RandomWithOffset>,
+    clone: clone as unknown as (() => RandomWithOffset) & MockWithArgs<() => RandomWithOffset>,
   };
 }
 
