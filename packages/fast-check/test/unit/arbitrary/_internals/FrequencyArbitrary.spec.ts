@@ -16,10 +16,9 @@ import { Stream } from '../../../../src/stream/Stream';
 import { sizeArb } from '../__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
-  vi.resetModules();
   vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
 }
+fc.configureGlobal({ beforeEach: beforeEachHook });
 beforeEach(beforeEachHook);
 
 const frequencyValidInputsArb = fc
@@ -154,6 +153,7 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
+    // This test does not pass even alone
     it('should reject calls having a total weight of zero', () =>
       fc.assert(
         fc.property(fc.nat({ max: 1000 }), (numEntries) => {
