@@ -33,9 +33,9 @@ describe('scheduler', () => {
     const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
     const outF = new Promise<void>(() => {});
-    let numCalls= 0
+    let numCalls = 0;
     const f = () => {
-      ++numCalls// Ideally we whould have used: vi.fn().mockReturnValue(outF) but it wraps the Promise
+      ++numCalls; // Ideally we whould have used: vi.fn().mockReturnValue(outF) but it wraps the Promise
       return outF;
     };
 
