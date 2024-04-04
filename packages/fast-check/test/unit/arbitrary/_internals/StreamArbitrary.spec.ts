@@ -1,4 +1,5 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';import * as fc from 'fast-check';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
+import * as fc from 'fast-check';
 import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { cloneIfNeeded, hasCloneMethod } from '../../../../src/check/symbols';
@@ -56,7 +57,8 @@ describe('StreamArbitrary', () => {
     it('should not check bias again for cloned instances', () => {
       // Arrange
       const biasFactor = 48;
-      const { instance: sourceArb } = fakeArbitrary();
+      const { instance: sourceArb, generate } = fakeArbitrary();
+      generate.mockReturnValue(new Value({}, undefined));
       const { instance: mrng, nextInt } = fakeRandom();
 
       // Act

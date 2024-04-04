@@ -1,4 +1,5 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
+import type { MockInstance } from 'vitest';
 import * as fc from 'fast-check';
 import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -97,9 +98,9 @@ describe('IntegerArbitrary', () => {
               nextInt.mockImplementationOnce((min, max) => min + (mod % (max - min + 1)));
             }
             nextInt.mockReturnValueOnce(mid); // Remark: this value will most of the time be outside of requested range
-            const biasNumericRange = vi.spyOn(BiasNumericRangeMock, 'biasNumericRange') as unknown as vi.SpyInstance<
-              { min: number; max: number }[],
-              [number, number, () => number]
+            const biasNumericRange = vi.spyOn(BiasNumericRangeMock, 'biasNumericRange') as unknown as MockInstance<
+              [min: number, max: number, logLike: (n: number) => number],
+              { min: number; max: number }[]
             >;
             biasNumericRange.mockReturnValueOnce(ranges);
 

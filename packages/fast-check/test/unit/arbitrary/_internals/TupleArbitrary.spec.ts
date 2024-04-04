@@ -210,7 +210,7 @@ describe('TupleArbitrary', () => {
       const { instance: fakeArbitraryCloneableB, generate: generateB, shrink: shrinkB } = fakeArbitrary<string[]>();
 
       const { instance: fakeArbitraryNotCloneableC, generate: generateC, shrink: shrinkC } = fakeArbitrary<string[]>();
-      const cloneMethodImpl = jest
+      const cloneMethodImpl = vi
         .fn()
         .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
       generateA.mockReturnValue(new Value([], undefined));
