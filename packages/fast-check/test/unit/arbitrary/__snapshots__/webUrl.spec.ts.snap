@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`webUrl (integration) should be able to shrink http://my.domain.org/a/z 1`] = `
+exports[`webUrl (integration) > should be able to shrink 'http://my.domain.org/a/z' 1`] = `
 ""http://my.domain.org/a/z"
 ├> "http://domain.org/a/z"
 |  ├> "http://aomain.org/a/z"
@@ -113,7 +113,7 @@ exports[`webUrl (integration) should be able to shrink http://my.domain.org/a/z 
 └> …"
 `;
 
-exports[`webUrl (integration) should be able to shrink http://my.domain.org/a/z?query#fragments 1`] = `
+exports[`webUrl (integration) > should be able to shrink 'http://my.domain.org/a/z?query#fragme…' 1`] = `
 ""http://my.domain.org/a/z?query#fragments"
 ├> "http://domain.org/a/z?query#fragments"
 |  ├> "http://aomain.org/a/z?query#fragments"
@@ -230,7 +230,7 @@ exports[`webUrl (integration) should be able to shrink http://my.domain.org/a/z?
 └> …"
 `;
 
-exports[`webUrl (integration) should be able to shrink http://user:pass@my.domain.org/a/z 1`] = `
+exports[`webUrl (integration) > should be able to shrink 'http://user:pass@my.domain.org/a/z' 1`] = `
 ""http://user:pass@my.domain.org/a/z"
 ├> "http://my.domain.org/a/z"
 |  ├> "http://domain.org/a/z"

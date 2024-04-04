@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`stringOf (integration) should be able to shrink .................................................................................................... 1`] = `
+exports[`stringOf (integration) > should be able to shrink '.....................................…' 1`] = `
 ""...................................................................................................."
 ├> ""
 ├> ".................................................."
@@ -112,7 +112,7 @@ exports[`stringOf (integration) should be able to shrink .......................
 └> …"
 `;
 
-exports[`stringOf (integration) should be able to shrink _._.____... 1`] = `
+exports[`stringOf (integration) > should be able to shrink '_._.____...' 1`] = `
 ""_._.____..."
 ├> ""
 ├> "___..."
@@ -220,7 +220,7 @@ exports[`stringOf (integration) should be able to shrink _._.____... 1`] = `
 └> …"
 `;
 
-exports[`stringOf (integration) should be able to shrink CccABbBbCcc 1`] = `
+exports[`stringOf (integration) > should be able to shrink 'CccABbBbCcc' 1`] = `
 ""CccABbBbCcc"
 ├> ""
 ├> "BbBbCcc"

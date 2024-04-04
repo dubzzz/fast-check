@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fullUnicodeString (integration) should be able to shrink Hey 🐱! with fc.fullUnicodeString() 1`] = `
+exports[`fullUnicodeString (integration) > should be able to shrink 'Hey 🐱!' with fc.fullUnicodeString() 1`] = `
 ""Hey 🐱!"
 ├> ""
 ├> " 🐱!"
@@ -122,7 +122,7 @@ exports[`fullUnicodeString (integration) should be able to shrink Hey 🐱! with
 └> …"
 `;
 
-exports[`fullUnicodeString (integration) should be able to shrink 🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱 with fc.fullUnicodeString() 1`] = `
+exports[`fullUnicodeString (integration) > should be able to shrink '🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱�…' with fc.fullUnicodeString() 1`] = `
 ""🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱"
 ├> ""
 ├> "🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱🐱"
