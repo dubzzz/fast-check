@@ -1,4 +1,5 @@
-import {  describe, it, expect,  } from 'vitest';import * as fc from 'fast-check';
+import { describe, it, expect } from 'vitest';
+import * as fc from 'fast-check';
 
 import {
   escapeForTemplateString,

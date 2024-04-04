@@ -1,4 +1,4 @@
-import {  describe, it, expect,  } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 
 import type { JsonSharedConstraints } from '../../../src/arbitrary/jsonValue';

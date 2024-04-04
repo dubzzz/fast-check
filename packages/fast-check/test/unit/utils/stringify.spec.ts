@@ -224,7 +224,7 @@ describe('stringify', () => {
         foundOne = true;
         expect(stringify(s)).toEqual(
           symbolName === 'dispose' || symbolName === 'asyncDispose'
-            ? `Symbol.for("nodejs.${ symbolName}")`
+            ? `Symbol.for("nodejs.${symbolName}")`
             : `Symbol.${symbolName}`,
         );
         expect(stringify(Symbol(`Symbol.${symbolName}`))).toEqual(`Symbol("Symbol.${symbolName}")`);

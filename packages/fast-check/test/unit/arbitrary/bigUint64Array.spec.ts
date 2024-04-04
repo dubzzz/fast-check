@@ -1,4 +1,4 @@
-import {  describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { bigUint64Array } from '../../../src/arbitrary/bigUint64Array';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

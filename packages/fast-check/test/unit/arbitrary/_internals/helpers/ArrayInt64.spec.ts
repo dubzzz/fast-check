@@ -1,4 +1,4 @@
-import {  describe, it, expect,  } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 import type { ArrayInt64 } from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';

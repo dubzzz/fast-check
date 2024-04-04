@@ -1,4 +1,4 @@
-import {  describe, it, expect,  } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { unicodeString } from '../../../src/arbitrary/unicodeString';
 

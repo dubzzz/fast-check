@@ -1,4 +1,4 @@
-import {  describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { uint8Array } from '../../../src/arbitrary/uint8Array';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

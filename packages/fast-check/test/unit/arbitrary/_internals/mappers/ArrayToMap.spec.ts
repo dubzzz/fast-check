@@ -1,4 +1,4 @@
-import {  describe, it, expect,  } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { arrayToMapUnmapper } from '../../../../../src/arbitrary/_internals/mappers/ArrayToMap';
 
 describe('arrayToMapUnmapper', () => {
