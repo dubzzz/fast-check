@@ -34,7 +34,9 @@ describe('constantFrom', () => {
 
   it('should throw when receiving no parameters', () => {
     // Arrange / Act / Assert
-    expect(() => constantFrom()).toThrowErrorMatchingInlineSnapshot('"fc.constantFrom expects at least one parameter"');
+    expect(() => constantFrom()).toThrowErrorMatchingInlineSnapshot(
+      '[Error: fc.constantFrom expects at least one parameter]',
+    );
   });
 
   it('should not throw on cloneable instance', () => {
