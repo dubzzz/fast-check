@@ -32,8 +32,12 @@ describe('scheduler', () => {
     const { instance } = fakeArbitrary<Scheduler<unknown>>();
     const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
-    const outF = new Promise<unknown>(() => {});
-    const f = vi.fn().mockReturnValue(outF);
+    const outF = new Promise<void>(() => {});
+    let numCalls= 0
+    const f = () => {
+      ++numCalls// Ideally we whould have used: vi.fn().mockReturnValue(outF) but it wraps the Promise
+      return outF;
+    };
 
     // Act
     scheduler();
@@ -41,7 +45,7 @@ describe('scheduler', () => {
     const out = receivedAct(f);
 
     // Assert
-    expect(f).toHaveBeenCalledTimes(1);
+    expect(numCalls).toBe(1);
     expect(out).toBe(outF);
   });
   it('should instantiate a SchedulerArbitrary with received act', () => {
