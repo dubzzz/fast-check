@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { UniqueArrayConstraints } from '../../../src/arbitrary/uniqueArray';
 import { uniqueArray } from '../../../src/arbitrary/uniqueArray';

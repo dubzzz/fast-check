@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { boolean } from '../../../src/arbitrary/boolean';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

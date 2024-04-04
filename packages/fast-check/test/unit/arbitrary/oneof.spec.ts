@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { OneOfConstraints } from '../../../src/arbitrary/oneof';
 import { oneof } from '../../../src/arbitrary/oneof';

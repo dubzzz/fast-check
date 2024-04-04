@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { date } from '../../../src/arbitrary/date';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

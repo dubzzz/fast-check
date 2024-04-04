@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { maxSafeNat } from '../../../src/arbitrary/maxSafeNat';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

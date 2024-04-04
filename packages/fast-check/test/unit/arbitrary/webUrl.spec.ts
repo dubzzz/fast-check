@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type { WebUrlConstraints } from '../../../src/arbitrary/webUrl';
 import { webUrl } from '../../../src/arbitrary/webUrl';
