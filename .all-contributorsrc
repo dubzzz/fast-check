@@ -441,6 +441,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/26570572?v=4",
       "profile": "https://github.com/gruhn",
       "contributions": ["code"]
+    },
+    {
+      "login": "patroza",
+      "name": "Patrick Roza",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42661?v=4",
+      "profile": "https://patrickroza.com/",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7

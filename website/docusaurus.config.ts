@@ -41,10 +41,13 @@ const config: Config = {
       'classic',
       {
         docs: {
+          showLastUpdateAuthor: true,
+          showLastUpdateTime: true,
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
         },
         blog: { showReadingTime: true },
+        sitemap: { lastmod: 'date' },
         theme: { customCss: require.resolve('./src/css/custom.css') },
       } satisfies Preset.Options,
     ],
