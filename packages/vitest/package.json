@@ -58,7 +58,7 @@
     "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
-    "typescript": "~5.4.3",
+    "typescript": "~5.4.4",
     "vite": "^5.2.8",
     "vitest": "^1.4.0"
   },
