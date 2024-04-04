@@ -2,7 +2,7 @@ import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { cloneIfNeeded, hasCloneMethod } from '../../../../src/check/symbols';
+import { cloneIfNeeded, cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
 import {
   assertProduceCorrectValues,
@@ -16,8 +16,8 @@ import * as StringifyMock from '../../../../src/utils/stringify';
 function beforeEachHook() {
   vi.resetModules();
   vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
 }
+fc.configureGlobal({ beforeEach: beforeEachHook });
 beforeEach(beforeEachHook);
 
 describe('StreamArbitrary', () => {
@@ -58,7 +58,8 @@ describe('StreamArbitrary', () => {
       // Arrange
       const biasFactor = 48;
       const { instance: sourceArb, generate } = fakeArbitrary();
-      generate.mockReturnValue(new Value({}, undefined));
+      const internalValue = { [cloneMethod]: () => internalValue };
+      generate.mockReturnValue(new Value(internalValue, undefined));
       const { instance: mrng, nextInt } = fakeRandom();
 
       // Act
@@ -70,7 +71,9 @@ describe('StreamArbitrary', () => {
       // Assert
       expect(nextInt).toHaveBeenCalledTimes(1);
       expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
-      expect(s2).not.toBe(s1);
+      if (Object.is(s1, s2)) {
+        throw new Error(`We do not expect s1 to be identical to s2`);
+      }
     });
 
     it('should call generate with cloned instance of Random as we pull from the Stream', () => {
