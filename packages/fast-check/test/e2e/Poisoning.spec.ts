@@ -136,6 +136,27 @@ describe(`Poisoning (seed: ${seed})`, () => {
       failedOnce = failedOnce || !ret;
       return ret;
     };
+    // --> drop me
+    const checks = [
+      typeof Crypto,
+      typeof CryptoKey,
+      typeof SubtleCrypto,
+      typeof CustomEvent,
+      typeof URL,
+      typeof CompressionStream,
+      typeof DecompressionStream,
+      typeof TextDecoder,
+    ];
+    const report: number[] = [];
+    for (let index = 0; index !== checks.length; ++index) {
+      if (checks[index] === 'undefined') {
+        report.push(index);
+      }
+    }
+    if (report.length > 0) {
+      throw new Error(`Failure: unknown at ${report.join(', ')}`);
+    }
+    // <-- drop me
     const restoreAll = dropMainGlobals();
 
     // Act
