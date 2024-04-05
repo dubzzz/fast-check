@@ -15,7 +15,7 @@ export default function HomepageHeader() {
           <img src={logoDataUri} alt={siteConfig.title} className={styles.mainTitleLogo} width="570px" height="103px" />
         </h1>
         <div className={clsx('hero__subtitle', styles.subTitle)}>
-          {siteConfig.tagline}
+          Property-based testing for JavaScript and TypeScript
           <div className={styles.taglineBadges}>
             <a href="https://www.npmjs.com/package/fast-check" target="_blank" rel="noopener">
               <img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" width={133} height={20} />
