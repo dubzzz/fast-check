@@ -234,7 +234,6 @@ function dropMainGlobals(): () => void {
     URIError,
     Atomics,
     WebAssembly,
-    PerformanceEntry,
     PerformanceMark,
     PerformanceMeasure,
     PerformanceObserver,
@@ -282,6 +281,7 @@ function dropMainGlobals(): () => void {
     typeof Headers !== 'undefined' ? Headers : undefined,
     typeof Request !== 'undefined' ? Request : undefined,
     typeof Response !== 'undefined' ? Response : undefined,
+    typeof PerformanceEntry !== 'undefined' ? PerformanceEntry : undefined,
   ];
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
