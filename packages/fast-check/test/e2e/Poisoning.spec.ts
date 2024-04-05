@@ -234,11 +234,6 @@ function dropMainGlobals(): () => void {
     URIError,
     Atomics,
     WebAssembly,
-    PerformanceMark,
-    PerformanceMeasure,
-    PerformanceObserver,
-    PerformanceObserverEntryList,
-    PerformanceResourceTiming,
     Crypto,
     CryptoKey,
     SubtleCrypto,
@@ -282,6 +277,11 @@ function dropMainGlobals(): () => void {
     typeof Request !== 'undefined' ? Request : undefined,
     typeof Response !== 'undefined' ? Response : undefined,
     typeof PerformanceEntry !== 'undefined' ? PerformanceEntry : undefined,
+    typeof PerformanceMark !== 'undefined' ? PerformanceMark : undefined,
+    typeof PerformanceMeasure !== 'undefined' ? PerformanceMeasure : undefined,
+    typeof PerformanceObserver !== 'undefined' ? PerformanceObserver : undefined,
+    typeof PerformanceObserverEntryList !== 'undefined' ? PerformanceObserverEntryList : undefined,
+    typeof PerformanceResourceTiming !== 'undefined' ? PerformanceResourceTiming : undefined,
   ];
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
