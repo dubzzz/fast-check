@@ -12,6 +12,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
   if (type() === 'Darwin') {
     // Skip Poisoning related tests on MacOS
     it('No test for Darwin', () => {});
+    return;
   }
 
   it.each<{
