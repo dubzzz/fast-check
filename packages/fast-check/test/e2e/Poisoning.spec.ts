@@ -1,5 +1,6 @@
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
+import { platform } from 'os';
 
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const safeObjectDefineProperty = Object.defineProperty;
@@ -8,6 +9,11 @@ const safeObjectDefineProperty = Object.defineProperty;
 const preBuiltStringMatching = fc.stringMatching(/(^|\s)[0-9a-f]{8}-(\w{4})[^abc][^a-u]\D+(\s|$)/);
 
 describe(`Poisoning (seed: ${seed})`, () => {
+  if (platform() === 'Darwin') {
+    // Skip Poisoning related tests on MacOS
+    it('No test for Darwin', () => {});
+  }
+
   it.each<{
     name: string;
     arbitraryBuilder: () => fc.Arbitrary<unknown>;
