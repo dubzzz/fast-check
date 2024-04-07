@@ -213,7 +213,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ampproject/remapping@npm:^2.2.0":
+"@ampproject/remapping@npm:^2.2.0, @ampproject/remapping@npm:^2.2.1":
   version: 2.3.0
   resolution: "@ampproject/remapping@npm:2.3.0"
   dependencies:
@@ -5623,22 +5623,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-istanbul@npm:^1.4.0":
+"@vitest/coverage-v8@npm:^1.4.0":
   version: 1.4.0
-  resolution: "@vitest/coverage-istanbul@npm:1.4.0"
+  resolution: "@vitest/coverage-v8@npm:1.4.0"
   dependencies:
+    "@ampproject/remapping": "npm:^2.2.1"
+    "@bcoe/v8-coverage": "npm:^0.2.3"
     debug: "npm:^4.3.4"
     istanbul-lib-coverage: "npm:^3.2.2"
-    istanbul-lib-instrument: "npm:^6.0.1"
     istanbul-lib-report: "npm:^3.0.1"
     istanbul-lib-source-maps: "npm:^5.0.4"
     istanbul-reports: "npm:^3.1.6"
+    magic-string: "npm:^0.30.5"
     magicast: "npm:^0.3.3"
     picocolors: "npm:^1.0.0"
+    std-env: "npm:^3.5.0"
+    strip-literal: "npm:^2.0.0"
     test-exclude: "npm:^6.0.0"
+    v8-to-istanbul: "npm:^9.2.0"
   peerDependencies:
     vitest: 1.4.0
-  checksum: 10c0/0c1ac9ea86bfd03c06b9a05888daebb9f740b264f307884be200ee4be0026c08d9382d3f470b648cd9602130f1dec27e99e1438d893d6de9b9ecb470db3a8e12
+  checksum: 10c0/1ff9db69c8f45c9e3f57d513d577331c23748c53d93122889b8634d1997a61a2a37a7284f520b647b837f44150656c1127b9c3392112139224bb86678aae1e7e
   languageName: node
   linkType: hard
 
@@ -9470,7 +9475,7 @@ __metadata:
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": "npm:^7.43.0"
     "@types/node": "npm:^20.12.5"
-    "@vitest/coverage-istanbul": "npm:^1.4.0"
+    "@vitest/coverage-v8": "npm:^1.4.0"
     cross-env: "npm:^7.0.3"
     glob: "npm:^10.3.12"
     not-node-buffer: "npm:buffer@^6.0.3"
@@ -11751,7 +11756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-lib-instrument@npm:^6.0.0, istanbul-lib-instrument@npm:^6.0.1":
+"istanbul-lib-instrument@npm:^6.0.0":
   version: 6.0.2
   resolution: "istanbul-lib-instrument@npm:6.0.2"
   dependencies:
@@ -18986,7 +18991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"v8-to-istanbul@npm:^9.0.1":
+"v8-to-istanbul@npm:^9.0.1, v8-to-istanbul@npm:^9.2.0":
   version: 9.2.0
   resolution: "v8-to-istanbul@npm:9.2.0"
   dependencies:
