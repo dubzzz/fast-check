@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import prand from 'pure-rand';
 
@@ -16,15 +16,11 @@ import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
 
 describe('ArrayArbitrary', () => {
+  declareCleaningHooksForSpies();
+
   describe('generate', () => {
     it('should concat all the generated values together when no set constraints ', () => {
       fc.assert(

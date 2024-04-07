@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import type { MockInstance } from 'vitest';
 import * as fc from 'fast-check';
 import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary';
@@ -16,15 +16,11 @@ import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/Shrin
 import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange';
 import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers/ShrinkInteger';
 import { Stream } from '../../../../src/stream/Stream';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
 
 describe('IntegerArbitrary', () => {
+  declareCleaningHooksForSpies();
+
   describe('generate', () => {
     it('should never bias and generate the full range when biasFactor is not specified', () =>
       fc.assert(

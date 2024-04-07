@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import type { WebPathConstraints } from '../../../src/arbitrary/webPath';
 import { webPath } from '../../../src/arbitrary/webPath';
@@ -13,13 +13,6 @@ import {
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
 
 describe('webPath (integration)', () => {
   type Extra = WebPathConstraints;

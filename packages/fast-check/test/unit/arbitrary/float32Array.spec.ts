@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import type { Float32ArrayConstraints } from '../../../src/arbitrary/float32Array';
 import { float32Array } from '../../../src/arbitrary/float32Array';
@@ -9,13 +9,6 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/ArbitraryAssertions';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
 
 describe('float32Array (integration)', () => {
   type Extra = Float32ArrayConstraints;

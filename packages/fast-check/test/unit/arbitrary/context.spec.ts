@@ -1,5 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
-import * as fc from 'fast-check';
+import { describe, it, expect, vi } from 'vitest';
 import type { ContextValue } from '../../../src/arbitrary/context';
 import { context } from '../../../src/arbitrary/context';
 
@@ -8,15 +7,11 @@ import type { WithCloneMethod } from '../../../src/check/symbols';
 import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantMock from '../../../src/arbitrary/constant';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('context', () => {
+  declareCleaningHooksForSpies();
+
   it('should re-use constant to build the context', () => {
     // Arrange
     const { instance } = fakeArbitrary();

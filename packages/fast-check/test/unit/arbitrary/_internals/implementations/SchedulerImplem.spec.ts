@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type {
   ScheduledTask,
@@ -7,13 +7,6 @@ import type {
 import { SchedulerImplem } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
 
 const buildUnresolved = () => {
   let resolved = false;

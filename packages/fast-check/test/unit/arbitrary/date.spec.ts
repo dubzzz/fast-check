@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { date } from '../../../src/arbitrary/date';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -11,15 +11,11 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('date', () => {
+  declareCleaningHooksForSpies();
+
   it('should map on the output of an integer and specify mapper and unmapper', () =>
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {

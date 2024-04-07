@@ -1,8 +1,9 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { ascii } from '../../../src/arbitrary/ascii';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import * as CharacterArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/CharacterArbitraryBuilder';
 import {
@@ -13,14 +14,9 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions';
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('ascii', () => {
+  declareCleaningHooksForSpies();
+
   it('should be able to unmap any mapped value', () => {
     // Arrange
     const { min, max, mapToCode, unmapFromCode } = extractArgumentsForBuildCharacter(ascii);

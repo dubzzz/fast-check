@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -14,21 +14,10 @@ import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
-describe('MixedCaseArbitrary (integration)', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
+describe('MixedCaseArbitrary', () => {
+  declareCleaningHooksForSpies();
 
   describe('generate', () => {
     it('should not toggle any character if flags equal zero', () => {
