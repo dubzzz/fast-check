@@ -5,8 +5,8 @@ import * as SchedulerImplemMock from '../../../../src/arbitrary/_internals/imple
 import type { ScheduledTask } from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 
@@ -14,14 +14,14 @@ describe('SchedulerArbitrary', () => {
   describe('generate', () => {
     it('should instanciate a SchedulerImplem on generate and clone the random generator', () => {
       // Arrange
-      const act = jest.fn();
+      const act = vi.fn();
       const { instance: mrng, clone } = fakeRandom(); // random received by generate (risk to be altered from the outside so we clone it)
       const { instance: mrng1, clone: clone1 } = fakeRandom(); // random used by the first taskScheduler
       const { instance: mrng2 } = fakeRandom(); // random used by the clone of taskScheduler is needed
       clone.mockReturnValueOnce(mrng1);
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-      const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+      const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
       SchedulerImplem.mockReturnValue(fakeScheduler);
 
       // Act
@@ -41,7 +41,7 @@ describe('SchedulerArbitrary', () => {
 
     it('should build a taskScheduler pulling random values out of the cloned instance of Random', () => {
       // Arrange
-      const act = jest.fn();
+      const act = vi.fn();
       const scheduledTasks = [{}, {}, {}, {}, {}, {}, {}, {}] as ScheduledTask<unknown>[];
       const { instance: mrng, clone } = fakeRandom();
       const { instance: mrng1, clone: clone1, nextInt } = fakeRandom();
@@ -49,7 +49,7 @@ describe('SchedulerArbitrary', () => {
       clone.mockReturnValueOnce(mrng1);
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-      const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+      const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
       SchedulerImplem.mockReturnValue(fakeScheduler);
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
@@ -65,7 +65,7 @@ describe('SchedulerArbitrary', () => {
 
     it('should build a taskScheduler that can be cloned and create the same values', () => {
       // Arrange
-      const act = jest.fn();
+      const act = vi.fn();
       const scheduledTasks = [{}, {}, {}, {}, {}, {}, {}, {}] as ScheduledTask<unknown>[];
       const { instance: mrng, clone } = fakeRandom();
       const { instance: mrng1, clone: clone1, nextInt } = fakeRandom();
@@ -83,7 +83,7 @@ describe('SchedulerArbitrary', () => {
       nextInt.mockReturnValueOnce(5).mockReturnValueOnce(2);
       nextIntBis.mockReturnValueOnce(5).mockReturnValueOnce(2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-      const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+      const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
       SchedulerImplem.mockReturnValue(fakeScheduler);
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
@@ -109,12 +109,12 @@ describe('SchedulerArbitrary', () => {
   describe('canShrinkWithoutContext', () => {
     it('should return false for any Scheduler received without any context (even for SchedulerImplem)', () => {
       // Arrange
-      const act = jest.fn();
+      const act = vi.fn();
 
       // Act
       const arb = new SchedulerArbitrary(act);
       const out = arb.canShrinkWithoutContext(
-        new SchedulerImplemMock.SchedulerImplem(act, { clone: jest.fn(), nextTaskIndex: jest.fn() }),
+        new SchedulerImplemMock.SchedulerImplem(act, { clone: vi.fn(), nextTaskIndex: vi.fn() }),
       );
 
       // Assert
@@ -123,7 +123,7 @@ describe('SchedulerArbitrary', () => {
 
     it('should return false even for its own values', () => {
       // Arrange
-      const act = jest.fn();
+      const act = vi.fn();
       const { instance: mrng, clone } = fakeRandom();
       const { instance: mrng1, clone: clone1 } = fakeRandom();
       const { instance: mrng2 } = fakeRandom();
@@ -143,7 +143,7 @@ describe('SchedulerArbitrary', () => {
   describe('shrink', () => {
     it('should always shrink to nil', () => {
       // Arrange
-      const act = jest.fn();
+      const act = vi.fn();
       const { instance: mrng, clone } = fakeRandom();
       const { instance: mrng1, clone: clone1 } = fakeRandom();
       const { instance: mrng2 } = fakeRandom();

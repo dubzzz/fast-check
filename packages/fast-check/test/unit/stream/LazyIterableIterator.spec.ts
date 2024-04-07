@@ -2,14 +2,14 @@ import { makeLazy } from '../../../src/stream/LazyIterableIterator';
 
 describe('makeLazy', () => {
   it('Should not call producer on create', () => {
-    const g = jest.fn();
+    const g = vi.fn();
 
     makeLazy(g);
     expect(g).not.toHaveBeenCalled();
   });
   it('Should only call producer once when iterating', () => {
     const content = [1, 42, 350, 0];
-    const g = jest.fn().mockImplementation(function* () {
+    const g = vi.fn().mockImplementation(function* () {
       yield* content;
     });
 
@@ -19,7 +19,7 @@ describe('makeLazy', () => {
   });
   it('Should only call producer once even when iterating twice', () => {
     const content = [1, 42, 350, 0];
-    const g = jest.fn().mockImplementation(function* () {
+    const g = vi.fn().mockImplementation(function* () {
       yield* content;
     });
 

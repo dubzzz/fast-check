@@ -18,8 +18,8 @@ import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { MaxLengthUpperBound } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 fc.configureGlobal({
@@ -33,8 +33,8 @@ describe('sparseArray', () => {
       fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
-        const tuple = jest.spyOn(TupleMock, 'tuple');
-        const uniqueArray = jest.spyOn(UniqueMock, 'uniqueArray');
+        const tuple = vi.spyOn(TupleMock, 'tuple');
+        const uniqueArray = vi.spyOn(UniqueMock, 'uniqueArray');
         const { instance: tupleInstance } = fakeArbitraryStaticValue(() => []);
         const { instance: uniqueInstance } = fakeArbitraryStaticValue(() => []);
         tuple.mockReturnValueOnce(tupleInstance);
@@ -59,9 +59,9 @@ describe('sparseArray', () => {
       fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
-        const tuple = jest.spyOn(TupleMock, 'tuple');
-        const uniqueArray = jest.spyOn(UniqueMock, 'uniqueArray');
-        const restrictedIntegerArbitraryBuilder = jest.spyOn(
+        const tuple = vi.spyOn(TupleMock, 'tuple');
+        const uniqueArray = vi.spyOn(UniqueMock, 'uniqueArray');
+        const restrictedIntegerArbitraryBuilder = vi.spyOn(
           RestrictedIntegerArbitraryBuilderMock,
           'restrictedIntegerArbitraryBuilder',
         ); // called to build indexes

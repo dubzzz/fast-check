@@ -13,8 +13,8 @@ import {
 import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -37,10 +37,10 @@ describe('option', () => {
           // Arrange
           const expectedNil = 'nil' in constraints ? constraints.nil : null;
           const expectedArb = fakeArbitrary().instance;
-          const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+          const from = vi.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
           from.mockReturnValue(expectedArb);
           const expectedConstantArb = fakeArbitrary().instance;
-          const constant = jest.spyOn(ConstantMock, 'constant');
+          const constant = vi.spyOn(ConstantMock, 'constant');
           constant.mockReturnValue(expectedConstantArb);
           const { instance: arb } = fakeArbitrary();
 
@@ -70,10 +70,10 @@ describe('option', () => {
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
     // Arrange
     const expectedArb = fakeArbitrary().instance;
-    const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+    const from = vi.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
     from.mockReturnValue(expectedArb);
     const expectedConstantArb = fakeArbitrary().instance;
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockReturnValue(expectedConstantArb);
     const { instance: arb } = fakeArbitrary();
 

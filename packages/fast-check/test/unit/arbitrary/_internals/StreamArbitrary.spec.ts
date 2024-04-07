@@ -1,7 +1,7 @@
 import * as fc from 'fast-check';
 import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { cloneIfNeeded, hasCloneMethod } from '../../../../src/check/symbols';
+import { cloneIfNeeded, cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
 import { Stream } from '../../../../src/stream/Stream';
 import {
   assertProduceCorrectValues,
@@ -13,8 +13,8 @@ import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import * as StringifyMock from '../../../../src/utils/stringify';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -56,7 +56,9 @@ describe('StreamArbitrary', () => {
     it('should not check bias again for cloned instances', () => {
       // Arrange
       const biasFactor = 48;
-      const { instance: sourceArb } = fakeArbitrary();
+      const { instance: sourceArb, generate } = fakeArbitrary();
+      const internalValue = { [cloneMethod]: () => internalValue };
+      generate.mockReturnValue(new Value(internalValue, undefined));
       const { instance: mrng, nextInt } = fakeRandom();
 
       // Act
@@ -68,7 +70,9 @@ describe('StreamArbitrary', () => {
       // Assert
       expect(nextInt).toHaveBeenCalledTimes(1);
       expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
-      expect(s2).not.toBe(s1);
+      if (Object.is(s1, s2)) {
+        throw new Error(`We do not expect s1 to be identical to s2`);
+      }
     });
 
     it('should call generate with cloned instance of Random as we pull from the Stream', () => {
@@ -154,7 +158,7 @@ describe('StreamArbitrary', () => {
           const { instance: mrngCloned } = fakeRandom();
           clone.mockReturnValueOnce(mrngCloned);
           const fakeStringify = (v: unknown) => '<' + String(v) + '>';
-          const stringify = jest.spyOn(StringifyMock, 'stringify');
+          const stringify = vi.spyOn(StringifyMock, 'stringify');
           stringify.mockImplementation(fakeStringify);
 
           // Act
@@ -183,7 +187,7 @@ describe('StreamArbitrary', () => {
       nextInt.mockReturnValueOnce(2); // for no bias
       const { instance: mrngCloned } = fakeRandom();
       clone.mockReturnValueOnce(mrngCloned);
-      const stringify = jest.spyOn(StringifyMock, 'stringify');
+      const stringify = vi.spyOn(StringifyMock, 'stringify');
       stringify.mockImplementation((v) => '<' + String(v) + '>');
 
       // Act

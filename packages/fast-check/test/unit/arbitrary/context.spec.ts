@@ -9,8 +9,8 @@ import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
 import * as ConstantMock from '../../../src/arbitrary/constant';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -19,7 +19,7 @@ describe('context', () => {
   it('should re-use constant to build the context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act
@@ -33,7 +33,7 @@ describe('context', () => {
   it('should pass a cloneable context to constant', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act
@@ -47,7 +47,7 @@ describe('context', () => {
   it('should not reset its own logs on clone', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act
@@ -65,7 +65,7 @@ describe('context', () => {
   it('should produce a clone without any logs', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act

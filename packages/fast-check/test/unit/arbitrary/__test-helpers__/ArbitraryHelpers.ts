@@ -8,15 +8,15 @@ import { Stream } from '../../../../src/stream/Stream';
  * Generate a fake Class inheriting from Arbitrary with all methods being mocked
  */
 export function fakeArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
-  const generate = jest.fn();
-  const canShrinkWithoutContext = jest.fn() as any as ((value: unknown) => value is T) &
+  const generate = vi.fn();
+  const canShrinkWithoutContext = vi.fn() as any as ((value: unknown) => value is T) &
     MockWithArgs<(value: unknown) => value is T>;
-  const shrink = jest.fn();
-  const filter = jest.fn();
-  const map = jest.fn();
-  const chain = jest.fn();
-  const noShrink = jest.fn();
-  const noBias = jest.fn();
+  const shrink = vi.fn();
+  const filter = vi.fn();
+  const map = vi.fn();
+  const chain = vi.fn();
+  const noShrink = vi.fn();
+  const noBias = vi.fn();
 
   class FakeArbitrary extends Arbitrary<T> {
     generate = generate;

@@ -5,8 +5,8 @@ import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as IntegerMock from '../../../src/arbitrary/integer';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 
@@ -57,7 +57,7 @@ function prepare() {
   const { instance, map } = fakeArbitrary<number>();
   const { instance: mappedInstance, noBias } = fakeArbitrary<boolean>();
   const { instance: unbiasedInstance } = fakeArbitrary<boolean>();
-  const integer = jest.spyOn(IntegerMock, 'integer');
+  const integer = vi.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   noBias.mockReturnValue(unbiasedInstance);

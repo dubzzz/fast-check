@@ -7,12 +7,12 @@ function sanitizeStack(initialMessage: string) {
     .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*):\d+:\d+\)/g, 'at $1 ($2$3:?:?)') // any import linked to internals of fast-check
     .replace(/at (.*) \(.*\/(\.yarn|Yarn)\/.*\/(node_modules\/.*):\d+:\d+\)/g, 'at $1 ($3:?:?)') // reducing risks of changes on bumps: .yarn (Linux and Mac), Yarn (Windows)
     .split('\n');
-  // Drop internals of Jest from the stack: internals of jest, subject to regular changes and OS dependent
-  const firstLineWithJest = lines.findIndex((line) => line.includes('node_modules/jest-'));
-  if (firstLineWithJest !== -1) {
-    const lastLineWithJest =
-      lines.length - 1 - [...lines].reverse().findIndex((line) => line.includes('node_modules/jest-'));
-    lines.splice(firstLineWithJest, lastLineWithJest - firstLineWithJest + 1);
+  // Drop internals of Vitest from the stack: internals of vitest, subject to regular changes and OS dependent
+  const firstLineWithVitest = lines.findIndex((line) => line.includes('node_modules/vitest'));
+  if (firstLineWithVitest !== -1) {
+    const lastLineWithVitest =
+      lines.length - 1 - [...lines].reverse().findIndex((line) => line.includes('node_modules/vitest'));
+    lines.splice(firstLineWithVitest, lastLineWithVitest - firstLineWithVitest + 1);
   }
   return lines.join('\n');
 }

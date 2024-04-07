@@ -20,8 +20,8 @@ describe('AdapterArbitrary', () => {
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
             generate.mockReturnValueOnce(value);
             const { instance: mrng } = fakeRandom();
-            const adapterFunction = jest
-              .fn<AdapterOutput<any>, [any]>()
+            const adapterFunction = vi
+              .fn<[any], AdapterOutput<any>>()
               .mockImplementation((v) => ({ adapted: false, value: v }));
 
             // Act
@@ -52,8 +52,8 @@ describe('AdapterArbitrary', () => {
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
             generate.mockReturnValueOnce(value);
             const { instance: mrng } = fakeRandom();
-            const adapterFunction = jest
-              .fn<AdapterOutput<any>, [any]>()
+            const adapterFunction = vi
+              .fn<[any], AdapterOutput<any>>()
               .mockImplementation(() => ({ adapted: true, value: vAdapted }));
 
             // Act
@@ -87,8 +87,8 @@ describe('AdapterArbitrary', () => {
         const vA = Symbol();
         const { instance, canShrinkWithoutContext } = fakeArbitrary();
         canShrinkWithoutContext.mockReturnValueOnce(canShrink);
-        const adapterFunction = jest
-          .fn<AdapterOutput<any>, [any]>()
+        const adapterFunction = vi
+          .fn<[any], AdapterOutput<any>>()
           .mockImplementation(() => ({ adapted: hasToAdapt, value: vA }));
 
         // Act
@@ -127,8 +127,8 @@ describe('AdapterArbitrary', () => {
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
             canShrinkWithoutContext.mockReturnValue(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();
-            const adapterFunction = jest
-              .fn<AdapterOutput<any>, [any]>()
+            const adapterFunction = vi
+              .fn<[any], AdapterOutput<any>>()
               .mockImplementation((v) => (Object.is(v, vA) ? adaptedA : Object.is(v, vAA) ? adaptedAA : adaptedAB));
 
             // Act
@@ -219,8 +219,8 @@ describe('AdapterArbitrary', () => {
             if (adaptedA.adapted) canShrinkWithoutContext.mockReturnValueOnce(true);
             canShrinkWithoutContext.mockReturnValueOnce(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();
-            const adapterFunction = jest
-              .fn<AdapterOutput<any>, [any]>()
+            const adapterFunction = vi
+              .fn<[any], AdapterOutput<any>>()
               .mockImplementation((v) =>
                 Object.is(v, vA)
                   ? adaptedA
@@ -285,8 +285,8 @@ describe('AdapterArbitrary', () => {
             const valueAB = new Value(vAB, cAB);
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
-            const adapterFunction = jest
-              .fn<AdapterOutput<any>, [any]>()
+            const adapterFunction = vi
+              .fn<[any], AdapterOutput<any>>()
               .mockImplementation((v) => (Object.is(v, vAA) ? adaptedAA : adaptedAB));
 
             // Act

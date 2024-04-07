@@ -8,7 +8,7 @@ describe('int8Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder for Int8Array', () => {
     // Arrange
     const instance = fakeArbitrary();
-    const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
+    const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(() => instance);
 
     // Act
@@ -28,7 +28,7 @@ describe('int8Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder with extreme values for min and max', () => {
     // Arrange
     const instance = fakeArbitrary();
-    const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
+    const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(() => instance);
 
     // Act

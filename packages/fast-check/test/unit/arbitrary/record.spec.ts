@@ -13,8 +13,8 @@ import {
 import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -37,7 +37,7 @@ describe('record', () => {
             recordModel[k] = instance;
           }
           const { instance } = fakeArbitrary<any>();
-          const buildPartialRecordArbitrary = jest.spyOn(
+          const buildPartialRecordArbitrary = vi.spyOn(
             PartialRecordArbitraryBuilderMock,
             'buildPartialRecordArbitrary',
           );
@@ -68,7 +68,7 @@ describe('record', () => {
             recordModel[k] = instance;
           }
           const { instance } = fakeArbitrary<any>();
-          const buildPartialRecordArbitrary = jest.spyOn(
+          const buildPartialRecordArbitrary = vi.spyOn(
             PartialRecordArbitraryBuilderMock,
             'buildPartialRecordArbitrary',
           );
@@ -108,7 +108,7 @@ describe('record', () => {
             }
           }
           const { instance } = fakeArbitrary<any>();
-          const buildPartialRecordArbitrary = jest.spyOn(
+          const buildPartialRecordArbitrary = vi.spyOn(
             PartialRecordArbitraryBuilderMock,
             'buildPartialRecordArbitrary',
           );

@@ -5,7 +5,7 @@ describe('Value', () => {
   describe('cloneable values', () => {
     it('should not clone cloneable values on first access', () => {
       // Arrange
-      const clone = jest.fn();
+      const clone = vi.fn();
       const instance = { [cloneMethod]: clone };
 
       // Act
@@ -19,7 +19,7 @@ describe('Value', () => {
 
     it('should clone cloneable values on second access', () => {
       // Arrange
-      const clone = jest.fn();
+      const clone = vi.fn();
       const instance = { [cloneMethod]: clone };
 
       // Act
@@ -35,8 +35,8 @@ describe('Value', () => {
 
     it('should not call cloneMethod of cloneable values on second access if customGetValue was provided', () => {
       // Arrange
-      const clone = jest.fn();
-      const cloneOverride = jest.fn();
+      const clone = vi.fn();
+      const cloneOverride = vi.fn();
       const instance = { [cloneMethod]: clone };
 
       // Act

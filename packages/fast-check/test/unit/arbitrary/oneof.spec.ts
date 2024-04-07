@@ -6,8 +6,8 @@ import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/Frequ
 import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -31,7 +31,7 @@ describe('oneof', () => {
         (constraints: Partial<OneOfConstraints>, weight1, weight2, weight3) => {
           // Arrange
           const expectedArb = fakeArbitrary().instance;
-          const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+          const from = vi.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
           from.mockReturnValue(expectedArb);
           const { instance: arb1 } = fakeArbitrary();
           const { instance: arb2 } = fakeArbitrary();
@@ -66,7 +66,7 @@ describe('oneof', () => {
       fc.property(fc.option(fc.nat()), fc.option(fc.nat()), fc.option(fc.nat()), (weight1, weight2, weight3) => {
         // Arrange
         const expectedArb = fakeArbitrary().instance;
-        const from = jest.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+        const from = vi.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
         from.mockReturnValue(expectedArb);
         const { instance: arb1 } = fakeArbitrary();
         const { instance: arb2 } = fakeArbitrary();
