@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { __commitHash } from 'fast-check';
 
 describe(`Bundle`, () => {

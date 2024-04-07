@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { letrec } from '../../../src/arbitrary/letrec';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';

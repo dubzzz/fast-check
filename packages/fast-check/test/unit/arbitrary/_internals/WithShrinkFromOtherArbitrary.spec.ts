@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { WithShrinkFromOtherArbitrary } from '../../../../src/arbitrary/_internals/WithShrinkFromOtherArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';

@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import * as prand from 'pure-rand';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
@@ -11,9 +12,9 @@ import { sizeArb } from './SizeHelpers';
 function poisoningAfterEach(nestedAfterEach: () => void) {
   nestedAfterEach();
   try {
-    assertNoPoisoning({ ignoredRootRegex: /^(__coverage__|console|expect|__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
+    assertNoPoisoning({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
   } catch (err) {
-    restoreGlobals({ ignoredRootRegex: /^(__coverage__|console|expect|__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
+    restoreGlobals({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
     throw err;
   }
 }

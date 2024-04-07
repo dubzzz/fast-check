@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { SchedulerArbitrary } from '../../../../src/arbitrary/_internals/SchedulerArbitrary';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 

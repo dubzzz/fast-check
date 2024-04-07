@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { indexToCharStringUnmapper } from '../../../../../src/arbitrary/_internals/mappers/IndexToCharString';
 

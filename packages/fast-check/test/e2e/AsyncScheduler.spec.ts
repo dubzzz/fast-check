@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from '../../src/fast-check';
 import { seed } from './seed';
 

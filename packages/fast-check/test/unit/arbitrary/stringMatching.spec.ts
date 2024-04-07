@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching';
 

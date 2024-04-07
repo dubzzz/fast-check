@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import type { AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
 import { adapter } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';

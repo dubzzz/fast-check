@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { infiniteStream } from '../../../src/arbitrary/infiniteStream';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

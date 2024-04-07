@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
 import * as fc from 'fast-check';
 

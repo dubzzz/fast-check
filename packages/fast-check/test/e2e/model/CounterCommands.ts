@@ -1,4 +1,5 @@
 import type * as fc from '../../../src/fast-check';
+import { expect } from 'vitest';
 
 type M1 = { count: number };
 type R1 = unknown;

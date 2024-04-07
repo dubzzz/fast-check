@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 
 import { Value } from '../../../../../src/check/arbitrary/definition/Value';

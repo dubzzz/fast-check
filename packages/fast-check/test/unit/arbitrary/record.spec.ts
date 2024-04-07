@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type { RecordConstraints } from '../../../src/arbitrary/record';
 import { record } from '../../../src/arbitrary/record';

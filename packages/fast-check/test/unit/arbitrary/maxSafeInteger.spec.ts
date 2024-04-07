@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { maxSafeInteger } from '../../../src/arbitrary/maxSafeInteger';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';

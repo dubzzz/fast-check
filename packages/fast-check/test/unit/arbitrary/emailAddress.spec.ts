@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type { EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
 import { emailAddress } from '../../../src/arbitrary/emailAddress';

@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { Float64ArrayConstraints } from '../../../src/arbitrary/float64Array';
 import { float64Array } from '../../../src/arbitrary/float64Array';

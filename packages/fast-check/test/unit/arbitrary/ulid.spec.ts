@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { ulid } from '../../../src/arbitrary/ulid';
 import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';

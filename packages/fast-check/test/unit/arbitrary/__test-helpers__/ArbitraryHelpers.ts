@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import type { MaybeMocked, MockWithArgs } from '../../__test-helpers__/Mocked';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';

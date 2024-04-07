@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { safeApply } from '../../../src/utils/apply';
 
 describe('safeApply', () => {

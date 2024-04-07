@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { memo } from '../../../src/arbitrary/memo';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';

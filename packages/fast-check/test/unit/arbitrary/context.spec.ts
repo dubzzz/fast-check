@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { ContextValue } from '../../../src/arbitrary/context';
 import { context } from '../../../src/arbitrary/context';

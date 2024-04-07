@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { int32Array } from '../../../src/arbitrary/int32Array';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
