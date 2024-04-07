@@ -11,7 +11,6 @@ export default defineConfig({
       enabled: true,
       include: ['src/**'],
       exclude: ['lib/**', 'test/**'],
-      provider: 'istanbul',
     },
     include: ['test/unit/**/*.spec.?(c|m)[jt]s?(x)'],
   },
