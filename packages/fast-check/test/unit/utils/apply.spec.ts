@@ -50,7 +50,7 @@ describe('safeApply', () => {
     const n = new Nominal(5);
     let numCalls = 0;
     const poisoned = () => {
-      // Does not pass with v.fn()
+      // Does not pass with vi.fn()
       ++numCalls;
     };
     const sourceFunctionApply = Function.prototype.apply;

@@ -16,8 +16,8 @@ import * as StringifyMock from '../../../../src/utils/stringify';
 function beforeEachHook() {
   vi.resetModules();
   vi.restoreAllMocks();
+  fc.configureGlobal({ beforeEach: beforeEachHook });
 }
-fc.configureGlobal({ beforeEach: beforeEachHook });
 beforeEach(beforeEachHook);
 
 describe('StreamArbitrary', () => {

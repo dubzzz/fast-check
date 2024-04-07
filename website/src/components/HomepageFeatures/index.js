@@ -9,22 +9,38 @@ const FeatureList = [
     description: (
       <>
         Finding bugs has never been so easy! From classical edge cases to very complex combinations of inputs,
-        fast-check will be able to detect any class of bug.
+        fast-check is able to detect any class of bug.
       </>
     ),
   },
   {
     title: 'Test runner agnostic',
     Svg: require('@site/static/img/checkbox.svg').default,
-    description: <>fast-check can be used within any test runner without any specific integration needed.</>,
+    description: (
+      <>
+        fast-check can be used within any test runner without any specific integration needed. It works well with{' '}
+        <a href="https://jestjs.io/" target="_blank" rel="noopener">
+          Jest
+        </a>
+        ,{' '}
+        <a href="https://mochajs.org/" target="_blank" rel="noopener">
+          Mocha
+        </a>
+        ,{' '}
+        <a href="https://vitest.dev/" target="_blank" rel="noopener">
+          Vitest
+        </a>
+        , and others.
+      </>
+    ),
   },
   {
     title: 'Next level testing',
     Svg: require('@site/static/img/syringe.svg').default,
     description: (
       <>
-        Race conditions, prototype poisoning… Embrace the full power of fast-check and let it help you into finding race
-        conditions or zero days.
+        Let fuzzing and generative testing help you into uncovering the most challenging bugs: race conditions,
+        prototype poisoning, zero-days…
       </>
     ),
   },

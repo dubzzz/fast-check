@@ -9,7 +9,8 @@ const darkCodeTheme = themes.dracula;
 
 const config: Config = {
   title: 'fast-check',
-  tagline: 'Property-based testing for JavaScript and TypeScript',
+  tagline:
+    "fast-check is a Property-based Testing framework for JavaScript and TypeScript. It works with Jest, Mocha, Vitest, and others. Let's fuzz!",
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
