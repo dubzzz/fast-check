@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`base64String (integration) should be able to shrink 0123AB== 1`] = `
+exports[`base64String (integration) > should be able to shrink '0123AB==' 1`] = `
 ""0123AB=="
 ├> ""
 ├> "3AB="
@@ -109,7 +109,7 @@ exports[`base64String (integration) should be able to shrink 0123AB== 1`] = `
 └> …"
 `;
 
-exports[`base64String (integration) should be able to shrink 01230123012301230123AB== 1`] = `
+exports[`base64String (integration) > should be able to shrink '01230123012301230123AB==' 1`] = `
 ""01230123012301230123AB=="
 ├> ""
 ├> "301230123AB="
@@ -221,7 +221,7 @@ exports[`base64String (integration) should be able to shrink 0123012301230123012
 └> …"
 `;
 
-exports[`base64String (integration) should be able to shrink ABCD 1`] = `
+exports[`base64String (integration) > should be able to shrink 'ABCD' 1`] = `
 ""ABCD"
 ├> ""
 ├> "CD=="
@@ -328,7 +328,7 @@ exports[`base64String (integration) should be able to shrink ABCD 1`] = `
 └> …"
 `;
 
-exports[`base64String (integration) should be able to shrink ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD 1`] = `
+exports[`base64String (integration) > should be able to shrink 'ABCDABCDABCDABCDABCDABCDABCDABCDABCDA…' 1`] = `
 ""ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD"
 ├> ""
 ├> "ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD"

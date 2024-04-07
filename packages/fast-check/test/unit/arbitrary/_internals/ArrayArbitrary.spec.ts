@@ -17,8 +17,8 @@ import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -39,7 +39,7 @@ describe('ArrayArbitrary', () => {
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(acceptedValues.size, integerContext));
-            const integer = jest.spyOn(IntegerMock, 'integer');
+            const integer = vi.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
@@ -85,7 +85,7 @@ describe('ArrayArbitrary', () => {
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(acceptedValues.size, integerContext));
-            const integer = jest.spyOn(IntegerMock, 'integer');
+            const integer = vi.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
@@ -137,7 +137,7 @@ describe('ArrayArbitrary', () => {
             const { minLength, maxLength } = extractLengths(seed, aLength, aLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(minLength, integerContext));
-            const integer = jest.spyOn(IntegerMock, 'integer');
+            const integer = vi.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
@@ -190,7 +190,7 @@ describe('ArrayArbitrary', () => {
           fc.boolean(),
           (generatedValues, seed, aLength, bLength, integerContext, biasFactor, withSetBuilder) => {
             // Arrange
-            const getDepthContextFor = jest.spyOn(DepthContextMock, 'getDepthContextFor');
+            const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             const depthContext = { depth: 0 };
             getDepthContextFor.mockReturnValue(depthContext);
             const seenDepths = new Set<number>();
@@ -204,7 +204,7 @@ describe('ArrayArbitrary', () => {
             const { minLength, maxGeneratedLength, maxLength } = extractLengths(seed, aLength, bLength, acceptedValues);
             const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
             generateInteger.mockReturnValue(new Value(minLength, integerContext));
-            const integer = jest.spyOn(IntegerMock, 'integer');
+            const integer = vi.spyOn(IntegerMock, 'integer');
             integer.mockReturnValue(integerInstance);
             const { instance: mrng } = fakeRandom();
 
@@ -238,12 +238,12 @@ describe('ArrayArbitrary', () => {
       const { instance, generate } = fakeArbitrary<string[]>();
       generate
         .mockReturnValueOnce(new Value(['a'], undefined))
-        .mockReturnValueOnce(new Value(Object.defineProperty(['b'], cloneMethod, { value: jest.fn() }), undefined))
+        .mockReturnValueOnce(new Value(Object.defineProperty(['b'], cloneMethod, { value: vi.fn() }), undefined))
         .mockReturnValueOnce(new Value(['c'], undefined))
         .mockReturnValueOnce(new Value(['d'], undefined));
       const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
       generateInteger.mockReturnValue(new Value(4, undefined));
-      const integer = jest.spyOn(IntegerMock, 'integer');
+      const integer = vi.spyOn(IntegerMock, 'integer');
       integer.mockReturnValue(integerInstance);
       const { instance: mrng } = fakeRandom();
 
@@ -260,7 +260,7 @@ describe('ArrayArbitrary', () => {
 
     it('should not clone cloneable on generate', () => {
       // Arrange
-      const cloneMethodImpl = jest.fn();
+      const cloneMethodImpl = vi.fn();
       const { instance, generate } = fakeArbitrary<string[]>();
       generate
         .mockReturnValueOnce(new Value(['a'], undefined))
@@ -271,7 +271,7 @@ describe('ArrayArbitrary', () => {
         .mockReturnValueOnce(new Value(['d'], undefined));
       const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
       generateInteger.mockReturnValue(new Value(4, undefined));
-      const integer = jest.spyOn(IntegerMock, 'integer');
+      const integer = vi.spyOn(IntegerMock, 'integer');
       integer.mockReturnValue(integerInstance);
       const { instance: mrng } = fakeRandom();
 
@@ -315,7 +315,7 @@ describe('ArrayArbitrary', () => {
                 return true;
               },
             };
-            const setBuilder = jest.fn();
+            const setBuilder = vi.fn();
             setBuilder.mockReturnValue(customSet);
 
             // Act
@@ -367,7 +367,7 @@ describe('ArrayArbitrary', () => {
                 return true;
               },
             };
-            const setBuilder = jest.fn();
+            const setBuilder = vi.fn();
             setBuilder.mockReturnValue(customSet);
 
             // Act
@@ -420,7 +420,7 @@ describe('ArrayArbitrary', () => {
                 return false;
               },
             };
-            const setBuilder = jest.fn();
+            const setBuilder = vi.fn();
             setBuilder.mockReturnValue(customSet);
 
             // Act
@@ -468,7 +468,7 @@ describe('ArrayArbitrary', () => {
                 return true;
               },
             };
-            const setBuilder = jest.fn();
+            const setBuilder = vi.fn();
             setBuilder.mockReturnValue(customSet);
 
             // Act
@@ -513,7 +513,7 @@ describe('ArrayArbitrary', () => {
                 return true;
               },
             };
-            const setBuilder = jest.fn();
+            const setBuilder = vi.fn();
             setBuilder.mockReturnValue(customSet);
 
             // Act
@@ -608,7 +608,7 @@ function prepareSetBuilderData(
       return false;
     },
   };
-  const setBuilder = jest.fn();
+  const setBuilder = vi.fn();
   setBuilder.mockReturnValue(customSet);
   return { acceptedValues, instance, generate, setBuilder };
 }

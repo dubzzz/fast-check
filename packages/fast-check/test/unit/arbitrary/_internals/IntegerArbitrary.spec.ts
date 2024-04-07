@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest';
 import * as fc from 'fast-check';
 import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -16,8 +17,8 @@ import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers
 import { Stream } from '../../../../src/stream/Stream';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -96,10 +97,10 @@ describe('IntegerArbitrary', () => {
               nextInt.mockImplementationOnce((min, max) => min + (mod % (max - min + 1)));
             }
             nextInt.mockReturnValueOnce(mid); // Remark: this value will most of the time be outside of requested range
-            const biasNumericRange = jest.spyOn(
-              BiasNumericRangeMock,
-              'biasNumericRange',
-            ) as unknown as jest.SpyInstance<{ min: number; max: number }[], [number, number, () => number]>;
+            const biasNumericRange = vi.spyOn(BiasNumericRangeMock, 'biasNumericRange') as unknown as MockInstance<
+              [min: number, max: number, logLike: (n: number) => number],
+              { min: number; max: number }[]
+            >;
             biasNumericRange.mockReturnValueOnce(ranges);
 
             // Act
@@ -198,7 +199,7 @@ describe('IntegerArbitrary', () => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
           const expectedShrinks = Stream.nil<Value<number>>();
-          const shrinkInteger = jest.spyOn(ShrinkIntegerMock, 'shrinkInteger');
+          const shrinkInteger = vi.spyOn(ShrinkIntegerMock, 'shrinkInteger');
           shrinkInteger.mockReturnValueOnce(expectedShrinks);
 
           // Act

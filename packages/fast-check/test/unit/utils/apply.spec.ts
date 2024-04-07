@@ -27,7 +27,7 @@ describe('safeApply', () => {
       }
     }
     const n = new Nominal(5);
-    const poisoned = jest.fn();
+    const poisoned = vi.fn();
     Nominal.prototype.doStuff.apply = poisoned;
 
     // Act
@@ -47,7 +47,11 @@ describe('safeApply', () => {
       }
     }
     const n = new Nominal(5);
-    const poisoned = jest.fn();
+    let numCalls = 0;
+    const poisoned = () => {
+      // Does not pass with vi.fn()
+      ++numCalls;
+    };
     const sourceFunctionApply = Function.prototype.apply;
     Function.prototype.apply = poisoned;
 
@@ -56,7 +60,7 @@ describe('safeApply', () => {
       const out = safeApply(Nominal.prototype.doStuff, n, [3, 10]);
 
       // Assert
-      expect(poisoned).not.toHaveBeenCalled();
+      expect(numCalls).toBe(0);
       expect(out).toBe(5 + 3 + 10);
     } finally {
       Function.prototype.apply = sourceFunctionApply;
@@ -109,7 +113,10 @@ describe('safeApply', () => {
       const out = safeApply(Nominal.prototype.doStuff, n, [3, 10]);
 
       // Assert
-      expect(out).toBe(5 + 3 + 10);
+      if (out !== 5 + 3 + 10) {
+        // Does not pass with expect() coming from vitest
+        throw new Error(`Sorry, it failed: ${out} !== ${5 + 3 + 10}`);
+      }
     } finally {
       Object.defineProperty(Function.prototype, 'apply', originalApplyDescriptor!);
     }

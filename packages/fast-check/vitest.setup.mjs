@@ -1,8 +1,5 @@
-const process = require('process');
-const fc = require('fast-check');
-
-// Default timeout of 120s
-jest.setTimeout(120000);
+import process from 'process';
+import fc from 'fast-check';
 
 // Setup fast-check
 const defaultSeedRaw = process.env.DEFAULT_SEED;

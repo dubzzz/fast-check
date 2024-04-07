@@ -221,7 +221,11 @@ describe('stringify', () => {
       const s = (Symbol as any)[symbolName];
       if (typeof s === 'symbol') {
         foundOne = true;
-        expect(stringify(s)).toEqual(`Symbol.${symbolName}`);
+        expect(stringify(s)).toEqual(
+          symbolName === 'dispose' || symbolName === 'asyncDispose'
+            ? `Symbol.for("nodejs.${symbolName}")`
+            : `Symbol.${symbolName}`,
+        );
         expect(stringify(Symbol(`Symbol.${symbolName}`))).toEqual(`Symbol("Symbol.${symbolName}")`);
         expect(eval(`(function() { return typeof ${stringify(s)}; })()`)).toBe('symbol');
       }
@@ -421,7 +425,7 @@ describe('stringify', () => {
     const instance3 = { [toStringMethod]: () => { throw new Error('hello3'); } };
     const stringified3 = stringify(instance3);
     expect(stringified3.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error(\'hello3\'); }}',
+      '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error("hello3"); }}',
     ); // fallbacking to default
 
     class InProto {
@@ -437,12 +441,12 @@ describe('stringify', () => {
   });
   it('Should not be able to rely on the output of [asyncToStringMethod] in sync mode', () => {
     const instance1 = { [asyncToStringMethod]: () => 'hello1' }; // not even async there
-    expect(stringify(instance1)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:() => \'hello1\'}'); // fallbacking to default
+    expect(stringify(instance1)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:() => "hello1"}'); // fallbacking to default
 
     const instance2 = { [asyncToStringMethod]: () => 'hello2', [toStringMethod]: () => 'world' };
     expect(stringify(instance2)).toEqual('world'); // fallbacking to [toStringMethod]
 
-    const instance3ProbeFn = jest.fn();
+    const instance3ProbeFn = vi.fn();
     const instance3 = { [asyncToStringMethod]: instance3ProbeFn };
     stringify(instance3);
     expect(instance3ProbeFn).not.toHaveBeenCalled(); // never calling [asyncToStringMethod] in sync mode
@@ -558,7 +562,7 @@ describe('asyncStringify', () => {
     const instance4 = { [asyncToStringMethod]: async () => { throw new Error('hello4'); } };
     const stringified4 = await asyncStringify(instance4);
     expect(stringified4.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error(\'hello4\'); }}',
+      '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error("hello4"); }}',
     ); // fallbacking to default
 
     // prettier-ignore
@@ -569,7 +573,7 @@ describe('asyncStringify', () => {
     const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
     const stringified6 = await asyncStringify(instance6);
     expect(stringified6.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error(\'hello6\'); }}',
+      '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error("hello6"); }}',
     ); // fallbacking to default
 
     class InProto {

@@ -46,7 +46,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     expect(out.counterexample![0].toString()).toEqual(
       'schedulerFor()`\n' +
         '-> [task${2}] function::fetchHeroesById() resolved with value [{"name":"James Bond"}]\n' +
-        '-> [task${1}] function::fetchHeroName() pending`',
+        '-> [task${1}] function::fetchHeroName2() pending`',
     );
     // Node  <16: Cannot read property 'toLowerCase' of undefined
     // Node >=16: TypeError: Cannot read properties of undefined (reading 'toLowerCase')

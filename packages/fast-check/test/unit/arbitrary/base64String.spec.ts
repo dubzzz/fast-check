@@ -14,8 +14,8 @@ import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -64,7 +64,7 @@ describe('base64String', () => {
         (min, gap, withMin, withMax) => {
           // Arrange
           const constraints = { minLength: withMin ? min : undefined, maxLength: withMax ? min + gap : undefined };
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance, map } = fakeArbitrary();
           array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map
@@ -117,7 +117,7 @@ describe('base64String', () => {
             maxLength: withMax ? min + gap : undefined,
             size,
           };
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance, map } = fakeArbitrary();
           array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map

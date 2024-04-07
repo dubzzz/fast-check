@@ -2,14 +2,14 @@ import type { MaybeMocked } from '../../__test-helpers__/Mocked';
 import { Random } from '../../../../src/random/generator/Random';
 
 export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
-  const clone = jest.fn();
-  const next = jest.fn();
-  const nextBoolean = jest.fn();
-  const nextInt = jest.fn();
-  const nextBigInt = jest.fn();
-  const nextArrayInt = jest.fn();
-  const nextDouble = jest.fn();
-  const getState = jest.fn();
+  const clone = vi.fn();
+  const next = vi.fn();
+  const nextBoolean = vi.fn();
+  const nextInt = vi.fn();
+  const nextBigInt = vi.fn();
+  const nextArrayInt = vi.fn();
+  const nextDouble = vi.fn();
+  const getState = vi.fn();
   class MyRandom extends Random {
     clone = clone;
     next = next;

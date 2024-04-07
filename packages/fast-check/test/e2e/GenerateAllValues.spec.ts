@@ -84,7 +84,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
             }
           }
         }
-        fail(`Was not able to generate ${label}`);
+        expect(`Was not able to generate ${label}`).toBe(null);
       });
     };
     checkCanProduce('null', 'object', '[object Null]');

@@ -14,8 +14,8 @@ import {
 const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -31,7 +31,7 @@ describe('uuidV', () => {
   `('should produce the minimal uuid (v$version) given all minimal generated values', ({ version, expected }) => {
     // Arrange
     const { instance: mrng } = fakeRandom();
-    const integer = jest.spyOn(IntegerMock, 'integer');
+    const integer = vi.spyOn(IntegerMock, 'integer');
     integer.mockImplementation(({ min }) => {
       const { instance } = fakeArbitraryStaticValue(() => min);
       return instance;
@@ -55,7 +55,7 @@ describe('uuidV', () => {
   `('should produce the maximal uuid (v$version) given all maximal generated values', ({ version, expected }) => {
     // Arrange
     const { instance: mrng } = fakeRandom();
-    const integer = jest.spyOn(IntegerMock, 'integer');
+    const integer = vi.spyOn(IntegerMock, 'integer');
     integer.mockImplementation(({ max }) => {
       const { instance } = fakeArbitraryStaticValue(() => max);
       return instance;

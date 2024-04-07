@@ -10,7 +10,7 @@ const timeLimitMs = 100;
 describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRunHook) => {
   it('should call timer at construction', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty } = fakeProperty();
 
     // Act
@@ -22,7 +22,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should not call timer on isAsync but forward call', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
@@ -41,7 +41,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should not call timer on generate but forward call', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
     const { instance: mrng } = fakeRandom();
 
@@ -61,7 +61,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should not call timer on shrink but forward call', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
@@ -80,7 +80,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should call timer on run and forward call if ok', () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
@@ -105,7 +105,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should call timer on run and fail after time limit', () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -141,7 +141,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should forward falsy interrupt flag to the precondition failure', async () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -165,7 +165,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should forward truthy interrupt flag to the precondition failure', () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -190,9 +190,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
   describe('timeout', () => {
     it('should clear all started timeouts on success', async () => {
       // Arrange
-      jest.useFakeTimers();
-      jest.spyOn(global, 'setTimeout');
-      jest.spyOn(global, 'clearTimeout');
+      vi.useFakeTimers();
+      vi.spyOn(global, 'setTimeout');
+      vi.spyOn(global, 'clearTimeout');
       const { instance: decoratedProperty, run } = fakeProperty(true);
       run.mockResolvedValueOnce(null);
 
@@ -214,9 +214,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     it('should clear all started timeouts on failure', async () => {
       // Arrange
       const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
-      jest.useFakeTimers();
-      jest.spyOn(global, 'setTimeout');
-      jest.spyOn(global, 'clearTimeout');
+      vi.useFakeTimers();
+      vi.spyOn(global, 'setTimeout');
+      vi.spyOn(global, 'clearTimeout');
       const { instance: decoratedProperty, run } = fakeProperty(true);
       run.mockResolvedValueOnce(errorFromUnderlying);
 
@@ -237,7 +237,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     it('should timeout if it takes to long', async () => {
       // Arrange
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       const { instance: decoratedProperty, run } = fakeProperty(true);
       run.mockReturnValueOnce(
         new Promise(function (resolve) {
@@ -254,7 +254,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
       } else {
         runPromise = timeoutProp.run({}, false);
       }
-      jest.advanceTimersByTime(10);
+      vi.advanceTimersByTime(10);
 
       // Assert
       const out = await runPromise;

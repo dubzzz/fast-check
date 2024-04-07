@@ -17,8 +17,8 @@ import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
 import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -30,7 +30,7 @@ describe('uniqueArray', () => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
-        const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+        const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
@@ -61,7 +61,7 @@ describe('uniqueArray', () => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
-        const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+        const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
 
         // Act
@@ -103,7 +103,7 @@ describe('uniqueArray', () => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance, filter } = fakeArbitrary<unknown[]>();
-        const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+        const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
         ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
         filter.mockReturnValue(instance);
 
@@ -144,7 +144,7 @@ describe('uniqueArray', () => {
           const [minLength, maxLength] = aLength < bLength ? [aLength, bLength] : [bLength, aLength];
           const { instance: childInstance } = fakeArbitrary<unknown>();
           const { instance, filter } = fakeArbitrary<unknown[]>();
-          const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+          const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
           ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
           filter.mockReturnValue(instance);
 
@@ -212,7 +212,7 @@ describe('uniqueArray', () => {
           // Arrange
           const { instance: childInstance } = fakeArbitrary<unknown>();
           const { instance, filter } = fakeArbitrary<unknown[]>();
-          const ArrayArbitrary = jest.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+          const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
           ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
           filter.mockReturnValue(instance);
 

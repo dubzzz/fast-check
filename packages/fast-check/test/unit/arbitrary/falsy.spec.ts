@@ -6,8 +6,8 @@ import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as ConstantFromMock from '../../../src/arbitrary/constantFrom';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
   fc.configureGlobal({ beforeEach: beforeEachHook });
 }
 beforeEach(beforeEachHook);
@@ -16,7 +16,7 @@ describe('falsy', () => {
   it('should re-use constantFrom to build the falsy', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
+    const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
     // Act
@@ -30,7 +30,7 @@ describe('falsy', () => {
   it('should only produce falsy values', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
+    const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
     // Act
@@ -48,7 +48,7 @@ describe('falsy', () => {
   it('should only produce falsy values even with withBigInt', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
+    const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
     // Act
