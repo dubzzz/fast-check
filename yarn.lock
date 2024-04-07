@@ -3867,8 +3867,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^7.0.0":
-  version: 7.4.0
-  resolution: "@npmcli/arborist@npm:7.4.0"
+  version: 7.4.1
+  resolution: "@npmcli/arborist@npm:7.4.1"
   dependencies:
     "@isaacs/string-locale-compare": "npm:^1.1.0"
     "@npmcli/fs": "npm:^3.1.0"
@@ -3886,12 +3886,12 @@ __metadata:
     hosted-git-info: "npm:^7.0.1"
     json-parse-even-better-errors: "npm:^3.0.0"
     json-stringify-nice: "npm:^1.1.4"
-    minimatch: "npm:^9.0.0"
+    minimatch: "npm:^9.0.4"
     nopt: "npm:^7.0.0"
     npm-install-checks: "npm:^6.2.0"
     npm-package-arg: "npm:^11.0.1"
     npm-pick-manifest: "npm:^9.0.0"
-    npm-registry-fetch: "npm:^16.0.0"
+    npm-registry-fetch: "npm:^16.2.0"
     npmlog: "npm:^7.0.1"
     pacote: "npm:^17.0.4"
     parse-conflict-json: "npm:^3.0.0"
@@ -3905,7 +3905,7 @@ __metadata:
     walk-up-path: "npm:^3.0.1"
   bin:
     arborist: bin/index.js
-  checksum: 10c0/b11fee0c6997607aaf0d0ad1f7fa266914e97cb0c64c9d254497cad60c511cecb9747a6628f35f15a63cada81843ec6812d60ce6e479ee68ce8d2d0554fee0db
+  checksum: 10c0/b1d4f3adb3dd9c5b0f2f77d4f6013be8970ba1887c9945181e09b08c66583fdd5835e528dd383d40a4ea63859230710ab60d43fd5110e550bd17370595a3d610
   languageName: node
   linkType: hard
 
@@ -14005,7 +14005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^9.0.0, minimatch@npm:^9.0.1, minimatch@npm:^9.0.3":
+"minimatch@npm:^9.0.0, minimatch@npm:^9.0.1, minimatch@npm:^9.0.3, minimatch@npm:^9.0.4":
   version: 9.0.4
   resolution: "minimatch@npm:9.0.4"
   dependencies:
@@ -14499,7 +14499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-registry-fetch@npm:^16.0.0":
+"npm-registry-fetch@npm:^16.0.0, npm-registry-fetch@npm:^16.2.0":
   version: 16.2.0
   resolution: "npm-registry-fetch@npm:16.2.0"
   dependencies:
