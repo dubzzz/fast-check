@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 
 import type { FloatConstraints } from '../../../src/arbitrary/float';
@@ -21,6 +21,7 @@ import {
 
 import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import {
   assertProduceCorrectValues,
@@ -32,16 +33,6 @@ import {
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-}
-beforeEach(beforeEachHook);
-fc.configureGlobal({
-  ...fc.readConfigureGlobal(),
-  beforeEach: beforeEachHook,
-});
-
 function minMaxForConstraints(ct: FloatConstraints) {
   const noDefaultInfinity = ct.noDefaultInfinity;
   const {
@@ -52,6 +43,8 @@ function minMaxForConstraints(ct: FloatConstraints) {
 }
 
 describe('float', () => {
+  declareCleaningHooksForSpies();
+
   it('should accept any valid range of 32-bit floating point numbers (including infinity)', () => {
     fc.assert(
       fc.property(floatConstraints(), (ct) => {

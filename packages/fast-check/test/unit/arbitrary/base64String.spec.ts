@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { base64String } from '../../../src/arbitrary/base64String';
 
@@ -7,6 +7,7 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import * as ArrayMock from '../../../src/arbitrary/array';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -14,14 +15,9 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers';
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('base64String', () => {
+  declareCleaningHooksForSpies();
+
   it('should accept any constraints accepting at least one length multiple of 4', () =>
     fc.assert(
       fc.property(

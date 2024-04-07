@@ -1,19 +1,14 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
-import * as fc from 'fast-check';
+import { describe, it, expect, vi } from 'vitest';
 import { falsy } from '../../../src/arbitrary/falsy';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import * as ConstantFromMock from '../../../src/arbitrary/constantFrom';
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('falsy', () => {
+  declareCleaningHooksForSpies();
+
   it('should re-use constantFrom to build the falsy', () => {
     // Arrange
     const { instance } = fakeArbitrary();

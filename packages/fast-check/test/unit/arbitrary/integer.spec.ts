@@ -1,24 +1,20 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { integer } from '../../../src/arbitrary/integer';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 function fakeIntegerArbitrary() {
   const instance = fakeArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
   return instance;
 }
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('integer', () => {
+  declareCleaningHooksForSpies();
+
   it('should instantiate IntegerArbitrary(-0x80000000, 0x7fffffff) for integer()', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();

@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { typedIntArrayArbitraryArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
 
@@ -11,15 +11,11 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from '../../__test-helpers__/ArbitraryAssertions';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from '../../__test-helpers__/SpyCleaner';
 
 describe('typedIntArrayArbitraryArbitraryBuilder', () => {
+  declareCleaningHooksForSpies();
+
   it('should default constraints for arbitraryBuilder to defaultMin/Max when not specified', () => {
     fc.assert(
       fc.property(

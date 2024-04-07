@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type { RecordConstraints } from '../../../src/arbitrary/record';
 import { record } from '../../../src/arbitrary/record';
@@ -12,15 +12,11 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 
 import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('record', () => {
+  declareCleaningHooksForSpies();
+
   const keyArb: fc.Arbitrary<any> = fc
     .tuple(fc.string(), fc.boolean())
     .map(([name, symbol]) => (symbol ? Symbol.for(name) : name));

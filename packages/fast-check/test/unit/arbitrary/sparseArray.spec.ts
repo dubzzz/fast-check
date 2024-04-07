@@ -1,5 +1,5 @@
 /* eslint-disable no-sparse-arrays */
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
 import { sparseArray } from '../../../src/arbitrary/sparseArray';
@@ -17,18 +17,11 @@ import {
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { MaxLengthUpperBound } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-}
-beforeEach(beforeEachHook);
-fc.configureGlobal({
-  ...fc.readConfigureGlobal(),
-  beforeEach: beforeEachHook,
-});
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('sparseArray', () => {
+  declareCleaningHooksForSpies();
+
   it('should always specify a minLength and maxLength on the underlying set', () => {
     fc.assert(
       fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {

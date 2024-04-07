@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { hexa } from '../../../src/arbitrary/hexa';
 
@@ -12,15 +12,11 @@ import {
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('hexa', () => {
+  declareCleaningHooksForSpies();
+
   it('should be able to unmap any mapped value', () => {
     // Arrange
     const { min, max, mapToCode, unmapFromCode } = extractArgumentsForBuildCharacter(hexa);

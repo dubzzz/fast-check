@@ -1,5 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
-import fc from 'fast-check';
+import { describe, it, expect, vi } from 'vitest';
 import { uuid } from '../../../src/arbitrary/uuid';
 import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 
@@ -12,16 +11,12 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/ArbitraryAssertions';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('uuid', () => {
+  declareCleaningHooksForSpies();
+
   it('should produce the minimal uuid (v1-v5) given all minimal generated values', () => {
     // Arrange
     const { instance: mrng } = fakeRandom();

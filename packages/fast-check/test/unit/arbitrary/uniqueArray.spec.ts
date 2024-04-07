@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { UniqueArrayConstraints } from '../../../src/arbitrary/uniqueArray';
 import { uniqueArray } from '../../../src/arbitrary/uniqueArray';
@@ -16,15 +16,11 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
 import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('uniqueArray', () => {
+  declareCleaningHooksForSpies();
+
   it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a, <default>) for uniqueArray(arb)', () => {
     fc.assert(
       fc.property(sizeRelatedGlobalConfigArb, (config) => {

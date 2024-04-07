@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type { WebUrlConstraints } from '../../../src/arbitrary/webUrl';
 import { webUrl } from '../../../src/arbitrary/webUrl';
@@ -20,15 +20,11 @@ import * as WebQueryParametersMock from '../../../src/arbitrary/webQueryParamete
 import * as WebPathMock from '../../../src/arbitrary/webPath';
 import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('webUrl', () => {
+  declareCleaningHooksForSpies();
+
   it('should always use the same size value for all its sub-arbitraries (except webAuthority when using its own)', () => {
     fc.assert(
       fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {

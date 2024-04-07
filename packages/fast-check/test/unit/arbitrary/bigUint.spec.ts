@@ -1,8 +1,9 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { bigUint } from '../../../src/arbitrary/bigUint';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import * as BigIntArbitraryMock from '../../../src/arbitrary/_internals/BigIntArbitrary';
 
@@ -11,20 +12,8 @@ function fakeBigIntArbitrary() {
   return instance;
 }
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('bigUint', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
+  declareCleaningHooksForSpies();
 
   it('should instantiate the same BigIntArbitrary as empty constraints for no arguments', () => {
     // Arrange

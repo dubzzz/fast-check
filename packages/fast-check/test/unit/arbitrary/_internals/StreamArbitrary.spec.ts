@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -12,15 +12,11 @@ import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/Arbitra
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 
 import * as StringifyMock from '../../../../src/utils/stringify';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
 
 describe('StreamArbitrary', () => {
+  declareCleaningHooksForSpies();
+
   describe('generate', () => {
     it('should produce a cloneable instance of Stream', () => {
       // Arrange

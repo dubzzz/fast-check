@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 
 import type { DoubleConstraints } from '../../../src/arbitrary/double';
@@ -15,6 +15,7 @@ import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/
 
 import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import {
   assertProduceCorrectValues,
@@ -26,17 +27,9 @@ import {
 
 import * as ArrayInt64ArbitraryMock from '../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
 
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-}
-beforeEach(beforeEachHook);
-fc.configureGlobal({
-  ...fc.readConfigureGlobal(),
-  beforeEach: beforeEachHook,
-});
-
 describe('double', () => {
+  declareCleaningHooksForSpies();
+
   it('should accept any valid range of floating point numbers (including infinity)', () => {
     fc.assert(
       fc.property(doubleConstraints(), (ct) => {

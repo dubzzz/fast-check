@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { BigIntArbitrary } from '../../../../src/arbitrary/_internals/BigIntArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -15,21 +15,10 @@ import { Stream } from '../../../../src/stream/Stream';
 
 import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange';
 import * as ShrinkBigIntMock from '../../../../src/arbitrary/_internals/helpers/ShrinkBigInt';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
 
 describe('BigIntArbitrary', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
+  declareCleaningHooksForSpies();
 
   describe('generate', () => {
     it('should never bias and generate the full range when biasFactor is not specified', () =>

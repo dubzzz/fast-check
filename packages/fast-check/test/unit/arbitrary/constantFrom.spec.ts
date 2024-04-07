@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { constantFrom } from '../../../src/arbitrary/constantFrom';
 
@@ -6,15 +6,11 @@ import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { cloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('constantFrom', () => {
+  declareCleaningHooksForSpies();
+
   it('should instantiate ConstantArbitrary(csts) for constantFrom(...csts)', () =>
     fc.assert(
       fc.property(fc.array(fc.anything(), { minLength: 1 }), (csts) => {

@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import type { WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority';
 import { webAuthority } from '../../../src/arbitrary/webAuthority';
@@ -11,13 +11,6 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/ArbitraryAssertions';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
 
 describe('webAuthority (integration)', () => {
   type Extra = WebAuthorityConstraints;

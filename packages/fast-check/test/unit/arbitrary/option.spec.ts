@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { OptionConstraints } from '../../../src/arbitrary/option';
 import { option } from '../../../src/arbitrary/option';
@@ -12,15 +12,11 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions';
 import { sizeArb } from './__test-helpers__/SizeHelpers';
-
-function beforeEachHook() {
-  vi.resetModules();
-  vi.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('option', () => {
+  declareCleaningHooksForSpies();
+
   it('should call FrequencyArbitrary.from with the right parameters when called with constraints', () =>
     fc.assert(
       fc.property(
