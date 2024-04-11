@@ -224,7 +224,7 @@ More details on the [package itself](https://www.npmjs.com/package/@fast-check/a
 ![license](https://img.shields.io/npm/l/@fast-check%2Fjest.svg)
 ![official package](https://img.shields.io/badge/-official%20package-%23ffcb00.svg)
 
-Bring support for property-based testing into [jest](https://www.npmjs.com/package/ava).
+Bring support for property-based testing into [jest](https://www.npmjs.com/package/jest).
 
 In addition to offering enhanced versions of `test` and `it` functions, this package seamlessly synchronizes the timeouts of fast-check with those of jest. You no longer need to worry about setting separate timeouts for fast-check when you have already defined one in jest. This package handles the integration effortlessly, ensuring everything gets wired out-of-the-box.
 
