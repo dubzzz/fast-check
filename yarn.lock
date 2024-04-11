@@ -3886,8 +3886,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^7.0.0":
-  version: 7.4.1
-  resolution: "@npmcli/arborist@npm:7.4.1"
+  version: 7.4.2
+  resolution: "@npmcli/arborist@npm:7.4.2"
   dependencies:
     "@isaacs/string-locale-compare": "npm:^1.1.0"
     "@npmcli/fs": "npm:^3.1.0"
@@ -3898,6 +3898,7 @@ __metadata:
     "@npmcli/node-gyp": "npm:^3.0.0"
     "@npmcli/package-json": "npm:^5.0.0"
     "@npmcli/query": "npm:^3.1.0"
+    "@npmcli/redact": "npm:^1.1.0"
     "@npmcli/run-script": "npm:^7.0.2"
     bin-links: "npm:^4.0.1"
     cacache: "npm:^18.0.0"
@@ -3924,7 +3925,7 @@ __metadata:
     walk-up-path: "npm:^3.0.1"
   bin:
     arborist: bin/index.js
-  checksum: 10c0/b1d4f3adb3dd9c5b0f2f77d4f6013be8970ba1887c9945181e09b08c66583fdd5835e528dd383d40a4ea63859230710ab60d43fd5110e550bd17370595a3d610
+  checksum: 10c0/e21e16f33f1c032c18bb2d4f1afd86778915895fff0bc0e8a9f7709a8ec2060207f99436713b8b4d9c7c86e3d1bfda31da02afa599892f8b0a3e821e37cac58a
   languageName: node
   linkType: hard
 
