@@ -51,7 +51,7 @@
   "bugs": {
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
-  "homepage": "https://github.com/dubzzz/fast-check#readme",
+  "homepage": "https://fast-check.dev/",
   "engines": {
     "node": ">=8.0.0"
   },
