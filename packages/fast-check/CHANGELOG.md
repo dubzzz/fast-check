@@ -3,10 +3,6 @@
 _TODO Description_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.17.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.1...v3.17.2)]
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#4853](https://github.com/dubzzz/fast-check/pull/4853)) CI: Build doc with full git history
