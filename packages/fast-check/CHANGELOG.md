@@ -1,6 +1,6 @@
 # 3.17.2
 
-_TODO Description_
+_Directly reference the official documentation from NPM_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.17.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.1...v3.17.2)]
 
 ## Fixes
