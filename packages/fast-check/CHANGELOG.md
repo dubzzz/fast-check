@@ -1,3 +1,23 @@
+# 3.17.2
+
+_Directly reference the official documentation from NPM_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.17.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.1...v3.17.2)]
+
+## Fixes
+
+- ([PR#4853](https://github.com/dubzzz/fast-check/pull/4853)) CI: Build doc with full git history
+- ([PR#4872](https://github.com/dubzzz/fast-check/pull/4872)) CI: Stop caching Jest on CI
+- ([PR#4852](https://github.com/dubzzz/fast-check/pull/4852)) Doc: Show last update time on doc
+- ([PR#4851](https://github.com/dubzzz/fast-check/pull/4851)) Doc: Add last modified date to sitemap
+- ([PR#4868](https://github.com/dubzzz/fast-check/pull/4868)) Doc: Enhance SEO for homepage
+- ([PR#4888](https://github.com/dubzzz/fast-check/pull/4888)) Doc: Add tutorial for PBT with Jest
+- ([PR#4901](https://github.com/dubzzz/fast-check/pull/4901)) Doc: Use official doc for npm homepage
+- ([PR#4866](https://github.com/dubzzz/fast-check/pull/4866)) Test: Safer rewrite of Poisoning E2E
+- ([PR#4871](https://github.com/dubzzz/fast-check/pull/4871)) Test: Move tests to Vitest
+- ([PR#4863](https://github.com/dubzzz/fast-check/pull/4863)) Test: Explicitely import from Vitest
+- ([PR#4873](https://github.com/dubzzz/fast-check/pull/4873)) Test: Move to v8 for coverage
+- ([PR#4875](https://github.com/dubzzz/fast-check/pull/4875)) Test: Better mock/spy cleaning
+
 # 3.17.1
 
 _Better interrupt CJS/MJS regarding types_
