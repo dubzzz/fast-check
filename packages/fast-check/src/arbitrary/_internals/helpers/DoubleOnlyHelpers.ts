@@ -1,5 +1,8 @@
 import type { DoubleConstraints } from '../../double';
 
+const safeNumberIsInteger = Number.isInteger;
+const safeObjectIs = Object.is;
+
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
 const safeMaxValue = Number.MAX_VALUE;
@@ -41,10 +44,10 @@ export function refineConstraintsForDoubleOnly(
 
   const fullConstraints: Required<Omit<DoubleConstraints, 'noInteger'>> = {
     noDefaultInfinity: false, // already handled locally
-    minExcluded, // exclusion still need to be applied
-    maxExcluded,
-    min: effectiveMin,
-    max: effectiveMax,
+    minExcluded: minExcluded || ((min !== safeNegativeInfinity || minExcluded) && safeNumberIsInteger(effectiveMin)), // exclusion still need to be applied, but might be altered to be more precise
+    maxExcluded: maxExcluded || ((max !== safePositiveInfinity || maxExcluded) && safeNumberIsInteger(effectiveMax)),
+    min: safeObjectIs(effectiveMin, -0) ? 0 : effectiveMin,
+    max: safeObjectIs(effectiveMax, 0) ? -0 : effectiveMax,
     noNaN: constraints.noNaN || false,
   };
   return fullConstraints;
