@@ -7,6 +7,7 @@ import {
   refineConstraintsForDoubleOnly,
 } from '../../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers';
 import { add64 } from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
+import type { DoubleConstraints } from '../../../../../src/arbitrary/double';
 
 describe('maxNonIntegerValue', () => {
   it('should be immediately followed by an integer', () => {
@@ -33,10 +34,52 @@ describe('maxNonIntegerValue', () => {
 });
 
 describe('refineConstraintsForDoubleOnly', () => {
+  it.each`
+    sourceRange                                   | targetRange
+    ${'[-1;1]'}                                   | ${']-1;1[' /* -1 and 1 being integers we don't need them in the range */}
+    ${']-1;1['}                                   | ${']-1;1['}
+    ${'[-1;1['}                                   | ${']-1;1['}
+    ${']-1;1]'}                                   | ${']-1;1['}
+    ${'[-4503599627370496;4503599627370496]'}     | ${'[-4503599627370495.5;4503599627370495.5]' /* 4503599627370496 is the starting point for the world of integers / equivalent to ]-4503599627370496;4503599627370496[ */}
+    ${']-4503599627370496;4503599627370496['}     | ${']-4503599627370496;4503599627370496['}
+    ${'[-10000000000000000;10000000000000000]'}   | ${'[-4503599627370495.5;4503599627370495.5]' /* 10000000000000000 is outside of the area of non-integers / equivalent to ]-4503599627370496;4503599627370496[ */}
+    ${']-10000000000000000;10000000000000000['}   | ${']-4503599627370496;4503599627370496['}
+    ${'[-0;1]'}                                   | ${']0;1[' /* -0 is followed by an integer value, it needs to be skipped... */}
+    ${']-0;1['}                                   | ${']0;1['}
+    ${'[-1;-0]'}                                  | ${']-1;-0[' /* ...only if -0 is on the left side of the range */}
+    ${']-1;-0['}                                  | ${']-1;-0['}
+    ${'[-1;0]'}                                   | ${']-1;-0[' /* 0 is followed by an integer value, it needs to be skipped... */}
+    ${']-1;0['}                                   | ${']-1;-0['}
+    ${'[0;1]'}                                    | ${']0;1[' /* ...only if 0 is on the right side of the range */}
+    ${']0;1['}                                    | ${']0;1['}
+    ${'[-0.5;0.5]'}                               | ${'[-0.5;0.5]' /* -0.5 and 0.5 being non-integers we need them in the range */}
+    ${']-0.5;0.5['}                               | ${']-0.5;0.5[' /* the double right after -0.5 and the one right before 0.5 are also non-integers */}
+    ${'[-4503599627370495.5;4503599627370495.5]'} | ${'[-4503599627370495.5;4503599627370495.5]'}
+  `('should update $sourceRange into $targetRange', ({ sourceRange, targetRange }) => {
+    // Arrange
+    // Note: We could also try to optimize ranges such as:
+    // >  ]-4503599627370495.5;4503599627370495.5[ -> ]-4503599627370495;4503599627370495[
+    const sourceConstraints: DoubleConstraints = {
+      minExcluded: sourceRange.at(0) === ']',
+      maxExcluded: sourceRange.at(-1) === '[',
+      min: Number(sourceRange.substring(1).split(';')[0]),
+      max: Number(sourceRange.substring(0, sourceRange.length - 1).split(';')[1]),
+    };
+    const targetConstraints: DoubleConstraints = {
+      minExcluded: targetRange.at(0) === ']',
+      maxExcluded: targetRange.at(-1) === '[',
+      min: Number(targetRange.substring(1).split(';')[0]),
+      max: Number(targetRange.substring(0, targetRange.length - 1).split(';')[1]),
+    };
+
+    // Act / Assert
+    expect(refineConstraintsForDoubleOnly(sourceConstraints)).toStrictEqual(expect.objectContaining(targetConstraints));
+  });
+
   describe('no excluded', () => {
     it('should properly refine default constraints', () => {
       // Arrange / Act / Assert
-      expect(refineConstraintsForDoubleOnly({})).toEqual({
+      expect(refineConstraintsForDoubleOnly({})).toStrictEqual({
         minExcluded: false,
         min: -onlyIntegersAfterThisValue, // min included, but its value will be replaced by -inf in mapper
         maxExcluded: false,
@@ -48,7 +91,7 @@ describe('refineConstraintsForDoubleOnly', () => {
 
     it('should properly refine when constraints reject infinities', () => {
       // Arrange / Act / Assert
-      expect(refineConstraintsForDoubleOnly({ noDefaultInfinity: true })).toEqual({
+      expect(refineConstraintsForDoubleOnly({ noDefaultInfinity: true })).toStrictEqual({
         minExcluded: false,
         min: -maxNonIntegerValue,
         maxExcluded: false,
@@ -64,7 +107,7 @@ describe('refineConstraintsForDoubleOnly', () => {
           fc.double({ noDefaultInfinity: true, noNaN: true, min: onlyIntegersAfterThisValue }),
           (boundary) => {
             // Arrange / Act / Assert
-            expect(refineConstraintsForDoubleOnly({ min: -boundary, max: boundary })).toEqual({
+            expect(refineConstraintsForDoubleOnly({ min: -boundary, max: boundary })).toStrictEqual({
               minExcluded: false,
               min: -maxNonIntegerValue, // min has been adapted to better fit the float range
               maxExcluded: false,
@@ -81,10 +124,10 @@ describe('refineConstraintsForDoubleOnly', () => {
       fc.assert(
         fc.property(fc.double({ noNaN: true, min: 1, max: maxNonIntegerValue }), (boundary) => {
           // Arrange / Act / Assert
-          expect(refineConstraintsForDoubleOnly({ min: -boundary, max: boundary })).toEqual({
-            minExcluded: false,
+          expect(refineConstraintsForDoubleOnly({ min: -boundary, max: boundary })).toStrictEqual({
+            minExcluded: Number.isInteger(-boundary),
             min: -boundary, // min was already in the accepted range
-            maxExcluded: false,
+            maxExcluded: Number.isInteger(boundary),
             max: boundary, // max was already in the accepted range
             noDefaultInfinity: false,
             noNaN: false,
@@ -99,7 +142,7 @@ describe('refineConstraintsForDoubleOnly', () => {
 
     it('should properly refine default constraints', () => {
       // Arrange / Act / Assert
-      expect(refineConstraintsForDoubleOnly({ ...excluded })).toEqual({
+      expect(refineConstraintsForDoubleOnly({ ...excluded })).toStrictEqual({
         minExcluded: true,
         min: -onlyIntegersAfterThisValue, // min excluded so it only starts at -maxNonIntegerValue
         maxExcluded: true,
@@ -111,7 +154,7 @@ describe('refineConstraintsForDoubleOnly', () => {
 
     it('should properly refine when constraints reject infinities', () => {
       // Arrange / Act / Assert
-      expect(refineConstraintsForDoubleOnly({ ...excluded, noDefaultInfinity: true })).toEqual({
+      expect(refineConstraintsForDoubleOnly({ ...excluded, noDefaultInfinity: true })).toStrictEqual({
         minExcluded: true,
         min: -onlyIntegersAfterThisValue, // min excluded so it only starts at -maxNonIntegerValue
         maxExcluded: true,
@@ -127,7 +170,7 @@ describe('refineConstraintsForDoubleOnly', () => {
           fc.double({ noDefaultInfinity: true, noNaN: true, min: onlyIntegersAfterThisValue }),
           (boundary) => {
             // Arrange / Act / Assert
-            expect(refineConstraintsForDoubleOnly({ ...excluded, min: -boundary, max: boundary })).toEqual({
+            expect(refineConstraintsForDoubleOnly({ ...excluded, min: -boundary, max: boundary })).toStrictEqual({
               minExcluded: true,
               min: -onlyIntegersAfterThisValue, // min has been adapted to better fit the float range, values only starts at -maxNonIntegerValue
               maxExcluded: true,
@@ -144,7 +187,7 @@ describe('refineConstraintsForDoubleOnly', () => {
       fc.assert(
         fc.property(fc.double({ noNaN: true, min: 1, max: maxNonIntegerValue }), (boundary) => {
           // Arrange / Act / Assert
-          expect(refineConstraintsForDoubleOnly({ ...excluded, min: -boundary, max: boundary })).toEqual({
+          expect(refineConstraintsForDoubleOnly({ ...excluded, min: -boundary, max: boundary })).toStrictEqual({
             minExcluded: true,
             min: -boundary, // min was already in the accepted range
             maxExcluded: true,
