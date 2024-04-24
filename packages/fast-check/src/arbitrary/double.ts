@@ -10,7 +10,13 @@ import {
 import { arrayInt64 } from './_internals/ArrayInt64Arbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers';
+import {
+  doubleOnlyMapper,
+  doubleOnlyUnmapper,
+  refineConstraintsForDoubleOnly,
+} from './_internals/helpers/DoubleOnlyHelpers';
 
+const safeNumberIsInteger = Number.isInteger;
 const safeNumberIsNaN = Number.isNaN;
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
@@ -63,6 +69,13 @@ export interface DoubleConstraints {
    * @remarks Since 2.8.0
    */
   noNaN?: boolean;
+  /**
+   * When set to true, Number.isInteger(value) will be false for any generated value.
+   * Note: -infinity and +infinity, or NaN can stil be generated except if you rejected them via another constraint.
+   * @defaultValue false
+   * @remarks Since 3.18.0
+   */
+  noInteger?: boolean;
 }
 
 /**
@@ -84,18 +97,13 @@ function unmapperDoubleToIndex(value: unknown): ArrayInt64 {
   return doubleToIndex(value);
 }
 
-/**
- * For 64-bit floating point numbers:
- * - sign: 1 bit
- * - significand: 52 bits
- * - exponent: 11 bits
- *
- * @param constraints - Constraints to apply when building instances (since 2.8.0)
- *
- * @remarks Since 0.0.6
- * @public
- */
-export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
+/** @internal */
+function numberIsNotInteger(value: number): boolean {
+  return !safeNumberIsInteger(value);
+}
+
+/** @internal */
+function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
@@ -136,4 +144,24 @@ export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
       return doubleToIndex(value);
     },
   );
+}
+
+/**
+ * For 64-bit floating point numbers:
+ * - sign: 1 bit
+ * - significand: 52 bits
+ * - exponent: 11 bits
+ *
+ * @param constraints - Constraints to apply when building instances (since 2.8.0)
+ *
+ * @remarks Since 0.0.6
+ * @public
+ */
+export function double(constraints: DoubleConstraints = {}): Arbitrary<number> {
+  if (!constraints.noInteger) {
+    return anyDouble(constraints);
+  }
+  return anyDouble(refineConstraintsForDoubleOnly(constraints))
+    .map(doubleOnlyMapper, doubleOnlyUnmapper)
+    .filter(numberIsNotInteger);
 }
