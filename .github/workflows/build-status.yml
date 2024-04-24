@@ -212,7 +212,7 @@ jobs:
           - '@fast-check/vitest'
           - '@fast-check/worker'
         script-name: ['test']
-        node-version: [18.x, 20.x, latest]
+        node-version: [18.x, 20.x, 22.x, latest]
         os: ['ubuntu-latest']
         include:
           # More platforms and scripts...
