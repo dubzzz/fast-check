@@ -140,6 +140,7 @@ It always generates valid 32-bit floating point values.
 - `maxExcluded?` — default: `false` — _do not include `max` in the set of possible values_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 
 **Usages:**
 
@@ -164,6 +165,10 @@ fc.float({ noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.PO
 fc.float({ min: 0, max: 1, maxExcluded: true });
 // Note: All possible 32-bit floating point values between 0 (included) and 1 (excluded)
 // Examples of generated values: 3.2229864679470793e-44, 2.4012229232976108e-20, 1.1826533935374394e-27, 0.9999997615814209, 3.783505853677006e-44…
+
+fc.float({ noInteger: true });
+// Note: All possible 32-bit floating point values but no integer
+// Examples of generated values: -7.006492321624085e-45, 1.4734616113175924e-21, 8.407790785948902e-45, 1.5815058151957828e-9, Number.POSITIVE_INFINITY…
 
 fc.integer({ min: 0, max: (1 << 24) - 1 })
   .map((v) => v / (1 << 24))

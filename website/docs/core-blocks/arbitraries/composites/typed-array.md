@@ -315,6 +315,7 @@ Generate _Float32Array_
 - `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
