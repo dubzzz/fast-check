@@ -15,7 +15,7 @@ export const onlyIntegersAfterThisValue = 4503599627370496;
  */
 export function refineConstraintsForDoubleOnly(
   constraints: Omit<DoubleConstraints, 'noInteger'>,
-): Omit<DoubleConstraints, 'noInteger'> {
+): Required<Omit<DoubleConstraints, 'noInteger'>> {
   const {
     noDefaultInfinity = false,
     minExcluded = false,

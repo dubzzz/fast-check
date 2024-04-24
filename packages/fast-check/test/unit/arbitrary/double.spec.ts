@@ -31,8 +31,11 @@ describe('double', () => {
   declareCleaningHooksForSpies();
 
   it('should accept any valid range of floating point numbers (including infinity)', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { noInteger, ...withoutNoIntegerRecordConstraints } = defaultDoubleRecordConstraints;
+
     fc.assert(
-      fc.property(doubleConstraints(), (ct) => {
+      fc.property(doubleConstraints(withoutNoIntegerRecordConstraints), (ct) => {
         // Arrange
         spyArrayInt64();
 
@@ -143,6 +146,7 @@ describe('double', () => {
         ...defaultDoubleRecordConstraints,
         minExcluded: fc.constant(false),
         maxExcluded: fc.constant(false),
+        noInteger: fc.constant(false),
       };
 
       fc.assert(
@@ -174,7 +178,11 @@ describe('double', () => {
   }
 
   describe('with NaN', () => {
-    const withNaNRecordConstraints = { ...defaultDoubleRecordConstraints, noNaN: fc.constant(false) };
+    const withNaNRecordConstraints = {
+      ...defaultDoubleRecordConstraints,
+      noNaN: fc.constant(false),
+      noInteger: fc.constant(false),
+    };
 
     it('should ask for a range with one extra value (far from zero)', () => {
       fc.assert(
@@ -238,7 +246,7 @@ describe('double', () => {
 
   describe('without NaN', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noNaN, ...noNaNRecordConstraints } = defaultDoubleRecordConstraints;
+    const { noNaN, noInteger, ...noNaNRecordConstraints } = defaultDoubleRecordConstraints;
 
     it('should ask integers between the indexes corresponding to min and max', () => {
       fc.assert(
@@ -273,6 +281,9 @@ describe('double (integration)', () => {
 
     if (extra === undefined) {
       return; // no other constraints
+    }
+    if (extra.noInteger) {
+      expect(v).toSatisfy((v) => !Number.isInteger(v)); // should not produce integer values
     }
     if (extra.noNaN) {
       expect(v).not.toBe(Number.NaN); // should not produce NaN if explicitely asked not too
