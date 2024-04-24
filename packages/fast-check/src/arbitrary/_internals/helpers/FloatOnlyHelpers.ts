@@ -1,26 +1,27 @@
-import type { DoubleConstraints } from '../../double';
+import type { FloatConstraints } from '../../float';
+import { MAX_VALUE_32 } from './FloatHelpers';
 import { refineConstraintsForFloatingOnly } from './FloatingOnlyHelpers';
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeMaxValue = Number.MAX_VALUE;
+const safeMaxValue = MAX_VALUE_32;
 
-// The last floating point value available with 64 bits floating point numbers is: 4503599627370495.5
-// The start of integers' world is: 4503599627370496 = 2**52 = 2**(significand_size_with_sign-1)
-export const maxNonIntegerValue = 4503599627370495.5;
-export const onlyIntegersAfterThisValue = 4503599627370496;
+// The last floating point value available with 32 bits floating point numbers is: 8388607.5
+// The start of integers' world is: 8388608 = 2**23 = 2**(significand_size_with_sign-1)
+export const maxNonIntegerValue = 8388607.5;
+export const onlyIntegersAfterThisValue = 8388608;
 
 /**
- * Refine source constraints receive by a double to focus only on non-integer values.
+ * Refine source constraints receive by a float to focus only on non-integer values.
  * @param constraints - Source constraints to be refined
  */
-export function refineConstraintsForDoubleOnly(
-  constraints: Omit<DoubleConstraints, 'noInteger'>,
-): Required<Omit<DoubleConstraints, 'noInteger'>> {
+export function refineConstraintsForFloatOnly(
+  constraints: Omit<FloatConstraints, 'noInteger'>,
+): Required<Omit<FloatConstraints, 'noInteger'>> {
   return refineConstraintsForFloatingOnly(constraints, safeMaxValue, maxNonIntegerValue, onlyIntegersAfterThisValue);
 }
 
-export function doubleOnlyMapper(value: number): number {
+export function floatOnlyMapper(value: number): number {
   return value === onlyIntegersAfterThisValue
     ? safePositiveInfinity
     : value === -onlyIntegersAfterThisValue
@@ -28,7 +29,7 @@ export function doubleOnlyMapper(value: number): number {
       : value;
 }
 
-export function doubleOnlyUnmapper(value: unknown): number {
+export function floatOnlyUnmapper(value: unknown): number {
   if (typeof value !== 'number') throw new Error('Unsupported type');
   return value === safePositiveInfinity
     ? onlyIntegersAfterThisValue

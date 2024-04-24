@@ -5,6 +5,7 @@ import { MAX_VALUE_32, floatToIndex } from '../../../../src/arbitrary/_internals
 import { doubleToIndex } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 import { substract64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import { refineConstraintsForDoubleOnly } from '../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers';
+import { refineConstraintsForFloatOnly } from '../../../../src/arbitrary/_internals/helpers/FloatOnlyHelpers';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);
@@ -21,6 +22,7 @@ export const defaultFloatRecordConstraints = {
   max: float32raw(),
   noDefaultInfinity: fc.boolean(),
   noNaN: fc.boolean(),
+  noInteger: fc.boolean(),
   minExcluded: fc.boolean(),
   maxExcluded: fc.boolean(),
 };
@@ -96,7 +98,19 @@ function constraintsInternal(
     })
     .filter((ct) => {
       if (!ct.noInteger) return true;
-      if (!is32Bits) {
+      if (is32Bits) {
+        const resolvedCt = refineConstraintsForFloatOnly(ct);
+        if (resolvedCt.min > resolvedCt.max) return false;
+        const minIndex = floatToIndex(resolvedCt.min);
+        const maxIndex = floatToIndex(resolvedCt.max);
+        const distance = maxIndex - minIndex;
+        // Dangerous range, not enough value in range to safely run
+        // Worst cases:
+        // >  [int, float, int] -> distance is 2,
+        // >  ]int, float, int[ -> distance is 2,
+        // -> for >= 2 it's safe, we will alays have a non-integer value within the range
+        if (distance < 2) return false;
+      } else {
         const resolvedCt = refineConstraintsForDoubleOnly(ct);
         if (resolvedCt.min > resolvedCt.max) return false;
         const minIndex = doubleToIndex(resolvedCt.min);
