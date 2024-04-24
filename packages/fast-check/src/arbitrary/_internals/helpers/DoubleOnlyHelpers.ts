@@ -1,7 +1,6 @@
 import type { DoubleConstraints } from '../../double';
 import { refineConstraintsForFloatingOnly } from './FloatingOnlyHelpers';
 
-
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
 const safeMaxValue = Number.MAX_VALUE;
