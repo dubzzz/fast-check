@@ -103,7 +103,10 @@ function constraintsInternal(
         const maxIndex = doubleToIndex(resolvedCt.max);
         const distance = substract64(maxIndex, minIndex);
         // Dangerous range, not enough value in range to safely run
-        // Worst case: [int, float, int] -> distance is 2, for >= 2 it's safe
+        // Worst cases:
+        // >  [int, float, int] -> distance is 2,
+        // >  ]int, float, int[ -> distance is 2,
+        // -> for >= 2 it's safe, we will alays have a non-integer value within the range
         if (distance.data[0] === 0 && distance.data[1] < 2) return false;
       }
       return true;
