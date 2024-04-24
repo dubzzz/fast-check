@@ -13,7 +13,6 @@
     "skipLibCheck": true,
     "strict": true,
     "moduleDetection": "force",
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true
+    "isolatedModules": true
   }
 }
