@@ -98,7 +98,6 @@ describe.each<DescribeOptions>([
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop([fc.nat()], { timeout: 500 })('property block main thread', () => {
-          // eslint-disable-next-line no-constant-condition
           while (true);
         });
       });

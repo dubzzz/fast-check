@@ -343,7 +343,6 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
     this.bindRefinementOnValue = (v: Value<T>): v is Value<U> => this.refinementOnValue(v);
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const g = this.arb.generate(mrng, biasFactor);
       if (this.refinementOnValue(g)) {
