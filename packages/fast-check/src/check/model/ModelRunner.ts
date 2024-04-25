@@ -48,7 +48,6 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
 };
 
 /** @internal */
-
 const internalModelRun = <Model extends object, Real>(
   s: ModelRunSetup<Model, Real>,
   cmds: Iterable<Command<Model, Real>>,
@@ -81,7 +80,6 @@ const isAsyncSetup = <Model, Real>(
 };
 
 /** @internal */
-
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: ModelRunSetup<Model, Real> | ModelRunAsyncSetup<Model, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,
@@ -112,7 +110,6 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
  * @remarks Since 1.5.0
  * @public
  */
-
 export function modelRun<Model extends object, Real, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real>,
   cmds: Iterable<Command<Model, Real>>,
@@ -131,7 +128,6 @@ export function modelRun<Model extends object, Real, InitialModel extends Model>
  * @remarks Since 1.5.0
  * @public
  */
-
 export async function asyncModelRun<Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real> | ModelRunAsyncSetup<InitialModel, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,

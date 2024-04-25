@@ -57,7 +57,6 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
 }
 
 /** @internal */
-
 export const scheduleCommands = function* <Model extends object, Real, CheckAsync extends boolean>(
   s: Scheduler,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,
