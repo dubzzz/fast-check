@@ -1,12 +1,7 @@
-// eslint-disable-next-line
 const { execSync } = require('child_process');
-// eslint-disable-next-line
 const fs = require('fs');
-// eslint-disable-next-line
 const path = require('path');
-// eslint-disable-next-line
 const process = require('process');
-// eslint-disable-next-line
 const replace = require('replace-in-file');
 
 // Append *.js file extension on all local imports
@@ -20,7 +15,6 @@ const options = {
 const results = replace.sync(options);
 for (const { file, hasChanged } of results) {
   if (hasChanged) {
-    // eslint-disable-next-line
     console.info(`Extensions added to: ${file}`);
   }
 }
@@ -30,10 +24,8 @@ for (const { file, hasChanged } of results) {
 // eslint-disable-next-line
 const commitHash = getCommitHash();
 
-// eslint-disable-next-line
 fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   if (err) {
-    // eslint-disable-next-line
     console.error(err.message);
     process.exit(2);
   }
@@ -46,7 +38,6 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     to: ['commonjs', packageVersion, commitHash],
   });
   if (commonJsReplacement.length === 1 && commonJsReplacement[0].hasChanged) {
-    // eslint-disable-next-line
     console.info(`Package details added onto commonjs version`);
   }
 
@@ -56,7 +47,6 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     to: ['module', packageVersion, commitHash],
   });
   if (moduleReplacement.length === 1 && moduleReplacement[0].hasChanged) {
-    // eslint-disable-next-line
     console.info(`Package details added onto module version`);
   }
 
@@ -66,7 +56,6 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     to: [packageVersion, commitHash],
   });
   if (dTsReplacement.length === 1 && dTsReplacement[0].hasChanged) {
-    // eslint-disable-next-line
     console.info(`Package details added onto d.ts version for cjs`);
   }
 
@@ -76,7 +65,6 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     to: [packageVersion, commitHash],
   });
   if (dTsReplacement2.length === 1 && dTsReplacement[0].hasChanged) {
-    // eslint-disable-next-line
     console.info(`Package details added onto d.ts version for esm`);
   }
 
@@ -94,7 +82,6 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     to: [escapeHtml('module'), escapeHtml(packageVersion), escapeHtml(commitHash)],
   });
   if (docReplacement.length === 1 && docReplacement[0].hasChanged) {
-    // eslint-disable-next-line
     console.info(`Package details added onto doc`);
   }
 });
@@ -103,13 +90,11 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
 function getCommitHash() {
   const gitHubCommitHash = process.env.GITHUB_SHA && process.env.GITHUB_SHA.split('\n')[0];
   if (gitHubCommitHash) {
-    // eslint-disable-next-line
     console.info(`Using env variable GITHUB_SHA for the commit hash, got: ${gitHubCommitHash}`);
     return gitHubCommitHash;
   }
   if (process.env.EXPECT_GITHUB_SHA) {
     if (!gitHubCommitHash) {
-      // eslint-disable-next-line
       console.error('No GITHUB_SHA specified');
       process.exit(1);
     }

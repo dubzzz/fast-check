@@ -1,6 +1,4 @@
 // @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* global __filename, exports, require */
 const { pathToFileURL } = require('node:url');
 const fc = require('fast-check');
 const { propertyFor } = require('@fast-check/worker');

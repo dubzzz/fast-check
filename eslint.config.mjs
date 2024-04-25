@@ -2,6 +2,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import globals from 'globals';
 
 /** @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile} */
 export default [
@@ -33,6 +34,18 @@ export default [
     },
   },
   {
+    files: ['**/*.cjs', '**/cjs/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.commonjs,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off',
+    },
+  },
+  {
     files: ['**/*.spec.ts', '**/test/unit/**/*.ts', '**/test/e2e/**/*.ts'],
     rules: {
       '@typescript-eslint/no-empty-function': 'off',
@@ -50,6 +63,7 @@ export default [
       'packages/*/dist/',
       'packages/*/lib/',
       'packages/*/lib-*/',
+      'packages/*/runkit.cjs',
       'packages/test-minimal-support/',
       'packages/test-types/',
       'website/',

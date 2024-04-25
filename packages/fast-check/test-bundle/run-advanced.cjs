@@ -1,7 +1,5 @@
 // @ts-check
-// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 var assert = require('assert');
-// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 var fc = require('fast-check');
 
 function testArbitrary(arb) {
