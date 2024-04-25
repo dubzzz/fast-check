@@ -26,14 +26,15 @@
     "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
+    "@eslint/js": "^9.1.1",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
-    "@typescript-eslint/parser": "^7.7.0",
+    "@typescript-eslint/utils": "^7.7.1",
     "all-contributors-cli": "^6.26.1",
     "eslint": "^9.1.1",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "3.2.5",
     "publint": "^0.2.7",
-    "typescript": "~5.4.5"
+    "typescript": "~5.4.5",
+    "typescript-eslint": "^7.7.1"
   }
 }
