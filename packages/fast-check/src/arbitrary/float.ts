@@ -1,7 +1,13 @@
 import { integer } from './integer';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers';
+import {
+  floatOnlyMapper,
+  floatOnlyUnmapper,
+  refineConstraintsForFloatOnly,
+} from './_internals/helpers/FloatOnlyHelpers';
 
+const safeNumberIsInteger = Number.isInteger;
 const safeNumberIsNaN = Number.isNaN;
 const safeMathFround = Math.fround;
 
@@ -54,6 +60,13 @@ export interface FloatConstraints {
    * @remarks Since 2.8.0
    */
   noNaN?: boolean;
+  /**
+   * When set to true, Number.isInteger(value) will be false for any generated value.
+   * Note: -infinity and +infinity, or NaN can stil be generated except if you rejected them via another constraint.
+   * @defaultValue false
+   * @remarks Since 3.18.0
+   */
+  noInteger?: boolean;
 }
 
 /**
@@ -78,21 +91,12 @@ function unmapperFloatToIndex(value: unknown): number {
   return floatToIndex(value);
 }
 
-/**
- * For 32-bit floating point numbers:
- * - sign: 1 bit
- * - significand: 23 bits
- * - exponent: 8 bits
- *
- * The smallest non-zero value (in absolute value) that can be represented by such float is: 2 ** -126 * 2 ** -23.
- * And the largest one is: 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23).
- *
- * @param constraints - Constraints to apply when building instances (since 2.8.0)
- *
- * @remarks Since 0.0.6
- * @public
- */
-export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
+/** @internal */
+function numberIsNotInteger(value: number): boolean {
+  return !safeNumberIsInteger(value);
+}
+
+function anyFloat(constraints: Omit<FloatConstraints, 'noInteger'>): Arbitrary<number> {
   const {
     noDefaultInfinity = false,
     noNaN = false,
@@ -131,4 +135,27 @@ export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
       return floatToIndex(value);
     },
   );
+}
+
+/**
+ * For 32-bit floating point numbers:
+ * - sign: 1 bit
+ * - significand: 23 bits
+ * - exponent: 8 bits
+ *
+ * The smallest non-zero value (in absolute value) that can be represented by such float is: 2 ** -126 * 2 ** -23.
+ * And the largest one is: 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23).
+ *
+ * @param constraints - Constraints to apply when building instances (since 2.8.0)
+ *
+ * @remarks Since 0.0.6
+ * @public
+ */
+export function float(constraints: FloatConstraints = {}): Arbitrary<number> {
+  if (!constraints.noInteger) {
+    return anyFloat(constraints);
+  }
+  return anyFloat(refineConstraintsForFloatOnly(constraints))
+    .map(floatOnlyMapper, floatOnlyUnmapper)
+    .filter(numberIsNotInteger);
 }

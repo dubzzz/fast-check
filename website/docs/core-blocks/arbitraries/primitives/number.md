@@ -140,6 +140,7 @@ It always generates valid 32-bit floating point values.
 - `maxExcluded?` — default: `false` — _do not include `max` in the set of possible values_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 
 **Usages:**
 
@@ -164,6 +165,10 @@ fc.float({ noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.PO
 fc.float({ min: 0, max: 1, maxExcluded: true });
 // Note: All possible 32-bit floating point values between 0 (included) and 1 (excluded)
 // Examples of generated values: 3.2229864679470793e-44, 2.4012229232976108e-20, 1.1826533935374394e-27, 0.9999997615814209, 3.783505853677006e-44…
+
+fc.float({ noInteger: true });
+// Note: All possible 32-bit floating point values but no integer
+// Examples of generated values: -7.006492321624085e-45, 1.4734616113175924e-21, 8.407790785948902e-45, 1.5815058151957828e-9, Number.POSITIVE_INFINITY…
 
 fc.integer({ min: 0, max: (1 << 24) - 1 })
   .map((v) => v / (1 << 24))
@@ -197,6 +202,7 @@ The lower and upper bounds are included into the range of possible values.
 - `maxExcluded?` — default: `false` — _do not include `max` in the set of possible values_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 
 **Usages:**
 
@@ -221,6 +227,10 @@ fc.double({ noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.P
 fc.double({ min: 0, max: 1, maxExcluded: true });
 // Note: All possible floating point values between 0 (included) and 1 (excluded)
 // Examples of generated values: 4.8016271592767985e-73, 4.8825963576686075e-55, 0.9999999999999967, 0.9999999999999959, 2.5e-322…
+
+fc.double({ noInteger: true });
+// Note: All possible floating point values but no integer
+// Examples of generated values: -2.3e-322, -4503599627370495.5, -1.8524776326185756e-119, -9.4e-323, 7e-323…
 
 fc.tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
   .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53))
