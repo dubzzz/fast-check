@@ -34,7 +34,7 @@ export default [
     },
   },
   {
-    files: ['**/*.cjs', '**/cjs/**/*.js'],
+    files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -43,6 +43,14 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
+    },
+  },
+  {
+    files: ['**/*.mjs', '**/mjs/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
   {
