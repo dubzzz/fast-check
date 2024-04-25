@@ -42,6 +42,7 @@ export default [
   },
   {
     ignores: [
+      '.github/',
       '.yarn/',
       'node_modules/',
       'examples/',
@@ -52,6 +53,7 @@ export default [
       'packages/test-minimal-support/',
       'packages/test-types/',
       'website/',
+      '.pnp*',
       'jest*.js',
       'jest*.cjs',
     ],
