@@ -105,11 +105,12 @@ function constraintsInternal(
         const maxIndex = floatToIndex(resolvedCt.max);
         const distance = maxIndex - minIndex;
         // Dangerous range, not enough value in range to safely run
-        // Worst cases:
-        // >  [int, float, int] -> distance is 2,
-        // >  ]int, float, int[ -> distance is 2,
-        // -> for >= 2 it's safe, we will alays have a non-integer value within the range
-        if (distance < 2) return false;
+        // Worst broken cases:
+        // >  {float, int, float} with distance 2 such as from 8388606.5 (excl.) to 8388607.5 (excl.)
+        // >  {float, -0, 0}      with distance 2 such as from -MIN_VALUE (excl.) to 0
+        // >  {-0, 0, float}      with distance 2 such as from 0 to MIN_VALUE (excl.)
+        // -> for >= 3 it's safe, we will always have a non-integer value within the range
+        if (distance < 3) return false;
       } else {
         const resolvedCt = refineConstraintsForDoubleOnly(ct);
         if (resolvedCt.min > resolvedCt.max) return false;
@@ -117,11 +118,12 @@ function constraintsInternal(
         const maxIndex = doubleToIndex(resolvedCt.max);
         const distance = substract64(maxIndex, minIndex);
         // Dangerous range, not enough value in range to safely run
-        // Worst cases:
-        // >  [int, float, int] -> distance is 2,
-        // >  ]int, float, int[ -> distance is 2,
-        // -> for >= 2 it's safe, we will alays have a non-integer value within the range
-        if (distance.data[0] === 0 && distance.data[1] < 2) return false;
+        // Worst broken cases:
+        // >  {float, int, float} with distance 2 such as from 4503599627370494.5 (excl.) to 4503599627370495.5 (excl.)
+        // >  {float, -0, 0}      with distance 2 such as from -MIN_VALUE (excl.) to 0
+        // >  {-0, 0, float}      with distance 2 such as from 0 to MIN_VALUE (excl.)
+        // -> for >= 3 it's safe, we will always have a non-integer value within the range
+        if (distance.data[0] === 0 && distance.data[1] < 3) return false;
       }
       return true;
     });
