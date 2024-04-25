@@ -79,6 +79,7 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if globalThis gets changed into another type and be able to revert the change', () => {
     // Arrange
     const G = globalThis;
+    // eslint-disable-next-line no-global-assign
     (globalThis as any) = 1;
 
     // Act / Assert
@@ -89,10 +90,12 @@ describe('assertNoPoisoning', () => {
       error = err;
     }
     if (error === undefined) {
+      // eslint-disable-next-line no-global-assign
       (globalThis as any) = G;
       throw new Error('No error has been thrown');
     }
     if (!/Poisoning detected/.test((error as Error).message)) {
+      // eslint-disable-next-line no-global-assign
       (globalThis as any) = G;
       throw new Error(`Received error does not fulfill expectations, got: ${error}`);
     }
@@ -100,6 +103,7 @@ describe('assertNoPoisoning', () => {
       restoreGlobals();
       expect(() => assertNoPoisoning()).not.toThrow();
     } finally {
+      // eslint-disable-next-line no-global-assign
       (globalThis as any) = G;
     }
   });

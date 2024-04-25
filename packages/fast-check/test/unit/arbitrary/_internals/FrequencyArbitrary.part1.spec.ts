@@ -210,7 +210,6 @@ describe('FrequencyArbitrary', () => {
             // Act / Assert
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
             let currentDepth = 0;
-            // eslint-disable-next-line no-constant-condition
             while (true) {
               depthContext.depth = currentDepth;
               arb.generate(mrng, biasFactor);

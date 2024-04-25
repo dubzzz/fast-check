@@ -1,7 +1,5 @@
 // @ts-check
-// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 var assert = require('assert');
-// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 var fc = require('fast-check');
 
 function testArbitrary(arb) {
@@ -105,9 +103,11 @@ testArbitrary(
 testArbitrary(
   (function () {
     const tree = fc.memo(function (n) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       return fc.oneof(node(n), leaf());
     });
     const node = fc.memo(function (n) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
       return fc.record({ left: tree(), right: tree() });
     });

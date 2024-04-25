@@ -129,11 +129,8 @@ describe('stringify', () => {
     expect(stringify([1, 2, , ,])).toEqual('[1,2,,,]'); // two values then two holes
   });
   it('Should be able to stringify large sparse arrays', () => {
-    // eslint-disable-next-line no-sparse-arrays
     expect(stringify(Array(10000))).toEqual('Array(10000)');
-    // eslint-disable-next-line no-sparse-arrays
     expect(stringify(Array(4294967295))).toEqual('Array(4294967295)');
-    // eslint-disable-next-line no-sparse-arrays
     const sparseNonEmpty: any[] = Array(10000);
     sparseNonEmpty[150] = 5;
     sparseNonEmpty[21] = 1;
