@@ -28,7 +28,6 @@ type MockedObject<T> = MaybeMockedConstructor<T> & {
   [K in PropertyKeysOf<T>]: T[K];
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T extends object ? MockedObject<T> : T;
 
 export function mocked<T>(item: T): MaybeMocked<T> {

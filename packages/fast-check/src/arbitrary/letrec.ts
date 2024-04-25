@@ -93,7 +93,6 @@ export function letrec<T>(builder: T extends Record<string, unknown> ? LetrecTyp
  * @public
  */
 export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>;
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
   const tie = (key: keyof T): Arbitrary<any> => {

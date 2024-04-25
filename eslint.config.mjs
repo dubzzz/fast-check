@@ -31,6 +31,9 @@ export default [
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/ban-types': 'error',
+      'require-atomic-updates': 'error',
     },
   },
   {

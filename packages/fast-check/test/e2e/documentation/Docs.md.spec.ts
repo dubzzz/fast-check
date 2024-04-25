@@ -179,7 +179,6 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       ++numExecutedSnippets;
 
       const computedStatitics = (baseSize: fc.Size) =>
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         (function (fc): string[] {
           const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
           const refinedSnippet =

@@ -4,7 +4,6 @@ import type { CommandWrapper } from './CommandWrapper';
 /**
  * Iterable datastructure accepted as input for asyncModelRun and modelRun
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync extends boolean = false>
   implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>>
 {
