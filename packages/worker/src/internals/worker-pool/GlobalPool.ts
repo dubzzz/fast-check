@@ -51,6 +51,7 @@ export class GlobalPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPa
     pendingTerminationPerFile.set(
       this.workerFileUrl.toString(),
       setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.internalPool.terminateAllWorkers();
       }, 0),
     );

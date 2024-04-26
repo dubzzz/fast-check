@@ -7,7 +7,7 @@ import globals from 'globals';
 /** @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile} */
 export default [
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
   eslintConfigPrettier,
   {
     languageOptions: {
@@ -34,6 +34,16 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/ban-types': 'error',
       'require-atomic-updates': 'error',
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/restrict-plus-operands': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/unbound-method': 'off',
     },
   },
   {
@@ -46,6 +56,7 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
+      ...tseslint.configs.disableTypeChecked.rules,
     },
   },
   {
@@ -55,13 +66,23 @@ export default [
         ...globals.node,
       },
     },
+    rules: {
+      ...tseslint.configs.disableTypeChecked.rules,
+    },
   },
   {
-    files: ['**/*.spec.ts', '**/test/unit/**/*.ts', '**/test/e2e/**/*.ts'],
+    files: [
+      '**/*.spec.ts',
+      '**/test/unit/**/*.ts',
+      '**/test/e2e/**/*.ts',
+      '**/test-types/**/*.ts',
+      '**/test-types/**/*.mts',
+    ],
     rules: {
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
+      ...tseslint.configs.disableTypeChecked.rules,
     },
   },
   {

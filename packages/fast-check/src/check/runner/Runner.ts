@@ -31,13 +31,11 @@ function runIt<Ts>(
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
     if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      property.runBeforeEach!();
+      (property.runBeforeEach as () => void)();
     }
     const out = property.run(v, isModernProperty) as PreconditionFailure | PropertyFailure | null;
     if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      property.runAfterEach!();
+      (property.runAfterEach as () => void)();
     }
     runner.handleResult(out);
   }
@@ -191,7 +189,7 @@ function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promis
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(asyncReportRunDetails);
-  else reportRunDetails(out as RunDetails<Ts>);
+  else reportRunDetails(out as RunDetails<Ts>) as void;
 }
 
 export { check, assert };
