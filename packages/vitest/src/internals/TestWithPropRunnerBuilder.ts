@@ -8,6 +8,7 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
 }
 
 export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
   label: string,
   arbitraries: ArbitraryTuple<Ts>,

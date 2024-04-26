@@ -123,6 +123,7 @@ function stringifyNumber(numValue: number) {
 /** @internal */
 function isSparseArray(arr: unknown[]): boolean {
   let previousNumberedIndex = -1;
+  // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const index in arr) {
     const numberedIndex = Number(index);
     if (numberedIndex !== previousNumberedIndex + 1) return true; // we've got a hole
@@ -168,6 +169,7 @@ export function stringifyInternal<Ts>(
         const assignments: string[] = [];
         // Discarded: map then join will still show holes
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
+        // eslint-disable-next-line @typescript-eslint/no-for-in-array
         for (const index in arr) {
           if (!safeNumberIsNaN(Number(index)))
             safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);

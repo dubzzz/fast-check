@@ -72,14 +72,17 @@ function adaptRunDetailsForRecord<Ts>(
  * @param testFn - The source `{it,test}.*`
  */
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
   fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters>;
 function buildTestProp<Ts, TsParameters extends Ts = Ts>(
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
   fc: FcExtra,
 ): TestPropRecord<Ts, TsParameters>;
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
   fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters> | TestPropRecord<Ts, TsParameters> {
