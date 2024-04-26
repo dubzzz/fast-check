@@ -197,7 +197,7 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 ```js
 fc.webPath();
-// Examples of generated values: "/OZx@%E4%B6%958j~64", "", "/0cLw*!~%F2%9A%90%BE5I", "/1", "/"…
+// Examples of generated values: "/X/x///1/j//6/@/", "", "/B/~", "/'//%F3%AF%93%AA/*/3/%F2%9A%90%BE/A///", "/HzDG-&&)E"…
 
 fc.webPath({ size: '+1' });
 // Examples of generated values:
@@ -283,17 +283,17 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 ```js
 fc.webUrl();
-// Examples of generated values: "https://1e.pl", "https://s.snp", "https://h.ot", "https://copze7.wrc", "http://ay84wia.bi"…
+// Examples of generated values: "https://1e.pl/", "https://s.snp", "https://h.ot", "https://copze7.wrc/N/", "http://ay84wia.bi/%F3%AA%A1%92/J"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
 });
 // Examples of generated values:
-// • "ftps://iq7rvu2my.tm/'1V&HqX52m"
+// • "ftps://iq7rvu2my.tm/%F0%97%BC%9Fu%F3%81%88%B6&10"
 // • "ftp://7eee69dc78fg.nec"
 // • "ftp://hye.rbh9r2.hb"
-// • "ftp://hmakevcba.uis"
-// • "ftps://xb1.5787e.cew/"
+// • "ftp://hmakevcba.uis/~%F2%AF%99%80"
+// • "ftps://xb1.5787e.cew/d"
 // • …
 
 fc.webUrl({
@@ -301,10 +301,10 @@ fc.webUrl({
   withQueryParameters: true,
 });
 // Examples of generated values:
-// • "https://db.oaurut3lxuey.yc"
-// • "http://91kpzb6.x4tmjg.pa/*yjz,%F1%A0%AA%B0?~v6+#engtho__!/"
-// • "http://hqydzxt3ihu.db/_tAUbo?:/#%F3%B9%93%B6qfx"
-// • "https://74gl.fp601objrmhm.rx/#tZK%2ae'(c"
+// • "https://db.oaurut3lxuey.yc#%F3%84%9B%A1aFY.$/3n7"
+// • "http://91kpzb6.x4tmjg.pa//y/%F3%98%89%84/,//?~v6+#engtho__!/"
+// • "http://hqydzxt3ihu.db/m/A/M/o/6/?e#%EF%88%9DMq.mx:pU_"
+// • "https://74gl.fp601objrmhm.rx/svxJFoL#"
 // • "http://7.qxq?;Y:f@HiK#ref"
 // • …
 

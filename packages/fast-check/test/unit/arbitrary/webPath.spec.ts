@@ -7,12 +7,14 @@ import { URL } from 'url';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
+  assertProduceSomeSpecificValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
+import { DefaultSize } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 describe('webPath (integration)', () => {
   type Extra = WebPathConstraints;
@@ -48,10 +50,26 @@ describe('webPath (integration)', () => {
     });
   });
 
+  it(`should be able to produce starting by // when using default-size=${DefaultSize}`, () => {
+    assertProduceSomeSpecificValues(
+      () => webPath({ size: DefaultSize }),
+      (value) => value.startsWith('//'),
+    );
+  });
+
+  it(`should be able to produce containing // when using default-size=${DefaultSize}`, () => {
+    assertProduceSomeSpecificValues(
+      () => webPath({ size: DefaultSize }),
+      (value) => value.includes('//'),
+    );
+  });
+
   it.each`
     rawValue
     ${'/a/z'}
     ${'/azerty'}
+    ${'//az'}
+    ${'/a//z'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = webPath();
