@@ -1,15 +1,11 @@
 # 0.4.0
 
-_TODO Description_
+_Better error handling in script_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.3.0...packaged%2Fv0.4.0)]
 
 ## Features
 
 - ([PR#4934](https://github.com/dubzzz/fast-check/pull/4934)) Better handle errors in script
-
-## Fixes
-
-
 
 ---
 

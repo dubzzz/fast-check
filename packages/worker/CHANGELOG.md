@@ -1,15 +1,11 @@
 # 0.3.1
 
-_TODO Description_
+_Adapt code to new lint rules_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.3.0...worker%2Fv0.3.1)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#4933](https://github.com/dubzzz/fast-check/pull/4933)) Script: Switch on more eslint rules
 
 # 0.3.0
 

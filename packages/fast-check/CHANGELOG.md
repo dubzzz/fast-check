@@ -1,6 +1,6 @@
 # 3.18.0
 
-_TODO Description_
+_New options for floating point arbitraries_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.18.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.2...v3.18.0)]
 
 ## Features
