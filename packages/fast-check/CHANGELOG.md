@@ -1,3 +1,25 @@
+# 3.18.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.18.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.2...v3.18.0)]
+
+## Features
+
+- ([PR#4917](https://github.com/dubzzz/fast-check/pull/4917)) Add option to produce non-integer on `double`
+- ([PR#4923](https://github.com/dubzzz/fast-check/pull/4923)) Add option to produce non-integer on `float`
+- ([PR#4935](https://github.com/dubzzz/fast-check/pull/4935)) Produce "//" in web paths
+
+## Fixes
+
+- ([PR#4924](https://github.com/dubzzz/fast-check/pull/4924)) CI: Enable more advanced TS flags
+- ([PR#4925](https://github.com/dubzzz/fast-check/pull/4925)) CI: Explicitly test against Node 22
+- ([PR#4926](https://github.com/dubzzz/fast-check/pull/4926)) CI: Stabilize tests of `double` on small ranges
+- ([PR#4921](https://github.com/dubzzz/fast-check/pull/4921)) Performance: More optimal `noInteger` on `double`
+- ([PR#4933](https://github.com/dubzzz/fast-check/pull/4933)) Script: Switch on more eslint rules
+- ([PR#4922](https://github.com/dubzzz/fast-check/pull/4922)) Test: Cover `noInteger` on `double` via integration layers
+
+---
+
 # 3.17.2
 
 _Directly reference the official documentation from NPM_
