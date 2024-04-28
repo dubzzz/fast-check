@@ -1,3 +1,12 @@
+# 0.1.1
+
+_Adapt code to new lint rules_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.0...vitest%2Fv0.1.1)]
+
+## Fixes
+
+- ([PR#4933](https://github.com/dubzzz/fast-check/pull/4933)) Script: Switch on more eslint rules
+
 # 0.1.0
 
 _Declare root of the package as ESM_
