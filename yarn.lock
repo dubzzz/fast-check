@@ -3888,8 +3888,8 @@ __metadata:
   linkType: hard
 
 "@npmcli/arborist@npm:^7.0.0":
-  version: 7.5.0
-  resolution: "@npmcli/arborist@npm:7.5.0"
+  version: 7.5.1
+  resolution: "@npmcli/arborist@npm:7.5.1"
   dependencies:
     "@isaacs/string-locale-compare": "npm:^1.1.0"
     "@npmcli/fs": "npm:^3.1.0"
@@ -3900,8 +3900,8 @@ __metadata:
     "@npmcli/node-gyp": "npm:^3.0.0"
     "@npmcli/package-json": "npm:^5.1.0"
     "@npmcli/query": "npm:^3.1.0"
-    "@npmcli/redact": "npm:^1.1.0"
-    "@npmcli/run-script": "npm:^8.0.0"
+    "@npmcli/redact": "npm:^2.0.0"
+    "@npmcli/run-script": "npm:^8.1.0"
     bin-links: "npm:^4.0.1"
     cacache: "npm:^18.0.0"
     common-ancestor-path: "npm:^1.0.1"
@@ -3913,7 +3913,7 @@ __metadata:
     npm-install-checks: "npm:^6.2.0"
     npm-package-arg: "npm:^11.0.2"
     npm-pick-manifest: "npm:^9.0.0"
-    npm-registry-fetch: "npm:^16.2.1"
+    npm-registry-fetch: "npm:^17.0.0"
     pacote: "npm:^18.0.1"
     parse-conflict-json: "npm:^3.0.0"
     proc-log: "npm:^4.2.0"
@@ -3927,7 +3927,7 @@ __metadata:
     walk-up-path: "npm:^3.0.1"
   bin:
     arborist: bin/index.js
-  checksum: 10c0/5113e81f2c4c98ec9a3c279068a6f9637012878b396505fbb9e21fa8e7507272c15590c77860e17946e6d37b0f5e706b9efff8427ccee87c6053e0bb7151b148
+  checksum: 10c0/aceb8589d82a569e4290148ede7a8e83ee18d13c77d093bfdfd0be687b350d5609f0120b6a96f865594c8df6f6fa0db455234416b94605056f10dafce33b0b63
   languageName: node
   linkType: hard
 
@@ -4047,7 +4047,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@npmcli/run-script@npm:^8.0.0":
+"@npmcli/redact@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@npmcli/redact@npm:2.0.0"
+  checksum: 10c0/8a09619ff542412e32b795ff2e88668fcb4d5c6fe2eb329a034f988f59a97553b6664ad270398b0f131184db9f21ca5aa2786a718af5da244addda2f736cda0d
+  languageName: node
+  linkType: hard
+
+"@npmcli/run-script@npm:^8.0.0, @npmcli/run-script@npm:^8.1.0":
   version: 8.1.0
   resolution: "@npmcli/run-script@npm:8.1.0"
   dependencies:
@@ -14457,7 +14464,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-registry-fetch@npm:^16.0.0, npm-registry-fetch@npm:^16.2.1":
+"npm-registry-fetch@npm:^16.0.0":
   version: 16.2.1
   resolution: "npm-registry-fetch@npm:16.2.1"
   dependencies:
@@ -14470,6 +14477,22 @@ __metadata:
     npm-package-arg: "npm:^11.0.0"
     proc-log: "npm:^4.0.0"
   checksum: 10c0/bccffc291771d55056a6ebedb7aaf431cecc663286e060dc2936e8e0deee454a4a71654f772afcaa44f0d74a2c02403d8b45486a0aa2dd6d2bd8c09c9134eeb9
+  languageName: node
+  linkType: hard
+
+"npm-registry-fetch@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "npm-registry-fetch@npm:17.0.0"
+  dependencies:
+    "@npmcli/redact": "npm:^2.0.0"
+    make-fetch-happen: "npm:^13.0.0"
+    minipass: "npm:^7.0.2"
+    minipass-fetch: "npm:^3.0.0"
+    minipass-json-stream: "npm:^1.0.1"
+    minizlib: "npm:^2.1.2"
+    npm-package-arg: "npm:^11.0.0"
+    proc-log: "npm:^4.0.0"
+  checksum: 10c0/873fd9e4a11178badcf9f749310f364244307912f45b2ca0ec6913f0bc01186899674378dacddc6c0a15013236dc604d406754e65cce42477b9819a61f33f597
   languageName: node
   linkType: hard
 
