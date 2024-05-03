@@ -30,7 +30,7 @@
     "@fast-check/packaged": "*",
     "@typescript-eslint/utils": "^7.8.0",
     "all-contributors-cli": "^6.26.1",
-    "eslint": "^9.1.1",
+    "eslint": "^9.2.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.1.0",
     "prettier": "3.2.5",
