@@ -3,7 +3,7 @@ import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
 import * as fc from 'fast-check';
 
 describe('symbols', () => {
-  it('should declare indentical cloneMethod for distinct instances of fast-check', () => {
+  it('should declare identical cloneMethod for distinct instances of fast-check', () => {
     expect(cloneMethod).toBe(fc.cloneMethod);
   });
 });
