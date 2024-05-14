@@ -423,7 +423,7 @@ describe('stringify', () => {
     const instance3 = { [toStringMethod]: () => { throw new Error('hello3'); } };
     const stringified3 = stringify(instance3);
     expect(stringified3.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error("hello3"); }}',
+      '{[Symbol.for("fast-check/toStringMethod")]:() => { throw new Error("hello3"); }}',
     ); // fallbacking to default
 
     class InProto {
@@ -435,11 +435,11 @@ describe('stringify', () => {
     expect(stringify(instance4)).toEqual('hello4');
 
     const instance5 = { [toStringMethod]: 1 }; // not callable
-    expect(stringify(instance5)).toEqual('{[Symbol("fast-check/toStringMethod")]:1}');
+    expect(stringify(instance5)).toEqual('{[Symbol.for("fast-check/toStringMethod")]:1}');
   });
   it('Should not be able to rely on the output of [asyncToStringMethod] in sync mode', () => {
     const instance1 = { [asyncToStringMethod]: () => 'hello1' }; // not even async there
-    expect(stringify(instance1)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:() => "hello1"}'); // fallbacking to default
+    expect(stringify(instance1)).toEqual('{[Symbol.for("fast-check/asyncToStringMethod")]:() => "hello1"}'); // fallbacking to default
 
     const instance2 = { [asyncToStringMethod]: () => 'hello2', [toStringMethod]: () => 'world' };
     expect(stringify(instance2)).toEqual('world'); // fallbacking to [toStringMethod]
@@ -560,7 +560,7 @@ describe('asyncStringify', () => {
     const instance4 = { [asyncToStringMethod]: async () => { throw new Error('hello4'); } };
     const stringified4 = await asyncStringify(instance4);
     expect(stringified4.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error("hello4"); }}',
+      '{[Symbol.for("fast-check/asyncToStringMethod")]:async () => { throw new Error("hello4"); }}',
     ); // fallbacking to default
 
     // prettier-ignore
@@ -571,7 +571,7 @@ describe('asyncStringify', () => {
     const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
     const stringified6 = await asyncStringify(instance6);
     expect(stringified6.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error("hello6"); }}',
+      '{[Symbol.for("fast-check/asyncToStringMethod")]:() => { throw new Error("hello6"); }}',
     ); // fallbacking to default
 
     class InProto {
@@ -583,7 +583,7 @@ describe('asyncStringify', () => {
     expect(await asyncStringify(instance7)).toEqual('hello7');
 
     const instance8 = { [asyncToStringMethod]: 1 }; // not callable
-    expect(await asyncStringify(instance8)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:1}');
+    expect(await asyncStringify(instance8)).toEqual('{[Symbol.for("fast-check/asyncToStringMethod")]:1}');
 
     const instance9 = {
       [asyncToStringMethod]: async () => {

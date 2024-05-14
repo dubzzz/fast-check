@@ -28,7 +28,7 @@ const safePositiveInfinity = Number.POSITIVE_INFINITY;
  * @remarks Since 2.17.0
  * @public
  */
-export const toStringMethod = Symbol('fast-check/toStringMethod');
+export const toStringMethod = Symbol.for('fast-check/toStringMethod');
 /**
  * Interface to implement for {@link toStringMethod}
  *
@@ -62,7 +62,7 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
  * @remarks Since 2.17.0
  * @public
  */
-export const asyncToStringMethod = Symbol('fast-check/asyncToStringMethod');
+export const asyncToStringMethod = Symbol.for('fast-check/asyncToStringMethod');
 /**
  * Interface to implement for {@link asyncToStringMethod}
  *
