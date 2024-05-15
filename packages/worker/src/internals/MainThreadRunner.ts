@@ -23,7 +23,6 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   randomSource: 'main-thread' | 'worker',
   arbitraries: PropertyArbitraries<Ts>,
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
-  console.log('main');
   const lock = new Lock();
   const pool: IWorkerPool<boolean | void, Payload<Ts>> = isolationLevel === 'predicate'
     ? new OneTimePool(workerFileUrl)
@@ -49,14 +48,12 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
     randomSource === 'worker',
   );
   property.beforeEach(async (hookFunction) => {
-    console.log('before');
     await hookFunction(); // run outside of the worker, can throw
     const acquired = await lock.acquire();
     releaseLock = acquired.release;
     worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
   });
   property.afterEach(async (hookFunction) => {
-    console.log('after');
     if (worker !== undefined) {
       worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
       worker = undefined;

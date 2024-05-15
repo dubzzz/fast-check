@@ -147,6 +147,39 @@ describe('BasicPool', () => {
       expect(onSkipped).not.toHaveBeenCalled();
     });
 
+    it('should call skipped handler and release the worker as soon as receiving a skipped answer', async () => {
+      // Arrange
+      const { on, postMessage } = mockWorker();
+      const workerFileUrl = new URL('file:///worker.cjs');
+      const predicateId = 0;
+      const onSuccess = jest.fn();
+      const onFailure = jest.fn();
+      const onSkipped = jest.fn();
+      const pool = new BasicPool<string, string>(workerFileUrl);
+      const workerPromise = pool.spawnNewWorker();
+      fireOnlineEvent(on);
+      const worker = await workerPromise;
+      worker.register(predicateId, 'to-worker', onSuccess, onFailure, onSkipped);
+
+      // Act
+      const receivedMessage: PoolToWorkerMessage<string> = postMessage.mock.calls[0][0];
+      const receivedRunId = receivedMessage.runId;
+      const message: WorkerToPoolMessage<string> = {
+        runId: receivedRunId,
+        status: WorkerToPoolMessageStatus.Skipped,
+      };
+      const onMessageHandler = on.mock.calls.find(([eventName]) => eventName === 'message')![1];
+      onMessageHandler(message); // emulate failure
+
+      // Assert
+      expect(onSkipped).toHaveBeenCalledTimes(1);
+      expect(worker.isAvailable()).toBe(true);
+      expect(worker.isFaulty()).toBe(false);
+      expect(postMessage).toHaveBeenCalledTimes(1);
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(onFailure).not.toHaveBeenCalled();
+    });
+
     it('should ignore success or failures not related to the current run', async () => {
       // Arrange
       const { on, postMessage } = mockWorker();

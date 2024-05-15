@@ -62,15 +62,11 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       if (registration === null || data.runId !== registration.currentRunId) {
         return;
       }
-      console.log(data);
       if (data.status === WorkerToPoolMessageStatus.Success) {
-        console.log('success');
         registration.onSuccess(data.output);
       } else if (data.status === WorkerToPoolMessageStatus.Failure) {
-        console.log('failure');
         registration.onFailure(data.error);
       } else {
-        console.log('skipped');
         registration.onSkipped();
       }
       registration = null;
