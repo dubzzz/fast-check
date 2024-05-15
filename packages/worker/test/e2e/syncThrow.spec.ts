@@ -26,7 +26,7 @@ if (isMainThread) {
           const message = String(err);
           const mainValueRegex = /Counterexample: \[(-?\d+),(-?\d+)\]/;
           expect(message).toMatch(mainValueRegex);
-          expect(message).toContain("Out of range, synchronously")
+          expect(message).toContain('Out of range, synchronously');
           const fromValue = +mainValueRegex.exec(message)![1];
           const toValue = +mainValueRegex.exec(message)![2];
           expect(Math.abs(fromValue - toValue)).toBeGreaterThanOrEqual(100);
