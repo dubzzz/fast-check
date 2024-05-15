@@ -2,6 +2,7 @@ import type { ValueState } from '../ValueFromState.js';
 
 export type OnSuccessCallback<TSuccess> = (value: TSuccess) => void;
 export type OnErrorCallback = (error: unknown) => void;
+export type OnSkippedCallback = () => void;
 
 /**
  * Worker API
@@ -14,6 +15,7 @@ export type PooledWorker<TSuccess, TPayload> = {
     payload: TPayload,
     onSuccess: OnSuccessCallback<TSuccess>,
     onFailure: OnErrorCallback,
+    onSkipped: OnSkippedCallback,
   ) => void;
   terminateIfStillRunning: () => Promise<void>;
 };
@@ -33,11 +35,21 @@ export type PoolToWorkerMessage<TPayload> = {
 export type Payload<TValue> = { source: 'main'; value: TValue } | ({ source: 'worker' } & ValueState);
 
 /**
+ * Status of the execution by the worker
+ */
+export enum WorkerToPoolMessageStatus {
+  Success = 'o',
+  Skipped = '-',
+  Failure = 'x',
+}
+
+/**
  * Message exchanged from the worker to the pool
  */
 export type WorkerToPoolMessage<TSuccess> = { runId: number } & (
-  | { success: true; output: TSuccess }
-  | { success: false; error: unknown }
+  | { status: WorkerToPoolMessageStatus.Success; output: TSuccess }
+  | { status: WorkerToPoolMessageStatus.Skipped }
+  | { status: WorkerToPoolMessageStatus.Failure; error: unknown }
 );
 
 /**

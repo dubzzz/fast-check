@@ -1,11 +1,13 @@
 import { Worker } from 'node:worker_threads';
-import type {
-  OnErrorCallback,
-  OnSuccessCallback,
-  IWorkerPool,
-  PooledWorker,
-  WorkerToPoolMessage,
-  PoolToWorkerMessage,
+import {
+  type OnErrorCallback,
+  type OnSuccessCallback,
+  type OnSkippedCallback,
+  type IWorkerPool,
+  type PooledWorker,
+  type WorkerToPoolMessage,
+  type PoolToWorkerMessage,
+  WorkerToPoolMessageStatus,
 } from './IWorkerPool.js';
 
 /**
@@ -36,6 +38,7 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       currentRunId: number;
       onSuccess: OnSuccessCallback<TSuccess>;
       onFailure: OnErrorCallback;
+      onSkipped: OnSkippedCallback;
     } | null = null;
     const worker = new Worker(this.workerFileUrl, { workerData: { fastcheckWorker: true } });
 
@@ -59,10 +62,16 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       if (registration === null || data.runId !== registration.currentRunId) {
         return;
       }
-      if (data.success) {
+      console.log(data);
+      if (data.status === WorkerToPoolMessageStatus.Success) {
+        console.log('success');
         registration.onSuccess(data.output);
-      } else {
+      } else if (data.status === WorkerToPoolMessageStatus.Failure) {
+        console.log('failure');
         registration.onFailure(data.error);
+      } else {
+        console.log('skipped');
+        registration.onSkipped();
       }
       registration = null;
     });
@@ -114,12 +123,12 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       worker,
       isAvailable,
       isFaulty,
-      register: (predicateId, payload, onSuccess, onFailure) => {
+      register: (predicateId, payload, onSuccess, onFailure, onSkipped) => {
         if (!isAvailable()) {
           throw new Error('This instance of PooledWorker is currently in use');
         }
         const currentRunId = ++runIdInWorker;
-        registration = { currentRunId, onSuccess, onFailure };
+        registration = { currentRunId, onSuccess, onFailure, onSkipped };
         const message: PoolToWorkerMessage<TPayload> = {
           targetPredicateId: predicateId,
           payload,

@@ -5,6 +5,7 @@ import type { IWorkerPool, Payload, PooledWorker } from './worker-pool/IWorkerPo
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
+import { PreconditionFailure } from 'fast-check';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -22,6 +23,7 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   randomSource: 'main-thread' | 'worker',
   arbitraries: PropertyArbitraries<Ts>,
 ): { property: WorkerProperty<Ts>; terminateAllWorkers: () => Promise<void> } {
+  console.log('main');
   const lock = new Lock();
   const pool: IWorkerPool<boolean | void, Payload<Ts>> = isolationLevel === 'predicate'
     ? new OneTimePool(workerFileUrl)
@@ -39,18 +41,22 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
           reject(new Error('Badly initialized worker, unable to run the property'));
           return;
         }
-        worker.register(predicateId, property.getPayload(inputs), resolve, reject);
+        worker.register(predicateId, property.getPayload(inputs), resolve, reject, () =>
+          reject(new PreconditionFailure()),
+        );
       });
     },
     randomSource === 'worker',
   );
   property.beforeEach(async (hookFunction) => {
+    console.log('before');
     await hookFunction(); // run outside of the worker, can throw
     const acquired = await lock.acquire();
     releaseLock = acquired.release;
     worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
   });
   property.afterEach(async (hookFunction) => {
+    console.log('after');
     if (worker !== undefined) {
       worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
       worker = undefined;
