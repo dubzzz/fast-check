@@ -1,0 +1,39 @@
+import { isMainThread } from 'node:worker_threads';
+import type { Parameters } from 'fast-check';
+import { assert } from '@fast-check/worker';
+
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore
+import { syncThrowProperty } from './__properties__/syncThrow.cjs';
+
+if (isMainThread) {
+  describe('@fast-check/worker', () => {
+    const jestTimeout = 10000;
+    const assertTimeout = 1000;
+    const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
+
+    it(
+      'should intercept synchronous throw if any',
+      async () => {
+        // Arrange
+        let failed = false;
+
+        // Act / Assert
+        try {
+          await assert(syncThrowProperty, defaultOptions);
+        } catch (err) {
+          failed = true;
+          const message = String(err);
+          const mainValueRegex = /Counterexample: \[(-?\d+),(-?\d+)\]/;
+          expect(message).toMatch(mainValueRegex);
+          expect(message).toContain("Out of range, synchronously")
+          const fromValue = +mainValueRegex.exec(message)![1];
+          const toValue = +mainValueRegex.exec(message)![2];
+          expect(Math.abs(fromValue - toValue)).toBeGreaterThanOrEqual(100);
+        }
+        expect(failed).toBe(true);
+      },
+      jestTimeout,
+    );
+  });
+}
