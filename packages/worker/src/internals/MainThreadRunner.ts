@@ -5,6 +5,7 @@ import type { IWorkerPool, Payload, PooledWorker } from './worker-pool/IWorkerPo
 import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
+import { PreconditionFailure } from 'fast-check';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -39,7 +40,9 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
           reject(new Error('Badly initialized worker, unable to run the property'));
           return;
         }
-        worker.register(predicateId, property.getPayload(inputs), resolve, reject);
+        worker.register(predicateId, property.getPayload(inputs), resolve, reject, () =>
+          reject(new PreconditionFailure()),
+        );
       });
     },
     randomSource === 'worker',
