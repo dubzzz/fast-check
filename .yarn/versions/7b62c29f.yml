@@ -1,5 +1,5 @@
 releases:
-  "@fast-check/worker": minor
+  "@fast-check/worker": patch
 
 declined:
   - "@fast-check/jest"
