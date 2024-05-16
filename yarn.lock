@@ -2738,7 +2738,7 @@ __metadata:
     "@testing-library/user-event": "npm:^14.5.2"
     "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^29.5.12"
-    "@types/lodash": "npm:^4.17.1"
+    "@types/lodash": "npm:^4.17.3"
     "@types/react": "npm:^18.3.2"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.7.0"
@@ -5108,10 +5108,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.1":
-  version: 4.17.1
-  resolution: "@types/lodash@npm:4.17.1"
-  checksum: 10c0/af2ad8a3c8d7deb170a7ec6e18afc5ae8980576e5f7fe798d8a95a1df7222c15bdf967a25a35879f575a3b64743de00145710ee461a0051e055e94e4fe253f45
+"@types/lodash@npm:^4.17.3":
+  version: 4.17.3
+  resolution: "@types/lodash@npm:4.17.3"
+  checksum: 10c0/04eb8cfde06b12f4b68251b8956a636c4e80e4ac85926f41d502e26b9c6d050dbbc9e586e4bf706c62e97d78309c3dad079e791f07efbe7ff6f19ccf62a414b4
   languageName: node
   linkType: hard
 
