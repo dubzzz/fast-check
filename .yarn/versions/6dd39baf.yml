@@ -1,0 +1,5 @@
+releases:
+  "@fast-check/worker": minor
+
+declined:
+  - "@fast-check/jest"

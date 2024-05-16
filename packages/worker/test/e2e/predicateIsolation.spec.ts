@@ -51,14 +51,14 @@ if (isMainThread) {
     );
 
     it(
-      'should respawn a new worker when the predicate execution fails',
+      'should respawn a new worker when the predicate execution crashes the worker',
       async () => {
         // Arrange
         const options: Parameters<unknown> = { ...defaultOptions, verbose: 2 };
 
         // Act / Assert
         try {
-          await assert(predicateIsolation.propertyLevel2, options);
+          await assert(predicateIsolation.propertyLevelDepthCheckWithExitWorker, options);
           expect('It should have thrown').toBe(null);
         } catch (err) {
           const summary = (err as Error).message.split('Execution summary:')[1];
@@ -72,6 +72,44 @@ if (isMainThread) {
               foundOne = true;
               try {
                 expect(summaryLine).toContain('\x1b[32m\u221A\x1b[0m'); // success tick
+              } catch (subErr) {
+                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
+              }
+              previousLevel = currentLevel;
+            }
+          }
+          expect(foundOne).toBe(true);
+        }
+      },
+      jestTimeout,
+    );
+
+    it(
+      'should not respawn a new worker when the predicate execution fails synchronously',
+      async () => {
+        // Arrange
+        const options: Parameters<unknown> = { ...defaultOptions, verbose: 2 };
+
+        // Act / Assert
+        try {
+          await assert(predicateIsolation.propertyLevelDepthCheckWithThrow, options);
+          expect('It should have thrown').toBe(null);
+        } catch (err) {
+          const summary = (err as Error).message.split('Execution summary:')[1];
+          let foundOne = false;
+          let previousLevel = null;
+          const summaryLines = summary.split('\n').filter((line) => line.trim() !== '');
+          for (const summaryLine of summaryLines) {
+            // eslint-disable-next-line no-control-regex
+            const currentLevel = summaryLine.split(/\x1b\[32m\u221A\x1b\[0m|\x1b\[31m\xD7\x1b\[0m/)[0]; // split on success tick or error cross
+            if (currentLevel !== previousLevel) {
+              foundOne = true;
+              try {
+                if (previousLevel === null) {
+                  expect(summaryLine).toContain('\x1b[32m\u221A\x1b[0m'); // success tick, the first run is a success
+                } else {
+                  expect(summaryLine).toContain('\x1b[31m\xD7\x1b[0m'); // error tick, we are still running on the same worker
+                }
               } catch (subErr) {
                 throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
               }

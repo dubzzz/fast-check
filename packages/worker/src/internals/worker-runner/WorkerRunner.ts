@@ -22,7 +22,7 @@ export function runWorker<Ts extends unknown[]>(
       return;
     }
     const inputs = payload.source === 'main' ? payload.value : buildInputs(payload);
-    Promise.resolve(predicate(...inputs)).then(
+    wrapAndRunAsPromise(predicate, inputs).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { success: true, output, runId };
         parentPort.postMessage(message);
@@ -33,4 +33,20 @@ export function runWorker<Ts extends unknown[]>(
       },
     );
   });
+}
+
+/**
+ * Wrap and run the predicate within a safe instance of Promise not throwing synchronously but rejecting asynchronously
+ * @param predicate - the predicate to assess
+ * @param inputs - the inputs for the predicate
+ */
+function wrapAndRunAsPromise<Ts extends unknown[]>(
+  predicate: PropertyPredicate<Ts>,
+  inputs: Ts,
+): Promise<boolean | void> {
+  try {
+    return Promise.resolve(predicate(...inputs));
+  } catch (err) {
+    return Promise.reject(err);
+  }
 }
