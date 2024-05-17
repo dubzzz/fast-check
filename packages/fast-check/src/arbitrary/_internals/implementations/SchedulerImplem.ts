@@ -105,6 +105,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     });
     this.scheduledTasks.push({
       original: task,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       trigger: trigger!,
       schedulingType,
       taskId,
