@@ -26,7 +26,7 @@ describe('SchedulerImplem', () => {
   describe('waitOne', () => {
     it('should throw synchronously when there is no scheduled promise in the pipe', () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -39,7 +39,7 @@ describe('SchedulerImplem', () => {
     it('should wrap waitOne call using act whenever specified', async () => {
       // Arrange
       let actCount = 0;
-      const act = (f) => {
+      const act = (f: () => Promise<void>) => {
         ++actCount;
         return f();
       };
@@ -69,7 +69,7 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
-      const act = async (f) => {
+      const act = async (f: () => Promise<void>) => {
         await p1.p;
         await f();
         await p2.p;
@@ -105,11 +105,11 @@ describe('SchedulerImplem', () => {
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
       let globalActCount = 0;
-      const globalAct = (f) => {
+      const globalAct = (f: () => Promise<void>) => {
         ++globalActCount;
         return f();
       };
-      const act = async (f) => {
+      const act = async (f: () => Promise<void>) => {
         await p1.p;
         await f();
         await p2.p;
@@ -146,8 +146,12 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
-      const globalAct = vi.fn().mockImplementation((f) => f());
-      const act = async (f) => {
+      let globalActCount = 0;
+      const globalAct = (f: () => Promise<void>) => {
+        ++globalActCount;
+        return f();
+      };
+      const act = async (f: () => Promise<void>) => {
         await p1.p;
         await f();
         await p2.p;
@@ -162,9 +166,9 @@ describe('SchedulerImplem', () => {
       s.schedule(Promise.resolve(1), undefined, undefined, act).then(() => (promiseResolved = true));
 
       // Assert
-      expect(globalAct).not.toHaveBeenCalled();
+      expect(globalActCount).toBe(0);
       s.waitOne().then(() => (waitOneResolved = true));
-      expect(globalAct).toHaveBeenCalledTimes(1);
+      expect(globalActCount).toBe(1);
       await delay();
       expect(promiseResolved).toBe(false);
       expect(waitOneResolved).toBe(false);
@@ -182,7 +186,7 @@ describe('SchedulerImplem', () => {
 
     it('should schedule for next waitOne anything immediately scheduled', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -197,7 +201,7 @@ describe('SchedulerImplem', () => {
 
     it('should not schedule for next waitOne something scheduled after an intermediate await', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -217,7 +221,7 @@ describe('SchedulerImplem', () => {
 
     it('should not schedule for next waitOne something scheduled after two intermediate await', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -242,7 +246,7 @@ describe('SchedulerImplem', () => {
   describe('waitAll', () => {
     it('should not throw when there is no scheduled promise in the pipe', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -257,7 +261,7 @@ describe('SchedulerImplem', () => {
         fc.asyncProperty(fc.infiniteStream(fc.nat()), async (seeds) => {
           // Arrange
           let actCount = 0;
-          const act = (f) => {
+          const act = (f: () => Promise<void>) => {
             ++actCount;
             return f();
           };
@@ -314,7 +318,7 @@ describe('SchedulerImplem', () => {
       const f2 = () => {
         calledF2 = true;
       };
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -341,7 +345,7 @@ describe('SchedulerImplem', () => {
       const f2 = () => {
         calledF2 = true;
       };
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -376,7 +380,7 @@ describe('SchedulerImplem', () => {
       const f2 = () => {
         calledF2 = true;
       };
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -951,7 +955,7 @@ describe('SchedulerImplem', () => {
       const expectedThenValue = 123;
       const thenFunction = vi.fn();
       let actCount = 0;
-      const act = (f) => {
+      const act = (f: () => Promise<void>) => {
         ++actCount;
         return f();
       };
@@ -982,7 +986,7 @@ describe('SchedulerImplem', () => {
       // Arrange
       const expectedThenValue = 123;
       const catchFunction = vi.fn();
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1003,7 +1007,7 @@ describe('SchedulerImplem', () => {
       // Arrange
       const tasks = [Promise.resolve(1), Promise.resolve(8), Promise.resolve(2)];
       let actCount = 0;
-      const act = (f) => {
+      const act = (f: () => Promise<void>) => {
         ++actCount;
         return f();
       };
@@ -1066,7 +1070,7 @@ describe('SchedulerImplem', () => {
             5: true,
           };
           const resolved = { ...nothingResolved };
-          const act = (f) => f();
+          const act = (f: () => Promise<void>) => f();
           const nextTaskIndex = buildSeededNextTaskIndex(seeds);
           const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
           const order: number[] = [];
@@ -1130,7 +1134,7 @@ describe('SchedulerImplem', () => {
 
     it('should show both resolved, rejected and pending promises in toString', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(5) // task#6 resolved, state was: [0,1,2,3,4,5,6,7,8,9]
@@ -1224,7 +1228,7 @@ describe('SchedulerImplem', () => {
       const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
       const then1Function = vi.fn();
       const then2Function = vi.fn();
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex1 = vi.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
       const nextTaskIndex2 = vi.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
       const taskSelector2: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: nextTaskIndex2 };
@@ -1255,7 +1259,7 @@ describe('SchedulerImplem', () => {
     it('should attach passed metadata into the report', async () => {
       // Arrange
       const expectedMetadata = Symbol('123');
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1274,7 +1278,7 @@ describe('SchedulerImplem', () => {
     it('should attach passed metadata into the report even if not executed', async () => {
       // Arrange
       const expectedMetadata = Symbol('123');
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1308,7 +1312,7 @@ describe('SchedulerImplem', () => {
           fc.infiniteStream(fc.nat()),
           async (plan, seeds) => {
             // Arrange
-            const act = (f) => f();
+            const act = (f: () => Promise<void>) => f();
             const nextTaskIndex = buildSeededNextTaskIndex(seeds);
             const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
             const computeTasksInPlan = (tasks: ExecutionPlan[]) => {
@@ -1343,7 +1347,7 @@ describe('SchedulerImplem', () => {
       const firstCallInput = 1;
       const expectedThenValue = 123;
       const thenFunction = vi.fn();
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1370,7 +1374,7 @@ describe('SchedulerImplem', () => {
       const expectedThenValue = 123;
       const thenFunction = vi.fn();
       const then2Function = vi.fn();
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(1) // resolving then2Function first
@@ -1402,7 +1406,7 @@ describe('SchedulerImplem', () => {
         if (remaining <= 0) return;
         scheduledFun(remaining - 1).then(thenImplem);
       };
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1424,7 +1428,7 @@ describe('SchedulerImplem', () => {
         [1, 4],
         [6, 0],
       ];
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(2) // task#3 resolved, state was: [0,1,2]
@@ -1470,7 +1474,7 @@ describe('SchedulerImplem', () => {
 
     it('should show function name if any in toString', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(2) // task#3 resolved, state was: [0,1,2]
@@ -1512,7 +1516,7 @@ describe('SchedulerImplem', () => {
   describe('scheduleSequence', () => {
     it('should accept empty sequences', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -1531,7 +1535,7 @@ describe('SchedulerImplem', () => {
       const p2Builder = vi.fn().mockResolvedValue(2);
       const p3Builder = vi.fn().mockResolvedValue(3);
       const p4Builder = vi.fn().mockResolvedValue(4);
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1556,7 +1560,7 @@ describe('SchedulerImplem', () => {
       const p2Builder = vi.fn().mockResolvedValue(2);
       const p3Builder = vi.fn().mockResolvedValue(3);
       const p4Builder = vi.fn().mockResolvedValue(4);
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1585,7 +1589,7 @@ describe('SchedulerImplem', () => {
       const p2Builder = vi.fn().mockResolvedValue(2);
       const p3Builder = vi.fn().mockRejectedValue(3);
       const p4Builder = vi.fn().mockResolvedValue(4);
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1613,7 +1617,7 @@ describe('SchedulerImplem', () => {
       const p2Builder = vi.fn().mockResolvedValue(2);
       const p3Builder = vi.fn().mockRejectedValue(3);
       const p4Builder = vi.fn().mockResolvedValue(4);
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1640,7 +1644,7 @@ describe('SchedulerImplem', () => {
       const p2Builder = vi.fn().mockResolvedValue(2);
       const p3Builder = vi.fn().mockResolvedValue(3);
       const p4Builder = vi.fn().mockResolvedValue(4);
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1686,7 +1690,7 @@ describe('SchedulerImplem', () => {
       const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
       const p1BuilderSteps = { a: false, b: false, c: false, d: false };
       const p2Builder = vi.fn().mockResolvedValue(2);
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1722,7 +1726,7 @@ describe('SchedulerImplem', () => {
 
     it('should show item name declared in sequence in toString', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1750,7 +1754,7 @@ describe('SchedulerImplem', () => {
 
     it('should issue a task that resolves when the sequence ends successfully', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1770,7 +1774,7 @@ describe('SchedulerImplem', () => {
 
     it('should issue a task that resolves when the sequence fails', async () => {
       // Arrange
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1793,7 +1797,7 @@ describe('SchedulerImplem', () => {
       // Arrange
       const expectedMetadataFirst = Symbol('123');
       const expectedMetadataSecond = Symbol('1234');
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1818,7 +1822,7 @@ describe('SchedulerImplem', () => {
       // Arrange
       const expectedMetadataFirst = Symbol('123');
       const expectedMetadataSecond = Symbol('1234');
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const nextTaskIndex = vi.fn().mockReturnValue(0);
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
@@ -1858,7 +1862,7 @@ describe('SchedulerImplem', () => {
         await 2;
         await 3;
       });
-      const act = (f) => f();
+      const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
