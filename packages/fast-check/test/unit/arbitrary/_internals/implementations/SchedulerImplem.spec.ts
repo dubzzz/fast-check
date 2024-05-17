@@ -298,8 +298,11 @@ describe('SchedulerImplem', () => {
 
     it('should schedule for the same waitAll anything immediately scheduled', async () => {
       // Arrange
-      const f2 = vi.fn();
-      const act = vi.fn().mockImplementation((f) => f());
+      let calledF2 = false;
+      const f2 = () => {
+        calledF2 = true;
+      };
+      const act = (f) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -311,19 +314,22 @@ describe('SchedulerImplem', () => {
         expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
       ]);
       expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
-      expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
+      expect(calledF2).toBe(false); // just confirming we don't have lags in the "report"
       await s.waitAll();
       expect(s.report()).toEqual([
         expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
         expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
       ]);
-      expect(f2).toHaveBeenCalled(); // and completions have been called
+      expect(calledF2).toBe(true); // and completions have been called
     });
 
     it('should not schedule for the same waitAll (but for next one) something scheduled after an intermadiate await', async () => {
       // Arrange
-      const f2 = vi.fn();
-      const act = vi.fn().mockImplementation((f) => f());
+      let calledF2 = false;
+      const f2 = () => {
+        calledF2 = true;
+      };
+      const act = (f) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -343,19 +349,22 @@ describe('SchedulerImplem', () => {
         expect.objectContaining({ status: 'pending' }), // ...and the one returning 2 has already been scehduled but not executed yet
       ]);
       expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
-      expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
+      expect(calledF2).toBe(false); // just confirming we don't have lags in the "report"
       await s.waitAll();
       expect(s.report()).toEqual([
         expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
         expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
       ]);
-      expect(f2).toHaveBeenCalled(); // and completions have been called
+      expect(calledF2).toBe(true); // and completions have been called
     });
 
     it('should not schedule for the same waitAll (nor next one) something scheduled after two intermadiate await', async () => {
       // Arrange
-      const f2 = vi.fn();
-      const act = vi.fn().mockImplementation((f) => f());
+      let calledF2 = false;
+      const f2 = () => {
+        calledF2 = true;
+      };
+      const act = (f) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
@@ -381,13 +390,13 @@ describe('SchedulerImplem', () => {
         expect.objectContaining({ status: 'pending' }), // ...but it will after a simple await
       ]);
       expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
-      expect(f2).not.toHaveBeenCalled(); // just confirming we don't have lags in the "report"
+      expect(calledF2).toBe(false); // just confirming we don't have lags in the "report"
       await s.waitAll();
       expect(s.report()).toEqual([
         expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
         expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
       ]);
-      expect(f2).toHaveBeenCalled(); // and completions have been called
+      expect(calledF2).toBe(true); // and completions have been called
     });
   });
 
