@@ -5,7 +5,7 @@ import { assert } from '@fast-check/worker';
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { blockEventLoopProperty } from './__properties__/blockEventLoop.cjs';
-import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {

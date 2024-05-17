@@ -1,7 +1,7 @@
 import { isMainThread } from 'node:worker_threads';
 import fc, { type Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
-import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
