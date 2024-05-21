@@ -119,7 +119,7 @@ describe('webUrl (integration)', () => {
 function webUrlConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebUrlConstraints> {
   return fc.record(
     {
-      validSchemes: fc.constant(['ftp']),
+      validSchemes: fc.constant<string[]>(['ftp']),
       authoritySettings: fc.record(
         {
           withIPv4: fc.boolean(),
