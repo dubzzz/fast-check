@@ -163,6 +163,32 @@ export abstract class Arbitrary<T> {
   }
 
   /**
+   * Create another Arbitrary with limited number of shrink values
+   *
+   * @example
+   * ```typescript
+   * const dataGenerator: Arbitrary<string> = ...;
+   * const limitedShrinkableDataGenerator: Arbitrary<string> = dataGenerator.limitShrink(2, 10);
+   * // up to 2 in depth for the shrink and 10 per level
+   * ```
+   *
+   * @returns Create another arbitrary with limited number of shrink values
+   * @remarks Since x.x.x
+   */
+  limitShrink(numMaxLevels: number, numMaxShrinkPerLevel: number): Arbitrary<T> {
+    let rewrapped: Arbitrary<T> = this;
+    if (numMaxLevels !== Number.POSITIVE_INFINITY) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      rewrapped = new LimitedShrinkDepthArbitrary(rewrapped, numMaxLevels);
+    }
+    if (numMaxShrinkPerLevel !== Number.POSITIVE_INFINITY) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      rewrapped = new LimitedShrinkPerLevelArbitrary(rewrapped, numMaxShrinkPerLevel);
+    }
+    return rewrapped;
+  }
+
+  /**
    * Create another Arbitrary that cannot be biased
    *
    * @param freq - The biased version will be used one time over freq - if it exists
@@ -377,6 +403,72 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
   }
   noShrink() {
     return this;
+  }
+}
+
+/** @internal */
+type LimitedShrinkDepthArbitraryContext<T> = {
+  originalContext: unknown;
+  depth: number;
+};
+
+/** @internal */
+class LimitedShrinkDepthArbitrary<T> extends Arbitrary<T> {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly maxDepth: number,
+  ) {
+    super();
+  }
+  generate(mrng: Random, biasFactor: number | undefined): Value<T> {
+    const value = this.arb.generate(mrng, biasFactor);
+    return this.valueMapper(value, 0);
+  }
+  canShrinkWithoutContext(value: unknown): value is T {
+    return this.arb.canShrinkWithoutContext(value);
+  }
+  shrink(value: T, context?: unknown): Stream<Value<T>> {
+    if (this.isSafeContext(context)) {
+      if (context.depth >= this.maxDepth) {
+        return Stream.nil();
+      }
+      return this.arb.shrink(value, context.originalContext).map((v) => this.valueMapper(v, context.depth + 1));
+    }
+    if (this.maxDepth <= 0) {
+      return Stream.nil();
+    }
+    return this.arb.shrink(value, undefined).map((v) => this.valueMapper(v, 0));
+  }
+  private valueMapper(v: Value<T>, newDepth: number): Value<T> {
+    const context: LimitedShrinkDepthArbitraryContext<T> = { originalContext: v.context, depth: newDepth };
+    return new Value(v.value, context);
+  }
+  private isSafeContext(context: unknown): context is LimitedShrinkDepthArbitraryContext<T> {
+    return (
+      context != null &&
+      typeof context === 'object' &&
+      'originalContext' in (context as any) &&
+      'depth' in (context as any)
+    );
+  }
+}
+
+/** @internal */
+class LimitedShrinkPerLevelArbitrary<T> extends Arbitrary<T> {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly maxPerShrinkLevel: number,
+  ) {
+    super();
+  }
+  generate(mrng: Random, biasFactor: number | undefined): Value<T> {
+    return this.arb.generate(mrng, biasFactor);
+  }
+  canShrinkWithoutContext(value: unknown): value is T {
+    return this.arb.canShrinkWithoutContext(value);
+  }
+  shrink(value: T, context?: unknown): Stream<Value<T>> {
+    return this.arb.shrink(value, context).take(this.maxPerShrinkLevel);
   }
 }
 
