@@ -1,6 +1,6 @@
 # 3.19.0
 
-_TODO Description_
+_New options to generate unicode strings on objects_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.19.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.18.0...v3.19.0)]
 
 ## Features
