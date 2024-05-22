@@ -5,7 +5,7 @@ _Increase range validity for worker_
 
 ## Fixes
 
-- ([PR#4452](https://github.com/dubzzz/fast-check/pull/4996)) Bump: Relax version constraint to allow 0.4.x of worker 
+- ([PR#4452](https://github.com/dubzzz/fast-check/pull/4996)) Bump: Relax version constraint to allow 0.4.x of worker
 
 # 1.8.1
 
