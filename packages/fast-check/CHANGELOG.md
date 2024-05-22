@@ -1,3 +1,22 @@
+# 3.19.0
+
+_New options to generate unicode strings on objects_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.19.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.18.0...v3.19.0)]
+
+## Features
+
+- ([PR#5010](https://github.com/dubzzz/fast-check/pull/5010)) Add option to generate unicode values in `object`
+- ([PR#5011](https://github.com/dubzzz/fast-check/pull/5011)) Add option to generate unicode values in `json`
+
+## Fixes
+
+- ([PR#4981](https://github.com/dubzzz/fast-check/pull/4981)) Bug: Better interrupt between multiple versions
+- ([PR#4984](https://github.com/dubzzz/fast-check/pull/4984)) CI: Rework issue template
+- ([PR#4941](https://github.com/dubzzz/fast-check/pull/4941)) Doc: Publish release note for 3.18.0
+- ([PR#4982](https://github.com/dubzzz/fast-check/pull/4982)) Script: Shorter bump command
+
+---
+
 # 3.18.0
 
 _New options for floating point arbitraries_
