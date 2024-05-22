@@ -1,15 +1,11 @@
 # 1.8.2
 
-_TODO Description_
+_Increase range validity for worker_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.8.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.8.1...jest%2Fv1.8.2)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#4452](https://github.com/dubzzz/fast-check/pull/4996)) Bump: Relax version constraint to allow 0.4.x of worker 
 
 # 1.8.1
 
