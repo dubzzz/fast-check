@@ -183,7 +183,7 @@ Generate objects (key/values).
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
-- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings_
+- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 **Usages:**
@@ -294,7 +294,7 @@ Generate any kind of entities.
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
-- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings_
+- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 **Usages:**

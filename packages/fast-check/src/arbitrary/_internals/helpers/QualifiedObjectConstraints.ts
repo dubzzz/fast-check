@@ -105,7 +105,7 @@ export interface ObjectConstraints {
    */
   withSparseArray?: boolean;
   /**
-   * Replace the arbitrary of strings defaulted for key and values by one able to generate unicode strings.
+   * Replace the arbitrary of strings defaulted for key and values by one able to generate unicode strings with non-ascii characters.
    * If you override key and/or values constraint, this flag will not apply to your override.
    * @defaultValue false
    * @remarks Since 3.19.0
