@@ -1,6 +1,6 @@
 # 0.4.0
 
-_TODO Description_
+_Respawn only on crash not on failure and support pre_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.3.1...worker%2Fv0.4.0)]
 
 ## Breaking changes
