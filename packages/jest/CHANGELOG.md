@@ -1,3 +1,16 @@
+# 1.8.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv1.8.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv1.8.1...jest%2Fv1.8.2)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 1.8.1
 
 _Relax range of versions for worker_

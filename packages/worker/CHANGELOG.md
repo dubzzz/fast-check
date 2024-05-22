@@ -1,3 +1,22 @@
+# 0.4.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.3.1...worker%2Fv0.4.0)]
+
+## Breaking changes
+
+- ([PR#4993](https://github.com/dubzzz/fast-check/pull/4993)) Only respawn workers on crash (not failure)
+
+## Features
+
+- ([PR#4988](https://github.com/dubzzz/fast-check/pull/4988)) Add support for `pre` in properties
+
+## Fixes
+
+- ([PR#4987](https://github.com/dubzzz/fast-check/pull/4987)) Test: Confirm we intercept synchronous throws
+
+---
+
 # 0.3.1
 
 _Adapt code to new lint rules_
