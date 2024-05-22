@@ -8,14 +8,42 @@ import type { ObjectConstraints } from './QualifiedObjectConstraints';
 /**
  * Shared constraints for:
  * - {@link json},
- * - {@link unicodeJson},
  * - {@link jsonValue},
- * - {@link unicodeJsonValue}
  *
  * @remarks Since 2.5.0
  * @public
  */
 export interface JsonSharedConstraints {
+  /**
+   * Limit the depth of the object by increasing the probability to generate simple values (defined via values)
+   * as we go deeper in the object.
+   *
+   * @remarks Since 2.20.0
+   */
+  depthSize?: DepthSize;
+  /**
+   * Maximal depth allowed
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
+   * @remarks Since 2.5.0
+   */
+  maxDepth?: number;
+  /**
+   * Only generate instances having keys and values made of ascii strings (when true)
+   * @defaultValue true
+   * @remarks Since 3.19.0
+   */
+  noUnicodeString?: boolean;
+}
+
+/**
+ * Shared constraints for:
+ * - {@link unicodeJson},
+ * - {@link unicodeJsonValue}
+ *
+ * @remarks Since 3.19.0
+ * @public
+ */
+export interface UnicodeJsonSharedConstraints {
   /**
    * Limit the depth of the object by increasing the probability to generate simple values (defined via values)
    * as we go deeper in the object.
