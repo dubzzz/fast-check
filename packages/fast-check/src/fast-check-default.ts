@@ -88,6 +88,7 @@ import { mixedCase } from './arbitrary/mixedCase';
 import type { ObjectConstraints } from './arbitrary/object';
 import { object } from './arbitrary/object';
 import type { JsonSharedConstraints } from './arbitrary/json';
+import type { UnicodeJsonSharedConstraints } from './arbitrary/unicodeJson';
 import { json } from './arbitrary/json';
 import { anything } from './arbitrary/anything';
 import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
@@ -277,6 +278,7 @@ export type {
   IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,
+  UnicodeJsonSharedConstraints,
   LoremConstraints,
   MixedCaseConstraints,
   NatConstraints,

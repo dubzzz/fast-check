@@ -57,12 +57,13 @@ All the string values (from keys to values) are generated using `fc.string()`.
 **Signatures:**
 
 - `fc.json()`
-- `fc.json({depthSize?, maxDepth?})`
+- `fc.json({depthSize?, maxDepth?, noUnicodeString?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
+- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters_
 
 **Usages:**
 
@@ -74,6 +75,15 @@ fc.json();
 // • "null"
 // • "-1e-322"
 // • "[null,-1.5485504457576672e+192,null,{},-1.417727947024272e-287,null,null,null]"
+// • …
+
+fc.json({ noUnicodeString: false });
+// Examples of generated values:
+// • "{}"
+// • "[{\"󜁳򁿳򎗯􈤘񖇅\":null,\"򈷩𫨹􏥃򤵪񥉨񢦜꣙\":[null,\"򉲨򛨰𜥲񆠉򁀿񇆾􀤯񾱄\"],\"__def\":\"񥛡\",\"𴂏򰷳𩪎񡨫\":true,\"2􏿺\":\"\",\"􍥚󛂾𓴒\":false},[3.5931489320423776e+139,[true,\"󌘅񪜆󗛃󎩻𙹖򞠚򺳵񨶖\",false,{\"􊆪򓔝򘥬𔧥󴓌򩁆\":null,\"\":\"󌽡𗀥󚨿󊭹򎻎񀓜򧅘򏜣󨓚񯄈\",\"𽸧򽂵񯆎񷡰𑴵񞱒\":[true,\"򀲑򿒦\",true,\"􊔹񒚡𣉟𳡸񮋳󳝶\",false,-4.119935921393037e+259,null,-8.9364525362984475e+248]},\"򸀿󳿴񥘡򪠾򃰧򣖏\",\"󱝇򹢖𬂏񠤫󴕠򒐧\"]],[false,-6.0502670401327095e+112,1.1096547717393745e-177,null,null,null,false,[null,\"󘳑㨦𭦄񱹂𚃜򅅪󪃗򟓓󊕝򠗺\",1.288654068889961e-213,null,1.6406299790913147e-206]]]"
+// • "\"򁤇𫍯􏿬$񞋰%򟱉򳟔󽐾\""
+// • "[null,[{\"壏\":true,\"𮀳񠍞󗈌\":\"耕򰶤䰅𸬣\",\"\":null,\"𘥣񯙝𖹟󗨟𯵽򿈤􊇦󣌙󸫨󸅔\":true,\"󒾠򈄕󬀘𚨶󍋤񃞜𮢌􇶸񏭘\":null,\"񮹷񀚤󷅓󰪼􀆌𥰂𫃩𧆔𹷹󭼜\":true,\"󛶋򣄚񼇏򡭇󹃤󢁬𞲢\":-4.059178361848322e-91,\"򉁀򠾫𓦞𑬞󵫽򏥷񹺏􌗈\":true},null],[3.6448982683876056e+131]]"
+// • "[null,false]"
 // • …
 
 fc.json({ maxDepth: 0 });
@@ -109,12 +119,13 @@ As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
 **Signatures:**
 
 - `fc.jsonValue()`
-- `fc.jsonValue({depthSize?, maxDepth?})`
+- `fc.jsonValue({depthSize?, maxDepth?, noUnicodeString?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
+- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters_
 
 **Usages:**
 
@@ -126,6 +137,15 @@ fc.jsonValue();
 // • [{"^":true,"1Y??Vih":-379313284684773500000,"_5zzvjCE":"B","B561n_":"2","eqHZM9R":null},1.2791945048214157e-72]
 // • false
 // • [null,true,true,"`l+$I","kSros",null]
+// • …
+
+fc.jsonValue({ noUnicodeString: false });
+// Examples of generated values:
+// • ["򴾼󹤷𡅤񤱓򛗡"]
+// • {"􎵔򲁼򀎈𸝔􃌅􊿛񹙦":[false],"򨊗𤮈𡈡󵑑񗀏򏗔𙔔𐸵񇘼":556603.8398649627,"􏿽+򸑽":{"񐀞󴕃󙉅񂊠𴛐󻕀㢋񦔘":true,"񊈒􋚭󷪙𫪀󌧶񉝒𱣆":null,"":5.539268054957889e+74,"򦹷":"񜝍⌳򻍜񇓷񖋦","񥸱񥊔򦹗":4.847354156832373e-25,"񜂑򹏁󞦐":"𻬫𳤲󵹃򕏧񁃵","𓧎𖰦":false,"󛻳򏜚񃛷񌛑𝜀󞅤񪉺":false}}
+// • [null,["󿦼񌅡󯻾𝀹򲓋񁆺񐿏󃢰",-2.4628931920258706e-282,null,false,2.681696006505804e-238,"򢰮"]]
+// • "򐐩"
+// • []
 // • …
 
 fc.jsonValue({ maxDepth: 0 });
@@ -210,8 +230,8 @@ All the string values (from keys to values) are generated using `fc.unicodeStrin
 
 **Signatures:**
 
-- `fc.unicodeJson()`
-- `fc.unicodeJson({depthSize?, maxDepth?})`
+- `fc.unicodeJson()` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
+- `fc.unicodeJson({depthSize?, maxDepth?})` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
 
 **with:**
 
@@ -268,8 +288,8 @@ As `JSON.parse` preserves `-0`, `unicodeJsonValue` can also have `-0` as a value
 
 **Signatures:**
 
-- `fc.unicodeJsonValue()`
-- `fc.unicodeJsonValue({depthSize?, maxDepth?})`
+- `fc.unicodeJsonValue()` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
+- `fc.unicodeJsonValue({depthSize?, maxDepth?})` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
 
 **with:**
 

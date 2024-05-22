@@ -3,6 +3,7 @@ import { string } from './string';
 import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
 import { jsonConstraintsBuilder } from './_internals/helpers/JsonConstraintsBuilder';
 import { anything } from './anything';
+import { fullUnicodeString } from './fullUnicodeString';
 
 export type { JsonSharedConstraints, JsonValue };
 
@@ -20,5 +21,7 @@ export type { JsonSharedConstraints, JsonValue };
  * @public
  */
 export function jsonValue(constraints: JsonSharedConstraints = {}): Arbitrary<JsonValue> {
-  return anything(jsonConstraintsBuilder(string(), constraints)) as Arbitrary<JsonValue>;
+  const noUnicodeString = constraints.noUnicodeString === undefined || constraints.noUnicodeString === true;
+  const stringArbitrary = noUnicodeString ? string() : fullUnicodeString();
+  return anything(jsonConstraintsBuilder(stringArbitrary, constraints)) as Arbitrary<JsonValue>;
 }

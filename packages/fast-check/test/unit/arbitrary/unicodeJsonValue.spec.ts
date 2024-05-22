@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 
-import type { JsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
+import type { UnicodeJsonSharedConstraints } from '../../../src/arbitrary/unicodeJsonValue';
 import { unicodeJsonValue } from '../../../src/arbitrary/unicodeJsonValue';
 import {
   assertProduceCorrectValues,
@@ -14,7 +14,7 @@ import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKey
 import { sizeArb } from './__test-helpers__/SizeHelpers';
 
 describe('unicodeJsonValue (integration)', () => {
-  type Extra = JsonSharedConstraints | undefined;
+  type Extra = UnicodeJsonSharedConstraints | undefined;
   const extraParameters: fc.Arbitrary<Extra> = fc.option(
     fc
       .record(
