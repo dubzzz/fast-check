@@ -230,8 +230,8 @@ All the string values (from keys to values) are generated using `fc.unicodeStrin
 
 **Signatures:**
 
-- `fc.unicodeJson()`
-- `fc.unicodeJson({depthSize?, maxDepth?})`
+- `fc.unicodeJson()` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
+- `fc.unicodeJson({depthSize?, maxDepth?})` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
 
 **with:**
 
@@ -288,8 +288,8 @@ As `JSON.parse` preserves `-0`, `unicodeJsonValue` can also have `-0` as a value
 
 **Signatures:**
 
-- `fc.unicodeJsonValue()`
-- `fc.unicodeJsonValue({depthSize?, maxDepth?})`
+- `fc.unicodeJsonValue()` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
+- `fc.unicodeJsonValue({depthSize?, maxDepth?})` — _deprecated since v3.19.0 ([#5011](https://github.com/dubzzz/fast-check/pull/5011))_
 
 **with:**
 
