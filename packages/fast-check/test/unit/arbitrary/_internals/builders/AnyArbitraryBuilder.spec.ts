@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import fc, { stringify } from 'fast-check';
 
 import { anyArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/AnyArbitraryBuilder';
 import type { ObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
@@ -102,6 +102,7 @@ describe('anyArbitraryBuilder (integration)', () => {
         withSet: fc.boolean(),
         withSparseArray: fc.boolean(),
         withTypedArray: fc.boolean(),
+        withUnicodeString: fc.boolean(),
       },
       { requiredKeys: [] },
     )
@@ -148,6 +149,9 @@ describe('anyArbitraryBuilder (integration)', () => {
     if (!extra.withTypedArray) {
       expect(isTypedArray(v)).toBe(false);
     }
+    if (!extra.withUnicodeString) {
+      expect(stringify(v)).toSatisfy(doesNotIncludeAnySurrogateCharacter);
+    }
     // No check for !extra.withObjectString as nothing prevent normal string builders to build such strings
     // In the coming major releases withObjectString might even disappear
   };
@@ -173,6 +177,11 @@ describe('anyArbitraryBuilder (integration)', () => {
 });
 
 // Helpers
+
+function doesNotIncludeAnySurrogateCharacter(s: string): boolean {
+  // No character is a part of a surrogate pair
+  return s.split('').every((c) => c < '\uD800' || c > '\uDFFF');
+}
 
 function isBigInt(v: unknown): boolean {
   return typeof v === 'bigint';

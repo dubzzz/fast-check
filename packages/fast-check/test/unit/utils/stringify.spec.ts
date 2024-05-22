@@ -37,7 +37,7 @@ class CustomTagThrowingToString {
   }
 }
 
-const anythingEnableAll = {
+const anythingEnableAll: fc.ObjectConstraints = {
   withBoxedValues: true,
   withMap: true,
   withSet: true,
@@ -46,6 +46,7 @@ const anythingEnableAll = {
   withDate: true,
   withTypedArray: true,
   withSparseArray: true,
+  withUnicodeString: true,
   ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
 };
 
