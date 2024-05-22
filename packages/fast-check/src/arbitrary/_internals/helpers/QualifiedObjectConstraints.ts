@@ -2,6 +2,7 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
+import { fullUnicodeString } from '../../fullUnicodeString';
 import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';
@@ -103,6 +104,13 @@ export interface ObjectConstraints {
    * @remarks Since 2.13.0
    */
   withSparseArray?: boolean;
+  /**
+   * Replace the arbitrary of strings defaulted for key and values by one able to generate unicode strings.
+   * If you override key and/or values constraint, this flag will not apply to your override.
+   * @defaultValue false
+   * @remarks Since 3.19.0
+   */
+  withUnicodeString?: boolean;
 }
 
 /** @internal */
@@ -113,18 +121,24 @@ type ObjectConstraintsOptionalValues = 'depthSize' | 'maxDepth' | 'maxKeys' | 's
  * @internal
  */
 export type QualifiedObjectConstraints = Required<
-  Omit<ObjectConstraints, 'withBoxedValues' | ObjectConstraintsOptionalValues>
+  Omit<ObjectConstraints, 'withBoxedValues' | 'withUnicodeString' | ObjectConstraintsOptionalValues>
 > &
   Pick<ObjectConstraints, ObjectConstraintsOptionalValues>;
 
 /** @internal */
-function defaultValues(constraints: { size: SizeForArbitrary }): Arbitrary<unknown>[] {
+type DefaultValuesConstraints = { size: SizeForArbitrary };
+
+/** @internal */
+function defaultValues(
+  constraints: DefaultValuesConstraints,
+  stringArbitrary: (constraints: DefaultValuesConstraints) => Arbitrary<string>,
+): Arbitrary<unknown>[] {
   return [
     boolean(),
     maxSafeInteger(),
     double(),
-    string(constraints),
-    oneof(string(constraints), constant(null), constant(undefined)),
+    stringArbitrary(constraints),
+    oneof(stringArbitrary(constraints), constant(null), constant(undefined)),
   ];
 }
 
@@ -146,11 +160,12 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
   function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
     return optionalValue !== undefined ? optionalValue : defaultValue;
   }
+  const stringArbitrary = settings.withUnicodeString ? fullUnicodeString : string;
   const valueConstraints = { size: settings.size };
   return {
-    key: orDefault(settings.key, string(valueConstraints)),
+    key: orDefault(settings.key, stringArbitrary(valueConstraints)),
     values: boxArbitrariesIfNeeded(
-      orDefault(settings.values, defaultValues(valueConstraints)),
+      orDefault(settings.values, defaultValues(valueConstraints, stringArbitrary)),
       orDefault(settings.withBoxedValues, false),
     ),
     depthSize: settings.depthSize,
