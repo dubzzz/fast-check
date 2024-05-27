@@ -2738,7 +2738,7 @@ __metadata:
     "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^29.5.12"
     "@types/lodash": "npm:^4.17.4"
-    "@types/react": "npm:^18.3.2"
+    "@types/react": "npm:^18.3.3"
     "@types/supertest": "npm:^6.0.2"
     babel-jest: "npm:^29.7.0"
     express: "npm:^4.19.2"
@@ -5341,13 +5341,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.3.2":
-  version: 18.3.2
-  resolution: "@types/react@npm:18.3.2"
+"@types/react@npm:*, @types/react@npm:^18.3.3":
+  version: 18.3.3
+  resolution: "@types/react@npm:18.3.3"
   dependencies:
     "@types/prop-types": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10c0/9fb2f1fcf7e889ee4ea7c3c5978df595c66e770e5fd3a245dbdd2589b9b911524c11dab25a6275d8af4e336e4cb5fa850d447884b84c335a187a338c89df99ba
+  checksum: 10c0/fe455f805c5da13b89964c3d68060cebd43e73ec15001a68b34634604a78140e6fc202f3f61679b9d809dde6d7a7c2cb3ed51e0fd1462557911db09879b55114
   languageName: node
   linkType: hard
 
