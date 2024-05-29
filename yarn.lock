@@ -3771,28 +3771,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.28.19":
-  version: 7.28.19
-  resolution: "@microsoft/api-extractor-model@npm:7.28.19"
+"@microsoft/api-extractor-model@npm:7.29.1":
+  version: 7.29.1
+  resolution: "@microsoft/api-extractor-model@npm:7.29.1"
   dependencies:
-    "@microsoft/tsdoc": "npm:0.14.2"
-    "@microsoft/tsdoc-config": "npm:~0.16.1"
-    "@rushstack/node-core-library": "npm:5.1.0"
-  checksum: 10c0/fbdb4b3349579ed70d169cf239f3f82fa540a03deb0ed1ce21056f56b5c6c57bf04c4e29845815c3f73044925a54ea412448dca1525cc23e81253743f5cd6042
+    "@microsoft/tsdoc": "npm:~0.15.0"
+    "@microsoft/tsdoc-config": "npm:~0.17.0"
+    "@rushstack/node-core-library": "npm:5.4.0"
+  checksum: 10c0/274fcb10a8b37581f893b0df8eb0545f8ab7707aa3824570ff96b2c2a9a1489f833684c9dd30148cdf260ad627f363dcb8fcb323d1feb5eb6202d0fc5e1a0635
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.44.1":
-  version: 7.44.1
-  resolution: "@microsoft/api-extractor@npm:7.44.1"
+"@microsoft/api-extractor@npm:^7.46.1":
+  version: 7.46.1
+  resolution: "@microsoft/api-extractor@npm:7.46.1"
   dependencies:
-    "@microsoft/api-extractor-model": "npm:7.28.19"
-    "@microsoft/tsdoc": "npm:0.14.2"
-    "@microsoft/tsdoc-config": "npm:~0.16.1"
-    "@rushstack/node-core-library": "npm:5.1.0"
+    "@microsoft/api-extractor-model": "npm:7.29.1"
+    "@microsoft/tsdoc": "npm:~0.15.0"
+    "@microsoft/tsdoc-config": "npm:~0.17.0"
+    "@rushstack/node-core-library": "npm:5.4.0"
     "@rushstack/rig-package": "npm:0.5.2"
-    "@rushstack/terminal": "npm:0.12.0"
-    "@rushstack/ts-command-line": "npm:4.21.2"
+    "@rushstack/terminal": "npm:0.12.3"
+    "@rushstack/ts-command-line": "npm:4.21.5"
     lodash: "npm:~4.17.15"
     minimatch: "npm:~3.0.3"
     resolve: "npm:~1.22.1"
@@ -3801,26 +3801,26 @@ __metadata:
     typescript: "npm:5.4.2"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 10c0/b860054badc14a6028e1ae700edc380230b37c4c0d9d7f0485d40ec9f25a355b7e77f668eed33297049ea752725d492ca37929c1936bc912a05e5d79f985a14f
+  checksum: 10c0/fcc045c320ea8df1e7da83918b49c24b50a060c299903e69dff86ce6950bf8160a93538b8f3b7c2b93b87eacd2c7189c3118e487ef180eba1d1f9f54c6361150
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc-config@npm:~0.16.1":
-  version: 0.16.2
-  resolution: "@microsoft/tsdoc-config@npm:0.16.2"
+"@microsoft/tsdoc-config@npm:~0.17.0":
+  version: 0.17.0
+  resolution: "@microsoft/tsdoc-config@npm:0.17.0"
   dependencies:
-    "@microsoft/tsdoc": "npm:0.14.2"
-    ajv: "npm:~6.12.6"
+    "@microsoft/tsdoc": "npm:0.15.0"
+    ajv: "npm:~8.12.0"
     jju: "npm:~1.4.0"
-    resolve: "npm:~1.19.0"
-  checksum: 10c0/9e8c176b68f01c8bb38e6365d5b543e471bba59fced6070d9bd35b32461fbd650c2e1a6f686e8dca0cf22bc5e7d796e4213e66bce4426c8cb9864c1f6ca6836c
+    resolve: "npm:~1.22.2"
+  checksum: 10c0/9aa51b5b0fa93ad5c6a40ed1acf1f25c625b616efe29f2e5fa22ee9bddea12a4a39c833726e11ab592f20cfc9b8c3865978864dd02711d457fa971df3c091847
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc@npm:0.14.2":
-  version: 0.14.2
-  resolution: "@microsoft/tsdoc@npm:0.14.2"
-  checksum: 10c0/c018857ad439144559ce34a397a29ace7cf5b24b999b8e3c1b88d878338088b3a453eaac4435beaf2c7eae13c4c0aac81e42f96f0f1d48e8d4eeb438eb3bb82f
+"@microsoft/tsdoc@npm:0.15.0, @microsoft/tsdoc@npm:~0.15.0":
+  version: 0.15.0
+  resolution: "@microsoft/tsdoc@npm:0.15.0"
+  checksum: 10c0/6beaf6e01ff54daeba69862cb3d27e03bbabfe299d23d0fade885f5b29bf98af01cecc746d23875fe60ba89514e3b630b71140b1b18d37301096f7a1e35451aa
   languageName: node
   linkType: hard
 
@@ -4330,9 +4330,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/node-core-library@npm:5.1.0":
-  version: 5.1.0
-  resolution: "@rushstack/node-core-library@npm:5.1.0"
+"@rushstack/node-core-library@npm:5.4.0":
+  version: 5.4.0
+  resolution: "@rushstack/node-core-library@npm:5.4.0"
   dependencies:
     ajv: "npm:~8.13.0"
     ajv-draft-04: "npm:~1.0.0"
@@ -4347,7 +4347,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/node":
       optional: true
-  checksum: 10c0/72b1b1cd3b055db35ac2b3d687386a72a9f7fbfa4c988a0f9b6f39c72fdfdd44552c42070bdedd67ba9a26024d2bf19a921fba6da27cd9c6337373342c320567
+  checksum: 10c0/5bd7f6fc6c3c69c9daf6b3c78a9d6e40f85a89484070044d1fc9966ce8a39ef9cd0c10304ff07d3421ef211352830ccfca0ada7984df742ff6527d9473d5898c
   languageName: node
   linkType: hard
 
@@ -4361,30 +4361,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/terminal@npm:0.12.0":
-  version: 0.12.0
-  resolution: "@rushstack/terminal@npm:0.12.0"
+"@rushstack/terminal@npm:0.12.3":
+  version: 0.12.3
+  resolution: "@rushstack/terminal@npm:0.12.3"
   dependencies:
-    "@rushstack/node-core-library": "npm:5.1.0"
+    "@rushstack/node-core-library": "npm:5.4.0"
     supports-color: "npm:~8.1.1"
   peerDependencies:
     "@types/node": "*"
   peerDependenciesMeta:
     "@types/node":
       optional: true
-  checksum: 10c0/d04dfccd6978be8b3ce9ec2dd8030d5a9b9739ce88b500134b1257c55f9f5a3448aa5bb0c5a0fb2df3a39e1bc5a24814f0ed7703faf01b5543a235f533ad9a93
+  checksum: 10c0/517441dcde910fd6f3c7e2d72dcc230430a7bc78668dfdf933911e12e9ddbc6f4f9495fdab383493f84dfd0c4cfcd974ab0045b1de622120fedb89bda44aeca3
   languageName: node
   linkType: hard
 
-"@rushstack/ts-command-line@npm:4.21.2":
-  version: 4.21.2
-  resolution: "@rushstack/ts-command-line@npm:4.21.2"
+"@rushstack/ts-command-line@npm:4.21.5":
+  version: 4.21.5
+  resolution: "@rushstack/ts-command-line@npm:4.21.5"
   dependencies:
-    "@rushstack/terminal": "npm:0.12.0"
+    "@rushstack/terminal": "npm:0.12.3"
     "@types/argparse": "npm:1.0.38"
     argparse: "npm:~1.0.9"
     string-argv: "npm:~0.3.1"
-  checksum: 10c0/3739e98d1c0fa254f312d733ca34120f6646c6c80ada6b03a829899f5c94273562618ed44da3bb89129128bd5fd2e8eaafa7f644818ac36b38022763d9f676a1
+  checksum: 10c0/22293fff7e62956d2858687517db50d7f7c9d278e8ff0f8b43e7bc97501c2da44b5992fe76de257c6877fe73463e345fd91cbdb652d46d4a45051e04bec31275
   languageName: node
   linkType: hard
 
@@ -6071,7 +6071,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^6.12.2, ajv@npm:^6.12.4, ajv@npm:^6.12.5, ajv@npm:~6.12.6":
+"ajv@npm:^6.12.2, ajv@npm:^6.12.4, ajv@npm:^6.12.5":
   version: 6.12.6
   resolution: "ajv@npm:6.12.6"
   dependencies:
@@ -6092,6 +6092,18 @@ __metadata:
     require-from-string: "npm:^2.0.2"
     uri-js: "npm:^4.4.1"
   checksum: 10c0/14c6497b6f72843986d7344175a1aa0e2c35b1e7f7475e55bc582cddb765fca7e6bf950f465dc7846f817776d9541b706f4b5b3fbedd8dfdeb5fce6f22864264
+  languageName: node
+  linkType: hard
+
+"ajv@npm:~8.12.0":
+  version: 8.12.0
+  resolution: "ajv@npm:8.12.0"
+  dependencies:
+    fast-deep-equal: "npm:^3.1.1"
+    json-schema-traverse: "npm:^1.0.0"
+    require-from-string: "npm:^2.0.2"
+    uri-js: "npm:^4.2.2"
+  checksum: 10c0/ac4f72adf727ee425e049bc9d8b31d4a57e1c90da8d28bcd23d60781b12fcd6fc3d68db5df16994c57b78b94eed7988f5a6b482fd376dc5b084125e20a0a622e
   languageName: node
   linkType: hard
 
@@ -9458,7 +9470,7 @@ __metadata:
   dependencies:
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.44.1"
+    "@microsoft/api-extractor": "npm:^7.46.1"
     "@types/node": "npm:^20.12.13"
     "@vitest/coverage-v8": "npm:^1.6.0"
     cross-env: "npm:^7.0.3"
@@ -11276,7 +11288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.1.0, is-core-module@npm:^2.13.0, is-core-module@npm:^2.8.1":
+"is-core-module@npm:^2.13.0, is-core-module@npm:^2.8.1":
   version: 2.13.1
   resolution: "is-core-module@npm:2.13.1"
   dependencies:
@@ -15011,7 +15023,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-parse@npm:^1.0.6, path-parse@npm:^1.0.7":
+"path-parse@npm:^1.0.7":
   version: 1.0.7
   resolution: "path-parse@npm:1.0.7"
   checksum: 10c0/11ce261f9d294cc7a58d6a574b7f1b935842355ec66fba3c3fd79e0f036462eaf07d0aa95bb74ff432f9afef97ce1926c720988c6a7451d8a584930ae7de86e1
@@ -16643,7 +16655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.6, resolve@npm:^1.14.2, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:~1.22.1":
+"resolve@npm:^1.1.6, resolve@npm:^1.14.2, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:~1.22.1, resolve@npm:~1.22.2":
   version: 1.22.8
   resolution: "resolve@npm:1.22.8"
   dependencies:
@@ -16656,17 +16668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:~1.19.0":
-  version: 1.19.0
-  resolution: "resolve@npm:1.19.0"
-  dependencies:
-    is-core-module: "npm:^2.1.0"
-    path-parse: "npm:^1.0.6"
-  checksum: 10c0/1c8afdfb88c9adab0a19b6f16756d47f5917f64047bf5a38c17aa543aae5ccca2a0631671b19ce8460a7a3e65ead98ee70e046d3056ec173d3377a27487848a8
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@npm%3A^1.1.6#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A~1.22.1#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.1.6#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A~1.22.1#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A~1.22.2#optional!builtin<compat/resolve>":
   version: 1.22.8
   resolution: "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>::version=1.22.8&hash=c3c19d"
   dependencies:
@@ -16676,16 +16678,6 @@ __metadata:
   bin:
     resolve: bin/resolve
   checksum: 10c0/0446f024439cd2e50c6c8fa8ba77eaa8370b4180f401a96abf3d1ebc770ac51c1955e12764cde449fde3fff480a61f84388e3505ecdbab778f4bef5f8212c729
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@npm%3A~1.19.0#optional!builtin<compat/resolve>":
-  version: 1.19.0
-  resolution: "resolve@patch:resolve@npm%3A1.19.0#optional!builtin<compat/resolve>::version=1.19.0&hash=c3c19d"
-  dependencies:
-    is-core-module: "npm:^2.1.0"
-    path-parse: "npm:^1.0.6"
-  checksum: 10c0/254980f60dd9fdb28b34a511e70df6e3027d9627efce86a40757eea9b87252d172829c84517554560c4541ebfe207868270c19a0f086997b41209367aa8ef74f
   languageName: node
   linkType: hard
 
