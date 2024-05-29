@@ -1,4 +1,3 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
