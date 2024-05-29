@@ -35,8 +35,6 @@ export interface JsonSharedConstraints {
   noUnicodeString?: boolean;
 }
 
-
-
 /**
  * Derive `ObjectConstraints` from a `JsonSharedConstraints`
  * @internal
