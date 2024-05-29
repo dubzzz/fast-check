@@ -1,7 +1,8 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
+import { fullUnicodeString } from '../../fullUnicodeString';
+import { string } from '../../string';
 import type { DepthSize } from './MaxLengthFromMinLength';
 import type { ObjectConstraints } from './QualifiedObjectConstraints';
 
@@ -29,7 +30,7 @@ export interface JsonSharedConstraints {
   maxDepth?: number;
   /**
    * Only generate instances having keys and values made of ascii strings (when true)
-   * @defaultValue true
+   * @defaultValue false
    * @remarks Since 3.19.0
    */
   noUnicodeString?: boolean;
@@ -40,11 +41,9 @@ export interface JsonSharedConstraints {
  * @internal
  */
 
-export function jsonConstraintsBuilder(
-  stringArbitrary: Arbitrary<string>,
-  constraints: JsonSharedConstraints,
-): ObjectConstraints {
-  const { depthSize, maxDepth } = constraints;
+export function jsonConstraintsBuilder(constraints: JsonSharedConstraints): ObjectConstraints {
+  const { depthSize, maxDepth, noUnicodeString } = constraints;
+  const stringArbitrary = noUnicodeString ? string() : fullUnicodeString();
   const key = stringArbitrary;
   const values = [
     boolean(), // any boolean
