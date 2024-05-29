@@ -61,7 +61,6 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // : More specific strings
     // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
     //{ name: 'json', arbitraryBuilder: () => fc.json() },
-    //{ name: 'unicodeJson', arbitraryBuilder: () => fc.unicodeJson() },
     { name: 'lorem', arbitraryBuilder: () => fc.lorem() },
     { name: 'ipV4', arbitraryBuilder: () => fc.ipV4() },
     { name: 'ipV4Extended', arbitraryBuilder: () => fc.ipV4Extended() },
@@ -119,7 +118,6 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
     //{ name: 'object', arbitraryBuilder: () => fc.object() },
     //{ name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
-    //{ name: 'unicodeJsonValue', arbitraryBuilder: () => fc.unicodeJsonValue() },
     //{ name: 'anything', arbitraryBuilder: () => fc.anything() },
     // : Function
     { name: 'compareBooleanFunc', arbitraryBuilder: () => fc.compareBooleanFunc() },
