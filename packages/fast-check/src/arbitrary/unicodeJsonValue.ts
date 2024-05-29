@@ -21,5 +21,5 @@ export type { UnicodeJsonSharedConstraints, JsonValue };
  * @public
  */
 export function unicodeJsonValue(constraints: UnicodeJsonSharedConstraints = {}): Arbitrary<JsonValue> {
-  return anything(jsonConstraintsBuilder(unicodeString(), constraints)) as Arbitrary<JsonValue>;
+  return anything(jsonConstraintsBuilder(constraints)) as Arbitrary<JsonValue>;
 }
