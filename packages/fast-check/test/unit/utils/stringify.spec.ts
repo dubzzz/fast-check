@@ -62,7 +62,7 @@ describe('stringify', () => {
   it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>
     fc.assert(
       fc.property(
-        // Remark: While fc.unicodeJsonObject() could have been a good alternative to fc.anything()
+        // Remark: While fc.jsonValue() could have been a good alternative to fc.anything()
         //         it unfortunately cannot be used as JSON.stringify poorly handles negative zeros.
         // JSON.parse('{"a": -0}') -> preserves -0
         // JSON.stringify({a: -0}) -> changes -0 into 0, it produces {"a":0}
