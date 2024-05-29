@@ -1,6 +1,6 @@
-import { testProp, fc } from '@fast-check/jest';
+import { test, fc } from '@fast-check/jest';
 import { expect } from '@jest/globals';
 
-testProp('should pass', [fc.constant(null)], (value) => {
+test.prop([fc.constant(null)])('should pass', (value) => {
   expect(value).toBe(null);
 });

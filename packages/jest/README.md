@@ -112,20 +112,6 @@ test.prop([fc.constant(null)])('should pass', (value) => {
 
 ⚠️ Do not forget to add the `await` before `init` for the ES Module version!
 
-## Deprecated API
-
-Our old API was not as close from `jest` as the current one is. Writing a property was done via:
-
-```ts
-import { testProp, fc } from '@fast-check/jest';
-
-testProp('should detect the substring', [fc.string(), fc.string(), fc.string()], (a, b, c) => {
-  return (a + b + c).includes(b);
-});
-```
-
-This API is available in all 1.x versions but may not exist anymore starting at 2.x.
-
 ## Minimal requirements
 
 | @fast-check/jest | jest                                    | fast-check | node                                                                                  |
