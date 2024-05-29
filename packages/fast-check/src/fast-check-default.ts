@@ -88,13 +88,10 @@ import { mixedCase } from './arbitrary/mixedCase';
 import type { ObjectConstraints } from './arbitrary/object';
 import { object } from './arbitrary/object';
 import type { JsonSharedConstraints } from './arbitrary/json';
-import type { UnicodeJsonSharedConstraints } from './arbitrary/unicodeJson';
 import { json } from './arbitrary/json';
 import { anything } from './arbitrary/anything';
-import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
 import type { JsonValue } from './arbitrary/jsonValue';
 import { jsonValue } from './arbitrary/jsonValue';
-import { unicodeJson } from './arbitrary/unicodeJson';
 import type { OneOfValue, OneOfConstraints, MaybeWeightedArbitrary, WeightedArbitrary } from './arbitrary/oneof';
 import { oneof } from './arbitrary/oneof';
 import type { OptionConstraints } from './arbitrary/option';
@@ -282,7 +279,6 @@ export type {
   IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,
-  UnicodeJsonSharedConstraints,
   LoremConstraints,
   MixedCaseConstraints,
   NatConstraints,
@@ -405,8 +401,6 @@ export {
   object,
   json,
   jsonValue,
-  unicodeJson,
-  unicodeJsonValue,
   letrec,
   memo,
   compareBooleanFunc,
