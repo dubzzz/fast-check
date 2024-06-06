@@ -211,6 +211,7 @@ import { bigUint64Array } from './arbitrary/bigUint64Array';
 import type { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler';
 import type { StringMatchingConstraints } from './arbitrary/stringMatching';
 import { stringMatching } from './arbitrary/stringMatching';
+import { noShrink } from './arbitrary/noShrink';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -383,6 +384,7 @@ export {
   option,
   oneof,
   clone,
+  noShrink,
   shuffledSubarray,
   subarray,
   array,

@@ -133,6 +133,28 @@ fc.clone(fc.nat(), 3);
 Resources: [API reference](https://fast-check.dev/api-reference/functions/clone.html).  
 Available since 2.5.0.
 
+## noShrink
+
+Drop shrinking capabilities from an existing arbitrary.
+
+**Signatures:**
+
+- `fc.noShrink(arb)`
+
+**with:**
+
+- `arb` — _arbitrary instance responsible to generate values_
+
+**Usages:**
+
+```js
+fc.noShrink(fc.nat());
+// Examples of generated values: 1395148595, 7, 1743838935, 879259091, 2147483640…
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#noShrink).  
+Available since 0.0.9.
+
 ## .filter
 
 Filter an existing arbitrary.
@@ -251,7 +273,7 @@ Drop shrinking capabilities from an existing arbitrary.
 
 **Signatures:**
 
-- `.noShrink()`
+- `.noShrink()` — _deprecated since v3.20.0 ([#](https://github.com/dubzzz/fast-check/pull/))_
 
 **Usages:**
 
