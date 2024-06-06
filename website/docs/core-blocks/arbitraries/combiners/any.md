@@ -133,6 +133,30 @@ fc.clone(fc.nat(), 3);
 Resources: [API reference](https://fast-check.dev/api-reference/functions/clone.html).  
 Available since 2.5.0.
 
+## noBias
+
+Drop bias from an existing arbitrary. Instead of being more likely to generate certain values the resulting arbitrary will be close to an equi-probable generator.
+
+**Signatures:**
+
+- `fc.noBias(arb)`
+
+**with:**
+
+- `arb` — _arbitrary instance responsible to generate values_
+
+**Usages:**
+
+```js
+fc.noBias(fc.nat());
+// Note: Compared to fc.nat() alone, the generated values are evenly distributed in
+// the range 0 to 0x7fffffff making small values much more unlikely.
+// Examples of generated values: 394798768, 980149687, 1298483622, 1164017931, 646759550…
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/noBias.html).  
+Available since 3.20.0.
+
 ## noShrink
 
 Drop shrinking capabilities from an existing arbitrary.
@@ -152,7 +176,7 @@ fc.noShrink(fc.nat());
 // Examples of generated values: 1395148595, 7, 1743838935, 879259091, 2147483640…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#noShrink).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/noShrink.html).  
 Available since 3.20.0.
 
 ## .filter
@@ -253,7 +277,7 @@ Drop bias from an existing arbitrary. Instead of being more likely to generate c
 
 **Signatures:**
 
-- `.noBias()`
+- `.noBias()` — _deprecated since v3.20.0 ([#5050](https://github.com/dubzzz/fast-check/pull/5050))_
 
 **Usages:**
 
