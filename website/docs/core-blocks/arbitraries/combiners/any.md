@@ -153,7 +153,7 @@ fc.noShrink(fc.nat());
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#noShrink).  
-Available since 0.0.9.
+Available since 3.20.0.
 
 ## .filter
 
