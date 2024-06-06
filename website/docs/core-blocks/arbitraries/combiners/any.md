@@ -151,7 +151,7 @@ Drop bias from an existing arbitrary. Instead of being more likely to generate c
 fc.noBias(fc.nat());
 // Note: Compared to fc.nat() alone, the generated values are evenly distributed in
 // the range 0 to 0x7fffffff making small values much more unlikely.
-// Examples of generated values: 422394692, 1060515252, 383444404, 1509445429, 659009523…
+// Examples of generated values: 394798768, 980149687, 1298483622, 1164017931, 646759550…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/noBias.html).  
