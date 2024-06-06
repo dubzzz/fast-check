@@ -448,7 +448,22 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/42661?v=4",
       "profile": "https://patrickroza.com/",
       "contributions": ["code"]
+    },
+    {
+      "login": "cindywu",
+      "name": "Cindy Wu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1177031?v=4",
+      "profile": "https://github.com/cindywu",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "nmay231",
+      "name": "Noah",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35386821?v=4",
+      "profile": "https://github.com/nmay231",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
 }
+
