@@ -58,7 +58,9 @@ As the migration is pretty automatable, a codemod is provided to do part of the 
 **Guidelines for v2 (≥2.8.0 recommended)**: Move any of the signatures specified above to its recent equivalent.
 
 [^1]: Like `integer(max)` or `array(arb, maxLength)` and even `array(arb, minLength, maxLength)`.
+
 [^2]: For instance, we added `size` and `depthIdentifier` onto `array` doing it with yet another set of extra parameters would have been problematic.
+
 [^3]: Initially, the rule has been: one extra argument for each new option like `array(arb, maxLength)`. But it used to be replaced by constraints-based signatures like `object(constraints)` for the most recent additions.
 
 ## Drop some arbitraries ✨
