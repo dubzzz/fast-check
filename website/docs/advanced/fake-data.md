@@ -125,7 +125,10 @@ const fakerToArb = (fakerGen) => {
   return fc
     .noShrink(
       // shrink on a seed makes no sense
-      fc.integer().noBias(), // same probability to generate each of the allowed integers
+      fc.noBias(
+        // same probability to generate each of the allowed integers
+        fc.integer(),
+      ),
     )
     .map((seed) => {
       faker.seed(seed); // seed the generator
@@ -150,10 +153,7 @@ const loremArb = fc
     fc.infiniteStream(
       // Arbitrary generating 32-bit floating point numbers
       // between 0 (included) and 1 (excluded) (uniform distribution)
-      fc
-        .integer({ min: 0, max: (1 << 24) - 1 })
-        .map((v) => v / (1 << 24))
-        .noBias(),
+      fc.noBias(fc.integer({ min: 0, max: (1 << 24) - 1 }).map((v) => v / (1 << 24))),
     ),
   )
   .map((s) => {
