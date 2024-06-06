@@ -273,7 +273,7 @@ Drop shrinking capabilities from an existing arbitrary.
 
 **Signatures:**
 
-- `.noShrink()` — _deprecated since v3.20.0 ([#](https://github.com/dubzzz/fast-check/pull/))_
+- `.noShrink()` — _deprecated since v3.20.0 ([#5047](https://github.com/dubzzz/fast-check/pull/5047))_
 
 **Usages:**
 
