@@ -3782,9 +3782,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.46.2":
-  version: 7.46.2
-  resolution: "@microsoft/api-extractor@npm:7.46.2"
+"@microsoft/api-extractor@npm:^7.47.0":
+  version: 7.47.0
+  resolution: "@microsoft/api-extractor@npm:7.47.0"
   dependencies:
     "@microsoft/api-extractor-model": "npm:7.29.2"
     "@microsoft/tsdoc": "npm:~0.15.0"
@@ -3801,7 +3801,7 @@ __metadata:
     typescript: "npm:5.4.2"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 10c0/731966911c7693a69991160958683dbfbe9ce9fbd41e6d172856268d8317bb2f64f6ea8987f5dda3e3264644f4fb9da53e1e01f6bac0f627c4be96cfd3fbe2f0
+  checksum: 10c0/7dc16848ccb5659f4cca9061c02bcd4febfc976c08c4c3a05c12081d82cd38d2046f004f4c02b8643ba2cce0033dc1ad26ec6da6e1fe77b677318e5fa7c36182
   languageName: node
   linkType: hard
 
@@ -9470,7 +9470,7 @@ __metadata:
   dependencies:
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.46.2"
+    "@microsoft/api-extractor": "npm:^7.47.0"
     "@types/node": "npm:^20.12.13"
     "@vitest/coverage-v8": "npm:^1.6.0"
     cross-env: "npm:^7.0.3"
