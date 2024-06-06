@@ -104,7 +104,7 @@ describe('mazeGenerator', () => {
 
 // Helpers
 
-const seedArb = fc.integer().noBias().noShrink();
+const seedArb = fc.noShrink(fc.integer().noBias());
 
 const dimensionArb = fc.record({
   width: fc.integer({ min: 2, max: 20 }),

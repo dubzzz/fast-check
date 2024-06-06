@@ -41,7 +41,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
   fc.assert(
     fc
       .property(
-        fc.integer().noShrink(),
+        fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
         fc.infiniteStream(fc.nat({ max: 20 })),
         extra,
@@ -88,7 +88,7 @@ export function assertProduceCorrectValues<T, U = never>(
   fc.assert(
     fc
       .property(
-        fc.integer().noShrink(),
+        fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
         fc.infiniteStream(fc.nat({ max: 20 })),
         extra,
@@ -129,7 +129,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
   } = options;
   fc.assert(
     fc
-      .property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
+      .property(fc.noShrink(fc.integer()), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
         // Arrange
         const arbA = arbitraryBuilderA(extraParameters);
         const arbB = arbitraryBuilderB(extraParameters);

@@ -9,7 +9,7 @@ describe(`Timeout (seed: ${seed})`, () => {
     const afterEach = vi.fn().mockResolvedValue(undefined);
     const out = await fc.check(
       fc
-        .asyncProperty(fc.integer().noShrink(), async (_x) => {
+        .asyncProperty(fc.noShrink(fc.integer()), async (_x) => {
           ++numRuns;
           await new Promise(() => {}); // never ending promise
         })
