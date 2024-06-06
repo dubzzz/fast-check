@@ -277,7 +277,7 @@ Drop bias from an existing arbitrary. Instead of being more likely to generate c
 
 **Signatures:**
 
-- `.noBias()` — _deprecated since v3.20.0 ([#](https://github.com/dubzzz/fast-check/pull/))_
+- `.noBias()` — _deprecated since v3.20.0 ([#5050](https://github.com/dubzzz/fast-check/pull/5050))_
 
 **Usages:**
 
