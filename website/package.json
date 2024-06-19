@@ -33,7 +33,7 @@
     "@docusaurus/types": "3.4.0",
     "@jest/globals": "^29.7.0",
     "@mdx-js/react": "^3.0.1",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.5",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jimp": "^0.22.12",
