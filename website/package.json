@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.14.2",
+    "@codesandbox/sandpack-react": "^2.14.4",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@docusaurus/core": "3.4.0",
     "@docusaurus/plugin-pwa": "3.4.0",
