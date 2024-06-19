@@ -2831,7 +2831,7 @@ __metadata:
     all-contributors-cli: "npm:^6.26.1"
     eslint: "npm:^9.5.0"
     eslint-config-prettier: "npm:^9.1.0"
-    globals: "npm:^15.4.0"
+    globals: "npm:^15.6.0"
     prettier: "npm:3.3.2"
     publint: "npm:^0.2.8"
     typescript: "npm:~5.4.5"
@@ -10264,10 +10264,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^15.4.0":
-  version: 15.4.0
-  resolution: "globals@npm:15.4.0"
-  checksum: 10c0/19041b8fd49deb154e1cb706c82756ab7184c8ae3495aab183efcad9edd1b6320cc54af1a9110d8699245bef124834b004a8156ca988ba7814c25ec71a43f6a4
+"globals@npm:^15.6.0":
+  version: 15.6.0
+  resolution: "globals@npm:15.6.0"
+  checksum: 10c0/ba488ec5bd770336a3e1ffec3f718077768aec99e16f30c33c0eeaed09e0b93fa06a24fc0d3844d1d81a678c86d22f04547703e87e2e4353601eddcb800479ec
   languageName: node
   linkType: hard
 
