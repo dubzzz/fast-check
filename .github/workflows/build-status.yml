@@ -420,7 +420,7 @@ jobs:
       matrix:
         ts-version:
           # Latest version of TypeScript
-          - '*'
+          - 'latest'
           # Various intermediate versions of Typescript
           - '4.4'
           # Minimal requirement for TypeScript
