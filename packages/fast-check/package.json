@@ -69,7 +69,7 @@
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^7.2.0",
-    "typedoc": "^0.25.13",
+    "typedoc": "^0.26.2",
     "typescript": "~5.4.5",
     "vitest": "^1.6.0"
   },
