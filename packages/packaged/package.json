@@ -42,7 +42,7 @@
     "@babel/preset-typescript": "^7.24.7",
     "@types/jest": "^29.5.12",
     "@types/npm-packlist": "^7.0.3",
-    "@types/npmcli__arborist": "^5.6.6",
+    "@types/npmcli__arborist": "^5.6.9",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "typescript": "~5.4.5"
