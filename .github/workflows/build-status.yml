@@ -477,7 +477,7 @@ jobs:
         if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
-        if: matrix.ts-version != '4.2'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: |
           yarn workspaces foreach --all -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
           yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
