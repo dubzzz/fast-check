@@ -423,8 +423,8 @@ jobs:
           - 'latest'
           # Various intermediate versions of Typescript
           - '4.4'
-          # Minimal requirement for TypeScript
-          - '4.1'
+          # Minimal requirement for TypeScript (should be 4.1)
+          - '4.2'
           # Other release channels for TypeScript
           - 'rc'
           - 'next'
@@ -454,31 +454,31 @@ jobs:
       - name: Retrieve dropped test-types
         run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
       - name: Check (legacy TS)
-        if: matrix.ts-version == '4.1' || matrix.ts-version == '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib es6 *.ts"
+        if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 *.ts"
       - name: Check with ESNext (legacy TS)
-        if: matrix.ts-version == '4.1' || matrix.ts-version == '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib es6 --module ESNext --moduleResolution Node *.ts"
+        if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 --module ESNext --moduleResolution Node *.ts"
       - name: Switch folder to CommonJS
-        if: matrix.ts-version != '4.1' && matrix.ts-version != '4.4'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        if: matrix.ts-version != '4.1' && matrix.ts-version != '4.4'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        if: matrix.ts-version != '4.1' && matrix.ts-version != '4.4'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
-        if: matrix.ts-version != '4.1' && matrix.ts-version != '4.4'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
-        if: matrix.ts-version != '4.1' && matrix.ts-version != '4.4'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.mts"
       - name: Check in ES Modules mode with NodeNext
-        if: matrix.ts-version != '4.1' && matrix.ts-version != '4.4'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
-        if: matrix.ts-version != '4.1'
+        if: matrix.ts-version != '4.2'
         run: |
           yarn workspaces foreach --all -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
           yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
