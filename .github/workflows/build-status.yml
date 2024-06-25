@@ -455,10 +455,10 @@ jobs:
         run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
       - name: Check (legacy TS)
         if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 *.ts"
+        run: yarn workspaces foreach --all --exclude '{@fast-check/ava,@fast-check/packaged,@fast-check/vitest}' -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 *.ts"
       - name: Check with ESNext (legacy TS)
         if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 --module ESNext --moduleResolution Node *.ts"
+        run: yarn workspaces foreach --all --exclude '{@fast-check/ava,@fast-check/packaged,@fast-check/vitest}' -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 --module ESNext --moduleResolution Node *.ts"
       - name: Switch folder to CommonJS
         if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
