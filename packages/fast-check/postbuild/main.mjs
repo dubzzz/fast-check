@@ -1,8 +1,11 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const process = require('process');
-const replace = require('replace-in-file');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import process from 'process';
+import { replaceInFileSync } from 'replace-in-file';
+import * as url from 'url';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 // Append *.js file extension on all local imports
 
@@ -12,7 +15,7 @@ const options = {
   to: ["from '.$1.js'", 'from ".$1.js"'],
 };
 
-const results = replace.sync(options);
+const results = replaceInFileSync(options);
 for (const { file, hasChanged } of results) {
   if (hasChanged) {
     console.info(`Extensions added to: ${file}`);
@@ -32,7 +35,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
 
   const packageVersion = JSON.parse(data.toString()).version;
 
-  const commonJsReplacement = replace.sync({
+  const commonJsReplacement = replaceInFileSync({
     files: 'lib/fast-check-default.js',
     from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: ['commonjs', packageVersion, commitHash],
@@ -41,7 +44,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     console.info(`Package details added onto commonjs version`);
   }
 
-  const moduleReplacement = replace.sync({
+  const moduleReplacement = replaceInFileSync({
     files: 'lib/esm/fast-check-default.js',
     from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: ['module', packageVersion, commitHash],
@@ -50,7 +53,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     console.info(`Package details added onto module version`);
   }
 
-  const dTsReplacement = replace.sync({
+  const dTsReplacement = replaceInFileSync({
     files: 'lib/types/fast-check-default.d.ts',
     from: [/__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: [packageVersion, commitHash],
@@ -59,7 +62,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     console.info(`Package details added onto d.ts version for cjs`);
   }
 
-  const dTsReplacement2 = replace.sync({
+  const dTsReplacement2 = replaceInFileSync({
     files: 'lib/esm/types/fast-check-default.d.ts',
     from: [/__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: [packageVersion, commitHash],
@@ -76,7 +79,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
   }
-  const docReplacement = replace.sync({
+  const docReplacement = replaceInFileSync({
     files: 'docs/index.html',
     from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: [escapeHtml('module'), escapeHtml(packageVersion), escapeHtml(commitHash)],
