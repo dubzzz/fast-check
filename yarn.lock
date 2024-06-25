@@ -9487,7 +9487,7 @@ __metadata:
     not-node-buffer: "npm:buffer@^6.0.3"
     pure-rand: "npm:^6.1.0"
     regexp-tree: "npm:^0.1.27"
-    replace-in-file: "npm:^7.2.0"
+    replace-in-file: "npm:^8.0.1"
     typedoc: "npm:^0.26.2"
     typescript: "npm:~5.4.5"
     vitest: "npm:^1.6.0"
@@ -10191,7 +10191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.1, glob@npm:^8.1.0":
+"glob@npm:^8.0.1":
   version: 8.1.0
   resolution: "glob@npm:8.1.0"
   dependencies:
@@ -16593,16 +16593,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"replace-in-file@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "replace-in-file@npm:7.2.0"
+"replace-in-file@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "replace-in-file@npm:8.0.1"
   dependencies:
-    chalk: "npm:^4.1.2"
-    glob: "npm:^8.1.0"
+    chalk: "npm:^5.3.0"
+    glob: "npm:^10.4.2"
     yargs: "npm:^17.7.2"
   bin:
     replace-in-file: bin/cli.js
-  checksum: 10c0/8779b98dcb4d7afccef357edbe38490b6588ef5f59f38d62de1d5854d3f42a9e087af7c4a018004d96e4c0f24a6bbf12109e8349417aba770d1e7ac1980f2177
+  checksum: 10c0/32cf33cdb7739ed61d7c7801abb6f0164470f905fd32053f0834826f09bdcd1b885c465e03c9c679456ac14e8bf98eeec032a87667e05848965ce8b261fd6d14
   languageName: node
   linkType: hard
 
