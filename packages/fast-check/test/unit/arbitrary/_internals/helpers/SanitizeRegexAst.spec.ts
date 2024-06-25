@@ -13,7 +13,9 @@ describe('addMissingDotStar', () => {
     ${/(a|b)/}          | ${/((?:^.*a.*$)|(?:^.*b.*$))/ /* original group altered */}
     ${/(a|^b$)/}        | ${/((?:^.*a.*$)|^b$)/ /* original group altered */}
     ${/(^|b)a($|c)/}    | ${/(^|(?:^.*b))a($|(?:c.*$))/ /* original group altered */}
-    ${/(?<toto>a)/}     | ${/(?:^.*(?<toto>a).*$)/}
+    ${// @ts-expect-error ES2018+ Regex
+/(?<toto>a)/} | ${// @ts-expect-error ES2018+ Regex
+/(?:^.*(?<toto>a).*$)/}
     ${/(^|\s)a+(\s|$)/} | ${/(^|(?:^.*\s))a+((?:\s.*$)|$)/}
   `('should transform $source into $target', ({ source, target }) => {
     const sourceAst = tokenizeRegex(source);
