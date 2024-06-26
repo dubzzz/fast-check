@@ -1,6 +1,6 @@
 **Description**
 
-<!-- Please provide a short description and potentially linked issues hustifying the need for this PR -->
+<!-- Please provide a short description and potentially linked issues justifying the need for this PR -->
 
 <!-- * Your PR is fixing a bug or regression? Check for existing issues related to this bug and link them -->
 <!-- * Your PR is adding a new feature? Make sure there is a related issue or discussion attached to it -->

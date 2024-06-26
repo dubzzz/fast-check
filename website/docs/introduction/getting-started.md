@@ -113,6 +113,6 @@ The predicate is a function taking the values produced by the declared arbitrari
 
 ### Arbitrary
 
-An arbitrary is responsible to generate random values in a seeded way and to shrink them in case it's requested. Here we only used one kind of arbitrary: `fc.string()`. But they are many others built-in ones and an infinity you can produce just by combining existing ones together.
+An arbitrary is responsible to generate random values in a seeded way and to shrink them in case it's requested. Here we only used one kind of arbitrary: `fc.string()`. There are many other built-in ones, and an infinite number can be produced by combining existing ones.
 
 The arbitrary called `fc.string()` is responsible to generate and shrink strings.

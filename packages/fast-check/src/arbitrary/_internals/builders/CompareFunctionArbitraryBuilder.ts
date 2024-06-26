@@ -4,6 +4,7 @@ import { cloneMethod } from '../../../check/symbols';
 import { hash } from '../../../utils/hash';
 import { stringify } from '../../../utils/stringify';
 import { integer } from '../../integer';
+import { noShrink } from '../../noShrink';
 import { tuple } from '../../tuple';
 import { safeJoin } from '../../../utils/globals';
 
@@ -14,7 +15,7 @@ const safeObjectKeys = Object.keys;
 export function buildCompareFunctionArbitrary<T, TOut>(
   cmp: (hA: number, hB: number) => TOut,
 ): Arbitrary<(a: T, b: T) => TOut> {
-  return tuple(integer().noShrink(), integer({ min: 1, max: 0xffffffff }).noShrink()).map(([seed, hashEnvSize]) => {
+  return tuple(noShrink(integer()), noShrink(integer({ min: 1, max: 0xffffffff }))).map(([seed, hashEnvSize]) => {
     const producer = () => {
       const recorded: { [key: string]: TOut } = {};
       const f = (a: T, b: T) => {

@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "yarn@4.2.2",
+  "packageManager": "yarn@4.3.1",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -23,19 +23,19 @@
     "publint:all": "yarn workspaces foreach --all -pvi --no-private exec publint --strict",
     "bump": "yarn version check --interactive",
     "pack:all": "yarn workspaces foreach --all -pvi --no-private pack --out package.tgz",
-    "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xvf package.tgz --strip-components=1 --exclude='package/package.json'"
+    "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
-    "@eslint/js": "^9.2.0",
+    "@eslint/js": "^9.5.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^7.9.0",
+    "@typescript-eslint/utils": "^7.14.1",
     "all-contributors-cli": "^6.26.1",
-    "eslint": "^9.2.0",
+    "eslint": "^9.5.0",
     "eslint-config-prettier": "^9.1.0",
-    "globals": "^15.2.0",
-    "prettier": "3.2.5",
-    "publint": "^0.2.7",
-    "typescript": "~5.4.5",
-    "typescript-eslint": "^7.9.0"
+    "globals": "^15.6.0",
+    "prettier": "3.3.2",
+    "publint": "^0.2.8",
+    "typescript": "~5.5.2",
+    "typescript-eslint": "^7.14.1"
   }
 }

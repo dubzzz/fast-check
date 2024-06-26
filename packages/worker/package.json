@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/worker",
   "description": "Provide built-ins to run predicates directly within dedicated workers",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "type": "module",
   "main": "lib/main.js",
   "exports": {
@@ -50,15 +50,15 @@
     "pure-rand": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.5",
-    "@babel/preset-typescript": "^7.24.1",
+    "@babel/core": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.8",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-ts-webcompat-resolver": "^1.0.0",
-    "typescript": "~5.4.5"
+    "typescript": "~5.5.2"
   },
   "keywords": [
     "worker",

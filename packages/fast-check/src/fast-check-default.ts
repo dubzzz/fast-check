@@ -88,6 +88,7 @@ import { mixedCase } from './arbitrary/mixedCase';
 import type { ObjectConstraints } from './arbitrary/object';
 import { object } from './arbitrary/object';
 import type { JsonSharedConstraints } from './arbitrary/json';
+import type { UnicodeJsonSharedConstraints } from './arbitrary/unicodeJson';
 import { json } from './arbitrary/json';
 import { anything } from './arbitrary/anything';
 import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
@@ -210,6 +211,8 @@ import { bigUint64Array } from './arbitrary/bigUint64Array';
 import type { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler';
 import type { StringMatchingConstraints } from './arbitrary/stringMatching';
 import { stringMatching } from './arbitrary/stringMatching';
+import { noShrink } from './arbitrary/noShrink';
+import { noBias } from './arbitrary/noBias';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -277,6 +280,7 @@ export type {
   IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,
+  UnicodeJsonSharedConstraints,
   LoremConstraints,
   MixedCaseConstraints,
   NatConstraints,
@@ -381,6 +385,8 @@ export {
   option,
   oneof,
   clone,
+  noBias,
+  noShrink,
   shuffledSubarray,
   subarray,
   array,

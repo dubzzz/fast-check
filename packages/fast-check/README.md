@@ -226,6 +226,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gruhn"><img src="https://avatars.githubusercontent.com/u/26570572?v=4?s=100" width="100px;" alt="Niklas Gruhn"/><br /><sub><b>Niklas Gruhn</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gruhn" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://patrickroza.com/"><img src="https://avatars.githubusercontent.com/u/42661?v=4?s=100" width="100px;" alt="Patrick Roza"/><br /><sub><b>Patrick Roza</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=patroza" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/cindywu"><img src="https://avatars.githubusercontent.com/u/1177031?v=4?s=100" width="100px;" alt="Cindy Wu"/><br /><sub><b>Cindy Wu</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=cindywu" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nmay231"><img src="https://avatars.githubusercontent.com/u/35386821?v=4?s=100" width="100px;" alt="Noah"/><br /><sub><b>Noah</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nmay231" title="Documentation">📖</a></td>
+    </tr>
   </tbody>
 </table>
 

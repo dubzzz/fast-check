@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "3.18.0",
+  "version": "3.19.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "commonjs",
   "main": "lib/fast-check.js",
@@ -26,7 +26,7 @@
   "sideEffects": false,
   "runkitExampleFilename": "runkit.cjs",
   "scripts": {
-    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.cjs",
+    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.mjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm/types",
     "build:publish-cjs": "tsc -p tsconfig.publish.json",
@@ -37,7 +37,7 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true vitest --config vitest.documentation.config.mjs",
     "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
     "test-legacy-bundle": "nvs add 8 && $(nvs which 8) test-bundle/run.cjs && $(nvs which 8) test-bundle/run-advanced.cjs",
-    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.cjs",
+    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
     "docs:serve": "yarn dlx serve docs/"
   },
@@ -61,16 +61,16 @@
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.43.7",
-    "@types/node": "^20.12.12",
+    "@microsoft/api-extractor": "^7.47.0",
+    "@types/node": "^20.14.8",
     "@vitest/coverage-v8": "^1.6.0",
     "cross-env": "^7.0.3",
-    "glob": "^10.3.15",
+    "glob": "^10.4.2",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
-    "replace-in-file": "^7.1.0",
-    "typedoc": "^0.25.13",
-    "typescript": "~5.4.5",
+    "replace-in-file": "^8.0.1",
+    "typedoc": "^0.26.2",
+    "typescript": "~5.5.2",
     "vitest": "^1.6.0"
   },
   "keywords": [

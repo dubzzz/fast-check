@@ -15,29 +15,29 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.13.10",
+    "@codesandbox/sandpack-react": "^2.14.4",
     "@codesandbox/sandpack-themes": "^2.0.21",
-    "@docusaurus/core": "3.3.2",
-    "@docusaurus/plugin-pwa": "3.3.2",
-    "@docusaurus/preset-classic": "3.3.2",
-    "@docusaurus/remark-plugin-npm2yarn": "3.3.2",
+    "@docusaurus/core": "3.4.0",
+    "@docusaurus/plugin-pwa": "3.4.0",
+    "@docusaurus/preset-classic": "3.4.0",
+    "@docusaurus/remark-plugin-npm2yarn": "3.4.0",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.3.2",
-    "@docusaurus/theme-classic": "3.3.2",
-    "@docusaurus/tsconfig": "3.3.2",
-    "@docusaurus/types": "3.3.2",
+    "@docusaurus/module-type-aliases": "3.4.0",
+    "@docusaurus/theme-classic": "3.4.0",
+    "@docusaurus/tsconfig": "3.4.0",
+    "@docusaurus/types": "3.4.0",
     "@jest/globals": "^29.7.0",
     "@mdx-js/react": "^3.0.1",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.8",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jimp": "^0.22.12",
-    "typescript": "~5.4.5"
+    "typescript": "~5.5.2"
   },
   "browserslist": {
     "production": [

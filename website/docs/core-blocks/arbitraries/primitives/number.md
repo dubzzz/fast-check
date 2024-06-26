@@ -170,9 +170,7 @@ fc.float({ noInteger: true });
 // Note: All possible 32-bit floating point values but no integer
 // Examples of generated values: -7.006492321624085e-45, 1.4734616113175924e-21, 8.407790785948902e-45, 1.5815058151957828e-9, Number.POSITIVE_INFINITY…
 
-fc.integer({ min: 0, max: (1 << 24) - 1 })
-  .map((v) => v / (1 << 24))
-  .noBias();
+fc.noBias(fc.integer({ min: 0, max: (1 << 24) - 1 }).map((v) => v / (1 << 24)));
 // Note: `fc.float` does not uniformly distribute the generated values in the requested range.
 // If you really want a uniform distribution of 32-bit floating point numbers in range 0 (included)
 // and 1 (excluded), you may want to use the arbitrary defined right above.
@@ -232,13 +230,15 @@ fc.double({ noInteger: true });
 // Note: All possible floating point values but no integer
 // Examples of generated values: -2.3e-322, -4503599627370495.5, -1.8524776326185756e-119, -9.4e-323, 7e-323…
 
-fc.tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
-  .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53))
-  .noBias();
+fc.noBias(
+  fc
+    .tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
+    .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53)),
+);
 // Note: `fc.double` does not uniformly distribute the generated values in the requested range.
 // If you really want a uniform distribution of 64-bit floating point numbers in range 0 (included)
 // and 1 (excluded), you may want to use the arbitrary defined right above.
-// Examples of generated values: 0.4791994496490358, 0.741935957579559, 0.31752046562590686, 0.07995703455612779, 0.2555619122341972…
+// Examples of generated values: 0.5424979085274226, 0.8984809917404123, 0.577376440989232, 0.8433714130130558, 0.48219857913738606…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/double.html).  
