@@ -7,7 +7,7 @@ import { Stream } from '../../stream/Stream';
 export class LimitedShrinkPerLevelArbitrary<T> extends Arbitrary<T> {
   constructor(
     readonly arb: Arbitrary<T>,
-    readonly maxPerShrinkLevel: number,
+    readonly maxShrinksPerLevel: number,
   ) {
     super();
   }
@@ -18,6 +18,6 @@ export class LimitedShrinkPerLevelArbitrary<T> extends Arbitrary<T> {
     return this.arb.canShrinkWithoutContext(value);
   }
   shrink(value: T, context?: unknown): Stream<Value<T>> {
-    return this.arb.shrink(value, context).take(this.maxPerShrinkLevel);
+    return this.arb.shrink(value, context).take(this.maxShrinksPerLevel);
   }
 }
