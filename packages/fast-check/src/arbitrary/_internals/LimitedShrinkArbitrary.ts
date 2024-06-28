@@ -20,21 +20,19 @@ export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
   }
   shrink(value: T, context?: unknown): Stream<Value<T>> {
     if (this.isSafeContext(context)) {
-      if (context.depth >= this.maxShrinks) {
-        return Stream.nil();
-      }
-      return this.arb
-        .shrink(value, context.originalContext)
-        .take(this.maxShrinks - context.depth)
-        .map((v) => this.valueMapper(v, context.depth + 1));
+      return this.safeShrink(value, context.originalContext, context.depth);
     }
-    if (this.maxShrinks <= 0) {
-      return Stream.nil();
+    return this.safeShrink(value, undefined, 0);
+  }
+  private safeShrink(value: T, originalContext: unknown, currentDepth: number): Stream<Value<T>> {
+    const remaining = this.maxShrinks - currentDepth;
+    if (remaining <= 0) {
+      return Stream.nil(); // early-exit to avoid potentially expensive computations in .shrink
     }
     return this.arb
-      .shrink(value, undefined)
-      .take(this.maxShrinks)
-      .map((v) => this.valueMapper(v, 0));
+      .shrink(value, originalContext)
+      .take(remaining)
+      .map((v) => this.valueMapper(v, currentDepth + 1));
   }
   private valueMapper(v: Value<T>, newDepth: number): Value<T> {
     const context: LimitedShrinkArbitraryContext<T> = { originalContext: v.context, depth: newDepth };
