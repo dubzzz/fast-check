@@ -4,10 +4,10 @@ import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 
 /** @internal */
-export class LimitedShrinkDepthArbitrary<T> extends Arbitrary<T> {
+export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
   constructor(
     readonly arb: Arbitrary<T>,
-    readonly maxDepth: number,
+    readonly maxShrinks: number,
   ) {
     super();
   }
@@ -20,21 +20,27 @@ export class LimitedShrinkDepthArbitrary<T> extends Arbitrary<T> {
   }
   shrink(value: T, context?: unknown): Stream<Value<T>> {
     if (this.isSafeContext(context)) {
-      if (context.depth >= this.maxDepth) {
+      if (context.depth >= this.maxShrinks) {
         return Stream.nil();
       }
-      return this.arb.shrink(value, context.originalContext).map((v) => this.valueMapper(v, context.depth + 1));
+      return this.arb
+        .shrink(value, context.originalContext)
+        .take(this.maxShrinks - context.depth)
+        .map((v) => this.valueMapper(v, context.depth + 1));
     }
-    if (this.maxDepth <= 0) {
+    if (this.maxShrinks <= 0) {
       return Stream.nil();
     }
-    return this.arb.shrink(value, undefined).map((v) => this.valueMapper(v, 0));
+    return this.arb
+      .shrink(value, undefined)
+      .take(this.maxShrinks)
+      .map((v) => this.valueMapper(v, 0));
   }
   private valueMapper(v: Value<T>, newDepth: number): Value<T> {
-    const context: LimitedShrinkDepthArbitraryContext<T> = { originalContext: v.context, depth: newDepth };
+    const context: LimitedShrinkArbitraryContext<T> = { originalContext: v.context, depth: newDepth };
     return new Value(v.value, context);
   }
-  private isSafeContext(context: unknown): context is LimitedShrinkDepthArbitraryContext<T> {
+  private isSafeContext(context: unknown): context is LimitedShrinkArbitraryContext<T> {
     return (
       context != null &&
       typeof context === 'object' &&
@@ -45,7 +51,7 @@ export class LimitedShrinkDepthArbitrary<T> extends Arbitrary<T> {
 }
 
 /** @internal */
-type LimitedShrinkDepthArbitraryContext<T> = {
+type LimitedShrinkArbitraryContext<T> = {
   originalContext: unknown;
   depth: number;
 };
