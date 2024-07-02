@@ -2748,7 +2748,7 @@ __metadata:
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
     rxjs: "npm:^7.8.1"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   peerDependencies:
     ava: ^4 || ^5 || ^6
   languageName: unknown
@@ -2780,7 +2780,7 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     supertest: "npm:^7.0.0"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
 
@@ -2788,7 +2788,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/expect-type@workspace:packages/expect-type"
   dependencies:
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
 
@@ -2808,7 +2808,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-jasmine2: "npm:^29.7.0"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   peerDependencies:
     "@fast-check/worker": ">=0.0.7 <0.5.0"
     "@jest/expect": ">=28.0.0"
@@ -2834,7 +2834,7 @@ __metadata:
     globals: "npm:^15.7.0"
     prettier: "npm:3.3.2"
     publint: "npm:^0.2.8"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
     typescript-eslint: "npm:^7.15.0"
   languageName: unknown
   linkType: soft
@@ -2852,7 +2852,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     jest: "npm:^29.7.0"
     npm-packlist: "npm:^8.0.0"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   bin:
     packaged: ./bin/packaged.js
   languageName: unknown
@@ -2870,7 +2870,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     jest: "npm:^29.7.0"
     jest-ts-webcompat-resolver: "npm:^1.0.0"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
 
@@ -2886,7 +2886,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
     vite: "npm:^5.3.2"
     vitest: "npm:^1.6.0"
   peerDependencies:
@@ -2908,7 +2908,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-ts-webcompat-resolver: "npm:^1.0.0"
     pure-rand: "npm:^6.1.0"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
 
@@ -9489,7 +9489,7 @@ __metadata:
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^8.0.2"
     typedoc: "npm:^0.26.3"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
     vitest: "npm:^1.6.0"
   languageName: unknown
   linkType: soft
@@ -18522,13 +18522,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.5.2":
-  version: 5.5.2
-  resolution: "typescript@npm:5.5.2"
+"typescript@npm:~5.5.3":
+  version: 5.5.3
+  resolution: "typescript@npm:5.5.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/8ca39b27b5f9bd7f32db795045933ab5247897660627251e8254180b792a395bf061ea7231947d5d7ffa5cb4cc771970fd4ef543275f9b559f08c9325cccfce3
+  checksum: 10c0/f52c71ccbc7080b034b9d3b72051d563601a4815bf3e39ded188e6ce60813f75dbedf11ad15dd4d32a12996a9ed8c7155b46c93a9b9c9bad1049766fe614bbdd
   languageName: node
   linkType: hard
 
@@ -18542,13 +18542,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.5.2#optional!builtin<compat/typescript>":
-  version: 5.5.2
-  resolution: "typescript@patch:typescript@npm%3A5.5.2#optional!builtin<compat/typescript>::version=5.5.2&hash=379a07"
+"typescript@patch:typescript@npm%3A~5.5.3#optional!builtin<compat/typescript>":
+  version: 5.5.3
+  resolution: "typescript@patch:typescript@npm%3A5.5.3#optional!builtin<compat/typescript>::version=5.5.3&hash=379a07"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/a7b7ede75dc7fc32a76d0d0af6b91f5fbd8620890d84c906f663d8783bf3de6d7bd50f0430b8bb55eac88a38934af847ff709e7156e5138b95ae94cbd5f73e5b
+  checksum: 10c0/911c7811d61f57f07df79c4a35f56a0f426a65426a020e5fcd792f66559f399017205f5f10255329ab5a3d8c2d1f1d19530aeceffda70758a521fae1d469432e
   languageName: node
   linkType: hard
 
@@ -19342,7 +19342,7 @@ __metadata:
     prism-react-renderer: "npm:^2.3.1"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
-    typescript: "npm:~5.5.2"
+    typescript: "npm:~5.5.3"
   languageName: unknown
   linkType: soft
 
