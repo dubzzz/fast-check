@@ -68,7 +68,7 @@
     "glob": "^10.4.2",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
-    "replace-in-file": "^8.0.1",
+    "replace-in-file": "^8.0.2",
     "typedoc": "^0.26.3",
     "typescript": "~5.5.2",
     "vitest": "^1.6.0"
