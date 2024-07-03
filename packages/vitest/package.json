@@ -59,7 +59,7 @@
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "typescript": "~5.5.3",
-    "vite": "^5.3.2",
+    "vite": "^5.3.3",
     "vitest": "^1.6.0"
   },
   "keywords": [
