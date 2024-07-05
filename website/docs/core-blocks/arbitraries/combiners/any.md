@@ -185,6 +185,35 @@ fc.noShrink(fc.nat());
 Resources: [API reference](https://fast-check.dev/api-reference/functions/noShrink.html).  
 Available since 3.20.0.
 
+## limitShrink
+
+Limit shrinking capabilities of an existing arbitrary. Cap the number of potential shrunk values it could produce.
+
+:::warning Avoid limiting shrinking capabilities
+Although limiting the shrinking capabilities can speed up your CI when failures occur, we do not recommend this approach. Instead, if you want to reduce the shrinking time for automated jobs or local runs, consider using `endOnFailure` or `interruptAfterTimeLimit`.
+
+The only potentially legitimate use of limiting shrinking is when creating new complex arbitraries. In such cases, limiting some less relevant parts may help preserve shrinking capabilities without requiring exhaustive coverage of the shrinker.
+:::
+
+**Signatures:**
+
+- `fc.limitShrink(arb, {maxShrinks})`
+
+**with:**
+
+- `arb` — _arbitrary instance responsible to generate values_
+- `maxShrinks` — _the maximal number of shrunk values that could be pulled from the arbitrary in case of shrink_
+
+**Usages:**
+
+```js
+fc.limitShrink(fc.nat(), { maxShrinks: 3 });
+// Examples of generated values: 25, 2147483643, 436087987, 2147483633, 1703130597…
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/limitShrink.html).  
+Available since 3.20.0.
+
 ## .filter
 
 Filter an existing arbitrary.
