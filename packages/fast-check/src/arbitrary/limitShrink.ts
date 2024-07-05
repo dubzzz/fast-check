@@ -29,6 +29,7 @@ export type LimitShrinkConstraints = {
  *
  * @returns Create another arbitrary with limited number of shrink values
  * @remarks Since 3.20.0
+ * @public
  */
 export function limitShrink<T>(arbitrary: Arbitrary<T>, constraints: LimitShrinkConstraints): Arbitrary<T> {
   return new LimitedShrinkArbitrary(arbitrary, constraints.maxShrinks);
