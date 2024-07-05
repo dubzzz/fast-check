@@ -1,7 +1,16 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { LimitedShrinkArbitrary } from './_internals/LimitedShrinkArbitrary';
 
+/**
+ * Constraints to be applied on {@link limitShrink}
+ * @remarks Since 3.20.0
+ * @public
+ */
 export type LimitShrinkConstraints = {
+  /**
+   * Define the maximal number of shrink values that can be pulled from this arbitrary
+   * @remarks Since 3.20.0
+   */
   maxShrinks: number;
 };
 
