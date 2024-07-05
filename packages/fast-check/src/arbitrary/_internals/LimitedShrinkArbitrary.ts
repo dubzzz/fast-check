@@ -1,8 +1,17 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
-import { Random } from '../../random/generator/Random';
+import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
 import { zipIterableIterators } from './helpers/ZipIterableIterators';
+
+/** @internal */
+function* iotaFrom(startValue: number) {
+  let value = startValue;
+  while (true) {
+    yield value;
+    ++value;
+  }
+}
 
 /** @internal */
 export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
@@ -35,10 +44,10 @@ export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
       .map((valueAndLength) => this.valueMapper(valueAndLength[0], valueAndLength[1]));
   }
   private valueMapper(v: Value<T>, newLength: number): Value<T> {
-    const context: LimitedShrinkArbitraryContext<T> = { originalContext: v.context, length: newLength };
+    const context: LimitedShrinkArbitraryContext = { originalContext: v.context, length: newLength };
     return new Value(v.value, context);
   }
-  private isSafeContext(context: unknown): context is LimitedShrinkArbitraryContext<T> {
+  private isSafeContext(context: unknown): context is LimitedShrinkArbitraryContext {
     return (
       context != null &&
       typeof context === 'object' &&
@@ -49,16 +58,7 @@ export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
 }
 
 /** @internal */
-function* iotaFrom(startValue: number) {
-  let value = startValue;
-  while (true) {
-    yield value;
-    ++value;
-  }
-}
-
-/** @internal */
-type LimitedShrinkArbitraryContext<T> = {
+type LimitedShrinkArbitraryContext = {
   originalContext: unknown;
   length: number;
 };
