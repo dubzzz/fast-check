@@ -172,5 +172,3 @@ describe('LimitedShrinkArbitrary', () => {
     });
   });
 });
-
-// TODO: As this Arbitrary is playing with mapping passed values we have to confirm it behaves well for cloneable values
