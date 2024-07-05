@@ -3051,6 +3051,22 @@ Execution summary:
 . . . . . . . . [32m√[0m [{"left":{"left":0,"right":{"left":0,"right":{"left":0,"right":0}}},"right":10}]]
 `;
 
+exports[`NoRegression > limitShrink 1`] = `
+[Error: Property failed after 2 tests
+{ seed: 42, path: "1:2", endOnFailure: true }
+Counterexample: [864744596]
+Shrunk 1 time(s)
+Got error: Property failed by returning false
+
+Execution summary:
+[32m√[0m [2147483626]
+[31m×[0m [1152992794]
+. [32m√[0m [0]
+. [32m√[0m [576496397]
+. [31m×[0m [864744596]
+. . [32m√[0m [720620497]]
+`;
+
 exports[`NoRegression > lorem 1`] = `
 [Error: Property failed after 2 tests
 { seed: 42, path: "1:1:0:0:0", endOnFailure: true }

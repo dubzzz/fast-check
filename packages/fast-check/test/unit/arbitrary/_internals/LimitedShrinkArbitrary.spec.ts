@@ -7,6 +7,12 @@ import { fakeRandom } from '../__test-helpers__/RandomHelpers';
 import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { LimitedShrinkArbitrary } from '../../../../src/arbitrary/_internals/LimitedShrinkArbitrary';
+import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary';
+import {
+  assertProduceSameValueGivenSameSeed,
+  assertShrinkProducesSameValueWithoutInitialContext,
+} from '../__test-helpers__/ArbitraryAssertions';
+import { buildShrinkTree, renderTree } from '../__test-helpers__/ShrinkTree';
 
 describe('LimitedShrinkArbitrary', () => {
   declareCleaningHooksForSpies();
@@ -127,8 +133,7 @@ describe('LimitedShrinkArbitrary', () => {
           fc.nat({ max: 50 }), // limiting shrink count to 50 to avoid taking hours
           fc.infiniteStream(fc.infiniteStream(fc.tuple(fc.anything(), fc.anything()))),
           fc.infiniteStream(fc.integer({ min: 1 })),
-          fc.context(),
-          (generatedValue, context, biasFactor, maxShrinks, shrunkValuesLevels, shrinkingPath, ctx) => {
+          (generatedValue, context, biasFactor, maxShrinks, shrunkValuesLevels, shrinkingPath) => {
             // Arrange
             const value = new Value(generatedValue, context);
             const { instance: mrng } = fakeRandom();
@@ -151,13 +156,10 @@ describe('LimitedShrinkArbitrary', () => {
             while (!done) {
               // Shrinking the value until we reach an end
               const shrinkLength: number = shrinkingPath.next().value;
-              ctx.log('shrinking for length=' + shrinkLength);
               const shrinks = arb.shrink(lastValue.value_, lastValue.context);
               for (let i = 0; i !== shrinkLength; ++i) {
-                ctx.log('at i=' + i);
                 const nextShrink = shrinks.next();
                 if (nextShrink.done) {
-                  ctx.log('stopped');
                   done = true;
                   break;
                 }
@@ -170,5 +172,41 @@ describe('LimitedShrinkArbitrary', () => {
         ),
       );
     });
+  });
+});
+
+describe('LimitedShrinkArbitrary (integration)', () => {
+  type Extra = { maxShrinks: number };
+  const extraParameters: fc.Arbitrary<Extra> = fc.record({ maxShrinks: fc.nat() });
+
+  const limitedShrinkBuilder = (extra: Extra) =>
+    new LimitedShrinkArbitrary(new IntegerArbitrary(0, 0x7fffffff), extra.maxShrinks);
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(limitedShrinkBuilder, { extraParameters });
+  });
+
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(limitedShrinkBuilder, { extraParameters });
+  });
+
+  it.each`
+    rawValue | maxShrinks
+    ${251}   | ${0}
+    ${251}   | ${1}
+    ${251}   | ${2}
+    ${251}   | ${3}
+    ${251}   | ${4}
+  `('should be able to shrink $rawValue given constraints maxShrinks:$maxShrinks', ({ rawValue, maxShrinks }) => {
+    // Arrange
+    const arb = new LimitedShrinkArbitrary(new IntegerArbitrary(0, 0x7fffffff), maxShrinks);
+    const value = new Value(rawValue, undefined);
+
+    // Act
+    const renderedTree = renderTree(buildShrinkTree(arb, value, { numItems: 100 })).join('\n');
+
+    // Assert
+    expect(arb.canShrinkWithoutContext(rawValue)).toBe(true);
+    expect(renderedTree).toMatchSnapshot();
   });
 });

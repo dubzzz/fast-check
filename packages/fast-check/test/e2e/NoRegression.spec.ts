@@ -402,6 +402,16 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it('limitShrink', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.limitShrink(fc.nat(), { maxShrinks: 4 }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('int8Array', () => {
     expect(
       runWithSanitizedStack(() =>
