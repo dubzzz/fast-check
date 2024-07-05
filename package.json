@@ -28,14 +28,14 @@
   "devDependencies": {
     "@eslint/js": "^9.5.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^7.14.1",
+    "@typescript-eslint/utils": "^7.15.0",
     "all-contributors-cli": "^6.26.1",
     "eslint": "^9.5.0",
     "eslint-config-prettier": "^9.1.0",
-    "globals": "^15.6.0",
+    "globals": "^15.7.0",
     "prettier": "3.3.2",
     "publint": "^0.2.8",
-    "typescript": "~5.5.2",
-    "typescript-eslint": "^7.14.1"
+    "typescript": "~5.5.3",
+    "typescript-eslint": "^7.15.0"
   }
 }
