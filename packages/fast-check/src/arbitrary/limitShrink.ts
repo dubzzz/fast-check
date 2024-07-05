@@ -24,6 +24,10 @@ export type LimitShrinkConstraints = {
  * // up to 10 shrunk values could be extracted from the resulting arbitrary
  * ```
  *
+ * NOTE: While limiting shrinking capabilities might be appealing to make your CI faster in case of failures,
+ * we don't recommend to use it for that purpose. If you care about shrinking time of your automated jobs or
+ * local executions, you should rather look for `endOnFailure` or `interruptAfterTimeLimit`.
+ *
  * @returns Create another arbitrary with limited number of shrink values
  * @remarks Since 3.20.0
  */
