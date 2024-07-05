@@ -161,6 +161,12 @@ Available since 3.20.0.
 
 Drop shrinking capabilities from an existing arbitrary.
 
+:::warning Avoid dropping shrinking capabilities
+Although dropping the shrinking capabilities can speed up your CI when failures occur, we do not recommend this approach. Instead, if you want to reduce the shrinking time for automated jobs or local runs, consider using `endOnFailure` or `interruptAfterTimeLimit`.
+
+The only potentially legitimate use of dropping shrinking is when creating new complex arbitraries. In such cases, dropping useless parts of the shrinker may prove useful.
+:::
+
 **Signatures:**
 
 - `fc.noShrink(arb)`
