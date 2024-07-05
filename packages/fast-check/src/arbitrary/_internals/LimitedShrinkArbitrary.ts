@@ -2,6 +2,7 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
+import { zipIterableIterators } from './helpers/ZipIterableIterators';
 
 /** @internal */
 export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
@@ -29,7 +30,7 @@ export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
     if (remaining <= 0) {
       return Stream.nil(); // early-exit to avoid potentially expensive computations in .shrink
     }
-    return new Stream(zip(this.arb.shrink(value, originalContext), iotaFrom(currentLength + 1)))
+    return new Stream(zipIterableIterators(this.arb.shrink(value, originalContext), iotaFrom(currentLength + 1)))
       .take(remaining)
       .map((valueAndLength) => this.valueMapper(valueAndLength[0], valueAndLength[1]));
   }
@@ -53,46 +54,6 @@ function* iotaFrom(startValue: number) {
   while (true) {
     yield value;
     ++value;
-  }
-}
-
-type ZippedIterableIteratorValues<ITs extends IterableIterator<unknown>[]> = {
-  [K in keyof ITs]: ITs[K] extends IterableIterator<infer IT> ? IT : unknown;
-};
-
-type ZippedIterableIterator<ITs extends IterableIterator<unknown>[]> = IterableIterator<
-  ZippedIterableIteratorValues<ITs>
->;
-
-function initZippedValues<ITs extends IterableIterator<unknown>[]>(its: ITs) {
-  const vs: IteratorResult<unknown, any>[] = [];
-  for (let index = 0; index !== its.length; ++index) {
-    vs.push(its[index].next());
-  }
-  return vs;
-}
-
-function nextZippedValues<ITs extends IterableIterator<unknown>[]>(its: ITs, vs: IteratorResult<unknown, any>[]) {
-  for (let index = 0; index !== its.length; ++index) {
-    vs[index] = its[index].next();
-  }
-}
-
-function isDoneZippedValues(vs: IteratorResult<unknown, any>[]): boolean {
-  for (let index = 0; index !== vs.length; ++index) {
-    if (vs[index].done) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/** @internal */
-function* zip<ITs extends IterableIterator<unknown>[]>(...its: ITs): ZippedIterableIterator<ITs> {
-  const vs = initZippedValues(its);
-  while (!isDoneZippedValues(vs)) {
-    yield vs.map((v) => v.value) as unknown as ZippedIterableIteratorValues<ITs>;
-    nextZippedValues(its, vs);
   }
 }
 
