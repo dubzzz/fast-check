@@ -157,7 +157,7 @@ jobs:
       - name: Create bundles
         run: yarn pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -344,7 +344,7 @@ jobs:
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
           name: website
           path: website/build/
