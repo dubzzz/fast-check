@@ -197,7 +197,7 @@ The only potentially legitimate use of limiting shrinking is when creating new c
 
 **Signatures:**
 
-- `fc.limitShrink(arb, {maxShrinks})`
+- `fc.limitShrink(arb, maxShrinks)`
 
 **with:**
 
@@ -207,8 +207,8 @@ The only potentially legitimate use of limiting shrinking is when creating new c
 **Usages:**
 
 ```js
-fc.limitShrink(fc.nat(), { maxShrinks: 3 });
-// Examples of generated values: 25, 2147483643, 436087987, 2147483633, 1703130597…
+fc.limitShrink(fc.nat(), 3);
+// Examples of generated values: 487640477, 1460784921, 1601237202, 1623804274, 5…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/limitShrink.html).  
