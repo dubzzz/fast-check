@@ -49,7 +49,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
     });
     it('fc.limitShrink', () => {
       const data = { counter: 0 };
-      fc.assert(fc.property(fc.limitShrink(cloneableWithCount(data), { maxShrinks: 10 }), () => {}));
+      fc.assert(fc.property(fc.limitShrink(cloneableWithCount(data), 10), () => {}));
       expect(data.counter).toEqual(0);
     });
   });
@@ -238,7 +238,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
     it('fc.limitShrink', () => {
       let nonClonedDetected = false;
       const status = fc.check(
-        fc.property(fc.integer(), fc.limitShrink(fc.context(), { maxShrinks: 10 }), fc.integer(), (a, ctx, b) => {
+        fc.property(fc.integer(), fc.limitShrink(fc.context(), 10), fc.integer(), (a, ctx, b) => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;

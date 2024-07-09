@@ -406,7 +406,7 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.limitShrink(fc.nat(), { maxShrinks: 4 }), (v) => testFunc(v)),
+          fc.property(fc.limitShrink(fc.nat(), 4), (v) => testFunc(v)),
           settings,
         ),
       ),

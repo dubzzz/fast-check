@@ -214,7 +214,6 @@ import { stringMatching } from './arbitrary/stringMatching';
 import { noShrink } from './arbitrary/noShrink';
 import { noBias } from './arbitrary/noBias';
 import { limitShrink } from './arbitrary/limitShrink';
-import type { LimitShrinkConstraints } from './arbitrary/limitShrink';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -283,7 +282,6 @@ export type {
   IntegerConstraints,
   JsonSharedConstraints,
   UnicodeJsonSharedConstraints,
-  LimitShrinkConstraints,
   LoremConstraints,
   MixedCaseConstraints,
   NatConstraints,
