@@ -1,0 +1,5 @@
+releases:
+  "@fast-check/vitest": patch
+
+declined:
+  - fast-check
