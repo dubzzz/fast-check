@@ -95,8 +95,7 @@ describe('IntegerArbitrary', () => {
             }
             nextInt.mockReturnValueOnce(mid); // Remark: this value will most of the time be outside of requested range
             const biasNumericRange = vi.spyOn(BiasNumericRangeMock, 'biasNumericRange') as unknown as MockInstance<
-              [min: number, max: number, logLike: (n: number) => number],
-              { min: number; max: number }[]
+              (min: number, max: number, logLike: (n: number) => number) => { min: number; max: number }[]
             >;
             biasNumericRange.mockReturnValueOnce(ranges);
 
