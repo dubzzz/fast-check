@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         id: yarn-cache
         with:
           node-version: '20.x'
@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         id: yarn-cache
         with:
           node-version: '20.x'
@@ -72,7 +72,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -90,7 +90,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -105,7 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -122,7 +122,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -141,7 +141,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -174,7 +174,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -248,7 +248,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
@@ -303,7 +303,7 @@ jobs:
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
           lfs: true
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -359,7 +359,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -430,7 +430,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -599,7 +599,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -638,7 +638,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -677,7 +677,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -716,7 +716,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -755,7 +755,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -794,7 +794,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -833,7 +833,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -872,7 +872,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
