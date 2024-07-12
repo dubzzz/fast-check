@@ -1,6 +1,9 @@
 ---
+sidebar_position: 1
 slug: /tutorials/setting-up-your-test-environment/property-based-testing-with-jest/
 description: Discover how to configure the integration of Property-Based Testing capabilities within Jest. Learn best practices to setup fast-check for it
+sidebar_label: With Jest
+image: /img/socials/fast-check-jest.png
 ---
 
 # Property Based Testing with Jest
