@@ -1,6 +1,6 @@
 # 3.20.0
 
-_TODO Description_
+_New arbitraries to alter shrinking capabilities_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.20.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.19.0...v3.20.0)]
 
 ## Features

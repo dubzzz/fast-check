@@ -1,15 +1,11 @@
 # 0.1.2
 
-_TODO Description_
+_Allow vitest v2 as a peer dependency_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.1...vitest%2Fv0.1.2)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#5108](https://github.com/dubzzz/fast-check/pull/5108)) Bump: Update vitest monorepo to v2 (major)
 
 # 0.1.1
 
