@@ -1,3 +1,16 @@
+# 0.1.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.1...vitest%2Fv0.1.2)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 0.1.1
 
 _Adapt code to new lint rules_

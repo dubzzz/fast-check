@@ -1,3 +1,29 @@
+# 3.20.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.20.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.19.0...v3.20.0)]
+
+## Features
+
+- ([PR#5047](https://github.com/dubzzz/fast-check/pull/5047)) Introduce new `fc.noShrink` arbitrary
+- ([PR#5050](https://github.com/dubzzz/fast-check/pull/5050)) Introduce new `fc.noBias` arbitrary
+- ([PR#5006](https://github.com/dubzzz/fast-check/pull/5006)) Add ability to limit shrink path
+- ([PR#5112](https://github.com/dubzzz/fast-check/pull/5112)) Simplify `limitShrink` before releasing
+
+## Fixes
+
+- ([PR#5013](https://github.com/dubzzz/fast-check/pull/5013)) CI: Drop verbosity flag at unpack step in CI
+- ([PR#5074](https://github.com/dubzzz/fast-check/pull/5074)) CI: Check types with multiple TypeScript
+- ([PR#5015](https://github.com/dubzzz/fast-check/pull/5015)) Doc: Release note for 3.19.0
+- ([PR#5016](https://github.com/dubzzz/fast-check/pull/5016)) Doc: Fix typo in the PR template
+- ([PR#4858](https://github.com/dubzzz/fast-check/pull/4858)) Doc: Update Getting Started section in docs
+- ([PR#5035](https://github.com/dubzzz/fast-check/pull/5035)) Doc: Remove duplicate paragraph in `your-first-race-condition-test.mdx`
+- ([PR#5048](https://github.com/dubzzz/fast-check/pull/5048)) Doc: Add new contributors cindywu and nmay231
+- ([PR#5097](https://github.com/dubzzz/fast-check/pull/5097)) Doc: Add warning on `noShrink`
+- ([PR#5121](https://github.com/dubzzz/fast-check/pull/5121)) Doc: Document integration with other test runners
+
+---
+
 # 3.19.0
 
 _New options to generate unicode strings on objects_
