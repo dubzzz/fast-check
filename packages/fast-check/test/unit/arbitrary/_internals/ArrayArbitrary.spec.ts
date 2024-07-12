@@ -354,7 +354,9 @@ describe('ArrayArbitrary', () => {
             const minLength = Math.min(Math.max(0, value.length - offsetMin), maxGeneratedLength);
             const maxLength = Math.max(Math.min(MaxLengthUpperBound, value.length + offsetMax), maxGeneratedLength);
             const { instance, canShrinkWithoutContext } = fakeArbitrary();
-            canShrinkWithoutContext.mockImplementation((vTest) => value.find((v) => Object.is(v[0], vTest))![1]);
+            canShrinkWithoutContext.mockImplementation(
+              (vTest): vTest is any => value.find((v) => Object.is(v[0], vTest))![1],
+            );
             const data: any[] = [];
             const customSet: CustomSet<Value<any>> = {
               size: () => data.length,

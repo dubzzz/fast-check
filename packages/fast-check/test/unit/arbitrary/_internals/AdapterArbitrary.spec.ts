@@ -22,7 +22,7 @@ describe('AdapterArbitrary', () => {
             generate.mockReturnValueOnce(value);
             const { instance: mrng } = fakeRandom();
             const adapterFunction = vi
-              .fn<[any], AdapterOutput<any>>()
+              .fn<(arg0: any) => AdapterOutput<any>>()
               .mockImplementation((v) => ({ adapted: false, value: v }));
 
             // Act
@@ -54,7 +54,7 @@ describe('AdapterArbitrary', () => {
             generate.mockReturnValueOnce(value);
             const { instance: mrng } = fakeRandom();
             const adapterFunction = vi
-              .fn<[any], AdapterOutput<any>>()
+              .fn<(arg0: any) => AdapterOutput<any>>()
               .mockImplementation(() => ({ adapted: true, value: vAdapted }));
 
             // Act
@@ -89,7 +89,7 @@ describe('AdapterArbitrary', () => {
         const { instance, canShrinkWithoutContext } = fakeArbitrary();
         canShrinkWithoutContext.mockReturnValueOnce(canShrink);
         const adapterFunction = vi
-          .fn<[any], AdapterOutput<any>>()
+          .fn<(arg0: any) => AdapterOutput<any>>()
           .mockImplementation(() => ({ adapted: hasToAdapt, value: vA }));
 
         // Act
@@ -129,7 +129,7 @@ describe('AdapterArbitrary', () => {
             canShrinkWithoutContext.mockReturnValue(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();
             const adapterFunction = vi
-              .fn<[any], AdapterOutput<any>>()
+              .fn<(arg0: any) => AdapterOutput<any>>()
               .mockImplementation((v) => (Object.is(v, vA) ? adaptedA : Object.is(v, vAA) ? adaptedAA : adaptedAB));
 
             // Act
@@ -221,7 +221,7 @@ describe('AdapterArbitrary', () => {
             canShrinkWithoutContext.mockReturnValueOnce(canShrinkIfAdapted);
             const { instance: mrng } = fakeRandom();
             const adapterFunction = vi
-              .fn<[any], AdapterOutput<any>>()
+              .fn<(arg0: any) => AdapterOutput<any>>()
               .mockImplementation((v) =>
                 Object.is(v, vA)
                   ? adaptedA
@@ -287,7 +287,7 @@ describe('AdapterArbitrary', () => {
             const { instance, generate, shrink, canShrinkWithoutContext } = fakeArbitrary();
             shrink.mockReturnValueOnce(Stream.of(valueAA, valueAB));
             const adapterFunction = vi
-              .fn<[any], AdapterOutput<any>>()
+              .fn<(arg0: any) => AdapterOutput<any>>()
               .mockImplementation((v) => (Object.is(v, vAA) ? adaptedAA : adaptedAB));
 
             // Act
