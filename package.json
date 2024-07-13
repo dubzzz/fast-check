@@ -33,7 +33,7 @@
     "eslint": "^9.6.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.8.0",
-    "prettier": "3.3.2",
+    "prettier": "3.3.3",
     "publint": "^0.2.8",
     "typescript": "~5.5.3",
     "typescript-eslint": "^7.16.0"
