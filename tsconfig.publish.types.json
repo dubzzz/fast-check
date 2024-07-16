@@ -4,6 +4,7 @@
     "noEmit": false,
     "declaration": true,
     "emitDeclarationOnly": true,
+    "isolatedDeclarations": true,
     "removeComments": false,
     "sourceMap": false,
     "stripInternal": true

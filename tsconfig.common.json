@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "noEmit": true,
-    "declaration": false,
+    "declaration": true,
+    "isolatedDeclarations": true,
     "incremental": false,
     "sourceMap": true,
     "target": "es2017",
