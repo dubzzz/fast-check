@@ -161,17 +161,6 @@ export abstract class Arbitrary<T> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return new NoShrinkArbitrary(this);
   }
-
-  /**
-   * Create another Arbitrary that cannot be biased
-   *
-   * @param freq - The biased version will be used one time over freq - if it exists
-   * @remarks Since 1.1.0
-   */
-  noBias(): Arbitrary<T> {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return new NoBiasArbitrary(this);
-  }
 }
 
 /** @internal */
@@ -376,25 +365,6 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
     return Stream.nil();
   }
   noShrink() {
-    return this;
-  }
-}
-
-/** @internal */
-class NoBiasArbitrary<T> extends Arbitrary<T> {
-  constructor(readonly arb: Arbitrary<T>) {
-    super();
-  }
-  generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
-    return this.arb.generate(mrng, undefined);
-  }
-  canShrinkWithoutContext(value: unknown): value is T {
-    return this.arb.canShrinkWithoutContext(value);
-  }
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
-    return this.arb.shrink(value, context);
-  }
-  noBias() {
     return this;
   }
 }
