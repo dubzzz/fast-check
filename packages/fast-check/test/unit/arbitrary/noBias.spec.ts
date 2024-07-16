@@ -70,7 +70,7 @@ describe('noBias', () => {
     const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
 
     // Act
-    const firstNoBias = noBias(fakeArbitrary)
+    const firstNoBias = noBias(fakeArbitrary);
     // @ts-ignore
     firstNoBias.generate = () => {}; // evil!
     const secondNoBias = noBias(firstNoBias);
