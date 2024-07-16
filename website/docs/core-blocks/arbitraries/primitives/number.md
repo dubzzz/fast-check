@@ -130,7 +130,7 @@ It always generates valid 32-bit floating point values.
 **Signatures:**
 
 - `fc.float()`
-- `fc.float({min?, max?, noDefaultInfinity?, noNaN?})`
+- `fc.float({min?, max?, minExcluded?, maxExcluded?, noDefaultInfinity?, noNaN?, noInteger?})`
 
 **with:**
 
@@ -190,7 +190,7 @@ The lower and upper bounds are included into the range of possible values.
 **Signatures:**
 
 - `fc.double()`
-- `fc.double({min?, max?, noDefaultInfinity?, noNaN?})`
+- `fc.double({min?, max?, minExcluded?, maxExcluded?, noDefaultInfinity?, noNaN?, noInteger?})`
 
 **with:**
 
