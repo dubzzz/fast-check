@@ -17,7 +17,6 @@ const stableObjectGetPrototypeOf = Object.getPrototypeOf;
  * @public
  */
 export function noBias<T>(arb: Arbitrary<T>): Arbitrary<T> {
-   
   if (
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     stableObjectGetPrototypeOf(arb) === NoBiasArbitrary.prototype &&
