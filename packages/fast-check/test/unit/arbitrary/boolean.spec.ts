@@ -4,6 +4,7 @@ import { boolean } from '../../../src/arbitrary/boolean';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
+import * as NoBiasMock from '../../../src/arbitrary/noBias';
 
 function beforeEachHook() {
   vi.resetModules();
@@ -56,11 +57,12 @@ describe('boolean', () => {
 
 function prepare() {
   const { instance, map } = fakeArbitrary<number>();
-  const { instance: mappedInstance, noBias } = fakeArbitrary<boolean>();
+  const { instance: mappedInstance } = fakeArbitrary<boolean>();
   const { instance: unbiasedInstance } = fakeArbitrary<boolean>();
+  map.mockReturnValue(mappedInstance);
   const integer = vi.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
-  map.mockReturnValue(mappedInstance);
+  const noBias = vi.spyOn(NoBiasMock, 'noBias');
   noBias.mockReturnValue(unbiasedInstance);
   return { map, integer, unbiasedInstance };
 }
