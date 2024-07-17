@@ -3350,7 +3350,6 @@ exports[`NoRegression > limitShrink 1`] = `
 { seed: 42, path: "1:2", endOnFailure: true }
 Counterexample: [864744596]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
 
 Execution summary:
 [32m√[0m [2147483626]
