@@ -3,6 +3,8 @@ import { Value } from '../check/arbitrary/definition/Value';
 import { Random } from '../random/generator/Random';
 import { Stream } from '../stream/Stream';
 
+const stableObjectGetPrototypeOf = Object.getPrototypeOf;
+
 /**
  * Build an arbitrary without any bias.
  *
@@ -16,7 +18,10 @@ import { Stream } from '../stream/Stream';
  */
 export function noBias<T>(arb: Arbitrary<T>): Arbitrary<T> {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  if (Object.getPrototypeOf(arb) === NoBiasArbitrary.prototype && arb.generate === NoBiasArbitrary.prototype.generate) {
+  if (
+    stableObjectGetPrototypeOf(arb) === NoBiasArbitrary.prototype &&
+    arb.generate === NoBiasArbitrary.prototype.generate
+  ) {
     return arb;
   }
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
