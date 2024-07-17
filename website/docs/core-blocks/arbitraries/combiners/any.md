@@ -305,21 +305,3 @@ fc.nat().chain((min) => fc.tuple(fc.constant(min), fc.integer({ min, max: 0xffff
 
 Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#chain).  
 Available since 1.2.0.
-
-## .noShrink
-
-Drop shrinking capabilities from an existing arbitrary.
-
-**Signatures:**
-
-- `.noShrink()` — _deprecated since v3.20.0 ([#5047](https://github.com/dubzzz/fast-check/pull/5047))_
-
-**Usages:**
-
-```js
-fc.nat().noShrink();
-// Examples of generated values: 3, 633829028, 2147483625, 1617246126, 25…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#noShrink).  
-Available since 0.0.9.

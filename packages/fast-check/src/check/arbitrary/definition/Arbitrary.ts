@@ -143,24 +143,6 @@ export abstract class Arbitrary<T> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return new ChainArbitrary(this, chainer);
   }
-
-  /**
-   * Create another Arbitrary with no shrink values
-   *
-   * @example
-   * ```typescript
-   * const dataGenerator: Arbitrary<string> = ...;
-   * const unshrinkableDataGenerator: Arbitrary<string> = dataGenerator.noShrink();
-   * // same values no shrink
-   * ```
-   *
-   * @returns Create another arbitrary with no shrink values
-   * @remarks Since 0.0.9
-   */
-  noShrink(): Arbitrary<T> {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return new NoShrinkArbitrary(this);
-  }
 }
 
 /** @internal */
@@ -347,25 +329,6 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
   }
   private refinementOnValue(v: Value<T>): v is Value<U> {
     return this.refinement(v.value);
-  }
-}
-
-/** @internal */
-class NoShrinkArbitrary<T> extends Arbitrary<T> {
-  constructor(readonly arb: Arbitrary<T>) {
-    super();
-  }
-  generate(mrng: Random, biasFactor: number | undefined): Value<T> {
-    return this.arb.generate(mrng, biasFactor);
-  }
-  canShrinkWithoutContext(value: unknown): value is T {
-    return this.arb.canShrinkWithoutContext(value);
-  }
-  shrink(_value: T, _context?: unknown): Stream<Value<T>> {
-    return Stream.nil();
-  }
-  noShrink() {
-    return this;
   }
 }
 
