@@ -1,7 +1,7 @@
 import { describe, it, vi, expect } from 'vitest';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../src/stream/Stream';
+import type { Value } from '../../../src/check/arbitrary/definition/Value';
+import type { Stream } from '../../../src/stream/Stream';
 import { noBias } from '../../../src/arbitrary/noBias';
 import * as stubRng from '../stubs/generators';
 
@@ -71,8 +71,8 @@ describe('noBias', () => {
 
     // Act
     const firstNoBias = noBias(fakeArbitrary);
-    // @ts-ignore
-    firstNoBias.generate = () => {}; // evil!
+    // @ts-expect-error - Evil inplace override of a method
+    firstNoBias.generate = () => {};
     const secondNoBias = noBias(firstNoBias);
 
     // Assert

@@ -1,7 +1,7 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { Value } from '../check/arbitrary/definition/Value';
-import { Random } from '../random/generator/Random';
-import { Stream } from '../stream/Stream';
+import type { Value } from '../check/arbitrary/definition/Value';
+import type { Random } from '../random/generator/Random';
+import type { Stream } from '../stream/Stream';
 
 const stableObjectGetPrototypeOf = Object.getPrototypeOf;
 
@@ -17,9 +17,11 @@ const stableObjectGetPrototypeOf = Object.getPrototypeOf;
  * @public
  */
 export function noBias<T>(arb: Arbitrary<T>): Arbitrary<T> {
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+   
   if (
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     stableObjectGetPrototypeOf(arb) === NoBiasArbitrary.prototype &&
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     arb.generate === NoBiasArbitrary.prototype.generate
   ) {
     return arb;
