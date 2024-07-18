@@ -64,6 +64,7 @@ const config: Config = {
         { to: '/docs/introduction/', label: 'Documentation' },
         { to: '/docs/tutorials/quick-start/', label: 'Quick Start' },
         { to: '/docs/tutorials/', label: 'All Tutorials' },
+        { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
         { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
         {
