@@ -27,7 +27,7 @@ export default function HomepageHeader() {
               <img
                 src="https://img.shields.io/github/stars/dubzzz/fast-check?style=social"
                 alt="number of stars"
-                width={82}
+                width={90}
                 height={20}
               />
             </a>
