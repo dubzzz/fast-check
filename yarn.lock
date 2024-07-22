@@ -9497,7 +9497,7 @@ __metadata:
     pure-rand: "npm:^6.1.0"
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^8.1.0"
-    typedoc: "npm:^0.26.4"
+    typedoc: "npm:^0.26.5"
     typescript: "npm:~5.5.3"
     vitest: "npm:^2.0.3"
   languageName: unknown
@@ -18535,7 +18535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.26.4":
+"typedoc@npm:^0.26.5":
   version: 0.26.5
   resolution: "typedoc@npm:0.26.5"
   dependencies:
