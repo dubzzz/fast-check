@@ -72,19 +72,19 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.24.8",
+    "@babel/core": "^7.24.9",
     "@babel/preset-env": "^7.24.8",
     "@babel/preset-typescript": "^7.24.7",
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.14.11",
     "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jest-jasmine2": "^29.7.0",
-    "typescript": "~5.5.3"
+    "typescript": "~5.5.4"
   },
   "keywords": [
     "jest",

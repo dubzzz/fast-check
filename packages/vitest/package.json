@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/vitest",
   "description": "Property based testing for Vitest based on fast-check",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "main": "lib/vitest-fast-check.js",
   "exports": {
@@ -50,17 +50,17 @@
     "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.8",
+    "@babel/core": "^7.24.9",
     "@babel/preset-typescript": "^7.24.7",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.14.11",
     "babel-jest": "^29.7.0",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
-    "typescript": "~5.5.3",
-    "vite": "^5.3.3",
-    "vitest": "^2.0.2"
+    "typescript": "~5.5.4",
+    "vite": "^5.3.4",
+    "vitest": "^2.0.4"
   },
   "keywords": [
     "vitest",
