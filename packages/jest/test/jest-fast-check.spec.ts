@@ -596,7 +596,7 @@ async function writeToFile(
   const specFileSeed = Math.random().toString(16).substring(2);
 
   // Prepare test file itself
-  const specFileName = `generated-${specFileSeed}-${++num}.spec.js`;
+  const specFileName = `generated-${specFileSeed}-${++num}.spec.cjs`;
   const specFilePath = path.join(generatedTestsDirectory, specFileName);
   const fileContentString = String(fileContent);
   const wrapInDescribeIfNeeded =
@@ -626,7 +626,7 @@ async function writeToFile(
     );
 
   // Prepare jest config itself
-  const jestConfigName = `jest.config-${specFileSeed}.js`;
+  const jestConfigName = `jest.config-${specFileSeed}.cjs`;
   const jestConfigRelativePath = `test/${generatedTestsDirectoryName}/${jestConfigName}`;
   const jestConfigPath = path.join(generatedTestsDirectory, jestConfigName);
 
