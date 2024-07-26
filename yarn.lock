@@ -1516,7 +1516,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.20.2, @babel/preset-env@npm:^7.22.9, @babel/preset-env@npm:^7.23.3, @babel/preset-env@npm:^7.24.8":
+"@babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.20.2, @babel/preset-env@npm:^7.22.9, @babel/preset-env@npm:^7.23.3":
   version: 7.24.8
   resolution: "@babel/preset-env@npm:7.24.8"
   dependencies:
@@ -1831,13 +1831,13 @@ __metadata:
   linkType: hard
 
 "@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.7.1":
-  version: 6.28.6
-  resolution: "@codemirror/view@npm:6.28.6"
+  version: 6.28.4
+  resolution: "@codemirror/view@npm:6.28.4"
   dependencies:
     "@codemirror/state": "npm:^6.4.0"
     style-mod: "npm:^4.1.0"
     w3c-keyname: "npm:^2.2.4"
-  checksum: 10c0/aaf0cd3959d846bb70cb760832c6dd2b74531d7d45d79b7bc10360ab8b0543234db3c04f6e56cee2d99b33057fc229f977e0f0f0c52be4cbd855b779d86e5a68
+  checksum: 10c0/a9b34fd6b34f0cc44b5d2b7c3eba6550ee6aab2dafe1339ed04fa53d7ac67c7fdb69fc9c5618b6dec5136c68e7695f0199066d262fb483873bffae7ff3f4bcc4
   languageName: node
   linkType: hard
 
@@ -2798,7 +2798,6 @@ __metadata:
   resolution: "@fast-check/jest@workspace:packages/jest"
   dependencies:
     "@babel/core": "npm:^7.24.9"
-    "@babel/preset-env": "npm:^7.24.8"
     "@babel/preset-typescript": "npm:^7.24.7"
     "@fast-check/worker": "workspace:*"
     "@jest/expect": "npm:^29.7.0"
