@@ -73,7 +73,9 @@ describe('uuidV', () => {
 
 describe('uuidV (integration)', () => {
   type Extra = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
-  const extraParameters: fc.Arbitrary<Extra> = fc.constantFrom(...([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as const));
+  const extraParameters: fc.Arbitrary<Extra> = fc.constantFrom(
+    ...([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as const),
+  );
 
   const isCorrect = (u: string, extra: Extra) => {
     expect(u).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-9a-f][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);

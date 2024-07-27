@@ -13,7 +13,9 @@ import { paddedEightsToUuidMapper, paddedEightsToUuidUnmapper } from './_interna
  * @remarks Since 1.17.0
  * @public
  */
-export function uuidV(versionNumber: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15): Arbitrary<string> {
+export function uuidV(
+  versionNumber: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15,
+): Arbitrary<string> {
   const padded = buildPaddedNumberArbitrary(0, 0xffffffff);
   const offsetSecond = versionNumber * 0x10000000;
   const secondPadded = buildPaddedNumberArbitrary(offsetSecond, offsetSecond + 0x0fffffff);
