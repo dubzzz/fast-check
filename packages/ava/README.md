@@ -131,4 +131,5 @@ testProp('should reach terminal state', [fc.string()], (t, received) => {
 
 | @fast-check/ava | AVA     | fast-check |
 | --------------- | ------- | ---------- |
+| ^2.0.0          | >=4.0.0 | ^3.0.0     |
 | ^1.0.0          | >=4.0.0 | ^3.0.0     |
