@@ -116,6 +116,7 @@ test.prop([fc.constant(null)])('should pass', (value) => {
 
 | @fast-check/jest | jest                                    | fast-check | node                                                                                  |
 | ---------------- | --------------------------------------- | ---------- | ------------------------------------------------------------------------------------- |
+| ^2.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20 |
 | ^1.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20 |
 
 - (1) any version of `jest` should be greater or equal than 26.5.0 if you are using `commonjs`
