@@ -77,7 +77,7 @@ describe('uuidV (integration)', () => {
 
   const isCorrect = (u: string, extra: Extra) => {
     expect(u).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-9a-f][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
-    expect(u[14]).toBe(extra.toString(16));
+    expect(parseInt(u[14], 16)).toBe(extra);
   };
 
   const uuidVBuilder = (extra: Extra) => uuidV(extra);
