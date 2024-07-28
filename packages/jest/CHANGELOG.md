@@ -1,11 +1,7 @@
 # 2.0.1
 
-_TODO Description_
+_Document minimum requirements of 2.x_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.0.0...jest%2Fv2.0.1)]
-
-## Features
-
-
 
 ## Fixes
 
