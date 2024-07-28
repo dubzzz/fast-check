@@ -1,3 +1,16 @@
+# 2.0.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.0.0...jest%2Fv2.0.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5171](https://github.com/dubzzz/fast-check/pull/5171)) Doc: Document minimum requirements of 2.x
+
 # 2.0.0
 
 _ES Module version by default_
