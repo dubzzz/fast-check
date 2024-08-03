@@ -63,7 +63,7 @@
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.47.5",
     "@types/node": "^20.14.13",
-    "@vitest/coverage-v8": "^2.0.4",
+    "@vitest/coverage-v8": "^2.0.5",
     "cross-env": "^7.0.3",
     "glob": "^11.0.0",
     "not-node-buffer": "npm:buffer@^6.0.3",
@@ -71,7 +71,7 @@
     "replace-in-file": "^8.1.0",
     "typedoc": "^0.26.5",
     "typescript": "~5.5.4",
-    "vitest": "^2.0.4"
+    "vitest": "^2.0.5"
   },
   "keywords": [
     "property-based testing",
