@@ -1,12 +1,15 @@
-import { safeNumberToString, Error, safeSubstring } from '../../../utils/globals';
+import { Error, safeSubstring } from '../../../utils/globals';
+
+/** @internal */
+const quickNumberToHexaString = '0123456789abcdef';
 
 /** @internal */
 export function buildVersionsAppliersForUuid(versions: number[]) {
   const mapping: Record<string, string> = {};
   const reversedMapping: Record<string, string> = {};
   for (let index = 0; index !== versions.length; ++index) {
-    const from = safeNumberToString(index, 16);
-    const to = safeNumberToString(versions[index], 16);
+    const from = quickNumberToHexaString[index];
+    const to = quickNumberToHexaString[versions[index]];
     mapping[from] = to;
     reversedMapping[to] = from;
   }
