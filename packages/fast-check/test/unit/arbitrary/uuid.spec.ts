@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { uuid } from '../../../src/arbitrary/uuid';
+import { uuid, UuidConstraints } from '../../../src/arbitrary/uuid';
 import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
+import fc from 'fast-check';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer';
 import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
@@ -53,25 +54,46 @@ describe('uuid', () => {
 });
 
 describe('uuid (integration)', () => {
-  const isCorrect = (u: string) => {
-    expect(u).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  type Extra = UuidConstraints;
+  const extraParameters: fc.Arbitrary<Extra> = fc.record(
+    {
+      version: fc.oneof(
+        fc.constantFrom(...([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as const)),
+        fc.uniqueArray(fc.constantFrom(...([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as const)), {
+          minLength: 1,
+        }),
+      ),
+    },
+    { requiredKeys: [] },
+  );
+
+  const isCorrect = (u: string, extra: Extra) => {
+    expect(u).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-9a-f][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    const versions =
+      extra.version !== undefined
+        ? typeof extra.version === 'number'
+          ? [extra.version]
+          : extra.version
+        : [1, 2, 3, 4, 5];
+    const versionInValue = u[14];
+    expect(versions.map((v) => v.toString(16))).toContain(versionInValue);
   };
 
-  const uuidVBuilder = () => uuid();
+  const uuidBuilder = (extra: Extra) => uuid(extra);
 
   it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(uuidVBuilder);
+    assertProduceSameValueGivenSameSeed(uuidBuilder, { extraParameters });
   });
 
   it('should only produce correct values', () => {
-    assertProduceCorrectValues(uuidVBuilder, isCorrect);
+    assertProduceCorrectValues(uuidBuilder, isCorrect, { extraParameters });
   });
 
   it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(uuidVBuilder);
+    assertProduceValuesShrinkableWithoutContext(uuidBuilder, { extraParameters });
   });
 
   it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(uuidVBuilder);
+    assertShrinkProducesSameValueWithoutInitialContext(uuidBuilder, { extraParameters });
   });
 });
