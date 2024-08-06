@@ -4,7 +4,10 @@ import { Error, safeSubstring } from '../../../utils/globals';
 const quickNumberToHexaString = '0123456789abcdef';
 
 /** @internal */
-export function buildVersionsAppliersForUuid(versions: number[]) {
+export function buildVersionsAppliersForUuid(versions: number[]): {
+  versionsApplierMapper: (value: string) => string;
+  versionsApplierUnmapper: (value: unknown) => string;
+} {
   const mapping: Record<string, string> = {};
   const reversedMapping: Record<string, string> = {};
   for (let index = 0; index !== versions.length; ++index) {

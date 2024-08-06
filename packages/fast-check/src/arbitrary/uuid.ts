@@ -24,7 +24,7 @@ export interface UuidConstraints {
 /** @internal */
 function assertValidVersions(versions: number[]) {
   const found: { [key: number]: true | undefined } = {};
-  for (let version of versions) {
+  for (const version of versions) {
     // Check no duplicates
     if (found[version]) {
       throw new Error(`Version ${version} has been requested at least twice for uuid`);

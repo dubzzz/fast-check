@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { uuid, UuidConstraints } from '../../../src/arbitrary/uuid';
+import type { UuidConstraints } from '../../../src/arbitrary/uuid';
+import { uuid } from '../../../src/arbitrary/uuid';
 import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import fc from 'fast-check';
 
