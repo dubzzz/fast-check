@@ -55,7 +55,7 @@ export class Stream<T> implements IterableIterator<T> {
   next(): IteratorResult<T> {
     return this.g.next();
   }
-  [safeSymbolIterator](): IterableIterator<T> {
+  [Symbol.iterator](): IterableIterator<T> {
     // /*DEBUG*/ this.closeCurrentStream();
     return this.g;
   }
