@@ -1,10 +1,11 @@
+import type {
+  WithAsyncToStringMethod,
+  WithToStringMethod} from '../../../utils/stringify';
 import {
   asyncToStringMethod,
   hasAsyncToStringMethod,
   hasToStringMethod,
-  toStringMethod,
-  WithAsyncToStringMethod,
-  WithToStringMethod,
+  toStringMethod
 } from '../../../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import type { ICommand } from '../command/ICommand';
