@@ -60,7 +60,7 @@ UUID values for a specific UUID version (only 1 to 15) only digits in 0-9a-f.
 
 **Signatures:**
 
-- `fc.uuidV(version)`
+- `fc.uuidV(version)` — _deprecated since v3.21.0 ([#5103](https://github.com/dubzzz/fast-check/issues/5103))_
 
 **with:**
 

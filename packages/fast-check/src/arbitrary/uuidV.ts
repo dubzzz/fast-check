@@ -10,6 +10,7 @@ import { paddedEightsToUuidMapper, paddedEightsToUuidUnmapper } from './_interna
  *
  * No mixed case, only lower case digits (0-9a-f)
  *
+ * @deprecated Prefer using {@link uuid}
  * @remarks Since 1.17.0
  * @public
  */
