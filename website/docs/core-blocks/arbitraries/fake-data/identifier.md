@@ -56,7 +56,7 @@ Available since 1.17.0.
 
 ### uuidV
 
-UUID values for a specific UUID version (only 1 to 5) only digits in 0-9a-f.
+UUID values for a specific UUID version (only 1 to 15) only digits in 0-9a-f.
 
 **Signatures:**
 
@@ -64,7 +64,7 @@ UUID values for a specific UUID version (only 1 to 5) only digits in 0-9a-f.
 
 **with:**
 
-- `version` — _version of the uuid to produce: 1, 2, 3, 4 or 5_
+- `version` — _version of the uuid to produce: 1, 2, 3, 4, 5... or 15_
 
 **Usages:**
 
