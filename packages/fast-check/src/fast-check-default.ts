@@ -126,6 +126,7 @@ import { shuffledSubarray } from './arbitrary/shuffledSubarray';
 import { tuple } from './arbitrary/tuple';
 import { ulid } from './arbitrary/ulid';
 import { uuid } from './arbitrary/uuid';
+import type { UuidConstraints } from './arbitrary/uuid';
 import { uuidV } from './arbitrary/uuidV';
 import type { WebAuthorityConstraints } from './arbitrary/webAuthority';
 import { webAuthority } from './arbitrary/webAuthority';
@@ -295,6 +296,7 @@ export type {
   UniqueArrayConstraintsRecommended,
   UniqueArrayConstraintsCustomCompare,
   UniqueArrayConstraintsCustomCompareSelect,
+  UuidConstraints,
   SparseArrayConstraints,
   StringMatchingConstraints,
   StringSharedConstraints,

@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "yarn@4.3.1",
+  "packageManager": "yarn@4.4.0",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -26,16 +26,16 @@
     "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
-    "@eslint/js": "^9.7.0",
+    "@eslint/js": "^9.8.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^7.17.0",
+    "@typescript-eslint/utils": "^7.18.0",
     "all-contributors-cli": "^6.26.1",
-    "eslint": "^9.7.0",
+    "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.1.0",
-    "globals": "^15.8.0",
+    "globals": "^15.9.0",
     "prettier": "3.3.3",
     "publint": "^0.2.9",
     "typescript": "~5.5.4",
-    "typescript-eslint": "^7.17.0"
+    "typescript-eslint": "^7.18.0"
   }
 }
