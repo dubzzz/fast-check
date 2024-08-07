@@ -1,6 +1,6 @@
 # 3.21.0
 
-_TODO Description_
+_Support customisable versions on `uuid`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.21.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.20.0...v3.21.0)]
 
 ## Features
