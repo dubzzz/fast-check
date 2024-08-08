@@ -2869,7 +2869,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     typescript: "npm:~5.5.4"
-    vite: "npm:^5.3.5"
+    vite: "npm:^5.4.0"
     vitest: "npm:^2.0.5"
   peerDependencies:
     vitest: ">=0.28.1 <1.0.0 || ^1 || ^2"
@@ -15722,14 +15722,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.21, postcss@npm:^8.4.24, postcss@npm:^8.4.26, postcss@npm:^8.4.33, postcss@npm:^8.4.38, postcss@npm:^8.4.39":
-  version: 8.4.40
-  resolution: "postcss@npm:8.4.40"
+"postcss@npm:^8.4.21, postcss@npm:^8.4.24, postcss@npm:^8.4.26, postcss@npm:^8.4.33, postcss@npm:^8.4.38, postcss@npm:^8.4.40":
+  version: 8.4.41
+  resolution: "postcss@npm:8.4.41"
   dependencies:
     nanoid: "npm:^3.3.7"
     picocolors: "npm:^1.0.1"
     source-map-js: "npm:^1.2.0"
-  checksum: 10c0/65ed67573e5443beaeb582282ff27a6be7c7fe3b4d9fa15761157616f2b97510cb1c335023c26220b005909f007337026d6e3ff092f25010b484ad484e80ea7f
+  checksum: 10c0/c1828fc59e7ec1a3bf52b3a42f615dba53c67960ed82a81df6441b485fe43c20aba7f4e7c55425762fd99c594ecabbaaba8cf5b30fd79dfec5b52a9f63a2d690
   languageName: node
   linkType: hard
 
@@ -19019,19 +19019,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.0.0, vite@npm:^5.3.5":
-  version: 5.3.5
-  resolution: "vite@npm:5.3.5"
+"vite@npm:^5.0.0, vite@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "vite@npm:5.4.0"
   dependencies:
     esbuild: "npm:^0.21.3"
     fsevents: "npm:~2.3.3"
-    postcss: "npm:^8.4.39"
+    postcss: "npm:^8.4.40"
     rollup: "npm:^4.13.0"
   peerDependencies:
     "@types/node": ^18.0.0 || >=20.0.0
     less: "*"
     lightningcss: ^1.21.0
     sass: "*"
+    sass-embedded: "*"
     stylus: "*"
     sugarss: "*"
     terser: ^5.4.0
@@ -19047,6 +19048,8 @@ __metadata:
       optional: true
     sass:
       optional: true
+    sass-embedded:
+      optional: true
     stylus:
       optional: true
     sugarss:
@@ -19055,7 +19058,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/795c7e0dbc94b96c4a0aff0d5d4b349dd28ad8b7b70979c1010f96b4d83f7d6c1700ebd6fed91de2e021b0a3689b9abc2d8017f6dfa8c9a6ca5c7af637d6afc6
+  checksum: 10c0/122de7795e1c3c08cd0acc7d77296f908398266b424492be7310400107f37a3cf4c9506f2b4b16619e57299ca2859b8ca187aac5e25f8e66d84f9204a1d72d18
   languageName: node
   linkType: hard
 
