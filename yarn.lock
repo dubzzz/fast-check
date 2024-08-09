@@ -2299,16 +2299,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/remark-plugin-npm2yarn@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@docusaurus/remark-plugin-npm2yarn@npm:3.4.0"
+"@docusaurus/remark-plugin-npm2yarn@npm:3.5.0":
+  version: 3.5.0
+  resolution: "@docusaurus/remark-plugin-npm2yarn@npm:3.5.0"
   dependencies:
     mdast-util-mdx: "npm:^3.0.0"
     npm-to-yarn: "npm:^2.2.1"
     tslib: "npm:^2.6.0"
     unified: "npm:^11.0.3"
     unist-util-visit: "npm:^5.0.0"
-  checksum: 10c0/b7d69921f3c6e17b04641a6749805ae0d16927c8d5f2541c047dd0933818d140c49c8117f07301196dbb7fdb333c42d2c1a51be5a51458028cb81d5ec5a7fcfc
+  checksum: 10c0/03af93b8066f1a5556a9a4247077f052fbd756bfa581db325cba17da2aa126bb6878c14f071f9ee25ba3b3d13cec099e70d76c6943f16900397855e56da1d435
   languageName: node
   linkType: hard
 
@@ -19360,7 +19360,7 @@ __metadata:
     "@docusaurus/module-type-aliases": "npm:3.4.0"
     "@docusaurus/plugin-pwa": "npm:3.4.0"
     "@docusaurus/preset-classic": "npm:3.4.0"
-    "@docusaurus/remark-plugin-npm2yarn": "npm:3.4.0"
+    "@docusaurus/remark-plugin-npm2yarn": "npm:3.5.0"
     "@docusaurus/theme-classic": "npm:3.4.0"
     "@docusaurus/tsconfig": "npm:3.4.0"
     "@docusaurus/types": "npm:3.4.0"
