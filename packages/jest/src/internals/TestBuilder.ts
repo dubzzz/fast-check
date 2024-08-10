@@ -138,7 +138,7 @@ export type FastCheckItBuilder<T> = T &
 /**
  * Build the enriched version of {it,test}, the one with added `.prop`
  */
-function enrichWithTestProp<T extends (...args: any[]) => any>(
+export function buildTest<T extends (...args: any[]) => any>(
   testFn: T,
   jest: JestExtra,
   fc: FcExtra,
@@ -148,7 +148,7 @@ function enrichWithTestProp<T extends (...args: any[]) => any>(
   for (const key in testFn) {
     if (typeof testFn[key] === 'function') {
       atLeastOneExtra = true;
-      extraKeys[key] = key !== 'each' ? enrichWithTestProp(testFn[key] as any, jest, fc) : testFn[key];
+      extraKeys[key] = key !== 'each' ? buildTest(testFn[key] as any, jest, fc) : testFn[key];
     }
   }
   if (!atLeastOneExtra) {
@@ -160,5 +160,3 @@ function enrichWithTestProp<T extends (...args: any[]) => any>(
   }
   return Object.assign(enrichedTestFn, extraKeys) as FastCheckItBuilder<T>;
 }
-
-export const buildTest = enrichWithTestProp;
