@@ -6,13 +6,13 @@ const safeMapSet = Map.prototype.set;
 const safeObjectDefineProperty = Object.defineProperty;
 
 /** Alias for Map.prototype.get */
-export const GetSymbol = Symbol('safe.get');
+export const GetSymbol: unique symbol = Symbol('safe.get');
 /** Alias for Map.prototype.has */
-export const HasSymbol = Symbol('safe.has');
+export const HasSymbol: unique symbol = Symbol('safe.has');
 /** Alias for Map.prototype.entries */
-export const EntriesSymbol = Symbol('safe.entries');
+export const EntriesSymbol: unique symbol = Symbol('safe.entries');
 /** Alias for Map.prototype.set */
-export const SetSymbol = Symbol('safe.set');
+export const SetSymbol: unique symbol = Symbol('safe.set');
 
 /** Map instance enriched with aliased methods that cannot be poisoned */
 export type PoisoningFreeMap<K, V> = Map<K, V> & {
