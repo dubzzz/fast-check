@@ -20,7 +20,6 @@ export interface FalsyContraints {
  * @remarks Since 2.2.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type FalsyValue<TConstraints extends FalsyContraints = {}> =
   | false
   | null

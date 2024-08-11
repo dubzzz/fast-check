@@ -51,7 +51,6 @@ export type RecordConstraints<T = unknown> = (
  * @remarks Since 2.2.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type RecordValue<T, TConstraints = {}> = TConstraints extends { withDeletedKeys: boolean; requiredKeys: any[] }
   ? never
   : TConstraints extends { withDeletedKeys: true }

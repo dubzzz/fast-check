@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { expectType, expectTypeAssignable } from '../src/main';
 
 function type<T>() {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 // Just a simple property, compiling a snippet importing fast-check
 // should be enough to ensure that typings will not raise errors regarding incompatible
 // and unknown syntaxes at build time
