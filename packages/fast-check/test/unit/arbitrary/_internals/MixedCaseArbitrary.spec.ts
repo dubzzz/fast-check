@@ -146,13 +146,6 @@ describe('MixedCaseArbitrary', () => {
 });
 
 describe('MixedCaseArbitrary (integration)', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   type Extra = { withoutToggle: boolean };
   const extraParameters: fc.Arbitrary<Extra> = fc.record({ withoutToggle: fc.boolean() });
   const mixedCaseBaseChars = ['A', 'B', '|', '~'];
