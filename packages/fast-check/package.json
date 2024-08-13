@@ -36,7 +36,7 @@
     "e2e": "vitest --config vitest.e2e.config.mjs",
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true vitest --config vitest.documentation.config.mjs",
     "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
-    "test-legacy-bundle": "nvs add 8 && $(nvs which 8) test-bundle/run.cjs && $(nvs which 8) test-bundle/run-advanced.cjs",
+    "test-legacy-bundle": "nvs add 10.5 && $(nvs which 10.5) test-bundle/run.cjs && $(nvs which 10.5) test-bundle/run-advanced.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
     "docs:serve": "yarn dlx serve docs/"
