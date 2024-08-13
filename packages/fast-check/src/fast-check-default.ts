@@ -124,7 +124,6 @@ import { tuple } from './arbitrary/tuple';
 import { ulid } from './arbitrary/ulid';
 import { uuid } from './arbitrary/uuid';
 import type { UuidConstraints } from './arbitrary/uuid';
-import { uuidV } from './arbitrary/uuidV';
 import type { WebAuthorityConstraints } from './arbitrary/webAuthority';
 import { webAuthority } from './arbitrary/webAuthority';
 import type { WebFragmentsConstraints } from './arbitrary/webFragments';
@@ -422,7 +421,6 @@ export {
   emailAddress,
   ulid,
   uuid,
-  uuidV,
   int8Array,
   uint8Array,
   uint8ClampedArray,
