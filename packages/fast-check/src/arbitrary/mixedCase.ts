@@ -43,9 +43,6 @@ function defaultToggleCase(rawChar: string) {
  * @public
  */
 export function mixedCase(stringArb: Arbitrary<string>, constraints?: MixedCaseConstraints): Arbitrary<string> {
-  if (typeof BigInt === 'undefined') {
-    throw new Error(`mixedCase requires BigInt support`);
-  }
   const toggleCase = (constraints && constraints.toggleCase) || defaultToggleCase;
   const untoggleAll = constraints && constraints.untoggleAll;
   return new MixedCaseArbitrary(stringArb, toggleCase, untoggleAll);
