@@ -91,7 +91,7 @@ It comes very useful when dealing with settings.
 
 ```js
 fc.record({
-  id: fc.uuidV(4),
+  id: fc.uuid({ version: 4 }),
   age: fc.nat(99),
 });
 // Examples of generated values:
@@ -104,7 +104,7 @@ fc.record({
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     age: fc.nat(99),
   },
   { requiredKeys: [] },
@@ -120,7 +120,7 @@ fc.record(
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
     age: fc.nat(99),
     birthday: fc.date({ min: new Date('1970-01-01T00:00:00.000Z'), max: new Date('2100-12-31T23:59:59.999Z') }),
@@ -138,7 +138,7 @@ fc.record(
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     age: fc.nat(99),
   },
   { requiredKeys: [] },
@@ -154,7 +154,7 @@ fc.record(
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     age: fc.nat(99),
   },
   { noNullPrototype: true },

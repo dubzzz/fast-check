@@ -726,16 +726,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('uuidV', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.uuidV(4), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('letrec', () => {
     expect(
       runWithSanitizedStack(() =>
