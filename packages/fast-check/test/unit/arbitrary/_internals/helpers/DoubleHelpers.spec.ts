@@ -75,13 +75,6 @@ describe('doubleToIndex', () => {
     );
   });
 
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  } // Following tests require BigInt to be launched
-
   it('should properly compute indexes', () => {
     expect(doubleToIndex(0)).toEqual(toIndex('0'));
     expect(doubleToIndex(Number.MIN_VALUE)).toEqual(toIndex('1'));
@@ -193,13 +186,6 @@ describe('indexToDouble', () => {
         expect(indexToDouble(doubleToIndex(f64))).toBe(f64);
       }),
     ));
-
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  } // Following tests require BigInt to be launched
 
   it('should properly find doubles corresponding to well-known values', () => {
     expect(indexToDouble(toIndex('-9218868437227405313'))).toBe(Number.NEGATIVE_INFINITY);

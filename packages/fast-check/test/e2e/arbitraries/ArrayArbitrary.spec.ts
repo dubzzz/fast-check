@@ -32,9 +32,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual([[5, 5]]);
     });
     biasIts('integer', fc.integer());
-    if (typeof BigInt !== 'undefined') {
-      biasIts('bigint', fc.bigIntN(64));
-    }
+    biasIts('bigint', fc.bigIntN(64));
   });
 });
 

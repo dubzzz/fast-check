@@ -3,13 +3,6 @@ import fc from 'fast-check';
 import { shrinkBigInt } from '../../../../../src/arbitrary/_internals/helpers/ShrinkBigInt';
 
 describe('shrinkBigInt', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   it('should always return empty stream when current equals target', () =>
     fc.assert(
       fc.property(fc.bigInt(), fc.boolean(), (value, tryAsap) => {
