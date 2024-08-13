@@ -27,7 +27,7 @@ describe('app', () => {
       fc.asyncProperty(
         fc.uniqueArray(
           fc.record<User>({
-            id: fc.uuidV(4),
+            id: fc.uuid({ version: 4 }),
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
@@ -84,7 +84,7 @@ describe('app', () => {
       fc.asyncProperty(
         fc.uniqueArray(
           fc.record<User>({
-            id: fc.uuidV(4),
+            id: fc.uuid({ version: 4 }),
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
