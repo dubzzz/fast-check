@@ -877,6 +877,126 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it('bigIntN', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigIntN(100), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigUintN', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigUintN(100), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({min})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16) }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({max})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt({ max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({min, max})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16), max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigUint', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigUint(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigUint({max})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigUint({ max: BigInt(1) << BigInt(96) }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt64Array', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt64Array(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigUint64Array', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigUint64Array(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('mixedCase', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.mixedCase(fc.constant('cCbAabBAcaBCcCACcABaCAaAabBACaBcBb')), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('mixedCase(stringOf)', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.mixedCase(fc.stringOf(fc.constantFrom('a', 'b', 'c'))), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe(`NoRegression (async)`, () => {

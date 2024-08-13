@@ -16,13 +16,6 @@ import {
 } from '../__test-helpers__/ArbitraryAssertions';
 
 describe('arrayInt64', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   const MinArrayIntValue = -(BigInt(2) ** BigInt(64)) + BigInt(1);
   const MaxArrayIntValue = BigInt(2) ** BigInt(64) - BigInt(1);
 
@@ -356,13 +349,6 @@ describe('arrayInt64', () => {
 });
 
 describe('arrayInt64 (integration)', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   type Extra = { min: bigint; max: bigint };
   const MaxArrayIntValue = BigInt(2) ** BigInt(64) - BigInt(1);
   const extraParameters: fc.Arbitrary<Extra> = fc
