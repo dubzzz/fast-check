@@ -2,8 +2,6 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../../src/fast-check';
 import { seed } from '../seed';
 
-declare function BigInt(n: number | bigint | string): bigint;
-
 describe(`ArrayArbitrary (seed: ${seed})`, () => {
   describe('array', () => {
     it('Should shrink on the size of the array', () => {
