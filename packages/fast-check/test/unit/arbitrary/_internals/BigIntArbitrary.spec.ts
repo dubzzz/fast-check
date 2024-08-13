@@ -205,13 +205,6 @@ describe('BigIntArbitrary', () => {
 });
 
 describe('BigIntArbitrary (integration)', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   type Extra = { min: bigint; max: bigint };
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(fc.bigInt(), fc.bigInt())
