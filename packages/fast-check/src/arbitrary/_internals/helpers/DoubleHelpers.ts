@@ -11,7 +11,7 @@ const INDEX_NEGATIVE_INFINITY = -INDEX_POSITIVE_INFINITY - BigInt(1); // doubleT
 
 const num2Pow52 = 0x10000000000000; // Equivalent to 2 ** 52
 const big2Pow52Mask = BigInt(0xfffffffffffff); // Equivalent to 2n ** 52n -1n
-const big2Pow53 = BigInt(0x20000000000000); // Equivalent to 2n ** 53n = 9007199254740992n = 'Number.MAX_SAFE_INTEGER + 1'
+const big2Pow53 = BigInt('9007199254740992'); // Equivalent to 2n ** 53n = 9007199254740992n = 'Number.MAX_SAFE_INTEGER + 1'
 
 const f64 = new Float64Array(1);
 const u32 = new Uint32Array(f64.buffer, f64.byteOffset);
