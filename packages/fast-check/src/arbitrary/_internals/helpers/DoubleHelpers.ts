@@ -1,14 +1,17 @@
-import type { ArrayInt64 } from './ArrayInt64';
-import { clone64, isEqual64 } from './ArrayInt64';
+import { BigInt, Number } from '../../../utils/globals';
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
 const safeEpsilon = Number.EPSILON;
 
 /** @internal */
-const INDEX_POSITIVE_INFINITY: ArrayInt64 = { sign: 1, data: [2146435072, 0] }; // doubleToIndex(Number.MAX_VALUE) + 1;
+const INDEX_POSITIVE_INFINITY = BigInt(2146435072) * BigInt(4294967296); // doubleToIndex(Number.MAX_VALUE) + 1;
 /** @internal */
-const INDEX_NEGATIVE_INFINITY: ArrayInt64 = { sign: -1, data: [2146435072, 1] }; // doubleToIndex(-Number.MAX_VALUE) - 1
+const INDEX_NEGATIVE_INFINITY = -INDEX_POSITIVE_INFINITY - BigInt(1); // doubleToIndex(-Number.MAX_VALUE) - 1
+
+const num2Pow52 = 0x10000000000000; // Equivalent to 2 ** 52
+const big2Pow52Mask = BigInt(0xfffffffffffff); // Equivalent to 2n ** 52n -1n
+const big2Pow53 = BigInt('9007199254740992'); // Equivalent to 2n ** 53n = 9007199254740992n = 'Number.MAX_SAFE_INTEGER + 1'
 
 const f64 = new Float64Array(1);
 const u32 = new Uint32Array(f64.buffer, f64.byteOffset);
@@ -40,19 +43,14 @@ export function decomposeDouble(d: number): { exponent: number; significand: num
 
   const exponent = exponentBits === 0 ? -1022 : exponentBits - 1023;
   let significand = exponentBits === 0 ? 0 : 1;
-  significand += significandBits / 2 ** 52;
+  significand += significandBits * safeEpsilon; // significand += significandBits / 2**52;
   significand *= signBit === 0 ? 1 : -1;
 
   return { exponent, significand };
 }
 
 /** @internal */
-function positiveNumberToInt64(n: number): ArrayInt64['data'] {
-  return [~~(n / 0x100000000), n >>> 0];
-}
-
-/** @internal */
-function indexInDoubleFromDecomp(exponent: number, significand: number): ArrayInt64['data'] {
+function indexInDoubleFromDecomp(exponent: number, significand: number): bigint {
   // WARNING: significand >= 0
 
   // By construct of significand in decomposeDouble,
@@ -64,17 +62,14 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): ArrayIn
   // All other ranges (other exponents) have a length of 2**52 elements.
   if (exponent === -1022) {
     // We want the significand to be an integer value (like an index)
-    const rescaledSignificand = significand * 2 ** 52; // significand * 2**52
-    return positiveNumberToInt64(rescaledSignificand);
+    return BigInt(significand * num2Pow52); // significand * 2**52
   }
   // Offset due to exp = -1022 + Offset of previous exp (excl. -1022) + Offset in current exp
   // 2**53 + (exponent - (-1022) -1) * 2**52 + (significand - 1) * 2**52
   // (exponent + 1023) * 2**52 + (significand - 1) * 2**52
-  const rescaledSignificand = (significand - 1) * 2 ** 52; // (significand-1) * 2**52
-  const exponentOnlyHigh = (exponent + 1023) * 2 ** 20; // (exponent + 1023) * 2**52 => [high: (exponent + 1023) * 2**20, low: 0]
-  const index = positiveNumberToInt64(rescaledSignificand);
-  index[0] += exponentOnlyHigh;
-  return index;
+  const rescaledSignificand = BigInt((significand - 1) * num2Pow52); // (significand-1) * 2**52
+  const exponentOnlyHigh = BigInt(exponent + 1023) << BigInt(52); // (exponent + 1023) * 2**52
+  return rescaledSignificand + exponentOnlyHigh;
 }
 
 /**
@@ -85,27 +80,20 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): ArrayIn
  *
  * @internal
  */
-export function doubleToIndex(d: number): ArrayInt64 {
+export function doubleToIndex(d: number): bigint {
   if (d === safePositiveInfinity) {
-    return clone64(INDEX_POSITIVE_INFINITY);
+    return INDEX_POSITIVE_INFINITY;
   }
   if (d === safeNegativeInfinity) {
-    return clone64(INDEX_NEGATIVE_INFINITY);
+    return INDEX_NEGATIVE_INFINITY;
   }
   const decomp = decomposeDouble(d);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
   if (d > 0 || (d === 0 && 1 / d === safePositiveInfinity)) {
-    return { sign: 1, data: indexInDoubleFromDecomp(exponent, significand) };
+    return indexInDoubleFromDecomp(exponent, significand);
   } else {
-    const indexOpposite = indexInDoubleFromDecomp(exponent, -significand);
-    if (indexOpposite[1] === 0xffffffff) {
-      indexOpposite[0] += 1;
-      indexOpposite[1] = 0;
-    } else {
-      indexOpposite[1] += 1;
-    }
-    return { sign: -1, data: indexOpposite }; // -indexInDoubleFromDecomp(exponent, -significand) - 1
+    return -indexInDoubleFromDecomp(exponent, -significand) - BigInt(1);
   }
 }
 
@@ -116,40 +104,29 @@ export function doubleToIndex(d: number): ArrayInt64 {
  *
  * @internal
  */
-export function indexToDouble(index: ArrayInt64): number {
-  if (index.sign === -1) {
-    const indexOpposite: ArrayInt64 = { sign: 1, data: [index.data[0], index.data[1]] };
-    if (indexOpposite.data[1] === 0) {
-      indexOpposite.data[0] -= 1;
-      indexOpposite.data[1] = 0xffffffff;
-    } else {
-      indexOpposite.data[1] -= 1;
-    }
-    return -indexToDouble(indexOpposite); // -indexToDouble(-index - 1);
+export function indexToDouble(index: bigint): number {
+  if (index < 0) {
+    return -indexToDouble(-index - BigInt(1));
   }
-  if (isEqual64(index, INDEX_POSITIVE_INFINITY)) {
+  if (index === INDEX_POSITIVE_INFINITY) {
     return safePositiveInfinity;
   }
-  if (index.data[0] < 0x200000) {
-    // if: index < 2 ** 53  <--> index[0] < 2 ** (53-32) = 0x20_0000
+  if (index < big2Pow53) {
+    // if: index < 2 ** 53
     // The first 2**53 elements correspond to values having
     // exponent = -1022 and significand = index * Number.EPSILON
     // double value = index * 2 ** -1022 * Number.EPSILON
     //              = index * 2 ** -1022 * 2 ** -52
     //              = index * 2 ** -1074
-    return (index.data[0] * 0x100000000 + index.data[1]) * 2 ** -1074;
+    return Number(index) * 2 ** -1074;
   }
-  const postIndexHigh = index.data[0] - 0x200000; // postIndex = index - 2 ** 53
+  const postIndex = index - big2Pow53;
   // exponent = -1021 + Math.floor(postIndex / 2**52)
-  //          = -1021 + Math.floor(postIndexHigh / 2**(52-32))
-  //          = -1021 + Math.floor(postIndexHigh / 2**20)
-  //          = -1021 + (postIndexHigh >> 20)
-  const exponent = -1021 + (postIndexHigh >> 20);
+  //          = -1021 + (postIndex >> 52)
+  const exponent = -1021 + Number(postIndex >> BigInt(52));
   // significand = 1 + (postIndex % 2**52) / 2**52
-  //             = 1 + ((postIndexHigh * 2**32 + postIndexLow) % 2**52) / 2**52
-  //             = 1 + ((postIndexHigh % 2**20) * 2**32 + postIndexLow) / 2**52
-  //             = 1 + ((postIndexHigh & 0xfffff) * 2**32 + postIndexLow) / 2**52
-  //             = 1 + ((postIndexHigh & 0xfffff) * 2**32 + postIndexLow) * Number.EPSILON
-  const significand = 1 + ((postIndexHigh & 0xfffff) * 2 ** 32 + index.data[1]) * safeEpsilon;
+  //             = 1 + (postIndex % 2**52) * Number.EPSILON
+  //             = 1 + (postIndex & (2**52 -1)) * Number.EPSILON
+  const significand = 1 + Number(postIndex & big2Pow52Mask) * safeEpsilon;
   return significand * 2 ** exponent;
 }

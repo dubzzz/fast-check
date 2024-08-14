@@ -3,8 +3,6 @@ import * as fc from 'fast-check';
 
 import type { DoubleConstraints } from '../../../src/arbitrary/double';
 import { double } from '../../../src/arbitrary/double';
-import type { ArrayInt64 } from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
-import { add64, isEqual64, substract64, Unit64 } from '../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import {
   defaultDoubleRecordConstraints,
   doubleConstraints,
@@ -25,7 +23,7 @@ import {
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/ArbitraryAssertions';
 
-import * as ArrayInt64ArbitraryMock from '../../../src/arbitrary/_internals/ArrayInt64Arbitrary';
+import * as BigIntMock from '../../../src/arbitrary/bigInt';
 
 describe('double', () => {
   declareCleaningHooksForSpies();
@@ -37,7 +35,7 @@ describe('double', () => {
     fc.assert(
       fc.property(doubleConstraints(withoutNoIntegerRecordConstraints), (ct) => {
         // Arrange
-        spyArrayInt64();
+        spyBigInt();
 
         // Act
         const arb = double(ct);
@@ -56,7 +54,7 @@ describe('double', () => {
         (f, otherCt) => {
           // Arrange
           fc.pre(!Number.isNaN(f));
-          spyArrayInt64();
+          spyBigInt();
 
           // Act
           const arb = double({ ...otherCt, min: f, max: f });
@@ -77,7 +75,7 @@ describe('double', () => {
         (f, otherCt, exclusiveMode) => {
           // Arrange
           fc.pre(!Number.isNaN(f));
-          spyArrayInt64();
+          spyBigInt();
 
           // Act / Assert
           expect(() =>
@@ -96,20 +94,20 @@ describe('double', () => {
 
   it('should reject NaN if specified for min', () => {
     // Arrange
-    const arrayInt64 = spyArrayInt64();
+    const bigInt = spyBigInt();
 
     // Act / Assert
     expect(() => double({ min: Number.NaN })).toThrowError();
-    expect(arrayInt64).not.toHaveBeenCalled();
+    expect(bigInt).not.toHaveBeenCalled();
   });
 
   it('should reject NaN if specified for max', () => {
     // Arrange
-    const arrayInt64 = spyArrayInt64();
+    const bigInt = spyBigInt();
 
     // Act / Assert
     expect(() => double({ max: Number.NaN })).toThrowError();
-    expect(arrayInt64).not.toHaveBeenCalled();
+    expect(bigInt).not.toHaveBeenCalled();
   });
 
   it('should reject if specified min is strictly greater than max', () => {
@@ -119,25 +117,25 @@ describe('double', () => {
         fc.pre(!Number.isNaN(da));
         fc.pre(!Number.isNaN(db));
         fc.pre(!Object.is(da, db)); // Object.is can distinguish -0 from 0, while !== cannot
-        const arrayInt64 = spyArrayInt64();
+        const bigInt = spyBigInt();
         const min = isStrictlySmaller(da, db) ? db : da;
         const max = isStrictlySmaller(da, db) ? da : db;
 
         // Act / Assert
         expect(() => double({ min, max })).toThrowError();
-        expect(arrayInt64).not.toHaveBeenCalled();
+        expect(bigInt).not.toHaveBeenCalled();
       }),
     );
   });
 
   it('should reject impossible noDefaultInfinity-based ranges', () => {
     // Arrange
-    const arrayInt64 = spyArrayInt64();
+    const bigInt = spyBigInt();
 
     // Act / Assert
     expect(() => double({ min: Number.POSITIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
     expect(() => double({ max: Number.NEGATIVE_INFINITY, noDefaultInfinity: true })).toThrowError();
-    expect(arrayInt64).not.toHaveBeenCalled();
+    expect(bigInt).not.toHaveBeenCalled();
   });
 
   it('should properly convert integer value for index between min and max into its associated float value', () => {
@@ -159,10 +157,8 @@ describe('double', () => {
           const { min, max } = minMaxForConstraints(ct || {});
           const minIndex = doubleToIndex(min);
           const maxIndex = doubleToIndex(max);
-          const arbitraryGeneratedIndex = toIndex(
-            (mod % (toBigInt(maxIndex) - toBigInt(minIndex) + BigInt(1))) + toBigInt(minIndex),
-          );
-          spyArrayInt64WithValue(() => arbitraryGeneratedIndex);
+          const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + BigInt(1))) + minIndex;
+          spyBigIntWithValue(() => arbitraryGeneratedIndex);
 
           // Act
           const arb = double(ct);
@@ -187,24 +183,28 @@ describe('double', () => {
         fc.property(doubleConstraints(withNaNRecordConstraints), (ct) => {
           // Arrange
           const { max } = minMaxForConstraints(ct);
-          const arrayInt64 = spyArrayInt64();
+          const bigInt = spyBigInt();
 
           // Act
           double({ ...ct, noNaN: true });
           double(ct);
 
           // Assert
-          expect(arrayInt64).toHaveBeenCalledTimes(2);
-          const constraintsNoNaN = arrayInt64.mock.calls[0];
-          const constraintsWithNaN = arrayInt64.mock.calls[1];
+          expect(bigInt).toHaveBeenCalledTimes(2);
+          const constraintsNoNaN = bigInt.mock.calls[0];
+          const constraintsWithNaN = bigInt.mock.calls[1];
           if (max > Number.MIN_VALUE || (max > 0 && !ct.maxExcluded)) {
             // max > 0  --> NaN will be added as the greatest value
-            expect(constraintsWithNaN[0]).toEqual(constraintsNoNaN[0]);
-            expect(constraintsWithNaN[1]).toEqual(add64(constraintsNoNaN[1], Unit64));
+            expect(constraintsWithNaN[0]).toEqual({
+              min: constraintsNoNaN[0].min,
+              max: constraintsNoNaN[0].max! + BigInt(1),
+            });
           } else {
             // max <= 0 --> NaN will be added as the smallest value
-            expect(constraintsWithNaN[0]).toEqual(substract64(constraintsNoNaN[0], Unit64));
-            expect(constraintsWithNaN[1]).toEqual(constraintsNoNaN[1]);
+            expect(constraintsWithNaN[0]).toEqual({
+              min: constraintsNoNaN[0].min! - BigInt(1),
+              max: constraintsNoNaN[0].max,
+            });
           }
         }),
       );
@@ -219,17 +219,21 @@ describe('double', () => {
             // Arrange
             // Setup mocks for integer
             const { instance: mrng } = fakeRandom();
-            const arbitraryGenerated = { value: { sign: 1, data: [Number.NaN, Number.NaN] } as ArrayInt64 };
-            const arrayInt64 = spyArrayInt64WithValue(() => arbitraryGenerated.value);
+            const arbitraryGenerated = {
+              value: (): bigint => {
+                throw new Error('Not ready');
+              },
+            };
+            const bigInt = spyBigIntWithValue(() => arbitraryGenerated.value());
             // Call float next to find out the value required for NaN
             double({ ...ct, noNaN: true });
             const arb = double(ct);
             // Extract NaN "index"
-            const [minNonNaN] = arrayInt64.mock.calls[0];
-            const [minNaN, maxNaN] = arrayInt64.mock.calls[1];
-            const indexForNaN = !isEqual64(minNonNaN, minNaN) ? minNaN : maxNaN;
+            const [{ min: minNonNaN }] = bigInt.mock.calls[0];
+            const [{ min: minNaN, max: maxNaN }] = bigInt.mock.calls[1];
+            const indexForNaN = minNonNaN !== minNaN ? minNaN : maxNaN;
             if (indexForNaN === undefined) throw new Error('No value available for NaN');
-            arbitraryGenerated.value = indexForNaN;
+            arbitraryGenerated.value = () => indexForNaN;
 
             // Act
             const { value_: f } = arb.generate(mrng, biasFactor);
@@ -251,19 +255,19 @@ describe('double', () => {
         fc.property(doubleConstraints(noNaNRecordConstraints), (ctDraft) => {
           // Arrange
           const ct = { ...ctDraft, noNaN: true };
-          const arrayInt64 = spyArrayInt64();
+          const bigInt = spyBigInt();
           const { min, max } = minMaxForConstraints(ct);
           const minIndex = doubleToIndex(min);
           const maxIndex = doubleToIndex(max);
-          const expectedMinIndex = ct.minExcluded ? add64(minIndex, Unit64) : minIndex;
-          const expectedMaxIndex = ct.maxExcluded ? substract64(maxIndex, Unit64) : maxIndex;
+          const expectedMinIndex = ct.minExcluded ? minIndex + BigInt(1) : minIndex;
+          const expectedMaxIndex = ct.maxExcluded ? maxIndex - BigInt(1) : maxIndex;
 
           // Act
           double(ct);
 
           // Assert
-          expect(arrayInt64).toHaveBeenCalledTimes(1);
-          expect(arrayInt64).toHaveBeenCalledWith(expectedMinIndex, expectedMaxIndex);
+          expect(bigInt).toHaveBeenCalledTimes(1);
+          expect(bigInt).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
         }),
       );
     });
@@ -356,18 +360,6 @@ describe('double (integration)', () => {
 
 // Helpers
 
-type Index = ReturnType<typeof doubleToIndex>;
-
-function toIndex(raw: bigint | string): Index {
-  const b = typeof raw === 'string' ? BigInt(raw) : raw;
-  const pb = b < BigInt(0) ? -b : b;
-  return { sign: b < BigInt(0) ? -1 : 1, data: [Number(pb >> BigInt(32)), Number(pb & BigInt(0xffffffff))] };
-}
-
-function toBigInt(index: Index): bigint {
-  return BigInt(index.sign) * ((BigInt(index.data[0]) << BigInt(32)) + BigInt(index.data[1]));
-}
-
 function minMaxForConstraints(ct: DoubleConstraints) {
   const noDefaultInfinity = ct.noDefaultInfinity;
   const {
@@ -377,18 +369,18 @@ function minMaxForConstraints(ct: DoubleConstraints) {
   return { min, max };
 }
 
-function spyArrayInt64() {
-  const { instance, map } = fakeArbitrary<ArrayInt64>();
+function spyBigInt() {
+  const { instance, map } = fakeArbitrary<bigint>();
   const { instance: mappedInstance } = fakeArbitrary();
-  const arrayInt64 = vi.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
-  arrayInt64.mockReturnValue(instance);
+  const bigInt = vi.spyOn(BigIntMock, 'bigInt');
+  bigInt.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
-  return arrayInt64;
+  return bigInt;
 }
 
-function spyArrayInt64WithValue(value: () => ArrayInt64) {
-  const { instance } = fakeArbitraryStaticValue<ArrayInt64>(value);
-  const integer = vi.spyOn(ArrayInt64ArbitraryMock, 'arrayInt64');
-  integer.mockReturnValue(instance);
-  return integer;
+function spyBigIntWithValue(value: () => bigint) {
+  const { instance } = fakeArbitraryStaticValue<bigint>(value);
+  const bigInt = vi.spyOn(BigIntMock, 'bigInt');
+  bigInt.mockReturnValue(instance);
+  return bigInt;
 }

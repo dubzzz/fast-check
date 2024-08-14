@@ -6,7 +6,6 @@ import {
   onlyIntegersAfterThisValue,
   refineConstraintsForDoubleOnly,
 } from '../../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers';
-import { add64 } from '../../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import type { DoubleConstraints } from '../../../../../src/arbitrary/double';
 
 describe('maxNonIntegerValue', () => {
@@ -205,6 +204,6 @@ describe('refineConstraintsForDoubleOnly', () => {
 
 function nextDouble(value: number): number {
   const index = doubleToIndex(value);
-  const nextIndex = add64(index, { sign: 1, data: [0, 1] });
+  const nextIndex = index + BigInt(1);
   return indexToDouble(nextIndex);
 }
