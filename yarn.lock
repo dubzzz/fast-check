@@ -2708,7 +2708,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.9.0, @eslint/js@npm:^9.8.0":
+"@eslint/js@npm:9.9.0, @eslint/js@npm:^9.9.0":
   version: 9.9.0
   resolution: "@eslint/js@npm:9.9.0"
   checksum: 10c0/6ec9f1f0d576132444d6a5c66a8a08b0be9444e3ebb563fa6a6bebcf5299df3da7e454dc04c0fa601bb811197f00764b3a04430d8458cdb8e3a4677993d23f30
@@ -2807,11 +2807,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/monorepo@workspace:."
   dependencies:
-    "@eslint/js": "npm:^9.8.0"
+    "@eslint/js": "npm:^9.9.0"
     "@fast-check/packaged": "npm:*"
     "@typescript-eslint/utils": "npm:^7.18.0"
     all-contributors-cli: "npm:^6.26.1"
-    eslint: "npm:^9.8.0"
+    eslint: "npm:^9.9.0"
     eslint-config-prettier: "npm:^9.1.0"
     globals: "npm:^15.9.0"
     prettier: "npm:3.3.3"
@@ -9091,7 +9091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.8.0":
+"eslint@npm:^9.9.0":
   version: 9.9.0
   resolution: "eslint@npm:9.9.0"
   dependencies:
