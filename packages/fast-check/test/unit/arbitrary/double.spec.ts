@@ -138,40 +138,38 @@ describe('double', () => {
     expect(bigInt).not.toHaveBeenCalled();
   });
 
-  if (typeof BigInt !== 'undefined') {
-    it('should properly convert integer value for index between min and max into its associated float value', () => {
-      const withoutExcludedConstraints = {
-        ...defaultDoubleRecordConstraints,
-        minExcluded: fc.constant(false),
-        maxExcluded: fc.constant(false),
-        noInteger: fc.constant(false),
-      };
+  it('should properly convert integer value for index between min and max into its associated float value', () => {
+    const withoutExcludedConstraints = {
+      ...defaultDoubleRecordConstraints,
+      minExcluded: fc.constant(false),
+      maxExcluded: fc.constant(false),
+      noInteger: fc.constant(false),
+    };
 
-      fc.assert(
-        fc.property(
-          fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
-          fc.bigUintN(64),
-          fc.option(fc.integer({ min: 2 }), { nil: undefined }),
-          (ct, mod, biasFactor) => {
-            // Arrange
-            const { instance: mrng } = fakeRandom();
-            const { min, max } = minMaxForConstraints(ct || {});
-            const minIndex = doubleToIndex(min);
-            const maxIndex = doubleToIndex(max);
-            const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + BigInt(1))) + minIndex;
-            spyBigIntWithValue(() => arbitraryGeneratedIndex);
+    fc.assert(
+      fc.property(
+        fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
+        fc.bigUintN(64),
+        fc.option(fc.integer({ min: 2 }), { nil: undefined }),
+        (ct, mod, biasFactor) => {
+          // Arrange
+          const { instance: mrng } = fakeRandom();
+          const { min, max } = minMaxForConstraints(ct || {});
+          const minIndex = doubleToIndex(min);
+          const maxIndex = doubleToIndex(max);
+          const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + BigInt(1))) + minIndex;
+          spyBigIntWithValue(() => arbitraryGeneratedIndex);
 
-            // Act
-            const arb = double(ct);
-            const { value_: f } = arb.generate(mrng, biasFactor);
+          // Act
+          const arb = double(ct);
+          const { value_: f } = arb.generate(mrng, biasFactor);
 
-            // Assert
-            expect(f).toBe(indexToDouble(arbitraryGeneratedIndex));
-          },
-        ),
-      );
-    });
-  }
+          // Assert
+          expect(f).toBe(indexToDouble(arbitraryGeneratedIndex));
+        },
+      ),
+    );
+  });
 
   describe('with NaN', () => {
     const withNaNRecordConstraints = {

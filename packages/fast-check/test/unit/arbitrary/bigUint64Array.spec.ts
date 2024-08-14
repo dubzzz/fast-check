@@ -6,13 +6,6 @@ import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
 
 describe('bigUint64Array', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   it('should call typedIntArrayArbitraryArbitraryBuilder for BigUint64Array', () => {
     // Arrange
     const instance = fakeArbitrary();

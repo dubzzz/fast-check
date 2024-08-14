@@ -2,67 +2,45 @@ import { safeApply } from './apply';
 
 // Globals
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SArray: typeof Array = typeof Array !== 'undefined' ? Array : undefined!;
+const SArray: typeof Array = Array;
 export { SArray as Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBigInt: typeof BigInt = typeof BigInt !== 'undefined' ? BigInt : undefined!;
+const SBigInt: typeof BigInt = BigInt;
 export { SBigInt as BigInt };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBigInt64Array: typeof BigInt64Array = typeof BigInt64Array !== 'undefined' ? BigInt64Array : undefined!;
+const SBigInt64Array: typeof BigInt64Array = BigInt64Array;
 export { SBigInt64Array as BigInt64Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBigUint64Array: typeof BigUint64Array = typeof BigUint64Array !== 'undefined' ? BigUint64Array : undefined!;
+const SBigUint64Array: typeof BigUint64Array = BigUint64Array;
 export { SBigUint64Array as BigUint64Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBoolean: typeof Boolean = typeof Boolean !== 'undefined' ? Boolean : undefined!;
+const SBoolean: typeof Boolean = Boolean;
 export { SBoolean as Boolean };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SDate: typeof Date = typeof Date !== 'undefined' ? Date : undefined!;
+const SDate: typeof Date = Date;
 export { SDate as Date };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SError: typeof Error = typeof Error !== 'undefined' ? Error : undefined!;
+const SError: typeof Error = Error;
 export { SError as Error };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SFloat32Array: typeof Float32Array = typeof Float32Array !== 'undefined' ? Float32Array : undefined!;
+const SFloat32Array: typeof Float32Array = Float32Array;
 export { SFloat32Array as Float32Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SFloat64Array: typeof Float64Array = typeof Float64Array !== 'undefined' ? Float64Array : undefined!;
+const SFloat64Array: typeof Float64Array = Float64Array;
 export { SFloat64Array as Float64Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SInt8Array: typeof Int8Array = typeof Int8Array !== 'undefined' ? Int8Array : undefined!;
+const SInt8Array: typeof Int8Array = Int8Array;
 export { SInt8Array as Int8Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SInt16Array: typeof Int16Array = typeof Int16Array !== 'undefined' ? Int16Array : undefined!;
+const SInt16Array: typeof Int16Array = Int16Array;
 export { SInt16Array as Int16Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SInt32Array: typeof Int32Array = typeof Int32Array !== 'undefined' ? Int32Array : undefined!;
+const SInt32Array: typeof Int32Array = Int32Array;
 export { SInt32Array as Int32Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SNumber: typeof Number = typeof Number !== 'undefined' ? Number : undefined!;
+const SNumber: typeof Number = Number;
 export { SNumber as Number };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SString: typeof String = typeof String !== 'undefined' ? String : undefined!;
+const SString: typeof String = String;
 export { SString as String };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SSet: typeof Set = typeof Set !== 'undefined' ? Set : undefined!;
+const SSet: typeof Set = Set;
 export { SSet as Set };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SUint8Array: typeof Uint8Array = typeof Uint8Array !== 'undefined' ? Uint8Array : undefined!;
+const SUint8Array: typeof Uint8Array = Uint8Array;
 export { SUint8Array as Uint8Array };
-const SUint8ClampedArray: typeof Uint8ClampedArray =
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  typeof Uint8ClampedArray !== 'undefined' ? Uint8ClampedArray : undefined!;
+const SUint8ClampedArray: typeof Uint8ClampedArray = Uint8ClampedArray;
 export { SUint8ClampedArray as Uint8ClampedArray };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SUint16Array: typeof Uint16Array = typeof Uint16Array !== 'undefined' ? Uint16Array : undefined!;
+const SUint16Array: typeof Uint16Array = Uint16Array;
 export { SUint16Array as Uint16Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SUint32Array: typeof Uint32Array = typeof Uint32Array !== 'undefined' ? Uint32Array : undefined!;
+const SUint32Array: typeof Uint32Array = Uint32Array;
 export { SUint32Array as Uint32Array };
-const SencodeURIComponent: typeof encodeURIComponent =
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  typeof encodeURIComponent !== 'undefined' ? encodeURIComponent : undefined!;
+const SencodeURIComponent: typeof encodeURIComponent = encodeURIComponent;
 export { SencodeURIComponent as encodeURIComponent };
 
 // Various remarks concerning this part of the file:
