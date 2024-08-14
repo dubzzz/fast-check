@@ -8,16 +8,6 @@ import {
   indexToDouble,
 } from '../../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
 
-type Index = ReturnType<typeof doubleToIndex>;
-const toIndex = (raw: bigint | string): Index => {
-  const b = typeof raw === 'string' ? BigInt(raw) : raw;
-  const pb = b < BigInt(0) ? -b : b;
-  return { sign: b < BigInt(0) ? -1 : 1, data: [Number(pb >> BigInt(32)), Number(pb & BigInt(0xffffffff))] };
-};
-const toBigInt = (index: Index): bigint => {
-  return BigInt(index.sign) * ((BigInt(index.data[0]) << BigInt(32)) + BigInt(index.data[1]));
-};
-
 describe('decomposeDouble', () => {
   it('should properly decompose basic values', () => {
     expect(decomposeDouble(0)).toEqual({ exponent: -1022, significand: 0 });
@@ -55,70 +45,46 @@ describe('decomposeDouble', () => {
 });
 
 describe('doubleToIndex', () => {
-  it('should always produce well-formed indexes', () => {
-    fc.assert(
-      fc.property(float64raw(), (d) => {
-        // Arrange
-        fc.pre(!Number.isNaN(d));
-
-        // Act
-        const index = doubleToIndex(d);
-
-        // Assert
-        expect(index.data[0]).toBeGreaterThanOrEqual(0);
-        expect(index.data[0]).toBeLessThanOrEqual(0xffffffff);
-        expect(Number.isInteger(index.data[0])).toBe(true);
-        expect(index.data[1]).toBeGreaterThanOrEqual(0);
-        expect(index.data[1]).toBeLessThanOrEqual(0xffffffff);
-        expect(Number.isInteger(index.data[1])).toBe(true);
-      }),
-    );
-  });
-
   it('should properly compute indexes', () => {
-    expect(doubleToIndex(0)).toEqual(toIndex('0'));
-    expect(doubleToIndex(Number.MIN_VALUE)).toEqual(toIndex('1'));
-    expect(doubleToIndex(2 * Number.MIN_VALUE)).toEqual(toIndex('2'));
-    expect(doubleToIndex(3 * Number.MIN_VALUE)).toEqual(toIndex('3'));
+    expect(doubleToIndex(0)).toEqual(BigInt('0'));
+    expect(doubleToIndex(Number.MIN_VALUE)).toEqual(BigInt('1'));
+    expect(doubleToIndex(2 * Number.MIN_VALUE)).toEqual(BigInt('2'));
+    expect(doubleToIndex(3 * Number.MIN_VALUE)).toEqual(BigInt('3'));
     // Last double with minimal exponent, ie -1022
     // index(last with min exponent) = 2**53 - 1
-    expect(doubleToIndex(2 ** -1022 * (2 - Number.EPSILON))).toEqual(toIndex('9007199254740991'));
+    expect(doubleToIndex(2 ** -1022 * (2 - Number.EPSILON))).toEqual(BigInt('9007199254740991'));
     // First double without minimal exponent, ie -1022
     // index(first without min exponent) = index(last with min exponent) + 1
-    expect(doubleToIndex(2 ** -1021)).toEqual(toIndex('9007199254740992'));
+    expect(doubleToIndex(2 ** -1021)).toEqual(BigInt('9007199254740992'));
     // Number.EPSILON === 1. * 2**-52 --> m = 1, e = -52
     // index(Number.EPSILON) = 2**53 + (-52 - (-1022) -1) * 2**52
-    expect(doubleToIndex(Number.EPSILON)).toEqual(toIndex('4372995238176751616'));
+    expect(doubleToIndex(Number.EPSILON)).toEqual(BigInt('4372995238176751616'));
     // index(1 - Number.EPSILON / 2) = index(1) - 1
-    expect(doubleToIndex(1 - Number.EPSILON / 2)).toEqual(toIndex('4607182418800017407'));
+    expect(doubleToIndex(1 - Number.EPSILON / 2)).toEqual(BigInt('4607182418800017407'));
     // 1 === 1. * 2**0 --> m = 1, e = 0
     // index(1) = 2**53 + (0 - (-1022) -1) * 2**52
-    expect(doubleToIndex(1)).toEqual(toIndex('4607182418800017408'));
+    expect(doubleToIndex(1)).toEqual(BigInt('4607182418800017408'));
     // index(1 + Number.EPSILON) = index(1) + 1
-    expect(doubleToIndex(1 + Number.EPSILON)).toEqual(toIndex('4607182418800017409'));
+    expect(doubleToIndex(1 + Number.EPSILON)).toEqual(BigInt('4607182418800017409'));
     // index(2 - Number.EPSILON) = index(2) - 1 = index(1 + (2 ** 52 - 1) * Number.EPSILON)
-    expect(doubleToIndex(2 - Number.EPSILON)).toEqual(toIndex('4611686018427387903'));
+    expect(doubleToIndex(2 - Number.EPSILON)).toEqual(BigInt('4611686018427387903'));
     // 1 === 1. * 2**1 --> m = 1, e = 1
     // index(2) = index(1) + 2**52
-    expect(doubleToIndex(2)).toEqual(toIndex('4611686018427387904'));
+    expect(doubleToIndex(2)).toEqual(BigInt('4611686018427387904'));
     // Number.MAX_VALUE === (1 + (2**52-1)/2**52) * 2**1023 --> m = 1 + (2**52-1)/2**52, e = 1023
     // index(Number.MAX_VALUE) = index(next(Number.MAX_VALUE)) -1 = 2**53 + (1024 - (-1022) -1) * 2**52 -1
-    expect(doubleToIndex(Number.MAX_VALUE)).toEqual(toIndex('9218868437227405311'));
+    expect(doubleToIndex(Number.MAX_VALUE)).toEqual(BigInt('9218868437227405311'));
   });
 
   it('should properly compute negative indexes', () => {
-    expect(doubleToIndex(-0)).toEqual(toIndex('-1'));
-    expect(doubleToIndex(-Number.MIN_VALUE)).toEqual(toIndex('-2'));
-    expect(doubleToIndex(-Number.MAX_VALUE)).toEqual(toIndex('-9218868437227405312'));
+    expect(doubleToIndex(-0)).toEqual(BigInt('-1'));
+    expect(doubleToIndex(-Number.MIN_VALUE)).toEqual(BigInt('-2'));
+    expect(doubleToIndex(-Number.MAX_VALUE)).toEqual(BigInt('-9218868437227405312'));
   });
 
   it('should properly compute indexes for infinity', () => {
-    expect(doubleToIndex(Number.NEGATIVE_INFINITY)).toEqual(
-      toIndex(toBigInt(doubleToIndex(-Number.MAX_VALUE)) - BigInt(1)),
-    );
-    expect(doubleToIndex(Number.POSITIVE_INFINITY)).toEqual(
-      toIndex(toBigInt(doubleToIndex(Number.MAX_VALUE)) + BigInt(1)),
-    );
+    expect(doubleToIndex(Number.NEGATIVE_INFINITY)).toEqual(BigInt(doubleToIndex(-Number.MAX_VALUE) - BigInt(1)));
+    expect(doubleToIndex(Number.POSITIVE_INFINITY)).toEqual(BigInt(doubleToIndex(Number.MAX_VALUE) + BigInt(1)));
   });
 
   it('should be able to infer index for negative double from the positive one', () => {
@@ -129,8 +95,8 @@ describe('doubleToIndex', () => {
         const posD = d > 0 || 1 / d > 0 ? d : -d;
 
         // Act
-        const bigIntIndexPos = toBigInt(doubleToIndex(posD));
-        const bigIntIndexNeg = toBigInt(doubleToIndex(-posD));
+        const bigIntIndexPos = doubleToIndex(posD);
+        const bigIntIndexNeg = doubleToIndex(-posD);
 
         // Assert
         expect(bigIntIndexNeg).toEqual(-bigIntIndexPos - BigInt(1));
@@ -151,8 +117,8 @@ describe('doubleToIndex', () => {
           const next = (rescaledSignificand + 1) * Number.EPSILON * 2 ** exponent;
 
           // Act
-          const bigIntIndexCurrent = toBigInt(doubleToIndex(current));
-          const bigIntIndexNext = toBigInt(doubleToIndex(next));
+          const bigIntIndexCurrent = doubleToIndex(current);
+          const bigIntIndexNext = doubleToIndex(next);
 
           // Assert
           expect(bigIntIndexNext).toEqual(bigIntIndexCurrent + BigInt(1));
@@ -169,9 +135,9 @@ describe('doubleToIndex', () => {
 
         // Act / Assert
         if (isStrictlySmaller(fa64, fb64)) {
-          expect(toBigInt(doubleToIndex(fa64))).toBeLessThan(toBigInt(doubleToIndex(fb64)));
+          expect(doubleToIndex(fa64)).toBeLessThan(doubleToIndex(fb64));
         } else {
-          expect(toBigInt(doubleToIndex(fa64))).toBeGreaterThanOrEqual(toBigInt(doubleToIndex(fb64)));
+          expect(doubleToIndex(fa64)).toBeGreaterThanOrEqual(doubleToIndex(fb64));
         }
       }),
     );
@@ -179,7 +145,7 @@ describe('doubleToIndex', () => {
 });
 
 describe('indexToDouble', () => {
-  it('Should reverse doubleToIndex', () =>
+  it('should reverse doubleToIndex', () =>
     fc.assert(
       fc.property(float64raw(), (f64) => {
         fc.pre(!Number.isNaN(f64));
@@ -188,13 +154,13 @@ describe('indexToDouble', () => {
     ));
 
   it('should properly find doubles corresponding to well-known values', () => {
-    expect(indexToDouble(toIndex('-9218868437227405313'))).toBe(Number.NEGATIVE_INFINITY);
-    expect(indexToDouble(toIndex('-9218868437227405312'))).toBe(-Number.MAX_VALUE);
-    expect(indexToDouble(toIndex('-1'))).toBe(-0);
-    expect(indexToDouble(toIndex('0'))).toBe(0);
-    expect(indexToDouble(toIndex('4372995238176751616'))).toBe(Number.EPSILON);
-    expect(indexToDouble(toIndex('9218868437227405311'))).toBe(Number.MAX_VALUE);
-    expect(indexToDouble(toIndex('9218868437227405312'))).toBe(Number.POSITIVE_INFINITY);
+    expect(indexToDouble(BigInt('-9218868437227405313'))).toBe(Number.NEGATIVE_INFINITY);
+    expect(indexToDouble(BigInt('-9218868437227405312'))).toBe(-Number.MAX_VALUE);
+    expect(indexToDouble(BigInt('-1'))).toBe(-0);
+    expect(indexToDouble(BigInt('0'))).toBe(0);
+    expect(indexToDouble(BigInt('4372995238176751616'))).toBe(Number.EPSILON);
+    expect(indexToDouble(BigInt('9218868437227405311'))).toBe(Number.MAX_VALUE);
+    expect(indexToDouble(BigInt('9218868437227405312'))).toBe(Number.POSITIVE_INFINITY);
   });
 
   it('should be reversed by doubleToIndex', () => {
@@ -206,7 +172,7 @@ describe('indexToDouble', () => {
           // It does not confirm that doubleToIndex(indexToDouble)) is identity
 
           // Arrange
-          const index = toIndex(bigIntIndex);
+          const index = BigInt(bigIntIndex);
 
           // Act / Assert
           expect(doubleToIndex(indexToDouble(index))).toEqual(index);

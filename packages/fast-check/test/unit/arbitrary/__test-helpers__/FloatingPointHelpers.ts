@@ -3,7 +3,6 @@ import type { DoubleConstraints } from '../../../../src/arbitrary/double';
 import type { FloatConstraints } from '../../../../src/arbitrary/float';
 import { MAX_VALUE_32, floatToIndex } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
 import { doubleToIndex } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
-import { substract64 } from '../../../../src/arbitrary/_internals/helpers/ArrayInt64';
 import { refineConstraintsForDoubleOnly } from '../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers';
 import { refineConstraintsForFloatOnly } from '../../../../src/arbitrary/_internals/helpers/FloatOnlyHelpers';
 
@@ -89,9 +88,9 @@ function constraintsInternal(
         } else {
           const minIndex = doubleToIndex(min);
           const maxIndex = doubleToIndex(max);
-          const distance = substract64(maxIndex, minIndex);
+          const distance = maxIndex - minIndex;
           // Illegal range, no value in range if min and max are too close from each others and both excluded
-          if (distance.data[0] === 0 && distance.data[1] === 1) return false;
+          if (distance === BigInt(1)) return false;
         }
       }
       return true;
@@ -116,14 +115,14 @@ function constraintsInternal(
         if (resolvedCt.min > resolvedCt.max) return false;
         const minIndex = doubleToIndex(resolvedCt.min);
         const maxIndex = doubleToIndex(resolvedCt.max);
-        const distance = substract64(maxIndex, minIndex);
+        const distance = maxIndex - minIndex;
         // Dangerous range, not enough value in range to safely run
         // Worst broken cases:
         // >  {float, int, float} with distance 2 such as from 4503599627370494.5 (excl.) to 4503599627370495.5 (excl.)
         // >  {float, -0, 0}      with distance 2 such as from -MIN_VALUE (excl.) to 0
         // >  {-0, 0, float}      with distance 2 such as from 0 to MIN_VALUE (excl.)
         // -> for >= 3 it's safe, we will always have a non-integer value within the range
-        if (distance.data[0] === 0 && distance.data[1] < 3) return false;
+        if (distance < BigInt(3)) return false;
       }
       return true;
     });
