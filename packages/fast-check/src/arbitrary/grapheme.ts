@@ -1,5 +1,5 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { autonomousGraphemeRanges } from './_internals/data/GraphemeRanges';
+import { autonomousDecomposableGraphemeRanges, autonomousGraphemeRanges } from './_internals/data/GraphemeRanges';
 import {
   convertGraphemeRangeToMapToConstantEntry,
   GraphemeRangeEntry,
@@ -12,6 +12,13 @@ function getEntries() {
     autonomousGraphemeEntries = [];
     for (const range of autonomousGraphemeRanges) {
       autonomousGraphemeEntries.push(convertGraphemeRangeToMapToConstantEntry(range));
+    }
+    for (const range of autonomousDecomposableGraphemeRanges) {
+      const rawEntry = convertGraphemeRangeToMapToConstantEntry(range);
+      autonomousGraphemeEntries.push({
+        num: rawEntry.num,
+        build: (idInGroup) => rawEntry.build(idInGroup).normalize('NFD'),
+      });
     }
   }
   return autonomousGraphemeEntries;
