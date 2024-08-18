@@ -1,14 +1,17 @@
 import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { autonomousGraphemeRanges } from './_internals/data/StringRanges';
-import { convertStringRangeToMapToConstantEntry, StringRangeEntry } from './_internals/helpers/StringRangesHelpers';
+import { autonomousGraphemeRanges } from './_internals/data/GraphemeRanges';
+import {
+  convertGraphemeRangeToMapToConstantEntry,
+  GraphemeRangeEntry,
+} from './_internals/helpers/GraphemeRangesHelpers';
 import { mapToConstant } from './mapToConstant';
 
-let autonomousGraphemeEntries: StringRangeEntry[] | undefined = undefined;
+let autonomousGraphemeEntries: GraphemeRangeEntry[] | undefined = undefined;
 function getEntries() {
   if (autonomousGraphemeEntries === undefined) {
     autonomousGraphemeEntries = [];
     for (const range of autonomousGraphemeRanges) {
-      autonomousGraphemeEntries.push(convertStringRangeToMapToConstantEntry(range));
+      autonomousGraphemeEntries.push(convertGraphemeRangeToMapToConstantEntry(range));
     }
   }
   return autonomousGraphemeEntries;
