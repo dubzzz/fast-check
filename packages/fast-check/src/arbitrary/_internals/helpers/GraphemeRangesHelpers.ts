@@ -2,8 +2,6 @@ import { GraphemeRange } from '../data/GraphemeRanges';
 
 /** @internal */
 const safeStringFromCodePoint = String.fromCodePoint;
-/** @internal */
-const safeMathMin = Math.min;
 
 /** @internal */
 export type GraphemeRangeEntry = { num: number; build: (idInGroup: number) => string };
