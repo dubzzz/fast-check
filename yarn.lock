@@ -1847,9 +1847,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codesandbox/sandpack-react@npm:^2.18.2":
-  version: 2.18.2
-  resolution: "@codesandbox/sandpack-react@npm:2.18.2"
+"@codesandbox/sandpack-react@npm:^2.18.3":
+  version: 2.18.3
+  resolution: "@codesandbox/sandpack-react@npm:2.18.3"
   dependencies:
     "@codemirror/autocomplete": "npm:^6.4.0"
     "@codemirror/commands": "npm:^6.1.3"
@@ -1873,7 +1873,7 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
-  checksum: 10c0/6030f6bdd8a6ee1814273d31984345275d48bdc4a436f1898ee66167e06c3b439c4a274112b3cd59471617851f401fa8ba62c4a0741d2a6d1be66628fd5ace33
+  checksum: 10c0/70b0681d979bf9d8e9432ae41a4cea9484cc124059acc35c0eca5a0cee923bad98adba4cf7ec3ae99540df67da4d2a3b2c1df257ea24befdcb1d52f29afd0af4
   languageName: node
   linkType: hard
 
@@ -19389,7 +19389,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "website@workspace:website"
   dependencies:
-    "@codesandbox/sandpack-react": "npm:^2.18.2"
+    "@codesandbox/sandpack-react": "npm:^2.18.3"
     "@codesandbox/sandpack-themes": "npm:^2.0.21"
     "@docusaurus/core": "npm:3.4.0"
     "@docusaurus/module-type-aliases": "npm:3.4.0"
