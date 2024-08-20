@@ -24,7 +24,7 @@ type StringUnitMapKey = `${StringUnitType}:${StringUnitAlphabet}`;
  * Caching all already instanciated variations of stringUnit
  * @internal
  */
-const registeredStringUnitInstancesMap = new Map<StringUnitMapKey, Arbitrary<string>>();
+const registeredStringUnitInstancesMap: Partial<Record<StringUnitMapKey, Arbitrary<string>>> = Object.create(null);
 
 /** @internal */
 function getAlphabetRanges(alphabet: StringUnitAlphabet): GraphemeRange[] {
@@ -39,7 +39,7 @@ function getAlphabetRanges(alphabet: StringUnitAlphabet): GraphemeRange[] {
 /** @internal */
 function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUnitAlphabet): Arbitrary<string> {
   const key: StringUnitMapKey = `${type}:${alphabet}`;
-  const registered = registeredStringUnitInstancesMap.get(key);
+  const registered = registeredStringUnitInstancesMap[key];
   if (registered !== undefined) {
     return registered;
   }
@@ -60,7 +60,7 @@ function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUni
     }
   }
   const stringUnitInstance = mapToConstant(...entries);
-  registeredStringUnitInstancesMap.set(key, stringUnitInstance);
+  registeredStringUnitInstancesMap[key] = stringUnitInstance;
   return stringUnitInstance;
 }
 
