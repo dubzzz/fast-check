@@ -119,14 +119,17 @@ describe('string (integration)', () => {
   });
 
   it.each`
-    source
-    ${''}
-    ${'azerty'}
-    ${'ah! ah!'}
-    ${'0123456789' /* by default maxLength = maxLengthFromMinLength(0) = 10 */}
-  `('should be able to generate $source with fc.string()', ({ source }) => {
+    source                                                                      | constraints
+    ${''}                                                                       | ${{}}
+    ${'azerty'}                                                                 | ${{}}
+    ${'ah! ah!'}                                                                | ${{}}
+    ${'0123456789' /* by default maxLength = maxLengthFromMinLength(0) = 10 */} | ${{}}
+    ${'\u{0061}\u{0300}'}                                                       | ${{ unit: 'binary', minLength: 2 }}
+    ${'\u{0061}\u{0300}'}                                                       | ${{ unit: 'grapheme', maxLength: 1 }}
+    ${'\u{0061}\u{0300}'}                                                       | ${{ unit: 'grapheme' }}
+  `('should be able to generate $source with fc.string($constraints)', ({ source, constraints }) => {
     // Arrange / Act
-    const arb = string();
+    const arb = string(constraints);
     const out = arb.canShrinkWithoutContext(source);
 
     // Assert
@@ -134,10 +137,13 @@ describe('string (integration)', () => {
   });
 
   it.each`
-    source                                        | constraints
-    ${'a\u{1f431}b' /* out-of-range character */} | ${{}}
-    ${'ab' /* not large enough */}                | ${{ minLength: 3 }}
-    ${'abcd' /* too large */}                     | ${{ maxLength: 3 }}
+    source                                                             | constraints
+    ${'a\u{1f431}b' /* out-of-range character */}                      | ${{}}
+    ${'ab' /* not large enough */}                                     | ${{ minLength: 3 }}
+    ${'abcd' /* too large */}                                          | ${{ maxLength: 3 }}
+    ${'\u{0061}\u{0300}' /* not large enough in terms of graphemes */} | ${{ unit: 'grapheme', minLength: 2 }}
+    ${'\u{0061}\u{0300}' /* too large in terms of code-points */}      | ${{ unit: 'binary', maxLength: 1 }}
+    ${'\u{0061}\u{0300}' /* out-of-range character */}                 | ${{ unit: 'grapheme-composite' }}
   `('should not be able to generate $source with fc.string($constraints)', ({ source, constraints }) => {
     // Arrange / Act
     const arb = string(constraints);
