@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { string } from '../../../src/arbitrary/string';
+import type { StringConstraints } from '../../../src/arbitrary/string';
 
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import {
@@ -12,21 +13,87 @@ import {
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 
 describe('string (integration)', () => {
-  type Extra = { minLength?: number; maxLength?: number };
+  type Extra = StringConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc
-    .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
-    .map(([min, gap, withMin, withMax]) => ({
+    .tuple(
+      fc.nat({ max: 5 }),
+      fc.nat({ max: 30 }),
+      fc.boolean(),
+      fc.boolean(),
+      fc.constantFrom<StringConstraints['unit']>(
+        undefined,
+        'grapheme',
+        'grapheme-composite',
+        'grapheme-ascii',
+        'binary',
+        'binary-ascii',
+      ),
+    )
+    .map(([min, gap, withMin, withMax, unit]) => ({
       minLength: withMin ? min : undefined,
       maxLength: withMax ? min + gap : undefined,
+      unit,
     }));
 
+  const measureLengthFor = (value: string, extra: Extra): number => {
+    if (typeof extra.unit === 'object') {
+      throw new Error('Not supported');
+    }
+    switch (extra.unit) {
+      case 'grapheme':
+      case 'grapheme-composite':
+      case 'grapheme-ascii':
+      case undefined:
+        // @ts-ignore
+        const segmenter = new Intl.Segmenter();
+        return [...segmenter.segment(value)].length;
+      case 'binary':
+      case 'binary-ascii':
+        return [...value].length;
+    }
+  };
+
+  const assertCorrectForUnit = (value: string, extra: Extra): void => {
+    if (typeof extra.unit === 'object') {
+      throw new Error('Not supported');
+    }
+    switch (extra.unit) {
+      case 'grapheme':
+        return;
+      case 'grapheme-composite':
+        // @ts-ignore
+        const segmenter = new Intl.Segmenter();
+        expect([...segmenter.segment(value)].map((s) => s.segment)).toEqual([...value]); // assert: grapheme equivalent to code-point
+        return;
+      case 'grapheme-ascii':
+      case undefined:
+        expect([...value]).toEqual(value.split('')); // assert: code-point equivalent to char
+        for (const c of value) {
+          expect(c.charCodeAt(0)).toBeGreaterThanOrEqual(0x20);
+          expect(c.charCodeAt(0)).toBeLessThanOrEqual(0x7e);
+        }
+        return;
+      case 'binary':
+        return;
+      case 'binary-ascii':
+        expect([...value]).toEqual(value.split('')); // assert: code-point equivalent to char
+        for (const c of value) {
+          expect(c.charCodeAt(0)).toBeGreaterThanOrEqual(0x00);
+          expect(c.charCodeAt(0)).toBeLessThanOrEqual(0xff);
+        }
+        return;
+    }
+  };
+
   const isCorrect = (value: string, extra: Extra) => {
+    const measuredLength = measureLengthFor(value, extra);
     if (extra.minLength !== undefined) {
-      expect(value.length).toBeGreaterThanOrEqual(extra.minLength);
+      expect(measuredLength).toBeGreaterThanOrEqual(extra.minLength);
     }
     if (extra.maxLength !== undefined) {
-      expect(value.length).toBeLessThanOrEqual(extra.maxLength);
+      expect(measuredLength).toBeLessThanOrEqual(extra.maxLength);
     }
+    assertCorrectForUnit(value, extra);
     for (const c of value.split('')) {
       expect(c.charCodeAt(0)).toBeGreaterThanOrEqual(0x20);
       expect(c.charCodeAt(0)).toBeLessThanOrEqual(0x7e);
