@@ -279,7 +279,7 @@ function orderedNonOverlappingGraphemeRangesArbitrary() {
 
 function orderedNonOverlappingAndNonContiguousGraphemeRangesArbitrary() {
   return orderedNonOverlappingGraphemeRangesArbitrary().filter((ranges) => {
-    for (let index = 1; index !== ranges.length; ++index) {
+    for (let index = 1; index < ranges.length; ++index) {
       const rangePrevious = ranges[index - 1];
       const rangePreviousMax = rangePrevious.length === 1 ? rangePrevious[0] : rangePrevious[1];
       if (rangePreviousMax + 1 === ranges[index][0]) {
