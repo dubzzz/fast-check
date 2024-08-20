@@ -84,6 +84,7 @@ fc.string({ minLength: 4, maxLength: 6 });
 fc.string({ unit: 'grapheme' });
 // Note: Any string made only of printable graphemes possibly made of multiple code-points.
 // With 'grapheme', minLength (resp. maxLength) refers to length in terms of graphemes (visual entities).
+// As an example, "\u{0061}\u{0300}" has a length of 1 in this context, as it corresponds to the visual entity: "à".
 // Examples of generated values: "length", "🡓𑨭", "🚌ﾱॶ🥄ၜ㏹", "key", "callஈcall"…
 
 fc.string({ unit: 'grapheme-composite' });
@@ -99,12 +100,18 @@ fc.string({ unit: 'grapheme-ascii' });
 fc.string({ unit: 'binary' });
 // Note: Results in strings made of any possible combinations of code-points no matter how they join between each others.
 // With 'binary', minLength (resp. maxLength) refers to length in terms of code-points (not in terms of visual entities).
+// As an example, "\u{0061}\u{0300}" has a length of 2 in this context, even if it corresponds to a single visual entity: "à".
 // Examples of generated values: "length", "򳇖𓔣򲳋󊕎󨐆󺣝􉥛󠙢􋳥򸂐", "", "𜖇𔳯𯊊򐺖", "key"…
 
 fc.string({ unit: 'binary-ascii' });
 // Note: Results in strings made of any possible combinations of code-points no matter how they join between each others.
-// With 'binary', minLength (resp. maxLength) refers to length in terms of chars (equivalent to code-points for this type).
+// With 'binary-ascii', minLength (resp. maxLength) refers to length in terms of chars (equivalent to code-points for this type).
 // Examples of generated values: "c\\3\f\u0000\u001f\u00047", "M\u0006\fD!U\u000fXss", "", "s\u0000", "\n\u0006tkK"…
+
+fc.string({ unit: fc.constantFrom('Hello', 'World') });
+// Note: With a custom arbitrary passed as unit, minLength (resp. maxLength) refers to length in terms of unit values.
+// As an example, "HelloWorldHello" has a length of 3 in this context.
+// Examples of generated values: "", "Hello", "HelloWorld", "HelloWorldHello", "WorldWorldHelloWorldHelloWorld"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/string.html).  
