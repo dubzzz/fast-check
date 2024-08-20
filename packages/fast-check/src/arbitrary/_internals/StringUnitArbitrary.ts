@@ -1,17 +1,14 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { mapToConstant } from '../mapToConstant';
+import type { GraphemeRange } from './data/GraphemeRanges';
 import {
   asciiAlphabetRanges,
   autonomousDecomposableGraphemeRanges,
   autonomousGraphemeRanges,
   fullAlphabetRanges,
-  GraphemeRange,
 } from './data/GraphemeRanges';
-import {
-  convertGraphemeRangeToMapToConstantEntry,
-  GraphemeRangeEntry,
-  intersectGraphemeRanges,
-} from './helpers/GraphemeRangesHelpers';
+import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers';
+import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers';
 
 /** @internal */
 type StringUnitType = 'grapheme' | 'simple-grapheme' | 'binary';

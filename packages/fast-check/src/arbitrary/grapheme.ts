@@ -1,9 +1,7 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { autonomousDecomposableGraphemeRanges, autonomousGraphemeRanges } from './_internals/data/GraphemeRanges';
-import {
-  convertGraphemeRangeToMapToConstantEntry,
-  GraphemeRangeEntry,
-} from './_internals/helpers/GraphemeRangesHelpers';
+import type { GraphemeRangeEntry } from './_internals/helpers/GraphemeRangesHelpers';
+import { convertGraphemeRangeToMapToConstantEntry } from './_internals/helpers/GraphemeRangesHelpers';
 import { mapToConstant } from './mapToConstant';
 
 let autonomousGraphemeEntries: GraphemeRangeEntry[] | undefined = undefined;

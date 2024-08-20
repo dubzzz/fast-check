@@ -3,7 +3,7 @@ import {
   convertGraphemeRangeToMapToConstantEntry,
   intersectGraphemeRanges,
 } from '../../../../../src/arbitrary/_internals/helpers/GraphemeRangesHelpers';
-import { GraphemeRange } from '../../../../../src/arbitrary/_internals/data/GraphemeRanges';
+import type { GraphemeRange } from '../../../../../src/arbitrary/_internals/data/GraphemeRanges';
 import * as fc from 'fast-check';
 
 describe('convertGraphemeRangeToMapToConstantEntry', () => {

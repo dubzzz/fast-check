@@ -1,4 +1,4 @@
-import { GraphemeRange } from '../data/GraphemeRanges';
+import type { GraphemeRange } from '../data/GraphemeRanges';
 
 /** @internal */
 const safeStringFromCodePoint = String.fromCodePoint;
