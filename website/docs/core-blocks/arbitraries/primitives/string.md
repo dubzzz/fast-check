@@ -79,7 +79,7 @@ fc.string({ minLength: 3 });
 
 fc.string({ minLength: 4, maxLength: 6 });
 // Note: Any string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "Trxall", "&&@%4", "s@IO", "0\"zM", "}#\"$"…
+// Examples of generated values: "Trxlyb", "&&@%4", "s@IO", "0\"zM", "}#\"$"…
 
 fc.string({ unit: 'grapheme' });
 // Note: Any string made only of printable graphemes possibly made of multiple code-points.

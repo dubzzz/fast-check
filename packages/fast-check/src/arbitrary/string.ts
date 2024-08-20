@@ -5,6 +5,7 @@ import type { StringSharedConstraints } from './_shared/StringSharedConstraints'
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 import { stringUnit } from './_internals/StringUnitArbitrary';
+import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -67,10 +68,11 @@ function extractUnitArbitrary(constraints: Pick<StringConstraints, 'unit'>): Arb
  */
 export function string(constraints: StringConstraints = {}): Arbitrary<string> {
   const charArbitrary = extractUnitArbitrary(constraints);
-  const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
+  const unmapper = patternsToStringUnmapperFor(charArbitrary, constraints);
+  const experimentalCustomSlices = createSlicesForString(charArbitrary, unmapper);
   // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
   const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {
     experimentalCustomSlices,
   });
-  return array(charArbitrary, enrichedConstraints).map(codePointsToStringMapper, codePointsToStringUnmapper);
+  return array(charArbitrary, enrichedConstraints).map(patternsToStringMapper, unmapper);
 }
