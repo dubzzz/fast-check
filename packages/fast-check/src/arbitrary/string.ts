@@ -5,6 +5,7 @@ import { char } from './char';
 import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
+import { stringUnit } from './_internals/StringUnitArbitrary';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 const safeObjectAssign = Object.assign;
@@ -18,7 +19,7 @@ const safeObjectAssign = Object.assign;
  * @public
  */
 export function string(constraints: StringSharedConstraints = {}): Arbitrary<string> {
-  const charArbitrary = char();
+  const charArbitrary = stringUnit('simple-grapheme', 'ascii');
   const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
   // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
   const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {

@@ -1,6 +1,12 @@
 /** @internal */
 export type GraphemeRange = [number] | [number, number];
 
+/** @internal */
+export const asciiAlphabetRanges: GraphemeRange[] = [[0x00, 0x7f]];
+
+/** @internal */
+export const fullAlphabetRanges: GraphemeRange[] = [[0x0000, 0x10ffff]];
+
 /**
  * Ranges of Graphemes safe to be combined together without any risks to interract between each others.
  * 779 ranges, gathering 31828 code-points over the 34931 being declared by http://unicode.org/Public/UNIDATA/UnicodeData.txt on the 17th of August 2024
