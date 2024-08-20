@@ -149,15 +149,30 @@ describe('intersectGraphemeRanges', () => {
     ]);
   });
 
+  it('should properly intercept with self when self is made of contiguous ranges mixing both forms', () => {
+    // Arrange
+    const rangesA: GraphemeRange[] = [[0, 25], [26]];
+    const rangesB: GraphemeRange[] = [[0, 25], [26]];
+
+    // Act
+    const intersection = intersectGraphemeRanges(rangesA, rangesB);
+
+    // Assert
+    expect(intersection).toStrictEqual([[0, 26]]);
+  });
+
   it('should intersect a range with a cloned version of itself to itself', () => {
     fc.assert(
-      fc.property(fc.clone(orderedNonOverlappingGraphemeRangesArbitrary(), 2), ([ranges, clonedRanges]) => {
-        // Arrange / Act
-        const intersection = intersectGraphemeRanges(ranges, clonedRanges);
+      fc.property(
+        fc.clone(orderedNonOverlappingAndNonContiguousGraphemeRangesArbitrary(), 2),
+        ([ranges, clonedRanges]) => {
+          // Arrange / Act
+          const intersection = intersectGraphemeRanges(ranges, clonedRanges);
 
-        // Assert
-        expect(intersection).toStrictEqual(ranges);
-      }),
+          // Assert
+          expect(intersection).toStrictEqual(ranges);
+        },
+      ),
     );
   });
 
@@ -259,5 +274,18 @@ function orderedNonOverlappingGraphemeRangesArbitrary() {
       }
     }
     return orderedNonOverlapping;
+  });
+}
+
+function orderedNonOverlappingAndNonContiguousGraphemeRangesArbitrary() {
+  return orderedNonOverlappingGraphemeRangesArbitrary().filter((ranges) => {
+    for (let index = 1; index !== ranges.length; ++index) {
+      const rangePrevious = ranges[index - 1];
+      const rangePreviousMax = rangePrevious.length === 1 ? rangePrevious[0] : rangePrevious[1];
+      if (rangePreviousMax + 1 === ranges[index][0]) {
+        return false; // ranges index-1 and index are contiguous
+      }
+    }
+    return true;
   });
 }
