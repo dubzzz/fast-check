@@ -94,10 +94,6 @@ describe('string (integration)', () => {
       expect(measuredLength).toBeLessThanOrEqual(extra.maxLength);
     }
     assertCorrectForUnit(value, extra);
-    for (const c of value.split('')) {
-      expect(c.charCodeAt(0)).toBeGreaterThanOrEqual(0x20);
-      expect(c.charCodeAt(0)).toBeLessThanOrEqual(0x7e);
-    }
   };
 
   const stringBuilder = (extra: Extra) => string(extra);
