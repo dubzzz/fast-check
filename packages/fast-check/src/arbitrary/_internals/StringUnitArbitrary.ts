@@ -11,7 +11,7 @@ import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers';
 import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers';
 
 /** @internal */
-type StringUnitType = 'grapheme' | 'simple-grapheme' | 'binary';
+type StringUnitType = 'grapheme' | 'composite' | 'binary';
 /** @internal */
 type StringUnitAlphabet = 'full' | 'ascii';
 /** @internal */
