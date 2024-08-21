@@ -2,7 +2,6 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import type { ArrayConstraintsInternal } from './array';
 import { array } from './array';
 import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
-import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
 import { stringUnit } from './_internals/StringUnitArbitrary';
 import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString';

@@ -11,6 +11,9 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+import { Random } from '../../../src/random/generator/Random';
+import { Stream } from '../../../src/stream/Stream';
 
 describe('string (integration)', () => {
   type Extra = StringConstraints;
@@ -27,6 +30,7 @@ describe('string (integration)', () => {
         'grapheme-ascii',
         'binary',
         'binary-ascii',
+        new PatternsArbitrary(['123', 'abc', '!']),
       ),
     )
     .map(([min, gap, withMin, withMax, unit]) => ({
@@ -37,7 +41,7 @@ describe('string (integration)', () => {
 
   const measureLengthFor = (value: string, extra: Extra): number => {
     if (typeof extra.unit === 'object') {
-      throw new Error('Not supported');
+      return [...value.matchAll(/(abc|123|!)/g)].length;
     }
     switch (extra.unit) {
       case 'grapheme':
@@ -55,7 +59,8 @@ describe('string (integration)', () => {
 
   const assertCorrectForUnit = (value: string, extra: Extra): void => {
     if (typeof extra.unit === 'object') {
-      throw new Error('Not supported');
+      expect(value).toMatch(/^(abc|123|!)*$/); // based on PatternsArbitrary
+      return;
     }
     switch (extra.unit) {
       case 'grapheme':
@@ -166,3 +171,27 @@ describe('string (integration)', () => {
     expect(renderedTree).toMatchSnapshot();
   });
 });
+
+// Helpers
+
+// Helpers
+
+class PatternsArbitrary extends Arbitrary<string> {
+  constructor(readonly patterns: string[]) {
+    super();
+  }
+  generate(mrng: Random): Value<string> {
+    return new Value(this.patterns[mrng.nextInt(0, this.patterns.length - 1)], undefined);
+  }
+  canShrinkWithoutContext(value: unknown): value is string {
+    if (typeof value !== 'string') return false;
+    return this.patterns.includes(value);
+  }
+  shrink(value: string): Stream<Value<string>> {
+    const patternIndex = this.patterns.indexOf(value);
+    if (patternIndex <= 0) {
+      return Stream.nil();
+    }
+    return Stream.of(new Value(this.patterns[0], undefined));
+  }
+}
