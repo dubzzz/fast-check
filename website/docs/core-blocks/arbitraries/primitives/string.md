@@ -98,13 +98,13 @@ fc.string({ unit: 'grapheme-ascii' });
 // Examples of generated values: "+", "y\\m4", ")H", "}q% b'", "ZvT`W"…
 
 fc.string({ unit: 'binary' });
-// Note: Results in strings made of any possible combinations of code-points no matter how they join between each others.
+// Note: Results in strings made of any possible combinations of code-points no matter how they join between each others (except half surrogate pairs).
 // With 'binary', minLength (resp. maxLength) refers to length in terms of code-points (not in terms of visual entities).
 // As an example, "\u{0061}\u{0300}" has a length of 2 in this context, even if it corresponds to a single visual entity: "à".
 // Examples of generated values: "length", "򳇖𓔣򲳋󊕎󨐆󺣝􉥛󠙢􋳥򸂐", "", "𜖇𔳯𯊊򐺖", "key"…
 
 fc.string({ unit: 'binary-ascii' });
-// Note: Results in strings made of any possible combinations of code-points no matter how they join between each others (except half surrogate pairs).
+// Note: Results in strings made of any possible combinations of ascii characters (in 0000-007F range).
 // With 'binary-ascii', minLength (resp. maxLength) refers to length in terms of chars (equivalent to code-points for this type).
 // Examples of generated values: "c\\3\f\u0000\u001f\u00047", "M\u0006\fD!U\u000fXss", "", "s\u0000", "\n\u0006tkK"…
 
