@@ -174,8 +174,6 @@ describe('string (integration)', () => {
 
 // Helpers
 
-// Helpers
-
 class PatternsArbitrary extends Arbitrary<string> {
   constructor(readonly patterns: string[]) {
     super();
