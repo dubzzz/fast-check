@@ -119,39 +119,79 @@ describe('string (integration)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(stringBuilder, { extraParameters });
   });
 
-  it.each`
-    source                                                                      | constraints
-    ${''}                                                                       | ${{}}
-    ${'azerty'}                                                                 | ${{}}
-    ${'ah! ah!'}                                                                | ${{}}
-    ${'0123456789' /* by default maxLength = maxLengthFromMinLength(0) = 10 */} | ${{}}
-    ${'\u{0061}\u{0300}'}                                                       | ${{ unit: 'binary', minLength: 2 }}
-    ${'\u{0061}\u{0300}'}                                                       | ${{ unit: 'grapheme', maxLength: 1 }}
-    ${'\u{0061}\u{0300}'}                                                       | ${{ unit: 'grapheme' }}
-  `('should be able to generate $source with fc.string($constraints)', ({ source, constraints }) => {
-    // Arrange / Act
-    const arb = string(constraints);
-    const out = arb.canShrinkWithoutContext(source);
+  const patterns = new PatternsArbitrary(['123', 'abc', '!']);
+  const allExcept = (exclusionList: StringConstraints['unit'][]): StringConstraints['unit'][] => {
+    const all: StringConstraints['unit'][] = [
+      'grapheme' as const,
+      'grapheme-composite' as const,
+      'grapheme-ascii' as const,
+      'binary' as const,
+      'binary-ascii' as const,
+      patterns,
+    ];
+    return all.filter((e) => !exclusionList.includes(e));
+  };
+  describe.each([
+    { unit: undefined },
+    { unit: 'grapheme' as const },
+    { unit: 'grapheme-composite' as const },
+    { unit: 'grapheme-ascii' as const },
+    { unit: 'binary' as const },
+    { unit: 'binary-ascii' as const },
+    { unit: patterns },
+  ])('based on unit=$unit', ({ unit }) => {
+    it.each<{ source: string; constraints: Omit<StringConstraints, 'unit'>; supportedBy: StringConstraints['unit'][] }>(
+      [
+        // Empty string is valid for any unit as long as there is no minLength>0...
+        { source: '', constraints: {}, supportedBy: allExcept([]) },
+        // ...If we ask for minLength=1, it becomes invalid
+        { source: '', constraints: { minLength: 1 }, supportedBy: [] },
+        // Except patternsArbitrary all units are OK with the strings below as they don't break any constraints (neither content nor length)...
+        { source: 'azerty', constraints: {}, supportedBy: allExcept([patterns]) },
+        { source: 'ah! ah!', constraints: {}, supportedBy: allExcept([patterns]) },
+        // ...just in case we play with the default implicit maxLength (=maxLengthFromMinLength(0)=10)...
+        { source: '0123456789', constraints: {}, supportedBy: allExcept([patterns]) },
+        // ...and just above it as when not provided we should still accept to shrink for any lengths even if we do not generate them.
+        { source: '0123456789'.repeat(10), constraints: {}, supportedBy: allExcept([patterns]) },
+        // On its own patternsArbitrary is also able to generate things but its language is way more limited (with our configuration)...
+        { source: 'abc!123!', constraints: {}, supportedBy: allExcept([]) },
+        // ...it does not count the length the same way as such 'abc', '123' or '!' are all considered to be a length 1.
+        // So it is the only one to accept 'abc!123!' when asked for a maxLength of 4.
+        { source: 'abc!123!', constraints: { maxLength: 4 }, supportedBy: [patterns] },
+        // Regarding not supported characters we have many examples even for others:
+        // - ascii versions do not support code-points out-side of the ascii range
+        { source: 'a\u{1f431}b', constraints: {}, supportedBy: ['binary', 'grapheme', 'grapheme-composite'] },
+        // - composite versions do not support decomposed code-points composing themselves with others (ascii neither)
+        { source: '\u{0061}\u{0300}', constraints: {}, supportedBy: ['binary', 'grapheme'] },
+        // - no one support half surrogate pairs (high or low)
+        { source: '\u{d800}', constraints: {}, supportedBy: [] },
+        { source: '\u{dfff}', constraints: {}, supportedBy: [] },
+        // Then we may discard entries as they break the length rules:
+        // - not large enough
+        { source: 'ab', constraints: { minLength: 3 }, supportedBy: [] },
+        { source: 'abc', constraints: { minLength: 4 }, supportedBy: [] },
+        // - too large
+        { source: 'abcd', constraints: { maxLength: 3 }, supportedBy: [] },
+        { source: 'abcabcabc', constraints: { maxLength: 2 }, supportedBy: [] },
+        { source: '0123456789', constraints: { maxLength: 9 }, supportedBy: [] },
+        { source: '0123456789'.repeat(10), constraints: { maxLength: 10 }, supportedBy: [] },
+        // But counting characters is different from one unit to another, not only just for patternsArbitrary.
+        // For binary: '\u{0061}\u{0300}' is ['\u{0061}', '\u{0300}'] -> length 2
+        // For grapheme: '\u{0061}\u{0300}' is ['\u{0061}\u{0300}']   -> length 1
+        { source: '\u{0061}\u{0300}', constraints: { minLength: 2 }, supportedBy: ['binary'] },
+        { source: '\u{0061}\u{0300}', constraints: { maxLength: 1 }, supportedBy: ['grapheme'] },
+      ],
+    )(
+      'should be able to generate $source with fc.string($constraints) for $supportedBy',
+      ({ source, constraints, supportedBy }) => {
+        // Arrange / Act
+        const arb = string({ ...constraints, unit });
+        const out = arb.canShrinkWithoutContext(source);
 
-    // Assert
-    expect(out).toBe(true);
-  });
-
-  it.each`
-    source                                                             | constraints
-    ${'a\u{1f431}b' /* out-of-range character */}                      | ${{}}
-    ${'ab' /* not large enough */}                                     | ${{ minLength: 3 }}
-    ${'abcd' /* too large */}                                          | ${{ maxLength: 3 }}
-    ${'\u{0061}\u{0300}' /* not large enough in terms of graphemes */} | ${{ unit: 'grapheme', minLength: 2 }}
-    ${'\u{0061}\u{0300}' /* too large in terms of code-points */}      | ${{ unit: 'binary', maxLength: 1 }}
-    ${'\u{0061}\u{0300}' /* out-of-range character */}                 | ${{ unit: 'grapheme-composite' }}
-  `('should not be able to generate $source with fc.string($constraints)', ({ source, constraints }) => {
-    // Arrange / Act
-    const arb = string(constraints);
-    const out = arb.canShrinkWithoutContext(source);
-
-    // Assert
-    expect(out).toBe(false);
+        // Assert
+        expect(out).toBe(supportedBy.includes(unit ?? 'grapheme-ascii'));
+      },
+    );
   });
 
   it.each`
