@@ -5,7 +5,10 @@ export type GraphemeRange = [number] | [number, number];
 export const asciiAlphabetRanges: GraphemeRange[] = [[0x00, 0x7f]];
 
 /** @internal */
-export const fullAlphabetRanges: GraphemeRange[] = [[0x0000, 0x10ffff]];
+export const fullAlphabetRanges: GraphemeRange[] = [
+  [0x0000, 0xd7ff], // d800-dfff being the range of surrogate pairs
+  [0xe000, 0x10ffff],
+];
 
 /**
  * Ranges of Graphemes safe to be combined together without any risks to interract between each others.
