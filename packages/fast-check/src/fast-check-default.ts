@@ -114,7 +114,7 @@ import { asciiString } from './arbitrary/asciiString';
 import { base64String } from './arbitrary/base64String';
 import { fullUnicodeString } from './arbitrary/fullUnicodeString';
 import { hexaString } from './arbitrary/hexaString';
-import type { StringSharedConstraints } from './arbitrary/string';
+import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
 import { string } from './arbitrary/string';
 import { string16bits } from './arbitrary/string16bits';
 import { stringOf } from './arbitrary/stringOf';
@@ -299,6 +299,7 @@ export type {
   UuidConstraints,
   SparseArrayConstraints,
   StringMatchingConstraints,
+  StringConstraints,
   StringSharedConstraints,
   SubarrayConstraints,
   ShuffledSubarrayConstraints,
