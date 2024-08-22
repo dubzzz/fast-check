@@ -12,7 +12,7 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Random } from '../../../src/random/generator/Random';
+import type { Random } from '../../../src/random/generator/Random';
 import { Stream } from '../../../src/stream/Stream';
 
 describe('string (integration)', () => {
@@ -47,10 +47,11 @@ describe('string (integration)', () => {
       case 'grapheme':
       case 'grapheme-composite':
       case 'grapheme-ascii':
-      case undefined:
-        // @ts-ignore
+      case undefined: {
+        // @ts-expect-error Not available with our current preset for TypeScript
         const segmenter = new Intl.Segmenter();
         return [...segmenter.segment(value)].length;
+      }
       case 'binary':
       case 'binary-ascii':
         return [...value].length;
@@ -65,14 +66,15 @@ describe('string (integration)', () => {
     switch (extra.unit) {
       case 'grapheme':
         return;
-      case 'grapheme-composite':
-        // @ts-ignore
+      case 'grapheme-composite': {
+        // @ts-expect-error Not available with our current preset for TypeScript
         const segmenter = new Intl.Segmenter();
         expect([...segmenter.segment(value)].map((s) => s.segment)).toEqual([...value]); // assert: grapheme equivalent to code-point
         return;
+      }
       case 'grapheme-ascii':
       case undefined:
-        expect([...value]).toEqual(value.split('')); // assert: code-point equivalent to char
+        expect([...value]).toEqual(value.split('')); // assert: code point equivalent to code unit aka char
         for (const c of value) {
           expect(c.charCodeAt(0)).toBeGreaterThanOrEqual(0x20);
           expect(c.charCodeAt(0)).toBeLessThanOrEqual(0x7e);
@@ -81,7 +83,7 @@ describe('string (integration)', () => {
       case 'binary':
         return;
       case 'binary-ascii':
-        expect([...value]).toEqual(value.split('')); // assert: code-point equivalent to char
+        expect([...value]).toEqual(value.split('')); // assert: code point equivalent to code unit aka char
         for (const c of value) {
           expect(c.charCodeAt(0)).toBeGreaterThanOrEqual(0x00);
           expect(c.charCodeAt(0)).toBeLessThanOrEqual(0xff);
