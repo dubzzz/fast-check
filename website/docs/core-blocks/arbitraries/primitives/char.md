@@ -12,7 +12,7 @@ One lowercase hexadecimal character — ie.: _one character in `0123456789abcdef
 
 **Signatures:**
 
-- `fc.hexa()`
+- `fc.hexa()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **Usages:**
 
@@ -30,7 +30,7 @@ One base64 character — _ie.: one character in `A-Z`, `a-z`, `0-9`, `+` or `/`_
 
 **Signatures:**
 
-- `fc.base64()`
+- `fc.base64()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **Usages:**
 
@@ -48,7 +48,7 @@ One printable character — _ie.: one character between `0x20` (included) and `0
 
 **Signatures:**
 
-- `fc.char()`
+- `fc.char()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **Usages:**
 
@@ -66,7 +66,7 @@ One ascii character — _ie.: one character between `0x00` (included) and `0x7f`
 
 **Signatures:**
 
-- `fc.ascii()`
+- `fc.ascii()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **Usages:**
 
@@ -86,7 +86,7 @@ Generate any character of UCS-2 which is a subset of UTF-16 (restricted to BMP p
 
 **Signatures:**
 
-- `fc.unicode()`
+- `fc.unicode()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **Usages:**
 
@@ -106,7 +106,7 @@ Generate any 16 bits character. Be aware the values within `0xd800` and `0xdfff`
 
 **Signatures:**
 
-- `fc.char16bits()`
+- `fc.char16bits()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **Usages:**
 
@@ -126,7 +126,7 @@ Its length can be greater than one as it potentially contains multiple UTF-16 ch
 
 **Signatures:**
 
-- `fc.fullUnicode()`
+- `fc.fullUnicode()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **Usages:**
 

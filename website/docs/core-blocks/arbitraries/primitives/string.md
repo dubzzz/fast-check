@@ -16,8 +16,8 @@ Hexadecimal string containing characters produced by `fc.hexa()`.
 
 **Signatures:**
 
-- `fc.hexaString()`
-- `fc.hexaString({minLength?, maxLength?, size?})`
+- `fc.hexaString()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
+- `fc.hexaString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **with:**
 
@@ -123,8 +123,8 @@ ASCII string containing characters produced by `fc.ascii()`.
 
 **Signatures:**
 
-- `fc.asciiString()`
-- `fc.asciiString({minLength?, maxLength?, size?})`
+- `fc.asciiString()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
+- `fc.asciiString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **with:**
 
@@ -160,8 +160,8 @@ Unicode string containing characters produced by `fc.unicode()`.
 
 **Signatures:**
 
-- `fc.unicodeString()`
-- `fc.unicodeString({minLength?, maxLength?, size?})`
+- `fc.unicodeString()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
+- `fc.unicodeString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **with:**
 
@@ -199,8 +199,8 @@ Be aware that the generated string might appear invalid regarding the unicode st
 
 **Signatures:**
 
-- `fc.string16bits()`
-- `fc.string16bits({minLength?, maxLength?, size?})`
+- `fc.string16bits()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
+- `fc.string16bits({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **with:**
 
@@ -236,8 +236,8 @@ Unicode string containing characters produced by `fc.fullUnicode()`.
 
 **Signatures:**
 
-- `fc.fullUnicodeString()`
-- `fc.fullUnicodeString({minLength?, maxLength?, size?})`
+- `fc.fullUnicodeString()` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
+- `fc.fullUnicodeString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
 
 **with:**
 
