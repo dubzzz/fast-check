@@ -12,8 +12,8 @@ String containing characters produced by the passed character generator.
 
 **Signatures:**
 
-- `fc.stringOf(charArb)` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
-- `fc.stringOf(charArb, {minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#xyza](https://github.com/dubzzz/fast-check/pull/xyza))_
+- `fc.stringOf(charArb)` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.stringOf(charArb, {minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
 
 **with:**
 
