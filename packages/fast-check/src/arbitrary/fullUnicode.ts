@@ -30,6 +30,7 @@ function unicodeUnmapper(v: number) {
  *
  * {@link https://tc39.github.io/ecma262/#sec-utf16encoding}
  *
+ * @deprecated Please use ${@link string} with `fc.string({ unit: 'grapheme', minLength: 1, maxLength: 1 })` or `fc.string({ unit: 'binary', minLength: 1, maxLength: 1 })` instead
  * @remarks Since 0.0.11
  * @public
  */
