@@ -1,4 +1,6 @@
 // @ts-check
+// yarn changeset status --output=changeset.json
+// yarn workspace fast-check version patch
 const {
   promises: { readFile, writeFile },
   existsSync,
