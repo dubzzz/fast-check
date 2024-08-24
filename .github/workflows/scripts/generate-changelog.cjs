@@ -1,6 +1,9 @@
 // @ts-check
 // yarn changeset status --output=changeset.json
+// => does not change package.json by itself
+// => does not drop the changesets
 // yarn workspace fast-check version patch
+// => does not tag anything
 const {
   promises: { readFile, writeFile },
   existsSync,
