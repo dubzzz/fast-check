@@ -1,3 +1,18 @@
+# 2.1.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv2.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv2.0.1...ava%2Fv2.1.0)]
+
+## Features
+
+
+
+## Fixes
+
+
+
+---
+
 # 2.0.1
 
 _Document minimum requirements of 2.x_
