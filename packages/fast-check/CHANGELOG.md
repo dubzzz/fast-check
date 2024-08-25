@@ -1,6 +1,6 @@
 # 3.22.0
 
-_TODO Description_
+_Graphemes support on `fc.string`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.22.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.21.0...v3.22.0)]
 
 ## Features
