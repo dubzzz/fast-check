@@ -207,14 +207,19 @@ async function run() {
   const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
   await rm(temporaryChangelogFile);
   // Array of {name, type, oldVersion, newVersion, changesets}
-  const allBumps = temporaryChangelogFileContent.releases.filter((entry) => entry.type !== 'none');
+  const allBumps = await Promise.all(
+    temporaryChangelogFileContent.releases
+      .filter((entry) => entry.type !== 'none')
+      .map(async (entry) => {
+        // Extracting the location of the package from the workspace
+        const { stdout: packageLocationUnsafe } = await execFile('yarn', ['workspace', entry.name, 'exec', 'pwd']);
+        const packageLocation = packageLocationUnsafe.split('\n')[0].trim();
+        return { ...entry, packageLocation };
+      }),
+  );
 
-  for (const { oldVersion, newVersion, name: packageName, type: releaseKind } of allBumps) {
+  for (const { oldVersion, newVersion, name: packageName, type: releaseKind, packageLocation } of allBumps) {
     console.debug(`[debug] Checking ${packageName} between version ${oldVersion} and version ${newVersion}`);
-
-    // Extracting the location of the package from the workspace
-    const { stdout: packageLocationUnsafe } = await execFile('yarn', ['workspace', packageName, 'exec', 'pwd']);
-    const packageLocation = packageLocationUnsafe.split('\n')[0].trim();
 
     // Extract metas for changelog
     const oldTag = computeTag(oldVersion, packageName);
@@ -299,7 +304,7 @@ async function run() {
 
   // Compute the list of all impacted changelogs
   const changelogs = allBumps
-    .map((b) => b.cwd.substring(process.cwd().length + 1).replace(/\\/g, '/'))
+    .map((b) => b.packageLocation.substring(process.cwd().length + 1).replace(/\\/g, '/'))
     .map(
       (packageRelativePath) =>
         `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`,
