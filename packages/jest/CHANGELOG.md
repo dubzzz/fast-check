@@ -1,11 +1,7 @@
 # 2.0.2
 
-_TODO Description_
+_Export missing types_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.0.1...jest%2Fv2.0.2)]
-
-## Features
-
-
 
 ## Fixes
 
