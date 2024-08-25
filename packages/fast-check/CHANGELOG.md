@@ -12,6 +12,7 @@ _Graphemes support on `fc.string`_
 ## Fixes
 
 - ([PR#5237](https://github.com/dubzzz/fast-check/pull/5237)) CI: Drop TypeScript rc release channel
+- ([PR#5241](https://github.com/dubzzz/fast-check/pull/5241)) CI: Move to changeset
 - ([PR#5199](https://github.com/dubzzz/fast-check/pull/5199)) Doc: Publish release note for 3.21.0
 - ([PR#5240](https://github.com/dubzzz/fast-check/pull/5240)) Doc: Better `string`'s deprecation note in documentation
 - ([PR#5203](https://github.com/dubzzz/fast-check/pull/5203)) Refactor: Add missing types on exported
