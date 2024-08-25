@@ -300,7 +300,7 @@ async function run() {
   const commitName = `🔖 Update CHANGELOG.md for ${allBumps.map((b) => `${b.ident}@${b.newVersion}`).join(', ')}`;
   await execFile('git', ['checkout', '-b', branchName]);
   await execFile('git', ['commit', '-m', commitName]);
-  //await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
+  await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
 
   // Compute the list of all impacted changelogs
   const changelogs = allBumps
