@@ -1,11 +1,7 @@
 # 0.2.1
 
-_TODO Description_
+_Export missing types_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.2.0...poisoning%2Fv0.2.1)]
-
-## Features
-
-
 
 ## Fixes
 
