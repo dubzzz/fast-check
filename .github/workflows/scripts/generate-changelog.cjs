@@ -207,7 +207,7 @@ async function run() {
   const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
   await rm(temporaryChangelogFile);
   // Array of {name, type, oldVersion, newVersion, changesets}
-  const allBumps = temporaryChangelogFileContent.releases;
+  const allBumps = temporaryChangelogFileContent.releases.filter((entry) => entry.type !== 'none');
 
   for (const { oldVersion, newVersion, name: packageName, type: releaseKind } of allBumps) {
     console.debug(`[debug] Checking ${packageName} between version ${oldVersion} and version ${newVersion}`);
@@ -267,7 +267,9 @@ async function run() {
     await execFile('git', ['add', changelogPath]);
 
     // Update the package.json
-    await execFile('npm', ['--no-git-tag-version', '--workspaces-update=false', 'version', releaseKind], { cwd: packageLocation });
+    await execFile('npm', ['--no-git-tag-version', '--workspaces-update=false', 'version', releaseKind], {
+      cwd: packageLocation,
+    });
     const packageJsonPath = path.join(packageLocation, 'package.json');
     await execFile('git', ['add', packageJsonPath]);
   }
