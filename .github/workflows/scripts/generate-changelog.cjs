@@ -267,10 +267,14 @@ async function run() {
     await execFile('git', ['add', changelogPath]);
 
     // Update the package.json
-    await execFile('npm', ['--no-git-tag-version', 'version', releaseKind], { cwd: packageLocation });
+    await execFile('npm', ['--no-git-tag-version', '--workspaces-update=false', 'version', releaseKind], { cwd: packageLocation });
     const packageJsonPath = path.join(packageLocation, 'package.json');
     await execFile('git', ['add', packageJsonPath]);
   }
+
+  // Force yarn reinstall
+  await execFile('yarn');
+  await execFile('git', ['add', 'yarn.lock']);
 
   // Drop all changesets
   for (const { changesets } of allBumps) {
