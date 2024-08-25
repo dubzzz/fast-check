@@ -1,3 +1,16 @@
+# 2.0.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.0.1...jest%2Fv2.0.2)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5201](https://github.com/dubzzz/fast-check/pull/5201)) Refactor: Add missing types on exported
+
 # 2.0.1
 
 _Document minimum requirements of 2.x_
