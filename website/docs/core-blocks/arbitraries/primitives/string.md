@@ -16,8 +16,8 @@ Hexadecimal string containing characters produced by `fc.hexa()`.
 
 **Signatures:**
 
-- `fc.hexaString()` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.hexaString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.hexaString()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.hexaString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
 
 **with:**
 
@@ -123,8 +123,8 @@ ASCII string containing characters produced by `fc.ascii()`.
 
 **Signatures:**
 
-- `fc.asciiString()` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.asciiString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.asciiString()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.asciiString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
 
 **with:**
 
@@ -160,8 +160,8 @@ Unicode string containing characters produced by `fc.unicode()`.
 
 **Signatures:**
 
-- `fc.unicodeString()` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.unicodeString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.unicodeString()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.unicodeString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
 
 **with:**
 
@@ -199,8 +199,8 @@ Be aware that the generated string might appear invalid regarding the unicode st
 
 **Signatures:**
 
-- `fc.string16bits()` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.string16bits({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.string16bits()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.string16bits({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
 
 **with:**
 
@@ -236,8 +236,8 @@ Unicode string containing characters produced by `fc.fullUnicode()`.
 
 **Signatures:**
 
-- `fc.fullUnicodeString()` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.fullUnicodeString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 ([#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.fullUnicodeString()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
+- `fc.fullUnicodeString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
 
 **with:**
 
