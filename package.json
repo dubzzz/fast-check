@@ -21,11 +21,12 @@
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "publint:all": "yarn workspaces foreach --all -pvi --no-private exec publint --strict",
-    "bump": "yarn version check --interactive",
+    "bump": "changeset",
     "pack:all": "yarn workspaces foreach --all -pvi --no-private pack --out package.tgz",
     "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "@eslint/js": "^9.9.0",
     "@fast-check/packaged": "*",
     "@typescript-eslint/utils": "^7.18.0",
