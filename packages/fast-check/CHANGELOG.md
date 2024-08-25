@@ -1,3 +1,20 @@
+# 3.22.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.22.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.21.0...v3.22.0)]
+
+## Features
+
+- ([PR#5222](https://github.com/dubzzz/fast-check/pull/5222)) Support for grapheme on `fc.string`
+
+## Fixes
+
+- ([PR#5237](https://github.com/dubzzz/fast-check/pull/5237)) CI: Drop TypeScript rc release channel
+- ([PR#5199](https://github.com/dubzzz/fast-check/pull/5199)) Doc: Publish release note for 3.21.0
+- ([PR#5203](https://github.com/dubzzz/fast-check/pull/5203)) Refactor: Add missing types on exported
+
+---
+
 # 3.21.0
 
 _Support customisable versions on `uuid`_
