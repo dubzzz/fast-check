@@ -1,11 +1,7 @@
 # 0.1.3
 
-_TODO Description_
+_Export missing types_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.2...vitest%2Fv0.1.3)]
-
-## Features
-
-
 
 ## Fixes
 
