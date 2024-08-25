@@ -279,8 +279,13 @@ async function run() {
   await execFile('git', ['add', 'yarn.lock']);
 
   // Drop all changesets
+  const alreadyDeleted = new Set();
   for (const { changesets } of allBumps) {
     for (const changeset of changesets) {
+      if (alreadyDeleted.has(changeset)) {
+        continue;
+      }
+      alreadyDeleted.add(changeset);
       await execFile('git', ['rm', `.changeset/${changeset}.md`]);
     }
   }
