@@ -1,3 +1,12 @@
+# 0.1.3
+
+_Export missing types_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.2...vitest%2Fv0.1.3)]
+
+## Fixes
+
+- ([PR#5200](https://github.com/dubzzz/fast-check/pull/5200)) Refactor: Add missing types on exported
+
 # 0.1.2
 
 _Allow vitest v2 as a peer dependency_
