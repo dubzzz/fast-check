@@ -48,6 +48,9 @@ export { SString as String };
 const SSet: typeof Set = typeof Set !== 'undefined' ? Set : undefined!;
 export { SSet as Set };
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const SMap: typeof Map = typeof Map !== 'undefined' ? Map : undefined!;
+export { SMap as Map };
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const SUint8Array: typeof Uint8Array = typeof Uint8Array !== 'undefined' ? Uint8Array : undefined!;
 export { SUint8Array as Uint8Array };
 const SUint8ClampedArray: typeof Uint8ClampedArray =
@@ -293,6 +296,7 @@ const untouchedToUpperCase = String.prototype.toUpperCase;
 const untouchedPadStart = String.prototype.padStart;
 const untouchedCharCodeAt = String.prototype.charCodeAt;
 const untouchedReplace: (pattern: RegExp | string, replacement: string) => string = String.prototype.replace;
+const untouchedNormalize = String.prototype.normalize;
 function extractSplit(instance: string) {
   try {
     return instance.split;
@@ -352,6 +356,13 @@ function extractCharCodeAt(instance: string) {
 function extractReplace(instance: string) {
   try {
     return instance.replace;
+  } catch (err) {
+    return undefined;
+  }
+}
+function extractNormalize(instance: string) {
+  try {
+    return instance.normalize;
   } catch (err) {
     return undefined;
   }
@@ -418,6 +429,12 @@ export function safeReplace(instance: string, pattern: RegExp | string, replacem
     return instance.replace(pattern, replacement);
   }
   return safeApply(untouchedReplace, instance, [pattern, replacement]);
+}
+export function safeNormalize(instance: string, form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): string {
+  if (extractNormalize(instance) === untouchedNormalize) {
+    return instance.normalize(form);
+  }
+  return safeApply(untouchedNormalize, instance, [form]);
 }
 
 // Number
