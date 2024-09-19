@@ -11,6 +11,7 @@ function identity(v: number) {
  *
  * {@link https://www.ascii-code.com/}
  *
+ * @deprecated Please use ${@link string} with `fc.string({ minLength: 1, maxLength: 1 })` instead
  * @remarks Since 0.0.1
  * @public
  */

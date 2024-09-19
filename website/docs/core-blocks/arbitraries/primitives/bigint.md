@@ -18,7 +18,7 @@ Generate any possible `bigint` between <code>-2<sup>n-1</sup></code>(included) a
 
 **Signatures:**
 
-- `fc.bigIntN(n)`
+- `fc.bigIntN(n)` — _deprecated since v3.22.0, prefer [bigInt](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/bigint/#bigint-1) (more details at [#5238](https://github.com/dubzzz/fast-check/pull/5238))_
 
 **with:**
 
@@ -105,7 +105,7 @@ Generate any possible positive `bigint` between <code>0</code>(included) and <co
 
 **Signatures:**
 
-- `fc.bigUintN(n)`
+- `fc.bigUintN(n)` — _deprecated since v3.22.0, prefer [bigInt](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/bigint/#bigint-1) (more details at [#5238](https://github.com/dubzzz/fast-check/pull/5238))_
 
 **with:**
 
@@ -140,9 +140,9 @@ Generate any positive bigint value taken up to upper bound included.
 
 **Signatures:**
 
-- `fc.bigUint()`
-- `fc.bigUint({max?})`
-- `fc.bigUint(max)`
+- `fc.bigUint()` — _deprecated since v3.22.0, prefer [bigInt](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/bigint/#bigint-1) (more details at [#5238](https://github.com/dubzzz/fast-check/pull/5238))_
+- `fc.bigUint({max?})` — _deprecated since v3.22.0, prefer [bigInt](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/bigint/#bigint-1) (more details at [#5238](https://github.com/dubzzz/fast-check/pull/5238))_
+- `fc.bigUint(max)` — _deprecated since v3.22.0, prefer [bigInt](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/bigint/#bigint-1) (more details at [#5238](https://github.com/dubzzz/fast-check/pull/5238))_
 
 **with:**
 

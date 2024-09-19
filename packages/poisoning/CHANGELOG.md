@@ -1,3 +1,12 @@
+# 0.2.1
+
+_Export missing types_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.2.0...poisoning%2Fv0.2.1)]
+
+## Fixes
+
+- ([PR#5202](https://github.com/dubzzz/fast-check/pull/5202)) Refactor: Add missing types on exported
+
 # 0.2.0
 
 _Declare root of the package as ESM_

@@ -22,6 +22,7 @@ function computeDefaultMax(): bigint {
 
 /**
  * For positive bigint
+ * @deprecated Please use ${@link bigInt} with `fc.bigInt({ min: 0n })` instead
  * @remarks Since 1.9.0
  * @public
  */
@@ -30,7 +31,7 @@ function bigUint(): Arbitrary<bigint>;
  * For positive bigint between 0 (included) and max (included)
  *
  * @param max - Upper bound for the generated bigint
- *
+ * @deprecated Please use ${@link bigInt} with `fc.bigInt({ min: 0n, max })` instead
  * @remarks Since 1.9.0
  * @public
  */
@@ -40,6 +41,7 @@ function bigUint(max: bigint): Arbitrary<bigint>;
  *
  * @param constraints - Constraints to apply when building instances
  *
+ * @deprecated Please use ${@link bigInt} with `fc.bigInt({ min: 0n, max })` instead
  * @remarks Since 2.6.0
  * @public
  */
