@@ -33,7 +33,6 @@ import { bigUintN } from './arbitrary/bigUintN';
 import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
-import { ascii } from './arbitrary/ascii';
 import { base64 } from './arbitrary/base64';
 import { char } from './arbitrary/char';
 import { char16bits } from './arbitrary/char16bits';
@@ -107,7 +106,6 @@ import type {
 } from './arbitrary/uniqueArray';
 import { uniqueArray } from './arbitrary/uniqueArray';
 import { infiniteStream } from './arbitrary/infiniteStream';
-import { asciiString } from './arbitrary/asciiString';
 import { base64String } from './arbitrary/base64String';
 import { fullUnicodeString } from './arbitrary/fullUnicodeString';
 import { hexaString } from './arbitrary/hexaString';
@@ -361,7 +359,6 @@ export {
   bigInt,
   bigUint,
   char,
-  ascii,
   char16bits,
   unicode,
   fullUnicode,
@@ -369,7 +366,6 @@ export {
   base64,
   mixedCase,
   string,
-  asciiString,
   string16bits,
   stringOf,
   unicodeString,
