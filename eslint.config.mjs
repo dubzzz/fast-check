@@ -50,7 +50,7 @@ export default [
     },
   },
   {
-    files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js'],
+    files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js', 'jest.config.js'],
     languageOptions: {
       ...tseslint.configs.disableTypeChecked.languageOptions,
       globals: {
