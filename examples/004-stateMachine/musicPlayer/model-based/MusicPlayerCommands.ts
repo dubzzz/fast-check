@@ -4,7 +4,7 @@ import { PauseCommand } from './PauseCommand';
 import { NextCommand } from './NextCommand';
 import { AddTrackCommand } from './AddTrackCommand';
 
-export const TrackNameArb = fc.hexaString({ minLength: 1 });
+export const TrackNameArb = fc.string({ minLength: 1 });
 
 export const MusicPlayerCommands = fc.commands([
   fc.constant(new PlayCommand()),

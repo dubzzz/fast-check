@@ -37,7 +37,6 @@ import { base64 } from './arbitrary/base64';
 import { char } from './arbitrary/char';
 import { char16bits } from './arbitrary/char16bits';
 import { fullUnicode } from './arbitrary/fullUnicode';
-import { hexa } from './arbitrary/hexa';
 import { unicode } from './arbitrary/unicode';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
@@ -108,7 +107,6 @@ import { uniqueArray } from './arbitrary/uniqueArray';
 import { infiniteStream } from './arbitrary/infiniteStream';
 import { base64String } from './arbitrary/base64String';
 import { fullUnicodeString } from './arbitrary/fullUnicodeString';
-import { hexaString } from './arbitrary/hexaString';
 import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
 import { string } from './arbitrary/string';
 import { string16bits } from './arbitrary/string16bits';
@@ -362,7 +360,6 @@ export {
   char16bits,
   unicode,
   fullUnicode,
-  hexa,
   base64,
   mixedCase,
   string,
@@ -370,7 +367,6 @@ export {
   stringOf,
   unicodeString,
   fullUnicodeString,
-  hexaString,
   base64String,
   stringMatching,
   limitShrink,

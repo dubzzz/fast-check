@@ -31,6 +31,11 @@ describe('versionsApplierMapper', () => {
 });
 
 describe('versionsApplierUnmapper', () => {
+  const items = '0123456789abcdef';
+  function hexa(): fc.Arbitrary<string> {
+    return fc.integer({ min: 0, max: 15 }).map((n) => items[n]);
+  }
+
   it('should correctly unmap from a known version', () => {
     // Arrange
     const source = '901'; // 9 is at index 3, so it should unmap to 3
@@ -73,7 +78,7 @@ describe('versionsApplierUnmapper', () => {
       fc.property(
         fc.uniqueArray(fc.nat({ max: 15 }), { minLength: 1 }),
         fc.nat(),
-        fc.hexaString(),
+        fc.string({ unit: hexa() }),
         (versions, diceIndex, tail) => {
           // Arrange
           const index = diceIndex % versions.length;

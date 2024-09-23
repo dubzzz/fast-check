@@ -10,43 +10,6 @@ Generate string values.
 If you want to join several strings together: refer to our [combiners section](/docs/core-blocks/arbitraries/combiners/). We have some [built-in combiners working exclusively on string values](/docs/core-blocks/arbitraries/combiners/string/).
 :::
 
-## hexaString
-
-Hexadecimal string containing characters produced by `fc.hexa()`.
-
-**Signatures:**
-
-- `fc.hexaString()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.hexaString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**with:**
-
-- `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-
-**Usages:**
-
-```js
-fc.hexaString();
-// Examples of generated values: "251971", "", "a9", "742e6c86e", "39350b163"…
-
-fc.hexaString({ maxLength: 3 });
-// Note: Any hexadecimal string containing up to 3 (included) characters
-// Examples of generated values: "1", "", "2ef", "2a", "6e3"…
-
-fc.hexaString({ minLength: 3 });
-// Note: Any hexadecimal string containing at least 3 (included) characters
-// Examples of generated values: "1021a292c2d306", "e4660fd014ae290", "2ef914a5d7ffe9df", "2a212", "05dd1"…
-
-fc.hexaString({ minLength: 4, maxLength: 6 });
-// Note: Any hexadecimal string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "b4ccb", "e51d", "b3e093", "383f", "27bd"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/hexaString.html).  
-Available since 0.0.1.
-
 ## string
 
 String containing characters produced by the character generator defined for `unit`. By default, `unit` defaults to `fc.char()`.
