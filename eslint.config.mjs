@@ -51,7 +51,15 @@ export default [
     },
   },
   {
-    files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js', '**/jest.config.js'],
+    files: [
+      '**/*.cjs',
+      '**/cjs/**/*.js',
+      'packages/ava/test/testProp.js',
+      '**/ava.config.js',
+      '**/jest.config.js',
+      'packages/expect-type/src/*.js',
+      'packages/packaged/bin/*.js',
+    ],
     languageOptions: {
       ...tseslint.configs.disableTypeChecked.languageOptions,
       globals: {
@@ -90,6 +98,7 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
       ...tseslint.configs.disableTypeChecked.rules,

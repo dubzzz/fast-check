@@ -23,6 +23,7 @@ export function runWorker<Ts extends unknown[]>(
       return;
     }
     const inputs = payload.source === 'main' ? payload.value : buildInputs(payload);
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     wrapAndRunAsPromise(predicate, inputs).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { status: WorkerToPoolMessageStatus.Success, output, runId };
@@ -50,6 +51,7 @@ function wrapAndRunAsPromise<Ts extends unknown[]>(
   try {
     return Promise.resolve(predicate(...inputs));
   } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
     return Promise.reject(err);
   }
 }

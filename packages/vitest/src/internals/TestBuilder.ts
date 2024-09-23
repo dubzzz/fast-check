@@ -24,6 +24,7 @@ type TestPropRecord<Ts, TsParameters extends Ts = Ts> = (
  * prop has just been declared for typing reasons, ideally TestProp should be enough
  * and should be used to replace `{ prop: typeof prop }` by `{ prop: TestProp<???> }`
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare const prop: <Ts, TsParameters extends Ts = Ts>(
   arbitraries: Ts extends [any] | any[] ? ArbitraryTuple<Ts> : ArbitraryRecord<Ts>,
   params?: FcParameters<TsParameters>,
