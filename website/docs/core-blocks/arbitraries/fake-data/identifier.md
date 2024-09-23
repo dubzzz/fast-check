@@ -41,7 +41,7 @@ UUID values including versions 1 to 5 and going up to 15 when asked to.
 
 **with:**
 
-- `version` — default: `[1,2,3,4,5]` — _version or versions of the uuid to produce: 1, 2, 3, 4, 5... or 15_
+- `version` — default: `[1,2,3,4,5,6,7,8]` — _version or versions of the uuid to produce: 1, 2, 3, 4, 5... or 15. By default, we only produce UUIDs with versions being officially assigned, ie. from 1 to 8_
 
 **Usages:**
 
