@@ -13,7 +13,7 @@ import { buildVersionsAppliersForUuid } from './_internals/mappers/VersionsAppli
 export interface UuidConstraints {
   /**
    * Define accepted versions in the [1-15] according to {@link https://datatracker.ietf.org/doc/html/rfc9562#name-version-field | RFC 9562}
-   * @defaultValue [1,2,3,4,5]
+   * @defaultValue [1,2,3,4,5,6,7,8]
    * @remarks Since 3.21.0
    */
   version?:
@@ -64,7 +64,7 @@ export function uuid(constraints: UuidConstraints = {}): Arbitrary<string> {
       ? typeof constraints.version === 'number'
         ? [constraints.version]
         : constraints.version
-      : [1, 2, 3, 4, 5];
+      : [1, 2, 3, 4, 5, 6, 7, 8];
   assertValidVersions(version);
   const { versionsApplierMapper, versionsApplierUnmapper } = buildVersionsAppliersForUuid(version);
   const secondPadded = buildPaddedNumberArbitrary(0, 0x10000000 * version.length - 1).map(
