@@ -25,6 +25,8 @@ describe('uuidV', () => {
     ${3}    | ${'00000000-0000-3000-8000-000000000000'}
     ${4}    | ${'00000000-0000-4000-8000-000000000000'}
     ${5}    | ${'00000000-0000-5000-8000-000000000000'}
+    ${10}   | ${'00000000-0000-a000-8000-000000000000'}
+    ${15}   | ${'00000000-0000-f000-8000-000000000000'}
   `('should produce the minimal uuid (v$version) given all minimal generated values', ({ version, expected }) => {
     // Arrange
     const { instance: mrng } = fakeRandom();
@@ -49,6 +51,8 @@ describe('uuidV', () => {
     ${3}    | ${'ffffffff-ffff-3fff-bfff-ffffffffffff'}
     ${4}    | ${'ffffffff-ffff-4fff-bfff-ffffffffffff'}
     ${5}    | ${'ffffffff-ffff-5fff-bfff-ffffffffffff'}
+    ${10}   | ${'ffffffff-ffff-afff-bfff-ffffffffffff'}
+    ${15}   | ${'ffffffff-ffff-ffff-bfff-ffffffffffff'}
   `('should produce the maximal uuid (v$version) given all maximal generated values', ({ version, expected }) => {
     // Arrange
     const { instance: mrng } = fakeRandom();
@@ -68,12 +72,14 @@ describe('uuidV', () => {
 });
 
 describe('uuidV (integration)', () => {
-  type Extra = 1 | 2 | 3 | 4 | 5;
-  const extraParameters: fc.Arbitrary<Extra> = fc.constantFrom(...([1, 2, 3, 4, 5] as const));
+  type Extra = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+  const extraParameters: fc.Arbitrary<Extra> = fc.constantFrom(
+    ...([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as const),
+  );
 
   const isCorrect = (u: string, extra: Extra) => {
-    expect(u).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
-    expect(u[14]).toBe(String(extra));
+    expect(u).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-9a-f][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    expect(parseInt(u[14], 16)).toBe(extra);
   };
 
   const uuidVBuilder = (extra: Extra) => uuidV(extra);

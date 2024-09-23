@@ -9,6 +9,7 @@ import { BigIntArbitrary } from './_internals/BigIntArbitrary';
  *
  * @param n - Maximal number of bits of the generated bigint
  *
+ * @deprecated Please use ${@link bigInt} with `fc.bigInt({ min: -2n**(n-1n), max: 2n**(n-1n)-1n })` instead
  * @remarks Since 1.9.0
  * @public
  */

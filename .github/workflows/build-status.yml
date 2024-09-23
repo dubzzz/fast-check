@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         id: yarn-cache
         with:
           node-version: '20.x'
@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         id: yarn-cache
         with:
           node-version: '20.x'
@@ -72,7 +72,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -80,24 +80,6 @@ jobs:
           check-latest: true
       - name: Ensure no dedupe required
         run: yarn dedupe --check
-  all_version_bump_declared:
-    name: 'All version bump declared'
-    needs: warmup_yarn_cache
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-        with:
-          fetch-depth: 0
-      - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
-        with:
-          node-version: '20.x'
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
-          check-latest: true
-      - name: Ensure versions have been properly bumped
-        run: yarn version check
   package_quality:
     name: 'Package quality'
     needs: warmup_yarn_cache
@@ -105,7 +87,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -122,7 +104,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -141,7 +123,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -157,7 +139,7 @@ jobs:
       - name: Create bundles
         run: yarn pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -174,7 +156,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -248,7 +230,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
@@ -303,7 +285,7 @@ jobs:
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
           lfs: true
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -344,7 +326,7 @@ jobs:
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: website
           path: website/build/
@@ -359,7 +341,7 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -426,11 +408,10 @@ jobs:
           # Minimal requirement for TypeScript (should be 4.1)
           - '4.2'
           # Other release channels for TypeScript
-          - 'rc'
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -599,7 +580,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -610,9 +591,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish fast-check
-        run: npm publish --provenance --access public packages/fast-check/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/fast-check/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -638,7 +620,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -649,9 +631,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish @fast-check/ava
-        run: npm publish --provenance --access public packages/ava/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/ava/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -677,7 +660,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -688,9 +671,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish @fast-check/jest
-        run: npm publish --provenance --access public packages/jest/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/jest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -716,7 +700,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -727,9 +711,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish @fast-check/packaged
-        run: npm publish --provenance --access public packages/packaged/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -755,7 +740,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -766,9 +751,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish @fast-check/poisoning
-        run: npm publish --provenance --access public packages/poisoning/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/poisoning/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -794,7 +780,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -805,9 +791,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish @fast-check/vitest
-        run: npm publish --provenance --access public packages/vitest/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/vitest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -833,7 +820,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -844,9 +831,10 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish @fast-check/worker
-        run: npm publish --provenance --access public packages/worker/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/worker/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -872,7 +860,7 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
@@ -883,6 +871,7 @@ jobs:
           name: bundles
           path: packages/
       - name: Publish @fast-check/expect-type
-        run: npm publish --provenance --access public packages/expect-type/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/expect-type/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}

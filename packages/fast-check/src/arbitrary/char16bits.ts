@@ -10,6 +10,7 @@ import { indexToPrintableIndexMapper, indexToPrintableIndexUnmapper } from './_i
  * Some generated characters might appear invalid regarding UCS-2 and UTF-16 encoding.
  * Indeed values within 0xd800 and 0xdfff constitute surrogate pair characters and are illegal without their paired character.
  *
+ * @deprecated Please use ${@link string} with `fc.string({ unit, minLength: 1, maxLength: 1 })`, utilizing one of its unit variants instead
  * @remarks Since 0.0.11
  * @public
  */
