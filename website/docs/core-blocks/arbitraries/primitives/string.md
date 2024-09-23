@@ -117,43 +117,6 @@ fc.string({ unit: fc.constantFrom('Hello', 'World') });
 Resources: [API reference](https://fast-check.dev/api-reference/functions/string.html).  
 Available since 0.0.1.
 
-## asciiString
-
-ASCII string containing characters produced by `fc.ascii()`.
-
-**Signatures:**
-
-- `fc.asciiString()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.asciiString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**with:**
-
-- `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-
-**Usages:**
-
-```js
-fc.asciiString();
-// Examples of generated values: "\f@D", "hp", "q#dO~?@", "Qad", "5eHqc"…
-
-fc.asciiString({ maxLength: 3 });
-// Note: Any ascii string containing up to 3 (included) characters
-// Examples of generated values: "6", "", "ty", ",", "k"…
-
-fc.asciiString({ minLength: 3 });
-// Note: Any ascii string containing at least 3 (included) characters
-// Examples of generated values: "603e", "6W\u001b^tR-\n\n|", "efproto_\u001abhasOw", "$\u001c&\u0000R", "apply"…
-
-fc.asciiString({ minLength: 4, maxLength: 6 });
-// Note: Any ascii string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "<&\u001e\u001b ", "bind", "dnGn\\2", "& % !", "__defi"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/asciiString.html).  
-Available since 0.0.1.
-
 ## unicodeString
 
 Unicode string containing characters produced by `fc.unicode()`.

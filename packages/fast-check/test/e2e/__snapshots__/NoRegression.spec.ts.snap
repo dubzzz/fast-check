@@ -1473,37 +1473,6 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . [32m√[0m [[53219898]]]
 `;
 
-exports[`NoRegression > asciiString 1`] = `
-[Error: Property failed after 2 tests
-{ seed: 42, path: "1:1:1:4:1:1:1:2", endOnFailure: true }
-Counterexample: ["\\u0000"]
-Shrunk 7 time(s)
-
-Execution summary:
-[32m√[0m [""]
-[31m×[0m ["zWiHt\\u001d(t"]
-. [32m√[0m [""]
-. [31m×[0m ["t\\u001d(t"]
-. . [32m√[0m ["(t"]
-. . [31m×[0m ["\\u001d(t"]
-. . . [32m√[0m ["(t"]
-. . . [32m√[0m [" (t"]
-. . . [32m√[0m ["^(t"]
-. . . [32m√[0m ["}(t"]
-. . . [31m×[0m ["\\u000e(t"]
-. . . . [32m√[0m ["(t"]
-. . . . [31m×[0m ["\\u0006(t"]
-. . . . . [32m√[0m ["(t"]
-. . . . . [31m×[0m ["\\u0002(t"]
-. . . . . . [32m√[0m ["(t"]
-. . . . . . [31m×[0m ["\\u0000(t"]
-. . . . . . . [32m√[0m ["(t"]
-. . . . . . . [32m√[0m ["~(t"]
-. . . . . . . [31m×[0m ["\\u0000"]
-. . . . . . . . [32m√[0m [""]
-. . . . . . . . [32m√[0m ["~"]]
-`;
-
 exports[`NoRegression > base64String 1`] = `
 [Error: Property failed after 3 tests
 { seed: 42, path: "2:3:5:5", endOnFailure: true }
