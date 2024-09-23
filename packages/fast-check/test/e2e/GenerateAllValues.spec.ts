@@ -31,9 +31,6 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.char()', () => {
     it('Should be able to produce any printable character', () => lookForMissing(fc.char(), 95));
   });
-  describe('fc.ascii()', () => {
-    it('Should be able to produce any character from ascii', () => lookForMissing(fc.ascii(), 128));
-  });
   describe('fc.char16bits()', () => {
     it('Should be able to produce any 16 bits character', () => lookForMissing(fc.char16bits(), 65536));
   });
