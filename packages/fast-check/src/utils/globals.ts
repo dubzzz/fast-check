@@ -65,77 +65,77 @@ const untouchedEvery = Array.prototype.every;
 function extractForEach(instance: unknown[]) {
   try {
     return instance.forEach;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractIndexOf(instance: readonly unknown[]) {
   try {
     return instance.indexOf;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractJoin(instance: unknown[]) {
   try {
     return instance.join;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractMap(instance: unknown[]) {
   try {
     return instance.map;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractFilter(instance: unknown[]) {
   try {
     return instance.filter;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractPush(instance: unknown[]) {
   try {
     return instance.push;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractPop(instance: unknown[]) {
   try {
     return instance.pop;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSplice(instance: unknown[]) {
   try {
     return instance.splice;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSlice(instance: unknown[]) {
   try {
     return instance.slice;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSort(instance: unknown[]) {
   try {
     return instance.sort;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractEvery(instance: unknown[]) {
   try {
     return instance.every;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -219,14 +219,14 @@ const untouchedToISOString = Date.prototype.toISOString;
 function extractGetTime(instance: Date) {
   try {
     return instance.getTime;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractToISOString(instance: Date) {
   try {
     return instance.toISOString;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -249,7 +249,7 @@ const untouchedAdd = Set.prototype.add;
 function extractAdd(instance: Set<unknown>) {
   try {
     return instance.add;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -274,63 +274,63 @@ const untouchedReplace: (pattern: RegExp | string, replacement: string) => strin
 function extractSplit(instance: string) {
   try {
     return instance.split;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractStartsWith(instance: string) {
   try {
     return instance.startsWith;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractEndsWith(instance: string) {
   try {
     return instance.endsWith;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSubstring(instance: string) {
   try {
     return instance.substring;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractToLowerCase(instance: string) {
   try {
     return instance.toLowerCase;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractToUpperCase(instance: string) {
   try {
     return instance.toUpperCase;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractPadStart(instance: string) {
   try {
     return instance.padStart;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractCharCodeAt(instance: string) {
   try {
     return instance.charCodeAt;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractReplace(instance: string) {
   try {
     return instance.replace;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -404,7 +404,7 @@ const untouchedNumberToString = Number.prototype.toString;
 function extractNumberToString(instance: number) {
   try {
     return instance.toString;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }

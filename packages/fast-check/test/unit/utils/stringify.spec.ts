@@ -19,7 +19,7 @@ const checkEqual = (a: any, b: any): boolean => {
   try {
     expect(a).toEqual(b);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 };

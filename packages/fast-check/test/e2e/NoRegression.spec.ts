@@ -788,7 +788,7 @@ describe(`NoRegression`, () => {
               try {
                 fc.modelRun(setup, cmds);
                 return true;
-              } catch (err) {
+              } catch {
                 return false;
               }
             },
