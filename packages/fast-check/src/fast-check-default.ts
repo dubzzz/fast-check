@@ -33,7 +33,6 @@ import { bigUintN } from './arbitrary/bigUintN';
 import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
-import { base64 } from './arbitrary/base64';
 import { char } from './arbitrary/char';
 import { char16bits } from './arbitrary/char16bits';
 import { fullUnicode } from './arbitrary/fullUnicode';
@@ -360,7 +359,6 @@ export {
   char16bits,
   unicode,
   fullUnicode,
-  base64,
   mixedCase,
   string,
   string16bits,
