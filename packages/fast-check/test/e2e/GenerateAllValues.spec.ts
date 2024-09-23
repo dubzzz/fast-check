@@ -39,9 +39,6 @@ describe(`Generate all values (seed: ${seed})`, () => {
     it('Should be able to produce any character from unicode (UCS-2 subset only)', () =>
       lookForMissing(fc.unicode(), numCharacters));
   });
-  describe('fc.hexa()', () => {
-    it('Should be able to produce any character from hexa', () => lookForMissing(fc.hexa(), 16));
-  });
   describe('fc.base64()', () => {
     it('Should be able to produce any character from base64', () => lookForMissing(fc.base64(), 64));
   });

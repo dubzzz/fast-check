@@ -200,16 +200,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('hexaString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.hexaString(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('base64String', () => {
     expect(
       runWithSanitizedStack(() =>

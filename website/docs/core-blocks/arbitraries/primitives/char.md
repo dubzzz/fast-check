@@ -6,24 +6,6 @@ slug: /core-blocks/arbitraries/primitives/char/
 
 Generate single-character values.
 
-## hexa
-
-One lowercase hexadecimal character — ie.: _one character in `0123456789abcdef`_.
-
-**Signatures:**
-
-- `fc.hexa()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**Usages:**
-
-```js
-fc.hexa();
-// Examples of generated values: "5", "f", "7", "d", "9"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/hexa.html).  
-Available since 0.0.1.
-
 ## base64
 
 One base64 character — _ie.: one character in `A-Z`, `a-z`, `0-9`, `+` or `/`_.
