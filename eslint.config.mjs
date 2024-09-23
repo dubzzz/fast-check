@@ -47,10 +47,11 @@ export default [
       '@typescript-eslint/restrict-plus-operands': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/no-duplicate-type-constituents': 'off',
     },
   },
   {
-    files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js', 'jest.config.js'],
+    files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js', '**/jest.config.js'],
     languageOptions: {
       ...tseslint.configs.disableTypeChecked.languageOptions,
       globals: {
