@@ -77,7 +77,7 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
     try {
       new RegExp('.', 'd'); // Not supported in Node 14
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   })();

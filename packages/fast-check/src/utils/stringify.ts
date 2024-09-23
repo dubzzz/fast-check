@@ -157,7 +157,7 @@ function stringifyInternal<Ts>(
     // if user defined custom sync serialization function, we use it before next ones
     try {
       return value[toStringMethod]();
-    } catch (err) {
+    } catch {
       // fallback to defaults...
     }
   }
@@ -212,7 +212,7 @@ function stringifyInternal<Ts>(
           // Instance (or one of its parent prototypes) overrides the default toString of Object
           return (value as any).toString(); // <-- Can throw
         }
-      } catch (err) {
+      } catch {
         // Only return what would have been the default toString on Object
         return '[object Object]';
       }

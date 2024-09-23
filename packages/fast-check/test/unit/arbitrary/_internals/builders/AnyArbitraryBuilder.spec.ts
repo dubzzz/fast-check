@@ -224,7 +224,7 @@ function isStringified(v: unknown): boolean {
   try {
     eval(v);
     return true; // the string was correctly parsed
-  } catch (err) {
+  } catch {
     return false; // not a valid representation
   }
 }
@@ -237,7 +237,7 @@ function isStringifiedAsKeys(v: unknown): boolean {
     try {
       eval(key);
       return true; // the string used as key the string representation of a JavaScript instance
-    } catch (err) {
+    } catch {
       // not a valid representation
     }
   }

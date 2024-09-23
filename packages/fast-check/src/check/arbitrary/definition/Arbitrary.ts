@@ -273,7 +273,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
       try {
         const unmapped = this.unmapper(value);
         return this.arb.canShrinkWithoutContext(unmapped);
-      } catch (_err) {
+      } catch {
         return false;
       }
     }

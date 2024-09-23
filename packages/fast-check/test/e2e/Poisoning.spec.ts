@@ -173,7 +173,7 @@ function dropAllFromObj(obj: unknown): (() => void)[] {
       const descriptor = safeObjectGetOwnPropertyDescriptor(obj, k)!;
       delete (obj as any)[k];
       restores.push(() => safeObjectDefineProperty(obj, k, descriptor));
-    } catch (err) {
+    } catch {
       // Object.prototype cannot be deleted, and others might too
     }
   }
