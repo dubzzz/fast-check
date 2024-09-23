@@ -13,7 +13,7 @@ export default [
     languageOptions: {
       parserOptions: {
         tsconfigRootDir: import.meta.dirname,
-        project: './tsconfig.common.json',
+        projectService: './tsconfig.common.json',
       },
     },
   },
@@ -52,19 +52,22 @@ export default [
   {
     files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js'],
     languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
       globals: {
         ...globals.node,
         ...globals.commonjs,
       },
     },
     rules: {
-      '@typescript-eslint/no-var-requires': 'off',
       ...tseslint.configs.disableTypeChecked.rules,
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
   {
     files: ['**/*.mjs', '**/mjs/**/*.js'],
     languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
       globals: {
         ...globals.node,
       },
@@ -81,6 +84,9 @@ export default [
       '**/test-types/**/*.ts',
       '**/test-types/**/*.mts',
     ],
+    languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
+    },
     rules: {
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
