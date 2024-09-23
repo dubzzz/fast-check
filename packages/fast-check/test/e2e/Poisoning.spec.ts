@@ -41,14 +41,12 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'bigUint', arbitraryBuilder: () => fc.bigUint() },
     // String
     // : Single character
-    { name: 'hexa', arbitraryBuilder: () => fc.hexa() },
     { name: 'base64', arbitraryBuilder: () => fc.base64() },
     { name: 'char', arbitraryBuilder: () => fc.char() },
     { name: 'unicode', arbitraryBuilder: () => fc.unicode() },
     { name: 'char16bits', arbitraryBuilder: () => fc.char16bits() },
     { name: 'fullUnicode', arbitraryBuilder: () => fc.fullUnicode() },
     // : Multiple characters
-    { name: 'hexaString', arbitraryBuilder: () => fc.hexaString() },
     { name: 'base64String', arbitraryBuilder: () => fc.base64String() },
     { name: 'string', arbitraryBuilder: () => fc.string() },
     { name: 'unicodeString', arbitraryBuilder: () => fc.unicodeString() },

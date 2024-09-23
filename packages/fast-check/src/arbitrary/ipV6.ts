@@ -1,7 +1,7 @@
 import { array } from './array';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { oneof } from './oneof';
-import { hexaString } from './hexaString';
+import { string } from './string';
 import { tuple } from './tuple';
 import { ipV4 } from './ipV4';
 import {
@@ -18,6 +18,7 @@ import {
   noTrailingMapper,
   noTrailingUnmapper,
 } from './_internals/mappers/EntitiesToIPv6';
+import { integer } from './integer';
 
 /** @internal */
 function h16sTol32Mapper([a, b]: [string, string]): string {
@@ -29,6 +30,24 @@ function h16sTol32Unmapper(value: unknown): [string, string] {
   if (typeof value !== 'string') throw new Error('Invalid type');
   if (!value.includes(':')) throw new Error('Invalid value');
   return value.split(':', 2) as [string, string];
+}
+
+const items = '0123456789abcdef';
+/** @internal */
+function hexa(): Arbitrary<string> {
+  return integer({ min: 0, max: 15 }).map(
+    (n) => items[n],
+    (c) => {
+      if (typeof c !== 'string') {
+        throw new Error('Not a string');
+      }
+      const index = items.indexOf(c);
+      if (index === -1) {
+        throw new Error('Unknown "char"');
+      }
+      return index;
+    },
+  );
 }
 
 /**
@@ -55,7 +74,7 @@ export function ipV6(): Arbitrary<string> {
   // Any size-based arbitrary called within the implementation of ipV6 has
   // to be called with size:'max' in order to prevent any behaviour change
   // related to global settings on size. ipV6 is fully independent of size
-  const h16Arb = hexaString({ minLength: 1, maxLength: 4, size: 'max' });
+  const h16Arb = string({ unit: hexa(), minLength: 1, maxLength: 4, size: 'max' });
   const ls32Arb = oneof(tuple(h16Arb, h16Arb).map(h16sTol32Mapper, h16sTol32Unmapper), ipV4());
   return oneof(
     tuple(array(h16Arb, { minLength: 6, maxLength: 6, size: 'max' }), ls32Arb).map(
