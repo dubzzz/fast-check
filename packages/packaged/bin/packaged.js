@@ -1,4 +1,3 @@
-/* global process, console */
 import { removeNonPublishedFiles } from '../lib/packaged.js';
 
 function run(args) {

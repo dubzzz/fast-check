@@ -10,7 +10,7 @@ import type { ArbitraryTuple, Prop, ArbitraryRecord, PropRecord, It, JestExtra, 
 type TestPropTuple<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
   arbitraries: ArbitraryTuple<Ts>,
   params?: FcParameters<TsParameters>,
-) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
+) => (testName: string, prop: Prop<Ts>, timeout?: number) => void;
 
 /**
  * Type used for any `{it,test}.*.prop` taking records
@@ -18,20 +18,17 @@ type TestPropTuple<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
 type TestPropRecord<Ts, TsParameters extends Ts = Ts> = (
   arbitraries: ArbitraryRecord<Ts>,
   params?: FcParameters<TsParameters>,
-) => (testName: string, prop: PropRecord<Ts>, timeout?: number | undefined) => void;
+) => (testName: string, prop: PropRecord<Ts>, timeout?: number) => void;
 
 /**
  * prop has just been declared for typing reasons, ideally TestProp should be enough
  * and should be used to replace `{ prop: typeof prop }` by `{ prop: TestProp<???> }`
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare const prop: <Ts, TsParameters extends Ts = Ts>(
   arbitraries: Ts extends [any] | any[] ? ArbitraryTuple<Ts> : ArbitraryRecord<Ts>,
   params?: FcParameters<TsParameters>,
-) => (
-  testName: string,
-  prop: Ts extends [any] | any[] ? Prop<Ts> : PropRecord<Ts>,
-  timeout?: number | undefined,
-) => void;
+) => (testName: string, prop: Ts extends [any] | any[] ? Prop<Ts> : PropRecord<Ts>, timeout?: number) => void;
 
 function adaptParametersForRecord<Ts>(
   parameters: FcParameters<[Ts]>,
@@ -88,10 +85,10 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
 ): TestPropTuple<Ts, TsParameters> | TestPropRecord<Ts, TsParameters> {
   return (arbitraries, params?: FcParameters<TsParameters>) => {
     if (Array.isArray(arbitraries)) {
-      return (testName: string, prop: Prop<Ts>, timeout?: number | undefined) =>
+      return (testName: string, prop: Prop<Ts>, timeout?: number) =>
         buildTestWithPropRunner(testFn, testName, arbitraries, prop, params, timeout, jest, fc);
     }
-    return (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => {
+    return (testName: string, prop: Prop<Ts>, timeout?: number) => {
       const recordArb = record<Ts>(arbitraries);
       const recordParams: FcParameters<[TsParameters]> | undefined =
         params !== undefined

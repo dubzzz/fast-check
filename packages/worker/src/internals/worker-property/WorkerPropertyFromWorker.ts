@@ -72,7 +72,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return this.internalProperty.isAsync();
   }
 
-  generate(mrng: Random, runId?: number | undefined): Value<Ts> {
+  generate(mrng: Random, runId?: number): Value<Ts> {
     // Extracting and cloning the state of Random before altering it
     const rawRngState = mrng.getState();
     if (rawRngState === undefined) {
@@ -88,7 +88,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return fc.Stream.nil();
   }
 
-  run(v: Ts, dontRunHook?: boolean | undefined): Promise<PreconditionFailure | PropertyFailure | null> {
+  run(v: Ts, dontRunHook?: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
     return this.internalProperty.run(v, dontRunHook);
   }
 

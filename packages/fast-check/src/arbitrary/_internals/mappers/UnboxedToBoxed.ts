@@ -23,7 +23,6 @@ export function unboxedToBoxedUnmapper(value: unknown): unknown {
     return value;
   }
   return value.constructor === Boolean || value.constructor === Number || value.constructor === String
-    ? // eslint-disable-next-line @typescript-eslint/ban-types
-      (value as Boolean | Number | String).valueOf()
+    ? (value as Boolean | Number | String).valueOf()
     : value;
 }

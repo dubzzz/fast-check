@@ -191,7 +191,7 @@ export function stringifyInternal<Ts>(
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]': {
-      // eslint-disable-next-line @typescript-eslint/ban-types
+      // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
       const unboxedToString = (value as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing
       return typeof value === 'boolean' ? unboxedToString : `new Boolean(${unboxedToString})`;
     }

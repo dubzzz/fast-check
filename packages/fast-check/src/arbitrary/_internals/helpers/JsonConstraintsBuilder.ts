@@ -84,6 +84,7 @@ export function jsonConstraintsBuilder(
  * @remarks Since 2.20.0
  * @public
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface JsonArray extends Array<JsonValue> {}
 
 /**

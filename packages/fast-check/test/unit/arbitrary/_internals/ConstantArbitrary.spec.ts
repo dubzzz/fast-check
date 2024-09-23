@@ -103,8 +103,10 @@ describe('ConstantArbitrary', () => {
       expect(cloneMethodImpl).not.toHaveBeenCalled();
 
       // Assert
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value;
       expect(cloneMethodImpl).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value;
       expect(cloneMethodImpl).toHaveBeenCalledTimes(2);
     });

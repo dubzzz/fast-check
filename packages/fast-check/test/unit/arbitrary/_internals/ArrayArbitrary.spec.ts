@@ -278,12 +278,16 @@ describe('ArrayArbitrary', () => {
 
       // Assert
       expect(cloneMethodImpl).not.toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value; // not calling clone as this is the first access
       expect(cloneMethodImpl).not.toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value; // calling clone as this is the second access
       expect(cloneMethodImpl).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value; // calling clone (again) as this is the third access
       expect(cloneMethodImpl).toHaveBeenCalledTimes(2);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value_; // not calling clone as we access value_ not value
       expect(cloneMethodImpl).toHaveBeenCalledTimes(2);
     });
