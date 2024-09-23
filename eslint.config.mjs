@@ -47,7 +47,6 @@ export default [
       '@typescript-eslint/restrict-plus-operands': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/unbound-method': 'off',
-      '@typescript-eslint/no-duplicate-type-constituents': 'off',
     },
   },
   {

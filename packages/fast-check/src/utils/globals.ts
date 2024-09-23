@@ -80,7 +80,7 @@ const untouchedMap = Array.prototype.map;
 const untouchedFilter = Array.prototype.filter;
 const untouchedPush = Array.prototype.push;
 const untouchedPop = Array.prototype.pop;
-const untouchedSplice: (start: number, deleteCount?: number | undefined) => any[] = Array.prototype.splice;
+const untouchedSplice: (start: number, deleteCount?: number) => any[] = Array.prototype.splice;
 const untouchedSlice = Array.prototype.slice;
 const untouchedSort = Array.prototype.sort;
 const untouchedEvery = Array.prototype.every;
@@ -284,7 +284,7 @@ export function safeAdd<T>(instance: Set<T>, value: T): Set<T> {
 
 // String
 
-const untouchedSplit: (separator: string | RegExp, limit?: number | undefined) => string[] = String.prototype.split;
+const untouchedSplit: (separator: string | RegExp, limit?: number) => string[] = String.prototype.split;
 const untouchedStartsWith = String.prototype.startsWith;
 const untouchedEndsWith = String.prototype.endsWith;
 const untouchedSubstring = String.prototype.substring;
