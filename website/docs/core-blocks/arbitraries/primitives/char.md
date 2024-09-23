@@ -6,24 +6,6 @@ slug: /core-blocks/arbitraries/primitives/char/
 
 Generate single-character values.
 
-## base64
-
-One base64 character — _ie.: one character in `A-Z`, `a-z`, `0-9`, `+` or `/`_.
-
-**Signatures:**
-
-- `fc.base64()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**Usages:**
-
-```js
-fc.base64();
-// Examples of generated values: "A", "H", "i", "l", "7"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/base64.html).  
-Available since 0.0.1.
-
 ## char
 
 One printable character — _ie.: one character between `0x20` (included) and `0x7e` (included), corresponding to printable characters (see https://www.ascii-code.com/)_.

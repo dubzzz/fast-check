@@ -39,9 +39,6 @@ describe(`Generate all values (seed: ${seed})`, () => {
     it('Should be able to produce any character from unicode (UCS-2 subset only)', () =>
       lookForMissing(fc.unicode(), numCharacters));
   });
-  describe('fc.base64()', () => {
-    it('Should be able to produce any character from base64', () => lookForMissing(fc.base64(), 64));
-  });
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>
       fc.assert(
