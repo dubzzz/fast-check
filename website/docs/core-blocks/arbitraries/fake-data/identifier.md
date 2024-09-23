@@ -50,7 +50,7 @@ fc.uuid();
 // Examples of generated values:
 // • "4ebb3995-0009-1000-8b20-2254b7902e27"
 // • "ffffffef-50fb-40b5-aa9f-05640000001d"
-// • "87a8e397-ffec-5fff-8000-001a00000004"
+// • "87a8e397-ffec-8fff-8000-001a00000004"
 // • "17983d5d-001b-1000-98d3-6afba08e1e61"
 // • "7da15579-001d-1000-a6b3-4d71cf6e5de5"
 // • …
