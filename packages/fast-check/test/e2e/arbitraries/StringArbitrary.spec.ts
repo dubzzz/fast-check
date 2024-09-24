@@ -45,14 +45,4 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       );
     });
   });
-  describe('string16bits', () => {
-    it('Should be able to produce invalid UTF-16 strings', () => {
-      const out = fc.check(
-        fc.property(fc.string16bits(), (s: string) => encodeURIComponent(s) !== null),
-        { seed: seed },
-      );
-      expect(out.failed).toBe(true);
-      expect(out.counterexample).toEqual(['\ud800']);
-    });
-  });
 });

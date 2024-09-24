@@ -156,10 +156,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  // // Jest Snapshot seems not to support incomplete surrogate pair correctly
-  // it('string16bits', () => {
-  //   expect(runWithSanitizedStack(() => fc.assert(fc.property(fc.string16bits(), v => testFunc(v + v)), settings))).toThrowErrorMatchingSnapshot();
-  // });
   it('stringMatching', () => {
     expect(
       runWithSanitizedStack(() =>

@@ -33,9 +33,12 @@ describe('indexToCharStringUnmapper', () => {
 
   it('should accept any 1 char string (including half-surrogates)', () =>
     fc.assert(
-      fc.property(fc.char16bits(), (c) => {
-        // Arrange / Act / Assert
-        expect(indexToCharStringUnmapper(c)).toBe(c.charCodeAt(0));
-      }),
+      fc.property(
+        fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n)),
+        (c) => {
+          // Arrange / Act / Assert
+          expect(indexToCharStringUnmapper(c)).toBe(c.charCodeAt(0));
+        },
+      ),
     ));
 });
