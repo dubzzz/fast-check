@@ -117,45 +117,6 @@ fc.unicodeString({ minLength: 4, maxLength: 6 });
 Resources: [API reference](https://fast-check.dev/api-reference/functions/unicodeString.html).  
 Available since 0.0.11.
 
-## string16bits
-
-String containing characters produced by `fc.char16bits()`.
-
-Be aware that the generated string might appear invalid regarding the unicode standard as it might contain incomplete pairs of surrogate.
-
-**Signatures:**
-
-- `fc.string16bits()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.string16bits({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**with:**
-
-- `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-
-**Usages:**
-
-```js
-fc.string16bits();
-// Examples of generated values: "", "沉蹻!쯼&)￹噕￶￻", "獏", "嚷爇꡽邏䨫Ꝺ䟌", "ۆ딛楯씺"…
-
-fc.string16bits({ maxLength: 3 });
-// Note: Any string (not really legal ones sometimes) containing up to 3 (included) characters
-// Examples of generated values: "", "ꃷ", "톽va", "뿤䵎悧", ""…
-
-fc.string16bits({ minLength: 3 });
-// Note: Any string (not really legal ones sometimes) containing at least 3 (included) characters
-// Examples of generated values: "㝟佷㟧࿝譽먔", "ꃷ￱￷￻ꢒ￺￸", "톽valueOf", "key", "app"…
-
-fc.string16bits({ minLength: 4, maxLength: 6 });
-// Note: Any string (not really legal ones sometimes) containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "apply", "鹽\udc68鯻שּׂ", "땺\uda2f熑鉈뗻", "__def", "㓐줫曧ᒢ"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/string16bits.html).  
-Available since 0.0.11.
-
 ## fullUnicodeString
 
 Unicode string containing characters produced by `fc.fullUnicode()`.

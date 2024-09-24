@@ -34,7 +34,6 @@ import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
 import { char } from './arbitrary/char';
-import { char16bits } from './arbitrary/char16bits';
 import { fullUnicode } from './arbitrary/fullUnicode';
 import { unicode } from './arbitrary/unicode';
 import { constant } from './arbitrary/constant';
@@ -108,7 +107,6 @@ import { base64String } from './arbitrary/base64String';
 import { fullUnicodeString } from './arbitrary/fullUnicodeString';
 import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
 import { string } from './arbitrary/string';
-import { string16bits } from './arbitrary/string16bits';
 import { stringOf } from './arbitrary/stringOf';
 import { unicodeString } from './arbitrary/unicodeString';
 import type { SubarrayConstraints } from './arbitrary/subarray';
@@ -356,12 +354,10 @@ export {
   bigInt,
   bigUint,
   char,
-  char16bits,
   unicode,
   fullUnicode,
   mixedCase,
   string,
-  string16bits,
   stringOf,
   unicodeString,
   fullUnicodeString,
