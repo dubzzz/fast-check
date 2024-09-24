@@ -6,45 +6,6 @@ slug: /core-blocks/arbitraries/combiners/string/
 
 Combine and enhance existing string arbitraries.
 
-## stringOf
-
-String containing characters produced by the passed character generator.
-
-**Signatures:**
-
-- `fc.stringOf(charArb)` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.stringOf(charArb, {minLength?, maxLength?, size?})` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**with:**
-
-- `charArb` — _arbitrary able to generate random strings (possibly multiple characters)_
-- `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-
-**Usages:**
-
-```js
-fc.stringOf(fc.char(), { maxLength: 3 });
-// Note: Any string containing up to 3 (included) characters extracted from `fc.char()`
-// Examples of generated values: "(G", "D(\\", "", "Z{", ";"…
-
-fc.stringOf(fc.char(), { minLength: 4, maxLength: 6 });
-// Note: Any string containing between 4 (included) and 6 (included) characters extracted from `fc.char()`
-// Examples of generated values: "j1,p{h", "[~%?", "&alf", "call!", "\"&S \"!"…
-
-fc.stringOf(fc.constantFrom('a', 'b'), { maxLength: 5 });
-// Note: Any string containing between 0 (included) and 5 (included) characters extracted from `fc.constantFrom('a', 'b')`
-// Examples of generated values: "ba", "bb", "aba", "", "abb"…
-
-fc.stringOf(fc.constantFrom('Hello', 'World'), { minLength: 1, maxLength: 3 });
-// Note: It might produce strings like "WorldWorldWorld" or "WorldHelloWorld"…
-// Examples of generated values: "Hello", "World", "HelloWorld", "WorldWorldHello", "HelloWorldHello"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/stringOf.html).  
-Available since 1.1.3.
-
 ## stringMatching
 
 String matching the passed regex.

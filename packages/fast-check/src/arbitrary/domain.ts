@@ -4,7 +4,7 @@ import {
   buildLowerAlphaNumericArbitrary,
 } from './_internals/builders/CharacterRangeArbitraryBuilder';
 import { option } from './option';
-import { stringOf } from './stringOf';
+import { string } from './string';
 import { tuple } from './tuple';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter';
@@ -48,7 +48,7 @@ function subdomainLabel(size: Size) {
   //    restriction on the first character is relaxed to allow either a letter or a digit. Host software MUST support this more liberal syntax."
   return tuple(
     alphaNumericArb,
-    option(tuple(stringOf(alphaNumericHyphenArb, { size, maxLength: 61 }), alphaNumericArb)),
+    option(tuple(string({ unit: alphaNumericHyphenArb, size, maxLength: 61 }), alphaNumericArb)),
   )
     .map(toSubdomainLabelMapper, toSubdomainLabelUnmapper)
     .filter(filterInvalidSubdomainLabel);
@@ -119,7 +119,7 @@ export function domain(constraints: DomainConstraints = {}): Arbitrary<string> {
   // our current implementation does not follow this list and generate a fully randomized suffix
   // which is probably not in this list (probability would be low)
   const alphaNumericArb = buildLowerAlphaArbitrary([]);
-  const publicSuffixArb = stringOf(alphaNumericArb, { minLength: 2, maxLength: 63, size: resolvedSizeMinusOne });
+  const publicSuffixArb = string({ unit: alphaNumericArb, minLength: 2, maxLength: 63, size: resolvedSizeMinusOne });
   return (
     // labels have between 1 and 63 characters
     // domains are made of dot-separated labels and have up to 255 characters so that are made of up-to 128 labels

@@ -160,16 +160,6 @@ describe(`NoRegression`, () => {
   // it('string16bits', () => {
   //   expect(runWithSanitizedStack(() => fc.assert(fc.property(fc.string16bits(), v => testFunc(v + v)), settings))).toThrowErrorMatchingSnapshot();
   // });
-  it('stringOf', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.stringOf(fc.constantFrom('a', 'b')), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('stringMatching', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -967,11 +957,11 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('mixedCase(stringOf)', () => {
+  it('mixedCase(string(constantFrom))', () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.mixedCase(fc.stringOf(fc.constantFrom('a', 'b', 'c'))), (v) => testFunc(v)),
+          fc.property(fc.mixedCase(fc.string({ unit: fc.constantFrom('a', 'b', 'c') })), (v) => testFunc(v)),
           settings,
         ),
       ),
