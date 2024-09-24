@@ -8,7 +8,7 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from '../__test-helpers__/ArbitraryAssertions';
 import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCaseArbitrary';
-import { stringOf } from '../../../../src/arbitrary/stringOf';
+import { string } from '../../../../src/arbitrary/string';
 import { nat } from '../../../../src/arbitrary/nat';
 import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
@@ -161,12 +161,12 @@ describe('MixedCaseArbitrary (integration)', () => {
 
   const mixedCaseBuilder = (extra: Extra) =>
     new MixedCaseArbitrary(
-      stringOf(
-        nat(mixedCaseBaseChars.length - 1).map(
+      string({
+        unit: nat(mixedCaseBaseChars.length - 1).map(
           (id) => mixedCaseBaseChars[id],
           (c) => mixedCaseBaseChars.indexOf(c as string),
         ),
-      ),
+      }),
       extra.withoutToggle ? (rawChar) => rawChar : (rawChar) => rawChar.toLowerCase(),
       (rawString) => rawString.toUpperCase(),
     );

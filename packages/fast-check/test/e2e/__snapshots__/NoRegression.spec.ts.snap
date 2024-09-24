@@ -4473,7 +4473,7 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m ["cCbAabBAcaBCcCACcABaCAaAabBAcaBcBb"]]
 `;
 
-exports[`NoRegression > mixedCase(stringOf) 1`] = `
+exports[`NoRegression > mixedCase(string(constantFrom)) 1`] = `
 [Error: Property failed after 3 tests
 { seed: 42, path: "2:6:2", endOnFailure: true }
 Counterexample: ["aa"]
@@ -5230,22 +5230,6 @@ Execution summary:
 . . . . [32m√[0m ["a B \\t"]
 . . . . [31m×[0m ["aa B  "]
 . . . . . [31m×[0m ["a B  "]]
-`;
-
-exports[`NoRegression > stringOf 1`] = `
-[Error: Property failed after 2 tests
-{ seed: 42, path: "1:1:0", endOnFailure: true }
-Counterexample: ["aa"]
-Shrunk 2 time(s)
-
-Execution summary:
-[32m√[0m [""]
-[31m×[0m ["abbaaaaa"]
-. [32m√[0m [""]
-. [31m×[0m ["aaaa"]
-. . [31m×[0m ["aa"]
-. . . [32m√[0m ["a"]
-. . . [32m√[0m ["a"]]
 `;
 
 exports[`NoRegression > subarray 1`] = `

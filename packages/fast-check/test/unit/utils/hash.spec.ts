@@ -36,10 +36,10 @@ describe('hash', () => {
 // Helpers
 
 const char0x80 = fc.nat(0x79).map((n) => String.fromCharCode(n));
-const string0x80 = fc.stringOf(char0x80);
+const string0x80 = fc.string({ unit: char0x80 });
 
 const char0x800 = fc.nat(0x799).map((n) => String.fromCharCode(n));
-const string0x800 = fc.stringOf(char0x800);
+const string0x800 = fc.string({ unit: char0x800 });
 
 const crc32Table = [
   0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3, 0x0edb8832,

@@ -196,13 +196,14 @@ describe('string (integration)', () => {
     );
   });
 
-  it.each`
-    rawValue
-    ${'Hey!'}
-    ${'0'.repeat(50) /* longer than default maxGeneratedLength but ok for shrink */}
-  `('should be able to shrink $rawValue with fc.string()', ({ rawValue }) => {
+  it.each([
+    { unit: undefined, rawValue: 'Hey!' },
+    { unit: undefined, rawValue: '0'.repeat(50) /* longer than default maxGeneratedLength but ok for shrink */ },
+    { unit: undefined, rawValue: 'abc!123!' },
+    { unit: patterns, rawValue: 'abc!123!' },
+  ])('should be able to shrink $rawValue with fc.string({$unit})', ({ rawValue, unit }) => {
     // Arrange
-    const arb = string();
+    const arb = string({ unit });
     const value = new Value(rawValue, undefined);
 
     // Act
