@@ -1,6 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
-import { stringOf } from './stringOf';
+import { string } from './string';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /**
@@ -32,5 +32,5 @@ export function webSegment(constraints: WebSegmentConstraints = {}): Arbitrary<s
   // pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
   // segment       = *pchar
   const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':', '@'];
-  return stringOf(buildAlphaNumericPercentArbitrary(others), { size: constraints.size });
+  return string({ unit: buildAlphaNumericPercentArbitrary(others), size: constraints.size });
 }

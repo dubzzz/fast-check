@@ -107,7 +107,6 @@ import { base64String } from './arbitrary/base64String';
 import { fullUnicodeString } from './arbitrary/fullUnicodeString';
 import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
 import { string } from './arbitrary/string';
-import { stringOf } from './arbitrary/stringOf';
 import { unicodeString } from './arbitrary/unicodeString';
 import type { SubarrayConstraints } from './arbitrary/subarray';
 import { subarray } from './arbitrary/subarray';
@@ -358,7 +357,6 @@ export {
   fullUnicode,
   mixedCase,
   string,
-  stringOf,
   unicodeString,
   fullUnicodeString,
   base64String,

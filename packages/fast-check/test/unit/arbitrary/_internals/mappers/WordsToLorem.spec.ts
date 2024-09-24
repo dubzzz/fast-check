@@ -10,10 +10,10 @@ import {
 } from '../../../../../src/arbitrary/_internals/mappers/WordsToLorem';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
 
-const wordArbitraryWithoutComma = fc.stringOf(
-  fc.nat({ max: 25 }).map((v) => String.fromCodePoint(97 + v)),
-  { minLength: 1 },
-);
+const wordArbitraryWithoutComma = fc.string({
+  unit: fc.nat({ max: 25 }).map((v) => String.fromCodePoint(97 + v)),
+  minLength: 1,
+});
 const wordArbitrary = fc
   .tuple(wordArbitraryWithoutComma, fc.boolean())
   .map(([word, hasComma]) => (hasComma ? `${word},` : word));

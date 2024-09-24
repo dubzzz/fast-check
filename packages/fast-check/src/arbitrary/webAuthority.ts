@@ -8,14 +8,14 @@ import { ipV6 } from './ipV6';
 import { nat } from './nat';
 import { oneof } from './oneof';
 import { option } from './option';
-import { stringOf } from './stringOf';
+import { string } from './string';
 import { tuple } from './tuple';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /** @internal */
 function hostUserInfo(size: SizeForArbitrary): Arbitrary<string> {
   const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':'];
-  return stringOf(buildAlphaNumericPercentArbitrary(others), { size });
+  return string({ unit: buildAlphaNumericPercentArbitrary(others), size });
 }
 
 /** @internal */
