@@ -53,8 +53,13 @@ const anythingEnableAll: fc.ObjectConstraints = {
 describe('stringify', () => {
   it('Should be able to stringify fc.anything()', () =>
     fc.assert(fc.property(fc.anything(anythingEnableAll), (a) => typeof stringify(a) === 'string')));
-  it('Should be able to stringify fc.char16bits() (ie. possibly invalid strings)', () =>
-    fc.assert(fc.property(fc.char16bits(), (a) => typeof stringify(a) === 'string')));
+  it('Should be able to stringify possibly invalid strings', () =>
+    fc.assert(
+      fc.property(
+        fc.string({ unit: fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n)) }),
+        (a) => typeof stringify(a) === 'string',
+      ),
+    ));
   it('Should be able to stringify bigint in object correctly', () =>
     fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
   it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>

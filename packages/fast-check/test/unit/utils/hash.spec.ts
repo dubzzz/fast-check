@@ -12,7 +12,7 @@ describe('hash', () => {
       }),
     ));
   it('Should be able to compute hash even for invalid strings', () =>
-    fc.assert(fc.property(fc.char16bits(), (a) => typeof hash(a) === 'number')));
+    fc.assert(fc.property(string16bits, (a) => typeof hash(a) === 'number')));
   it('Should compute the same value as reference for strings of characters <0x80', () =>
     fc.assert(fc.property(string0x80, (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for strings of characters <0x800', () =>
@@ -20,7 +20,7 @@ describe('hash', () => {
   it('Should compute the same value as reference for any string', () =>
     fc.assert(fc.property(fc.fullUnicodeString(), (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for potentially invalid strings', () =>
-    fc.assert(fc.property(fc.char16bits(), (s) => hash(s) === hashReference(s))));
+    fc.assert(fc.property(string16bits, (s) => hash(s) === hashReference(s))));
   it('Should consider any invalid surrogate pair as <ef bf bd> or 0xfffd', () => {
     // This is the behaviour of the reference implementation based on Buffer.from (see below)
     // Buffer.from([0xef,0xbf,0xbd]).toString('utf8') === '\ufffd'
@@ -34,6 +34,9 @@ describe('hash', () => {
 });
 
 // Helpers
+
+const char16bits = fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
+const string16bits = fc.string({ unit: char16bits });
 
 const char0x80 = fc.nat(0x79).map((n) => String.fromCharCode(n));
 const string0x80 = fc.string({ unit: char0x80 });
