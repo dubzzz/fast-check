@@ -17,7 +17,7 @@ describe('indexToCharStringUnmapper', () => {
 
   it('should reject any longer than 1 code-point strings', () =>
     fc.assert(
-      fc.property(fc.fullUnicodeString({ minLength: 2 }), (s) => {
+      fc.property(fc.string({ unit: 'binary', minLength: 2 }), (s) => {
         // Arrange / Act / Assert
         expect(() => indexToCharStringUnmapper(s)).toThrowError();
       }),
@@ -25,7 +25,7 @@ describe('indexToCharStringUnmapper', () => {
 
   it('should accept any 1 code-point string', () =>
     fc.assert(
-      fc.property(fc.fullUnicode(), (c) => {
+      fc.property(fc.string({ unit: 'binary', minLength: 1, maxLength: 1 }), (c) => {
         // Arrange / Act / Assert
         expect(indexToCharStringUnmapper(c)).toBe(c.codePointAt(0));
       }),

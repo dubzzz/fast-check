@@ -37,7 +37,7 @@ describe('escapeForTemplateString', () => {
 
   it('should escape properly any string', () =>
     fc.assert(
-      fc.property(fc.fullUnicodeString(), (text) => {
+      fc.property(fc.string({ unit: 'binary' }), (text) => {
         const escapedText = escapeForTemplateString(text);
         expect(eval('`' + escapedText + '`')).toBe(text);
       }),
@@ -61,7 +61,7 @@ describe('escapeForMultilineComments', () => {
 
   it('should escape properly any string', () =>
     fc.assert(
-      fc.property(fc.fullUnicodeString(), (text) => {
+      fc.property(fc.string({ unit: 'binary' }), (text) => {
         const escapedText = escapeForMultilineComments(text);
         expect(eval('/*' + escapedText + '*/"success"')).toBe('success');
       }),
