@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@npmcli/arborist": "^7.0.0",
-    "npm-packlist": "^8.0.0"
+    "npm-packlist": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
