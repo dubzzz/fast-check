@@ -64,7 +64,6 @@ testArbitrary(fc.subarray([1, 42, 360]));
 testArbitrary(fc.array(fc.nat()));
 testArbitrary(fc.json());
 testArbitrary(fc.string());
-testArbitrary(fc.fullUnicodeString());
 testArbitrary(fc.lorem());
 testArbitrary(fc.uuid());
 testArbitrary(fc.oneof(fc.nat(), fc.double()));
