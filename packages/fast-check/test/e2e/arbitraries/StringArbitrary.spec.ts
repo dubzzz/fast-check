@@ -41,9 +41,9 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
     { unit: undefined },
     { unit: 'grapheme' as const },
     { unit: 'grapheme-composite' as const },
-    { unit: 'grapheme-ascii'  as const },
+    { unit: 'grapheme-ascii' as const },
     { unit: 'binary' as const },
-    { unit:('binary-ascii' as const) },
+    { unit: 'binary-ascii' as const },
   ])('string(unit:$unit)', ({ unit }) => {
     it('Should produce valid UTF-16 strings', () => {
       fc.assert(
