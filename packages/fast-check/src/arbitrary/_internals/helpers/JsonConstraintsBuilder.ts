@@ -1,7 +1,6 @@
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
-import { fullUnicodeString } from '../../fullUnicodeString';
 import { string } from '../../string';
 import type { DepthSize } from './MaxLengthFromMinLength';
 import type { ObjectConstraints } from './QualifiedObjectConstraints';
@@ -43,7 +42,7 @@ export interface JsonSharedConstraints {
 
 export function jsonConstraintsBuilder(constraints: JsonSharedConstraints): ObjectConstraints {
   const { depthSize, maxDepth, noUnicodeString } = constraints;
-  const stringArbitrary = noUnicodeString ? string() : fullUnicodeString();
+  const stringArbitrary = noUnicodeString ? string({ unit: 'grapheme-ascii' }) : string({ unit: 'binary' });
   const key = stringArbitrary;
   const values = [
     boolean(), // any boolean

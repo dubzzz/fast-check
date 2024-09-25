@@ -1,8 +1,8 @@
-import { fullUnicode } from '../../fullUnicode';
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
 import { safeCharCodeAt, safeNumberToString, encodeURIComponent } from '../../../utils/globals';
+import { string } from '../../string';
 
 const safeStringFromCharCode = String.fromCharCode;
 
@@ -30,7 +30,10 @@ function percentCharArbUnmapper(value: unknown): string {
 }
 
 /** @internal */
-const percentCharArb = fullUnicode().map(percentCharArbMapper, percentCharArbUnmapper);
+const percentCharArb = string({ unit: 'binary', minLength: 1, maxLength: 1 }).map(
+  percentCharArbMapper,
+  percentCharArbUnmapper,
+);
 
 /** @internal */
 export const buildLowerAlphaArbitrary = (others: string[]): Arbitrary<string> =>

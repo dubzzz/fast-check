@@ -2,7 +2,6 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
-import { fullUnicodeString } from '../../fullUnicodeString';
 import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';
@@ -152,6 +151,18 @@ function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean)
   return boxEnabled ? boxArbitraries(arbs).concat(arbs) : arbs;
 }
 
+const binaryString = (constraints: { size: SizeForArbitrary }) =>
+  string({
+    unit: 'binary',
+    size: constraints.size,
+  });
+
+const graphemeAsciiString = (constraints: { size: SizeForArbitrary }) =>
+  string({
+    unit: 'grapheme-ascii',
+    size: constraints.size,
+  });
+
 /**
  * Convert constraints of type ObjectConstraints into fully qualified constraints
  * @internal
@@ -160,7 +171,7 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
   function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
     return optionalValue !== undefined ? optionalValue : defaultValue;
   }
-  const stringArbitrary = settings.withUnicodeString ? fullUnicodeString : string;
+  const stringArbitrary = settings.withUnicodeString ? binaryString : graphemeAsciiString;
   const valueConstraints = { size: settings.size };
   return {
     key: orDefault(settings.key, stringArbitrary(valueConstraints)),
