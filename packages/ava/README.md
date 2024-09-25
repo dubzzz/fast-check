@@ -74,7 +74,7 @@ testProp(
   { seed: 4242 },
 );
 
-testProp.skip('should be skipped', [fc.fullUnicodeString()], (t, text) => {
+testProp.skip('should be skipped', [fc.string()], (t, text) => {
   t.is([...text].length, text.length);
 });
 ```

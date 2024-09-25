@@ -176,16 +176,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('fullUnicodeString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.fullUnicodeString(), (v) => testFunc(v + v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('base64String', () => {
     expect(
       runWithSanitizedStack(() =>

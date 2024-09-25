@@ -75,7 +75,7 @@ describe('stringify', () => {
             fc.boolean(),
             fc.integer(),
             fc.double({ noDefaultInfinity: true, noNaN: true }).filter((d) => !Object.is(d, -0)),
-            fc.fullUnicodeString(),
+            fc.string({ unit: 'binary' }),
             fc.constant(null),
           ],
         }),
