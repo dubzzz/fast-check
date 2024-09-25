@@ -151,13 +151,13 @@ function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean)
   return boxEnabled ? boxArbitraries(arbs).concat(arbs) : arbs;
 }
 
-const binaryString = (constraints: { size: SizeForArbitrary }) =>
+const binaryString = (constraints: DefaultValuesConstraints) =>
   string({
     unit: 'binary',
     size: constraints.size,
   });
 
-const graphemeAsciiString = (constraints: { size: SizeForArbitrary }) =>
+const graphemeAsciiString = (constraints: DefaultValuesConstraints) =>
   string({
     unit: 'grapheme-ascii',
     size: constraints.size,
