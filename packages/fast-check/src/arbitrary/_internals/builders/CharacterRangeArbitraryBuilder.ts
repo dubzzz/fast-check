@@ -30,10 +30,8 @@ function percentCharArbUnmapper(value: unknown): string {
 }
 
 /** @internal */
-const percentCharArb = string({ unit: 'binary', minLength: 1, maxLength: 1 }).map(
-  percentCharArbMapper,
-  percentCharArbUnmapper,
-);
+const percentCharArb = () =>
+  string({ unit: 'binary', minLength: 1, maxLength: 1 }).map(percentCharArbMapper, percentCharArbUnmapper);
 
 /** @internal */
 export const buildLowerAlphaArbitrary = (others: string[]): Arbitrary<string> =>
@@ -49,4 +47,4 @@ const buildAlphaNumericArbitrary = (others: string[]): Arbitrary<string> =>
 
 /** @internal */
 export const buildAlphaNumericPercentArbitrary = (others: string[]): Arbitrary<string> =>
-  oneof({ weight: 10, arbitrary: buildAlphaNumericArbitrary(others) }, { weight: 1, arbitrary: percentCharArb });
+  oneof({ weight: 10, arbitrary: buildAlphaNumericArbitrary(others) }, { weight: 1, arbitrary: percentCharArb() });
