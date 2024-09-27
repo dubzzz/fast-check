@@ -3,8 +3,6 @@ import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { Value } from './Value';
 
-const safeObjectAssign = Object.assign;
-
 /**
  * Abstract class able to generate values on type `T`
  *
@@ -201,11 +199,11 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
           : Stream.nil<Value<U>>()
       ).join(
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
-          // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
-          const newContext: ChainArbitraryContext<T, U> = safeObjectAssign(safeObjectAssign({}, context), {
+          const newContext: ChainArbitraryContext<T, U> = {
+            ...context,
             chainedContext: dst.context,
             stoppedForOriginal: true,
-          });
+          };
           return new Value(dst.value_, newContext);
         }),
       );
