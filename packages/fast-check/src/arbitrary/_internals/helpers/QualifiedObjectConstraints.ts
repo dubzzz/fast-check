@@ -2,7 +2,6 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { boolean } from '../../boolean';
 import { constant } from '../../constant';
 import { double } from '../../double';
-import { fullUnicodeString } from '../../fullUnicodeString';
 import { maxSafeInteger } from '../../maxSafeInteger';
 import { oneof } from '../../oneof';
 import { string } from '../../string';
@@ -168,12 +167,11 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
   function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
     return optionalValue !== undefined ? optionalValue : defaultValue;
   }
-  const stringArbitrary = 'stringUnit' in settings ? string : settings.withUnicodeString ? fullUnicodeString : string;
   const valueConstraints = { size: settings.size, unit: settings.stringUnit };
   return {
-    key: orDefault(settings.key, stringArbitrary(valueConstraints)),
+    key: orDefault(settings.key, string(valueConstraints)),
     values: boxArbitrariesIfNeeded(
-      orDefault(settings.values, defaultValues(valueConstraints, stringArbitrary)),
+      orDefault(settings.values, defaultValues(valueConstraints, string)),
       orDefault(settings.withBoxedValues, false),
     ),
     depthSize: settings.depthSize,
