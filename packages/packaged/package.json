@@ -34,7 +34,7 @@
     "node": ">=14.14.0"
   },
   "dependencies": {
-    "@npmcli/arborist": "^7.0.0",
+    "@npmcli/arborist": "^8.0.0",
     "npm-packlist": "^9.0.0"
   },
   "devDependencies": {
