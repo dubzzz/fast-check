@@ -34,7 +34,6 @@ import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
 import { char } from './arbitrary/char';
-import { fullUnicode } from './arbitrary/fullUnicode';
 import { unicode } from './arbitrary/unicode';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
@@ -104,7 +103,6 @@ import type {
 import { uniqueArray } from './arbitrary/uniqueArray';
 import { infiniteStream } from './arbitrary/infiniteStream';
 import { base64String } from './arbitrary/base64String';
-import { fullUnicodeString } from './arbitrary/fullUnicodeString';
 import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
 import { string } from './arbitrary/string';
 import { unicodeString } from './arbitrary/unicodeString';
@@ -354,11 +352,9 @@ export {
   bigUint,
   char,
   unicode,
-  fullUnicode,
   mixedCase,
   string,
   unicodeString,
-  fullUnicodeString,
   base64String,
   stringMatching,
   limitShrink,
