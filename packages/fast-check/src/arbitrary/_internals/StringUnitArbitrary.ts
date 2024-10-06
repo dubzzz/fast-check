@@ -1,5 +1,6 @@
 import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { mapToConstant } from '../mapToConstant';
+import { Map, safeMap, safeNormalize, safePush } from '../../utils/globals';
+import { integer } from '../integer';
 import type { GraphemeRange } from './data/GraphemeRanges';
 import {
   asciiAlphabetRanges,
@@ -7,8 +8,7 @@ import {
   autonomousGraphemeRanges,
   fullAlphabetRanges,
 } from './data/GraphemeRanges';
-import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers';
-import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers';
+import { intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers';
 
 /** @internal */
 type StringUnitType = 'grapheme' | 'composite' | 'binary';
@@ -16,6 +16,8 @@ type StringUnitType = 'grapheme' | 'composite' | 'binary';
 type StringUnitAlphabet = 'full' | 'ascii';
 /** @internal */
 type StringUnitMapKey = `${StringUnitType}:${StringUnitAlphabet}`;
+/** @internal */
+const safeStringFromCodePoint = String.fromCodePoint;
 
 /**
  * Caching all already instanciated variations of stringUnit
@@ -34,6 +36,27 @@ function getAlphabetRanges(alphabet: StringUnitAlphabet): GraphemeRange[] {
 }
 
 /** @internal */
+function buildStringUnit(valuesAtIndex: string[]): Arbitrary<string> {
+  let reversedValuesAtIndex: Map<string, number> | undefined = undefined;
+  return integer({ min: 0, max: valuesAtIndex.length - 1 }).map(
+    (index) => valuesAtIndex[index],
+    (possibleValue) => {
+      if (typeof possibleValue !== 'string') {
+        throw new Error('Can only unmap strings');
+      }
+      if (reversedValuesAtIndex === undefined) {
+        reversedValuesAtIndex = new Map(safeMap(valuesAtIndex, (value, index) => [value, index]));
+      }
+      const reversedIndex = reversedValuesAtIndex.get(possibleValue);
+      if (reversedIndex === undefined) {
+        throw new Error('Can only unmap known values');
+      }
+      return reversedIndex;
+    },
+  );
+}
+
+/** @internal */
 function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUnitAlphabet): Arbitrary<string> {
   const key: StringUnitMapKey = `${type}:${alphabet}`;
   const registered = registeredStringUnitInstancesMap[key];
@@ -42,21 +65,25 @@ function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUni
   }
   const alphabetRanges = getAlphabetRanges(alphabet);
   const ranges = type === 'binary' ? alphabetRanges : intersectGraphemeRanges(alphabetRanges, autonomousGraphemeRanges);
-  const entries: GraphemeRangeEntry[] = [];
+  const valuesAtIndex: string[] = [];
   for (const range of ranges) {
-    entries.push(convertGraphemeRangeToMapToConstantEntry(range));
+    const start = range[0];
+    const end = range.length === 1 ? start : range[1];
+    for (let index = start; index <= end; ++index) {
+      safePush(valuesAtIndex, safeStringFromCodePoint(index));
+    }
   }
   if (type === 'grapheme') {
     const decomposedRanges = intersectGraphemeRanges(alphabetRanges, autonomousDecomposableGraphemeRanges);
     for (const range of decomposedRanges) {
-      const rawEntry = convertGraphemeRangeToMapToConstantEntry(range);
-      entries.push({
-        num: rawEntry.num,
-        build: (idInGroup) => rawEntry.build(idInGroup).normalize('NFD'),
-      });
+      const start = range[0];
+      const end = range.length === 1 ? start : range[1];
+      for (let index = start; index <= end; ++index) {
+        safePush(valuesAtIndex, safeNormalize(safeStringFromCodePoint(index), 'NFD'));
+      }
     }
   }
-  const stringUnitInstance = mapToConstant(...entries);
+  const stringUnitInstance = buildStringUnit(valuesAtIndex);
   registeredStringUnitInstancesMap[key] = stringUnitInstance;
   return stringUnitInstance;
 }
