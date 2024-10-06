@@ -72,24 +72,24 @@ The first arbitrary specified on `oneof` will have a privileged position. Constr
 **Usages:**
 
 ```js
-fc.oneof(fc.char(), fc.boolean());
+fc.oneof(fc.string(), fc.boolean());
 // Note: Equivalent to:
 //       fc.oneof(
-//         { arbitrary: fc.char(), weight: 1 },
+//         { arbitrary: fc.string(), weight: 1 },
 //         { arbitrary: fc.boolean(), weight: 1 },
 //       )
 // Examples of generated values: true, "p", " ", ",", "x"…
 
-fc.oneof(fc.char(), fc.boolean(), fc.nat());
+fc.oneof(fc.string(), fc.boolean(), fc.nat());
 // Note: Equivalent to:
 //       fc.oneof(
-//         { arbitrary: fc.char(), weight: 1 },
+//         { arbitrary: fc.string(), weight: 1 },
 //         { arbitrary: fc.boolean(), weight: 1 },
 //         { arbitrary: fc.nat(), weight: 1 },
 //       )
 // Examples of generated values: 12, true, 24, false, "N"…
 
-fc.oneof({ arbitrary: fc.char(), weight: 5 }, { arbitrary: fc.boolean(), weight: 2 });
+fc.oneof({ arbitrary: fc.string(), weight: 5 }, { arbitrary: fc.boolean(), weight: 2 });
 // Examples of generated values: false, true, "L", "b", "y"…
 
 // fc.oneof fits very well with recursive stuctures built using fc.letrec.
