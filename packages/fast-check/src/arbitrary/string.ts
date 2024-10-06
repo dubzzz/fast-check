@@ -61,6 +61,27 @@ function extractUnitArbitrary(constraints: Pick<StringConstraints, 'unit'>): Arb
  * For strings of {@link char}
  *
  * @param constraints - Constraints to apply when building instances (since 2.4.0)
+ * 
+ * @example
+ * ```typescript
+ * fc.string();
+ * // Examples of generated values: "JT>\"C9k", "h]iD\"27;", "S", "n\\Ye", ""…
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * fc.string({ minLength: 4, maxLength: 6 });
+ * // Note: Any string containing between 4 (included) and 6 (included) characters
+ * // Examples of generated values: "Trxlyb", "&&@%4", "s@IO", "0\"zM", "}#\"$"…
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * fc.string({ unit: fc.constantFrom('Hello', 'World') });
+ * // Note: With a custom arbitrary passed as unit, minLength (resp. maxLength) refers to length in terms of unit values.
+ * // As an example, "HelloWorldHello" has a length of 3 in this context.
+ * // Examples of generated values: "", "Hello", "HelloWorld", "HelloWorldHello", "WorldWorldHelloWorldHelloWorld"…
+ * ```
  *
  * @remarks Since 0.0.1
  * @public

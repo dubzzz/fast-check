@@ -37,6 +37,27 @@ function nat(max: number): Arbitrary<number>;
  * For positive integers between 0 (included) and max (included)
  *
  * @param constraints - Constraints to apply when building instances
+ * 
+ * @example
+ * ```typescript
+ * fc.nat();
+ * // Note: All possible integers between `0` (included) and `2147483647` (included)
+ * // Examples of generated values: 2, 5, 2147483618, 225111650, 1108701149…
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * fc.nat(1000);
+ * // Note: All possible integers between `0` (included) and `1000` (included)
+ * // Examples of generated values: 2, 8, 4, 270, 0…
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * fc.nat({ max: 1000 });
+ * // Note: All possible integers between `0` (included) and `1000` (included)
+ * // Examples of generated values: 917, 60, 599, 696, 7…
+ * ```
  *
  * @remarks Since 2.6.0
  * @public

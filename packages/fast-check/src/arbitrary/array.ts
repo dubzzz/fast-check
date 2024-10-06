@@ -71,7 +71,25 @@ export interface ArrayConstraintsInternal<T> extends ArrayConstraints {
  *
  * @param arb - Arbitrary used to generate the values inside the array
  * @param constraints - Constraints to apply when building instances (since 2.4.0)
+ * 
+ * @example
+ * ```typescript
+ * fc.array(fc.nat());
+ * // Examples of generated values:
+ * // • [1811605556]
+ * // • [773390791,2091685325,1242440672]
+ * // • []
+ * ```
  *
+ * @example
+ * ```typescript
+ * fc.array(fc.string());
+ * // Examples of generated values:
+ * // • ["key"]
+ * // • ["JT>\"C9k", "h]iD\"27;", "S", "n\\Ye", ""]
+ * // • []
+ * ```
+ * 
  * @remarks Since 0.0.1
  * @public
  */
