@@ -23,23 +23,3 @@ fc.char();
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/char.html).  
 Available since 0.0.1.
-
-## unicode
-
-One unicode character from BMP-plan — _ie.: one character between `0x0000` (included) and `0xffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`)_.
-
-Generate any character of UCS-2 which is a subset of UTF-16 (restricted to BMP plan).
-
-**Signatures:**
-
-- `fc.unicode()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**Usages:**
-
-```js
-fc.unicode();
-// Examples of generated values: "⬑", "￺", "叾", "꟣", "$"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/unicode.html).  
-Available since 0.0.11.

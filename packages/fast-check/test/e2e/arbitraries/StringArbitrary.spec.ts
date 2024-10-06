@@ -29,14 +29,6 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual(['AA==']);
     });
   });
-  describe('unicodeString', () => {
-    it('Should produce valid UTF-16 strings', () => {
-      fc.assert(
-        fc.property(fc.unicodeString(), (s: string) => encodeURIComponent(s) !== null),
-        { seed: seed },
-      );
-    });
-  });
   describe.each([
     { unit: undefined },
     { unit: 'grapheme' as const },
