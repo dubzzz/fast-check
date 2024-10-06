@@ -31,11 +31,6 @@ describe(`Generate all values (seed: ${seed})`, () => {
   describe('fc.char()', () => {
     it('Should be able to produce any printable character', () => lookForMissing(fc.char(), 95));
   });
-  describe('fc.unicode()', () => {
-    const numCharacters = 65536 - (0xdfff - 0xd800 + 1);
-    it('Should be able to produce any character from unicode (UCS-2 subset only)', () =>
-      lookForMissing(fc.unicode(), numCharacters));
-  });
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>
       fc.assert(
