@@ -78,7 +78,7 @@ fc.oneof(fc.string(), fc.boolean());
 //         { arbitrary: fc.string(), weight: 1 },
 //         { arbitrary: fc.boolean(), weight: 1 },
 //       )
-// Examples of generated values: true, "p", " ", ",", "x"…
+// Examples of generated values: false, "x ", "\"AXf", "x%", true…
 
 fc.oneof(fc.string(), fc.boolean(), fc.nat());
 // Note: Equivalent to:
@@ -87,10 +87,10 @@ fc.oneof(fc.string(), fc.boolean(), fc.nat());
 //         { arbitrary: fc.boolean(), weight: 1 },
 //         { arbitrary: fc.nat(), weight: 1 },
 //       )
-// Examples of generated values: 12, true, 24, false, "N"…
+// Examples of generated values: "a:m[nG+", 2147483628, "le@o|g4", 1039477336, 1961824130…
 
 fc.oneof({ arbitrary: fc.string(), weight: 5 }, { arbitrary: fc.boolean(), weight: 2 });
-// Examples of generated values: false, true, "L", "b", "y"…
+// Examples of generated values: "y", "u F(AR", true, ">,?4", false…
 
 // fc.oneof fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
