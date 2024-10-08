@@ -32,7 +32,7 @@
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "typescript": "~5.6.2"
+    "typescript": "~5.6.3"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT"
