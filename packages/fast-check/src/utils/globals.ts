@@ -270,6 +270,7 @@ const untouchedToLowerCase = String.prototype.toLowerCase;
 const untouchedToUpperCase = String.prototype.toUpperCase;
 const untouchedPadStart = String.prototype.padStart;
 const untouchedCharCodeAt = String.prototype.charCodeAt;
+const untouchedNormalize = String.prototype.normalize;
 const untouchedReplace: (pattern: RegExp | string, replacement: string) => string = String.prototype.replace;
 function extractSplit(instance: string) {
   try {
@@ -324,6 +325,13 @@ function extractCharCodeAt(instance: string) {
   try {
     return instance.charCodeAt;
   } catch {
+    return undefined;
+  }
+}
+function extractNormalize(instance: string) {
+  try {
+    return instance.normalize;
+  } catch (err) {
     return undefined;
   }
 }
@@ -390,6 +398,12 @@ export function safeCharCodeAt(instance: string, index: number): number {
     return instance.charCodeAt(index);
   }
   return safeApply(untouchedCharCodeAt, instance, [index]);
+}
+export function safeNormalize(instance: string, form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): string {
+  if (extractNormalize(instance) === untouchedNormalize) {
+    return instance.normalize(form);
+  }
+  return safeApply(untouchedNormalize, instance, [form]);
 }
 export function safeReplace(instance: string, pattern: RegExp | string, replacement: string): string {
   if (extractReplace(instance) === untouchedReplace) {
