@@ -1,7 +1,7 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { MaxLengthUpperBound } from '../helpers/MaxLengthFromMinLength';
 import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
-import { safeJoin, safePop, safePush, safeSubstring } from '../../../utils/globals';
+import { safeJoin, safePop, safePush, safeSubstring, Error } from '../../../utils/globals';
 
 /** @internal - tab is supposed to be composed of valid entries extracted from the source arbitrary */
 export function patternsToStringMapper(tab: string[]): string {
