@@ -28,8 +28,12 @@ describe(`Generate all values (seed: ${seed})`, () => {
         ),
       ));
   });
-  describe('fc.char()', () => {
-    it('Should be able to produce any printable character', () => lookForMissing(fc.char(), 95));
+  describe("fc.string({ unit: 'binary-ascii' })", () => {
+    it('Should be able to produce any ascii character', () => lookForMissing(fc.string({ unit: 'binary-ascii' }), 256));
+  });
+  describe("fc.string({ unit: 'grapheme-ascii' })", () => {
+    it('Should be able to produce any printable character', () =>
+      lookForMissing(fc.string({ unit: 'grapheme-ascii' }), 95));
   });
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>

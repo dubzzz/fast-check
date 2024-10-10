@@ -83,7 +83,7 @@ fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {});
 
 // base arbitrary (chain)
 expectType<fc.Arbitrary<string[]>>()(
-  fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })),
+  fc.nat().chain((n) => fc.array(fc.string(), { maxLength: n })),
   'Type of "chain" corresponds to the return type of the passed lambda',
 );
 expectType<fc.Arbitrary<1 | 2 | 3>>()(

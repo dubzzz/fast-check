@@ -214,7 +214,9 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.oneof<any>(fc.nat(), fc.char()), (v) => testFunc(v)),
+          fc.property(fc.oneof<any>(fc.nat(), fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 })), (v) =>
+            testFunc(v),
+          ),
           settings,
         ),
       ),
@@ -224,7 +226,13 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.oneof<any>({ weight: 1, arbitrary: fc.nat() }, { weight: 5, arbitrary: fc.char() }), testFunc),
+          fc.property(
+            fc.oneof<any>(
+              { weight: 1, arbitrary: fc.nat() },
+              { weight: 5, arbitrary: fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 }) },
+            ),
+            testFunc,
+          ),
           settings,
         ),
       ),
