@@ -4079,9 +4079,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.47.10":
-  version: 7.47.10
-  resolution: "@microsoft/api-extractor@npm:7.47.10"
+"@microsoft/api-extractor@npm:^7.47.11":
+  version: 7.47.11
+  resolution: "@microsoft/api-extractor@npm:7.47.11"
   dependencies:
     "@microsoft/api-extractor-model": "npm:7.29.8"
     "@microsoft/tsdoc": "npm:~0.15.0"
@@ -4089,7 +4089,7 @@ __metadata:
     "@rushstack/node-core-library": "npm:5.9.0"
     "@rushstack/rig-package": "npm:0.5.3"
     "@rushstack/terminal": "npm:0.14.2"
-    "@rushstack/ts-command-line": "npm:4.22.8"
+    "@rushstack/ts-command-line": "npm:4.23.0"
     lodash: "npm:~4.17.15"
     minimatch: "npm:~3.0.3"
     resolve: "npm:~1.22.1"
@@ -4098,7 +4098,7 @@ __metadata:
     typescript: "npm:5.4.2"
   bin:
     api-extractor: bin/api-extractor
-  checksum: 10c0/c9b34183e8d4360d06c3093d11f49a119e42d61702d18b4852470082374eb7c3c4afca471629a791856babb5213541f8b0470888579aebbe8c57988f3d20753f
+  checksum: 10c0/76aba3020a17b9324c540d584c6c699bf9a0a96efb0bfe50c858fe396dbe37e64360c0caecedd8e3328c80306cb0471ee12925af9ef0beac5f5195ed632a953c
   languageName: node
   linkType: hard
 
@@ -4696,15 +4696,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/ts-command-line@npm:4.22.8":
-  version: 4.22.8
-  resolution: "@rushstack/ts-command-line@npm:4.22.8"
+"@rushstack/ts-command-line@npm:4.23.0":
+  version: 4.23.0
+  resolution: "@rushstack/ts-command-line@npm:4.23.0"
   dependencies:
     "@rushstack/terminal": "npm:0.14.2"
     "@types/argparse": "npm:1.0.38"
     argparse: "npm:~1.0.9"
     string-argv: "npm:~0.3.1"
-  checksum: 10c0/c2bf9983427f7f85b8773c4fbf1ac1817b930131ea175cd29e8b84c3b98df49b26223e6e7363d9bdcf694d9996714e63c2a5877d916bc24be70b74c076e77ee9
+  checksum: 10c0/4bf5e384368024977d76024702c35f7204b030008dc6a2705aa85d58909eb7a29152793068a7388412945da20ebdc80ab487d428fe3e2329eb824c647175c80d
   languageName: node
   linkType: hard
 
@@ -9994,7 +9994,7 @@ __metadata:
   dependencies:
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
-    "@microsoft/api-extractor": "npm:^7.47.10"
+    "@microsoft/api-extractor": "npm:^7.47.11"
     "@types/node": "npm:^20.14.15"
     "@vitest/coverage-v8": "npm:^2.1.3"
     cross-env: "npm:^7.0.3"
