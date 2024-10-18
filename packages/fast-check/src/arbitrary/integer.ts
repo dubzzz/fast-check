@@ -37,6 +37,27 @@ function buildCompleteIntegerConstraints(constraints: IntegerConstraints): Requi
  * For integers between min (included) and max (included)
  *
  * @param constraints - Constraints to apply when building instances (since 2.6.0)
+ * 
+ * @example
+ * ```typescript
+ * fc.integer();
+ * // Note: All possible integers between `-2147483648` (included) and `2147483647` (included)
+ * // Examples of generated values: -1064811759, -2147483638, 2032841726, 930965475, -1…
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * fc.integer({ min: -99, max: 99 });
+ * // Note: All possible integers between `-99` (included) and `99` (included)
+ * // Examples of generated values: 33, -94, 5, -2, 97…
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * fc.integer({ min: 65536 });
+ * // Note: All possible integers between `65536` (included) and `2147483647` (included)
+ * // Examples of generated values: 487771549, 1460850457, 1601368274, 1623935346, 65541…
+ * ```
  *
  * @remarks Since 0.0.1
  * @public
