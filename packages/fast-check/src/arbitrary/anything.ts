@@ -33,7 +33,7 @@ function anything(): Arbitrary<unknown>;
  * ```typescript
  * // Using custom settings
  * fc.anything({
- *     key: fc.char(),
+ *     key: fc.string(),
  *     values: [fc.integer(10,20), fc.constant(42)],
  *     maxDepth: 2
  * });

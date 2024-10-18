@@ -37,8 +37,6 @@ describe(`Poisoning (seed: ${seed})`, () => {
     //{ name: 'double', arbitraryBuilder: () => fc.double() },
     { name: 'bigInt', arbitraryBuilder: () => fc.bigInt() },
     // String
-    // : Single character
-    { name: 'char', arbitraryBuilder: () => fc.char() },
     // : Multiple characters
     { name: 'base64String', arbitraryBuilder: () => fc.base64String() },
     { name: 'string', arbitraryBuilder: () => fc.string() },

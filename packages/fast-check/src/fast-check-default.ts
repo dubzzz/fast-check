@@ -29,7 +29,6 @@ import { bigInt } from './arbitrary/bigInt';
 import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
-import { char } from './arbitrary/char';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import type { ContextValue } from './arbitrary/context';
@@ -340,7 +339,6 @@ export {
   maxSafeInteger,
   maxSafeNat,
   bigInt,
-  char,
   mixedCase,
   string,
   base64String,

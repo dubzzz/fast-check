@@ -12,7 +12,7 @@ If you want to join several strings together: refer to our [combiners section](/
 
 ## string
 
-String containing characters produced by the character generator defined for `unit`. By default, `unit` defaults to `fc.char()`.
+String containing characters produced by the character generator defined for `unit`. By default, `unit` defaults to `'grapheme-ascii'`.
 
 **Signatures:**
 

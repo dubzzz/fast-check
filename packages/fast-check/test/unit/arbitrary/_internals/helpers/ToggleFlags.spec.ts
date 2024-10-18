@@ -85,31 +85,39 @@ describe('computeNextFlags', () => {
 describe('computeTogglePositions', () => {
   it('should properly tag toggleable positions', () => {
     fc.assert(
-      fc.property(fc.array(fc.char()), fc.func(fc.char()), (chars, toggleCase) => {
-        // Arrange / Act
-        const positions = computeTogglePositions(chars, toggleCase);
+      fc.property(
+        fc.array(fc.string({ minLength: 1, maxLength: 1 })),
+        fc.func(fc.string({ minLength: 1, maxLength: 1 })),
+        (chars, toggleCase) => {
+          // Arrange / Act
+          const positions = computeTogglePositions(chars, toggleCase);
 
-        // Assert
-        for (const p of positions) {
-          expect(toggleCase(chars[p])).not.toBe(chars[p]);
-        }
-      }),
+          // Assert
+          for (const p of positions) {
+            expect(toggleCase(chars[p])).not.toBe(chars[p]);
+          }
+        },
+      ),
     );
   });
 
   it('should not tag untoggleable positions', () => {
     fc.assert(
-      fc.property(fc.array(fc.char()), fc.func(fc.char()), (chars, toggleCase) => {
-        // Arrange / Act
-        const positions = computeTogglePositions(chars, toggleCase);
+      fc.property(
+        fc.array(fc.string({ minLength: 1, maxLength: 1 })),
+        fc.func(fc.string({ minLength: 1, maxLength: 1 })),
+        (chars, toggleCase) => {
+          // Arrange / Act
+          const positions = computeTogglePositions(chars, toggleCase);
 
-        // Assert
-        for (let index = 0; index !== chars.length; ++index) {
-          if (!positions.includes(index)) {
-            expect(toggleCase(chars[index])).toBe(chars[index]);
+          // Assert
+          for (let index = 0; index !== chars.length; ++index) {
+            if (!positions.includes(index)) {
+              expect(toggleCase(chars[index])).toBe(chars[index]);
+            }
           }
-        }
-      }),
+        },
+      ),
     );
   });
 });
@@ -118,8 +126,8 @@ describe('computeFlagsFromChars', () => {
   it('should be able to find back flags out of source and final chars', () => {
     fc.assert(
       fc.property(
-        fc.array(fc.char()),
-        fc.func(fc.char()),
+        fc.array(fc.string({ minLength: 1, maxLength: 1 })),
+        fc.func(fc.string({ minLength: 1, maxLength: 1 })),
         fc.bigInt({ min: BigInt(0) }),
         (chars, toggleCase, flagsUnmasked) => {
           // Arrange
