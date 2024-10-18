@@ -149,7 +149,7 @@ describe('double', () => {
     fc.assert(
       fc.property(
         fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
-        fc.bigUintN(64),
+        fc.bigInt({ min: BigInt(0) }),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (ct, mod, biasFactor) => {
           // Arrange

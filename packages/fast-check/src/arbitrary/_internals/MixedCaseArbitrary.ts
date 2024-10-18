@@ -1,6 +1,6 @@
 import type { Random } from '../../random/generator/Random';
 import type { Stream } from '../../stream/Stream';
-import { bigUintN } from '../bigUintN';
+import { bigInt } from '../bigInt';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import { makeLazy } from '../../stream/LazyIterableIterator';
@@ -51,7 +51,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
     const chars = [...rawStringValue.value]; // split into valid unicode (keeps surrogate pairs)
     const togglePositions = computeTogglePositions(chars, this.toggleCase);
 
-    const flagsArb = bigUintN(togglePositions.length);
+    const flagsArb = bigInt(BigInt(0), (BigInt(1) << BigInt(togglePositions.length)) - BigInt(1));
     const flagsValue = flagsArb.generate(mrng, undefined); // true => toggle the char, false => keep it as-is
 
     applyFlagsOnChars(chars, flagsValue.value, togglePositions, this.toggleCase);
@@ -114,7 +114,7 @@ export class MixedCaseArbitrary extends Arbitrary<string> {
         makeLazy(() => {
           const chars = [...rawString];
           const togglePositions = computeTogglePositions(chars, this.toggleCase);
-          return bigUintN(togglePositions.length)
+          return bigInt(BigInt(0), (BigInt(1) << BigInt(togglePositions.length)) - BigInt(1))
             .shrink(flags, contextSafe.flagsContext)
             .map((nFlagsValue) => {
               const nChars = safeSlice(chars); // cloning chars

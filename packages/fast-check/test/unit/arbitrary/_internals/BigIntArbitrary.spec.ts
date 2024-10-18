@@ -246,8 +246,8 @@ describe('BigIntArbitrary (integration)', () => {
       fc.assert(
         fc.property(
           fc.bigInt(),
-          fc.bigUint({ max: BigInt(20) }), // larger trees might be too wide
-          fc.bigUint({ max: BigInt(20) }),
+          fc.bigInt({ min: BigInt(0), max: BigInt(20) }), // larger trees might be too wide
+          fc.bigInt({ min: BigInt(0), max: BigInt(20) }),
           (start, o1, o2) => {
             // Arrange
             const min = start;
@@ -276,10 +276,10 @@ describe('BigIntArbitrary (integration)', () => {
     it('should build an offset version of the shrinking tree if we offset all the values (keep every value >=0)', () =>
       fc.assert(
         fc.property(
-          fc.bigUint(),
-          fc.bigUint({ max: BigInt(20) }), // larger trees might be too wide
-          fc.bigUint({ max: BigInt(20) }),
-          fc.bigUint(),
+          fc.bigInt({ min: BigInt(0) }),
+          fc.bigInt({ min: BigInt(0), max: BigInt(20) }), // larger trees might be too wide
+          fc.bigInt({ min: BigInt(0), max: BigInt(20) }),
+          fc.bigInt({ min: BigInt(0) }),
           (start, o1, o2, offset) => {
             // Arrange
             fc.pre(start + o1 + offset <= Number.MAX_SAFE_INTEGER);

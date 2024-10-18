@@ -35,10 +35,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'float', arbitraryBuilder: () => fc.float() },
     // pure-rand is not resilient to prototype poisoning occuring on Array
     //{ name: 'double', arbitraryBuilder: () => fc.double() },
-    { name: 'bigIntN', arbitraryBuilder: () => fc.bigIntN(64) },
     { name: 'bigInt', arbitraryBuilder: () => fc.bigInt() },
-    { name: 'bigUintN', arbitraryBuilder: () => fc.bigUintN(64) },
-    { name: 'bigUint', arbitraryBuilder: () => fc.bigUint() },
     // String
     // : Multiple characters
     { name: 'base64String', arbitraryBuilder: () => fc.base64String() },
