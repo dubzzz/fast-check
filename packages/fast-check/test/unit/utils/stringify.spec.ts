@@ -220,8 +220,10 @@ describe('stringify', () => {
       const s = (Symbol as any)[symbolName];
       if (typeof s === 'symbol') {
         foundOne = true;
+
         expect(stringify(s)).toEqual(
-          symbolName === 'dispose' || symbolName === 'asyncDispose'
+          Number(process.versions.node.split('.')[0]) < 23 &&
+            (symbolName === 'dispose' || symbolName === 'asyncDispose')
             ? `Symbol.for("nodejs.${symbolName}")`
             : `Symbol.${symbolName}`,
         );
