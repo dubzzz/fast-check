@@ -26,10 +26,6 @@ import type { ArrayConstraints } from './arbitrary/array';
 import { array } from './arbitrary/array';
 import type { BigIntConstraints } from './arbitrary/bigInt';
 import { bigInt } from './arbitrary/bigInt';
-import { bigIntN } from './arbitrary/bigIntN';
-import type { BigUintConstraints } from './arbitrary/bigUint';
-import { bigUint } from './arbitrary/bigUint';
-import { bigUintN } from './arbitrary/bigUintN';
 import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
@@ -252,7 +248,6 @@ export type {
   ArrayConstraints,
   BigIntConstraints,
   BigIntArrayConstraints,
-  BigUintConstraints,
   CommandsContraints,
   DateConstraints,
   DictionaryConstraints,
@@ -344,10 +339,7 @@ export {
   nat,
   maxSafeInteger,
   maxSafeNat,
-  bigIntN,
-  bigUintN,
   bigInt,
-  bigUint,
   char,
   mixedCase,
   string,
