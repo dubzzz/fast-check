@@ -69,7 +69,7 @@ describe('Playground', () => {
       for (const [specLabel, specCode] of Object.entries(allQueueSpecs)) {
         const expectedSuccess = snippet.greenTests.includes(specLabel);
         const friendlyStatus = expectedSuccess ? 'pass' : 'fail';
-        it.concurrent(`should ${friendlyStatus} on ${specLabel}`, async () => {
+        it(`should ${friendlyStatus} on ${specLabel}`, async () => {
           const seed = Math.random().toString(16).substring(2);
           const testDirectoryName = `test-${seed}`;
           const testDirectoryPath = path.join(generatedTestsDirectory, testDirectoryName);

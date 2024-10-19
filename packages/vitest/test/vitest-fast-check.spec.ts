@@ -37,7 +37,7 @@ describe.each<DescribeOptions>([
   { specName: 'test', runnerName: 'test' },
   { specName: 'it', runnerName: 'it' },
 ])('$specName', ({ runnerName }) => {
-  it.concurrent(`should support ${runnerName}.prop`, async () => {
+  it(`should support ${runnerName}.prop`, async () => {
     // Arrange
     const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
       runner.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -53,7 +53,7 @@ describe.each<DescribeOptions>([
   });
 
   describe('at depth 1', () => {
-    it.concurrent(`should support ${runnerName}.concurrent.prop`, async () => {
+    it(`should support ${runnerName}.concurrent.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.concurrent.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -68,7 +68,7 @@ describe.each<DescribeOptions>([
       expectPass(out, specFileName);
     });
 
-    it.concurrent(`should support ${runnerName}.fails.prop`, async () => {
+    it(`should support ${runnerName}.fails.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.fails.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -83,7 +83,7 @@ describe.each<DescribeOptions>([
       expectFail(out, specFileName);
     });
 
-    it.concurrent.skip(`should support ${runnerName}.only.prop`, async () => {
+    it.skip(`should support ${runnerName}.only.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -98,7 +98,7 @@ describe.each<DescribeOptions>([
       expectPass(out, specFileName);
     });
 
-    it.concurrent(`should support ${runnerName}.skip.prop`, async () => {
+    it(`should support ${runnerName}.skip.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.skip.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -113,7 +113,7 @@ describe.each<DescribeOptions>([
       expectSkip(out, specFileName);
     });
 
-    it.concurrent(`should support ${runnerName}.todo.prop`, async () => {
+    it(`should support ${runnerName}.todo.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.todo.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -130,7 +130,7 @@ describe.each<DescribeOptions>([
   });
 
   describe('at depth strictly above 1', () => {
-    it.concurrent(`should support ${runnerName}.concurrent.fails.prop`, async () => {
+    it(`should support ${runnerName}.concurrent.fails.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.concurrent.fails.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -145,7 +145,7 @@ describe.each<DescribeOptions>([
       expectFail(out, specFileName);
     });
 
-    it.concurrent(`should support ${runnerName}.concurrent.fails.only.prop`, async () => {
+    it(`should support ${runnerName}.concurrent.fails.only.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.concurrent.fails.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -160,7 +160,7 @@ describe.each<DescribeOptions>([
       expectFail(out, specFileName);
     });
 
-    it.concurrent(`should support ${runnerName}.concurrent.fails.skip.prop`, async () => {
+    it(`should support ${runnerName}.concurrent.fails.skip.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.concurrent.fails.skip.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -175,7 +175,7 @@ describe.each<DescribeOptions>([
       expectSkip(out, specFileName);
     });
 
-    it.concurrent(`should support ${runnerName}.concurrent.fails.todo.prop`, async () => {
+    it(`should support ${runnerName}.concurrent.fails.todo.prop`, async () => {
       // Arrange
       const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
         runner.concurrent.fails.todo.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
