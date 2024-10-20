@@ -3,7 +3,8 @@ import {
   type PoolToWorkerMessage,
   type WorkerToPoolMessage,
 } from '../../../src/internals/worker-pool/IWorkerPool.js';
-import { describe, it, expect, beforeEach, vi, MockedObject, MockedFunction } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import type { MockedObject, MockedFunction } from 'vitest';
 import { BasicPool } from '../../../src/internals/worker-pool/BasicPool.js';
 import * as WorkerThreadsMock from 'node:worker_threads';
 
