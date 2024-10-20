@@ -1,5 +1,6 @@
 import type { AcquiredLock } from '../../../src/internals/lock/Lock.js';
 import { Lock } from '../../../src/internals/lock/Lock.js';
+import { describe, it, expect } from 'vitest';
 
 describe('Lock', () => {
   it('should be able to take the first lock', async () => {

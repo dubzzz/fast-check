@@ -3,17 +3,17 @@ import {
   type PoolToWorkerMessage,
   type WorkerToPoolMessage,
 } from '../../../src/internals/worker-pool/IWorkerPool.js';
-import { jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import type { MockedObject, MockedFunction } from 'vitest';
+import { BasicPool } from '../../../src/internals/worker-pool/BasicPool.js';
+import * as WorkerThreadsMock from 'node:worker_threads';
 
-jest.unstable_mockModule('node:worker_threads', () => ({
-  Worker: jest.fn(),
+vi.mock('node:worker_threads', () => ({
+  Worker: vi.fn(),
 }));
 
-const { BasicPool } = await import('../../../src/internals/worker-pool/BasicPool.js');
-const WorkerThreadsMock = await import('node:worker_threads');
-
 beforeEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 describe('BasicPool', () => {
@@ -55,9 +55,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -80,9 +80,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const successMessage = 'success!';
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
@@ -116,9 +116,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const errorMessage = 'oups there was an error!';
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
@@ -152,9 +152,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -185,9 +185,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -231,9 +231,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -258,9 +258,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -285,9 +285,9 @@ describe('BasicPool', () => {
       const { on, postMessage } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -382,9 +382,9 @@ describe('BasicPool', () => {
       const { on, postMessage, terminate } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -418,9 +418,9 @@ describe('BasicPool', () => {
       const { on, postMessage, terminate } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -454,9 +454,9 @@ describe('BasicPool', () => {
       const { on, terminate } = mockWorker();
       const workerFileUrl = new URL('file:///worker.cjs');
       const predicateId = 0;
-      const onSuccess = jest.fn();
-      const onFailure = jest.fn();
-      const onSkipped = jest.fn();
+      const onSuccess = vi.fn();
+      const onFailure = vi.fn();
+      const onSkipped = vi.fn();
       const pool = new BasicPool<string, string>(workerFileUrl);
       const workerPromise = pool.spawnNewWorker();
       fireOnlineEvent(on);
@@ -482,10 +482,10 @@ describe('BasicPool', () => {
 // Helpers
 
 function mockWorker() {
-  const Worker = WorkerThreadsMock.Worker as jest.Mocked<typeof WorkerThreadsMock.Worker>;
-  const on = jest.fn<typeof WorkerThreadsMock.Worker.prototype.on>();
-  const postMessage = jest.fn<typeof WorkerThreadsMock.Worker.prototype.postMessage>();
-  const terminate = jest.fn<typeof WorkerThreadsMock.Worker.prototype.terminate>();
+  const Worker = WorkerThreadsMock.Worker as unknown as MockedObject<typeof WorkerThreadsMock.Worker>;
+  const on = vi.fn<typeof WorkerThreadsMock.Worker.prototype.on>();
+  const postMessage = vi.fn<typeof WorkerThreadsMock.Worker.prototype.postMessage>();
+  const terminate = vi.fn<typeof WorkerThreadsMock.Worker.prototype.terminate>();
   Worker.mockImplementation(
     () =>
       ({
@@ -497,7 +497,7 @@ function mockWorker() {
   return { Worker, on, postMessage, terminate };
 }
 
-function fireOnlineEvent(on: jest.Mock<typeof WorkerThreadsMock.Worker.prototype.on>) {
+function fireOnlineEvent(on: MockedFunction<typeof WorkerThreadsMock.Worker.prototype.on>) {
   const onOnlineHandler = on.mock.calls.find(([eventName]) => eventName === 'online')![1];
   onOnlineHandler();
 }
