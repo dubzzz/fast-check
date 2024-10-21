@@ -3107,14 +3107,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/vitest@workspace:packages/vitest"
   dependencies:
-    "@babel/core": "npm:^7.25.8"
-    "@babel/preset-typescript": "npm:^7.25.7"
-    "@jest/globals": "npm:^29.7.0"
-    "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^20.14.15"
-    babel-jest: "npm:^29.7.0"
     fast-check: "workspace:*"
-    jest: "npm:^29.7.0"
     typescript: "npm:~5.6.3"
     vite: "npm:^5.4.9"
     vitest: "npm:^2.1.3"
