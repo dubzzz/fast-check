@@ -3,7 +3,7 @@ import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
-import { jest } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 const execFile = promisify(_execFile);
 // @ts-expect-error --module must be higher
@@ -14,12 +14,10 @@ import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 
-const generatedTestsDirectoryName = 'generated-tests';
-const generatedTestsDirectory = path.join(__dirname, generatedTestsDirectoryName);
+const generatedTestsDirectoryName = '.test-artifacts';
+const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
 
 type RunnerType = 'test' | 'it';
-
-jest.setTimeout(60_000);
 
 beforeAll(async () => {
   await fs.mkdir(generatedTestsDirectory, { recursive: true });
@@ -220,7 +218,7 @@ async function writeToFile(
 
   // Prepare jest config itself
   const vitestConfigName = `vitest.config-${specFileSeed}.mjs`;
-  const vitestConfigRelativePath = `test/${generatedTestsDirectoryName}/${vitestConfigName}`;
+  const vitestConfigRelativePath = `${generatedTestsDirectoryName}/${vitestConfigName}`;
   const vitestConfigPath = path.join(generatedTestsDirectory, vitestConfigName);
 
   // Write the files
@@ -229,7 +227,7 @@ async function writeToFile(
     fs.writeFile(
       vitestConfigPath,
       `import { defineConfig } from 'vite';\n` +
-        `export default defineConfig({ test: { include: ['test/${generatedTestsDirectoryName}/${specFileName}'], }, });`,
+        `export default defineConfig({ test: { include: ['${generatedTestsDirectoryName}/${specFileName}'], }, });`,
     ),
   ]);
 
