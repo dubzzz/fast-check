@@ -50,12 +50,7 @@
     "pure-rand": "^6.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.8",
-    "@babel/preset-typescript": "^7.25.7",
-    "@jest/globals": "^29.7.0",
-    "@types/jest": "^29.5.13",
     "@types/node": "^20.14.15",
-    "babel-jest": "^29.7.0",
     "typescript": "~5.6.3",
     "vitest": "^2.1.3"
   },
