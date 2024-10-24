@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest';
 import fc from 'fast-check';
 import { MusicPlayerModel } from './model-based/MusicPlayerModel';
 import { MusicPlayerCommands, TrackNameArb } from './model-based/MusicPlayerCommands';
