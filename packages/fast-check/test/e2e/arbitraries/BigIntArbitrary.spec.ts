@@ -4,11 +4,17 @@ import { seed } from '../seed';
 
 declare function BigInt(n: number | bigint | string): bigint;
 
+function bigIntN(n: number) {
+  const min = BigInt(-1) << BigInt(n - 1);
+  const max = (BigInt(1) << BigInt(n - 1)) - BigInt(1);
+  return fc.bigInt({ min, max });
+}
+
 describe(`BigIntArbitrary (seed: ${seed})`, () => {
   describe('bitIntN', () => {
     it('Should be able to generate bigint above the highest positive double', () => {
       const out = fc.check(
-        fc.property(fc.bigInt(), (v) => Number(v) !== Number.POSITIVE_INFINITY),
+        fc.property(bigIntN(1030), (v) => Number(v) !== Number.POSITIVE_INFINITY),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -19,7 +25,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to generate bigint below the smallest negative double', () => {
       const out = fc.check(
-        fc.property(fc.bigInt(), (v) => Number(v) !== Number.NEGATIVE_INFINITY),
+        fc.property(bigIntN(1030), (v) => Number(v) !== Number.NEGATIVE_INFINITY),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -30,7 +36,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     });
     it('Should be able to generate small bigint (relatively to maximal bigint asked)', () => {
       const out = fc.check(
-        fc.property(fc.bigInt(), (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER),
+        fc.property(bigIntN(1030), (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
@@ -43,7 +49,7 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     it('Should be able to generate close to min or max bigints (relatively to the asked range)', () => {
       const out = fc.check(
         fc.property(
-          fc.bigInt(),
+          bigIntN(1030),
           (v) =>
             v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500),
         ),
@@ -51,14 +57,14 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true); // It found something quite close to min/max
       // Remark: Values, v, satisfying: v < min - 500n || v > max + 500n are pretty improbable in theory
-      //         as they have only 1000 chances over 2**256 to be generated (around 8e-73 % of the generated values).
+      //         as they have only 1000 chances over 2**1030 to be generated (around 8e-310 % of the generated values).
       //         With bias enabled (default), they could be generated more often than expected leading to a better
       //         discovery of boundaries issues.
     });
     it('Should not be able to generate small bigint if not biased (very improbable)', () => {
       const out = fc.check(
         fc.property(
-          fc.noBias(fc.bigInt()),
+          fc.noBias(bigIntN(1030)),
           (v) => Number(v) < Number.MIN_SAFE_INTEGER || Number(v) > Number.MAX_SAFE_INTEGER,
         ),
         { seed: seed },
@@ -68,9 +74,9 @@ describe(`BigIntArbitrary (seed: ${seed})`, () => {
     it('Should not be able to generate close to min or max bigints if not biased (very improbable)', () => {
       const out = fc.check(
         fc.property(
-          fc.noBias(fc.bigInt()),
+          fc.noBias(bigIntN(1030)),
           (v) =>
-            v >= (BigInt(-1) << BigInt(256 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(256 - 1)) - BigInt(500), // 256 because it's the default pow for bigInt
+            v >= (BigInt(-1) << BigInt(1030 - 1)) + BigInt(500) && v <= (BigInt(1) << BigInt(1030 - 1)) - BigInt(500),
         ),
         { seed: seed },
       );
