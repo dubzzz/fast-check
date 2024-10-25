@@ -33,7 +33,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('azerty');
-      expect(bigInt).toHaveBeenCalledWith(6); // num toggleable chars in string = 6
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
       expect(toggleCase).toHaveBeenCalledTimes(6); // length string = 6, to be toggled = 0
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -51,7 +51,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('azErtY');
-      expect(bigInt).toHaveBeenCalledWith(6); // num toggleable chars in string = 6
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -69,7 +69,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('Az01Ty');
-      expect(bigInt).toHaveBeenCalledWith(4); // // num toggleable chars in string = 4 as 01 upper version is the same -> only 4 can be toggled not 6
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 4 - 1)); // // num toggleable chars in string = 4 as 01 upper version is the same -> only 4 can be toggled not 6
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -90,7 +90,7 @@ describe('MixedCaseArbitrary', () => {
 
       // Assert
       expect(g.value).toBe('<Hello>zer<Hello>y');
-      expect(bigInt).toHaveBeenCalledWith(2); // num toggleable chars in string = 2, only a and t
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 2 - 1)); // num toggleable chars in string = 2, only a and t
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
