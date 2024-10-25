@@ -386,13 +386,22 @@ describe('stringify', () => {
     expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
       'BigInt64Array.from([-2147483648n,5n,2147483647n])',
     );
-    assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
+    assertStringifyTypedArraysProperly<bigint>(
+      fc.bigInt({
+        min: -BigInt(1) << BigInt(63), // -2**63
+        max: (BigInt(1) << BigInt(63)) - BigInt(1), // 2**63 -1
+      }),
+      BigInt64Array.from.bind(BigInt64Array),
+    );
   });
   it('Should be able to stringify BigUint64Array', () => {
     expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
       'BigUint64Array.from([0n,5n,2147483647n])',
     );
-    assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
+    assertStringifyTypedArraysProperly<bigint>(
+      fc.bigInt({ min: BigInt(0), max: (BigInt(1) << BigInt(64)) - BigInt(1) }),
+      BigUint64Array.from.bind(BigUint64Array),
+    );
   });
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');

@@ -52,7 +52,7 @@ describe('computeNextFlags', () => {
 
   it('should preserve the same number of flags', () => {
     fc.assert(
-      fc.property(fc.bigUint(), fc.nat(100), (flags, offset) => {
+      fc.property(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, offset) => {
         const sourceToggled = countToggledBits(flags);
         const nextSize = sourceToggled + offset; // anything >= sourceToggled
         const nextFlags = computeNextFlags(flags, nextSize);
@@ -63,7 +63,7 @@ describe('computeNextFlags', () => {
 
   it('should preserve the position of existing flags', () => {
     fc.assert(
-      fc.property(fc.bigUint(), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
+      fc.property(fc.bigInt({ min: BigInt(0) }), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         for (let idx = 0, mask = BigInt(1); idx !== nextSize; ++idx, mask <<= BigInt(1)) {
           if (flags & mask) expect(!!(nextFlags & mask)).toBe(true);
@@ -74,7 +74,7 @@ describe('computeNextFlags', () => {
 
   it('should not return flags larger than the asked size', () => {
     fc.assert(
-      fc.property(fc.bigUint(), fc.nat(100), (flags, nextSize) => {
+      fc.property(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         expect(nextFlags < BigInt(1) << BigInt(nextSize)).toBe(true);
       }),
@@ -128,7 +128,7 @@ describe('computeFlagsFromChars', () => {
       fc.property(
         fc.array(fc.string({ minLength: 1, maxLength: 1 })),
         fc.func(fc.string({ minLength: 1, maxLength: 1 })),
-        fc.bigUint(),
+        fc.bigInt({ min: BigInt(0) }),
         (chars, toggleCase, flagsUnmasked) => {
           // Arrange
           const positions = computeTogglePositions(chars, toggleCase);
