@@ -1,6 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeEvery, safeJoin } from '../utils/globals';
-import { Error, safeIndexOf, safeMap } from '../utils/globals';
+import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals';
 import { stringify } from '../utils/stringify';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst';
@@ -144,7 +143,7 @@ function toMatchingArbitrary(
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          return c.codePointAt(0)!;
+          return safeCharCodeAt(c, 0)!;
         },
       );
     }
@@ -166,7 +165,7 @@ function toMatchingArbitrary(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
-                  return [value.substring(0, value.length - 1), value[value.length - 1]];
+                  return [safeSubstring(value, 0, value.length - 1), value[value.length - 1]];
                 },
               ),
             );
@@ -177,7 +176,7 @@ function toMatchingArbitrary(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
-                  return [value[0], value.substring(1)];
+                  return [value[0], safeSubstring(value, 1)];
                 },
               ),
             );
