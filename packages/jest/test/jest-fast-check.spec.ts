@@ -6,7 +6,7 @@ import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/jest';
-import type { jest as _jest } from '@jest/globals';
+import type { jest as _jest, expect as _jestExpect } from '@jest/globals';
 
 const execFile = promisify(_execFile);
 // @ts-expect-error --module must be higher
@@ -15,6 +15,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 declare const jest: typeof _jest;
+declare const jestExpect: typeof _jestExpect;
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
@@ -58,7 +59,7 @@ describe.each<DescribeOptions>([
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner('successful no prop', () => {
-        expect(true).toBe(true);
+        jestExpect(true).toBe(true);
       });
     });
 
@@ -74,7 +75,7 @@ describe.each<DescribeOptions>([
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner('failing no prop', () => {
-        expect(false).toBe(true);
+        jestExpect(false).toBe(true);
       });
     });
 
@@ -176,9 +177,9 @@ describe.each<DescribeOptions>([
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property pass record', ({ a, b, c }) => {
-        expect(typeof a).toBe('string');
-        expect(typeof b).toBe('string');
-        expect(typeof c).toBe('string');
+        jestExpect(typeof a).toBe('string');
+        jestExpect(typeof b).toBe('string');
+        jestExpect(typeof c).toBe('string');
         return `${a}${b}${c}`.includes(b);
       });
     });
@@ -294,7 +295,7 @@ describe.each<DescribeOptions>([
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing('successful no prop', () => {
-            expect(true).toBe(true);
+            jestExpect(true).toBe(true);
           });
         });
 
@@ -310,7 +311,7 @@ describe.each<DescribeOptions>([
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing('failing no prop', () => {
-            expect(false).toBe(true);
+            jestExpect(false).toBe(true);
           });
         });
 
@@ -578,7 +579,12 @@ async function writeToFile(
   // Prepare test file itself
   const specFileName = `generated-${specFileSeed}-${++num}.spec.cjs`;
   const specFilePath = path.join(generatedTestsDirectory, specFileName);
-  const fileContentString = String(fileContent);
+  let fileContentString = String(fileContent);
+  if (fileContentString.includes('expect')) {
+    // "expect" would be replaced by Vitest by "__vite_ssr_import_0__.expect"
+    throw new Error('Drop any reference to expect to avoid running against the one from Vitest: use jestExpect');
+  }
+  fileContentString = fileContentString.replace(/jestExpect/g, 'expect');
   const wrapInDescribeIfNeeded =
     runner === 'it'
       ? (testCode: string) => `describe('test suite', () => {\n${testCode}\n});`
