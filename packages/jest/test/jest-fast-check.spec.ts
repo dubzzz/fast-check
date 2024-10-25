@@ -1,25 +1,25 @@
+import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import * as path from 'path';
 import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
-import { jest } from '@jest/globals';
+import type _fc from 'fast-check';
+import type { test as _test, it as _it } from '@fast-check/jest';
+import type { jest as _jest } from '@jest/globals';
 
 const execFile = promisify(_execFile);
 // @ts-expect-error --module must be higher
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-import type _fc from 'fast-check';
-import type { test as _test, it as _it } from '@fast-check/jest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
+declare const jest: typeof _jest;
 
-const generatedTestsDirectoryName = 'generated-tests';
-const generatedTestsDirectory = path.join(__dirname, generatedTestsDirectoryName);
+const generatedTestsDirectoryName = '.test-artifacts';
+const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
 
 type RunnerType = 'test' | 'it';
-
-jest.setTimeout(60_000);
 
 beforeAll(async () => {
   await fs.mkdir(generatedTestsDirectory, { recursive: true });
@@ -595,7 +595,7 @@ async function writeToFile(
 
   // Prepare jest config itself
   const jestConfigName = `jest.config-${specFileSeed}.cjs`;
-  const jestConfigRelativePath = `test/${generatedTestsDirectoryName}/${jestConfigName}`;
+  const jestConfigRelativePath = `${generatedTestsDirectoryName}/${jestConfigName}`;
   const jestConfigPath = path.join(generatedTestsDirectory, jestConfigName);
 
   // Write the files
