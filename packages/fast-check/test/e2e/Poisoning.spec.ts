@@ -33,8 +33,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'maxSafeInteger', arbitraryBuilder: () => fc.maxSafeInteger() },
     { name: 'maxSafeNat', arbitraryBuilder: () => fc.maxSafeNat() },
     { name: 'float', arbitraryBuilder: () => fc.float() },
-    // pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'double', arbitraryBuilder: () => fc.double() },
+    { name: 'double', arbitraryBuilder: () => fc.double() },
     { name: 'bigIntN', arbitraryBuilder: () => fc.bigIntN(64) },
     { name: 'bigInt', arbitraryBuilder: () => fc.bigInt() },
     { name: 'bigUintN', arbitraryBuilder: () => fc.bigUintN(64) },
@@ -45,8 +44,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'string', arbitraryBuilder: () => fc.string() },
     { name: 'stringMatching', arbitraryBuilder: () => preBuiltStringMatching },
     // : More specific strings
-    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'json', arbitraryBuilder: () => fc.json() },
+    { name: 'json', arbitraryBuilder: () => fc.json() },
     { name: 'lorem', arbitraryBuilder: () => fc.lorem() },
     { name: 'ipV4', arbitraryBuilder: () => fc.ipV4() },
     { name: 'ipV4Extended', arbitraryBuilder: () => fc.ipV4Extended() },
@@ -73,8 +71,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'int32Array', arbitraryBuilder: () => fc.int32Array() },
     { name: 'uint32Array', arbitraryBuilder: () => fc.uint32Array() },
     { name: 'float32Array', arbitraryBuilder: () => fc.float32Array() },
-    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'float64Array', arbitraryBuilder: () => fc.float64Array() },
+    { name: 'float64Array', arbitraryBuilder: () => fc.float64Array() },
     { name: 'bigInt64Array', arbitraryBuilder: () => fc.bigInt64Array() },
     { name: 'bigUint64Array', arbitraryBuilder: () => fc.bigUint64Array() },
     // Combinators
@@ -100,10 +97,9 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'dictionary', arbitraryBuilder: () => fc.dictionary(basic().map(String), noop()) },
     { name: 'record', arbitraryBuilder: () => fc.record({ a: noop(), b: noop() }) },
     { name: 'record::requiredKeys', arbitraryBuilder: () => fc.record({ a: noop(), b: noop() }, { requiredKeys: [] }) },
-    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'object', arbitraryBuilder: () => fc.object() },
-    //{ name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
-    //{ name: 'anything', arbitraryBuilder: () => fc.anything() },
+    { name: 'object', arbitraryBuilder: () => fc.object() },
+    { name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
+    { name: 'anything', arbitraryBuilder: () => fc.anything() },
     // : Function
     { name: 'compareBooleanFunc', arbitraryBuilder: () => fc.compareBooleanFunc() },
     { name: 'compareFunc', arbitraryBuilder: () => fc.compareFunc() },
