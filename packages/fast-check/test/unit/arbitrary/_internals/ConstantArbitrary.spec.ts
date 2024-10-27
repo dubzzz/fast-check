@@ -155,7 +155,7 @@ describe('ConstantArbitrary', () => {
       },
     );
 
-    it.each([{ source: -0 }, { source: 0 }, { source: 48 }])(
+    it.each([{ source: -0 }, { source: 0 }, { source: 48 }, { source: Number.NaN }])(
       'should accept to shrink $source if built with $source',
       ({ source }) => {
         // Arrange
