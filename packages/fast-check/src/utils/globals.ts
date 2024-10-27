@@ -268,9 +268,17 @@ export function safeToISOString(instance: Date): string {
 // Set
 
 const untouchedAdd = Set.prototype.add;
+const untouchedHas = Set.prototype.has;
 function extractAdd(instance: Set<unknown>) {
   try {
     return instance.add;
+  } catch (err) {
+    return undefined;
+  }
+}
+function extractHas(instance: Set<unknown>) {
+  try {
+    return instance.has;
   } catch (err) {
     return undefined;
   }
@@ -280,6 +288,12 @@ export function safeAdd<T>(instance: Set<T>, value: T): Set<T> {
     return instance.add(value);
   }
   return safeApply(untouchedAdd, instance, [value]);
+}
+export function safeHas<T>(instance: Set<T>, value: T): boolean {
+  if (extractHas(instance) === untouchedHas) {
+    return instance.has(value);
+  }
+  return safeApply(untouchedHas, instance, [value]);
 }
 
 // String
