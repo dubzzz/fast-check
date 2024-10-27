@@ -158,19 +158,43 @@ describe('ConstantArbitrary', () => {
       expect(out).toBe(false); // Object.is([], []) is falsy
     });
 
-    it.each([{ source: -0 }, { source: 0 }, { source: 48 }, { source: Number.NaN }])(
-      'should accept to shrink $source if built with $source',
-      ({ source }) => {
-        // Arrange
-        const arb = new ConstantArbitrary([source]);
+    it.each([
+      { source: -0, count: 1 },
+      { source: 0, count: 1 },
+      { source: 48, count: 1 },
+      { source: -0, count: 25 },
+      { source: 0, count: 25 },
+      { source: 48, count: 25 },
+    ])('should not accept to shrink -$source if built with $source (count: $count)', ({ source, count }) => {
+      // Arrange
+      const arb = new ConstantArbitrary(Array(count).fill(source));
 
-        // Act
-        const out = arb.canShrinkWithoutContext(source);
+      // Act
+      const out = arb.canShrinkWithoutContext(-source);
 
-        // Assert
-        expect(out).toBe(true);
-      },
-    );
+      // Assert
+      expect(out).toBe(false);
+    });
+
+    it.each([
+      { source: -0, count: 1 },
+      { source: 0, count: 1 },
+      { source: 48, count: 1 },
+      { source: Number.NaN, count: 1 },
+      { source: -0, count: 25 },
+      { source: 0, count: 25 },
+      { source: 48, count: 25 },
+      { source: Number.NaN, count: 25 },
+    ])('should accept to shrink $source if built with $source (count: $count)', ({ source, count }) => {
+      // Arrange
+      const arb = new ConstantArbitrary(Array(count).fill(source));
+
+      // Act
+      const out = arb.canShrinkWithoutContext(source);
+
+      // Assert
+      expect(out).toBe(true);
+    });
   });
 
   describe('shrink', () => {
