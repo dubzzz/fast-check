@@ -24,7 +24,7 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
   }
   canShrinkWithoutContext(value: unknown): value is T {
     if (this.values.length === 1) {
-      return Object.is(this.values[0], value);
+      return safeObjectIs(this.values[0], value);
     }
     if (this.fastValues === undefined) {
       this.fastValues = new FastConstantValuesLookup(this.values);
