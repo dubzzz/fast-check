@@ -140,6 +140,34 @@ describe('ConstantArbitrary', () => {
       // Assert
       expect(out).toBe(false); // Object.is([], []) is falsy
     });
+
+    it.each([{ source: -0 }, { source: 0 }, { source: 48 }])(
+      'should not accept to shrink -$source if built with $source',
+      ({ source }) => {
+        // Arrange
+        const arb = new ConstantArbitrary([source]);
+
+        // Act
+        const out = arb.canShrinkWithoutContext(-source);
+
+        // Assert
+        expect(out).toBe(false);
+      },
+    );
+
+    it.each([{ source: -0 }, { source: 0 }, { source: 48 }, { source: Number.NaN }])(
+      'should accept to shrink $source if built with $source',
+      ({ source }) => {
+        // Arrange
+        const arb = new ConstantArbitrary([source]);
+
+        // Act
+        const out = arb.canShrinkWithoutContext(source);
+
+        // Assert
+        expect(out).toBe(true);
+      },
+    );
   });
 
   describe('shrink', () => {
