@@ -574,11 +574,15 @@ async function writeToFile(
   fileContent: () => void,
 ): Promise<{ specFileName: string; jestConfigRelativePath: string }> {
   const { useWorkers } = options;
-  const specFileSeed = Math.random().toString(16).substring(2);
+
+  // Prepare directory for spec
+  const specDirectorySeed = `${Math.random().toString(16).substring(2)}-${++num}`;
+  const specDirectory = path.join(generatedTestsDirectory, `test-${specDirectorySeed}`);
+  await fs.mkdir(specDirectory, { recursive: true });
 
   // Prepare test file itself
-  const specFileName = `generated-${specFileSeed}-${++num}.spec.cjs`;
-  const specFilePath = path.join(generatedTestsDirectory, specFileName);
+  const specFileName = `generated.spec.cjs`;
+  const specFilePath = path.join(specDirectory, specFileName);
   let fileContentString = String(fileContent);
   if (fileContentString.includes('expect')) {
     // "expect" would be replaced by Vitest by "__vite_ssr_import_0__.expect"
@@ -600,9 +604,8 @@ async function writeToFile(
     );
 
   // Prepare jest config itself
-  const jestConfigName = `jest.config-${specFileSeed}.cjs`;
-  const jestConfigRelativePath = `${generatedTestsDirectoryName}/${jestConfigName}`;
-  const jestConfigPath = path.join(generatedTestsDirectory, jestConfigName);
+  const jestConfigName = `jest.config.cjs`;
+  const jestConfigPath = path.join(specDirectory, jestConfigName);
 
   // Write the files
   await Promise.all([
@@ -615,11 +618,12 @@ async function writeToFile(
     ),
   ]);
 
-  return { specFileName, jestConfigRelativePath };
+  return { specDirectory, specFileName, jestConfigName };
 }
 
 async function runSpec(
-  jestConfigRelativePath: string,
+  specDirectory: string,
+  jestConfigName: string,
   opts: { jestSeed?: number; testTimeoutCLI?: number } = {},
 ): Promise<string> {
   const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin', 'jest'], { shell: true });
