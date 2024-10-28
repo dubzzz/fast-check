@@ -55,7 +55,7 @@ describe.each<DescribeOptions>([
 ])('$specName', ({ runnerName, useWorkers, testRunner }) => {
   const options = { useWorkers, testRunner };
 
-  it('should pass on successful no prop mode', async () => {
+  it.concurrent('should pass on successful no prop mode', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner('successful no prop', () => {
@@ -71,7 +71,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[√✓] successful no prop/);
   });
 
-  it('should fail on failing no prop mode', async () => {
+  it.concurrent('should fail on failing no prop mode', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner('failing no prop', () => {
@@ -88,7 +88,7 @@ describe.each<DescribeOptions>([
   });
 
   if (useWorkers) {
-    it('should fail on property blocking the main thread', async () => {
+    it.concurrent('should fail on property blocking the main thread', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop([fc.nat()], { timeout: 500 })('property block main thread', () => {
@@ -105,7 +105,7 @@ describe.each<DescribeOptions>([
     });
   }
 
-  it('should pass on truthy synchronous property', async () => {
+  it.concurrent('should pass on truthy synchronous property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.string(), fc.string(), fc.string()])('property pass sync', (a, b, c) => {
@@ -121,7 +121,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[√✓] property pass sync \(with seed=-?\d+\)/);
   });
 
-  it('should pass on truthy asynchronous property', async () => {
+  it.concurrent('should pass on truthy asynchronous property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.string(), fc.string(), fc.string()])('property pass async', async (a, b, c) => {
@@ -138,7 +138,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[√✓] property pass async \(with seed=-?\d+\)/);
   });
 
-  it('should fail on falsy synchronous property', async () => {
+  it.concurrent('should fail on falsy synchronous property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.nat()])('property fail sync', (a) => {
@@ -155,7 +155,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[×✕] property fail sync \(with seed=-?\d+\)/);
   });
 
-  it('should fail on falsy asynchronous property', async () => {
+  it.concurrent('should fail on falsy asynchronous property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.nat()])('property fail async', async (a) => {
@@ -173,7 +173,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[×✕] property fail async \(with seed=-?\d+\)/);
   });
 
-  it('should pass on truthy record-based property', async () => {
+  it.concurrent('should pass on truthy record-based property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property pass record', ({ a, b, c }) => {
@@ -192,7 +192,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[√✓] property pass record \(with seed=-?\d+\)/);
   });
 
-  it('should fail on falsy record-based property', async () => {
+  it.concurrent('should fail on falsy record-based property', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('property fail record', ({ a, b, c }) => {
@@ -209,7 +209,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[×✕] property fail record \(with seed=-?\d+\)/);
   });
 
-  it('should fail on falsy record-based property with seed', async () => {
+  it.concurrent('should fail on falsy record-based property with seed', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop({ a: fc.string(), b: fc.string(), c: fc.string() }, { seed: 4869 })(
@@ -227,7 +227,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[×✕] property fail record seeded \(with seed=4869\)/);
   });
 
-  it('should fail with locally requested seed', async () => {
+  it.concurrent('should fail with locally requested seed', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.constant(null)], { seed: 4242 })('property fail with locally requested seed', (_unused) => false);
@@ -242,7 +242,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[×✕] property fail with locally requested seed \(with seed=4242\)/);
   });
 
-  it('should fail with globally requested seed', async () => {
+  it.concurrent('should fail with globally requested seed', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       fc.configureGlobal({ seed: 4848 });
@@ -258,7 +258,7 @@ describe.each<DescribeOptions>([
     expect(out).toMatch(/[×✕] property fail with globally requested seed \(with seed=4848\)/);
   });
 
-  it('should fail with seed requested at jest level', async () => {
+  it.concurrent('should fail with seed requested at jest level', async () => {
     // Arrange
     const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
       runner.prop([fc.constant(null)])('property fail with globally requested seed', (_unused) => false);
@@ -274,7 +274,7 @@ describe.each<DescribeOptions>([
   });
 
   describe('.skip', () => {
-    it('should never be executed', async () => {
+    it.concurrent('should never be executed', async () => {
       // Arrange
       const { jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.skip.prop([fc.constant(null)])('property never executed', (_unused) => false);
@@ -291,7 +291,7 @@ describe.each<DescribeOptions>([
 
   if (testRunner === undefined) {
     describe('.failing', () => {
-      it('should fail on successful no prop mode', async () => {
+      it.concurrent('should fail on successful no prop mode', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing('successful no prop', () => {
@@ -307,7 +307,7 @@ describe.each<DescribeOptions>([
         expect(out).toMatch(/[×✕] successful no prop/);
       });
 
-      it('should pass on failing no prop mode', async () => {
+      it.concurrent('should pass on failing no prop mode', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing('failing no prop', () => {
@@ -323,7 +323,7 @@ describe.each<DescribeOptions>([
         expect(out).toMatch(/[√✓] failing no prop/);
       });
 
-      it('should pass because failing', async () => {
+      it.concurrent('should pass because failing', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing.prop([fc.constant(null)])('property pass because failing', async (_unused) => false);
@@ -337,7 +337,7 @@ describe.each<DescribeOptions>([
         expect(out).toMatch(/[√✓] property pass because failing \(with seed=-?\d+\)/);
       });
 
-      it('should fail because passing', async () => {
+      it.concurrent('should fail because passing', async () => {
         // Arrange
         const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
           runner.failing.prop([fc.constant(null)])('property fail because passing', async (_unused) => true);
@@ -354,7 +354,7 @@ describe.each<DescribeOptions>([
   }
 
   describe('.concurrent', () => {
-    it('should pass on truthy property', async () => {
+    it.concurrent('should pass on truthy property', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.concurrent.prop([fc.constant(null)])('property pass on truthy property', (_unused) => true);
@@ -368,7 +368,7 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[√✓] property pass on truthy property \(with seed=-?\d+\)/);
     });
 
-    it('should fail on falsy property', async () => {
+    it.concurrent('should fail on falsy property', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.concurrent.prop([fc.constant(null)])('property fail on falsy property', (_unused) => false);
@@ -385,7 +385,7 @@ describe.each<DescribeOptions>([
 
     if (testRunner === undefined) {
       describe('.failing', () => {
-        it('should pass because failing', async () => {
+        it.concurrent('should pass because failing', async () => {
           // Arrange
           const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
             runner.concurrent.failing.prop([fc.constant(null)])(
@@ -402,7 +402,7 @@ describe.each<DescribeOptions>([
           expect(out).toMatch(/[√✓] property pass because failing \(with seed=-?\d+\)/);
         });
 
-        it('should fail because passing', async () => {
+        it.concurrent('should fail because passing', async () => {
           // Arrange
           const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
             runner.concurrent.failing.prop([fc.constant(null)])(
@@ -423,7 +423,7 @@ describe.each<DescribeOptions>([
   });
 
   describe('timeout', () => {
-    it('should fail as test takes longer than global Jest timeout', async () => {
+    it.concurrent('should fail as test takes longer than global Jest timeout', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop([fc.nat()])('property takes longer than global Jest timeout', async () => {
@@ -440,7 +440,7 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
     });
 
-    it('should fail as test takes longer than Jest local timeout', async () => {
+    it.concurrent('should fail as test takes longer than Jest local timeout', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop([fc.nat()])(
@@ -461,7 +461,7 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
     });
 
-    it('should fail as test takes longer than Jest config timeout', async () => {
+    it.concurrent('should fail as test takes longer than Jest config timeout', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(
         runnerName,
@@ -482,7 +482,7 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
     });
 
-    it('should fail as test takes longer than Jest setTimeout', async () => {
+    it.concurrent('should fail as test takes longer than Jest setTimeout', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         if (typeof jest !== 'undefined') {
@@ -502,7 +502,7 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
     });
 
-    it('should fail as test takes longer than Jest CLI timeout', async () => {
+    it.concurrent('should fail as test takes longer than Jest CLI timeout', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         runner.prop([fc.nat()])('property takes longer than Jest CLI timeout', async () => {
@@ -519,7 +519,7 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than Jest CLI timeout/);
     });
 
-    it('should fail but favor local Jest timeout over Jest setTimeout', async () => {
+    it.concurrent('should fail but favor local Jest timeout over Jest setTimeout', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         if (typeof jest !== 'undefined') {
@@ -543,7 +543,7 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
     });
 
-    it('should fail but favor Jest setTimeout over Jest CLI timeout', async () => {
+    it.concurrent('should fail but favor Jest setTimeout over Jest CLI timeout', async () => {
       // Arrange
       const { specFileName, jestConfigRelativePath } = await writeToFile(runnerName, options, () => {
         if (typeof jest !== 'undefined') {
