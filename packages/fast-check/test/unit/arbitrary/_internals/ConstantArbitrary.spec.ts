@@ -113,7 +113,7 @@ describe('ConstantArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it("should mark value as 'canShrinkWithoutContext' whenever one of the original values is equal regarding Object.is", () =>
+    it("should mark value as 'canShrinkWithoutContext' whenever one of the original values is equal regarding Object.is", () => {
       fc.assert(
         fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
@@ -126,7 +126,24 @@ describe('ConstantArbitrary', () => {
           // Assert
           expect(out).toBe(true);
         }),
-      ));
+      );
+    });
+
+    it("should not mark value as 'canShrinkWithoutContext' if none of the original values is equal regarding Object.is", () => {
+      fc.assert(
+        fc.property(fc.uniqueArray(fc.anything(), { minLength: 2, comparator: 'SameValue' }), (values) => {
+          // Arrange
+          const [selectedValue, ...acceptedValues] = values;
+
+          // Act
+          const arb = new ConstantArbitrary(acceptedValues);
+          const out = arb.canShrinkWithoutContext(selectedValue); // selectedValue is unique for SameValue comparison (Object.is)
+
+          // Assert
+          expect(out).toBe(false);
+        }),
+      );
+    });
 
     it('should not detect values not equal regarding to Object.is', () => {
       // Arrange
@@ -139,6 +156,44 @@ describe('ConstantArbitrary', () => {
 
       // Assert
       expect(out).toBe(false); // Object.is([], []) is falsy
+    });
+
+    it.each([
+      { source: -0, count: 1 },
+      { source: 0, count: 1 },
+      { source: 48, count: 1 },
+      { source: -0, count: 25 },
+      { source: 0, count: 25 },
+      { source: 48, count: 25 },
+    ])('should not accept to shrink -$source if built with $source (count: $count)', ({ source, count }) => {
+      // Arrange
+      const arb = new ConstantArbitrary(Array(count).fill(source));
+
+      // Act
+      const out = arb.canShrinkWithoutContext(-source);
+
+      // Assert
+      expect(out).toBe(false);
+    });
+
+    it.each([
+      { source: -0, count: 1 },
+      { source: 0, count: 1 },
+      { source: 48, count: 1 },
+      { source: Number.NaN, count: 1 },
+      { source: -0, count: 25 },
+      { source: 0, count: 25 },
+      { source: 48, count: 25 },
+      { source: Number.NaN, count: 25 },
+    ])('should accept to shrink $source if built with $source (count: $count)', ({ source, count }) => {
+      // Arrange
+      const arb = new ConstantArbitrary(Array(count).fill(source));
+
+      // Act
+      const out = arb.canShrinkWithoutContext(source);
+
+      // Assert
+      expect(out).toBe(true);
     });
   });
 
