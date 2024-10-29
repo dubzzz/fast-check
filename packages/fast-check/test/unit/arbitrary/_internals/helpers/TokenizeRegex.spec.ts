@@ -138,8 +138,7 @@ describe('tokenizeRegex', () => {
       ${/🐱/u}
       ${/🐱+/u}
       ${/[🐱🐴]/u}
-      ${// @ts-expect-error Range out-of-order on Regex
-/[🐱-🐴]/u}
+      ${/[🐱-🐴]/u}
       ${/[a-🐱b-🐴]/u}
     `('should consider code-point as any other character when parsing $regex', ({ regex }) => {
       const catReplacement = '\ufff0';

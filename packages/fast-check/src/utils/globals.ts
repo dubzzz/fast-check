@@ -80,7 +80,7 @@ const untouchedMap = Array.prototype.map;
 const untouchedFilter = Array.prototype.filter;
 const untouchedPush = Array.prototype.push;
 const untouchedPop = Array.prototype.pop;
-const untouchedSplice: (start: number, deleteCount?: number | undefined) => any[] = Array.prototype.splice;
+const untouchedSplice: (start: number, deleteCount?: number) => any[] = Array.prototype.splice;
 const untouchedSlice = Array.prototype.slice;
 const untouchedSort = Array.prototype.sort;
 const untouchedEvery = Array.prototype.every;
@@ -268,9 +268,17 @@ export function safeToISOString(instance: Date): string {
 // Set
 
 const untouchedAdd = Set.prototype.add;
+const untouchedHas = Set.prototype.has;
 function extractAdd(instance: Set<unknown>) {
   try {
     return instance.add;
+  } catch (err) {
+    return undefined;
+  }
+}
+function extractHas(instance: Set<unknown>) {
+  try {
+    return instance.has;
   } catch (err) {
     return undefined;
   }
@@ -281,10 +289,16 @@ export function safeAdd<T>(instance: Set<T>, value: T): Set<T> {
   }
   return safeApply(untouchedAdd, instance, [value]);
 }
+export function safeHas<T>(instance: Set<T>, value: T): boolean {
+  if (extractHas(instance) === untouchedHas) {
+    return instance.has(value);
+  }
+  return safeApply(untouchedHas, instance, [value]);
+}
 
 // String
 
-const untouchedSplit: (separator: string | RegExp, limit?: number | undefined) => string[] = String.prototype.split;
+const untouchedSplit: (separator: string | RegExp, limit?: number) => string[] = String.prototype.split;
 const untouchedStartsWith = String.prototype.startsWith;
 const untouchedEndsWith = String.prototype.endsWith;
 const untouchedSubstring = String.prototype.substring;
@@ -292,6 +306,7 @@ const untouchedToLowerCase = String.prototype.toLowerCase;
 const untouchedToUpperCase = String.prototype.toUpperCase;
 const untouchedPadStart = String.prototype.padStart;
 const untouchedCharCodeAt = String.prototype.charCodeAt;
+const untouchedNormalize = String.prototype.normalize;
 const untouchedReplace: (pattern: RegExp | string, replacement: string) => string = String.prototype.replace;
 function extractSplit(instance: string) {
   try {
@@ -345,6 +360,13 @@ function extractPadStart(instance: string) {
 function extractCharCodeAt(instance: string) {
   try {
     return instance.charCodeAt;
+  } catch (err) {
+    return undefined;
+  }
+}
+function extractNormalize(instance: string) {
+  try {
+    return instance.normalize;
   } catch (err) {
     return undefined;
   }
@@ -412,6 +434,12 @@ export function safeCharCodeAt(instance: string, index: number): number {
     return instance.charCodeAt(index);
   }
   return safeApply(untouchedCharCodeAt, instance, [index]);
+}
+export function safeNormalize(instance: string, form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): string {
+  if (extractNormalize(instance) === untouchedNormalize) {
+    return instance.normalize(form);
+  }
+  return safeApply(untouchedNormalize, instance, [form]);
 }
 export function safeReplace(instance: string, pattern: RegExp | string, replacement: string): string {
   if (extractReplace(instance) === untouchedReplace) {

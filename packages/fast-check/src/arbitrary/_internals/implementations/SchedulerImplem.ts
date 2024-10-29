@@ -97,6 +97,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           },
           (err) => {
             this.log(schedulingType, taskId, label, metadata, 'rejected', err);
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return reject(err);
           },
         );

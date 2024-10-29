@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.19.8",
+    "@codesandbox/sandpack-react": "^2.19.9",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@docusaurus/core": "3.4.0",
     "@docusaurus/plugin-pwa": "3.4.0",
@@ -32,12 +32,12 @@
     "@docusaurus/tsconfig": "3.4.0",
     "@docusaurus/types": "3.4.0",
     "@jest/globals": "^29.7.0",
-    "@mdx-js/react": "^3.0.1",
+    "@mdx-js/react": "^3.1.0",
     "@types/node": "^20.14.15",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jimp": "^0.22.12",
-    "typescript": "~5.5.4"
+    "typescript": "~5.6.3"
   },
   "browserslist": {
     "production": [

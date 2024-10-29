@@ -100,7 +100,7 @@ describe('safeApply', () => {
     }
     const n = new Nominal(5);
     const originalApplyDescriptor = Object.getOwnPropertyDescriptor(Function.prototype, 'apply');
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     delete (Function.prototype as Partial<Function['prototype']>).apply;
     Object.defineProperty(Function.prototype, 'apply', {
       configurable: true, // so that we can revert the change

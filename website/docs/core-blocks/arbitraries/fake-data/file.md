@@ -57,13 +57,14 @@ All the string values (from keys to values) are generated using `fc.string()`.
 **Signatures:**
 
 - `fc.json()`
-- `fc.json({depthSize?, maxDepth?, noUnicodeString?})`
+- `fc.json({depthSize?, maxDepth?, noUnicodeString?, stringUnit?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth of generated objects_
-- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters_
+- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters — shadowed by `stringUnit`_
+- `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 
 **Usages:**
 
@@ -119,13 +120,14 @@ As `JSON.parse` preserves `-0`, `jsonValue` can also have `-0` as a value.
 **Signatures:**
 
 - `fc.jsonValue()`
-- `fc.jsonValue({depthSize?, maxDepth?, noUnicodeString?})`
+- `fc.jsonValue({depthSize?, maxDepth?, noUnicodeString?, stringUnit?})`
 
 **with:**
 
 - `depthSize?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#depth-size-explained) — _how much we allow our recursive structures to be deep?_
 - `maxDepth?` — default: `Number.POSITIVE_INFINITY` — _maximal depth for generated objects (Map and Set included into objects)_
-- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters_
+- `noUnicodeString?` — default: `true` — _toggle on/off the generation of strings used either as keys or values of the instance and including non-ascii characters — shadowed by `stringUnit`_
+- `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 
 **Usages:**
 

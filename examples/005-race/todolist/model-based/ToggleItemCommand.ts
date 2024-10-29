@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import { act } from '@testing-library/react';
 import { TodolistCommand, TodolistModel, TodolistReal, listTodos, ExtractedTodoItem, prettyDetails } from './Model';
 

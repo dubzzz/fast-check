@@ -1,14 +1,15 @@
-import { jest } from '@jest/globals';
+/**
+ * @vitest-environment happy-dom
+ */
+import { describe, it, beforeEach, expect, vi } from 'vitest';
 import React from 'react';
 import DebouncedAutocomplete from './src/DebouncedAutocomplete';
 
-import { act, cleanup, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, cleanup, render, screen, fireEvent } from '@testing-library/react';
 import fc from 'fast-check';
 
 beforeEach(() => {
-  jest.clearAllTimers();
-  jest.resetAllMocks();
+  vi.clearAllTimers();
 });
 
 // Copied from https://github.com/testing-library/user-event/issues/586
@@ -18,6 +19,7 @@ function escapeKeyboardInput(value: string): string {
 
 describe('DebouncedAutocomplete', () => {
   it('should autocomplete queries (with mocked timers)', async () => {
+    vi.useFakeTimers();
     await fc.assert(
       fc
         .asyncProperty(
@@ -26,7 +28,6 @@ describe('DebouncedAutocomplete', () => {
           fc.string({ minLength: 1 }),
           async (s, allResults, userQuery) => {
             // Arrange
-            jest.useFakeTimers();
             const suggestionsFor = s.scheduleFunction(
               async (query: string) => {
                 return allResults.filter((r) => r.includes(query));
@@ -43,12 +44,10 @@ describe('DebouncedAutocomplete', () => {
               [...userQuery].map((c, idx) => ({
                 label: `Typing "${c}"`,
                 builder: async () => {
-                  await act(async () => {
+                  act(() => {
                     // Typing stuff may trigger state updates, thus they have to be wrapped into act
                     const input = screen.getByRole('textbox');
-                    const character = escapeKeyboardInput(userQuery.substr(idx, 1));
-                    const options = { delay: null }; // we don't want any call to setTimeout
-                    await userEvent.type(input, character, options);
+                    fireEvent.change(input, { target: { value: userQuery.substring(0, idx + 1) } });
                   });
                 },
               })),
@@ -63,8 +62,7 @@ describe('DebouncedAutocomplete', () => {
           },
         )
         .beforeEach(async () => {
-          jest.clearAllTimers();
-          jest.resetAllMocks();
+          vi.clearAllTimers();
           await cleanup();
         }),
     );
@@ -81,7 +79,7 @@ function buildWrapWithTimersAct(s: fc.Scheduler) {
   let timersAlreadyScheduled = false;
 
   function scheduleTimersIfNeeded() {
-    if (timersAlreadyScheduled || jest.getTimerCount() === 0) {
+    if (timersAlreadyScheduled || vi.getTimerCount() === 0) {
       return;
     }
     timersAlreadyScheduled = true;
@@ -89,7 +87,7 @@ function buildWrapWithTimersAct(s: fc.Scheduler) {
       timersAlreadyScheduled = false;
       act(() => {
         // Timers may trigger state updates, thus they have to be wrapped into act
-        jest.advanceTimersToNextTimer();
+        vi.advanceTimersToNextTimer();
       });
       scheduleTimersIfNeeded();
     });

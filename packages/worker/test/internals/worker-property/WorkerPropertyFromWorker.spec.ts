@@ -1,7 +1,7 @@
-import { jest } from '@jest/globals';
 import { WorkerPropertyFromWorker } from '../../../src/internals/worker-property/WorkerPropertyFromWorker.js';
 import fc from 'fast-check';
 import { xorshift128plus } from 'pure-rand';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('WorkerPropertyFromWorker', () => {
   it('should not generate anything from the provided arbitraries eagerly on generate', () => {
@@ -9,7 +9,7 @@ describe('WorkerPropertyFromWorker', () => {
     const mrng = buildMrng();
     const { arbitrary, generate } = buildTrackedArbitrary();
     const arbitraries: [fc.Arbitrary<unknown>] = [arbitrary];
-    const predicate = jest.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
+    const predicate = vi.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
 
     // Act
     const property = new WorkerPropertyFromWorker(arbitraries, predicate);
@@ -25,7 +25,7 @@ describe('WorkerPropertyFromWorker', () => {
     const mrng = buildMrng();
     const { arbitrary, generate } = buildTrackedArbitrary();
     const arbitraries: [fc.Arbitrary<unknown>] = [arbitrary];
-    const predicate = jest.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
+    const predicate = vi.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
 
     // Act
     const property = new WorkerPropertyFromWorker(arbitraries, predicate);
@@ -45,7 +45,7 @@ describe('WorkerPropertyFromWorker', () => {
     const { arbitrary, generate } = buildTrackedArbitrary();
     generate.mockReturnValue(new fc.Value({ hello: 'world' }, undefined));
     const arbitraries: [fc.Arbitrary<unknown>] = [arbitrary];
-    const predicate = jest.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
+    const predicate = vi.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
 
     // Act
     const property = new WorkerPropertyFromWorker(arbitraries, predicate);
@@ -72,7 +72,7 @@ describe('WorkerPropertyFromWorker', () => {
       return orderedValues[index];
     });
     const arbitraries: [fc.Arbitrary<unknown>] = [arbitrary];
-    const predicate = jest.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
+    const predicate = vi.fn<(...inputs: [unknown]) => Promise<void>>().mockResolvedValue();
 
     // Act
     const property = new WorkerPropertyFromWorker(arbitraries, predicate);
@@ -119,7 +119,7 @@ class TrackedArbitrary extends fc.Arbitrary<unknown> {
 }
 
 function buildTrackedArbitrary() {
-  const generate = jest.fn<fc.Arbitrary<unknown>['generate']>();
+  const generate = vi.fn<fc.Arbitrary<unknown>['generate']>();
   return { arbitrary: new TrackedArbitrary(generate), generate };
 }
 

@@ -42,7 +42,9 @@ describe('Value', () => {
 
       // Act
       const nextValue = new Value(instance, null, cloneOverride);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       nextValue.value;
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       nextValue.value;
 
       // Assert

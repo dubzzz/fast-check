@@ -22,6 +22,13 @@ describe('jsonValue (integration)', () => {
           depthSize: fc.oneof(fc.double({ min: 0.1, noNaN: true }), sizeArb),
           maxDepth: fc.nat({ max: 5 }),
           noUnicodeString: fc.boolean(),
+          stringUnit: fc.constantFrom<JsonSharedConstraints['stringUnit']>(
+            'grapheme',
+            'grapheme-composite',
+            'grapheme-ascii',
+            'binary',
+            'binary-ascii',
+          ),
         },
         { requiredKeys: [] },
       )

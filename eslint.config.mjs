@@ -13,7 +13,7 @@ export default [
     languageOptions: {
       parserOptions: {
         tsconfigRootDir: import.meta.dirname,
-        project: './tsconfig.common.json',
+        projectService: './tsconfig.common.json',
       },
     },
   },
@@ -26,13 +26,16 @@ export default [
       '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-this-alias': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
       '@typescript-eslint/no-use-before-define': 'warn',
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
-      '@typescript-eslint/ban-types': 'error',
+      '@typescript-eslint/no-restricted-types': 'error',
+      '@typescript-eslint/no-empty-object-type': 'error',
+      '@typescript-eslint/no-unsafe-function-type': 'error',
+      '@typescript-eslint/no-wrapper-object-types': 'error',
       'require-atomic-updates': 'error',
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
@@ -47,21 +50,32 @@ export default [
     },
   },
   {
-    files: ['**/*.cjs', '**/cjs/**/*.js', 'packages/ava/test/testProp.js'],
+    files: [
+      '**/*.cjs',
+      '**/cjs/**/*.js',
+      'packages/ava/test/testProp.js',
+      '**/ava.config.js',
+      '**/jest.config.js',
+      'packages/expect-type/src/*.js',
+      'packages/packaged/bin/*.js',
+    ],
     languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
       globals: {
         ...globals.node,
         ...globals.commonjs,
       },
     },
     rules: {
-      '@typescript-eslint/no-var-requires': 'off',
       ...tseslint.configs.disableTypeChecked.rules,
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
   {
     files: ['**/*.mjs', '**/mjs/**/*.js'],
     languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
       globals: {
         ...globals.node,
       },
@@ -78,8 +92,12 @@ export default [
       '**/test-types/**/*.ts',
       '**/test-types/**/*.mts',
     ],
+    languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
+    },
     rules: {
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
       ...tseslint.configs.disableTypeChecked.rules,

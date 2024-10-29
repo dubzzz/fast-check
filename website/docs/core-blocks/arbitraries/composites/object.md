@@ -165,7 +165,7 @@ Generate objects (key/values).
 **Signatures:**
 
 - `fc.object()`
-- `fc.object({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, withUnicodeString?, values?})`
+- `fc.object({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, withUnicodeString?, stringUnit?, values?})`
 
 **with:**
 
@@ -183,7 +183,8 @@ Generate objects (key/values).
 - `withSet?` — default: `false` — _enable `Set` - eg.: `new Set([1, 2, 3])`_
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
-- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters_
+- `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters — shadowed by `stringUnit`_
+- `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 **Usages:**
@@ -276,7 +277,7 @@ Generate any kind of entities.
 **Signatures:**
 
 - `fc.anything()`
-- `fc.anything({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, withUnicodeString?, values?})`
+- `fc.anything({key?, depthSize?, maxDepth?, maxKeys?, size?, withBigInt?, withBoxedValues?, withDate?, withMap?, withNullPrototype?, withObjectString?, withSet?, withTypedArray?, withSparseArray?, withUnicodeString?, stringUnit?, values?})`
 
 **with:**
 
@@ -295,6 +296,7 @@ Generate any kind of entities.
 - `withTypedArray?` — default: `false` — _enable typed arrays for ints, uints and floats - eg.: `Int8Array.from([1, 2, 3])`_
 - `withSparseArray?` — default: `false` — _enable sparse arrays - eg.: `[1,,,3]`_
 - `withUnicodeString?` — default: `false` — _change the default for `key` and `values` so that they produce unicode strings with non-ascii characters_
+- `stringUnit?` — default: `undefined` — _customize the set of characters being used by the `string` arbitrary — shadowed by `stringUnit`_
 - `values?` — default: _booleans, numbers, strings, null and undefined_ — _array of arbitraries producing the root* values - *non-object ones_
 
 **Usages:**

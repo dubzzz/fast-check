@@ -462,6 +462,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/35386821?v=4",
       "profile": "https://github.com/nmay231",
       "contributions": ["doc"]
+    },
+    {
+      "login": "jamesbvaughan",
+      "name": "James Vaughan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2906913?v=4",
+      "profile": "https://github.com/jamesbvaughan",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
