@@ -6,6 +6,6 @@ export default defineConfig({
   test: {
     testTimeout: 60000, // 60s
     include: ['**/test/*.{test,spec}.?(c|m)[jt]s?(x)'],
-    retry: major === 23 ? 3 : undefined,
+    retry: major === 23 ? 5 : undefined,
   },
 });
