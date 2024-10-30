@@ -41,11 +41,6 @@ function findDichotomyEntry<T>(dichotomyEntries: DicothomyEntry<T>[], choiceInde
 export function indexToMappedConstantMapperFor<T>(entries: Entry<T>[]): (choiceIndex: number) => T {
   const dichotomyEntries = buildDichotomyEntries(entries);
   return function indexToMappedConstantMapper(choiceIndex: number): T {
-    let idx = -1;
-    let numSkips = 0;
-    while (choiceIndex >= numSkips) {
-      numSkips += entries[++idx].num;
-    }
     const dichotomyEntry = findDichotomyEntry(dichotomyEntries, choiceIndex);
     return dichotomyEntry.entry.build(choiceIndex - dichotomyEntry.from);
   };
