@@ -4,16 +4,45 @@ import { Error } from '../../../utils/globals';
 const safeObjectIs = Object.is;
 
 /** @internal */
-export function indexToMappedConstantMapperFor<T>(
-  entries: { num: number; build: (idInGroup: number) => T }[],
-): (choiceIndex: number) => T {
-  return function indexToMappedConstantMapper(choiceIndex: number): T {
-    let idx = -1;
-    let numSkips = 0;
-    while (choiceIndex >= numSkips) {
-      numSkips += entries[++idx].num;
+type Entry<T> = { num: number; build: (idInGroup: number) => T };
+
+/** @internal */
+type DicothomyEntry<T> = { from: number; to: number; entry: Pick<Entry<T>, 'build'> };
+
+/** @internal */
+function buildDichotomyEntries<T>(entries: Entry<T>[]): DicothomyEntry<T>[] {
+  let currentFrom = 0;
+  const dichotomyEntries: DicothomyEntry<T>[] = [];
+  for (const entry of entries) {
+    const from = currentFrom;
+    currentFrom = from + entry.num;
+    const to = currentFrom - 1;
+    dichotomyEntries.push({ from, to, entry });
+  }
+  return dichotomyEntries;
+}
+
+/** @internal */
+function findDichotomyEntry<T>(dichotomyEntries: DicothomyEntry<T>[], choiceIndex: number): DicothomyEntry<T> {
+  let min = 0;
+  let max = dichotomyEntries.length;
+  while (max - min > 1) {
+    const mid = ~~((min + max) / 2); // ~~ is Math.floor
+    if (choiceIndex < dichotomyEntries[mid].from) {
+      max = mid;
+    } else {
+      min = mid;
     }
-    return entries[idx].build(choiceIndex - numSkips + entries[idx].num);
+  }
+  return dichotomyEntries[min];
+}
+
+/** @internal */
+export function indexToMappedConstantMapperFor<T>(entries: Entry<T>[]): (choiceIndex: number) => T {
+  const dichotomyEntries = buildDichotomyEntries(entries);
+  return function indexToMappedConstantMapper(choiceIndex: number): T {
+    const dichotomyEntry = findDichotomyEntry(dichotomyEntries, choiceIndex);
+    return dichotomyEntry.entry.build(choiceIndex - dichotomyEntry.from);
   };
 }
 
