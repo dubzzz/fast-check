@@ -10,7 +10,7 @@ export function patternsToStringMapper(tab: string[]): string {
 }
 
 /** @internal */
-export function patternsToStringUnmapperIsValidLength(tokens: string[], constraints: StringSharedConstraints) {
+export function patternsToStringUnmapperIsValidLength(tokens: string[], constraints: StringSharedConstraints): boolean {
   const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
   const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
   return minLength <= tokens.length && tokens.length <= maxLength;
