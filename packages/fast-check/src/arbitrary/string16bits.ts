@@ -4,7 +4,7 @@ import { array } from './array';
 import { char16bits } from './char16bits';
 import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { charsToStringMapper, charsToStringUnmapper } from './_internals/mappers/CharsToString';
-import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
+import { createSlicesForStringLegacy } from './_internals/helpers/SlicesForStringBuilder';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 const safeObjectAssign = Object.assign;
@@ -20,7 +20,7 @@ const safeObjectAssign = Object.assign;
  */
 export function string16bits(constraints: StringSharedConstraints = {}): Arbitrary<string> {
   const charArbitrary = char16bits();
-  const experimentalCustomSlices = createSlicesForString(charArbitrary, charsToStringUnmapper);
+  const experimentalCustomSlices = createSlicesForStringLegacy(charArbitrary, charsToStringUnmapper);
   // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
   const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {
     experimentalCustomSlices,
