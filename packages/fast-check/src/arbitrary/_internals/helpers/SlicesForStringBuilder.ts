@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { safePush } from '../../../utils/globals';
+import { safeGet, safePush, safeSet } from '../../../utils/globals';
 import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
 import { patternsToStringUnmapperIsValidLength } from '../mappers/PatternsToString';
 import { tokenizeString } from './TokenizeString';
@@ -71,16 +71,35 @@ export function createSlicesForStringLegacy(
 }
 
 /** @internal */
-export function createSlicesForString(
-  charArbitrary: Arbitrary<string>,
-  constraints: StringSharedConstraints,
-): string[][] {
+const slicesPerArbitrary = new WeakMap<Arbitrary<string>, string[][]>();
+
+/** @internal */
+function createSlicesForStringNoConstraints(charArbitrary: Arbitrary<string>): string[][] {
   const slicesForString: string[][] = [];
   for (const dangerous of dangerousStrings) {
     const candidate = tokenizeString(charArbitrary, dangerous);
-    if (candidate !== undefined && patternsToStringUnmapperIsValidLength(candidate, constraints)) {
+    if (candidate !== undefined) {
       safePush(slicesForString, candidate);
     }
   }
   return slicesForString;
+}
+
+/** @internal */
+export function createSlicesForString(
+  charArbitrary: Arbitrary<string>,
+  constraints: StringSharedConstraints,
+): string[][] {
+  let slices = safeGet(slicesPerArbitrary, charArbitrary);
+  if (slices === undefined) {
+    slices = createSlicesForStringNoConstraints(charArbitrary);
+    safeSet(slicesPerArbitrary, charArbitrary, slices);
+  }
+  const slicesForConstraints: string[][] = [];
+  for (const slice of slices) {
+    if (patternsToStringUnmapperIsValidLength(slice, constraints)) {
+      safePush(slicesForConstraints, slice);
+    }
+  }
+  return slicesForConstraints;
 }
