@@ -39,6 +39,7 @@ export function tokenizeString(patternsArb: Arbitrary<string>, value: string): s
         safePush(stack, { endIndexChunks: last.endIndexChunks, nextStartIndex: index + 1, chunks: last.chunks });
         // Pushed to go deeper in the tree
         safePush(stack, { endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+        break;
       }
     }
   }
