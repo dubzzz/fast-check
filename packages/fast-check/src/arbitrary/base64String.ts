@@ -6,7 +6,7 @@ import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength
 import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
 import { stringToBase64Mapper, stringToBase64Unmapper } from './_internals/mappers/StringToBase64';
-import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
+import { createSlicesForStringLegacy } from './_internals/helpers/SlicesForStringBuilder';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 /**
@@ -31,7 +31,7 @@ function base64String(constraints: StringSharedConstraints = {}): Arbitrary<stri
   if (maxLength % 4 !== 0) throw new Error('Maximal length of base64 strings must be a multiple of 4');
 
   const charArbitrary = base64();
-  const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
+  const experimentalCustomSlices = createSlicesForStringLegacy(charArbitrary, codePointsToStringUnmapper);
   const enrichedConstraints: ArrayConstraintsInternal<string> = {
     minLength,
     maxLength,

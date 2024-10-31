@@ -1,5 +1,8 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { safePush } from '../../../utils/globals';
+import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
+import { patternsToStringUnmapperIsValidLength } from '../mappers/PatternsToString';
+import { tokenizeString } from './TokenizeString';
 
 const dangerousStrings = [
   // Default attributes on raw Object (from ({}).*)
@@ -30,7 +33,7 @@ const dangerousStrings = [
 ];
 
 /** @internal */
-function computeCandidateString(
+function computeCandidateStringLegacy(
   dangerous: string,
   charArbitrary: Arbitrary<string>,
   stringSplitter: (value: string) => string[],
@@ -53,14 +56,29 @@ function computeCandidateString(
 }
 
 /** @internal */
-export function createSlicesForString(
+export function createSlicesForStringLegacy(
   charArbitrary: Arbitrary<string>,
   stringSplitter: (value: string) => string[],
 ): string[][] {
   const slicesForString: string[][] = [];
   for (const dangerous of dangerousStrings) {
-    const candidate = computeCandidateString(dangerous, charArbitrary, stringSplitter);
+    const candidate = computeCandidateStringLegacy(dangerous, charArbitrary, stringSplitter);
     if (candidate !== undefined) {
+      safePush(slicesForString, candidate);
+    }
+  }
+  return slicesForString;
+}
+
+/** @internal */
+export function createSlicesForString(
+  charArbitrary: Arbitrary<string>,
+  constraints: StringSharedConstraints,
+): string[][] {
+  const slicesForString: string[][] = [];
+  for (const dangerous of dangerousStrings) {
+    const candidate = tokenizeString(charArbitrary, dangerous);
+    if (candidate !== undefined && patternsToStringUnmapperIsValidLength(candidate, constraints)) {
       safePush(slicesForString, candidate);
     }
   }
