@@ -1,7 +1,7 @@
 # 0.4.1
 
 _Rework our testing stack_
-[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.0...packaged%2Fv0.4.1)]
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.0...packaged%2Fv0.4.1)]
 
 ## Fixes
 
