@@ -1,17 +1,11 @@
-# 0.5.0
+# 0.4.1
 
-_TODO Description_
-[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.0...packaged%2Fv0.5.0)]
-
-## Features
-
-
+_Rework our testing stack_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.0...packaged%2Fv0.4.1)]
 
 ## Fixes
 
 - ([PR#5348](https://github.com/dubzzz/fast-check/pull/5348)) CI: Move to Vitest
-
----
 
 # 0.4.0
 

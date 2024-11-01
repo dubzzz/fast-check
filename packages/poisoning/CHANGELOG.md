@@ -1,11 +1,7 @@
 # 0.2.2
 
-_TODO Description_
+_Rework our testing stack_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.2.1...poisoning%2Fv0.2.2)]
-
-## Features
-
-
 
 ## Fixes
 

@@ -1,6 +1,6 @@
 # 3.23.0
 
-_TODO Description_
+_Extend usages of string-units and increased performance_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.23.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.22.0...v3.23.0)]
 
 ## Features

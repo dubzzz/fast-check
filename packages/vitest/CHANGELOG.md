@@ -1,11 +1,7 @@
 # 0.1.4
 
-_TODO Description_
+_Rework our testing stack_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.3...vitest%2Fv0.1.4)]
-
-## Features
-
-
 
 ## Fixes
 

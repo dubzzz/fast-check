@@ -1,11 +1,7 @@
 # 0.4.1
 
-_TODO Description_
+_Rework our testing stack_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.0...worker%2Fv0.4.1)]
-
-## Features
-
-
 
 ## Fixes
 
