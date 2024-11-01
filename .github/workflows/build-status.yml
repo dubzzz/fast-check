@@ -205,7 +205,7 @@ jobs:
       - name: Unpack production packages
         run: yarn unpack:all
       - name: Preview
-        run: yarn dlx pkg-pr-new publish --compact './packages/*'
+        run: yarn dlx pkg-pr-new publish --compact './packages/*' --template './examples'
   test:
     name: 'Test'
     needs:
