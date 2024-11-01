@@ -1,3 +1,20 @@
+# 0.1.4
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.3...vitest%2Fv0.1.4)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5350](https://github.com/dubzzz/fast-check/pull/5350)) CI: Move to Vitest
+- ([PR#5352](https://github.com/dubzzz/fast-check/pull/5352)) CI: Drop unneeded configuration files
+- ([PR#5380](https://github.com/dubzzz/fast-check/pull/5380)) Test: Make tests run concurrently
+- ([PR#5379](https://github.com/dubzzz/fast-check/pull/5379)) Test: Better scoping of tests execution
+- ([PR#5384](https://github.com/dubzzz/fast-check/pull/5384)) Test: Add retry for Node 23
+
 # 0.1.3
 
 _Export missing types_
