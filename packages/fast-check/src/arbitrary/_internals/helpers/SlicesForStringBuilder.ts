@@ -2,6 +2,7 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { safeGet, safePush, safeSet } from '../../../utils/globals';
 import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
 import { patternsToStringUnmapperIsValidLength } from '../mappers/PatternsToString';
+import { MaxLengthUpperBound } from './MaxLengthFromMinLength';
 import { tokenizeString } from './TokenizeString';
 
 const dangerousStrings = [
@@ -77,7 +78,7 @@ const slicesPerArbitrary = new WeakMap<Arbitrary<string>, string[][]>();
 function createSlicesForStringNoConstraints(charArbitrary: Arbitrary<string>): string[][] {
   const slicesForString: string[][] = [];
   for (const dangerous of dangerousStrings) {
-    const candidate = tokenizeString(charArbitrary, dangerous);
+    const candidate = tokenizeString(charArbitrary, dangerous, 0, MaxLengthUpperBound);
     if (candidate !== undefined) {
       safePush(slicesForString, candidate);
     }

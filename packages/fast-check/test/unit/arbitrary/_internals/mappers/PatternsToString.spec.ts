@@ -14,13 +14,17 @@ describe('patternsToStringUnmapperFor', () => {
     ${['a']}                          | ${'aaa'}          | ${{}}                              | ${['a', 'a', 'a']}
     ${['a', 'b', 'c']}                | ${'abc'}          | ${{}}                              | ${['a', 'b', 'c']}
     ${['a', 'b', 'c', 'abc']}         | ${'abc'}          | ${{}}                              | ${['a', 'b', 'c'] /* starts by a: the shortest fit */}
+    ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 2, maxLength: 3 }}  | ${['ab', 'aaa'] /* starts by ab: the shortest fit */}
     ${['ab', 'aaa', 'aba', 'a']}      | ${'abaaa'}        | ${{ minLength: 3 }}                | ${['ab', 'a', 'a', 'a']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 1 }}                | ${['aaaaa']}
+    ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 4 }}                | ${['aaaaa']}
     ${['a', 'aaaaa']}                 | ${'aaaaa'}        | ${{ maxLength: 5 }}                | ${['a', 'a', 'a', 'a', 'a'] /* starts by a: the shortest fit */}
-    ${['a', 'ab']}                    | ${'aaaaaaaaaab'}  | ${{ minLength: 0, maxLength: 10 }} | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'ab']}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaa'}  | ${{ minLength: 0, maxLength: 10 }} | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa']}
     ${['a', 'aa']}                    | ${'aaaaaaaaaaa'}  | ${{ minLength: 0 }}                | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'] /* ignore maxGeneratedLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
-    ${['a', 'ab']}                    | ${'aaaaaaaaabab'} | ${{ minLength: 0, maxLength: 10 }} | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'ab', 'ab']}
+    ${['a', 'aa']}                    | ${'aaaaaaaaaaaa'} | ${{ minLength: 0, maxLength: 10 }} | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'aa', 'aa']}
     ${['a', 'aa']}                    | ${'aaaaaaaaaaaa'} | ${{ minLength: 0 }}                | ${['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'] /* ignore maxGeneratedLength = maxLengthFromMinLength(minLength) = 2*minLength + 10 */}
     ${MorseCode}                      | ${'...___...'}    | ${{}}                              | ${['.', '.', '.', '_', '_', '_', '.', '.', '.']}
+    ${MorseCode}                      | ${'...___...'}    | ${{ maxLength: 3 }}                | ${['..', '.__', '_...']}
     ${['\uD83D', '\uDC34', 'a', 'b']} | ${'a\u{1f434}b'}  | ${{}}                              | ${['a', '\uD83D', '\uDC34', 'b']}
   `(
     'should properly split $source into chunks ($constraints)',
@@ -40,16 +44,10 @@ describe('patternsToStringUnmapperFor', () => {
   );
 
   it.each`
-    sourceChunks                 | source            | constraints
-    ${['a', 'b', 'c']}           | ${'abcd'}         | ${{}}
-    ${['ab', 'aaa']}             | ${'abaaa'}        | ${{ minLength: 3 }}
-    ${['a']}                     | ${'aaaaa'}        | ${{ maxLength: 4 }}
-    ${['a', 'aa']}               | ${'aaaaaaaaaaa'}  | ${{ minLength: 0, maxLength: 10 /* Cannot reach ['a' x9, 'aa'] as the best match would be ['a' x11] so we discard the other */ }}
-    ${['a', 'aa']}               | ${'aaaaaaaaaaaa'} | ${{ minLength: 0, maxLength: 10 /* Cannot reach ['a' x8, 'aa' x2] as the best match would be ['a' x12] so we discard the other */ }}
-    ${MorseCode}                 | ${'...___...'}    | ${{ maxLength: 3 /* Cannot reach ['..', '.__', '_...'] as we have a better match (with shorter strings) discarding it */ }}
-    ${['ab', 'aaa', 'aba', 'a']} | ${'abaaa'}        | ${{ minLength: 2, maxLength: 3 /* Cannot reach ['ab', 'aaa'] as we have a better match (with shorter strings) discarding it */ }}
-    ${['a', 'aaaaa']}            | ${'aaaaa'}        | ${{ maxLength: 1 /* Cannot reach ['aaaaa'] as we have a better match (with shorter strings) discarding it */ }}
-    ${['a', 'aaaaa']}            | ${'aaaaa'}        | ${{ maxLength: 4 /* Cannot reach ['aaaaa'] as we have a better match (with shorter strings) discarding it */ }}
+    sourceChunks       | source     | constraints
+    ${['a', 'b', 'c']} | ${'abcd'}  | ${{}}
+    ${['ab', 'aaa']}   | ${'abaaa'} | ${{ minLength: 3 }}
+    ${['a']}           | ${'aaaaa'} | ${{ maxLength: 4 }}
   `('should throw when string cannot be split into chunks ($constraints)', ({ sourceChunks, source, constraints }) => {
     // Arrange
     const sourceChunksSet = new Set(sourceChunks);
@@ -76,7 +74,7 @@ describe('patternsToStringUnmapperFor', () => {
           const source = sourceMods.map((mod) => sourceChunks[mod % sourceChunks.length]).join('');
 
           // Act
-          const unmapper = patternsToStringUnmapperFor(instance, {}); // no constraints on the length, as such we can accept chunks overlapping them
+          const unmapper = patternsToStringUnmapperFor(instance, {});
           const chunks = unmapper(source);
 
           // Assert
@@ -93,10 +91,7 @@ describe('patternsToStringUnmapperFor', () => {
   it('should be able to split strings built out of chunks into chunks while respecting constraints in size', () =>
     fc.assert(
       fc.property(
-        fc.uniqueArray(fc.fullUnicodeString({ minLength: 1 }), {
-          minLength: 1,
-          comparator: (sa, sb) => sa.includes(sb) || sb.includes(sa), // chunks independent from each others to avoid being discarded because of better match
-        }),
+        fc.array(fc.fullUnicodeString({ minLength: 1 }), { minLength: 1 }),
         fc.array(fc.nat()),
         fc.nat(),
         fc.nat(),
