@@ -293,7 +293,7 @@ async function run() {
 
   // Create another branch and commit on it
   const branchName = `changelog-${Math.random().toString(16).substring(2)}`;
-  const commitName = `🔖 Update CHANGELOG.md for ${allBumps.map((b) => `${b.ident}@${b.newVersion}`).join(', ')}`;
+  const commitName = `🔖 Update CHANGELOG.md for ${allBumps.map((b) => `${b.name}@${b.newVersion}`).join(', ')}`;
   await execFile('git', ['checkout', '-b', branchName]);
   await execFile('git', ['commit', '-m', commitName]);
   await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
