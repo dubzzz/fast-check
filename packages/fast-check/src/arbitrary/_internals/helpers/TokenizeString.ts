@@ -5,11 +5,22 @@ import { safePop, safePush, safeSubstring } from '../../../utils/globals';
  * Split a string into valid tokens of patternsArb
  * @internal
  */
-export function tokenizeString(patternsArb: Arbitrary<string>, value: string): string[] | undefined {
+export function tokenizeString(
+  patternsArb: Arbitrary<string>,
+  value: string,
+  minLength: number,
+  maxLength: number,
+): string[] | undefined {
   // First match wins! Possibly not the best match.
   // Empty strings are not considered as valid chunks.
   if (value.length === 0) {
+    if (minLength > 0) {
+      return undefined;
+    }
     return [];
+  }
+  if (maxLength <= 0) {
+    return undefined;
   }
 
   // DFS analysis
@@ -29,6 +40,9 @@ export function tokenizeString(patternsArb: Arbitrary<string>, value: string): s
       if (patternsArb.canShrinkWithoutContext(chunk)) {
         const newChunks = [...last.chunks, chunk];
         if (index === value.length) {
+          if (newChunks.length < minLength) {
+            break; // =continue as we already reach the last index of the for-loop
+          }
           // TODO - Rely on dynamic programming tricks not to retry from already investigated indices
           return newChunks; // we found a full match
         }
@@ -38,7 +52,10 @@ export function tokenizeString(patternsArb: Arbitrary<string>, value: string): s
         // with this push.
         safePush(stack, { endIndexChunks: last.endIndexChunks, nextStartIndex: index + 1, chunks: last.chunks });
         // Pushed to go deeper in the tree
-        safePush(stack, { endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+        // If it's still acceptable in length
+        if (newChunks.length < maxLength) {
+          safePush(stack, { endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+        }
         break;
       }
     }

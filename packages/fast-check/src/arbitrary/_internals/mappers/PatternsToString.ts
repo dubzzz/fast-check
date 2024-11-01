@@ -10,10 +10,18 @@ export function patternsToStringMapper(tab: string[]): string {
 }
 
 /** @internal */
+function minLengthFrom(constraints: StringSharedConstraints): number {
+  return constraints.minLength !== undefined ? constraints.minLength : 0;
+}
+
+/** @internal */
+function maxLengthFrom(constraints: StringSharedConstraints): number {
+  return constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
+}
+
+/** @internal */
 export function patternsToStringUnmapperIsValidLength(tokens: string[], constraints: StringSharedConstraints): boolean {
-  const minLength = constraints.minLength !== undefined ? constraints.minLength : 0;
-  const maxLength = constraints.maxLength !== undefined ? constraints.maxLength : MaxLengthUpperBound;
-  return minLength <= tokens.length && tokens.length <= maxLength;
+  return minLengthFrom(constraints) <= tokens.length && tokens.length <= maxLengthFrom(constraints);
 }
 
 /** @internal */
@@ -26,10 +34,10 @@ export function patternsToStringUnmapperFor(
       throw new Error('Unsupported value');
     }
 
-    const tokens = tokenizeString(patternsArb, value);
-    if (tokens !== undefined && patternsToStringUnmapperIsValidLength(tokens, constraints)) {
-      return tokens;
+    const tokens = tokenizeString(patternsArb, value, minLengthFrom(constraints), maxLengthFrom(constraints));
+    if (tokens === undefined) {
+      throw new Error('Unable to unmap received string');
     }
-    throw new Error('Unable to unmap received string');
+    return tokens;
   };
 }
