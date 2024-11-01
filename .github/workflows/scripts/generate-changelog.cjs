@@ -197,6 +197,7 @@ async function run() {
 
   // Get packages to be bumped via changeset
   const temporaryChangelogFile = 'changelog.json';
+  await execFile('yarn', []);
   await execFile('yarn', ['changeset', 'status', `--output=${temporaryChangelogFile}`]);
   const temporaryChangelogFileContentBuffer = await readFile(temporaryChangelogFile);
   const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
