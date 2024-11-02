@@ -327,6 +327,37 @@ export function safeGet<T extends object, U>(instance: WeakMap<T, U>, key: T): U
   return safeApply(untouchedGet, instance, [key]);
 }
 
+// Map
+
+const untouchedMapSet = Map.prototype.set;
+const untouchedMapGet = Map.prototype.get;
+function extractMapSet(instance: Map<unknown, unknown>) {
+  try {
+    return instance.set;
+  } catch (err) {
+    return undefined;
+  }
+}
+function extractMapGet(instance: Map<unknown, unknown>) {
+  try {
+    return instance.get;
+  } catch (err) {
+    return undefined;
+  }
+}
+export function safeMapSet<T, U>(instance: Map<T, U>, key: T, value: U): Map<T, U> {
+  if (extractMapSet(instance) === untouchedMapSet) {
+    return instance.set(key, value);
+  }
+  return safeApply(untouchedMapSet, instance, [key, value]);
+}
+export function safeMapGet<T, U>(instance: Map<T, U>, key: T): U | undefined {
+  if (extractMapGet(instance) === untouchedMapGet) {
+    return instance.get(key);
+  }
+  return safeApply(untouchedMapGet, instance, [key]);
+}
+
 // String
 
 const untouchedSplit: (separator: string | RegExp, limit?: number) => string[] = String.prototype.split;
