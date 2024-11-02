@@ -37,7 +37,7 @@ const newLineChars = [...'\r\n'];
 const terminatorChars = [...'\x1E\x15'];
 const newLineAndTerminatorChars = [...newLineChars, ...terminatorChars];
 
-const defaultChar = char();
+const defaultChar = char;
 
 function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
@@ -65,20 +65,20 @@ function toMatchingArbitrary(
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar.filter((c) => safeIndexOf(wordChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(wordChars, c) === -1);
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar.filter((c) => safeIndexOf(digitChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(digitChars, c) === -1);
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar.filter((c) => safeIndexOf(spaceChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(spaceChars, c) === -1);
           }
           case '\\b':
           case '\\B': {
@@ -86,7 +86,7 @@ function toMatchingArbitrary(
           }
           case '.': {
             const forbiddenChars = flags.dotAll ? terminatorChars : newLineAndTerminatorChars;
-            return defaultChar.filter((c) => safeIndexOf(forbiddenChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(forbiddenChars, c) === -1);
           }
         }
       }
@@ -131,7 +131,7 @@ function toMatchingArbitrary(
     case 'CharacterClass':
       if (astNode.negative) {
         const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
-        return defaultChar.filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
+        return defaultChar().filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
       }
       return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags)));
     case 'ClassRange': {
@@ -161,7 +161,7 @@ function toMatchingArbitrary(
           if (astNode.kind === '^') {
             return oneof(
               constant(''),
-              tuple(stringOf(defaultChar), constantFrom(...newLineChars)).map(
+              tuple(stringOf(defaultChar()), constantFrom(...newLineChars)).map(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
@@ -172,7 +172,7 @@ function toMatchingArbitrary(
           } else {
             return oneof(
               constant(''),
-              tuple(constantFrom(...newLineChars), stringOf(defaultChar)).map(
+              tuple(constantFrom(...newLineChars), stringOf(defaultChar())).map(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
