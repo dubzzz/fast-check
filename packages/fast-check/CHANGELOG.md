@@ -1,11 +1,7 @@
 # 3.23.1
 
-_TODO Description_
+_Faster instantiation of internet-related arbitraries_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.23.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.0...v3.23.1)]
-
-## Features
-
-
 
 ## Fixes
 
