@@ -1,3 +1,12 @@
+# 3.23.1
+
+_Faster instantiation of internet-related arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.23.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.0...v3.23.1)]
+
+## Fixes
+
+- ([PR#5402](https://github.com/dubzzz/fast-check/pull/5402)) Performance: Faster instantiation of internet-related arbitraries
+
 # 3.23.0
 
 _Extend usages of string-units and increased performance_
