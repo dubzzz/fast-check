@@ -86,7 +86,7 @@ We have also started deprecating a few variations around `BigInt`. We believe th
 
 Please note that these arbitraries will remain available in all versions 3.x of fast-check, although they will likely be removed in version 4.x.
 
-## Changelog since 3.22.0
+## Changelog since 3.21.0
 
 The version 3.22.0 is based on version 3.21.0.
 
