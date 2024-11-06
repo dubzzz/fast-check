@@ -6,7 +6,7 @@ function sanitizeStack(initialMessage: string) {
     .replace(/at [^(]*fast-check\/(packages|node_modules)(.*):\d+:\d+/g, 'at $1$2:?:?') // line for the spec file itself
     .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*):\d+:\d+\)/g, 'at $1 ($2$3:?:?)') // any import linked to internals of fast-check
     .replace(/at (.*) \(.*\/(\.yarn|Yarn)\/.*\/(node_modules\/.*):\d+:\d+\)/g, 'at $1 ($3:?:?)') // reducing risks of changes on bumps: .yarn (Linux and Mac), Yarn (Windows)
-    .replace(/at file:\/\/\/.*\/\.yarn\/.*\/(node_modules\/.*):\d+:\d+/g, 'at $1:?:?') // reducing risks of changes on bumps: .yarn (Linux and Mac), Yarn (Windows)
+    .replace(/at file:\/\/\/.*\/(\.yarn|Yarn)\/.*\/(node_modules\/.*):\d+:\d+/g, 'at $2:?:?') // reducing risks of changes on bumps: .yarn (Linux and Mac), Yarn (Windows)
     .split('\n');
   // Drop internals of Vitest from the stack: internals of vitest, subject to regular changes and OS dependent
   const firstLineWithVitest = lines.findIndex((line) => line.includes('node_modules/vitest'));
