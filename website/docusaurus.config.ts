@@ -94,9 +94,7 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            { label: 'Bluesky', href: 'https://bsky.app/profile/ndubien.bsky.social' },
-            { label: 'Mastodon', href: 'https://fosstodon.org/@ndubien' },
-            { label: 'X (Twitter)', href: 'https://twitter.com/ndubien' },
+            { label: 'Bluesky 🦋', href: 'https://bsky.app/profile/fast-check.dev' },
             { label: 'Become a contributor', href: 'https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md' },
             { label: 'Sponsor us', href: 'https://github.com/sponsors/dubzzz' },
           ],
