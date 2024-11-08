@@ -1,4 +1,4 @@
-import jimp from 'jimp';
+import { Jimp } from 'jimp';
 import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { join } from 'path';
@@ -7,7 +7,7 @@ import allContributors from '../src/components/HomepageContributors/all-contribu
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 async function collectImage(imageUrl, imageFinalPath, squaredSize) {
-  const image = await jimp.read(imageUrl);
+  const image = await Jimp.read(imageUrl);
   await image.resize(squaredSize, squaredSize).quality(80).writeAsync(imageFinalPath);
 }
 
