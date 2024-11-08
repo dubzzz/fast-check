@@ -2322,7 +2322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-content-docs@npm:3.6.0":
+"@docusaurus/plugin-content-docs@npm:*, @docusaurus/plugin-content-docs@npm:3.6.0":
   version: 3.6.0
   resolution: "@docusaurus/plugin-content-docs@npm:3.6.0"
   dependencies:
