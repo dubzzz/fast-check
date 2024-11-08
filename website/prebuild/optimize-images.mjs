@@ -8,7 +8,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 async function collectImage(imageUrl, imageFinalPath, squaredSize) {
   const image = await Jimp.read(imageUrl);
-  await image.resize(squaredSize, squaredSize).quality(80).writeAsync(imageFinalPath);
+  await image.resize({ h: squaredSize, h: squaredSize }).write(imageFinalPath, { quality: 80 });
 }
 
 const quotes = [
