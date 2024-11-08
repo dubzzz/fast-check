@@ -68,6 +68,12 @@ const config: Config = {
         { to: '/blog', label: 'Blog', position: 'right' },
         { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
         {
+          href: 'https://bsky.app/profile/fast-check.dev',
+          'aria-label': 'Bluesky account',
+          position: 'right',
+          className: 'header-bluesky-link',
+        },
+        {
           href: 'https://github.com/dubzzz/fast-check',
           'aria-label': 'GitHub repository',
           position: 'right',
