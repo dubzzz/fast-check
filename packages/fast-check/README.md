@@ -11,6 +11,7 @@ Property based testing framework for JavaScript/TypeScript
   <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
   <a href="https://fast-check.dev/"><img src="https://img.shields.io/badge/-Documentation-%23282ea9.svg" title="Documentation" /></a>
+  <a href="https://gurubase.io/g/fast-check/"><img src="https://img.shields.io/badge/Gurubase-Ask%20fast--check%20Guru-brightgreen" title="fast-check guru on Gurubase.io" /></a>
 </p>
 <p align="center">
   <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/main"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/main/graph/badge.svg" alt="Coverage Status (unit tests)" /></a>
