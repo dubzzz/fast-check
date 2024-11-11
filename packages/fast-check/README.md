@@ -83,6 +83,7 @@ Useful documentations:
 - [💥 Tips](https://fast-check.dev/docs/configuration/)
 - [🔌 API Reference](https://fast-check.dev/api-reference/index.html)
 - [⭐ Awesome fast-check](https://fast-check.dev/docs/ecosystem/)
+- [🤖 Ask fast-check Guru](https://gurubase.io/g/fast-check)
 
 ## Why should I migrate to fast-check?
 
