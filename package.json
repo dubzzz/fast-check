@@ -29,7 +29,7 @@
     "@changesets/cli": "^2.27.9",
     "@eslint/js": "^9.14.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.14.0",
+    "@typescript-eslint/utils": "^8.15.0",
     "all-contributors-cli": "^6.26.1",
     "eslint": "^9.14.0",
     "eslint-config-prettier": "^9.1.0",
@@ -38,6 +38,6 @@
     "prettier": "3.3.3",
     "publint": "^0.2.12",
     "typescript": "~5.6.3",
-    "typescript-eslint": "^8.14.0"
+    "typescript-eslint": "^8.15.0"
   }
 }
