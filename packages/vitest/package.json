@@ -52,7 +52,7 @@
   "devDependencies": {
     "@types/node": "^20.14.15",
     "fast-check": "workspace:*",
-    "typescript": "~5.6.3",
+    "typescript": "~5.7.2",
     "vite": "^5.4.11",
     "vitest": "^2.1.3"
   },

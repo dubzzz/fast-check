@@ -3435,7 +3435,7 @@ __metadata:
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
     rxjs: "npm:^7.8.1"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
   peerDependencies:
     ava: ^4 || ^5 || ^6
   languageName: unknown
@@ -3460,7 +3460,7 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     supertest: "npm:^7.0.0"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.3"
   languageName: unknown
   linkType: soft
@@ -3469,7 +3469,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/expect-type@workspace:packages/expect-type"
   dependencies:
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
   languageName: unknown
   linkType: soft
 
@@ -3485,7 +3485,7 @@ __metadata:
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-jasmine2: "npm:^29.7.0"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.3"
   peerDependencies:
     "@fast-check/worker": ">=0.0.7 <0.5.0"
@@ -3514,7 +3514,7 @@ __metadata:
     pkg-pr-new: "npm:^0.0.30"
     prettier: "npm:3.3.3"
     publint: "npm:^0.2.12"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     typescript-eslint: "npm:^8.15.0"
   languageName: unknown
   linkType: soft
@@ -3527,7 +3527,7 @@ __metadata:
     "@types/npm-packlist": "npm:^7.0.3"
     "@types/npmcli__arborist": "npm:^5.6.11"
     npm-packlist: "npm:^9.0.0"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.3"
   bin:
     packaged: ./bin/packaged.js
@@ -3539,7 +3539,7 @@ __metadata:
   resolution: "@fast-check/poisoning@workspace:packages/poisoning"
   dependencies:
     "@types/node": "npm:^20.14.15"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.3"
   languageName: unknown
   linkType: soft
@@ -3550,7 +3550,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:^20.14.15"
     fast-check: "workspace:*"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     vite: "npm:^5.4.11"
     vitest: "npm:^2.1.3"
   peerDependencies:
@@ -3565,7 +3565,7 @@ __metadata:
     "@types/node": "npm:^20.14.15"
     fast-check: "npm:^3.4.0"
     pure-rand: "npm:^6.1.0"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.3"
   languageName: unknown
   linkType: soft
@@ -10500,7 +10500,7 @@ __metadata:
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^8.2.0"
     typedoc: "npm:^0.26.11"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.3"
   languageName: unknown
   linkType: soft
@@ -20099,13 +20099,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.6.3":
-  version: 5.6.3
-  resolution: "typescript@npm:5.6.3"
+"typescript@npm:~5.7.2":
+  version: 5.7.2
+  resolution: "typescript@npm:5.7.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/44f61d3fb15c35359bc60399cb8127c30bae554cd555b8e2b46d68fa79d680354b83320ad419ff1b81a0bdf324197b29affe6cc28988cd6a74d4ac60c94f9799
+  checksum: 10c0/a873118b5201b2ef332127ef5c63fb9d9c155e6fdbe211cbd9d8e65877283797cca76546bad742eea36ed7efbe3424a30376818f79c7318512064e8625d61622
   languageName: node
   linkType: hard
 
@@ -20119,13 +20119,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.6.3#optional!builtin<compat/typescript>":
-  version: 5.6.3
-  resolution: "typescript@patch:typescript@npm%3A5.6.3#optional!builtin<compat/typescript>::version=5.6.3&hash=8c6c40"
+"typescript@patch:typescript@npm%3A~5.7.2#optional!builtin<compat/typescript>":
+  version: 5.7.2
+  resolution: "typescript@patch:typescript@npm%3A5.7.2#optional!builtin<compat/typescript>::version=5.7.2&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/7c9d2e07c81226d60435939618c91ec2ff0b75fbfa106eec3430f0fcf93a584bc6c73176676f532d78c3594fe28a54b36eb40b3d75593071a7ec91301533ace7
+  checksum: 10c0/f3b8082c9d1d1629a215245c9087df56cb784f9fb6f27b5d55577a20e68afe2a889c040aacff6d27e35be165ecf9dca66e694c42eb9a50b3b2c451b36b5675cb
   languageName: node
   linkType: hard
 
@@ -20961,7 +20961,7 @@ __metadata:
     prism-react-renderer: "npm:^2.4.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
-    typescript: "npm:~5.6.3"
+    typescript: "npm:~5.7.2"
   languageName: unknown
   linkType: soft
 
