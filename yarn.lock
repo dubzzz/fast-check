@@ -3511,7 +3511,7 @@ __metadata:
     eslint: "npm:^9.15.0"
     eslint-config-prettier: "npm:^9.1.0"
     globals: "npm:^15.12.0"
-    pkg-pr-new: "npm:^0.0.30"
+    pkg-pr-new: "npm:^0.0.32"
     prettier: "npm:3.3.3"
     publint: "npm:^0.2.12"
     typescript: "npm:~5.7.2"
@@ -15907,13 +15907,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"package-manager-detector@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "package-manager-detector@npm:0.1.2"
-  checksum: 10c0/13ea222561fc045a9d06cde7dcbe2403b6b4e7c0f11814f01b0f4f4da12a54edfb406aed7996323d9c60e5a76e25f0363d981e298807efb167758f5dc086ed79
-  languageName: node
-  linkType: hard
-
 "package-manager-detector@npm:^0.2.0":
   version: 0.2.0
   resolution: "package-manager-detector@npm:0.2.0"
@@ -16321,21 +16314,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pkg-pr-new@npm:^0.0.30":
-  version: 0.0.30
-  resolution: "pkg-pr-new@npm:0.0.30"
+"pkg-pr-new@npm:^0.0.32":
+  version: 0.0.32
+  resolution: "pkg-pr-new@npm:0.0.32"
   dependencies:
     "@jsdevtools/ez-spawn": "npm:^3.0.4"
     "@octokit/action": "npm:^6.1.0"
     ignore: "npm:^5.3.1"
     isbinaryfile: "npm:^5.0.2"
-    package-manager-detector: "npm:^0.1.2"
     pkg-types: "npm:^1.1.1"
     query-registry: "npm:^3.0.1"
     tinyglobby: "npm:^0.2.9"
   bin:
     pkg-pr-new: bin/cli.js
-  checksum: 10c0/754cde6d51bcf50d8359e93cc7e45924578d19d86dd439ff438a874a22a9a1765034bfe225324a5a96b5f45dc32c0e4f73d6c7e2241b7a809f4b9a074829c8de
+  checksum: 10c0/f1c05263b15d992d50a606d8f3b39507f112c2c8bbd8ffcb18d754940d44b10352d7bf346fe042828f3198bc5abf2b1b1d019ac03799b31824acbbab54eb20e7
   languageName: node
   linkType: hard
 
