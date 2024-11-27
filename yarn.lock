@@ -3511,7 +3511,7 @@ __metadata:
     eslint: "npm:^9.15.0"
     eslint-config-prettier: "npm:^9.1.0"
     globals: "npm:^15.12.0"
-    pkg-pr-new: "npm:^0.0.32"
+    pkg-pr-new: "npm:^0.0.35"
     prettier: "npm:3.3.3"
     publint: "npm:^0.2.12"
     typescript: "npm:~5.7.2"
@@ -16314,9 +16314,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pkg-pr-new@npm:^0.0.32":
-  version: 0.0.32
-  resolution: "pkg-pr-new@npm:0.0.32"
+"pkg-pr-new@npm:^0.0.35":
+  version: 0.0.35
+  resolution: "pkg-pr-new@npm:0.0.35"
   dependencies:
     "@jsdevtools/ez-spawn": "npm:^3.0.4"
     "@octokit/action": "npm:^6.1.0"
@@ -16327,7 +16327,7 @@ __metadata:
     tinyglobby: "npm:^0.2.9"
   bin:
     pkg-pr-new: bin/cli.js
-  checksum: 10c0/f1c05263b15d992d50a606d8f3b39507f112c2c8bbd8ffcb18d754940d44b10352d7bf346fe042828f3198bc5abf2b1b1d019ac03799b31824acbbab54eb20e7
+  checksum: 10c0/23abb53dc2a41fa8a05d03811a3be5e6f8be70021edf28ffee44ca16ca652eafd12c450207f6193bf481793bc0bc2b17cdae1741aca59ddc67bf3941e77a9b8c
   languageName: node
   linkType: hard
 
