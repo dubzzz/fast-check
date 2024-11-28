@@ -3694,7 +3694,7 @@ __metadata:
     "@npmcli/arborist": "npm:^8.0.0"
     "@types/npm-packlist": "npm:^7.0.3"
     "@types/npmcli__arborist": "npm:^5.6.11"
-    npm-packlist: "npm:^9.0.0"
+    npm-packlist: "npm:^10.0.0"
     typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.3"
   bin:
@@ -15722,6 +15722,15 @@ __metadata:
     semver: "npm:^7.3.5"
     validate-npm-package-name: "npm:^6.0.0"
   checksum: 10c0/a2e4e60b16b52715786ba854ef93c4f489b4379c54aa9179b6dac3f4e44fb6fad0a1d937e25cf04b3496bd61b90fc356b44ecd02ce98a6fe0f348e1563b7b00c
+  languageName: node
+  linkType: hard
+
+"npm-packlist@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "npm-packlist@npm:10.0.0"
+  dependencies:
+    ignore-walk: "npm:^7.0.0"
+  checksum: 10c0/be8cb82c4f9b6fdfba2e3379c538949d3ea7aeb303436db013aaccd8ad1ff49d9f894d7fa4684f9d3016b7944dcc3f0bfc8c3d10c535fa7cd29314a8aad4b80f
   languageName: node
   linkType: hard
 
