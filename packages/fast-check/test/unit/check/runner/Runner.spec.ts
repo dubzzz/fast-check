@@ -569,7 +569,7 @@ describe('Runner', () => {
       expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`Got error in failingProperty`);
     });
     describe('Impact of VerbosityLevel in case of failure', () => {
-      const baseErrorMessage = '';
+      const baseErrorMessage = 'Property failed';
       const p: IRawProperty<[number]> = {
         isAsync: () => false,
         generate: () => {
