@@ -1,6 +1,4 @@
 {
   "extends": "../../tsconfig.common.json",
-  "compilerOptions": {
-    "isolatedDeclarations": false
-  }
+  "compilerOptions": {}
 }
