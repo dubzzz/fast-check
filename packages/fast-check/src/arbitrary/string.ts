@@ -68,7 +68,7 @@ function extractUnitArbitrary(constraints: Pick<StringConstraints, 'unit'>): Arb
 export function string(constraints: StringConstraints = {}): Arbitrary<string> {
   const charArbitrary = extractUnitArbitrary(constraints);
   const unmapper = patternsToStringUnmapperFor(charArbitrary, constraints);
-  const experimentalCustomSlices = createSlicesForString(charArbitrary, unmapper);
+  const experimentalCustomSlices = createSlicesForString(charArbitrary, constraints);
   // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
   const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {
     experimentalCustomSlices,

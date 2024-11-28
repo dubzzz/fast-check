@@ -68,6 +68,12 @@ const config: Config = {
         { to: '/blog', label: 'Blog', position: 'right' },
         { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
         {
+          href: 'https://bsky.app/profile/fast-check.dev',
+          'aria-label': 'Bluesky account',
+          position: 'right',
+          className: 'header-bluesky-link',
+        },
+        {
           href: 'https://github.com/dubzzz/fast-check',
           'aria-label': 'GitHub repository',
           position: 'right',
@@ -94,9 +100,7 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            { label: 'Bluesky', href: 'https://bsky.app/profile/ndubien.bsky.social' },
-            { label: 'Mastodon', href: 'https://fosstodon.org/@ndubien' },
-            { label: 'X (Twitter)', href: 'https://twitter.com/ndubien' },
+            { label: 'Bluesky 🦋', href: 'https://bsky.app/profile/fast-check.dev' },
             { label: 'Become a contributor', href: 'https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md' },
             { label: 'Sponsor us', href: 'https://github.com/sponsors/dubzzz' },
           ],

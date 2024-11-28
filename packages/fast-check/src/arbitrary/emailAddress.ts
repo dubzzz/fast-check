@@ -1,7 +1,7 @@
 import { array } from './array';
-import { buildLowerAlphaNumericArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
+import { getOrCreateLowerAlphaNumericArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
 import { domain } from './domain';
-import { stringOf } from './stringOf';
+import { string } from './string';
 import { tuple } from './tuple';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
@@ -71,15 +71,15 @@ export interface EmailAddressConstraints {
  * @public
  */
 export function emailAddress(constraints: EmailAddressConstraints = {}): Arbitrary<string> {
-  const others = ['!', '#', '$', '%', '&', "'", '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~'];
-  const atextArb = buildLowerAlphaNumericArbitrary(others);
+  const atextArb = getOrCreateLowerAlphaNumericArbitrary("!#$%&'*+-/=?^_`{|}~");
   const localPartArb = adapter(
     // Maximal length for the output of dotMapper is 64,
     // In other words:
     // - `stringOf(atextArb, ...)` cannot produce values having more than 64 characters
     // - `array(...)` cannot produce more than 32 values
     array(
-      stringOf(atextArb, {
+      string({
+        unit: atextArb,
         minLength: 1,
         maxLength: 64,
         size: constraints.size,

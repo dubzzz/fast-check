@@ -1,3 +1,48 @@
+# 3.23.1
+
+_Faster instantiation of internet-related arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.23.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.0...v3.23.1)]
+
+## Fixes
+
+- ([PR#5402](https://github.com/dubzzz/fast-check/pull/5402)) Performance: Faster instantiation of internet-related arbitraries
+
+# 3.23.0
+
+_Extend usages of string-units and increased performance_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.23.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.22.0...v3.23.0)]
+
+## Features
+
+- ([PR#5366](https://github.com/dubzzz/fast-check/pull/5366)) Add support for string-`unit` on `object`/`anything` arbitrary
+- ([PR#5367](https://github.com/dubzzz/fast-check/pull/5367)) Add support for string-`unit` on `json` arbitrary
+- ([PR#5390](https://github.com/dubzzz/fast-check/pull/5390)) Add back strong unmapping capabilities to `string`
+
+## Fixes
+
+- ([PR#5327](https://github.com/dubzzz/fast-check/pull/5327)) Bug: Resist even more to external poisoning for `string`
+- ([PR#5368](https://github.com/dubzzz/fast-check/pull/5368)) Bug: Better support for poisoning on `stringMatching`
+- ([PR#5344](https://github.com/dubzzz/fast-check/pull/5344)) CI: Adapt some tests for Node v23
+- ([PR#5346](https://github.com/dubzzz/fast-check/pull/5346)) CI: Drop usages of `it.concurrent` due to Node 23 failing
+- ([PR#5363](https://github.com/dubzzz/fast-check/pull/5363)) CI: Move to Vitest for `examples/`
+- ([PR#5391](https://github.com/dubzzz/fast-check/pull/5391)) CI: Preview builds using `pkg.pr.new`
+- ([PR#5392](https://github.com/dubzzz/fast-check/pull/5392)) CI: Connect custom templates to `pkg.pr.new` previews
+- ([PR#5394](https://github.com/dubzzz/fast-check/pull/5394)) CI: Install dependencies before building changesets
+- ([PR#5396](https://github.com/dubzzz/fast-check/pull/5396)) CI: Proper commit name on changelogs
+- ([PR#5393](https://github.com/dubzzz/fast-check/pull/5393)) Clean: Drop unused `examples/jest.setup.js`
+- ([PR#5249](https://github.com/dubzzz/fast-check/pull/5249)) Doc: Release note for fast-check 3.22.0
+- ([PR#5369](https://github.com/dubzzz/fast-check/pull/5369)) Doc: Typo fix in model-based-testing.md
+- ([PR#5370](https://github.com/dubzzz/fast-check/pull/5370)) Doc: Add new contributor jamesbvaughan
+- ([PR#5383](https://github.com/dubzzz/fast-check/pull/5383)) Doc: Properly indent code snippets for the documentation
+- ([PR#5372](https://github.com/dubzzz/fast-check/pull/5372)) Performance: Faster `canShrinkWithoutContext` for constants
+- ([PR#5386](https://github.com/dubzzz/fast-check/pull/5386)) Performance: Faster generate process for `mapToConstant`
+- ([PR#5387](https://github.com/dubzzz/fast-check/pull/5387)) Performance: Faster tokenizer of strings
+- ([PR#5388](https://github.com/dubzzz/fast-check/pull/5388)) Performance: Faster initialization of `string` with faster slices
+- ([PR#5389](https://github.com/dubzzz/fast-check/pull/5389)) Performance: Faster initialization of `string` with pre-cached slices
+- ([PR#5371](https://github.com/dubzzz/fast-check/pull/5371)) Test: Add extra set of tests for `constant*`
+
+---
+
 # 3.22.0
 
 _Graphemes support on `fc.string`_

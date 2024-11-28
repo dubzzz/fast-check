@@ -1,3 +1,13 @@
+# 0.4.1
+
+_Rework our testing stack_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.0...worker%2Fv0.4.1)]
+
+## Fixes
+
+- ([PR#5347](https://github.com/dubzzz/fast-check/pull/5347)) CI: Move to Vitest
+- ([PR#5351](https://github.com/dubzzz/fast-check/pull/5351)) CI: Drop unneeded devDependencies
+
 # 0.4.0
 
 _Respawn only on crash not on failure and support pre_

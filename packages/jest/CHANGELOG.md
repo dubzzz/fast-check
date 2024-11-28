@@ -1,3 +1,14 @@
+# 2.0.3
+
+_Rework our testing stack_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.0.3)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.0.2...jest%2Fv2.0.3)]
+
+## Fixes
+
+- ([PR#5364](https://github.com/dubzzz/fast-check/pull/5364)) CI: Move to Vitest
+- ([PR#5375](https://github.com/dubzzz/fast-check/pull/5375)) Test: Better scoping of tests execution
+- ([PR#5378](https://github.com/dubzzz/fast-check/pull/5378)) Test: Make tests run concurrently
+
 # 2.0.2
 
 _Export missing types_

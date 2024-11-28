@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/worker",
   "description": "Provide built-ins to run predicates directly within dedicated workers",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "main": "lib/main.js",
   "exports": {
@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.15",
-    "typescript": "~5.6.3",
+    "typescript": "~5.7.2",
     "vitest": "^2.1.3"
   },
   "keywords": [

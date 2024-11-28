@@ -4,7 +4,7 @@ import { array } from './array';
 import { unicode } from './unicode';
 import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
-import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
+import { createSlicesForStringLegacy } from './_internals/helpers/SlicesForStringBuilder';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
 
 const safeObjectAssign = Object.assign;
@@ -20,7 +20,7 @@ const safeObjectAssign = Object.assign;
  */
 export function unicodeString(constraints: StringSharedConstraints = {}): Arbitrary<string> {
   const charArbitrary = unicode();
-  const experimentalCustomSlices = createSlicesForString(charArbitrary, codePointsToStringUnmapper);
+  const experimentalCustomSlices = createSlicesForStringLegacy(charArbitrary, codePointsToStringUnmapper);
   // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
   const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {
     experimentalCustomSlices,

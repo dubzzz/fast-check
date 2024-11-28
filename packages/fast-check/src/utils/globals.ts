@@ -296,6 +296,68 @@ export function safeHas<T>(instance: Set<T>, value: T): boolean {
   return safeApply(untouchedHas, instance, [value]);
 }
 
+// WeakMap
+
+const untouchedSet = WeakMap.prototype.set;
+const untouchedGet = WeakMap.prototype.get;
+function extractSet(instance: WeakMap<object, unknown>) {
+  try {
+    return instance.set;
+  } catch (err) {
+    return undefined;
+  }
+}
+function extractGet(instance: WeakMap<object, unknown>) {
+  try {
+    return instance.get;
+  } catch (err) {
+    return undefined;
+  }
+}
+export function safeSet<T extends object, U>(instance: WeakMap<T, U>, key: T, value: U): WeakMap<T, U> {
+  if (extractSet(instance) === untouchedSet) {
+    return instance.set(key, value);
+  }
+  return safeApply(untouchedSet, instance, [key, value]);
+}
+export function safeGet<T extends object, U>(instance: WeakMap<T, U>, key: T): U | undefined {
+  if (extractGet(instance) === untouchedGet) {
+    return instance.get(key);
+  }
+  return safeApply(untouchedGet, instance, [key]);
+}
+
+// Map
+
+const untouchedMapSet = Map.prototype.set;
+const untouchedMapGet = Map.prototype.get;
+function extractMapSet(instance: Map<unknown, unknown>) {
+  try {
+    return instance.set;
+  } catch (err) {
+    return undefined;
+  }
+}
+function extractMapGet(instance: Map<unknown, unknown>) {
+  try {
+    return instance.get;
+  } catch (err) {
+    return undefined;
+  }
+}
+export function safeMapSet<T, U>(instance: Map<T, U>, key: T, value: U): Map<T, U> {
+  if (extractMapSet(instance) === untouchedMapSet) {
+    return instance.set(key, value);
+  }
+  return safeApply(untouchedMapSet, instance, [key, value]);
+}
+export function safeMapGet<T, U>(instance: Map<T, U>, key: T): U | undefined {
+  if (extractMapGet(instance) === untouchedMapGet) {
+    return instance.get(key);
+  }
+  return safeApply(untouchedMapGet, instance, [key]);
+}
+
 // String
 
 const untouchedSplit: (separator: string | RegExp, limit?: number) => string[] = String.prototype.split;

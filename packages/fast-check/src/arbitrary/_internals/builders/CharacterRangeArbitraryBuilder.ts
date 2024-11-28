@@ -2,8 +2,9 @@ import { fullUnicode } from '../../fullUnicode';
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
-import { safeCharCodeAt, safeNumberToString, encodeURIComponent } from '../../../utils/globals';
+import { safeCharCodeAt, safeNumberToString, encodeURIComponent, safeMapGet, safeMapSet } from '../../../utils/globals';
 
+const SMap = Map;
 const safeStringFromCharCode = String.fromCharCode;
 
 /** @internal */
@@ -32,18 +33,56 @@ function percentCharArbUnmapper(value: unknown): string {
 /** @internal */
 const percentCharArb = fullUnicode().map(percentCharArbMapper, percentCharArbUnmapper);
 
-/** @internal */
-export const buildLowerAlphaArbitrary = (others: string[]): Arbitrary<string> =>
-  mapToConstant(lowerCaseMapper, { num: others.length, build: (v) => others[v] });
+let lowerAlphaArbitrary: Arbitrary<string> | undefined = undefined;
 
 /** @internal */
-export const buildLowerAlphaNumericArbitrary = (others: string[]): Arbitrary<string> =>
-  mapToConstant(lowerCaseMapper, numericMapper, { num: others.length, build: (v) => others[v] });
+export function getOrCreateLowerAlphaArbitrary(): Arbitrary<string> {
+  if (lowerAlphaArbitrary === undefined) {
+    lowerAlphaArbitrary = mapToConstant(lowerCaseMapper);
+  }
+  return lowerAlphaArbitrary;
+}
+
+let lowerAlphaNumericArbitraries: Map<string, Arbitrary<string>> | undefined = undefined;
 
 /** @internal */
-export const buildAlphaNumericArbitrary = (others: string[]): Arbitrary<string> =>
-  mapToConstant(lowerCaseMapper, upperCaseMapper, numericMapper, { num: others.length, build: (v) => others[v] });
+export function getOrCreateLowerAlphaNumericArbitrary(others: string): Arbitrary<string> {
+  if (lowerAlphaNumericArbitraries === undefined) {
+    lowerAlphaNumericArbitraries = new SMap();
+  }
+  let match = safeMapGet(lowerAlphaNumericArbitraries, others);
+  if (match === undefined) {
+    match = mapToConstant(lowerCaseMapper, numericMapper, {
+      num: others.length,
+      build: (v) => others[v],
+    });
+    safeMapSet(lowerAlphaNumericArbitraries, others, match);
+  }
+  return match;
+}
 
 /** @internal */
-export const buildAlphaNumericPercentArbitrary = (others: string[]): Arbitrary<string> =>
-  oneof({ weight: 10, arbitrary: buildAlphaNumericArbitrary(others) }, { weight: 1, arbitrary: percentCharArb });
+function buildAlphaNumericArbitrary(others: string): Arbitrary<string> {
+  return mapToConstant(lowerCaseMapper, upperCaseMapper, numericMapper, {
+    num: others.length,
+    build: (v) => others[v],
+  });
+}
+
+let alphaNumericPercentArbitraries: Map<string, Arbitrary<string>> | undefined = undefined;
+
+/** @internal */
+export function getOrCreateAlphaNumericPercentArbitrary(others: string): Arbitrary<string> {
+  if (alphaNumericPercentArbitraries === undefined) {
+    alphaNumericPercentArbitraries = new SMap();
+  }
+  let match = safeMapGet(alphaNumericPercentArbitraries, others);
+  if (match === undefined) {
+    match = oneof(
+      { weight: 10, arbitrary: buildAlphaNumericArbitrary(others) },
+      { weight: 1, arbitrary: percentCharArb },
+    );
+    safeMapSet(alphaNumericPercentArbitraries, others, match);
+  }
+  return match;
+}

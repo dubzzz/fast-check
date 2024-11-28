@@ -1,5 +1,9 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { safePush } from '../../../utils/globals';
+import { safeGet, safePush, safeSet } from '../../../utils/globals';
+import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
+import { patternsToStringUnmapperIsValidLength } from '../mappers/PatternsToString';
+import { MaxLengthUpperBound } from './MaxLengthFromMinLength';
+import { tokenizeString } from './TokenizeString';
 
 const dangerousStrings = [
   // Default attributes on raw Object (from ({}).*)
@@ -30,7 +34,7 @@ const dangerousStrings = [
 ];
 
 /** @internal */
-function computeCandidateString(
+function computeCandidateStringLegacy(
   dangerous: string,
   charArbitrary: Arbitrary<string>,
   stringSplitter: (value: string) => string[],
@@ -53,16 +57,50 @@ function computeCandidateString(
 }
 
 /** @internal */
-export function createSlicesForString(
+export function createSlicesForStringLegacy(
   charArbitrary: Arbitrary<string>,
   stringSplitter: (value: string) => string[],
 ): string[][] {
   const slicesForString: string[][] = [];
   for (const dangerous of dangerousStrings) {
-    const candidate = computeCandidateString(dangerous, charArbitrary, stringSplitter);
+    const candidate = computeCandidateStringLegacy(dangerous, charArbitrary, stringSplitter);
     if (candidate !== undefined) {
       safePush(slicesForString, candidate);
     }
   }
   return slicesForString;
+}
+
+/** @internal */
+const slicesPerArbitrary = new WeakMap<Arbitrary<string>, string[][]>();
+
+/** @internal */
+function createSlicesForStringNoConstraints(charArbitrary: Arbitrary<string>): string[][] {
+  const slicesForString: string[][] = [];
+  for (const dangerous of dangerousStrings) {
+    const candidate = tokenizeString(charArbitrary, dangerous, 0, MaxLengthUpperBound);
+    if (candidate !== undefined) {
+      safePush(slicesForString, candidate);
+    }
+  }
+  return slicesForString;
+}
+
+/** @internal */
+export function createSlicesForString(
+  charArbitrary: Arbitrary<string>,
+  constraints: StringSharedConstraints,
+): string[][] {
+  let slices = safeGet(slicesPerArbitrary, charArbitrary);
+  if (slices === undefined) {
+    slices = createSlicesForStringNoConstraints(charArbitrary);
+    safeSet(slicesPerArbitrary, charArbitrary, slices);
+  }
+  const slicesForConstraints: string[][] = [];
+  for (const slice of slices) {
+    if (patternsToStringUnmapperIsValidLength(slice, constraints)) {
+      safePush(slicesForConstraints, slice);
+    }
+  }
+  return slicesForConstraints;
 }

@@ -1,3 +1,12 @@
+# 0.2.2
+
+_Rework our testing stack_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.2.1...poisoning%2Fv0.2.2)]
+
+## Fixes
+
+- ([PR#5353](https://github.com/dubzzz/fast-check/pull/5353)) CI: Move to Vitest
+
 # 0.2.1
 
 _Export missing types_
