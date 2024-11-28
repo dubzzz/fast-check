@@ -36,7 +36,7 @@
     "@types/node": "^20.14.15",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
-    "jimp": "^0.22.12",
+    "jimp": "^1.6.0",
     "typescript": "~5.7.2"
   },
   "browserslist": {
