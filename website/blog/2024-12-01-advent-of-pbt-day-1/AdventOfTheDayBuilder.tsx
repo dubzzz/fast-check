@@ -18,7 +18,7 @@ type Options = {
 };
 
 // When minified for publish, the value of String(buildBuggyAdvent) is: "function(){return function(e){return[...e].sort(((e,t)=>e.age-t.age||e.name.codePointAt(0)-t.name.codePointAt(0)))}}"
-const coreCodeExtractorRegex = /^function(\s+[^(]+)?\([^)]*\)\s*{(.*)}$/sm
+const coreCodeExtractorRegex = /^function(\s+[^(]+)?\([^)]*\)\s*{(.*)}$/ms;
 
 export function buildAdventOfTheDay(options: Options) {
   const {
@@ -33,11 +33,13 @@ export function buildAdventOfTheDay(options: Options) {
     signatureExtras,
   } = options;
 
-  const originalSource =String(buildBuggyAdvent).trim()
-const m = coreCodeExtractorRegex.exec(originalSource)
-if (m === null) {
-  throw new Error(`Unable to parse the snippet for the advent of code properly, original source code being:\n\n${JSON.stringify(originalSource)}`)
-}
+  const originalSource = String(buildBuggyAdvent).trim();
+  const m = coreCodeExtractorRegex.exec(originalSource);
+  if (m === null) {
+    throw new Error(
+      `Unable to parse the snippet for the advent of code properly, original source code being:\n\n${JSON.stringify(originalSource)}`,
+    );
+  }
   const snippetLinesWithHeadingSpaces = m[2].split('\n');
   const spacesCountToDrop = /^( +)/.exec(snippetLinesWithHeadingSpaces[0])?.[1].length ?? 0;
   const spacesToDrop = ' '.repeat(spacesCountToDrop);
