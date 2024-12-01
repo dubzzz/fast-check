@@ -40,14 +40,7 @@ export function buildAdventOfTheDay(options: Options) {
       `Unable to parse the snippet for the advent of code properly, original source code being:\n\n${JSON.stringify(originalSource)}`,
     );
   }
-  const snippetLinesWithHeadingSpaces = m[2].split('\n');
-  const spacesCountToDrop = /^( +)/.exec(snippetLinesWithHeadingSpaces[0])?.[1].length ?? 0;
-  const spacesToDrop = ' '.repeat(spacesCountToDrop);
-  const snippet = snippetLinesWithHeadingSpaces
-    .map((line) => (line.startsWith(spacesToDrop) ? line.substring(spacesToDrop.length) : line))
-    .map((line) => line.replace(/^return /, 'export default '))
-    .join('\n');
-
+  const snippet = m[2].replace(/return /, 'export default ');
   function AdventPlaygroundOfTheDay() {
     return (
       <AdventPlayground
