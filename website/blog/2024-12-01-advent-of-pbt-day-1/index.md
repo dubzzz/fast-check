@@ -5,6 +5,7 @@ tags: [advent-of-pbt, advent-of-pbt-2024]
 ---
 
 import {AdventPlaygroundOfTheDay,FormOfTheDay} from './AdventOfTheDay';
+import BlueskyComments from './BlueskyComments'
 
 Christmas is at risk! In their rush to meet tight deadlines, Santa’s elves accidentally introduced bugs into critical algorithms. If these issues aren’t discovered in time, Christmas could be delayed for everyone worldwide!
 
@@ -38,3 +39,7 @@ Santa has entrusted you with the code created by the elves (though you can’t s
 ## Your answer
 
 <FormOfTheDay />
+
+## Comments
+
+<BlueskyComments url="https://bsky.app/profile/fast-check.dev/post/3lca65jr4vc2n" />

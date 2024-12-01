@@ -106,6 +106,15 @@ export function buildAdventOfTheDay(options: Options) {
         {pastAnswer !== null && (
           <Admonition type="tip" icon="🎉" title="Congratulations">
             <p>You solved this puzzle!</p>
+            <p>
+              <a
+                href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`Just solved the #AdventOfPBT puzzle made by https://fast-check.dev/<br/><br/>👉 Join the challenge: ${window.location.href}`)}`}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Share your success on Bluesky 🎉
+              </a>
+            </p>
           </Admonition>
         )}
         {lastError !== null && (
