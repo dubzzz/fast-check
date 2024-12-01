@@ -1,18 +1,28 @@
 // Copied from https://github.com/ascorbic/bluesky-comments-tag/blob/19173f39c7154ef1372fdf74d1450b37719e7419/packages/comments/src/BlueskyComments.js
 // While waiting for an official NPM package
 
-class BlueskyComments extends HTMLElement {
-  static properties = {
-    /** The URL of the Bluesky post to use as the parent */
-    url: { type: String },
-  };
+import { useLayoutEffect } from 'react';
 
-  #observer;
-  #loaded = false;
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-    this.shadowRoot.innerHTML = /*html*/ `
+let alreadyDefined = false;
+
+function load() {
+  if (alreadyDefined) {
+    return;
+  }
+
+  alreadyDefined = true;
+  class BlueskyComments extends HTMLElement {
+    static properties = {
+      /** The URL of the Bluesky post to use as the parent */
+      url: { type: String },
+    };
+
+    #observer;
+    #loaded = false;
+    constructor() {
+      super();
+      this.attachShadow({ mode: 'open' });
+      this.shadowRoot.innerHTML = /*html*/ `
     <style>
       :host {
         --bluesky-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -148,175 +158,175 @@ class BlueskyComments extends HTMLElement {
     </style>
     <div class="comments"></div>
       `;
-    this.#observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.#loaded) {
-            this.#loadComments();
-            this.#loaded = true;
-            this.#observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.1 },
-    );
-  }
-
-  connectedCallback() {
-    this.#observer.observe(this);
-  }
-
-  disconnectedCallback() {
-    this.#observer.disconnect();
-  }
-
-  async #loadComments() {
-    const blueskyUrl = this.getAttribute('url');
-    if (blueskyUrl) {
-      try {
-        const atUri = await this.#resolvePostUrl(blueskyUrl);
-        if (!atUri) {
-          throw new Error('Failed to resolve AT URI');
-        }
-        const replies = await this.#fetchReplies(atUri);
-        this.#displayReplies(replies);
-      } catch (e) {
-        this.shadowRoot.querySelector('.comments').innerHTML = `<p>Error loading comments.</p>`;
-      }
-    } else {
-      this.shadowRoot.querySelector('.comments').innerHTML = `<p>No Bluesky URL provided.</p>`;
-    }
-  }
-
-  async #resolvePostUrl(postUrl) {
-    let atUri;
-
-    if (postUrl.startsWith('at:')) {
-      return postUrl;
+      this.#observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !this.#loaded) {
+              this.#loadComments();
+              this.#loaded = true;
+              this.#observer.disconnect();
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
     }
 
-    if (!postUrl.startsWith('https://bsky.app/')) {
-      return undefined;
+    connectedCallback() {
+      this.#observer.observe(this);
     }
 
-    const urlParts = new URL(postUrl).pathname.split('/');
-    let did = urlParts[2];
-    const postId = urlParts[4];
-
-    if (!did || !postId) {
-      return undefined;
+    disconnectedCallback() {
+      this.#observer.disconnect();
     }
 
-    if (!did.startsWith('did:')) {
-      const cachedDid = this.#getCache(`handle:${did}`);
-      if (cachedDid) {
-        did = cachedDid;
-      } else {
+    async #loadComments() {
+      const blueskyUrl = this.getAttribute('url');
+      if (blueskyUrl) {
         try {
-          const handleResolutionUrl = `https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(
-            did,
-          )}`;
-          const handleResponse = await fetch(handleResolutionUrl);
-
-          if (!handleResponse.ok) {
-            throw new Error('Failed to resolve handle');
+          const atUri = await this.#resolvePostUrl(blueskyUrl);
+          if (!atUri) {
+            throw new Error('Failed to resolve AT URI');
           }
+          const replies = await this.#fetchReplies(atUri);
+          this.#displayReplies(replies);
+        } catch (e) {
+          this.shadowRoot.querySelector('.comments').innerHTML = `<p>Error loading comments.</p>`;
+        }
+      } else {
+        this.shadowRoot.querySelector('.comments').innerHTML = `<p>No Bluesky URL provided.</p>`;
+      }
+    }
 
-          const handleData = await handleResponse.json();
-          if (!handleData.did) {
+    async #resolvePostUrl(postUrl) {
+      let atUri;
+
+      if (postUrl.startsWith('at:')) {
+        return postUrl;
+      }
+
+      if (!postUrl.startsWith('https://bsky.app/')) {
+        return undefined;
+      }
+
+      const urlParts = new URL(postUrl).pathname.split('/');
+      let did = urlParts[2];
+      const postId = urlParts[4];
+
+      if (!did || !postId) {
+        return undefined;
+      }
+
+      if (!did.startsWith('did:')) {
+        const cachedDid = this.#getCache(`handle:${did}`);
+        if (cachedDid) {
+          did = cachedDid;
+        } else {
+          try {
+            const handleResolutionUrl = `https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${encodeURIComponent(
+              did,
+            )}`;
+            const handleResponse = await fetch(handleResolutionUrl);
+
+            if (!handleResponse.ok) {
+              throw new Error('Failed to resolve handle');
+            }
+
+            const handleData = await handleResponse.json();
+            if (!handleData.did) {
+              return undefined;
+            }
+
+            this.#setCache(`handle:${did}`, handleData.did, 86400);
+            did = handleData.did;
+          } catch (e) {
+            console.error(`[error] Failed to resolve handle: ${e.message || e}`);
             return undefined;
           }
-
-          this.#setCache(`handle:${did}`, handleData.did, 86400);
-          did = handleData.did;
-        } catch (e) {
-          console.error(`[error] Failed to resolve handle: ${e.message || e}`);
-          return undefined;
         }
       }
+
+      atUri = `at://${did}/app.bsky.feed.post/${postId}`;
+      return atUri;
     }
 
-    atUri = `at://${did}/app.bsky.feed.post/${postId}`;
-    return atUri;
-  }
-
-  #setCache(key, value, ttl = 86400) {
-    const expiry = Date.now() + ttl * 1000;
-    const cacheData = { value, expiry };
-    localStorage.setItem(key, JSON.stringify(cacheData));
-  }
-
-  #getCache(key) {
-    const cachedItem = localStorage.getItem(key);
-    if (!cachedItem) return null;
-
-    const { value, expiry } = JSON.parse(cachedItem);
-    if (Date.now() > expiry) {
-      localStorage.removeItem(key);
-      return null;
+    #setCache(key, value, ttl = 86400) {
+      const expiry = Date.now() + ttl * 1000;
+      const cacheData = { value, expiry };
+      localStorage.setItem(key, JSON.stringify(cacheData));
     }
-    return value;
-  }
 
-  async #fetchReplies(atUri) {
-    const apiUrl = `https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?uri=${encodeURIComponent(atUri)}`;
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error('Failed to fetch replies');
-    }
-    const data = await response.json();
-    return data.thread;
-  }
+    #getCache(key) {
+      const cachedItem = localStorage.getItem(key);
+      if (!cachedItem) return null;
 
-  #displayReplies(thread, container = null) {
-    const commentsContainer = container || this.shadowRoot.querySelector('.comments');
-    if (thread && thread.replies && thread.replies.length > 0) {
-      const sortedReplies = thread.replies.sort((a, b) => {
-        return new Date(a.post.record.createdAt).getTime() - new Date(b.post.record.createdAt).getTime();
-      });
-      sortedReplies.forEach((reply) => {
-        this.#displayComments(reply, commentsContainer, false);
-      });
-    }
-  }
-
-  #sanitizeText(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  #displayComments(thread, container, isReply = false) {
-    if (thread?.post?.author && thread.post.record) {
-      if (thread.post.record.text.trim() === '📌') {
-        return;
+      const { value, expiry } = JSON.parse(cachedItem);
+      if (Date.now() > expiry) {
+        localStorage.removeItem(key);
+        return null;
       }
+      return value;
+    }
 
-      const commentDiv = document.createElement('div');
-      commentDiv.classList.add('comment');
-      if (isReply) {
-        commentDiv.classList.add('reply');
+    async #fetchReplies(atUri) {
+      const apiUrl = `https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?uri=${encodeURIComponent(atUri)}`;
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch replies');
       }
+      const data = await response.json();
+      return data.thread;
+    }
 
-      const authorHandle = thread.post.author.handle;
-      const authorProfileUrl = `https://bsky.app/profile/${thread.post.author.did}`;
-      const postUrl = `https://bsky.app/profile/${thread.post.author.did}/post/${thread.post.uri.split('/').pop()}`;
-      const createdAt = new Date(thread.post.record.createdAt);
-      const createdAtFull = createdAt.toLocaleString();
-      const createdAtAbbreviated = this.#getAbbreviatedTime(createdAt);
-      const avatarUrl = thread.post?.author?.avatar.replace('/img/avatar/', '/img/avatar_thumbnail/');
-      const displayName = thread.post.author.displayName || authorHandle;
-      const likeCount = thread.post.likeCount || 0;
-      const repostCount = thread.post.repostCount || 0;
-      const replyCount = thread.post.replyCount || 0;
-
-      let avatarElement;
-      if (avatarUrl) {
-        avatarElement = `<img src="${avatarUrl}" alt="${authorHandle}'s avatar" class="avatar" part="avatar"/>`;
-      } else {
-        avatarElement = `<div class="default-avatar" part="avatar"></div>`;
+    #displayReplies(thread, container = null) {
+      const commentsContainer = container || this.shadowRoot.querySelector('.comments');
+      if (thread && thread.replies && thread.replies.length > 0) {
+        const sortedReplies = thread.replies.sort((a, b) => {
+          return new Date(a.post.record.createdAt).getTime() - new Date(b.post.record.createdAt).getTime();
+        });
+        sortedReplies.forEach((reply) => {
+          this.#displayComments(reply, commentsContainer, false);
+        });
       }
-      commentDiv.innerHTML = `
+    }
+
+    #sanitizeText(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    #displayComments(thread, container, isReply = false) {
+      if (thread?.post?.author && thread.post.record) {
+        if (thread.post.record.text.trim() === '📌') {
+          return;
+        }
+
+        const commentDiv = document.createElement('div');
+        commentDiv.classList.add('comment');
+        if (isReply) {
+          commentDiv.classList.add('reply');
+        }
+
+        const authorHandle = thread.post.author.handle;
+        const authorProfileUrl = `https://bsky.app/profile/${thread.post.author.did}`;
+        const postUrl = `https://bsky.app/profile/${thread.post.author.did}/post/${thread.post.uri.split('/').pop()}`;
+        const createdAt = new Date(thread.post.record.createdAt);
+        const createdAtFull = createdAt.toLocaleString();
+        const createdAtAbbreviated = this.#getAbbreviatedTime(createdAt);
+        const avatarUrl = thread.post?.author?.avatar.replace('/img/avatar/', '/img/avatar_thumbnail/');
+        const displayName = thread.post.author.displayName || authorHandle;
+        const likeCount = thread.post.likeCount || 0;
+        const repostCount = thread.post.repostCount || 0;
+        const replyCount = thread.post.replyCount || 0;
+
+        let avatarElement;
+        if (avatarUrl) {
+          avatarElement = `<img src="${avatarUrl}" alt="${authorHandle}'s avatar" class="avatar" part="avatar"/>`;
+        } else {
+          avatarElement = `<div class="default-avatar" part="avatar"></div>`;
+        }
+        commentDiv.innerHTML = `
           <div class="comment-header" part="comment-header">
             ${avatarElement}
             <div>
@@ -354,37 +364,46 @@ class BlueskyComments extends HTMLElement {
           </div>
         `;
 
-      container.appendChild(commentDiv);
+        container.appendChild(commentDiv);
 
-      if (thread.replies && thread.replies.length > 0) {
-        const sortedReplies = thread.replies.sort((a, b) => {
-          return new Date(a.post.record.createdAt).getTime() - new Date(b.post.record.createdAt).getTime();
-        });
-        sortedReplies.forEach((reply) => {
-          this.#displayComments(reply, commentDiv, true);
-        });
+        if (thread.replies && thread.replies.length > 0) {
+          const sortedReplies = thread.replies.sort((a, b) => {
+            return new Date(a.post.record.createdAt).getTime() - new Date(b.post.record.createdAt).getTime();
+          });
+          sortedReplies.forEach((reply) => {
+            this.#displayComments(reply, commentDiv, true);
+          });
+        }
+      }
+    }
+
+    #getAbbreviatedTime(date) {
+      const now = new Date().getTime();
+      const diffMs = now - date;
+      const diffSeconds = Math.floor(diffMs / 1000);
+      const diffMinutes = Math.floor(diffSeconds / 60);
+      const diffHours = Math.floor(diffMinutes / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffDays > 0) {
+        return `${diffDays}d`;
+      } else if (diffHours > 0) {
+        return `${diffHours}h`;
+      } else if (diffMinutes > 0) {
+        return `${diffMinutes}m`;
+      } else {
+        return `${diffSeconds}s`;
       }
     }
   }
-
-  #getAbbreviatedTime(date) {
-    const now = new Date().getTime();
-    const diffMs = now - date;
-    const diffSeconds = Math.floor(diffMs / 1000);
-    const diffMinutes = Math.floor(diffSeconds / 60);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffDays > 0) {
-      return `${diffDays}d`;
-    } else if (diffHours > 0) {
-      return `${diffHours}h`;
-    } else if (diffMinutes > 0) {
-      return `${diffMinutes}m`;
-    } else {
-      return `${diffSeconds}s`;
-    }
-  }
+  customElements.define('bluesky-comments', BlueskyComments);
 }
 
-customElements.define('bluesky-comments', BlueskyComments);
+export default function BlueskyComments({ url }) {
+  useLayoutEffect(() => {
+    if (typeof HTMLElement !== 'undefined') {
+      load();
+    }
+  }, []);
+  return <bluesky-comments url={url}></bluesky-comments>;
+}
