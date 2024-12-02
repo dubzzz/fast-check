@@ -77,6 +77,9 @@ export function buildAdventOfTheDay(options: Options) {
   }
 
   function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
+    fetch(`https://api.counterapi.dev/v1/fast-check/AdventOfPBT2024Day${day}Attempt/up`)
+      .then((response) => response.json())
+      .catch(() => {});
     event.preventDefault();
     try {
       const answer = extractAnswerFromForm(event);
@@ -92,6 +95,9 @@ export function buildAdventOfTheDay(options: Options) {
       }
       lastError = null;
       localStorage.setItem(storageKey, answer);
+      fetch(`https://api.counterapi.dev/v1/fast-check/AdventOfPBT2024Day${day}Success/up`)
+        .then((response) => response.json())
+        .catch(() => {});
     } catch (err) {
       lastError = `Malformed inputs provided!\n${(err as Error).message}`;
     }
