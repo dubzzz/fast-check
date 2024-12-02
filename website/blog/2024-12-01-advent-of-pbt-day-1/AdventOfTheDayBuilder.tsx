@@ -77,7 +77,7 @@ export function buildAdventOfTheDay(options: Options) {
   }
 
   function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
-    fetch(`https://api.counterapi.dev/v1/fast-check/advent-of pbt-day-${day}-2024-attempt/up`)
+    fetch(`https://api.counterapi.dev/v1/fast-check/AdventOfPBT2024Day${day}Attempt/up`)
       .then((response) => response.json())
       .catch(() => {});
     event.preventDefault();
@@ -95,7 +95,7 @@ export function buildAdventOfTheDay(options: Options) {
       }
       lastError = null;
       localStorage.setItem(storageKey, answer);
-      fetch(`https://api.counterapi.dev/v1/fast-check/advent-of pbt-day-${day}-2024-success/up`)
+      fetch(`https://api.counterapi.dev/v1/fast-check/AdventOfPBT2024Day${day}Success/up`)
         .then((response) => response.json())
         .catch(() => {});
     } catch (err) {
