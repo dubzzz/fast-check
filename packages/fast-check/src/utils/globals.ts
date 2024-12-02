@@ -64,6 +64,10 @@ const SencodeURIComponent: typeof encodeURIComponent =
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   typeof encodeURIComponent !== 'undefined' ? encodeURIComponent : undefined!;
 export { SencodeURIComponent as encodeURIComponent };
+const SMap = Map;
+export { SMap as Map };
+const SSymbol = Symbol;
+export { SSymbol as Symbol };
 
 // Various remarks concerning this part of the file:
 // - Functions accepting a variadic number of arguments ALWAYS use (...args) instead of (a, b)
