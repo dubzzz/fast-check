@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
+import CodeBlock from '@theme/CodeBlock';
 
 const FeatureList = [
   {
@@ -69,12 +70,25 @@ function Feature({ Svg, title, description }) {
 
 export default function HomepageFeatures() {
   return (
-    <section className={styles.features}>
-      <div className={clsx('container', styles.allFeatureCards)}>
-        {FeatureList.map((props, idx) => (
-          <Feature key={idx} {...props} />
-        ))}
-      </div>
-    </section>
+    <div className="container">
+      <section className={styles.features}>
+        <div className={clsx('container', styles.allFeatureCards)}>
+          {FeatureList.map((props, idx) => (
+            <Feature key={idx} {...props} />
+          ))}
+        </div>
+        <div className={styles.codeBlock}>
+          <CodeBlock language="js">
+            {`test('validates substring presence in concatenated string', () => {
+  fc.assert(
+    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+      expect(isSubstring(\`\${a}\${b}\${c}\`, b)).toBe(true);
+    })
+  );
+});`}
+          </CodeBlock>
+        </div>
+      </section>
+    </div>
   );
 }
