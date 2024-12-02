@@ -42,6 +42,10 @@ const SUint32Array: typeof Uint32Array = Uint32Array;
 export { SUint32Array as Uint32Array };
 const SencodeURIComponent: typeof encodeURIComponent = encodeURIComponent;
 export { SencodeURIComponent as encodeURIComponent };
+const SMap = Map;
+export { SMap as Map };
+const SSymbol = Symbol;
+export { SSymbol as Symbol };
 
 // Various remarks concerning this part of the file:
 // - Functions accepting a variadic number of arguments ALWAYS use (...args) instead of (a, b)
