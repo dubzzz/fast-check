@@ -114,7 +114,7 @@ export function buildAdventOfTheDay(options: Options) {
             <p>You solved this puzzle!</p>
             <p>
               <a
-                href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`Just solved the #AdventOfPBT puzzle made by https://fast-check.dev/<br/><br/>👉 Join the challenge: ${window.location.href}`)}`}
+                href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`Just solved the #AdventOfPBT puzzle made by https://fast-check.dev/ · 👉 Join the challenge: ${window.location.href}`)}`}
                 target="_blank"
                 rel="noreferrer noopener"
               >
