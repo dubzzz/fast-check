@@ -287,6 +287,9 @@ function load() {
         sortedReplies.forEach((reply) => {
           this.#displayComments(reply, commentsContainer, false);
         });
+      } else {
+        this.shadowRoot.querySelector('.comments').innerHTML =
+          `<p><a href=${JSON.stringify(this.getAttribute('url'))} target="_blank" rel="noopener">Add the first comment</a></p>`;
       }
     }
 
