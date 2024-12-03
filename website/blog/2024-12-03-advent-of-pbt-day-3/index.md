@@ -38,3 +38,7 @@ You are Santa’s last hope to ensure Christmas happens this year — don’t le
 ## Your answer
 
 <FormOfTheDay />
+
+## Comments
+
+<BlueskyComments url="https://bsky.app/profile/fast-check.dev/post/3lcf7uosakk24" />
