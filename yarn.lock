@@ -10420,7 +10420,7 @@ __metadata:
     pure-rand: "npm:^6.1.0"
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^8.2.0"
-    typedoc: "npm:^0.27.2"
+    typedoc: "npm:^0.27.3"
     typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.6"
   languageName: unknown
@@ -19876,9 +19876,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.27.2":
-  version: 0.27.2
-  resolution: "typedoc@npm:0.27.2"
+"typedoc@npm:^0.27.3":
+  version: 0.27.3
+  resolution: "typedoc@npm:0.27.3"
   dependencies:
     "@gerrit0/mini-shiki": "npm:^1.24.0"
     lunr: "npm:^2.3.9"
@@ -19889,7 +19889,7 @@ __metadata:
     typescript: 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x || 5.6.x || 5.7.x
   bin:
     typedoc: bin/typedoc
-  checksum: 10c0/85184d40760a5528a7f82a6b1a2932973208fc55762a4b8c3445b895c4fbdd65bbfbde9b1c2b335019129b59e36eda294080de9d332df6e1c856500234f0bb4d
+  checksum: 10c0/e772715d6b6fed48d682187abc48b9c7bf72fe11dd8afba536b3307e94f07cd77719ef4f2f137964a530561c0982ea8a14118a48b059185142510f6b4fd790c2
   languageName: node
   linkType: hard
 
