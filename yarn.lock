@@ -3457,7 +3457,7 @@ __metadata:
     "@testing-library/user-event": "npm:^14.5.2"
     "@types/express": "npm:^5.0.0"
     "@types/lodash": "npm:^4.17.13"
-    "@types/react": "npm:^18.3.13"
+    "@types/react": "npm:^18.3.14"
     "@types/supertest": "npm:^6.0.2"
     express: "npm:^4.21.1"
     fast-check: "workspace:*"
@@ -6261,13 +6261,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.3.13":
-  version: 18.3.13
-  resolution: "@types/react@npm:18.3.13"
+"@types/react@npm:*, @types/react@npm:^18.3.14":
+  version: 18.3.14
+  resolution: "@types/react@npm:18.3.14"
   dependencies:
     "@types/prop-types": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10c0/91815e00157deb179fa670aa2dfc491952698b7743ffddca0e3e0f16e7a18454f3f5ef72321a07386c49e721563b9d280dbbdfae039face764e2fdd8ad949d4b
+  checksum: 10c0/d925fbfcf084238b93d1a0b5406d4cf9aeb37c4a1191559aa4ee107c2e55cc15327989140f03eddda4d471f5b935d4673fd74a86f451860edea18eae48ca44f8
   languageName: node
   linkType: hard
 
@@ -20786,7 +20786,7 @@ __metadata:
     "@mdx-js/react": "npm:^3.1.0"
     "@types/lodash": "npm:^4.17.13"
     "@types/node": "npm:^20.14.15"
-    "@types/react": "npm:^18.3.13"
+    "@types/react": "npm:^18.3.14"
     clsx: "npm:^2.1.1"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
