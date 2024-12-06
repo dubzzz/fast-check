@@ -39,7 +39,7 @@ export default function advent(unitPerNumericalOverride) {
     ];
     const base25 = '0123456789abcdefghijklmno';
 
-    const unitPerNumerical = typeof unitPerNumericalOverride !== "undefined" ? unitPerNumericalOverride : 12;
+    const unitPerNumerical = typeof unitPerNumericalOverride !== 'undefined' ? unitPerNumericalOverride : 12;
     const maxForNumerical = units.length ** unitPerNumerical;
     const numericalVersion = [];
 
