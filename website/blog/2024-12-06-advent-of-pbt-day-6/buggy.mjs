@@ -1,6 +1,6 @@
 // @ts-check
 
-export default function advent(unitPerNumericalOverride) {
+export default function advent() {
   /**
    * @typedef {'\u{2709}\u{fe0f}'|'\u{1f9fa}'|'\u{1f384}'|'\u{1f514}'|'\u{1f56f}\u{fe0f}'|'\u{2b50}'|'\u{1f98c}'|'\u{26c4}'|'\u{1f6f7}'|'\u{2744}\u{fe0f}'|'\u{1f3bf}'|'\u{2728}'|'\u{1f929}'|'\u{1f973}'|'\u{1f388}'|'\u{1fa80}'|'\u{1f3ae}'|'\u{1f3b2}'|'\u{265f}\u{fe0f}'|'\u{1f49d}'|'\u{1f380}'|'\u{1f9e6}'|'\u{1f385}'|'\u{1f936}'|'\u{1f381}'} Unit
    */
@@ -39,7 +39,7 @@ export default function advent(unitPerNumericalOverride) {
     ];
     const base25 = '0123456789abcdefghijklmno';
 
-    const unitPerNumerical = typeof unitPerNumericalOverride !== 'undefined' ? unitPerNumericalOverride : 12;
+    const unitPerNumerical = 12;
     const maxForNumerical = units.length ** unitPerNumerical;
     const numericalVersion = [];
 
