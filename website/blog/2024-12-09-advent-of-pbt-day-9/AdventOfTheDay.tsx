@@ -8,7 +8,7 @@ const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   parser,
   placeholderForm: 'any set of characters as long as it fits on one line',
   functionName: 'isProbablyEnchantedWord',
-  signature: 'isProbablyEnchantedWord(word: string): string;',
+  signature: 'isProbablyEnchantedWord(word: string): boolean;',
   signatureExtras: [],
 });
 
