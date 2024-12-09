@@ -36,7 +36,13 @@ export default function HomepageHeader() {
         <div>
           <div className={styles.quickNavigationButtons}>
             <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/">
-              Quick Start - 5min ⏱️
+              Quick Start – 5min ⏱️
+            </Link>
+            <Link
+              className={clsx('button', 'button--secondary', 'button--lg', styles.adventButton)}
+              to="/blog/tags/advent-of-pbt-2024/"
+            >
+              Save Christmas – Play! 🎄
             </Link>
           </div>
         </div>

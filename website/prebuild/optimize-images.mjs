@@ -1,5 +1,5 @@
-import jimp from 'jimp';
-import { existsSync } from 'fs';
+import { Jimp } from 'jimp';
+import { existsSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { join } from 'path';
 import allContributors from '../src/components/HomepageContributors/all-contributors.json' assert { type: 'json' };
@@ -7,8 +7,8 @@ import allContributors from '../src/components/HomepageContributors/all-contribu
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 async function collectImage(imageUrl, imageFinalPath, squaredSize) {
-  const image = await jimp.read(imageUrl);
-  await image.resize(squaredSize, squaredSize).quality(80).writeAsync(imageFinalPath);
+  const image = await Jimp.read(imageUrl);
+  await image.resize({ h: squaredSize, h: squaredSize }).write(imageFinalPath, { quality: 80 });
 }
 
 const quotes = [
@@ -38,11 +38,13 @@ const allAvatars = [
   })),
 ];
 
+const pathFinalImageDirectory = join(__dirname, '..', 'static', 'img', '_');
 for (const avatar of allAvatars) {
   const { url, login, size } = avatar;
-  const pathFinalImage = join(__dirname, '..', 'static', 'img', '_', `avatar_${size}_${login}.jpg`);
+  const pathFinalImage = join(pathFinalImageDirectory, `avatar_${size}_${login}.jpg`);
   if (!existsSync(pathFinalImage)) {
     console.log(`Importing avatar ${size}x${size} for ${url}`);
+    mkdirSync(pathFinalImageDirectory, { recursive: true });
     collectImage(url, pathFinalImage, 64);
   } else {
     console.log(`Skipped import of avatar ${size}x${size} for ${url}`);
