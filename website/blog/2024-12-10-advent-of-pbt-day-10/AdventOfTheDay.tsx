@@ -16,7 +16,7 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 
 // Reference implementation
 
-function isProbablyEnchantedWordV2(word: string): string {
+function isProbablyEnchantedWordV2(word: string): boolean {
   const segmenter = new Intl.Segmenter();
   return (
     [...segmenter.segment(word)]
