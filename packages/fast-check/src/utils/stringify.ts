@@ -7,7 +7,9 @@ import {
   safePush,
   safeToISOString,
   safeToString,
+  Map,
   String,
+  Symbol as StableSymbol,
 } from './globals';
 
 const safeArrayFrom = Array.from;
@@ -249,14 +251,14 @@ export function stringifyInternal<Ts>(
       return typeof value === 'string' ? safeJsonStringify(value) : `new String(${safeJsonStringify(value)})`;
     case '[object Symbol]': {
       const s = value as unknown as symbol;
-      if (Symbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${safeJsonStringify(Symbol.keyFor(s))})`;
+      if (StableSymbol.keyFor(s) !== undefined) {
+        return `Symbol.for(${safeJsonStringify(StableSymbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       if (desc === null) {
         return 'Symbol()';
       }
-      const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
+      const knownSymbol = desc.startsWith('Symbol.') && (StableSymbol as any)[desc.substring(7)];
       return s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`;
     }
     case '[object Promise]': {
@@ -353,7 +355,7 @@ export function stringify<Ts>(value: Ts): string {
  * @internal
  */
 export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
-  const stillPendingMarker = Symbol();
+  const stillPendingMarker = StableSymbol();
   const pendingPromisesForCache: Promise<void>[] = [];
   const cache = new Map<unknown, AsyncContent>();
 
