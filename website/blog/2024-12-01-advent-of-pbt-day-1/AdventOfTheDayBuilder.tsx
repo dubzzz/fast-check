@@ -8,6 +8,7 @@ const answerFieldName = 'answer';
 type Options = {
   day: number;
   buildBuggyAdvent: () => (...args: unknown[]) => unknown;
+  buggyAdventSurcharged?: (...args: unknown[]) => unknown;
   referenceAdvent: (...args: unknown[]) => unknown;
   postAdvent?: (adventOutput: unknown) => unknown;
   parser: (answer: string) => unknown[] | undefined;
@@ -24,6 +25,7 @@ export function buildAdventOfTheDay(options: Options) {
   const {
     day,
     buildBuggyAdvent,
+    buggyAdventSurcharged,
     referenceAdvent,
     postAdvent = (v) => v,
     parser,
@@ -66,7 +68,7 @@ export function buildAdventOfTheDay(options: Options) {
       if (inputs === undefined) {
         return null;
       }
-      const buggyAdvent = buildBuggyAdvent();
+      const buggyAdvent = buggyAdventSurcharged ?? buildBuggyAdvent();
       if (isEqual(postAdvent(buggyAdvent(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
         return null;
       }
@@ -91,7 +93,7 @@ export function buildAdventOfTheDay(options: Options) {
         lastError = 'Malformed inputs provided!';
         return;
       }
-      const buggyAdvent = buildBuggyAdvent();
+      const buggyAdvent = buggyAdventSurcharged ?? buildBuggyAdvent();
       if (isEqual(postAdvent(buggyAdvent(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
         lastError = 'The input you provided seems to be working well: Santa is looking for a bug!';
         return;
