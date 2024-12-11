@@ -3598,7 +3598,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
-    "@types/node": "npm:^20.14.15"
+    "@types/node": "npm:^22.10.2"
     ava: "npm:^6.2.0"
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
@@ -3649,7 +3649,7 @@ __metadata:
     "@jest/expect": "npm:^29.7.0"
     "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^20.14.15"
+    "@types/node": "npm:^22.10.2"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-jasmine2: "npm:^29.7.0"
@@ -3706,7 +3706,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/poisoning@workspace:packages/poisoning"
   dependencies:
-    "@types/node": "npm:^20.14.15"
+    "@types/node": "npm:^22.10.2"
     typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.8"
   languageName: unknown
@@ -3716,7 +3716,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/vitest@workspace:packages/vitest"
   dependencies:
-    "@types/node": "npm:^20.14.15"
+    "@types/node": "npm:^22.10.2"
     fast-check: "workspace:*"
     typescript: "npm:~5.7.2"
     vite: "npm:^6.0.3"
@@ -3730,7 +3730,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/worker@workspace:packages/worker"
   dependencies:
-    "@types/node": "npm:^20.14.15"
+    "@types/node": "npm:^22.10.2"
     fast-check: "npm:^3.4.0"
     pure-rand: "npm:^6.1.0"
     typescript: "npm:~5.7.2"
@@ -6245,12 +6245,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 22.2.0
-  resolution: "@types/node@npm:22.2.0"
+"@types/node@npm:*, @types/node@npm:^22.10.2":
+  version: 22.10.2
+  resolution: "@types/node@npm:22.10.2"
   dependencies:
-    undici-types: "npm:~6.13.0"
-  checksum: 10c0/c17900b34faecfec204f72970bd658d0c217aaf739c1bf7690c969465b6b26b77a8be1cd9ba735aadbd1dd20b5c3e4f406ec33528bf7c6eec90744886c5d5608
+    undici-types: "npm:~6.20.0"
+  checksum: 10c0/2c7b71a040f1ef5320938eca8ebc946e6905caa9bbf3d5665d9b3774a8d15ea9fab1582b849a6d28c7fc80756a62c5666bc66b69f42f4d5dafd1ccb193cdb4ac
   languageName: node
   linkType: hard
 
@@ -6272,15 +6272,6 @@ __metadata:
   version: 17.0.45
   resolution: "@types/node@npm:17.0.45"
   checksum: 10c0/0db377133d709b33a47892581a21a41cd7958f22723a3cc6c71d55ac018121382de42fbfc7970d5ae3e7819dbe5f40e1c6a5174aedf7e7964e9cb8fa72b580b0
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^20.14.15":
-  version: 20.14.15
-  resolution: "@types/node@npm:20.14.15"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10c0/093713db52dc544f3931a3dec9d7d8ef661f323e57becd083a7918c778cef1eb6ec32d1017bf5ade06bb06dc5c7551f4f4d749a14e40868cce44d51e54acd8ed
   languageName: node
   linkType: hard
 
@@ -10636,7 +10627,7 @@ __metadata:
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": "npm:^7.48.0"
-    "@types/node": "npm:^20.14.15"
+    "@types/node": "npm:^22.10.2"
     "@vitest/coverage-v8": "npm:^2.1.8"
     cross-env: "npm:^7.0.3"
     glob: "npm:^11.0.0"
@@ -20192,17 +20183,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~5.26.4":
-  version: 5.26.5
-  resolution: "undici-types@npm:5.26.5"
-  checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.13.0":
-  version: 6.13.0
-  resolution: "undici-types@npm:6.13.0"
-  checksum: 10c0/2de55181f569c77a4f08063f8bf2722fcbb6ea312a26a9e927bd1f5ea5cf3a281c5ddf23155061db083e0a25838f54813543ff13b0ac34d230d5c1205ead66c1
+"undici-types@npm:~6.20.0":
+  version: 6.20.0
+  resolution: "undici-types@npm:6.20.0"
+  checksum: 10c0/68e659a98898d6a836a9a59e6adf14a5d799707f5ea629433e025ac90d239f75e408e2e5ff086afc3cace26f8b26ee52155293564593fbb4a2f666af57fc59bf
   languageName: node
   linkType: hard
 
@@ -21045,7 +21029,7 @@ __metadata:
     "@jest/globals": "npm:^29.7.0"
     "@mdx-js/react": "npm:^3.1.0"
     "@types/lodash": "npm:^4.17.13"
-    "@types/node": "npm:^20.14.15"
+    "@types/node": "npm:^22.10.2"
     "@types/react": "npm:^19.0.1"
     clsx: "npm:^2.1.1"
     fast-check: "workspace:*"
