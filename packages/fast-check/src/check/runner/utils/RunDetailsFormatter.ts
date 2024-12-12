@@ -1,4 +1,4 @@
-import { Error, safePush, safeReplace } from '../../../utils/globals';
+import { Error, safeMapGet, Map, safePush, safeReplace } from '../../../utils/globals';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
 import { VerbosityLevel } from '../configuration/VerbosityLevel';
 import { ExecutionStatus } from '../reporter/ExecutionStatus';
@@ -228,7 +228,7 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
   // Retry with async stringified versions in mind
   const registeredValues = new Map(await Promise.all(pendingStringifieds));
   function stringifySecond(value: unknown): string {
-    const asyncStringifiedIfRegistered = registeredValues.get(value);
+    const asyncStringifiedIfRegistered = safeMapGet(registeredValues, value);
     if (asyncStringifiedIfRegistered !== undefined) {
       return asyncStringifiedIfRegistered;
     }
