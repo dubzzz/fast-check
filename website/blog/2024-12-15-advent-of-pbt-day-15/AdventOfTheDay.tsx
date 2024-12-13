@@ -5,7 +5,6 @@ const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 15,
   buildBuggyAdvent: adventBuggy,
   buggyAdventSurcharged: (actions: ('put' | 'pop' | 'isEmpty')[]) => {
-    console.log(actions);
     const shelfSize = 5;
     const shelf = adventBuggy()();
     let shelfUsed = 0;
