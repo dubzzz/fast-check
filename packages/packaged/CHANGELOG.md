@@ -1,3 +1,16 @@
+# 0.4.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.4.2)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.1...packaged%2Fv0.4.2)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5401](https://github.com/dubzzz/fast-check/pull/5401)) Doc: Fix typos in CHANGELOG.md
+
 # 0.4.1
 
 _Rework our testing stack_
