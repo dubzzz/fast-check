@@ -1,11 +1,7 @@
 # 0.4.2
 
-_TODO Description_
+_Typos in the changelog_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.4.2)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.1...packaged%2Fv0.4.2)]
-
-## Features
-
-
 
 ## Fixes
 
