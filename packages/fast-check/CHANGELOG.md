@@ -1,11 +1,7 @@
 # 3.23.2
 
-_TODO Description_
+_Increased resiliency to poisoning_
 [[Code](https://github.com/dubzzz/fast-check/tree/v3.23.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.1...v3.23.2)]
-
-## Features
-
-
 
 ## Fixes
 
