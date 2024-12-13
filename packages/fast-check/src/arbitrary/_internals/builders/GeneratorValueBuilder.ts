@@ -2,10 +2,13 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../check/arbitrary/definition/Value';
 import { cloneMethod } from '../../../check/symbols';
 import type { Random } from '../../../random/generator/Random';
+import { safeMap, safePush } from '../../../utils/globals';
 import { stringify, toStringMethod } from '../../../utils/stringify';
 import type { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache';
 
 export type InternalGeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
+
+const safeObjectAssign = Object.assign;
 
 /**
  * Take an arbitrary builder and all its arguments separatly.
@@ -89,7 +92,7 @@ export function buildGeneratorValue(
     if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
       // Until it matches we just re-use the originally produced value
       const value = preBuiltValue.value;
-      context.history.push({ arb, value, context: preBuiltValue.context, mrng: preBuiltValue.mrng });
+      safePush(context.history, { arb, value, context: preBuiltValue.context, mrng: preBuiltValue.mrng });
       localMrng = preBuiltValue.mrng.clone();
       return value as T;
     }
@@ -99,7 +102,7 @@ export function buildGeneratorValue(
     // In other words: `preBuiltValue !== undefined && context.history.length === 0` is a legit case!
     // If we start to mismatch we run a new random value computation
     const g = arb.generate(localMrng, biasFactor);
-    context.history.push({ arb, value: g.value_, context: g.context, mrng: localMrng.clone() });
+    safePush(context.history, { arb, value: g.value_, context: g.context, mrng: localMrng.clone() });
     return g.value;
   };
 
@@ -112,16 +115,16 @@ export function buildGeneratorValue(
 
   const valueMethods = {
     values(): unknown[] {
-      return context.history.map((c) => c.value);
+      return safeMap(context.history, (c) => c.value);
     },
     [cloneMethod](): GeneratorValue {
       return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, arbitraryCache).value;
     },
     [toStringMethod](): string {
-      return stringify(context.history.map((c) => c.value));
+      return stringify(safeMap(context.history, (c) => c.value));
     },
   };
 
-  const value = Object.assign(memoedValueFunction, valueMethods);
+  const value = safeObjectAssign(memoedValueFunction, valueMethods);
   return new Value(value, context);
 }
