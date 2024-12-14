@@ -149,41 +149,9 @@ export function buildAdventOfTheDay(options: Options) {
             placeholder={`Example of answer:\n${placeholderForm}`}
           ></textarea>
           <br />
-          <div>
-            <button type="submit">Submit</button>
-            <SolvedTimes />
-          </div>
+          <button type="submit">Submit</button>
         </form>
       </>
-    );
-  }
-
-  function SolvedTimes() {
-    const [times, setTimes] = useState(null);
-    useEffect(() => {
-      async function update() {
-        try {
-          const response = await fetch(`https://api.counterapi.dev/v1/fast-check/AdventOfPBT2024Day${day}Success`);
-          const data = await response.json();
-          const count = data.count || 0;
-          setTimes(count);
-        } catch (err) {
-          setTimes(-1);
-        }
-      }
-      update();
-    }, []);
-
-    return (
-      <span style={{ marginLeft: '1rem' }}>
-        {times === null
-          ? 'Loading the solve count...'
-          : times === 0
-            ? 'Be the first to solve this challenge!'
-            : times === -1
-              ? 'Unable to retrieve the solve count at the moment.'
-              : `This puzzle has been solved ${times} time${times > 1 ? 's' : ''}!`}
-      </span>
     );
   }
 
