@@ -66,7 +66,7 @@ const initialRegex = /^initial\s*:\s*(\d{1,4})\s*,\s*(\d{1,3})$/;
 const boxRegex = /^box\s*:\s*(\d{1,4})\s*,\s*(\d{1,3})$/;
 
 function parser(answer: string): unknown[] | undefined {
-  const lines = answer.trim().split('\n');
+  const lines = answer.split('\n');
   if (lines.length !== 2) {
     throw new Error(
       `Your answer should be made of two distinct lines: the first line for the initial location, the second one for the box`,

@@ -30,7 +30,7 @@ function sortLetters(letters: Letter[]): Letter[] {
 const lineRegex = /^([a-z]+)=(\d+)$/;
 function parser(answer: string): unknown[] | undefined {
   const parsedAnswer: Letter[] = [];
-  for (const line of answer.trim().split('\n')) {
+  for (const line of answer.split('\n')) {
     const m = lineRegex.exec(line);
     if (m === null) {
       throw new Error(
