@@ -23,7 +23,7 @@ function isWordIncludedInLetter(letterContent: string, word: string): boolean {
 // Inputs parser
 
 function parser(answer: string): unknown[] | undefined {
-  const lines = answer.trim().split('\n');
+  const lines = answer.split('\n');
   if (lines.length !== 2) {
     throw new Error(
       `Your answer should be made of two distinct lines: one for the content of the letter and the other for the word being looked for`,

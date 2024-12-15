@@ -33,7 +33,7 @@ function dropLettersFromDuplicatedSenders(letters: Letter[]): Letter[] {
 
 function parser(answer: string): unknown[] | undefined {
   const parsedAnswer: Letter[] = [];
-  for (const line of answer.trim().split('\n')) {
+  for (const line of answer.split('\n')) {
     const parsed = JSON.parse(line);
     if (typeof parsed !== 'string') {
       throw new Error('Each line of the answer should follow the pattern: "quoted-string-being-the-id"');

@@ -123,7 +123,7 @@ function nextBarcode(barcode: Unit[]): Unit[] {
 
 const validBarcodeRegex = /^(✉️|🧺|🎄|🔔|🕯️|⭐|🦌|⛄|🛷|❄️|🎿|✨|🤩|🥳|🎈|🪀|🎮|🎲|♟️|💝|🎀|🧦|🎅|🤶|🎁)+$/;
 function parser(answer: string): unknown[] | undefined {
-  const lines = answer.trim().split('\n');
+  const lines = answer.split('\n');
   if (lines.length !== 1) {
     throw new Error(`Your answer should be made of one line`);
   }

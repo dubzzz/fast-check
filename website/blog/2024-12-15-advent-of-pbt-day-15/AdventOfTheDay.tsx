@@ -61,10 +61,10 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 // Inputs parser
 
 function parser(answer: string): unknown[] | undefined {
-  if (answer.trim() === '') {
+  if (answer === '') {
     return [[]];
   }
-  const lines = answer.trim().split('\n');
+  const lines = answer.split('\n');
   for (const line of lines) {
     if (line !== 'put' && line !== 'pop' && line !== 'isEmpty') {
       throw new Error(`Only expecting one of the following operations: put, pop or isEmpty. Received: ${line}`);

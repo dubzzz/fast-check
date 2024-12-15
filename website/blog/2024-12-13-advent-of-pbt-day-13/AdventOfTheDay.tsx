@@ -53,7 +53,7 @@ function buildSantaURLOfChild(firstName: string, lastName: string, birthDateTime
 const nameRegex = /^".+"$/;
 
 function parser(answer: string): unknown[] | undefined {
-  const lines = answer.trim().split('\n');
+  const lines = answer.split('\n');
   if (lines.length !== 3) {
     throw new Error(`Your answer should be made of three lines`);
   }
