@@ -3,6 +3,7 @@
   "compilerOptions": {
     "noEmit": false,
     "declaration": false,
+    "isolatedDeclarations": false,
     "removeComments": true,
     "sourceMap": false
   }
