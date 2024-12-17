@@ -10643,7 +10643,7 @@ __metadata:
     not-node-buffer: "npm:buffer@^6.0.3"
     pure-rand: "npm:^6.1.0"
     regexp-tree: "npm:^0.1.27"
-    replace-in-file: "npm:^8.2.0"
+    replace-in-file: "npm:^8.3.0"
     typedoc: "npm:^0.27.5"
     typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.8"
@@ -18177,16 +18177,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"replace-in-file@npm:^8.2.0":
-  version: 8.2.0
-  resolution: "replace-in-file@npm:8.2.0"
+"replace-in-file@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "replace-in-file@npm:8.3.0"
   dependencies:
     chalk: "npm:^5.3.0"
     glob: "npm:^10.4.2"
     yargs: "npm:^17.7.2"
   bin:
     replace-in-file: bin/cli.js
-  checksum: 10c0/a6e4283a774c155c484f222ac11f9dbc21ce64f180b240e95206e05ac856e23205ed0b0b6b0286746b453df0ec3b37a64f93c23b7df9b70cdda8eab57fc6d2d8
+  checksum: 10c0/0862e36112c06be39ff2bb1f3448dc976adc89d1d80ca6613b4410683e62338fd83d69c2d291065d7603bd1361e52ff672406eeea2e38309b9368a8f6fcad7c0
   languageName: node
   linkType: hard
 
