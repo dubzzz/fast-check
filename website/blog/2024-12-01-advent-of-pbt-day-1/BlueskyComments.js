@@ -408,5 +408,9 @@ export default function BlueskyComments({ url }) {
       load();
     }
   }, []);
+
+  if (!url) {
+    return null;
+  }
   return <bluesky-comments url={url}></bluesky-comments>;
 }
