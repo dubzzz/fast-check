@@ -2,7 +2,7 @@ import adventBuggy from './buggy.mjs';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
-  day: 18,
+  day: 19,
   buildBuggyAdvent: adventBuggy,
   referenceAdvent: findOptimalPacking,
   postAdvent: (sleights: number[][]) => sleights.length,
