@@ -2,9 +2,11 @@
 title: Advent of PBT 2024 · Day 17
 authors: [dubzzz]
 tags: [advent-of-pbt, advent-of-pbt-2024]
+image: ./social.png
 ---
 
 import {AdventPlaygroundOfTheDay,FormOfTheDay} from './AdventOfTheDay';
+import BlueskyComments from '../2024-12-01-advent-of-pbt-day-1/BlueskyComments';
 
 Christmas is at risk! In their rush to meet tight deadlines, Santa’s elves accidentally introduced bugs into critical algorithms. If these issues aren’t discovered in time, Christmas could be delayed for everyone worldwide!
 
@@ -29,3 +31,7 @@ Your mission: Can you find an email address that, despite being valid, is incorr
 ## Your answer
 
 <FormOfTheDay />
+
+## Comments
+
+<BlueskyComments url="https://bsky.app/profile/fast-check.dev/post/3ldifkvx77k2n" />
