@@ -39,3 +39,7 @@ Can you find an issue in their implementation and save Christmas? 🎄✨
 ## Your answer
 
 <FormOfTheDay />
+
+## Comments
+
+<BlueskyComments url="https://bsky.app/profile/fast-check.dev/post/3ldkw4tnh5s2x" />
