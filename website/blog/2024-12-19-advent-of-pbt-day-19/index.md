@@ -45,4 +45,4 @@ Santa is counting on you to ensure no unnecessary trips delay his gift delivery.
 
 ## Comments
 
-<BlueskyComments url="" />
+<BlueskyComments url="https://bsky.app/profile/fast-check.dev/post/3ldnepa4pi22n" />
