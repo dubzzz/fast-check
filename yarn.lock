@@ -3719,7 +3719,7 @@ __metadata:
     "@types/node": "npm:^20.14.15"
     fast-check: "workspace:*"
     typescript: "npm:~5.7.2"
-    vite: "npm:^6.0.3"
+    vite: "npm:^6.0.4"
     vitest: "npm:^2.1.8"
   peerDependencies:
     vitest: ">=0.28.1 <1.0.0 || ^1 || ^2"
@@ -20679,9 +20679,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "vite@npm:6.0.3"
+"vite@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "vite@npm:6.0.4"
   dependencies:
     esbuild: "npm:^0.24.0"
     fsevents: "npm:~2.3.3"
@@ -20727,7 +20727,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/764ebed14770426a638575b23a51127c630ace873999ab896b0184484d8107e7255cdf64cfb36c65c1ef1d583e44b70a1d14c0f05b89612e834a5806e3964475
+  checksum: 10c0/b1808f99250980bb1dc7805897ecfced4913adc7b4fd1cf7912e034f3e24e3e97a751ca3410620428bf073070f0b46071b94c4241cf9fc88b12f2d9dcafd7619
   languageName: node
   linkType: hard
 
