@@ -32,21 +32,21 @@ function findStartIndex(partlyShuffled) {
 
 // Inputs parser
 
-const presentRegex = /^(\d+)$/;
+const valueRegex = /^(-?\d+)$/;
 
 function parser(answer: string): unknown[] | undefined {
   const lines = answer.split('\n');
   const items: number[] = [];
-  for (let i = 0; i < lines.length - 1; ++i) {
-    const m = presentRegex.exec(lines[i]);
+  for (let i = 0; i < lines.length; ++i) {
+    const m = valueRegex.exec(lines[i]);
     if (m === null) {
       throw new Error(`All lines except must be of the form <item>. Received: ${lines[i]}.`);
     }
-    const weight = Number(m[1]);
-    if (!Number.isInteger(weight)) {
+    const value = Number(m[1]);
+    if (!Number.isInteger(value)) {
       throw new Error(`The value of items must be integer. Received: ${m[1]}.`);
     }
-    items.push(weight);
+    items.push(value);
   }
   if (items.length === 0) {
     throw new Error(`Must provide at least one item.`);
