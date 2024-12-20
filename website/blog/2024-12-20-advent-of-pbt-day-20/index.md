@@ -46,4 +46,4 @@ Santa has already tested the solution thoroughly and hasn’t found any issues, 
 
 ## Comments
 
-<BlueskyComments url="" />
+<BlueskyComments url="https://bsky.app/profile/fast-check.dev/post/3ldpumndae22n" />
