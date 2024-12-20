@@ -24,14 +24,13 @@ export default function advent() {
         return index;
       },
       pop: () => {
-        const prevLast = (last - 1 + size) % size;
-        const prevIndex = remapped[prevLast];
-        if (data[prevIndex] === undefined) {
+        const index = remapped[first];
+        if (data[index] === undefined) {
           return -1;
         }
-        data[prevIndex] = undefined;
-        last = prevLast;
-        return prevIndex;
+        data[index] = undefined;
+        first = (first + 1) % size;
+        return index;
       },
       isEmpty: () => {
         return first === last;
