@@ -4,11 +4,11 @@ import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfT
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 22,
   buildBuggyAdvent: adventBuggy,
-  referenceAdvent: findOptimalPacking,
+  referenceAdvent: computeSantaMindScore,
   parser,
   placeholderForm: '🎄🎁⛄🎈🎅\n🎁🎄⛄🎄🦌',
-  functionName: 'findOptimalPacking',
-  signature: 'findOptimalPacking(weights: number[]): number[][];',
+  functionName: 'computeSantaMindScore',
+  signature: 'findOptimalPacking(secretSequence: Sequence, guessedSequence: Sequence): { goodPlacement: number; misplaced: number };',
   signatureExtras: [
     "type Icon = '🎄' | '🦌' | '⛄' | '🛷' | '🎈' | '🎀' | '🎅' | '🎁';",
     'type Sequence = [Icon, Icon, Icon, Icon, Icon];',
@@ -22,7 +22,7 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 type Icon = '🎄' | '🦌' | '⛄' | '🛷' | '🎈' | '🎀' | '🎅' | '🎁';
 type Sequence = [Icon, Icon, Icon, Icon, Icon];
 
-function findOptimalPacking(
+function computeSantaMindScore(
   secretSequence: Sequence,
   guessedSequence: Sequence,
 ): { goodPlacement: number; misplaced: number } {
