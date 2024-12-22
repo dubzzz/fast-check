@@ -9,7 +9,7 @@ export default function advent() {
    * @param {Sequence} guessedSequence
    * @returns {{goodPlacement:number; misplaced: number}}
    */
-  return function findOptimalPacking(secretSequence, guessedSequence) {
+  return function computeSantaMindScore(secretSequence, guessedSequence) {
     let goodPlacement = 0;
     let misplaced = 0;
     const copiedSecretSequence = [...secretSequence];
