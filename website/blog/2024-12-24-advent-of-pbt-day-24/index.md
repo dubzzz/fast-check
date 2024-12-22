@@ -34,6 +34,8 @@ So elves created a more sophisticated algorithm that handles multiple payslips s
 >
 > An array of arrays, where each inner array contains the coins used to fulfill a payslip (e.g., `[[7], [5], [2, 2, 4]]`).
 > Return null if it’s impossible to fulfill all payslips with the given coins.
+>
+> When returned the array should be in the same ordered as the received payslips.
 
 ## Hands On
 

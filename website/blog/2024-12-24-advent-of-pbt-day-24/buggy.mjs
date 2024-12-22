@@ -1,26 +1,48 @@
 // @ts-check
 
 export default function advent() {
+  /** @typedef {1|2|3|4|5|6|7|8|9|10} Coin */
+
   /**
-   * @param {number[]} weights
-   * @returns {number[][]}
+   * @param {Coin[]} availableCoins
+   * @param {number[]} amountsToBePaid
+   * @returns {Coin[][] | null}
    */
-  return function findOptimalPacking(weights) {
-    const sleights = [];
-    const sortedWeights = [...weights].sort((a, b) => b - a);
-    while (sortedWeights.length !== 0) {
-      let sleighWeight = 0;
-      const sleigh = [];
-      for (let i = 0; i < sortedWeights.length; ++i) {
-        if (sleighWeight + sortedWeights[i] <= 10) {
-          sleighWeight += sortedWeights[i];
-          sleigh.push(sortedWeights[i]);
-          sortedWeights.splice(i, 1);
-          i -= 1;
+  return function distributeCoins(availableCoins, amountsToBePaid) {
+    function payslipContentFor(availableCoins, amountToBePaid) {
+      const coins = [...availableCoins].sort((a, b) => b - a);
+      function helper(target, index) {
+        if (target === 0) {
+          return [];
         }
+        if (target < 0 || index >= coins.length) {
+          return null;
+        }
+        const withCurrent = helper(target - coins[index], index + 1);
+        if (withCurrent !== null) {
+          return [coins[index], ...withCurrent];
+        }
+        const withoutCurrent = helper(target, index + 1);
+        return withoutCurrent;
       }
-      sleights.push(sleigh);
+      return helper(amountToBePaid, 0);
     }
-    return sleights;
+
+    const remainingCoins = [...availableCoins];
+    const coinsForPayslips = [];
+    const orderedAmountsToBePaid = amountsToBePaid
+      .map((amount, index) => ({ amount, index }))
+      .sort((a, b) => a.amount - b.amount);
+    for (const { index, amount } of orderedAmountsToBePaid) {
+      const dedicatedCoins = payslipContentFor(remainingCoins, amount);
+      if (dedicatedCoins === null) {
+        return null;
+      }
+      for (const coin of dedicatedCoins) {
+        remainingCoins.splice(remainingCoins.indexOf(coin), 1);
+      }
+      coinsForPayslips[index] = dedicatedCoins;
+    }
+    return coinsForPayslips;
   };
 }
