@@ -75,7 +75,9 @@ function distributeCoins(availableCoins, payslips) {
 function parser(answer: string): unknown[] | undefined {
   const lines = answer.split('\n');
   if (lines.length !== 2) {
-    throw new Error('Expected to receive two lines one for the amounts (payslips) to be paid, another one for the coins');
+    throw new Error(
+      'Expected to receive two lines one for the amounts (payslips) to be paid, another one for the coins',
+    );
   }
   if (lines[0].at(-1) !== '?') {
     throw new Error(`First line must end by ?, got: ${lines[0]}.`);
