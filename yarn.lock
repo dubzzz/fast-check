@@ -3622,7 +3622,7 @@ __metadata:
     "@types/supertest": "npm:^6.0.2"
     express: "npm:^4.21.2"
     fast-check: "workspace:*"
-    happy-dom: "npm:^15.11.7"
+    happy-dom: "npm:^16.2.9"
     lodash: "npm:^4.17.21"
     pure-rand: "npm:^6.1.0"
     react: "npm:^19.0.0"
@@ -9796,7 +9796,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^4.2.0, entities@npm:^4.4.0, entities@npm:^4.5.0":
+"entities@npm:^4.2.0, entities@npm:^4.4.0":
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 10c0/5b039739f7621f5d1ad996715e53d964035f75ad3b9a4d38c6b3804bb226e282ffeae2443624d8fdd9c47d8e926ae9ac009c54671243f0c3294c26af7cc85250
@@ -11567,14 +11567,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^15.11.7":
-  version: 15.11.7
-  resolution: "happy-dom@npm:15.11.7"
+"happy-dom@npm:^16.2.9":
+  version: 16.2.9
+  resolution: "happy-dom@npm:16.2.9"
   dependencies:
-    entities: "npm:^4.5.0"
     webidl-conversions: "npm:^7.0.0"
     whatwg-mimetype: "npm:^3.0.0"
-  checksum: 10c0/22b08cac20192b08edf2e9c857ceeda8333a3301c4b5965a9550787b00db60d6d107c726390bd45a35305cd12ab086abd656bf957a408be0fcdc9fcd389f1973
+  checksum: 10c0/32f21d8e27f64c684d10a85004ed2e68219415cd6d2d6d7172f5ca6c174e483a8305fc452d72f449895e34160d17e995142461600bdd5339ea1069d0b74869c8
   languageName: node
   linkType: hard
 
