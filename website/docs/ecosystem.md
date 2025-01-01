@@ -20,7 +20,7 @@ This page provides a list of packages available in the fast-check ecosystem. It 
 - 🥈 active<sup>1</sup> non-official package
 - ⚠️ others
 
-1: The package has been updated in the last twelve months  
+1: The package has been updated in the last twelve months
 2: The package has been downloaded more than 1k times per month
 
 In each section, packages marked with ⭐ and 🥇 will come first in alphabetical order, followed by 🥈 and then 🌗 and ⚠️.
@@ -110,7 +110,7 @@ More details on the [package itself](https://www.npmjs.com/package/zod-fast-chec
 ![license](https://img.shields.io/npm/l/fast-check-io-ts.svg)
 ![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
 
-Convert [io-ts validators](https://gcanti.github.io/io-ts/) into arbitraries for fast-check.  
+Convert [io-ts validators](https://gcanti.github.io/io-ts/) into arbitraries for fast-check.
 More details on the [package itself](https://www.npmjs.com/package/fast-check-io-ts)!
 
 ### `graphql-codegen-fast-check` ⚠️
@@ -121,7 +121,7 @@ More details on the [package itself](https://www.npmjs.com/package/fast-check-io
 ![license](https://img.shields.io/npm/l/graphql-codegen-fast-check.svg)
 ![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
 
-Convert [GraphQL schemas](https://graphql.org/) into arbitraries for fast-check.  
+Convert [GraphQL schemas](https://graphql.org/) into arbitraries for fast-check.
 More details on the [package itself](https://www.npmjs.com/package/graphql-codegen-fast-check)!
 
 ### `json-schema-fast-check` ⚠️
@@ -132,7 +132,7 @@ More details on the [package itself](https://www.npmjs.com/package/graphql-codeg
 ![license](https://img.shields.io/npm/l/json-schema-fast-check.svg)
 ![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
 
-Convert [JSON Schemas](https://json-schema.org/) into arbitraries for fast-check.  
+Convert [JSON Schemas](https://json-schema.org/) into arbitraries for fast-check.
 More details on the [package itself](https://www.npmjs.com/package/json-schema-fast-check)!
 
 ### `idonttrustlikethat-fast-check` ⚠️
@@ -143,7 +143,7 @@ More details on the [package itself](https://www.npmjs.com/package/json-schema-f
 ![license](https://img.shields.io/npm/l/idonttrustlikethat-fast-check.svg)
 ![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
 
-Convert [idonttrustlikethat validators](https://github.com/AlexGalays/idonttrustlikethat) into arbitraries for fast-check.  
+Convert [idonttrustlikethat validators](https://github.com/AlexGalays/idonttrustlikethat) into arbitraries for fast-check.
 More details on the [package itself](https://www.npmjs.com/package/idonttrustlikethat-fast-check)!
 
 ### `mock-data-gen` ⚠️
@@ -154,7 +154,7 @@ More details on the [package itself](https://www.npmjs.com/package/idonttrustlik
 ![license](https://img.shields.io/npm/l/mock-data-gen.svg)
 ![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
 
-Convert [io-ts validators](https://gcanti.github.io/io-ts/) into arbitraries for fast-check.  
+Convert [io-ts validators](https://gcanti.github.io/io-ts/) into arbitraries for fast-check.
 More details on the [package itself](https://www.npmjs.com/package/mock-data-gen)!
 
 ### `jsverify-to-fast-check` 🌗
@@ -191,6 +191,103 @@ const fcArbitrary = jsc2fc(jscArbitrary);
 ```
 
 More details on the [package itself](https://www.npmjs.com/package/jsverify-to-fast-check)!
+
+### `typespec-fast-check` 🥈
+
+![npm version](https://badge.fury.io/js/typespec-fast-check.svg)
+![monthly downloads](https://img.shields.io/npm/dm/typespec-fast-check)
+![last commit](https://img.shields.io/github/last-commit/kaeluka/typespec-fast-check)
+![license](https://img.shields.io/npm/l/typespec-fast-check.svg)
+![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
+
+Already using [TypeSpec](https://typespec.io) to describe your API and generate your OpenAPI spec, JSON schema, etc.? You can use [`typespec-fast-check`](https://github.com/TomerAberbach/typespec-fast-check) to also generate fast-check arbitraries from your TypeSpec files.
+
+For example, the following TypeSpec file:
+
+```tsp
+model Person {
+  /** The person's first name. */
+  firstName: string;
+
+  /** The person's last name. */
+  lastName: string;
+
+  /** Age in years which must be equal to or greater than zero. */
+  @minValue(0) age: int32;
+
+  /** Person address */
+  address: Address;
+
+  /** List of nick names */
+  nickNames?: string[];
+
+  /** List of cars person owns */
+  cars?: Car[];
+}
+
+/** Represents an address */
+model Address {
+  street: string;
+  city: string;
+  country: string;
+}
+model Car {
+  /** Kind of car */
+  kind: "ev" | "ice";
+
+  /** Brand of the car */
+  brand: string;
+
+  /** Model of the car */
+  `model`: string;
+}
+```
+
+Can generate the following fast-check arbitraries file:
+
+```js
+// Generated from TypeSpec using `typespec-fast-check`
+
+import fc from 'fast-check';
+
+export const Car = fc.record({
+  /** Kind of car */
+  kind: fc.constantFrom('ev', 'ice'),
+  /** Brand of the car */
+  brand: fc.string(),
+  /** Model of the car */
+  model: fc.string(),
+});
+
+/** Represents an address */
+export const Address = fc.record({
+  street: fc.string(),
+  city: fc.string(),
+  country: fc.string(),
+});
+
+export const Person = fc.record(
+  {
+    /** The person's first name. */
+    firstName: fc.string(),
+    /** The person's last name. */
+    lastName: fc.string(),
+    /** Age in years which must be equal to or greater than zero. */
+    age: fc.nat(),
+    /** Person address */
+    address: Address,
+    /** List of nick names */
+    nickNames: fc.array(fc.string()),
+    /** List of cars person owns */
+    cars: fc.array(Car),
+  },
+  {
+    requiredKeys: ['firstName', 'lastName', 'age', 'address'],
+  },
+);
+```
+
+More details on the [package itself](https://www.npmjs.com/package/typespec-fast-check)!
 
 ## Test runners
 
@@ -354,7 +451,7 @@ External libraries leveraging fast-check, its properties and predicates to valid
 ![license](https://img.shields.io/npm/l/fp-ts-laws.svg)
 ![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
 
-Make sure your [fp-ts](https://gcanti.github.io/fp-ts/) constructs are properly configured.  
+Make sure your [fp-ts](https://gcanti.github.io/fp-ts/) constructs are properly configured.
 More details on the [package itself](https://www.npmjs.com/package/fp-ts-laws)!
 
 ## Other stacks
