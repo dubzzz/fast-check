@@ -86,7 +86,7 @@ expectType<fc.Arbitrary<string[]>>()(
   fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })),
   'Type of "chain" corresponds to the return type of the passed lambda',
 );
-expectType<fc.Arbitrary<number>>()(
+expectType<fc.Arbitrary<1 | 2 | 3>>()(
   fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value)),
   'Type of "chain" corresponds to the return type of the passed lambda',
 );
@@ -109,13 +109,11 @@ expectType<fc.Arbitrary<string>>()(
 );
 
 // constantFrom arbitrary
-expectType<fc.Arbitrary<number>>()(
-  fc.constantFrom(1, 2),
-  'By default, "constantFrom" simplifies the type (eg.: "1 -> number")',
-);
+expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(1, 2), 'By default, "constantFrom" preserves the precise type');
+expectType<fc.Arbitrary<number>>()(fc.constantFrom<number[]>(1, 2), 'But it also accepts to receive the type');
 expectType<fc.Arbitrary<1 | 2>>()(
   fc.constantFrom(...([1, 2] as const)),
-  '"as const" prevent extra simplification of "constantFrom"',
+  '"as const" was a way to prevent extra simplification of "constantFrom", it\'s now not needed anymore',
 );
 expectType<fc.Arbitrary<number | string>>()(
   fc.constantFrom(1, 2, 'hello'),
@@ -123,7 +121,7 @@ expectType<fc.Arbitrary<number | string>>()(
 );
 expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(
   fc.constantFrom(...([1, 2, 'hello'] as const)),
-  '"as const" prevent extra simplification of "constantFrom"',
+  '"as const" was a way to prevent extra simplification of "constantFrom"',
 );
 
 // uniqueArray arbitrary

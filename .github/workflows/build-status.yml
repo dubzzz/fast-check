@@ -433,10 +433,9 @@ jobs:
         ts-version:
           # Latest version of TypeScript
           - 'latest'
-          # Various intermediate versions of Typescript
-          - '4.4'
-          # Minimal requirement for TypeScript (should be 4.1)
-          - '4.2'
+          # Various intermediate versions of Typescript (if any required)
+          # Minimal requirement for TypeScript
+          - '5.0'
           # Other release channels for TypeScript
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

@@ -6,7 +6,7 @@ import { natToStringifiedNatMapper, natToStringifiedNatUnmapper } from '../mappe
 
 /** @internal */
 export function buildStringifiedNatArbitrary(maxValue: number): Arbitrary<string> {
-  return tuple(constantFrom<('dec' | 'oct' | 'hex')[]>('dec', 'oct', 'hex'), nat(maxValue)).map(
+  return tuple(constantFrom('dec', 'oct', 'hex'), nat(maxValue)).map(
     natToStringifiedNatMapper,
     natToStringifiedNatUnmapper,
   );
