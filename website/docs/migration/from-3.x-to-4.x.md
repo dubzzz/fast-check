@@ -48,3 +48,5 @@ fc.record(definition, {}); // equivalent to "requiredKeys: undefined", previousl
 
   </TabItem>
 </Tabs>
+
+Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578)
