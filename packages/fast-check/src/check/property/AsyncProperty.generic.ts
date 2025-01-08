@@ -118,7 +118,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
     try {
       const output = await this.predicate(v);
-      return output == null || output === true
+      return output === undefined || output === true
         ? null
         : {
             error: new Error('Property failed by returning false'),
