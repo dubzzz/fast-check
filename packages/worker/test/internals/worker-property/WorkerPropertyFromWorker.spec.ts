@@ -31,7 +31,7 @@ describe('WorkerPropertyFromWorker', () => {
     const property = new WorkerPropertyFromWorker(arbitraries, predicate);
     const value = property.generate(mrng, 0);
     property.runBeforeEach();
-    property.run(value.value_, true);
+    property.run(value.value_);
     property.runAfterEach();
 
     // Assert

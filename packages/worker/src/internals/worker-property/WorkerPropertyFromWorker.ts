@@ -89,7 +89,12 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
   }
 
   run(v: Ts, dontRunHook?: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
-    return this.internalProperty.run(v, dontRunHook);
+    return (
+      this.internalProperty.run as (
+        v: Ts,
+        dontRunHook?: boolean,
+      ) => Promise<PreconditionFailure | PropertyFailure | null>
+    )(v, dontRunHook);
   }
 
   beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {

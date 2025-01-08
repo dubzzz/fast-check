@@ -115,10 +115,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
     await this.afterEachHook();
   }
 
-  async run(v: Ts, dontRunHook?: boolean): Promise<PreconditionFailure | PropertyFailure | null> {
-    if (!dontRunHook) {
-      await this.beforeEachHook();
-    }
+  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
     try {
       const output = await this.predicate(v);
       return output == null || output === true
@@ -135,10 +132,6 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
         return { error: err, errorMessage: err.stack }; // stack includes the message
       }
       return { error: err, errorMessage: String(err) };
-    } finally {
-      if (!dontRunHook) {
-        await this.afterEachHook();
-      }
     }
   }
 

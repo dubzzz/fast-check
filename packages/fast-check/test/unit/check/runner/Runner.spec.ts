@@ -32,7 +32,9 @@ describe('Runner', () => {
         isAsync: () => isAsync,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: () => null,
+        runAfterEach: () => {},
       };
       expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError();
     });
@@ -41,7 +43,9 @@ describe('Runner', () => {
         isAsync: () => false,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: () => null,
+        runAfterEach: () => {},
       };
       expect(() => check(p, { reporter: () => {} })).not.toThrowError();
     });
@@ -50,7 +54,9 @@ describe('Runner', () => {
         isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: () => null,
+        runAfterEach: () => {},
       };
       expect(() => check(p, { reporter: () => {} })).not.toThrowError();
     });
@@ -59,7 +65,9 @@ describe('Runner', () => {
         isAsync: () => false,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: () => null,
+        runAfterEach: () => {},
       };
       expect(() => check(p, { asyncReporter: async () => {} })).toThrowError();
     });
@@ -68,7 +76,9 @@ describe('Runner', () => {
         isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: () => null,
+        runAfterEach: () => {},
       };
       expect(() => check(p, { asyncReporter: async () => {} })).not.toThrowError();
     });
@@ -83,11 +93,13 @@ describe('Runner', () => {
           return new Value([numCallsGenerate] as [number], undefined);
         },
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: (value: [number]) => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
           ++numCallsRun;
           return null;
         },
+        runAfterEach: () => {},
       };
       const out = check(p) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(100);
@@ -105,11 +117,13 @@ describe('Runner', () => {
           return new Value([numCallsGenerate] as [number], undefined);
         },
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: (value: [number]) => {
           expect(value[0]).toEqual(numCallsGenerate); // called with previously generated value
           ++numCallsRun;
           return null;
         },
+        runAfterEach: () => {},
       };
       const out = check(p, { path: '3002' }) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(100);
@@ -136,10 +150,12 @@ describe('Runner', () => {
           }
           return new Stream(g());
         },
+        runBeforeEach: () => {},
         run: () => {
           ++numCallsRun;
           return null;
         },
+        runAfterEach: () => {},
       };
       const out = check(p, { path: '3002:0' }) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(1);
@@ -166,6 +182,7 @@ describe('Runner', () => {
               isAsync: () => isAsyncProp,
               generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => Stream.nil(),
+              runBeforeEach: () => {},
               run: (value: [number]) => {
                 ++numCallsRun;
                 const successId = successIds.indexOf(value[0]);
@@ -173,6 +190,7 @@ describe('Runner', () => {
                   return successId === failAtId ? { error: new Error(), errorMessage: 'failed' } : null;
                 return new PreconditionFailure();
               },
+              runAfterEach: () => {},
             };
             const out = await check(p);
             if (failAtId == null) {
@@ -208,11 +226,13 @@ describe('Runner', () => {
               isAsync: () => isAsyncProp,
               generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => Stream.nil(),
+              runBeforeEach: () => {},
               run: (value: [number]) => {
                 if (value[0] === settings.onlySuccessId) return null;
                 ++numPreconditionFailures;
                 return new PreconditionFailure();
               },
+              runAfterEach: () => {},
             };
             const out = await check(p, { numRuns: 2, maxSkipsPerRun: settings.maxSkipsPerRun });
             const expectedSkips = 2 * settings.maxSkipsPerRun + 1;
@@ -237,10 +257,12 @@ describe('Runner', () => {
         shrink: () => {
           throw 'Not implemented';
         },
+        runBeforeEach: () => {},
         run: (_value: [number]) => {
           ++numCallsRun;
           return null;
         },
+        runAfterEach: () => {},
       };
       const out = check(p) as RunDetails<[number]>;
       expect(numCallsGenerate).toEqual(100);
@@ -259,9 +281,11 @@ describe('Runner', () => {
               return new Value([0], undefined);
             },
             shrink: () => Stream.nil(),
+            runBeforeEach: () => {},
             run: (_value: [number]) => {
               return ++numCallsRun < num ? null : { error: new Error(), errorMessage: 'error' };
             },
+            runAfterEach: () => {},
           };
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
           expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
@@ -284,10 +308,12 @@ describe('Runner', () => {
               return new Value([0], undefined);
             },
             shrink: () => Stream.nil(),
+            runBeforeEach: () => {},
             run: (_value: [number]) => {
               ++numCallsRun;
               return null;
             },
+            runAfterEach: () => {},
           };
           const out = check(p, { numRuns: num }) as RunDetails<[number]>;
           expect(numCallsGenerate).toEqual(num);
@@ -306,10 +332,12 @@ describe('Runner', () => {
                 return new Value([rng.nextInt()], undefined);
               },
               shrink: () => Stream.nil(),
+              runBeforeEach: () => {},
               run: (value: [number]) => {
                 runOn.push(value[0]);
                 return null;
               },
+              runAfterEach: () => {},
             };
             return p;
           };
@@ -330,9 +358,11 @@ describe('Runner', () => {
         shrink: () => {
           throw 'Not implemented';
         },
+        runBeforeEach: () => {},
         run: (_value: [number]) => {
           return { error: new Error(), errorMessage: 'failure' };
         },
+        runAfterEach: () => {},
       };
       const out = check(p, { endOnFailure: true }) as RunDetails<[number]>;
       expect(out.failed).toBe(true);
@@ -350,9 +380,11 @@ describe('Runner', () => {
           }
           return Stream.of(new Value([42], undefined));
         },
+        runBeforeEach: () => {},
         run: (value: [number]) => {
           return value[0] === 42 ? { error: new Error(), errorMessage: 'failure' } : null;
         },
+        runAfterEach: () => {},
       };
       const out = check(p, { path: '0:0', endOnFailure: true }) as RunDetails<[number]>;
       expect(out.failed).toBe(true);
@@ -363,7 +395,9 @@ describe('Runner', () => {
         isAsync: () => false,
         generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: () => ({ error: new Error(), errorMessage: 'failure' }),
+        runAfterEach: () => {},
       };
       const out = check(p) as RunDetails<[number]>;
       expect(out.failures).toHaveLength(0);
@@ -377,7 +411,9 @@ describe('Runner', () => {
             ? Stream.of(new Value([48], undefined), new Value([12], undefined))
             : Stream.nil();
         },
+        runBeforeEach: () => {},
         run: () => ({ error: new Error(), errorMessage: 'failure' }),
+        runAfterEach: () => {},
       };
       const out = check(p, { verbose: true }) as RunDetails<[number]>;
       expect(out.failures).not.toHaveLength(0);
@@ -406,11 +442,13 @@ describe('Runner', () => {
               }
               return new Stream(g());
             },
+            runBeforeEach: () => {},
             run: (_value: [number]) => {
               if (--remainingBeforeFailure >= 0) return null;
               remainingBeforeFailure = failurePoints[++idx];
               return { error: new Error(), errorMessage: 'failure' };
             },
+            runAfterEach: () => {},
           };
           const expectedFailurePath = failurePoints.join(':');
           const out = check(p, { seed: seed }) as RunDetails<[number]>;
@@ -439,12 +477,14 @@ describe('Runner', () => {
             shrink: (value) => {
               return value.value[0] === 1 ? Stream.of(new Value([42], undefined)) : Stream.nil();
             },
+            runBeforeEach: async () => {},
             run: async (_value: [number]) => {
               await new Promise<void>((resolve) => {
                 waitingResolve.push(resolve);
               });
               return ++numCallsRun < num ? null : { error: new Error(), errorMessage: 'error' };
             },
+            runAfterEach: async () => {},
           };
           const checker = check(p, { seed: seed }) as Promise<RunDetails<[number]>>;
           checker.then(() => (runnerHasCompleted = true));
@@ -475,7 +515,9 @@ describe('Runner', () => {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: async () => {},
         run: async (_value: [number]) => null,
+        runAfterEach: async () => {},
       };
       const out = await (check(p) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(false);
@@ -486,7 +528,9 @@ describe('Runner', () => {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: async () => {},
         run: async (_value: [number]) => await wait(0),
+        runAfterEach: async () => {},
       };
       const out = await (check(p, { timeout: 100 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(false);
@@ -497,7 +541,9 @@ describe('Runner', () => {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: async () => {},
         run: async (_value: [number]) => await wait(100),
+        runAfterEach: async () => {},
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(true);
@@ -508,7 +554,9 @@ describe('Runner', () => {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: async () => {},
         run: async (_value: [number]) => await neverEnds(),
+        runAfterEach: async () => {},
       };
       const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
       expect(out.failed).toBe(true);
@@ -521,19 +569,25 @@ describe('Runner', () => {
       isAsync: () => false,
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
+      runBeforeEach: () => {},
       run: (_v: [any, any]) => ({ error: new Error(), errorMessage: 'error in failingProperty' }),
+      runAfterEach: () => {},
     };
     const failingComplexProperty: IRawProperty<[any, any, any]> = {
       isAsync: () => false,
       generate: () => new Value([[v1, v2], v2, v1], undefined),
       shrink: () => Stream.nil(),
+      runBeforeEach: () => {},
       run: (_v: [any, any, any]) => ({ error: new Error(), errorMessage: 'error in failingComplexProperty' }),
+      runAfterEach: () => {},
     };
     const successProperty: IRawProperty<[any, any]> = {
       isAsync: () => false,
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
+      runBeforeEach: () => {},
       run: (_v: [any, any]) => null,
+      runAfterEach: () => {},
     };
 
     it('Should throw if property is null', () => {
@@ -580,7 +634,9 @@ describe('Runner', () => {
             ? Stream.of(new Value([48], undefined), new Value([12], undefined))
             : Stream.nil();
         },
+        runBeforeEach: () => {},
         run: () => ({ error: new Error(), errorMessage: 'failure' }),
+        runAfterEach: () => {},
       };
       it('Should throw with base message by default (no verbose)', () => {
         expect(() => rAssert(p)).toThrowError(baseErrorMessage);
@@ -618,7 +674,9 @@ describe('Runner', () => {
         isAsync: () => false,
         generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
+        runBeforeEach: () => {},
         run: () => new PreconditionFailure(),
+        runAfterEach: () => {},
       };
       it('Should throw with base message by default (no verbose)', () => {
         expect(() => rAssert(p)).toThrowError(baseErrorMessage);
