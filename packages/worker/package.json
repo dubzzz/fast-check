@@ -50,7 +50,7 @@
     "pure-rand": "^6.1.0"
   },
   "devDependencies": {
-    "@types/node": "^20.14.15",
+    "@types/node": "^20.17.12",
     "typescript": "~5.7.2",
     "vitest": "^2.1.8"
   },

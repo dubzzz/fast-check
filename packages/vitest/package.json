@@ -50,7 +50,7 @@
     "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2"
   },
   "devDependencies": {
-    "@types/node": "^20.14.15",
+    "@types/node": "^20.17.12",
     "fast-check": "workspace:*",
     "typescript": "~5.7.2",
     "vite": "^6.0.7",
