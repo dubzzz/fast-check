@@ -38,3 +38,13 @@ fc.record(recordModel, {
 ```
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578)
+
+## Advanced usages
+
+### Property execution
+
+If you have implemented a custom class that adheres to the `IRawProperty` API required by property runners, or if you have created a custom property runner (e.g., a custom implementation of `fc.assert` or `fc.check`), this change may affect your code.
+
+The update requires property executors to explicitly call the `runBeforeEach` and `runAfterEach` hooks. This adjustment can already be made in version 3 by passing true as the second argument to the run method of properties.
+
+Related pull requests: [#5581](https://github.com/dubzzz/fast-check/pull/5581)
