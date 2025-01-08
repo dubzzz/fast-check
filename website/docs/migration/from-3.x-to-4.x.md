@@ -3,9 +3,6 @@ sidebar_position: 1
 slug: /migration-guide/from-3.x-to-4.x/
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # From 3.x to 4.x
 
 Simple migration guide to fast-check v4 starting from fast-check v3
@@ -30,23 +27,14 @@ In earlier versions, the `record` arbitrary included a flag named `withDeletedKe
 
 To migrate, update your usage of the `record` arbitrary as follows:
 
-<Tabs>
-  <TabItem value="before" label="Before">
-
-```ts
-fc.record(definition, { withDeletedKeys: true });
-fc.record(definition, { withDeletedKeys: false });
+```diff
+fc.record(definition, {
+-  withDeletedKeys: true,
++  requiredKeys: [],
+});
+fc.record(definition, {
+-  withDeletedKeys: false,
+});
 ```
-
-  </TabItem>
-  <TabItem value="after" label="After" default>
-
-```ts
-fc.record(definition, { requiredKeys: [] }); // previously: "withDeletedKeys: true"
-fc.record(definition, {}); // equivalent to "requiredKeys: undefined", previously: "withDeletedKeys: false"
-```
-
-  </TabItem>
-</Tabs>
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578)
