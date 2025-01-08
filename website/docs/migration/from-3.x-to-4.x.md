@@ -28,11 +28,11 @@ In earlier versions, the `record` arbitrary included a flag named `withDeletedKe
 To migrate, update your usage of the `record` arbitrary as follows:
 
 ```diff
-fc.record(definition, {
+fc.record(recordModel, {
 -  withDeletedKeys: true,
 +  requiredKeys: [],
 });
-fc.record(definition, {
+fc.record(recordModel, {
 -  withDeletedKeys: false,
 });
 ```
