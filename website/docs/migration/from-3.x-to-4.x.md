@@ -41,6 +41,12 @@ Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578)
 
 ## Advanced usages
 
+### Custom reporters
+
+The `error` field has been removed from the `RunDetails` object returned by `fc.check`. If you need access to the error message, use the `errorInstance` field instead, which was introduced in version 3.0.0.
+
+Related pull requests: [#5584](https://github.com/dubzzz/fast-check/pull/5584)
+
 ### Property execution
 
 If you have implemented a custom class that adheres to the `IRawProperty` API required by property runners, or if you have created a custom property runner (e.g., a custom implementation of `fc.assert` or `fc.check`), this change may affect your code.

@@ -17,11 +17,6 @@ export type PropertyFailure = {
    * @remarks Since 3.0.0
    */
   error: unknown;
-  /**
-   * The error message extracted from the error
-   * @remarks Since 3.0.0
-   */
-  errorMessage: string;
 };
 
 /**

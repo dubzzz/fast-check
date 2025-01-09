@@ -11,7 +11,7 @@ import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
 } from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
-import { Error, String } from '../../utils/globals';
+import { Error } from '../../utils/globals';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -120,18 +120,12 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       const output = await this.predicate(v);
       return output === undefined || output === true
         ? null
-        : {
-            error: new Error('Property failed by returning false'),
-            errorMessage: 'Error: Property failed by returning false',
-          };
+        : { error: new Error('Property failed by returning false') };
     } catch (err) {
       // precondition failure considered as success for the first version
       if (PreconditionFailure.isFailure(err)) return err;
       // exception as PropertyFailure in case of real failure
-      if (err instanceof Error && err.stack) {
-        return { error: err, errorMessage: err.stack }; // stack includes the message
-      }
-      return { error: err, errorMessage: String(err) };
+      return { error: err };
     }
   }
 

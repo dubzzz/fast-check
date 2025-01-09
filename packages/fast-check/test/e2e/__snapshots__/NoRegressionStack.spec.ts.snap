@@ -41,6 +41,13 @@ exports[`NoRegressionStack > return false 1`] = `
 Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: Property failed by returning false
+    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
+    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
+    at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
 `;

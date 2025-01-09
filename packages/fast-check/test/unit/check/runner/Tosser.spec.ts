@@ -21,7 +21,7 @@ const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
     generate = (rng: Random) => new Value(this.arb.generate(rng, undefined).value_, undefined);
     shrink = () => Stream.nil<Value<T>>();
     runBeforeEach = () => {};
-    run = () => ({ error: new Error(), errorMessage: 'failure' });
+    run = () => ({ error: new Error('failure') });
     runAfterEach = () => {};
   })(arb);
 
