@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/lodash": "^4.17.14",
-    "@types/react": "^19.0.3",
+    "@types/react": "^19.0.4",
     "@types/supertest": "^6.0.2",
     "happy-dom": "^16.5.3",
     "typescript": "~5.7.2",
