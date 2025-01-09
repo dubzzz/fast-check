@@ -128,6 +128,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // : Recursive structures
     { name: 'letrec', arbitraryBuilder: () => letrecTree() },
     { name: 'memo', arbitraryBuilder: () => memoTree() },
+    { name: 'gen', arbitraryBuilder: () => fc.gen() },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;

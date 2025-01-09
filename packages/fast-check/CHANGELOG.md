@@ -1,3 +1,56 @@
+# 3.23.2
+
+_Increased resiliency to poisoning_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.23.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.1...v3.23.2)]
+
+## Fixes
+
+- ([PR#5469](https://github.com/dubzzz/fast-check/pull/5469)) Bug: Make `subarray` a bit more resilient to poisoning
+- ([PR#5468](https://github.com/dubzzz/fast-check/pull/5468)) Bug: Make `stringify` a bit more resilient to poisoning
+- ([PR#5515](https://github.com/dubzzz/fast-check/pull/5515)) Bug: Make depth retrieval more resilient to poisoning
+- ([PR#5516](https://github.com/dubzzz/fast-check/pull/5516)) Bug: Make `mapToConstant` a bit more resilient to poisoning
+- ([PR#5517](https://github.com/dubzzz/fast-check/pull/5517)) Bug: Make run details printer a bit more resilient to poisoning
+- ([PR#5518](https://github.com/dubzzz/fast-check/pull/5518)) Bug: Make `gen` a bit more resilient to poisoning
+- ([PR#5456](https://github.com/dubzzz/fast-check/pull/5456)) CI: Allow Bluesky calls from the blog
+- ([PR#5457](https://github.com/dubzzz/fast-check/pull/5457)) CI: Add Bluesky CDN as trustable source for images
+- ([PR#5410](https://github.com/dubzzz/fast-check/pull/5410)) Doc: Release note for 3.23.0
+- ([PR#5413](https://github.com/dubzzz/fast-check/pull/5413)) Doc: Update social links on footer
+- ([PR#5414](https://github.com/dubzzz/fast-check/pull/5414)) Doc: Drop Twitter badge from README
+- ([PR#5415](https://github.com/dubzzz/fast-check/pull/5415)) Doc: Add link to bluesky account in the header of the doc
+- ([PR#5453](https://github.com/dubzzz/fast-check/pull/5453)) Doc: AdventOfPBT event Day 1
+- ([PR#5454](https://github.com/dubzzz/fast-check/pull/5454)) Doc: Saving Christmas with nroken playground
+- ([PR#5455](https://github.com/dubzzz/fast-check/pull/5455)) Doc: Add links towards Bluesky from the AdventOfPBT
+- ([PR#5460](https://github.com/dubzzz/fast-check/pull/5460)) Doc: Advent Of PBT, day 2
+- ([PR#5461](https://github.com/dubzzz/fast-check/pull/5461)) Doc: Add linkt towards Bluesky comments
+- ([PR#5464](https://github.com/dubzzz/fast-check/pull/5464)) Doc: Add quick code snippet directly from the documentation
+- ([PR#5465](https://github.com/dubzzz/fast-check/pull/5465)) Doc: Quick CTA to our Advent of PBT event
+- ([PR#5467](https://github.com/dubzzz/fast-check/pull/5467)) Doc: Single line success message for the Advent of PBT
+- ([PR#5470](https://github.com/dubzzz/fast-check/pull/5470)) Doc: Notify fast-check.dev account
+- ([PR#5471](https://github.com/dubzzz/fast-check/pull/5471)) Doc: Advent of PBT, day 3
+- ([PR#5472](https://github.com/dubzzz/fast-check/pull/5472)) Doc: Add comments section on Advent of PBT, Day 3
+- ([PR#5474](https://github.com/dubzzz/fast-check/pull/5474)) Doc: Advent of PBT, day 4
+- ([PR#5477](https://github.com/dubzzz/fast-check/pull/5477)) Doc: Add comments section on Advent of PBT, Day 4
+- ([PR#5479](https://github.com/dubzzz/fast-check/pull/5479)) Doc: Advent of PBT Day 5
+- ([PR#5480](https://github.com/dubzzz/fast-check/pull/5480)) Doc: Advent of PBT Day 5, link to comments on Bluesky
+- ([PR#5481](https://github.com/dubzzz/fast-check/pull/5481)) Doc: Do not send new success pixels when advent solved once
+- ([PR#5482](https://github.com/dubzzz/fast-check/pull/5482)) Doc: Add a counter showing the number of times the puzzle got solved
+- ([PR#5489](https://github.com/dubzzz/fast-check/pull/5489)) Doc: Advent Of PBT, Day 6
+- ([PR#5490](https://github.com/dubzzz/fast-check/pull/5490)) Doc: Advent of PBT, comments on Day 6
+- ([PR#5493](https://github.com/dubzzz/fast-check/pull/5493)) Doc: Fix playground code of Day 6
+- ([PR#5495](https://github.com/dubzzz/fast-check/pull/5495)) Doc: Advent of PBT Day 7
+- ([PR#5496](https://github.com/dubzzz/fast-check/pull/5496)) Doc: Advent of PBT Day 7, comments section
+- ([PR#5497](https://github.com/dubzzz/fast-check/pull/5497)) Doc: Advent of PBT Day 8
+- ([PR#5498](https://github.com/dubzzz/fast-check/pull/5498)) Doc: Advent of PBT Day 8, comments section
+- ([PR#5501](https://github.com/dubzzz/fast-check/pull/5501)) Doc: Drop buggy "solved times" at the end of each advent
+- ([PR#5500](https://github.com/dubzzz/fast-check/pull/5500)) Doc: Advent of PBT Day 9
+- ([PR#5503](https://github.com/dubzzz/fast-check/pull/5503)) Doc: Add back buggy "solved times" at the end of each advent
+- ([PR#5505](https://github.com/dubzzz/fast-check/pull/5505)) Doc: Advent of PBT Day 10
+- ([PR#5510](https://github.com/dubzzz/fast-check/pull/5510)) Doc: Advent Of PBT Day 10, comments section
+- ([PR#5508](https://github.com/dubzzz/fast-check/pull/5508)) Doc: Advent Of PBT Day 11
+- ([PR#5507](https://github.com/dubzzz/fast-check/pull/5507)) Doc: Advent Of PBT Day 12
+- ([PR#5509](https://github.com/dubzzz/fast-check/pull/5509)) Doc: Advent Of PBT Day 13
+- ([PR#5523](https://github.com/dubzzz/fast-check/pull/5523)) Doc: Advent of PBT add comments sections on days 11 to 13
+
 # 3.23.1
 
 _Faster instantiation of internet-related arbitraries_

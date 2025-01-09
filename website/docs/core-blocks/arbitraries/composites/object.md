@@ -80,13 +80,11 @@ It comes very useful when dealing with settings.
 
 - `fc.record(recordModel)`
 - `fc.record(recordModel, {requiredKeys?, noNullPrototype?})`
-- `fc.record(recordModel, {withDeletedKeys?, noNullPrototype?})`
 
 **with:**
 
 - `recordModel` — _structure of the resulting instance_
-- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted, remark: cannot be used with `withDeletedKeys`_
-- `withDeletedKeys?` — default: `false` — _when enabled, record might not generate all keys. `withDeletedKeys: true` is equivalent to `requiredKeys: []`, thus the two options cannot be used at the same time_
+- `requiredKeys?` — default: `[all keys of recordModel]` — _list of keys that should never be deleted_
 - `noNullPrototype?` — default: `true` — _only generate records based on the Object-prototype, do not generate any record with null-prototype_
 
 **Usages:**
@@ -131,11 +129,11 @@ fc.record(
 );
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
-// • {"id":"46045be9-0009-4000-8000-0008ffffffed","name":"Karen","age":11,"birthday":new Date("2100-12-31T23:59:59.996Z")}
+// • {"id":"46045be9-0009-4000-8000-0008ffffffed","name":"Karen","age":11,"birthday":new Date("2100-12-31T23:59:59.997Z")}
 // • {"id":"fffffffe-0015-4000-95a0-f8e9ffffffe7","name":"Karen","birthday":new Date("1970-01-01T00:00:00.018Z")}
 // • {"id":"e2b066ec-000b-4000-bfff-ffe7ccb1828d","name":"Karen","age":17}
 // • {"id":"43b7d8e5-d043-42ef-8000-001a00000005","age":16,"birthday":new Date("2004-10-16T22:01:09.416Z")}
-// • {"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.981Z")}
+// • {"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.982Z")}
 // • …
 
 fc.record(
@@ -143,15 +141,15 @@ fc.record(
     id: fc.uuidV(4),
     age: fc.nat(99),
   },
-  { withDeletedKeys: true },
+  { requiredKeys: [] },
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {"id":"ffffffe1-582d-457d-899e-8084fffffff7","age":97}
-// • {"age":96}
-// • {"id":"00000012-bdc2-4b1c-8a2a-245900000006","age":6}
-// • {"id":"8785297a-e305-43bc-bfff-fff1927a3512","age":30}
-// • {"age":17}
+// • {"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
+// • {"id":"ffffffee-ffef-4fff-8000-0015f69788ee","age":21}
+// • {"age":34}
+// • {"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
+// • {"id":"00000006-0007-4000-8397-86ea00000004"}
 // • …
 ```
 

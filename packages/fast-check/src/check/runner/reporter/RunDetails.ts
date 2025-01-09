@@ -30,7 +30,6 @@ export interface RunDetailsFailureProperty<Ts> extends RunDetailsCommon<Ts> {
   interrupted: boolean;
   counterexample: Ts;
   counterexamplePath: string;
-  error: string;
   errorInstance: unknown;
 }
 
@@ -48,7 +47,6 @@ export interface RunDetailsFailureTooManySkips<Ts> extends RunDetailsCommon<Ts> 
   interrupted: false;
   counterexample: null;
   counterexamplePath: null;
-  error: null;
   errorInstance: null;
 }
 
@@ -66,7 +64,6 @@ export interface RunDetailsFailureInterrupted<Ts> extends RunDetailsCommon<Ts> {
   interrupted: true;
   counterexample: null;
   counterexamplePath: null;
-  error: null;
   errorInstance: null;
 }
 
@@ -83,7 +80,6 @@ export interface RunDetailsSuccess<Ts> extends RunDetailsCommon<Ts> {
   interrupted: boolean;
   counterexample: null;
   counterexamplePath: null;
-  error: null;
   errorInstance: null;
 }
 
@@ -138,11 +134,6 @@ export interface RunDetailsCommon<Ts> {
    * @remarks Since 0.0.7
    */
   counterexample: Ts | null;
-  /**
-   * In case of failure: it contains the reason of the failure
-   * @remarks Since 0.0.7
-   */
-  error: string | null;
   /**
    * In case of failure: it contains the error that has been thrown if any
    * @remarks Since 3.0.0

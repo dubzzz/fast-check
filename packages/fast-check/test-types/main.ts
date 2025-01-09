@@ -86,7 +86,7 @@ expectType<fc.Arbitrary<string[]>>()(
   fc.nat().chain((n) => fc.array(fc.char(), { maxLength: n })),
   'Type of "chain" corresponds to the return type of the passed lambda',
 );
-expectType<fc.Arbitrary<number>>()(
+expectType<fc.Arbitrary<1 | 2 | 3>>()(
   fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value)),
   'Type of "chain" corresponds to the return type of the passed lambda',
 );
@@ -109,13 +109,11 @@ expectType<fc.Arbitrary<string>>()(
 );
 
 // constantFrom arbitrary
-expectType<fc.Arbitrary<number>>()(
-  fc.constantFrom(1, 2),
-  'By default, "constantFrom" simplifies the type (eg.: "1 -> number")',
-);
+expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(1, 2), 'By default, "constantFrom" preserves the precise type');
+expectType<fc.Arbitrary<number>>()(fc.constantFrom<number[]>(1, 2), 'But it also accepts to receive the type');
 expectType<fc.Arbitrary<1 | 2>>()(
   fc.constantFrom(...([1, 2] as const)),
-  '"as const" prevent extra simplification of "constantFrom"',
+  '"as const" was a way to prevent extra simplification of "constantFrom", it\'s now not needed anymore',
 );
 expectType<fc.Arbitrary<number | string>>()(
   fc.constantFrom(1, 2, 'hello'),
@@ -123,7 +121,7 @@ expectType<fc.Arbitrary<number | string>>()(
 );
 expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(
   fc.constantFrom(...([1, 2, 'hello'] as const)),
-  '"as const" prevent extra simplification of "constantFrom"',
+  '"as const" was a way to prevent extra simplification of "constantFrom"',
 );
 
 // uniqueArray arbitrary
@@ -199,14 +197,6 @@ expectType<fc.Arbitrary<{ a: number; b: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, {}),
   '"record" accepts empty constraints',
 );
-expectType<fc.Arbitrary<{ a: number; b: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: false }),
-  '"record" understands withDeletedKeys=false',
-);
-expectType<fc.Arbitrary<{ a?: number; b?: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true }),
-  '"record" understands withDeletedKeys=true',
-);
 expectType<fc.Arbitrary<{ a?: number; b?: string }>>()(
   fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] }),
   '"record" only applies optional on keys declared within requiredKeys even when empty',
@@ -242,12 +232,6 @@ expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string; a: number; 
     { requiredKeys: [mySymbol1, 'a'] as [typeof mySymbol1, 'a'] },
   ),
   '"record" only applies optional on keys declared within requiredKeys even if it contains symbols and normal keys',
-);
-expectType<fc.Arbitrary<never>>()(
-  // requiredKeys and withDeletedKeys cannot be used together
-  // typings are not perfect but at least they build a value that cannot be used
-  fc.record({ a: fc.nat(), b: fc.string() }, { withDeletedKeys: true, requiredKeys: [] }),
-  '"record" receiving both withDeletedKeys and requiredKeys is invalid',
 );
 type Query = { data: { field: 'X' } };
 expectType<fc.Arbitrary<Query>>()(
