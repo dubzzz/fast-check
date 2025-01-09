@@ -21,6 +21,17 @@ Version 4 of fast-check introduces significant changes as part of its major rele
 
 To ensure a smoother migration to version 4, we recommend first upgrading to the latest minor release of version 3. Then, review and address the following deprecation notices to align your codebase with supported patterns.
 
+### Changes on `date`
+
+In version 4, the `date` arbitrary will generate any `Date` instances by default, including Invalid Date. If your code cannot handle invalid dates, you should add the `noInvalidDate: true` constraint to the configuration of your date builder to exclude such values.
+
+```diff
+-fc.date();
++fc.date({ noInvalidDate: true });
+```
+
+Related pull requests: [#5589](https://github.com/dubzzz/fast-check/pull/5589)
+
 ### Changes on `record`
 
 In earlier versions, the `record` arbitrary included a flag named `withDeletedKeys`. Starting with version 2.11.0, this flag was deprecated and replaced by a new flag called `requiredKeys`. In version 4.0.0, the deprecated `withDeletedKeys` flag has been removed entirely.
