@@ -1,7 +1,7 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
