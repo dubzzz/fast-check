@@ -65,7 +65,7 @@
     "@types/node": "^22.10.5",
     "@vitest/coverage-v8": "^2.1.8",
     "cross-env": "^7.0.3",
-    "glob": "^11.0.0",
+    "glob": "^11.0.1",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^8.3.0",
