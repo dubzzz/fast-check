@@ -37,7 +37,7 @@ export class QualifiedParameters<T> {
   ignoreEqualValues: boolean;
   reporter: ((runDetails: RunDetails<T>) => void) | null;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
-  errorWithCause: boolean;
+  includeErrorInReport: boolean;
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -66,7 +66,7 @@ export class QualifiedParameters<T> {
     this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
     this.reporter = QualifiedParameters.readOrDefault(p, 'reporter', null);
     this.asyncReporter = QualifiedParameters.readOrDefault(p, 'asyncReporter', null);
-    this.errorWithCause = QualifiedParameters.readBoolean(p, 'errorWithCause');
+    this.includeErrorInReport = QualifiedParameters.readBoolean(p, 'includeErrorInReport');
   }
 
   toParameters(): Parameters<T> {
@@ -90,7 +90,7 @@ export class QualifiedParameters<T> {
       endOnFailure: this.endOnFailure,
       reporter: orUndefined(this.reporter),
       asyncReporter: orUndefined(this.asyncReporter),
-      errorWithCause: this.errorWithCause,
+      includeErrorInReport: this.includeErrorInReport,
     };
     return parameters;
   }

@@ -5,14 +5,6 @@ exports[`NoRegression BigInt > bigInt 1`] = `
 { seed: 42, path: "1:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:2:0:0:0:0:0:0:0:1:0:1:0:0:0:0:0:0:0:0:0:0:1:0:1:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:2:0:1:1:0:1:0:2:0:0:0:1:0:0:1:1:0", endOnFailure: true }
 Counterexample: [-39395841487650527926240175269879659877n]
 Shrunk 231 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [32m√[0m [-68n]
@@ -279,14 +271,6 @@ exports[`NoRegression BigInt > bigInt({max}) 1`] = `
 { seed: 42, path: "1:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:2:0:0:0:0:0:0:0:1:0:1:0:0:0:0:0:0:0:0:0:0:1:0:1:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:2:0:1:1:0:1:0:2:0:0:0:1:0:0:1:1:0", endOnFailure: true }
 Counterexample: [-39395841487650527926240175269879659877n]
 Shrunk 231 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [32m√[0m [-47n]
@@ -553,14 +537,6 @@ exports[`NoRegression BigInt > bigInt({min, max}) 1`] = `
 { seed: 42, path: "0:0", endOnFailure: true }
 Counterexample: [65536n]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [31m×[0m [18446744073709551598n]
@@ -572,14 +548,6 @@ exports[`NoRegression BigInt > bigInt({min}) 1`] = `
 { seed: 42, path: "0:0", endOnFailure: true }
 Counterexample: [65536n]
 Shrunk 1 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [31m×[0m [57896044618658097711785492504343953926634992332820282019728792003960859787248n]
@@ -591,14 +559,6 @@ exports[`NoRegression BigInt > bigInt64Array 1`] = `
 { seed: 42, path: "1:1:0:0:3:1:2:2:2:1:1:1:4:1:2:2:1:1:1:1:1:1:1:2:1:2:2:1:1:1:1:1:1:1:1:1:2:10:1", endOnFailure: true }
 Counterexample: [BigInt64Array.from([4164375494697153299n])]
 Shrunk 38 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [32m√[0m [BigInt64Array.from([])]
@@ -713,14 +673,6 @@ exports[`NoRegression BigInt > bigIntN 1`] = `
 { seed: 42, path: "1:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:2:0:0:0:0:0:0:1:0:0:0:0:0:0:1:1:0:0:0:0:0:0:0:0:0:0:1:0:1:1:1:0:0:1:0:0:0:1:2:1:0:0:1:0:0:0:0:0:3:0:1:1", endOnFailure: true }
 Counterexample: [4194867847541098797699n]
 Shrunk 77 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [32m√[0m [-18n]
@@ -831,14 +783,6 @@ exports[`NoRegression BigInt > bigUint 1`] = `
 { seed: 42, path: "0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0:0:1:0:0:0:0:0:2:0:0:0:4:0:0:2:0:1:1:1:1:0:0:0:0:0:0:1:0:1:0:1:0", endOnFailure: true }
 Counterexample: [85075794168298103635341375769565987988n]
 Shrunk 232 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [31m×[0m [115792089237316195423570985008687907853269984665640564039457584007913129639892n]
@@ -1106,14 +1050,6 @@ exports[`NoRegression BigInt > bigUint({max}) 1`] = `
 { seed: 42, path: "0:1:0:0:0:0:0:0:0:1:0:0:0:1:0:1:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:3:0:0:1:1:1:1:2:0:2:0:0:1:0:1:2:2:0:1:3", endOnFailure: true }
 Counterexample: [160187393467674982176938799n]
 Shrunk 70 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [31m×[0m [79228162514264337593543950321n]
@@ -1222,14 +1158,6 @@ exports[`NoRegression BigInt > bigUint64Array 1`] = `
 { seed: 42, path: "1:1:0:0:2:1:1:1:1:1:2:1:2:2:1:1:1:2:1:1:2:1:1:2:3:1:1:2:3:1:1:3:3:1:1:2:2:1:1:3:1:1:1:1:4:1", endOnFailure: true }
 Counterexample: [BigUint64Array.from([148057437989876990n])]
 Shrunk 45 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [32m√[0m [BigUint64Array.from([])]
@@ -1354,14 +1282,6 @@ exports[`NoRegression BigInt > bigUintN 1`] = `
 { seed: 42, path: "0:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:1:0:1:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:3:0:0:1:1:1:1:2:0:2:0:0:1:0:1:2:2:0:1:3", endOnFailure: true }
 Counterexample: [160187393467674982176938799n]
 Shrunk 74 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [31m×[0m [1267650600228229401496703205352n]
@@ -1474,14 +1394,6 @@ exports[`NoRegression BigInt > mixedCase 1`] = `
 { seed: 42, path: "0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:2", endOnFailure: true }
 Counterexample: ["cCbAabBAcaBCcCACcABaCAaAabBAcaBcBB"]
 Shrunk 29 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [31m×[0m ["CCbaabbaCabCccaCcaBAcaAAABbaCabCbb"]
@@ -1526,14 +1438,6 @@ exports[`NoRegression BigInt > mixedCase(stringOf) 1`] = `
 { seed: 42, path: "2:6:2", endOnFailure: true }
 Counterexample: ["aa"]
 Shrunk 2 time(s)
-Got error: Property failed by returning false
-    at Property.run (packages/fast-check/src/check/property/Property.generic.ts:?:?)
-    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
-    at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/chai/chai.js:?:?)
-    at packages/fast-check/test/e2e/NoRegressionBigInt.spec.ts:?:?
 
 Execution summary:
 [32m√[0m [""]

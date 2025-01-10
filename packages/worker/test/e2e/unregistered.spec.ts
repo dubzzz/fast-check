@@ -1,11 +1,12 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { buildUnregisteredProperty } from './__properties__/unregistered.cjs';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -21,7 +22,7 @@ if (isMainThread) {
         const expectedError = /Unregistered predicate/;
 
         // Act / Assert
-        await expect(assert(unregisteredProperty, defaultOptions)).rejects.toThrowError(expectedError);
+        await expectThrowWithCause(assert(unregisteredProperty, defaultOptions), expectedError);
       },
       jestTimeout,
     );
