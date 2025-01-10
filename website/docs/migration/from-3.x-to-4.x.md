@@ -50,6 +50,20 @@ fc.record(recordModel, {
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578)
 
+## Update to latest v4.x
+
+After applying the recommendations for migrating to the latest v3.x, transitioning to version 4 should be straightforward. However, there are still a few changes to review, either during the upgrade or as you use the updated library. These changes enhance functionality and ensure a more powerful tool by default.
+
+### Default error reporting
+
+We adopted a new approach to report errors by leveraging "[Error Cause](https://github.com/tc39/proposal-error-cause/blob/main/README.md#error-cause)", which is already supported by many test runners. Previously, when your predicate threw an `Error`, fast-check created a new `Error` instance with a message that combined fast-check’s failure details with your original error message.
+
+Now, it attaches your original error as a cause. This approach improves integration with test runners, which often parse error messages for stack trace cleanup and reporting.
+
+If you prefer the previous behavior, you can disable this feature in version 4 by enabling the `includeErrorInReport` flag. You can also test this behavior in version 3 by toggling the `errorWithCause` flag (renamed to `includeErrorInReport` in version 4).
+
+Related pull requests: [#5590](https://github.com/dubzzz/fast-check/pull/5590)
+
 ## Advanced usages
 
 ### Custom reporters
