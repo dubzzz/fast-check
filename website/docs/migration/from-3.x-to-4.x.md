@@ -50,7 +50,7 @@ fc.record(recordModel, {
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578)
 
-## Update to latest v4.x
+## Update to v4.x
 
 After applying the recommendations for migrating to the latest v3.x, transitioning to version 4 should be straightforward. However, there are still a few changes to review, either during the upgrade or as you use the updated library. These changes enhance functionality and ensure a more powerful tool by default.
 
