@@ -1,4 +1,4 @@
-import { expect } from "vitest";
+import { expect } from 'vitest';
 
 export async function expectThrowWithCause(
   promise: Promise<unknown>,
