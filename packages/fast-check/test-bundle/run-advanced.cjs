@@ -43,7 +43,11 @@ function testArbitrary(arb) {
   fc.statistics(
     arb,
     function (data) {
-      return String(String(data).length);
+      const dataWithPrototype =
+        data !== null && typeof data === 'object' && Object.getPrototypeOf(data) === null
+          ? Object.assign({}, data) // String(<no-prototype>) throws, we just put an Object prototype to not throw
+          : data;
+      return String(String(dataWithPrototype).length);
     },
     {
       logger: function (l) {
