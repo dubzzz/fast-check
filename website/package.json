@@ -36,7 +36,7 @@
     "@mdx-js/react": "^3.1.0",
     "@types/lodash": "^4.17.14",
     "@types/node": "^22.10.5",
-    "@types/react": "^19.0.4",
+    "@types/react": "^19.0.6",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jimp": "^1.6.0",
