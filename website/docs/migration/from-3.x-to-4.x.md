@@ -48,11 +48,14 @@ fc.record(recordModel, {
 });
 ```
 
-We also changed the defaulting on `record` to produce objects having null prototypes by default. As such if not told differently, when using `record` you will produce instances inheriting from the usual `Object` prototype but also some without any prototype. In order to disable such setting, you could use the constrait `noNullPrototype` added by version 3.13.0:
+Additionally, the default behavior of `record` has been updated in version 4 to generate objects that may have null prototypes by default. This means that, unless configured otherwise, `record` will produce instances inheriting from the usual `Object` prototype as well as instances with no prototype.
+
+If your code requires all generated objects to have the usual `Object` prototype, you can configure the `noNullPrototype` constraint to `true`. It has been introduced in version 3.13.0 and can be set as follow:
 
 ```ts
 fc.record(recordModel, {
   noNullPrototype: true,
+  // other contraints (if any)...
 });
 ```
 
