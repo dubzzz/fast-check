@@ -13,7 +13,7 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 | ----------------------- | --------------- | -------------------- |
 | TypeScript _(optional)_ | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605)
 
 ## Update to latest v3.x
 
@@ -64,6 +64,32 @@ Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578), 
 ## Update to v4.x
 
 After applying the recommendations for migrating to the latest v3.x, transitioning to version 4 should be straightforward. However, there are still a few changes to review, either during the upgrade or as you use the updated library. These changes enhance functionality and ensure a more powerful tool by default.
+
+### Better type inference
+
+Some typings have been enhanced to ease the user experience:
+
+```ts
+// In version 3:
+fc.constant('a'); // Produces an Arbitrary<string>
+fc.constant<'a'>('a'); // Produces an Arbitrary<'a'>
+
+// In version 4:
+fc.constant('a'); // Produces an Arbitrary<'a'>
+fc.constant<string>('a'); // Produces an Arbitrary<string>
+```
+
+```ts
+// In version 3:
+fc.constantFrom('a', 'b'); // Produces an Arbitrary<string>
+fc.constantFrom<'a' | 'b'>('a', 'b'); // Produces an Arbitrary<'a' | 'b'>
+
+// In version 4:
+fc.constantFrom('a', 'b'); // Produces an Arbitrary<'a' | 'b'>
+fc.constantFrom<string[]>('a', 'b'); // Produces an Arbitrary<string>
+```
+
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605)
 
 ### Default error reporting
 
