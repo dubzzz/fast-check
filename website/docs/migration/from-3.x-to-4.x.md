@@ -87,6 +87,17 @@ The `.noBias` method, previously available on every `Arbitrary`, was marked as d
 
 Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
 
+### Replace any reference to `uuidV`
+
+Introduced in version 3.21.0 for `uuid`, the `version` constraint is intended to replace `uuidV`. This change can already be applied in version 3 by making the following update:
+
+```diff
+--fc.uuidV(4);
+++fc.uuid({ version: 4 });
+```
+
+Related pull requests: [#5611](https://github.com/dubzzz/fast-check/pull/5611)
+
 ## Update to v4.x
 
 After applying the recommendations for migrating to the latest v3.x, transitioning to version 4 should be straightforward. However, there are still a few changes to review, either during the upgrade or as you use the updated library. These changes enhance functionality and ensure a more powerful tool by default.
