@@ -4832,20 +4832,6 @@ Execution summary:
 . . . . [31m×[0m ["00000000-0000-1000-8000-000000000000"]]
 `;
 
-exports[`NoRegression > uuidV 1`] = `
-[Error: Property failed after 1 tests
-{ seed: 42, path: "0:0:0:0:0", endOnFailure: true }
-Counterexample: ["00000000-0000-4000-8000-000000000000"]
-Shrunk 4 time(s)
-
-Execution summary:
-[31m×[0m ["ffffffe8-9cf2-4819-8000-0004ffffffe4"]
-. [31m×[0m ["00000000-9cf2-4819-8000-0004ffffffe4"]
-. . [31m×[0m ["00000000-0000-4000-8000-0004ffffffe4"]
-. . . [31m×[0m ["00000000-0000-4000-8000-0000ffffffe4"]
-. . . . [31m×[0m ["00000000-0000-4000-8000-000000000000"]]
-`;
-
 exports[`NoRegression > webAuthority 1`] = `
 [Error: Property failed after 2 tests
 { seed: 42, path: "1:0", endOnFailure: true }
