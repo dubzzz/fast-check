@@ -108,6 +108,10 @@ expectType<fc.Arbitrary<string>>()(
   '"map" alters the resulting type',
 );
 
+// constant arbitrary
+expectType<fc.Arbitrary<1>>()(fc.constant(1), 'By default, "constant" preserves the precise type');
+expectType<fc.Arbitrary<number>>()(fc.constant<number>(1), 'But it also accepts to receive the type');
+
 // constantFrom arbitrary
 expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(1, 2), 'By default, "constantFrom" preserves the precise type');
 expectType<fc.Arbitrary<number>>()(fc.constantFrom<number[]>(1, 2), 'But it also accepts to receive the type');
