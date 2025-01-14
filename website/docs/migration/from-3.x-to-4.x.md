@@ -61,6 +61,17 @@ fc.record(recordModel, {
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578), [#5597](https://github.com/dubzzz/fast-check/pull/5597)
 
+### Replace any reference to `.noBias`
+
+The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:
+
+```diff
+--myArbitrary.noBias();
+++fc.noBias(myArbitrary);
+```
+
+Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
+
 ## Update to v4.x
 
 After applying the recommendations for migrating to the latest v3.x, transitioning to version 4 should be straightforward. However, there are still a few changes to review, either during the upgrade or as you use the updated library. These changes enhance functionality and ensure a more powerful tool by default.
