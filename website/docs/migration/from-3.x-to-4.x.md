@@ -127,6 +127,44 @@ If you prefer the previous behavior, you can disable this feature in version 4 b
 
 Related pull requests: [#5590](https://github.com/dubzzz/fast-check/pull/5590)
 
+### Faster `scheduler`
+
+Since version 1.20.0, fast-check has included a primitive designed to help detect race conditions. This feature unlocked many advanced use cases and elevated the library's capabilities.
+
+However, the previous implementation was slower than intended and allowed intermediate tasks to be created and executed between two scheduled ones. This inconsistency could lead to scenarios where code passed tests but later failed when additional microtasks were introduced. To address this, we have reworked the scheduler in version 4 to be faster, more consistent, and safer.
+
+Consider the following example, where a scheduler instance `s` is used:
+
+```ts
+// `s`: an instance of scheduler provided by fast-check
+s.schedule(Promise.resolve(1)).then(async () => {
+  await 'something already resolved';
+  s.schedule(Promise.resolve(2));
+});
+await s.waitAll();
+```
+
+In version 3, all scheduled tasks, including `Promise.resolve(2)`, would have been executed by the end of `s.waitAll()`. In version 4, however, `Promise.resolve(2)` remains pending. This is because during the `waitAll` loop, the scheduler processes `Promise.resolve(1)` and continues execution until `await 'something already resolved'`. At that point, the scheduler resumes its waiting sequence, but `Promise.resolve(2)` has not yet been scheduled and remains unknown. As a result, `waitAll` finishes before executing it.
+
+This behavior makes the scheduler more predictable and prevents subtle issues. In contrast, version 3 behaved inconsistently when processing many immediately resolved tasks, as shown below:
+
+```ts
+// `s`: an instance of scheduler provided by fast-check
+s.schedule(Promise.resolve(1)).then(async () => {
+  await 'something already resolved';
+  await 'something already resolved';
+  await 'something already resolved';
+  await 'something already resolved';
+  await 'something already resolved';
+  s.schedule(Promise.resolve(2));
+});
+await s.waitAll();
+```
+
+On this second example version 3 would have behaved as version 4 with `Promise.resolve(2)` still pending. The only difference between the two examples being the number of `await` before the next scheduled tasks. This improvement ensures unexpected behaviors in such edge cases and ensures consistent behavior.
+
+Related pull requests: [#5600](https://github.com/dubzzz/fast-check/pull/5600), [#5604](https://github.com/dubzzz/fast-check/pull/5604), [#5614](https://github.com/dubzzz/fast-check/pull/5614)
+
 ## Advanced usages
 
 ### Custom reporters

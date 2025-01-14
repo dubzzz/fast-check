@@ -156,27 +156,30 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     // Placeholder resolver, immediately replaced by the one retrieved in `new Promise`
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     let resolveSequenceTask = () => {};
-    const sequenceTask = new Promise<void>((resolve) => (resolveSequenceTask = resolve));
+    const sequenceTask = new Promise<{ done: boolean; faulty: boolean }>((resolve) => {
+      resolveSequenceTask = () => resolve({ done: status.done, faulty: status.faulty });
+    });
 
     const onFaultyItemNoThrow = () => {
       status.faulty = true;
       resolveSequenceTask();
-    };
-    const onFaultyItem = (error: unknown) => {
-      onFaultyItemNoThrow(); // Faulty must resolve sequence as soon as possible without any extra then
-      throw error; // Faulty must stay faulty to avoid calling next items
     };
     const onDone = () => {
       status.done = true;
       resolveSequenceTask();
     };
 
-    let previouslyScheduled = dummyResolvedPromise;
-    for (const item of sequenceBuilders) {
-      const [builder, label, metadata] =
-        typeof item === 'function' ? [item, item.name, undefined] : [item.builder, item.label, item.metadata];
-      const onNextItem = () => {
-        // We schedule a successful promise that will trigger builder directly when triggered
+    const registerNextBuilder = (index: number, previous: PromiseLike<unknown>) => {
+      if (index >= sequenceBuilders.length) {
+        // All builders have been scheduled, we handle termination:
+        // if the last one succeeds then we are done, if it fails then the sequence should be marked as failed
+        previous.then(onDone, onFaultyItemNoThrow);
+        return;
+      }
+      previous.then(() => {
+        const item = sequenceBuilders[index];
+        const [builder, label, metadata] =
+          typeof item === 'function' ? [item, item.name, undefined] : [item.builder, item.label, item.metadata];
         const scheduled = this.scheduleInternal(
           'sequence',
           label,
@@ -185,16 +188,11 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           customAct || defaultSchedulerAct,
           () => builder(),
         );
-        return scheduled;
-      };
-      // We will run current item if and only if the one preceeding it succeeds
-      // Otherwise, we mark the run as "failed" and ignore any subsequent item (including this one)
-      previouslyScheduled = previouslyScheduled.then(onNextItem, onFaultyItem);
-    }
-    // Once last item is done, the full sequence can be considered as successful
-    // If it failed (or any preceeding one failed), then the sequence should be marked as failed (already marked for others)
-    // We always handle Promise rejection of previouslyScheduled internally, in other words no error will bubble outside
-    previouslyScheduled.then(onDone, onFaultyItemNoThrow);
+        registerNextBuilder(index + 1, scheduled);
+      }, onFaultyItemNoThrow);
+    };
+
+    registerNextBuilder(0, dummyResolvedPromise);
 
     // TODO Prefer getter instead of sharing the variable itself
     //      Would need to stop supporting <es5
@@ -202,11 +200,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     //   get done() { return status.done },
     //   get faulty() { return status.faulty }
     // };
-    return Object.assign(status, {
-      task: Promise.resolve(sequenceTask).then(() => {
-        return { done: status.done, faulty: status.faulty };
-      }),
-    });
+    return Object.assign(status, { task: sequenceTask });
   }
 
   count(): number {
