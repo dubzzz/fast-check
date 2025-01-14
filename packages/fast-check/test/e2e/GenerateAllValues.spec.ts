@@ -76,7 +76,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
           withTypedArray: true,
           withSparseArray: true,
           withUnicodeString: true,
-          ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
+          withBigInt: true,
         });
         while (++numTries <= 10000) {
           const { value } = arb.generate(mrng, undefined);
@@ -114,8 +114,6 @@ describe(`Generate all values (seed: ${seed})`, () => {
     checkCanProduce('null prototype object', 'object', '[object Object]', (instance: unknown) => {
       return Object.getPrototypeOf(instance) === null;
     });
-    if (typeof BigInt !== 'undefined') {
-      checkCanProduce('BigInt', 'bigint', '[object BigInt]');
-    }
+    checkCanProduce('BigInt', 'bigint', '[object BigInt]');
   });
 });

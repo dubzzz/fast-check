@@ -5,12 +5,6 @@ import { seed } from '../seed';
 declare function BigInt(n: number | bigint | string): bigint;
 
 describe(`BigIntArbitrary (seed: ${seed})`, () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
   describe('bitIntN', () => {
     it('Should be able to generate bigint above the highest positive double', () => {
       const out = fc.check(
