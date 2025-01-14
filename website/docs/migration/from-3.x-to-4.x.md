@@ -13,7 +13,7 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 | ----------------------- | --------------- | -------------------- |
 | TypeScript _(optional)_ | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5618](https://github.com/dubzzz/fast-check/pull/5618)
 
 ## Update to latest v3.x
 
