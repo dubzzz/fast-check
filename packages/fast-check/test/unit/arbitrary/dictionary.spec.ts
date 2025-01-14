@@ -37,11 +37,7 @@ describe('dictionary (integration)', () => {
   );
 
   const isCorrect = (value: Record<string, unknown>, extra: Extra) => {
-    if (
-      extra.constraints === undefined ||
-      extra.constraints.noNullPrototype ||
-      extra.constraints.noNullPrototype === undefined
-    ) {
+    if (extra.constraints !== undefined && extra.constraints.noNullPrototype) {
       expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
     }
     for (const k of Object.keys(value)) {

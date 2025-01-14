@@ -32,6 +32,21 @@ In version 4, the `date` arbitrary will generate any `Date` instances by default
 
 Related pull requests: [#5589](https://github.com/dubzzz/fast-check/pull/5589)
 
+### Changes on `dictionary`
+
+In version 4, the default behavior of `dictionary` will be updated to generate objects that may have null prototypes by default. As a result, unless configured otherwise, `dictionary` can produce both instances inheriting from the usual `Object` prototype and instances with no prototype.
+
+If your code requires all generated objects to inherit from the usual `Object` prototype, you can set the `noNullPrototype` constraint to `true` (used to be defaulted to `true` in version 3). This option was introduced in version 3.13.0 and can be applied as follows:
+
+```ts
+fc.dictionary(fc.string(), fc.string(), {
+  noNullPrototype: true,
+  // other contraints (if any)...
+});
+```
+
+Related pull requests: [#5609](https://github.com/dubzzz/fast-check/pull/5609)
+
 ### Changes on `record`
 
 In earlier versions, the `record` arbitrary included a flag named `withDeletedKeys`. Starting with version 2.11.0, this flag was deprecated and replaced by a new flag called `requiredKeys`. In version 4.0.0, the deprecated `withDeletedKeys` flag has been removed entirely.
@@ -60,6 +75,17 @@ fc.record(recordModel, {
 ```
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578), [#5597](https://github.com/dubzzz/fast-check/pull/5597)
+
+### Replace any reference to `.noBias`
+
+The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:
+
+```diff
+--myArbitrary.noBias();
+++fc.noBias(myArbitrary);
+```
+
+Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
 
 ## Update to v4.x
 
