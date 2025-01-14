@@ -32,6 +32,21 @@ In version 4, the `date` arbitrary will generate any `Date` instances by default
 
 Related pull requests: [#5589](https://github.com/dubzzz/fast-check/pull/5589)
 
+### Changes on `dictionary`
+
+In version 4, the default behavior of `dictionary` will be updated to generate objects that may have null prototypes by default. As a result, unless configured otherwise, `dictionary` can produce both instances inheriting from the usual `Object` prototype and instances with no prototype.
+
+If your code requires all generated objects to inherit from the usual `Object` prototype, you can set the `noNullPrototype` constraint to `true` (used to be defaulted to `true` in version 3). This option was introduced in version 3.13.0 and can be applied as follows:
+
+```ts
+fc.dictionary(fc.string(), fc.string(), {
+  noNullPrototype: true,
+  // other contraints (if any)...
+});
+```
+
+Related pull requests: [#5609](https://github.com/dubzzz/fast-check/pull/5609)
+
 ### Changes on `record`
 
 In earlier versions, the `record` arbitrary included a flag named `withDeletedKeys`. Starting with version 2.11.0, this flag was deprecated and replaced by a new flag called `requiredKeys`. In version 4.0.0, the deprecated `withDeletedKeys` flag has been removed entirely.
