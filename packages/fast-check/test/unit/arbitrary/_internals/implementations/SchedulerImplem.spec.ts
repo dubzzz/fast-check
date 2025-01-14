@@ -943,7 +943,7 @@ describe('SchedulerImplem', () => {
       const s = new SchedulerImplem(act, taskSelector);
       for (let idx = 0; idx !== 10; ++idx) {
         if (idx % 2 === 0) s.schedule(Promise.resolve(idx));
-        else s.schedule(Promise.reject(idx));
+        else s.schedule(Promise.reject(idx)).catch(() => {});
       }
 
       // Assert
@@ -1233,7 +1233,7 @@ describe('SchedulerImplem', () => {
         return a;
       });
       for (const ins of calls) {
-        scheduledFun(...ins);
+        scheduledFun(...ins).catch(() => {});
       }
 
       // Assert
