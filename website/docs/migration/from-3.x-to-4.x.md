@@ -174,7 +174,7 @@ await s.waitAll();
 
 On this second example version 3 would have behaved as version 4 with `Promise.resolve(2)` still pending. The only difference between the two examples being the number of `await` before the next scheduled tasks. This improvement ensures unexpected behaviors in such edge cases and ensures consistent behavior.
 
-Related pull requests: [#5600](https://github.com/dubzzz/fast-check/pull/5600), [#5604](https://github.com/dubzzz/fast-check/pull/5604), [#5614](https://github.com/dubzzz/fast-check/pull/5614)
+Related pull requests: [#5600](https://github.com/dubzzz/fast-check/pull/5600), [#5604](https://github.com/dubzzz/fast-check/pull/5604), [#5614](https://github.com/dubzzz/fast-check/pull/5614), [#5615](https://github.com/dubzzz/fast-check/pull/5615)
 
 ## Advanced usages
 

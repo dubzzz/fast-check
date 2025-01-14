@@ -18,8 +18,7 @@ type TriggeredTask<TMetaData> = {
 /** @internal */
 export type ScheduledTask<TMetaData> = {
   original: PromiseLike<unknown>;
-  scheduled: PromiseLike<unknown>;
-  trigger: () => void;
+  trigger: () => Promise<unknown>;
   schedulingType: 'promise' | 'function' | 'sequence';
   taskId: number;
   label: string;
@@ -86,27 +85,27 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     customAct: SchedulerAct,
     thenTaskToBeAwaited?: () => PromiseLike<T>,
   ): Promise<T> {
-    let trigger: (() => void) | null = null;
     const taskId = ++this.lastTaskId;
+    let trigger: (() => Promise<unknown>) | undefined = undefined;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
-        (thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task).then(
+        const promise = Promise.resolve(thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task);
+        promise.then(
           (data) => {
             this.log(schedulingType, taskId, label, metadata, 'resolved', data);
-            return resolve(data);
+            resolve(data);
           },
           (err) => {
             this.log(schedulingType, taskId, label, metadata, 'rejected', err);
             // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-            return reject(err);
+            reject(err);
           },
         );
+        return promise;
       };
     });
     this.scheduledTasks.push({
       original: task,
-      scheduled: scheduledPromise,
-      // `trigger` will always be initialised at this point: body of `new Promise` has already been executed
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       trigger: trigger!,
       schedulingType,
@@ -213,19 +212,18 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
     const taskIndex = this.taskSelector.nextTaskIndex(this.scheduledTasks);
     const [scheduledTask] = this.scheduledTasks.splice(taskIndex, 1);
-    return scheduledTask.customAct(async () => {
-      scheduledTask.trigger(); // release the promise
-      try {
-        await scheduledTask.scheduled; // wait for its completion
-      } catch (_err) {
+    return scheduledTask.customAct(() => {
+      const scheduled = scheduledTask.trigger(); // release the promise
+      return scheduled.catch((_err) => {
         // We ignore failures here, we just want to wait the promise to be resolved (failure or success)
-      }
+      }) as Promise<void>;
     });
   }
 
-  async waitOne(customAct?: SchedulerAct): Promise<void> {
+  waitOne(customAct?: SchedulerAct): Promise<void> {
     const waitAct = customAct || defaultSchedulerAct;
-    await this.act(() => waitAct(async () => await this.internalWaitOne()));
+    const waitOneResult: Promise<unknown> = this.act(() => waitAct(() => this.internalWaitOne()));
+    return waitOneResult as Promise<void>;
   }
 
   async waitAll(customAct?: SchedulerAct): Promise<void> {
