@@ -229,6 +229,7 @@ export function stringifyInternal<Ts>(
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
+        ...(safeObjectGetPrototypeOf(value) === null ? ['__proto__:null'] : []),
         ...safeMap(safeObjectKeys(value as object), mapper),
         ...safeMap(
           safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
@@ -238,12 +239,7 @@ export function stringifyInternal<Ts>(
           mapper,
         ),
       ];
-      const rawRepr = '{' + safeJoin(stringifiedProperties, ',') + '}';
-
-      if (safeObjectGetPrototypeOf(value) === null) {
-        return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
-      }
-      return rawRepr;
+      return '{' + safeJoin(stringifiedProperties, ',') + '}';
     }
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;

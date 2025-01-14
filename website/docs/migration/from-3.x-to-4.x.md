@@ -90,3 +90,23 @@ If you have implemented a custom class that adheres to the `IRawProperty` API re
 The update requires property executors to explicitly call the `runBeforeEach` and `runAfterEach` hooks. This adjustment can already be made in version 3 by passing true as the second argument to the run method of properties.
 
 Related pull requests: [#5581](https://github.com/dubzzz/fast-check/pull/5581)
+
+### Refined serializer
+
+In previous major releases, the stringifier algorithm produced outputs like the following:
+
+```ts
+stringify(Object.create(null)); // 'Object.create(null)'
+stringify(Object.assign(Object.create(null), { a: 1 })); // 'Object.assign(Object.create(null),{"a":1})'
+```
+
+Starting with the new major release, the output has been refined to:
+
+```ts
+stringify(Object.create(null)); // '{__proto__:null}'
+stringify(Object.assign(Object.create(null), { a: 1 })); // '{__proto__:null,"a":1}'
+```
+
+This change is unlikely to impact most users. However, we are highlighting it for advanced users who might rely on custom reporting capabilities or stringifier behavior to meet specific needs.
+
+Related pull requests: [#5603](https://github.com/dubzzz/fast-check/pull/5603)

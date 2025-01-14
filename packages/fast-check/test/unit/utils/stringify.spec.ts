@@ -294,12 +294,10 @@ describe('stringify', () => {
     expect(stringify(new B())).toEqual('{"a":1,"b":3,[Symbol.for("a")]:2,[Symbol.for("b")]:4}');
   });
   it('Should be able to stringify Object without prototype', () => {
-    expect(stringify(Object.create(null))).toEqual('Object.create(null)');
-    expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{"a":1})',
-    );
+    expect(stringify(Object.create(null))).toEqual('{__proto__:null}');
+    expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual('{__proto__:null,"a":1}');
     expect(stringify(Object.assign(Object.create(null), { [Symbol.for('a')]: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{[Symbol.for("a")]:1})',
+      '{__proto__:null,[Symbol.for("a")]:1}',
     );
   });
   it('Should be able to stringify Object with custom __proto__ value', () => {
@@ -308,7 +306,7 @@ describe('stringify', () => {
   });
   it('Should be able to stringify Object with custom __proto__ value and no prototype', () => {
     const instance = Object.assign(Object.create(null), { ['__proto__']: 1 });
-    expect(stringify(instance)).toEqual('Object.assign(Object.create(null),{["__proto__"]:1})');
+    expect(stringify(instance)).toEqual('{__proto__:null,["__proto__"]:1}');
     // NOTE: {['__proto__']: 1} is not the same as Object.assign(Object.create(null),{["__proto__"]:1})
     // The first one has a prototype equal to Object, the second one has no prototype.
   });
