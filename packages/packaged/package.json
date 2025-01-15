@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@types/npm-packlist": "^7.0.3",
-    "@types/npmcli__arborist": "^5.6.11",
+    "@types/npmcli__arborist": "^6.3.0",
     "typescript": "~5.7.2",
     "vitest": "^2.1.8"
   },
