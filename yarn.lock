@@ -3709,7 +3709,7 @@ __metadata:
   dependencies:
     "@npmcli/arborist": "npm:^9.0.0"
     "@types/npm-packlist": "npm:^7.0.3"
-    "@types/npmcli__arborist": "npm:^5.6.11"
+    "@types/npmcli__arborist": "npm:^6.3.0"
     npm-packlist: "npm:^10.0.0"
     typescript: "npm:~5.7.2"
     vitest: "npm:^2.1.8"
@@ -6307,16 +6307,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/npmcli__arborist@npm:*, @types/npmcli__arborist@npm:^5.6.11":
-  version: 5.6.11
-  resolution: "@types/npmcli__arborist@npm:5.6.11"
+"@types/npmcli__arborist@npm:*, @types/npmcli__arborist@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@types/npmcli__arborist@npm:6.3.0"
   dependencies:
     "@npm/types": "npm:^1"
     "@types/cacache": "npm:*"
     "@types/node": "npm:*"
     "@types/npmcli__package-json": "npm:*"
     "@types/pacote": "npm:*"
-  checksum: 10c0/bdd0ec419958e672d25dddcf7a7b90c386db473f5cb2fedefc622d676a159f1eb3a262f25eb9719a545b30a2446345c6800173a8d9db828d70eb01687f19f9cb
+  checksum: 10c0/880f8a44941732b564fc801f17130d3313ea2ab52ea4fa05d7ddecd157b69b757a2f5d488f2d9c34c568bdc901f282ad8cb03ab2cef4d41a6c8d8b6f4c23e3bc
   languageName: node
   linkType: hard
 
