@@ -12,7 +12,7 @@ const computeMaximalStackSize = () => {
   };
   try {
     f();
-  } catch (_err) {
+  } catch {
     // throws 'RangeError: Maximum call stack size exceeded'
   }
   return depth;

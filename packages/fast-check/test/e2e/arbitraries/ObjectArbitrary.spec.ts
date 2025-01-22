@@ -30,7 +30,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
           try {
             JSON.parse(revJson(json));
             return false;
-          } catch (err) {
+          } catch {
             return true;
           }
         }),
