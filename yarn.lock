@@ -3738,7 +3738,7 @@ __metadata:
     vite: "npm:^6.0.11"
     vitest: "npm:^2.1.8"
   peerDependencies:
-    vitest: ">=0.28.1 <1.0.0 || ^1 || ^2"
+    vitest: ">=0.28.1 <1.0.0 || ^1 || ^2 || ^3"
   languageName: unknown
   linkType: soft
 
