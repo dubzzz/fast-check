@@ -93,6 +93,26 @@ However, we strongly recommend either using the new default behavior or explicit
 
 Related pull requests: [#5633](https://github.com/dubzzz/fast-check/pull/5633)
 
+### Changes on strings
+
+In version 4, we have made significant changes to our string arbitraries to simplify and enhance their usage.
+
+First, we have removed arbitraries that generated single-character strings. Since generating a single character is equivalent to creating a string with a length of one, these specialized arbitraries were unnecessary. This change helps reduce the API surface and better aligns with typical use cases, as most users require multi-character strings rather than single-character ones.
+
+Second, we have consolidated our main string arbitraries into a single string arbitrary. Previously, separate arbitraries existed for different character sets, such as ASCII and Unicode. In version 4, these have been unified into a single arbitrary that can be configured using the `unit` constraint to generate specific character types.
+
+To assist with the migration, here’s how to update your existing code to the new API:
+
+```diff
+--fc.ascii();
+++fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
+
+--fc.asciiString();
+++fc.string({ unit: 'binary-ascii' });
+```
+
+Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
+
 ### Replace any reference to `.noBias`
 
 The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:

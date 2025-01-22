@@ -60,24 +60,6 @@ fc.char();
 Resources: [API reference](https://fast-check.dev/api-reference/functions/char.html).  
 Available since 0.0.1.
 
-## ascii
-
-One ascii character — _ie.: one character between `0x00` (included) and `0x7f` (included)_.
-
-**Signatures:**
-
-- `fc.ascii()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**Usages:**
-
-```js
-fc.ascii();
-// Examples of generated values: "4", "l", "S", ";", "\u0019"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/ascii.html).  
-Available since 0.0.1.
-
 ## unicode
 
 One unicode character from BMP-plan — _ie.: one character between `0x0000` (included) and `0xffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`)_.
