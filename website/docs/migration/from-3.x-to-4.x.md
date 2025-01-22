@@ -89,6 +89,24 @@ The `.noBias` method, previously available on every `Arbitrary`, was marked as d
 
 Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
 
+### Replace any reference to `unicodeJson*`
+
+The arbitraries `unicodeJson` and `unicodeJsonValue` have been replaced with `json` and `jsonValue`. Instead of maintaining separate versions for different character sets, the new approach consolidates them into a single arbitrary that accepts a custom charset via constraints.
+
+To migrate, update your code as follows:
+
+```diff
+--fc.unicodeJson();
+++fc.json({ stringUnit: 'binary' }); // or 'grapheme'
+
+--fc.unicodeJsonValue();
+++fc.jsonValue({ stringUnit: 'binary' }); // or 'grapheme'
+```
+
+This change provides greater flexibility by allowing customization of the character set directly through the constraint options.
+
+Related pull requests: [#5613](https://github.com/dubzzz/fast-check/pull/5613)
+
 ### Replace any reference to `uuidV`
 
 Introduced in version 3.21.0 for `uuid`, the `version` constraint is intended to replace `uuidV`. This change can already be applied in version 3 by making the following update:
