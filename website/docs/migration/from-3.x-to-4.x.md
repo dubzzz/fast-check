@@ -78,6 +78,21 @@ fc.record(recordModel, {
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578), [#5597](https://github.com/dubzzz/fast-check/pull/5597)
 
+### Changes on `uuid`
+
+Previously, the `uuid` arbitrary only generated UUIDs of versions 1 through 5. In version 4, we have expanded the default behavior to include versions 6, 7, and 8, which are also valid and commonly used UUID versions.
+
+If your code relies specifically on versions 1 to 5, you can maintain the previous behavior by applying the following change:
+
+```diff
+--fc.uuid();
+++fc.uuid({ version: [1, 2, 3, 4, 5] });
+```
+
+However, we strongly recommend either using the new default behavior or explicitly specifying the exact versions your application supports to ensure compatibility and consistency.
+
+Related pull requests: [#5633](https://github.com/dubzzz/fast-check/pull/5633)
+
 ### Replace any reference to `.noBias`
 
 The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:
