@@ -25,7 +25,7 @@ describe('commands (integration)', () => {
       if (!c.check(model)) continue;
       try {
         c.run(model, real);
-      } catch (err) {
+      } catch {
         return;
       }
     }

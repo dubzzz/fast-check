@@ -121,7 +121,7 @@ describe('assertNoPoisoning', () => {
           // @ts-ignore
           delete obj[k];
           ++numDeleted;
-        } catch (err) {
+        } catch {
           // Object.prototype cannot be deleted, and others might too
         }
       }

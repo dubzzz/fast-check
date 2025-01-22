@@ -15,7 +15,7 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 | ECMAScript specification | ES2020          | ES2017               |
 | TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5635](https://github.com/dubzzz/fast-check/pull/5635)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635)
 
 ## Update to latest v3.x
 
@@ -88,6 +88,24 @@ The `.noBias` method, previously available on every `Arbitrary`, was marked as d
 ```
 
 Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
+
+### Replace any reference to `unicodeJson*`
+
+The arbitraries `unicodeJson` and `unicodeJsonValue` have been replaced with `json` and `jsonValue`. Instead of maintaining separate versions for different character sets, the new approach consolidates them into a single arbitrary that accepts a custom charset via constraints.
+
+To migrate, update your code as follows:
+
+```diff
+--fc.unicodeJson();
+++fc.json({ stringUnit: 'binary' }); // or 'grapheme'
+
+--fc.unicodeJsonValue();
+++fc.jsonValue({ stringUnit: 'binary' }); // or 'grapheme'
+```
+
+This change provides greater flexibility by allowing customization of the character set directly through the constraint options.
+
+Related pull requests: [#5613](https://github.com/dubzzz/fast-check/pull/5613)
 
 ### Replace any reference to `uuidV`
 

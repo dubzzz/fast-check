@@ -10,7 +10,7 @@
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.6.0",
+    "@testing-library/user-event": "^14.6.1",
     "express": "^4.21.2",
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
@@ -24,7 +24,7 @@
     "@types/lodash": "^4.17.14",
     "@types/react": "^19.0.7",
     "@types/supertest": "^6.0.2",
-    "happy-dom": "^16.7.0",
+    "happy-dom": "^16.7.2",
     "typescript": "~5.7.2",
     "vitest": "^2.1.8"
   },
