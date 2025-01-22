@@ -47,7 +47,7 @@
     "fast-check": "^3.0.0"
   },
   "peerDependencies": {
-    "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2"
+    "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2 || ^3"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
