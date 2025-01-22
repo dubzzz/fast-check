@@ -19,7 +19,19 @@ const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<nu
 describe('uuid', () => {
   declareCleaningHooksForSpies();
 
-  it('should produce the minimal uuid (v1-v5) given all minimal generated values', () => {
+  it.each`
+    version      | prettyVersion | expected
+    ${undefined} | ${'v1 to v5'} | ${'00000000-0000-1000-8000-000000000000'}
+    ${1}         | ${'v1'}       | ${'00000000-0000-1000-8000-000000000000'}
+    ${2}         | ${'v2'}       | ${'00000000-0000-2000-8000-000000000000'}
+    ${3}         | ${'v3'}       | ${'00000000-0000-3000-8000-000000000000'}
+    ${4}         | ${'v4'}       | ${'00000000-0000-4000-8000-000000000000'}
+    ${5}         | ${'v5'}       | ${'00000000-0000-5000-8000-000000000000'}
+    ${10}        | ${'v10'}      | ${'00000000-0000-a000-8000-000000000000'}
+    ${15}        | ${'v15'}      | ${'00000000-0000-f000-8000-000000000000'}
+    ${[4, 7]}    | ${'v4 & v7'}  | ${'00000000-0000-4000-8000-000000000000'}
+    ${[7, 4]}    | ${'v7 & v4'}  | ${'00000000-0000-7000-8000-000000000000' /* minimal with respect to the order in the declared version constraint */}
+  `('should produce the minimal uuid ($prettyVersion) given all minimal generated values', ({ version, expected }) => {
     // Arrange
     const { instance: mrng } = fakeRandom();
     const integer = vi.spyOn(IntegerMock, 'integer');
@@ -29,14 +41,26 @@ describe('uuid', () => {
     });
 
     // Act
-    const arb = uuid();
+    const arb = uuid({ version });
     const out = arb.generate(mrng, undefined);
 
     // Assert
-    expect(out.value).toBe('00000000-0000-1000-8000-000000000000');
+    expect(out.value).toBe(expected);
   });
 
-  it('should produce the maximal uuid (v1-v5) given all maximal generated values', () => {
+  it.each`
+    version      | prettyVersion | expected
+    ${undefined} | ${'v1 to v5'} | ${'ffffffff-ffff-5fff-bfff-ffffffffffff'}
+    ${1}         | ${'v1'}       | ${'ffffffff-ffff-1fff-bfff-ffffffffffff'}
+    ${2}         | ${'v2'}       | ${'ffffffff-ffff-2fff-bfff-ffffffffffff'}
+    ${3}         | ${'v3'}       | ${'ffffffff-ffff-3fff-bfff-ffffffffffff'}
+    ${4}         | ${'v4'}       | ${'ffffffff-ffff-4fff-bfff-ffffffffffff'}
+    ${5}         | ${'v5'}       | ${'ffffffff-ffff-5fff-bfff-ffffffffffff'}
+    ${10}        | ${'v10'}      | ${'ffffffff-ffff-afff-bfff-ffffffffffff'}
+    ${15}        | ${'v15'}      | ${'ffffffff-ffff-ffff-bfff-ffffffffffff'}
+    ${[4, 7]}    | ${'v4 & v7'}  | ${'ffffffff-ffff-7fff-bfff-ffffffffffff'}
+    ${[7, 4]}    | ${'v7 & v4'}  | ${'ffffffff-ffff-4fff-bfff-ffffffffffff' /* maximal with respect to the order in the declared version constraint */}
+  `('should produce the maximal uuid ($prettyVersion) given all maximal generated values', ({ version, expected }) => {
     // Arrange
     const { instance: mrng } = fakeRandom();
     const integer = vi.spyOn(IntegerMock, 'integer');
@@ -46,11 +70,11 @@ describe('uuid', () => {
     });
 
     // Act
-    const arb = uuid();
+    const arb = uuid({ version });
     const out = arb.generate(mrng, undefined);
 
     // Assert
-    expect(out.value).toBe('ffffffff-ffff-5fff-bfff-ffffffffffff');
+    expect(out.value).toBe(expected);
   });
 });
 

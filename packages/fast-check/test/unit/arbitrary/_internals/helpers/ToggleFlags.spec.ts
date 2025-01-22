@@ -9,13 +9,6 @@ import {
 } from '../../../../../src/arbitrary/_internals/helpers/ToggleFlags';
 
 describe('countToggledBits', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   it('should properly count when zero bits are toggled', () => {
     expect(countToggledBits(BigInt(0))).toBe(0);
   });
@@ -30,13 +23,6 @@ describe('countToggledBits', () => {
 });
 
 describe('computeNextFlags', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   it('should keep the same flags if size has not changed', () => {
     const flags = BigInt(243); // 11110011 -> 11110011
     expect(computeNextFlags(flags, 8)).toBe(flags);
@@ -129,13 +115,6 @@ describe('computeTogglePositions', () => {
 });
 
 describe('computeFlagsFromChars', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   it('should be able to find back flags out of source and final chars', () => {
     fc.assert(
       fc.property(fc.array(fc.char()), fc.func(fc.char()), fc.bigUint(), (chars, toggleCase, flagsUnmasked) => {

@@ -9,11 +9,13 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 
 ## Changes in minimal requirements
 
-| Name                    | New requirement | Previous requirement |
-| ----------------------- | --------------- | -------------------- |
-| TypeScript _(optional)_ | ≥5.0            | ≥4.1                 |
+| Name                     | New requirement | Previous requirement |
+| ------------------------ | --------------- | -------------------- |
+| Node                     | ≥10.5.0         | ≥8                   |
+| ECMAScript specification | ES2020          | ES2017               |
+| TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617)
 
 ## Update to latest v3.x
 
@@ -31,6 +33,21 @@ In version 4, the `date` arbitrary will generate any `Date` instances by default
 ```
 
 Related pull requests: [#5589](https://github.com/dubzzz/fast-check/pull/5589)
+
+### Changes on `dictionary`
+
+In version 4, the default behavior of `dictionary` will be updated to generate objects that may have null prototypes by default. As a result, unless configured otherwise, `dictionary` can produce both instances inheriting from the usual `Object` prototype and instances with no prototype.
+
+If your code requires all generated objects to inherit from the usual `Object` prototype, you can set the `noNullPrototype` constraint to `true` (used to be defaulted to `true` in version 3). This option was introduced in version 3.13.0 and can be applied as follows:
+
+```ts
+fc.dictionary(fc.string(), fc.string(), {
+  noNullPrototype: true,
+  // other contraints (if any)...
+});
+```
+
+Related pull requests: [#5609](https://github.com/dubzzz/fast-check/pull/5609)
 
 ### Changes on `record`
 
@@ -60,6 +77,28 @@ fc.record(recordModel, {
 ```
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578), [#5597](https://github.com/dubzzz/fast-check/pull/5597)
+
+### Replace any reference to `.noBias`
+
+The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:
+
+```diff
+--myArbitrary.noBias();
+++fc.noBias(myArbitrary);
+```
+
+Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
+
+### Replace any reference to `uuidV`
+
+Introduced in version 3.21.0 for `uuid`, the `version` constraint is intended to replace `uuidV`. This change can already be applied in version 3 by making the following update:
+
+```diff
+--fc.uuidV(4);
+++fc.uuid({ version: 4 });
+```
+
+Related pull requests: [#5611](https://github.com/dubzzz/fast-check/pull/5611)
 
 ## Update to v4.x
 
@@ -100,6 +139,44 @@ Now, it attaches your original error as a cause. This approach improves integrat
 If you prefer the previous behavior, you can disable this feature in version 4 by enabling the `includeErrorInReport` flag. You can also test this behavior in version 3 by toggling the `errorWithCause` flag (renamed to `includeErrorInReport` in version 4).
 
 Related pull requests: [#5590](https://github.com/dubzzz/fast-check/pull/5590)
+
+### Faster `scheduler`
+
+Since version 1.20.0, fast-check has included a primitive designed to help detect race conditions. This feature unlocked many advanced use cases and elevated the library's capabilities.
+
+However, the previous implementation was slower than intended and allowed intermediate tasks to be created and executed between two scheduled ones. This inconsistency could lead to scenarios where code passed tests but later failed when additional microtasks were introduced. To address this, we have reworked the scheduler in version 4 to be faster, more consistent, and safer.
+
+Consider the following example, where a scheduler instance `s` is used:
+
+```ts
+// `s`: an instance of scheduler provided by fast-check
+s.schedule(Promise.resolve(1)).then(async () => {
+  await 'something already resolved';
+  s.schedule(Promise.resolve(2));
+});
+await s.waitAll();
+```
+
+In version 3, all scheduled tasks, including `Promise.resolve(2)`, would have been executed by the end of `s.waitAll()`. In version 4, however, `Promise.resolve(2)` remains pending. This is because during the `waitAll` loop, the scheduler processes `Promise.resolve(1)` and continues execution until `await 'something already resolved'`. At that point, the scheduler resumes its waiting sequence, but `Promise.resolve(2)` has not yet been scheduled and remains unknown. As a result, `waitAll` finishes before executing it.
+
+This behavior makes the scheduler more predictable and prevents subtle issues. In contrast, version 3 behaved inconsistently when processing many immediately resolved tasks, as shown below:
+
+```ts
+// `s`: an instance of scheduler provided by fast-check
+s.schedule(Promise.resolve(1)).then(async () => {
+  await 'something already resolved';
+  await 'something already resolved';
+  await 'something already resolved';
+  await 'something already resolved';
+  await 'something already resolved';
+  s.schedule(Promise.resolve(2));
+});
+await s.waitAll();
+```
+
+On this second example version 3 would have behaved as version 4 with `Promise.resolve(2)` still pending. The only difference between the two examples being the number of `await` before the next scheduled tasks. This improvement ensures unexpected behaviors in such edge cases and ensures consistent behavior.
+
+Related pull requests: [#5600](https://github.com/dubzzz/fast-check/pull/5600), [#5604](https://github.com/dubzzz/fast-check/pull/5604), [#5614](https://github.com/dubzzz/fast-check/pull/5614), [#5615](https://github.com/dubzzz/fast-check/pull/5615)
 
 ## Advanced usages
 

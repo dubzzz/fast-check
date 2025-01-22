@@ -22,7 +22,7 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 - `minKeys?` — default: `0` — _minimal number of keys in the generated instances (included)_
 - `maxKeys?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of keys in the generated instances (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-- `noNullPrototype?` — default: `true` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
+- `noNullPrototype?` — default: `false` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
 - `depthIdentifier?` — default: `undefined` — _share the depth between instances using the same `depthIdentifier`_
 
 **Usages:**
@@ -30,18 +30,18 @@ Generate dictionaries containing keys generated using `keyArb` and values genera
 ```js
 fc.dictionary(fc.string(), fc.string());
 // Examples of generated values:
-// • {"<H":"`D? &7A","T>X0Aa]tp>":":5+|","8{0.mI>8R,":"j._[Xi&.[","!83F]'E1_":"y[bB,G$_S}","NnY,!{":"6NZ4,G'}","Y&>Uj":"gg@eTi","e>QDNvD/gz":"Bt0&oV;","ULLW1":"F6i_","?&I":"lPd7}"}
-// • {"_":" y|","Yo+\"O@q+j":"cI{H","":"3#$}9{5!z","?^~k ":"w$defipro","[fa4c":"J"}
-// • {"~":""}
+// • {__proto__:null,"<H":"`D? &7A","T>X0Aa]tp>":":5+|","8{0.mI>8R,":"j._[Xi&.[","!83F]'E1_":"y[bB,G$_S}","NnY,!{":"6NZ4,G'}","Y&>Uj":"gg@eTi","e>QDNvD/gz":"Bt0&oV;","ULLW1":"F6i_","?&I":"lPd7}"}
+// • {__proto__:null,"_":" y|","Yo+\"O@q+j":"cI{H","":"3#$}9{5!z","?^~k ":"w$defipro","[fa4c":"J"}
+// • {__proto__:null,"~":""}
 // • {"lzproperty":"?"}
 // • {"hOIY\"R q}":"W","l__defineG":"8x`:H0?T"}
 // • …
 
 fc.dictionary(fc.string(), fc.nat());
 // Examples of generated values:
-// • {"":11,".[hM+$+:?N":30,"%{":59342696,"|_":29,"E":670852246,"pl_":2147483639,">":2147483630,"M7cU?#9":1072636200,"ot":1627183273}
+// • {__proto__:null,"":11,".[hM+$+:?N":30,"%{":59342696,"|_":29,"E":670852246,"pl_":2147483639,">":2147483630,"M7cU?#9":1072636200,"ot":1627183273}
 // • {"_G@>x":461241683,"@9c=&6H:c0":105089967,"c_)r66nwK":1355210745}
-// • {"#1O;mZ1":1005073225}
+// • {__proto__:null,"#1O;mZ1":1005073225}
 // • {}
 // • {"6":144134225,".9":437743867,"tR?j$Hat3X":1920000943,"DQTd":324814916}
 // • …
@@ -50,20 +50,20 @@ fc.dictionary(fc.string(), fc.nat(), { minKeys: 2 });
 // Note: Generate instances with at least 2 keys
 // Examples of generated values:
 // • {"%{":11,"4cH":12,"ke":2147483622,"rqM~i'":485910780}
-// • {"K":1498847755,"&cP<5:e(y\"":1430281549,"!\"2a":1631161561,"dY+g":1880545446,"M2+^,Yq7~t":1437539188}
-// • {"NfXclS":815533370,"?":2060844890,"":1862140278,"R":618808229,"N|":25902062,"DGw00u?brK":348863633}
+// • {__proto__:null,"K":1498847755,"&cP<5:e(y\"":1430281549,"!\"2a":1631161561,"dY+g":1880545446,"M2+^,Yq7~t":1437539188}
+// • {__proto__:null,"NfXclS":815533370,"?":2060844890,"":1862140278,"R":618808229,"N|":25902062,"DGw00u?brK":348863633}
 // • {" R~Own":2147483645,"~":16,"i$#D":1037390287}
-// • {">YTN<Tt":1950414260,"I6":1505301756,"2;]'dH.i!":815067799,":kmC'":1948205418,"g|GTLPe-":2101264769}
+// • {__proto__:null,">YTN<Tt":1950414260,"I6":1505301756,"2;]'dH.i!":815067799,":kmC'":1948205418,"g|GTLPe-":2101264769}
 // • …
 
-fc.dictionary(fc.string(), fc.string(), { noNullPrototype: false });
-// Note: Allow generated values to be objects with null prototype
+fc.dictionary(fc.string(), fc.string(), { noNullPrototype: true });
+// Note: Do not generate any object with null prototype, always define them with Object prototype
 // Examples of generated values:
-// • {"|^!!\"+.\"%":"LB","]CQxQ":"0/uv","(JH(35e8":":"}
-// • {",>a[":"f&EYz","VR 9JX":"/|hRyU","Nm20AgHq":"b","A1Gb{5nXM":"?B","W;>__":"","G5":"IS"}
-// • {"3{59v":"Tf]hDL2","tj:,Kq9'2":"#o:WpR","":"[4h","e{":"j","!Ws@hZV_":"p1*44.<"}
-// • {__proto__:null,"/\\v":"1ki#1'|#","L":"2o","chGEb'qmi":"hXXU"}
-// • {"Q]8":"JQ=b<ea","@zz\\]oW(*":"uv","w":"\\","X*X":"/2{*wi=d","\"+;P\"tp3n":"LLZ-%}w"}
+// • {"~}P-T{^H`":"X~bd\"T","3Y,I8B\\*":"i;vLI(7R|","_":"o>|L~","RIUht":"x>?!**l:\\o","8oV?LkD@LD":"E%leQ*Q}4O"}
+// • {}
+// • {"zQD\"x!p":"V<GfsgU","q1RH0sG":"rXM>>","Eo3iTH4f":"","sU3":"FJ-"}
+// • {"iY7s.{?":"&i>","V`x?~qpp4C":"3+u$","I!z{na":",0D^g/G5"}
+// • {"Vo=AG":"0D%{Mv2c>w","_~dC3=@D":"f-","=":"vluzcJ"}
 // • …
 ```
 
@@ -91,36 +91,36 @@ It comes very useful when dealing with settings.
 
 ```js
 fc.record({
-  id: fc.uuidV(4),
+  id: fc.uuid({ version: 4 }),
   age: fc.nat(99),
 });
 // Examples of generated values:
-// • {__proto__:null,"id":"0000001b-000b-4000-8000-0000ab45c359","age":1}
-// • {"id":"9de2ca04-dc68-4c3f-87e4-e878407827d6","age":98}
-// • {"id":"12bb661f-b57a-4d8c-8407-719100000002","age":99}
-// • {"id":"ffffffe3-0013-4000-a7d5-d5734251f8d2","age":0}
-// • {__proto__:null,"id":"00000007-000a-4000-8000-00170000000e","age":5}
+// • {__proto__:null,"id":"0000001f-2a24-4215-b068-5798948c5f90","age":3}
+// • {__proto__:null,"id":"acf6f6c5-fff4-4fff-bfff-fff0a2ca880f","age":18}
+// • {__proto__:null,"id":"5682d7df-8023-4f9b-b7a7-19500000001a","age":5}
+// • {"id":"0000000b-001a-4000-8000-0001c7ed6eaf","age":93}
+// • {"id":"f4f0e509-dcc3-435a-8000-0007fffffffe","age":7}
 // • …
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     age: fc.nat(99),
   },
   { requiredKeys: [] },
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {__proto__:null,"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
-// • {"id":"ffffffee-ffef-4fff-8000-0015f69788ee","age":21}
-// • {__proto__:null,"age":34}
-// • {__proto__:null,"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
-// • {__proto__:null,"id":"00000006-0007-4000-8397-86ea00000004"}
+// • {__proto__:null,"id":"fffffffb-c066-4b8c-bfff-fff076fecf56","age":99}
+// • {"age":4}
+// • {__proto__:null,"age":4}
+// • {"id":"79a18a26-7f2a-44ae-8000-001d24687e88"}
+// • {__proto__:null,"id":"00000005-6a47-4c09-b343-053a0000000d","age":24}
 // • …
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     name: fc.constantFrom('Paul', 'Luis', 'Jane', 'Karen'),
     age: fc.nat(99),
     birthday: fc.date({ min: new Date('1970-01-01T00:00:00.000Z'), max: new Date('2100-12-31T23:59:59.999Z') }),
@@ -129,32 +129,32 @@ fc.record(
 );
 // Note: All keys except 'id' will be optional values. id has been marked as required.
 // Examples of generated values:
-// • {"id":"46045be9-0009-4000-8000-0008ffffffed","name":"Karen","age":11,"birthday":new Date("2100-12-31T23:59:59.997Z")}
-// • {__proto__:null,"id":"fffffffe-0015-4000-95a0-f8e9ffffffe7","name":"Karen","birthday":new Date("1970-01-01T00:00:00.018Z")}
-// • {"id":"e2b066ec-000b-4000-bfff-ffe7ccb1828d","name":"Karen","age":17}
-// • {"id":"43b7d8e5-d043-42ef-8000-001a00000005","age":16,"birthday":new Date("2004-10-16T22:01:09.416Z")}
-// • {__proto__:null,"id":"00000007-2008-452e-8000-00133ed36be7","name":"Karen","age":6,"birthday":new Date("2100-12-31T23:59:59.982Z")}
+// • {__proto__:null,"id":"90ff29b1-56e2-408d-bf2a-4f6b0000001f","name":"Paul","age":66,"birthday":new Date("2050-04-17T15:35:56.134Z")}
+// • {"id":"fffffff5-ffe5-4fff-8000-000b00000013","name":"Luis","age":3,"birthday":new Date("1970-01-01T00:00:00.025Z")}
+// • {__proto__:null,"id":"687e2e0a-000e-4000-bfff-fff30000000a","name":"Karen","age":6,"birthday":new Date("1970-01-01T00:00:00.040Z")}
+// • {"id":"f6967db5-3699-45bd-b9b6-4b300ca48a17","name":"Paul","age":94,"birthday":new Date("2031-12-18T04:14:25.874Z")}
+// • {__proto__:null,"id":"00000009-377c-4856-8000-000d3b05e20d","age":79}
 // • …
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     age: fc.nat(99),
   },
   { requiredKeys: [] },
 );
 // Note: Both id and age will be optional values
 // Examples of generated values:
-// • {__proto__:null,"id":"00000004-27f6-48bb-8000-000a69064200","age":3}
-// • {"id":"ffffffee-ffef-4fff-8000-0015f69788ee","age":21}
-// • {__proto__:null,"age":34}
-// • {__proto__:null,"id":"2db92e09-3fdc-49e6-8000-001b00000007","age":5}
-// • {__proto__:null,"id":"00000006-0007-4000-8397-86ea00000004"}
+// • {__proto__:null,"id":"fffffffb-c066-4b8c-bfff-fff076fecf56","age":99}
+// • {"age":4}
+// • {__proto__:null,"age":4}
+// • {"id":"79a18a26-7f2a-44ae-8000-001d24687e88"}
+// • {__proto__:null,"id":"00000005-6a47-4c09-b343-053a0000000d","age":24}
 // • …
 
 fc.record(
   {
-    id: fc.uuidV(4),
+    id: fc.uuid({ version: 4 }),
     age: fc.nat(99),
   },
   { noNullPrototype: true },
@@ -162,11 +162,11 @@ fc.record(
 // Note: If you only want instances coming with the prototype of Object, you can toggle the flag noNullPrototype.
 // The prototype of Object carry some extra functions with it: `generatedInstance.toString()` can be achieved on it, it "cannot" without a prototype if no toString was explicitely defined.
 // Examples of generated values:
-// • {"id":"b635cdb8-001b-4000-bd7a-8cbfffffffeb","age":79}
-// • {"id":"ffffffec-5522-4356-bc7e-9b14ffffffe5","age":69}
-// • {"id":"00000010-000a-4000-8a2a-245900000006","age":34}
-// • {"id":"56829181-0005-4000-bfff-fff1927a3512","age":27}
-// • {"id":"0000001b-1825-4e4d-8000-000c00000003","age":5}
+// • {"id":"f24af89b-fff1-4fff-9941-0ed3ffffffe4","age":5}
+// • {"id":"00000001-860d-4216-ba28-48790000001a","age":35}
+// • {"id":"fffffff8-9657-4e22-93a8-24ed21bdd338","age":3}
+// • {"id":"937c1a2c-fffd-4fff-9c7d-d2d200000007","age":2}
+// • {"id":"dabdc13e-4e5e-43ed-acf2-062100000014","age":96}
 // • …
 ```
 

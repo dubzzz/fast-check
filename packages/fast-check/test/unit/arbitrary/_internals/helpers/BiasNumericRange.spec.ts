@@ -87,29 +87,27 @@ describe('biasNumericRange', () => {
       }),
     ));
 
-  if (typeof BigInt !== 'undefined') {
-    it('should always bias in valid ranges when using bigIntLogLike', () =>
-      fc.assert(
-        fc.property(fc.bigInt(), fc.bigInt(), (a, b) => {
-          // Arrange
-          const min = a < b ? a : b;
-          const max = a < b ? b : a;
+  it('should always bias in valid ranges when using bigIntLogLike', () =>
+    fc.assert(
+      fc.property(fc.bigInt(), fc.bigInt(), (a, b) => {
+        // Arrange
+        const min = a < b ? a : b;
+        const max = a < b ? b : a;
 
-          // Act
-          const ranges = biasNumericRange(min, max, bigIntLogLike);
+        // Act
+        const ranges = biasNumericRange(min, max, bigIntLogLike);
 
-          // Assert
-          expect(ranges).not.toHaveLength(0);
-          for (const range of ranges) {
-            expect(range.max).toBeGreaterThanOrEqual(range.min);
-            expect(min).toBeLessThanOrEqual(range.max);
-            expect(max).toBeGreaterThanOrEqual(range.max);
-            expect(min).toBeLessThanOrEqual(range.min);
-            expect(max).toBeGreaterThanOrEqual(range.min);
-          }
-        }),
-      ));
-  }
+        // Assert
+        expect(ranges).not.toHaveLength(0);
+        for (const range of ranges) {
+          expect(range.max).toBeGreaterThanOrEqual(range.min);
+          expect(min).toBeLessThanOrEqual(range.max);
+          expect(max).toBeGreaterThanOrEqual(range.max);
+          expect(min).toBeLessThanOrEqual(range.min);
+          expect(max).toBeGreaterThanOrEqual(range.min);
+        }
+      }),
+    ));
 });
 
 // Helpers

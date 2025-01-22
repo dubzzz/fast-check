@@ -47,7 +47,7 @@ const anythingEnableAll: fc.ObjectConstraints = {
   withTypedArray: true,
   withSparseArray: true,
   withUnicodeString: true,
-  ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
+  withBigInt: true,
 };
 
 describe('stringify', () => {
@@ -55,10 +55,8 @@ describe('stringify', () => {
     fc.assert(fc.property(fc.anything(anythingEnableAll), (a) => typeof stringify(a) === 'string')));
   it('Should be able to stringify fc.char16bits() (ie. possibly invalid strings)', () =>
     fc.assert(fc.property(fc.char16bits(), (a) => typeof stringify(a) === 'string')));
-  if (typeof BigInt !== 'undefined') {
-    it('Should be able to stringify bigint in object correctly', () =>
-      fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
-  }
+  it('Should be able to stringify bigint in object correctly', () =>
+    fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
   it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>
     fc.assert(
       fc.property(
@@ -176,9 +174,7 @@ describe('stringify', () => {
     expect(stringify(Number.NEGATIVE_INFINITY)).toEqual('Number.NEGATIVE_INFINITY');
     expect(stringify(Number.NaN)).toEqual('Number.NaN');
     expect(stringify('Hello')).toEqual('"Hello"');
-    if (typeof BigInt !== 'undefined') {
-      expect(stringify(BigInt(42))).toEqual('42n');
-    }
+    expect(stringify(BigInt(42))).toEqual('42n');
   });
   it('Should be able to stringify boxed values', () => {
     expect(stringify(new Boolean(false))).toEqual('new Boolean(false)');
@@ -381,20 +377,18 @@ describe('stringify', () => {
     expect(stringify(Float64Array.from([0, 0.5, 30, -1]))).toEqual('Float64Array.from([0,0.5,30,-1])');
     assertStringifyTypedArraysProperly(fc.double(), Float64Array.from.bind(Float64Array));
   });
-  if (typeof BigInt !== 'undefined') {
-    it('Should be able to stringify BigInt64Array', () => {
-      expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigInt64Array.from([-2147483648n,5n,2147483647n])',
-      );
-      assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
-    });
-    it('Should be able to stringify BigUint64Array', () => {
-      expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigUint64Array.from([0n,5n,2147483647n])',
-      );
-      assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
-    });
-  }
+  it('Should be able to stringify BigInt64Array', () => {
+    expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
+      'BigInt64Array.from([-2147483648n,5n,2147483647n])',
+    );
+    assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
+  });
+  it('Should be able to stringify BigUint64Array', () => {
+    expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
+      'BigUint64Array.from([0n,5n,2147483647n])',
+    );
+    assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
+  });
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');
     expect(stringify(new CustomTagThrowingToString())).toEqual('[object CustomTagThrowingToString]');
