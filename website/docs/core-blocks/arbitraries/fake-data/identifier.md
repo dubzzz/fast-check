@@ -41,7 +41,7 @@ UUID values including versions 1 to 5 and going up to 15 when asked to.
 
 **with:**
 
-- `version` — default: `[1,2,3,4,5]` — _version or versions of the uuid to produce: 1, 2, 3, 4, 5... or 15_
+- `version` — default: `[1,2,3,4,5,6,7,8]` — _version or versions of the uuid to produce: 1, 2, 3, 4, 5... or 15. By default, we only produce UUIDs with versions being officially assigned, ie. from 1 to 8_
 
 **Usages:**
 
@@ -50,7 +50,7 @@ fc.uuid();
 // Examples of generated values:
 // • "4ebb3995-0009-1000-8b20-2254b7902e27"
 // • "ffffffef-50fb-40b5-aa9f-05640000001d"
-// • "87a8e397-ffec-5fff-8000-001a00000004"
+// • "87a8e397-ffec-8fff-8000-001a00000004"
 // • "17983d5d-001b-1000-98d3-6afba08e1e61"
 // • "7da15579-001d-1000-a6b3-4d71cf6e5de5"
 // • …
