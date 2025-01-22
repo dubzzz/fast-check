@@ -35,8 +35,6 @@ export type StringConstraints = StringSharedConstraints & {
   unit?: 'grapheme' | 'grapheme-composite' | 'grapheme-ascii' | 'binary' | 'binary-ascii' | Arbitrary<string>;
 };
 
-const safeObjectAssign = Object.assign;
-
 /** @internal */
 function extractUnitArbitrary(constraints: Pick<StringConstraints, 'unit'>): Arbitrary<string> {
   if (typeof constraints.unit === 'object') {
@@ -69,9 +67,6 @@ export function string(constraints: StringConstraints = {}): Arbitrary<string> {
   const charArbitrary = extractUnitArbitrary(constraints);
   const unmapper = patternsToStringUnmapperFor(charArbitrary, constraints);
   const experimentalCustomSlices = createSlicesForString(charArbitrary, constraints);
-  // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
-  const enrichedConstraints: ArrayConstraintsInternal<string> = safeObjectAssign(safeObjectAssign({}, constraints), {
-    experimentalCustomSlices,
-  });
+  const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
   return array(charArbitrary, enrichedConstraints).map(patternsToStringMapper, unmapper);
 }

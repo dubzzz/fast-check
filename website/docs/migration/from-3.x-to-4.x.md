@@ -15,7 +15,7 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 | ECMAScript specification | ES2020          | ES2017               |
 | TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5634](https://github.com/dubzzz/fast-check/pull/5634)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635)
 
 ## Update to latest v3.x
 
@@ -77,6 +77,21 @@ fc.record(recordModel, {
 ```
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578), [#5597](https://github.com/dubzzz/fast-check/pull/5597)
+
+### Changes on `uuid`
+
+Previously, the `uuid` arbitrary only generated UUIDs of versions 1 through 5. In version 4, we have expanded the default behavior to include versions 6, 7, and 8, which are also valid and commonly used UUID versions.
+
+If your code relies specifically on versions 1 to 5, you can maintain the previous behavior by applying the following change:
+
+```diff
+--fc.uuid();
+++fc.uuid({ version: [1, 2, 3, 4, 5] });
+```
+
+However, we strongly recommend either using the new default behavior or explicitly specifying the exact versions your application supports to ensure compatibility and consistency.
+
+Related pull requests: [#5633](https://github.com/dubzzz/fast-check/pull/5633)
 
 ### Changes on strings
 

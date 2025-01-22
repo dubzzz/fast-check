@@ -21,7 +21,7 @@ describe('uuid', () => {
 
   it.each`
     version      | prettyVersion | expected
-    ${undefined} | ${'v1 to v5'} | ${'00000000-0000-1000-8000-000000000000'}
+    ${undefined} | ${'v1 to v8'} | ${'00000000-0000-1000-8000-000000000000'}
     ${1}         | ${'v1'}       | ${'00000000-0000-1000-8000-000000000000'}
     ${2}         | ${'v2'}       | ${'00000000-0000-2000-8000-000000000000'}
     ${3}         | ${'v3'}       | ${'00000000-0000-3000-8000-000000000000'}
@@ -50,7 +50,7 @@ describe('uuid', () => {
 
   it.each`
     version      | prettyVersion | expected
-    ${undefined} | ${'v1 to v5'} | ${'ffffffff-ffff-5fff-bfff-ffffffffffff'}
+    ${undefined} | ${'v1 to v8'} | ${'ffffffff-ffff-8fff-bfff-ffffffffffff'}
     ${1}         | ${'v1'}       | ${'ffffffff-ffff-1fff-bfff-ffffffffffff'}
     ${2}         | ${'v2'}       | ${'ffffffff-ffff-2fff-bfff-ffffffffffff'}
     ${3}         | ${'v3'}       | ${'ffffffff-ffff-3fff-bfff-ffffffffffff'}
@@ -99,7 +99,7 @@ describe('uuid (integration)', () => {
         ? typeof extra.version === 'number'
           ? [extra.version]
           : extra.version
-        : [1, 2, 3, 4, 5];
+        : [1, 2, 3, 4, 5, 6, 7, 8];
     const versionInValue = u[14];
     expect(versions.map((v) => v.toString(16))).toContain(versionInValue);
   };

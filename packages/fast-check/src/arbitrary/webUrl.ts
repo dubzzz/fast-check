@@ -12,8 +12,6 @@ import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLeng
 import { relativeSizeToSize, resolveSize } from './_internals/helpers/MaxLengthFromMinLength';
 import { webPath } from './webPath';
 
-const safeObjectAssign = Object.assign;
-
 /**
  * Constraints to be applied on {@link webUrl}
  * @remarks Since 1.14.0
@@ -69,10 +67,7 @@ export function webUrl(constraints?: WebUrlConstraints): Arbitrary<string> {
     c.authoritySettings !== undefined && c.authoritySettings.size !== undefined
       ? relativeSizeToSize(c.authoritySettings.size, resolvedSize)
       : resolvedSize;
-  // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
-  const resolvedAuthoritySettings = safeObjectAssign(safeObjectAssign({}, c.authoritySettings), {
-    size: resolvedAuthoritySettingsSize,
-  });
+  const resolvedAuthoritySettings = { ...c.authoritySettings, size: resolvedAuthoritySettingsSize };
   const validSchemes = c.validSchemes || ['http', 'https'];
   const schemeArb = constantFrom(...validSchemes);
   const authorityArb = webAuthority(resolvedAuthoritySettings);
