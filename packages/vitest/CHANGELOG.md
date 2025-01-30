@@ -1,3 +1,12 @@
+# 0.1.5
+
+_Extend support to vitest v3_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.5)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.4...vitest%2Fv0.1.5)]
+
+## Fixes
+
+- ([PR#5637](https://github.com/dubzzz/fast-check/pull/5637)) CI: Flag vitest v3 as supported
+
 # 0.1.4
 
 _Rework our testing stack_
