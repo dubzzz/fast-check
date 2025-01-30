@@ -19,6 +19,7 @@ import {
   noTrailingUnmapper,
 } from './_internals/mappers/EntitiesToIPv6';
 import { integer } from './integer';
+import { safeCharCodeAt } from '../utils/globals';
 
 /** @internal */
 function h16sTol32Mapper([a, b]: [string, string]): string {
@@ -41,11 +42,17 @@ function hexa(): Arbitrary<string> {
       if (typeof c !== 'string') {
         throw new Error('Not a string');
       }
-      const index = items.indexOf(c);
-      if (index === -1) {
-        throw new Error('Unknown "char"');
+      if (c.length !== 1) {
+        throw new Error('Invalid length');
       }
-      return index;
+      const code = safeCharCodeAt(c, 0); // 0=48,..,9=57,a=97,..,f=102
+      if (code <= 57) {
+        return code - 48; // any char before '0' will lead to <0 (rejected by integer)
+      }
+      if (code < 97) {
+        throw new Error('Invalid character');
+      }
+      return code - 87; // -87=-97+10, any char after 'f' will lead to >15 (rejected by integer)
     },
   );
 }
