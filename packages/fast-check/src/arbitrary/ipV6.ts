@@ -19,7 +19,7 @@ import {
   noTrailingUnmapper,
 } from './_internals/mappers/EntitiesToIPv6';
 import { integer } from './integer';
-import { safeCharCodeAt } from '../utils/globals';
+import { safeCharCodeAt, Error } from '../utils/globals';
 
 /** @internal */
 function h16sTol32Mapper([a, b]: [string, string]): string {
