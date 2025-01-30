@@ -3633,7 +3633,7 @@ __metadata:
     "@testing-library/react": "npm:^16.2.0"
     "@testing-library/user-event": "npm:^14.6.1"
     "@types/express": "npm:^5.0.0"
-    "@types/lodash": "npm:^4.17.14"
+    "@types/lodash": "npm:^4.17.15"
     "@types/react": "npm:^19.0.8"
     "@types/supertest": "npm:^6.0.2"
     express: "npm:^4.21.2"
@@ -6185,10 +6185,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.14":
-  version: 4.17.14
-  resolution: "@types/lodash@npm:4.17.14"
-  checksum: 10c0/343c6f722e0b39969036a885ad5aad6578479ead83987128c9b994e6b7f2fb9808244d802d4d332396bb09096f720a6c7060de16a492f5460e06a44560360322
+"@types/lodash@npm:^4.17.15":
+  version: 4.17.15
+  resolution: "@types/lodash@npm:4.17.15"
+  checksum: 10c0/2eb2dc6d231f5fb4603d176c08c8d7af688f574d09af47466a179cd7812d9f64144ba74bb32ca014570ffdc544eedc51b7a5657212bad083b6eecbd72223f9bb
   languageName: node
   linkType: hard
 
@@ -21000,7 +21000,7 @@ __metadata:
     "@docusaurus/types": "npm:3.7.0"
     "@jest/globals": "npm:^29.7.0"
     "@mdx-js/react": "npm:^3.1.0"
-    "@types/lodash": "npm:^4.17.14"
+    "@types/lodash": "npm:^4.17.15"
     "@types/node": "npm:^22.12.0"
     "@types/react": "npm:^19.0.8"
     clsx: "npm:^2.1.1"
