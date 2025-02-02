@@ -3638,7 +3638,7 @@ __metadata:
     "@types/supertest": "npm:^6.0.2"
     express: "npm:^4.21.2"
     fast-check: "workspace:*"
-    happy-dom: "npm:^16.7.3"
+    happy-dom: "npm:^16.8.1"
     lodash: "npm:^4.17.21"
     pure-rand: "npm:^6.1.0"
     react: "npm:^19.0.0"
@@ -11539,13 +11539,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^16.7.3":
-  version: 16.7.3
-  resolution: "happy-dom@npm:16.7.3"
+"happy-dom@npm:^16.8.1":
+  version: 16.8.1
+  resolution: "happy-dom@npm:16.8.1"
   dependencies:
     webidl-conversions: "npm:^7.0.0"
     whatwg-mimetype: "npm:^3.0.0"
-  checksum: 10c0/94497b686a545a3995646d85198456d7b1e0a9ef0785124e0c0bdd7b5feeb9b61b366cdcc22f880effbb0a5924405eadca56ac8d43f2d81450803d48d2fecf61
+  checksum: 10c0/3e6e4ce3bf67871304fadc7a0e661397b3d6c12de149cafce5a9062b47038a4c12f5f29c2fc9a070be3e56f2b5a1625cc79570e1fd1a30ffea9aa107f844d57b
   languageName: node
   linkType: hard
 
