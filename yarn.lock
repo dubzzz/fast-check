@@ -3614,7 +3614,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/ava@workspace:packages/ava"
   dependencies:
-    "@types/node": "npm:^22.12.0"
+    "@types/node": "npm:^22.13.1"
     ava: "npm:^6.2.0"
     esm: "npm:^3.2.25"
     fast-check: "workspace:*"
@@ -3665,7 +3665,7 @@ __metadata:
     "@jest/expect": "npm:^29.7.0"
     "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^22.12.0"
+    "@types/node": "npm:^22.13.1"
     fast-check: "workspace:*"
     jest: "npm:^29.7.0"
     jest-jasmine2: "npm:^29.7.0"
@@ -3722,7 +3722,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/poisoning@workspace:packages/poisoning"
   dependencies:
-    "@types/node": "npm:^22.12.0"
+    "@types/node": "npm:^22.13.1"
     typescript: "npm:~5.7.3"
     vitest: "npm:^2.1.8"
   languageName: unknown
@@ -3732,7 +3732,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/vitest@workspace:packages/vitest"
   dependencies:
-    "@types/node": "npm:^22.12.0"
+    "@types/node": "npm:^22.13.1"
     fast-check: "workspace:*"
     typescript: "npm:~5.7.3"
     vite: "npm:^6.0.11"
@@ -3746,7 +3746,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fast-check/worker@workspace:packages/worker"
   dependencies:
-    "@types/node": "npm:^22.12.0"
+    "@types/node": "npm:^22.13.1"
     fast-check: "npm:^3.4.0"
     pure-rand: "npm:^6.1.0"
     typescript: "npm:~5.7.3"
@@ -6247,12 +6247,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.12.0":
-  version: 22.12.0
-  resolution: "@types/node@npm:22.12.0"
+"@types/node@npm:*, @types/node@npm:^22.13.1":
+  version: 22.13.1
+  resolution: "@types/node@npm:22.13.1"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10c0/be220706732d95db2ed1c441c1e64cab90bf9a47519ce6f4c79cc5a9ec9d5c517131a149a9ac30afac1a30103e67e3a00d453ba7c1b0141608a3a7ba6397c303
+  checksum: 10c0/d4e56d41d8bd53de93da2651c0a0234e330bd7b1b6d071b1a94bd3b5ee2d9f387519e739c52a15c1faa4fb9d97e825b848421af4b2e50e6518011e7adb4a34b7
   languageName: node
   linkType: hard
 
@@ -10622,7 +10622,7 @@ __metadata:
     "@fast-check/expect-type": "workspace:*"
     "@fast-check/poisoning": "workspace:*"
     "@microsoft/api-extractor": "npm:^7.49.2"
-    "@types/node": "npm:^22.12.0"
+    "@types/node": "npm:^22.13.1"
     "@vitest/coverage-v8": "npm:^2.1.8"
     cross-env: "npm:^7.0.3"
     glob: "npm:^11.0.1"
@@ -21009,7 +21009,7 @@ __metadata:
     "@jest/globals": "npm:^29.7.0"
     "@mdx-js/react": "npm:^3.1.0"
     "@types/lodash": "npm:^4.17.15"
-    "@types/node": "npm:^22.12.0"
+    "@types/node": "npm:^22.13.1"
     "@types/react": "npm:^19.0.8"
     clsx: "npm:^2.1.1"
     fast-check: "workspace:*"
