@@ -129,7 +129,7 @@ To assist with the migration, here’s how to update your existing code to the n
 ++fc.string({ unit: hexa() });
 ```
 
-Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636), [#5644](https://github.com/dubzzz/fast-check/pull/5644)
+Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636), [#5644](https://github.com/dubzzz/fast-check/pull/5644), [#5664](https://github.com/dubzzz/fast-check/pull/5664)
 
 ### Replace any reference to `.noBias`
 
