@@ -104,19 +104,19 @@ Second, we have consolidated our main string arbitraries into a single string ar
 To assist with the migration, here’s how to update your existing code to the new API:
 
 ```diff
---fc.ascii();
-++fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
+-fc.ascii();
++fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
 
---fc.asciiString();
-++fc.string({ unit: 'binary-ascii' });
+-fc.asciiString();
++fc.string({ unit: 'binary-ascii' });
 ```
 
 Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
 
 ```diff
---fc.base64();
-++const base64 = () => fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
-++base64();
+-fc.base64();
++const base64 = () => fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
++base64();
 
 // We preserved fc.base64String() as it goes further than just a simple string of base64 characters.
 ```
@@ -124,13 +124,24 @@ Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
 Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
 
 ```diff
---fc.hexa();
-++const items = '0123456789abcdef';
-++const hexa = () => fc.integer({ min: 0, max: 15 }).map(n => items[n]);
-++hexa();
+-fc.char16bits();
++const char16bits = () => fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
++char16bits();
 
---fc.hexaString();
-++fc.string({ unit: hexa() });
+-fc.string16bits();
++fc.string({ unit: char16bits() });
+```
+
+Related pull requests: [#5666](https://github.com/dubzzz/fast-check/pull/5666)
+
+```diff
+-fc.hexa();
++const items = '0123456789abcdef';
++const hexa = () => fc.integer({ min: 0, max: 15 }).map(n => items[n]);
++hexa();
+
+-fc.hexaString();
++fc.string({ unit: hexa() });
 ```
 
 Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
