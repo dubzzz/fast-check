@@ -135,6 +135,17 @@ Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
 
 Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
 
+### Replace any reference to `stringOf`
+
+Starting at 3.22.0, we recommend to replace any reference to `stringOf` by `string`. The following diff gives you an example of such change:
+
+```diff
+-fc.stringOf(fc.constantFrom('Hello', 'World'));
++fc.string({ unit: fc.constantFrom('Hello', 'World') });
+```
+
+Related pull requests: [#5665](https://github.com/dubzzz/fast-check/pull/5665)
+
 ### Replace any reference to `.noBias`
 
 The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:
