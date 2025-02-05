@@ -112,9 +112,18 @@ To assist with the migration, here’s how to update your existing code to the n
 ```
 
 ```diff
+--fc.base64();
+++const base64 = () => fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
+++base64();
+
+// We preserved fc.base64String() as it goes further than just a simple string of base64 characters.
+```
+
+```diff
 --fc.hexa();
 ++const items = '0123456789abcdef';
-++fc.integer({ min: 0, max: 15 }).map(n => items[n]);
+++const hexa = () => fc.integer({ min: 0, max: 15 }).map(n => items[n]);
+++hexa();
 
 --fc.hexaString();
 ++fc.string({ unit: hexa() });
