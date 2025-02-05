@@ -3697,7 +3697,7 @@ __metadata:
     globals: "npm:^15.14.0"
     pkg-pr-new: "npm:^0.0.39"
     prettier: "npm:3.4.2"
-    publint: "npm:^0.3.2"
+    publint: "npm:^0.3.3"
     typescript: "npm:~5.7.3"
     typescript-eslint: "npm:^8.23.0"
   languageName: unknown
@@ -15900,10 +15900,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"package-manager-detector@npm:^0.2.0, package-manager-detector@npm:^0.2.8":
-  version: 0.2.8
-  resolution: "package-manager-detector@npm:0.2.8"
-  checksum: 10c0/2d24dd6e50a196a0b1e3ce7bf6db8aff403bdbe333cf81383bec54fa441dac958ec87a7e6865cf86e614704f349c7effaf8d0c2474a6a50a164e6218689f02db
+"package-manager-detector@npm:^0.2.0, package-manager-detector@npm:^0.2.9":
+  version: 0.2.9
+  resolution: "package-manager-detector@npm:0.2.9"
+  checksum: 10c0/5fe1e80743fd110954f1904be4be32f34fc46c17b05e9e47a81e2f5777e474366cb570ed3b697a5ae8290860b53ac4b309898b24919dc1ddeb6d4097429113e1
   languageName: node
   linkType: hard
 
@@ -17366,17 +17366,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"publint@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "publint@npm:0.3.2"
+"publint@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "publint@npm:0.3.3"
   dependencies:
     "@publint/pack": "npm:^0.1.1"
-    package-manager-detector: "npm:^0.2.8"
+    package-manager-detector: "npm:^0.2.9"
     picocolors: "npm:^1.1.1"
     sade: "npm:^1.8.1"
   bin:
     publint: src/cli.js
-  checksum: 10c0/7974d2f22e46b8461cb567516faf46eb668b1bfab11b615c47c76b1afe14fa94347cbf25affe3ef9016e7892a8f8fec5c9c74023a5f92e72343fe1178e8505b5
+  checksum: 10c0/342916d7b49d76dd59b20b659e87cb331ab2c2bbf753348559ed77bb08adcd0f27b06bbda4175e7ad368ffd22f7deaaf46de0a51b4afad3ca7909a80edd19dae
   languageName: node
   linkType: hard
 
