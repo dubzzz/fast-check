@@ -111,6 +111,8 @@ To assist with the migration, here’s how to update your existing code to the n
 ++fc.string({ unit: 'binary-ascii' });
 ```
 
+Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
+
 ```diff
 --fc.base64();
 ++const base64 = () => fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
@@ -118,6 +120,8 @@ To assist with the migration, here’s how to update your existing code to the n
 
 // We preserved fc.base64String() as it goes further than just a simple string of base64 characters.
 ```
+
+Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
 
 ```diff
 --fc.hexa();
@@ -129,7 +133,7 @@ To assist with the migration, here’s how to update your existing code to the n
 ++fc.string({ unit: hexa() });
 ```
 
-Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636), [#5644](https://github.com/dubzzz/fast-check/pull/5644), [#5664](https://github.com/dubzzz/fast-check/pull/5664)
+Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
 
 ### Replace any reference to `.noBias`
 
