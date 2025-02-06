@@ -3713,6 +3713,7 @@ __metadata:
     "@types/npmcli__arborist": "npm:^6.3.0"
     npm-packlist: "npm:^10.0.0"
     typescript: "npm:~5.7.3"
+    vite: "npm:^6.1.0"
     vitest: "npm:^2.1.9"
   bin:
     packaged: ./bin/packaged.js
