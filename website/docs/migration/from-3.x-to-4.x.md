@@ -104,11 +104,11 @@ Second, we have consolidated our main string arbitraries into a single string ar
 To assist with the migration, here’s how to update your existing code to the new API:
 
 ```ts
-function ascii() {
+function ascii(): fc.Arbitrary<string> {
   return fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
 }
 
-function asciiString(constraints: Omit<fc.StringConstraints, 'unit'> = {}) {
+function asciiString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
   return fc.string({ ...constraints, unit: 'binary-ascii' });
 }
 ```
@@ -116,21 +116,50 @@ function asciiString(constraints: Omit<fc.StringConstraints, 'unit'> = {}) {
 Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
 
 ```ts
-function base64() {
+function base64(): fc.Arbitrary<string> {
   return fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
 }
 
 // We preserved fc.base64String() as it goes further than just a simple string of base64 characters.
 ```
 
-Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
+<details>
+<summary>Advanced rewriting</summary>
 
 ```ts
-function char16bits() {
+function base64Mapper(v: number) {
+  if (v < 26) return String.fromCharCode(v + 65); // A-Z
+  if (v < 52) return String.fromCharCode(v + 97 - 26); // a-z
+  if (v < 62) return String.fromCharCode(v + 48 - 52); // 0-9
+  return v === 62 ? '+' : '/'; // 43, 47
+}
+
+function base64Unmapper(s: unknown) {
+  if (typeof s !== 'string' || s.length !== 1) {
+    throw new Error('Invalid entry');
+  }
+  const v = s.charCodeAt(0);
+  if (v >= 65 && v <= 90) return v - 65; // A-Z
+  if (v >= 97 && v <= 122) return v - 97 + 26; // a-z
+  if (v >= 48 && v <= 57) return v - 48 + 52; // 0-9
+  return v === 43 ? 62 : v === 47 ? 63 : -1; // +/
+}
+
+function base64(): fc.Arbitrary<string> {
+  return integer({ min: 0, max: 63 }).map(base64Mapper, base64Unmapper);
+}
+```
+
+</details>
+
+Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
+
+```ts
+function char16bits(): fc.Arbitrary<string> {
   return fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
 }
 
-function string16bits(constraints: Omit<fc.StringConstraints, 'unit'> = {}) {
+function string16bits(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
   return fc.string({ ...constraints, unit: char16bits() });
 }
 ```
@@ -138,17 +167,33 @@ function string16bits(constraints: Omit<fc.StringConstraints, 'unit'> = {}) {
 Related pull requests: [#5666](https://github.com/dubzzz/fast-check/pull/5666)
 
 ```ts
-function hexa() {
+function hexa(): fc.Arbitrary<string> {
   const items = '0123456789abcdef';
   return fc.integer({ min: 0, max: 15 }).map((n) => items[n]);
 }
 
-function hexaString(constraints: Omit<fc.StringConstraints, 'unit'> = {}) {
+function hexaString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
   return fc.string({ ...constraints, unit: hexa() });
 }
 ```
 
-Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
+<details>
+<summary>Advanced rewriting</summary>
+
+```ts
+function hexa(): fc.Arbitrary<string> {
+  return fc.integer({ min: 0, max: 15 }).map(
+    (n) => items[n],
+    (c) => items.indexOf(c),
+  );
+}
+
+// hexaString unchanged!
+```
+
+</details>
+
+Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
 
 ### Replace any reference to `stringOf`
 
