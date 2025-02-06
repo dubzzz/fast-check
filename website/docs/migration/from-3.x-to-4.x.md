@@ -172,6 +172,20 @@ function string16bits(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.
 
 Related pull requests: [#5666](https://github.com/dubzzz/fast-check/pull/5666)
 
+#### `fullUnicode` or `fullUnicodeString`
+
+```ts
+function fullUnicode(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'binary', minLength: 1, maxLength: 1 });
+}
+
+function fullUnicodeString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: 'binary' });
+}
+```
+
+Related pull requests: [#5667](https://github.com/dubzzz/fast-check/pull/5667)
+
 #### `hexa` or `hexaString`
 
 ```ts
