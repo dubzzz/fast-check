@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { char } from '../../../../src/arbitrary/char';
+import { integer } from '../../../../src/arbitrary/integer';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner';
 import type { Random } from '../../../../src/random/generator/Random';
@@ -21,7 +21,7 @@ describe('Runner', () => {
       expect(() => check({} as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => check(char() as any as IRawProperty<unknown>)).toThrowError();
+      expect(() => check(integer() as any as IRawProperty<unknown>)).toThrowError();
     });
     it.each`
       isAsync
@@ -596,7 +596,7 @@ describe('Runner', () => {
       expect(() => rAssert({} as IRawProperty<unknown>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => rAssert(char() as any as IRawProperty<unknown>)).toThrowError();
+      expect(() => rAssert(integer() as any as IRawProperty<unknown>)).toThrowError();
     });
     it('Should never throw if no failure occured', () => {
       expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();

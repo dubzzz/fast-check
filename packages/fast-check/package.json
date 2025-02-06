@@ -2,22 +2,22 @@
   "name": "fast-check",
   "version": "3.23.2",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
-  "type": "commonjs",
+  "type": "module",
   "main": "lib/fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "require": {
-        "types": "./lib/types/fast-check.d.ts",
-        "default": "./lib/fast-check.js"
+        "types": "./lib/cjs/types/fast-check.d.ts",
+        "default": "./lib/cjs/fast-check.js"
       },
       "import": {
-        "types": "./lib/esm/types/fast-check.d.ts",
-        "default": "./lib/esm/fast-check.js"
+        "types": "./lib/types/fast-check.d.ts",
+        "default": "./lib/fast-check.js"
       }
     }
   },
-  "module": "lib/esm/fast-check.js",
+  "module": "lib/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
   "files": [
     "lib",
@@ -28,15 +28,15 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.mjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm/types",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs/types",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
     "typecheck": "tsc --noEmit",
     "test": "vitest --config vitest.unit.config.mjs",
     "e2e": "vitest --config vitest.e2e.config.mjs",
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true vitest --config vitest.documentation.config.mjs",
     "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
-    "test-legacy-bundle": "nvs add 8 && $(nvs which 8) test-bundle/run.cjs && $(nvs which 8) test-bundle/run-advanced.cjs",
+    "test-legacy-bundle": "nvs add 12.17 && $(nvs which 12.17) test-bundle/run.cjs && $(nvs which 12.17) test-bundle/run-advanced.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
     "docs:serve": "yarn dlx serve docs/"
@@ -56,22 +56,22 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^6.1.0"
+    "pure-rand": "^7.0.0"
   },
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.49.1",
-    "@types/node": "^22.10.6",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@microsoft/api-extractor": "^7.49.2",
+    "@types/node": "^22.13.1",
+    "@vitest/coverage-v8": "^2.1.9",
     "cross-env": "^7.0.3",
     "glob": "^11.0.1",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^8.3.0",
     "typedoc": "^0.27.6",
-    "typescript": "~5.7.2",
-    "vitest": "^2.1.8"
+    "typescript": "~5.7.3",
+    "vitest": "^2.1.9"
   },
   "keywords": [
     "property-based testing",

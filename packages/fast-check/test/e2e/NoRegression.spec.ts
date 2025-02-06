@@ -156,65 +156,11 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('asciiString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.asciiString(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  // // Jest Snapshot seems not to support incomplete surrogate pair correctly
-  // it('string16bits', () => {
-  //   expect(runWithSanitizedStack(() => fc.assert(fc.property(fc.string16bits(), v => testFunc(v + v)), settings))).toThrowErrorMatchingSnapshot();
-  // });
-  it('stringOf', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.stringOf(fc.constantFrom('a', 'b')), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('stringMatching', () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.stringMatching(/(^|\s)a+[^a][b-eB-E]+[^b-eB-E](\s|$)/), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('unicodeString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.unicodeString(), (v) => testFunc(v + v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('fullUnicodeString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.fullUnicodeString(), (v) => testFunc(v + v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('hexaString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.hexaString(), (v) => testFunc(v)),
           settings,
         ),
       ),
@@ -268,7 +214,9 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.oneof<any>(fc.nat(), fc.char()), (v) => testFunc(v)),
+          fc.property(fc.oneof<any>(fc.nat(), fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 })), (v) =>
+            testFunc(v),
+          ),
           settings,
         ),
       ),
@@ -278,7 +226,13 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.oneof<any>({ weight: 1, arbitrary: fc.nat() }, { weight: 5, arbitrary: fc.char() }), testFunc),
+          fc.property(
+            fc.oneof<any>(
+              { weight: 1, arbitrary: fc.nat() },
+              { weight: 5, arbitrary: fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 }) },
+            ),
+            testFunc,
+          ),
           settings,
         ),
       ),
@@ -566,26 +520,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('unicodeJson', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.unicodeJson(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('unicodeJsonValue', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.unicodeJsonValue(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('compareFunc', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -818,7 +752,7 @@ describe(`NoRegression`, () => {
               try {
                 fc.modelRun(setup, cmds);
                 return true;
-              } catch (err) {
+              } catch {
                 return false;
               }
             },
@@ -897,26 +831,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('bigIntN', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigIntN(100), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('bigUintN', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigUintN(100), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('bigInt', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -957,26 +871,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('bigUint', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigUint(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('bigUint({max})', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigUint({ max: BigInt(1) << BigInt(96) }), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('bigInt64Array', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -1007,11 +901,11 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('mixedCase(stringOf)', () => {
+  it('mixedCase(string(constantFrom))', () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.mixedCase(fc.stringOf(fc.constantFrom('a', 'b', 'c'))), (v) => testFunc(v)),
+          fc.property(fc.mixedCase(fc.string({ unit: fc.constantFrom('a', 'b', 'c') })), (v) => testFunc(v)),
           settings,
         ),
       ),

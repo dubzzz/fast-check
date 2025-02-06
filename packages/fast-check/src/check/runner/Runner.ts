@@ -17,8 +17,6 @@ import type { IAsyncProperty } from '../property/AsyncProperty';
 import type { IProperty } from '../property/Property';
 import type { Value } from '../arbitrary/definition/Value';
 
-const safeObjectAssign = Object.assign;
-
 /** @internal */
 function runIt<Ts>(
   property: IRawProperty<Ts>,
@@ -100,10 +98,10 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(
-    // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
-    safeObjectAssign(safeObjectAssign({}, readConfigureGlobal() as Parameters<Ts>), params),
-  );
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
+    ...(readConfigureGlobal() as Parameters<Ts>),
+    ...params,
+  });
   if (qParams.reporter !== null && qParams.asyncReporter !== null)
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
   if (qParams.asyncReporter !== null && !rawProperty.isAsync())

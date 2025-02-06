@@ -2,71 +2,49 @@ import { safeApply } from './apply';
 
 // Globals
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SArray: typeof Array = typeof Array !== 'undefined' ? Array : undefined!;
+const SArray: typeof Array = Array;
 export { SArray as Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBigInt: typeof BigInt = typeof BigInt !== 'undefined' ? BigInt : undefined!;
+const SBigInt: typeof BigInt = BigInt;
 export { SBigInt as BigInt };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBigInt64Array: typeof BigInt64Array = typeof BigInt64Array !== 'undefined' ? BigInt64Array : undefined!;
+const SBigInt64Array: typeof BigInt64Array = BigInt64Array;
 export { SBigInt64Array as BigInt64Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBigUint64Array: typeof BigUint64Array = typeof BigUint64Array !== 'undefined' ? BigUint64Array : undefined!;
+const SBigUint64Array: typeof BigUint64Array = BigUint64Array;
 export { SBigUint64Array as BigUint64Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SBoolean: typeof Boolean = typeof Boolean !== 'undefined' ? Boolean : undefined!;
+const SBoolean: typeof Boolean = Boolean;
 export { SBoolean as Boolean };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SDate: typeof Date = typeof Date !== 'undefined' ? Date : undefined!;
+const SDate: typeof Date = Date;
 export { SDate as Date };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SError: typeof Error = typeof Error !== 'undefined' ? Error : undefined!;
+const SError: typeof Error = Error;
 export { SError as Error };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SFloat32Array: typeof Float32Array = typeof Float32Array !== 'undefined' ? Float32Array : undefined!;
+const SFloat32Array: typeof Float32Array = Float32Array;
 export { SFloat32Array as Float32Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SFloat64Array: typeof Float64Array = typeof Float64Array !== 'undefined' ? Float64Array : undefined!;
+const SFloat64Array: typeof Float64Array = Float64Array;
 export { SFloat64Array as Float64Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SInt8Array: typeof Int8Array = typeof Int8Array !== 'undefined' ? Int8Array : undefined!;
+const SInt8Array: typeof Int8Array = Int8Array;
 export { SInt8Array as Int8Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SInt16Array: typeof Int16Array = typeof Int16Array !== 'undefined' ? Int16Array : undefined!;
+const SInt16Array: typeof Int16Array = Int16Array;
 export { SInt16Array as Int16Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SInt32Array: typeof Int32Array = typeof Int32Array !== 'undefined' ? Int32Array : undefined!;
+const SInt32Array: typeof Int32Array = Int32Array;
 export { SInt32Array as Int32Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SNumber: typeof Number = typeof Number !== 'undefined' ? Number : undefined!;
+const SNumber: typeof Number = Number;
 export { SNumber as Number };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SString: typeof String = typeof String !== 'undefined' ? String : undefined!;
+const SString: typeof String = String;
 export { SString as String };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SSet: typeof Set = typeof Set !== 'undefined' ? Set : undefined!;
+const SSet: typeof Set = Set;
 export { SSet as Set };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SUint8Array: typeof Uint8Array = typeof Uint8Array !== 'undefined' ? Uint8Array : undefined!;
+const SUint8Array: typeof Uint8Array = Uint8Array;
 export { SUint8Array as Uint8Array };
-const SUint8ClampedArray: typeof Uint8ClampedArray =
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  typeof Uint8ClampedArray !== 'undefined' ? Uint8ClampedArray : undefined!;
+const SUint8ClampedArray: typeof Uint8ClampedArray = Uint8ClampedArray;
 export { SUint8ClampedArray as Uint8ClampedArray };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SUint16Array: typeof Uint16Array = typeof Uint16Array !== 'undefined' ? Uint16Array : undefined!;
+const SUint16Array: typeof Uint16Array = Uint16Array;
 export { SUint16Array as Uint16Array };
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const SUint32Array: typeof Uint32Array = typeof Uint32Array !== 'undefined' ? Uint32Array : undefined!;
+const SUint32Array: typeof Uint32Array = Uint32Array;
 export { SUint32Array as Uint32Array };
-const SencodeURIComponent: typeof encodeURIComponent =
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  typeof encodeURIComponent !== 'undefined' ? encodeURIComponent : undefined!;
+const SencodeURIComponent: typeof encodeURIComponent = encodeURIComponent;
 export { SencodeURIComponent as encodeURIComponent };
-const SMap = Map;
+const SMap: MapConstructor = Map;
 export { SMap as Map };
-const SSymbol = Symbol;
+const SSymbol: SymbolConstructor = Symbol;
 export { SSymbol as Symbol };
 
 // Various remarks concerning this part of the file:
@@ -91,77 +69,77 @@ const untouchedEvery = Array.prototype.every;
 function extractForEach(instance: unknown[]) {
   try {
     return instance.forEach;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractIndexOf(instance: readonly unknown[]) {
   try {
     return instance.indexOf;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractJoin(instance: unknown[]) {
   try {
     return instance.join;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractMap(instance: unknown[]) {
   try {
     return instance.map;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractFilter(instance: unknown[]) {
   try {
     return instance.filter;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractPush(instance: unknown[]) {
   try {
     return instance.push;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractPop(instance: unknown[]) {
   try {
     return instance.pop;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSplice(instance: unknown[]) {
   try {
     return instance.splice;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSlice(instance: unknown[]) {
   try {
     return instance.slice;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSort(instance: unknown[]) {
   try {
     return instance.sort;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractEvery(instance: unknown[]) {
   try {
     return instance.every;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -245,14 +223,14 @@ const untouchedToISOString = Date.prototype.toISOString;
 function extractGetTime(instance: Date) {
   try {
     return instance.getTime;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractToISOString(instance: Date) {
   try {
     return instance.toISOString;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -276,7 +254,7 @@ const untouchedHas = Set.prototype.has;
 function extractAdd(instance: Set<unknown>) {
   try {
     return instance.add;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -377,56 +355,56 @@ const untouchedReplace: (pattern: RegExp | string, replacement: string) => strin
 function extractSplit(instance: string) {
   try {
     return instance.split;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractStartsWith(instance: string) {
   try {
     return instance.startsWith;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractEndsWith(instance: string) {
   try {
     return instance.endsWith;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractSubstring(instance: string) {
   try {
     return instance.substring;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractToLowerCase(instance: string) {
   try {
     return instance.toLowerCase;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractToUpperCase(instance: string) {
   try {
     return instance.toUpperCase;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractPadStart(instance: string) {
   try {
     return instance.padStart;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
 function extractCharCodeAt(instance: string) {
   try {
     return instance.charCodeAt;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -440,7 +418,7 @@ function extractNormalize(instance: string) {
 function extractReplace(instance: string) {
   try {
     return instance.replace;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }
@@ -520,7 +498,7 @@ const untouchedNumberToString = Number.prototype.toString;
 function extractNumberToString(instance: number) {
   try {
     return instance.toString;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }

@@ -52,7 +52,7 @@ describe('computeNextFlags', () => {
 
   it('should preserve the same number of flags', () => {
     fc.assert(
-      fc.property(fc.bigUint(), fc.nat(100), (flags, offset) => {
+      fc.property(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, offset) => {
         const sourceToggled = countToggledBits(flags);
         const nextSize = sourceToggled + offset; // anything >= sourceToggled
         const nextFlags = computeNextFlags(flags, nextSize);
@@ -63,7 +63,7 @@ describe('computeNextFlags', () => {
 
   it('should preserve the position of existing flags', () => {
     fc.assert(
-      fc.property(fc.bigUint(), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
+      fc.property(fc.bigInt({ min: BigInt(0) }), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         for (let idx = 0, mask = BigInt(1); idx !== nextSize; ++idx, mask <<= BigInt(1)) {
           if (flags & mask) expect(!!(nextFlags & mask)).toBe(true);
@@ -74,7 +74,7 @@ describe('computeNextFlags', () => {
 
   it('should not return flags larger than the asked size', () => {
     fc.assert(
-      fc.property(fc.bigUint(), fc.nat(100), (flags, nextSize) => {
+      fc.property(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         expect(nextFlags < BigInt(1) << BigInt(nextSize)).toBe(true);
       }),
@@ -85,31 +85,39 @@ describe('computeNextFlags', () => {
 describe('computeTogglePositions', () => {
   it('should properly tag toggleable positions', () => {
     fc.assert(
-      fc.property(fc.array(fc.char()), fc.func(fc.char()), (chars, toggleCase) => {
-        // Arrange / Act
-        const positions = computeTogglePositions(chars, toggleCase);
+      fc.property(
+        fc.array(fc.string({ minLength: 1, maxLength: 1 })),
+        fc.func(fc.string({ minLength: 1, maxLength: 1 })),
+        (chars, toggleCase) => {
+          // Arrange / Act
+          const positions = computeTogglePositions(chars, toggleCase);
 
-        // Assert
-        for (const p of positions) {
-          expect(toggleCase(chars[p])).not.toBe(chars[p]);
-        }
-      }),
+          // Assert
+          for (const p of positions) {
+            expect(toggleCase(chars[p])).not.toBe(chars[p]);
+          }
+        },
+      ),
     );
   });
 
   it('should not tag untoggleable positions', () => {
     fc.assert(
-      fc.property(fc.array(fc.char()), fc.func(fc.char()), (chars, toggleCase) => {
-        // Arrange / Act
-        const positions = computeTogglePositions(chars, toggleCase);
+      fc.property(
+        fc.array(fc.string({ minLength: 1, maxLength: 1 })),
+        fc.func(fc.string({ minLength: 1, maxLength: 1 })),
+        (chars, toggleCase) => {
+          // Arrange / Act
+          const positions = computeTogglePositions(chars, toggleCase);
 
-        // Assert
-        for (let index = 0; index !== chars.length; ++index) {
-          if (!positions.includes(index)) {
-            expect(toggleCase(chars[index])).toBe(chars[index]);
+          // Assert
+          for (let index = 0; index !== chars.length; ++index) {
+            if (!positions.includes(index)) {
+              expect(toggleCase(chars[index])).toBe(chars[index]);
+            }
           }
-        }
-      }),
+        },
+      ),
     );
   });
 });
@@ -117,20 +125,25 @@ describe('computeTogglePositions', () => {
 describe('computeFlagsFromChars', () => {
   it('should be able to find back flags out of source and final chars', () => {
     fc.assert(
-      fc.property(fc.array(fc.char()), fc.func(fc.char()), fc.bigUint(), (chars, toggleCase, flagsUnmasked) => {
-        // Arrange
-        const positions = computeTogglePositions(chars, toggleCase);
-        const mask = (BigInt(1) << BigInt(positions.length)) - BigInt(1);
-        const flags = flagsUnmasked & mask;
-        const finalChars = [...chars];
-        applyFlagsOnChars(finalChars, flags, positions, toggleCase);
+      fc.property(
+        fc.array(fc.string({ minLength: 1, maxLength: 1 })),
+        fc.func(fc.string({ minLength: 1, maxLength: 1 })),
+        fc.bigInt({ min: BigInt(0) }),
+        (chars, toggleCase, flagsUnmasked) => {
+          // Arrange
+          const positions = computeTogglePositions(chars, toggleCase);
+          const mask = (BigInt(1) << BigInt(positions.length)) - BigInt(1);
+          const flags = flagsUnmasked & mask;
+          const finalChars = [...chars];
+          applyFlagsOnChars(finalChars, flags, positions, toggleCase);
 
-        // Act
-        const out = computeFlagsFromChars(chars, finalChars, positions);
+          // Act
+          const out = computeFlagsFromChars(chars, finalChars, positions);
 
-        // Assert
-        expect(out).toBe(flags);
-      }),
+          // Assert
+          expect(out).toBe(flags);
+        },
+      ),
     );
   });
 });

@@ -1,7 +1,7 @@
 import { Value } from '../../../check/arbitrary/definition/Value';
 
 /** @internal */
-export const UndefinedContextPlaceholder = Symbol('UndefinedContextPlaceholder');
+export const UndefinedContextPlaceholder: unique symbol = Symbol('UndefinedContextPlaceholder');
 
 /** @internal */
 export function noUndefinedAsContext<Ts>(value: Value<Ts>): Value<Ts> {

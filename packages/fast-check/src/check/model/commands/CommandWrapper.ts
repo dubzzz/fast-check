@@ -4,6 +4,7 @@ import {
   hasToStringMethod,
   toStringMethod,
 } from '../../../utils/stringify';
+import type { WithToStringMethod, WithAsyncToStringMethod } from '../../../utils/stringify';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import type { ICommand } from '../command/ICommand';
 
@@ -14,22 +15,20 @@ import type { ICommand } from '../command/ICommand';
 export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean>
   implements ICommand<Model, Real, RunResult, CheckAsync>
 {
-  [toStringMethod]?: () => string;
-  [asyncToStringMethod]?: () => Promise<string>;
-
   hasRan = false;
   constructor(readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>) {
     if (hasToStringMethod(cmd)) {
       const method = cmd[toStringMethod];
-      this[toStringMethod] = function toStringMethod(): string {
+      (this as unknown as WithToStringMethod)[toStringMethod] = function toStringMethod(): string {
         return method.call(cmd);
       };
     }
     if (hasAsyncToStringMethod(cmd)) {
       const method = cmd[asyncToStringMethod];
-      this[asyncToStringMethod] = function asyncToStringMethod(): Promise<string> {
-        return method.call(cmd);
-      };
+      (this as unknown as WithAsyncToStringMethod)[asyncToStringMethod] =
+        function asyncToStringMethod(): Promise<string> {
+          return method.call(cmd);
+        };
     }
   }
   check(m: Readonly<Model>): CheckAsync extends false ? boolean : Promise<boolean> {

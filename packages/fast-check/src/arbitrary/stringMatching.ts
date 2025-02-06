@@ -5,12 +5,11 @@ import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLeng
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex';
 import { tokenizeRegex } from './_internals/helpers/TokenizeRegex';
-import { char } from './char';
 import { constant } from './constant';
 import { constantFrom } from './constantFrom';
 import { integer } from './integer';
 import { oneof } from './oneof';
-import { stringOf } from './stringOf';
+import { string } from './string';
 import { tuple } from './tuple';
 
 const safeStringFromCodePoint = String.fromCodePoint;
@@ -37,7 +36,7 @@ const newLineChars = [...'\r\n'];
 const terminatorChars = [...'\x1E\x15'];
 const newLineAndTerminatorChars = [...newLineChars, ...terminatorChars];
 
-const defaultChar = char();
+const defaultChar = () => string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
 
 function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
@@ -65,20 +64,20 @@ function toMatchingArbitrary(
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar.filter((c) => safeIndexOf(wordChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(wordChars, c) === -1);
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar.filter((c) => safeIndexOf(digitChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(digitChars, c) === -1);
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar.filter((c) => safeIndexOf(spaceChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(spaceChars, c) === -1);
           }
           case '\\b':
           case '\\B': {
@@ -86,7 +85,7 @@ function toMatchingArbitrary(
           }
           case '.': {
             const forbiddenChars = flags.dotAll ? terminatorChars : newLineAndTerminatorChars;
-            return defaultChar.filter((c) => safeIndexOf(forbiddenChars, c) === -1);
+            return defaultChar().filter((c) => safeIndexOf(forbiddenChars, c) === -1);
           }
         }
       }
@@ -99,19 +98,20 @@ function toMatchingArbitrary(
       const node = toMatchingArbitrary(astNode.expression, constraints, flags);
       switch (astNode.quantifier.kind) {
         case '*': {
-          return stringOf(node, constraints);
+          return string({ ...constraints, unit: node });
         }
         case '+': {
-          return stringOf(node, { ...constraints, minLength: 1 });
+          return string({ ...constraints, minLength: 1, unit: node });
         }
         case '?': {
-          return stringOf(node, { ...constraints, minLength: 0, maxLength: 1 });
+          return string({ ...constraints, minLength: 0, maxLength: 1, unit: node });
         }
         case 'Range': {
-          return stringOf(node, {
+          return string({
             ...constraints,
             minLength: astNode.quantifier.from,
             maxLength: astNode.quantifier.to,
+            unit: node,
           });
         }
         default: {
@@ -131,7 +131,7 @@ function toMatchingArbitrary(
     case 'CharacterClass':
       if (astNode.negative) {
         const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
-        return defaultChar.filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
+        return defaultChar().filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
       }
       return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags)));
     case 'ClassRange': {
@@ -161,7 +161,7 @@ function toMatchingArbitrary(
           if (astNode.kind === '^') {
             return oneof(
               constant(''),
-              tuple(stringOf(defaultChar), constantFrom(...newLineChars)).map(
+              tuple(string({ unit: defaultChar() }), constantFrom(...newLineChars)).map(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
@@ -172,7 +172,7 @@ function toMatchingArbitrary(
           } else {
             return oneof(
               constant(''),
-              tuple(constantFrom(...newLineChars), stringOf(defaultChar)).map(
+              tuple(constantFrom(...newLineChars), string({ unit: defaultChar() })).map(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');

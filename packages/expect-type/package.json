@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
   "devDependencies": {
-    "typescript": "~5.7.2"
+    "typescript": "~5.7.3"
   },
   "keywords": [
     "type",

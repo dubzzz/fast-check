@@ -19,7 +19,7 @@ const checkEqual = (a: any, b: any): boolean => {
   try {
     expect(a).toEqual(b);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 };
@@ -53,14 +53,19 @@ const anythingEnableAll: fc.ObjectConstraints = {
 describe('stringify', () => {
   it('Should be able to stringify fc.anything()', () =>
     fc.assert(fc.property(fc.anything(anythingEnableAll), (a) => typeof stringify(a) === 'string')));
-  it('Should be able to stringify fc.char16bits() (ie. possibly invalid strings)', () =>
-    fc.assert(fc.property(fc.char16bits(), (a) => typeof stringify(a) === 'string')));
+  it('Should be able to stringify possibly invalid strings', () =>
+    fc.assert(
+      fc.property(
+        fc.string({ unit: fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n)) }),
+        (a) => typeof stringify(a) === 'string',
+      ),
+    ));
   it('Should be able to stringify bigint in object correctly', () =>
     fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
   it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>
     fc.assert(
       fc.property(
-        // Remark: While fc.unicodeJsonObject() could have been a good alternative to fc.anything()
+        // Remark: While fc.jsonValue() could have been a good alternative to fc.anything()
         //         it unfortunately cannot be used as JSON.stringify poorly handles negative zeros.
         // JSON.parse('{"a": -0}') -> preserves -0
         // JSON.stringify({a: -0}) -> changes -0 into 0, it produces {"a":0}
@@ -70,7 +75,7 @@ describe('stringify', () => {
             fc.boolean(),
             fc.integer(),
             fc.double({ noDefaultInfinity: true, noNaN: true }).filter((d) => !Object.is(d, -0)),
-            fc.fullUnicodeString(),
+            fc.string({ unit: 'binary' }),
             fc.constant(null),
           ],
         }),
@@ -381,13 +386,22 @@ describe('stringify', () => {
     expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
       'BigInt64Array.from([-2147483648n,5n,2147483647n])',
     );
-    assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
+    assertStringifyTypedArraysProperly<bigint>(
+      fc.bigInt({
+        min: -BigInt(1) << BigInt(63), // -2**63
+        max: (BigInt(1) << BigInt(63)) - BigInt(1), // 2**63 -1
+      }),
+      BigInt64Array.from.bind(BigInt64Array),
+    );
   });
   it('Should be able to stringify BigUint64Array', () => {
     expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
       'BigUint64Array.from([0n,5n,2147483647n])',
     );
-    assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
+    assertStringifyTypedArraysProperly<bigint>(
+      fc.bigInt({ min: BigInt(0), max: (BigInt(1) << BigInt(64)) - BigInt(1) }),
+      BigUint64Array.from.bind(BigUint64Array),
+    );
   });
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');

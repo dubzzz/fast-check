@@ -9,11 +9,13 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 
 ## Changes in minimal requirements
 
-| Name                    | New requirement | Previous requirement |
-| ----------------------- | --------------- | -------------------- |
-| TypeScript _(optional)_ | ≥5.0            | ≥4.1                 |
+| Name                     | New requirement | Previous requirement |
+| ------------------------ | --------------- | -------------------- |
+| Node                     | ≥12.17.0        | ≥8                   |
+| ECMAScript specification | ES2020          | ES2017               |
+| TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5618](https://github.com/dubzzz/fast-check/pull/5618)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5618](https://github.com/dubzzz/fast-check/pull/5618), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635), [#5670](https://github.com/dubzzz/fast-check/pull/5670)
 
 ## Update to latest v3.x
 
@@ -76,6 +78,213 @@ fc.record(recordModel, {
 
 Related pull requests: [#5578](https://github.com/dubzzz/fast-check/pull/5578), [#5597](https://github.com/dubzzz/fast-check/pull/5597)
 
+### Changes on `uuid`
+
+Previously, the `uuid` arbitrary only generated UUIDs of versions 1 through 5. In version 4, we have expanded the default behavior to include versions 6, 7, and 8, which are also valid and commonly used UUID versions.
+
+If your code relies specifically on versions 1 to 5, you can maintain the previous behavior by applying the following change:
+
+```diff
+--fc.uuid();
+++fc.uuid({ version: [1, 2, 3, 4, 5] });
+```
+
+However, we strongly recommend either using the new default behavior or explicitly specifying the exact versions your application supports to ensure compatibility and consistency.
+
+Related pull requests: [#5633](https://github.com/dubzzz/fast-check/pull/5633)
+
+### Changes on strings
+
+In version 4, we have made significant changes to our string arbitraries to simplify and enhance their usage.
+
+First, we have removed arbitraries that generated single-character strings. Since generating a single character is equivalent to creating a string with a length of one, these specialized arbitraries were unnecessary. This change helps reduce the API surface and better aligns with typical use cases, as most users require multi-character strings rather than single-character ones.
+
+Second, we have consolidated our main string arbitraries into a single string arbitrary. Previously, separate arbitraries existed for different character sets, such as ASCII and Unicode. In version 4, these have been unified into a single arbitrary that can be configured using the `unit` constraint to generate specific character types.
+
+To assist with the migration, here’s how to update your existing code to the new API:
+
+#### `ascii` or `asciiString`
+
+```ts
+function ascii(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
+}
+
+function asciiString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: 'binary-ascii' });
+}
+```
+
+Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
+
+#### `base64`
+
+```ts
+function base64(): fc.Arbitrary<string> {
+  return fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
+}
+
+// We preserved fc.base64String() as it goes further than just a simple string of base64 characters.
+```
+
+<details>
+<summary>Advanced rewriting</summary>
+
+```ts
+function base64Mapper(v: number) {
+  if (v < 26) return String.fromCharCode(v + 65); // A-Z
+  if (v < 52) return String.fromCharCode(v + 97 - 26); // a-z
+  if (v < 62) return String.fromCharCode(v + 48 - 52); // 0-9
+  return v === 62 ? '+' : '/'; // 43, 47
+}
+
+function base64Unmapper(s: unknown) {
+  if (typeof s !== 'string' || s.length !== 1) {
+    throw new Error('Invalid entry');
+  }
+  const v = s.charCodeAt(0);
+  if (v >= 65 && v <= 90) return v - 65; // A-Z
+  if (v >= 97 && v <= 122) return v - 97 + 26; // a-z
+  if (v >= 48 && v <= 57) return v - 48 + 52; // 0-9
+  return v === 43 ? 62 : v === 47 ? 63 : -1; // +/
+}
+
+function base64(): fc.Arbitrary<string> {
+  return integer({ min: 0, max: 63 }).map(base64Mapper, base64Unmapper);
+}
+```
+
+</details>
+
+Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
+
+#### `char`
+
+```ts
+function char(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
+}
+
+// We preserved fc.string().
+```
+
+Related pull requests: [#5671](https://github.com/dubzzz/fast-check/pull/5671)
+
+#### `char16bits` or `string16bits`
+
+```ts
+function char16bits(): fc.Arbitrary<string> {
+  return fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
+}
+
+function string16bits(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: char16bits() });
+}
+```
+
+Related pull requests: [#5666](https://github.com/dubzzz/fast-check/pull/5666)
+
+#### `fullUnicode` or `fullUnicodeString`
+
+```ts
+function fullUnicode(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'binary', minLength: 1, maxLength: 1 });
+}
+
+function fullUnicodeString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: 'binary' });
+}
+```
+
+Related pull requests: [#5667](https://github.com/dubzzz/fast-check/pull/5667)
+
+#### `hexa` or `hexaString`
+
+```ts
+function hexa(): fc.Arbitrary<string> {
+  const items = '0123456789abcdef';
+  return fc.integer({ min: 0, max: 15 }).map((n) => items[n]);
+}
+
+function hexaString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: hexa() });
+}
+```
+
+<details>
+<summary>Advanced rewriting</summary>
+
+```ts
+function hexa(): fc.Arbitrary<string> {
+  return fc.integer({ min: 0, max: 15 }).map(
+    (n) => items[n],
+    (c) => items.indexOf(c),
+  );
+}
+
+// hexaString unchanged!
+```
+
+</details>
+
+Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
+
+#### `unicode` or `unicodeString`
+
+```ts
+const gapSize = 0xdfff + 1 - 0xd800;
+function unicodeMapper(v: number) {
+  if (v < 0xd800) return v;
+  return v + gapSize;
+}
+function unicode(): Arbitrary<string> {
+  return integer({ min: 0, max: 0xffff - gapSize }).map((v) => String.fromCodePoint(unicodeMapper(v)));
+}
+
+function unicodeString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: unicode() });
+}
+```
+
+<details>
+<summary>Advanced rewriting</summary>
+
+```ts
+const gapSize = 0xdfff + 1 - 0xd800;
+function unicodeMapper(v: number) {
+  if (v < 0xd800) return v;
+  return v + gapSize;
+}
+function unicodeUnmapper(v: number) {
+  if (v < 0xd800) return v;
+  if (v <= 0xdfff) return -1;
+  return v - gapSize;
+}
+function unicode(): Arbitrary<string> {
+  return integer({ min: 0, max: 0xffff - gapSize }).map(
+    (v) => String.fromCodePoint(unicodeMapper(v)),
+    (s) => {
+      if (typeof s !== 'string') throw new Error('Invalid');
+      if (s.length !== 1) throw new Error('Invalid');
+      return unicodeUnmapper(s.codePointAt(0));
+    },
+  );
+}
+
+// unicodeString unchanged!
+```
+
+</details>
+
+:::warning You probably don't need `unicode`/`unicodeString`
+
+The `unicode` arbitrary was introduced early in fast-check, but later, `fullUnicode` was added to provide full Unicode support. `unicode` stayed limited to characters from the BMP (Basic Multilingual Plane).
+
+If you chose `unicode` to support Unicode in general, you might actually need to consider `fullUnicode` instead.
+:::
+
+Related pull requests: [#5669](https://github.com/dubzzz/fast-check/pull/5669)
+
 ### Replace any reference to `.noBias`
 
 The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:
@@ -86,6 +295,55 @@ The `.noBias` method, previously available on every `Arbitrary`, was marked as d
 ```
 
 Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
+
+### Replace any reference to `big{U|}int{N|}`
+
+The arbitraries `fc.bigIntN`, `fc.bigUintN`, and `fc.bigUint` have been removed. Replace any usage of these with `fc.bigInt`. If needed, you can reimplement them as follows:
+
+```ts
+function bigIntN(n: number): fc.Arbitrary<bigint> {
+  return fc.bigInt({ min: 1n << BigInt(n - 1), max: (1n << BigInt(n - 1)) - 1n });
+}
+
+function bigUintN(n: number): fc.Arbitrary<bigint> {
+  return fc.bigInt({ min: 0n, max: (1n << BigInt(n)) - 1n });
+}
+
+function bigUint(max: bigint = (1n << 256n) - 1n): fc.Arbitrary<bigint> {
+  return fc.bigInt({ min: 0n, max });
+}
+```
+
+Related pull requests: [#5674](https://github.com/dubzzz/fast-check/pull/5674)
+
+### Replace any reference to `stringOf`
+
+Starting at 3.22.0, we recommend to replace any reference to `stringOf` by `string`. The following diff gives you an example of such change:
+
+```diff
+-fc.stringOf(fc.constantFrom('Hello', 'World'));
++fc.string({ unit: fc.constantFrom('Hello', 'World') });
+```
+
+Related pull requests: [#5665](https://github.com/dubzzz/fast-check/pull/5665)
+
+### Replace any reference to `unicodeJson*`
+
+The arbitraries `unicodeJson` and `unicodeJsonValue` have been replaced with `json` and `jsonValue`. Instead of maintaining separate versions for different character sets, the new approach consolidates them into a single arbitrary that accepts a custom charset via constraints.
+
+To migrate, update your code as follows:
+
+```diff
+--fc.unicodeJson();
+++fc.json({ stringUnit: 'binary' }); // or 'grapheme'
+
+--fc.unicodeJsonValue();
+++fc.jsonValue({ stringUnit: 'binary' }); // or 'grapheme'
+```
+
+This change provides greater flexibility by allowing customization of the character set directly through the constraint options.
+
+Related pull requests: [#5613](https://github.com/dubzzz/fast-check/pull/5613)
 
 ### Replace any reference to `uuidV`
 
@@ -211,3 +469,40 @@ stringify(Object.assign(Object.create(null), { a: 1 })); // '{__proto__:null,"a"
 This change is unlikely to impact most users. However, we are highlighting it for advanced users who might rely on custom reporting capabilities or stringifier behavior to meet specific needs.
 
 Related pull requests: [#5603](https://github.com/dubzzz/fast-check/pull/5603)
+
+### Remove certain Symbol-based typings for commands
+
+In previous versions, the typings for `CommandWrapper` included methods on the symbols `toStringMethod` and `asyncToStringMethod`. While these methods will still exist in JavaScript in v4, they will no longer be exposed in the TypeScript typings. As a result, the declared type will change as follows:
+
+```diff
+export declare class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean>
+  implements ICommand<Model, Real, RunResult, CheckAsync>
+{
+  readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>;
+-  [toStringMethod]?: () => string;
+-  [asyncToStringMethod]?: () => Promise<string>;
+  hasRan: boolean;
+  constructor(cmd: ICommand<Model, Real, RunResult, CheckAsync>);
+  check(m: Readonly<Model>): CheckAsync extends false ? boolean : Promise<boolean>;
+  run(m: Model, r: Real): RunResult;
+  clone(): CommandWrapper<Model, Real, RunResult, CheckAsync>;
+  toString(): string;
+}
+```
+
+A similar change affects `CommandsIterable`, where the `cloneMethod` symbol will no longer be included in the typings:
+
+```diff
+export declare class CommandsIterable<Model extends object, Real, RunResult, CheckAsync extends boolean = false>
+  implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>>
+{
+  readonly commands: CommandWrapper<Model, Real, RunResult, CheckAsync>[];
+  readonly metadataForReplay: () => string;
+  constructor(commands: CommandWrapper<Model, Real, RunResult, CheckAsync>[], metadataForReplay: () => string);
+  [Symbol.iterator](): Iterator<CommandWrapper<Model, Real, RunResult, CheckAsync>>;
+-  [cloneMethod](): CommandsIterable<Model, Real, RunResult, CheckAsync>;
+  toString(): string;
+}
+```
+
+Related pull requests: [#5136](https://github.com/dubzzz/fast-check/pull/5136)

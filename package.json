@@ -26,18 +26,18 @@
     "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.11",
-    "@eslint/js": "^9.18.0",
+    "@changesets/cli": "^2.27.12",
+    "@eslint/js": "^9.19.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.20.0",
+    "@typescript-eslint/utils": "^8.23.0",
     "all-contributors-cli": "^6.26.1",
-    "eslint": "^9.18.0",
+    "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "globals": "^15.14.0",
     "pkg-pr-new": "^0.0.39",
     "prettier": "3.4.2",
-    "publint": "^0.3.2",
-    "typescript": "~5.7.2",
-    "typescript-eslint": "^8.20.0"
+    "publint": "^0.3.3",
+    "typescript": "~5.7.3",
+    "typescript-eslint": "^8.23.0"
   }
 }

@@ -36,7 +36,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   const packageVersion = JSON.parse(data.toString()).version;
 
   const commonJsReplacement = replaceInFileSync({
-    files: 'lib/fast-check-default.js',
+    files: 'lib/cjs/fast-check-default.js',
     from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: ['commonjs', packageVersion, commitHash],
   });
@@ -45,7 +45,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   }
 
   const moduleReplacement = replaceInFileSync({
-    files: 'lib/esm/fast-check-default.js',
+    files: 'lib/fast-check-default.js',
     from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: ['module', packageVersion, commitHash],
   });
@@ -54,7 +54,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   }
 
   const dTsReplacement = replaceInFileSync({
-    files: 'lib/types/fast-check-default.d.ts',
+    files: 'lib/cjs/types/fast-check-default.d.ts',
     from: [/__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: [packageVersion, commitHash],
   });
@@ -63,7 +63,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   }
 
   const dTsReplacement2 = replaceInFileSync({
-    files: 'lib/esm/types/fast-check-default.d.ts',
+    files: 'lib/types/fast-check-default.d.ts',
     from: [/__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: [packageVersion, commitHash],
   });

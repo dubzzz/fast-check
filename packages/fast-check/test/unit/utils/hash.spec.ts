@@ -6,21 +6,21 @@ import { hash } from '../../../src/utils/hash';
 describe('hash', () => {
   it('Should produce hash values in 0x00000000 and 0xffffffff', () =>
     fc.assert(
-      fc.property(fc.fullUnicodeString(), (a) => {
+      fc.property(fc.string({ unit: 'binary' }), (a) => {
         const h = hash(a);
         return h >= 0 && h <= 0xffffffff;
       }),
     ));
   it('Should be able to compute hash even for invalid strings', () =>
-    fc.assert(fc.property(fc.char16bits(), (a) => typeof hash(a) === 'number')));
+    fc.assert(fc.property(string16bits, (a) => typeof hash(a) === 'number')));
   it('Should compute the same value as reference for strings of characters <0x80', () =>
     fc.assert(fc.property(string0x80, (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for strings of characters <0x800', () =>
     fc.assert(fc.property(string0x800, (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for any string', () =>
-    fc.assert(fc.property(fc.fullUnicodeString(), (s) => hash(s) === hashReference(s))));
+    fc.assert(fc.property(fc.string({ unit: 'binary' }), (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for potentially invalid strings', () =>
-    fc.assert(fc.property(fc.char16bits(), (s) => hash(s) === hashReference(s))));
+    fc.assert(fc.property(string16bits, (s) => hash(s) === hashReference(s))));
   it('Should consider any invalid surrogate pair as <ef bf bd> or 0xfffd', () => {
     // This is the behaviour of the reference implementation based on Buffer.from (see below)
     // Buffer.from([0xef,0xbf,0xbd]).toString('utf8') === '\ufffd'
@@ -35,11 +35,14 @@ describe('hash', () => {
 
 // Helpers
 
+const char16bits = fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
+const string16bits = fc.string({ unit: char16bits });
+
 const char0x80 = fc.nat(0x79).map((n) => String.fromCharCode(n));
-const string0x80 = fc.stringOf(char0x80);
+const string0x80 = fc.string({ unit: char0x80 });
 
 const char0x800 = fc.nat(0x799).map((n) => String.fromCharCode(n));
-const string0x800 = fc.stringOf(char0x800);
+const string0x800 = fc.string({ unit: char0x800 });
 
 const crc32Table = [
   0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3, 0x0edb8832,
