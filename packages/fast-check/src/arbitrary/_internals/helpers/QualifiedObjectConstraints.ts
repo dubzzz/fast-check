@@ -167,7 +167,10 @@ export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): 
   function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
     return optionalValue !== undefined ? optionalValue : defaultValue;
   }
-  const valueConstraints = { size: settings.size, unit: settings.stringUnit };
+  const valueConstraints = {
+    size: settings.size,
+    unit: 'stringUnit' in settings ? settings.stringUnit : settings.withUnicodeString ? 'binary' : undefined,
+  };
   return {
     key: orDefault(settings.key, string(valueConstraints)),
     values: boxArbitrariesIfNeeded(
