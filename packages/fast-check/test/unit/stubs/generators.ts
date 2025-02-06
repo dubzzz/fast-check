@@ -23,6 +23,9 @@ class NoCallGenerator implements RandomGenerator {
   max(): number {
     throw new Error('Method not implemented.');
   }
+  getState(): readonly number[] {
+    throw new Error('Method not implemented.');
+  }
 }
 
 /**
@@ -60,6 +63,9 @@ class FastIncreaseRandomGenerator implements RandomGenerator {
   max(): number {
     return 0x7fffffff;
   }
+  getState(): readonly number[] {
+    throw new Error('Method not implemented.');
+  }
 }
 
 /**
@@ -89,6 +95,9 @@ class CounterRandomGenerator implements RandomGenerator {
   }
   max(): number {
     return 0x7fffffff;
+  }
+  getState(): readonly number[] {
+    throw new Error('Method not implemented.');
   }
 }
 

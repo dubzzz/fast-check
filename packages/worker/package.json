@@ -47,7 +47,7 @@
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
   "dependencies": {
     "fast-check": "^3.4.0",
-    "pure-rand": "^6.1.0"
+    "pure-rand": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",
