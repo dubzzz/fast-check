@@ -42,9 +42,9 @@ const SUint32Array: typeof Uint32Array = Uint32Array;
 export { SUint32Array as Uint32Array };
 const SencodeURIComponent: typeof encodeURIComponent = encodeURIComponent;
 export { SencodeURIComponent as encodeURIComponent };
-const SMap = Map;
+const SMap: MapConstructor = Map;
 export { SMap as Map };
-const SSymbol = Symbol;
+const SSymbol: SymbolConstructor = Symbol;
 export { SSymbol as Symbol };
 
 // Various remarks concerning this part of the file:
