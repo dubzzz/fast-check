@@ -10,43 +10,6 @@ Generate string values.
 If you want to join several strings together: refer to our [combiners section](/docs/core-blocks/arbitraries/combiners/). We have some [built-in combiners working exclusively on string values](/docs/core-blocks/arbitraries/combiners/string/).
 :::
 
-## hexaString
-
-Hexadecimal string containing characters produced by `fc.hexa()`.
-
-**Signatures:**
-
-- `fc.hexaString()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.hexaString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**with:**
-
-- `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-
-**Usages:**
-
-```js
-fc.hexaString();
-// Examples of generated values: "251971", "", "a9", "742e6c86e", "39350b163"…
-
-fc.hexaString({ maxLength: 3 });
-// Note: Any hexadecimal string containing up to 3 (included) characters
-// Examples of generated values: "1", "", "2ef", "2a", "6e3"…
-
-fc.hexaString({ minLength: 3 });
-// Note: Any hexadecimal string containing at least 3 (included) characters
-// Examples of generated values: "1021a292c2d306", "e4660fd014ae290", "2ef914a5d7ffe9df", "2a212", "05dd1"…
-
-fc.hexaString({ minLength: 4, maxLength: 6 });
-// Note: Any hexadecimal string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "b4ccb", "e51d", "b3e093", "383f", "27bd"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/hexaString.html).  
-Available since 0.0.1.
-
 ## string
 
 String containing characters produced by the character generator defined for `unit`. By default, `unit` defaults to `fc.char()`.
@@ -117,43 +80,6 @@ fc.string({ unit: fc.constantFrom('Hello', 'World') });
 Resources: [API reference](https://fast-check.dev/api-reference/functions/string.html).  
 Available since 0.0.1.
 
-## asciiString
-
-ASCII string containing characters produced by `fc.ascii()`.
-
-**Signatures:**
-
-- `fc.asciiString()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.asciiString({minLength?, maxLength?, size?})` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**with:**
-
-- `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-
-**Usages:**
-
-```js
-fc.asciiString();
-// Examples of generated values: "\f@D", "hp", "q#dO~?@", "Qad", "5eHqc"…
-
-fc.asciiString({ maxLength: 3 });
-// Note: Any ascii string containing up to 3 (included) characters
-// Examples of generated values: "6", "", "ty", ",", "k"…
-
-fc.asciiString({ minLength: 3 });
-// Note: Any ascii string containing at least 3 (included) characters
-// Examples of generated values: "603e", "6W\u001b^tR-\n\n|", "efproto_\u001abhasOw", "$\u001c&\u0000R", "apply"…
-
-fc.asciiString({ minLength: 4, maxLength: 6 });
-// Note: Any ascii string containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "<&\u001e\u001b ", "bind", "dnGn\\2", "& % !", "__defi"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/asciiString.html).  
-Available since 0.0.1.
-
 ## unicodeString
 
 Unicode string containing characters produced by `fc.unicode()`.
@@ -189,45 +115,6 @@ fc.unicodeString({ minLength: 4, maxLength: 6 });
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/unicodeString.html).  
-Available since 0.0.11.
-
-## string16bits
-
-String containing characters produced by `fc.char16bits()`.
-
-Be aware that the generated string might appear invalid regarding the unicode standard as it might contain incomplete pairs of surrogate.
-
-**Signatures:**
-
-- `fc.string16bits()` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-- `fc.string16bits({minLength?, maxLength?, size?})` — _deprecated since v3.22.0 (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**with:**
-
-- `minLength?` — default: `0` — _minimal number of characters (included)_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of characters (included)_
-- `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
-
-**Usages:**
-
-```js
-fc.string16bits();
-// Examples of generated values: "", "沉蹻!쯼&)￹噕￶￻", "獏", "嚷爇꡽邏䨫Ꝺ䟌", "ۆ딛楯씺"…
-
-fc.string16bits({ maxLength: 3 });
-// Note: Any string (not really legal ones sometimes) containing up to 3 (included) characters
-// Examples of generated values: "", "ꃷ", "톽va", "뿤䵎悧", ""…
-
-fc.string16bits({ minLength: 3 });
-// Note: Any string (not really legal ones sometimes) containing at least 3 (included) characters
-// Examples of generated values: "㝟佷㟧࿝譽먔", "ꃷ￱￷￻ꢒ￺￸", "톽valueOf", "key", "app"…
-
-fc.string16bits({ minLength: 4, maxLength: 6 });
-// Note: Any string (not really legal ones sometimes) containing between 4 (included) and 6 (included) characters
-// Examples of generated values: "apply", "鹽\udc68鯻שּׂ", "땺\uda2f熑鉈뗻", "__def", "㓐줫曧ᒢ"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/string16bits.html).  
 Available since 0.0.11.
 
 ## fullUnicodeString

@@ -234,7 +234,7 @@ export function assertProduceSomeSpecificValues<T, U = never>(
       // We default numRuns to 1000, but let user override it whenever needed
       assertParameters: { numRuns: 1000, ...options.assertParameters, endOnFailure: true },
     });
-  } catch (err) {
+  } catch {
     // no-op
   }
   expect(foundOne).toBe(true);

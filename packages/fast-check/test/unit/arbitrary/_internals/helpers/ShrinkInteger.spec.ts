@@ -98,10 +98,6 @@ describe('shrinkInteger', () => {
       }),
     ));
 
-  if (typeof BigInt === 'undefined') {
-    return;
-  }
-
   it('should always strictly increase distance from target as we move in the stream', () =>
     fc.assert(
       fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.boolean(), (current, target, tryAsap) => {

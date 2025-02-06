@@ -75,7 +75,7 @@ export function emailAddress(constraints: EmailAddressConstraints = {}): Arbitra
   const localPartArb = adapter(
     // Maximal length for the output of dotMapper is 64,
     // In other words:
-    // - `stringOf(atextArb, ...)` cannot produce values having more than 64 characters
+    // - `string({unit:atextArb,...})` cannot produce values having more than 64 characters
     // - `array(...)` cannot produce more than 32 values
     array(
       string({

@@ -11,7 +11,7 @@ function safeExtractApply<T, TArgs extends unknown[], TReturn>(
 ): ((thisArg: T) => TReturn) | undefined {
   try {
     return f.apply;
-  } catch (err) {
+  } catch {
     return undefined;
   }
 }

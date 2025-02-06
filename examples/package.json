@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "express": "^4.21.2",
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
@@ -21,12 +21,12 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/lodash": "^4.17.14",
-    "@types/react": "^19.0.4",
+    "@types/lodash": "^4.17.15",
+    "@types/react": "^19.0.8",
     "@types/supertest": "^6.0.2",
-    "happy-dom": "^16.5.3",
-    "typescript": "~5.7.2",
-    "vitest": "^2.1.8"
+    "happy-dom": "^16.8.1",
+    "typescript": "~5.7.3",
+    "vitest": "^2.1.9"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT"

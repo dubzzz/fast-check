@@ -41,34 +41,24 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'bigUint', arbitraryBuilder: () => fc.bigUint() },
     // String
     // : Single character
-    { name: 'hexa', arbitraryBuilder: () => fc.hexa() },
-    { name: 'base64', arbitraryBuilder: () => fc.base64() },
     { name: 'char', arbitraryBuilder: () => fc.char() },
-    { name: 'ascii', arbitraryBuilder: () => fc.ascii() },
     { name: 'unicode', arbitraryBuilder: () => fc.unicode() },
-    { name: 'char16bits', arbitraryBuilder: () => fc.char16bits() },
     { name: 'fullUnicode', arbitraryBuilder: () => fc.fullUnicode() },
     // : Multiple characters
-    { name: 'hexaString', arbitraryBuilder: () => fc.hexaString() },
     { name: 'base64String', arbitraryBuilder: () => fc.base64String() },
     { name: 'string', arbitraryBuilder: () => fc.string() },
-    { name: 'asciiString', arbitraryBuilder: () => fc.asciiString() },
     { name: 'unicodeString', arbitraryBuilder: () => fc.unicodeString() },
-    { name: 'string16bits', arbitraryBuilder: () => fc.string16bits() },
     { name: 'fullUnicodeString', arbitraryBuilder: () => fc.fullUnicodeString() },
-    { name: 'stringOf', arbitraryBuilder: () => fc.stringOf(fc.char()) },
     { name: 'stringMatching', arbitraryBuilder: () => preBuiltStringMatching },
     // : More specific strings
     // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
     //{ name: 'json', arbitraryBuilder: () => fc.json() },
-    //{ name: 'unicodeJson', arbitraryBuilder: () => fc.unicodeJson() },
     { name: 'lorem', arbitraryBuilder: () => fc.lorem() },
     { name: 'ipV4', arbitraryBuilder: () => fc.ipV4() },
     { name: 'ipV4Extended', arbitraryBuilder: () => fc.ipV4Extended() },
     { name: 'ipV6', arbitraryBuilder: () => fc.ipV6() },
     { name: 'ulid', arbitraryBuilder: () => fc.ulid() },
     { name: 'uuid', arbitraryBuilder: () => fc.uuid() },
-    { name: 'uuidV', arbitraryBuilder: () => fc.uuidV(4) },
     { name: 'domain', arbitraryBuilder: () => fc.domain() },
     { name: 'webAuthority', arbitraryBuilder: () => fc.webAuthority() },
     { name: 'webFragments', arbitraryBuilder: () => fc.webFragments() },
@@ -119,7 +109,6 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
     //{ name: 'object', arbitraryBuilder: () => fc.object() },
     //{ name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
-    //{ name: 'unicodeJsonValue', arbitraryBuilder: () => fc.unicodeJsonValue() },
     //{ name: 'anything', arbitraryBuilder: () => fc.anything() },
     // : Function
     { name: 'compareBooleanFunc', arbitraryBuilder: () => fc.compareBooleanFunc() },
@@ -181,7 +170,7 @@ function dropAllFromObj(obj: unknown): (() => void)[] {
       const descriptor = safeObjectGetOwnPropertyDescriptor(obj, k)!;
       delete (obj as any)[k];
       restores.push(() => safeObjectDefineProperty(obj, k, descriptor));
-    } catch (err) {
+    } catch {
       // Object.prototype cannot be deleted, and others might too
     }
   }

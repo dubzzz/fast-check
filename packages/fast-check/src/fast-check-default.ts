@@ -33,12 +33,8 @@ import { bigUintN } from './arbitrary/bigUintN';
 import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
-import { ascii } from './arbitrary/ascii';
-import { base64 } from './arbitrary/base64';
 import { char } from './arbitrary/char';
-import { char16bits } from './arbitrary/char16bits';
 import { fullUnicode } from './arbitrary/fullUnicode';
-import { hexa } from './arbitrary/hexa';
 import { unicode } from './arbitrary/unicode';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
@@ -88,13 +84,10 @@ import { mixedCase } from './arbitrary/mixedCase';
 import type { ObjectConstraints } from './arbitrary/object';
 import { object } from './arbitrary/object';
 import type { JsonSharedConstraints } from './arbitrary/json';
-import type { UnicodeJsonSharedConstraints } from './arbitrary/unicodeJson';
 import { json } from './arbitrary/json';
 import { anything } from './arbitrary/anything';
-import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
 import type { JsonValue } from './arbitrary/jsonValue';
 import { jsonValue } from './arbitrary/jsonValue';
-import { unicodeJson } from './arbitrary/unicodeJson';
 import type { OneOfValue, OneOfConstraints, MaybeWeightedArbitrary, WeightedArbitrary } from './arbitrary/oneof';
 import { oneof } from './arbitrary/oneof';
 import type { OptionConstraints } from './arbitrary/option';
@@ -110,14 +103,10 @@ import type {
 } from './arbitrary/uniqueArray';
 import { uniqueArray } from './arbitrary/uniqueArray';
 import { infiniteStream } from './arbitrary/infiniteStream';
-import { asciiString } from './arbitrary/asciiString';
 import { base64String } from './arbitrary/base64String';
 import { fullUnicodeString } from './arbitrary/fullUnicodeString';
-import { hexaString } from './arbitrary/hexaString';
 import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
 import { string } from './arbitrary/string';
-import { string16bits } from './arbitrary/string16bits';
-import { stringOf } from './arbitrary/stringOf';
 import { unicodeString } from './arbitrary/unicodeString';
 import type { SubarrayConstraints } from './arbitrary/subarray';
 import { subarray } from './arbitrary/subarray';
@@ -127,7 +116,6 @@ import { tuple } from './arbitrary/tuple';
 import { ulid } from './arbitrary/ulid';
 import { uuid } from './arbitrary/uuid';
 import type { UuidConstraints } from './arbitrary/uuid';
-import { uuidV } from './arbitrary/uuidV';
 import type { WebAuthorityConstraints } from './arbitrary/webAuthority';
 import { webAuthority } from './arbitrary/webAuthority';
 import type { WebFragmentsConstraints } from './arbitrary/webFragments';
@@ -282,7 +270,6 @@ export type {
   IntArrayConstraints,
   IntegerConstraints,
   JsonSharedConstraints,
-  UnicodeJsonSharedConstraints,
   LoremConstraints,
   MixedCaseConstraints,
   NatConstraints,
@@ -366,20 +353,12 @@ export {
   bigInt,
   bigUint,
   char,
-  ascii,
-  char16bits,
   unicode,
   fullUnicode,
-  hexa,
-  base64,
   mixedCase,
   string,
-  asciiString,
-  string16bits,
-  stringOf,
   unicodeString,
   fullUnicodeString,
-  hexaString,
   base64String,
   stringMatching,
   limitShrink,
@@ -405,8 +384,6 @@ export {
   object,
   json,
   jsonValue,
-  unicodeJson,
-  unicodeJsonValue,
   letrec,
   memo,
   compareBooleanFunc,
@@ -428,7 +405,6 @@ export {
   emailAddress,
   ulid,
   uuid,
-  uuidV,
   int8Array,
   uint8Array,
   uint8ClampedArray,

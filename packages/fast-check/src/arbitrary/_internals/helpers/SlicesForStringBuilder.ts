@@ -42,7 +42,7 @@ function computeCandidateStringLegacy(
   let candidate: string[];
   try {
     candidate = stringSplitter(dangerous);
-  } catch (err) {
+  } catch {
     // No split found for `dangerous`, `dangerous` cannot be shrunk by arrays made of `charArbitrary`
     return undefined;
   }

@@ -40,7 +40,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
   it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', () => {
     // Arrange
     const failingLength = 2;
-    const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
+    const dataArb: fc.Memo<readonly unknown[]> = fc.memo((n) => {
       if (n <= 1) return fc.constant([0]);
       else return fc.oneof({ withCrossShrink: true }, fc.constant([0]), fc.tuple(dataArb(), dataArb()));
     });
@@ -125,7 +125,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
 
 // Helpers
 
-function flat(arr: unknown[]): unknown[] {
+function flat(arr: readonly unknown[]): unknown[] {
   return arr.reduce((acc: unknown[], cur: unknown) => {
     if (Array.isArray(cur)) acc.push(...flat(cur));
     else acc.push(cur);

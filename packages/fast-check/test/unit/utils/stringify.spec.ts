@@ -19,7 +19,7 @@ const checkEqual = (a: any, b: any): boolean => {
   try {
     expect(a).toEqual(b);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 };
@@ -47,22 +47,25 @@ const anythingEnableAll: fc.ObjectConstraints = {
   withTypedArray: true,
   withSparseArray: true,
   withUnicodeString: true,
-  ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
+  withBigInt: true,
 };
 
 describe('stringify', () => {
   it('Should be able to stringify fc.anything()', () =>
     fc.assert(fc.property(fc.anything(anythingEnableAll), (a) => typeof stringify(a) === 'string')));
-  it('Should be able to stringify fc.char16bits() (ie. possibly invalid strings)', () =>
-    fc.assert(fc.property(fc.char16bits(), (a) => typeof stringify(a) === 'string')));
-  if (typeof BigInt !== 'undefined') {
-    it('Should be able to stringify bigint in object correctly', () =>
-      fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
-  }
+  it('Should be able to stringify possibly invalid strings', () =>
+    fc.assert(
+      fc.property(
+        fc.string({ unit: fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n)) }),
+        (a) => typeof stringify(a) === 'string',
+      ),
+    ));
+  it('Should be able to stringify bigint in object correctly', () =>
+    fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
   it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>
     fc.assert(
       fc.property(
-        // Remark: While fc.unicodeJsonObject() could have been a good alternative to fc.anything()
+        // Remark: While fc.jsonValue() could have been a good alternative to fc.anything()
         //         it unfortunately cannot be used as JSON.stringify poorly handles negative zeros.
         // JSON.parse('{"a": -0}') -> preserves -0
         // JSON.stringify({a: -0}) -> changes -0 into 0, it produces {"a":0}
@@ -176,9 +179,7 @@ describe('stringify', () => {
     expect(stringify(Number.NEGATIVE_INFINITY)).toEqual('Number.NEGATIVE_INFINITY');
     expect(stringify(Number.NaN)).toEqual('Number.NaN');
     expect(stringify('Hello')).toEqual('"Hello"');
-    if (typeof BigInt !== 'undefined') {
-      expect(stringify(BigInt(42))).toEqual('42n');
-    }
+    expect(stringify(BigInt(42))).toEqual('42n');
   });
   it('Should be able to stringify boxed values', () => {
     expect(stringify(new Boolean(false))).toEqual('new Boolean(false)');
@@ -294,12 +295,10 @@ describe('stringify', () => {
     expect(stringify(new B())).toEqual('{"a":1,"b":3,[Symbol.for("a")]:2,[Symbol.for("b")]:4}');
   });
   it('Should be able to stringify Object without prototype', () => {
-    expect(stringify(Object.create(null))).toEqual('Object.create(null)');
-    expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{"a":1})',
-    );
+    expect(stringify(Object.create(null))).toEqual('{__proto__:null}');
+    expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual('{__proto__:null,"a":1}');
     expect(stringify(Object.assign(Object.create(null), { [Symbol.for('a')]: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{[Symbol.for("a")]:1})',
+      '{__proto__:null,[Symbol.for("a")]:1}',
     );
   });
   it('Should be able to stringify Object with custom __proto__ value', () => {
@@ -308,7 +307,7 @@ describe('stringify', () => {
   });
   it('Should be able to stringify Object with custom __proto__ value and no prototype', () => {
     const instance = Object.assign(Object.create(null), { ['__proto__']: 1 });
-    expect(stringify(instance)).toEqual('Object.assign(Object.create(null),{["__proto__"]:1})');
+    expect(stringify(instance)).toEqual('{__proto__:null,["__proto__"]:1}');
     // NOTE: {['__proto__']: 1} is not the same as Object.assign(Object.create(null),{["__proto__"]:1})
     // The first one has a prototype equal to Object, the second one has no prototype.
   });
@@ -383,20 +382,18 @@ describe('stringify', () => {
     expect(stringify(Float64Array.from([0, 0.5, 30, -1]))).toEqual('Float64Array.from([0,0.5,30,-1])');
     assertStringifyTypedArraysProperly(fc.double(), Float64Array.from.bind(Float64Array));
   });
-  if (typeof BigInt !== 'undefined') {
-    it('Should be able to stringify BigInt64Array', () => {
-      expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigInt64Array.from([-2147483648n,5n,2147483647n])',
-      );
-      assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
-    });
-    it('Should be able to stringify BigUint64Array', () => {
-      expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigUint64Array.from([0n,5n,2147483647n])',
-      );
-      assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
-    });
-  }
+  it('Should be able to stringify BigInt64Array', () => {
+    expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
+      'BigInt64Array.from([-2147483648n,5n,2147483647n])',
+    );
+    assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
+  });
+  it('Should be able to stringify BigUint64Array', () => {
+    expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
+      'BigUint64Array.from([0n,5n,2147483647n])',
+    );
+    assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
+  });
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');
     expect(stringify(new CustomTagThrowingToString())).toEqual('[object CustomTagThrowingToString]');
