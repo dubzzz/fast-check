@@ -2,11 +2,11 @@ const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
 
 /** @internal */
-export const MIN_VALUE_32 = 2 ** -126 * 2 ** -23;
+export const MIN_VALUE_32: number = 2 ** -126 * 2 ** -23;
 /** @internal */
-export const MAX_VALUE_32 = 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23);
+export const MAX_VALUE_32: number = 2 ** 127 * (1 + (2 ** 23 - 1) / 2 ** 23);
 /** @internal */
-export const EPSILON_32 = 2 ** -23;
+export const EPSILON_32: number = 2 ** -23;
 
 /** @internal */
 const INDEX_POSITIVE_INFINITY = 2139095040; // floatToIndex(MAX_VALUE_32) + 1;

@@ -1,7 +1,7 @@
 import { safeCharCodeAt } from '../../../utils/globals';
 
 /** @internal */
-export const indexToCharStringMapper = String.fromCodePoint;
+export const indexToCharStringMapper: (...codePoints: number[]) => string = String.fromCodePoint;
 
 /** @internal */
 export function indexToCharStringUnmapper(c: unknown): number {

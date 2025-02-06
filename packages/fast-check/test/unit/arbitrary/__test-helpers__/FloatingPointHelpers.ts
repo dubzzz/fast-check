@@ -17,7 +17,15 @@ export function float64raw(): fc.Arbitrary<number> {
     .map(([na32, nb32]) => new Float64Array(new Int32Array([na32, nb32]).buffer)[0]);
 }
 
-export const defaultFloatRecordConstraints = {
+export const defaultFloatRecordConstraints: {
+  min: fc.Arbitrary<number>;
+  max: fc.Arbitrary<number>;
+  noDefaultInfinity: fc.Arbitrary<boolean>;
+  noNaN: fc.Arbitrary<boolean>;
+  noInteger: fc.Arbitrary<boolean>;
+  minExcluded: fc.Arbitrary<boolean>;
+  maxExcluded: fc.Arbitrary<boolean>;
+} = {
   min: float32raw(),
   max: float32raw(),
   noDefaultInfinity: fc.boolean(),
@@ -27,7 +35,15 @@ export const defaultFloatRecordConstraints = {
   maxExcluded: fc.boolean(),
 };
 
-export const defaultDoubleRecordConstraints = {
+export const defaultDoubleRecordConstraints: {
+  min: fc.Arbitrary<number>;
+  max: fc.Arbitrary<number>;
+  noDefaultInfinity: fc.Arbitrary<boolean>;
+  noNaN: fc.Arbitrary<boolean>;
+  noInteger: fc.Arbitrary<boolean>;
+  minExcluded: fc.Arbitrary<boolean>;
+  maxExcluded: fc.Arbitrary<boolean>;
+} = {
   min: float64raw(),
   max: float64raw(),
   noDefaultInfinity: fc.boolean(),
