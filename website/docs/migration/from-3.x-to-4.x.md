@@ -217,6 +217,62 @@ function hexa(): fc.Arbitrary<string> {
 
 Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
 
+#### `unicode` or `unicodeString`
+
+```ts
+const gapSize = 0xdfff + 1 - 0xd800;
+function unicodeMapper(v: number) {
+  if (v < 0xd800) return v;
+  return v + gapSize;
+}
+function unicode(): Arbitrary<string> {
+  return integer({ min: 0, max: 0xffff - gapSize }).map((v) => String.fromCodePoint(unicodeMapper(v)));
+}
+
+function unicodeString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: unicode() });
+}
+```
+
+<details>
+<summary>Advanced rewriting</summary>
+
+```ts
+const gapSize = 0xdfff + 1 - 0xd800;
+function unicodeMapper(v: number) {
+  if (v < 0xd800) return v;
+  return v + gapSize;
+}
+function unicodeUnmapper(v: number) {
+  if (v < 0xd800) return v;
+  if (v <= 0xdfff) return -1;
+  return v - gapSize;
+}
+function unicode(): Arbitrary<string> {
+  return integer({ min: 0, max: 0xffff - gapSize }).map(
+    (v) => String.fromCodePoint(unicodeMapper(v)),
+    (s) => {
+      if (typeof s !== 'string') throw new Error('Invalid');
+      if (s.length !== 1) throw new Error('Invalid');
+      return unicodeUnmapper(s.codePointAt(0));
+    },
+  );
+}
+
+// unicodeString unchanged!
+```
+
+</details>
+
+:::warning You probably don't need `unicode`/`unicodeString`
+
+The `unicode` arbitrary was introduced early in fast-check, but later, `fullUnicode` was added to provide full Unicode support. `unicode` stayed limited to characters from the BMP (Basic Multilingual Plane).
+
+If you chose `unicode` to support Unicode in general, you might actually need to consider `fullUnicode` instead.
+:::
+
+Related pull requests: [#5669](https://github.com/dubzzz/fast-check/pull/5669)
+
 ### Replace any reference to `stringOf`
 
 Starting at 3.22.0, we recommend to replace any reference to `stringOf` by `string`. The following diff gives you an example of such change:
