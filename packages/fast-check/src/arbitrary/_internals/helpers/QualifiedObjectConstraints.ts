@@ -164,30 +164,27 @@ function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean)
  * @internal
  */
 export function toQualifiedObjectConstraints(settings: ObjectConstraints = {}): QualifiedObjectConstraints {
-  function orDefault<T>(optionalValue: T | undefined, defaultValue: T): T {
-    return optionalValue !== undefined ? optionalValue : defaultValue;
-  }
   const valueConstraints = {
     size: settings.size,
     unit: 'stringUnit' in settings ? settings.stringUnit : settings.withUnicodeString ? 'binary' : undefined,
   };
   return {
-    key: orDefault(settings.key, string(valueConstraints)),
+    key: settings.key !== undefined ? settings.key : string(valueConstraints),
     values: boxArbitrariesIfNeeded(
-      orDefault(settings.values, defaultValues(valueConstraints, string)),
-      orDefault(settings.withBoxedValues, false),
+      settings.values !== undefined ? settings.values : defaultValues(valueConstraints, string),
+      settings.withBoxedValues === true,
     ),
     depthSize: settings.depthSize,
     maxDepth: settings.maxDepth,
     maxKeys: settings.maxKeys,
     size: settings.size,
-    withSet: orDefault(settings.withSet, false),
-    withMap: orDefault(settings.withMap, false),
-    withObjectString: orDefault(settings.withObjectString, false),
-    withNullPrototype: orDefault(settings.withNullPrototype, false),
-    withBigInt: orDefault(settings.withBigInt, false),
-    withDate: orDefault(settings.withDate, false),
-    withTypedArray: orDefault(settings.withTypedArray, false),
-    withSparseArray: orDefault(settings.withSparseArray, false),
+    withSet: settings.withSet == true,
+    withMap: settings.withMap == true,
+    withObjectString: settings.withObjectString == true,
+    withNullPrototype: settings.withNullPrototype == true,
+    withBigInt: settings.withBigInt == true,
+    withDate: settings.withDate == true,
+    withTypedArray: settings.withTypedArray == true,
+    withSparseArray: settings.withSparseArray == true,
   };
 }
