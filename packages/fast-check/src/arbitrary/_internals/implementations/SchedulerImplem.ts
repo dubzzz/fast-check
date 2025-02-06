@@ -1,5 +1,6 @@
 import { escapeForTemplateString } from '../helpers/TextEscaper';
-import { cloneMethod, WithCloneMethod } from '../../../check/symbols';
+import { cloneMethod } from '../../../check/symbols';
+import type { WithCloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
 import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
 
