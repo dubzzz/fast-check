@@ -1,4 +1,4 @@
-import { UserConfig } from 'vite';
+import type { UserConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 const major = Number(process.versions.node.split('.')[0]);
