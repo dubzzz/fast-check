@@ -285,17 +285,6 @@ If you chose `unicode` to support Unicode in general, you might actually need to
 
 Related pull requests: [#5669](https://github.com/dubzzz/fast-check/pull/5669)
 
-### Replace any reference to `stringOf`
-
-Starting at 3.22.0, we recommend to replace any reference to `stringOf` by `string`. The following diff gives you an example of such change:
-
-```diff
--fc.stringOf(fc.constantFrom('Hello', 'World'));
-+fc.string({ unit: fc.constantFrom('Hello', 'World') });
-```
-
-Related pull requests: [#5665](https://github.com/dubzzz/fast-check/pull/5665)
-
 ### Replace any reference to `.noBias`
 
 The `.noBias` method, previously available on every `Arbitrary`, was marked as deprecated in version 3.20.0. It has been replaced by a standalone arbitrary with the same functionality. You can prepare for compatibility with the next major version by updating your code as follows:
@@ -306,6 +295,37 @@ The `.noBias` method, previously available on every `Arbitrary`, was marked as d
 ```
 
 Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
+
+### Replace any reference to `big{U|}int{N|}`
+
+The arbitraries `fc.bigIntN`, `fc.bigUintN`, and `fc.bigUint` have been removed. Replace any usage of these with `fc.bigInt`. If needed, you can reimplement them as follows:
+
+```ts
+function bigIntN(n: number): fc.Arbitrary<bigint> {
+  return fc.bigInt({ min: 1n << BigInt(n - 1), max: (1n << BigInt(n - 1)) - 1n });
+}
+
+function bigUintN(n: number): fc.Arbitrary<bigint> {
+  return fc.bigInt({ min: 0n, max: (1n << BigInt(n)) - 1n });
+}
+
+function bigUint(max: bigint = (1n << 256n) - 1n): fc.Arbitrary<bigint> {
+  return fc.bigInt({ min: 0n, max });
+}
+```
+
+Related pull requests: [#5674](https://github.com/dubzzz/fast-check/pull/5674)
+
+### Replace any reference to `stringOf`
+
+Starting at 3.22.0, we recommend to replace any reference to `stringOf` by `string`. The following diff gives you an example of such change:
+
+```diff
+-fc.stringOf(fc.constantFrom('Hello', 'World'));
++fc.string({ unit: fc.constantFrom('Hello', 'World') });
+```
+
+Related pull requests: [#5665](https://github.com/dubzzz/fast-check/pull/5665)
 
 ### Replace any reference to `unicodeJson*`
 
