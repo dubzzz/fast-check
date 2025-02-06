@@ -268,7 +268,7 @@ fc.tuple(fc.nat(), '');
 
 // oneof arbitrary
 expectType<fc.Arbitrary<string>>()(
-  fc.oneof(fc.string(), fc.fullUnicodeString()),
+  fc.oneof(fc.string(), fc.string({ unit: 'binary' })),
   '"oneof" with multiple arguments having the same type',
 );
 expectType<fc.Arbitrary<string | number>>()(
@@ -284,7 +284,7 @@ expectType<fc.Arbitrary<string | number>>()(
   '"oneof" with different types and some constraints',
 );
 expectType<fc.Arbitrary<string>>()(
-  fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.fullUnicodeString(), weight: 1 }),
+  fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.string({ unit: 'binary' }), weight: 1 }),
   '"oneof" with weighted arbitraries and multiple arguments having the same type',
 );
 expectType<fc.Arbitrary<number | string>>()(

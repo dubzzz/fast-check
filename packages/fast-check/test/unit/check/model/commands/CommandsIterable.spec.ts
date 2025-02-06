@@ -56,7 +56,7 @@ describe('CommandsIterable', () => {
     ));
   it('Should only print ran commands and metadata if any', () =>
     fc.assert(
-      fc.property(fc.array(fc.boolean()), fc.fullUnicodeString(), (runFlags, metadata) => {
+      fc.property(fc.array(fc.boolean()), fc.string({ unit: 'binary' }), (runFlags, metadata) => {
         const commandsIterable = new CommandsIterable(buildAlreadyRanCommands(runFlags), () => metadata);
         const expectedCommands = runFlags
           .map((hasRan, idx) => (hasRan ? String(idx) : ''))

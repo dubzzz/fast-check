@@ -3,7 +3,6 @@ import { string } from './string';
 import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
 import { jsonConstraintsBuilder } from './_internals/helpers/JsonConstraintsBuilder';
 import { anything } from './anything';
-import { fullUnicodeString } from './fullUnicodeString';
 
 export type { JsonSharedConstraints, JsonValue };
 
@@ -27,6 +26,6 @@ export function jsonValue(constraints: JsonSharedConstraints = {}): Arbitrary<Js
       ? string({ unit: constraints.stringUnit })
       : noUnicodeString
         ? string()
-        : fullUnicodeString();
+        : string({ unit: 'binary' });
   return anything(jsonConstraintsBuilder(stringArbitrary, constraints)) as Arbitrary<JsonValue>;
 }

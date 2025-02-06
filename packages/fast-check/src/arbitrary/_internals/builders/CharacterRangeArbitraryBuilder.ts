@@ -1,8 +1,8 @@
-import { fullUnicode } from '../../fullUnicode';
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 import { oneof } from '../../oneof';
 import { mapToConstant } from '../../mapToConstant';
 import { safeCharCodeAt, safeNumberToString, encodeURIComponent, safeMapGet, safeMapSet } from '../../../utils/globals';
+import { string } from '../../string';
 
 const SMap = Map;
 const safeStringFromCharCode = String.fromCharCode;
@@ -31,7 +31,8 @@ function percentCharArbUnmapper(value: unknown): string {
 }
 
 /** @internal */
-const percentCharArb = fullUnicode().map(percentCharArbMapper, percentCharArbUnmapper);
+const percentCharArb = () =>
+  string({ unit: 'binary', minLength: 1, maxLength: 1 }).map(percentCharArbMapper, percentCharArbUnmapper);
 
 let lowerAlphaArbitrary: Arbitrary<string> | undefined = undefined;
 
@@ -80,7 +81,7 @@ export function getOrCreateAlphaNumericPercentArbitrary(others: string): Arbitra
   if (match === undefined) {
     match = oneof(
       { weight: 10, arbitrary: buildAlphaNumericArbitrary(others) },
-      { weight: 1, arbitrary: percentCharArb },
+      { weight: 1, arbitrary: percentCharArb() },
     );
     safeMapSet(alphaNumericPercentArbitraries, others, match);
   }

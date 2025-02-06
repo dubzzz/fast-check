@@ -43,23 +43,3 @@ fc.unicode();
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/unicode.html).  
 Available since 0.0.11.
-
-## fullUnicode
-
-One unicode character — _ie.: one character between `0x0000` (included) and `0x10ffff` (included) but excluding surrogate pairs (between `0xd800` and `0xdfff`)_.
-
-Its length can be greater than one as it potentially contains multiple UTF-16 characters for a single glyph (eg.: `"\u{1f434}".length === 2`).
-
-**Signatures:**
-
-- `fc.fullUnicode()` — _deprecated since v3.22.0, prefer [string](https://fast-check.dev/docs/core-blocks/arbitraries/primitives/string/#string-1) (more details at [#5233](https://github.com/dubzzz/fast-check/pull/5233))_
-
-**Usages:**
-
-```js
-fc.fullUnicode();
-// Examples of generated values: "􅍫", "#", "󳥰", "񸻩", "񘙠"…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/functions/fullUnicode.html).  
-Available since 0.0.11.

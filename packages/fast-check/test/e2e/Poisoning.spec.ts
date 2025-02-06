@@ -43,12 +43,10 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // : Single character
     { name: 'char', arbitraryBuilder: () => fc.char() },
     { name: 'unicode', arbitraryBuilder: () => fc.unicode() },
-    { name: 'fullUnicode', arbitraryBuilder: () => fc.fullUnicode() },
     // : Multiple characters
     { name: 'base64String', arbitraryBuilder: () => fc.base64String() },
     { name: 'string', arbitraryBuilder: () => fc.string() },
     { name: 'unicodeString', arbitraryBuilder: () => fc.unicodeString() },
-    { name: 'fullUnicodeString', arbitraryBuilder: () => fc.fullUnicodeString() },
     { name: 'stringMatching', arbitraryBuilder: () => preBuiltStringMatching },
     // : More specific strings
     // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array

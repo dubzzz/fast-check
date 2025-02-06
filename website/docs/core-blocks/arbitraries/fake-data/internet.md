@@ -172,7 +172,7 @@ Fragment is the optional part right after the # in an URI.
 
 ```js
 fc.webFragments();
-// Examples of generated values: "", "kg%F4%8F%BF%AEe=@b%F2%90%95%8Ad'", "a", "?x%F1%82%BD%B9-f.%F3%92%97%BA", "%F0%B7%94%9Bu_8r"…
+// Examples of generated values: "", "kg%00au@b%08cg", "a", "?x%F1%80%9F%8Cti.k", "%F0%A1%85%AFR%F1%8F%B1%86rQ"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/webFragments.html).  
@@ -197,14 +197,14 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 ```js
 fc.webPath();
-// Examples of generated values: "/X/x///1/j//6/@/", "", "/B/~", "/'//%F3%AF%93%AA/*/3/%F2%9A%90%BE/A///", "/HzDG-&&)E"…
+// Examples of generated values: "/X/x///1/j//6/@/", "", "/B/~", "/'//%F4%87%81%B9/B/~/e//P//", "/HzDG-&&)E"…
 
 fc.webPath({ size: '+1' });
 // Examples of generated values:
-// • "/%F3%A0%A1%8BlESmD/cLeL/6C%F1%A7%A8%A6J4%F1%AC%A3%8D-2(/k%F1%B6%B2%8F%E0%BD%98*S6y%F1%8F%B5%B8/_M/0S2JqQ/%F2%9D%90%B1D@gRy"
-// • "/Fxamq,9/%F1%84%A7%9Ex8L79RVmv"
-// • "/P.=*%F1%98%B1%A6.!zS/w4Rw/X%F1%82%9A%87ETDLW/Y/+lr!w-kJL/wOq)Xw0KZ"
-// • "/@H%F1%B2%B8%A8F+5uAO/=%F1%A4%96%835Ty+uv/OfoC.F%F3%8A%AD%96:J=/%F0%A6%92%B8~,0Wo8t%F2%8F%A5%87/k-G9=L;P4/;a"
+// • "/%F1%B7%93%81h&kpL/%F3%96%AA%BFeLb6of/4%F3%B3%80%85%F2%B2%94%B4(t02U/S6y/u_M24BC_%F1%B0%A2%A6t//0bR0co%E2%BD%BB"
+// • "/Fxamq,9/%F1%BE%A9%95t=P6-LPgL"
+// • "/P.=*%F2%97%A8%93~0i%F2%9A%AC%83/4Rwg0&nSQ/W/Y/+lr!w-kJL/wOq)Xw0KZ"
+// • "/@H%F4%8A%91%BFZR:%F2%BA%A7%96O4/%F3%98%90%B8y%F1%B6%96%83+uv%F2%9F%B0%BFf/+/.F%F0%B1%89%88aE%F1%88%A7%BA/~/"
 // • "/Bubfb"
 // • …
 ```
@@ -231,7 +231,7 @@ Query parameters part is the optional part right after the ? in an URI.
 
 ```js
 fc.webQueryParameters();
-// Examples of generated values: "argumentsp", "zB)MCS9r*", "=gcJbW:1", "RmE9%F3%96%BC%95XJ4h", "1=eJ@5ic1"…
+// Examples of generated values: "argumentsp", "zB)MCS9r*", "=gcJbW:1", "RmE9%F1%A6%BE%968y:2", "1=eJ@5ic1"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/webQueryParameters.html).  
@@ -254,7 +254,7 @@ Web URL path segment.
 
 ```js
 fc.webSegment();
-// Examples of generated values: "*lej@(", "", "+Y", "1FBtTF1GX", "V:%F2%BF%87%8B%F4%8A%AF%B6(AieS"…
+// Examples of generated values: "*lej@(", "", "+Y", "1FBtTF1GX", "V:%F2%96%A2%A1$PV4Yq"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/webSegment.html).  
@@ -283,16 +283,16 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 ```js
 fc.webUrl();
-// Examples of generated values: "https://1e.pl/", "https://s.snp", "https://h.ot", "https://copze7.wrc/N/", "http://ay84wia.bi/%F3%AA%A1%92/J"…
+// Examples of generated values: "https://1e.pl/", "https://s.snp", "https://h.ot", "https://copze7.wrc/N/", "http://ay84wia.bi/%05/_"…
 
 fc.webUrl({
   validSchemes: ['ftp', 'ftps'],
 });
 // Examples of generated values:
-// • "ftps://iq7rvu2my.tm/%F0%97%BC%9Fu%F3%81%88%B6&10"
+// • "ftps://iq7rvu2my.tm/%F0%91%B3%981V&Hq"
 // • "ftp://7eee69dc78fg.nec"
 // • "ftp://hye.rbh9r2.hb"
-// • "ftp://hmakevcba.uis/~%F2%AF%99%80"
+// • "ftp://hmakevcba.uis/~%F3%BC%B3%B2"
 // • "ftps://xb1.5787e.cew/d"
 // • …
 
@@ -301,9 +301,9 @@ fc.webUrl({
   withQueryParameters: true,
 });
 // Examples of generated values:
-// • "https://db.oaurut3lxuey.yc#%F3%84%9B%A1aFY.$/3n7"
-// • "http://91kpzb6.x4tmjg.pa//y/%F3%98%89%84/,//?~v6+#engtho__!/"
-// • "http://hqydzxt3ihu.db/m/A/M/o/6/?e#%EF%88%9DMq.mx:pU_"
+// • "https://db.oaurut3lxuey.yc#%F4%84%8D%9Ep%F3%87%81%B8.$/3n7%F3%A7%8F%BB"
+// • "http://91kpzb6.x4tmjg.pa//y/%F4%8A%8E%83///?Z7R)=W%F3%A2%95%B1h14"
+// • "http://hqydzxt3ihu.db/m/A/M/o/6/?e#%F3%B9%93%B65%F1%B9%A7%B1mx:pU_m"
 // • "https://74gl.fp601objrmhm.rx/svxJFoL#"
 // • "http://7.qxq?;Y:f@HiK#ref"
 // • …
