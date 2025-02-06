@@ -158,6 +158,18 @@ function base64(): fc.Arbitrary<string> {
 
 Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
 
+#### `char`
+
+```ts
+function char(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
+}
+
+// We preserved fc.string().
+```
+
+Related pull requests: [#5671](https://github.com/dubzzz/fast-check/pull/5671)
+
 #### `char16bits` or `string16bits`
 
 ```ts
