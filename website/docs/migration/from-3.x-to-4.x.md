@@ -310,3 +310,40 @@ stringify(Object.assign(Object.create(null), { a: 1 })); // '{__proto__:null,"a"
 This change is unlikely to impact most users. However, we are highlighting it for advanced users who might rely on custom reporting capabilities or stringifier behavior to meet specific needs.
 
 Related pull requests: [#5603](https://github.com/dubzzz/fast-check/pull/5603)
+
+### Remove certain Symbol-based typings for commands
+
+In previous versions, the typings for `CommandWrapper` included methods on the symbols `toStringMethod` and `asyncToStringMethod`. While these methods will still exist in JavaScript in v4, they will no longer be exposed in the TypeScript typings. As a result, the declared type will change as follows:
+
+```diff
+export declare class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean>
+  implements ICommand<Model, Real, RunResult, CheckAsync>
+{
+  readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>;
+-  [toStringMethod]?: () => string;
+-  [asyncToStringMethod]?: () => Promise<string>;
+  hasRan: boolean;
+  constructor(cmd: ICommand<Model, Real, RunResult, CheckAsync>);
+  check(m: Readonly<Model>): CheckAsync extends false ? boolean : Promise<boolean>;
+  run(m: Model, r: Real): RunResult;
+  clone(): CommandWrapper<Model, Real, RunResult, CheckAsync>;
+  toString(): string;
+}
+```
+
+A similar change affects `CommandsIterable`, where the `cloneMethod` symbol will no longer be included in the typings:
+
+```diff
+export declare class CommandsIterable<Model extends object, Real, RunResult, CheckAsync extends boolean = false>
+  implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>>
+{
+  readonly commands: CommandWrapper<Model, Real, RunResult, CheckAsync>[];
+  readonly metadataForReplay: () => string;
+  constructor(commands: CommandWrapper<Model, Real, RunResult, CheckAsync>[], metadataForReplay: () => string);
+  [Symbol.iterator](): Iterator<CommandWrapper<Model, Real, RunResult, CheckAsync>>;
+-  [cloneMethod](): CommandsIterable<Model, Real, RunResult, CheckAsync>;
+  toString(): string;
+}
+```
+
+Related pull requests: [#5136](https://github.com/dubzzz/fast-check/pull/5136)
