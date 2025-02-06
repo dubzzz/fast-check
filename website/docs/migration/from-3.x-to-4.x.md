@@ -103,6 +103,8 @@ Second, we have consolidated our main string arbitraries into a single string ar
 
 To assist with the migration, here’s how to update your existing code to the new API:
 
+#### `ascii` or `asciiString`
+
 ```ts
 function ascii(): fc.Arbitrary<string> {
   return fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
@@ -114,6 +116,8 @@ function asciiString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.A
 ```
 
 Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
+
+#### `base64`
 
 ```ts
 function base64(): fc.Arbitrary<string> {
@@ -154,6 +158,8 @@ function base64(): fc.Arbitrary<string> {
 
 Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
 
+#### `char16bits` or `string16bits`
+
 ```ts
 function char16bits(): fc.Arbitrary<string> {
   return fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
@@ -165,6 +171,8 @@ function string16bits(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.
 ```
 
 Related pull requests: [#5666](https://github.com/dubzzz/fast-check/pull/5666)
+
+#### `hexa` or `hexaString`
 
 ```ts
 function hexa(): fc.Arbitrary<string> {
