@@ -63,7 +63,7 @@ describe('patternsToStringUnmapperFor', () => {
     fc.assert(
       fc.property(
         // Defining chunks, we allow "" to be part of the chunks as we do not request any minimal length for the 'split into chunks'
-        fc.array(fc.fullUnicodeString(), { minLength: 1 }),
+        fc.array(fc.string({ unit: 'binary' }), { minLength: 1 }),
         // Array of random natural numbers to help building the source string
         fc.array(fc.nat()),
         (sourceChunks, sourceMods) => {
@@ -91,7 +91,7 @@ describe('patternsToStringUnmapperFor', () => {
   it('should be able to split strings built out of chunks into chunks while respecting constraints in size', () =>
     fc.assert(
       fc.property(
-        fc.array(fc.fullUnicodeString({ minLength: 1 }), { minLength: 1 }),
+        fc.array(fc.string({ unit: 'binary', minLength: 1 }), { minLength: 1 }),
         fc.array(fc.nat()),
         fc.nat(),
         fc.nat(),

@@ -11,11 +11,11 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 
 | Name                     | New requirement | Previous requirement |
 | ------------------------ | --------------- | -------------------- |
-| Node                     | ≥10.5.0         | ≥8                   |
+| Node                     | ≥12.17.0        | ≥8                   |
 | ECMAScript specification | ES2020          | ES2017               |
 | TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635), [#5670](https://github.com/dubzzz/fast-check/pull/5670)
 
 ## Update to latest v3.x
 
@@ -103,48 +103,187 @@ Second, we have consolidated our main string arbitraries into a single string ar
 
 To assist with the migration, here’s how to update your existing code to the new API:
 
-```diff
--fc.ascii();
-+fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
+#### `ascii` or `asciiString`
 
--fc.asciiString();
-+fc.string({ unit: 'binary-ascii' });
+```ts
+function ascii(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'binary-ascii', minLength: 1, maxLength: 1 });
+}
+
+function asciiString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: 'binary-ascii' });
+}
 ```
 
 Related pull requests: [#5636](https://github.com/dubzzz/fast-check/pull/5636)
 
-```diff
--fc.base64();
-+const base64 = () => fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
-+base64();
+#### `base64`
+
+```ts
+function base64(): fc.Arbitrary<string> {
+  return fc.constantFrom(...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/');
+}
 
 // We preserved fc.base64String() as it goes further than just a simple string of base64 characters.
 ```
 
-Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
+<details>
+<summary>Advanced rewriting</summary>
 
-```diff
--fc.char16bits();
-+const char16bits = () => fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
-+char16bits();
+```ts
+function base64Mapper(v: number) {
+  if (v < 26) return String.fromCharCode(v + 65); // A-Z
+  if (v < 52) return String.fromCharCode(v + 97 - 26); // a-z
+  if (v < 62) return String.fromCharCode(v + 48 - 52); // 0-9
+  return v === 62 ? '+' : '/'; // 43, 47
+}
 
--fc.string16bits();
-+fc.string({ unit: char16bits() });
+function base64Unmapper(s: unknown) {
+  if (typeof s !== 'string' || s.length !== 1) {
+    throw new Error('Invalid entry');
+  }
+  const v = s.charCodeAt(0);
+  if (v >= 65 && v <= 90) return v - 65; // A-Z
+  if (v >= 97 && v <= 122) return v - 97 + 26; // a-z
+  if (v >= 48 && v <= 57) return v - 48 + 52; // 0-9
+  return v === 43 ? 62 : v === 47 ? 63 : -1; // +/
+}
+
+function base64(): fc.Arbitrary<string> {
+  return integer({ min: 0, max: 63 }).map(base64Mapper, base64Unmapper);
+}
+```
+
+</details>
+
+Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
+
+#### `char`
+
+```ts
+function char(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
+}
+
+// We preserved fc.string().
+```
+
+Related pull requests: [#5671](https://github.com/dubzzz/fast-check/pull/5671)
+
+#### `char16bits` or `string16bits`
+
+```ts
+function char16bits(): fc.Arbitrary<string> {
+  return fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n));
+}
+
+function string16bits(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: char16bits() });
+}
 ```
 
 Related pull requests: [#5666](https://github.com/dubzzz/fast-check/pull/5666)
 
-```diff
--fc.hexa();
-+const items = '0123456789abcdef';
-+const hexa = () => fc.integer({ min: 0, max: 15 }).map(n => items[n]);
-+hexa();
+#### `fullUnicode` or `fullUnicodeString`
 
--fc.hexaString();
-+fc.string({ unit: hexa() });
+```ts
+function fullUnicode(): fc.Arbitrary<string> {
+  return fc.string({ unit: 'binary', minLength: 1, maxLength: 1 });
+}
+
+function fullUnicodeString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: 'binary' });
+}
 ```
 
-Related pull requests: [#5664](https://github.com/dubzzz/fast-check/pull/5664)
+Related pull requests: [#5667](https://github.com/dubzzz/fast-check/pull/5667)
+
+#### `hexa` or `hexaString`
+
+```ts
+function hexa(): fc.Arbitrary<string> {
+  const items = '0123456789abcdef';
+  return fc.integer({ min: 0, max: 15 }).map((n) => items[n]);
+}
+
+function hexaString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: hexa() });
+}
+```
+
+<details>
+<summary>Advanced rewriting</summary>
+
+```ts
+function hexa(): fc.Arbitrary<string> {
+  return fc.integer({ min: 0, max: 15 }).map(
+    (n) => items[n],
+    (c) => items.indexOf(c),
+  );
+}
+
+// hexaString unchanged!
+```
+
+</details>
+
+Related pull requests: [#5644](https://github.com/dubzzz/fast-check/pull/5644)
+
+#### `unicode` or `unicodeString`
+
+```ts
+const gapSize = 0xdfff + 1 - 0xd800;
+function unicodeMapper(v: number) {
+  if (v < 0xd800) return v;
+  return v + gapSize;
+}
+function unicode(): Arbitrary<string> {
+  return integer({ min: 0, max: 0xffff - gapSize }).map((v) => String.fromCodePoint(unicodeMapper(v)));
+}
+
+function unicodeString(constraints: Omit<fc.StringConstraints, 'unit'> = {}): fc.Arbitrary<string> {
+  return fc.string({ ...constraints, unit: unicode() });
+}
+```
+
+<details>
+<summary>Advanced rewriting</summary>
+
+```ts
+const gapSize = 0xdfff + 1 - 0xd800;
+function unicodeMapper(v: number) {
+  if (v < 0xd800) return v;
+  return v + gapSize;
+}
+function unicodeUnmapper(v: number) {
+  if (v < 0xd800) return v;
+  if (v <= 0xdfff) return -1;
+  return v - gapSize;
+}
+function unicode(): Arbitrary<string> {
+  return integer({ min: 0, max: 0xffff - gapSize }).map(
+    (v) => String.fromCodePoint(unicodeMapper(v)),
+    (s) => {
+      if (typeof s !== 'string') throw new Error('Invalid');
+      if (s.length !== 1) throw new Error('Invalid');
+      return unicodeUnmapper(s.codePointAt(0));
+    },
+  );
+}
+
+// unicodeString unchanged!
+```
+
+</details>
+
+:::warning You probably don't need `unicode`/`unicodeString`
+
+The `unicode` arbitrary was introduced early in fast-check, but later, `fullUnicode` was added to provide full Unicode support. `unicode` stayed limited to characters from the BMP (Basic Multilingual Plane).
+
+If you chose `unicode` to support Unicode in general, you might actually need to consider `fullUnicode` instead.
+:::
+
+Related pull requests: [#5669](https://github.com/dubzzz/fast-check/pull/5669)
 
 ### Replace any reference to `stringOf`
 

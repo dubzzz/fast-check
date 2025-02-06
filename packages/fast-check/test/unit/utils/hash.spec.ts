@@ -6,7 +6,7 @@ import { hash } from '../../../src/utils/hash';
 describe('hash', () => {
   it('Should produce hash values in 0x00000000 and 0xffffffff', () =>
     fc.assert(
-      fc.property(fc.fullUnicodeString(), (a) => {
+      fc.property(fc.string({ unit: 'binary' }), (a) => {
         const h = hash(a);
         return h >= 0 && h <= 0xffffffff;
       }),
@@ -18,7 +18,7 @@ describe('hash', () => {
   it('Should compute the same value as reference for strings of characters <0x800', () =>
     fc.assert(fc.property(string0x800, (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for any string', () =>
-    fc.assert(fc.property(fc.fullUnicodeString(), (s) => hash(s) === hashReference(s))));
+    fc.assert(fc.property(fc.string({ unit: 'binary' }), (s) => hash(s) === hashReference(s))));
   it('Should compute the same value as reference for potentially invalid strings', () =>
     fc.assert(fc.property(string16bits, (s) => hash(s) === hashReference(s))));
   it('Should consider any invalid surrogate pair as <ef bf bd> or 0xfffd', () => {

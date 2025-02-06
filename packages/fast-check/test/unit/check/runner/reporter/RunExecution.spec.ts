@@ -16,7 +16,7 @@ describe('RunExecution', () => {
           fc.record({
             value: fc.integer(),
             failureId: fc.nat(1000),
-            error: fc.fullUnicodeString().map((message) => new Error(message)),
+            error: fc.string({ unit: 'binary' }).map((message) => new Error(message)),
           }),
           { minLength: 1 },
         ),

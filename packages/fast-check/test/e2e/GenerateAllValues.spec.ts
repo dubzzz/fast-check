@@ -28,13 +28,12 @@ describe(`Generate all values (seed: ${seed})`, () => {
         ),
       ));
   });
-  describe('fc.char()', () => {
-    it('Should be able to produce any printable character', () => lookForMissing(fc.char(), 95));
+  describe("fc.string({ unit: 'binary-ascii' })", () => {
+    it('Should be able to produce any ascii character', () => lookForMissing(fc.string({ unit: 'binary-ascii' }), 256));
   });
-  describe('fc.unicode()', () => {
-    const numCharacters = 65536 - (0xdfff - 0xd800 + 1);
-    it('Should be able to produce any character from unicode (UCS-2 subset only)', () =>
-      lookForMissing(fc.unicode(), numCharacters));
+  describe("fc.string({ unit: 'grapheme-ascii' })", () => {
+    it('Should be able to produce any printable character', () =>
+      lookForMissing(fc.string({ unit: 'grapheme-ascii' }), 95));
   });
   describe('fc.constantFrom()', () => {
     it('Should be able to produce all the constants', () =>

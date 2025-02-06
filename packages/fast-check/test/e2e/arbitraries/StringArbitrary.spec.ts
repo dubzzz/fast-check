@@ -29,18 +29,17 @@ describe(`StringArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual(['AA==']);
     });
   });
-  describe('unicodeString', () => {
+  describe.each([
+    { unit: undefined },
+    { unit: 'grapheme' as const },
+    { unit: 'grapheme-composite' as const },
+    { unit: 'grapheme-ascii' as const },
+    { unit: 'binary' as const },
+    { unit: 'binary-ascii' as const },
+  ])('string(unit:$unit)', ({ unit }) => {
     it('Should produce valid UTF-16 strings', () => {
       fc.assert(
-        fc.property(fc.unicodeString(), (s: string) => encodeURIComponent(s) !== null),
-        { seed: seed },
-      );
-    });
-  });
-  describe('fullUnicodeString', () => {
-    it('Should produce valid UTF-16 strings', () => {
-      fc.assert(
-        fc.property(fc.fullUnicodeString(), (s: string) => encodeURIComponent(s) !== null),
+        fc.property(fc.string({ unit }), (s: string) => encodeURIComponent(s) !== null),
         { seed: seed },
       );
     });
