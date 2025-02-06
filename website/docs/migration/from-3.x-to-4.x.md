@@ -11,7 +11,7 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 
 | Name                     | New requirement | Previous requirement |
 | ------------------------ | --------------- | -------------------- |
-| Node                     | ≥10.5.0         | ≥8                   |
+| Node                     | ≥12.17.0        | ≥8                   |
 | ECMAScript specification | ES2020          | ES2017               |
 | TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
