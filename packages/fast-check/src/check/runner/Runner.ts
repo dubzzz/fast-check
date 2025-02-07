@@ -102,9 +102,9 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });
-  if (qParams.reporter !== null && qParams.asyncReporter !== null)
+  if (qParams.reporter !== undefined && qParams.asyncReporter !== undefined)
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
-  if (qParams.asyncReporter !== null && !rawProperty.isAsync())
+  if (qParams.asyncReporter !== undefined && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
 
