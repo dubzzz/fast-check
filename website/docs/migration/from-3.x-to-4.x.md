@@ -442,6 +442,20 @@ The `error` field has been removed from the `RunDetails` object returned by `fc.
 
 Related pull requests: [#5584](https://github.com/dubzzz/fast-check/pull/5584)
 
+### No more `nextArrayInt` on `Random`
+
+There are several ways to build arbitraries in fast-check:
+
+- Combine some existing ones,
+- Map, Filter and Chain some,
+- Implement the interface of `Arbitrary`.
+
+The breaking change only affects the last category of users. If you implemented by hand your own `Arbitrary` you probably leveraged the instance of `Random` being provided to your `generate` method in order to build your values.
+
+We dropped the method called `nextArrayInt` from it. We recommend users to rely on `nextBigInt` for big numerical values.
+
+Related pull requests: [#5679](https://github.com/dubzzz/fast-check/pull/5679)
+
 ### Property execution
 
 If you have implemented a custom class that adheres to the `IRawProperty` API required by property runners, or if you have created a custom property runner (e.g., a custom implementation of `fc.assert` or `fc.check`), this change may affect your code.
