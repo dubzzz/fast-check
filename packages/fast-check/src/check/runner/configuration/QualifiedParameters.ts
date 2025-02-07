@@ -45,7 +45,7 @@ export class QualifiedParameters<T> {
     this.randomType = QualifiedParameters.readRandomType(p);
     this.numRuns = QualifiedParameters.readNumRuns(p);
     this.verbose = QualifiedParameters.readVerbose(p);
-    this.maxSkipsPerRun = p.maxSkipsPerRun ?? 100;
+    this.maxSkipsPerRun = p.maxSkipsPerRun !== undefined ? p.maxSkipsPerRun : 100;
     this.timeout = QualifiedParameters.safeTimeout(p.timeout);
     this.skipAllAfterTimeLimit = QualifiedParameters.safeTimeout(p.skipAllAfterTimeLimit);
     this.interruptAfterTimeLimit = QualifiedParameters.safeTimeout(p.interruptAfterTimeLimit);
@@ -53,7 +53,7 @@ export class QualifiedParameters<T> {
     this.skipEqualValues = p.skipEqualValues === true;
     this.ignoreEqualValues = p.ignoreEqualValues === true;
     this.logger =
-      p.logger ??
+      p.logger !== undefined ? p.logger :
       ((v: string) => {
         // tslint:disable-next-line:no-console
         console.log(v);
