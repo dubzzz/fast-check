@@ -53,14 +53,15 @@ export class QualifiedParameters<T> {
     this.skipEqualValues = p.skipEqualValues === true;
     this.ignoreEqualValues = p.ignoreEqualValues === true;
     this.logger =
-      p.logger !== undefined ? p.logger :
-      ((v: string) => {
-        // tslint:disable-next-line:no-console
-        console.log(v);
-      });
-    this.path = p.path ?? '';
+      p.logger !== undefined
+        ? p.logger
+        : (v: string) => {
+            // tslint:disable-next-line:no-console
+            console.log(v);
+          };
+    this.path = p.path !== undefined ? p.path : '';
     this.unbiased = p.unbiased === true;
-    this.examples = p.examples ?? [];
+    this.examples = p.examples !== undefined ? p.examples : [];
     this.endOnFailure = p.endOnFailure === true;
     this.reporter = p.reporter;
     this.asyncReporter = p.asyncReporter;
