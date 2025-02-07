@@ -23,20 +23,20 @@ export class QualifiedParameters<T> {
   randomType: (seed: number) => QualifiedRandomGenerator;
   numRuns: number;
   maxSkipsPerRun: number;
-  timeout: number | null;
+  timeout: number | undefined;
   path: string;
   logger: (v: string) => void;
   unbiased: boolean;
   verbose: VerbosityLevel;
   examples: T[];
   endOnFailure: boolean;
-  skipAllAfterTimeLimit: number | null;
-  interruptAfterTimeLimit: number | null;
+  skipAllAfterTimeLimit: number | undefined;
+  interruptAfterTimeLimit: number | undefined;
   markInterruptAsFailure: boolean;
   skipEqualValues: boolean;
   ignoreEqualValues: boolean;
-  reporter: ((runDetails: RunDetails<T>) => void) | null;
-  asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | null;
+  reporter: ((runDetails: RunDetails<T>) => void) | undefined;
+  asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | undefined;
   includeErrorInReport: boolean;
 
   constructor(op?: Parameters<T>) {
@@ -45,40 +45,38 @@ export class QualifiedParameters<T> {
     this.randomType = QualifiedParameters.readRandomType(p);
     this.numRuns = QualifiedParameters.readNumRuns(p);
     this.verbose = QualifiedParameters.readVerbose(p);
-    this.maxSkipsPerRun = QualifiedParameters.readOrDefault(p, 'maxSkipsPerRun', 100);
-    this.timeout = QualifiedParameters.safeTimeout(QualifiedParameters.readOrDefault(p, 'timeout', null));
-    this.skipAllAfterTimeLimit = QualifiedParameters.safeTimeout(
-      QualifiedParameters.readOrDefault(p, 'skipAllAfterTimeLimit', null),
-    );
-    this.interruptAfterTimeLimit = QualifiedParameters.safeTimeout(
-      QualifiedParameters.readOrDefault(p, 'interruptAfterTimeLimit', null),
-    );
-    this.markInterruptAsFailure = QualifiedParameters.readBoolean(p, 'markInterruptAsFailure');
-    this.skipEqualValues = QualifiedParameters.readBoolean(p, 'skipEqualValues');
-    this.ignoreEqualValues = QualifiedParameters.readBoolean(p, 'ignoreEqualValues');
-    this.logger = QualifiedParameters.readOrDefault(p, 'logger', (v: string) => {
-      // tslint:disable-next-line:no-console
-      console.log(v);
-    });
-    this.path = QualifiedParameters.readOrDefault(p, 'path', '');
-    this.unbiased = QualifiedParameters.readBoolean(p, 'unbiased');
-    this.examples = QualifiedParameters.readOrDefault(p, 'examples', []);
-    this.endOnFailure = QualifiedParameters.readBoolean(p, 'endOnFailure');
-    this.reporter = QualifiedParameters.readOrDefault(p, 'reporter', null);
-    this.asyncReporter = QualifiedParameters.readOrDefault(p, 'asyncReporter', null);
-    this.includeErrorInReport = QualifiedParameters.readBoolean(p, 'includeErrorInReport');
+    this.maxSkipsPerRun = p.maxSkipsPerRun !== undefined ? p.maxSkipsPerRun : 100;
+    this.timeout = QualifiedParameters.safeTimeout(p.timeout);
+    this.skipAllAfterTimeLimit = QualifiedParameters.safeTimeout(p.skipAllAfterTimeLimit);
+    this.interruptAfterTimeLimit = QualifiedParameters.safeTimeout(p.interruptAfterTimeLimit);
+    this.markInterruptAsFailure = p.markInterruptAsFailure === true;
+    this.skipEqualValues = p.skipEqualValues === true;
+    this.ignoreEqualValues = p.ignoreEqualValues === true;
+    this.logger =
+      p.logger !== undefined
+        ? p.logger
+        : (v: string) => {
+            // tslint:disable-next-line:no-console
+            console.log(v);
+          };
+    this.path = p.path !== undefined ? p.path : '';
+    this.unbiased = p.unbiased === true;
+    this.examples = p.examples !== undefined ? p.examples : [];
+    this.endOnFailure = p.endOnFailure === true;
+    this.reporter = p.reporter;
+    this.asyncReporter = p.asyncReporter;
+    this.includeErrorInReport = p.includeErrorInReport === true;
   }
 
   toParameters(): Parameters<T> {
-    const orUndefined = <V>(value: V | null) => (value !== null ? value : undefined);
     const parameters: { [K in keyof Required<Parameters<T>>]: Parameters<T>[K] } = {
       seed: this.seed,
       randomType: this.randomType,
       numRuns: this.numRuns,
       maxSkipsPerRun: this.maxSkipsPerRun,
-      timeout: orUndefined(this.timeout),
-      skipAllAfterTimeLimit: orUndefined(this.skipAllAfterTimeLimit),
-      interruptAfterTimeLimit: orUndefined(this.interruptAfterTimeLimit),
+      timeout: this.timeout,
+      skipAllAfterTimeLimit: this.skipAllAfterTimeLimit,
+      interruptAfterTimeLimit: this.interruptAfterTimeLimit,
       markInterruptAsFailure: this.markInterruptAsFailure,
       skipEqualValues: this.skipEqualValues,
       ignoreEqualValues: this.ignoreEqualValues,
@@ -88,8 +86,8 @@ export class QualifiedParameters<T> {
       verbose: this.verbose,
       examples: this.examples,
       endOnFailure: this.endOnFailure,
-      reporter: orUndefined(this.reporter),
-      asyncReporter: orUndefined(this.asyncReporter),
+      reporter: this.reporter,
+      asyncReporter: this.asyncReporter,
       includeErrorInReport: this.includeErrorInReport,
     };
     return parameters;
@@ -109,7 +107,7 @@ export class QualifiedParameters<T> {
 
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
-    if (p.seed == null) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
+    if (p.seed === undefined) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
 
     // Seed is a 32 bits signed integer
     const seed32 = p.seed | 0;
@@ -120,7 +118,7 @@ export class QualifiedParameters<T> {
     return seed32 ^ (gap * 0x100000000);
   };
   private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => QualifiedRandomGenerator) => {
-    if (p.randomType == null) return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+    if (p.randomType === undefined) return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
         case 'mersenne':
@@ -150,12 +148,12 @@ export class QualifiedParameters<T> {
   };
   private static readNumRuns = <T>(p: Parameters<T>): number => {
     const defaultValue = 100;
-    if (p.numRuns != null) return p.numRuns;
-    if ((p as { num_runs?: number }).num_runs != null) return (p as { num_runs: number }).num_runs;
+    if (p.numRuns !== undefined) return p.numRuns;
+    if ((p as { num_runs?: number }).num_runs !== undefined) return (p as { num_runs: number }).num_runs;
     return defaultValue;
   };
   private static readVerbose = <T>(p: Parameters<T>): VerbosityLevel => {
-    if (p.verbose == null) return VerbosityLevel.None;
+    if (p.verbose === undefined) return VerbosityLevel.None;
     if (typeof p.verbose === 'boolean') {
       return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
     }
@@ -167,20 +165,9 @@ export class QualifiedParameters<T> {
     }
     return p.verbose | 0;
   };
-  private static readBoolean = <T, K extends keyof Parameters<T>>(p: Parameters<T>, key: K): boolean => p[key] === true;
-  private static readOrDefault = <T, K extends keyof Parameters<T>, V>(
-    p: Parameters<T>,
-    key: K,
-    defaultValue: V,
-  ): NonNullable<Parameters<T>[K]> | V => {
-    const value = p[key];
-    // value will be non nullable if value != null (even if TypeScript complains about it)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return value != null ? value! : defaultValue;
-  };
-  private static safeTimeout = (value: number | null): number | null => {
-    if (value === null) {
-      return null;
+  private static safeTimeout = (value: number | undefined): number | undefined => {
+    if (value === undefined) {
+      return undefined;
     }
     return safeMathMin(value, 0x7fffffff);
   };
