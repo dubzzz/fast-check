@@ -34,27 +34,31 @@ function h16sTol32Unmapper(value: unknown): [string, string] {
 }
 
 const items = '0123456789abcdef';
+let cachedHexa: Arbitrary<string> | undefined = undefined;
 /** @internal */
 function hexa(): Arbitrary<string> {
-  return integer({ min: 0, max: 15 }).map(
-    (n) => items[n],
-    (c) => {
-      if (typeof c !== 'string') {
-        throw new Error('Not a string');
-      }
-      if (c.length !== 1) {
-        throw new Error('Invalid length');
-      }
-      const code = safeCharCodeAt(c, 0); // 0=48,..,9=57,a=97,..,f=102
-      if (code <= 57) {
-        return code - 48; // any char before '0' will lead to <0 (rejected by integer)
-      }
-      if (code < 97) {
-        throw new Error('Invalid character');
-      }
-      return code - 87; // -87=-97+10, any char after 'f' will lead to >15 (rejected by integer)
-    },
-  );
+  if (cachedHexa === undefined) {
+    cachedHexa = integer({ min: 0, max: 15 }).map(
+      (n) => items[n],
+      (c) => {
+        if (typeof c !== 'string') {
+          throw new Error('Not a string');
+        }
+        if (c.length !== 1) {
+          throw new Error('Invalid length');
+        }
+        const code = safeCharCodeAt(c, 0); // 0=48,..,9=57,a=97,..,f=102
+        if (code <= 57) {
+          return code - 48; // any char before '0' will lead to <0 (rejected by integer)
+        }
+        if (code < 97) {
+          throw new Error('Invalid character');
+        }
+        return code - 87; // -87=-97+10, any char after 'f' will lead to >15 (rejected by integer)
+      },
+    );
+  }
+  return cachedHexa;
 }
 
 /**
