@@ -30,7 +30,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual([[5, 5]]);
     });
     biasIts('integer', fc.integer());
-    biasIts('bigint', fc.bigInt());
+    biasIts('bigint', fc.bigInt({ min: 0n, max: (1n << 64n) - 1n }));
   });
 });
 
