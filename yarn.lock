@@ -3640,7 +3640,7 @@ __metadata:
     fast-check: "workspace:*"
     happy-dom: "npm:^17.0.0"
     lodash: "npm:^4.17.21"
-    pure-rand: "npm:^7.0.0"
+    pure-rand: "npm:^7.0.1"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     supertest: "npm:^7.0.0"
@@ -17412,10 +17412,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "pure-rand@npm:7.0.0"
-  checksum: 10c0/cad318afa0dc2f5d687be7f888b8ab2c6864e6e4bcc744b152353b1af5606fe8903669c253969b8a58b792bfbd896aa88cbcdea26a1c0e4cf0f1acff9b12ed2c
+"pure-rand@npm:^7.0.0, pure-rand@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "pure-rand@npm:7.0.1"
+  checksum: 10c0/9cade41030f5ec95f5d55a11a71404cd6f46b69becaad892097cd7f58e2c6248cd0a933349ca7d21336ab629f1da42ffe899699b671bc4651600eaf6e57f837e
   languageName: node
   linkType: hard
 
