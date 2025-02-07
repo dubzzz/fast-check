@@ -1,13 +1,3 @@
-import type { ArrayInt64 } from './_internals/helpers/ArrayInt64';
-import {
-  add64,
-  isEqual64,
-  isStrictlyPositive64,
-  isStrictlySmaller64,
-  substract64,
-  Unit64,
-} from './_internals/helpers/ArrayInt64';
-import { arrayInt64 } from './_internals/ArrayInt64Arbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers';
 import {
@@ -15,6 +5,8 @@ import {
   doubleOnlyUnmapper,
   refineConstraintsForDoubleOnly,
 } from './_internals/helpers/DoubleOnlyHelpers';
+import { bigInt } from './bigInt';
+import { BigInt } from '../utils/globals';
 
 const safeNumberIsInteger = Number.isInteger;
 const safeNumberIsNaN = Number.isNaN;
@@ -83,7 +75,7 @@ export interface DoubleConstraints {
  *
  * @internal
  */
-function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints) {
+function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints): bigint {
   if (safeNumberIsNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
     throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 64-bit float');
@@ -92,7 +84,7 @@ function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints)
 }
 
 /** @internal */
-function unmapperDoubleToIndex(value: unknown): ArrayInt64 {
+function unmapperDoubleToIndex(value: unknown): bigint {
   if (typeof value !== 'number') throw new Error('Unsupported type');
   return doubleToIndex(value);
 }
@@ -113,34 +105,34 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
     max = noDefaultInfinity ? safeMaxValue : safePositiveInfinity,
   } = constraints;
   const minIndexRaw = safeDoubleToIndex(min, 'min');
-  const minIndex = minExcluded ? add64(minIndexRaw, Unit64) : minIndexRaw;
+  const minIndex = minExcluded ? minIndexRaw + BigInt(1) : minIndexRaw;
   const maxIndexRaw = safeDoubleToIndex(max, 'max');
-  const maxIndex = maxExcluded ? substract64(maxIndexRaw, Unit64) : maxIndexRaw;
-  if (isStrictlySmaller64(maxIndex, minIndex)) {
+  const maxIndex = maxExcluded ? maxIndexRaw - BigInt(1) : maxIndexRaw;
+  if (maxIndex < minIndex) {
     // In other words: minIndex > maxIndex
     // Comparing min and max might be problematic in case min=+0 and max=-0
     // For that reason, we prefer to compare computed index to be safer
     throw new Error('fc.double constraints.min must be smaller or equal to constraints.max');
   }
   if (noNaN) {
-    return arrayInt64(minIndex, maxIndex).map(indexToDouble, unmapperDoubleToIndex);
+    return bigInt({ min: minIndex, max: maxIndex }).map(indexToDouble, unmapperDoubleToIndex);
   }
   // In case maxIndex > 0 or in other words max > 0,
   //   values will be [min, ..., +0, ..., max, NaN]
   //               or [min, ..., max, NaN] if min > +0
   // Otherwise,
   //   values will be [NaN, min, ..., max] with max <= +0
-  const positiveMaxIdx = isStrictlyPositive64(maxIndex);
-  const minIndexWithNaN = positiveMaxIdx ? minIndex : substract64(minIndex, Unit64);
-  const maxIndexWithNaN = positiveMaxIdx ? add64(maxIndex, Unit64) : maxIndex;
-  return arrayInt64(minIndexWithNaN, maxIndexWithNaN).map(
+  const positiveMaxIdx = maxIndex > BigInt(0);
+  const minIndexWithNaN = positiveMaxIdx ? minIndex : minIndex - BigInt(1);
+  const maxIndexWithNaN = positiveMaxIdx ? maxIndex + BigInt(1) : maxIndex;
+  return bigInt({ min: minIndexWithNaN, max: maxIndexWithNaN }).map(
     (index) => {
-      if (isStrictlySmaller64(maxIndex, index) || isStrictlySmaller64(index, minIndex)) return safeNaN;
+      if (maxIndex < index || index < minIndex) return safeNaN;
       else return indexToDouble(index);
     },
     (value) => {
       if (typeof value !== 'number') throw new Error('Unsupported type');
-      if (safeNumberIsNaN(value)) return !isEqual64(maxIndex, maxIndexWithNaN) ? maxIndexWithNaN : minIndexWithNaN;
+      if (safeNumberIsNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
       return doubleToIndex(value);
     },
   );

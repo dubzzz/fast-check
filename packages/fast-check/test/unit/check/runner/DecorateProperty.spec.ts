@@ -34,9 +34,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable none when needed', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -49,8 +49,8 @@ describe('decorateProperty', () => {
   it('Should enable SkipAfterProperty on skipAllAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
       skipAllAfterTimeLimit: 1,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -62,9 +62,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable SkipAfterProperty on interruptAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
+      skipAllAfterTimeLimit: undefined,
       interruptAfterTimeLimit: 1,
-      timeout: null,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -76,8 +76,8 @@ describe('decorateProperty', () => {
   });
   it('Should enable TimeoutProperty on timeout', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
       timeout: 1,
       unbiased: false,
       skipEqualValues: false,
@@ -90,9 +90,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable UnbiasedProperty on unbiased', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: true,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -104,8 +104,8 @@ describe('decorateProperty', () => {
   });
   it('Should not enable TimeoutProperty on synchronous property', () => {
     decorateProperty(buildProperty(false), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
       timeout: 1,
       unbiased: false,
       skipEqualValues: false,
@@ -118,9 +118,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable IgnoreEqualValuesProperty on ignoreEqualValues', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: true,
@@ -132,9 +132,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable IgnoreEqualValuesProperty on skipEqualValues', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: true,
       ignoreEqualValues: false,

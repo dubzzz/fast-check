@@ -831,26 +831,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('bigIntN', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigIntN(100), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('bigUintN', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigUintN(100), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('bigInt', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -886,26 +866,6 @@ describe(`NoRegression`, () => {
       runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16), max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('bigUint', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigUint(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('bigUint({max})', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.bigUint({ max: BigInt(1) << BigInt(96) }), (v) => testFunc(v)),
           settings,
         ),
       ),

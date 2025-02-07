@@ -1,5 +1,6 @@
 import { escapeForTemplateString } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
+import type { WithCloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
 import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
 
@@ -49,6 +50,11 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     this.scheduledTasks = [];
     this.triggeredTasks = [];
     this.scheduledWatchers = [];
+    (this as unknown as WithCloneMethod<unknown>)[cloneMethod] = function (
+      this: SchedulerImplem<TMetaData>,
+    ): Scheduler<TMetaData> {
+      return new SchedulerImplem(this.act, this.sourceTaskSelector);
+    };
   }
 
   private static buildLog<TMetaData>(reportItem: SchedulerReportItem<TMetaData>) {
@@ -322,9 +328,5 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         .join('\n') +
       '`'
     );
-  }
-
-  [cloneMethod](): Scheduler<TMetaData> {
-    return new SchedulerImplem(this.act, this.sourceTaskSelector);
   }
 }

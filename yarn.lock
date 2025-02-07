@@ -3640,7 +3640,7 @@ __metadata:
     fast-check: "workspace:*"
     happy-dom: "npm:^17.0.0"
     lodash: "npm:^4.17.21"
-    pure-rand: "npm:^6.1.0"
+    pure-rand: "npm:^7.0.0"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     supertest: "npm:^7.0.0"
@@ -3670,6 +3670,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-jasmine2: "npm:^29.7.0"
     typescript: "npm:~5.7.3"
+    vite: "npm:^6.1.0"
     vitest: "npm:^2.1.9"
   peerDependencies:
     "@fast-check/worker": ">=0.0.7 <0.5.0"
@@ -3712,6 +3713,7 @@ __metadata:
     "@types/npmcli__arborist": "npm:^6.3.0"
     npm-packlist: "npm:^10.0.0"
     typescript: "npm:~5.7.3"
+    vite: "npm:^6.1.0"
     vitest: "npm:^2.1.9"
   bin:
     packaged: ./bin/packaged.js
@@ -3748,7 +3750,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:^22.13.1"
     fast-check: "npm:^3.4.0"
-    pure-rand: "npm:^6.1.0"
+    pure-rand: "npm:^7.0.0"
     typescript: "npm:~5.7.3"
     vitest: "npm:^2.1.9"
   languageName: unknown
@@ -10627,7 +10629,7 @@ __metadata:
     cross-env: "npm:^7.0.3"
     glob: "npm:^11.0.1"
     not-node-buffer: "npm:buffer@^6.0.3"
-    pure-rand: "npm:^6.1.0"
+    pure-rand: "npm:^7.0.0"
     regexp-tree: "npm:^0.1.27"
     replace-in-file: "npm:^8.3.0"
     typedoc: "npm:^0.27.6"
@@ -17403,10 +17405,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pure-rand@npm:^6.0.0, pure-rand@npm:^6.1.0":
+"pure-rand@npm:^6.0.0":
   version: 6.1.0
   resolution: "pure-rand@npm:6.1.0"
   checksum: 10c0/1abe217897bf74dcb3a0c9aba3555fe975023147b48db540aa2faf507aee91c03bf54f6aef0eb2bf59cc259a16d06b28eca37f0dc426d94f4692aeff02fb0e65
+  languageName: node
+  linkType: hard
+
+"pure-rand@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "pure-rand@npm:7.0.0"
+  checksum: 10c0/cad318afa0dc2f5d687be7f888b8ab2c6864e6e4bcc744b152353b1af5606fe8903669c253969b8a58b792bfbd896aa88cbcdea26a1c0e4cf0f1acff9b12ed2c
   languageName: node
   linkType: hard
 

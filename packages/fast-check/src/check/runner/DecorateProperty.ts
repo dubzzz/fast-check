@@ -21,13 +21,13 @@ export function decorateProperty<Ts>(
   qParams: MinimalQualifiedParameters<Ts>,
 ): IRawProperty<Ts> {
   let prop = rawProperty;
-  if (rawProperty.isAsync() && qParams.timeout != null) {
+  if (rawProperty.isAsync() && qParams.timeout !== undefined) {
     prop = new TimeoutProperty(prop, qParams.timeout, safeSetTimeout, safeClearTimeout);
   }
   if (qParams.unbiased) {
     prop = new UnbiasedProperty(prop);
   }
-  if (qParams.skipAllAfterTimeLimit != null) {
+  if (qParams.skipAllAfterTimeLimit !== undefined) {
     prop = new SkipAfterProperty(
       prop,
       safeDateNow,
@@ -37,7 +37,7 @@ export function decorateProperty<Ts>(
       safeClearTimeout,
     );
   }
-  if (qParams.interruptAfterTimeLimit != null) {
+  if (qParams.interruptAfterTimeLimit !== undefined) {
     prop = new SkipAfterProperty(
       prop,
       safeDateNow,
