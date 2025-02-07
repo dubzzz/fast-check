@@ -15,7 +15,7 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 | ECMAScript specification | ES2020          | ES2017               |
 | TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635), [#5670](https://github.com/dubzzz/fast-check/pull/5670)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5618](https://github.com/dubzzz/fast-check/pull/5618), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635), [#5670](https://github.com/dubzzz/fast-check/pull/5670)
 
 ## Update to latest v3.x
 
