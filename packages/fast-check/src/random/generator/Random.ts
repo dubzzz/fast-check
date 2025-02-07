@@ -1,9 +1,5 @@
 import type { RandomGenerator } from 'pure-rand';
-import {
-  unsafeUniformArrayIntDistribution,
-  unsafeUniformBigIntDistribution,
-  unsafeUniformIntDistribution,
-} from 'pure-rand';
+import { unsafeUniformBigIntDistribution, unsafeUniformIntDistribution } from 'pure-rand';
 
 /**
  * Wrapper around an instance of a `pure-rand`'s random number generator
@@ -77,18 +73,6 @@ export class Random {
    */
   nextBigInt(min: bigint, max: bigint): bigint {
     return unsafeUniformBigIntDistribution(min, max, this.internalRng);
-  }
-
-  /**
-   * Generate a random ArrayInt between min (included) and max (included)
-   * @param min - Minimal ArrayInt value
-   * @param max - Maximal ArrayInt value
-   */
-  nextArrayInt(
-    min: { sign: 1 | -1; data: number[] },
-    max: { sign: 1 | -1; data: number[] },
-  ): { sign: 1 | -1; data: number[] } {
-    return unsafeUniformArrayIntDistribution(min, max, this.internalRng);
   }
 
   /**

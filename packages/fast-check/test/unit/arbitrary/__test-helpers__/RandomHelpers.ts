@@ -8,7 +8,6 @@ export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, '
   const nextBoolean = vi.fn();
   const nextInt = vi.fn();
   const nextBigInt = vi.fn();
-  const nextArrayInt = vi.fn();
   const nextDouble = vi.fn();
   const getState = vi.fn();
   class MyRandom extends Random {
@@ -17,12 +16,11 @@ export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, '
     nextBoolean = nextBoolean;
     nextInt = nextInt;
     nextBigInt = nextBigInt;
-    nextArrayInt = nextArrayInt;
     getState = getState;
   }
 
   // Calling `new MyRandom` triggers a call to the default ctor of `Random`.
   // As we don't use anything from this base class, we just pass the ctor with a value that looks ok for it.
   const instance = new MyRandom({ clone: () => null } as any);
-  return { instance, clone, next, nextBoolean, nextInt, nextBigInt, nextArrayInt, nextDouble, getState };
+  return { instance, clone, next, nextBoolean, nextInt, nextBigInt, nextDouble, getState };
 }
