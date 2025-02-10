@@ -3,7 +3,7 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
 import { noShrink } from '../../../src/arbitrary/noShrink';
 import * as stubRng from '../stubs/generators';
-import { Stream } from '../../../src/stream/Stream';
+import type { Stream } from '../../../src/stream/Stream';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
