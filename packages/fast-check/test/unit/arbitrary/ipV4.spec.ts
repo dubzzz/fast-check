@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { ipV4 } from '../../../src/arbitrary/ipV4';
 
 import { Value } from '../../../src/check/arbitrary/definition/Value';

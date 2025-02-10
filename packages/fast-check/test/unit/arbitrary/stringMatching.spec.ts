@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching';
 
@@ -76,7 +77,7 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
     try {
       new RegExp('.', 'd'); // Not supported in Node 14
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   })();

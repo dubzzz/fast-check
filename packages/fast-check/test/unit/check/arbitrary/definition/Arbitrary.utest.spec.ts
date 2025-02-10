@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../../src/stream/Stream';
@@ -12,9 +13,9 @@ describe('NextArbitrary', () => {
     it('should filter the values produced by the original arbitrary on generate', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choice1 = new Value(1, Symbol());
       const choice2 = new Value(2, Symbol());
       const choice3 = new Value(3, Symbol());
@@ -41,9 +42,9 @@ describe('NextArbitrary', () => {
 
     it('should filter the values produced by the original arbitrary on shrink', () => {
       // Arrange
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const valueToShrink = 5;
       const contextToShrink = Symbol();
       const choice1 = new Value(1, Symbol());
@@ -78,10 +79,10 @@ describe('NextArbitrary', () => {
       ({ canShrinkWithoutContextOutput, predicateOutput, expected }) => {
         // Arrange
         const requestedValue = Symbol();
-        const generate = jest.fn();
-        const canShrinkWithoutContext = jest.fn();
-        const shrink = jest.fn();
-        const predicate = jest.fn();
+        const generate = vi.fn();
+        const canShrinkWithoutContext = vi.fn();
+        const shrink = vi.fn();
+        const predicate = vi.fn();
         class MyNextArbitrary extends Arbitrary<any> {
           generate = generate;
           canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
@@ -111,9 +112,9 @@ describe('NextArbitrary', () => {
     it('should map the values produced by the original arbitrary on generate', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choice = new Value(1, Symbol());
       generate.mockReturnValueOnce(choice);
       class MyNextArbitrary extends Arbitrary<any> {
@@ -134,9 +135,9 @@ describe('NextArbitrary', () => {
     it('should preserve cloneable capabilities for mapped values on generate', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choice = new Value({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
       generate.mockReturnValueOnce(choice);
       class MyNextArbitrary extends Arbitrary<any> {
@@ -159,11 +160,11 @@ describe('NextArbitrary', () => {
     it('should not alter the mapped value if already cloneable on generate', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choice = new Value({ source: 1, [cloneMethod]: () => choice.value_ }, Symbol());
-      const mappedClone = jest.fn();
+      const mappedClone = vi.fn();
       const mapped = { source: 42, [cloneMethod]: mappedClone };
       generate.mockReturnValueOnce(choice);
       class MyNextArbitrary extends Arbitrary<any> {
@@ -188,9 +189,9 @@ describe('NextArbitrary', () => {
     it('should properly shrink output of generate by calling back shrink with the right context', () => {
       // Arrange
       const expectedBiasFactor = 42;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const source = new Value(69, Symbol());
       generate.mockReturnValueOnce(source);
       const choice1 = new Value(1, Symbol());
@@ -216,9 +217,9 @@ describe('NextArbitrary', () => {
     it('should properly shrink output of shrink by calling back shrink with the right context', () => {
       // Arrange
       const expectedBiasFactor = 42;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const source = new Value(69, Symbol());
       generate.mockReturnValueOnce(source);
       const choice1 = new Value(1, Symbol());
@@ -250,9 +251,9 @@ describe('NextArbitrary', () => {
     it('should preserve cloneable capabilities for mapped values on shrink', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const source = new Value({ source: 1, [cloneMethod]: () => source.value_ }, Symbol());
       generate.mockReturnValueOnce(source);
       const choice1 = new Value({ source: 2, [cloneMethod]: () => choice1.value_ }, Symbol());
@@ -280,9 +281,9 @@ describe('NextArbitrary', () => {
 
     it('should always return false for canShrinkWithoutContext when not provided any unmapper function', () => {
       // Arrange
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn();
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn();
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
@@ -300,9 +301,9 @@ describe('NextArbitrary', () => {
 
     it('should return empty stream when shrinking without any context and not provided any unmapper function', () => {
       // Arrange
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn();
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn();
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
@@ -327,12 +328,12 @@ describe('NextArbitrary', () => {
       'should try to unmap the value then call source arbitrary on canShrinkWithoutContext when provided a successful unmapper function',
       ({ outputCanGenerate }) => {
         // Arrange
-        const generate = jest.fn();
-        const canShrinkWithoutContext = jest.fn().mockReturnValue(outputCanGenerate);
-        const shrink = jest.fn();
+        const generate = vi.fn();
+        const canShrinkWithoutContext = vi.fn().mockReturnValue(outputCanGenerate);
+        const shrink = vi.fn();
         const originalValue = Symbol();
         const unmapperOutput = Symbol();
-        const unmapper = jest.fn().mockReturnValue(unmapperOutput);
+        const unmapper = vi.fn().mockReturnValue(unmapperOutput);
         class MyNextArbitrary extends Arbitrary<any> {
           generate = generate;
           canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
@@ -354,11 +355,11 @@ describe('NextArbitrary', () => {
 
     it('should try to unmap the value and stop on error in case of failing unmapper function', () => {
       // Arrange
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn();
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn();
       const originalValue = Symbol();
-      const unmapper = jest.fn().mockImplementation(() => {
+      const unmapper = vi.fn().mockImplementation(() => {
         throw new Error('Unable to unmap such value');
       });
       class MyNextArbitrary extends Arbitrary<any> {
@@ -385,12 +386,12 @@ describe('NextArbitrary', () => {
         new Value('toto', undefined),
         new Value('tutu', undefined),
       );
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn();
-      const shrink = jest.fn().mockReturnValueOnce(expectedStreamValuesFromSource);
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn().mockReturnValueOnce(expectedStreamValuesFromSource);
       const originalValue = Symbol();
       const unmapperOutput = 'tata';
-      const unmapper = jest.fn().mockReturnValue('tata');
+      const unmapper = vi.fn().mockReturnValue('tata');
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
@@ -414,14 +415,14 @@ describe('NextArbitrary', () => {
     it('should chain the values produced by the original arbitrary on generate', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
-      const generateChained = jest.fn();
-      const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
-      const shrinkChained = jest.fn();
+      const generateChained = vi.fn();
+      const canShrinkWithoutContextChained = vi.fn() as any as (value: unknown) => value is any;
+      const shrinkChained = vi.fn();
       const choiceChained = new Value(50, Symbol());
       generateChained.mockReturnValueOnce(choiceChained);
       class MyNextArbitrary extends Arbitrary<any> {
@@ -434,7 +435,7 @@ describe('NextArbitrary', () => {
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
-      const chainer = jest.fn();
+      const chainer = vi.fn();
       chainer.mockReturnValueOnce(new MyNextChainedArbitrary());
 
       // Act
@@ -451,18 +452,18 @@ describe('NextArbitrary', () => {
     it('should properly shrink output of generate by calling back shrink with the right context', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
       const shrinkRoot1 = new Value(10, Symbol());
       const shrinkRoot2 = new Value(11, Symbol());
       const shrinkRoot3 = new Value(15, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2, shrinkRoot3));
-      const generateChained = jest.fn();
-      const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
-      const shrinkChained = jest.fn();
+      const generateChained = vi.fn();
+      const canShrinkWithoutContextChained = vi.fn() as any as (value: unknown) => value is any;
+      const shrinkChained = vi.fn();
       const choiceChained = new Value(50, Symbol());
       const choiceShrink1Chained = new Value(58, Symbol()); // chain will be called for each sub-shrink of root
       const choiceShrink2Chained = new Value(57, Symbol());
@@ -485,7 +486,7 @@ describe('NextArbitrary', () => {
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
-      const chainer = jest.fn();
+      const chainer = vi.fn();
       chainer.mockReturnValue(new MyNextChainedArbitrary());
 
       // Act
@@ -511,9 +512,9 @@ describe('NextArbitrary', () => {
     it('should properly shrink output of shrink by calling back shrink with the right context', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
       const shrinkRoot1 = new Value(10, Symbol());
@@ -522,9 +523,9 @@ describe('NextArbitrary', () => {
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2, shrinkRoot3));
       const shrinkRoot11 = new Value(310, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot11));
-      const generateChained = jest.fn();
-      const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
-      const shrinkChained = jest.fn();
+      const generateChained = vi.fn();
+      const canShrinkWithoutContextChained = vi.fn() as any as (value: unknown) => value is any;
+      const shrinkChained = vi.fn();
       const choiceChained = new Value(50, Symbol());
       const choiceShrink1Chained = new Value(58, Symbol()); // chain will be called for each iterated sub-shrink of root (->10)
       const choiceShrink2Chained = new Value(57, Symbol()); // ->310 - 11 and 15 will not be retrieved (getNthOrLast(0))
@@ -548,7 +549,7 @@ describe('NextArbitrary', () => {
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
-      const chainer = jest.fn();
+      const chainer = vi.fn();
       chainer.mockReturnValue(new MyNextChainedArbitrary());
 
       // Act
@@ -574,17 +575,17 @@ describe('NextArbitrary', () => {
     it('should stop shrink on source if it exhausted it once', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choiceRoot = new Value(1, Symbol());
       generate.mockReturnValueOnce(choiceRoot);
       const shrinkRoot1 = new Value(10, Symbol());
       const shrinkRoot2 = new Value(11, Symbol());
       shrink.mockReturnValueOnce(Stream.of(shrinkRoot1, shrinkRoot2));
-      const generateChained = jest.fn();
-      const canShrinkWithoutContextChained = jest.fn() as any as (value: unknown) => value is any;
-      const shrinkChained = jest.fn();
+      const generateChained = vi.fn();
+      const canShrinkWithoutContextChained = vi.fn() as any as (value: unknown) => value is any;
+      const shrinkChained = vi.fn();
       const choiceChained = new Value(50, Symbol());
       const choiceShrink1Chained = new Value(58, Symbol());
       const choiceShrink2Chained = new Value(57, Symbol());
@@ -608,7 +609,7 @@ describe('NextArbitrary', () => {
         canShrinkWithoutContext = canShrinkWithoutContextChained;
         shrink = shrinkChained;
       }
-      const chainer = jest.fn();
+      const chainer = vi.fn();
       chainer.mockReturnValue(new MyNextChainedArbitrary());
 
       // Act
@@ -624,9 +625,9 @@ describe('NextArbitrary', () => {
 
     it('should always return false for canShrinkWithoutContext when not provided any unchain function', () => {
       // Arrange
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn();
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn();
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
@@ -644,9 +645,9 @@ describe('NextArbitrary', () => {
 
     it('should return empty stream when shrinking without any context and not provided any unchainer function', () => {
       // Arrange
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn();
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn();
       class MyNextArbitrary extends Arbitrary<any> {
         generate = generate;
         canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
@@ -667,9 +668,9 @@ describe('NextArbitrary', () => {
     it('should simply return the original instance of Value on generate', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const generate = jest.fn();
-      const canShrinkWithoutContext = jest.fn() as any as (value: unknown) => value is any;
-      const shrink = jest.fn();
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn() as any as (value: unknown) => value is any;
+      const shrink = vi.fn();
       const choice = new Value(1, Symbol());
       generate.mockReturnValueOnce(choice);
       class MyNextArbitrary extends Arbitrary<any> {
@@ -689,7 +690,7 @@ describe('NextArbitrary', () => {
 
     it('should override default shrink with function returning an empty Stream', () => {
       // Arrange
-      const shrink = jest.fn();
+      const shrink = vi.fn();
       class MyNextArbitrary extends Arbitrary<any> {
         generate(): Value<any> {
           throw new Error('Not implemented.');
@@ -731,54 +732,6 @@ describe('NextArbitrary', () => {
 
       // Assert
       expect(secondNoShrink).toBe(firstNoShrink);
-    });
-  });
-
-  describe('noBias', () => {
-    it('should override passed bias with undefined', () => {
-      // Arrange
-      const generate = jest.fn();
-      class MyNextArbitrary extends Arbitrary<any> {
-        generate = generate;
-        canShrinkWithoutContext(value: unknown): value is any {
-          throw new Error('Not implemented.');
-        }
-        shrink(): Stream<Value<any>> {
-          throw new Error('Not implemented.');
-        }
-      }
-      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
-      const noBiasArbitrary = fakeArbitrary.noBias();
-
-      // Act
-      noBiasArbitrary.generate(mrngNoCall, 42);
-
-      // Assert
-      expect(generate).toHaveBeenCalledTimes(1);
-      expect(generate).toHaveBeenCalledWith(mrngNoCall, undefined);
-    });
-
-    it('should return itself when called twice', () => {
-      // Arrange
-      class MyNextArbitrary extends Arbitrary<any> {
-        generate(): Value<any> {
-          throw new Error('Not implemented.');
-        }
-        canShrinkWithoutContext(value: unknown): value is any {
-          throw new Error('Not implemented.');
-        }
-        shrink(): Stream<Value<any>> {
-          throw new Error('Not implemented.');
-        }
-      }
-      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
-
-      // Act
-      const firstNoBias = fakeArbitrary.noBias();
-      const secondNoBias = firstNoBias.noBias();
-
-      // Assert
-      expect(secondNoBias).toBe(firstNoBias);
     });
   });
 });

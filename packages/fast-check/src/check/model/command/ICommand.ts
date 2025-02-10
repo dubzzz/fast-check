@@ -8,7 +8,6 @@
  * @remarks Since 1.5.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export interface ICommand<Model extends object, Real, RunResult, CheckAsync extends boolean = false> {
   /**
    * Check if the model is in the right state to apply the command

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../../src/fast-check';
 import { seed } from '../seed';
 
@@ -29,7 +30,7 @@ describe(`ObjectArbitrary (seed: ${seed})`, () => {
           try {
             JSON.parse(revJson(json));
             return false;
-          } catch (err) {
+          } catch {
             return true;
           }
         }),

@@ -4,7 +4,9 @@
  * @public
  */
 export class PreconditionFailure extends Error {
-  private static readonly SharedFootPrint: symbol = Symbol('fast-check/PreconditionFailure');
+  /** @internal */
+  private static readonly SharedFootPrint: symbol = Symbol.for('fast-check/PreconditionFailure');
+  /** @internal */
   private readonly footprint: symbol;
   constructor(readonly interruptExecution: boolean = false) {
     super();

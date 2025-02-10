@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/packaged",
   "description": "Utility package removing any files that will not be part of the final bundle",
-  "version": "0.2.0",
+  "version": "0.4.2",
   "type": "module",
   "main": "lib/packaged.js",
   "types": "lib/packaged.d.ts",
@@ -16,7 +16,7 @@
     "build-ci": "yarn build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "test": "yarn node --experimental-vm-modules $(yarn bin jest) --verbose",
+    "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -34,18 +34,15 @@
     "node": ">=14.14.0"
   },
   "dependencies": {
-    "@npmcli/arborist": "^7.0.0",
-    "npm-packlist": "^8.0.0"
+    "@npmcli/arborist": "^9.0.0",
+    "npm-packlist": "^10.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/preset-typescript": "^7.23.3",
-    "@types/jest": "^29.5.11",
     "@types/npm-packlist": "^7.0.3",
-    "@types/npmcli__arborist": "^5.6.5",
-    "babel-jest": "^29.7.0",
-    "jest": "^29.7.0",
-    "typescript": "~5.3.3"
+    "@types/npmcli__arborist": "^6.3.0",
+    "typescript": "~5.7.3",
+    "vite": "^6.1.0",
+    "vitest": "^2.1.9"
   },
   "keywords": [],
   "funding": [

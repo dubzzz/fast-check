@@ -1,10 +1,12 @@
 import { isMainThread } from 'node:worker_threads';
 import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
+import { describe, it, expect } from 'vitest';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { propertyIsolation } from './__properties__/propertyIsolation.cjs';
+import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
@@ -45,7 +47,7 @@ if (isMainThread) {
         await expect(assert(propertyIsolation.fileLevelWarmUp, defaultOptions)).resolves.not.toThrow();
 
         // Act / Assert
-        await expect(assert(propertyIsolation.fileLevelRun, defaultOptions)).rejects.toThrowError(expectedError);
+        await expectThrowWithCause(assert(propertyIsolation.fileLevelRun, defaultOptions), expectedError);
       },
       jestTimeout,
     );

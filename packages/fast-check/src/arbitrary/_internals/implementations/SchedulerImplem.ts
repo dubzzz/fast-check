@@ -1,5 +1,6 @@
 import { escapeForTemplateString } from '../helpers/TextEscaper';
 import { cloneMethod } from '../../../check/symbols';
+import type { WithCloneMethod } from '../../../check/symbols';
 import { stringify } from '../../../utils/stringify';
 import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
 
@@ -18,8 +19,7 @@ type TriggeredTask<TMetaData> = {
 /** @internal */
 export type ScheduledTask<TMetaData> = {
   original: PromiseLike<unknown>;
-  scheduled: PromiseLike<unknown>;
-  trigger: () => void;
+  trigger: () => Promise<unknown>;
   schedulingType: 'promise' | 'function' | 'sequence';
   taskId: number;
   label: string;
@@ -50,6 +50,11 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     this.scheduledTasks = [];
     this.triggeredTasks = [];
     this.scheduledWatchers = [];
+    (this as unknown as WithCloneMethod<unknown>)[cloneMethod] = function (
+      this: SchedulerImplem<TMetaData>,
+    ): Scheduler<TMetaData> {
+      return new SchedulerImplem(this.act, this.sourceTaskSelector);
+    };
   }
 
   private static buildLog<TMetaData>(reportItem: SchedulerReportItem<TMetaData>) {
@@ -86,26 +91,27 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     customAct: SchedulerAct,
     thenTaskToBeAwaited?: () => PromiseLike<T>,
   ): Promise<T> {
-    let trigger: (() => void) | null = null;
     const taskId = ++this.lastTaskId;
+    let trigger: (() => Promise<unknown>) | undefined = undefined;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
-        (thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task).then(
+        const promise = Promise.resolve(thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task);
+        promise.then(
           (data) => {
             this.log(schedulingType, taskId, label, metadata, 'resolved', data);
-            return resolve(data);
+            resolve(data);
           },
           (err) => {
             this.log(schedulingType, taskId, label, metadata, 'rejected', err);
-            return reject(err);
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            reject(err);
           },
         );
+        return promise;
       };
     });
     this.scheduledTasks.push({
       original: task,
-      scheduled: scheduledPromise,
-      // `trigger` will always be initialised at this point: body of `new Promise` has already been executed
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       trigger: trigger!,
       schedulingType,
@@ -155,39 +161,43 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     // Placeholder resolver, immediately replaced by the one retrieved in `new Promise`
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     let resolveSequenceTask = () => {};
-    const sequenceTask = new Promise<void>((resolve) => (resolveSequenceTask = resolve));
+    const sequenceTask = new Promise<{ done: boolean; faulty: boolean }>((resolve) => {
+      resolveSequenceTask = () => resolve({ done: status.done, faulty: status.faulty });
+    });
 
-    sequenceBuilders
-      .reduce((previouslyScheduled: PromiseLike<any>, item: SchedulerSequenceItem<TMetaData>) => {
+    const onFaultyItemNoThrow = () => {
+      status.faulty = true;
+      resolveSequenceTask();
+    };
+    const onDone = () => {
+      status.done = true;
+      resolveSequenceTask();
+    };
+
+    const registerNextBuilder = (index: number, previous: PromiseLike<unknown>) => {
+      if (index >= sequenceBuilders.length) {
+        // All builders have been scheduled, we handle termination:
+        // if the last one succeeds then we are done, if it fails then the sequence should be marked as failed
+        previous.then(onDone, onFaultyItemNoThrow);
+        return;
+      }
+      previous.then(() => {
+        const item = sequenceBuilders[index];
         const [builder, label, metadata] =
           typeof item === 'function' ? [item, item.name, undefined] : [item.builder, item.label, item.metadata];
-        return previouslyScheduled.then(() => {
-          // We schedule a successful promise that will trigger builder directly when triggered
-          const scheduled = this.scheduleInternal(
-            'sequence',
-            label,
-            dummyResolvedPromise,
-            metadata,
-            customAct || defaultSchedulerAct,
-            () => builder(),
-          );
-          scheduled.catch(() => {
-            status.faulty = true;
-            resolveSequenceTask();
-          });
-          return scheduled;
-        });
-      }, dummyResolvedPromise)
-      .then(
-        () => {
-          status.done = true;
-          resolveSequenceTask();
-        },
-        () => {
-          /* Discarding UnhandledPromiseRejectionWarning */
-          /* No need to call resolveSequenceTask as it should already have been triggered */
-        },
-      );
+        const scheduled = this.scheduleInternal(
+          'sequence',
+          label,
+          dummyResolvedPromise,
+          metadata,
+          customAct || defaultSchedulerAct,
+          () => builder(),
+        );
+        registerNextBuilder(index + 1, scheduled);
+      }, onFaultyItemNoThrow);
+    };
+
+    registerNextBuilder(0, dummyResolvedPromise);
 
     // TODO Prefer getter instead of sharing the variable itself
     //      Would need to stop supporting <es5
@@ -195,11 +205,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     //   get done() { return status.done },
     //   get faulty() { return status.faulty }
     // };
-    return Object.assign(status, {
-      task: Promise.resolve(sequenceTask).then(() => {
-        return { done: status.done, faulty: status.faulty };
-      }),
-    });
+    return Object.assign(status, { task: sequenceTask });
   }
 
   count(): number {
@@ -212,19 +218,18 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
     const taskIndex = this.taskSelector.nextTaskIndex(this.scheduledTasks);
     const [scheduledTask] = this.scheduledTasks.splice(taskIndex, 1);
-    return scheduledTask.customAct(async () => {
-      scheduledTask.trigger(); // release the promise
-      try {
-        await scheduledTask.scheduled; // wait for its completion
-      } catch (_err) {
+    return scheduledTask.customAct(() => {
+      const scheduled = scheduledTask.trigger(); // release the promise
+      return scheduled.catch((_err) => {
         // We ignore failures here, we just want to wait the promise to be resolved (failure or success)
-      }
+      }) as Promise<void>;
     });
   }
 
-  async waitOne(customAct?: SchedulerAct): Promise<void> {
+  waitOne(customAct?: SchedulerAct): Promise<void> {
     const waitAct = customAct || defaultSchedulerAct;
-    await this.act(() => waitAct(async () => await this.internalWaitOne()));
+    const waitOneResult: Promise<unknown> = this.act(() => waitAct(() => this.internalWaitOne()));
+    return waitOneResult as Promise<void>;
   }
 
   async waitAll(customAct?: SchedulerAct): Promise<void> {
@@ -323,9 +328,5 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         .join('\n') +
       '`'
     );
-  }
-
-  [cloneMethod](): Scheduler<TMetaData> {
-    return new SchedulerImplem(this.act, this.sourceTaskSelector);
   }
 }

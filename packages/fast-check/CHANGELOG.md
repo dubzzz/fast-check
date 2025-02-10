@@ -1,3 +1,309 @@
+# 3.23.2
+
+_Increased resiliency to poisoning_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.23.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.1...v3.23.2)]
+
+## Fixes
+
+- ([PR#5469](https://github.com/dubzzz/fast-check/pull/5469)) Bug: Make `subarray` a bit more resilient to poisoning
+- ([PR#5468](https://github.com/dubzzz/fast-check/pull/5468)) Bug: Make `stringify` a bit more resilient to poisoning
+- ([PR#5515](https://github.com/dubzzz/fast-check/pull/5515)) Bug: Make depth retrieval more resilient to poisoning
+- ([PR#5516](https://github.com/dubzzz/fast-check/pull/5516)) Bug: Make `mapToConstant` a bit more resilient to poisoning
+- ([PR#5517](https://github.com/dubzzz/fast-check/pull/5517)) Bug: Make run details printer a bit more resilient to poisoning
+- ([PR#5518](https://github.com/dubzzz/fast-check/pull/5518)) Bug: Make `gen` a bit more resilient to poisoning
+- ([PR#5456](https://github.com/dubzzz/fast-check/pull/5456)) CI: Allow Bluesky calls from the blog
+- ([PR#5457](https://github.com/dubzzz/fast-check/pull/5457)) CI: Add Bluesky CDN as trustable source for images
+- ([PR#5410](https://github.com/dubzzz/fast-check/pull/5410)) Doc: Release note for 3.23.0
+- ([PR#5413](https://github.com/dubzzz/fast-check/pull/5413)) Doc: Update social links on footer
+- ([PR#5414](https://github.com/dubzzz/fast-check/pull/5414)) Doc: Drop Twitter badge from README
+- ([PR#5415](https://github.com/dubzzz/fast-check/pull/5415)) Doc: Add link to bluesky account in the header of the doc
+- ([PR#5453](https://github.com/dubzzz/fast-check/pull/5453)) Doc: AdventOfPBT event Day 1
+- ([PR#5454](https://github.com/dubzzz/fast-check/pull/5454)) Doc: Saving Christmas with nroken playground
+- ([PR#5455](https://github.com/dubzzz/fast-check/pull/5455)) Doc: Add links towards Bluesky from the AdventOfPBT
+- ([PR#5460](https://github.com/dubzzz/fast-check/pull/5460)) Doc: Advent Of PBT, day 2
+- ([PR#5461](https://github.com/dubzzz/fast-check/pull/5461)) Doc: Add linkt towards Bluesky comments
+- ([PR#5464](https://github.com/dubzzz/fast-check/pull/5464)) Doc: Add quick code snippet directly from the documentation
+- ([PR#5465](https://github.com/dubzzz/fast-check/pull/5465)) Doc: Quick CTA to our Advent of PBT event
+- ([PR#5467](https://github.com/dubzzz/fast-check/pull/5467)) Doc: Single line success message for the Advent of PBT
+- ([PR#5470](https://github.com/dubzzz/fast-check/pull/5470)) Doc: Notify fast-check.dev account
+- ([PR#5471](https://github.com/dubzzz/fast-check/pull/5471)) Doc: Advent of PBT, day 3
+- ([PR#5472](https://github.com/dubzzz/fast-check/pull/5472)) Doc: Add comments section on Advent of PBT, Day 3
+- ([PR#5474](https://github.com/dubzzz/fast-check/pull/5474)) Doc: Advent of PBT, day 4
+- ([PR#5477](https://github.com/dubzzz/fast-check/pull/5477)) Doc: Add comments section on Advent of PBT, Day 4
+- ([PR#5479](https://github.com/dubzzz/fast-check/pull/5479)) Doc: Advent of PBT Day 5
+- ([PR#5480](https://github.com/dubzzz/fast-check/pull/5480)) Doc: Advent of PBT Day 5, link to comments on Bluesky
+- ([PR#5481](https://github.com/dubzzz/fast-check/pull/5481)) Doc: Do not send new success pixels when advent solved once
+- ([PR#5482](https://github.com/dubzzz/fast-check/pull/5482)) Doc: Add a counter showing the number of times the puzzle got solved
+- ([PR#5489](https://github.com/dubzzz/fast-check/pull/5489)) Doc: Advent Of PBT, Day 6
+- ([PR#5490](https://github.com/dubzzz/fast-check/pull/5490)) Doc: Advent of PBT, comments on Day 6
+- ([PR#5493](https://github.com/dubzzz/fast-check/pull/5493)) Doc: Fix playground code of Day 6
+- ([PR#5495](https://github.com/dubzzz/fast-check/pull/5495)) Doc: Advent of PBT Day 7
+- ([PR#5496](https://github.com/dubzzz/fast-check/pull/5496)) Doc: Advent of PBT Day 7, comments section
+- ([PR#5497](https://github.com/dubzzz/fast-check/pull/5497)) Doc: Advent of PBT Day 8
+- ([PR#5498](https://github.com/dubzzz/fast-check/pull/5498)) Doc: Advent of PBT Day 8, comments section
+- ([PR#5501](https://github.com/dubzzz/fast-check/pull/5501)) Doc: Drop buggy "solved times" at the end of each advent
+- ([PR#5500](https://github.com/dubzzz/fast-check/pull/5500)) Doc: Advent of PBT Day 9
+- ([PR#5503](https://github.com/dubzzz/fast-check/pull/5503)) Doc: Add back buggy "solved times" at the end of each advent
+- ([PR#5505](https://github.com/dubzzz/fast-check/pull/5505)) Doc: Advent of PBT Day 10
+- ([PR#5510](https://github.com/dubzzz/fast-check/pull/5510)) Doc: Advent Of PBT Day 10, comments section
+- ([PR#5508](https://github.com/dubzzz/fast-check/pull/5508)) Doc: Advent Of PBT Day 11
+- ([PR#5507](https://github.com/dubzzz/fast-check/pull/5507)) Doc: Advent Of PBT Day 12
+- ([PR#5509](https://github.com/dubzzz/fast-check/pull/5509)) Doc: Advent Of PBT Day 13
+- ([PR#5523](https://github.com/dubzzz/fast-check/pull/5523)) Doc: Advent of PBT add comments sections on days 11 to 13
+
+# 3.23.1
+
+_Faster instantiation of internet-related arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.23.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.0...v3.23.1)]
+
+## Fixes
+
+- ([PR#5402](https://github.com/dubzzz/fast-check/pull/5402)) Performance: Faster instantiation of internet-related arbitraries
+
+# 3.23.0
+
+_Extend usages of string-units and increased performance_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.23.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.22.0...v3.23.0)]
+
+## Features
+
+- ([PR#5366](https://github.com/dubzzz/fast-check/pull/5366)) Add support for string-`unit` on `object`/`anything` arbitrary
+- ([PR#5367](https://github.com/dubzzz/fast-check/pull/5367)) Add support for string-`unit` on `json` arbitrary
+- ([PR#5390](https://github.com/dubzzz/fast-check/pull/5390)) Add back strong unmapping capabilities to `string`
+
+## Fixes
+
+- ([PR#5327](https://github.com/dubzzz/fast-check/pull/5327)) Bug: Resist even more to external poisoning for `string`
+- ([PR#5368](https://github.com/dubzzz/fast-check/pull/5368)) Bug: Better support for poisoning on `stringMatching`
+- ([PR#5344](https://github.com/dubzzz/fast-check/pull/5344)) CI: Adapt some tests for Node v23
+- ([PR#5346](https://github.com/dubzzz/fast-check/pull/5346)) CI: Drop usages of `it.concurrent` due to Node 23 failing
+- ([PR#5363](https://github.com/dubzzz/fast-check/pull/5363)) CI: Move to Vitest for `examples/`
+- ([PR#5391](https://github.com/dubzzz/fast-check/pull/5391)) CI: Preview builds using `pkg.pr.new`
+- ([PR#5392](https://github.com/dubzzz/fast-check/pull/5392)) CI: Connect custom templates to `pkg.pr.new` previews
+- ([PR#5394](https://github.com/dubzzz/fast-check/pull/5394)) CI: Install dependencies before building changesets
+- ([PR#5396](https://github.com/dubzzz/fast-check/pull/5396)) CI: Proper commit name on changelogs
+- ([PR#5393](https://github.com/dubzzz/fast-check/pull/5393)) Clean: Drop unused `examples/jest.setup.js`
+- ([PR#5249](https://github.com/dubzzz/fast-check/pull/5249)) Doc: Release note for fast-check 3.22.0
+- ([PR#5369](https://github.com/dubzzz/fast-check/pull/5369)) Doc: Typo fix in model-based-testing.md
+- ([PR#5370](https://github.com/dubzzz/fast-check/pull/5370)) Doc: Add new contributor jamesbvaughan
+- ([PR#5383](https://github.com/dubzzz/fast-check/pull/5383)) Doc: Properly indent code snippets for the documentation
+- ([PR#5372](https://github.com/dubzzz/fast-check/pull/5372)) Performance: Faster `canShrinkWithoutContext` for constants
+- ([PR#5386](https://github.com/dubzzz/fast-check/pull/5386)) Performance: Faster generate process for `mapToConstant`
+- ([PR#5387](https://github.com/dubzzz/fast-check/pull/5387)) Performance: Faster tokenizer of strings
+- ([PR#5388](https://github.com/dubzzz/fast-check/pull/5388)) Performance: Faster initialization of `string` with faster slices
+- ([PR#5389](https://github.com/dubzzz/fast-check/pull/5389)) Performance: Faster initialization of `string` with pre-cached slices
+- ([PR#5371](https://github.com/dubzzz/fast-check/pull/5371)) Test: Add extra set of tests for `constant*`
+
+---
+
+# 3.22.0
+
+_Graphemes support on `fc.string`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.22.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.21.0...v3.22.0)]
+
+## Features
+
+- ([PR#5222](https://github.com/dubzzz/fast-check/pull/5222)) Support for grapheme on `fc.string`
+- ([PR#5233](https://github.com/dubzzz/fast-check/pull/5233)) Mark as deprecated most of char and string arbitraries
+- ([PR#5238](https://github.com/dubzzz/fast-check/pull/5238)) Deprecate `bigInt`'s alternatives
+
+## Fixes
+
+- ([PR#5237](https://github.com/dubzzz/fast-check/pull/5237)) CI: Drop TypeScript rc release channel
+- ([PR#5241](https://github.com/dubzzz/fast-check/pull/5241)) CI: Move to changeset
+- ([PR#5199](https://github.com/dubzzz/fast-check/pull/5199)) Doc: Publish release note for 3.21.0
+- ([PR#5240](https://github.com/dubzzz/fast-check/pull/5240)) Doc: Better `string`'s deprecation note in documentation
+- ([PR#5203](https://github.com/dubzzz/fast-check/pull/5203)) Refactor: Add missing types on exported
+
+---
+
+# 3.21.0
+
+_Support customisable versions on `uuid`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.21.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.20.0...v3.21.0)]
+
+## Features
+
+- ([PR#5172](https://github.com/dubzzz/fast-check/pull/5172)) Support UUID versions [1-15] on `uuidV`
+- ([PR#5189](https://github.com/dubzzz/fast-check/pull/5189)) Deprecate `uuidV` in favor of `uuid`
+- ([PR#5188](https://github.com/dubzzz/fast-check/pull/5188)) Customize versions directly from `uuid`
+
+## Fixes
+
+- ([PR#5190](https://github.com/dubzzz/fast-check/pull/5190)) CI: Support npm publish on other tags
+- ([PR#5124](https://github.com/dubzzz/fast-check/pull/5124)) Doc: Publish release note for 3.20.0
+- ([PR#5137](https://github.com/dubzzz/fast-check/pull/5137)) Doc: Add missing options in the documentation for `float` and `double`
+- ([PR#5142](https://github.com/dubzzz/fast-check/pull/5142)) Doc: Better width for stargazer badge in the documentation
+- ([PR#5143](https://github.com/dubzzz/fast-check/pull/5143)) Doc: Document Faker integration
+- ([PR#5144](https://github.com/dubzzz/fast-check/pull/5144)) Doc: Add support us page in our documentation
+
+---
+
+# 3.20.0
+
+_New arbitraries to alter shrinking capabilities_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.20.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.19.0...v3.20.0)]
+
+## Features
+
+- ([PR#5047](https://github.com/dubzzz/fast-check/pull/5047)) Introduce new `fc.noShrink` arbitrary
+- ([PR#5050](https://github.com/dubzzz/fast-check/pull/5050)) Introduce new `fc.noBias` arbitrary
+- ([PR#5006](https://github.com/dubzzz/fast-check/pull/5006)) Add ability to limit shrink path
+- ([PR#5112](https://github.com/dubzzz/fast-check/pull/5112)) Simplify `limitShrink` before releasing
+
+## Fixes
+
+- ([PR#5013](https://github.com/dubzzz/fast-check/pull/5013)) CI: Drop verbosity flag at unpack step in CI
+- ([PR#5074](https://github.com/dubzzz/fast-check/pull/5074)) CI: Check types with multiple TypeScript
+- ([PR#5015](https://github.com/dubzzz/fast-check/pull/5015)) Doc: Release note for 3.19.0
+- ([PR#5016](https://github.com/dubzzz/fast-check/pull/5016)) Doc: Fix typo in the PR template
+- ([PR#4858](https://github.com/dubzzz/fast-check/pull/4858)) Doc: Update Getting Started section in docs
+- ([PR#5035](https://github.com/dubzzz/fast-check/pull/5035)) Doc: Remove duplicate paragraph in `your-first-race-condition-test.mdx`
+- ([PR#5048](https://github.com/dubzzz/fast-check/pull/5048)) Doc: Add new contributors cindywu and nmay231
+- ([PR#5097](https://github.com/dubzzz/fast-check/pull/5097)) Doc: Add warning on `noShrink`
+- ([PR#5121](https://github.com/dubzzz/fast-check/pull/5121)) Doc: Document integration with other test runners
+
+---
+
+# 3.19.0
+
+_New options to generate unicode strings on objects_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.19.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.18.0...v3.19.0)]
+
+## Features
+
+- ([PR#5010](https://github.com/dubzzz/fast-check/pull/5010)) Add option to generate unicode values in `object`
+- ([PR#5011](https://github.com/dubzzz/fast-check/pull/5011)) Add option to generate unicode values in `json`
+
+## Fixes
+
+- ([PR#4981](https://github.com/dubzzz/fast-check/pull/4981)) Bug: Better interrupt between multiple versions
+- ([PR#4984](https://github.com/dubzzz/fast-check/pull/4984)) CI: Rework issue template
+- ([PR#4941](https://github.com/dubzzz/fast-check/pull/4941)) Doc: Publish release note for 3.18.0
+- ([PR#4982](https://github.com/dubzzz/fast-check/pull/4982)) Script: Shorter bump command
+
+---
+
+# 3.18.0
+
+_New options for floating point arbitraries_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.18.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.2...v3.18.0)]
+
+## Features
+
+- ([PR#4917](https://github.com/dubzzz/fast-check/pull/4917)) Add option to produce non-integer on `double`
+- ([PR#4923](https://github.com/dubzzz/fast-check/pull/4923)) Add option to produce non-integer on `float`
+- ([PR#4935](https://github.com/dubzzz/fast-check/pull/4935)) Produce "//" in web paths
+
+## Fixes
+
+- ([PR#4924](https://github.com/dubzzz/fast-check/pull/4924)) CI: Enable more advanced TS flags
+- ([PR#4925](https://github.com/dubzzz/fast-check/pull/4925)) CI: Explicitly test against Node 22
+- ([PR#4926](https://github.com/dubzzz/fast-check/pull/4926)) CI: Stabilize tests of `double` on small ranges
+- ([PR#4921](https://github.com/dubzzz/fast-check/pull/4921)) Performance: More optimal `noInteger` on `double`
+- ([PR#4933](https://github.com/dubzzz/fast-check/pull/4933)) Script: Switch on more eslint rules
+- ([PR#4922](https://github.com/dubzzz/fast-check/pull/4922)) Test: Cover `noInteger` on `double` via integration layers
+
+---
+
+# 3.17.2
+
+_Directly reference the official documentation from NPM_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.17.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.1...v3.17.2)]
+
+## Fixes
+
+- ([PR#4853](https://github.com/dubzzz/fast-check/pull/4853)) CI: Build doc with full git history
+- ([PR#4872](https://github.com/dubzzz/fast-check/pull/4872)) CI: Stop caching Jest on CI
+- ([PR#4852](https://github.com/dubzzz/fast-check/pull/4852)) Doc: Show last update time on doc
+- ([PR#4851](https://github.com/dubzzz/fast-check/pull/4851)) Doc: Add last modified date to sitemap
+- ([PR#4868](https://github.com/dubzzz/fast-check/pull/4868)) Doc: Enhance SEO for homepage
+- ([PR#4888](https://github.com/dubzzz/fast-check/pull/4888)) Doc: Add tutorial for PBT with Jest
+- ([PR#4901](https://github.com/dubzzz/fast-check/pull/4901)) Doc: Use official doc for npm homepage
+- ([PR#4866](https://github.com/dubzzz/fast-check/pull/4866)) Test: Safer rewrite of Poisoning E2E
+- ([PR#4871](https://github.com/dubzzz/fast-check/pull/4871)) Test: Move tests to Vitest
+- ([PR#4863](https://github.com/dubzzz/fast-check/pull/4863)) Test: Explicitely import from Vitest
+- ([PR#4873](https://github.com/dubzzz/fast-check/pull/4873)) Test: Move to v8 for coverage
+- ([PR#4875](https://github.com/dubzzz/fast-check/pull/4875)) Test: Better mock/spy cleaning
+
+# 3.17.1
+
+_Better interrupt CJS/MJS regarding types_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.17.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.17.0...v3.17.1)]
+
+## Fixes
+
+- ([PR#4842](https://github.com/dubzzz/fast-check/pull/4842)) Bug: Fix dual-packages hazard and types incompatibility
+- ([PR#4836](https://github.com/dubzzz/fast-check/pull/4836)) Doc: Release note for 3.17.0
+- ([PR#4844](https://github.com/dubzzz/fast-check/pull/4844)) Doc: Add new contributor patroza
+
+# 3.17.0
+
+_Allow access to some internals details linked to the underlying random generator_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.17.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.16.0...v3.17.0)]
+
+## Features
+
+- ([PR#4817](https://github.com/dubzzz/fast-check/pull/4817)) Expose internal state of the PRNG from `Random`
+
+## Fixes
+
+- ([PR#4781](https://github.com/dubzzz/fast-check/pull/4781)) Doc: Official release note of 3.16.0
+- ([PR#4799](https://github.com/dubzzz/fast-check/pull/4799)) Doc: Add more links in the footer
+- ([PR#4800](https://github.com/dubzzz/fast-check/pull/4800)) Doc: Better colors for footer and dark mode
+
+---
+
+# 3.16.0
+
+_Type assert on assertions linked to `fc.pre`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.16.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.15.1...v3.16.0)]
+
+## Features
+
+- ([PR#4709](https://github.com/dubzzz/fast-check/pull/4709)) Make `fc.pre` an assertion function
+
+## Fixes
+
+- ([PR#4736](https://github.com/dubzzz/fast-check/pull/4736)) Bug: Wrong logo ratio on small screen
+- ([PR#4747](https://github.com/dubzzz/fast-check/pull/4747)) CI: Deploy website on Netlify
+- ([PR#4751](https://github.com/dubzzz/fast-check/pull/4751)) CI: Drop configuration of GitHub Pages
+- ([PR#4756](https://github.com/dubzzz/fast-check/pull/4756)) CI: Make CI fail on invalid deploy
+- ([PR#4776](https://github.com/dubzzz/fast-check/pull/4776)) CI: Drop Google Analytics
+- ([PR#4769](https://github.com/dubzzz/fast-check/pull/4769)) Clean: Drop legacy patch on React 17
+- ([PR#4677](https://github.com/dubzzz/fast-check/pull/4677)) Doc: Add `jsonwebtoken` to track record
+- ([PR#4712](https://github.com/dubzzz/fast-check/pull/4712)) Doc: Fix console errors of website
+- ([PR#4713](https://github.com/dubzzz/fast-check/pull/4713)) Doc: Add extra spacing on top of CTA
+- ([PR#4730](https://github.com/dubzzz/fast-check/pull/4730)) Doc: Optimize image assets on homepage
+- ([PR#4732](https://github.com/dubzzz/fast-check/pull/4732)) Doc: Optimize SVG assets
+- ([PR#4735](https://github.com/dubzzz/fast-check/pull/4735)) Doc: Less layout shift with proper sizes
+- ([PR#4750](https://github.com/dubzzz/fast-check/pull/4750)) Doc: Add link to Netlify
+- ([PR#4754](https://github.com/dubzzz/fast-check/pull/4754)) Doc: Better assets on the homepage of the website
+- ([PR#4768](https://github.com/dubzzz/fast-check/pull/4768)) Doc: Add new contributors ej-shafran and gruhn
+- ([PR#4771](https://github.com/dubzzz/fast-check/pull/4771)) Doc: Blog post for 3.15.0
+- ([PR#4753](https://github.com/dubzzz/fast-check/pull/4753)) Security: Configure CSP for fast-check.dev
+- ([PR#4761](https://github.com/dubzzz/fast-check/pull/4761)) Security: Enforce Content-Security-Policy on our website
+- ([PR#4772](https://github.com/dubzzz/fast-check/pull/4772)) Security: Relax CSP policy to support Algolia
+
+---
+
+# 3.15.1
+
+_Prepare the monorepo for ESM build-chain_
+[[Code](https://github.com/dubzzz/fast-check/tree/v3.15.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.15.0...v3.15.1)]
+
+## Fixes
+
+- ([PR#4591](https://github.com/dubzzz/fast-check/pull/4591)) CI: Move build chain to ESM for root of monorepo
+- ([PR#4598](https://github.com/dubzzz/fast-check/pull/4598)) CI: Add `onBrokenAnchors`'check on Docusaurus
+- ([PR#4606](https://github.com/dubzzz/fast-check/pull/4606)) CI: Configuration files for VSCode
+- ([PR#4650](https://github.com/dubzzz/fast-check/pull/4650)) CI: Move examples build chain to ESM
+- ([PR#4554](https://github.com/dubzzz/fast-check/pull/4554)) Doc: Add `idonttrustlikethat-fast-check` in ecosystem.md
+- ([PR#4563](https://github.com/dubzzz/fast-check/pull/4563)) Doc: Add new contributor nielk
+- ([PR#4669](https://github.com/dubzzz/fast-check/pull/4669)) Doc: Add `@effect/schema` in ecosystem
+- ([PR#4665](https://github.com/dubzzz/fast-check/pull/4665)) Test: Fix `isCorrect` check on double
+- ([PR#4666](https://github.com/dubzzz/fast-check/pull/4666)) Test: Stabilize flaky URL-related test
+
 # 3.15.0
 
 _Add support for `depthIdentifier` to `dictionary`_

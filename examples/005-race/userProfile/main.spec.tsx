@@ -1,4 +1,7 @@
-import { jest } from '@jest/globals';
+/**
+ * @vitest-environment happy-dom
+ */
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import * as React from 'react';
 
@@ -41,7 +44,7 @@ describe('UserProfilePage', () => {
           expect((await screen.queryByTestId('user-id'))!.textContent).toBe(`Id: ${uid2}`);
         })
         .beforeEach(async () => {
-          jest.resetAllMocks();
+          vi.resetAllMocks();
           await cleanup();
         }),
     );
@@ -85,7 +88,7 @@ describe('UserProfilePage', () => {
           }
         })
         .beforeEach(async () => {
-          jest.resetAllMocks();
+          vi.resetAllMocks();
           await cleanup();
         }),
     );

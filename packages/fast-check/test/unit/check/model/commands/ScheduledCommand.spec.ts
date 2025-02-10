@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { ScheduledCommand } from '../../../../../src/check/model/commands/ScheduledCommand';
 import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
 import type { Scheduler, SchedulerSequenceItem } from '../../../../../src/arbitrary/scheduler';
@@ -7,12 +8,12 @@ type Real = unknown;
 
 function buildFakeScheduler(): Scheduler {
   return {
-    count: jest.fn(),
-    waitOne: jest.fn(),
-    waitAll: jest.fn(),
-    waitFor: jest.fn(),
-    schedule: jest.fn(),
-    scheduleFunction: jest.fn(),
+    count: vi.fn(),
+    waitOne: vi.fn(),
+    waitAll: vi.fn(),
+    waitFor: vi.fn(),
+    schedule: vi.fn(),
+    scheduleFunction: vi.fn(),
     scheduleSequence: (sequenceBuilders: SchedulerSequenceItem[]) => {
       const state = { done: false, faulty: false };
       const run = async () => {
@@ -34,7 +35,7 @@ function buildFakeScheduler(): Scheduler {
         ),
       });
     },
-    report: jest.fn(),
+    report: vi.fn(),
   };
 }
 
@@ -80,7 +81,7 @@ describe('ScheduledCommand', () => {
 
   it('Should properly call to run', async () => {
     // Arrange
-    const run = jest.fn();
+    const run = vi.fn();
     const model = {};
     const real = {};
     const cmd = new (class implements AsyncCommand<Model, Real> {
@@ -115,8 +116,8 @@ describe('ScheduledCommand', () => {
 
   it('Should wrap calls to check and run using the scheduler', async () => {
     // Arrange
-    const check = jest.fn();
-    const run = jest.fn();
+    const check = vi.fn();
+    const run = vi.fn();
     const cmd = new (class implements AsyncCommand<Model, Real> {
       check = check;
       run = run;

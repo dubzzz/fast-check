@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { TupleArbitrary } from '../../../../src/arbitrary/_internals/TupleArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
@@ -47,7 +48,7 @@ describe('TupleArbitrary', () => {
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeArbitrary<string[]>();
       const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeArbitrary<string[]>();
       generateA.mockReturnValue(new Value([], undefined));
-      generateB.mockReturnValue(new Value(Object.defineProperty([], cloneMethod, { value: jest.fn() }), undefined));
+      generateB.mockReturnValue(new Value(Object.defineProperty([], cloneMethod, { value: vi.fn() }), undefined));
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -80,7 +81,7 @@ describe('TupleArbitrary', () => {
       // Arrange
       const { instance: fakeArbitraryNotCloneableA, generate: generateA } = fakeArbitrary<string[]>();
       const { instance: fakeArbitraryCloneableB, generate: generateB } = fakeArbitrary<string[]>();
-      const cloneMethodImpl = jest.fn();
+      const cloneMethodImpl = vi.fn();
       generateA.mockReturnValue(new Value([], undefined));
       generateB.mockReturnValue(
         new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
@@ -209,7 +210,7 @@ describe('TupleArbitrary', () => {
       const { instance: fakeArbitraryCloneableB, generate: generateB, shrink: shrinkB } = fakeArbitrary<string[]>();
 
       const { instance: fakeArbitraryNotCloneableC, generate: generateC, shrink: shrinkC } = fakeArbitrary<string[]>();
-      const cloneMethodImpl = jest
+      const cloneMethodImpl = vi
         .fn()
         .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
       generateA.mockReturnValue(new Value([], undefined));

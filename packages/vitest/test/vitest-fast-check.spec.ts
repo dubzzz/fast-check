@@ -3,7 +3,7 @@ import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
-import { jest } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
 // @ts-expect-error --module must be higher
@@ -14,12 +14,12 @@ import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 
-const generatedTestsDirectoryName = 'generated-tests';
-const generatedTestsDirectory = path.join(__dirname, generatedTestsDirectoryName);
+const generatedTestsDirectoryName = '.test-artifacts';
+const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
+const specFileName = `generated.spec.mjs`;
+const vitestConfigName = `vitest.config.mjs`;
 
 type RunnerType = 'test' | 'it';
-
-jest.setTimeout(60_000);
 
 beforeAll(async () => {
   await fs.mkdir(generatedTestsDirectory, { recursive: true });
@@ -39,155 +39,155 @@ describe.each<DescribeOptions>([
 ])('$specName', ({ runnerName }) => {
   it.concurrent(`should support ${runnerName}.prop`, async () => {
     // Arrange
-    const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+    const specDirectory = await writeToFile(runnerName, () => {
       runner.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
         return `${a}${b}${c}`.includes(b);
       });
     });
 
     // Act
-    const out = await runSpec(jestConfigRelativePath);
+    const out = await runSpec(specDirectory);
 
     // Assert
-    expectPass(out, specFileName);
+    expectPass(out);
   });
 
   describe('at depth 1', () => {
     it.concurrent(`should support ${runnerName}.concurrent.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.concurrent.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectPass(out, specFileName);
+      expectPass(out);
     });
 
     it.concurrent(`should support ${runnerName}.fails.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.fails.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectFail(out, specFileName);
+      expectFail(out);
     });
 
-    it.concurrent.skip(`should support ${runnerName}.only.prop`, async () => {
+    it.skip(`should support ${runnerName}.only.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectPass(out, specFileName);
+      expectPass(out);
     });
 
     it.concurrent(`should support ${runnerName}.skip.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.skip.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectSkip(out, specFileName);
+      expectSkip(out);
     });
 
     it.concurrent(`should support ${runnerName}.todo.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.todo.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectSkip(out, specFileName);
+      expectSkip(out);
     });
   });
 
   describe('at depth strictly above 1', () => {
     it.concurrent(`should support ${runnerName}.concurrent.fails.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.concurrent.fails.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectFail(out, specFileName);
+      expectFail(out);
     });
 
     it.concurrent(`should support ${runnerName}.concurrent.fails.only.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.concurrent.fails.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectFail(out, specFileName);
+      expectFail(out);
     });
 
     it.concurrent(`should support ${runnerName}.concurrent.fails.skip.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.concurrent.fails.skip.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectSkip(out, specFileName);
+      expectSkip(out);
     });
 
     it.concurrent(`should support ${runnerName}.concurrent.fails.todo.prop`, async () => {
       // Arrange
-      const { specFileName, vitestConfigRelativePath: jestConfigRelativePath } = await writeToFile(runnerName, () => {
+      const specDirectory = await writeToFile(runnerName, () => {
         runner.concurrent.fails.todo.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
           return `${a}${b}${c}`.includes(b);
         });
       });
 
       // Act
-      const out = await runSpec(jestConfigRelativePath);
+      const out = await runSpec(specDirectory);
 
       // Assert
-      expectSkip(out, specFileName);
+      expectSkip(out);
     });
   });
 });
@@ -195,15 +195,14 @@ describe.each<DescribeOptions>([
 // Helper
 
 let num = -1;
-async function writeToFile(
-  runner: 'test' | 'it',
-  fileContent: () => void,
-): Promise<{ specFileName: string; vitestConfigRelativePath: string }> {
-  const specFileSeed = Math.random().toString(16).substring(2);
+async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Promise<string> {
+  // Prepare directory for spec
+  const specDirectorySeed = `${Math.random().toString(16).substring(2)}-${++num}`;
+  const specDirectory = path.join(generatedTestsDirectory, `test-${specDirectorySeed}`);
+  await fs.mkdir(specDirectory, { recursive: true });
 
   // Prepare test file itself
-  const specFileName = `generated-${specFileSeed}-${++num}.spec.mjs`;
-  const specFilePath = path.join(generatedTestsDirectory, specFileName);
+  const specFilePath = path.join(specDirectory, specFileName);
   const fileContentString = String(fileContent);
   const wrapInDescribeIfNeeded =
     runner === 'it'
@@ -219,9 +218,7 @@ async function writeToFile(
     );
 
   // Prepare jest config itself
-  const vitestConfigName = `vitest.config-${specFileSeed}.mjs`;
-  const vitestConfigRelativePath = `test/${generatedTestsDirectoryName}/${vitestConfigName}`;
-  const vitestConfigPath = path.join(generatedTestsDirectory, vitestConfigName);
+  const vitestConfigPath = path.join(specDirectory, vitestConfigName);
 
   // Write the files
   await Promise.all([
@@ -229,38 +226,42 @@ async function writeToFile(
     fs.writeFile(
       vitestConfigPath,
       `import { defineConfig } from 'vite';\n` +
-        `export default defineConfig({ test: { include: ['test/${generatedTestsDirectoryName}/${specFileName}'], }, });`,
+        `export default defineConfig({ test: { include: ['${specFileName}'], }, });`,
     ),
   ]);
 
-  return { specFileName, vitestConfigRelativePath: vitestConfigRelativePath };
+  return specDirectory;
 }
 
-async function runSpec(vitestConfigRelativePath: string): Promise<string> {
+async function runSpec(specDirectory: string): Promise<string> {
   const { stdout: vitestBinaryPathCommand } = await execFile('yarn', ['bin', 'vitest'], { shell: true });
   const vitestBinaryPath = vitestBinaryPathCommand.split('\n')[0];
   try {
-    const { stdout: specOutput } = await execFile('node', [
-      vitestBinaryPath,
-      '--config',
-      vitestConfigRelativePath,
-      '--run', // no watch
-      '--no-color',
-    ]);
+    const { stdout: specOutput } = await execFile(
+      'node',
+      [
+        vitestBinaryPath,
+        '--config',
+        vitestConfigName,
+        '--run', // no watch
+        '--no-color',
+      ],
+      { cwd: specDirectory },
+    );
     return specOutput;
   } catch (err) {
     return (err as any).stderr;
   }
 }
 
-function expectPass(out: string, specFileName: string): void {
-  expect(out).toMatch(new RegExp('✓ .*\\/' + specFileName));
+function expectPass(out: string): void {
+  expect(out).toContain('✓ ' + specFileName);
 }
 
-function expectFail(out: string, specFileName: string): void {
-  expect(out).toMatch(new RegExp('FAIL .*\\/' + specFileName));
+function expectFail(out: string): void {
+  expect(out).toContain('FAIL  ' + specFileName);
 }
 
-function expectSkip(out: string, specFileName: string): void {
-  expect(out).toMatch(new RegExp('↓ .*\\/' + specFileName));
+function expectSkip(out: string): void {
+  expect(out).toContain('↓ ' + specFileName);
 }

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 import * as prand from 'pure-rand';
@@ -11,7 +12,7 @@ const computeMaximalStackSize = () => {
   };
   try {
     f();
-  } catch (_err) {
+  } catch {
     // throws 'RangeError: Maximum call stack size exceeded'
   }
   return depth;
@@ -22,7 +23,7 @@ const callStackSizeWithMargin = 2 * callStackSize;
 
 // Configure arbitraries and provide them with a maximal length much greater than the default one
 // This value is hardcoded in order to avoid variations from one env to another and ease replays in case of problem
-const maxDepthForArrays = 40000;
+const maxDepthForArrays = 50_000;
 
 // Not all the shrunk values of a given generated value will be asked
 // The aim is to check if asking for the first maxShrinksToAsk might trigger unwanted stack overflows

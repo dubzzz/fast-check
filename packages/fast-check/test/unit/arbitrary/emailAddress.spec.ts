@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import type { EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
 import { emailAddress } from '../../../src/arbitrary/emailAddress';
@@ -11,15 +12,11 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('emailAddress (integration)', () => {
+  declareCleaningHooksForSpies();
+
   const expectValidEmailRfc1123 = (t: string) => {
     // Taken from https://www.w3.org/TR/html5/forms.html#valid-e-mail-address
     const rfc1123 =

@@ -1,4 +1,3 @@
-/* global process, console */
 import { removeNonPublishedFiles } from '../lib/packaged.js';
 
 function run(args) {
@@ -16,18 +15,27 @@ function run(args) {
   }
   const dryRun = args.includes('--dry-run');
   const keepNodeModules = args.includes('--keep-node-modules');
-  removeNonPublishedFiles('.', { dryRun, keepNodeModules }).then((out) => {
-    if (dryRun) {
-      console.log('Those files would have been kept:');
-      for (const k of out.kept) {
-        console.log(`- ${k}`);
+  removeNonPublishedFiles('.', { dryRun, keepNodeModules }).then(
+    (out) => {
+      if (dryRun) {
+        console.log('Those files would have been kept:');
+        for (const k of out.kept) {
+          console.log(`- ${k}`);
+        }
+        console.log('Those files would have been removed:');
+        for (const r of out.removed) {
+          console.log(`- ${r}`);
+        }
       }
-      console.log('Those files would have been removed:');
-      for (const r of out.removed) {
-        console.log(`- ${r}`);
-      }
-    }
-  });
+    },
+    (error) => {
+      console.error('Process aborted! An error occurred when removing non-published files:');
+      console.error('----------');
+      console.error(error);
+      console.error('----------');
+      process.exit(1);
+    },
+  );
 }
 
 run(process.argv.slice(2));

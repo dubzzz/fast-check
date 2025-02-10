@@ -6,13 +6,13 @@ const safeArraySort = Array.prototype.sort;
 const safeObjectDefineProperty = Object.defineProperty;
 
 /** Alias for Array.prototype.map */
-export const MapSymbol = Symbol('safe.map');
+export const MapSymbol: unique symbol = Symbol('safe.map');
 /** Alias for Array.prototype.push */
-export const PushSymbol = Symbol('safe.push');
+export const PushSymbol: unique symbol = Symbol('safe.push');
 /** Alias for Array.prototype.shift */
-export const ShiftSymbol = Symbol('safe.shift');
+export const ShiftSymbol: unique symbol = Symbol('safe.shift');
 /** Alias for Array.prototype.sort */
-export const SortSymbol = Symbol('safe.sort');
+export const SortSymbol: unique symbol = Symbol('safe.sort');
 
 /** Array instance enriched with aliased methods that cannot be poisoned */
 export type PoisoningFreeArray<T> = Array<T> & {

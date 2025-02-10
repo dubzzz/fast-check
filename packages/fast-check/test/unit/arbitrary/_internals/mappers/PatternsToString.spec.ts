@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import { patternsToStringUnmapperFor } from '../../../../../src/arbitrary/_internals/mappers/PatternsToString';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
@@ -31,7 +32,7 @@ describe('patternsToStringUnmapperFor', () => {
       // Arrange
       const sourceChunksSet = new Set(sourceChunks);
       const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
-      canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
+      canShrinkWithoutContext.mockImplementation((value): value is string => sourceChunksSet.has(value as string));
 
       // Act
       const unmapper = patternsToStringUnmapperFor(instance, constraints);
@@ -51,7 +52,7 @@ describe('patternsToStringUnmapperFor', () => {
     // Arrange
     const sourceChunksSet = new Set(sourceChunks);
     const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
-    canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
+    canShrinkWithoutContext.mockImplementation((value): value is string => sourceChunksSet.has(value as string));
 
     // Act / Assert
     const unmapper = patternsToStringUnmapperFor(instance, constraints);
@@ -62,14 +63,14 @@ describe('patternsToStringUnmapperFor', () => {
     fc.assert(
       fc.property(
         // Defining chunks, we allow "" to be part of the chunks as we do not request any minimal length for the 'split into chunks'
-        fc.array(fc.fullUnicodeString(), { minLength: 1 }),
+        fc.array(fc.string({ unit: 'binary' }), { minLength: 1 }),
         // Array of random natural numbers to help building the source string
         fc.array(fc.nat()),
         (sourceChunks, sourceMods) => {
           // Arrange
           const sourceChunksSet = new Set(sourceChunks);
           const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
-          canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
+          canShrinkWithoutContext.mockImplementation((value): value is string => sourceChunksSet.has(value as string));
           const source = sourceMods.map((mod) => sourceChunks[mod % sourceChunks.length]).join('');
 
           // Act
@@ -90,7 +91,7 @@ describe('patternsToStringUnmapperFor', () => {
   it('should be able to split strings built out of chunks into chunks while respecting constraints in size', () =>
     fc.assert(
       fc.property(
-        fc.array(fc.fullUnicodeString({ minLength: 1 }), { minLength: 1 }),
+        fc.array(fc.string({ unit: 'binary', minLength: 1 }), { minLength: 1 }),
         fc.array(fc.nat()),
         fc.nat(),
         fc.nat(),
@@ -98,7 +99,7 @@ describe('patternsToStringUnmapperFor', () => {
           // Arrange
           const sourceChunksSet = new Set(sourceChunks);
           const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
-          canShrinkWithoutContext.mockImplementation((value) => sourceChunksSet.has(value as string));
+          canShrinkWithoutContext.mockImplementation((value): value is string => sourceChunksSet.has(value as string));
           const source = sourceMods.map((mod) => sourceChunks[mod % sourceChunks.length]).join('');
           const constraints = {
             minLength: Math.max(0, sourceMods.length - constraintsMinOffset),

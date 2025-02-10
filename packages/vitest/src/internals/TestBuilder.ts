@@ -10,7 +10,7 @@ import type { ArbitraryTuple, Prop, ArbitraryRecord, PropRecord, It, FcExtra } f
 type TestPropTuple<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
   arbitraries: ArbitraryTuple<Ts>,
   params?: FcParameters<TsParameters>,
-) => (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => void;
+) => (testName: string, prop: Prop<Ts>, timeout?: number) => void;
 
 /**
  * Type used for any `{it,test}.*.prop` taking records
@@ -18,20 +18,17 @@ type TestPropTuple<Ts extends [any] | any[], TsParameters extends Ts = Ts> = (
 type TestPropRecord<Ts, TsParameters extends Ts = Ts> = (
   arbitraries: ArbitraryRecord<Ts>,
   params?: FcParameters<TsParameters>,
-) => (testName: string, prop: PropRecord<Ts>, timeout?: number | undefined) => void;
+) => (testName: string, prop: PropRecord<Ts>, timeout?: number) => void;
 
 /**
  * prop has just been declared for typing reasons, ideally TestProp should be enough
  * and should be used to replace `{ prop: typeof prop }` by `{ prop: TestProp<???> }`
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare const prop: <Ts, TsParameters extends Ts = Ts>(
   arbitraries: Ts extends [any] | any[] ? ArbitraryTuple<Ts> : ArbitraryRecord<Ts>,
   params?: FcParameters<TsParameters>,
-) => (
-  testName: string,
-  prop: Ts extends [any] | any[] ? Prop<Ts> : PropRecord<Ts>,
-  timeout?: number | undefined,
-) => void;
+) => (testName: string, prop: Ts extends [any] | any[] ? Prop<Ts> : PropRecord<Ts>, timeout?: number) => void;
 
 function adaptParametersForRecord<Ts>(
   parameters: FcParameters<[Ts]>,
@@ -72,23 +69,26 @@ function adaptRunDetailsForRecord<Ts>(
  * @param testFn - The source `{it,test}.*`
  */
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
   fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters>;
 function buildTestProp<Ts, TsParameters extends Ts = Ts>(
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
   fc: FcExtra,
 ): TestPropRecord<Ts, TsParameters>;
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
   testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
   fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters> | TestPropRecord<Ts, TsParameters> {
   return (arbitraries, params?: FcParameters<TsParameters>) => {
     if (Array.isArray(arbitraries)) {
-      return (testName: string, prop: Prop<Ts>, timeout?: number | undefined) =>
+      return (testName: string, prop: Prop<Ts>, timeout?: number) =>
         buildTestWithPropRunner(testFn, testName, arbitraries, prop, params, timeout, fc);
     }
-    return (testName: string, prop: Prop<Ts>, timeout?: number | undefined) => {
+    return (testName: string, prop: Prop<Ts>, timeout?: number) => {
       const recordArb = record<Ts>(arbitraries);
       const recordParams: FcParameters<[TsParameters]> | undefined =
         params !== undefined
@@ -134,7 +134,7 @@ export type FastCheckItBuilder<T> = T &
 /**
  * Build the enriched version of {it,test}, the one with added `.prop`
  */
-function enrichWithTestProp<T extends (...args: any[]) => any>(
+export function buildTest<T extends (...args: any[]) => any>(
   testFn: T,
   fc: FcExtra,
   ancestors: Set<string> = new Set(),
@@ -145,8 +145,7 @@ function enrichWithTestProp<T extends (...args: any[]) => any>(
     const key = unsafeKey as keyof typeof testFn & string;
     if (!ancestors.has(key) && typeof testFn[key] === 'function') {
       atLeastOneExtra = true;
-      extraKeys[key] =
-        key !== 'each' ? enrichWithTestProp(testFn[key] as any, fc, new Set([...ancestors, key])) : testFn[key];
+      extraKeys[key] = key !== 'each' ? buildTest(testFn[key] as any, fc, new Set([...ancestors, key])) : testFn[key];
     }
   }
   if (!atLeastOneExtra) {
@@ -158,5 +157,3 @@ function enrichWithTestProp<T extends (...args: any[]) => any>(
   }
   return Object.assign(enrichedTestFn, extraKeys) as FastCheckItBuilder<T>;
 }
-
-export const buildTest = enrichWithTestProp;

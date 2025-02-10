@@ -1,14 +1,48 @@
+import { Error, Number, Map, safeMapGet, safeMapSet } from '../../../utils/globals';
+
 /** @internal */
-export function indexToMappedConstantMapperFor<T>(
-  entries: { num: number; build: (idInGroup: number) => T }[],
-): (choiceIndex: number) => T {
-  return function indexToMappedConstantMapper(choiceIndex: number): T {
-    let idx = -1;
-    let numSkips = 0;
-    while (choiceIndex >= numSkips) {
-      numSkips += entries[++idx].num;
+const safeObjectIs = Object.is;
+
+/** @internal */
+type Entry<T> = { num: number; build: (idInGroup: number) => T };
+
+/** @internal */
+type DicothomyEntry<T> = { from: number; to: number; entry: Pick<Entry<T>, 'build'> };
+
+/** @internal */
+function buildDichotomyEntries<T>(entries: Entry<T>[]): DicothomyEntry<T>[] {
+  let currentFrom = 0;
+  const dichotomyEntries: DicothomyEntry<T>[] = [];
+  for (const entry of entries) {
+    const from = currentFrom;
+    currentFrom = from + entry.num;
+    const to = currentFrom - 1;
+    dichotomyEntries.push({ from, to, entry });
+  }
+  return dichotomyEntries;
+}
+
+/** @internal */
+function findDichotomyEntry<T>(dichotomyEntries: DicothomyEntry<T>[], choiceIndex: number): DicothomyEntry<T> {
+  let min = 0;
+  let max = dichotomyEntries.length;
+  while (max - min > 1) {
+    const mid = ~~((min + max) / 2); // ~~ is Math.floor
+    if (choiceIndex < dichotomyEntries[mid].from) {
+      max = mid;
+    } else {
+      min = mid;
     }
-    return entries[idx].build(choiceIndex - numSkips + entries[idx].num);
+  }
+  return dichotomyEntries[min];
+}
+
+/** @internal */
+export function indexToMappedConstantMapperFor<T>(entries: Entry<T>[]): (choiceIndex: number) => T {
+  const dichotomyEntries = buildDichotomyEntries(entries);
+  return function indexToMappedConstantMapper(choiceIndex: number): T {
+    const dichotomyEntry = findDichotomyEntry(dichotomyEntries, choiceIndex);
+    return dichotomyEntry.entry.build(choiceIndex - dichotomyEntry.from);
   };
 }
 
@@ -34,7 +68,7 @@ function buildReverseMapping(entries: { num: number; build: (idInGroup: number) 
       if (value === 0 && 1 / value === Number.NEGATIVE_INFINITY) {
         reverseMapping.negativeZeroIndex = choiceIndex;
       } else {
-        reverseMapping.mapping.set(value, choiceIndex);
+        safeMapSet(reverseMapping.mapping, value, choiceIndex);
       }
       ++choiceIndex;
     }
@@ -51,7 +85,9 @@ export function indexToMappedConstantUnmapperFor<T>(
     if (reverseMapping === null) {
       reverseMapping = buildReverseMapping(entries);
     }
-    const choiceIndex = Object.is(value, -0) ? reverseMapping.negativeZeroIndex : reverseMapping.mapping.get(value);
+    const choiceIndex = safeObjectIs(value, -0)
+      ? reverseMapping.negativeZeroIndex
+      : safeMapGet(reverseMapping.mapping, value);
     if (choiceIndex === undefined) {
       throw new Error('Unknown value encountered cannot be built using this mapToConstant');
     }

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import type { WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority';
 import { webAuthority } from '../../../src/arbitrary/webAuthority';
@@ -11,13 +12,6 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
 
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('webAuthority (integration)', () => {
   type Extra = WebAuthorityConstraints;
   const extraParametersBuilder: (onlySmall?: boolean) => fc.Arbitrary<Extra> = (onlySmall?: boolean) =>
@@ -28,7 +22,9 @@ describe('webAuthority (integration)', () => {
         withIPv6: fc.boolean(),
         withPort: fc.boolean(),
         withUserInfo: fc.boolean(),
-        size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb),
+        size: onlySmall
+          ? fc.constantFrom(...(['-1', '=', 'xsmall', 'small'] as const))
+          : fc.oneof(sizeArb, relativeSizeArb),
       },
       { requiredKeys: [] },
     );

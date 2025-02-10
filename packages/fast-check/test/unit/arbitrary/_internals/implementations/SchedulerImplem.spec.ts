@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type {
   ScheduledTask,
@@ -6,13 +7,6 @@ import type {
 import { SchedulerImplem } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
 
 const buildUnresolved = () => {
   let resolved = false;
@@ -30,39 +24,43 @@ const delay = () => new Promise((r) => setTimeout(r, 0));
 
 describe('SchedulerImplem', () => {
   describe('waitOne', () => {
-    it('should throw when there is no scheduled promise in the pipe', async () => {
+    it('should throw synchronously when there is no scheduled promise in the pipe', () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
 
       // Assert
-      await expect(s.waitOne()).rejects.toMatchInlineSnapshot(`[Error: No task scheduled]`);
+      expect(() => s.waitOne()).toThrowErrorMatchingInlineSnapshot(`[Error: No task scheduled]`);
     });
 
     it('should wrap waitOne call using act whenever specified', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
+      let actCount = 0;
+      const act = (f: () => Promise<void>) => {
+        ++actCount;
+        return f();
+      };
       const nextTaskIndexLengths: number[] = [];
-      const nextTaskIndex = jest.fn().mockImplementation((tasks: ScheduledTask<unknown>[]) => {
+      const nextTaskIndex = vi.fn().mockImplementation((tasks: ScheduledTask<unknown>[]) => {
         // `tasks` pointer being re-used from one call to another (mutate)
         // we cannot rely on toHaveBeenCalledWith
         nextTaskIndexLengths.push(tasks.length);
         return 0;
       });
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
       s.schedule(Promise.resolve(42));
 
       // Assert
-      expect(act).not.toHaveBeenCalled();
+      expect(actCount).toBe(0);
       expect(nextTaskIndex).not.toHaveBeenCalled();
       await s.waitOne();
-      expect(act).toHaveBeenCalledTimes(1);
+      expect(actCount).toBe(1);
       expect(nextTaskIndex).toHaveBeenCalledTimes(1);
       expect(nextTaskIndexLengths).toEqual([1]); // only one task scheduled
     });
@@ -71,13 +69,13 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
-      const act = jest.fn().mockImplementation(async (f) => {
+      const act = async (f: () => Promise<void>) => {
         await p1.p;
         await f();
         await p2.p;
-      });
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      };
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       let promiseResolved = false;
@@ -106,14 +104,18 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
-      const globalAct = jest.fn().mockImplementation((f) => f());
-      const act = jest.fn().mockImplementation(async (f) => {
+      let globalActCount = 0;
+      const globalAct = (f: () => Promise<void>) => {
+        ++globalActCount;
+        return f();
+      };
+      const act = async (f: () => Promise<void>) => {
         await p1.p;
         await f();
         await p2.p;
-      });
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      };
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       let promiseResolved = false;
@@ -122,9 +124,9 @@ describe('SchedulerImplem', () => {
       s.schedule(Promise.resolve(1)).then(() => (promiseResolved = true));
 
       // Assert
-      expect(globalAct).not.toHaveBeenCalled();
+      expect(globalActCount).toBe(0);
       s.waitOne(act).then(() => (waitOneResolved = true));
-      expect(globalAct).toHaveBeenCalledTimes(1);
+      expect(globalActCount).toBe(1);
       await delay();
       expect(promiseResolved).toBe(false);
       expect(waitOneResolved).toBe(false);
@@ -144,14 +146,18 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
-      const globalAct = jest.fn().mockImplementation((f) => f());
-      const act = jest.fn().mockImplementation(async (f) => {
+      let globalActCount = 0;
+      const globalAct = (f: () => Promise<void>) => {
+        ++globalActCount;
+        return f();
+      };
+      const act = async (f: () => Promise<void>) => {
         await p1.p;
         await f();
         await p2.p;
-      });
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      };
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       let promiseResolved = false;
@@ -160,9 +166,9 @@ describe('SchedulerImplem', () => {
       s.schedule(Promise.resolve(1), undefined, undefined, act).then(() => (promiseResolved = true));
 
       // Assert
-      expect(globalAct).not.toHaveBeenCalled();
+      expect(globalActCount).toBe(0);
       s.waitOne().then(() => (waitOneResolved = true));
-      expect(globalAct).toHaveBeenCalledTimes(1);
+      expect(globalActCount).toBe(1);
       await delay();
       expect(promiseResolved).toBe(false);
       expect(waitOneResolved).toBe(false);
@@ -177,13 +183,71 @@ describe('SchedulerImplem', () => {
       expect(promiseResolved).toBe(true);
       expect(waitOneResolved).toBe(true);
     });
+
+    it('should schedule for next waitOne anything immediately scheduled', async () => {
+      // Arrange
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(() => s.schedule(Promise.resolve(2)));
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(1); // The promise returning 2 should be queued into the scheduler
+    });
+
+    it('should not schedule for next waitOne something scheduled after an intermediate await', async () => {
+      // Arrange
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        s.schedule(Promise.resolve(2));
+      });
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
+      await 'just awaiting something';
+      expect(s.count()).toBe(1); // ...but it will after a simple await
+    });
+
+    it('should not schedule for next waitOne something scheduled after two intermediate await', async () => {
+      // Arrange
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        await 'another something already resolved';
+        s.schedule(Promise.resolve(2));
+      });
+
+      // Assert
+      expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
+      await s.waitOne();
+      expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
+      await 'just awaiting something';
+      expect(s.count()).toBe(0);
+      await 'just awaiting one more time';
+      expect(s.count()).toBe(1); // ...but it will after two simple await
+    });
   });
 
   describe('waitAll', () => {
     it('should not throw when there is no scheduled promise in the pipe', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -196,10 +260,14 @@ describe('SchedulerImplem', () => {
       fc.assert(
         fc.asyncProperty(fc.infiniteStream(fc.nat()), async (seeds) => {
           // Arrange
-          const act = jest.fn().mockImplementation((f) => f());
+          let actCount = 0;
+          const act = (f: () => Promise<void>) => {
+            ++actCount;
+            return f();
+          };
           const nextTaskIndexLengths: number[] = [];
           const nextTaskIndex = buildSeededNextTaskIndex(seeds, nextTaskIndexLengths);
-          const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+          const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
           // Act
           const s = new SchedulerImplem(act, taskSelector);
@@ -208,10 +276,10 @@ describe('SchedulerImplem', () => {
           s.schedule(Promise.resolve(42));
 
           // Assert
-          expect(act).not.toHaveBeenCalled();
+          expect(actCount).toBe(0);
           expect(nextTaskIndex).not.toHaveBeenCalled();
           await s.waitAll();
-          expect(act).toHaveBeenCalledTimes(3);
+          expect(actCount).toBe(3);
           expect(nextTaskIndex).toHaveBeenCalledTimes(3);
           expect(nextTaskIndexLengths).toEqual([3, 2, 1]);
         }),
@@ -223,14 +291,14 @@ describe('SchedulerImplem', () => {
           // Arrange
           let locked = false;
           const updateLocked = (newLocked: boolean) => (locked = newLocked);
-          const act = jest.fn().mockImplementation(async (f) => {
+          const act = vi.fn().mockImplementation(async (f) => {
             expect(locked).toBe(false);
             updateLocked(true); // equivalent to: locked = true
             await f();
             updateLocked(false); // equivalent to: locked = false
           });
           const nextTaskIndex = buildSeededNextTaskIndex(seeds);
-          const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+          const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
           // Act
           const s = new SchedulerImplem(act, taskSelector);
@@ -243,6 +311,109 @@ describe('SchedulerImplem', () => {
           expect(locked).toBe(false);
         }),
       ));
+
+    it('should schedule for the same waitAll anything immediately scheduled', async () => {
+      // Arrange
+      let calledF2 = false;
+      const f2 = () => {
+        calledF2 = true;
+      };
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(() => s.schedule(Promise.resolve(2)).then(f2));
+
+      // Assert
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
+      ]);
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
+      expect(calledF2).toBe(false); // just confirming we don't have lags in the "report"
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
+        expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
+      ]);
+      expect(calledF2).toBe(true); // and completions have been called
+    });
+
+    it('should not schedule for the same waitAll (but for next one) something scheduled after an intermadiate await', async () => {
+      // Arrange
+      let calledF2 = false;
+      const f2 = () => {
+        calledF2 = true;
+      };
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        s.schedule(Promise.resolve(2)).then(f2);
+      });
+
+      // Assert
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
+      ]);
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed...
+        expect.objectContaining({ status: 'pending' }), // ...and the one returning 2 has already been scehduled but not executed yet
+      ]);
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
+      expect(calledF2).toBe(false); // just confirming we don't have lags in the "report"
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
+        expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
+      ]);
+      expect(calledF2).toBe(true); // and completions have been called
+    });
+
+    it('should not schedule for the same waitAll (nor next one) something scheduled after two intermadiate await', async () => {
+      // Arrange
+      let calledF2 = false;
+      const f2 = () => {
+        calledF2 = true;
+      };
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.schedule(Promise.resolve(1)).then(async () => {
+        await 'something already resolved';
+        await 'another something already resolved';
+        s.schedule(Promise.resolve(2)).then(f2);
+      });
+
+      // Assert
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'pending' }), // The promise returning 1 has been scheduled
+      ]);
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed...
+        // ...but the promise returning 2 has not even been scheduled...
+      ]);
+      await 'just awaiting something';
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }),
+        expect.objectContaining({ status: 'pending' }), // ...but it will after a simple await
+      ]);
+      expect(s.count()).toBe(1); // just confirming "count" is aligned with "report"
+      expect(calledF2).toBe(false); // just confirming we don't have lags in the "report"
+      await s.waitAll();
+      expect(s.report()).toEqual([
+        expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed
+        expect.objectContaining({ status: 'resolved', outputValue: '2' }), // The promise returning 2 has been completed
+      ]);
+      expect(calledF2).toBe(true); // and completions have been called
+    });
   });
 
   describe('waitFor', () => {
@@ -250,8 +421,8 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
-      const nextTaskIndex = jest.fn();
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const nextTaskIndex = vi.fn();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
       const awaitedTaskValue = Symbol();
       const awaitedTask = Promise.resolve(awaitedTaskValue);
 
@@ -273,7 +444,7 @@ describe('SchedulerImplem', () => {
       const p2 = buildUnresolved();
       const p3 = buildUnresolved();
       const nextTaskIndexParams: unknown[] = [];
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockImplementationOnce((scheduledTasks) => {
           nextTaskIndexParams.push([...scheduledTasks]); // need to clone it as it will be altered
@@ -283,14 +454,13 @@ describe('SchedulerImplem', () => {
           nextTaskIndexParams.push([...scheduledTasks]);
           return 0;
         });
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem((f) => f(), taskSelector);
-      const sp1 = s.schedule(p1.p);
+      const awaitedTask = s.schedule(p1.p);
       s.schedule(p2.p);
       s.schedule(p3.p);
-      const awaitedTask = sp1.then(() => Symbol());
 
       // Assert
       let waitForEnded = false;
@@ -327,8 +497,8 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = buildUnresolved();
       const pAwaited = buildUnresolved();
-      const nextTaskIndex = jest.fn().mockReturnValueOnce(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const nextTaskIndex = vi.fn().mockReturnValueOnce(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem((f) => f(), taskSelector);
@@ -358,8 +528,8 @@ describe('SchedulerImplem', () => {
     it('should wait and release scheduled tasks coming after the call to waitFor', async () => {
       // Arrange
       const p1 = buildUnresolved();
-      const nextTaskIndex = jest.fn().mockReturnValueOnce(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const nextTaskIndex = vi.fn().mockReturnValueOnce(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
       let resolveAwaitedTask: () => void;
       const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
 
@@ -394,11 +564,11 @@ describe('SchedulerImplem', () => {
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
       const nextTaskIndexParams: unknown[] = [];
-      const nextTaskIndex = jest.fn().mockImplementation((scheduledTasks) => {
+      const nextTaskIndex = vi.fn().mockImplementation((scheduledTasks) => {
         nextTaskIndexParams.push([...scheduledTasks]); // We need to clone it as it will be altered after the call
         return 0;
       });
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
       let resolveAwaitedTask: () => void;
       const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
 
@@ -444,11 +614,11 @@ describe('SchedulerImplem', () => {
       const p1 = Promise.resolve(1);
       const p2 = Promise.resolve(2);
       const nextTaskIndexParams: unknown[] = [];
-      const nextTaskIndex = jest.fn().mockImplementation((scheduledTasks) => {
+      const nextTaskIndex = vi.fn().mockImplementation((scheduledTasks) => {
         nextTaskIndexParams.push([...scheduledTasks]); // We need to clone it as it will be altered after the call
         return 0;
       });
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
       let resolveAwaitedTask: () => void;
       const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
 
@@ -484,11 +654,11 @@ describe('SchedulerImplem', () => {
       const p1 = Promise.resolve(1);
       const p2 = Promise.resolve(2);
       const nextTaskIndexParams: unknown[] = [];
-      const nextTaskIndex = jest.fn().mockImplementation((scheduledTasks) => {
+      const nextTaskIndex = vi.fn().mockImplementation((scheduledTasks) => {
         nextTaskIndexParams.push([...scheduledTasks]); // We need to clone it as it will be altered after the call
         return 0;
       });
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
       let resolveAwaitedTask: () => void;
       const awaitedTask = new Promise<void>((r) => (resolveAwaitedTask = r));
 
@@ -518,8 +688,8 @@ describe('SchedulerImplem', () => {
 
     it('should forward exception thrown by the awaited task', async () => {
       // Arrange
-      const nextTaskIndex = jest.fn();
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const nextTaskIndex = vi.fn();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
       const awaitedTaskValue = new Error('thrown by awaited');
       const awaitedTask = Promise.reject(awaitedTaskValue);
 
@@ -534,8 +704,8 @@ describe('SchedulerImplem', () => {
       // Arrange
       const p1 = Promise.resolve(1);
       const p2 = Promise.resolve(2);
-      const nextTaskIndex = jest.fn().mockReturnValueOnce(0).mockReturnValueOnce(1);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const nextTaskIndex = vi.fn().mockReturnValueOnce(0).mockReturnValueOnce(1);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
       const awaitedTaskValue = Symbol();
       const awaitedTask = Promise.resolve(awaitedTaskValue);
 
@@ -557,21 +727,19 @@ describe('SchedulerImplem', () => {
       const p2 = buildUnresolved();
       const p3 = buildUnresolved();
       const p4 = buildUnresolved();
-      const nextTaskIndex = jest
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(1) // releasing p2 in [p1,p2,p3,p4]
         .mockReturnValueOnce(2) // releasing p4 in [p1,p3,p4]
         .mockReturnValueOnce(0); // releasing p1 in [p1,p4]
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem((f) => f(), taskSelector);
-      const sp1 = s.schedule(p1.p);
-      const sp2 = s.schedule(p2.p);
+      const awaitedTask1 = s.schedule(p1.p);
+      const awaitedTask2 = s.schedule(p2.p);
       s.schedule(p3.p);
       s.schedule(p4.p);
-      const awaitedTask1 = sp1.then(() => Symbol());
-      const awaitedTask2 = sp2.then(() => Symbol());
 
       // Assert
       let waitForEnded1 = false;
@@ -699,7 +867,7 @@ describe('SchedulerImplem', () => {
             let multipleTasksReleasedAtTheSameTime: string | undefined = undefined;
             let alreadyRunningPx: typeof p1 | undefined = undefined;
             const taskSelector: TaskSelector<unknown> = {
-              clone: jest.fn(),
+              clone: vi.fn(),
               nextTaskIndex: (scheduledTasks) => {
                 const selectedId = nextTaskIndexSeed.next().value % scheduledTasks.length;
                 const selectedPx = rawAllPs.find((p) => p.p === scheduledTasks[selectedId].original);
@@ -785,14 +953,18 @@ describe('SchedulerImplem', () => {
     it('should postpone completion of promise but call it with right parameters in case of success', async () => {
       // Arrange
       const expectedThenValue = 123;
-      const thenFunction = jest.fn();
-      const act = jest.fn().mockImplementation((f) => f());
+      const thenFunction = vi.fn();
+      let actCount = 0;
+      const act = (f: () => Promise<void>) => {
+        ++actCount;
+        return f();
+      };
       const nextTaskIndexLengths: number[] = [];
-      const nextTaskIndex = jest.fn().mockImplementationOnce((tasks: ScheduledTask<unknown>[]) => {
+      const nextTaskIndex = vi.fn().mockImplementationOnce((tasks: ScheduledTask<unknown>[]) => {
         nextTaskIndexLengths.push(tasks.length); // tasks are mutated, toHaveBeenCalledWith cannot be used
         return 0;
       });
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -805,7 +977,7 @@ describe('SchedulerImplem', () => {
       expect(thenFunction).toHaveBeenCalled();
       expect(thenFunction).toHaveBeenCalledTimes(1);
       expect(thenFunction).toHaveBeenCalledWith(expectedThenValue);
-      expect(act).toHaveBeenCalledTimes(1);
+      expect(actCount).toBe(1);
       expect(nextTaskIndex).toHaveBeenCalledTimes(1);
       expect(nextTaskIndexLengths).toEqual([1]); // only one task scheduled
     });
@@ -813,10 +985,10 @@ describe('SchedulerImplem', () => {
     it('should postpone completion of promise but call it with right parameters in case of failure', async () => {
       // Arrange
       const expectedThenValue = 123;
-      const catchFunction = jest.fn();
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const catchFunction = vi.fn();
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -834,8 +1006,12 @@ describe('SchedulerImplem', () => {
     it('should be able to schedule multiple promises', async () => {
       // Arrange
       const tasks = [Promise.resolve(1), Promise.resolve(8), Promise.resolve(2)];
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      let actCount = 0;
+      const act = (f: () => Promise<void>) => {
+        ++actCount;
+        return f();
+      };
+      const nextTaskIndex = vi
         .fn()
         .mockImplementationOnce((scheduledTasks) => {
           expect(scheduledTasks).toEqual([
@@ -858,7 +1034,7 @@ describe('SchedulerImplem', () => {
           ]);
           return 0;
         });
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -870,7 +1046,7 @@ describe('SchedulerImplem', () => {
       expect(s.count()).toBe(tasks.length);
       await s.waitAll();
       expect(s.count()).toBe(0);
-      expect(act).toHaveBeenCalledTimes(3);
+      expect(actCount).toBe(3);
       expect(nextTaskIndex).toHaveBeenCalledTimes(3);
     });
 
@@ -886,27 +1062,40 @@ describe('SchedulerImplem', () => {
             4: false,
             5: false,
           };
+          const everythingResolved = {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true,
+          };
           const resolved = { ...nothingResolved };
-          const act = jest.fn().mockImplementation((f) => f());
+          const act = (f: () => Promise<void>) => f();
           const nextTaskIndex = buildSeededNextTaskIndex(seeds);
-          const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+          const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+          const order: number[] = [];
 
           // Act
           const s = new SchedulerImplem(act, taskSelector);
           s.schedule(Promise.resolve(1)).then(() => {
+            order.push(1);
             resolved[1] = true;
             Promise.all([
               s.schedule(Promise.resolve(2)).then(() => {
+                order.push(2);
                 resolved[2] = true;
               }),
               s.schedule(Promise.resolve(3)).then(() => {
+                order.push(3);
                 resolved[3] = true;
                 s.schedule(Promise.resolve(4)).then(() => {
+                  order.push(4);
                   resolved[4] = true;
                 });
               }),
             ]).then(() => {
               s.schedule(Promise.resolve(5)).then(() => {
+                order.push(5);
                 resolved[5] = true;
                 status.done = true;
               });
@@ -917,21 +1106,36 @@ describe('SchedulerImplem', () => {
           expect(status.done).toBe(false);
           expect(resolved).toEqual(nothingResolved);
           await s.waitAll();
+          if (status.done) {
+            // There are only a few cases that could make 5 resolved via waitAll. Scheduling 5 is the consequence of Promise.all([2, 3]) being resolved.
+            // Promise.all is nasty as it costs an extra await. Meaning that if 3 and 4 (a task scheduled when 3 succeeds) have already been resolved,
+            // resolving 2 would not be enought to schedule 5 in a visible way for waitAll.
+            expect([
+              // The following orders should work to include 5 within the waitAll:
+              [1, 2, 3, 4, 5],
+              [1, 3, 2, 4, 5],
+            ]).toContainEqual(order);
+          } else {
+            expect([
+              // But these ones will not work:
+              [1, 3, 4, 2],
+            ]).toContainEqual(order);
+
+            expect(resolved).toEqual({ ...everythingResolved, 5: false });
+            expect(s.count()).toBe(0); // Well, Promise.all just received the last completion it was waiting for...
+            await 'just awaiting to get the proper count'; // It needs one extra await to move forward and schedule the item 5
+            expect(s.count()).not.toBe(0);
+            await s.waitAll(); // extra waitAll should make it pass
+          }
           expect(status.done).toBe(true);
-          expect(resolved).toEqual({
-            1: true,
-            2: true,
-            3: true,
-            4: true,
-            5: true,
-          });
+          expect(resolved).toEqual(everythingResolved);
         }),
       ));
 
     it('should show both resolved, rejected and pending promises in toString', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(5) // task#6 resolved, state was: [0,1,2,3,4,5,6,7,8,9]
         .mockReturnValueOnce(5) // task#7 resolved, state was: [0,1,2,3,4,6,7,8,9]
@@ -943,13 +1147,13 @@ describe('SchedulerImplem', () => {
         .mockReturnValueOnce(0) // task#3 resolved, state was: [2,4,8]
         .mockReturnValueOnce(0) // task#5 resolved, state was: [4,8]
         .mockReturnValueOnce(0); // task#9 resolved, state was: [8]
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
       for (let idx = 0; idx !== 10; ++idx) {
         if (idx % 2 === 0) s.schedule(Promise.resolve(idx));
-        else s.schedule(Promise.reject(idx));
+        else s.schedule(Promise.reject(idx)).catch(() => {});
       }
 
       // Assert
@@ -1022,14 +1226,14 @@ describe('SchedulerImplem', () => {
     it('should properly replay schedule on cloned instance', async () => {
       // Arrange
       const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
-      const then1Function = jest.fn();
-      const then2Function = jest.fn();
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex1 = jest.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
-      const nextTaskIndex2 = jest.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
-      const taskSelector2: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: nextTaskIndex2 };
+      const then1Function = vi.fn();
+      const then2Function = vi.fn();
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex1 = vi.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
+      const nextTaskIndex2 = vi.fn().mockReturnValueOnce(2).mockReturnValueOnce(1).mockReturnValueOnce(0);
+      const taskSelector2: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: nextTaskIndex2 };
       const taskSelector1: TaskSelector<unknown> = {
-        clone: jest.fn().mockReturnValueOnce(taskSelector2),
+        clone: vi.fn().mockReturnValueOnce(taskSelector2),
         nextTaskIndex: nextTaskIndex1,
       };
 
@@ -1055,9 +1259,9 @@ describe('SchedulerImplem', () => {
     it('should attach passed metadata into the report', async () => {
       // Arrange
       const expectedMetadata = Symbol('123');
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1074,9 +1278,9 @@ describe('SchedulerImplem', () => {
     it('should attach passed metadata into the report even if not executed', async () => {
       // Arrange
       const expectedMetadata = Symbol('123');
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1096,7 +1300,7 @@ describe('SchedulerImplem', () => {
           fc.array(
             fc.letrec((tie) => ({
               self: fc.record({
-                name: fc.hexaString({ minLength: 4, maxLength: 4 }).noBias(),
+                name: fc.noBias(fc.string({ minLength: 4, maxLength: 4 })),
                 children: fc.oneof(
                   fc.constant<ExecutionPlan[]>([]),
                   fc.array(tie('self') as fc.Arbitrary<ExecutionPlan>),
@@ -1108,9 +1312,9 @@ describe('SchedulerImplem', () => {
           fc.infiniteStream(fc.nat()),
           async (plan, seeds) => {
             // Arrange
-            const act = jest.fn().mockImplementation((f) => f());
+            const act = (f: () => Promise<void>) => f();
             const nextTaskIndex = buildSeededNextTaskIndex(seeds);
-            const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+            const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
             const computeTasksInPlan = (tasks: ExecutionPlan[]) => {
               let count = 0;
               for (const t of tasks) {
@@ -1142,10 +1346,10 @@ describe('SchedulerImplem', () => {
       // Arrange
       const firstCallInput = 1;
       const expectedThenValue = 123;
-      const thenFunction = jest.fn();
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const thenFunction = vi.fn();
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1168,14 +1372,14 @@ describe('SchedulerImplem', () => {
       const firstCallInput = 1;
       const secondCallInput = 10;
       const expectedThenValue = 123;
-      const thenFunction = jest.fn();
-      const then2Function = jest.fn();
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const thenFunction = vi.fn();
+      const then2Function = vi.fn();
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(1) // resolving then2Function first
         .mockReturnValueOnce(0); // resolving thenFunction second
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1196,15 +1400,15 @@ describe('SchedulerImplem', () => {
     it('should be able to waitAll for a scheduled function calling itself', async () => {
       // Arrange
       const firstCallInput = 10;
-      const thenFunction = jest.fn();
+      const thenFunction = vi.fn();
       const thenImplem = (remaining: number) => {
         thenFunction();
         if (remaining <= 0) return;
         scheduledFun(remaining - 1).then(thenImplem);
       };
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1224,13 +1428,13 @@ describe('SchedulerImplem', () => {
         [1, 4],
         [6, 0],
       ];
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(2) // task#3 resolved, state was: [0,1,2]
         .mockReturnValueOnce(0) // task#1 resolved, state was: [0,1]
         .mockReturnValueOnce(0); // task#2 resolved, state was: [1]
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1239,7 +1443,7 @@ describe('SchedulerImplem', () => {
         return a;
       });
       for (const ins of calls) {
-        scheduledFun(...ins);
+        scheduledFun(...ins).catch(() => {});
       }
 
       // Assert
@@ -1270,13 +1474,13 @@ describe('SchedulerImplem', () => {
 
     it('should show function name if any in toString', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi
         .fn()
         .mockReturnValueOnce(2) // task#3 resolved, state was: [0,1,2]
         .mockReturnValueOnce(0) // task#1 resolved, state was: [0,1]
         .mockReturnValueOnce(0); // task#2 resolved, state was: [1]
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1312,8 +1516,8 @@ describe('SchedulerImplem', () => {
   describe('scheduleSequence', () => {
     it('should accept empty sequences', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex: jest.fn() };
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1327,13 +1531,13 @@ describe('SchedulerImplem', () => {
 
     it('should consider a sequence as a serie of tasks and not parallel tasks', async () => {
       // Arrange
-      const p1Builder = jest.fn().mockResolvedValue(1);
-      const p2Builder = jest.fn().mockResolvedValue(2);
-      const p3Builder = jest.fn().mockResolvedValue(3);
-      const p4Builder = jest.fn().mockResolvedValue(4);
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const p1Builder = vi.fn().mockResolvedValue(1);
+      const p2Builder = vi.fn().mockResolvedValue(2);
+      const p3Builder = vi.fn().mockResolvedValue(3);
+      const p4Builder = vi.fn().mockResolvedValue(4);
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1352,13 +1556,13 @@ describe('SchedulerImplem', () => {
 
     it('should mark schedule as done at the end of the sequence but not faulty', async () => {
       // Arrange
-      const p1Builder = jest.fn().mockResolvedValue(1);
-      const p2Builder = jest.fn().mockResolvedValue(2);
-      const p3Builder = jest.fn().mockResolvedValue(3);
-      const p4Builder = jest.fn().mockResolvedValue(4);
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const p1Builder = vi.fn().mockResolvedValue(1);
+      const p2Builder = vi.fn().mockResolvedValue(2);
+      const p3Builder = vi.fn().mockResolvedValue(3);
+      const p4Builder = vi.fn().mockResolvedValue(4);
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1381,13 +1585,13 @@ describe('SchedulerImplem', () => {
 
     it('should mark faulty schedule as not done but as faulty', async () => {
       // Arrange
-      const p1Builder = jest.fn().mockResolvedValue(1);
-      const p2Builder = jest.fn().mockResolvedValue(2);
-      const p3Builder = jest.fn().mockRejectedValue(3);
-      const p4Builder = jest.fn().mockResolvedValue(4);
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const p1Builder = vi.fn().mockResolvedValue(1);
+      const p2Builder = vi.fn().mockResolvedValue(2);
+      const p3Builder = vi.fn().mockRejectedValue(3);
+      const p4Builder = vi.fn().mockResolvedValue(4);
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1409,13 +1613,13 @@ describe('SchedulerImplem', () => {
 
     it('should execute schedule up to the first faulty task', async () => {
       // Arrange
-      const p1Builder = jest.fn().mockResolvedValue(1);
-      const p2Builder = jest.fn().mockResolvedValue(2);
-      const p3Builder = jest.fn().mockRejectedValue(3);
-      const p4Builder = jest.fn().mockResolvedValue(4);
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const p1Builder = vi.fn().mockResolvedValue(1);
+      const p2Builder = vi.fn().mockResolvedValue(2);
+      const p3Builder = vi.fn().mockRejectedValue(3);
+      const p4Builder = vi.fn().mockResolvedValue(4);
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1436,13 +1640,13 @@ describe('SchedulerImplem', () => {
 
     it('should execute sequence in order', async () => {
       // Arrange
-      const p1Builder = jest.fn().mockResolvedValue(1);
-      const p2Builder = jest.fn().mockResolvedValue(2);
-      const p3Builder = jest.fn().mockResolvedValue(3);
-      const p4Builder = jest.fn().mockResolvedValue(4);
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const p1Builder = vi.fn().mockResolvedValue(1);
+      const p2Builder = vi.fn().mockResolvedValue(2);
+      const p3Builder = vi.fn().mockResolvedValue(3);
+      const p4Builder = vi.fn().mockResolvedValue(4);
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1485,10 +1689,10 @@ describe('SchedulerImplem', () => {
       // Arrange
       const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
       const p1BuilderSteps = { a: false, b: false, c: false, d: false };
-      const p2Builder = jest.fn().mockResolvedValue(2);
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const p2Builder = vi.fn().mockResolvedValue(2);
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1522,9 +1726,9 @@ describe('SchedulerImplem', () => {
 
     it('should show item name declared in sequence in toString', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1550,9 +1754,9 @@ describe('SchedulerImplem', () => {
 
     it('should issue a task that resolves when the sequence ends successfully', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       let taskResolvedValue: { done: boolean; faulty: boolean } | null = null;
@@ -1564,18 +1768,15 @@ describe('SchedulerImplem', () => {
       task.then((v) => (taskResolvedValue = v));
 
       // Assert
-      while (s.count() !== 0) {
-        expect(taskResolvedValue).toBe(null);
-        await s.waitOne();
-      }
+      await s.waitAll();
       expect(taskResolvedValue).toEqual({ done: true, faulty: false });
     });
 
     it('should issue a task that resolves when the sequence fails', async () => {
       // Arrange
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       let taskResolvedValue: { done: boolean; faulty: boolean } | null = null;
@@ -1588,10 +1789,7 @@ describe('SchedulerImplem', () => {
       task.then((v) => (taskResolvedValue = v));
 
       // Assert
-      while (s.count() !== 0) {
-        expect(taskResolvedValue).toBe(null);
-        await s.waitOne();
-      }
+      await s.waitAll();
       expect(taskResolvedValue).toEqual({ done: false, faulty: true });
     });
 
@@ -1599,9 +1797,9 @@ describe('SchedulerImplem', () => {
       // Arrange
       const expectedMetadataFirst = Symbol('123');
       const expectedMetadataSecond = Symbol('1234');
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1624,9 +1822,9 @@ describe('SchedulerImplem', () => {
       // Arrange
       const expectedMetadataFirst = Symbol('123');
       const expectedMetadataSecond = Symbol('1234');
-      const act = jest.fn().mockImplementation((f) => f());
-      const nextTaskIndex = jest.fn().mockReturnValue(0);
-      const taskSelector: TaskSelector<unknown> = { clone: jest.fn(), nextTaskIndex };
+      const act = (f: () => Promise<void>) => f();
+      const nextTaskIndex = vi.fn().mockReturnValue(0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
 
       // Act
       const s = new SchedulerImplem(act, taskSelector);
@@ -1641,13 +1839,56 @@ describe('SchedulerImplem', () => {
       expect(report[0].status).toBe('pending');
       expect(report[0].metadata).toBe(expectedMetadataFirst);
     });
+
+    it('should execute a whole scheduled sequence made of async long steps using a single waitAll', async () => {
+      // Arrange
+      const b1 = vi.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b2 = vi.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b3 = vi.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const b4 = vi.fn(async () => {
+        await 1;
+        await 2;
+        await 3;
+      });
+      const act = (f: () => Promise<void>) => f();
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem(act, taskSelector);
+      s.scheduleSequence([
+        { label: 'exec #1', builder: b1 },
+        { label: 'exec #2', builder: b2 },
+        { label: 'exec #3', builder: b3 },
+        { label: 'exec #4', builder: b4 },
+      ]);
+
+      // Assert
+      await s.waitAll();
+      expect(s.report()).toHaveLength(4);
+      expect(b1).toHaveBeenCalled();
+      expect(b2).toHaveBeenCalled();
+      expect(b3).toHaveBeenCalled();
+      expect(b4).toHaveBeenCalled();
+    });
   });
 });
 
 // Helpers
 
 function buildSeededNextTaskIndex(seeds: fc.Stream<number>, nextTaskIndexLengths: number[] = []) {
-  const nextTaskIndex = jest.fn().mockImplementation((scheduledTasks: ScheduledTask<unknown>[]) => {
+  const nextTaskIndex = vi.fn().mockImplementation((scheduledTasks: ScheduledTask<unknown>[]) => {
     const seed = seeds.next();
     if (seed.done) {
       throw new Error('Stream for seeds exhausted');

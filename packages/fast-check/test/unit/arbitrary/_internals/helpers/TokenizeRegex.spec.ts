@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { parse } from 'regexp-tree';
 import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex';
 
@@ -17,10 +18,13 @@ describe('tokenizeRegex', () => {
     { regex: /.{1,4}?/ },
     { regex: /a/ },
     { regex: /🐱/, invalidWithUnicode: true }, // handled separately
+    // @ts-expect-error Referencing non-existing group in Regex
     { regex: /\125/, invalidWithUnicode: true },
     { regex: /\x25/ },
     { regex: /\u0025/ },
+    // @ts-expect-error Missing unicode mode on Regex
     { regex: /\u{1f431}/ },
+    // @ts-expect-error Missing unicode mode on Regex
     { regex: /\u{1f43}/ },
     { regex: /\n/ },
     { regex: /\w/ },
@@ -29,6 +33,7 @@ describe('tokenizeRegex', () => {
     { regex: /[(]/ },
     { regex: /[.*]/ },
     { regex: /[.*[\\\](){}?]/ },
+    // @ts-expect-error Missing unicode mode on Regex
     { regex: /[\u{1f431}]/ },
     { regex: /[a-z]/ },
     { regex: /[A-Za-z0-9-]/ },
@@ -43,17 +48,21 @@ describe('tokenizeRegex', () => {
     { regex: /[^a-z]/ },
     { regex: /[abc^def]/ },
     { regex: /[a-z^A-Z]/ },
+    // @ts-expect-error Missing unicode mode on Regex
     { regex: /\u{1[81]}/, invalidWithUnicode: true },
     { regex: /[\u{1f431}-\u{1f434}]/u },
     { regex: /(foo)/ }, // capturing group
     { regex: /(foo) (bar) (baz)/ }, // multiple capturing groups
+    // @ts-expect-error ES2018+ Regex
     { regex: /(?<named>x)/ }, // named capturing group
+    // @ts-expect-error ES2018+ Regex
     { regex: /(foo) (?<named>x) (bar)/ }, // named capturing group with anonymous capturing groups
     { regex: /(?:x)/ }, // non-capturing group
     { regex: /(foo) (?:x) (bar)/ }, // non-capturing group with anonymous capturing groups
     { regex: /(\))/ },
     { regex: /([)])/ },
     { regex: /([)\]])/ },
+    // @ts-expect-error ES2018+ Regex
     { regex: /(function\s+)(?<name>[$_A-Z][$_A-Za-z0-9]*)/ },
     { regex: /a|b/ }, // 'or' with only two operands containing a single token each
     { regex: /a|b|c/ }, // 'or' with strictly more than two operands containing a single token each
@@ -71,9 +80,12 @@ describe('tokenizeRegex', () => {
     { regex: /a^$b/ },
     { regex: /a*^$b*/ }, // matches '', but not 'aa', seems equivalent to /^$/
     { regex: /\^ab\$/ },
+    // @ts-expect-error Referencing non-existing group in Regex
     { regex: /\1/, invalidWithUnicode: true },
+    // @ts-expect-error Referencing non-existing group in Regex
     { regex: /\1000/, invalidWithUnicode: true }, // in non-unicode: \100 then 0
     { regex: /(a)\1/ },
+    // @ts-expect-error Referencing non-existing group in Regex
     { regex: /(a)\2/, invalidWithUnicode: true }, // in non-unicode: \2 is considered as an octal
     { regex: /(?=a)/ },
     { regex: /(?!a)/ },
@@ -85,10 +97,15 @@ describe('tokenizeRegex', () => {
     { regex: /a(2|)b/ },
     { regex: /a(|2)b/ },
     { regex: /(a(b)c)/ },
+    // @ts-expect-error ES2018+ Regex
     { regex: /(?<la>a(?<lb>b)c)/ },
+    // @ts-expect-error ES2018+ Regex
     { regex: /(?<label>[A-Z][a-z]*) \k<label>/ },
+    // @ts-expect-error ES2018+ Regex
     { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/ },
+    // @ts-expect-error Missing unicode mode on Regex
     { regex: /\P{Emoji_Presentation}/, expectThrowUnicode: true }, // not supported for now
+    // @ts-expect-error Missing unicode mode on Regex
     { regex: /\P{Script_Extensions=Thaana}/, expectThrowUnicode: true }, // not supported for now
   ];
 

@@ -1,5 +1,6 @@
 import type { MessagePort } from 'node:worker_threads';
 import type { MainThreadToWorkerMessage, WorkerToMainThreadMessage } from '../SharedTypes.js';
+import { WorkerToPoolMessageStatus } from '../worker-pool/IWorkerPool.js';
 
 /**
  * Setup the fallback worker listening to all predicates and rejecting any that has never been registered
@@ -16,7 +17,7 @@ export function runNoWorker(parentPort: MessagePort, registeredPredicates: Set<n
       ...registeredPredicates,
     ].join(', ')}`;
     const sentMessage: WorkerToMainThreadMessage = {
-      success: false,
+      status: WorkerToPoolMessageStatus.Failure,
       error: new Error(errorMessage),
       runId,
     };

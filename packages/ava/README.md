@@ -74,7 +74,7 @@ testProp(
   { seed: 4242 },
 );
 
-testProp.skip('should be skipped', [fc.fullUnicodeString()], (t, text) => {
+testProp.skip('should be skipped', [fc.string()], (t, text) => {
   t.is([...text].length, text.length);
 });
 ```
@@ -131,4 +131,5 @@ testProp('should reach terminal state', [fc.string()], (t, received) => {
 
 | @fast-check/ava | AVA     | fast-check |
 | --------------- | ------- | ---------- |
+| ^2.0.0          | >=4.0.0 | ^3.0.0     |
 | ^1.0.0          | >=4.0.0 | ^3.0.0     |

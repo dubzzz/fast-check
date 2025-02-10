@@ -1,9 +1,10 @@
+import { describe, it, expect } from 'vitest';
 import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
 import * as fc from 'fast-check';
 
 describe('symbols', () => {
-  it('should declare distinct cloneMethod for distinct libraries', () => {
-    expect(cloneMethod).not.toBe(fc.cloneMethod);
+  it('should declare identical cloneMethod for distinct instances of fast-check', () => {
+    expect(cloneMethod).toBe(fc.cloneMethod);
   });
 });
 

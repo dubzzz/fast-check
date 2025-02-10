@@ -2,7 +2,6 @@
 // It seems that in some cases, Vitest allow imports of invalid packages, with that dedicated
 // test case, we make sure that the package is correct from a Node point of view.
 
-// eslint-disable-next-line no-undef
 globalThis.__vitest_worker__ = { config: { fakeTimers: undefined }, environment: { name: 'node' } };
 
 import('@fast-check/vitest').then(

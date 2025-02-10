@@ -1,8 +1,10 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 import { sample, statistics } from '../../../../src/check/runner/Sampler';
 
 import * as stubArb from '../../stubs/arbitraries';
+import { noShrink } from '../../../../src/arbitrary/noShrink';
 import { cloneMethod } from '../../../../src/check/symbols';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -55,12 +57,12 @@ describe('Sampler', () => {
         }),
       ));
     it('Should throw on wrong path (too deep)', () => {
-      const arb = stubArb.forward().noShrink();
+      const arb = noShrink(stubArb.forward());
       expect(() => sample(arb, { seed: 42, path: '0:0:0' })).toThrowError();
       // 0:1 should not throw but retrieve an empty set
     });
     it('Should throw on invalid path', () => {
-      const arb = stubArb.forward().noShrink();
+      const arb = noShrink(stubArb.forward());
       expect(() => sample(arb, { seed: 42, path: 'invalid' })).toThrowError();
     });
     it('Should not call clone on cloneable instances', () => {

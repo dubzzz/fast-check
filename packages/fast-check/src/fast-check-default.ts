@@ -26,20 +26,9 @@ import type { ArrayConstraints } from './arbitrary/array';
 import { array } from './arbitrary/array';
 import type { BigIntConstraints } from './arbitrary/bigInt';
 import { bigInt } from './arbitrary/bigInt';
-import { bigIntN } from './arbitrary/bigIntN';
-import type { BigUintConstraints } from './arbitrary/bigUint';
-import { bigUint } from './arbitrary/bigUint';
-import { bigUintN } from './arbitrary/bigUintN';
 import { boolean } from './arbitrary/boolean';
 import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
 import { falsy } from './arbitrary/falsy';
-import { ascii } from './arbitrary/ascii';
-import { base64 } from './arbitrary/base64';
-import { char } from './arbitrary/char';
-import { char16bits } from './arbitrary/char16bits';
-import { fullUnicode } from './arbitrary/fullUnicode';
-import { hexa } from './arbitrary/hexa';
-import { unicode } from './arbitrary/unicode';
 import { constant } from './arbitrary/constant';
 import { constantFrom } from './arbitrary/constantFrom';
 import type { ContextValue } from './arbitrary/context';
@@ -90,10 +79,8 @@ import { object } from './arbitrary/object';
 import type { JsonSharedConstraints } from './arbitrary/json';
 import { json } from './arbitrary/json';
 import { anything } from './arbitrary/anything';
-import { unicodeJsonValue } from './arbitrary/unicodeJsonValue';
 import type { JsonValue } from './arbitrary/jsonValue';
 import { jsonValue } from './arbitrary/jsonValue';
-import { unicodeJson } from './arbitrary/unicodeJson';
 import type { OneOfValue, OneOfConstraints, MaybeWeightedArbitrary, WeightedArbitrary } from './arbitrary/oneof';
 import { oneof } from './arbitrary/oneof';
 import type { OptionConstraints } from './arbitrary/option';
@@ -109,15 +96,9 @@ import type {
 } from './arbitrary/uniqueArray';
 import { uniqueArray } from './arbitrary/uniqueArray';
 import { infiniteStream } from './arbitrary/infiniteStream';
-import { asciiString } from './arbitrary/asciiString';
 import { base64String } from './arbitrary/base64String';
-import { fullUnicodeString } from './arbitrary/fullUnicodeString';
-import { hexaString } from './arbitrary/hexaString';
-import type { StringSharedConstraints } from './arbitrary/string';
+import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
 import { string } from './arbitrary/string';
-import { string16bits } from './arbitrary/string16bits';
-import { stringOf } from './arbitrary/stringOf';
-import { unicodeString } from './arbitrary/unicodeString';
 import type { SubarrayConstraints } from './arbitrary/subarray';
 import { subarray } from './arbitrary/subarray';
 import type { ShuffledSubarrayConstraints } from './arbitrary/shuffledSubarray';
@@ -125,7 +106,7 @@ import { shuffledSubarray } from './arbitrary/shuffledSubarray';
 import { tuple } from './arbitrary/tuple';
 import { ulid } from './arbitrary/ulid';
 import { uuid } from './arbitrary/uuid';
-import { uuidV } from './arbitrary/uuidV';
+import type { UuidConstraints } from './arbitrary/uuid';
 import type { WebAuthorityConstraints } from './arbitrary/webAuthority';
 import { webAuthority } from './arbitrary/webAuthority';
 import type { WebFragmentsConstraints } from './arbitrary/webFragments';
@@ -210,6 +191,9 @@ import { bigUint64Array } from './arbitrary/bigUint64Array';
 import type { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler';
 import type { StringMatchingConstraints } from './arbitrary/stringMatching';
 import { stringMatching } from './arbitrary/stringMatching';
+import { noShrink } from './arbitrary/noShrink';
+import { noBias } from './arbitrary/noBias';
+import { limitShrink } from './arbitrary/limitShrink';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -263,7 +247,6 @@ export type {
   ArrayConstraints,
   BigIntConstraints,
   BigIntArrayConstraints,
-  BigUintConstraints,
   CommandsContraints,
   DateConstraints,
   DictionaryConstraints,
@@ -290,8 +273,10 @@ export type {
   UniqueArrayConstraintsRecommended,
   UniqueArrayConstraintsCustomCompare,
   UniqueArrayConstraintsCustomCompareSelect,
+  UuidConstraints,
   SparseArrayConstraints,
   StringMatchingConstraints,
+  StringConstraints,
   StringSharedConstraints,
   SubarrayConstraints,
   ShuffledSubarrayConstraints,
@@ -353,27 +338,12 @@ export {
   nat,
   maxSafeInteger,
   maxSafeNat,
-  bigIntN,
-  bigUintN,
   bigInt,
-  bigUint,
-  char,
-  ascii,
-  char16bits,
-  unicode,
-  fullUnicode,
-  hexa,
-  base64,
   mixedCase,
   string,
-  asciiString,
-  string16bits,
-  stringOf,
-  unicodeString,
-  fullUnicodeString,
-  hexaString,
   base64String,
   stringMatching,
+  limitShrink,
   lorem,
   constant,
   constantFrom,
@@ -381,6 +351,8 @@ export {
   option,
   oneof,
   clone,
+  noBias,
+  noShrink,
   shuffledSubarray,
   subarray,
   array,
@@ -394,8 +366,6 @@ export {
   object,
   json,
   jsonValue,
-  unicodeJson,
-  unicodeJsonValue,
   letrec,
   memo,
   compareBooleanFunc,
@@ -417,7 +387,6 @@ export {
   emailAddress,
   ulid,
   uuid,
-  uuidV,
   int8Array,
   uint8Array,
   uint8ClampedArray,

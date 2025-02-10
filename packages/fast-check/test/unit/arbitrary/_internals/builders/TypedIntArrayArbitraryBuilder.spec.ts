@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { typedIntArrayArbitraryArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
 
@@ -10,15 +11,11 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from '../../__test-helpers__/ArbitraryAssertions';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from '../../__test-helpers__/SpyCleaner';
 
 describe('typedIntArrayArbitraryArbitraryBuilder', () => {
+  declareCleaningHooksForSpies();
+
   it('should default constraints for arbitraryBuilder to defaultMin/Max when not specified', () => {
     fc.assert(
       fc.property(
@@ -26,11 +23,11 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         validArrayConstraintsArb(),
         ({ defaultMin, defaultMax, TypedArrayClass }, arrayConstraints) => {
           // Arrange
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints };
-          const arbitraryBuilder = jest.fn();
+          const arbitraryBuilder = vi.fn();
           const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
@@ -57,14 +54,14 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         validIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {
           // Arrange
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints, ...integerConstraints };
           const defaultMin = -128;
           const defaultMax = 127;
           const TypedArrayClass = Int8Array;
-          const arbitraryBuilder = jest.fn();
+          const arbitraryBuilder = vi.fn();
           const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
@@ -95,14 +92,14 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
         invalidIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {
           // Arrange
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance } = fakeArbitraryStaticValue<unknown[]>(() => []);
           array.mockReturnValue(arrayInstance);
           const constraints = { ...arrayConstraints, ...integerConstraints };
           const defaultMin = -128;
           const defaultMax = 127;
           const TypedArrayClass = Int8Array;
-          const arbitraryBuilder = jest.fn();
+          const arbitraryBuilder = vi.fn();
           const { instance: arbitraryInstance } = fakeArbitrary<number>();
           arbitraryBuilder.mockReturnValue(arbitraryInstance);
 
@@ -196,7 +193,7 @@ function defaultsMinMaxTypedInt8Arb() {
 }
 
 function validArrayConstraintsArb() {
-  return fc.record({ minLength: fc.nat(), maxLength: fc.nat() }, { withDeletedKeys: true }).map((ct) => {
+  return fc.record({ minLength: fc.nat(), maxLength: fc.nat() }, { requiredKeys: [] }).map((ct) => {
     if (ct.minLength !== undefined && ct.maxLength !== undefined && ct.minLength > ct.maxLength) {
       return { minLength: ct.maxLength, maxLength: ct.minLength };
     }
@@ -205,14 +202,12 @@ function validArrayConstraintsArb() {
 }
 
 function validIntegerConstraintsArb(min: number, max: number) {
-  return fc
-    .record({ min: fc.integer({ min, max }), max: fc.integer({ min, max }) }, { withDeletedKeys: true })
-    .map((ct) => {
-      if (ct.min !== undefined && ct.max !== undefined && ct.min > ct.max) {
-        return { min: ct.max, max: ct.min };
-      }
-      return ct;
-    });
+  return fc.record({ min: fc.integer({ min, max }), max: fc.integer({ min, max }) }, { requiredKeys: [] }).map((ct) => {
+    if (ct.min !== undefined && ct.max !== undefined && ct.min > ct.max) {
+      return { min: ct.max, max: ct.min };
+    }
+    return ct;
+  });
 }
 
 function invalidIntegerConstraintsArb(min: number, max: number) {

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import type { DomainConstraints } from '../../../src/arbitrary/domain';
 import { domain } from '../../../src/arbitrary/domain';
@@ -12,15 +13,11 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('domain (integration)', () => {
+  declareCleaningHooksForSpies();
+
   const isValidDomain = (t: string) => {
     // According to https://www.ietf.org/rfc/rfc1034.txt
     // <domain> ::= <subdomain> | " "

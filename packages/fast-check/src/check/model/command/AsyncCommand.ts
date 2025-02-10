@@ -7,6 +7,6 @@ import type { ICommand } from './ICommand';
  * @remarks Since 1.5.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AsyncCommand<Model extends object, Real, CheckAsync extends boolean = false>
   extends ICommand<Model, Real, Promise<void>, CheckAsync> {}

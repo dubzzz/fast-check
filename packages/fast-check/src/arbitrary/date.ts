@@ -30,7 +30,7 @@ export interface DateConstraints {
   max?: Date;
   /**
    * When set to true, no more "Invalid Date" can be generated.
-   * @defaultValue true
+   * @defaultValue false
    * @remarks Since 3.13.0
    */
   noInvalidDate?: boolean;
@@ -48,7 +48,7 @@ export function date(constraints: DateConstraints = {}): Arbitrary<Date> {
   // Date min and max in ECMAScript specification : https://stackoverflow.com/a/11526569/3707828
   const intMin = constraints.min !== undefined ? safeGetTime(constraints.min) : -8640000000000000;
   const intMax = constraints.max !== undefined ? safeGetTime(constraints.max) : 8640000000000000;
-  const noInvalidDate = constraints.noInvalidDate === undefined || constraints.noInvalidDate;
+  const noInvalidDate = constraints.noInvalidDate;
   if (safeNumberIsNaN(intMin)) throw new Error('fc.date min must be valid instance of Date');
   if (safeNumberIsNaN(intMax)) throw new Error('fc.date max must be valid instance of Date');
   if (intMin > intMax) throw new Error('fc.date max must be greater or equal to min');

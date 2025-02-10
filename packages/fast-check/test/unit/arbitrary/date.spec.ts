@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { date } from '../../../src/arbitrary/date';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -10,22 +11,18 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('date', () => {
+  declareCleaningHooksForSpies();
+
   it('should map on the output of an integer and specify mapper and unmapper', () =>
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
@@ -46,7 +43,7 @@ describe('date', () => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
@@ -74,10 +71,10 @@ describe('date', () => {
     fc.assert(
       fc.property(constraintsArb(), (constraints) => {
         // Arrange
-        const withInvalidDates = constraints.noInvalidDate === false;
+        const withInvalidDates = !constraints.noInvalidDate;
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
@@ -107,7 +104,7 @@ describe('date', () => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
-        const integer = jest.spyOn(IntegerMock, 'integer');
+        const integer = vi.spyOn(IntegerMock, 'integer');
         integer.mockReturnValue(instance);
         map.mockReturnValue(mappedInstance);
 
@@ -118,7 +115,7 @@ describe('date', () => {
         const d = mapper(rangeMin! + (mod % (rangeMax! - rangeMin! + 1))) as Date;
 
         // Assert
-        if (constraints.noInvalidDate !== false || !Number.isNaN(d.getTime())) {
+        if (constraints.noInvalidDate || !Number.isNaN(d.getTime())) {
           expect(d.getTime()).not.toBe(Number.NaN);
           if (constraints.min) expect(d.getTime()).toBeGreaterThanOrEqual(constraints.min.getTime());
           if (constraints.max) expect(d.getTime()).toBeLessThanOrEqual(constraints.max.getTime());
@@ -156,7 +153,7 @@ describe('date (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = constraintsArb();
 
   const isCorrect = (d: Date, extra: Extra) => {
-    if (extra.noInvalidDate || extra.noInvalidDate === undefined) {
+    if (extra.noInvalidDate) {
       expect(d.getTime()).not.toBe(Number.NaN);
     } else if (Number.isNaN(d.getTime())) {
       return;
@@ -206,7 +203,13 @@ describe('date (integration)', () => {
 
 function constraintsArb() {
   return fc
-    .tuple(fc.date(), fc.date(), fc.boolean(), fc.boolean(), fc.option(fc.boolean(), { nil: undefined }))
+    .tuple(
+      fc.date({ noInvalidDate: true }),
+      fc.date({ noInvalidDate: true }),
+      fc.boolean(),
+      fc.boolean(),
+      fc.option(fc.boolean(), { nil: undefined }),
+    )
     .map(([d1, d2, withMin, withMax, noInvalidDate]) => {
       const min = d1 < d2 ? d1 : d2;
       const max = d1 < d2 ? d2 : d1;
@@ -216,7 +219,11 @@ function constraintsArb() {
 
 function invalidRangeConstraintsArb() {
   return fc
-    .tuple(fc.date(), fc.date(), fc.option(fc.boolean(), { nil: undefined }))
+    .tuple(
+      fc.date({ noInvalidDate: true }),
+      fc.date({ noInvalidDate: true }),
+      fc.option(fc.boolean(), { nil: undefined }),
+    )
     .filter(([d1, d2]) => +d1 !== +d2)
     .map(([d1, d2, noInvalidDate]) => {
       const min = d1 < d2 ? d1 : d2;

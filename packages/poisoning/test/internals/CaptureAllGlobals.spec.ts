@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { captureAllGlobals } from '../../src/internals/CaptureAllGlobals.js';
 import type { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
 import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
@@ -133,7 +134,12 @@ describe('captureAllGlobals', () => {
       const globals = captureAllGlobals();
 
       // Assert
-      expect(globals.get(globalValue)?.rootAncestors).toEqual(expectedRoots);
+      const rootAncestorsWithoutVitest = new Set(
+        // We are ignoring any root ancestor related to Vitest as they are likely to evolve over time.
+        // As such we stick to non test framework related ones.
+        [...(globals.get(globalValue)?.rootAncestors ?? new Set())].filter((name) => !/__vitest_\w+__/.test(name)),
+      );
+      expect(rootAncestorsWithoutVitest).toEqual(expectedRoots);
     },
   );
 

@@ -1,3 +1,7 @@
+/**
+ * @vitest-environment happy-dom
+ */
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import React from 'react';
 import TodoList from './src/TodoList';
@@ -16,10 +20,9 @@ describe('TodoList', () => {
         .asyncProperty(
           fc.scheduler(),
           TodoListCommands,
-          fc.uniqueArray(
-            fc.record({ id: fc.hexaString({ minLength: 8, maxLength: 8 }), label: fc.string(), checked: fc.boolean() }),
-            { selector: (entry) => entry.id },
-          ),
+          fc.uniqueArray(fc.record({ id: fc.uuid(), label: fc.string(), checked: fc.boolean() }), {
+            selector: (entry) => entry.id,
+          }),
           fc.infiniteStream(fc.boolean()),
           async (s, commands, initialTodos, allFailures) => {
             const { mockedApi, expectedTodos } = mockApi(s, initialTodos, allFailures);

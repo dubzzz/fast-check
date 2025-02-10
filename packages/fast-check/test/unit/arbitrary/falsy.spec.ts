@@ -1,22 +1,18 @@
-import * as fc from 'fast-check';
+import { describe, it, expect, vi } from 'vitest';
 import { falsy } from '../../../src/arbitrary/falsy';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import * as ConstantFromMock from '../../../src/arbitrary/constantFrom';
 
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('falsy', () => {
+  declareCleaningHooksForSpies();
+
   it('should re-use constantFrom to build the falsy', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
+    const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
     // Act
@@ -30,7 +26,7 @@ describe('falsy', () => {
   it('should only produce falsy values', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
+    const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
     // Act
@@ -48,7 +44,7 @@ describe('falsy', () => {
   it('should only produce falsy values even with withBigInt', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constantFrom = jest.spyOn(ConstantFromMock, 'constantFrom');
+    const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
     constantFrom.mockImplementation(() => instance);
 
     // Act

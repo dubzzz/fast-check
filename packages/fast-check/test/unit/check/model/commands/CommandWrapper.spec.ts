@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
 import type { Command } from '../../../../../src/check/model/command/Command';
 import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
@@ -89,12 +90,12 @@ describe('CommandWrapper', () => {
   });
   it('Should clone cloneable commands on clone', async () => {
     const cloneMethodOut = {};
-    const cloneMethodMock = jest.fn();
+    const cloneMethodMock = vi.fn();
     cloneMethodMock.mockReturnValueOnce(cloneMethodOut);
     const cmd = new (class implements Command<Model, Real> {
-      check = jest.fn();
-      run = jest.fn();
-      toString = jest.fn();
+      check = vi.fn();
+      run = vi.fn();
+      toString = vi.fn();
       [cloneMethod] = cloneMethodMock;
     })();
 
@@ -106,9 +107,9 @@ describe('CommandWrapper', () => {
   });
   it('Should keep same ref for non cloneable commands on clone', async () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = jest.fn();
-      run = jest.fn();
-      toString = jest.fn();
+      check = vi.fn();
+      run = vi.fn();
+      toString = vi.fn();
     })();
 
     const wrapper = new CommandWrapper(cmd);
@@ -119,9 +120,9 @@ describe('CommandWrapper', () => {
   });
   it('Should not define [toStringMethod] if underlying command does not', async () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = jest.fn();
-      run = jest.fn();
-      toString = jest.fn();
+      check = vi.fn();
+      run = vi.fn();
+      toString = vi.fn();
     })();
 
     const wrapper = new CommandWrapper(cmd);
@@ -129,9 +130,9 @@ describe('CommandWrapper', () => {
   });
   it('Should define [toStringMethod] if underlying command does', async () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = jest.fn();
-      run = jest.fn();
-      toString = jest.fn();
+      check = vi.fn();
+      run = vi.fn();
+      toString = vi.fn();
       [toStringMethod] = () => 'hello';
     })();
 
@@ -142,9 +143,9 @@ describe('CommandWrapper', () => {
   });
   it('Should not define [asyncToStringMethod] if underlying command does not', async () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = jest.fn();
-      run = jest.fn();
-      toString = jest.fn();
+      check = vi.fn();
+      run = vi.fn();
+      toString = vi.fn();
     })();
 
     const wrapper = new CommandWrapper(cmd);
@@ -152,9 +153,9 @@ describe('CommandWrapper', () => {
   });
   it('Should define [asyncToStringMethod] if underlying command does', async () => {
     const cmd = new (class implements Command<Model, Real> {
-      check = jest.fn();
-      run = jest.fn();
-      toString = jest.fn();
+      check = vi.fn();
+      run = vi.fn();
+      toString = vi.fn();
       [asyncToStringMethod] = async () => 'world';
     })();
 

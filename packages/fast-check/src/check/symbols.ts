@@ -11,7 +11,7 @@
  * @remarks Since 1.8.0
  * @public
  */
-export const cloneMethod = Symbol('fast-check/cloneMethod');
+export const cloneMethod: unique symbol = Symbol.for('fast-check/cloneMethod');
 
 /**
  * Object instance that should be cloned from one generation/shrink to another

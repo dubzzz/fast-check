@@ -1,3 +1,47 @@
+# 0.4.2
+
+_Typos in the changelog_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.4.2)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.1...packaged%2Fv0.4.2)]
+
+## Fixes
+
+- ([PR#5401](https://github.com/dubzzz/fast-check/pull/5401)) Doc: Fix typos in CHANGELOG.md
+
+# 0.4.1
+
+_Rework our testing stack_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.0...packaged%2Fv0.4.1)]
+
+## Fixes
+
+- ([PR#5348](https://github.com/dubzzz/fast-check/pull/5348)) CI: Move to Vitest
+
+# 0.4.0
+
+_Better error handling in script_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.3.0...packaged%2Fv0.4.0)]
+
+## Features
+
+- ([PR#4934](https://github.com/dubzzz/fast-check/pull/4934)) Better handle errors in script
+
+---
+
+# 0.3.0
+
+_Declare root of the package as ESM_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.2.0...packaged%2Fv0.3.0)]
+
+## Breaking changes
+
+- ([PR#4588](https://github.com/dubzzz/fast-check/pull/4588)) CI: Move build chain to ESM
+
+## Fixes
+
+- ([PR#4599](https://github.com/dubzzz/fast-check/pull/4599)) CI: Migrate jest to esm
+
+---
+
 # 0.2.0
 
 _Faster execution with bulk removals_

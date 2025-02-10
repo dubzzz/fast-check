@@ -1,16 +1,17 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
 
-describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHook) => {
+describe('TimeoutProperty', () => {
   beforeEach(() => {
-    jest.clearAllTimers();
+    vi.clearAllTimers();
   });
 
   it('should forward calls to generate', () => {
     // Arrange
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const { instance: decoratedProperty, generate } = fakeProperty(true);
     const { instance: mrng } = fakeRandom();
     const expectedRunId = 42;
@@ -29,34 +30,28 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
 
   it('should forward inputs to run', async () => {
     // Arrange
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const { instance: decoratedProperty, run, runBeforeEach, runAfterEach } = fakeProperty(true);
     const expectedRunInput = { anything: Symbol('something') };
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
-    if (dontRunHook) {
-      await timeoutProp.runBeforeEach!();
-      const runPromise = timeoutProp.run(expectedRunInput, true);
-      jest.advanceTimersByTime(10);
-      await runPromise;
-      await timeoutProp.runAfterEach!();
-    } else {
-      const runPromise = timeoutProp.run(expectedRunInput, false);
-      jest.advanceTimersByTime(10);
-      await runPromise;
-    }
+    await timeoutProp.runBeforeEach();
+    const runPromise = timeoutProp.run(expectedRunInput);
+    vi.advanceTimersByTime(10);
+    await runPromise;
+    await timeoutProp.runAfterEach();
 
     // Assert
     expect(run).toHaveBeenCalledTimes(1);
-    expect(run).toHaveBeenCalledWith(expectedRunInput, dontRunHook);
+    expect(run).toHaveBeenCalledWith(expectedRunInput);
     expect(runBeforeEach).toHaveBeenCalledTimes(1);
     expect(runAfterEach).toHaveBeenCalledTimes(1);
   });
 
   it('should not timeout if it succeeds in time', async () => {
     // Arrange
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
@@ -66,67 +61,58 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
-    let runPromise: ReturnType<typeof timeoutProp.run>;
-    if (dontRunHook) {
-      await timeoutProp.runBeforeEach!();
-      runPromise = timeoutProp.run({}, true);
-      jest.advanceTimersByTime(10);
-      await runPromise;
-      await timeoutProp.runAfterEach!();
-    } else {
-      runPromise = timeoutProp.run({}, false);
-      jest.advanceTimersByTime(10);
-      await runPromise;
-    }
+    await timeoutProp.runBeforeEach();
+    const runPromise = timeoutProp.run({});
+    vi.advanceTimersByTime(10);
+    await runPromise;
+    await timeoutProp.runAfterEach();
 
     // Assert
     expect(await runPromise).toBe(null);
   });
 
-  if (dontRunHook) {
-    it('should not timeout if it succeeds in time while timeout in beforeEach', async () => {
-      // Arrange
-      jest.useFakeTimers();
-      const { instance: decoratedProperty, runBeforeEach } = fakeProperty(true);
-      runBeforeEach.mockReturnValueOnce(
-        new Promise(function (resolve) {
-          setTimeout(() => resolve(), 100);
-        }),
-      );
+  it('should not timeout if it succeeds in time while timeout in beforeEach', async () => {
+    // Arrange
+    vi.useFakeTimers();
+    const { instance: decoratedProperty, runBeforeEach } = fakeProperty(true);
+    runBeforeEach.mockReturnValueOnce(
+      new Promise(function (resolve) {
+        setTimeout(() => resolve(), 100);
+      }),
+    );
 
-      // Act / After
-      const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
-      const beforeEachPromise = timeoutProp.runBeforeEach!();
-      jest.advanceTimersByTime(100);
-      await beforeEachPromise;
-      await timeoutProp.run({}, true);
-      await timeoutProp.runAfterEach!();
-    });
+    // Act / After
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
+    const beforeEachPromise = timeoutProp.runBeforeEach();
+    vi.advanceTimersByTime(100);
+    await beforeEachPromise;
+    await timeoutProp.run({});
+    await timeoutProp.runAfterEach();
+  });
 
-    it('should not timeout if it succeeds in time while timeout in afterEach', async () => {
-      // Arrange
-      jest.useFakeTimers();
-      const { instance: decoratedProperty, runAfterEach } = fakeProperty(true);
-      runAfterEach.mockReturnValueOnce(
-        new Promise(function (resolve) {
-          setTimeout(() => resolve(), 100);
-        }),
-      );
+  it('should not timeout if it succeeds in time while timeout in afterEach', async () => {
+    // Arrange
+    vi.useFakeTimers();
+    const { instance: decoratedProperty, runAfterEach } = fakeProperty(true);
+    runAfterEach.mockReturnValueOnce(
+      new Promise(function (resolve) {
+        setTimeout(() => resolve(), 100);
+      }),
+    );
 
-      // Act / Assert
-      const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
-      await timeoutProp.runBeforeEach!();
-      await timeoutProp.run({}, true);
-      const afterEachPromise = timeoutProp.runAfterEach!();
-      jest.advanceTimersByTime(100);
-      await afterEachPromise;
-    });
-  }
+    // Act / Assert
+    const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
+    await timeoutProp.runBeforeEach();
+    await timeoutProp.run({});
+    const afterEachPromise = timeoutProp.runAfterEach();
+    vi.advanceTimersByTime(100);
+    await afterEachPromise;
+  });
 
   it('should not timeout if it fails in time', async () => {
     // Arrange
-    const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
-    jest.useFakeTimers();
+    const errorFromUnderlying = { error: new Error('plop') };
+    vi.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
@@ -137,18 +123,11 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
-    let runPromise: ReturnType<typeof timeoutProp.run>;
-    if (dontRunHook) {
-      await timeoutProp.runBeforeEach!();
-      runPromise = timeoutProp.run({}, true);
-      jest.advanceTimersByTime(10);
-      await runPromise;
-      await timeoutProp.runAfterEach!();
-    } else {
-      runPromise = timeoutProp.run({}, false);
-      jest.advanceTimersByTime(10);
-      await runPromise;
-    }
+    await timeoutProp.runBeforeEach();
+    const runPromise = timeoutProp.run({});
+    vi.advanceTimersByTime(10);
+    await runPromise;
+    await timeoutProp.runAfterEach();
 
     // Assert
     expect(await runPromise).toBe(errorFromUnderlying);
@@ -156,21 +135,17 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
 
   it('should clear all started timeouts on success', async () => {
     // Arrange
-    jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
-    jest.spyOn(global, 'clearTimeout');
+    vi.useFakeTimers();
+    vi.spyOn(global, 'setTimeout');
+    vi.spyOn(global, 'clearTimeout');
     const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockResolvedValueOnce(null);
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
-    if (dontRunHook) {
-      await timeoutProp.runBeforeEach!();
-      await timeoutProp.run({}, true);
-      await timeoutProp.runAfterEach!();
-    } else {
-      await timeoutProp.run({}, false);
-    }
+    await timeoutProp.runBeforeEach();
+    await timeoutProp.run({});
+    await timeoutProp.runAfterEach();
 
     // Assert
     expect(setTimeout).toBeCalledTimes(1);
@@ -179,22 +154,18 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
 
   it('should clear all started timeouts on failure', async () => {
     // Arrange
-    const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
-    jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
-    jest.spyOn(global, 'clearTimeout');
+    const errorFromUnderlying = { error: new Error('plop') };
+    vi.useFakeTimers();
+    vi.spyOn(global, 'setTimeout');
+    vi.spyOn(global, 'clearTimeout');
     const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockResolvedValueOnce(errorFromUnderlying);
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 100, setTimeout, clearTimeout);
-    if (dontRunHook) {
-      await timeoutProp.runBeforeEach!();
-      await timeoutProp.run({}, true);
-      await timeoutProp.runAfterEach!();
-    } else {
-      await timeoutProp.run({}, false);
-    }
+    await timeoutProp.runBeforeEach();
+    await timeoutProp.run({});
+    await timeoutProp.runAfterEach();
 
     // Assert
     expect(setTimeout).toBeCalledTimes(1);
@@ -203,7 +174,7 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
 
   it('should timeout if it takes to long', async () => {
     // Arrange
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
@@ -213,45 +184,29 @@ describe.each([[true], [false]])('TimeoutProperty (dontRunHook: %p)', (dontRunHo
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
-    let runPromise: ReturnType<typeof timeoutProp.run>;
-    if (dontRunHook) {
-      await timeoutProp.runBeforeEach!();
-      runPromise = timeoutProp.run({}, true);
-    } else {
-      runPromise = timeoutProp.run({}, false);
-    }
-    jest.advanceTimersByTime(10);
+    await timeoutProp.runBeforeEach();
+    const runPromise = timeoutProp.run({});
+    vi.advanceTimersByTime(10);
 
     // Assert
-    expect(await runPromise).toEqual({
-      error: expect.any(Error),
-      errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
-    });
-    await timeoutProp.runAfterEach!();
+    expect(await runPromise).toEqual({ error: new Error(`Property timeout: exceeded limit of 10 milliseconds`) });
+    await timeoutProp.runAfterEach();
   });
 
   it('Should timeout if it never ends', async () => {
     // Arrange
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const { instance: decoratedProperty, run } = fakeProperty(true);
     run.mockReturnValueOnce(new Promise(() => {}));
 
     // Act
     const timeoutProp = new TimeoutProperty(decoratedProperty, 10, setTimeout, clearTimeout);
-    let runPromise: ReturnType<typeof timeoutProp.run>;
-    if (dontRunHook) {
-      await timeoutProp.runBeforeEach!();
-      runPromise = timeoutProp.run({}, true);
-    } else {
-      runPromise = timeoutProp.run({}, false);
-    }
-    jest.advanceTimersByTime(10);
+    await timeoutProp.runBeforeEach();
+    const runPromise = timeoutProp.run({});
+    vi.advanceTimersByTime(10);
 
     // Assert
-    expect(await runPromise).toEqual({
-      error: expect.any(Error),
-      errorMessage: `Property timeout: exceeded limit of 10 milliseconds`,
-    });
-    await timeoutProp.runAfterEach!();
+    expect(await runPromise).toEqual({ error: new Error(`Property timeout: exceeded limit of 10 milliseconds`) });
+    await timeoutProp.runAfterEach();
   });
 });

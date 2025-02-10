@@ -1,3 +1,4 @@
+import { describe, it, expect, afterAll } from 'vitest';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as url from 'url';
@@ -5,6 +6,11 @@ import { removeNonPublishedFiles } from '../src/packaged';
 
 // @ts-expect-error --module must be higher
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const testDirname = path.join(__dirname, '..', '.test-artifacts');
+
+afterAll(async () => {
+  await fs.rmdir(testDirname);
+});
 
 describe('removeNonPublishedFiles', () => {
   it.each`
@@ -262,7 +268,7 @@ type RunnerFileSystem = {
 async function runPackageTest(runner: (fileSystem: RunnerFileSystem) => Promise<void>): Promise<void> {
   const initialWorkingDirectory = process.cwd();
   const packageName = `random-package-${Date.now().toString(16)}-${Math.random().toString(16).substring(2)}`;
-  const packagePath = path.join(__dirname, packageName);
+  const packagePath = path.join(testDirname, packageName);
   try {
     const fileSystem: RunnerFileSystem = {
       packagePath,

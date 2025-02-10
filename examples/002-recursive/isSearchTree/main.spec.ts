@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest';
 import fc from 'fast-check';
 import _ from 'lodash';
 import { binarySearchTreeWithMaxDepth } from './arbitraries/BinarySearchTreeArbitrary';

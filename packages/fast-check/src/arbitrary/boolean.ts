@@ -1,5 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { integer } from './integer';
+import { noBias } from './noBias';
 
 /** @internal */
 function booleanMapper(v: number): boolean {
@@ -18,7 +19,7 @@ function booleanUnmapper(v: unknown): number {
  * @public
  */
 function boolean(): Arbitrary<boolean> {
-  return integer({ min: 0, max: 1 }).map(booleanMapper, booleanUnmapper).noBias();
+  return noBias(integer({ min: 0, max: 1 }).map(booleanMapper, booleanUnmapper));
 }
 
 export { boolean };

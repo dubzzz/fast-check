@@ -25,9 +25,9 @@ jobs:
     name: 'Warm up Yarn cache'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         id: yarn-cache
         with:
           node-version: '20.x'
@@ -46,9 +46,9 @@ jobs:
       matrix:
         os: ['macos-latest', 'windows-latest']
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         id: yarn-cache
         with:
           node-version: '20.x'
@@ -68,11 +68,11 @@ jobs:
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -80,32 +80,14 @@ jobs:
           check-latest: true
       - name: Ensure no dedupe required
         run: yarn dedupe --check
-  all_version_bump_declared:
-    name: 'All version bump declared'
-    needs: warmup_yarn_cache
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'renovate[bot]'
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-        with:
-          fetch-depth: 0
-      - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
-        with:
-          node-version: '20.x'
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
-          check-latest: true
-      - name: Ensure versions have been properly bumped
-        run: yarn version check
   package_quality:
     name: 'Package quality'
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -120,9 +102,9 @@ jobs:
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -139,9 +121,9 @@ jobs:
     needs: warmup_yarn_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -157,7 +139,7 @@ jobs:
       - name: Create bundles
         run: yarn pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -172,9 +154,9 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -186,7 +168,7 @@ jobs:
           YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
@@ -194,6 +176,36 @@ jobs:
         run: yarn unpack:all
       - name: Typecheck
         run: yarn workspaces foreach --all -pvi run typecheck
+  preview:
+    name: 'Preview'
+    needs:
+      - warmup_yarn_cache
+      - production_packages
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Using Node v20.x
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+          check-latest: true
+      - name: Install dependencies
+        env:
+          YARN_ENABLE_OFFLINE_MODE: 1
+          YARN_ENABLE_HARDENED_MODE: 0
+        run: yarn install --immutable --immutable-cache --mode=skip-build
+      - name: Download production packages
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: yarn unpack:all
+      - name: Preview
+        run: yarn dlx pkg-pr-new publish --compact './packages/*' --template './examples'
   test:
     name: 'Test'
     needs:
@@ -212,7 +224,7 @@ jobs:
           - '@fast-check/vitest'
           - '@fast-check/worker'
         script-name: ['test']
-        node-version: [18.x, 20.x, latest]
+        node-version: [18.x, 20.x, 22.x, latest]
         os: ['ubuntu-latest']
         include:
           # More platforms and scripts...
@@ -246,14 +258,9 @@ jobs:
             node-version: 20.x
             os: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Cache for Jest
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-        with:
-          path: /tmp/jest_rt
-          key: '${{matrix.package-name}}-${{matrix.script-name}}-${{runner.os}}-${{matrix.node-version}}-jest-test'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: ${{matrix.node-version}}
           cache: 'yarn'
@@ -265,7 +272,7 @@ jobs:
           YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
@@ -288,12 +295,13 @@ jobs:
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           yarn workspace '${{matrix.package-name}}' '${{matrix.script-name}}'
       - name: Codecov
-        uses: codecov/codecov-action@4fe8c5f003fae66aa5ebb77cfd3e7bfbbda0b6b0 # v3.1.5
+        uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5.3.1
         if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
           flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
-          fail_ci_if_error: false # default: false
+          token: ${{secrets.CODECOV_TOKEN}}
+          fail_ci_if_error: true # default: false
           verbose: false # default: false
   documentation:
     name: 'Build documentation'
@@ -302,11 +310,12 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          fetch-depth: 0 # all history in order to be able to show last-edited-at dates
           lfs: true
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -318,12 +327,22 @@ jobs:
           YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Unpack production packages
         run: yarn unpack:all
+      - name: Get Date cache buster
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Cache for Optimized assets
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: website/static/img/_
+          key: optimized-assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc')}}-${{hashFiles('website/prebuild/optimize-images.mjs')}}
       - name: Generate documentation
         run: yarn workspace website build
       - name: Generate API reference
@@ -336,10 +355,13 @@ jobs:
           yarn workspace fast-check docs-ci
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
-      - name: Upload documentation
-        uses: actions/upload-pages-artifact@0252fc4ba7626f0298f0cf00902a25c6afc77fa8 # v3.0.0
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
+          name: website
           path: website/build/
+          if-no-files-found: error
+          retention-days: 1
   test_bundle:
     name: 'Test bundle'
     needs:
@@ -347,9 +369,9 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -361,7 +383,7 @@ jobs:
           YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
@@ -410,18 +432,15 @@ jobs:
       matrix:
         ts-version:
           # Latest version of TypeScript
-          - '*'
-          # Various intermediate versions of Typescript
-          - '4.4'
+          - 'latest'
+          # Various intermediate versions of Typescript (if any required)
           # Minimal requirement for TypeScript
-          - '4.1'
+          - '5.0'
           # Other release channels for TypeScript
-          - 'rc'
-          - 'next'
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           cache: 'yarn'
@@ -433,7 +452,7 @@ jobs:
           YARN_ENABLE_HARDENED_MODE: 0
         run: yarn install --immutable --immutable-cache --mode=skip-build
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
@@ -443,23 +462,35 @@ jobs:
         run: yarn workspaces foreach --recursive -pvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Retrieve dropped test-types
         run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
+      - name: Check (legacy TS)
+        if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
+        run: yarn workspaces foreach --all --exclude '{@fast-check/ava,@fast-check/packaged,@fast-check/vitest}' -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 *.ts"
+      - name: Check with ESNext (legacy TS)
+        if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
+        run: yarn workspaces foreach --all --exclude '{@fast-check/ava,@fast-check/packaged,@fast-check/vitest}' -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 --module ESNext --moduleResolution Node *.ts"
       - name: Switch folder to CommonJS
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.cts"
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict *.mts"
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.mts"
       - name: Check in ES Modules mode with NodeNext
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
+        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
-        if: matrix.ts-version != '4.1'
+        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: |
           yarn workspaces foreach --all -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
-          yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+          yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Job to confirm every required job passed
   pre_all_checks_passed:
@@ -492,20 +523,51 @@ jobs:
         run: exit 1
 
   # Publication jobs
-  publish_documentation:
-    name: 'Publish documentation'
+  publish_documentation_netlify:
+    name: 'Publish documentation on Netlify'
     needs: documentation
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
+      pull-requests: write
+    env:
+      DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@87c3283f01cd6fe19a0ab93a23b2f6fcba5a8e42 # v4.0.3
+      - name: Download documentation artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: website
+          path: artifacts/
+      - name: Alter robots.txt for draft build
+        if: env.DRAFT_BUILD == 'true'
+        run: |
+          echo "User-agent: *" > artifacts/robots.txt
+          echo "Disallow: /" >> artifacts/robots.txt
+      - name: Configure custom headers
+        run: |
+          echo "/*" > artifacts/_headers
+          echo "  Content-Security-Policy: default-src 'none'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com api.securityscorecards.dev bestpractices.coreinfrastructure.org www.bestpractices.dev cdn.bsky.app;connect-src *.algolia.net *.algolianet.com public.api.bsky.app api.counterapi.dev;script-src 'self' 'unsafe-inline' 'unsafe-eval';frame-src *.codesandbox.io www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
+          echo "/api-reference/*" >> artifacts/_headers
+          echo "  Content-Security-Policy: default-src 'none'; img-src 'self' data:; connect-src data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" >> artifacts/_headers
+      - name: Compress documentation artifacts as zip
+        run: zip -r artifacts.zip artifacts
+      - name: Deploy to Netlify
+        id: deployment_to_netlify
+        run: |
+          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}} > deploy.json
+          cat deploy.json
+          deploy_url=$(jq -r '.deploy_url' --exit-status deploy.json)
+          echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        name: Notify the user of the preview
+        if: env.DRAFT_BUILD == 'true'
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 A preview of the new documentation is available at: ${{steps.deployment_to_netlify.outputs.deploy_url}}'
+            })
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
@@ -514,7 +576,7 @@ jobs:
     outputs:
       tag_count: ${{steps.tag_count.outputs.count}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: tag_count
@@ -530,7 +592,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -547,20 +609,21 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish fast-check
-        run: npm publish --provenance --access public packages/fast-check/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/fast-check/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -569,7 +632,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -586,20 +649,21 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/ava
-        run: npm publish --provenance --access public packages/ava/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/ava/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -608,7 +672,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -625,20 +689,21 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/jest
-        run: npm publish --provenance --access public packages/jest/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/jest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -647,7 +712,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -664,20 +729,21 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/packaged
-        run: npm publish --provenance --access public packages/packaged/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -686,7 +752,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -703,20 +769,21 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/poisoning
-        run: npm publish --provenance --access public packages/poisoning/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/poisoning/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -725,7 +792,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -742,20 +809,21 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/vitest
-        run: npm publish --provenance --access public packages/vitest/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/vitest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -764,7 +832,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -781,20 +849,21 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/worker
-        run: npm publish --provenance --access public packages/worker/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/worker/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -803,7 +872,7 @@ jobs:
     outputs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - id: check_has_tag
@@ -820,17 +889,18 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v20.x
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/expect-type
-        run: npm publish --provenance --access public packages/expect-type/package.tgz
+        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/expect-type/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}

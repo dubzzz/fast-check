@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import type { Scheduler } from '../../../src/arbitrary/scheduler';
 import { scheduler, schedulerFor } from '../../../src/arbitrary/scheduler';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -6,8 +7,8 @@ import * as BuildSchedulerForMock from '../../../src/arbitrary/_internals/helper
 import * as SchedulerArbitraryMock from '../../../src/arbitrary/_internals/SchedulerArbitrary';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 
@@ -15,7 +16,7 @@ describe('scheduler', () => {
   it('should instantiate a SchedulerArbitrary with defaulted act (if not provided)', () => {
     // Arrange
     const { instance } = fakeArbitrary<Scheduler<unknown>>();
-    const SchedulerArbitrary = jest.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
+    const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
 
     // Act
@@ -29,10 +30,14 @@ describe('scheduler', () => {
   it('should pass a defaulted act that calls the received function', () => {
     // Arrange
     const { instance } = fakeArbitrary<Scheduler<unknown>>();
-    const SchedulerArbitrary = jest.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
+    const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
-    const outF = new Promise<unknown>(() => {});
-    const f = jest.fn().mockReturnValue(outF);
+    const outF = new Promise<void>(() => {});
+    let numCalls = 0;
+    const f = () => {
+      ++numCalls; // Ideally we whould have used: vi.fn().mockReturnValue(outF) but it wraps the Promise
+      return outF;
+    };
 
     // Act
     scheduler();
@@ -40,13 +45,13 @@ describe('scheduler', () => {
     const out = receivedAct(f);
 
     // Assert
-    expect(f).toHaveBeenCalledTimes(1);
+    expect(numCalls).toBe(1);
     expect(out).toBe(outF);
   });
   it('should instantiate a SchedulerArbitrary with received act', () => {
     // Arrange
     const { instance } = fakeArbitrary<Scheduler<unknown>>();
-    const SchedulerArbitrary = jest.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
+    const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockReturnValue(instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>);
     const act = () => Promise.resolve();
 
@@ -63,7 +68,7 @@ describe('schedulerFor', () => {
   it('should build proper scheduler when using template string from error logs', async () => {
     // Arrange
     const instance = {} as Scheduler<unknown>;
-    const buildSchedulerFor = jest.spyOn(BuildSchedulerForMock, 'buildSchedulerFor');
+    const buildSchedulerFor = vi.spyOn(BuildSchedulerForMock, 'buildSchedulerFor');
     buildSchedulerFor.mockReturnValue(instance);
 
     // Act
@@ -80,7 +85,7 @@ describe('schedulerFor', () => {
   it('should build proper scheduler when using custom template string', async () => {
     // Arrange
     const instance = {} as Scheduler<unknown>;
-    const buildSchedulerFor = jest.spyOn(BuildSchedulerForMock, 'buildSchedulerFor');
+    const buildSchedulerFor = vi.spyOn(BuildSchedulerForMock, 'buildSchedulerFor');
     buildSchedulerFor.mockReturnValue(instance);
 
     // Act
@@ -96,7 +101,7 @@ describe('schedulerFor', () => {
   it('should build proper scheduler when using ordering array', async () => {
     // Arrange
     const instance = {} as Scheduler<unknown>;
-    const buildSchedulerFor = jest.spyOn(BuildSchedulerForMock, 'buildSchedulerFor');
+    const buildSchedulerFor = vi.spyOn(BuildSchedulerForMock, 'buildSchedulerFor');
     buildSchedulerFor.mockReturnValue(instance);
 
     // Act

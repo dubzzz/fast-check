@@ -1,9 +1,5 @@
 import type { RandomGenerator } from 'pure-rand';
-import {
-  unsafeUniformArrayIntDistribution,
-  unsafeUniformBigIntDistribution,
-  unsafeUniformIntDistribution,
-} from 'pure-rand';
+import { unsafeUniformBigIntDistribution, unsafeUniformIntDistribution } from 'pure-rand';
 
 /**
  * Wrapper around an instance of a `pure-rand`'s random number generator
@@ -17,6 +13,7 @@ export class Random {
   private static DBL_FACTOR: number = Math.pow(2, 27);
   private static DBL_DIVISOR: number = Math.pow(2, -53);
 
+  /** @internal */
   private internalRng: RandomGenerator;
 
   /**
@@ -79,23 +76,21 @@ export class Random {
   }
 
   /**
-   * Generate a random ArrayInt between min (included) and max (included)
-   * @param min - Minimal ArrayInt value
-   * @param max - Maximal ArrayInt value
-   */
-  nextArrayInt(
-    min: { sign: 1 | -1; data: number[] },
-    max: { sign: 1 | -1; data: number[] },
-  ): { sign: 1 | -1; data: number[] } {
-    return unsafeUniformArrayIntDistribution(min, max, this.internalRng);
-  }
-
-  /**
    * Generate a random floating point number between 0.0 (included) and 1.0 (excluded)
    */
   nextDouble(): number {
     const a = this.next(26);
     const b = this.next(27);
     return (a * Random.DBL_FACTOR + b) * Random.DBL_DIVISOR;
+  }
+
+  /**
+   * Extract the internal state of the internal RandomGenerator backing the current instance of Random
+   */
+  getState(): readonly number[] | undefined {
+    if ('getState' in this.internalRng && typeof this.internalRng.getState === 'function') {
+      return this.internalRng.getState();
+    }
+    return undefined;
   }
 }

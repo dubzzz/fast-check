@@ -1,8 +1,9 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
 describe(`ReplayFailures (seed: ${seed})`, () => {
-  const propArbitrary = fc.uniqueArray(fc.hexaString());
+  const propArbitrary = fc.uniqueArray(fc.string());
   const propCheck = (data: string[]) => {
     // element at <idx> should not contain the first character of the element just before
     // 01, 12, 20  - is correct
@@ -59,7 +60,7 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
             expect(data).toEqual(out.counterexample![0]);
             validCallIndex = numCalls;
             ++numValidCalls;
-          } catch (err) {
+          } catch {
             // noop
           }
           ++numCalls;

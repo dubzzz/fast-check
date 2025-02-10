@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import {
   assertProduceValuesShrinkableWithoutContext,
@@ -7,35 +8,24 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from '../__test-helpers__/ArbitraryAssertions';
 import { MixedCaseArbitrary } from '../../../../src/arbitrary/_internals/MixedCaseArbitrary';
-import { stringOf } from '../../../../src/arbitrary/stringOf';
+import { string } from '../../../../src/arbitrary/string';
 import { nat } from '../../../../src/arbitrary/nat';
-import * as BigUintNMock from '../../../../src/arbitrary/bigUintN';
+import * as BigIntMock from '../../../../src/arbitrary/bigInt';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
 
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
-describe('MixedCaseArbitrary (integration)', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
+describe('MixedCaseArbitrary', () => {
+  declareCleaningHooksForSpies();
 
   describe('generate', () => {
     it('should not toggle any character if flags equal zero', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigUintN, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(0), 'azerty');
-      const toggleCase = jest.fn().mockImplementation((c) => c.toUpperCase());
-      const untoggleAll = jest.fn().mockImplementation((s) => s.toLowerCase());
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(0), 'azerty');
+      const toggleCase = vi.fn().mockImplementation((c) => c.toUpperCase());
+      const untoggleAll = vi.fn().mockImplementation((s) => s.toLowerCase());
 
       // Act
       const arb = new MixedCaseArbitrary(stringInstance, toggleCase, untoggleAll);
@@ -43,7 +33,7 @@ describe('MixedCaseArbitrary (integration)', () => {
 
       // Assert
       expect(g.value).toBe('azerty');
-      expect(bigUintN).toHaveBeenCalledWith(6); // num toggleable chars in string = 6
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
       expect(toggleCase).toHaveBeenCalledTimes(6); // length string = 6, to be toggled = 0
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -51,9 +41,9 @@ describe('MixedCaseArbitrary (integration)', () => {
     it('should toggle characters according to flags', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigUintN, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(9) /* 001001 */, 'azerty');
-      const toggleCase = jest.fn().mockImplementation((c) => c.toUpperCase());
-      const untoggleAll = jest.fn().mockImplementation((s) => s.toLowerCase());
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(9) /* 001001 */, 'azerty');
+      const toggleCase = vi.fn().mockImplementation((c) => c.toUpperCase());
+      const untoggleAll = vi.fn().mockImplementation((s) => s.toLowerCase());
 
       // Act
       const arb = new MixedCaseArbitrary(stringInstance, toggleCase, untoggleAll);
@@ -61,7 +51,7 @@ describe('MixedCaseArbitrary (integration)', () => {
 
       // Assert
       expect(g.value).toBe('azErtY');
-      expect(bigUintN).toHaveBeenCalledWith(6); // num toggleable chars in string = 6
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 6 - 1)); // num toggleable chars in string = 6, so range [0, 2**6 -1]
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -69,9 +59,9 @@ describe('MixedCaseArbitrary (integration)', () => {
     it('should not try to toggle characters that do not have toggled versions', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigUintN, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(10) /* 1010 */, 'az01ty');
-      const toggleCase = jest.fn().mockImplementation((c) => c.toUpperCase());
-      const untoggleAll = jest.fn().mockImplementation((s) => s.toLowerCase());
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(10) /* 1010 */, 'az01ty');
+      const toggleCase = vi.fn().mockImplementation((c) => c.toUpperCase());
+      const untoggleAll = vi.fn().mockImplementation((s) => s.toLowerCase());
 
       // Act
       const arb = new MixedCaseArbitrary(stringInstance, toggleCase, untoggleAll);
@@ -79,7 +69,7 @@ describe('MixedCaseArbitrary (integration)', () => {
 
       // Assert
       expect(g.value).toBe('Az01Ty');
-      expect(bigUintN).toHaveBeenCalledWith(4); // // num toggleable chars in string = 4 as 01 upper version is the same -> only 4 can be toggled not 6
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 4 - 1)); // // num toggleable chars in string = 4 as 01 upper version is the same -> only 4 can be toggled not 6
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -87,12 +77,12 @@ describe('MixedCaseArbitrary (integration)', () => {
     it('should properly deal with toggle mapping to multiple characters', () => {
       // Arrange
       const { instance: mrng } = fakeRandom();
-      const { bigUintN, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(63) /* 111111 */, 'azerty');
-      const toggleCase = jest.fn().mockImplementation((c: string) => {
+      const { bigInt, stringInstance } = mockSourceArbitrariesForGenerate(BigInt(63) /* 111111 */, 'azerty');
+      const toggleCase = vi.fn().mockImplementation((c: string) => {
         if (c === 'a' || c === 't') return '<Hello>';
         else return c;
       });
-      const untoggleAll = jest.fn().mockImplementation((s) => s.toLowerCase());
+      const untoggleAll = vi.fn().mockImplementation((s) => s.toLowerCase());
 
       // Act
       const arb = new MixedCaseArbitrary(stringInstance, toggleCase, untoggleAll);
@@ -100,7 +90,7 @@ describe('MixedCaseArbitrary (integration)', () => {
 
       // Assert
       expect(g.value).toBe('<Hello>zer<Hello>y');
-      expect(bigUintN).toHaveBeenCalledWith(2); // num toggleable chars in string = 2, only a and t
+      expect(bigInt).toHaveBeenCalledWith(BigInt(0), BigInt(2 ** 2 - 1)); // num toggleable chars in string = 2, only a and t
       expect(toggleCase).toHaveBeenCalledTimes(6 + 2); // length string = 6, to be toggled = 2
       expect(untoggleAll).not.toHaveBeenCalled();
     });
@@ -137,7 +127,7 @@ describe('MixedCaseArbitrary (integration)', () => {
             // Arrange
             const { instance, canShrinkWithoutContext } = fakeArbitrary();
             canShrinkWithoutContext.mockReturnValueOnce(isShrinkable);
-            const untoggleAll = jest.fn();
+            const untoggleAll = vi.fn();
             untoggleAll.mockReturnValue(untoggledValue);
 
             // Act
@@ -156,13 +146,6 @@ describe('MixedCaseArbitrary (integration)', () => {
 });
 
 describe('MixedCaseArbitrary (integration)', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
-
   type Extra = { withoutToggle: boolean };
   const extraParameters: fc.Arbitrary<Extra> = fc.record({ withoutToggle: fc.boolean() });
   const mixedCaseBaseChars = ['A', 'B', '|', '~'];
@@ -178,12 +161,12 @@ describe('MixedCaseArbitrary (integration)', () => {
 
   const mixedCaseBuilder = (extra: Extra) =>
     new MixedCaseArbitrary(
-      stringOf(
-        nat(mixedCaseBaseChars.length - 1).map(
+      string({
+        unit: nat(mixedCaseBaseChars.length - 1).map(
           (id) => mixedCaseBaseChars[id],
           (c) => mixedCaseBaseChars.indexOf(c as string),
         ),
-      ),
+      }),
       extra.withoutToggle ? (rawChar) => rawChar : (rawChar) => rawChar.toLowerCase(),
       (rawString) => rawString.toUpperCase(),
     );
@@ -212,11 +195,11 @@ describe('MixedCaseArbitrary (integration)', () => {
 // Helpers
 
 function mockSourceArbitrariesForGenerate(bigIntOutput: bigint, stringOutput: string) {
-  const { instance: bigUintNInstance, generate: bigUintNGenerate } = fakeArbitrary();
-  const bigUintN = jest.spyOn(BigUintNMock, 'bigUintN');
-  bigUintN.mockReturnValue(bigUintNInstance);
-  bigUintNGenerate.mockReturnValueOnce(new Value(bigIntOutput, undefined));
+  const { instance: bigIntInstance, generate: bigIntGenerate } = fakeArbitrary();
+  const bigInt = vi.spyOn(BigIntMock, 'bigInt');
+  bigInt.mockReturnValue(bigIntInstance);
+  bigIntGenerate.mockReturnValueOnce(new Value(bigIntOutput, undefined));
   const { instance: stringInstance, generate: stringGenerate } = fakeArbitrary();
   stringGenerate.mockReturnValueOnce(new Value(stringOutput, undefined));
-  return { bigUintN, stringInstance };
+  return { bigInt, stringInstance };
 }

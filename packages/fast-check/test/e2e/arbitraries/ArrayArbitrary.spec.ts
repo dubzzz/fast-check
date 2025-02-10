@@ -1,7 +1,6 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../../src/fast-check';
 import { seed } from '../seed';
-
-declare function BigInt(n: number | bigint | string): bigint;
 
 describe(`ArrayArbitrary (seed: ${seed})`, () => {
   describe('array', () => {
@@ -31,9 +30,7 @@ describe(`ArrayArbitrary (seed: ${seed})`, () => {
       expect(out.counterexample).toEqual([[5, 5]]);
     });
     biasIts('integer', fc.integer());
-    if (typeof BigInt !== 'undefined') {
-      biasIts('bigint', fc.bigIntN(64));
-    }
+    biasIts('bigint', fc.bigInt());
   });
 });
 

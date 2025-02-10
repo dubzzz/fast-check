@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { ConstantArbitrary } from '../../../../src/arbitrary/_internals/ConstantArbitrary';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers';
@@ -77,7 +78,7 @@ describe('ConstantArbitrary', () => {
     it('should produce a cloneable instance if provided value is cloneable', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const cloneable = Object.defineProperty([], cloneMethod, { value: jest.fn() });
+      const cloneable = Object.defineProperty([], cloneMethod, { value: vi.fn() });
       const { instance: mrng } = fakeRandom();
 
       // Act
@@ -91,7 +92,7 @@ describe('ConstantArbitrary', () => {
     it('should clone cloneable instances for each access', () => {
       // Arrange
       const expectedBiasFactor = 48;
-      const cloneMethodImpl = jest.fn();
+      const cloneMethodImpl = vi.fn();
       const cloneable = Object.defineProperty([], cloneMethod, { value: cloneMethodImpl });
       cloneMethodImpl.mockReturnValue(cloneable); // in reality it should be a clone of it, not itself
       const { instance: mrng } = fakeRandom();
@@ -102,15 +103,17 @@ describe('ConstantArbitrary', () => {
       expect(cloneMethodImpl).not.toHaveBeenCalled();
 
       // Assert
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value;
       expect(cloneMethodImpl).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       g.value;
       expect(cloneMethodImpl).toHaveBeenCalledTimes(2);
     });
   });
 
   describe('canShrinkWithoutContext', () => {
-    it("should mark value as 'canShrinkWithoutContext' whenever one of the original values is equal regarding Object.is", () =>
+    it("should mark value as 'canShrinkWithoutContext' whenever one of the original values is equal regarding Object.is", () => {
       fc.assert(
         fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
@@ -123,7 +126,24 @@ describe('ConstantArbitrary', () => {
           // Assert
           expect(out).toBe(true);
         }),
-      ));
+      );
+    });
+
+    it("should not mark value as 'canShrinkWithoutContext' if none of the original values is equal regarding Object.is", () => {
+      fc.assert(
+        fc.property(fc.uniqueArray(fc.anything(), { minLength: 2, comparator: 'SameValue' }), (values) => {
+          // Arrange
+          const [selectedValue, ...acceptedValues] = values;
+
+          // Act
+          const arb = new ConstantArbitrary(acceptedValues);
+          const out = arb.canShrinkWithoutContext(selectedValue); // selectedValue is unique for SameValue comparison (Object.is)
+
+          // Assert
+          expect(out).toBe(false);
+        }),
+      );
+    });
 
     it('should not detect values not equal regarding to Object.is', () => {
       // Arrange
@@ -136,6 +156,44 @@ describe('ConstantArbitrary', () => {
 
       // Assert
       expect(out).toBe(false); // Object.is([], []) is falsy
+    });
+
+    it.each([
+      { source: -0, count: 1 },
+      { source: 0, count: 1 },
+      { source: 48, count: 1 },
+      { source: -0, count: 25 },
+      { source: 0, count: 25 },
+      { source: 48, count: 25 },
+    ])('should not accept to shrink -$source if built with $source (count: $count)', ({ source, count }) => {
+      // Arrange
+      const arb = new ConstantArbitrary(Array(count).fill(source));
+
+      // Act
+      const out = arb.canShrinkWithoutContext(-source);
+
+      // Assert
+      expect(out).toBe(false);
+    });
+
+    it.each([
+      { source: -0, count: 1 },
+      { source: 0, count: 1 },
+      { source: 48, count: 1 },
+      { source: Number.NaN, count: 1 },
+      { source: -0, count: 25 },
+      { source: 0, count: 25 },
+      { source: 48, count: 25 },
+      { source: Number.NaN, count: 25 },
+    ])('should accept to shrink $source if built with $source (count: $count)', ({ source, count }) => {
+      // Arrange
+      const arb = new ConstantArbitrary(Array(count).fill(source));
+
+      // Act
+      const out = arb.canShrinkWithoutContext(source);
+
+      // Assert
+      expect(out).toBe(true);
     });
   });
 

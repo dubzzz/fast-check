@@ -3,8 +3,6 @@ import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { Value } from './Value';
 
-const safeObjectAssign = Object.assign;
-
 /**
  * Abstract class able to generate values on type `T`
  *
@@ -161,17 +159,6 @@ export abstract class Arbitrary<T> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return new NoShrinkArbitrary(this);
   }
-
-  /**
-   * Create another Arbitrary that cannot be biased
-   *
-   * @param freq - The biased version will be used one time over freq - if it exists
-   * @remarks Since 1.1.0
-   */
-  noBias(): Arbitrary<T> {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return new NoBiasArbitrary(this);
-  }
 }
 
 /** @internal */
@@ -212,11 +199,11 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
           : Stream.nil<Value<U>>()
       ).join(
         context.chainedArbitrary.shrink(value, context.chainedContext).map((dst) => {
-          // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
-          const newContext: ChainArbitraryContext<T, U> = safeObjectAssign(safeObjectAssign({}, context), {
+          const newContext: ChainArbitraryContext<T, U> = {
+            ...context,
             chainedContext: dst.context,
             stoppedForOriginal: true,
-          });
+          };
           return new Value(dst.value_, newContext);
         }),
       );
@@ -284,7 +271,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
       try {
         const unmapped = this.unmapper(value);
         return this.arb.canShrinkWithoutContext(unmapped);
-      } catch (_err) {
+      } catch {
         return false;
       }
     }
@@ -343,7 +330,6 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
     this.bindRefinementOnValue = (v: Value<T>): v is Value<U> => this.refinementOnValue(v);
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const g = this.arb.generate(mrng, biasFactor);
       if (this.refinementOnValue(g)) {
@@ -377,25 +363,6 @@ class NoShrinkArbitrary<T> extends Arbitrary<T> {
     return Stream.nil();
   }
   noShrink() {
-    return this;
-  }
-}
-
-/** @internal */
-class NoBiasArbitrary<T> extends Arbitrary<T> {
-  constructor(readonly arb: Arbitrary<T>) {
-    super();
-  }
-  generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
-    return this.arb.generate(mrng, undefined);
-  }
-  canShrinkWithoutContext(value: unknown): value is T {
-    return this.arb.canShrinkWithoutContext(value);
-  }
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
-    return this.arb.shrink(value, context);
-  }
-  noBias() {
     return this;
   }
 }

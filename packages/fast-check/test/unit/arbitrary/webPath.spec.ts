@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import type { WebPathConstraints } from '../../../src/arbitrary/webPath';
 import { webPath } from '../../../src/arbitrary/webPath';
@@ -6,19 +7,14 @@ import { URL } from 'url';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
+  assertProduceSomeSpecificValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/ArbitraryAssertions';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { DefaultSize } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
 
 describe('webPath (integration)', () => {
   type Extra = WebPathConstraints;
@@ -54,10 +50,26 @@ describe('webPath (integration)', () => {
     });
   });
 
+  it(`should be able to produce starting by // when using default-size=${DefaultSize}`, () => {
+    assertProduceSomeSpecificValues(
+      () => webPath({ size: DefaultSize }),
+      (value) => value.startsWith('//'),
+    );
+  });
+
+  it(`should be able to produce containing // when using default-size=${DefaultSize}`, () => {
+    assertProduceSomeSpecificValues(
+      () => webPath({ size: DefaultSize }),
+      (value) => value.includes('//'),
+    );
+  });
+
   it.each`
     rawValue
     ${'/a/z'}
     ${'/azerty'}
+    ${'//az'}
+    ${'/a//z'}
   `('should be able to shrink $rawValue', ({ rawValue }) => {
     // Arrange
     const arb = webPath();
@@ -76,7 +88,11 @@ describe('webPath (integration)', () => {
 
 function webPathConstraintsBuilder(onlySmall?: boolean): fc.Arbitrary<WebPathConstraints> {
   return fc.record(
-    { size: onlySmall ? fc.constantFrom('-1', '=', 'xsmall', 'small') : fc.oneof(sizeArb, relativeSizeArb) },
+    {
+      size: onlySmall
+        ? fc.constantFrom(...(['-1', '=', 'xsmall', 'small'] as const))
+        : fc.oneof(sizeArb, relativeSizeArb),
+    },
     { requiredKeys: [] },
   );
 }

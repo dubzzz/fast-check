@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { memo } from '../../../src/arbitrary/memo';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
@@ -56,7 +57,7 @@ describe('memo', () => {
   it('should automatically decrease depth for self recursive', () => {
     // Arrange
     const { instance: expectedArb } = fakeArbitrary();
-    const memoFun = jest.fn();
+    const memoFun = vi.fn();
     const builder = memo(memoFun);
     memoFun.mockImplementation((n) => (n <= 6 ? expectedArb : builder()));
 
@@ -70,8 +71,8 @@ describe('memo', () => {
   it('should automatically interleave decrease depth for mutually recursive', () => {
     // Arrange
     const { instance: expectedArb } = fakeArbitrary();
-    const memoFunA = jest.fn();
-    const memoFunB = jest.fn();
+    const memoFunA = vi.fn();
+    const memoFunB = vi.fn();
     const builderA = memo(memoFunA);
     const builderB = memo(memoFunB);
     memoFunA.mockImplementation((n) => (n <= 6 ? expectedArb : builderB()));
@@ -88,7 +89,7 @@ describe('memo', () => {
   it('should be able to override decrease depth', () => {
     // Arrange
     const { instance: expectedArb } = fakeArbitrary();
-    const memoFun = jest.fn();
+    const memoFun = vi.fn();
     const builder = memo(memoFun);
     memoFun.mockImplementation((n) => (n <= 0 ? expectedArb : builder(n - 3)));
 

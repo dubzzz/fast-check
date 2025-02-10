@@ -7,6 +7,6 @@ import { ConstantArbitrary } from './_internals/ConstantArbitrary';
  * @remarks Since 0.0.1
  * @public
  */
-export function constant<T>(value: T): Arbitrary<T> {
+export function constant<const T>(value: T): Arbitrary<T> {
   return new ConstantArbitrary([value]);
 }

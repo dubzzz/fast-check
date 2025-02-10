@@ -1,7 +1,9 @@
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { bigInt } from '../../../src/arbitrary/bigInt';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import * as BigIntArbitraryMock from '../../../src/arbitrary/_internals/BigIntArbitrary';
 
@@ -10,25 +12,13 @@ function fakeBigIntArbitrary() {
   return instance;
 }
 
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('bigInt', () => {
-  if (typeof BigInt === 'undefined') {
-    it('no test', () => {
-      expect(true).toBe(true);
-    });
-    return;
-  }
+  declareCleaningHooksForSpies();
 
   it('should instantiate the same BigIntArbitrary as empty constraints for no arguments', () => {
     // Arrange
     const instance = fakeBigIntArbitrary();
-    const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+    const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
     BigIntArbitrary.mockImplementation(() => instance);
 
     // Act
@@ -50,7 +40,7 @@ describe('bigInt', () => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
-        const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+        const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
         BigIntArbitrary.mockImplementation(() => instance);
 
         // Act
@@ -73,7 +63,7 @@ describe('bigInt', () => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
-        const BigIntArbitrary = jest.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+        const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
         BigIntArbitrary.mockImplementation(() => instance);
 
         // Act

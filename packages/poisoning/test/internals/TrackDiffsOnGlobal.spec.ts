@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { PoisoningFreeMap } from '../../src/internals/PoisoningFreeMap.js';
 import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 import { trackDiffsOnGlobals } from '../../src/internals/TrackDiffsOnGlobal.js';

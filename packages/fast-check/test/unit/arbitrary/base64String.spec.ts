@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { base64String } from '../../../src/arbitrary/base64String';
 
@@ -6,6 +7,7 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import * as ArrayMock from '../../../src/arbitrary/array';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -13,14 +15,9 @@ import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
 import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers';
 
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
-
 describe('base64String', () => {
+  declareCleaningHooksForSpies();
+
   it('should accept any constraints accepting at least one length multiple of 4', () =>
     fc.assert(
       fc.property(
@@ -64,7 +61,7 @@ describe('base64String', () => {
         (min, gap, withMin, withMax) => {
           // Arrange
           const constraints = { minLength: withMin ? min : undefined, maxLength: withMax ? min + gap : undefined };
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance, map } = fakeArbitrary();
           array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map
@@ -117,7 +114,7 @@ describe('base64String', () => {
             maxLength: withMax ? min + gap : undefined,
             size,
           };
-          const array = jest.spyOn(ArrayMock, 'array');
+          const array = vi.spyOn(ArrayMock, 'array');
           const { instance: arrayInstance, map } = fakeArbitrary();
           array.mockReturnValue(arrayInstance);
           map.mockReturnValue(arrayInstance); // fake map

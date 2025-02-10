@@ -20,5 +20,12 @@ export type { JsonSharedConstraints, JsonValue };
  * @public
  */
 export function jsonValue(constraints: JsonSharedConstraints = {}): Arbitrary<JsonValue> {
-  return anything(jsonConstraintsBuilder(string(), constraints)) as Arbitrary<JsonValue>;
+  const noUnicodeString = constraints.noUnicodeString === undefined || constraints.noUnicodeString === true;
+  const stringArbitrary =
+    'stringUnit' in constraints
+      ? string({ unit: constraints.stringUnit })
+      : noUnicodeString
+        ? string()
+        : string({ unit: 'binary' });
+  return anything(jsonConstraintsBuilder(stringArbitrary, constraints)) as Arbitrary<JsonValue>;
 }

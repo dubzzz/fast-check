@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/vitest",
   "description": "Property based testing for Vitest based on fast-check",
-  "version": "0.0.9",
+  "version": "0.1.5",
   "type": "module",
   "main": "lib/vitest-fast-check.js",
   "exports": {
@@ -28,7 +28,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "test": "yarn node --experimental-vm-modules $(yarn bin jest)",
+    "test": "vitest",
     "test-bundle": "node test-bundle/basic.mjs && vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },
@@ -47,20 +47,14 @@
     "fast-check": "^3.0.0"
   },
   "peerDependencies": {
-    "vitest": ">=0.28.1 <1.0.0 || ^1"
+    "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2 || ^3"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/preset-typescript": "^7.23.3",
-    "@jest/globals": "^29.7.0",
-    "@types/jest": "^29.5.11",
-    "@types/node": "^20.11.10",
-    "babel-jest": "^29.7.0",
+    "@types/node": "^22.13.1",
     "fast-check": "workspace:*",
-    "jest": "^29.7.0",
-    "typescript": "~5.3.3",
-    "vite": "^5.0.12",
-    "vitest": "^1.2.2"
+    "typescript": "~5.7.3",
+    "vite": "^6.1.0",
+    "vitest": "^2.1.9"
   },
   "keywords": [
     "vitest",

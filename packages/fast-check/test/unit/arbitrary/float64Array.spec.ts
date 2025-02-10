@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import type { Float64ArrayConstraints } from '../../../src/arbitrary/float64Array';
 import { float64Array } from '../../../src/arbitrary/float64Array';
@@ -8,13 +9,6 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
 } from './__test-helpers__/ArbitraryAssertions';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
 
 describe('float64Array (integration)', () => {
   type Extra = Float64ArrayConstraints;

@@ -1,4 +1,5 @@
-import fc from 'fast-check';
+import { describe, it, expect } from 'vitest';
+import fc, { stringify } from 'fast-check';
 
 import { anyArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/AnyArbitraryBuilder';
 import type { ObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
@@ -101,6 +102,14 @@ describe('anyArbitraryBuilder (integration)', () => {
         withSet: fc.boolean(),
         withSparseArray: fc.boolean(),
         withTypedArray: fc.boolean(),
+        withUnicodeString: fc.boolean(),
+        stringUnit: fc.constantFrom<ObjectConstraints['stringUnit']>(
+          'grapheme',
+          'grapheme-composite',
+          'grapheme-ascii',
+          'binary',
+          'binary-ascii',
+        ),
       },
       { requiredKeys: [] },
     )
@@ -147,6 +156,9 @@ describe('anyArbitraryBuilder (integration)', () => {
     if (!extra.withTypedArray) {
       expect(isTypedArray(v)).toBe(false);
     }
+    if (!extra.withUnicodeString && !('stringUnit' in extra)) {
+      expect(stringify(v)).toSatisfy(doesNotIncludeAnySurrogateCharacter);
+    }
     // No check for !extra.withObjectString as nothing prevent normal string builders to build such strings
     // In the coming major releases withObjectString might even disappear
   };
@@ -172,6 +184,11 @@ describe('anyArbitraryBuilder (integration)', () => {
 });
 
 // Helpers
+
+function doesNotIncludeAnySurrogateCharacter(s: string): boolean {
+  // No character is a part of a surrogate pair
+  return s.split('').every((c) => c < '\uD800' || c > '\uDFFF');
+}
 
 function isBigInt(v: unknown): boolean {
   return typeof v === 'bigint';
@@ -214,7 +231,7 @@ function isStringified(v: unknown): boolean {
   try {
     eval(v);
     return true; // the string was correctly parsed
-  } catch (err) {
+  } catch {
     return false; // not a valid representation
   }
 }
@@ -227,7 +244,7 @@ function isStringifiedAsKeys(v: unknown): boolean {
     try {
       eval(key);
       return true; // the string used as key the string representation of a JavaScript instance
-    } catch (err) {
+    } catch {
       // not a valid representation
     }
   }

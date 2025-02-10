@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
@@ -8,17 +9,19 @@ import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterPrope
 import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
 import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
 import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
-jest.mock('../../../../src/check/property/SkipAfterProperty');
-jest.mock('../../../../src/check/property/TimeoutProperty');
-jest.mock('../../../../src/check/property/UnbiasedProperty');
-jest.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
+vi.mock('../../../../src/check/property/SkipAfterProperty');
+vi.mock('../../../../src/check/property/TimeoutProperty');
+vi.mock('../../../../src/check/property/UnbiasedProperty');
+vi.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
 
 function buildProperty(asyncProp: boolean) {
   return {
     isAsync: () => asyncProp,
     generate: () => new Value({}, undefined),
     shrink: () => Stream.nil(),
+    runBeforeEach: () => {},
     run: () => null,
+    runAfterEach: () => {},
   } as IRawProperty<any>;
 }
 
@@ -31,9 +34,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable none when needed', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -46,8 +49,8 @@ describe('decorateProperty', () => {
   it('Should enable SkipAfterProperty on skipAllAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
       skipAllAfterTimeLimit: 1,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -59,9 +62,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable SkipAfterProperty on interruptAfterTimeLimit', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
+      skipAllAfterTimeLimit: undefined,
       interruptAfterTimeLimit: 1,
-      timeout: null,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -73,8 +76,8 @@ describe('decorateProperty', () => {
   });
   it('Should enable TimeoutProperty on timeout', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
       timeout: 1,
       unbiased: false,
       skipEqualValues: false,
@@ -87,9 +90,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable UnbiasedProperty on unbiased', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: true,
       skipEqualValues: false,
       ignoreEqualValues: false,
@@ -101,8 +104,8 @@ describe('decorateProperty', () => {
   });
   it('Should not enable TimeoutProperty on synchronous property', () => {
     decorateProperty(buildProperty(false), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
       timeout: 1,
       unbiased: false,
       skipEqualValues: false,
@@ -115,9 +118,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable IgnoreEqualValuesProperty on ignoreEqualValues', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: false,
       ignoreEqualValues: true,
@@ -129,9 +132,9 @@ describe('decorateProperty', () => {
   });
   it('Should enable IgnoreEqualValuesProperty on skipEqualValues', () => {
     decorateProperty(buildProperty(true), {
-      skipAllAfterTimeLimit: null,
-      interruptAfterTimeLimit: null,
-      timeout: null,
+      skipAllAfterTimeLimit: undefined,
+      interruptAfterTimeLimit: undefined,
+      timeout: undefined,
       unbiased: false,
       skipEqualValues: true,
       ignoreEqualValues: false,

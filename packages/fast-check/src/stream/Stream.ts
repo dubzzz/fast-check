@@ -43,7 +43,7 @@ export class Stream<T> implements IterableIterator<T> {
    * Create a Stream based on `g`
    * @param g - Underlying data of the Stream
    */
-  constructor(private readonly g: IterableIterator<T>) {
+  constructor(/** @internal */ private readonly g: IterableIterator<T>) {
     // /*DEBUG*/ this.isLive = true;
   }
 
@@ -55,7 +55,7 @@ export class Stream<T> implements IterableIterator<T> {
   next(): IteratorResult<T> {
     return this.g.next();
   }
-  [safeSymbolIterator](): IterableIterator<T> {
+  [Symbol.iterator](): IterableIterator<T> {
     // /*DEBUG*/ this.closeCurrentStream();
     return this.g;
   }

@@ -17,8 +17,6 @@ import type { IAsyncProperty } from '../property/AsyncProperty';
 import type { IProperty } from '../property/Property';
 import type { Value } from '../arbitrary/definition/Value';
 
-const safeObjectAssign = Object.assign;
-
 /** @internal */
 function runIt<Ts>(
   property: IRawProperty<Ts>,
@@ -27,18 +25,11 @@ function runIt<Ts>(
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
 ): RunExecution<Ts> {
-  const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      property.runBeforeEach!();
-    }
-    const out = property.run(v, isModernProperty) as PreconditionFailure | PropertyFailure | null;
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      property.runAfterEach!();
-    }
+    (property.runBeforeEach as () => void)();
+    const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
+    (property.runAfterEach as () => void)();
     runner.handleResult(out);
   }
   return runner.runExecution;
@@ -52,18 +43,11 @@ async function asyncRunIt<Ts>(
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
 ): Promise<RunExecution<Ts>> {
-  const isModernProperty = property.runBeforeEach !== undefined && property.runAfterEach !== undefined;
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await property.runBeforeEach!();
-    }
-    const out = await property.run(v, isModernProperty);
-    if (isModernProperty) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await property.runAfterEach!();
-    }
+    await property.runBeforeEach();
+    const out = await property.run(v);
+    await property.runAfterEach();
     runner.handleResult(out);
   }
   return runner.runExecution;
@@ -114,13 +98,13 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run == null)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(
-    // TODO - Move back to object spreading as soon as we bump support from es2017 to es2018+
-    safeObjectAssign(safeObjectAssign({}, readConfigureGlobal() as Parameters<Ts>), params),
-  );
-  if (qParams.reporter !== null && qParams.asyncReporter !== null)
+  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
+    ...(readConfigureGlobal() as Parameters<Ts>),
+    ...params,
+  });
+  if (qParams.reporter !== undefined && qParams.asyncReporter !== undefined)
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
-  if (qParams.asyncReporter !== null && !rawProperty.isAsync())
+  if (qParams.asyncReporter !== undefined && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
 
@@ -191,7 +175,7 @@ function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promis
 function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
   const out = check(property, params);
   if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(asyncReportRunDetails);
-  else reportRunDetails(out as RunDetails<Ts>);
+  else reportRunDetails(out as RunDetails<Ts>) as void;
 }
 
 export { check, assert };

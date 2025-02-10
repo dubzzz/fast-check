@@ -1,6 +1,4 @@
 // @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* global __filename, exports, require, __dirname */
 const { pathToFileURL } = require('node:url');
 const fc = require('fast-check');
 const { propertyFor } = require('@fast-check/worker');
@@ -21,13 +19,14 @@ function nextFilenameAnswer() {
 exports.readerAssert = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
-  (from, to) => {
+  (_from, _to) => {
     // Send question
     const filenameQuestion = nextFilenameQuestion();
     writeFileSync(filenameQuestion, 'ok');
 
     // Wait answer
     const filenameAnswer = nextFilenameAnswer();
+    // eslint-disable-next-line no-empty
     while (!existsSync(filenameAnswer)) {}
     rmSync(filenameAnswer);
   },
@@ -36,9 +35,10 @@ exports.readerAssert = property(
 exports.writerAssert = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
-  (from, to) => {
+  (_from, _to) => {
     // Wait question
     const filenameQuestion = nextFilenameQuestion();
+    // eslint-disable-next-line no-empty
     while (!existsSync(filenameQuestion)) {}
     rmSync(filenameQuestion);
 

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
@@ -44,6 +45,11 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
     it('fc.array', () => {
       const data = { counter: 0 };
       fc.assert(fc.property(fc.array(cloneableWithCount(data)), () => {}));
+      expect(data.counter).toEqual(0);
+    });
+    it('fc.limitShrink', () => {
+      const data = { counter: 0 };
+      fc.assert(fc.property(fc.limitShrink(cloneableWithCount(data), 10), () => {}));
       expect(data.counter).toEqual(0);
     });
   });
@@ -228,6 +234,20 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
       expect(alwaysWithElements).toBe(true);
+    });
+    it('fc.limitShrink', () => {
+      let nonClonedDetected = false;
+      const status = fc.check(
+        fc.property(fc.integer(), fc.limitShrink(fc.context(), 10), fc.integer(), (a, ctx, b) => {
+          nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
+          ctx.log('logging stuff');
+          return a < b;
+        }),
+        { seed },
+      );
+      expect(status.failed).toBe(true);
+      expect(nonClonedDetected).toBe(false);
+      expect(status.counterexample![1].size()).toEqual(1);
     });
   });
 });

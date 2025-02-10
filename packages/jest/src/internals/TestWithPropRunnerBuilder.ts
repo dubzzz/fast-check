@@ -37,7 +37,8 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     // Copy global configuration of interruptAfterTimeLimit as local one
     customParams.interruptAfterTimeLimit = fc.readConfigureGlobal().interruptAfterTimeLimit;
   }
-  const jestTimeout = timeout !== undefined ? timeout : extractJestGLobalTimeout();
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  const jestTimeout = timeout !== undefined ? timeout : extractJestGlobalTimeout();
   if (jestTimeout !== undefined) {
     if (customParams.interruptAfterTimeLimit === undefined) {
       // Use the timeout specified at jest's level for interruptAfterTimeLimit
@@ -68,7 +69,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
   );
 }
 
-function extractJestGLobalTimeout(): number | undefined {
+function extractJestGlobalTimeout(): number | undefined {
   // Timeout defined via explicit calls to jest.setTimeout
   // See https://github.com/facebook/jest/blob/fb2de8a10f8e808b080af67aa771f67b5ea537ce/packages/jest-runtime/src/index.ts#L2174
   const jestTimeout = (globalThis as any)[Symbol.for('TEST_TIMEOUT_SYMBOL')];

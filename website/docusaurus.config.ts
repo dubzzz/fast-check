@@ -9,7 +9,8 @@ const darkCodeTheme = themes.dracula;
 
 const config: Config = {
   title: 'fast-check',
-  tagline: 'Property-based testing for JavaScript and TypeScript',
+  tagline:
+    "fast-check is a Property-based Testing framework for JavaScript and TypeScript. It works with Jest, Mocha, Vitest, and others. Let's fuzz!",
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -41,15 +42,14 @@ const config: Config = {
       'classic',
       {
         docs: {
+          showLastUpdateAuthor: true,
+          showLastUpdateTime: true,
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
         },
         blog: { showReadingTime: true },
+        sitemap: { lastmod: 'date' },
         theme: { customCss: require.resolve('./src/css/custom.css') },
-        gtag: {
-          trackingID: 'G-PHXW2XCMCL',
-          anonymizeIP: true,
-        },
       } satisfies Preset.Options,
     ],
   ],
@@ -64,8 +64,15 @@ const config: Config = {
         { to: '/docs/introduction/', label: 'Documentation' },
         { to: '/docs/tutorials/quick-start/', label: 'Quick Start' },
         { to: '/docs/tutorials/', label: 'All Tutorials' },
+        { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
         { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
+        {
+          href: 'https://bsky.app/profile/fast-check.dev',
+          'aria-label': 'Bluesky account',
+          position: 'right',
+          className: 'header-bluesky-link',
+        },
         {
           href: 'https://github.com/dubzzz/fast-check',
           'aria-label': 'GitHub repository',
@@ -93,8 +100,9 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            { label: 'Mastodon', href: 'https://fosstodon.org/@ndubien' },
-            { label: 'Twitter', href: 'https://twitter.com/ndubien' },
+            { label: 'Bluesky 🦋', href: 'https://bsky.app/profile/fast-check.dev' },
+            { label: 'Become a contributor', href: 'https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md' },
+            { label: 'Sponsor us', href: 'https://github.com/sponsors/dubzzz' },
           ],
         },
         {
@@ -103,6 +111,10 @@ const config: Config = {
             { label: 'Blog', to: '/blog' },
             { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
+            { label: 'Work with me @Pigment', href: 'https://refer.hellotrusty.io/kz48qf0nh7' },
+            {
+              html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" loading="lazy" /></a>`,
+            },
           ],
         },
       ],

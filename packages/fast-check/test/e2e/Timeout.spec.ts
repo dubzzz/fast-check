@@ -1,14 +1,15 @@
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
 describe(`Timeout (seed: ${seed})`, () => {
   it('should always run beforeEach and afterEach even in case of timeout', async () => {
     let numRuns = 0;
-    const beforeEach = jest.fn().mockResolvedValue(undefined);
-    const afterEach = jest.fn().mockResolvedValue(undefined);
+    const beforeEach = vi.fn().mockResolvedValue(undefined);
+    const afterEach = vi.fn().mockResolvedValue(undefined);
     const out = await fc.check(
       fc
-        .asyncProperty(fc.integer().noShrink(), async (_x) => {
+        .asyncProperty(fc.noShrink(fc.integer()), async (_x) => {
           ++numRuns;
           await new Promise(() => {}); // never ending promise
         })

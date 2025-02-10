@@ -26,7 +26,6 @@ interface SetupProducer<Model, Real, P> {
 }
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/ban-types
 const genericModelRun = <Model extends object, Real, P, CheckAsync extends boolean>(
   s: SetupProducer<Model, Real, P>,
   cmds: Iterable<ICommand<Model, Real, P, CheckAsync>>,
@@ -49,7 +48,6 @@ const genericModelRun = <Model extends object, Real, P, CheckAsync extends boole
 };
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/ban-types
 const internalModelRun = <Model extends object, Real>(
   s: ModelRunSetup<Model, Real>,
   cmds: Iterable<Command<Model, Real>>,
@@ -82,7 +80,6 @@ const isAsyncSetup = <Model, Real>(
 };
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/ban-types
 const internalAsyncModelRun = async <Model extends object, Real, CheckAsync extends boolean>(
   s: ModelRunSetup<Model, Real> | ModelRunAsyncSetup<Model, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,
@@ -113,7 +110,6 @@ const internalAsyncModelRun = async <Model extends object, Real, CheckAsync exte
  * @remarks Since 1.5.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function modelRun<Model extends object, Real, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real>,
   cmds: Iterable<Command<Model, Real>>,
@@ -132,7 +128,6 @@ export function modelRun<Model extends object, Real, InitialModel extends Model>
  * @remarks Since 1.5.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export async function asyncModelRun<Model extends object, Real, CheckAsync extends boolean, InitialModel extends Model>(
   s: ModelRunSetup<InitialModel, Real> | ModelRunAsyncSetup<InitialModel, Real>,
   cmds: Iterable<AsyncCommand<Model, Real, CheckAsync>>,
@@ -153,7 +148,6 @@ export async function asyncModelRun<Model extends object, Real, CheckAsync exten
  * @public
  */
 export async function scheduledModelRun<
-  // eslint-disable-next-line @typescript-eslint/ban-types
   Model extends object,
   Real,
   CheckAsync extends boolean,

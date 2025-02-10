@@ -1,3 +1,65 @@
+# 0.1.5
+
+_Extend support to vitest v3_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.5)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.4...vitest%2Fv0.1.5)]
+
+## Fixes
+
+- ([PR#5637](https://github.com/dubzzz/fast-check/pull/5637)) CI: Flag vitest v3 as supported
+
+# 0.1.4
+
+_Rework our testing stack_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.4)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.3...vitest%2Fv0.1.4)]
+
+## Fixes
+
+- ([PR#5350](https://github.com/dubzzz/fast-check/pull/5350)) CI: Move to Vitest
+- ([PR#5352](https://github.com/dubzzz/fast-check/pull/5352)) CI: Drop unneeded configuration files
+- ([PR#5380](https://github.com/dubzzz/fast-check/pull/5380)) Test: Make tests run concurrently
+- ([PR#5379](https://github.com/dubzzz/fast-check/pull/5379)) Test: Better scoping of tests execution
+- ([PR#5384](https://github.com/dubzzz/fast-check/pull/5384)) Test: Add retry for Node 23
+
+# 0.1.3
+
+_Export missing types_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.2...vitest%2Fv0.1.3)]
+
+## Fixes
+
+- ([PR#5200](https://github.com/dubzzz/fast-check/pull/5200)) Refactor: Add missing types on exported
+
+# 0.1.2
+
+_Allow vitest v2 as a peer dependency_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.1...vitest%2Fv0.1.2)]
+
+## Fixes
+
+- ([PR#5108](https://github.com/dubzzz/fast-check/pull/5108)) Bump: Update vitest monorepo to v2 (major)
+
+# 0.1.1
+
+_Adapt code to new lint rules_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.0...vitest%2Fv0.1.1)]
+
+## Fixes
+
+- ([PR#4933](https://github.com/dubzzz/fast-check/pull/4933)) Script: Switch on more eslint rules
+
+# 0.1.0
+
+_Declare root of the package as ESM_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.0.9...vitest%2Fv0.1.0)]
+
+## Breaking changes
+
+- ([PR#4586](https://github.com/dubzzz/fast-check/pull/4586)) CI: Move build chain to ESM
+
+## Fixes
+
+- ([PR#4603](https://github.com/dubzzz/fast-check/pull/4603)) CI: Migrate jest to esm
+
 # 0.0.9
 
 _Stricter declaration of peers and better imports_

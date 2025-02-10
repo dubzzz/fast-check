@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { letrec } from '../../../src/arbitrary/letrec';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
@@ -159,7 +160,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary "missing" not correctly initialized"`,
+        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
       );
     });
 
@@ -177,7 +178,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary "missing" not correctly initialized"`,
+        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
       );
     });
 
@@ -271,7 +272,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.canShrinkWithoutContext(expectedValue)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary "missing" not correctly initialized"`,
+        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
       );
     });
   });
@@ -310,7 +311,7 @@ describe('letrec', () => {
 
       // Act / Assert
       expect(() => arb1.shrink(expectedValue, expectedContext)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary "missing" not correctly initialized"`,
+        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
       );
     });
   });

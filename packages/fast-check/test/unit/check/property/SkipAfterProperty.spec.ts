@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
 import { fakeProperty } from './__test-helpers__/PropertyHelpers';
@@ -7,10 +8,10 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value';
 const startTimeMs = 200;
 const timeLimitMs = 100;
 
-describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRunHook) => {
+describe('SkipAfterProperty', () => {
   it('should call timer at construction', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty } = fakeProperty();
 
     // Act
@@ -22,7 +23,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should not call timer on isAsync but forward call', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
@@ -41,7 +42,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should not call timer on generate but forward call', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
     const { instance: mrng } = fakeRandom();
 
@@ -61,7 +62,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should not call timer on shrink but forward call', async () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
@@ -80,18 +81,14 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should call timer on run and forward call if ok', () => {
     // Arrange
-    const timerMock = jest.fn();
+    const timerMock = vi.fn();
     const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(2);
@@ -105,7 +102,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should call timer on run and fail after time limit', () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -113,14 +110,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
-    let out: ReturnType<typeof p.run>;
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      out = p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      out = p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    const out = p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -129,19 +121,14 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
-    if (dontRunHook) {
-      // We may not want to run them in such context, but so far we do
-      expect(runBeforeEach).toHaveBeenCalledTimes(1);
-      expect(runAfterEach).toHaveBeenCalledTimes(1);
-    } else {
-      expect(runBeforeEach).not.toHaveBeenCalled();
-      expect(runAfterEach).not.toHaveBeenCalled();
-    }
+    // We may not want to run hooks in such context, but so far we do
+    expect(runBeforeEach).toHaveBeenCalledTimes(1);
+    expect(runAfterEach).toHaveBeenCalledTimes(1);
   });
 
   it('should forward falsy interrupt flag to the precondition failure', async () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -149,14 +136,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
-    let out: ReturnType<typeof p.run>;
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      out = p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      out = p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    const out = p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -165,7 +147,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
   it('should forward truthy interrupt flag to the precondition failure', () => {
     // Arrange
-    const timerMock = jest
+    const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
@@ -173,14 +155,9 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, true, setTimeout, clearTimeout);
-    let out: ReturnType<typeof p.run>;
-    if (dontRunHook) {
-      p.runBeforeEach!();
-      out = p.run(Symbol('value'), true);
-      p.runAfterEach!();
-    } else {
-      out = p.run(Symbol('value'), false);
-    }
+    p.runBeforeEach();
+    const out = p.run(Symbol('value'));
+    p.runAfterEach();
 
     // Assert
     expect(PreconditionFailure.isFailure(out)).toBe(true);
@@ -190,21 +167,17 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
   describe('timeout', () => {
     it('should clear all started timeouts on success', async () => {
       // Arrange
-      jest.useFakeTimers();
-      jest.spyOn(global, 'setTimeout');
-      jest.spyOn(global, 'clearTimeout');
+      vi.useFakeTimers();
+      vi.spyOn(global, 'setTimeout');
+      vi.spyOn(global, 'clearTimeout');
       const { instance: decoratedProperty, run } = fakeProperty(true);
       run.mockResolvedValueOnce(null);
 
       // Act
       const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
-      if (dontRunHook) {
-        await timeoutProp.runBeforeEach!();
-        await timeoutProp.run({}, true);
-        await timeoutProp.runAfterEach!();
-      } else {
-        await timeoutProp.run({}, false);
-      }
+      await timeoutProp.runBeforeEach();
+      await timeoutProp.run({});
+      await timeoutProp.runAfterEach();
 
       // Assert
       expect(setTimeout).toBeCalledTimes(1);
@@ -213,22 +186,18 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     it('should clear all started timeouts on failure', async () => {
       // Arrange
-      const errorFromUnderlying = { error: undefined, errorMessage: 'plop' };
-      jest.useFakeTimers();
-      jest.spyOn(global, 'setTimeout');
-      jest.spyOn(global, 'clearTimeout');
+      const errorFromUnderlying = { error: new Error('plop') };
+      vi.useFakeTimers();
+      vi.spyOn(global, 'setTimeout');
+      vi.spyOn(global, 'clearTimeout');
       const { instance: decoratedProperty, run } = fakeProperty(true);
       run.mockResolvedValueOnce(errorFromUnderlying);
 
       // Act
       const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
-      if (dontRunHook) {
-        await timeoutProp.runBeforeEach!();
-        await timeoutProp.run({}, true);
-        await timeoutProp.runAfterEach!();
-      } else {
-        await timeoutProp.run({}, false);
-      }
+      await timeoutProp.runBeforeEach();
+      await timeoutProp.run({});
+      await timeoutProp.runAfterEach();
 
       // Assert
       expect(setTimeout).toBeCalledTimes(1);
@@ -237,7 +206,7 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
     it('should timeout if it takes to long', async () => {
       // Arrange
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       const { instance: decoratedProperty, run } = fakeProperty(true);
       run.mockReturnValueOnce(
         new Promise(function (resolve) {
@@ -247,20 +216,15 @@ describe.each([[true], [false]])('SkipAfterProperty (dontRunHook: %p)', (dontRun
 
       // Act
       const timeoutProp = new SkipAfterProperty(decoratedProperty, Date.now, 10, true, setTimeout, clearTimeout);
-      let runPromise: ReturnType<typeof timeoutProp.run>;
-      if (dontRunHook) {
-        await timeoutProp.runBeforeEach!();
-        runPromise = timeoutProp.run({}, true);
-      } else {
-        runPromise = timeoutProp.run({}, false);
-      }
-      jest.advanceTimersByTime(10);
+      await timeoutProp.runBeforeEach();
+      const runPromise = timeoutProp.run({});
+      vi.advanceTimersByTime(10);
 
       // Assert
       const out = await runPromise;
       expect(PreconditionFailure.isFailure(out)).toBe(true);
       expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
-      await timeoutProp.runAfterEach!();
+      await timeoutProp.runAfterEach();
     });
   });
 });

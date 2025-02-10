@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { CloneArbitrary } from '../../../../src/arbitrary/_internals/CloneArbitrary';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
@@ -51,8 +52,8 @@ describe('CloneArbitrary', () => {
       const numValues = 1;
       const { instance: mrng } = fakeRandom();
       const { instance: sourceArb, generate } = fakeArbitrary<unknown>();
-      if (cloneable) generate.mockReturnValue(new Value({ [cloneMethod]: jest.fn() }, undefined));
-      else generate.mockReturnValue(new Value({ m: jest.fn() }, undefined));
+      if (cloneable) generate.mockReturnValue(new Value({ [cloneMethod]: vi.fn() }, undefined));
+      else generate.mockReturnValue(new Value({ m: vi.fn() }, undefined));
 
       // Act
       const arb = new CloneArbitrary(sourceArb, numValues);

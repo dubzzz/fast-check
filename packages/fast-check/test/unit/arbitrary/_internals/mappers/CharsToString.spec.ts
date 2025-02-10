@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import {
   charsToStringMapper,
@@ -18,7 +19,7 @@ describe('charsToStringUnmapper', () => {
 
   it('should be able to split any string mapped from chars into chars', () =>
     fc.assert(
-      fc.property(fc.array(fc.char16bits()), (data) => {
+      fc.property(fc.array(fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n))), (data) => {
         // Arrange
         const source = charsToStringMapper(data);
 

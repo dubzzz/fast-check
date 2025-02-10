@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../../src/fast-check';
 import { seed } from '../seed';
 
@@ -23,7 +24,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         cc: fc.string(),
       };
       const out = fc.check(
-        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj) => obj.bb == null),
+        fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => obj.bb == null),
         {
           seed: seed,
         },
@@ -41,7 +42,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         forceNegativeOutput: fc.boolean(),
       };
       const out = fc.check(
-        fc.property(fc.record(recordModel, { withDeletedKeys: true }), (obj) => {
+        fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => {
           if (obj.forcePositiveOutput === true && obj.forceNegativeOutput === true) return false;
           return true;
         }),

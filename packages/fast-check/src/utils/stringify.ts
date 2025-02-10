@@ -7,7 +7,9 @@ import {
   safePush,
   safeToISOString,
   safeToString,
+  Map,
   String,
+  Symbol as StableSymbol,
 } from './globals';
 
 const safeArrayFrom = Array.from;
@@ -28,7 +30,7 @@ const safePositiveInfinity = Number.POSITIVE_INFINITY;
  * @remarks Since 2.17.0
  * @public
  */
-export const toStringMethod = Symbol('fast-check/toStringMethod');
+export const toStringMethod: unique symbol = Symbol.for('fast-check/toStringMethod');
 /**
  * Interface to implement for {@link toStringMethod}
  *
@@ -62,7 +64,7 @@ export function hasToStringMethod<T>(instance: T): instance is T & WithToStringM
  * @remarks Since 2.17.0
  * @public
  */
-export const asyncToStringMethod = Symbol('fast-check/asyncToStringMethod');
+export const asyncToStringMethod: unique symbol = Symbol.for('fast-check/asyncToStringMethod');
 /**
  * Interface to implement for {@link asyncToStringMethod}
  *
@@ -123,6 +125,7 @@ function stringifyNumber(numValue: number) {
 /** @internal */
 function isSparseArray(arr: unknown[]): boolean {
   let previousNumberedIndex = -1;
+  // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const index in arr) {
     const numberedIndex = Number(index);
     if (numberedIndex !== previousNumberedIndex + 1) return true; // we've got a hole
@@ -156,7 +159,7 @@ export function stringifyInternal<Ts>(
     // if user defined custom sync serialization function, we use it before next ones
     try {
       return value[toStringMethod]();
-    } catch (err) {
+    } catch {
       // fallback to defaults...
     }
   }
@@ -168,6 +171,7 @@ export function stringifyInternal<Ts>(
         const assignments: string[] = [];
         // Discarded: map then join will still show holes
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
+        // eslint-disable-next-line @typescript-eslint/no-for-in-array
         for (const index in arr) {
           if (!safeNumberIsNaN(Number(index)))
             safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
@@ -189,7 +193,7 @@ export function stringifyInternal<Ts>(
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]': {
-      // eslint-disable-next-line @typescript-eslint/ban-types
+      // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
       const unboxedToString = (value as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing
       return typeof value === 'boolean' ? unboxedToString : `new Boolean(${unboxedToString})`;
     }
@@ -210,7 +214,7 @@ export function stringifyInternal<Ts>(
           // Instance (or one of its parent prototypes) overrides the default toString of Object
           return (value as any).toString(); // <-- Can throw
         }
-      } catch (err) {
+      } catch {
         // Only return what would have been the default toString on Object
         return '[object Object]';
       }
@@ -225,6 +229,7 @@ export function stringifyInternal<Ts>(
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
+        ...(safeObjectGetPrototypeOf(value) === null ? ['__proto__:null'] : []),
         ...safeMap(safeObjectKeys(value as object), mapper),
         ...safeMap(
           safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
@@ -234,12 +239,7 @@ export function stringifyInternal<Ts>(
           mapper,
         ),
       ];
-      const rawRepr = '{' + safeJoin(stringifiedProperties, ',') + '}';
-
-      if (safeObjectGetPrototypeOf(value) === null) {
-        return rawRepr === '{}' ? 'Object.create(null)' : `Object.assign(Object.create(null),${rawRepr})`;
-      }
-      return rawRepr;
+      return '{' + safeJoin(stringifiedProperties, ',') + '}';
     }
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -247,14 +247,14 @@ export function stringifyInternal<Ts>(
       return typeof value === 'string' ? safeJsonStringify(value) : `new String(${safeJsonStringify(value)})`;
     case '[object Symbol]': {
       const s = value as unknown as symbol;
-      if (Symbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${safeJsonStringify(Symbol.keyFor(s))})`;
+      if (StableSymbol.keyFor(s) !== undefined) {
+        return `Symbol.for(${safeJsonStringify(StableSymbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       if (desc === null) {
         return 'Symbol()';
       }
-      const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
+      const knownSymbol = desc.startsWith('Symbol.') && (StableSymbol as any)[desc.substring(7)];
       return s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`;
     }
     case '[object Promise]': {
@@ -351,7 +351,7 @@ export function stringify<Ts>(value: Ts): string {
  * @internal
  */
 export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
-  const stillPendingMarker = Symbol();
+  const stillPendingMarker = StableSymbol();
   const pendingPromisesForCache: Promise<void>[] = [];
   const cache = new Map<unknown, AsyncContent>();
 

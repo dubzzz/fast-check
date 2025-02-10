@@ -1,16 +1,13 @@
-import { jest } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { MockedFunction } from 'vitest';
 import fc from 'fast-check';
 import request from 'supertest';
 import type { User } from './src/db';
+import { app, dropDeactivatedInternal } from './src/app';
+// import { app, dropDeactivatedInternal } from'./src/appBug';
+import * as DbMock from './src/db';
 
-jest.unstable_mockModule('./005-race/supertest/src/db', () => ({
-  getAllUsers: jest.fn(),
-  removeUsers: jest.fn(),
-}));
-
-const { app, dropDeactivatedInternal } = await import('./src/app');
-// const { app, dropDeactivatedInternal } = await import('./src/appBug');
-const DbMock = await import('./src/db');
+vi.mock('./src/db');
 
 if (!fc.readConfigureGlobal()) {
   // Global config of Jest has been ignored, we will have a timeout after 5000ms
@@ -19,7 +16,7 @@ if (!fc.readConfigureGlobal()) {
 }
 
 const beforeEachHook = () => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 };
 beforeEach(beforeEachHook);
 fc.configureGlobal({ ...fc.readConfigureGlobal(), beforeEach: beforeEachHook });
@@ -30,7 +27,7 @@ describe('app', () => {
       fc.asyncProperty(
         fc.uniqueArray(
           fc.record<User>({
-            id: fc.uuidV(4),
+            id: fc.uuid({ version: 4 }),
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
@@ -50,8 +47,8 @@ describe('app', () => {
         async (allUsers, num, s) => {
           // Arrange
           let knownUsers = allUsers;
-          const getAllUsers = DbMock.getAllUsers as jest.Mocked<typeof DbMock.getAllUsers>;
-          const removeUsers = DbMock.removeUsers as jest.Mocked<typeof DbMock.removeUsers>;
+          const getAllUsers = DbMock.getAllUsers as MockedFunction<typeof DbMock.getAllUsers>;
+          const removeUsers = DbMock.removeUsers as MockedFunction<typeof DbMock.removeUsers>;
           getAllUsers.mockImplementation(
             s.scheduleFunction(async function getAllUsers() {
               return knownUsers;
@@ -87,7 +84,7 @@ describe('app', () => {
       fc.asyncProperty(
         fc.uniqueArray(
           fc.record<User>({
-            id: fc.uuidV(4),
+            id: fc.uuid({ version: 4 }),
             name: fc.string(),
             deactivated: fc.boolean(),
           }),
@@ -98,8 +95,8 @@ describe('app', () => {
         async (allUsers, num, s) => {
           // Arrange
           let knownUsers = allUsers;
-          const getAllUsers = DbMock.getAllUsers as jest.Mocked<typeof DbMock.getAllUsers>;
-          const removeUsers = DbMock.removeUsers as jest.Mocked<typeof DbMock.removeUsers>;
+          const getAllUsers = DbMock.getAllUsers as MockedFunction<typeof DbMock.getAllUsers>;
+          const removeUsers = DbMock.removeUsers as MockedFunction<typeof DbMock.removeUsers>;
           getAllUsers.mockImplementation(
             s.scheduleFunction(async function getAllUsers() {
               return knownUsers;

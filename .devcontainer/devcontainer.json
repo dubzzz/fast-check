@@ -7,17 +7,17 @@
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
         "eamodio.gitlens",
-        "GitHub.vscode-github-actions",
+        "GitHub.vscode-github-actions"
       ],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
         "editor.stickyScroll.enabled": true,
         "terminal.integrated.defaultProfile.linux": "bash",
-        "workbench.colorTheme": "Dark+",
-      },
-    },
+        "workbench.colorTheme": "Dark+"
+      }
+    }
   },
   "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
-  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
 }

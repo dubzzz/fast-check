@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import { hash } from '../../../../src/utils/hash';
 import { stringify } from '../../../../src/utils/stringify';
 

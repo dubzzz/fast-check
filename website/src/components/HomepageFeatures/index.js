@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
+import CodeBlock from '@theme/CodeBlock';
 
 const FeatureList = [
   {
@@ -9,22 +10,38 @@ const FeatureList = [
     description: (
       <>
         Finding bugs has never been so easy! From classical edge cases to very complex combinations of inputs,
-        fast-check will be able to detect any class of bug.
+        fast-check is able to detect any class of bug.
       </>
     ),
   },
   {
     title: 'Test runner agnostic',
     Svg: require('@site/static/img/checkbox.svg').default,
-    description: <>fast-check can be used within any test runner without any specific integration needed.</>,
+    description: (
+      <>
+        fast-check can be used within any test runner without any specific integration needed. It works well with{' '}
+        <a href="https://jestjs.io/" target="_blank" rel="noopener">
+          Jest
+        </a>
+        ,{' '}
+        <a href="https://mochajs.org/" target="_blank" rel="noopener">
+          Mocha
+        </a>
+        ,{' '}
+        <a href="https://vitest.dev/" target="_blank" rel="noopener">
+          Vitest
+        </a>
+        , and others.
+      </>
+    ),
   },
   {
     title: 'Next level testing',
     Svg: require('@site/static/img/syringe.svg').default,
     description: (
       <>
-        Race conditions, prototype poisoning… Embrace the full power of fast-check and let it help you into finding race
-        conditions or zero days.
+        Let fuzzing and generative testing help you into uncovering the most challenging bugs: race conditions,
+        prototype poisoning, zero-days…
       </>
     ),
   },
@@ -53,12 +70,25 @@ function Feature({ Svg, title, description }) {
 
 export default function HomepageFeatures() {
   return (
-    <section className={styles.features}>
-      <div className={clsx('container', styles.allFeatureCards)}>
-        {FeatureList.map((props, idx) => (
-          <Feature key={idx} {...props} />
-        ))}
-      </div>
-    </section>
+    <div className="container">
+      <section className={styles.features}>
+        <div className={clsx('container', styles.allFeatureCards)}>
+          {FeatureList.map((props, idx) => (
+            <Feature key={idx} {...props} />
+          ))}
+        </div>
+        <div className={styles.codeBlock}>
+          <CodeBlock language="js">
+            {`test('validates substring presence in concatenated string', () => {
+  fc.assert(
+    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+      expect(isSubstring(\`\${a}\${b}\${c}\`, b)).toBe(true);
+    })
+  );
+});`}
+          </CodeBlock>
+        </div>
+      </section>
+    </div>
   );
 }

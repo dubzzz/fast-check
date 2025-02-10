@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import {
   indexToMappedConstantMapperFor,
   indexToMappedConstantUnmapperFor,
@@ -84,8 +85,8 @@ describe('indexToMappedConstantUnmapperFor', () => {
   it('should not call any build function when creating the unmapper', () => {
     // Arrange
     const entries = [
-      { num: 10, build: jest.fn() },
-      { num: 3, build: jest.fn() },
+      { num: 10, build: vi.fn() },
+      { num: 3, build: vi.fn() },
     ];
 
     // Act
@@ -99,8 +100,8 @@ describe('indexToMappedConstantUnmapperFor', () => {
   it('should call all build functions on first call to unmapper', () => {
     // Arrange
     const entries = [
-      { num: 10, build: jest.fn().mockReturnValue(0) },
-      { num: 3, build: jest.fn().mockReturnValue(1) },
+      { num: 10, build: vi.fn().mockReturnValue(0) },
+      { num: 3, build: vi.fn().mockReturnValue(1) },
     ];
 
     // Act
@@ -115,8 +116,8 @@ describe('indexToMappedConstantUnmapperFor', () => {
   it('should not call again build functions on second call to unmapper', () => {
     // Arrange
     const entries = [
-      { num: 10, build: jest.fn().mockReturnValue(0) },
-      { num: 3, build: jest.fn().mockReturnValue(1) },
+      { num: 10, build: vi.fn().mockReturnValue(0) },
+      { num: 3, build: vi.fn().mockReturnValue(1) },
     ];
 
     // Act

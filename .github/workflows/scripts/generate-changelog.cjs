@@ -1,6 +1,6 @@
 // @ts-check
 const {
-  promises: { readFile, writeFile },
+  promises: { readFile, writeFile, rm },
   existsSync,
 } = require('fs');
 const path = require('path');
@@ -190,44 +190,36 @@ function isInitialTag(tagName) {
 }
 
 /**
- * Extract the kind of release
- * @param {string} oldTagName
- * @param {string} newTagName
- * @returns {'major'|'minor'|'patch'}
- */
-function extractReleaseKind(oldTagName, newTagName) {
-  const oldTagVersion = extractMajorMinorPatch(oldTagName);
-  const newTagVersion = extractMajorMinorPatch(newTagName);
-  const releaseKind =
-    newTagVersion.major !== oldTagVersion.major
-      ? 'major'
-      : newTagVersion.minor !== oldTagVersion.minor
-        ? 'minor'
-        : 'patch';
-  return releaseKind;
-}
-
-/**
  * @returns {Promise<{branchName:string, commitName:string, errors:string[], changelogs: string[]}>}
  */
 async function run() {
   const allErrors = [];
 
-  // Get packages to be bumped via yarn
-  const { stdout: yarnOut } = await execFile('yarn', ['version', 'apply', '--all', '--dry-run', '--json']);
-  const allBumps = yarnOut
-    .split('\n')
-    .filter((line) => line.trim().length !== 0)
-    .map((line) => JSON.parse(line));
+  // Get packages to be bumped via changeset
+  const temporaryChangelogFile = 'changelog.json';
+  await execFile('yarn', []);
+  await execFile('yarn', ['changeset', 'status', `--output=${temporaryChangelogFile}`]);
+  const temporaryChangelogFileContentBuffer = await readFile(temporaryChangelogFile);
+  const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
+  await rm(temporaryChangelogFile);
+  // Array of {name, type, oldVersion, newVersion, changesets}
+  const allBumps = await Promise.all(
+    temporaryChangelogFileContent.releases
+      .filter((entry) => entry.type !== 'none')
+      .map(async (entry) => {
+        // Extracting the location of the package from the workspace
+        const { stdout: packageLocationUnsafe } = await execFile('yarn', ['workspace', entry.name, 'exec', 'pwd']);
+        const packageLocation = packageLocationUnsafe.split('\n')[0].trim();
+        return { ...entry, packageLocation };
+      }),
+  );
 
-  for (const packageBump of allBumps) {
-    const { oldVersion, newVersion, cwd: packageLocation, ident: packageName } = packageBump;
+  for (const { oldVersion, newVersion, name: packageName, type: releaseKind, packageLocation } of allBumps) {
     console.debug(`[debug] Checking ${packageName} between version ${oldVersion} and version ${newVersion}`);
 
     // Extract metas for changelog
     const oldTag = computeTag(oldVersion, packageName);
     const newTag = computeTag(newVersion, packageName);
-    const releaseKind = extractReleaseKind(oldTag, newTag);
     console.debug(`[debug] Checking ${packageName} between tag ${oldTag} and tag ${newTag}`);
     const { breakingSection, newFeaturesSection, maintenanceSection, errors } = await extractAndParseDiff(
       oldTag,
@@ -274,27 +266,41 @@ async function run() {
     const previousContent = existsSync(changelogPath) ? await readFile(changelogPath) : '';
     await writeFile(changelogPath, `${body}\n\n${releaseKind !== 'patch' ? `---\n\n` : ''}${previousContent}`);
     await execFile('git', ['add', changelogPath]);
-  }
 
-  // Bump towards latest version and add files for upcoming commit
-  await execFile('yarn', ['version', 'apply', '--all']);
-  for (const packageBump of allBumps) {
-    const { cwd: packageLocation } = packageBump;
+    // Update the package.json
+    await execFile('npm', ['--no-git-tag-version', '--workspaces-update=false', 'version', releaseKind], {
+      cwd: packageLocation,
+    });
     const packageJsonPath = path.join(packageLocation, 'package.json');
     await execFile('git', ['add', packageJsonPath]);
   }
-  await execFile('git', ['add', '.yarn/versions']);
+
+  // Force yarn reinstall
+  await execFile('yarn');
+  await execFile('git', ['add', 'yarn.lock']);
+
+  // Drop all changesets
+  const alreadyDeleted = new Set();
+  for (const { changesets } of allBumps) {
+    for (const changeset of changesets) {
+      if (alreadyDeleted.has(changeset)) {
+        continue;
+      }
+      alreadyDeleted.add(changeset);
+      await execFile('git', ['rm', `.changeset/${changeset}.md`]);
+    }
+  }
 
   // Create another branch and commit on it
   const branchName = `changelog-${Math.random().toString(16).substring(2)}`;
-  const commitName = `🔖 Update CHANGELOG.md for ${allBumps.map((b) => `${b.ident}@${b.newVersion}`).join(', ')}`;
+  const commitName = `🔖 Update CHANGELOG.md for ${allBumps.map((b) => `${b.name}@${b.newVersion}`).join(', ')}`;
   await execFile('git', ['checkout', '-b', branchName]);
   await execFile('git', ['commit', '-m', commitName]);
   await execFile('git', ['push', '--set-upstream', 'origin', branchName]);
 
   // Compute the list of all impacted changelogs
   const changelogs = allBumps
-    .map((b) => b.cwd.substring(process.cwd().length + 1).replace(/\\/g, '/'))
+    .map((b) => b.packageLocation.substring(process.cwd().length + 1).replace(/\\/g, '/'))
     .map(
       (packageRelativePath) =>
         `https://github.com/dubzzz/fast-check/blob/${branchName}/${packageRelativePath}/CHANGELOG.md`,

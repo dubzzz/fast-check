@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { LazyArbitrary } from '../../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../../src/stream/Stream';
@@ -30,7 +31,7 @@ describe('LazyArbitrary', () => {
 
       // Assert
       expect(() => lazy.generate(mrng, 2)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary "id007" not correctly initialized"`,
+        `[Error: Lazy arbitrary "id007" not correctly initialized]`,
       );
     });
   });
@@ -62,7 +63,7 @@ describe('LazyArbitrary', () => {
 
       // Assert
       expect(() => lazy.canShrinkWithoutContext(1)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary "id007" not correctly initialized"`,
+        `[Error: Lazy arbitrary "id007" not correctly initialized]`,
       );
     });
   });
@@ -92,7 +93,7 @@ describe('LazyArbitrary', () => {
 
       // Assert
       expect(() => lazy.shrink(1, 2)).toThrowErrorMatchingInlineSnapshot(
-        `"Lazy arbitrary "id007" not correctly initialized"`,
+        `[Error: Lazy arbitrary "id007" not correctly initialized]`,
       );
     });
   });

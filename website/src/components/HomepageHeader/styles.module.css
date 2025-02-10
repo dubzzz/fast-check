@@ -12,6 +12,8 @@
 
 .mainTitleLogo {
   max-width: '100%';
+  width: auto;
+  height: auto;
 }
 
 @media screen and (max-width: 996px) {
@@ -20,10 +22,15 @@
   }
 }
 
+.subTitle {
+  margin-bottom: 1.25rem;
+}
+
 .subTitle .taglineBadges {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.2em;
 }
 
@@ -35,6 +42,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.25rem;
+}
+
+@media screen and (max-width: 996px) {
+  .quickNavigationButtons {
+    flex-direction: column;
+  }
+}
+
+.adventButton {
+  background-color: rgb(255, 150, 150);
+  border-color: rgb(255, 170, 170);
+}
+
+.adventButton:hover {
+  background-color: rgb(255, 31, 31);
 }

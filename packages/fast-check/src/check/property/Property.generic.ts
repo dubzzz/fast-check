@@ -11,7 +11,7 @@ import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
 } from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
-import { Error, String } from '../../utils/globals';
+import { Error } from '../../utils/globals';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -27,6 +27,7 @@ export type PropertyHookFunction = (globalHookFunction: GlobalPropertyHookFuncti
  * @remarks Since 1.19.0
  * @public
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
 /**
@@ -130,30 +131,17 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     this.afterEachHook();
   }
 
-  run(v: Ts, dontRunHook?: boolean): PreconditionFailure | PropertyFailure | null {
-    if (!dontRunHook) {
-      this.beforeEachHook();
-    }
+  run(v: Ts): PreconditionFailure | PropertyFailure | null {
     try {
       const output = this.predicate(v);
-      return output == null || output === true
+      return output === undefined || output === true
         ? null
-        : {
-            error: new Error('Property failed by returning false'),
-            errorMessage: 'Error: Property failed by returning false',
-          };
+        : { error: new Error('Property failed by returning false') };
     } catch (err) {
       // precondition failure considered as success for the first version
       if (PreconditionFailure.isFailure(err)) return err;
       // exception as PropertyFailure in case of real failure
-      if (err instanceof Error && err.stack) {
-        return { error: err, errorMessage: err.stack }; // stack includes the message
-      }
-      return { error: err, errorMessage: String(err) };
-    } finally {
-      if (!dontRunHook) {
-        this.afterEachHook();
-      }
+      return { error: err };
     }
   }
 

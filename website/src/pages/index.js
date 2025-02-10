@@ -11,10 +11,7 @@ import HomepageSponsors from '@site/src/components/HomepageSponsors';
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <Layout
-      title={`${siteConfig.title} official documentation`}
-      description="Property-based testing for JavaScript and TypeScript"
-    >
+    <Layout title={`${siteConfig.title} official documentation`} description={siteConfig.tagline}>
       <HomepageHeader />
       <main>
         <HomepageFeatures />

@@ -1,6 +1,8 @@
+import { safeMapGet, safeMapSet } from '../../../utils/globals';
+
 /**
  * Internal symbol used to declare an opaque type for DepthIdentifier
- * @public
+ * @internal
  */
 declare const depthIdentifierSymbol: unique symbol;
 
@@ -11,7 +13,10 @@ declare const depthIdentifierSymbol: unique symbol;
  * @remarks Since 2.25.0
  * @public
  */
-export type DepthIdentifier = { [depthIdentifierSymbol]: true };
+export type DepthIdentifier = {
+  /** @internal */
+  [depthIdentifierSymbol]: true;
+} & DepthContext;
 
 /**
  * Instance of depth, can be used to alter the depth perceived by an arbitrary
@@ -51,12 +56,12 @@ export function getDepthContextFor(contextMeta: DepthContext | DepthIdentifier |
   if (typeof contextMeta !== 'string') {
     return contextMeta as DepthContext;
   }
-  const cachedContext = depthContextCache.get(contextMeta);
+  const cachedContext = safeMapGet(depthContextCache, contextMeta);
   if (cachedContext !== undefined) {
     return cachedContext;
   }
   const context = { depth: 0 };
-  depthContextCache.set(contextMeta, context);
+  safeMapSet(depthContextCache, contextMeta, context);
   return context;
 }
 

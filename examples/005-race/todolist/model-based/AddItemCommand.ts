@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import { TodolistCommand, TodolistModel, TodolistReal, listTodos, sortTodos, ExtractedTodoItem } from './Model';
 import { screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

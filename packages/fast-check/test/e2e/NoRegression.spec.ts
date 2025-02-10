@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from '../../src/fast-check';
 import { asyncRunWithSanitizedStack, runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
 import {
@@ -9,7 +10,11 @@ import {
 } from './model/CounterCommands';
 
 const testFunc = (value: unknown) => {
-  const repr = fc.stringify(value).replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5');
+  const repr = fc
+    .stringify(value)
+    .replace(/^(|Big)(Int|Uint|Float)(8|16|32|64)(|Clamped)Array\.from\((.*)\)$/, '$5')
+    .replace(/__proto__:null,/g, '')
+    .replace(/__proto__:null/g, '');
   for (let idx = 1; idx < repr.length; ++idx) {
     if (repr[idx - 1] === repr[idx] && repr[idx] !== '"' && repr[idx] !== '}') {
       return false;
@@ -151,65 +156,11 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('asciiString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.asciiString(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  // // Jest Snapshot seems not to support incomplete surrogate pair correctly
-  // it('string16bits', () => {
-  //   expect(runWithSanitizedStack(() => fc.assert(fc.property(fc.string16bits(), v => testFunc(v + v)), settings))).toThrowErrorMatchingSnapshot();
-  // });
-  it('stringOf', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.stringOf(fc.constantFrom('a', 'b')), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('stringMatching', () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.stringMatching(/(^|\s)a+[^a][b-eB-E]+[^b-eB-E](\s|$)/), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('unicodeString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.unicodeString(), (v) => testFunc(v + v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('fullUnicodeString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.fullUnicodeString(), (v) => testFunc(v + v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('hexaString', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.hexaString(), (v) => testFunc(v)),
           settings,
         ),
       ),
@@ -263,7 +214,9 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.oneof<any>(fc.nat(), fc.char()), (v) => testFunc(v)),
+          fc.property(fc.oneof<any>(fc.nat(), fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 })), (v) =>
+            testFunc(v),
+          ),
           settings,
         ),
       ),
@@ -273,7 +226,13 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.oneof<any>({ weight: 1, arbitrary: fc.nat() }, { weight: 5, arbitrary: fc.char() }), testFunc),
+          fc.property(
+            fc.oneof<any>(
+              { weight: 1, arbitrary: fc.nat() },
+              { weight: 5, arbitrary: fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 }) },
+            ),
+            testFunc,
+          ),
           settings,
         ),
       ),
@@ -401,6 +360,16 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it('limitShrink', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.limitShrink(fc.nat(), 4), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('int8Array', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -495,7 +464,7 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.record({ k1: fc.nat(), k2: fc.nat() }, { withDeletedKeys: true }), (v) => testFunc(v)),
+          fc.property(fc.record({ k1: fc.nat(), k2: fc.nat() }, { requiredKeys: [] }), (v) => testFunc(v)),
           settings,
         ),
       ),
@@ -546,26 +515,6 @@ describe(`NoRegression`, () => {
       runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.jsonValue(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('unicodeJson', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.unicodeJson(), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
-  it('unicodeJsonValue', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.unicodeJsonValue(), (v) => testFunc(v)),
           settings,
         ),
       ),
@@ -731,16 +680,6 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('uuidV', () => {
-    expect(
-      runWithSanitizedStack(() =>
-        fc.assert(
-          fc.property(fc.uuidV(4), (v) => testFunc(v)),
-          settings,
-        ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
-  });
   it('letrec', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -813,7 +752,7 @@ describe(`NoRegression`, () => {
               try {
                 fc.modelRun(setup, cmds);
                 return true;
-              } catch (err) {
+              } catch {
                 return false;
               }
             },
@@ -888,6 +827,86 @@ describe(`NoRegression`, () => {
               [17, '18', '19', 20],
             ],
           },
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({min})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16) }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({max})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt({ max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt({min, max})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16), max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigInt64Array', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigInt64Array(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('bigUint64Array', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.bigUint64Array(), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('mixedCase', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.mixedCase(fc.constant('cCbAabBAcaBCcCACcABaCAaAabBACaBcBb')), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('mixedCase(string(constantFrom))', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.mixedCase(fc.string({ unit: fc.constantFrom('a', 'b', 'c') })), (v) => testFunc(v)),
+          settings,
         ),
       ),
     ).toThrowErrorMatchingSnapshot();

@@ -1,10 +1,11 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { buildSchedulerFor } from '../../../../../src/arbitrary/_internals/helpers/BuildSchedulerFor';
 
 import * as SchedulerImplemMock from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 
@@ -12,9 +13,9 @@ describe('buildSchedulerFor', () => {
   it('should instantiate a SchedulerImplem', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-    const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+    const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
     SchedulerImplem.mockImplementation(() => instance);
-    const act = jest.fn();
+    const act = vi.fn();
 
     // Act
     const s = buildSchedulerFor(act, []);
@@ -30,9 +31,9 @@ describe('buildSchedulerFor', () => {
   it('should create a taskSelector returning the requested ordering', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-    const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+    const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
     SchedulerImplem.mockImplementation(() => instance);
-    const act = jest.fn();
+    const act = vi.fn();
     const requestedOrder = [4, 1, 2, 0];
     const fakeLongScheduledTasks = [
       { taskId: 0 },
@@ -56,9 +57,9 @@ describe('buildSchedulerFor', () => {
   it('should create a taskSelector throwing in case the requested task does not exist', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-    const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+    const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
     SchedulerImplem.mockImplementation(() => instance);
-    const act = jest.fn();
+    const act = vi.fn();
     const requestedOrder = [4, 1, 2, 10];
     const fakeLongScheduledTasks = [
       { taskId: 0 },
@@ -77,16 +78,16 @@ describe('buildSchedulerFor', () => {
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[1]);
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[2]);
     expect(() => taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toThrowErrorMatchingInlineSnapshot(
-      `"Invalid schedulerFor defined: unable to find next task"`,
+      `[Error: Invalid schedulerFor defined: unable to find next task]`,
     );
   });
 
   it('should create a taskSelector throwing when exhausted and asked for another value', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-    const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+    const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
     SchedulerImplem.mockImplementation(() => instance);
-    const act = jest.fn();
+    const act = vi.fn();
     const requestedOrder = [4, 1, 2];
     const fakeLongScheduledTasks = [
       { taskId: 0 },
@@ -105,16 +106,16 @@ describe('buildSchedulerFor', () => {
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[1]);
     expect(taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toBe(requestedOrder[2]);
     expect(() => taskSelector.nextTaskIndex(fakeLongScheduledTasks)).toThrowErrorMatchingInlineSnapshot(
-      `"Invalid schedulerFor defined: too many tasks have been scheduled"`,
+      `[Error: Invalid schedulerFor defined: too many tasks have been scheduled]`,
     );
   });
 
   it('should create a taskSelector with clones being reset to start', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
-    const SchedulerImplem = jest.spyOn(SchedulerImplemMock, 'SchedulerImplem');
+    const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
     SchedulerImplem.mockImplementation(() => instance);
-    const act = jest.fn();
+    const act = vi.fn();
     const requestedOrder = [4, 1, 2];
     const fakeLongScheduledTasks = [
       { taskId: 0 },
@@ -146,10 +147,10 @@ describe('buildSchedulerFor', () => {
 describe('buildSchedulerFor (integration)', () => {
   it('should execute tasks in the requested order', async () => {
     // Arrange
-    const act = jest.fn().mockImplementation((f) => f());
-    const px = jest.fn();
-    const py = jest.fn();
-    const pz = jest.fn();
+    const act = vi.fn().mockImplementation((f) => f());
+    const px = vi.fn();
+    const py = vi.fn();
+    const pz = vi.fn();
 
     // Act
     const s = buildSchedulerFor(act, [3, 1, 2]);

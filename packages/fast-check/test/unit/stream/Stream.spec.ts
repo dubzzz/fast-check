@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Stream, stream } from '../../../src/stream/Stream';
 
 describe('Stream', () => {

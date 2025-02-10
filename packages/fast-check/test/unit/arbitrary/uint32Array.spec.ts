@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { uint32Array } from '../../../src/arbitrary/uint32Array';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -8,7 +9,7 @@ describe('uint32Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder for Uint32Array', () => {
     // Arrange
     const instance = fakeArbitrary();
-    const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
+    const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(() => instance);
 
     // Act
@@ -28,7 +29,7 @@ describe('uint32Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder with extreme values for min and max', () => {
     // Arrange
     const instance = fakeArbitrary();
-    const builder = jest.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
+    const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(() => instance);
 
     // Act

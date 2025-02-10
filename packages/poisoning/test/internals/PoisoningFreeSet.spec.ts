@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { AddSymbol, HasSymbol, PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 
 describe('PoisoningFreeSet', () => {

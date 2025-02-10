@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
 import { buildPartialRecordArbitrary } from '../../../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
 
@@ -8,8 +9,8 @@ import * as TupleMock from '../../../../../src/arbitrary/tuple';
 import * as ValuesAndSeparateKeysToObjectMock from '../../../../../src/arbitrary/_internals/mappers/ValuesAndSeparateKeysToObject';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 
@@ -22,24 +23,24 @@ describe('buildPartialRecordArbitrary', () => {
       const { instance: tupleInstance } = fakeArbitrary<any[]>();
       const { instance: tupleInstance2, map } = fakeArbitrary<any[]>();
       const { instance: booleanInstance } = fakeArbitrary<any>();
-      const boolean = jest.spyOn(BooleanMock, 'boolean');
-      const constant = jest.spyOn(ConstantMock, 'constant');
-      const option = jest.spyOn(OptionMock, 'option');
-      const tuple = jest.spyOn(TupleMock, 'tuple');
+      const boolean = vi.spyOn(BooleanMock, 'boolean');
+      const constant = vi.spyOn(ConstantMock, 'constant');
+      const option = vi.spyOn(OptionMock, 'option');
+      const tuple = vi.spyOn(TupleMock, 'tuple');
       boolean.mockReturnValueOnce(booleanInstance);
       constant.mockReturnValueOnce(booleanInstance);
       tuple.mockReturnValueOnce(tupleInstance).mockReturnValueOnce(tupleInstance2);
       map.mockReturnValueOnce(mappedInstance);
 
-      const mapper = jest.fn();
-      const buildValuesAndSeparateKeysToObjectMapper = jest.spyOn(
+      const mapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectMapper = vi.spyOn(
         ValuesAndSeparateKeysToObjectMock,
         'buildValuesAndSeparateKeysToObjectMapper',
       );
       buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
 
-      const unmapper = jest.fn();
-      const buildValuesAndSeparateKeysToObjectUnmapper = jest.spyOn(
+      const unmapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectUnmapper = vi.spyOn(
         ValuesAndSeparateKeysToObjectMock,
         'buildValuesAndSeparateKeysToObjectUnmapper',
       );
@@ -90,10 +91,10 @@ describe('buildPartialRecordArbitrary', () => {
       const { instance: booleanInstance } = fakeArbitrary<any>();
       const { instance: optionInstance1 } = fakeArbitrary();
       const { instance: optionInstance2 } = fakeArbitrary();
-      const boolean = jest.spyOn(BooleanMock, 'boolean');
-      const constant = jest.spyOn(ConstantMock, 'constant');
-      const option = jest.spyOn(OptionMock, 'option');
-      const tuple = jest.spyOn(TupleMock, 'tuple');
+      const boolean = vi.spyOn(BooleanMock, 'boolean');
+      const constant = vi.spyOn(ConstantMock, 'constant');
+      const option = vi.spyOn(OptionMock, 'option');
+      const tuple = vi.spyOn(TupleMock, 'tuple');
       const optionInstance1Old = optionInstance1;
       const optionInstance2Old = optionInstance2;
       boolean.mockReturnValueOnce(booleanInstance);
@@ -102,15 +103,15 @@ describe('buildPartialRecordArbitrary', () => {
       tuple.mockReturnValueOnce(tupleInstance).mockReturnValueOnce(tupleInstance2);
       map.mockReturnValueOnce(mappedInstance);
 
-      const mapper = jest.fn();
-      const buildValuesAndSeparateKeysToObjectMapper = jest.spyOn(
+      const mapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectMapper = vi.spyOn(
         ValuesAndSeparateKeysToObjectMock,
         'buildValuesAndSeparateKeysToObjectMapper',
       );
       buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
 
-      const unmapper = jest.fn();
-      const buildValuesAndSeparateKeysToObjectUnmapper = jest.spyOn(
+      const unmapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectUnmapper = vi.spyOn(
         ValuesAndSeparateKeysToObjectMock,
         'buildValuesAndSeparateKeysToObjectUnmapper',
       );
@@ -163,24 +164,24 @@ describe('buildPartialRecordArbitrary', () => {
       const { instance: tupleInstance } = fakeArbitrary<any[]>();
       const { instance: tupleInstance2, map } = fakeArbitrary<any[]>();
       const { instance: booleanInstance } = fakeArbitrary<any>();
-      const boolean = jest.spyOn(BooleanMock, 'boolean');
-      const constant = jest.spyOn(ConstantMock, 'constant');
-      const option = jest.spyOn(OptionMock, 'option');
-      const tuple = jest.spyOn(TupleMock, 'tuple');
+      const boolean = vi.spyOn(BooleanMock, 'boolean');
+      const constant = vi.spyOn(ConstantMock, 'constant');
+      const option = vi.spyOn(OptionMock, 'option');
+      const tuple = vi.spyOn(TupleMock, 'tuple');
       boolean.mockReturnValueOnce(booleanInstance);
       constant.mockReturnValueOnce(booleanInstance);
       tuple.mockReturnValueOnce(tupleInstance).mockReturnValueOnce(tupleInstance2);
       map.mockReturnValueOnce(mappedInstance);
 
-      const mapper = jest.fn();
-      const buildValuesAndSeparateKeysToObjectMapper = jest.spyOn(
+      const mapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectMapper = vi.spyOn(
         ValuesAndSeparateKeysToObjectMock,
         'buildValuesAndSeparateKeysToObjectMapper',
       );
       buildValuesAndSeparateKeysToObjectMapper.mockReturnValue(mapper);
 
-      const unmapper = jest.fn();
-      const buildValuesAndSeparateKeysToObjectUnmapper = jest.spyOn(
+      const unmapper = vi.fn();
+      const buildValuesAndSeparateKeysToObjectUnmapper = vi.spyOn(
         ValuesAndSeparateKeysToObjectMock,
         'buildValuesAndSeparateKeysToObjectUnmapper',
       );

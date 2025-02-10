@@ -1,28 +1,26 @@
 .features {
-  display: flex;
-  align-items: center;
+  display: grid;
   padding: 2rem 0;
+  gap: 2rem;
   width: 100%;
+  grid-template-columns: 2fr 1fr;
 }
 
 .allFeatureCards {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 100%;
   gap: 3em;
 }
 
 .featureCard {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }
 
 @media screen and (max-width: 996px) {
-  .allFeatureCards {
+  .features {
     grid-template-columns: 100%;
-  }
-  .featureCard {
-    flex-direction: row;
   }
 }
 

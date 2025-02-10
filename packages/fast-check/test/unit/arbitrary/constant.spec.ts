@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { constant } from '../../../src/arbitrary/constant';
 
@@ -5,21 +6,17 @@ import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { cloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('constant', () => {
+  declareCleaningHooksForSpies();
+
   it('should instantiate ConstantArbitrary([c]) for constant(c)', () =>
     fc.assert(
       fc.property(fc.anything(), (c) => {
         // Arrange
         const { instance } = fakeArbitrary();
-        const ConstantArbitrary = jest.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');
+        const ConstantArbitrary = vi.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');
         ConstantArbitrary.mockImplementation(() => instance as ConstantArbitraryMock.ConstantArbitrary<unknown>);
 
         // Act

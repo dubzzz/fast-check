@@ -46,9 +46,7 @@ We can also see that we assess the order of results by confirming that the value
 
 ## Towards next test
 
-The test above has some limitations. Among them we have the fact that the fake API we defined always resolve instantly. It has one downside: without any `queue`, calling `call(1)` and then `call(2)` would also pass the test. Indeed, when calling `call(1)` it would produce a new promise being `Promise.resolve(1)`. Instantely created, instantly resolved and instantly watched via `.then((v) => seenAnswers.push(v))`. In other words, as soon as we give back the hand to JavaScript runtime, the continuation will be called. The one registered immediately after when calling `call(2)` will have to wait its turn as it has been queued after it.
-
-While the test we just examined is a good starting point, it comes with some limitations. Specifically, the fake API we established in the test instantly resolves queries. As a result, it does not account for scenarios where we have multiple calls to `call` that need to be queued. For instance, if we were to call `call(1)` followed by `call(2)` without any queue, the test would still pass. This is because `call(1)` produces a new promise that resolves immediately, which is then instantly followed by `.then((v) => seenAnswers.push(v))`. Once the JavaScript runtime relinquishes control, the continuation of `call(1)` is immediately called. Consequently, the continuation registered during the call to `call(2)` will wait until the continuation of `call(1)` ends.
+The test above has some limitations. Namely, the promises and their `.then()` callbacks happen to resolve in the correct order only because they were instantiated in the correct order and they did not `await` to yield control back to the JavaScript event loop (because we use `Promise.resolve()`). In other words, we are just testing that the JavaScript event loop is queueing and processing promises in the correct order, which is hopefully already true!
 
 In order to address this limitation, our updated test should ensure that promises resolve later rather than instantly.
 
@@ -56,7 +54,7 @@ In order to address this limitation, our updated test should ensure that promise
 
 When adding fast-check into a race condition test, the recommended initial step is to update the test code as follows:
 
-<!-- prettier-ignore-start -->
+{/* prettier-ignore-start */}
 ```js
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => { // <-- added
@@ -64,7 +62,7 @@ test('should resolve in call order', async () => {
   }));                                                            // <-- added
 });
 ```
-<!-- prettier-ignore-end -->
+{/* prettier-ignore-end */}
 
 This modification runs the test using the fast-check runner. By doing so, any bugs that arise during the predicate will be caught by fast-check.
 

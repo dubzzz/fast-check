@@ -10,14 +10,12 @@ import { Stream } from '../../stream/Stream';
 import { oneof } from '../oneof';
 import { restrictedIntegerArbitraryBuilder } from './builders/RestrictedIntegerArbitraryBuilder';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type CommandsArbitraryContext<Model extends object, Real, RunResult, CheckAsync extends boolean> = {
   shrunkOnce: boolean;
   items: Value<CommandWrapper<Model, Real, RunResult, CheckAsync>>[];
 };
 
 /** @internal */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync extends boolean> extends Arbitrary<
   CommandsIterable<Model, Real, RunResult, CheckAsync>
 > {

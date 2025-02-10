@@ -315,6 +315,7 @@ Generate _Float32Array_
 - `max?` — default: `+∞` and `+3.4028234663852886e+38` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
@@ -359,6 +360,7 @@ Generate _Float64Array_
 - `max?` — default: `+∞` and `Number.MAX_VALUE` when `noDefaultInfinity:true` — _upper bound for the generated 32-bit floats (included)_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 - `minLength?` — default: `0` — _minimal length (included)_
 - `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal length (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
@@ -369,7 +371,7 @@ Generate _Float64Array_
 fc.float64Array();
 // Examples of generated values:
 // • Float64Array.from([])
-// • Float64Array.from([-301377788.37725013,-1.7149147913092319e-97,-2.47e-322,1.24e-322,4e-323,-2.057106358614005e-7,3.7791002743330725e-63,-1.43e-322,-1.4e-322,-2.7469348785639148e+224])
+// • Float64Array.from([-301377788.37725013,-1.7149147913092319e-97,8e-323,1e-323,-4e-323,-2.057106358614005e-7,3.7791002743330725e-63,5e-323,7e-323,-2.7469348785639148e+224])
 // • Float64Array.from([-1.1619421936685911e-164])
 // • Float64Array.from([-7.651385650429631e+128,-8.869426164279998e-72,4.233071733934197e-64,-0.000002350752021139201,7.038756466481596e-175,126806475960244.08,1.1085581712589228e+178])
 // • Float64Array.from([3.477655531645621e-163,8.482885727970808e+246,8.005016653709244e+200,-1.6308036504155555e+224,-1.8149570511597214e-122])
@@ -378,10 +380,10 @@ fc.float64Array();
 fc.float64Array({ minLength: 1 });
 // Examples of generated values:
 // • Float64Array.from([1.179182805455725e-90])
-// • Float64Array.from([33830772.59796326,-0])
-// • Float64Array.from([8.4e-323,-2.0609982364042263e+263,8.629895099097848e+77,1.4155962948371038e-248,-1.9599359241539372e+245,5.117175856556106e-218,3.0325723805645807e-84,-1.7976931348623067e+308])
-// • Float64Array.from([1.7976931348623141e+308])
-// • Float64Array.from([-1.7976931348623091e+308])
+// • Float64Array.from([33830772.59796326,4.4e-323])
+// • Float64Array.from([4.4e-323,-2.0609982364042263e+263,8.629895099097848e+77,1.4155962948371038e-248,-1.9599359241539372e+245,5.117175856556106e-218,3.0325723805645807e-84,-1.7976931348623147e+308])
+// • Float64Array.from([1.7976931348623147e+308])
+// • Float64Array.from([-1.7976931348623147e+308])
 // • …
 ```
 

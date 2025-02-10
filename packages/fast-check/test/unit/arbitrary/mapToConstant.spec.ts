@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { mapToConstant } from '../../../src/arbitrary/mapToConstant';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
@@ -14,7 +15,7 @@ describe('mapToConstant', () => {
     fc.assert(
       fc.property(fc.array(fc.nat()), fc.array(fc.nat()), fc.integer({ max: -1 }), (beforeNeg, afterNeg, neg) => {
         // Arrange
-        const entries = [...beforeNeg, neg, ...afterNeg].map((num) => ({ num, build: jest.fn() }));
+        const entries = [...beforeNeg, neg, ...afterNeg].map((num) => ({ num, build: vi.fn() }));
 
         // Act / Assert
         expect(() => mapToConstant(...entries)).toThrowError();
@@ -25,7 +26,7 @@ describe('mapToConstant', () => {
     fc.assert(
       fc.property(fc.nat({ max: 1000 }), (length) => {
         // Arrange
-        const entries = [...Array(length)].map(() => ({ num: 0, build: jest.fn() }));
+        const entries = [...Array(length)].map(() => ({ num: 0, build: vi.fn() }));
 
         // Act / Assert
         expect(() => mapToConstant(...entries)).toThrowError();
@@ -37,7 +38,7 @@ describe('mapToConstant', () => {
       fc.property(fc.array(fc.nat(), { minLength: 1 }), (nums) => {
         // Arrange
         fc.pre(nums.some((n) => n > 0));
-        const entries = nums.map((num) => ({ num, build: jest.fn() }));
+        const entries = nums.map((num) => ({ num, build: vi.fn() }));
 
         // Act / Assert
         expect(() => mapToConstant(...entries)).not.toThrowError();

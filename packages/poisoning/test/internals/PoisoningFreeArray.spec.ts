@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { MapSymbol, PushSymbol, SortSymbol, PoisoningFreeArray } from '../../src/internals/PoisoningFreeArray.js';
 
 describe('PoisoningFreeArray', () => {

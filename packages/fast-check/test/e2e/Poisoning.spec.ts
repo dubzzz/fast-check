@@ -1,11 +1,21 @@
-import { restoreGlobals } from '@fast-check/poisoning';
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
+import { type } from 'os';
+
+const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const safeObjectDefineProperty = Object.defineProperty;
 
 // Building the matcher in a polluted context is not working for now
 const preBuiltStringMatching = fc.stringMatching(/(^|\s)[0-9a-f]{8}-(\w{4})[^abc][^a-u]\D+(\s|$)/);
 
 describe(`Poisoning (seed: ${seed})`, () => {
+  if (type() === 'Darwin') {
+    // Skip Poisoning related tests on MacOS
+    it('No test for Darwin', () => {});
+    return;
+  }
+
   it.each<{
     name: string;
     arbitraryBuilder: () => fc.Arbitrary<unknown>;
@@ -23,42 +33,21 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'maxSafeInteger', arbitraryBuilder: () => fc.maxSafeInteger() },
     { name: 'maxSafeNat', arbitraryBuilder: () => fc.maxSafeNat() },
     { name: 'float', arbitraryBuilder: () => fc.float() },
-    // pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'double', arbitraryBuilder: () => fc.double() },
-    { name: 'bigIntN', arbitraryBuilder: () => fc.bigIntN(64) },
+    { name: 'double', arbitraryBuilder: () => fc.double() },
     { name: 'bigInt', arbitraryBuilder: () => fc.bigInt() },
-    { name: 'bigUintN', arbitraryBuilder: () => fc.bigUintN(64) },
-    { name: 'bigUint', arbitraryBuilder: () => fc.bigUint() },
     // String
-    // : Single character
-    { name: 'hexa', arbitraryBuilder: () => fc.hexa() },
-    { name: 'base64', arbitraryBuilder: () => fc.base64() },
-    { name: 'char', arbitraryBuilder: () => fc.char() },
-    { name: 'ascii', arbitraryBuilder: () => fc.ascii() },
-    { name: 'unicode', arbitraryBuilder: () => fc.unicode() },
-    { name: 'char16bits', arbitraryBuilder: () => fc.char16bits() },
-    { name: 'fullUnicode', arbitraryBuilder: () => fc.fullUnicode() },
     // : Multiple characters
-    { name: 'hexaString', arbitraryBuilder: () => fc.hexaString() },
     { name: 'base64String', arbitraryBuilder: () => fc.base64String() },
     { name: 'string', arbitraryBuilder: () => fc.string() },
-    { name: 'asciiString', arbitraryBuilder: () => fc.asciiString() },
-    { name: 'unicodeString', arbitraryBuilder: () => fc.unicodeString() },
-    { name: 'string16bits', arbitraryBuilder: () => fc.string16bits() },
-    { name: 'fullUnicodeString', arbitraryBuilder: () => fc.fullUnicodeString() },
-    { name: 'stringOf', arbitraryBuilder: () => fc.stringOf(fc.char()) },
     { name: 'stringMatching', arbitraryBuilder: () => preBuiltStringMatching },
     // : More specific strings
-    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'json', arbitraryBuilder: () => fc.json() },
-    //{ name: 'unicodeJson', arbitraryBuilder: () => fc.unicodeJson() },
+    { name: 'json', arbitraryBuilder: () => fc.json() },
     { name: 'lorem', arbitraryBuilder: () => fc.lorem() },
     { name: 'ipV4', arbitraryBuilder: () => fc.ipV4() },
     { name: 'ipV4Extended', arbitraryBuilder: () => fc.ipV4Extended() },
     { name: 'ipV6', arbitraryBuilder: () => fc.ipV6() },
     { name: 'ulid', arbitraryBuilder: () => fc.ulid() },
     { name: 'uuid', arbitraryBuilder: () => fc.uuid() },
-    { name: 'uuidV', arbitraryBuilder: () => fc.uuidV(4) },
     { name: 'domain', arbitraryBuilder: () => fc.domain() },
     { name: 'webAuthority', arbitraryBuilder: () => fc.webAuthority() },
     { name: 'webFragments', arbitraryBuilder: () => fc.webFragments() },
@@ -79,8 +68,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'int32Array', arbitraryBuilder: () => fc.int32Array() },
     { name: 'uint32Array', arbitraryBuilder: () => fc.uint32Array() },
     { name: 'float32Array', arbitraryBuilder: () => fc.float32Array() },
-    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'float64Array', arbitraryBuilder: () => fc.float64Array() },
+    { name: 'float64Array', arbitraryBuilder: () => fc.float64Array() },
     { name: 'bigInt64Array', arbitraryBuilder: () => fc.bigInt64Array() },
     { name: 'bigUint64Array', arbitraryBuilder: () => fc.bigUint64Array() },
     // Combinators
@@ -106,11 +94,9 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'dictionary', arbitraryBuilder: () => fc.dictionary(basic().map(String), noop()) },
     { name: 'record', arbitraryBuilder: () => fc.record({ a: noop(), b: noop() }) },
     { name: 'record::requiredKeys', arbitraryBuilder: () => fc.record({ a: noop(), b: noop() }, { requiredKeys: [] }) },
-    // related to fc.double: pure-rand is not resilient to prototype poisoning occuring on Array
-    //{ name: 'object', arbitraryBuilder: () => fc.object() },
-    //{ name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
-    //{ name: 'unicodeJsonValue', arbitraryBuilder: () => fc.unicodeJsonValue() },
-    //{ name: 'anything', arbitraryBuilder: () => fc.anything() },
+    { name: 'object', arbitraryBuilder: () => fc.object() },
+    { name: 'jsonValue', arbitraryBuilder: () => fc.jsonValue() },
+    { name: 'anything', arbitraryBuilder: () => fc.anything() },
     // : Function
     { name: 'compareBooleanFunc', arbitraryBuilder: () => fc.compareBooleanFunc() },
     { name: 'compareFunc', arbitraryBuilder: () => fc.compareFunc() },
@@ -118,6 +104,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // : Recursive structures
     { name: 'letrec', arbitraryBuilder: () => letrecTree() },
     { name: 'memo', arbitraryBuilder: () => memoTree() },
+    { name: 'gen', arbitraryBuilder: () => fc.gen() },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
@@ -133,7 +120,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
       failedOnce = failedOnce || !ret;
       return ret;
     };
-    dropMainGlobals();
+    const restoreAll = dropMainGlobals();
 
     // Act
     let interceptedException: unknown = undefined;
@@ -147,7 +134,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     }
 
     // Assert
-    restoreGlobals(); // Restore globals before running real checks
+    restoreAll(); // Restore globals before running real checks
     expect(interceptedException).toBeDefined();
     expect(interceptedException).toBeInstanceOf(Error);
     expect((interceptedException as Error).message).toMatch(/Property failed after/);
@@ -158,7 +145,8 @@ describe(`Poisoning (seed: ${seed})`, () => {
 
 const capturedGlobalThis = globalThis;
 const own = Object.getOwnPropertyNames;
-function dropAllFromObj(obj: unknown): void {
+function dropAllFromObj(obj: unknown): (() => void)[] {
+  const restores: (() => void)[] = [];
   for (const k of own(obj)) {
     // We need to keep String for Jest to be able to run properly
     // and Object because of some code generated by TypeScript in the cjs version
@@ -166,19 +154,20 @@ function dropAllFromObj(obj: unknown): void {
       continue;
     }
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      delete obj[k];
-    } catch (err) {
+      const descriptor = safeObjectGetOwnPropertyDescriptor(obj, k)!;
+      delete (obj as any)[k];
+      restores.push(() => safeObjectDefineProperty(obj, k, descriptor));
+    } catch {
       // Object.prototype cannot be deleted, and others might too
     }
   }
+  return restores;
 }
-function dropMainGlobals(): void {
+function dropMainGlobals(): () => void {
   const mainGlobals = [
     Object,
     Function,
-    Array,
+    //Array, // TypeError: originalEmit.apply is not a function
     Number,
     Boolean,
     String,
@@ -229,40 +218,56 @@ function dropMainGlobals(): void {
     URIError,
     Atomics,
     WebAssembly,
+    URL,
+    CompressionStream,
+    DecompressionStream,
+    TextDecoder,
     globalThis,
+    // The following globals are unknown for TypeScript
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    AggregateError,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    FinalizationRegistry,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    WeakRef,
+    // The following globals used to be unknown on MacOS,
+    // as such we check they exist before referencing them
+    typeof File !== 'undefined' ? File : undefined,
+    typeof BroadcastChannel !== 'undefined' ? BroadcastChannel : undefined,
+    typeof DOMException !== 'undefined' ? DOMException : undefined,
+    typeof Blob !== 'undefined' ? Blob : undefined,
+    typeof Performance !== 'undefined' ? Performance : undefined,
+    typeof ReadableStream !== 'undefined' ? ReadableStream : undefined,
+    typeof ReadableStreamDefaultReader !== 'undefined' ? ReadableStreamDefaultReader : undefined,
+    typeof ReadableStreamBYOBReader !== 'undefined' ? ReadableStreamBYOBReader : undefined,
+    typeof ReadableStreamBYOBRequest !== 'undefined' ? ReadableStreamBYOBRequest : undefined,
+    typeof ReadableByteStreamController !== 'undefined' ? ReadableByteStreamController : undefined,
+    typeof ReadableStreamDefaultController !== 'undefined' ? ReadableStreamDefaultController : undefined,
+    typeof TransformStream !== 'undefined' ? TransformStream : undefined,
+    typeof TransformStreamDefaultController !== 'undefined' ? TransformStreamDefaultController : undefined,
+    typeof WritableStream !== 'undefined' ? WritableStream : undefined,
+    typeof WritableStreamDefaultWriter !== 'undefined' ? WritableStreamDefaultWriter : undefined,
+    typeof WritableStreamDefaultController !== 'undefined' ? WritableStreamDefaultController : undefined,
+    typeof ByteLengthQueuingStrategy !== 'undefined' ? ByteLengthQueuingStrategy : undefined,
+    typeof CountQueuingStrategy !== 'undefined' ? CountQueuingStrategy : undefined,
+    typeof TextEncoderStream !== 'undefined' ? TextEncoderStream : undefined,
+    typeof TextDecoderStream !== 'undefined' ? TextDecoderStream : undefined,
+    typeof FormData !== 'undefined' ? FormData : undefined,
+    typeof Headers !== 'undefined' ? Headers : undefined,
+    typeof Request !== 'undefined' ? Request : undefined,
+    typeof Response !== 'undefined' ? Response : undefined,
+    typeof PerformanceEntry !== 'undefined' ? PerformanceEntry : undefined,
+    typeof PerformanceMark !== 'undefined' ? PerformanceMark : undefined,
+    typeof PerformanceMeasure !== 'undefined' ? PerformanceMeasure : undefined,
+    typeof PerformanceObserver !== 'undefined' ? PerformanceObserver : undefined,
+    typeof PerformanceObserverEntryList !== 'undefined' ? PerformanceObserverEntryList : undefined,
+    typeof PerformanceResourceTiming !== 'undefined' ? PerformanceResourceTiming : undefined,
+    typeof Crypto !== 'undefined' ? Crypto : undefined,
+    typeof CryptoKey !== 'undefined' ? CryptoKey : undefined,
+    typeof SubtleCrypto !== 'undefined' ? SubtleCrypto : undefined,
+    typeof CustomEvent !== 'undefined' ? CustomEvent : undefined,
   ];
-  const skippedGlobals = new Set([
-    'AggregateError',
-    'FinalizationRegistry',
-    'WeakRef',
-    'URL', // Causing exception in test (unrelated to fast-check)
-    'CompressionStream', // TS issue
-    'DecompressionStream', // TS issue
-    'BroadcastChannel', // Unknown in CI against macOS
-    'DOMException', // Unknown in CI against macOS
-    'Blob', // Unknown in CI against macOS
-    'Performance', // Unknown in CI against macOS
-    'ReadableStream', // Unknown in CI against macOS
-    'ReadableStreamDefaultReader', // Unknown in CI against macOS
-    'ReadableStreamBYOBReader', // Unknown in CI against macOS
-    'ReadableStreamBYOBRequest', // Unknown in CI against macOS
-    'ReadableByteStreamController', // Unknown in CI against macOS
-    'ReadableStreamDefaultController', // Unknown in CI against macOS
-    'TransformStream', // Unknown in CI against macOS
-    'TransformStreamDefaultController', // Unknown in CI against macOS
-    'WritableStream', // Unknown in CI against macOS
-    'WritableStreamDefaultWriter', // Unknown in CI against macOS
-    'WritableStreamDefaultController', // Unknown in CI against macOS
-    'ByteLengthQueuingStrategy', // Unknown in CI against macOS
-    'CountQueuingStrategy', // Unknown in CI against macOS
-    'TextEncoderStream', // Unknown in CI against macOS
-    'TextDecoderStream', // Unknown in CI against macOS
-    'FormData', // Unknown in CI against macOS
-    'Headers', // Unknown in CI against macOS
-    'Request', // Unknown in CI against macOS
-    'Response', // Unknown in CI against macOS
-    'TextDecoder', // Leveraged by @jridgewell/sourcemap-codec which is used by babel
-  ]);
+  const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
       globalName[0] >= 'A' &&
@@ -279,13 +284,18 @@ function dropMainGlobals(): void {
       missingGlobals.push(globalName);
     }
   }
-  //expect(missingGlobals).toEqual([]);
+  expect(missingGlobals).toEqual([]);
+
+  const restores: (() => void)[] = [];
   for (const mainGlobal of mainGlobals) {
-    if ('prototype' in mainGlobal) {
-      dropAllFromObj(mainGlobal.prototype);
+    if (mainGlobals !== undefined) {
+      if ('prototype' in mainGlobal) {
+        restores.push(...dropAllFromObj(mainGlobal.prototype));
+      }
+      restores.push(...dropAllFromObj(mainGlobal));
     }
-    dropAllFromObj(mainGlobal);
   }
+  return () => restores.forEach((restore) => restore());
 }
 
 class NoopArbitrary extends fc.Arbitrary<number> {

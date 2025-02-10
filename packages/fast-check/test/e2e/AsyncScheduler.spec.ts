@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from '../../src/fast-check';
 import { seed } from './seed';
 
@@ -46,11 +47,11 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     expect(out.counterexample![0].toString()).toEqual(
       'schedulerFor()`\n' +
         '-> [task${2}] function::fetchHeroesById() resolved with value [{"name":"James Bond"}]\n' +
-        '-> [task${1}] function::fetchHeroName() pending`',
+        '-> [task${1}] function::fetchHeroName2() pending`',
     );
     // Node  <16: Cannot read property 'toLowerCase' of undefined
     // Node >=16: TypeError: Cannot read properties of undefined (reading 'toLowerCase')
-    expect(out.error).toContain(`'toLowerCase'`);
+    expect((out.errorInstance as Error).message).toContain(`'toLowerCase'`);
   });
 
   it('should detect race conditions leading to infinite loops', async () => {
@@ -174,10 +175,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     expect(outRetry.failed).toBe(true);
     expect(outRetry.numRuns).toBe(1);
 
-    const cleanError = (error: string) => {
-      return error.replace(/AsyncScheduler\.spec\.ts:\d+:\d+/g, 'AsyncScheduler.spec.ts:*:*');
-    };
-    expect(cleanError(outRetry.error!)).toBe(cleanError(out.error!));
+    expect(outRetry.errorInstance).toStrictEqual(out.errorInstance);
     expect(String(outRetry.counterexample![0])).toBe(String(out.counterexample![0]));
   });
 });

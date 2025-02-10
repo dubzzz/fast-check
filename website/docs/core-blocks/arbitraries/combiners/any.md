@@ -72,25 +72,25 @@ The first arbitrary specified on `oneof` will have a privileged position. Constr
 **Usages:**
 
 ```js
-fc.oneof(fc.char(), fc.boolean());
+fc.oneof(fc.string(), fc.boolean());
 // Note: Equivalent to:
 //       fc.oneof(
-//         { arbitrary: fc.char(), weight: 1 },
+//         { arbitrary: fc.string(), weight: 1 },
 //         { arbitrary: fc.boolean(), weight: 1 },
 //       )
-// Examples of generated values: true, "p", " ", ",", "x"…
+// Examples of generated values: false, "x ", "\"AXf", "x%", true…
 
-fc.oneof(fc.char(), fc.boolean(), fc.nat());
+fc.oneof(fc.string(), fc.boolean(), fc.nat());
 // Note: Equivalent to:
 //       fc.oneof(
-//         { arbitrary: fc.char(), weight: 1 },
+//         { arbitrary: fc.string(), weight: 1 },
 //         { arbitrary: fc.boolean(), weight: 1 },
 //         { arbitrary: fc.nat(), weight: 1 },
 //       )
-// Examples of generated values: 12, true, 24, false, "N"…
+// Examples of generated values: "a:m[nG+", 2147483628, "le@o|g4", 1039477336, 1961824130…
 
-fc.oneof({ arbitrary: fc.char(), weight: 5 }, { arbitrary: fc.boolean(), weight: 2 });
-// Examples of generated values: false, true, "L", "b", "y"…
+fc.oneof({ arbitrary: fc.string(), weight: 5 }, { arbitrary: fc.boolean(), weight: 2 });
+// Examples of generated values: "y", "u F(AR", true, ">,?4", false…
 
 // fc.oneof fits very well with recursive stuctures built using fc.letrec.
 // Examples of such recursive structures are available with fc.letrec.
@@ -132,6 +132,87 @@ fc.clone(fc.nat(), 3);
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/clone.html).  
 Available since 2.5.0.
+
+## noBias
+
+Drop bias from an existing arbitrary. Instead of being more likely to generate certain values the resulting arbitrary will be close to an equi-probable generator.
+
+**Signatures:**
+
+- `fc.noBias(arb)`
+
+**with:**
+
+- `arb` — _arbitrary instance responsible to generate values_
+
+**Usages:**
+
+```js
+fc.noBias(fc.nat());
+// Note: Compared to fc.nat() alone, the generated values are evenly distributed in
+// the range 0 to 0x7fffffff making small values much more unlikely.
+// Examples of generated values: 394798768, 980149687, 1298483622, 1164017931, 646759550…
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/noBias.html).  
+Available since 3.20.0.
+
+## noShrink
+
+Drop shrinking capabilities from an existing arbitrary.
+
+:::warning Avoid dropping shrinking capabilities
+Although dropping the shrinking capabilities can speed up your CI when failures occur, we do not recommend this approach. Instead, if you want to reduce the shrinking time for automated jobs or local runs, consider using `endOnFailure` or `interruptAfterTimeLimit`.
+
+The only potentially legitimate use of dropping shrinking is when creating new complex arbitraries. In such cases, dropping useless parts of the shrinker may prove useful.
+:::
+
+**Signatures:**
+
+- `fc.noShrink(arb)`
+
+**with:**
+
+- `arb` — _arbitrary instance responsible to generate values_
+
+**Usages:**
+
+```js
+fc.noShrink(fc.nat());
+// Examples of generated values: 1395148595, 7, 1743838935, 879259091, 2147483640…
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/noShrink.html).  
+Available since 3.20.0.
+
+## limitShrink
+
+Limit shrinking capabilities of an existing arbitrary. Cap the number of potential shrunk values it could produce.
+
+:::warning Avoid limiting shrinking capabilities
+Although limiting the shrinking capabilities can speed up your CI when failures occur, we do not recommend this approach. Instead, if you want to reduce the shrinking time for automated jobs or local runs, consider using `endOnFailure` or `interruptAfterTimeLimit`.
+
+The only potentially legitimate use of limiting shrinking is when creating new complex arbitraries. In such cases, limiting some less relevant parts may help preserve shrinking capabilities without requiring exhaustive coverage of the shrinker.
+:::
+
+**Signatures:**
+
+- `fc.limitShrink(arb, maxShrinks)`
+
+**with:**
+
+- `arb` — _arbitrary instance responsible to generate values_
+- `maxShrinks` — _the maximal number of shrunk values that could be pulled from the arbitrary in case of shrink_
+
+**Usages:**
+
+```js
+fc.limitShrink(fc.nat(), 3);
+// Examples of generated values: 487640477, 1460784921, 1601237202, 1623804274, 5…
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/limitShrink.html).  
+Available since 3.20.0.
 
 ## .filter
 
@@ -225,33 +306,13 @@ fc.nat().chain((min) => fc.tuple(fc.constant(min), fc.integer({ min, max: 0xffff
 Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#chain).  
 Available since 1.2.0.
 
-## .noBias
-
-Drop bias from an existing arbitrary. Instead of being more likely to generate certain values the resulting arbitrary will be close to an equi-probable generator.
-
-**Signatures:**
-
-- `.noBias()`
-
-**Usages:**
-
-```js
-fc.nat().noBias();
-// Note: Compared to fc.nat() alone, the generated values are evenly distributed in
-// the range 0 to 0x7fffffff making small values much more unlikely.
-// Examples of generated values: 422394692, 1060515252, 383444404, 1509445429, 659009523…
-```
-
-Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#noBias).  
-Available since 1.1.0.
-
 ## .noShrink
 
 Drop shrinking capabilities from an existing arbitrary.
 
 **Signatures:**
 
-- `.noShrink()`
+- `.noShrink()` — _deprecated since v3.20.0 ([#5047](https://github.com/dubzzz/fast-check/pull/5047))_
 
 **Usages:**
 

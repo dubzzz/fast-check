@@ -123,9 +123,13 @@ import { faker } from '@faker-js/faker';
 
 const fakerToArb = (fakerGen) => {
   return fc
-    .integer()
-    .noBias() // same probability to generate each of the allowed integers
-    .noShrink() // shrink on a seed makes no sense
+    .noShrink(
+      // shrink on a seed makes no sense
+      fc.noBias(
+        // same probability to generate each of the allowed integers
+        fc.integer(),
+      ),
+    )
     .map((seed) => {
       faker.seed(seed); // seed the generator
       return fakerGen(); // call it
@@ -136,6 +140,11 @@ const streetAddressArb = fakerToArb(faker.address.streetAddress);
 const customArb = fakerToArb(() => faker.fake('{{name.lastName}}, {{name.firstName}} {{name.suffix}}'));
 ```
 
+:::tip Recommended integration for Faker
+
+Our recommended integration for Faker has changed since the release of the version 8.2.0 of Faker. We recommend you to have a look to [our article](/blog/2024/07/18/integrating-faker-with-fast-check/) on the subject.
+:::
+
 ### Random-based (eg.: lorem-ipsum)
 
 With [lorem-ipsum](https://www.npmjs.com/package/lorem-ipsum):
@@ -145,15 +154,13 @@ import fc from 'fast-check';
 import { loremIpsum } from 'lorem-ipsum';
 
 const loremArb = fc
-  .infiniteStream(
-    // Arbitrary generating 32-bit floating point numbers
-    // between 0 (included) and 1 (excluded) (uniform distribution)
-    fc
-      .integer({ min: 0, max: (1 << 24) - 1 })
-      .map((v) => v / (1 << 24))
-      .noBias(),
+  .noShrink(
+    fc.infiniteStream(
+      // Arbitrary generating 32-bit floating point numbers
+      // between 0 (included) and 1 (excluded) (uniform distribution)
+      fc.noBias(fc.integer({ min: 0, max: (1 << 24) - 1 }).map((v) => v / (1 << 24))),
+    ),
   )
-  .noShrink()
   .map((s) => {
     const rng = () => s.next().value; // prng like Math.random but controlled by fast-check
     return loremIpsum({ random: rng });

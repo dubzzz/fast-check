@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { GeneratorArbitrary } from '../../../../src/arbitrary/_internals/GeneratorArbitrary';
 import { Value } from '../../../../src/check/arbitrary/definition/Value';
 import type { Random } from '../../../../src/random/generator/Random';
@@ -248,7 +249,7 @@ function fakeRandomWithOffset(): {
 
   return {
     instance: instance as RandomWithOffset,
-    clone: clone as (() => RandomWithOffset) & MockWithArgs<() => RandomWithOffset>,
+    clone: clone as unknown as (() => RandomWithOffset) & MockWithArgs<() => RandomWithOffset>,
   };
 }
 

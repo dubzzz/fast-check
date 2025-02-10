@@ -1,3 +1,4 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { maxSafeNat } from '../../../src/arbitrary/maxSafeNat';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
@@ -10,8 +11,8 @@ function fakeIntegerArbitrary() {
 }
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 
@@ -19,7 +20,7 @@ describe('maxSafeInteger', () => {
   it('should instantiate IntegerArbitrary(0, MAX_SAFE_INTEGER) for maxSafeInteger()', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
-    const IntegerArbitrary = jest.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+    const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
     IntegerArbitrary.mockImplementation(() => instance);
 
     // Act

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import fc from '../../../src/fast-check';
 import { globSync } from 'glob';
@@ -178,7 +179,6 @@ function refreshContent(originalContent: string): { content: string; numExecuted
       ++numExecutedSnippets;
 
       const computedStatitics = (baseSize: fc.Size) =>
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         (function (fc): string[] {
           const lastIndexCommentForGeneratedValues = snippet.lastIndexOf(CommentForGeneratedValues);
           const refinedSnippet =

@@ -1,10 +1,12 @@
 // Copied from ts-jest/dist/utils/testing
+import type { MockInstance } from 'vitest';
 
 type MockableFunction = (...args: any[]) => any;
 type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never;
 type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never;
 
-export interface MockWithArgs<T extends MockableFunction> extends jest.MockInstance<ReturnType<T>, ArgumentsOf<T>> {
+export interface MockWithArgs<T extends MockableFunction>
+  extends MockInstance<(...args: ArgumentsOf<T>) => ReturnType<T>> {
   new (...args: ConstructorArgumentsOf<T>): T;
   (...args: ArgumentsOf<T>): ReturnType<T>;
 }
@@ -16,7 +18,7 @@ type PropertyKeysOf<T> = {
   [K in keyof T]: T[K] extends MockableFunction ? never : K;
 }[keyof T];
 type MaybeMockedConstructor<T> = T extends new (...args: any[]) => infer R
-  ? jest.MockInstance<R, ConstructorArgumentsOf<T>>
+  ? MockInstance<(...args: ConstructorArgumentsOf<T>) => R>
   : T;
 type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & {
   [K in keyof T]: T[K];
@@ -27,7 +29,6 @@ type MockedObject<T> = MaybeMockedConstructor<T> & {
   [K in PropertyKeysOf<T>]: T[K];
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T extends object ? MockedObject<T> : T;
 
 export function mocked<T>(item: T): MaybeMocked<T> {

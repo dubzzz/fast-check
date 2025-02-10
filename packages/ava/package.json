@@ -1,23 +1,23 @@
 {
   "name": "@fast-check/ava",
   "description": "Property based testing for AVA based on fast-check",
-  "version": "1.2.1",
-  "type": "commonjs",
+  "version": "2.0.1",
+  "type": "module",
   "main": "lib/ava-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "require": {
-        "types": "./lib/ava-fast-check.d.ts",
-        "default": "./lib/ava-fast-check.js"
+        "types": "./lib/cjs/ava-fast-check.d.ts",
+        "default": "./lib/cjs/ava-fast-check.js"
       },
       "import": {
-        "types": "./lib/esm/ava-fast-check.d.ts",
-        "default": "./lib/esm/ava-fast-check.js"
+        "types": "./lib/ava-fast-check.d.ts",
+        "default": "./lib/ava-fast-check.js"
       }
     }
   },
-  "module": "lib/esm/ava-fast-check.js",
+  "module": "lib/ava-fast-check.js",
   "types": "lib/ava-fast-check.d.ts",
   "files": [
     "lib"
@@ -25,10 +25,10 @@
   "scripts": {
     "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
     "build-ci": "yarn build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/esm",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node --outDir lib/esm && cp package.esm-template.json lib/esm/package.json",
-    "ava-test": "ava --config test/ava.config.cjs -s -t",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "ava-test": "ava --config test/ava.config.js -s -t",
     "test": "sh test.sh",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
@@ -53,12 +53,12 @@
     "ava": "^4 || ^5 || ^6"
   },
   "devDependencies": {
-    "@types/node": "^20.11.10",
-    "ava": "^6.1.1",
+    "@types/node": "^22.13.1",
+    "ava": "^6.2.0",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "rxjs": "^7.8.1",
-    "typescript": "~5.3.3"
+    "typescript": "~5.7.3"
   },
   "keywords": [
     "ava",

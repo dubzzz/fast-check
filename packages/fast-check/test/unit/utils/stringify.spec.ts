@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 
 // Importing 'buffer' imports the real implementation from node
@@ -18,7 +19,7 @@ const checkEqual = (a: any, b: any): boolean => {
   try {
     expect(a).toEqual(b);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 };
@@ -36,7 +37,7 @@ class CustomTagThrowingToString {
   }
 }
 
-const anythingEnableAll = {
+const anythingEnableAll: fc.ObjectConstraints = {
   withBoxedValues: true,
   withMap: true,
   withSet: true,
@@ -45,22 +46,26 @@ const anythingEnableAll = {
   withDate: true,
   withTypedArray: true,
   withSparseArray: true,
-  ...(typeof BigInt !== 'undefined' ? { withBigInt: true } : {}),
+  withUnicodeString: true,
+  withBigInt: true,
 };
 
 describe('stringify', () => {
   it('Should be able to stringify fc.anything()', () =>
     fc.assert(fc.property(fc.anything(anythingEnableAll), (a) => typeof stringify(a) === 'string')));
-  it('Should be able to stringify fc.char16bits() (ie. possibly invalid strings)', () =>
-    fc.assert(fc.property(fc.char16bits(), (a) => typeof stringify(a) === 'string')));
-  if (typeof BigInt !== 'undefined') {
-    it('Should be able to stringify bigint in object correctly', () =>
-      fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
-  }
+  it('Should be able to stringify possibly invalid strings', () =>
+    fc.assert(
+      fc.property(
+        fc.string({ unit: fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n)) }),
+        (a) => typeof stringify(a) === 'string',
+      ),
+    ));
+  it('Should be able to stringify bigint in object correctly', () =>
+    fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
   it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>
     fc.assert(
       fc.property(
-        // Remark: While fc.unicodeJsonObject() could have been a good alternative to fc.anything()
+        // Remark: While fc.jsonValue() could have been a good alternative to fc.anything()
         //         it unfortunately cannot be used as JSON.stringify poorly handles negative zeros.
         // JSON.parse('{"a": -0}') -> preserves -0
         // JSON.stringify({a: -0}) -> changes -0 into 0, it produces {"a":0}
@@ -70,7 +75,7 @@ describe('stringify', () => {
             fc.boolean(),
             fc.integer(),
             fc.double({ noDefaultInfinity: true, noNaN: true }).filter((d) => !Object.is(d, -0)),
-            fc.fullUnicodeString(),
+            fc.string({ unit: 'binary' }),
             fc.constant(null),
           ],
         }),
@@ -128,11 +133,8 @@ describe('stringify', () => {
     expect(stringify([1, 2, , ,])).toEqual('[1,2,,,]'); // two values then two holes
   });
   it('Should be able to stringify large sparse arrays', () => {
-    // eslint-disable-next-line no-sparse-arrays
     expect(stringify(Array(10000))).toEqual('Array(10000)');
-    // eslint-disable-next-line no-sparse-arrays
     expect(stringify(Array(4294967295))).toEqual('Array(4294967295)');
-    // eslint-disable-next-line no-sparse-arrays
     const sparseNonEmpty: any[] = Array(10000);
     sparseNonEmpty[150] = 5;
     sparseNonEmpty[21] = 1;
@@ -177,9 +179,7 @@ describe('stringify', () => {
     expect(stringify(Number.NEGATIVE_INFINITY)).toEqual('Number.NEGATIVE_INFINITY');
     expect(stringify(Number.NaN)).toEqual('Number.NaN');
     expect(stringify('Hello')).toEqual('"Hello"');
-    if (typeof BigInt !== 'undefined') {
-      expect(stringify(BigInt(42))).toEqual('42n');
-    }
+    expect(stringify(BigInt(42))).toEqual('42n');
   });
   it('Should be able to stringify boxed values', () => {
     expect(stringify(new Boolean(false))).toEqual('new Boolean(false)');
@@ -221,7 +221,13 @@ describe('stringify', () => {
       const s = (Symbol as any)[symbolName];
       if (typeof s === 'symbol') {
         foundOne = true;
-        expect(stringify(s)).toEqual(`Symbol.${symbolName}`);
+
+        expect(stringify(s)).toEqual(
+          Number(process.versions.node.split('.')[0]) < 23 &&
+            (symbolName === 'dispose' || symbolName === 'asyncDispose')
+            ? `Symbol.for("nodejs.${symbolName}")`
+            : `Symbol.${symbolName}`,
+        );
         expect(stringify(Symbol(`Symbol.${symbolName}`))).toEqual(`Symbol("Symbol.${symbolName}")`);
         expect(eval(`(function() { return typeof ${stringify(s)}; })()`)).toBe('symbol');
       }
@@ -289,12 +295,10 @@ describe('stringify', () => {
     expect(stringify(new B())).toEqual('{"a":1,"b":3,[Symbol.for("a")]:2,[Symbol.for("b")]:4}');
   });
   it('Should be able to stringify Object without prototype', () => {
-    expect(stringify(Object.create(null))).toEqual('Object.create(null)');
-    expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{"a":1})',
-    );
+    expect(stringify(Object.create(null))).toEqual('{__proto__:null}');
+    expect(stringify(Object.assign(Object.create(null), { a: 1 }))).toEqual('{__proto__:null,"a":1}');
     expect(stringify(Object.assign(Object.create(null), { [Symbol.for('a')]: 1 }))).toEqual(
-      'Object.assign(Object.create(null),{[Symbol.for("a")]:1})',
+      '{__proto__:null,[Symbol.for("a")]:1}',
     );
   });
   it('Should be able to stringify Object with custom __proto__ value', () => {
@@ -303,7 +307,7 @@ describe('stringify', () => {
   });
   it('Should be able to stringify Object with custom __proto__ value and no prototype', () => {
     const instance = Object.assign(Object.create(null), { ['__proto__']: 1 });
-    expect(stringify(instance)).toEqual('Object.assign(Object.create(null),{["__proto__"]:1})');
+    expect(stringify(instance)).toEqual('{__proto__:null,["__proto__"]:1}');
     // NOTE: {['__proto__']: 1} is not the same as Object.assign(Object.create(null),{["__proto__"]:1})
     // The first one has a prototype equal to Object, the second one has no prototype.
   });
@@ -378,20 +382,27 @@ describe('stringify', () => {
     expect(stringify(Float64Array.from([0, 0.5, 30, -1]))).toEqual('Float64Array.from([0,0.5,30,-1])');
     assertStringifyTypedArraysProperly(fc.double(), Float64Array.from.bind(Float64Array));
   });
-  if (typeof BigInt !== 'undefined') {
-    it('Should be able to stringify BigInt64Array', () => {
-      expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigInt64Array.from([-2147483648n,5n,2147483647n])',
-      );
-      assertStringifyTypedArraysProperly<bigint>(fc.bigIntN(64), BigInt64Array.from.bind(BigInt64Array));
-    });
-    it('Should be able to stringify BigUint64Array', () => {
-      expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
-        'BigUint64Array.from([0n,5n,2147483647n])',
-      );
-      assertStringifyTypedArraysProperly<bigint>(fc.bigUintN(64), BigUint64Array.from.bind(BigUint64Array));
-    });
-  }
+  it('Should be able to stringify BigInt64Array', () => {
+    expect(stringify(BigInt64Array.from([BigInt(-2147483648), BigInt(5), BigInt(2147483647)]))).toEqual(
+      'BigInt64Array.from([-2147483648n,5n,2147483647n])',
+    );
+    assertStringifyTypedArraysProperly<bigint>(
+      fc.bigInt({
+        min: -BigInt(1) << BigInt(63), // -2**63
+        max: (BigInt(1) << BigInt(63)) - BigInt(1), // 2**63 -1
+      }),
+      BigInt64Array.from.bind(BigInt64Array),
+    );
+  });
+  it('Should be able to stringify BigUint64Array', () => {
+    expect(stringify(BigUint64Array.from([BigInt(0), BigInt(5), BigInt(2147483647)]))).toEqual(
+      'BigUint64Array.from([0n,5n,2147483647n])',
+    );
+    assertStringifyTypedArraysProperly<bigint>(
+      fc.bigInt({ min: BigInt(0), max: (BigInt(1) << BigInt(64)) - BigInt(1) }),
+      BigUint64Array.from.bind(BigUint64Array),
+    );
+  });
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');
     expect(stringify(new CustomTagThrowingToString())).toEqual('[object CustomTagThrowingToString]');
@@ -421,7 +432,7 @@ describe('stringify', () => {
     const instance3 = { [toStringMethod]: () => { throw new Error('hello3'); } };
     const stringified3 = stringify(instance3);
     expect(stringified3.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/toStringMethod")]:() => { throw new Error(\'hello3\'); }}',
+      '{[Symbol.for("fast-check/toStringMethod")]:() => { throw new Error("hello3"); }}',
     ); // fallbacking to default
 
     class InProto {
@@ -433,16 +444,16 @@ describe('stringify', () => {
     expect(stringify(instance4)).toEqual('hello4');
 
     const instance5 = { [toStringMethod]: 1 }; // not callable
-    expect(stringify(instance5)).toEqual('{[Symbol("fast-check/toStringMethod")]:1}');
+    expect(stringify(instance5)).toEqual('{[Symbol.for("fast-check/toStringMethod")]:1}');
   });
   it('Should not be able to rely on the output of [asyncToStringMethod] in sync mode', () => {
     const instance1 = { [asyncToStringMethod]: () => 'hello1' }; // not even async there
-    expect(stringify(instance1)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:() => \'hello1\'}'); // fallbacking to default
+    expect(stringify(instance1)).toEqual('{[Symbol.for("fast-check/asyncToStringMethod")]:() => "hello1"}'); // fallbacking to default
 
     const instance2 = { [asyncToStringMethod]: () => 'hello2', [toStringMethod]: () => 'world' };
     expect(stringify(instance2)).toEqual('world'); // fallbacking to [toStringMethod]
 
-    const instance3ProbeFn = jest.fn();
+    const instance3ProbeFn = vi.fn();
     const instance3 = { [asyncToStringMethod]: instance3ProbeFn };
     stringify(instance3);
     expect(instance3ProbeFn).not.toHaveBeenCalled(); // never calling [asyncToStringMethod] in sync mode
@@ -558,7 +569,7 @@ describe('asyncStringify', () => {
     const instance4 = { [asyncToStringMethod]: async () => { throw new Error('hello4'); } };
     const stringified4 = await asyncStringify(instance4);
     expect(stringified4.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:async () => { throw new Error(\'hello4\'); }}',
+      '{[Symbol.for("fast-check/asyncToStringMethod")]:async () => { throw new Error("hello4"); }}',
     ); // fallbacking to default
 
     // prettier-ignore
@@ -569,7 +580,7 @@ describe('asyncStringify', () => {
     const instance6 = { [asyncToStringMethod]: () => { throw new Error('hello6'); } }; // throw is sync
     const stringified6 = await asyncStringify(instance6);
     expect(stringified6.replace(/[\s\n]+/g, ' ')).toEqual(
-      '{[Symbol("fast-check/asyncToStringMethod")]:() => { throw new Error(\'hello6\'); }}',
+      '{[Symbol.for("fast-check/asyncToStringMethod")]:() => { throw new Error("hello6"); }}',
     ); // fallbacking to default
 
     class InProto {
@@ -581,7 +592,7 @@ describe('asyncStringify', () => {
     expect(await asyncStringify(instance7)).toEqual('hello7');
 
     const instance8 = { [asyncToStringMethod]: 1 }; // not callable
-    expect(await asyncStringify(instance8)).toEqual('{[Symbol("fast-check/asyncToStringMethod")]:1}');
+    expect(await asyncStringify(instance8)).toEqual('{[Symbol.for("fast-check/asyncToStringMethod")]:1}');
 
     const instance9 = {
       [asyncToStringMethod]: async () => {

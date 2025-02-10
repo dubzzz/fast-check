@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../../src/fast-check';
 import { seed } from '../seed';
 
@@ -6,7 +7,7 @@ describe(`DoubleArbitrary (seed: ${seed})`, () => {
     const limitedNumRuns = 1000;
     const numRuns = 25000;
     const sampleDouble = fc.sample(fc.double(), { seed, numRuns });
-    const sampleDoubleNoBias = fc.sample(fc.double().noBias(), { seed, numRuns });
+    const sampleDoubleNoBias = fc.sample(fc.noBias(fc.double()), { seed, numRuns });
 
     function shouldGenerate(expectedValue: number) {
       it('Should be able to generate ' + fc.stringify(expectedValue), () => {

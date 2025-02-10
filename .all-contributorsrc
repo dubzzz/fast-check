@@ -427,6 +427,48 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/4980521?v=4",
       "profile": "https://github.com/nielk",
       "contributions": ["doc"]
+    },
+    {
+      "login": "ej-shafran",
+      "name": "ej shafran",
+      "avatar_url": "https://avatars.githubusercontent.com/u/116496520?v=4",
+      "profile": "https://github.com/ej-shafran",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "gruhn",
+      "name": "Niklas Gruhn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26570572?v=4",
+      "profile": "https://github.com/gruhn",
+      "contributions": ["code"]
+    },
+    {
+      "login": "patroza",
+      "name": "Patrick Roza",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42661?v=4",
+      "profile": "https://patrickroza.com/",
+      "contributions": ["code"]
+    },
+    {
+      "login": "cindywu",
+      "name": "Cindy Wu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1177031?v=4",
+      "profile": "https://github.com/cindywu",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "nmay231",
+      "name": "Noah",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35386821?v=4",
+      "profile": "https://github.com/nmay231",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "jamesbvaughan",
+      "name": "James Vaughan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2906913?v=4",
+      "profile": "https://github.com/jamesbvaughan",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7

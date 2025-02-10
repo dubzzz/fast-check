@@ -1,11 +1,13 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { assert as fcAssert, type IAsyncProperty, type IProperty, type Parameters } from 'fast-check';
+import { assert as fcAssert, property as fcProperty } from 'fast-check';
+import type { IAsyncProperty, IProperty, Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
-import { NoopWorkerProperty } from './internals/NoopWorkerProperty.js';
+import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
 import type { PropertyArbitraries, PropertyPredicate, WorkerProperty } from './internals/SharedTypes.js';
 import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
+import { generateValueFromState } from './internals/ValueFromState.js';
 
 let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<
@@ -64,6 +66,18 @@ export type PropertyForOptions = {
    * @default "file"
    */
   isolationLevel?: 'file' | 'property' | 'predicate';
+
+  /**
+   * Where should we generate the random values?
+   *
+   * - `main-thread`: The main thread will be responsible to generate the random values and send them to the worker thread.
+   *    It unfortunately cannot send any value that cannot be serialized between threads.
+   * - `worker`: The worker is responsible to generate its own values based on the instructions provided by the main thread.
+   *    Switching to a worker mode allows to support non-serializable values, unfortunately it drops all shrinking capabilities.
+   *
+   * @default "main-thread"
+   */
+  randomSource?: 'main-thread' | 'worker';
 };
 
 const registeredPredicates = new Set<number>();
@@ -80,14 +94,23 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
   if (isMainThread) {
     // Main thread code
     const isolationLevel = options.isolationLevel || 'file';
+    const randomSource = options.randomSource || 'main-thread';
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
-    const { property, terminateAllWorkers } = runMainThread<Ts>(url, currentPredicateId, isolationLevel, arbitraries);
+    const { property, terminateAllWorkers } = runMainThread<Ts>(
+      url,
+      currentPredicateId,
+      isolationLevel,
+      randomSource,
+      arbitraries,
+    );
     allKnownTerminateAllWorkersPerProperty.set(property, terminateAllWorkers);
     return property;
   } else if (parentPort !== null && workerData.fastcheckWorker === true) {
     // Worker code
+    const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
-    runWorker(parentPort, currentPredicateId, predicate);
+    const property: IProperty<Ts> = fcProperty(...arbitraries, () => true);
+    runWorker(parentPort, currentPredicateId, predicate, (state) => generateValueFromState(property, state));
     registeredPredicates.add(currentPredicateId);
   }
   // Cannot throw for invalid worker at this point as we may not be the only worker for this run

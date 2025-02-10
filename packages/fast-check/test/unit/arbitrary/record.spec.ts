@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import type { RecordConstraints } from '../../../src/arbitrary/record';
 import { record } from '../../../src/arbitrary/record';
@@ -11,15 +12,11 @@ import {
 } from './__test-helpers__/ArbitraryAssertions';
 
 import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('record', () => {
+  declareCleaningHooksForSpies();
+
   const keyArb: fc.Arbitrary<any> = fc
     .tuple(fc.string(), fc.boolean())
     .map(([name, symbol]) => (symbol ? Symbol.for(name) : name));
@@ -37,12 +34,12 @@ describe('record', () => {
             recordModel[k] = instance;
           }
           const { instance } = fakeArbitrary<any>();
-          const buildPartialRecordArbitrary = jest.spyOn(
+          const buildPartialRecordArbitrary = vi.spyOn(
             PartialRecordArbitraryBuilderMock,
             'buildPartialRecordArbitrary',
           );
           buildPartialRecordArbitrary.mockReturnValue(instance);
-          const noNullPrototype = constraints !== undefined ? constraints.noNullPrototype : undefined;
+          const noNullPrototype = constraints !== undefined && constraints.noNullPrototype;
 
           // Act
           const arb = constraints !== undefined ? record(recordModel, constraints) : record(recordModel);
@@ -50,37 +47,7 @@ describe('record', () => {
           // Assert
           expect(arb).toBe(instance);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined, noNullPrototype !== false);
-        },
-      ),
-    ));
-
-  it('should call buildPartialRecordArbitrary with keys=[] when constraints defines withDeletedKeys=true', () =>
-    fc.assert(
-      fc.property(
-        fc.uniqueArray(keyArb, { minLength: 1 }),
-        fc.option(fc.boolean(), { nil: undefined }),
-        (keys, noNullPrototype) => {
-          // Arrange
-          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
-          for (const k of keys) {
-            const { instance } = fakeArbitrary();
-            recordModel[k] = instance;
-          }
-          const { instance } = fakeArbitrary<any>();
-          const buildPartialRecordArbitrary = jest.spyOn(
-            PartialRecordArbitraryBuilderMock,
-            'buildPartialRecordArbitrary',
-          );
-          buildPartialRecordArbitrary.mockReturnValue(instance);
-
-          // Act
-          const arb = record(recordModel, { withDeletedKeys: true, noNullPrototype });
-
-          // Assert
-          expect(arb).toBe(instance);
-          expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, [], noNullPrototype !== false);
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, undefined, !!noNullPrototype);
         },
       ),
     ));
@@ -108,7 +75,7 @@ describe('record', () => {
             }
           }
           const { instance } = fakeArbitrary<any>();
-          const buildPartialRecordArbitrary = jest.spyOn(
+          const buildPartialRecordArbitrary = vi.spyOn(
             PartialRecordArbitraryBuilderMock,
             'buildPartialRecordArbitrary',
           );
@@ -120,11 +87,7 @@ describe('record', () => {
           // Assert
           expect(arb).toBe(instance);
           expect(buildPartialRecordArbitrary).toHaveBeenCalledTimes(1);
-          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(
-            recordModel,
-            requiredKeys,
-            noNullPrototype !== false,
-          );
+          expect(buildPartialRecordArbitrary).toHaveBeenCalledWith(recordModel, requiredKeys, !!noNullPrototype);
         },
       ),
     ));
@@ -147,34 +110,6 @@ describe('record', () => {
           }),
         ).toThrowError();
       }),
-    ));
-
-  it('should reject configurations specifying both requiredKeys and withDeletedKeys (even undefined)', () =>
-    fc.assert(
-      fc.property(
-        fc.uniqueArray(fc.record({ name: keyArb, required: fc.boolean() }), {
-          minLength: 1,
-          selector: (entry) => entry.name,
-        }),
-        fc.option(fc.constant(true), { nil: undefined }),
-        fc.option(fc.boolean(), { nil: undefined }),
-        (keys, withRequiredKeys, withDeletedKeys) => {
-          // Arrange
-          const recordModel: Record<string | symbol, Arbitrary<any>> = {};
-          for (const k of keys) {
-            const { instance } = fakeArbitrary();
-            recordModel[k.name] = instance;
-          }
-
-          // Act / Assert
-          expect(() =>
-            record(recordModel, {
-              requiredKeys: withRequiredKeys ? keys.filter((k) => k.required).map((k) => k.name) : undefined,
-              withDeletedKeys: withDeletedKeys,
-            }),
-          ).toThrowError();
-        },
-      ),
     ));
 
   it('should accept empty keys configurations with empty requiredKeys', () => {
@@ -224,13 +159,13 @@ describe('record (integration)', () => {
     }),
     { selector: (entry) => entry.key },
   );
-  const constraintsArbitrary = fc.oneof(
-    fc.record({ withDeletedKeys: fc.boolean(), noNullPrototype: fc.boolean() }, { requiredKeys: [] }),
-    fc.record({ withRequiredKeys: fc.constant<true>(true), noNullPrototype: fc.boolean() }, { requiredKeys: [] }),
+  const constraintsArbitrary = fc.record(
+    { withRequiredKeys: fc.constant<true>(true), noNullPrototype: fc.boolean() },
+    { requiredKeys: [] },
   );
   const extraParameters: fc.Arbitrary<Extra> = fc
     .tuple(metaArbitrary, constraintsArbitrary)
-    .map(([metas, constraintsMeta]: [Meta[], { withDeletedKeys?: boolean; withRequiredKeys?: true }]) => {
+    .map(([metas, constraintsMeta]: [Meta[], { withRequiredKeys?: true }]) => {
       if ('withRequiredKeys' in constraintsMeta) {
         return [
           metas,
@@ -253,13 +188,6 @@ describe('record (integration)', () => {
     for (const m of metas) {
       // optional keys can be missing in the generated instance
       if (
-        'withDeletedKeys' in constraints &&
-        constraints.withDeletedKeys === true &&
-        !Object.prototype.hasOwnProperty.call(value, m.key)
-      ) {
-        continue;
-      }
-      if (
         'requiredKeys' in constraints &&
         constraints.requiredKeys !== undefined &&
         !constraints.requiredKeys.includes(m.key) &&
@@ -272,7 +200,7 @@ describe('record (integration)', () => {
       if (value[m.key] < m.valueStart) return false;
       if (value[m.key] > m.valueStart + 10) return false;
     }
-    if (constraints.noNullPrototype !== false) {
+    if (constraints.noNullPrototype) {
       expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
     }
     return true;

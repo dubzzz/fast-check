@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import * as prand from 'pure-rand';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
@@ -11,9 +12,9 @@ import { sizeArb } from './SizeHelpers';
 function poisoningAfterEach(nestedAfterEach: () => void) {
   nestedAfterEach();
   try {
-    assertNoPoisoning({ ignoredRootRegex: /^(__coverage__|console)$/ });
+    assertNoPoisoning({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
   } catch (err) {
-    restoreGlobals({ ignoredRootRegex: /^(__coverage__|console)$/ });
+    restoreGlobals({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
     throw err;
   }
 }
@@ -40,7 +41,7 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
   fc.assert(
     fc
       .property(
-        fc.integer().noShrink(),
+        fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
         fc.infiniteStream(fc.nat({ max: 20 })),
         extra,
@@ -87,7 +88,7 @@ export function assertProduceCorrectValues<T, U = never>(
   fc.assert(
     fc
       .property(
-        fc.integer().noShrink(),
+        fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
         fc.infiniteStream(fc.nat({ max: 20 })),
         extra,
@@ -128,7 +129,7 @@ export function assertGenerateEquivalentTo<T, U = never>(
   } = options;
   fc.assert(
     fc
-      .property(fc.integer().noShrink(), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
+      .property(fc.noShrink(fc.integer()), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
         // Arrange
         const arbA = arbitraryBuilderA(extraParameters);
         const arbB = arbitraryBuilderB(extraParameters);
@@ -233,7 +234,7 @@ export function assertProduceSomeSpecificValues<T, U = never>(
       // We default numRuns to 1000, but let user override it whenever needed
       assertParameters: { numRuns: 1000, ...options.assertParameters, endOnFailure: true },
     });
-  } catch (err) {
+  } catch {
     // no-op
   }
   expect(foundOne).toBe(true);

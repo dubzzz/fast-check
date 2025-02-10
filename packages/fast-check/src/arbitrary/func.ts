@@ -4,6 +4,7 @@ import { cloneMethod, hasCloneMethod } from '../check/symbols';
 import { array } from './array';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { integer } from './integer';
+import { noShrink } from './noShrink';
 import { tuple } from './tuple';
 import { escapeForMultilineComments } from './_internals/helpers/TextEscaper';
 import { safeMap, safeSort } from '../utils/globals';
@@ -20,7 +21,7 @@ const safeObjectKeys = Object.keys;
  * @public
  */
 export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary<(...args: TArgs) => TOut> {
-  return tuple(array(arb, { minLength: 1 }), integer().noShrink()).map(([outs, seed]) => {
+  return tuple(array(arb, { minLength: 1 }), noShrink(integer())).map(([outs, seed]) => {
     const producer = () => {
       const recorded: { [key: string]: TOut } = {};
       const f = (...args: TArgs) => {

@@ -130,7 +130,7 @@ It always generates valid 32-bit floating point values.
 **Signatures:**
 
 - `fc.float()`
-- `fc.float({min?, max?, noDefaultInfinity?, noNaN?})`
+- `fc.float({min?, max?, minExcluded?, maxExcluded?, noDefaultInfinity?, noNaN?, noInteger?})`
 
 **with:**
 
@@ -140,6 +140,7 @@ It always generates valid 32-bit floating point values.
 - `maxExcluded?` — default: `false` — _do not include `max` in the set of possible values_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 
 **Usages:**
 
@@ -165,9 +166,11 @@ fc.float({ min: 0, max: 1, maxExcluded: true });
 // Note: All possible 32-bit floating point values between 0 (included) and 1 (excluded)
 // Examples of generated values: 3.2229864679470793e-44, 2.4012229232976108e-20, 1.1826533935374394e-27, 0.9999997615814209, 3.783505853677006e-44…
 
-fc.integer({ min: 0, max: (1 << 24) - 1 })
-  .map((v) => v / (1 << 24))
-  .noBias();
+fc.float({ noInteger: true });
+// Note: All possible 32-bit floating point values but no integer
+// Examples of generated values: -7.006492321624085e-45, 1.4734616113175924e-21, 8.407790785948902e-45, 1.5815058151957828e-9, Number.POSITIVE_INFINITY…
+
+fc.noBias(fc.integer({ min: 0, max: (1 << 24) - 1 }).map((v) => v / (1 << 24)));
 // Note: `fc.float` does not uniformly distribute the generated values in the requested range.
 // If you really want a uniform distribution of 32-bit floating point numbers in range 0 (included)
 // and 1 (excluded), you may want to use the arbitrary defined right above.
@@ -187,7 +190,7 @@ The lower and upper bounds are included into the range of possible values.
 **Signatures:**
 
 - `fc.double()`
-- `fc.double({min?, max?, noDefaultInfinity?, noNaN?})`
+- `fc.double({min?, max?, minExcluded?, maxExcluded?, noDefaultInfinity?, noNaN?, noInteger?})`
 
 **with:**
 
@@ -197,38 +200,45 @@ The lower and upper bounds are included into the range of possible values.
 - `maxExcluded?` — default: `false` — _do not include `max` in the set of possible values_
 - `noDefaultInfinity?` — default: `false` — _use finite values for `min` and `max` by default_
 - `noNaN?` — default: `false` — _do not generate `Number.NaN`_
+- `noInteger?` — default: `false` — _do not generate values matching `Number.isInteger`_
 
 **Usages:**
 
 ```js
 fc.double();
 // Note: All possible floating point values (including -∞, +∞ and NaN but also -0)
-// Examples of generated values: 6.978211330273434e+123, 2.6272140589206812e-53, 947075901019127, -1.3737004055555409e-182, -1.83e-322…
+// Examples of generated values: 6.978211330273434e+123, 2.6272140589206812e-53, 947075901019127, -1.3737004055555409e-182, -4.4e-323…
 
 fc.double({ min: 0 });
 // Note: All possible positive floating point values (including +∞ and NaN)
-// Examples of generated values: 8.762813623312512e-262, 5.0929130565593696e-226, 1.3411157084252699e+222, 8845025119580469, 2.2e-322…
+// Examples of generated values: 8.762813623312512e-262, 5.0929130565593696e-226, 1.3411163978818024e+222, 8845029414547763, 8.4e-323…
 
 fc.double({ noDefaultInfinity: true, noNaN: true });
 // Note: All possible finite floating point values
-// Examples of generated values: -3.0862366688503372e+144, -1.7384136409372626e-212, 1.79769313486231e+308, 3.5e-323, -1.1800479468035008e+224…
+// Examples of generated values: -3.0862366688503372e+144, -1.7384136409372626e-212, 1.7976931348623153e+308, 2.5e-323, -1.1800479468035008e+224…
 
 fc.double({ noDefaultInfinity: true, min: Number.NEGATIVE_INTEGER, max: Number.POSITIVE_INTEGER });
 // Note: Same as fc.double(), noDefaultInfinity just tells that defaults for min and max
 // should not be set to -∞ and +∞. It does not forbid the user to explicitely set them to -∞ and +∞.
-// Examples of generated values: 7.593633990222606e-236, -5.74664305820822e+216, -1.243100551492039e-161, 1.797693134862313e+308, -1.7976931348623077e+308…
+// Examples of generated values: 7.593633990222606e-236, -5.74664305820822e+216, -1.243100551492039e-161, 1.7976931348623143e+308, -1.7976931348623157e+308…
 
 fc.double({ min: 0, max: 1, maxExcluded: true });
 // Note: All possible floating point values between 0 (included) and 1 (excluded)
-// Examples of generated values: 4.8016271592767985e-73, 4.8825963576686075e-55, 0.9999999999999967, 0.9999999999999959, 2.5e-322…
+// Examples of generated values: 4.801635255684817e-73, 4.882602580683884e-55, 0.9999999999999998, 0.9999999999999991, 2.5e-323…
 
-fc.tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
-  .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53))
-  .noBias();
+fc.double({ noInteger: true });
+// Note: All possible floating point values but no integer
+// Examples of generated values: 9.4e-323, 4503599627370491.5, -1.8524776326185756e-119, 2.5e-323, -5e-323…
+
+fc.noBias(
+  fc
+    .tuple(fc.integer({ min: 0, max: (1 << 26) - 1 }), fc.integer({ min: 0, max: (1 << 27) - 1 }))
+    .map((v) => (v[0] * Math.pow(2, 27) + v[1]) * Math.pow(2, -53)),
+);
 // Note: `fc.double` does not uniformly distribute the generated values in the requested range.
 // If you really want a uniform distribution of 64-bit floating point numbers in range 0 (included)
 // and 1 (excluded), you may want to use the arbitrary defined right above.
-// Examples of generated values: 0.4791994496490358, 0.741935957579559, 0.31752046562590686, 0.07995703455612779, 0.2555619122341972…
+// Examples of generated values: 0.5424979085274226, 0.8984809917404123, 0.577376440989232, 0.8433714130130558, 0.48219857913738606…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/double.html).  

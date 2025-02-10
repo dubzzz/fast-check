@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import * as prand from 'pure-rand';
 import { seed } from './seed';

@@ -3,6 +3,7 @@ import type { Size } from '../helpers/MaxLengthFromMinLength';
 import { webSegment } from '../../webSegment';
 import { array } from '../../array';
 import { segmentsToPathMapper, segmentsToPathUnmapper } from '../mappers/SegmentsToPath';
+import { oneof } from '../../oneof';
 
 /** @internal */
 function sqrtSize(size: Size): [Size, Size] {
@@ -21,10 +22,21 @@ function sqrtSize(size: Size): [Size, Size] {
 }
 
 /** @internal */
-export function buildUriPathArbitrary(resolvedSize: Size): Arbitrary<string> {
-  const [segmentSize, numSegmentSize] = sqrtSize(resolvedSize);
+function buildUriPathArbitraryInternal(segmentSize: Size, numSegmentSize: Size): Arbitrary<string> {
   return array(webSegment({ size: segmentSize }), { size: numSegmentSize }).map(
     segmentsToPathMapper,
     segmentsToPathUnmapper,
+  );
+}
+
+/** @internal */
+export function buildUriPathArbitrary(resolvedSize: Size): Arbitrary<string> {
+  const [segmentSize, numSegmentSize] = sqrtSize(resolvedSize);
+  if (segmentSize === numSegmentSize) {
+    return buildUriPathArbitraryInternal(segmentSize, numSegmentSize);
+  }
+  return oneof(
+    buildUriPathArbitraryInternal(segmentSize, numSegmentSize),
+    buildUriPathArbitraryInternal(numSegmentSize, segmentSize),
   );
 }

@@ -7,4 +7,4 @@ const globalSeed = globalConfig.seed;
 if (process.env.CI && globalSeed === undefined) {
   throw new Error('seed must be defined globally in CI');
 }
-export const seed = globalSeed !== undefined ? globalSeed : Date.now();
+export const seed: number = globalSeed !== undefined ? globalSeed : Date.now();

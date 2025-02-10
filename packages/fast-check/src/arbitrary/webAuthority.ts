@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { buildAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
+import { getOrCreateAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
 import { constant } from './constant';
 import { domain } from './domain';
 import { ipV4 } from './ipV4';
@@ -8,14 +8,13 @@ import { ipV6 } from './ipV6';
 import { nat } from './nat';
 import { oneof } from './oneof';
 import { option } from './option';
-import { stringOf } from './stringOf';
+import { string } from './string';
 import { tuple } from './tuple';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 
 /** @internal */
 function hostUserInfo(size: SizeForArbitrary): Arbitrary<string> {
-  const others = ['-', '.', '_', '~', '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=', ':'];
-  return stringOf(buildAlphaNumericPercentArbitrary(others), { size });
+  return string({ unit: getOrCreateAlphaNumericPercentArbitrary("-._~!$&'()*+,;=:"), size });
 }
 
 /** @internal */

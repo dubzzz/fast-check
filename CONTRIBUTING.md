@@ -60,7 +60,7 @@ Any change in the code may have impact in the next release. In order to ease our
 - minor: new features
 - major: breaking changes
 
-In order to ease this work, before opening the PR (or after if you forgot to do it), you should run the script `yarn version:bump` to underline which packages have been impacted. Please note that our internals and private packages must always be toggled to 'decline' as we don't plan to bump their versions.
+In order to ease this work, before opening the PR (or after if you forgot to do it), you should run the script `yarn bump` to underline which packages have been impacted. Please note that our internals and private packages must always be toggled to 'decline' as we don't plan to bump their versions.
 
 #### Update your PR
 

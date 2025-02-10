@@ -1,10 +1,11 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
 describe(`RandomEnough (seed: ${seed})`, () => {
   it('should not repeat values when noBias enabled', () => {
     const alreadySeenValues = new Set<string>();
-    const allEmails = fc.sample(fc.tuple(fc.emailAddress(), fc.emailAddress()).noBias(), { seed });
+    const allEmails = fc.sample(fc.noBias(fc.tuple(fc.emailAddress(), fc.emailAddress())), { seed });
     for (const [, email] of allEmails) {
       if (alreadySeenValues.has(email)) {
         throw new Error(`email ${email} has already been seen`);
@@ -14,7 +15,7 @@ describe(`RandomEnough (seed: ${seed})`, () => {
   });
   it('should not repeat values across arbitraries of a tuple when noBias enabled', () => {
     const alreadySeenValues = new Set<string>();
-    const allEmails = fc.sample(fc.tuple(fc.emailAddress(), fc.emailAddress()).noBias(), { seed });
+    const allEmails = fc.sample(fc.noBias(fc.tuple(fc.emailAddress(), fc.emailAddress())), { seed });
     for (const [emailA, emailB] of allEmails) {
       if (alreadySeenValues.has(emailA)) {
         throw new Error(`emailA ${emailA} has already been seen`);
@@ -27,7 +28,7 @@ describe(`RandomEnough (seed: ${seed})`, () => {
     }
   });
   it('should not repeat values between two consecutive sequences', () => {
-    const [seqA, seqB] = fc.sample(fc.array(fc.integer(), { minLength: 1000, maxLength: 1000 }).noBias(), {
+    const [seqA, seqB] = fc.sample(fc.noBias(fc.array(fc.integer(), { minLength: 1000, maxLength: 1000 })), {
       seed,
       numRuns: 2,
     });

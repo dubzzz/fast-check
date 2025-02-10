@@ -1,3 +1,4 @@
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
 import { property } from '../../../../src/check/property/Property';
 import { pre } from '../../../../src/check/precondition/Pre';
@@ -12,20 +13,16 @@ import { Stream } from '../../../../src/stream/Stream';
 import type { PropertyFailure } from '../../../../src/check/property/IRawProperty';
 import fc from 'fast-check';
 
-describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => {
+describe('Property', () => {
   afterEach(() => resetConfigureGlobal());
 
   it('Should fail if predicate fails', () => {
     const p = property(stubArb.single(8), (_arg: number) => {
       return false;
     });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).not.toBe(null); // property fails
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null); // property fails
+    p.runAfterEach();
   });
   it('Should fail if predicate throws an Error', () => {
     // Arrange
@@ -36,17 +33,11 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
     });
 
     // Act
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    const out = p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+    p.runAfterEach();
 
     // Assert
-    expect((out as PropertyFailure).errorMessage).toContain('predicate throws');
-    expect((out as PropertyFailure).errorMessage).toContain('at ');
     expect((out as PropertyFailure).error).toBe(originalError);
   });
   it('Should fail if predicate throws a raw string', () => {
@@ -56,18 +47,13 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
     });
 
     // Act
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    const out = p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+    p.runAfterEach();
 
     // Assert
     expect(out).toEqual({
       error: 'predicate throws', // the original error is a string in this test
-      errorMessage: 'predicate throws', // the original error results in this message
     });
   });
   it('Should fail if predicate throws anything', () => {
@@ -80,16 +66,12 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
         });
 
         // Act
-        if (dontRunHook) {
-          p.runBeforeEach!();
-        }
-        const out = p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook);
-        if (dontRunHook) {
-          p.runAfterEach!();
-        }
+        p.runBeforeEach();
+        const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+        p.runAfterEach();
 
         // Assert
-        expect(out).toEqual({ error: stuff, errorMessage: expect.any(String) });
+        expect(out).toEqual({ error: stuff });
       }),
     );
   });
@@ -100,13 +82,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       doNotResetThisValue = true;
       return false;
     });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    const out = p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    const out = p.run(p.generate(stubRng.mutable.nocall()).value);
+    p.runAfterEach();
     expect(PreconditionFailure.isFailure(out)).toBe(true);
     expect(doNotResetThisValue).toBe(false); // does not run code after the failing precondition
   });
@@ -114,23 +92,15 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
     const p = property(stubArb.single(8), (_arg: number) => {
       return true;
     });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
   });
   it('Should succeed if predicate does not return anything', () => {
     const p = property(stubArb.single(8), (_arg: number) => {});
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
   });
   it('Should call and forward arbitraries one time', () => {
     let oneCallToPredicate = false;
@@ -150,13 +120,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
     for (let idx = 0; idx !== arbs.length; ++idx) {
       expect(arbs[idx].calledOnce).toBe(false); // property creation does not trigger call to generator #${idx + 1}
     }
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
     expect(oneCallToPredicate).toBe(true);
     for (let idx = 0; idx !== arbs.length; ++idx) {
       expect(arbs[idx].calledOnce).toBe(true); //  Generator #${idx + 1} called by run
@@ -211,16 +177,12 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
         previousBeforeEach();
         prob.beforeEachCalled = true;
       });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
   });
   it('Should execute both global and local beforeEach hooks before the test', () => {
-    const globalBeforeEach = jest.fn();
+    const globalBeforeEach = vi.fn();
     const prob = { beforeEachCalled: false };
     configureGlobal({
       beforeEach: globalBeforeEach,
@@ -233,13 +195,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       prob.beforeEachCalled = true;
       globalBeforeEach();
     });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
     expect(globalBeforeEach).toBeCalledTimes(1);
   });
   it('Should use global beforeEach as default if specified', () => {
@@ -252,13 +210,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       prob.beforeEachCalled = false;
       return beforeEachCalled;
     });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
   });
   it('should fail if global asyncBeforeEach has been set', () => {
     configureGlobal({
@@ -282,13 +236,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
         previousAfterEach();
         callOrder.push('after afterEach');
       });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
     expect(callOrder).toEqual(['test', 'afterEach', 'after afterEach']);
   });
   it('Should execute afterEach after the test on failure', () => {
@@ -297,13 +247,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       callOrder.push('test');
       return false;
     }).afterEach(() => callOrder.push('afterEach'));
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).not.toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
+    p.runAfterEach();
     expect(callOrder).toEqual(['test', 'afterEach']);
   });
   it('Should execute afterEach after the test on uncaught exception', () => {
@@ -312,13 +258,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       callOrder.push('test');
       throw new Error('uncaught');
     }).afterEach(() => callOrder.push('afterEach'));
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).not.toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
+    p.runAfterEach();
     expect(callOrder).toEqual(['test', 'afterEach']);
   });
   it('Should use global afterEach as default if specified', () => {
@@ -330,13 +272,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       callOrder.push('test');
       return false;
     });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).not.toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).not.toBe(null);
+    p.runAfterEach();
     expect(callOrder).toEqual(['test', 'afterEach']);
   });
   it('Should execute both global and local afterEach hooks', () => {
@@ -351,13 +289,9 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
       callOrder.push('afterEach');
       globalAfterEach();
     });
-    if (dontRunHook) {
-      p.runBeforeEach!();
-    }
-    expect(p.run(p.generate(stubRng.mutable.nocall()).value, dontRunHook)).toBe(null);
-    if (dontRunHook) {
-      p.runAfterEach!();
-    }
+    p.runBeforeEach();
+    expect(p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
+    p.runAfterEach();
     expect(callOrder).toEqual(['test', 'afterEach', 'globalAfterEach']);
   });
   it('should fail if global asyncAfterEach has been set', () => {
@@ -375,7 +309,7 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
     const value = Symbol();
 
     // Act
-    const p = property(arb, jest.fn());
+    const p = property(arb, vi.fn());
     const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
     expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
     const shrinks = [...shrinksStream];
@@ -396,7 +330,7 @@ describe.each([[true], [false]])('Property (dontRunHook: %p)', (dontRunHook) => 
     const value = Symbol();
 
     // Act
-    const p = property(arb, jest.fn());
+    const p = property(arb, vi.fn());
     const shrinksStream = p.shrink(new Value([value], undefined)); // context=undefined in the case of user defined values
     expect(canShrinkWithoutContext).not.toHaveBeenCalled(); // lazy evaluation of shrink for tuples
     expect(shrink).not.toHaveBeenCalled();

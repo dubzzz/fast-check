@@ -1,3 +1,71 @@
+# 0.4.1
+
+_Rework our testing stack_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.0...worker%2Fv0.4.1)]
+
+## Fixes
+
+- ([PR#5347](https://github.com/dubzzz/fast-check/pull/5347)) CI: Move to Vitest
+- ([PR#5351](https://github.com/dubzzz/fast-check/pull/5351)) CI: Drop unneeded devDependencies
+
+# 0.4.0
+
+_Respawn only on crash not on failure and support pre_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.3.1...worker%2Fv0.4.0)]
+
+## Breaking changes
+
+- ([PR#4993](https://github.com/dubzzz/fast-check/pull/4993)) Only respawn workers on crash (not failure)
+
+## Features
+
+- ([PR#4988](https://github.com/dubzzz/fast-check/pull/4988)) Add support for `pre` in properties
+
+## Fixes
+
+- ([PR#4987](https://github.com/dubzzz/fast-check/pull/4987)) Test: Confirm we intercept synchronous throws
+
+---
+
+# 0.3.1
+
+_Adapt code to new lint rules_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.3.1)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.3.0...worker%2Fv0.3.1)]
+
+## Fixes
+
+- ([PR#4933](https://github.com/dubzzz/fast-check/pull/4933)) Script: Switch on more eslint rules
+
+# 0.3.0
+
+_Support generating inputs in workers_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.2.0...worker%2Fv0.3.0)]
+
+## Features
+
+- ([PR#4063](https://github.com/dubzzz/fast-check/pull/4063)) Add support for non-serializable data in workers
+
+## Fixes
+
+- ([PR#4837](https://github.com/dubzzz/fast-check/pull/4837)) CI: Stabilize tests on worker
+
+---
+
+# 0.2.0
+
+_Declare root of the package as ESM_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.1.1...worker%2Fv0.2.0)]
+
+## Breaking changes
+
+- ([PR#4585](https://github.com/dubzzz/fast-check/pull/4585)) CI: Move build chain to ESM
+
+## Fixes
+
+- ([PR#4604](https://github.com/dubzzz/fast-check/pull/4604)) CI: Migrate jest to esm
+
+---
+
 # 0.1.1
 
 _Implement missing methods for future v4 of fast-check_

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 import { toss } from '../../../../src/check/runner/Tosser';
@@ -19,7 +20,9 @@ const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
     isAsync = () => false;
     generate = (rng: Random) => new Value(this.arb.generate(rng, undefined).value_, undefined);
     shrink = () => Stream.nil<Value<T>>();
-    run = () => ({ error: new Error(), errorMessage: 'failure' });
+    runBeforeEach = () => {};
+    run = () => ({ error: new Error('failure') });
+    runAfterEach = () => {};
   })(arb);
 
 describe('Tosser', () => {

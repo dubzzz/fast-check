@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 
 import type { JsonSharedConstraints } from '../../../src/arbitrary/jsonValue';
@@ -20,6 +21,14 @@ describe('jsonValue (integration)', () => {
         {
           depthSize: fc.oneof(fc.double({ min: 0.1, noNaN: true }), sizeArb),
           maxDepth: fc.nat({ max: 5 }),
+          noUnicodeString: fc.boolean(),
+          stringUnit: fc.constantFrom<JsonSharedConstraints['stringUnit']>(
+            'grapheme',
+            'grapheme-composite',
+            'grapheme-ascii',
+            'binary',
+            'binary-ascii',
+          ),
         },
         { requiredKeys: [] },
       )

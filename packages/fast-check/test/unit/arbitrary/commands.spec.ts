@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { commands } from '../../../src/arbitrary/commands';
 
@@ -24,7 +25,7 @@ describe('commands (integration)', () => {
       if (!c.check(model)) continue;
       try {
         c.run(model, real);
-      } catch (err) {
+      } catch {
         return;
       }
     }
@@ -161,7 +162,7 @@ describe('commands (integration)', () => {
     };
     fc.assert(
       fc.property(
-        fc.integer().noShrink(),
+        fc.noShrink(fc.integer()),
         fc.infiniteStream(fc.nat()),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (seed, shrinkPath, biasFactor) => {
@@ -199,7 +200,7 @@ describe('commands (integration)', () => {
     const commandsArb = commands([nat(3).map((id) => new SuccessIdCommand(id))]);
     fc.assert(
       fc.property(
-        fc.integer().noShrink(),
+        fc.noShrink(fc.integer()),
         fc.infiniteStream(fc.nat()),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (seed, shrinkPath, biasFactor) => {
@@ -236,7 +237,7 @@ describe('commands (integration)', () => {
   it('should shrink the same way when based on replay data', () => {
     fc.assert(
       fc.property(
-        fc.integer().noShrink(),
+        fc.noShrink(fc.integer()),
         fc.nat(100),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (seed, numValues, biasFactor) => {

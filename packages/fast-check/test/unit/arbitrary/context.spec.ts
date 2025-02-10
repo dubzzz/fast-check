@@ -1,4 +1,4 @@
-import * as fc from 'fast-check';
+import { describe, it, expect, vi } from 'vitest';
 import type { ContextValue } from '../../../src/arbitrary/context';
 import { context } from '../../../src/arbitrary/context';
 
@@ -7,19 +7,15 @@ import type { WithCloneMethod } from '../../../src/check/symbols';
 import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
 
 import * as ConstantMock from '../../../src/arbitrary/constant';
-
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-  fc.configureGlobal({ beforeEach: beforeEachHook });
-}
-beforeEach(beforeEachHook);
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 describe('context', () => {
+  declareCleaningHooksForSpies();
+
   it('should re-use constant to build the context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act
@@ -33,7 +29,7 @@ describe('context', () => {
   it('should pass a cloneable context to constant', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act
@@ -47,7 +43,7 @@ describe('context', () => {
   it('should not reset its own logs on clone', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act
@@ -65,7 +61,7 @@ describe('context', () => {
   it('should produce a clone without any logs', () => {
     // Arrange
     const { instance } = fakeArbitrary();
-    const constant = jest.spyOn(ConstantMock, 'constant');
+    const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(() => instance);
 
     // Act

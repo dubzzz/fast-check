@@ -1,12 +1,14 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { boolean } from '../../../src/arbitrary/boolean';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
+import * as NoBiasMock from '../../../src/arbitrary/noBias';
 
 function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 }
 beforeEach(beforeEachHook);
 
@@ -55,11 +57,12 @@ describe('boolean', () => {
 
 function prepare() {
   const { instance, map } = fakeArbitrary<number>();
-  const { instance: mappedInstance, noBias } = fakeArbitrary<boolean>();
+  const { instance: mappedInstance } = fakeArbitrary<boolean>();
   const { instance: unbiasedInstance } = fakeArbitrary<boolean>();
-  const integer = jest.spyOn(IntegerMock, 'integer');
-  integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
+  const integer = vi.spyOn(IntegerMock, 'integer');
+  integer.mockReturnValue(instance);
+  const noBias = vi.spyOn(NoBiasMock, 'noBias');
   noBias.mockReturnValue(unbiasedInstance);
   return { map, integer, unbiasedInstance };
 }

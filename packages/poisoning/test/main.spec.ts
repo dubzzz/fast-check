@@ -1,12 +1,14 @@
-import { jest } from '@jest/globals';
+import { describe, it, expect, vi } from 'vitest';
 import { assertNoPoisoning, restoreGlobals } from '../src/main.js';
+
+const options = { ignoredRootRegex: /__vitest_worker__/ };
 
 describe('assertNoPoisoning', () => {
   it('should not throw any Error if no poisoning occurred', () => {
     // Arrange / Act / Assert
-    expect(() => assertNoPoisoning()).not.toThrow();
-    restoreGlobals();
-    expect(() => assertNoPoisoning()).not.toThrow();
+    expect(() => assertNoPoisoning(options)).not.toThrow();
+    restoreGlobals(options);
+    expect(() => assertNoPoisoning(options)).not.toThrow();
   });
 
   it('should throw an Error if new global appeared and be able to revert the change', () => {
@@ -17,9 +19,9 @@ describe('assertNoPoisoning', () => {
 
     // Act / Assert
     try {
-      expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/);
-      restoreGlobals();
-      expect(() => assertNoPoisoning()).not.toThrow();
+      expect(() => assertNoPoisoning(options)).toThrowError(/Poisoning detected/);
+      restoreGlobals(options);
+      expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -36,9 +38,9 @@ describe('assertNoPoisoning', () => {
 
     // Act / Assert
     try {
-      expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/);
-      restoreGlobals();
-      expect(() => assertNoPoisoning()).not.toThrow();
+      expect(() => assertNoPoisoning(options)).toThrowError(/Poisoning detected/);
+      restoreGlobals(options);
+      expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
       globalThis.Function = F;
     }
@@ -47,13 +49,13 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if global altered via globalThis and be able to revert the change', () => {
     // Arrange
     const F = globalThis.Function;
-    globalThis.Function = jest.fn() as any;
+    globalThis.Function = vi.fn() as any;
 
     // Act / Assert
     try {
-      expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/);
-      restoreGlobals();
-      expect(() => assertNoPoisoning()).not.toThrow();
+      expect(() => assertNoPoisoning(options)).toThrowError(/Poisoning detected/);
+      restoreGlobals(options);
+      expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
       globalThis.Function = F;
     }
@@ -63,13 +65,13 @@ describe('assertNoPoisoning', () => {
     // Arrange
     const F = Function;
     // eslint-disable-next-line no-global-assign
-    Function = jest.fn() as any;
+    Function = vi.fn() as any;
 
     // Act / Assert
     try {
-      expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/);
-      restoreGlobals();
-      expect(() => assertNoPoisoning()).not.toThrow();
+      expect(() => assertNoPoisoning(options)).toThrowError(/Poisoning detected/);
+      restoreGlobals(options);
+      expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
       // eslint-disable-next-line no-global-assign
       Function = F;
@@ -79,27 +81,31 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if globalThis gets changed into another type and be able to revert the change', () => {
     // Arrange
     const G = globalThis;
+    // eslint-disable-next-line no-global-assign
     (globalThis as any) = 1;
 
     // Act / Assert
     let error: unknown = undefined;
     try {
-      assertNoPoisoning();
+      assertNoPoisoning(options);
     } catch (err) {
       error = err;
     }
     if (error === undefined) {
+      // eslint-disable-next-line no-global-assign
       (globalThis as any) = G;
       throw new Error('No error has been thrown');
     }
     if (!/Poisoning detected/.test((error as Error).message)) {
+      // eslint-disable-next-line no-global-assign
       (globalThis as any) = G;
       throw new Error(`Received error does not fulfill expectations, got: ${error}`);
     }
     try {
-      restoreGlobals();
-      expect(() => assertNoPoisoning()).not.toThrow();
+      restoreGlobals(options);
+      expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
+      // eslint-disable-next-line no-global-assign
       (globalThis as any) = G;
     }
   });
@@ -115,7 +121,7 @@ describe('assertNoPoisoning', () => {
           // @ts-ignore
           delete obj[k];
           ++numDeleted;
-        } catch (err) {
+        } catch {
           // Object.prototype cannot be deleted, and others might too
         }
       }
@@ -137,11 +143,11 @@ describe('assertNoPoisoning', () => {
     dropAll('Error', Error);
 
     // Act / Assert
-    // Manual expectation mimicing "expect(() => assertNoPoisoning()).toThrowError(/Poisoning detected/)"
+    // Manual expectation mimicing "expect(() => assertNoPoisoning(options)).toThrowError(/Poisoning detected/)"
     // as Jest makes use of Object.keys and probably others in its code
     let caughtError: unknown = undefined;
     try {
-      assertNoPoisoning();
+      assertNoPoisoning(options);
     } catch (err) {
       caughtError = err;
     }
@@ -151,8 +157,8 @@ describe('assertNoPoisoning', () => {
     if (!(caughtError instanceof Error)) {
       throw new Error('Expected an error of type Error to be thrown during the test');
     }
-    restoreGlobals();
-    expect(() => assertNoPoisoning()).not.toThrow();
+    restoreGlobals(options);
+    expect(() => assertNoPoisoning(options)).not.toThrow();
     // WARNING: If restoreGlobals failed, then this test may break others
   });
 });

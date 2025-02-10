@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 
 import type { FloatConstraints } from '../../../src/arbitrary/float';
@@ -20,6 +21,7 @@ import {
 
 import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
 
 import {
   assertProduceCorrectValues,
@@ -31,16 +33,6 @@ import {
 
 import * as IntegerMock from '../../../src/arbitrary/integer';
 
-function beforeEachHook() {
-  jest.resetModules();
-  jest.restoreAllMocks();
-}
-beforeEach(beforeEachHook);
-fc.configureGlobal({
-  ...fc.readConfigureGlobal(),
-  beforeEach: beforeEachHook,
-});
-
 function minMaxForConstraints(ct: FloatConstraints) {
   const noDefaultInfinity = ct.noDefaultInfinity;
   const {
@@ -51,9 +43,14 @@ function minMaxForConstraints(ct: FloatConstraints) {
 }
 
 describe('float', () => {
+  declareCleaningHooksForSpies();
+
   it('should accept any valid range of 32-bit floating point numbers (including infinity)', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { noInteger, ...withoutNoIntegerRecordConstraints } = defaultFloatRecordConstraints;
+
     fc.assert(
-      fc.property(floatConstraints(), (ct) => {
+      fc.property(floatConstraints(withoutNoIntegerRecordConstraints), (ct) => {
         // Arrange
         spyInteger();
 
@@ -70,7 +67,7 @@ describe('float', () => {
     fc.assert(
       fc.property(
         float32raw(),
-        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         (f, otherCt) => {
           // Arrange
           fc.pre(isNotNaN32bits(f));
@@ -90,7 +87,7 @@ describe('float', () => {
     fc.assert(
       fc.property(
         float32raw(),
-        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { withDeletedKeys: true }),
+        fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         fc.constantFrom('min', 'max', 'both'),
         (f, otherCt, exclusiveMode) => {
           // Arrange
@@ -173,6 +170,7 @@ describe('float', () => {
       ...defaultFloatRecordConstraints,
       minExcluded: fc.constant(false),
       maxExcluded: fc.constant(false),
+      noInteger: fc.constant(false),
     };
 
     fc.assert(
@@ -201,7 +199,11 @@ describe('float', () => {
   });
 
   describe('with NaN', () => {
-    const withNaNRecordConstraints = { ...defaultFloatRecordConstraints, noNaN: fc.constant(false) };
+    const withNaNRecordConstraints = {
+      ...defaultFloatRecordConstraints,
+      noNaN: fc.constant(false),
+      noInteger: fc.constant(false),
+    };
 
     it('should ask for a range with one extra value (far from zero)', () => {
       fc.assert(
@@ -264,7 +266,7 @@ describe('float', () => {
 
   describe('without NaN', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noNaN, ...noNaNRecordConstraints } = defaultFloatRecordConstraints;
+    const { noNaN, noInteger, ...noNaNRecordConstraints } = defaultFloatRecordConstraints;
 
     it('should ask integers between the indexes corresponding to min and max', () => {
       fc.assert(
@@ -300,6 +302,9 @@ describe('float (integration)', () => {
 
     if (extra === undefined) {
       return; // no other constraints
+    }
+    if (extra.noInteger) {
+      expect(v).toSatisfy((v) => !Number.isInteger(v)); // should not produce integer values
     }
     if (extra.noNaN) {
       expect(v).not.toBe(Number.NaN); // should not produce NaN if explicitely asked not too
@@ -353,7 +358,7 @@ describe('float (integration)', () => {
 function spyInteger() {
   const { instance, map } = fakeArbitrary<number>();
   const { instance: mappedInstance } = fakeArbitrary();
-  const integer = jest.spyOn(IntegerMock, 'integer');
+  const integer = vi.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   map.mockReturnValue(mappedInstance);
   return integer;
@@ -361,7 +366,7 @@ function spyInteger() {
 
 function spyIntegerWithValue(value: () => number) {
   const { instance } = fakeArbitraryStaticValue<number>(value);
-  const integer = jest.spyOn(IntegerMock, 'integer');
+  const integer = vi.spyOn(IntegerMock, 'integer');
   integer.mockReturnValue(instance);
   return integer;
 }

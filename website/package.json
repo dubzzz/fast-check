@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && docusaurus start",
-    "build": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && docusaurus build",
+    "start": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus start",
+    "build": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -16,28 +16,32 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.11.3",
+    "@codesandbox/sandpack-react": "^2.19.11",
     "@codesandbox/sandpack-themes": "^2.0.21",
-    "@docusaurus/core": "3.1.1",
-    "@docusaurus/plugin-pwa": "3.1.1",
-    "@docusaurus/preset-classic": "3.1.1",
-    "@docusaurus/remark-plugin-npm2yarn": "3.1.1",
-    "clsx": "^2.1.0",
-    "prism-react-renderer": "^2.3.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@docusaurus/core": "3.7.0",
+    "@docusaurus/plugin-pwa": "3.7.0",
+    "@docusaurus/preset-classic": "3.7.0",
+    "@docusaurus/remark-plugin-npm2yarn": "3.7.0",
+    "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
+    "prism-react-renderer": "^2.4.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.1.1",
-    "@docusaurus/theme-classic": "3.1.1",
-    "@docusaurus/tsconfig": "3.1.1",
-    "@docusaurus/types": "3.1.1",
+    "@docusaurus/module-type-aliases": "3.7.0",
+    "@docusaurus/theme-classic": "3.7.0",
+    "@docusaurus/tsconfig": "3.7.0",
+    "@docusaurus/types": "3.7.0",
     "@jest/globals": "^29.7.0",
-    "@mdx-js/react": "^3.0.0",
-    "@types/node": "^20.11.10",
+    "@mdx-js/react": "^3.1.0",
+    "@types/lodash": "^4.17.15",
+    "@types/node": "^22.13.1",
+    "@types/react": "^19.0.8",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
-    "typescript": "~5.3.3"
+    "jimp": "^1.6.0",
+    "typescript": "~5.7.3"
   },
   "browserslist": {
     "production": [

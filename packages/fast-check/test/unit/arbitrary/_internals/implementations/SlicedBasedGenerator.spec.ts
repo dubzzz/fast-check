@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import { SlicedBasedGenerator } from '../../../../../src/arbitrary/_internals/implementations/SlicedBasedGenerator';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value';

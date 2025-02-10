@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import {
   codePointsToStringMapper,
@@ -18,7 +19,7 @@ describe('codePointsToStringUnmapper', () => {
 
   it('should be able to split any string mapped from code-points into code-points', () =>
     fc.assert(
-      fc.property(fc.array(fc.fullUnicode()), (data) => {
+      fc.property(fc.array(fc.string({ unit: 'binary', minLength: 1, maxLength: 1 })), (data) => {
         // Arrange
         const source = codePointsToStringMapper(data);
 
