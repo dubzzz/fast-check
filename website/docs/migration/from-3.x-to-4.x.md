@@ -305,7 +305,7 @@ The `.noShrink` method, has been marked as deprecated in version 3.20.0 and has 
 ++fc.noShrink(myArbitrary);
 ```
 
-Related pull requests: [#xxxx](https://github.com/dubzzz/fast-check/pull/xxxx)
+Related pull requests: [#5694](https://github.com/dubzzz/fast-check/pull/5694)
 
 ### Replace any reference to `big{U|}int{N|}`
 
