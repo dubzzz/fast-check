@@ -2,7 +2,7 @@ import { Jimp } from 'jimp';
 import { existsSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { join } from 'path';
-import allContributors from '../src/components/HomepageContributors/all-contributors.json' assert { type: 'json' };
+import allContributors from '../src/components/HomepageContributors/all-contributors.json' with { type: 'json' };
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
