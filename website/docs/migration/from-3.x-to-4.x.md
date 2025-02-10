@@ -296,6 +296,17 @@ The `.noBias` method, previously available on every `Arbitrary`, was marked as d
 
 Related pull requests: [#5610](https://github.com/dubzzz/fast-check/pull/5610)
 
+### Replace any reference to `.noShrink`
+
+The `.noShrink` method, has been marked as deprecated in version 3.20.0 and has been replaced by a standalone arbitrary doing the same. You can update your code as follows if you want to be ready for v4:
+
+```diff
+--myArbitrary.noShrink();
+++fc.noShrink(myArbitrary);
+```
+
+Related pull requests: [#xxxx](https://github.com/dubzzz/fast-check/pull/xxxx)
+
 ### Replace any reference to `big{U|}int{N|}`
 
 The arbitraries `fc.bigIntN`, `fc.bigUintN`, and `fc.bigUint` have been removed. Replace any usage of these with `fc.bigInt`. If needed, you can reimplement them as follows:
