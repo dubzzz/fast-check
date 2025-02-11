@@ -76,4 +76,32 @@ describe('noShrink', () => {
     // Assert
     expect(secondNoShrink).toBe(firstNoShrink);
   });
+
+  it.each([{ method: 'generate' }, { method: 'canShrinkWithoutContext' }, { method: 'shrink' }])(
+    'should return itself when called twice except when altered on $method',
+    ({ method }) => {
+      // Arrange
+      class MyNextArbitrary extends Arbitrary<any> {
+        generate(): Value<any> {
+          throw new Error('Not implemented.');
+        }
+        canShrinkWithoutContext(value: unknown): value is any {
+          throw new Error('Not implemented.');
+        }
+        shrink(): Stream<Value<any>> {
+          throw new Error('Not implemented.');
+        }
+      }
+      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
+
+      // Act
+      const firstNoShrink = noShrink(fakeArbitrary);
+      // @ts-expect-error - Evil inplace override of a method
+      firstNoShrink[method] = () => {};
+      const secondNoShrink = noShrink(firstNoShrink);
+
+      // Assert
+      expect(secondNoShrink).not.toBe(firstNoShrink);
+    },
+  );
 });
