@@ -31,7 +31,7 @@
     "@fast-check/packaged": "*",
     "@typescript-eslint/utils": "^8.24.0",
     "all-contributors-cli": "^6.26.1",
-    "eslint": "^9.20.0",
+    "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
     "globals": "^15.14.0",
     "pkg-pr-new": "^0.0.39",
