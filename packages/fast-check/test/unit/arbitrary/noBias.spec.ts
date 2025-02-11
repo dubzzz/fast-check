@@ -54,28 +54,31 @@ describe('noBias', () => {
     expect(secondNoBias).toBe(firstNoBias);
   });
 
-  it('should return itself when called twice except when altered on generate', () => {
-    // Arrange
-    class MyNextArbitrary extends Arbitrary<any> {
-      generate(): Value<any> {
-        throw new Error('Not implemented.');
+  it.each([{ method: 'generate' }, { method: 'canShrinkWithoutContext' }, { method: 'shrink' }])(
+    'should return itself when called twice except when altered on $method',
+    ({ method }) => {
+      // Arrange
+      class MyNextArbitrary extends Arbitrary<any> {
+        generate(): Value<any> {
+          throw new Error('Not implemented.');
+        }
+        canShrinkWithoutContext(value: unknown): value is any {
+          throw new Error('Not implemented.');
+        }
+        shrink(): Stream<Value<any>> {
+          throw new Error('Not implemented.');
+        }
       }
-      canShrinkWithoutContext(value: unknown): value is any {
-        throw new Error('Not implemented.');
-      }
-      shrink(): Stream<Value<any>> {
-        throw new Error('Not implemented.');
-      }
-    }
-    const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
+      const fakeArbitrary: Arbitrary<any> = new MyNextArbitrary();
 
-    // Act
-    const firstNoBias = noBias(fakeArbitrary);
-    // @ts-expect-error - Evil inplace override of a method
-    firstNoBias.generate = () => {};
-    const secondNoBias = noBias(firstNoBias);
+      // Act
+      const firstNoBias = noBias(fakeArbitrary);
+      // @ts-expect-error - Evil inplace override of a method
+      firstNoBias[method] = () => {};
+      const secondNoBias = noBias(firstNoBias);
 
-    // Assert
-    expect(secondNoBias).not.toBe(firstNoBias);
-  });
+      // Assert
+      expect(secondNoBias).not.toBe(firstNoBias);
+    },
+  );
 });
