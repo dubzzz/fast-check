@@ -15,7 +15,7 @@ function nextFilenameAnswer() {
   return path.join(__dirname, `concurrent-answer-${++index2}`);
 }
 
-exports.readerAssert = property(
+export const readerAssert = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (_from, _to) => {
@@ -31,7 +31,7 @@ exports.readerAssert = property(
   },
 );
 
-exports.writerAssert = property(
+export const writerAssert = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (_from, _to) => {

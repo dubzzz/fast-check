@@ -21,7 +21,7 @@ function buildProperty(isolationLevel, forceExit) {
   );
 }
 
-exports.predicateIsolation = {
+export const predicateIsolation = {
   predicateLevel: buildProperty('predicate', false),
   propertyLevel: buildProperty('property', false),
   propertyLevelDepthCheckWithExitWorker: buildProperty('propertyLevelDepthCheckWithExitWorker', true),

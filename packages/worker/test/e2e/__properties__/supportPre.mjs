@@ -4,7 +4,7 @@ import { propertyFor } from '@fast-check/worker';
 
 const property = propertyFor(new URL(import.meta.url));
 
-exports.supportPreProperty = property(
+export const supportPreProperty = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (from, to) => {

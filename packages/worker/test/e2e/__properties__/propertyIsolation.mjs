@@ -28,7 +28,7 @@ function buildPropertyRun(isolationLevel) {
   );
 }
 
-exports.propertyIsolation = {
+export const propertyIsolation = {
   predicateLevelWarmUp: buildPropertyWarmUp('predicate'),
   predicateLevelRun: buildPropertyRun('predicate'),
   propertyLevelWarmUp: buildPropertyWarmUp('property'),
