@@ -1,10 +1,9 @@
 // @ts-check
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
 
-const property = propertyFor(pathToFileURL(__filename), { randomSource: 'worker' });
-const propertyMainThread = propertyFor(pathToFileURL(__filename), { randomSource: 'main-thread' });
+const property = propertyFor(new URL(import.meta.url), { randomSource: 'worker' });
+const propertyMainThread = propertyFor(new URL(import.meta.url), { randomSource: 'main-thread' });
 
 exports.nonSerializableDataProperty = property(
   fc.integer({ min: -1000, max: 1000 }).map((v) => Symbol.for(String(v))),

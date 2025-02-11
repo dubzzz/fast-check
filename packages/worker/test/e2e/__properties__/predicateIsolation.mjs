@@ -1,12 +1,11 @@
 // @ts-check
 const process = require('node:process');
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
 
 const counters = {};
 function buildProperty(isolationLevel, forceExit) {
-  return propertyFor(pathToFileURL(__filename), { isolationLevel })(
+  return propertyFor(new URL(import.meta.url), { isolationLevel })(
     fc.integer({ min: -1000, max: 1000 }),
     fc.integer({ min: -1000, max: 1000 }),
     (_from, _to) => {

@@ -1,11 +1,10 @@
 // @ts-check
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
 const { writeFileSync, existsSync, rmSync } = require('fs');
 const path = require('path');
 
-const property = propertyFor(pathToFileURL(__filename));
+const property = propertyFor(new URL(import.meta.url));
 
 let index = 0;
 function nextFilenameQuestion() {
