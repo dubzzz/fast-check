@@ -16,7 +16,6 @@ export function fakeArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> }
   const filter = vi.fn();
   const map = vi.fn();
   const chain = vi.fn();
-  const noShrink = vi.fn();
 
   class FakeArbitrary extends Arbitrary<T> {
     generate = generate;
@@ -25,9 +24,8 @@ export function fakeArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> }
     filter = filter;
     map = map;
     chain = chain;
-    noShrink = noShrink;
   }
-  return { Class: FakeArbitrary, generate, canShrinkWithoutContext, shrink, filter, map, chain, noShrink };
+  return { Class: FakeArbitrary, generate, canShrinkWithoutContext, shrink, filter, map, chain };
 }
 
 /**
