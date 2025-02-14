@@ -35,7 +35,7 @@
     "@jest/globals": "^29.7.0",
     "@mdx-js/react": "^3.1.0",
     "@types/lodash": "^4.17.15",
-    "@types/node": "^22.13.2",
+    "@types/node": "^22.13.4",
     "@types/react": "^19.0.8",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
