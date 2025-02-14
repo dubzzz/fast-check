@@ -27,7 +27,7 @@ if (isMainThread) {
       jestTimeout,
     );
 
-    it(
+    it.only(
       'should be able to isolate at property level with property level',
       async () => {
         // Arrange

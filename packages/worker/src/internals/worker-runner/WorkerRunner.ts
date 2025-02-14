@@ -3,6 +3,7 @@ import type { MainThreadToWorkerMessage, PropertyPredicate, WorkerToMainThreadMe
 import type { ValueState } from '../ValueFromState.js';
 import { WorkerToPoolMessageStatus, type Payload } from '../worker-pool/IWorkerPool.js';
 import { PreconditionFailure } from 'fast-check';
+import { writeFileSync } from 'node:fs';
 
 /**
  * Setup a worker listening to parentPort and able to run a single time for a given predicate
@@ -16,7 +17,21 @@ export function runWorker<Ts extends unknown[]>(
   predicate: PropertyPredicate<Ts>,
   buildInputs: (state: ValueState) => Ts,
 ): void {
+  writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] runWorker -> SETUP\n`, { flag: 'a' });
   parentPort.on('message', (message: MainThreadToWorkerMessage<Payload<Ts>>) => {
+    try {
+      writeFileSync(
+        '/workspaces/fast-check/debug.log',
+        `[${process.pid}] runWorker -> MESSAGE RECEIVED ${JSON.stringify(message)}\n`,
+        {
+          flag: 'a',
+        },
+      );
+    } catch (err) {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] runWorker -> MESSAGE RECEIVED {{{!!!}}}\n`, {
+        flag: 'a',
+      });
+    }
     const { payload, targetPredicateId, runId } = message;
     if (targetPredicateId !== predicateId) {
       // The current predicate is not the one targeted by the received message
@@ -27,12 +42,18 @@ export function runWorker<Ts extends unknown[]>(
     wrapAndRunAsPromise(predicate, inputs).then(
       (output) => {
         const message: WorkerToMainThreadMessage = { status: WorkerToPoolMessageStatus.Success, output, runId };
+        writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] runWorker -> PREDICATE OUTPUT\n`, {
+          flag: 'a',
+        });
         parentPort.postMessage(message);
       },
       (error) => {
         const message: WorkerToMainThreadMessage = PreconditionFailure.isFailure(error)
           ? { status: WorkerToPoolMessageStatus.Skipped, runId }
           : { status: WorkerToPoolMessageStatus.Failure, error, runId };
+        writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] runWorker -> PREDICATE ERROR\n`, {
+          flag: 'a',
+        });
         parentPort.postMessage(message);
       },
     );

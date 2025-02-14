@@ -6,6 +6,7 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
 import { PreconditionFailure } from 'fast-check';
+import { writeFileSync } from 'node:fs';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -40,9 +41,27 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
           reject(new Error('Badly initialized worker, unable to run the property'));
           return;
         }
-        worker.register(predicateId, property.getPayload(inputs), resolve, reject, () =>
-          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-          reject(new PreconditionFailure()),
+        writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] runMainThread -> registering...\n`, {
+          flag: 'a',
+        });
+        worker.register(
+          predicateId,
+          property.getPayload(inputs),
+          (v) => {
+            writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] runMainThread -> register resolved\n`, {
+              flag: 'a',
+            });
+            resolve(v);
+          },
+          (v) => {
+            writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] runMainThread -> register rejected\n`, {
+              flag: 'a',
+            });
+            reject(v);
+          },
+          () =>
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+            reject(new PreconditionFailure()),
         );
       });
     },
