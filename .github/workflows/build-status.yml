@@ -368,13 +368,13 @@ jobs:
       - name: Unpack production packages
         run: pnpm run unpack:all
       - name: Alter internals to behave as if published
-        run: yarn workspaces foreach --all -pvi --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
+        run: pnpm --filter {./packages/**} --parallel exec node $(pnpm bin)/packaged --keep-node-modules
       - name: Retrieve potentially dropped test-bundle
-        run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-bundle || true"
+        run: pnpm --filter {./packages/**} --parallel exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check publication lint
         run: pnpm run publint:all
       - name: Check bundles
-        run: yarn workspaces foreach --all -pvi --no-private run test-bundle
+        run: pnpm --filter {./packages/**} --parallel run test-bundle
       - name: Check legacy bundles
         run: |
           export NODE_VERSION="$(node --version)"
@@ -390,7 +390,7 @@ jobs:
               echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
               exit 2
           fi
-          yarn workspaces foreach --all -pvi --no-private run test-legacy-bundle
+          pnpm --filter {./packages/**} --parallel run test-legacy-bundle
           if [ "$(node --version)" != "$NODE_VERSION" ]; then
               echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
               exit 3
@@ -431,36 +431,23 @@ jobs:
       - name: Alter internals to behave as if published
         run: yarn workspaces foreach --recursive -pvi --from '@fast-check/test-types' --no-private exec yarn node $(yarn bin packaged) --keep-node-modules
       - name: Retrieve dropped test-types
-        run: yarn workspaces foreach --all -vi --no-private exec "git restore -s@ -SW -- test-types"
-      - name: Check (legacy TS)
-        if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
-        run: yarn workspaces foreach --all --exclude '{@fast-check/ava,@fast-check/packaged,@fast-check/vitest}' -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 *.ts"
-      - name: Check with ESNext (legacy TS)
-        if: matrix.ts-version == '4.2' || matrix.ts-version == '4.4'
-        run: yarn workspaces foreach --all --exclude '{@fast-check/ava,@fast-check/packaged,@fast-check/vitest}' -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --lib ES2020 --module ESNext --moduleResolution Node *.ts"
+        run: pnpm --filter {./packages/**} --parallel exec "git restore -s@ -SW -- test-types"
       - name: Switch folder to CommonJS
-        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
+        run: pnpm --filter {./packages/**} --parallel exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.cts"
+        run: pnpm --filter {./packages/**} --parallel exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        run: pnpm --filter {./packages/**} --parallel exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
-        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
+        run: pnpm --filter {./packages/**} --parallel exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
-        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.mts"
+        run: pnpm --filter {./packages/**} --parallel exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.mts"
       - name: Check in ES Modules mode with NodeNext
-        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
-        run: yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+        run: pnpm --filter {./packages/**} --parallel exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
-        if: matrix.ts-version != '4.2' && matrix.ts-version != '4.4'
         run: |
-          yarn workspaces foreach --all -pvi --no-private exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
-          yarn workspaces foreach --all -pvi --no-private exec "cd test-types && yarn dlx -p typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+          pnpm --filter {./packages/**} --parallel exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
+          pnpm --filter {./packages/**} --parallel exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Job to confirm every required job passed
   pre_all_checks_passed:
