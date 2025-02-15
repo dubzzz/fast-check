@@ -21,68 +21,70 @@ permissions:
 
 jobs:
   # Root jobs
-  warmup_yarn_cache:
-    name: 'Warm up Yarn cache'
+  warmup_pnpm_cache:
+    name: 'Warm up pnpm cache'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 10
       - name: Using Node v22.x
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
-        id: yarn-cache
+        id: pnpm-cache
         with:
           node-version: '22.x'
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
-          check-latest: true
-      - name: Update Yarn cache
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        env:
-          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today on GH CI
-        run: yarn install --immutable --mode=skip-build --check-cache
-  warmup_yarn_cache_others:
-    name: 'Warm up Yarn cache (others)'
+          cache: 'pnpm'
+      - name: Update pnpm cache
+        if: steps.pnpm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+  warmup_pnpm_cache_others:
+    name: 'Warm up pnpm cache (others)'
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: ['macos-latest', 'windows-latest']
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 10
       - name: Using Node v22.x
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
-        id: yarn-cache
+        id: pnpm-cache
         with:
           node-version: '22.x'
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
-          check-latest: true
-      - name: Update Yarn cache
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        env:
-          YARN_ENABLE_HARDENED_MODE: 1 # enforcing it even if it's the default today on GH CI
-        run: yarn install --immutable --mode=skip-build --check-cache
+          cache: 'pnpm'
+      - name: Update pnpm cache
+        if: steps.pnpm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
 
-  # Jobs without any strong requirement on warmup_yarn_cache
-  # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_yarn_cache
+  # Jobs without any strong requirement on warmup_pnpm_cache
+  # except that they have to wait for it to avoid setting an empty cache that would replace the one pushed by warmup_pnpm_cache
   no_dedupe_required:
     name: 'No dedupe required'
-    needs: warmup_yarn_cache
+    needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
+      - name: Install pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 10
       - name: Using Node v22.x
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: '22.x'
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
-          check-latest: true
+          cache: 'pnpm'
       - name: Ensure no dedupe required
-        run: yarn dedupe --check
+        run: pnpm dedupe --check
   package_quality:
     name: 'Package quality'
-    needs: warmup_yarn_cache
+    needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -96,10 +98,10 @@ jobs:
       - name: Check package score using skypack
         run: cd packages/fast-check && yarn dlx @skypack/package-check
 
-  # Jobs requesting warmup_yarn_cache
+  # Jobs requesting warmup_pnpm_cache
   format_lint:
     name: 'Format & Lint'
-    needs: warmup_yarn_cache
+    needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -118,7 +120,7 @@ jobs:
         run: yarn lint:check
   production_packages:
     name: 'Build production packages'
-    needs: warmup_yarn_cache
+    needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -146,11 +148,11 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # Jobs requesting warmup_yarn_cache AND production_packages
+  # Jobs requesting warmup_pnpm_cache AND production_packages
   typecheck:
     name: 'Typecheck'
     needs:
-      - warmup_yarn_cache
+      - warmup_pnpm_cache
       - production_packages
     runs-on: ubuntu-latest
     steps:
@@ -179,7 +181,7 @@ jobs:
   preview:
     name: 'Preview'
     needs:
-      - warmup_yarn_cache
+      - warmup_pnpm_cache
       - production_packages
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -209,8 +211,8 @@ jobs:
   test:
     name: 'Test'
     needs:
-      - warmup_yarn_cache
-      - warmup_yarn_cache_others
+      - warmup_pnpm_cache
+      - warmup_pnpm_cache_others
       - production_packages
     runs-on: ${{matrix.os}}
     strategy:
@@ -306,7 +308,7 @@ jobs:
   documentation:
     name: 'Build documentation'
     needs:
-      - warmup_yarn_cache
+      - warmup_pnpm_cache
       - production_packages
     runs-on: ubuntu-latest
     steps:
@@ -365,7 +367,7 @@ jobs:
   test_bundle:
     name: 'Test bundle'
     needs:
-      - warmup_yarn_cache
+      - warmup_pnpm_cache
       - production_packages
     runs-on: ubuntu-latest
     steps:
@@ -425,7 +427,7 @@ jobs:
   test_types:
     name: 'Test types'
     needs:
-      - warmup_yarn_cache
+      - warmup_pnpm_cache
       - production_packages
     runs-on: ubuntu-latest
     strategy:
