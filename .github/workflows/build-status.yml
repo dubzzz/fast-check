@@ -362,7 +362,7 @@ jobs:
       - name: Unpack production packages
         run: pnpm run unpack:all
       - name: Alter internals to behave as if published
-        run: pnpm --filter {./packages/**} --parallel exec node $(pnpm bin)/packaged --keep-node-modules
+        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
       - name: Retrieve potentially dropped test-bundle
         run: pnpm --filter {./packages/**} --parallel exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check publication lint
@@ -423,7 +423,7 @@ jobs:
       - name: Unpack production packages
         run: pnpm run unpack:all
       - name: Alter internals to behave as if published
-        run: pnpm --filter {./packages/**} --parallel exec node $(pnpm bin)/packaged --keep-node-modules
+        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
       - name: Retrieve dropped test-types
         run: pnpm --filter {./packages/**} --parallel exec "git restore -s@ -SW -- test-types"
       - name: Switch folder to CommonJS
