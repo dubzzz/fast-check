@@ -107,7 +107,7 @@ jobs:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm --filter @fast-check/monorepo install --frozen-lockfile
       - name: Check format
         run: pnpm run format:check
       - name: Check lint
@@ -304,7 +304,7 @@ jobs:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm --filter website install --frozen-lockfile
       - name: Download production packages
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
@@ -325,12 +325,8 @@ jobs:
       - name: Generate documentation
         run: pnpm --filter website run build
       - name: Generate API reference
-        env:
-          YARN_ENABLE_OFFLINE_MODE: 1
-          YARN_ENABLE_HARDENED_MODE: 0
-          YARN_NODE_LINKER: 'node-modules'
         run: |
-          pnpm install --frozen-lockfile
+          pnpm --filter fast-check install --frozen-lockfile
           pnpm --filter fast-check run docs-ci
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
