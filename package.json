@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "pnpm@10.4.0+sha512.6b849d0787d97f8f4e1f03a9b8ff8f038e79e153d6f11ae539ae7c435ff9e796df6a862c991502695c7f9e8fac8aeafc1ac5a8dab47e36148d183832d886dd52",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -12,18 +12,18 @@
   ],
   "scripts": {
     "contributor:add": "all-contributors add",
-    "build:all": "yarn workspaces foreach --all -pvi --topological-dev --exclude website run build",
-    "build-ci:all": "yarn workspaces foreach --all -pvi --topological-dev --exclude website run build-ci",
-    "test:all": "yarn workspaces foreach --all -pvi run test && yarn workspaces foreach --all -pvi run e2e",
-    "typecheck:all": "yarn workspaces foreach --all -pvi run typecheck",
+    "build:all": "pnpm --filter {./packages/**} run build",
+    "build-ci:all": "pnpm --filter {./packages/**} run build-ci",
+    "test:all": "pnpm --filter {**} --parallel run test && pnpm --filter {**} --parallel run e2e",
+    "typecheck:all": "pnpm --filter {**} --parallel run typecheck",
     "format": "prettier --cache --write .",
     "format:check": "prettier --list-different .",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
-    "publint:all": "yarn workspaces foreach --all -pvi --no-private exec publint --strict",
+    "publint:all": "pnpm --filter {**} --parallel exec publint --strict",
     "bump": "changeset",
-    "pack:all": "yarn workspaces foreach --all -pvi --no-private pack --out package.tgz",
-    "unpack:all": "yarn workspaces foreach --all -pvi --no-private exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
+    "pack:all": "pnpm --filter {**} --parallel pack --out package.tgz",
+    "unpack:all": "pnpm --filter {**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.12",

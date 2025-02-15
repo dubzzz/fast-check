@@ -23,15 +23,15 @@
     "lib"
   ],
   "scripts": {
-    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
-    "build-ci": "yarn build",
+    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
+    "build-ci": "pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
     "test": "vitest",
     "test-bundle:cjs": "node test-bundle/main.cjs",
     "test-bundle:mjs": "node test-bundle/main.mjs",
-    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
+    "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit --module nodenext --moduleResolution nodenext"
   },
   "repository": {

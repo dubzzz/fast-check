@@ -53,8 +53,8 @@ const allQueueSnippets = {
 
 let jestBinaryPath = undefined;
 beforeAll(async () => {
-  const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin', 'jest'], { shell: true });
-  jestBinaryPath = jestBinaryPathCommand.split('\n')[0];
+  const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin'], { shell: true });
+  jestBinaryPath = path.join(jestBinaryPathCommand.split('\n')[0], 'jest');
 });
 
 afterAll(async () => {
