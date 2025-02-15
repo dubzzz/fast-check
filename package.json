@@ -22,7 +22,7 @@
     "lint:check": "eslint .",
     "publint:all": "pnpm --filter {**} --parallel exec publint --strict",
     "bump": "changeset",
-    "pack:all": "pnpm --filter {**} --parallel pack --out package.tgz",
+    "pack:all": "pnpm --filter {**} --parallel exec pnpm pack --out package.tgz",
     "unpack:all": "pnpm --filter {**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
