@@ -429,19 +429,19 @@ jobs:
       - name: Switch folder to CommonJS
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.cts"
+        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict *.mts"
+        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
       - name: Check in ES Modules mode with NodeNext
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
       - name: Check in ES Modules mode with exactOptionalPropertyTypes
         run: |
           pnpm --filter {./packages/**} --parallel -c exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
-          pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm dlx --package typescript@${{ matrix.ts-version }} tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+          pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
 
   # Job to confirm every required job passed
   pre_all_checks_passed:
