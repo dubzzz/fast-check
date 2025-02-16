@@ -23,7 +23,7 @@
   },
   "osvVulnerabilityAlerts": true,
   "dependencyDashboardOSVVulnerabilitySummary": "all",
-  "postUpdateOptions": ["yarnDedupeHighest"],
+  "postUpdateOptions": ["pnpmDedupe"],
   "lockFileMaintenance": {
     "enabled": true
   },

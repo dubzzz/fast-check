@@ -1,5 +1,4 @@
 .changeset/
-.yarn/
 packages/*/coverage/
 packages/*/dist/
 packages/*/lib/

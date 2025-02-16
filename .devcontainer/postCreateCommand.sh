@@ -2,4 +2,4 @@
 set -x
 
 # Install locked dependencies
-yarn install --immutable
+pnpm install --frozen-lockfile

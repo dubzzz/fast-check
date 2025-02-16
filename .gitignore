@@ -14,12 +14,3 @@ v8.out
 
 # IDE related files
 .idea
-
-# https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
