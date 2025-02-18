@@ -197,8 +197,8 @@ async function run() {
 
   // Get packages to be bumped via changeset
   const temporaryChangelogFile = 'changelog.json';
-  await execFile('yarn', []);
-  await execFile('yarn', ['changeset', 'status', `--output=${temporaryChangelogFile}`]);
+  await execFile('pnpm', ['install']);
+  await execFile('pnpm', ['run', 'changeset', 'status', `--output=${temporaryChangelogFile}`]);
   const temporaryChangelogFileContentBuffer = await readFile(temporaryChangelogFile);
   const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
   await rm(temporaryChangelogFile);
@@ -208,7 +208,7 @@ async function run() {
       .filter((entry) => entry.type !== 'none')
       .map(async (entry) => {
         // Extracting the location of the package from the workspace
-        const { stdout: packageLocationUnsafe } = await execFile('yarn', ['workspace', entry.name, 'exec', 'pwd']);
+        const { stdout: packageLocationUnsafe } = await execFile('pnpm', ['--filter', entry.name, 'exec', 'pwd']);
         const packageLocation = packageLocationUnsafe.split('\n')[0].trim();
         return { ...entry, packageLocation };
       }),
@@ -275,9 +275,9 @@ async function run() {
     await execFile('git', ['add', packageJsonPath]);
   }
 
-  // Force yarn reinstall
-  await execFile('yarn');
-  await execFile('git', ['add', 'yarn.lock']);
+  // Force pnpm reinstall
+  await execFile('pnpm', ['install']);
+  await execFile('git', ['add', 'pnpm-lock.yaml']);
 
   // Drop all changesets
   const alreadyDeleted = new Set();
