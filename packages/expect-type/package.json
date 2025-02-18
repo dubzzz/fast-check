@@ -23,8 +23,8 @@
     "src"
   ],
   "scripts": {
-    "build": "yarn build:publish-types",
-    "build-ci": "yarn build",
+    "build": "pnpm run build:publish-types",
+    "build-ci": "pnpm run build",
     "build:publish-types": "cp src/*.d.ts src/cjs/",
     "test": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
@@ -41,6 +41,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
   "devDependencies": {
+    "@fast-check/expect-type": "workspace:*",
     "typescript": "~5.7.3"
   },
   "keywords": [

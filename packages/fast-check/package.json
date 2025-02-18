@@ -26,8 +26,8 @@
   "sideEffects": false,
   "runkitExampleFilename": "runkit.cjs",
   "scripts": {
-    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types && node postbuild/main.mjs",
-    "build-ci": "cross-env EXPECT_GITHUB_SHA=true yarn build",
+    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types && node postbuild/main.mjs",
+    "build-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs/types",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
@@ -38,8 +38,8 @@
     "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
     "test-legacy-bundle": "nvs add 12.17 && $(nvs which 12.17) test-bundle/run.cjs && $(nvs which 12.17) test-bundle/run-advanced.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
-    "docs-ci": "cross-env EXPECT_GITHUB_SHA=true yarn docs",
-    "docs:serve": "yarn dlx serve docs/"
+    "docs-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run docs",
+    "docs:serve": "pnpm run dlx serve docs/"
   },
   "repository": {
     "type": "git",
@@ -61,10 +61,11 @@
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.49.2",
-    "@types/node": "^22.13.1",
+    "@microsoft/api-extractor": "^7.50.0",
+    "@types/node": "^22.13.4",
     "@vitest/coverage-v8": "^2.1.9",
     "cross-env": "^7.0.3",
+    "fast-check": "workspace:*",
     "glob": "^11.0.1",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",

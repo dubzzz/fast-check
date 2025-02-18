@@ -33,15 +33,15 @@
     "lib"
   ],
   "scripts": {
-    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
-    "build-ci": "yarn build",
+    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
+    "build-ci": "pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
     "test": "vitest",
-    "test-bundle:cjs": "yarn node --experimental-vm-modules $(yarn bin jest) --config test-bundle/jest.config.cjs",
-    "test-bundle:mjs": "yarn node --experimental-vm-modules $(yarn bin jest) --config test-bundle/jest.config.mjs",
-    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
+    "test-bundle:cjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.cjs",
+    "test-bundle:mjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.mjs",
+    "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -72,11 +72,12 @@
     }
   },
   "devDependencies": {
+    "@fast-check/jest": "workspace:*",
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.4",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jest-jasmine2": "^29.7.0",

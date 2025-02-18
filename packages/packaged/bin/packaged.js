@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { removeNonPublishedFiles } from '../lib/packaged.js';
 
 function run(args) {

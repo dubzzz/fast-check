@@ -234,13 +234,11 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
 }
 
 async function runSpec(specDirectory: string): Promise<string> {
-  const { stdout: vitestBinaryPathCommand } = await execFile('yarn', ['bin', 'vitest'], { shell: true });
-  const vitestBinaryPath = vitestBinaryPathCommand.split('\n')[0];
   try {
     const { stdout: specOutput } = await execFile(
       'node',
       [
-        vitestBinaryPath,
+        '../../node_modules/vitest/vitest.mjs',
         '--config',
         vitestConfigName,
         '--run', // no watch

@@ -1,5 +1,4 @@
 .changeset/
-.yarn/
 packages/*/coverage/
 packages/*/dist/
 packages/*/lib/
@@ -8,3 +7,4 @@ packages/fast-check/docs/
 packages/fast-check/documentation/Arbitraries.md
 website/.docusaurus/
 website/build/
+pnpm-lock.yaml

@@ -13,7 +13,7 @@
 - [ ] My PR references one of several related issues (if any)
   - [ ] New features or breaking changes must come with an associated Issue or Discussion
   - [ ] My PR does not add any new dependency without an associated Issue or Discussion
-- [ ] My PR includes bumps details, please run `yarn bump` and flag the impacts properly
+- [ ] My PR includes bumps details, please run `pnpm run bump` and flag the impacts properly
 - [ ] My PR adds relevant tests and they would have failed without my PR (when applicable)
 
 <!-- More about contributing at https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md -->

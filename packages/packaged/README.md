@@ -21,6 +21,8 @@ Run the following command at the root of your package to drop any file that will
 ```bash
 # With npm
 npx -p @fast-check/packaged packaged
+# With pnpm
+pnpm --package=@fast-check/packaged dlx packaged
 # With yarn
 yarn dlx -p @fast-check/packaged packaged
 ```
