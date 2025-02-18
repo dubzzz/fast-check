@@ -1,5 +1,5 @@
 // @ts-check
-import { jest, beforeAll, afterAll, describe, it, expect } from '@jest/globals';
+import { jest, afterAll, describe, it, expect } from '@jest/globals';
 import * as path from 'path';
 import * as url from 'url';
 import { promises as fs } from 'fs';
@@ -51,11 +51,7 @@ const allQueueSnippets = {
   },
 };
 
-let jestBinaryPath = undefined;
-beforeAll(async () => {
-  const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin', 'jest'], { shell: true });
-  jestBinaryPath = jestBinaryPathCommand.split('\n')[0];
-});
+const jestBinaryPath = './node_modules/jest/bin/jest.js';
 
 afterAll(async () => {
   await fs.rmdir(generatedTestsDirectory);

@@ -23,8 +23,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
-    "build-ci": "yarn build",
+    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
+    "build-ci": "pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
@@ -32,7 +32,7 @@
     "test": "sh test.sh",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
-    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
+    "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -53,6 +53,7 @@
     "ava": "^4 || ^5 || ^6"
   },
   "devDependencies": {
+    "@fast-check/ava": "workspace:*",
     "@types/node": "^22.13.4",
     "ava": "^6.2.0",
     "esm": "^3.2.25",

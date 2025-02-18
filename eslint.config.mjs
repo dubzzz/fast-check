@@ -106,7 +106,6 @@ export default [
   {
     ignores: [
       '.github/',
-      '.yarn/',
       'node_modules/',
       'examples/',
       'packages/*/coverage/',
@@ -117,9 +116,6 @@ export default [
       'packages/test-minimal-support/',
       'packages/test-types/',
       'website/',
-      '.pnp*',
-      'jest*.js',
-      'jest*.cjs',
     ],
   },
 ];

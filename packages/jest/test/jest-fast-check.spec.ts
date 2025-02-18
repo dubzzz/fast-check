@@ -623,13 +623,11 @@ async function runSpec(
   specDirectory: string,
   opts: { jestSeed?: number; testTimeoutCLI?: number } = {},
 ): Promise<string> {
-  const { stdout: jestBinaryPathCommand } = await execFile('yarn', ['bin', 'jest'], { shell: true });
-  const jestBinaryPath = jestBinaryPathCommand.split('\n')[0];
   try {
     const { stderr: specOutput } = await execFile(
       'node',
       [
-        jestBinaryPath,
+        '../../node_modules/jest/bin/jest.js',
         '--config',
         jestConfigName,
         '--show-seed',
