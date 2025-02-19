@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest';
-import * as prand from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import * as fc from 'fast-check';
 
 import { Random } from '../../../../src/random/generator/Random';
@@ -10,7 +10,7 @@ describe('Random', () => {
     it('Should produce values within 0 and 2 ** n - 1', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(31), fc.nat(MAX_SIZE), (seed, n, num) => {
-          const mrng = new Random(prand.xorshift128plus(seed));
+          const mrng = new Random(xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx) {
             const v = mrng.next(n);
             if (v < 0 || v > (((1 << n) - 1) | 0)) return false;
@@ -23,7 +23,7 @@ describe('Random', () => {
     it('Should produce values within the range', () =>
       fc.assert(
         fc.property(fc.integer(), fc.integer(), fc.integer(), fc.nat(MAX_SIZE), (seed, a, b, num) => {
-          const mrng = new Random(prand.xorshift128plus(seed));
+          const mrng = new Random(xorshift128plus(seed));
           const min = a < b ? a : b;
           const max = a < b ? b : a;
           for (let idx = 0; idx !== num; ++idx) {
@@ -36,8 +36,8 @@ describe('Random', () => {
     it('Should produce the same sequences given same seeds', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
-          const mrng1 = new Random(prand.xorshift128plus(seed));
-          const mrng2 = new Random(prand.xorshift128plus(seed));
+          const mrng1 = new Random(xorshift128plus(seed));
+          const mrng2 = new Random(xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;
           return true;
         }),
@@ -47,7 +47,7 @@ describe('Random', () => {
     it('Should produce values within 0 and 1', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
-          const mrng = new Random(prand.xorshift128plus(seed));
+          const mrng = new Random(xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx) {
             const v = mrng.nextDouble();
             if (v < 0 || v >= 1) return false;
@@ -60,7 +60,7 @@ describe('Random', () => {
     it('Should produce the same sequences', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
-          const mrng1 = new Random(prand.xorshift128plus(seed));
+          const mrng1 = new Random(xorshift128plus(seed));
           const mrng2 = mrng1.clone();
           for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;
           return true;

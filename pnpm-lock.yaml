@@ -69,7 +69,7 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       pure-rand:
-        specifier: ^7.0.0
+        specifier: ^7.0.1
         version: 7.0.1
       react:
         specifier: ^19.0.0
@@ -140,7 +140,7 @@ importers:
   packages/fast-check:
     dependencies:
       pure-rand:
-        specifier: ^7.0.0
+        specifier: ^7.0.1
         version: 7.0.1
     devDependencies:
       '@fast-check/expect-type':
@@ -294,7 +294,7 @@ importers:
         specifier: ^3.4.0
         version: link:../fast-check
       pure-rand:
-        specifier: ^7.0.0
+        specifier: ^7.0.1
         version: 7.0.1
     devDependencies:
       '@fast-check/worker':

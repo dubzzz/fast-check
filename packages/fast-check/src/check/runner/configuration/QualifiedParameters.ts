@@ -1,8 +1,12 @@
-import prand, { unsafeSkipN } from 'pure-rand';
 import type { Parameters } from './Parameters';
 import { VerbosityLevel } from './VerbosityLevel';
 import type { RunDetails } from '../reporter/RunDetails';
-import type { RandomGenerator } from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
+import { unsafeSkipN } from 'pure-rand/distribution/UnsafeSkipN';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { mersenne } from 'pure-rand/generator/MersenneTwister';
+import { congruential32 } from 'pure-rand/generator/LinearCongruential';
+import { xoroshiro128plus } from 'pure-rand/generator/XoroShiro';
 
 const safeDateNow = Date.now;
 const safeMathMin = Math.min;
@@ -118,18 +122,18 @@ export class QualifiedParameters<T> {
     return seed32 ^ (gap * 0x100000000);
   };
   private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => QualifiedRandomGenerator) => {
-    if (p.randomType === undefined) return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+    if (p.randomType === undefined) return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
         case 'mersenne':
-          return QualifiedParameters.createQualifiedRandomGenerator(prand.mersenne);
+          return QualifiedParameters.createQualifiedRandomGenerator(mersenne);
         case 'congruential':
         case 'congruential32':
-          return QualifiedParameters.createQualifiedRandomGenerator(prand.congruential32);
+          return QualifiedParameters.createQualifiedRandomGenerator(congruential32);
         case 'xorshift128plus':
-          return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+          return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
         case 'xoroshiro128plus':
-          return prand.xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
+          return xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
         default:
           throw new Error(`Invalid random specified: '${p.randomType}'`);
       }
