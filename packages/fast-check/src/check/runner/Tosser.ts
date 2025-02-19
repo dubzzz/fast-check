@@ -1,5 +1,5 @@
-import type { RandomGenerator } from 'pure-rand';
-import { skipN } from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
+import { skipN } from 'pure-rand/distribution/SkipN';
 
 import { Random } from '../../random/generator/Random';
 import type { IRawProperty } from '../property/IRawProperty';
