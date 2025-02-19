@@ -37,6 +37,11 @@ const config: Config = {
     locales: ['en'],
   },
 
+  future: {
+    // More details at https://docusaurus.io/blog/releases/3.6#docusaurus-faster
+    experimental_faster: true,
+  },
+
   presets: [
     [
       'classic',
