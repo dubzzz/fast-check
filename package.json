@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "pnpm@10.4.0+sha512.6b849d0787d97f8f4e1f03a9b8ff8f038e79e153d6f11ae539ae7c435ff9e796df6a862c991502695c7f9e8fac8aeafc1ac5a8dab47e36148d183832d886dd52",
+  "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -26,10 +26,10 @@
     "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.12",
+    "@changesets/cli": "^2.28.0",
     "@eslint/js": "^9.20.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.24.0",
+    "@typescript-eslint/utils": "^8.24.1",
     "all-contributors-cli": "^6.26.1",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
@@ -38,6 +38,6 @@
     "prettier": "3.5.1",
     "publint": "^0.3.5",
     "typescript": "~5.7.3",
-    "typescript-eslint": "^8.24.0"
+    "typescript-eslint": "^8.24.1"
   }
 }
