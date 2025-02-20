@@ -33,7 +33,7 @@
     "all-contributors-cli": "^6.26.1",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
-    "globals": "^15.15.0",
+    "globals": "^16.0.0",
     "pkg-pr-new": "^0.0.39",
     "prettier": "3.5.1",
     "publint": "^0.3.5",
