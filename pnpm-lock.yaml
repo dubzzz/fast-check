@@ -150,8 +150,8 @@ importers:
         specifier: workspace:*
         version: link:../poisoning
       '@microsoft/api-extractor':
-        specifier: ^7.50.0
-        version: 7.50.0(@types/node@22.13.4)
+        specifier: ^7.50.1
+        version: 7.50.1(@types/node@22.13.4)
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.4
@@ -2296,8 +2296,8 @@ packages:
   '@microsoft/api-extractor-model@7.30.3':
     resolution: {integrity: sha512-yEAvq0F78MmStXdqz9TTT4PZ05Xu5R8nqgwI5xmUmQjWBQ9E6R2n8HB/iZMRciG4rf9iwI2mtuQwIzDXBvHn1w==}
 
-  '@microsoft/api-extractor@7.50.0':
-    resolution: {integrity: sha512-Ds/PHTiVzuENQsmXrJKkSdfgNkr/SDG/2rDef0AWl3BchAnXdO7gXaYsAkNx4gWiC4OngNA3fQfd3+BcQxP1DQ==}
+  '@microsoft/api-extractor@7.50.1':
+    resolution: {integrity: sha512-L18vz0ARLNaBLKwWe0DdEf7eijDsb7ERZspgZK7PxclLoQrc+9hJZo8y4OVfCHxNVyxlwVywY2WdE/3pOFViLQ==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.17.1':
@@ -8693,11 +8693,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
 
-  typescript@5.7.2:
-    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@5.7.3:
     resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
     engines: {node: '>=14.17'}
@@ -12340,7 +12335,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.50.0(@types/node@22.13.4)':
+  '@microsoft/api-extractor@7.50.1(@types/node@22.13.4)':
     dependencies:
       '@microsoft/api-extractor-model': 7.30.3(@types/node@22.13.4)
       '@microsoft/tsdoc': 0.15.1
@@ -12354,7 +12349,7 @@ snapshots:
       resolve: 1.22.10
       semver: 7.5.4
       source-map: 0.6.1
-      typescript: 5.7.2
+      typescript: 5.7.3
     transitivePeerDependencies:
       - '@types/node'
 
@@ -19973,8 +19968,6 @@ snapshots:
       typescript: 5.7.3
     transitivePeerDependencies:
       - supports-color
-
-  typescript@5.7.2: {}
 
   typescript@5.7.3: {}
 
