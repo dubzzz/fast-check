@@ -26,7 +26,6 @@
     "build": "pnpm run build:publish-types",
     "build-ci": "pnpm run build",
     "build:publish-types": "cp src/*.d.ts src/cjs/",
-    "test": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
   "repository": {

@@ -14,7 +14,7 @@
     "contributor:add": "all-contributors add",
     "build:all": "pnpm --filter {./packages/**} run build",
     "build-ci:all": "pnpm --filter {./packages/**} run build-ci",
-    "test:all": "pnpm --parallel run test && pnpm --parallel run e2e",
+    "test": "vitest",
     "typecheck:all": "pnpm --parallel run typecheck",
     "format": "prettier --cache --write .",
     "format:check": "prettier --list-different .",
@@ -23,7 +23,8 @@
     "publint:all": "pnpm --filter {./packages/**} --parallel exec publint --strict",
     "bump": "changeset",
     "pack:all": "pnpm --filter {./packages/**} --parallel exec pnpm pack --out package.tgz",
-    "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
+    "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'",
+    "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check:documentation"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
@@ -38,6 +39,7 @@
     "prettier": "3.5.2",
     "publint": "^0.3.6",
     "typescript": "~5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript-eslint": "^8.24.1",
+    "vitest": "^2.1.9"
   }
 }

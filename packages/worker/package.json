@@ -28,7 +28,6 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "test": "vitest",
     "test-bundle:cjs": "node test-bundle/main.cjs",
     "test-bundle:mjs": "node test-bundle/main.mjs",
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
@@ -53,6 +52,7 @@
     "@fast-check/worker": "workspace:*",
     "@types/node": "^22.13.4",
     "typescript": "~5.7.3",
+    "vite": "^6.1.1",
     "vitest": "^2.1.9"
   },
   "keywords": [

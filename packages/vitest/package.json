@@ -28,7 +28,6 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "test": "vitest",
     "test-bundle": "node test-bundle/basic.mjs && vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },
