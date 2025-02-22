@@ -23,6 +23,9 @@ importers:
       all-contributors-cli:
         specifier: ^6.26.1
         version: 6.26.1(encoding@0.1.13)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       eslint:
         specifier: ^9.20.1
         version: 9.20.1(jiti@1.21.7)
