@@ -1,12 +1,12 @@
 node_modules/
 
 # Various generated files
-packages/*/coverage/
-packages/*/dist/
-packages/*/lib/
-packages/*/lib-*/
 packages/fast-check/docs/
-packages/*/.test-artifacts/
+**/coverage/
+**/dist/
+**/lib/
+**/lib-*/
+**/.test-artifacts/
 *.tgz
 deopt.out
 v8.log
