@@ -36,8 +36,8 @@ importers:
         specifier: ^0.0.39
         version: 0.0.39
       prettier:
-        specifier: 3.5.1
-        version: 3.5.1
+        specifier: 3.5.2
+        version: 3.5.2
       publint:
         specifier: ^0.3.6
         version: 0.3.6
@@ -94,14 +94,14 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
       happy-dom:
-        specifier: ^17.1.1
-        version: 17.1.1
+        specifier: ^17.1.2
+        version: 17.1.2
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/ava:
     dependencies:
@@ -122,8 +122,8 @@ importers:
         specifier: ^3.2.25
         version: 3.2.25
       rxjs:
-        specifier: ^7.8.1
-        version: 7.8.1
+        specifier: ^7.8.2
+        version: 7.8.2
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
@@ -150,14 +150,14 @@ importers:
         specifier: workspace:*
         version: link:../poisoning
       '@microsoft/api-extractor':
-        specifier: ^7.50.0
-        version: 7.50.0(@types/node@22.13.4)
+        specifier: ^7.50.1
+        version: 7.50.1(@types/node@22.13.4)
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.4
       '@vitest/coverage-v8':
         specifier: ^2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0))
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -184,7 +184,7 @@ importers:
         version: 5.7.3
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/jest:
     dependencies:
@@ -224,7 +224,7 @@ importers:
         version: 6.1.1(@types/node@22.13.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/packaged:
     dependencies:
@@ -249,7 +249,7 @@ importers:
         version: 6.1.1(@types/node@22.13.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/poisoning:
     devDependencies:
@@ -264,7 +264,7 @@ importers:
         version: 5.7.3
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/vitest:
     dependencies:
@@ -286,7 +286,7 @@ importers:
         version: 6.1.1(@types/node@22.13.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/worker:
     dependencies:
@@ -308,7 +308,7 @@ importers:
         version: 5.7.3
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   website:
     dependencies:
@@ -2302,8 +2302,8 @@ packages:
   '@microsoft/api-extractor-model@7.30.3':
     resolution: {integrity: sha512-yEAvq0F78MmStXdqz9TTT4PZ05Xu5R8nqgwI5xmUmQjWBQ9E6R2n8HB/iZMRciG4rf9iwI2mtuQwIzDXBvHn1w==}
 
-  '@microsoft/api-extractor@7.50.0':
-    resolution: {integrity: sha512-Ds/PHTiVzuENQsmXrJKkSdfgNkr/SDG/2rDef0AWl3BchAnXdO7gXaYsAkNx4gWiC4OngNA3fQfd3+BcQxP1DQ==}
+  '@microsoft/api-extractor@7.50.1':
+    resolution: {integrity: sha512-L18vz0ARLNaBLKwWe0DdEf7eijDsb7ERZspgZK7PxclLoQrc+9hJZo8y4OVfCHxNVyxlwVywY2WdE/3pOFViLQ==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.17.1':
@@ -5246,8 +5246,8 @@ packages:
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
-  happy-dom@17.1.1:
-    resolution: {integrity: sha512-OSTkBlmD/6Do7gCd7nZB5iFq1bF9VQg/iFmjHmxvVX2S1UiOpo6sT+aFNnu3XUsB8hCZb9+GZ0G1g1TaMiAggw==}
+  happy-dom@17.1.2:
+    resolution: {integrity: sha512-5E8yneWaJwliTPlN1gGVKrmwRRfAg54yiChOjR3vjdTr0+b8mdbZsqPh8MRRvZfQHqaBJmrJvjmoAXFcL4LXLQ==}
     engines: {node: '>=18.0.0'}
 
   has-bigints@1.1.0:
@@ -7530,8 +7530,8 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  prettier@3.5.1:
-    resolution: {integrity: sha512-hPpFQvHwL3Qv5AdRvBFMhnKo4tYxp0ReXiPn2bxkiohEX6mBeBwEpBSQTkD458RaaDKQMYSp4hX4UtfUTA5wDw==}
+  prettier@3.5.2:
+    resolution: {integrity: sha512-lc6npv5PH7hVqozBR7lkBNOGXV9vMwROAPlumdBkX0wTbbzPu/U1hk5yL8p2pt4Xoc+2mkT8t/sow2YrV/M5qg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -7999,8 +7999,8 @@ packages:
     resolution: {integrity: sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==}
     engines: {npm: '>=2.0.0'}
 
-  rxjs@7.8.1:
-    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
+  rxjs@7.8.2:
+    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
 
   sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
@@ -8698,11 +8698,6 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
-
-  typescript@5.7.2:
-    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
-    engines: {node: '>=14.17'}
-    hasBin: true
 
   typescript@5.7.3:
     resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
@@ -12346,7 +12341,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.50.0(@types/node@22.13.4)':
+  '@microsoft/api-extractor@7.50.1(@types/node@22.13.4)':
     dependencies:
       '@microsoft/api-extractor-model': 7.30.3(@types/node@22.13.4)
       '@microsoft/tsdoc': 0.15.1
@@ -12360,7 +12355,7 @@ snapshots:
       resolve: 1.22.10
       semver: 7.5.4
       source-map: 0.6.1
-      typescript: 5.7.2
+      typescript: 5.7.3
     transitivePeerDependencies:
       - '@types/node'
 
@@ -13566,7 +13561,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0))':
+  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -13580,7 +13575,7 @@ snapshots:
       std-env: 3.8.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+      vitest: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -15784,7 +15779,7 @@ snapshots:
 
   handle-thing@2.0.1: {}
 
-  happy-dom@17.1.1:
+  happy-dom@17.1.2:
     dependencies:
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
@@ -18605,7 +18600,7 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  prettier@3.5.1: {}
+  prettier@3.5.2: {}
 
   pretty-bytes@5.6.0: {}
 
@@ -19190,7 +19185,7 @@ snapshots:
     dependencies:
       tslib: 1.14.1
 
-  rxjs@7.8.1:
+  rxjs@7.8.2:
     dependencies:
       tslib: 2.8.1
 
@@ -19981,8 +19976,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  typescript@5.7.2: {}
-
   typescript@5.7.3: {}
 
   uc.micro@2.1.0: {}
@@ -20206,7 +20199,7 @@ snapshots:
       terser: 5.39.0
       yaml: 2.7.0
 
-  vitest@2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0):
+  vitest@2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0):
     dependencies:
       '@vitest/expect': 2.1.9
       '@vitest/mocker': 2.1.9(vite@5.4.14(@types/node@22.13.4)(lightningcss@1.29.1)(terser@5.39.0))
@@ -20230,7 +20223,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.13.4
-      happy-dom: 17.1.1
+      happy-dom: 17.1.2
     transitivePeerDependencies:
       - less
       - lightningcss
