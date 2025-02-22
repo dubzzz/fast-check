@@ -1,5 +1,5 @@
 // @ts-check
-import { jest, afterAll, describe, it, expect } from '@jest/globals';
+import { afterAll, describe, it, expect } from 'vitest';
 import * as path from 'path';
 import * as url from 'url';
 import { promises as fs } from 'fs';
@@ -10,7 +10,7 @@ import { cwd } from 'process';
 
 const execFile = promisify(_execFile);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const generatedTestsDirectoryName = 'generated-tests';
+const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(__dirname, generatedTestsDirectoryName);
 
 const allQueueSpecs = {
@@ -57,15 +57,13 @@ afterAll(async () => {
   await fs.rmdir(generatedTestsDirectory);
 });
 
-jest.setTimeout(60_000);
-
 describe('Playground', () => {
   for (const [snippetLabel, snippet] of Object.entries(allQueueSnippets)) {
-    describe(`snippet ${snippetLabel}`, () => {
+    describe.concurrent(`snippet ${snippetLabel}`, () => {
       for (const [specLabel, specCode] of Object.entries(allQueueSpecs)) {
         const expectedSuccess = snippet.greenTests.includes(specLabel);
         const friendlyStatus = expectedSuccess ? 'pass' : 'fail';
-        it(`should ${friendlyStatus} on ${specLabel}`, async () => {
+        it.concurrent(`should ${friendlyStatus} on ${specLabel}`, async () => {
           const seed = Math.random().toString(16).substring(2);
           const testDirectoryName = `test-${seed}`;
           const testDirectoryPath = path.join(generatedTestsDirectory, testDirectoryName);
