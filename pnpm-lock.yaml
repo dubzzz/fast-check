@@ -393,7 +393,7 @@ importers:
         version: 6.1.1(@types/node@22.13.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.1)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.13.4)(happy-dom@17.1.2)(lightningcss@1.29.1)(terser@5.39.0)
 
 packages:
 
