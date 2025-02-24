@@ -24,7 +24,7 @@
     "bump": "changeset",
     "pack:all": "pnpm --filter {./packages/**} --parallel exec pnpm pack --out package.tgz",
     "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'",
-    "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check:documentation"
+    "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check:e2e test/e2e/documentation"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
