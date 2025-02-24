@@ -10,8 +10,12 @@ import { cwd } from 'process';
 
 const execFile = promisify(_execFile);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const rootWebsite = path.join(__dirname, '..', '..', '..');
+
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(__dirname, generatedTestsDirectoryName);
+const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryName);
+
+const jestBinaryPath = path.join(rootWebsite, './node_modules/jest/bin/jest.js');
 
 const allQueueSpecs = {
   unit: snippets.queueUnitSpecCode,
@@ -51,7 +55,7 @@ const allQueueSnippets = {
   },
 };
 
-const jestBinaryPath = './node_modules/jest/bin/jest.js';
+
 
 afterAll(async () => {
   await fs.rmdir(generatedTestsDirectory);
