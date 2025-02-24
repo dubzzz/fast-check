@@ -5,8 +5,8 @@ export default defineConfig({
     coverage: {
       name: 'fast-check',
       enabled: true,
-      include: ['**/src/**'],
-      exclude: ['**/lib/**', '**/test/**'],
+      include: ['packages/fast-check/src/**'],
+      exclude: ['packages/fast-check/lib/**', 'packages/fast-check/test/**'],
     },
   },
 });
