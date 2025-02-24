@@ -28,8 +28,7 @@
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "ava-test": "ava --config test/ava.config.js -s -t",
-    "test": "sh test.sh",
+    "test": "vitest",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
@@ -59,7 +58,9 @@
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "rxjs": "^7.8.2",
-    "typescript": "~5.7.3"
+    "typescript": "~5.7.3",
+    "vite": "^6.1.1",
+    "vitest": "^2.1.9"
   },
   "keywords": [
     "ava",
