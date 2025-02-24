@@ -1,5 +1,5 @@
 // @ts-check
-import { afterAll, describe, it, expect } from 'vitest';
+import { afterAll, describe, it, expect, beforeAll } from 'vitest';
 import * as path from 'path';
 import * as url from 'url';
 import { promises as fs } from 'fs';
@@ -56,8 +56,11 @@ const allQueueSnippets = {
   },
 };
 
+beforeAll(async () => {
+  await fs.mkdir(generatedTestsDirectory, { recursive: true });
+});
 afterAll(async () => {
-  await fs.rmdir(generatedTestsDirectory);
+  await fs.rm(generatedTestsDirectory, { recursive: true });
 });
 
 describe('Playground', () => {
