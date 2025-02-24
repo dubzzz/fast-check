@@ -10,7 +10,7 @@ const CommentForGeneratedValues = '// Examples of generated values:';
 const CommentForArbitraryIndicator = '// Use the arbitrary:';
 const CommentForStatistics = '// Computed statistics for 10k generated values:';
 
-const allPathsFromWebsite = globSync(`../../website/docs/core-blocks/arbitraries/**/*.md`, {
+const allPathsFromWebsite = globSync(`./website/docs/core-blocks/arbitraries/**/*.md`, {
   withFileTypes: true,
   nodir: true,
 }).map((fileDescriptor) => ({
