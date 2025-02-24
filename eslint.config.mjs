@@ -53,7 +53,7 @@ export default [
     files: [
       '**/*.cjs',
       '**/cjs/**/*.js',
-      'packages/ava/test/testProp.js',
+      'packages/ava/test/ava-specs/testProp.js',
       '**/ava.config.js',
       '**/jest.config.js',
       'packages/expect-type/src/*.js',
