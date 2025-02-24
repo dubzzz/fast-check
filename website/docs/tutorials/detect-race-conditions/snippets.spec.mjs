@@ -55,8 +55,6 @@ const allQueueSnippets = {
   },
 };
 
-
-
 afterAll(async () => {
   await fs.rmdir(generatedTestsDirectory);
 });
