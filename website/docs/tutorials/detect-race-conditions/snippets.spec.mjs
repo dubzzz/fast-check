@@ -16,6 +16,7 @@ const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryName);
 
 const jestBinaryPath = path.join(rootWebsite, './node_modules/jest/bin/jest.js');
+const jestConfigName = `jest.config.cjs`;
 
 const allQueueSpecs = {
   unit: snippets.queueUnitSpecCode,
@@ -71,7 +72,7 @@ describe('Playground', () => {
           const testDirectoryPath = path.join(generatedTestsDirectory, testDirectoryName);
           const sourceFilePath = path.join(testDirectoryPath, `queue.mjs`);
           const specFilePath = path.join(testDirectoryPath, `queue.spec.mjs`);
-          const jestConfigPath = path.join(testDirectoryPath, `jest.config.cjs`);
+          const jestConfigPath = path.join(testDirectoryPath, jestConfigName);
           const sanitizedSpecCode =
             "import { jest } from '@jest/globals';\n" + specCode.replace('queue.js', 'queue.mjs');
           try {
@@ -79,7 +80,7 @@ describe('Playground', () => {
             await fs.writeFile(sourceFilePath, snippet.code);
             await fs.writeFile(specFilePath, sanitizedSpecCode);
             await fs.writeFile(jestConfigPath, `module.exports = { testMatch: ['<rootDir>/*.spec.mjs'] }`);
-            const specOutput = await runJest(jestConfigPath);
+            const specOutput = await runJest(testDirectoryPath);
             if (expectedSuccess) {
               expect(specOutput).toContain('1 passed');
               expect(specOutput).not.toContain('1 failed');
@@ -103,15 +104,13 @@ describe('Playground', () => {
 
 // Helpers
 
-async function runJest(jestConfigPath) {
-  expect(jestBinaryPath).toBeDefined();
+async function runJest(testDirectoryPath) {
   try {
-    const { stderr: specOutput } = await execFile('node', [
-      '--experimental-vm-modules',
-      jestBinaryPath,
-      '--config',
-      path.relative(cwd(), jestConfigPath),
-    ]);
+    const { stderr: specOutput } = await execFile(
+      'node',
+      ['--experimental-vm-modules', jestBinaryPath, '--config', jestConfigName],
+      { cwd: testDirectoryPath },
+    );
     return specOutput;
   } catch (err) {
     return err.stderr;
