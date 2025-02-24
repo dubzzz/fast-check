@@ -20,9 +20,15 @@ importers:
       '@typescript-eslint/utils':
         specifier: ^8.25.0
         version: 8.25.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.9
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.5)(happy-dom@17.1.4)(lightningcss@1.29.1)(terser@5.39.0))
       all-contributors-cli:
         specifier: ^6.26.1
         version: 6.26.1(encoding@0.1.13)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       eslint:
         specifier: ^9.21.0
         version: 9.21.0(jiti@1.21.7)
@@ -47,6 +53,9 @@ importers:
       typescript-eslint:
         specifier: ^8.25.0
         version: 8.25.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)
+      vitest:
+        specifier: ^2.1.9
+        version: 2.1.9(@types/node@22.13.5)(happy-dom@17.1.4)(lightningcss@1.29.1)(terser@5.39.0)
 
   examples:
     dependencies:
@@ -161,9 +170,6 @@ importers:
       '@types/node':
         specifier: ^22.13.5
         version: 22.13.5
-      '@vitest/coverage-v8':
-        specifier: ^2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.13.5)(happy-dom@17.1.4)(lightningcss@1.29.1)(terser@5.39.0))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -268,6 +274,9 @@ importers:
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
+      vite:
+        specifier: ^6.1.1
+        version: 6.1.1(@types/node@22.13.5)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@22.13.5)(happy-dom@17.1.4)(lightningcss@1.29.1)(terser@5.39.0)
@@ -312,6 +321,9 @@ importers:
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
+      vite:
+        specifier: ^6.1.1
+        version: 6.1.1(@types/node@22.13.5)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@22.13.5)(happy-dom@17.1.4)(lightningcss@1.29.1)(terser@5.39.0)

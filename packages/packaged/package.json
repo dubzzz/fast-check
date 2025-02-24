@@ -16,7 +16,6 @@
     "build-ci": "pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
