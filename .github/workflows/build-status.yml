@@ -277,7 +277,7 @@ jobs:
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           pnpm --filter '${{matrix.package-name}}' run '${{matrix.script-name}}'
       - name: Codecov
-        uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5.3.1
+        uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
         if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
