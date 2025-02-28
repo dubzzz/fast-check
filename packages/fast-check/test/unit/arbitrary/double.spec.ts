@@ -323,7 +323,7 @@ describe('double (integration)', () => {
       }
       if (extra.max === undefined) {
         expect(v).not.toBe(Number.POSITIVE_INFINITY); // should not produce +infinity when noInfinity and max unset
-        if (extra.minExcluded) {
+        if (extra.maxExcluded) {
           expect(v).not.toBe(Number.MAX_VALUE); // nor max_value
         }
       }
