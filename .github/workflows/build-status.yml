@@ -158,7 +158,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -185,7 +185,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -256,7 +256,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -306,7 +306,7 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter website install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -355,7 +355,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -416,7 +416,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -484,7 +484,7 @@ jobs:
       DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: website
           path: artifacts/
@@ -566,7 +566,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -606,7 +606,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -646,7 +646,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -686,7 +686,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -726,7 +726,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -766,7 +766,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -806,7 +806,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -846,7 +846,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
