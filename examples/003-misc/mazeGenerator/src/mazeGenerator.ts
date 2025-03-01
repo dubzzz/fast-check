@@ -1,5 +1,5 @@
 // Implementation inspired from https://github.com/dubzzz/various-algorithms/blob/main/algorithms/graph/maze-generator/implem.cpp
-import prand from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import { Random } from 'fast-check';
 
 export type Dimension = {
@@ -95,7 +95,7 @@ const mazeGeneratorInternal = (
 };
 
 export const mazeGenerator = (seed: number, dim: Dimension, startPt: Point, endPt: Point): CellType[][] => {
-  const mrng = new Random(prand.xorshift128plus(seed));
+  const mrng = new Random(xorshift128plus(seed));
 
   while (true) {
     const { maze, hasPathLeadingToTheEnd } = mazeGeneratorInternal(mrng, dim, startPt, endPt);
