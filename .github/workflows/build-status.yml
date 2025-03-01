@@ -109,9 +109,9 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter @fast-check/monorepo install --frozen-lockfile
       - name: Check format
-        run: pnpm run format:check
+        run: node --run format:check
       - name: Check lint
-        run: pnpm run lint:check
+        run: node --run lint:check
   production_packages:
     name: 'Build production packages'
     needs: warmup_pnpm_cache
@@ -128,9 +128,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build production packages
-        run: pnpm run build-ci:all
+        run: node --run build-ci:all
       - name: Create bundles
-        run: pnpm run pack:all
+        run: node --run pack:all
       - name: Upload production packages
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
@@ -163,9 +163,9 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Typecheck
-        run: pnpm run typecheck:all
+        run: node --run typecheck:all
   preview:
     name: 'Preview'
     needs:
@@ -190,7 +190,7 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Preview
         run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples'
   test:
@@ -311,7 +311,7 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Get Date cache buster
         id: get-date
         run: |
@@ -360,13 +360,13 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
       - name: Retrieve potentially dropped test-bundle
         run: pnpm --filter {./packages/**} --parallel -c --workspace-concurrency=1 exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check publication lint
-        run: pnpm run publint:all
+        run: node --run publint:all
       - name: Check bundles
         run: pnpm --filter {./packages/**} --parallel run test-bundle
       - name: Check legacy bundles
@@ -421,7 +421,7 @@ jobs:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
       - name: Retrieve dropped test-types
