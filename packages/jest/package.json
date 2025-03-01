@@ -83,7 +83,7 @@
     "jest-jasmine2": "^29.7.0",
     "typescript": "~5.7.3",
     "vite": "^6.2.0",
-    "vitest": "^2.1.9"
+    "vitest": "^3.0.7"
   },
   "keywords": [
     "jest",
