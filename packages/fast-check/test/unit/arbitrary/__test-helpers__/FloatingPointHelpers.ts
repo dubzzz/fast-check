@@ -54,14 +54,19 @@ export const defaultDoubleRecordConstraints: {
 
 type ConstraintsInternalOut = FloatConstraints & DoubleConstraints;
 type ConstraintsInternal = {
-  [K in keyof ConstraintsInternalOut]?: fc.Arbitrary<ConstraintsInternalOut[K]>;
+  [K in keyof ConstraintsInternalOut]: fc.Arbitrary<ConstraintsInternalOut[K] | undefined> | undefined;
 };
 function constraintsInternal(
   recordConstraints: ConstraintsInternal,
   is32Bits: boolean,
 ): fc.Arbitrary<ConstraintsInternalOut> {
+  const fullyDefinedRecordConstraints = Object.fromEntries(
+    Object.entries(recordConstraints).map((entry) => [entry[0], entry[1] ?? fc.constant(undefined)]),
+  ) as Required<ConstraintsInternal>;
   return fc
-    .record(recordConstraints, { requiredKeys: [] })
+    .record(fullyDefinedRecordConstraints, {
+      requiredKeys: [],
+    })
     .filter((ct) => {
       // Forbid min and max to be NaN
       return (ct.min === undefined || !Number.isNaN(ct.min)) && (ct.max === undefined || !Number.isNaN(ct.max));
