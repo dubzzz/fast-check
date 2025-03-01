@@ -27,7 +27,6 @@ export type PropertyHookFunction = (globalHookFunction: GlobalPropertyHookFuncti
  * @remarks Since 1.19.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
 
 /**
