@@ -12,7 +12,7 @@ If you want to join several strings together: refer to our [combiners section](/
 
 ## string
 
-String containing characters produced by the character generator defined for `unit`. By default, `unit` defaults to `'grapheme-ascii'`.
+String containing characters produced by the character generator defined for `unit`. By default, `unit` defaults to `'grapheme-ascii'`. Our `unit`s have been built from documents linked to the specifications of Unicode 15.
 
 **Signatures:**
 
