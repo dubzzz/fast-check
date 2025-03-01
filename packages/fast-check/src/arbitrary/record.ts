@@ -34,8 +34,7 @@ export type RecordConstraints<T = unknown> = {
  * @remarks Since 2.2.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type RecordValue<T, TConstraints = {}> = TConstraints extends { requiredKeys: (infer TKeys)[] }
+export type RecordValue<T, TConstraints = object> = TConstraints extends { requiredKeys: (infer TKeys)[] }
   ? Partial<T> & Pick<T, TKeys & keyof T>
   : T;
 

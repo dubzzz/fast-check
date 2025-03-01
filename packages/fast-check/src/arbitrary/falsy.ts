@@ -20,8 +20,7 @@ export interface FalsyContraints {
  * @remarks Since 2.2.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type FalsyValue<TConstraints extends FalsyContraints = {}> =
+export type FalsyValue<TConstraints extends FalsyContraints = object> =
   | false
   | null
   | 0

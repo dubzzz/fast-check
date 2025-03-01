@@ -7,5 +7,4 @@ import type { ICommand } from './ICommand';
  * @remarks Since 1.5.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Command<Model extends object, Real> extends ICommand<Model, Real, void> {}
