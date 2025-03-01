@@ -87,6 +87,15 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   if (docReplacement.length === 1 && docReplacement[0].hasChanged) {
     console.info(`Package details added onto doc`);
   }
+
+  const noSideEffectsOnAllArbitraries = replaceInFileSync({
+    files: ['lib/arbitrary/*.js', 'lib/cjs/arbitrary/*.js'],
+    from: [(file) => `function ${path.basename(file).split('.')[0]}(`],
+    to: [(match) => `/**@__NO_SIDE_EFFECTS__*/${match}`],
+  });
+  if (noSideEffectsOnAllArbitraries.length === 1 && noSideEffectsOnAllArbitraries[0].hasChanged) {
+    console.info(`No side effects tags added onto arbitraries`);
+  }
 });
 
 // Helpers
