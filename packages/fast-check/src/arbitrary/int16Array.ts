@@ -9,7 +9,7 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
  * @remarks Since 2.9.0
  * @public
  */
-export function int16Array(constraints: IntArrayConstraints = {}): Arbitrary<Int16Array> {
+export function int16Array(constraints: IntArrayConstraints = {}): Arbitrary<Int16Array<ArrayBuffer>> {
   return typedIntArrayArbitraryArbitraryBuilder<Int16Array, number>(constraints, -32768, 32767, Int16Array, integer);
 }
 export type { IntArrayConstraints };
