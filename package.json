@@ -36,7 +36,7 @@
     "globals": "^16.0.0",
     "pkg-pr-new": "^0.0.40",
     "prettier": "3.5.3",
-    "publint": "^0.3.7",
+    "publint": "^0.3.8",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.25.0"
   }
