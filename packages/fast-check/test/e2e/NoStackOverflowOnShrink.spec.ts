@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
-import * as prand from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 
 const computeMaximalStackSize = () => {
   // Compute the maximal call stack size
@@ -71,7 +71,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     // the maximal depth we computed before reaching a stack overflow
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
-    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const mrng = new fc.Random(xorshift128plus(seed));
     const arb = fc.array(fc.boolean(), { maxLength: maxDepthForArrays, size: 'max' });
     let value: fc.Value<boolean[]> | null = null;
     while (value === null) {
@@ -88,7 +88,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     // the maximal depth we computed before reaching a stack overflow
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
-    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const mrng = new fc.Random(xorshift128plus(seed));
     const arb = fc.array(fc.boolean(), { minLength: maxDepthForArrays, maxLength: maxDepthForArrays });
     const value: fc.Value<boolean[]> = arb.generate(mrng, undefined);
     expect(() => iterateOverShrunkValues(arb, value)).not.toThrow();
@@ -99,7 +99,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     // the maximal depth we computed before reaching a stack overflow
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
-    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const mrng = new fc.Random(xorshift128plus(seed));
     const arb = fc.tuple<boolean[]>(...[...Array(maxDepthForArrays)].fill(fc.boolean()));
     const value: fc.Value<boolean[]> = arb.generate(mrng, undefined);
     expect(() => iterateOverShrunkValues(arb, value)).not.toThrow();
@@ -110,7 +110,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     // the maximal depth we computed before reaching a stack overflow
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
 
-    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const mrng = new fc.Random(xorshift128plus(seed));
     const arb = fc.shuffledSubarray([...Array(maxDepthForArrays)].map((_, i) => i));
     let value: fc.Value<number[]> | null = null;
     while (value === null) {
@@ -133,7 +133,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
       run = () => {};
     }
 
-    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const mrng = new fc.Random(xorshift128plus(seed));
     const arb = fc.commands([fc.boolean().map((b) => new AnyCommand(b))], {
       maxCommands: maxDepthForArrays,
       size: 'max',

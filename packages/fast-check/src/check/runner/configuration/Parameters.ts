@@ -1,7 +1,7 @@
 import type { RandomType } from './RandomType';
 import type { VerbosityLevel } from './VerbosityLevel';
 import type { RunDetails } from '../reporter/RunDetails';
-import type { RandomGenerator } from 'pure-rand';
+import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 
 /**
  * Customization of the parameters used to run the properties

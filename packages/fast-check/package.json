@@ -56,7 +56,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "pure-rand": "^7.0.0"
+    "pure-rand": "^7.0.1"
   },
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",

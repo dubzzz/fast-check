@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import * as prand from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
@@ -9,7 +9,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
    * of their type / range
    */
   const lookForMissing = <T>(arb: fc.Arbitrary<T>, expectedSize: number): void => {
-    const mrng = new fc.Random(prand.xorshift128plus(seed));
+    const mrng = new fc.Random(xorshift128plus(seed));
     const alreadySeen = new Set<T>();
     while (alreadySeen.size < expectedSize) {
       const value = arb.generate(mrng, undefined).value;
@@ -52,7 +52,7 @@ describe(`Generate all values (seed: ${seed})`, () => {
     ) => {
       it(`should be able to generate ${label}`, () => {
         let numTries = 0;
-        const mrng = new fc.Random(prand.xorshift128plus(seed));
+        const mrng = new fc.Random(xorshift128plus(seed));
         const arb = fc.anything({
           withBoxedValues: true,
           withMap: true,
