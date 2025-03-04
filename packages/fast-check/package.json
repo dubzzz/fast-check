@@ -8,10 +8,12 @@
     "./package.json": "./package.json",
     ".": {
       "require": {
+        "types@<5.7": "./lib/cjs/types57/fast-check.d.ts",
         "types": "./lib/cjs/types/fast-check.d.ts",
         "default": "./lib/cjs/fast-check.js"
       },
       "import": {
+        "types@<5.7": "./lib/types57/fast-check.d.ts",
         "types": "./lib/types/fast-check.d.ts",
         "default": "./lib/fast-check.js"
       }
@@ -19,6 +21,13 @@
   },
   "module": "lib/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
+  "typesVersions": {
+    "<5.7": {
+      "lib/types/fast-check.d.ts": [
+        "lib/types57/fast-check.d.ts"
+      ]
+    }
+  },
   "files": [
     "lib",
     "runkit.cjs"

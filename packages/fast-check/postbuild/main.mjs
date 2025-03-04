@@ -67,9 +67,39 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
     from: [/__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
     to: [packageVersion, commitHash],
   });
-  if (dTsReplacement2.length === 1 && dTsReplacement[0].hasChanged) {
+  if (dTsReplacement2.length === 1 && dTsReplacement2[0].hasChanged) {
     console.info(`Package details added onto d.ts version for esm`);
   }
+
+  function reportArrayReplace(results) {
+    for (const result of results) {
+      if (result.numReplacements === 1) {
+        console.info(`Stripped ${result.numReplacements} generic from typed array for `, result.file);
+      } else {
+        throw new Error(
+          `We expected to only replace 1 generic for ${result.file}, but instead replaced ` + result.numReplacements,
+        );
+      }
+    }
+  }
+
+  fs.cpSync('lib/types', 'lib/types57', { recursive: true });
+  const dTsReplacement57 = replaceInFileSync({
+    files: 'lib/types57/arbitrary/*[0-9]*Array.d.ts',
+    from: [/Array<ArrayBuffer>>/g],
+    to: ['Array>'],
+    countMatches: true,
+  });
+  reportArrayReplace(dTsReplacement57);
+
+  fs.cpSync('lib/cjs/types', 'lib/cjs/types57', { recursive: true });
+  const dTsReplacement57cjs = replaceInFileSync({
+    files: 'lib/cjs/types57/arbitrary/*[0-9]*Array.d.ts',
+    from: [/Array<ArrayBuffer>>/g],
+    to: ['Array>'],
+    countMatches: true,
+  });
+  reportArrayReplace(dTsReplacement57cjs);
 
   function escapeHtml(unsafe) {
     return unsafe
