@@ -72,7 +72,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
   }
 
   function reportArrayReplace(results) {
-    for (const result of results.filter((x) => x.hasChanged)) {
+    for (const result of results) {
       if (result.numReplacements === 1) {
         console.info(`Stripped ${result.numReplacements} generic from typed array for `, result.file);
       } else {
@@ -85,7 +85,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
 
   fs.cpSync('lib/types', 'lib/types57', { recursive: true });
   const dTsReplacement57 = replaceInFileSync({
-    files: 'lib/types57/**/*Array.d.ts',
+    files: 'lib/types57/arbitrary/*[0-9]*Array.d.ts',
     from: [/Array<ArrayBuffer>>/g],
     to: ['Array>'],
     countMatches: true,
@@ -94,7 +94,7 @@ fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
 
   fs.cpSync('lib/cjs/types', 'lib/cjs/types57', { recursive: true });
   const dTsReplacement57cjs = replaceInFileSync({
-    files: 'lib/cjs/types57/**/*Array.d.ts',
+    files: 'lib/cjs/types57/arbitrary/*[0-9]*Array.d.ts',
     from: [/Array<ArrayBuffer>>/g],
     to: ['Array>'],
     countMatches: true,
