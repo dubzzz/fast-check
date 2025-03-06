@@ -297,7 +297,7 @@ importers:
   packages/worker:
     dependencies:
       fast-check:
-        specifier: ^3.4.0
+        specifier: ^3.4.0 || ^4.0.0
         version: link:../fast-check
       pure-rand:
         specifier: ^7.0.0
