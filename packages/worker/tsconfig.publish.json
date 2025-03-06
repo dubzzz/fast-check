@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.publish.json",
+  "extends": "../../tsconfig.publish.legacy.json",
   "compilerOptions": {
     "target": "es2020",
     "outDir": "lib/"
