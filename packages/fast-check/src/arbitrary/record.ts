@@ -2,7 +2,7 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
 import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
 
-type Prettify<T> = { [K in keyof T]: T[K]; } & {};
+type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
 /**
  * Constraints to be applied on {@link record}
@@ -56,8 +56,8 @@ export type RecordValue<T, K> = Prettify<Partial<T> & Pick<T, K & keyof T>>;
 
 function record<T, K extends keyof T>(
   model: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints?: { requiredKeys?: K[] }
-): Arbitrary<RecordValue<T, K>>
+  constraints?: { requiredKeys?: K[] },
+): Arbitrary<RecordValue<T, K>>;
 
 function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
