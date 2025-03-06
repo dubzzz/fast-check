@@ -2,4 +2,4 @@
 'fast-check': patch
 ---
 
-🏷️: simplify types for `fc.record`
+🏷️ Simplify types for `fc.record`
