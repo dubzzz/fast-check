@@ -26,7 +26,7 @@ describe('app', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.uniqueArray(
-          fc.record<User>({
+          fc.record({
             id: fc.uuid({ version: 4 }),
             name: fc.string(),
             deactivated: fc.boolean(),
@@ -83,7 +83,7 @@ describe('app', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.uniqueArray(
-          fc.record<User>({
+          fc.record({
             id: fc.uuid({ version: 4 }),
             name: fc.string(),
             deactivated: fc.boolean(),
