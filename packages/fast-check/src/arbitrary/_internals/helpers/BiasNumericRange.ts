@@ -11,7 +11,7 @@ export function integerLogLike(v: number): number {
 /** @internal */
 export function bigIntLogLike(v: bigint): bigint {
   if (v === BigInt(0)) return BigInt(0);
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
+   
   return BigInt(String(v).length);
 }
 
