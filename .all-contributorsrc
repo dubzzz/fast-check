@@ -469,7 +469,15 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/2906913?v=4",
       "profile": "https://github.com/jamesbvaughan",
       "contributions": ["doc"]
+    },
+    {
+      "login": "AlexErrant",
+      "name": "Alex Errant",
+      "avatar_url": "https://avatars.githubusercontent.com/u/109672176?v=4",
+      "profile": "https://github.com/AlexErrant",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7
 }
+
