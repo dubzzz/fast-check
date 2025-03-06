@@ -54,9 +54,9 @@ export type RecordValue<T, K> = Prettify<Partial<T> & Pick<T, K & keyof T>>;
  * @public
  */
 
-function record<T, K extends keyof T>(
+function record<T, K extends keyof T = keyof T>(
   model: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints?: { requiredKeys?: K[] },
+  constraints?: RecordConstraints<K>,
 ): Arbitrary<RecordValue<T, K>>;
 
 function record<T>(
