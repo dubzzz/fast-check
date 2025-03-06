@@ -195,7 +195,7 @@ importers:
   packages/jest:
     dependencies:
       fast-check:
-        specifier: ^3.0.0
+        specifier: ^3.0.0 || ^4.0.0
         version: link:../fast-check
     devDependencies:
       '@fast-check/jest':
