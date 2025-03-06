@@ -14,17 +14,15 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
     });
     it('Should print the values and corresponding outputs', () => {
-      expect(
-        () =>
-          fc.assert(
-            fc.property(fc.func(fc.nat()), (f) => {
-              f(0, 8);
-              f(42, 1);
-              return false;
-            }),
-            { seed: seed },
-          ),
-        // @ts-expect-error ES2018+ Regex
+      expect(() =>
+        fc.assert(
+          fc.property(fc.func(fc.nat()), (f) => {
+            f(0, 8);
+            f(42, 1);
+            return false;
+          }),
+          { seed: seed },
+        ),
       ).toThrowError(/\[0,8\] => 0.*\[42,1\] => 0/s);
     });
   });

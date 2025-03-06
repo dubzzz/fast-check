@@ -46,6 +46,6 @@ function fromTypedUnmapper(value: unknown): number[] {
  * @remarks Since 2.9.0
  * @public
  */
-export function float64Array(constraints: Float64ArrayConstraints = {}): Arbitrary<Float64Array> {
+export function float64Array(constraints: Float64ArrayConstraints = {}): Arbitrary<Float64Array<ArrayBuffer>> {
   return array(double(constraints), constraints).map(toTypedMapper, fromTypedUnmapper);
 }

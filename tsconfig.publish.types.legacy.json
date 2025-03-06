@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.publish.types.json",
+  "compilerOptions": {
+    "target": "es2017"
+  }
+}
