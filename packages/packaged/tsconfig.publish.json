@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.publish.json",
+  "extends": "../../tsconfig.publish.legacy.json",
   "compilerOptions": {
     "outDir": "lib/",
     "esModuleInterop": true

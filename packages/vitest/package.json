@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/vitest#readme",
   "dependencies": {
-    "fast-check": "^3.0.0"
+    "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
     "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2 || ^3"
@@ -55,7 +55,7 @@
     "fast-check": "workspace:*",
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
-    "vitest": "^3.0.7"
+    "vitest": "^3.0.8"
   },
   "keywords": [
     "vitest",

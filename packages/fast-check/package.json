@@ -8,10 +8,12 @@
     "./package.json": "./package.json",
     ".": {
       "require": {
+        "types@<5.7": "./lib/cjs/types57/fast-check.d.ts",
         "types": "./lib/cjs/types/fast-check.d.ts",
         "default": "./lib/cjs/fast-check.js"
       },
       "import": {
+        "types@<5.7": "./lib/types57/fast-check.d.ts",
         "types": "./lib/types/fast-check.d.ts",
         "default": "./lib/fast-check.js"
       }
@@ -19,6 +21,13 @@
   },
   "module": "lib/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
+  "typesVersions": {
+    "<5.7": {
+      "lib/types/fast-check.d.ts": [
+        "lib/types57/fast-check.d.ts"
+      ]
+    }
+  },
   "files": [
     "lib",
     "runkit.cjs"
@@ -63,7 +72,7 @@
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.51.1",
     "@types/node": "^22.13.9",
-    "@vitest/coverage-v8": "^3.0.7",
+    "@vitest/coverage-v8": "^3.0.8",
     "cross-env": "^7.0.3",
     "fast-check": "workspace:*",
     "glob": "^11.0.1",
@@ -72,7 +81,7 @@
     "replace-in-file": "^8.3.0",
     "typedoc": "^0.27.9",
     "typescript": "~5.8.2",
-    "vitest": "^3.0.7"
+    "vitest": "^3.0.8"
   },
   "keywords": [
     "property-based testing",
