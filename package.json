@@ -22,6 +22,7 @@
     "lint:check": "eslint .",
     "publint:all": "pnpm --filter {./packages/**} --parallel exec publint --strict",
     "bump": "changeset",
+    "changelog": "changeset status",
     "pack:all": "pnpm --filter {./packages/**} --parallel exec pnpm pack --out package.tgz",
     "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
