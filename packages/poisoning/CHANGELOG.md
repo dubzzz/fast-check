@@ -1,11 +1,7 @@
 # 0.2.3
 
-_TODO Description_
+_Update build scripts_
 [[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.3)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.2.2...poisoning%2Fv0.2.3)]
-
-## Features
-
-
 
 ## Fixes
 
