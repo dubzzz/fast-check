@@ -1,6 +1,3 @@
 {
-  "extends": "../../tsconfig.common.legacy.json",
-  "compilerOptions": {
-    "target": "es2020"
-  }
+  "extends": "../../tsconfig.common.json"
 }
