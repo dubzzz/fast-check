@@ -1,16 +1,13 @@
 # 0.1.6
 
-_TODO Description_
+_Support fast-check v4_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.6)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.5...vitest%2Fv0.1.6)]
-
-## Features
-
-- ([PR#5766](https://github.com/dubzzz/fast-check/pull/5766)) No intermediate var to declare our types
 
 ## Fixes
 
 - ([PR#5811](https://github.com/dubzzz/fast-check/pull/5811)) CI: Update tsconfig to common config
 - ([PR#5792](https://github.com/dubzzz/fast-check/pull/5792)) Dependencies: Add support for fast-check v4
+- ([PR#5766](https://github.com/dubzzz/fast-check/pull/5766)) Typings: No intermediate var to declare our types
 
 # 0.1.5
 
