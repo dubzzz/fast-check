@@ -41,7 +41,6 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
           return;
         }
         worker.register(predicateId, property.getPayload(inputs), resolve, reject, () =>
-           
           reject(new PreconditionFailure()),
         );
       });
