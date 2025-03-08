@@ -198,7 +198,7 @@ async function run() {
   // Get packages to be bumped via changeset
   const temporaryChangelogFile = 'changelog.json';
   await execFile('pnpm', ['install']);
-  await execFile('pnpm', ['run', 'changeset', 'status', `--output=${temporaryChangelogFile}`]);
+  await execFile('pnpm', ['run', 'changelog', `--output=${temporaryChangelogFile}`]);
   const temporaryChangelogFileContentBuffer = await readFile(temporaryChangelogFile);
   const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
   await rm(temporaryChangelogFile);
