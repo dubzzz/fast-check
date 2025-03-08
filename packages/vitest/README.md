@@ -66,6 +66,18 @@ describe('with it', () => {
 
 ## Minimal requirements
 
-| @fast-check/vitest | vitest   | fast-check |
-| ------------------ | -------- | ---------- |
-| ^0.0.0             | >=0.28.1 | ^3.0.0     |
+| @fast-check/vitest | vitest                                                              | fast-check                       | Node                   |
+| ------------------ | ------------------------------------------------------------------- | -------------------------------- | ---------------------- |
+| **0.2**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2 \|\| ^3                             | ^3.0.0 \|\| ^4.0.0               | ≥12.17.0<sup>(1)</sup> |
+| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(2)</sup> \|\| ^3<sup>(3)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(4)</sup> | N.A                    |
+| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                           | N.A                    |
+
+<details>
+<summary>More details...</summary>
+
+1. The plugin requires a version of Node supporting most of the features coming with the standard ES2020. Version 12.17.0 of Node is supporting enough features to run the plugin properly. Meanwhile, the support of Node may vary depending on the version of vitest or fast-check that you are depending on.
+2. Official support for version 2.x of vitest starts at 0.1.2.
+3. Official support for version 3.x of vitest starts at 0.1.5.
+4. Official support for version 4.x of fast-check starts at 0.1.6.
+
+</details>
