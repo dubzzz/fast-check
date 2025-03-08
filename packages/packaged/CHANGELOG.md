@@ -1,11 +1,7 @@
 # 0.5.0
 
-_TODO Description_
+_Fix declaration of the script_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.2...packaged%2Fv0.5.0)]
-
-## Features
-
-
 
 ## Fixes
 
