@@ -2,6 +2,8 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
 import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
 
+type Prettify<T> = { [K in keyof T]: T[K] } & {};
+
 /**
  * Constraints to be applied on {@link record}
  * @remarks Since 0.0.12
@@ -34,25 +36,8 @@ export type RecordConstraints<T = unknown> = {
  * @remarks Since 2.2.0
  * @public
  */
-export type RecordValue<T, TConstraints = object> = TConstraints extends { requiredKeys: (infer TKeys)[] }
-  ? Partial<T> & Pick<T, TKeys & keyof T>
-  : T;
+export type RecordValue<T, K> = Prettify<Partial<T> & Pick<T, K & keyof T>>;
 
-/**
- * For records following the `recordModel` schema
- *
- * @example
- * ```typescript
- * record({ x: someArbitraryInt, y: someArbitraryInt }): Arbitrary<{x:number,y:number}>
- * // merge two integer arbitraries to produce a {x, y} record
- * ```
- *
- * @param recordModel - Schema of the record
- *
- * @remarks Since 0.0.12
- * @public
- */
-function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }>>;
 /**
  * For records following the `recordModel` schema
  *
@@ -68,10 +53,11 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  * @remarks Since 0.0.12
  * @public
  */
-function record<T, TConstraints extends RecordConstraints<keyof T>>(
-  recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints: TConstraints,
-): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
+function record<T, K extends keyof T = keyof T>(
+  model: { [K in keyof T]: Arbitrary<T[K]> },
+  constraints?: RecordConstraints<K>,
+): Arbitrary<RecordValue<T, K>>;
+
 function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints?: RecordConstraints<keyof T>,
