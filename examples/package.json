@@ -24,7 +24,7 @@
     "@types/lodash": "^4.17.16",
     "@types/react": "^19.0.10",
     "@types/supertest": "^6.0.2",
-    "happy-dom": "^17.3.0",
+    "happy-dom": "^17.4.1",
     "typescript": "~5.8.2",
     "vitest": "^3.0.8"
   },
