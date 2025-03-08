@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.common.legacy.json",
+  "extends": "../../tsconfig.common.json",
   "compilerOptions": {
     "esModuleInterop": true
   }
