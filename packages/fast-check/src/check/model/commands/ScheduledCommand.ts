@@ -41,7 +41,6 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
         label: `run@${this.cmd.toString()}`,
         builder: async () => {
           try {
-             
             await this.cmd.run(m, r);
           } catch (err) {
             error = err;
