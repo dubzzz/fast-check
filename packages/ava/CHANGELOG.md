@@ -1,11 +1,7 @@
 # 2.0.2
 
-_TODO Description_
+_Support fast-check v4_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv2.0.2)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv2.0.1...ava%2Fv2.0.2)]
-
-## Features
-
-
 
 ## Fixes
 
