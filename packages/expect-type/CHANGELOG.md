@@ -1,3 +1,16 @@
+# 0.2.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/expect-type%2Fv0.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/expect-type%2Fv0.2.0...expect-type%2Fv0.2.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5808](https://github.com/dubzzz/fast-check/pull/5808)) CI: Update tsconfig to ES2020
+
 # 0.2.0
 
 _Declare root of the package as ESM_

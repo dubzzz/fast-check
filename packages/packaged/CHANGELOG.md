@@ -1,3 +1,19 @@
+# 0.5.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.4.2...packaged%2Fv0.5.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5706](https://github.com/dubzzz/fast-check/pull/5706)) Bug: Add node shebang on script
+- ([PR#5807](https://github.com/dubzzz/fast-check/pull/5807)) CI: Update tsconfig to ES2020
+
+---
+
 # 0.4.2
 
 _Typos in the changelog_
