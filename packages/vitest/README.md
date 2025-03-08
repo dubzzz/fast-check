@@ -75,9 +75,9 @@ describe('with it', () => {
 <details>
 <summary>More details...</summary>
 
-1. The plugin requires a version of Node supporting most of the features coming with the standard ES2020. Version 12.17.0 of Node is supporting enough features to run the plugin properly. Meanwhile, the support of Node may vary depending on the version of vitest or fast-check that you are depending on.
-2. Official support for version 2.x of vitest starts at 0.1.2.
-3. Official support for version 3.x of vitest starts at 0.1.5.
-4. Official support for version 4.x of fast-check starts at 0.1.6.
+1. Official support for version 2.x of vitest starts at 0.1.2.
+2. Official support for version 3.x of vitest starts at 0.1.5.
+3. Official support for version 4.x of fast-check starts at 0.1.6.
+4. As for vitest 0.28.1 and later.
 
 </details>
