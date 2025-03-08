@@ -106,7 +106,11 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         break;
       case '⬆️':
       case ':arrow_up:':
-        ++numIgnored;
+        if (packageName === 'fast-check') {
+          ++numIgnored;
+        } else {
+          maintenanceSection.push({ type: 'Dependencies', pr, title });
+        }
         break;
       case '♻️':
       case ':recycle:':
