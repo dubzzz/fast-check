@@ -1,11 +1,7 @@
 # 0.4.2
 
-_TODO Description_
+_Support fast-check v4_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.2)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.1...worker%2Fv0.4.2)]
-
-## Features
-
-
 
 ## Fixes
 
