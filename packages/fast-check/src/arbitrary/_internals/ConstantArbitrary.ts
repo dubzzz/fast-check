@@ -8,38 +8,6 @@ import { Set, safeHas } from '../../utils/globals';
 const safeObjectIs = Object.is;
 
 /** @internal */
-export class ConstantArbitrary<T> extends Arbitrary<T> {
-  private fastValues: FastConstantValuesLookup<T> | undefined;
-
-  constructor(readonly values: T[]) {
-    super();
-  }
-  generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
-    const idx = this.values.length === 1 ? 0 : mrng.nextInt(0, this.values.length - 1);
-    const value = this.values[idx];
-    if (!hasCloneMethod(value)) {
-      return new Value(value, idx);
-    }
-    return new Value(value, idx, () => value[cloneMethod]());
-  }
-  canShrinkWithoutContext(value: unknown): value is T {
-    if (this.values.length === 1) {
-      return safeObjectIs(this.values[0], value);
-    }
-    if (this.fastValues === undefined) {
-      this.fastValues = new FastConstantValuesLookup(this.values);
-    }
-    return this.fastValues.has(value);
-  }
-  shrink(value: T, context?: unknown): Stream<Value<T>> {
-    if (context === 0 || safeObjectIs(value, this.values[0])) {
-      return Stream.nil();
-    }
-    return Stream.of(new Value(this.values[0], 0));
-  }
-}
-
-/** @internal */
 class FastConstantValuesLookup<T> {
   private readonly hasMinusZero: boolean;
   private readonly hasPlusZero: boolean;
@@ -69,5 +37,37 @@ class FastConstantValuesLookup<T> {
       return this.hasMinusZero;
     }
     return safeHas(this.fastValues, value);
+  }
+}
+
+/** @internal */
+export class ConstantArbitrary<T> extends Arbitrary<T> {
+  private fastValues: FastConstantValuesLookup<T> | undefined;
+
+  constructor(readonly values: T[]) {
+    super();
+  }
+  generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
+    const idx = this.values.length === 1 ? 0 : mrng.nextInt(0, this.values.length - 1);
+    const value = this.values[idx];
+    if (!hasCloneMethod(value)) {
+      return new Value(value, idx);
+    }
+    return new Value(value, idx, () => value[cloneMethod]());
+  }
+  canShrinkWithoutContext(value: unknown): value is T {
+    if (this.values.length === 1) {
+      return safeObjectIs(this.values[0], value);
+    }
+    if (this.fastValues === undefined) {
+      this.fastValues = new FastConstantValuesLookup(this.values);
+    }
+    return this.fastValues.has(value);
+  }
+  shrink(value: T, context?: unknown): Stream<Value<T>> {
+    if (context === 0 || safeObjectIs(value, this.values[0])) {
+      return Stream.nil();
+    }
+    return Stream.of(new Value(this.values[0], 0));
   }
 }
