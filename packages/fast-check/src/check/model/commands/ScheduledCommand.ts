@@ -41,7 +41,7 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
         label: `run@${this.cmd.toString()}`,
         builder: async () => {
           try {
-             
+            // eslint-disable-next-line @typescript-eslint/await-thenable
             await this.cmd.run(m, r);
           } catch (err) {
             error = err;
