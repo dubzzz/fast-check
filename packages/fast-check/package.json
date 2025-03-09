@@ -62,7 +62,7 @@
   },
   "homepage": "https://fast-check.dev/",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12.17.0"
   },
   "dependencies": {
     "pure-rand": "^7.0.0"
