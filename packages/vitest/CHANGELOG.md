@@ -1,3 +1,15 @@
+# 0.1.6
+
+_Support fast-check v4_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.6)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.5...vitest%2Fv0.1.6)]
+
+## Fixes
+
+- ([PR#5811](https://github.com/dubzzz/fast-check/pull/5811)) CI: Update tsconfig to common config
+- ([PR#5792](https://github.com/dubzzz/fast-check/pull/5792)) Dependencies: Add support for fast-check v4
+- ([PR#5764](https://github.com/dubzzz/fast-check/pull/5764)) Lint: Abide by lint rule `no-duplicate-type-constituents`
+- ([PR#5766](https://github.com/dubzzz/fast-check/pull/5766)) Typings: No intermediate var to declare our types
+
 # 0.1.5
 
 _Extend support to vitest v3_
