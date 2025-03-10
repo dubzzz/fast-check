@@ -5,11 +5,6 @@ slug: /migration-guide/from-3.x-to-4.x/
 
 # From 3.x to 4.x
 
-:::warning Work in progress
-
-Version 4 has not been released yet. This guide is still a work in progress document with part of it already actionable from v3.
-:::
-
 Simple migration guide to fast-check v4 starting from fast-check v3
 
 ## Changes in minimal requirements
