@@ -39,8 +39,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       publint:
-        specifier: ^0.3.8
-        version: 0.3.8
+        specifier: ^0.3.9
+        version: 0.3.9
       typescript:
         specifier: ~5.8.2
         version: 5.8.2
@@ -7483,8 +7483,8 @@ packages:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
 
-  publint@0.3.8:
-    resolution: {integrity: sha512-qJyxCpQFf0j0uvlr7GizYZiQgAFgePbAVRV2uecAbNIXniDD/NMSNNBL8+DxLMMjhjgPuLJ3l2GbrB0F9MwvfA==}
+  publint@0.3.9:
+    resolution: {integrity: sha512-irTwfRfYW38vomkxxoiZQtFtUOQKpz5m0p9Z60z4xpXrl1KmvSrX1OMARvnnolB5usOXeNfvLj6d/W3rwXKfBQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -18419,7 +18419,7 @@ snapshots:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
 
-  publint@0.3.8:
+  publint@0.3.9:
     dependencies:
       '@publint/pack': 0.1.2
       package-manager-detector: 0.2.9
