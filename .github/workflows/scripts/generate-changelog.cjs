@@ -106,7 +106,11 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
         break;
       case '⬆️':
       case ':arrow_up:':
-        ++numIgnored;
+        if (packageName === 'fast-check') {
+          ++numIgnored;
+        } else {
+          maintenanceSection.push({ type: 'Dependencies', pr, title });
+        }
         break;
       case '♻️':
       case ':recycle:':
@@ -198,7 +202,7 @@ async function run() {
   // Get packages to be bumped via changeset
   const temporaryChangelogFile = 'changelog.json';
   await execFile('pnpm', ['install']);
-  await execFile('pnpm', ['run', 'changeset', 'status', `--output=${temporaryChangelogFile}`]);
+  await execFile('pnpm', ['run', 'changelog', `--output=${temporaryChangelogFile}`]);
   const temporaryChangelogFileContentBuffer = await readFile(temporaryChangelogFile);
   const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
   await rm(temporaryChangelogFile);
