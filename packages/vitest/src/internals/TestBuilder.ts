@@ -20,16 +20,6 @@ type TestPropRecord<Ts, TsParameters extends Ts = Ts> = (
   params?: FcParameters<TsParameters>,
 ) => (testName: string, prop: PropRecord<Ts>, timeout?: number) => void;
 
-/**
- * prop has just been declared for typing reasons, ideally TestProp should be enough
- * and should be used to replace `{ prop: typeof prop }` by `{ prop: TestProp<???> }`
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-declare const prop: <Ts, TsParameters extends Ts = Ts>(
-  arbitraries: Ts extends [any] | any[] ? ArbitraryTuple<Ts> : ArbitraryRecord<Ts>,
-  params?: FcParameters<TsParameters>,
-) => (testName: string, prop: Ts extends [any] | any[] ? Prop<Ts> : PropRecord<Ts>, timeout?: number) => void;
-
 function adaptParametersForRecord<Ts>(
   parameters: FcParameters<[Ts]>,
   originalParamaters: FcParameters<Ts>,
@@ -69,18 +59,15 @@ function adaptRunDetailsForRecord<Ts>(
  * @param testFn - The source `{it,test}.*`
  */
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-  testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
+  testFn: It | It['only' | 'skip' | 'concurrent'],
   fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters>;
 function buildTestProp<Ts, TsParameters extends Ts = Ts>(
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-  testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
+  testFn: It | It['only' | 'skip' | 'concurrent'],
   fc: FcExtra,
 ): TestPropRecord<Ts, TsParameters>;
 function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-  testFn: It | It['only' | 'skip' | 'concurrent'] | It['concurrent']['only' | 'skip'],
+  testFn: It | It['only' | 'skip' | 'concurrent'],
   fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters> | TestPropRecord<Ts, TsParameters> {
   return (arbitraries, params?: FcParameters<TsParameters>) => {
@@ -127,7 +114,14 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
  * Revamped {it,test} with added `.prop`
  */
 export type FastCheckItBuilder<T> = T &
-  ('each' extends keyof T ? T & { prop: typeof prop } : T) & {
+  ('each' extends keyof T
+    ? T & {
+        prop: <Ts, TsParameters extends Ts = Ts>(
+          arbitraries: Ts extends [any] | any[] ? ArbitraryTuple<Ts> : ArbitraryRecord<Ts>,
+          params?: FcParameters<TsParameters>,
+        ) => (testName: string, prop: Ts extends [any] | any[] ? Prop<Ts> : PropRecord<Ts>, timeout?: number) => void;
+      }
+    : T) & {
     [K in keyof Omit<T, 'each'>]: FastCheckItBuilder<T[K]>;
   };
 

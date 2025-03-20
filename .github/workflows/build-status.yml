@@ -29,7 +29,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         id: pnpm-cache
         with:
           node-version: '22.x'
@@ -48,7 +48,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         id: pnpm-cache
         with:
           node-version: '22.x'
@@ -70,7 +70,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
@@ -85,7 +85,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
@@ -102,16 +102,16 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --filter @fast-check/monorepo install --frozen-lockfile
       - name: Check format
-        run: pnpm run format:check
+        run: node --run format:check
       - name: Check lint
-        run: pnpm run lint:check
+        run: node --run lint:check
   production_packages:
     name: 'Build production packages'
     needs: warmup_pnpm_cache
@@ -121,16 +121,16 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build production packages
-        run: pnpm run build-ci:all
+        run: node --run build-ci:all
       - name: Create bundles
-        run: pnpm run pack:all
+        run: node --run pack:all
       - name: Upload production packages
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
@@ -151,21 +151,21 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Typecheck
-        run: pnpm run typecheck:all
+        run: node --run typecheck:all
   preview:
     name: 'Preview'
     needs:
@@ -178,19 +178,19 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Preview
         run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples'
   test:
@@ -209,14 +209,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: ${{matrix.node-version}}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -237,7 +237,7 @@ jobs:
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           pnpm run test
       - name: Codecov
-        uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5.3.1
+        uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
         with:
           name: unit-tests-${{matrix.node-version}}-${{runner.os}}
           flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
@@ -258,26 +258,26 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --filter website install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Get Date cache buster
         id: get-date
         run: |
           echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
         shell: bash
       - name: Cache for Optimized assets
-        uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f # v4.2.1
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           path: website/static/img/_
           key: optimized-assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc')}}-${{hashFiles('website/prebuild/optimize-images.mjs')}}
@@ -307,25 +307,25 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
       - name: Retrieve potentially dropped test-bundle
         run: pnpm --filter {./packages/**} --parallel -c --workspace-concurrency=1 exec "git restore -s@ -SW -- test-bundle || true"
       - name: Check publication lint
-        run: pnpm run publint:all
+        run: node --run publint:all
       - name: Check bundles
         run: pnpm --filter {./packages/**} --parallel run test-bundle
       - name: Check legacy bundles
@@ -360,6 +360,7 @@ jobs:
           # Latest version of TypeScript
           - 'latest'
           # Various intermediate versions of Typescript (if any required)
+          - '5.7' # First version adding generics on Uint8Array
           # Minimal requirement for TypeScript
           - '5.0'
           # Other release channels for TypeScript
@@ -368,19 +369,19 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
       - name: Unpack production packages
-        run: pnpm run unpack:all
+        run: node --run unpack:all
       - name: Alter internals to behave as if published
         run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
       - name: Retrieve dropped test-types
@@ -443,7 +444,7 @@ jobs:
       DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: website
           path: artifacts/
@@ -519,13 +520,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -559,13 +560,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -599,13 +600,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -639,13 +640,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -679,13 +680,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -719,13 +720,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -759,13 +760,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/
@@ -799,13 +800,13 @@ jobs:
       id-token: write
     steps:
       - name: Using Node v22.x
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: bundles
           path: packages/

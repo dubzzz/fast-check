@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/jest",
   "description": "Property based testing for Jest based on fast-check",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "type": "module",
   "main": "lib/jest-fast-check.js",
   "exports": {
@@ -55,7 +55,7 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
   "dependencies": {
-    "fast-check": "^3.0.0"
+    "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
     "@fast-check/worker": ">=0.0.7 <0.5.0",
@@ -76,13 +76,13 @@
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.13.5",
+    "@types/node": "^22.13.10",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jest-jasmine2": "^29.7.0",
-    "typescript": "~5.7.3",
-    "vite": "^6.1.1",
-    "vitest": "^2.1.9"
+    "typescript": "~5.8.2",
+    "vite": "^6.2.2",
+    "vitest": "^3.0.9"
   },
   "keywords": [
     "jest",

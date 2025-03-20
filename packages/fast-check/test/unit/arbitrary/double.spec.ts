@@ -29,11 +29,8 @@ describe('double', () => {
   declareCleaningHooksForSpies();
 
   it('should accept any valid range of floating point numbers (including infinity)', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noInteger, ...withoutNoIntegerRecordConstraints } = defaultDoubleRecordConstraints;
-
     fc.assert(
-      fc.property(doubleConstraints(withoutNoIntegerRecordConstraints), (ct) => {
+      fc.property(doubleConstraints({ ...defaultDoubleRecordConstraints, noInteger: undefined }), (ct) => {
         // Arrange
         spyBigInt();
 
@@ -247,28 +244,28 @@ describe('double', () => {
   });
 
   describe('without NaN', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noNaN, noInteger, ...noNaNRecordConstraints } = defaultDoubleRecordConstraints;
-
     it('should ask integers between the indexes corresponding to min and max', () => {
       fc.assert(
-        fc.property(doubleConstraints(noNaNRecordConstraints), (ctDraft) => {
-          // Arrange
-          const ct = { ...ctDraft, noNaN: true };
-          const bigInt = spyBigInt();
-          const { min, max } = minMaxForConstraints(ct);
-          const minIndex = doubleToIndex(min);
-          const maxIndex = doubleToIndex(max);
-          const expectedMinIndex = ct.minExcluded ? minIndex + BigInt(1) : minIndex;
-          const expectedMaxIndex = ct.maxExcluded ? maxIndex - BigInt(1) : maxIndex;
+        fc.property(
+          doubleConstraints({ ...defaultDoubleRecordConstraints, noNaN: undefined, noInteger: undefined }),
+          (ctDraft) => {
+            // Arrange
+            const ct = { ...ctDraft, noNaN: true };
+            const bigInt = spyBigInt();
+            const { min, max } = minMaxForConstraints(ct);
+            const minIndex = doubleToIndex(min);
+            const maxIndex = doubleToIndex(max);
+            const expectedMinIndex = ct.minExcluded ? minIndex + BigInt(1) : minIndex;
+            const expectedMaxIndex = ct.maxExcluded ? maxIndex - BigInt(1) : maxIndex;
 
-          // Act
-          double(ct);
+            // Act
+            double(ct);
 
-          // Assert
-          expect(bigInt).toHaveBeenCalledTimes(1);
-          expect(bigInt).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
-        }),
+            // Assert
+            expect(bigInt).toHaveBeenCalledTimes(1);
+            expect(bigInt).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
+          },
+        ),
       );
     });
   });
@@ -323,7 +320,7 @@ describe('double (integration)', () => {
       }
       if (extra.max === undefined) {
         expect(v).not.toBe(Number.POSITIVE_INFINITY); // should not produce +infinity when noInfinity and max unset
-        if (extra.minExcluded) {
+        if (extra.maxExcluded) {
           expect(v).not.toBe(Number.MAX_VALUE); // nor max_value
         }
       }

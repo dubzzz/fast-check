@@ -1,11 +1,48 @@
-# 4.0.0
+---
+title: What's new in fast-check 4.0.0?
+authors: [dubzzz]
+tags: [what's new]
+---
 
-_Reducing the API surface to ease ramp-up on fast-check_
-[[Code](https://github.com/dubzzz/fast-check/tree/v4.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v3.23.2...v4.0.0)]
+The release of fast-check 4.0.0 marks the end of the 3.x series. With this new version, we've streamlined and refined our APIs, embraced modern standards, and removed unnecessary polyfills to enhance performance and maintainability.
 
-The simplest migration guide to v4 is probably [here](https://fast-check.dev/docs/migration-guide/from-3.x-to-4.x/).
+Continue reading to explore the detailed updates it brings.
 
-## Breaking changes
+<!--truncate-->
+
+## Migration guide
+
+As with any major release, version 4.0.0 introduces breaking changes. To help ease the transition, we've put together a simplified migration guide that outlines the necessary steps to upgrade incrementally.
+
+If you're currently using v3 and planning to migrate to v4, we highly recommend reviewing our guide for a smooth upgrade process. You can find it [here](/docs/migration-guide/from-3.x-to-4.x/).
+
+## Key takeaways
+
+If I had to summarize this release in three major changes, they would be:
+
+### Smarter defaults
+
+We continue our mission to provide smarter defaults. Whether it's `date` or `object`, this release introduces more challenging default behaviors. Our goal is to anticipate potential edge cases for our users, so they can focus on defining their specifications rather than worrying about unexpected issues.
+
+For example, generated dates will now include invalid values by default, and objects may be created without a prototype. While these options remain customizable on a case-by-case basis, our aim is to free users from thinking about potential pitfalls and instead let them concentrate on specifying what they want to achieve.
+
+### Unified string builder
+
+We have consolidated all our string-related arbitraries into a single one: `string`. Instead of maintaining a variety of separate arbitraries — some focused on characters, others on strings — we now provide a unified approach that handles all string cases.
+
+We postponed the idea of enforcing smarter defaults to strings in v4, but we plan to introduce it in v5. In the meantime, we will work on giving users more powerful ways to override and customize fast-check’s defaults at the arbitrary level.
+
+### Finer scheduler
+
+We've improved our scheduling capabilities to be more precise, ensuring that tasks are only scheduled if they were present at the expected time. This change makes the behavior more predictable and easier to understand from an external perspective.
+
+Looking ahead, we plan to introduce more configuration options in upcoming minor releases. This will allow users to fine-tune the behavior, including the ability to relax constraints on microtasks and other tasks as needed.
+
+## Changelog since 3.23.2
+
+The version 4.0.0 is based on version 3.23.2.
+
+### Breaking changes
 
 - ([PR#5589](https://github.com/dubzzz/fast-check/pull/5589)) Include invalid dates by default
 - ([PR#5590](https://github.com/dubzzz/fast-check/pull/5590)) Error with cause by default
@@ -29,14 +66,14 @@ The simplest migration guide to v4 is probably [here](https://fast-check.dev/doc
 - ([PR#5694](https://github.com/dubzzz/fast-check/pull/5694)) Drop deprecated `.noShrink`
 - ([PR#5821](https://github.com/dubzzz/fast-check/pull/5821)) Force usage of Node >=12.17.0
 
-## Features
+### Features
 
 - ([PR#5577](https://github.com/dubzzz/fast-check/pull/5577)) Better typings for `constantFrom`
 - ([PR#5605](https://github.com/dubzzz/fast-check/pull/5605)) Better typings for `constant`
 - ([PR#5773](https://github.com/dubzzz/fast-check/pull/5773)) `Arbitrary<XxxArray>` => `Arbitrary<XxxArray<ArrayBuffer>>`
 - ([PR#5783](https://github.com/dubzzz/fast-check/pull/5783)) Simplify types for `fc.record`
 
-## Fixes
+### Fixes
 
 - ([PR#5604](https://github.com/dubzzz/fast-check/pull/5604)) Bug: Better rejection handling in `scheduleSequence`
 - ([PR#5672](https://github.com/dubzzz/fast-check/pull/5672)) Bug: Resist to external poisoning for `json`

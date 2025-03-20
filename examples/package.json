@@ -21,12 +21,12 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/lodash": "^4.17.15",
-    "@types/react": "^19.0.10",
+    "@types/lodash": "^4.17.16",
+    "@types/react": "^19.0.11",
     "@types/supertest": "^6.0.2",
-    "happy-dom": "^17.1.4",
-    "typescript": "~5.7.3",
-    "vitest": "^2.1.9"
+    "happy-dom": "^17.4.4",
+    "typescript": "~5.8.2",
+    "vitest": "^3.0.9"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT"
