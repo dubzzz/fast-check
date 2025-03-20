@@ -202,48 +202,13 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        package-name:
-          - 'fast-check'
-          - '@fast-check/ava'
-          - '@fast-check/jest'
-          - '@fast-check/packaged'
-          - '@fast-check/poisoning'
-          - '@fast-check/vitest'
-          - '@fast-check/worker'
-        script-name: ['test']
         node-version: [18.x, 20.x, 22.x, latest]
         os: ['ubuntu-latest']
         include:
-          # More platforms and scripts...
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 20.x
-            os: 'ubuntu-latest'
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 20.x
+          - node-version: 22.x
             os: 'macos-latest'
-          - package-name: 'fast-check'
-            script-name: 'e2e'
-            node-version: 20.x
+          - node-version: 22.x
             os: 'windows-latest'
-          - package-name: '@fast-check/packaged'
-            script-name: 'test'
-            node-version: 20.x
-            os: 'macos-latest'
-          - package-name: '@fast-check/packaged'
-            script-name: 'test'
-            node-version: 20.x
-            os: 'windows-latest'
-          # Limited matrix for test only packages
-          - package-name: '@fast-check/examples'
-            script-name: 'test'
-            node-version: 20.x
-            os: 'ubuntu-latest'
-          - package-name: 'website'
-            script-name: 'test'
-            node-version: 20.x
-            os: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install pnpm
@@ -275,13 +240,17 @@ jobs:
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          pnpm --filter '${{matrix.package-name}}' run '${{matrix.script-name}}'
+          if [ "${{matrix.os}}" = "ubuntu-latest" ]; then
+            pnpm run test:coverage
+          else
+            pnpm run test
+          fi
       - name: Codecov
         uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
-        if: matrix.package-name == 'fast-check' && matrix.script-name == 'test'
+        if: matrix.os == 'ubuntu-latest'
         with:
-          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          name: tests-${{matrix.node-version}}-${{runner.os}}
+          flags: tests, tests-against-${{matrix.node-version}}-on-${{runner.os}}
           token: ${{secrets.CODECOV_TOKEN}}
           fail_ci_if_error: true # default: false
           verbose: false # default: false

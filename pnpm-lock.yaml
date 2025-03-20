@@ -20,9 +20,15 @@ importers:
       '@typescript-eslint/utils':
         specifier: ^8.26.1
         version: 8.26.1(eslint@9.22.0(jiti@1.21.7))(typescript@5.8.2)
+      '@vitest/coverage-v8':
+        specifier: ^3.0.9
+        version: 3.0.9(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@17.4.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0))
       all-contributors-cli:
         specifier: ^6.26.1
         version: 6.26.1(encoding@0.1.13)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       eslint:
         specifier: ^9.22.0
         version: 9.22.0(jiti@1.21.7)
@@ -47,6 +53,9 @@ importers:
       typescript-eslint:
         specifier: ^8.26.1
         version: 8.26.1(eslint@9.22.0(jiti@1.21.7))(typescript@5.8.2)
+      vitest:
+        specifier: ^3.0.9
+        version: 3.0.9(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@17.4.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
 
   examples:
     dependencies:
@@ -161,9 +170,6 @@ importers:
       '@types/node':
         specifier: ^22.13.10
         version: 22.13.10
-      '@vitest/coverage-v8':
-        specifier: ^3.0.9
-        version: 3.0.9(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@17.4.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -268,6 +274,9 @@ importers:
       typescript:
         specifier: ~5.8.2
         version: 5.8.2
+      vite:
+        specifier: ^6.2.2
+        version: 6.2.2(@types/node@22.13.10)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
         version: 3.0.9(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@17.4.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
@@ -312,6 +321,9 @@ importers:
       typescript:
         specifier: ~5.8.2
         version: 5.8.2
+      vite:
+        specifier: ^6.2.2
+        version: 6.2.2(@types/node@22.13.10)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
         version: 3.0.9(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@17.4.4)(jiti@1.21.7)(lightningcss@1.29.1)(terser@5.39.0)(yaml@2.7.0)

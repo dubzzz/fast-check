@@ -1,8 +1,11 @@
 import { defineConfig } from 'vitest/config';
 
+import rootConfig from './vitest.shared.mjs';
+
 export default defineConfig({
+  ...rootConfig,
   test: {
-    testTimeout: 120000, // 120s
-    setupFiles: ['vitest.setup.mjs'],
+    ...rootConfig.test,
+    include: ['test/unit/**/*.spec.?(c|m)[jt]s?(x)'],
   },
 });
