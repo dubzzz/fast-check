@@ -270,6 +270,7 @@ function dropMainGlobals(): () => void {
     // @ts-expect-error - 'Iterator' only refers to a type, but is being used as a value here. ts(2693)
     typeof Iterator !== 'undefined' ? Iterator : undefined,
     typeof Navigator !== 'undefined' ? Navigator : undefined,
+    typeof CloseEvent !== 'undefined' ? CloseEvent : undefined,
   ];
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
