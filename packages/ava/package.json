@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/ava",
   "description": "Property based testing for AVA based on fast-check",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "module",
   "main": "lib/ava-fast-check.js",
   "exports": {
@@ -46,21 +46,21 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/ava#readme",
   "dependencies": {
-    "fast-check": "^3.0.0"
+    "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
     "ava": "^4 || ^5 || ^6"
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "@types/node": "^22.13.5",
+    "@types/node": "^22.13.10",
     "ava": "^6.2.0",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "rxjs": "^7.8.2",
-    "typescript": "~5.7.3",
-    "vite": "^6.2.0",
-    "vitest": "^2.1.9"
+    "typescript": "~5.8.2",
+    "vite": "^6.2.2",
+    "vitest": "^3.0.9"
   },
   "keywords": [
     "ava",

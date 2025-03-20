@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b",
+  "packageManager": "pnpm@10.6.4+sha512.da3d715bfd22a9a105e6e8088cfc7826699332ded60c423b14ec613a185f1602206702ff0fe4c438cb15c979081ce4cb02568e364b15174503a63c7a8e2a5f6c",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -22,22 +22,23 @@
     "lint:check": "eslint .",
     "publint:all": "pnpm --filter {./packages/**} --parallel exec publint --strict",
     "bump": "changeset",
+    "changelog": "changeset status",
     "pack:all": "pnpm --filter {./packages/**} --parallel exec pnpm pack --out package.tgz",
     "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
-    "@eslint/js": "^9.21.0",
+    "@eslint/js": "^9.22.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.25.0",
+    "@typescript-eslint/utils": "^8.26.1",
     "all-contributors-cli": "^6.26.1",
-    "eslint": "^9.21.0",
-    "eslint-config-prettier": "^10.0.2",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
     "globals": "^16.0.0",
-    "pkg-pr-new": "^0.0.40",
-    "prettier": "3.5.2",
-    "publint": "^0.3.6",
-    "typescript": "~5.7.3",
-    "typescript-eslint": "^8.25.0"
+    "pkg-pr-new": "^0.0.41",
+    "prettier": "3.5.3",
+    "publint": "^0.3.9",
+    "typescript": "~5.8.2",
+    "typescript-eslint": "^8.26.1"
   }
 }

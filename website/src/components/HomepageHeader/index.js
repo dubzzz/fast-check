@@ -38,12 +38,12 @@ export default function HomepageHeader() {
             <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/">
               Quick Start – 5min ⏱️
             </Link>
-            <Link
+            {/*<Link
               className={clsx('button', 'button--secondary', 'button--lg', styles.adventButton)}
               to="/blog/tags/advent-of-pbt-2024/"
             >
               Save Christmas – Play! 🎄
-            </Link>
+            </Link>*/}
           </div>
         </div>
       </div>
