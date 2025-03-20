@@ -243,9 +243,10 @@ jobs:
           pnpm run test
       - name: Codecov
         uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
+        if: matrix.os == 'ubuntu-latest'
         with:
-          name: unit-tests-${{matrix.node-version}}-${{runner.os}}
-          flags: unit-tests, unit-tests-${{matrix.node-version}}-${{runner.os}}
+          name: tests-${{matrix.node-version}}-${{runner.os}}
+          flags: tests, tests-against-${{matrix.node-version}}-on-${{runner.os}}
           token: ${{secrets.CODECOV_TOKEN}}
           fail_ci_if_error: true # default: false
           verbose: false # default: false
