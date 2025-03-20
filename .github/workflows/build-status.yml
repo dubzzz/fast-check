@@ -240,7 +240,7 @@ jobs:
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
-          pnpm run test
+          {{matrix.os == 'ubuntu-latest' && 'pnpm run test:coverage' || 'pnpm run test'}}
       - name: Codecov
         uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
         if: matrix.os == 'ubuntu-latest'
