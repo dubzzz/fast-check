@@ -82,7 +82,7 @@ describe('Playground', () => {
             await fs.mkdir(testDirectoryPath, { recursive: true });
             await fs.writeFile(sourceFilePath, snippet.code);
             await fs.writeFile(specFilePath, sanitizedSpecCode);
-            await fs.writeFile(jestConfigPath, `module.exports = { testMatch: ['<rootDir>/*.spec.mjs'] }`);
+            await fs.writeFile(jestConfigPath, `module.exports = { testMatch: ['**.spec.mjs'] }`);
             const specOutput = await runJest(testDirectoryPath);
             if (expectedSuccess) {
               expect(specOutput).toContain('1 passed');
