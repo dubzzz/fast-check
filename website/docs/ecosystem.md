@@ -453,35 +453,3 @@ External libraries leveraging fast-check, its properties and predicates to valid
 
 Make sure your [fp-ts](https://gcanti.github.io/fp-ts/) constructs are properly configured.
 More details on the [package itself](https://www.npmjs.com/package/fp-ts-laws)!
-
-## Other stacks
-
-Wanna run fast-check in non-JavaScript environments? The following packages offer some bindings making it possible.
-
-### `rescript-fast-check` ⚠️
-
-![npm version](https://badge.fury.io/js/rescript-fast-check.svg)
-![monthly downloads](https://img.shields.io/npm/dm/rescript-fast-check)
-![last commit](https://img.shields.io/github/last-commit/TheSpyder/rescript-fast-check)
-![license](https://img.shields.io/npm/l/rescript-fast-check.svg)
-![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
-
-Run fast-check from [ReScript](https://rescript-lang.org/) code.
-
-```re
-open FastCheck
-open Arbitrary
-open Property.Sync
-
-describe("properties", () => {
-  it("should detect the substring", () =>
-    assert_(
-      property3(string(), string(), string(), (a, b, c) =>
-        contains(a ++ b ++ c, b)
-      ),
-    )
-  )
-})
-```
-
-More details on the [package itself](https://www.npmjs.com/package/rescript-fast-check)!
