@@ -7,10 +7,6 @@ _TODO Description_
 
 - ([PR#5846](https://github.com/dubzzz/fast-check/pull/5846)) Access random from any test
 
-## Fixes
-
-
-
 ---
 
 # 0.1.6
