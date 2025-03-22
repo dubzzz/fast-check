@@ -36,6 +36,7 @@ Unlike property-based testing, this mode does not run tests multiple times or at
 
 ```javascript
 import { test, fc } from '@fast-check/vitest';
+import { expect } from 'vitest';
 
 // You can provide a fixed seed to force a replay by adding this line:
 // >>  fc.configureGlobal({ seed })
