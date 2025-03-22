@@ -55,7 +55,7 @@ test('test relying on randomness', ({ g }) => {
   const displayName = computeDisplayName(user);
 
   // Assert
-  expect(displayName).toContain(firstName);
+  expect(displayName).toContain(user.firstName);
 });
 
 test('test not relying on randomness', () => {
