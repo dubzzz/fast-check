@@ -21,7 +21,51 @@ npm install --save-dev @fast-check/vitest
 
 In order to work properly, `@fast-check/vitest` requires `vitest` to be installed.
 
-## Example
+## Examples
+
+The library comes with two modes, both powered by fast-check:
+
+- One-time random mode – A lightweight approach that introduces controlled randomness into your tests while keeping runs reproducible.
+- Property-based testing mode – A full-fledged property-based testing approach leveraging the full capabilities of fast-check.
+
+### One-time random mode
+
+This mode extends Vitest's default `test` and `it` functions, allowing you to introduce controlled randomness into your tests while ensuring failures remain reproducible. This makes it easier to debug flaky tests and avoid irreproducible failures due to randomness.
+
+Unlike property-based testing, this mode does not run tests multiple times or attempt shrinking when failures occur. Instead, it provides a determistic way to introduce randomness when needed.
+
+```javascript
+import { test, fc } from '@fast-check/vitest';
+import { expect } from 'vitest';
+
+// You can provide a fixed seed to force a replay by adding this line:
+// >>  fc.configureGlobal({ seed })
+// Eventually you can disable shrinking capabilities with:
+// >>  fc.configureGlobal({ endOnFailure: false })
+// >>  // or combine it with the one above if you need both
+
+test('test relying on randomness', ({ g }) => {
+  // Arrange
+  const user = {
+    firstName: g(fc.string),
+    lastName: g(fc.string),
+  };
+
+  // Act
+  const displayName = computeDisplayName(user);
+
+  // Assert
+  expect(displayName).toContain(user.firstName);
+});
+
+test('test not relying on randomness', () => {
+  // your test
+});
+```
+
+### Full property-based mode
+
+For more extensive testing, `@fast-check/vitest` also provides full support for property-based testing. This mode enables exhaustive, randomized testing by generating a variety of inputs and detecting edge cases automatically.
 
 ```javascript
 import { test, fc } from '@fast-check/vitest';
@@ -40,7 +84,7 @@ test.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('should detect the
 
 Please note that the properties accepted by `@fast-check/vitest` as input can either be synchronous or asynchronous (even just `PromiseLike` instances).
 
-## Advanced
+### Advanced
 
 If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
 

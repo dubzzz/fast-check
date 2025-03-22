@@ -190,6 +190,82 @@ describe.each<DescribeOptions>([
       expectSkip(out);
     });
   });
+
+  describe('without .prop', () => {
+    it.concurrent(`should support ${runnerName} without any use of the generator on success`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        runner('no gen', () => {});
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(
+      `should support ${runnerName} without any use of the generator on failure but not report it via fast-check`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          runner('no gen', () => {
+            throw new Error('Expect 2 to equal 1');
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectFail(out);
+        expect(out).toContain('Expect 2 to equal 1');
+        expect(out).not.toContain('Property failed after 1 tests');
+      },
+    );
+
+    it.concurrent(`should support ${runnerName} using the generator on success`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        runner('no gen', ({ g }) => {
+          const value = g(() => fc.constant(0));
+          if (value !== 0) {
+            throw new Error(`Expect ${value} to equal 0`);
+          }
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(
+      `should support ${runnerName} using the generator on failure and report it using fast-check`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          runner('no gen', ({ g }) => {
+            const value: number = g(() => fc.constant(2));
+            if (value !== 1) {
+              throw new Error(`Expect ${value} to equal 1`);
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectFail(out);
+        expect(out).toContain('Expect 2 to equal 1');
+        expect(out).toContain('Property failed after 1 tests');
+      },
+    );
+  });
 });
 
 // Helper
