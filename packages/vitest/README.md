@@ -47,8 +47,8 @@ import { expect } from 'vitest';
 test('test relying on randomness', ({ g }) => {
   // Arrange
   const user = {
-    firstName: g(fc.string()),
-    lastName: g(fc.string()),
+    firstName: g(fc.string),
+    lastName: g(fc.string),
   };
 
   // Act
