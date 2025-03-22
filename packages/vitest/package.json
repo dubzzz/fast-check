@@ -46,7 +46,7 @@
     "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2 || ^3"
+    "vitest": "^1 || ^2 || ^3"
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",

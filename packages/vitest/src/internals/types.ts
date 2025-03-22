@@ -1,5 +1,5 @@
-import type { it as itVitest } from 'vitest';
-import type { Arbitrary, asyncProperty, assert, readConfigureGlobal } from 'fast-check';
+import type { TestAPI } from 'vitest';
+import type { Arbitrary, asyncProperty, assert, readConfigureGlobal, GeneratorValue } from 'fast-check';
 
 export type FcExtra = {
   asyncProperty: typeof asyncProperty;
@@ -7,7 +7,8 @@ export type FcExtra = {
   readConfigureGlobal: typeof readConfigureGlobal;
 };
 
-export type It = typeof itVitest;
+export type ExtraContext = { g: GeneratorValue };
+export type It = TestAPI<ExtraContext>;
 
 // Pre-requisite: https://github.com/Microsoft/TypeScript/pull/26063
 // Require TypeScript 3.1
