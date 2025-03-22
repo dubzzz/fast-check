@@ -1,3 +1,18 @@
+# 3.0.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv3.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.1.0...jest%2Fv3.0.0)]
+
+## Features
+
+
+
+## Fixes
+
+
+
+---
+
 # 2.1.0
 
 _Support fast-check v4_

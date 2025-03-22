@@ -1,3 +1,18 @@
+# 0.2.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.6...vitest%2Fv0.2.0)]
+
+## Features
+
+- ([PR#5846](https://github.com/dubzzz/fast-check/pull/5846)) Access random from any test
+
+## Fixes
+
+
+
+---
+
 # 0.1.6
 
 _Support fast-check v4_

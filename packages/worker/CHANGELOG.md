@@ -1,3 +1,18 @@
+# 0.5.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.2...worker%2Fv0.5.0)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5769](https://github.com/dubzzz/fast-check/pull/5769)) Clean: Drop support for v3 of fast-check
+
+---
+
 # 0.4.2
 
 _Support fast-check v4_
