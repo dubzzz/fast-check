@@ -1,11 +1,7 @@
 # 0.5.0
 
-_TODO Description_
+_Drop support to fast-check v3_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.2...worker%2Fv0.5.0)]
-
-## Features
-
-
 
 ## Fixes
 
