@@ -1,6 +1,6 @@
 # 0.2.0
 
-_TODO Description_
+_Extend property based capabilities to basic tests_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.6...vitest%2Fv0.2.0)]
 
 ## Features
