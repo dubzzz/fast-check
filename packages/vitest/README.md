@@ -39,7 +39,7 @@ import { test, fc } from '@fast-check/vitest';
 
 // You can provide a fixed seed to force a replay by adding this line:
 // >>  fc.configureGlobal({ seed })
-// Eventually you can toggle on shrinking capabilities with:
+// Eventually you can disable shrinking capabilities with:
 // >>  fc.configureGlobal({ endOnFailure: false })
 // >>  // or combine it with the one above if you need both
 
