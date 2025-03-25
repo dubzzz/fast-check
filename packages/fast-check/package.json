@@ -67,7 +67,7 @@
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.52.1",
+    "@microsoft/api-extractor": "^7.52.2",
     "@types/node": "^22.13.11",
     "cross-env": "^7.0.3",
     "fast-check": "workspace:*",
