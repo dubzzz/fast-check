@@ -8,7 +8,7 @@ import {
   nonSerializableDataPropertyMainThread,
   /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore
-} from './__properties__/nonSerializableData.cjs';
+} from './__properties__/nonSerializableData.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
