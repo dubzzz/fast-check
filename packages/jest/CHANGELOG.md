@@ -1,3 +1,16 @@
+# 2.1.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.1.0...jest%2Fv2.1.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5866](https://github.com/dubzzz/fast-check/pull/5866)) Dependencies: Add support for `@fast-check/worker` 0.5.x
+
 # 2.1.0
 
 _Support fast-check v4_
