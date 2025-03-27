@@ -264,7 +264,17 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
-          lfs: true
+          # we dropped lfs:true from the checkout command as it was not caching the artifacts cross-builds
+          # we use the snippet coming from https://github.com/actions/checkout/issues/165#issuecomment-657673315
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      - name: Restore LFS cache
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        with:
+          path: .git/lfs
+          key: ${{runner.os}}-lfs-${{hashFiles('.lfs-assets-id')}}
+      - name: Git LFS Pull
+        run: GIT_TRACE=1 git lfs pull
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
