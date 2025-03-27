@@ -309,6 +309,8 @@ jobs:
           pnpm --filter fast-check run docs-ci
       - name: Copy API reference within documentation
         run: mv packages/fast-check/docs website/build/api-reference
+      - name: Copy raw logo within documentation
+        run: cp website/static/img/logo.png website/build/assets/images/logo.png
       - name: Upload documentation artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
