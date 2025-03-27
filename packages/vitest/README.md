@@ -1,6 +1,6 @@
 # `@fast-check/vitest`
 
-![fast-check logo](https://media.githubusercontent.com/media/dubzzz/fast-check/main/website/static/img/logo.png)
+![fast-check logo](https://fast-check.dev/assets/images/logo.png)
 
 Bring the power of property based testing framework `fast-check` into Vitest.
 `@fast-check/vitest` simplifies the integration of `fast-check` into Vitest.

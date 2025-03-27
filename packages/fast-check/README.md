@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img align="center" src="https://media.githubusercontent.com/media/dubzzz/fast-check/main/website/static/img/logo.png" alt="fast-check logo" />
+  <img align="center" src="https://fast-check.dev/assets/images/logo.png" alt="fast-check logo" />
 </h1>
 
 <p align="center">

@@ -1,6 +1,6 @@
 # `@fast-check/poisoning`
 
-![fast-check logo](https://media.githubusercontent.com/media/dubzzz/fast-check/main/website/static/img/logo.png)
+![fast-check logo](https://fast-check.dev/assets/images/logo.png)
 
 Set of utilities to ease detection and revert of poisoning
 
