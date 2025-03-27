@@ -305,7 +305,7 @@ jobs:
           path: .git/lfs
           key: ${{runner.os}}-lfs-${{hashFiles('.lfs-assets-id')}}
       - name: Git LFS Pull
-        run: git lfs pull
+        run: GIT_TRACE=1 git lfs pull
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - name: Using Node v22.x
