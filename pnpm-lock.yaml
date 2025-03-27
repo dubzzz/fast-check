@@ -137,7 +137,7 @@ importers:
         specifier: ~5.8.2
         version: 5.8.2
       vite:
-        specifier: ^6.2.2
+        specifier: ^6.2.3
         version: 6.2.3(@types/node@22.13.11)(jiti@1.21.7)(lightningcss@1.29.3)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
@@ -232,7 +232,7 @@ importers:
         specifier: ~5.8.2
         version: 5.8.2
       vite:
-        specifier: ^6.2.2
+        specifier: ^6.2.3
         version: 6.2.3(@types/node@22.13.11)(jiti@1.21.7)(lightningcss@1.29.3)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
@@ -257,7 +257,7 @@ importers:
         specifier: ~5.8.2
         version: 5.8.2
       vite:
-        specifier: ^6.2.2
+        specifier: ^6.2.3
         version: 6.2.3(@types/node@22.13.11)(jiti@1.21.7)(lightningcss@1.29.3)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
@@ -275,7 +275,7 @@ importers:
         specifier: ~5.8.2
         version: 5.8.2
       vite:
-        specifier: ^6.2.2
+        specifier: ^6.2.3
         version: 6.2.3(@types/node@22.13.11)(jiti@1.21.7)(lightningcss@1.29.3)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
@@ -297,7 +297,7 @@ importers:
         specifier: ~5.8.2
         version: 5.8.2
       vite:
-        specifier: ^6.2.2
+        specifier: ^6.2.3
         version: 6.2.3(@types/node@22.13.11)(jiti@1.21.7)(lightningcss@1.29.3)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
@@ -322,7 +322,7 @@ importers:
         specifier: ~5.8.2
         version: 5.8.2
       vite:
-        specifier: ^6.2.2
+        specifier: ^6.2.3
         version: 6.2.3(@types/node@22.13.11)(jiti@1.21.7)(lightningcss@1.29.3)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
@@ -407,7 +407,7 @@ importers:
         specifier: ~5.8.2
         version: 5.8.2
       vite:
-        specifier: ^6.2.2
+        specifier: ^6.2.3
         version: 6.2.3(@types/node@22.13.11)(jiti@1.21.7)(lightningcss@1.29.3)(terser@5.39.0)(yaml@2.7.0)
       vitest:
         specifier: ^3.0.9
