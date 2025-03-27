@@ -53,7 +53,7 @@
     "@types/node": "^22.13.11",
     "fast-check": "workspace:*",
     "typescript": "~5.8.2",
-    "vite": "^6.2.2",
+    "vite": "^6.2.3",
     "vitest": "^3.0.9"
   },
   "keywords": [
