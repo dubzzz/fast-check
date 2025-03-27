@@ -58,7 +58,7 @@
     "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "@fast-check/worker": ">=0.0.7 <0.5.0",
+    "@fast-check/worker": ">=0.0.7 <0.6.0",
     "@jest/expect": ">=28.0.0",
     "@jest/globals": ">=25.5.2"
   },
