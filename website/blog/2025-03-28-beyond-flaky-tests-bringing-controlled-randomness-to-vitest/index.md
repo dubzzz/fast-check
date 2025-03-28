@@ -33,13 +33,13 @@ test('considered active if its end timestamp is 100ms after now', () => {
 
 It looks stable, but in reality, it’s a ticking time bomb. The reason? `Date.now()` is not monotonic — it can go backwards in time, especially when dealing with negative leap seconds. The test is subtly fragile, and when it fails, debugging the issue can take hours or days or even years.
 
-## Our problem: Uncontrolled randomness
+## The problem: Uncontrolled randomness
 
 While depending on random or non-deterministic values in tests is generally discouraged, developers frequently use timestamps, random numbers, unique IDs, or even generated values from libraries like [Faker](https://fakerjs.dev/) without realizing the risks.
 
 The core issue? These values are inherently non-reproducible, making debugging a nightmare when a test fails unexpectedly.
 
-## Our proposal: Built-in fuzzing with stability in mind
+## The proposal: Built-in fuzzing with stability in mind
 
 What if your test runner could automatically handle randomness safely, ensuring reproducibility without requiring you to adopt an entirely new testing paradigm? What if you could enjoy the benefits of randomized testing without the headaches?
 
@@ -95,7 +95,7 @@ What’s more unpredictable than random values? Race conditions. They’re among
 
 Consider a `queue` function that ensures function calls are executed sequentially. This is our prime candidate for race conditions, and we provide a full guide on detecting them with property-based testing [here](https://fast-check.dev/docs/tutorials/detect-race-conditions/).
 
-However, our goal is incremental adoption — so let’s build a simple test that looks like a standard unit test but can still catch race conditions:
+So let’s build a simple test that looks like a standard unit test but catching race conditions itth no tears:
 
 ```js
 test('queued calls are resolved in proper order', async ({ g }) => {
