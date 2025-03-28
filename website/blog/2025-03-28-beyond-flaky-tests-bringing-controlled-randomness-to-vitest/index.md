@@ -124,11 +124,11 @@ This means that if multiple calls are fired simultaneously, the scheduler can in
 
 ## Bringing this to Vitest?
 
-We believe our suggestion is essential for making tests more stable, reproducible, and robust across the entire ecosystem. It answers to a rather common issue in tests: feeling the need for random or fake data is not new but without proper tooling it's pretty unsafe and driving users into fkakyness.
+We believe this approach is crucial for making tests more stable, reproducible, and robust across the ecosystem. The need for random or fake data in tests isn't new, but without proper tooling, it often leads to flakiness and unreliable results.
 
-As such our aim is not to keep it limited to a package living outside of Vitest as it is for now within @fast-check/vitest but rather to make it a first class citizen.
+Our goal isn’t to keep this feature confined to @fast-check/vitest — we want it to be natively integrated into Vitest as a first-class feature.
 
-Imagine being able to safely play with fake data in your tests. Imagine running `vitest --fuzz=<num_samples>` to thoroughly validate your code across multiple random values without modifying a single test just because you added random on purpose in some of them.
+Imagine being able to safely use random data in your tests without worrying about flakiness. Imagine running `vitest --fuzz=<num_samples>` to automatically validate your code across multiple randomized inputs — without modifying a single test, simply because randomness was introduced intentionally.
 
 To get there, we need your support:
 
