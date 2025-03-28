@@ -95,7 +95,7 @@ What’s more unpredictable than random values? Race conditions. They’re among
 
 Consider a `queue` function that ensures function calls are executed sequentially. This is our prime candidate for race conditions, and we provide a full guide on detecting them with property-based testing [here](https://fast-check.dev/docs/tutorials/detect-race-conditions/).
 
-So let’s build a simple test that looks like a standard unit test but catching race conditions itth no tears:
+So let’s build a simple test that looks like a standard unit test but catching race conditions with no tears:
 
 ```js
 test('queued calls are resolved in proper order', async ({ g }) => {
