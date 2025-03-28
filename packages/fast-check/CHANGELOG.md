@@ -1,11 +1,7 @@
 # 4.0.1
 
-_TODO Description_
+_Change location of the logo on the README for LFS quotas reasons_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.0.0...v4.0.1)]
-
-## Features
-
-
 
 ## Fixes
 
