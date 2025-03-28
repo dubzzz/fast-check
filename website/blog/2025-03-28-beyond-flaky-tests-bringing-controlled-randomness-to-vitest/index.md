@@ -33,13 +33,13 @@ test('considered active if its end timestamp is 100ms after now', () => {
 
 It looks stable, but in reality, it’s a ticking time bomb. The reason? `Date.now()` is not monotonic — it can go backwards in time, especially when dealing with negative leap seconds. The test is subtly fragile, and when it fails, debugging the issue can take hours or days or even years.
 
-## Our problem: Uncontrolled randomness
+## The problem: Uncontrolled randomness
 
 While depending on random or non-deterministic values in tests is generally discouraged, developers frequently use timestamps, random numbers, unique IDs, or even generated values from libraries like [Faker](https://fakerjs.dev/) without realizing the risks.
 
 The core issue? These values are inherently non-reproducible, making debugging a nightmare when a test fails unexpectedly.
 
-## Our proposal: Built-in fuzzing with stability in mind
+## The proposal: Built-in fuzzing with stability in mind
 
 What if your test runner could automatically handle randomness safely, ensuring reproducibility without requiring you to adopt an entirely new testing paradigm? What if you could enjoy the benefits of randomized testing without the headaches?
 
@@ -95,7 +95,7 @@ What’s more unpredictable than random values? Race conditions. They’re among
 
 Consider a `queue` function that ensures function calls are executed sequentially. This is our prime candidate for race conditions, and we provide a full guide on detecting them with property-based testing [here](https://fast-check.dev/docs/tutorials/detect-race-conditions/).
 
-However, our goal is incremental adoption — so let’s build a simple test that looks like a standard unit test but can still catch race conditions:
+So let’s build a simple test that looks like a standard unit test but catching race conditions with no tears:
 
 ```js
 test('queued calls are resolved in proper order', async ({ g }) => {
@@ -124,9 +124,11 @@ This means that if multiple calls are fired simultaneously, the scheduler can in
 
 ## Bringing this to Vitest?
 
-Currently, this functionality is available through @fast-check/vitest, but our ultimate goal is native support in Vitest. We believe this feature is essential for making tests more stable, reproducible, and robust across the entire ecosystem.
+We believe this approach is crucial for making tests more stable, reproducible, and robust across the ecosystem. The need for random or fake data in tests isn't new, but without proper tooling, it often leads to flakiness and unreliable results.
 
-Imagine running `vitest --fuzz=<num_samples>` to thoroughly validate your code across multiple random values without modifying a single test.
+Our goal isn’t to keep this feature confined to @fast-check/vitest — we want it to be natively integrated into Vitest as a first-class feature.
+
+Imagine being able to safely use random data in your tests without worrying about flakiness. Imagine running `vitest --fuzz=<num_samples>` to automatically validate your code across multiple randomized inputs — without modifying a single test, simply because randomness was introduced intentionally.
 
 To get there, we need your support:
 
