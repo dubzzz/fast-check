@@ -39,7 +39,7 @@
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "globals": "^16.0.0",
-    "pkg-pr-new": "^0.0.41",
+    "pkg-pr-new": "^0.0.42",
     "prettier": "3.5.3",
     "publint": "^0.3.9",
     "typescript": "~5.8.2",
