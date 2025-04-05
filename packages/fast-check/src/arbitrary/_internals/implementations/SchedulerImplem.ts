@@ -250,11 +250,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterPromise: Promise<void> | null = null;
     let awaiterScheduledTaskPromise: Promise<void> | null = null;
-    const awaiter = async () => {
-      for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
-        if (taskResolved) {
-          break;
-        }
+    const awaiter = async (): Promise<void> => {
+      for (let i = 0; !taskResolved && i !== numTicksBeforeScheduling; ++i) {
         await Promise.resolve();
       }
       if (!taskResolved && this.scheduledTasks.length > 0) {
@@ -263,7 +260,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           () => (awaiterScheduledTaskPromise = null),
           () => (awaiterScheduledTaskPromise = null),
         );
-        await awaiterScheduledTaskPromise.then(awaiter); // NOTE: waitOne does not throw, except throwing "act"
+        return awaiterScheduledTaskPromise.then(awaiter); // NOTE: waitOne does not throw, except throwing "act"
       }
       awaiterPromise = null;
     };
