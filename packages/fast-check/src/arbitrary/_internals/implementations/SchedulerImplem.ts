@@ -274,7 +274,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      awaiterPromise = Promise.resolve().then(awaiter);
+      awaiterPromise = awaiter();
     };
 
     // Define the wrapping task and its resolution strategy
