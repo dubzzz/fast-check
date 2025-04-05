@@ -244,8 +244,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
   }
 
-  async waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
+  async internalWaitFor<T>(
+    unscheduledTask: Promise<T>,
+    options: { customAct: SchedulerAct | undefined; onWaitStart: (() => void) | undefined },
+  ): Promise<T> {
     let taskResolved = false;
+    const customAct = options.customAct;
+    const onWaitStart = options.onWaitStart;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterPromise: Promise<void> | null = null;
@@ -258,6 +263,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           }
         }
         if (this.scheduledTasks.length > 0) {
+          if (onWaitStart !== undefined) {
+            onWaitStart();
+          }
           await this.waitOne(customAct);
         } else {
           break;
@@ -318,6 +326,16 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     this.scheduledWatchers.push(handleNotified);
 
     return rewrappedTask;
+  }
+
+  waitNext(customAct?: SchedulerAct): Promise<void> {
+    let resolver: (() => void) | undefined = undefined;
+    const awaited = new Promise<void>((r) => (resolver = r));
+    return this.internalWaitFor(awaited, { customAct, onWaitStart: resolver });
+  }
+
+  waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
+    return this.internalWaitFor(unscheduledTask, { customAct, onWaitStart: undefined });
   }
 
   report(): SchedulerReportItem<TMetaData>[] {
