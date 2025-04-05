@@ -1,6 +1,6 @@
 # 4.1.0
 
-_TODO Description_
+_More effective `waitFor` on `fc.scheduler`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.0.1...v4.1.0)]
 
 ## Features
