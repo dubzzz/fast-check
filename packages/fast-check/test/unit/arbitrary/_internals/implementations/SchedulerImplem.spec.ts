@@ -863,7 +863,7 @@ describe('SchedulerImplem', () => {
       // Assert
       expect(processFlags).toEqual(expectedFlags);
       for (let i = 0; i !== expectedFlags.length; ++i) {
-        // Scheduled promises will be partially grouped into common batches, the process we play with does fire in parallel:
+        // Scheduled promises will be grouped into common batches, the process we play with does fire in parallel:
         // - s.schedule(promise[0])
         // - Promise.resolve().then(() => s.schedule(promise[1]))
         // - Promise.resolve().then(() => {}).then(() => s.schedule(promise[2]))
