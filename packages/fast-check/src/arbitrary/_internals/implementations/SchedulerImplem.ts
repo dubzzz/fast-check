@@ -6,6 +6,12 @@ import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceIte
 
 const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
 
+/**
+ * Number of ticks we perform before scheduling anything in waitFor
+ * @internal
+ */
+export const numTicksBeforeScheduling = 50;
+
 /** @internal */
 type TriggeredTask<TMetaData> = {
   status: 'resolved' | 'rejected';
@@ -244,8 +250,18 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterPromise: Promise<void> | null = null;
     const awaiter = async () => {
-      while (!taskResolved && this.scheduledTasks.length > 0) {
-        await this.waitOne(customAct);
+      while (!taskResolved) {
+        for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
+          await Promise.resolve();
+          if (taskResolved) {
+            break;
+          }
+        }
+        if (this.scheduledTasks.length > 0) {
+          await this.waitOne(customAct);
+        } else {
+          break;
+        }
       }
       awaiterPromise = null;
     };
