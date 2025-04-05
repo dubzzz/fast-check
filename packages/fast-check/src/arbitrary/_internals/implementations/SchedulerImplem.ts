@@ -250,29 +250,23 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterPromise: Promise<void> | null = null;
     let awaiterScheduledTaskPromise: Promise<void> | null = null;
-    const buildAwaiter = (remainingTicks: number): Promise<void> => {
-      if (taskResolved) {
-        awaiterPromise = null;
-        return Promise.resolve();
-      }
-      if (remainingTicks === 0) {
-        if (this.scheduledTasks.length === 0) {
-          awaiterPromise = null;
-          return Promise.resolve();
+    const awaiter = async () => {
+      while (!taskResolved) {
+        for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
+          await Promise.resolve();
         }
-        awaiterScheduledTaskPromise = this.waitOne(customAct);
-        return awaiterScheduledTaskPromise.then(
-          () => {
-            awaiterScheduledTaskPromise = null;
-            return buildAwaiter(numTicksBeforeScheduling);
-          },
-          (err) => {
-            awaiterScheduledTaskPromise = null;
-            throw err;
-          },
-        );
+        if (!taskResolved && this.scheduledTasks.length > 0) {
+          awaiterScheduledTaskPromise = this.waitOne(customAct);
+          awaiterScheduledTaskPromise.then(
+            () => (awaiterScheduledTaskPromise = null),
+            () => (awaiterScheduledTaskPromise = null),
+          );
+          await awaiterScheduledTaskPromise;
+        } else {
+          break;
+        }
       }
-      return Promise.resolve().then(() => buildAwaiter(remainingTicks - 1));
+      awaiterPromise = null;
     };
     const handleNotified = () => {
       if (awaiterPromise !== null) {
@@ -280,7 +274,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      awaiterPromise = Promise.resolve().then(() => buildAwaiter(numTicksBeforeScheduling));
+      awaiterPromise = Promise.resolve().then(awaiter);
     };
 
     // Define the wrapping task and its resolution strategy
@@ -307,11 +301,11 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       },
       (err) => {
         taskResolved = true;
-        if (awaiterPromise === null) {
+        if (awaiterScheduledTaskPromise === null) {
           clearAndReplaceWatcher();
           throw err;
         }
-        return awaiterPromise.then(() => {
+        return awaiterScheduledTaskPromise.then(() => {
           clearAndReplaceWatcher();
           throw err;
         });
