@@ -799,7 +799,7 @@ describe('SchedulerImplem', () => {
       await s.waitFor(awaitedTask.p);
 
       // Assert
-      expect(processFlag).toBe(7); // ideally 1, but got 7 with current implementation
+      expect(processFlag).toBe(3); // ideally 1, but got 3 with current implementation
       await process;
     });
 
