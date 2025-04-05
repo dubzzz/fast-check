@@ -4,7 +4,10 @@ import type {
   ScheduledTask,
   TaskSelector,
 } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
-import { SchedulerImplem } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import {
+  SchedulerImplem,
+  numTicksBeforeScheduling,
+} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
 
@@ -494,7 +497,6 @@ describe('SchedulerImplem', () => {
     });
 
     it('should wait any released scheduled task to end even if the one we waited for resolved on its own', async () => {
-      // Might be rediscussed in the future
       // Arrange
       const p1 = buildUnresolved();
       const pAwaited = buildUnresolved();
@@ -797,7 +799,7 @@ describe('SchedulerImplem', () => {
       await s.waitFor(awaitedTask.p);
 
       // Assert
-      expect(processFlag).toBe(3); // ideally 1, but got 3 with current implementation
+      expect(processFlag).toBe(7); // ideally 1, but got 7 with current implementation
       await process;
     });
 
@@ -827,7 +829,6 @@ describe('SchedulerImplem', () => {
     });
 
     it('should schedule known Promises as quickly as possible when depending on promise ticks', async () => {
-      // Might be rediscussed in the future
       // Arrange
       const awaitedTask = buildUnresolved();
       const seenTasks: unknown[][] = [];
@@ -861,8 +862,8 @@ describe('SchedulerImplem', () => {
 
       // Assert
       expect(processFlags).toEqual(expectedFlags);
-      const batchSize = 2;
-      let expectedCount = batchSize;
+      const batchSize = numTicksBeforeScheduling;
+      let expectedCount = batchSize + 2;
       for (let i = 0; i !== expectedFlags.length; ++i) {
         // Scheduled promises will be partially grouped into common batches, the process we play with does fire in parallel:
         // - s.schedule(promise[0])
@@ -873,7 +874,7 @@ describe('SchedulerImplem', () => {
         expect(seenTasks[i]).toEqual(
           promises.slice(i, i + expectedCount).map((p) => expect.objectContaining({ original: p })),
         );
-        ++expectedCount;
+        expectedCount += batchSize;
       }
       expect(seenTasks).toHaveLength(expectedFlags.length); // all promises took part in the first scheduling
     });
