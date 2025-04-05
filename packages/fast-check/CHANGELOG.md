@@ -1,3 +1,21 @@
+# 4.1.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.1.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.0.1...v4.1.0)]
+
+## Features
+
+- ([PR#5889](https://github.com/dubzzz/fast-check/pull/5889)) Wait longer before scheduling anything with `waitFor`
+- ([PR#5892](https://github.com/dubzzz/fast-check/pull/5892)) Better capture scheduled tasks before running scheduling
+
+## Fixes
+
+- ([PR#5868](https://github.com/dubzzz/fast-check/pull/5868)) Doc: Adapt article on Vitest following feedback
+- ([PR#5891](https://github.com/dubzzz/fast-check/pull/5891)) Performance: Move back to better tick management of `waitFor`
+- ([PR#5888](https://github.com/dubzzz/fast-check/pull/5888)) Test: Closely test `waitFor` on interactions with micro-tasks
+
+---
+
 # 4.0.1
 
 _Change location of the logo on the README for LFS quotas reasons_
