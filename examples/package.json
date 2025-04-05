@@ -25,7 +25,7 @@
     "@types/react": "^19.0.12",
     "@types/supertest": "^6.0.3",
     "happy-dom": "^17.4.4",
-    "typescript": "~5.8.2",
+    "typescript": "~5.8.3",
     "vitest": "^3.0.9"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
