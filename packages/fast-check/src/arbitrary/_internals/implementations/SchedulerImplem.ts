@@ -251,23 +251,19 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let awaiterPromise: Promise<void> | null = null;
     let awaiterScheduledTaskPromise: Promise<void> | null = null;
     const awaiter = async () => {
-      while (!taskResolved) {
-        for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
-          await Promise.resolve();
-          if (taskResolved) {
-            break;
-          }
-        }
-        if (!taskResolved && this.scheduledTasks.length > 0) {
-          awaiterScheduledTaskPromise = this.waitOne(customAct);
-          awaiterScheduledTaskPromise.then(
-            () => (awaiterScheduledTaskPromise = null),
-            () => (awaiterScheduledTaskPromise = null),
-          );
-          await awaiterScheduledTaskPromise; // NOTE: waitOne does not throw, except throwing "act"
-        } else {
+      for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
+        if (taskResolved) {
           break;
         }
+        await Promise.resolve();
+      }
+      if (!taskResolved && this.scheduledTasks.length > 0) {
+        awaiterScheduledTaskPromise = this.waitOne(customAct);
+        awaiterScheduledTaskPromise.then(
+          () => (awaiterScheduledTaskPromise = null),
+          () => (awaiterScheduledTaskPromise = null),
+        );
+        await awaiterScheduledTaskPromise.then(awaiter); // NOTE: waitOne does not throw, except throwing "act"
       }
       awaiterPromise = null;
     };
