@@ -248,10 +248,12 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let taskResolved = false;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
+    let awaiterTicks = 0;
     let awaiterPromise: Promise<void> | null = null;
     let awaiterScheduledTaskPromise: Promise<void> | null = null;
     const awaiter = async (): Promise<void> => {
-      for (let i = 0; !taskResolved && i !== numTicksBeforeScheduling; ++i) {
+      awaiterTicks = numTicksBeforeScheduling;
+      for (awaiterTicks = numTicksBeforeScheduling; !taskResolved && awaiterTicks > 0; --awaiterTicks) {
         await Promise.resolve();
       }
       if (!taskResolved && this.scheduledTasks.length > 0) {
@@ -267,6 +269,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const handleNotified = () => {
       if (awaiterPromise !== null) {
         // Awaiter is currently running, there is no need to relaunch it
+        // but we can ask it for more ticks
+        awaiterTicks = numTicksBeforeScheduling + 1; // +1 as 1 is running
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
