@@ -799,7 +799,7 @@ describe('SchedulerImplem', () => {
       await s.waitFor(awaitedTask.p);
 
       // Assert
-      expect(processFlag).toBe(7); // ideally 1, but got 7 with current implementation
+      expect(processFlag).toBe(3); // ideally 1, but got 3 with current implementation
       await process;
     });
 
@@ -863,7 +863,7 @@ describe('SchedulerImplem', () => {
       // Assert
       expect(processFlags).toEqual(expectedFlags);
       const batchSize = numTicksBeforeScheduling;
-      let expectedCount = batchSize + 2;
+      let expectedCount = batchSize + 1;
       for (let i = 0; i !== expectedFlags.length; ++i) {
         // Scheduled promises will be partially grouped into common batches, the process we play with does fire in parallel:
         // - s.schedule(promise[0])

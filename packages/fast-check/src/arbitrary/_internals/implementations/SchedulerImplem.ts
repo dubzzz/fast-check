@@ -249,19 +249,18 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterPromise: Promise<void> | null = null;
-    const awaiter = async () => {
-      while (!taskResolved) {
-        for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
-          await Promise.resolve();
-          if (taskResolved) {
-            break;
-          }
-        }
-        if (this.scheduledTasks.length > 0) {
-          await this.waitOne(customAct);
-        } else {
-          break;
-        }
+    let awaiterScheduledTaskPromise: Promise<void> | null = null;
+    const awaiter = async (): Promise<void> => {
+      for (let i = 0; !taskResolved && i !== numTicksBeforeScheduling; ++i) {
+        await Promise.resolve();
+      }
+      if (!taskResolved && this.scheduledTasks.length > 0) {
+        awaiterScheduledTaskPromise = this.waitOne(customAct);
+        awaiterScheduledTaskPromise.then(
+          () => (awaiterScheduledTaskPromise = null),
+          () => (awaiterScheduledTaskPromise = null),
+        );
+        return awaiterScheduledTaskPromise.then(awaiter); // NOTE: waitOne does not throw, except throwing "act"
       }
       awaiterPromise = null;
     };
@@ -271,7 +270,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      awaiterPromise = Promise.resolve().then(awaiter);
+      awaiterPromise = awaiter();
     };
 
     // Define the wrapping task and its resolution strategy
@@ -287,22 +286,22 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const rewrappedTask = unscheduledTask.then(
       (ret) => {
         taskResolved = true;
-        if (awaiterPromise === null) {
+        if (awaiterScheduledTaskPromise === null) {
           clearAndReplaceWatcher();
           return ret;
         }
-        return awaiterPromise.then(() => {
+        return awaiterScheduledTaskPromise.then(() => {
           clearAndReplaceWatcher();
           return ret;
         });
       },
       (err) => {
         taskResolved = true;
-        if (awaiterPromise === null) {
+        if (awaiterScheduledTaskPromise === null) {
           clearAndReplaceWatcher();
           throw err;
         }
-        return awaiterPromise.then(() => {
+        return awaiterScheduledTaskPromise.then(() => {
           clearAndReplaceWatcher();
           throw err;
         });
