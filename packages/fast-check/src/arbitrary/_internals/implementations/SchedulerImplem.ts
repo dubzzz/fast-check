@@ -254,6 +254,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       while (!taskResolved) {
         for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
           await Promise.resolve();
+          if (taskResolved) {
+            break;
+          }
         }
         if (!taskResolved && this.scheduledTasks.length > 0) {
           awaiterScheduledTaskPromise = this.waitOne(customAct);
