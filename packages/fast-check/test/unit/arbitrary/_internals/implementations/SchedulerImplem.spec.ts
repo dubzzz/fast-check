@@ -20,7 +20,7 @@ const buildUnresolved = () => {
   );
   return { p, resolve, hasBeenResolved: () => resolved };
 };
-const delay = () => new Promise((r) => setTimeout(r, 0));
+const delay = (value?: number) => new Promise<number>((r) => setTimeout(() => r(value || 0), 0));
 
 describe('SchedulerImplem', () => {
   describe('waitOne', () => {
@@ -417,7 +417,7 @@ describe('SchedulerImplem', () => {
   });
 
   describe('waitFor', () => {
-    it('should not release any of the scheduled promises if the task has already been resolved', async () => {
+    it('should not release any of the scheduled promises if the task has already been resolved before start', async () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
@@ -494,6 +494,7 @@ describe('SchedulerImplem', () => {
     });
 
     it('should wait any released scheduled task to end even if the one we waited for resolved on its own', async () => {
+      // Might be rediscussed in the future
       // Arrange
       const p1 = buildUnresolved();
       const pAwaited = buildUnresolved();
@@ -513,10 +514,10 @@ describe('SchedulerImplem', () => {
       expect(waitForEnded).toBe(false);
       expect(nextTaskIndex).toHaveBeenCalledTimes(1);
 
-      // Let's resolve waiated task
+      // Let's resolve awaited task
       pAwaited.resolve();
       await delay();
-      expect(waitForEnded).toBe(false); // should not be visible yet as we need to wait the running one
+      expect(waitForEnded).toBe(false); // should not be visible yet as we need to wait the running one (aka p1)
 
       // Let's resolve running one
       p1.resolve();
@@ -772,6 +773,153 @@ describe('SchedulerImplem', () => {
       expect(waitForEnded2).toBe(true);
       expect(nextTaskIndex).toHaveBeenCalledTimes(3); // no other call received
       expect(s.count()).toBe(1); // Still one pending scheduled task for p3
+    });
+
+    it('should resolve waitFor promptly without scheduling too many extra promise ticks', async () => {
+      // Might be rediscussed in the future
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const nextTaskIndex = vi.fn().mockReturnValue(0); // automatically releasing first available promise
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlag = -1;
+      async function startProcess() {
+        processFlag = 0;
+        processFlag = await s.schedule(Promise.resolve(1));
+        awaitedTask.resolve();
+        for (let i = 2; i !== 1_000; ++i) {
+          processFlag = await Promise.resolve(i);
+        }
+      }
+      const process = startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlag).toBe(3); // ideally 1, but got 3 with current implementation
+      await process;
+    });
+
+    it('should resolve waitFor promptly without scheduling any immediate timeout', async () => {
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const nextTaskIndex = vi.fn().mockReturnValue(0); // automatically releasing first available promise
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlag = -1;
+      async function startProcess() {
+        processFlag = 0;
+        processFlag = await s.schedule(delay(1));
+        awaitedTask.resolve();
+        for (let i = 2; i !== 1_000; ++i) {
+          processFlag = await delay(i);
+        }
+      }
+      const process = startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlag).toBe(1); // nothing else should have been released
+      await process;
+    });
+
+    it('should schedule known Promises as quickly as possible when depending on promise ticks', async () => {
+      // Might be rediscussed in the future
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const seenTasks: unknown[][] = [];
+      const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+        seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+        return 0; // automatically releasing first available promise
+      });
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlags: number[] = [];
+      const expectedFlags = [...Array(100)].map((_, index) => index);
+      function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+        if (extraTicks === 0) {
+          return s.schedule(promise);
+        }
+        let p = Promise.resolve();
+        for (let i = 1; i !== extraTicks; ++i) {
+          p = p.then(() => {});
+        }
+        return p.then(() => s.schedule(promise));
+      }
+      const promises: Promise<number>[] = expectedFlags.map((value) => Promise.resolve(value));
+      async function startProcess() {
+        processFlags = await Promise.all(promises.map((p, index) => wrapPromise(p, index)));
+        awaitedTask.resolve();
+      }
+      startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlags).toEqual(expectedFlags);
+      const batchSize = 2;
+      let expectedCount = batchSize;
+      for (let i = 0; i !== expectedFlags.length; ++i) {
+        // Scheduled promises will be partially grouped into common batches, the process we play with does fire in parallel:
+        // - s.schedule(promise[0])
+        // - Promise.resolve().then(() => s.schedule(promise[1]))
+        // - Promise.resolve().then(() => {}).then(() => s.schedule(promise[2]))
+        // - Promise.resolve().then(() => {}).then(() => {}).then(() => s.schedule(promise[3]))...
+        // In other words, promise[3] gets scheduled 3 ticks after promise[0].
+        expect(seenTasks[i]).toEqual(
+          promises.slice(i, i + expectedCount).map((p) => expect.objectContaining({ original: p })),
+        );
+        ++expectedCount;
+      }
+      expect(seenTasks).toHaveLength(expectedFlags.length); // all promises took part in the first scheduling
+    });
+
+    it('should schedule known Promises without any timeout delay', async () => {
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const seenTasks: unknown[][] = [];
+      const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+        seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+        return 0; // automatically releasing first available promise
+      });
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlags: number[] = [];
+      const expectedFlags = [...Array(100)].map((_, index) => index);
+      function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+        if (extraTicks === 0) {
+          return s.schedule(promise);
+        }
+        let p = delay();
+        for (let i = 1; i !== extraTicks; ++i) {
+          p = p.then(() => delay());
+        }
+        return p.then(() => s.schedule(promise));
+      }
+      const promises: Promise<number>[] = expectedFlags.map((value) => Promise.resolve(value));
+      async function startProcess() {
+        processFlags = await Promise.all(promises.map((p, index) => wrapPromise(p, index)));
+        awaitedTask.resolve();
+      }
+      startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlags).toEqual(expectedFlags);
+      for (let i = 0; i !== expectedFlags.length; ++i) {
+        // Scheduled promises will be spread into independant batches, the process we play with does fire in parallel:
+        // - s.schedule(promise[0])
+        // - delay().then(() => s.schedule(promise[1]))
+        // - delay().then(() => delay()).then(() => s.schedule(promise[2]))...
+        // In other words, promise[3] gets scheduled 3 0-timeout timers after promise[0].
+        expect(seenTasks[i]).toEqual([expect.objectContaining({ original: promises[i] })]);
+      }
     });
 
     it('should end whenever possible while never launching multiple tasks at the same time', async () => {
