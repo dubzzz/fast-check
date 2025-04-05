@@ -37,7 +37,7 @@ And the test:
 ```js
 // s is the scheduler provided by fast-check
 const caches = {
-  // our tests only focuses on the case of caches being already resolved
+  // our test focuses on caches being already resolved
   d: Promise.resolve('d'),
   e: Promise.resolve('e'),
   f: Promise.resolve('f'),
