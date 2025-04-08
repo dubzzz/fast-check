@@ -1,11 +1,7 @@
 # 4.1.1
 
-_TODO Description_
+_Avoid overlapping tasks_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.1.0...v4.1.1)]
-
-## Features
-
-
 
 ## Fixes
 
