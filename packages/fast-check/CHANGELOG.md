@@ -1,3 +1,14 @@
+# 4.1.1
+
+_Avoid overlapping tasks_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.1.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.1.0...v4.1.1)]
+
+## Fixes
+
+- ([PR#5900](https://github.com/dubzzz/fast-check/pull/5900)) Bug: Avoid overlapping tasks during `scheduler` execution
+- ([PR#5894](https://github.com/dubzzz/fast-check/pull/5894)) Doc: Release note for 4.1.0
+- ([PR#5901](https://github.com/dubzzz/fast-check/pull/5901)) Performance: Slightly faster `scheduler` with explicit `undefined` check
+
 # 4.1.0
 
 _More effective `waitFor` on `fc.scheduler`_
