@@ -1028,6 +1028,40 @@ describe('SchedulerImplem', () => {
       }
     });
 
+    it('should never overlap tasks from function and sequences', async () => {
+      // Arrange
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+
+      // Act
+      let count = 0;
+      let overlapDetected = false;
+      let running = false;
+      const collisionAct = (f: () => Promise<void>) => {
+        count += 1;
+        overlapDetected ||= running;
+        running = true;
+        const out = f();
+        out.then(() => (running = false));
+        return out;
+      };
+      const builder = () => delay();
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      const fun = s.scheduleFunction(builder, collisionAct);
+      const shortSeq = s.scheduleSequence([{ label: 'short-seq-a', builder }], collisionAct);
+      const longSeq = s.scheduleSequence(
+        [
+          { label: 'long-seq-a', builder },
+          { label: 'long-seq-b', builder },
+        ],
+        collisionAct,
+      );
+      await s.waitFor(Promise.all([fun(), fun().then(fun), fun().then(fun).then(fun), shortSeq.task, longSeq.task]));
+
+      // Assert
+      expect(count).toBe(9);
+      expect(overlapDetected).toBe(false);
+    });
+
     it('should end whenever possible while never launching multiple tasks at the same time', async () => {
       const schedulingTypeArb = fc.constantFrom(...(['none', 'init'] as const));
       const dependenciesArbFor = (currentItem: number) =>

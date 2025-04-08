@@ -258,11 +258,16 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       }
       if (!taskResolved && this.scheduledTasks.length > 0) {
         awaiterScheduledTaskPromise = this.waitOne(customAct);
-        awaiterScheduledTaskPromise.then(
-          () => (awaiterScheduledTaskPromise = null),
-          () => (awaiterScheduledTaskPromise = null),
+        return awaiterScheduledTaskPromise.then(
+          () => {
+            awaiterScheduledTaskPromise = null;
+            return awaiter(); // NOTE: waitOne does not throw, except throwing "act"
+          },
+          (err) => {
+            awaiterScheduledTaskPromise = null;
+            throw err;
+          },
         );
-        return awaiterScheduledTaskPromise.then(awaiter); // NOTE: waitOne does not throw, except throwing "act"
       }
       awaiterPromise = null;
     };
