@@ -101,7 +101,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let trigger: (() => Promise<unknown>) | undefined = undefined;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
-        const promise = Promise.resolve(thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task);
+        const promise = Promise.resolve(
+          thenTaskToBeAwaited !== undefined ? task.then(() => thenTaskToBeAwaited()) : task,
+        );
         promise.then(
           (data) => {
             this.log(schedulingType, taskId, label, metadata, 'resolved', data);
