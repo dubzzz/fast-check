@@ -192,7 +192,7 @@ jobs:
         run: node --run unpack:all
       - name: Preview (no comment)
         if: github.event_name != 'pull_request'
-        run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples'
+        run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples' --comment=off
       - name: Preview
         if: github.event_name == 'pull_request'
         run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples' --comment=off
