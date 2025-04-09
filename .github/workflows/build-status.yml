@@ -243,8 +243,8 @@ jobs:
       - name: Restore Vitest cache
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
-          path: node_modules/.vitest
-          key: vitest-${{matrix.node-version}}-${{matrix.os}}-${{matrix.shard}}-${{hashFiles('pnpm-lock.yaml')}}
+          path: node_modules/.vite
+          key: vitest-cache-${{matrix.node-version}}-${{matrix.os}}-${{matrix.shard}}-${{hashFiles('pnpm-lock.yaml')}}
       - name: Unit tests
         shell: bash -l {0}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
