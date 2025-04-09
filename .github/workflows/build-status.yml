@@ -243,7 +243,7 @@ jobs:
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           if [ "${ENABLE_COVERAGE}" = "true" ]; then
-            pnpm run test:coverage
+            pnpm run test:coverage --reporter=junit --reporter=default
           else
             pnpm run test
           fi
