@@ -195,7 +195,7 @@ jobs:
         run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples' --comment=off
       - name: Preview
         if: github.event_name == 'pull_request'
-        run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples' --comment=off
+        run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples'
   test:
     name: 'Test'
     needs:
