@@ -171,7 +171,6 @@ jobs:
     needs:
       - warmup_pnpm_cache
       - production_packages
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -191,8 +190,12 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
-      - name: Preview
+      - name: Preview (no comment)
+        if: github.event_name != 'pull_request'
         run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples'
+      - name: Preview
+        if: github.event_name == 'pull_request'
+        run: pnpm dlx pkg-pr-new publish --compact './packages/*' --template './examples' --comment=off
   test:
     name: 'Test'
     needs:

@@ -15,20 +15,16 @@ fast-check can be installed into any existing project by running the following c
 npm install --save-dev fast-check
 ```
 
-:::tip No install
-You can also directly pull it from a CDN:
+:::tip Experimental versions
 
-```ts
-// deno
-import fc from 'https://cdn.skypack.dev/fast-check';
-```
+All versions of fast-check, including experimental ones, are published to [pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new). This means you can try out the latest features without waiting for an official release.
 
-```html
-<!-- html file -->
-<script type="module">
-  import fc from 'https://cdn.skypack.dev/fast-check';
-  // code...
-</script>
+Keep in mind that these versions may include unfinished APIs or unstable behaviors. They’re provided for convenience only, and we kindly ask you not to report any bug related to them.
+
+As an example, you can install the latest HEAD by running:
+
+```bash npm2yarn
+npm install --save-dev https://pkg.pr.new/fast-check@main
 ```
 
 :::
