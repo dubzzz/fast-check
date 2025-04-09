@@ -204,11 +204,17 @@ jobs:
       matrix:
         node-version: [18.x, 20.x, 22.x, latest]
         os: ['ubuntu-latest']
+        shard: ['1/1']
         include:
           - node-version: 22.x
             os: 'macos-latest'
+            shard: '1/1'
           - node-version: 22.x
             os: 'windows-latest'
+            shard: '1/2'
+          - node-version: 22.x
+            os: 'windows-latest'
+            shard: '2/2'
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x' }}
     steps:
@@ -243,9 +249,9 @@ jobs:
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           if [ "${ENABLE_COVERAGE}" = "true" ]; then
-            pnpm run test:coverage
+            pnpm run test:coverage --shard=${{matrix.shard}}
           else
-            pnpm run test
+            pnpm run test --shard=${{matrix.shard}}
           fi
       - name: Codecov
         uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
