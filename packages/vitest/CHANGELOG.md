@@ -1,3 +1,16 @@
+# 0.2.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.0...vitest%2Fv0.2.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#5913](https://github.com/dubzzz/fast-check/pull/5913)) Bug: Forward errors with fast-check@3
+
 # 0.2.0
 
 _Extend property based capabilities to basic tests_
