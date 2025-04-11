@@ -1,11 +1,7 @@
 # 0.2.1
 
-_TODO Description_
+_Forward errors properly when using fast-check v3_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.0...vitest%2Fv0.2.1)]
-
-## Features
-
-
 
 ## Fixes
 
