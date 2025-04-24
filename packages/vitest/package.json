@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "fast-check": "workspace:*",
     "typescript": "~5.8.3",
     "vite": "^6.2.3",

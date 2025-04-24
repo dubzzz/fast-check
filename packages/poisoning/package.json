@@ -43,7 +43,7 @@
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "typescript": "~5.8.3",
     "vite": "^6.2.3",
     "vitest": "^3.0.9"
