@@ -38,7 +38,7 @@
     "@types/node": "^22.14.1",
     "@types/react": "^19.1.2",
     "fast-check": "workspace:*",
-    "glob": "^11.0.1",
+    "glob": "^11.0.2",
     "jest": "^29.7.0",
     "jimp": "^1.6.0",
     "typescript": "~5.8.3",

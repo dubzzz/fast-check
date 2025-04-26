@@ -398,8 +398,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/fast-check
       glob:
-        specifier: ^11.0.1
-        version: 11.0.1
+        specifier: ^11.0.2
+        version: 11.0.2
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.14.1)
