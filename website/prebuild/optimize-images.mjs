@@ -65,7 +65,7 @@ async function collectAsset(assetName, resultingFilePath) {
   await writeFile(resultingFilePath, bytes);
 }
 async function syncStaticAssets() {
-  const imageMatcherRegex = /@site\/static\/img\/([A-Za-z0-9./-]+\.(png|gif))/g;
+  const imageMatcherRegex = /\/static\/img\/([A-Za-z0-9./-]+\.(png|gif))/g;
   const pathFinalImageDirectory = join(__dirname, '..', 'static', 'img');
   const pendingImages = new Map();
   const pendingScans = (

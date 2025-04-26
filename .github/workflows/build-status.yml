@@ -292,7 +292,7 @@ jobs:
       - name: Unpack production packages
         run: node --run unpack:all
       - name: Get static assets
-        run: git ls-files | grep website/ | sort | xargs grep "@site/static/img" > .assets-id
+        run: git ls-files | grep website/ | sort | xargs grep "/static/img" > .assets-id
       - name: Get date cache buster
         id: get-date
         shell: bash
