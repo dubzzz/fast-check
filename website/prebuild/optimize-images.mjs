@@ -1,4 +1,3 @@
-// @ts-check
 import { Jimp } from 'jimp';
 import { existsSync, mkdirSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
