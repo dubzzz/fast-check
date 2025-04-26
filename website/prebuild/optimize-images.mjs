@@ -9,6 +9,8 @@ import allContributors from '../src/components/HomepageContributors/all-contribu
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
+// Collecting AVATARs for contributors
+
 async function collectAvatar(imageUrl, imageFinalPath, squaredSize) {
   let image = await Jimp.read(imageUrl);
   await image.resize({ h: squaredSize, w: squaredSize }).write(imageFinalPath, { quality: 80 });
@@ -54,6 +56,8 @@ for (const avatar of allAvatars) {
   }
 }
 
+// Collecting out-sourced STATIC ASSETS
+
 async function syncPngImages() {
   const imageMatcherRegex = /@site\/static\/img\/([A-Za-z0-9./-]+\.(png|gif))/g;
   const pathFinalImageDirectory = join(__dirname, '..', 'static', 'img');
@@ -87,10 +91,4 @@ async function syncPngImages() {
   await Promise.all(pendingScans);
   await Promise.all([...pendingImages.values()]);
 }
-
 syncPngImages();
-
-// https://www.npmjs.com/package/ignore
-// glob src/ blog/ .md .js -- '{src,blog}/**/*.{js,ts,jsx,tsx,md}'
-// @site\/static\/img\/(.*\.png)
-// https://github.com/dubzzz/fast-check-assets/blob/main/$1?raw=true
