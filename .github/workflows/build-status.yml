@@ -291,16 +291,17 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
-      - name: Get Date cache buster
+      - name: Get static assets
+        run: git ls-files | grep website/ | sort | xargs grep "@site/static/img" > .assets-id
+      - name: Get date cache buster
         id: get-date
-        run: |
-          echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
         shell: bash
+        run: echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
       - name: Cache for Optimized assets
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: website/static/img/_
-          key: optimized-assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc')}}-${{hashFiles('website/prebuild/optimize-images.mjs')}}
+          key: optimized-assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc')}}-${{hashFiles('.assets-id')}}-${{hashFiles('website/prebuild/optimize-images.mjs')}}
       - name: Generate documentation
         run: pnpm --filter website run build
       - name: Generate API reference
