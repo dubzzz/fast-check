@@ -12,7 +12,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 // Collecting AVATARs for contributors
 
 async function collectAvatar(imageUrl, imageFinalPath, squaredSize) {
-  let image = await Jimp.read(imageUrl);
+  const image = await Jimp.read(imageUrl);
   await image.resize({ h: squaredSize, w: squaredSize }).write(imageFinalPath, { quality: 80 });
 }
 
