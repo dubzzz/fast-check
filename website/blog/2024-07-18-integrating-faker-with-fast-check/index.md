@@ -2,7 +2,7 @@
 title: Integrating Faker with fast-check
 authors: [dubzzz]
 tags: [tips, integration]
-image: ./social.png
+image: '@site/static/img/blog/2024-07-18-integrating-faker-with-fast-check--social.png'
 ---
 
 [Faker](https://fakerjs.dev) is a well-known and powerful library for generating fake data. It provides a wide range of random but realistic-looking data generators. However, testing with purely random data can be risky, which is why property-based testing is valuable. While using fake but realistic data in tests can be beneficial, it is essential to integrate it properly. fast-check offers a robust solution for this integration.

@@ -17,7 +17,7 @@ Continue reading to explore the detailed updates it brings.
 The introduction of [`@fast-check/worker`](https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme) marked a significant addition to the fast-check family with the 3.2.0 release. Its primary objective was to offload the execution of predicates to workers, enhancing interruptibility. However, despite this improvement, the parent thread remained responsible for computing inputs for the predicates, which were then transmitted to the workers.
 
 <figure>
-![Simplified workflow of an execution before](worker-parent-gen.png)
+![Simplified workflow of an execution before](@site/static/img/blog/2024-03-26-whats-new-in-fast-check-3-17-0--worker-parent-gen.png)
 <figurecaption>Simplified workflow of an execution with the main thread responsible for generating the values</figurecaption>
 </figure>
 
@@ -46,7 +46,7 @@ Our generators operate in a pure manner, ensuring that inputs for each run are i
 This decoupling allows us to move the generation to the worker as illustrated below:
 
 <figure>
-![Simplified workflow of an execution with worker generating values](worker-worker-gen.png)
+![Simplified workflow of an execution with worker generating values](@site/static/img/blog/2024-03-26-whats-new-in-fast-check-3-17-0--worker-worker-gen.png)
 <figurecaption>Simplified workflow of an execution with worker responsible to generate the value</figurecaption>
 </figure>
 
