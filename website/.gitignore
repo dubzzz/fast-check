@@ -10,6 +10,8 @@
 generated-tests
 src/components/HomepageContributors/all-contributors.json
 static/img/_
+static/img/**/*.gif
+static/img/**/*.png
 
 # Misc
 .DS_Store

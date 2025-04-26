@@ -2,7 +2,7 @@
 title: Advent of PBT 2024 · Day 24
 authors: [dubzzz]
 tags: [advent-of-pbt, advent-of-pbt-2024]
-image: ./social.png
+image: ../../static/img/blog/2024-12-24-advent-of-pbt-day-24--social.png
 ---
 
 import {AdventPlaygroundOfTheDay,FormOfTheDay} from './AdventOfTheDay';
