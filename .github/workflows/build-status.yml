@@ -291,8 +291,6 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
-      - name: Get static assets
-        run: git ls-files | grep website/ | sort | xargs grep "/static/img" > .assets-id
       - name: Get date cache buster
         id: get-date
         shell: bash
@@ -304,7 +302,7 @@ jobs:
             website/static/img/_
             website/static/img/**/*.gif
             website/static/img/**/*.png
-          key: assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc')}}-${{hashFiles('.assets-id')}}-${{hashFiles('website/prebuild/optimize-images.mjs')}}
+          key: assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc', 'website/prebuild/optimize-images.mjs')}}
       - name: Generate documentation
         run: pnpm --filter website run build
       - name: Generate API reference
