@@ -29,7 +29,7 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check:e2e test/e2e/documentation"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.2",
+    "@changesets/cli": "^2.29.3",
     "@eslint/js": "^9.26.0",
     "@fast-check/packaged": "*",
     "@typescript-eslint/utils": "^8.31.1",
