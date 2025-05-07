@@ -338,9 +338,16 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     return rewrappedTask;
   }
 
-  waitNext(customAct?: SchedulerAct): Promise<void> {
+  waitNext(count?: number, customAct?: SchedulerAct): Promise<void> {
     let resolver: (() => void) | undefined = undefined;
-    const awaited = new Promise<void>((r) => (resolver = r));
+    let remaining = count !== undefined ? count : 1;
+    const awaited = new Promise<void>((r) => {
+      resolver = () => {
+        if (--remaining <= 0) {
+          r();
+        }
+      };
+    });
     return this.internalWaitFor(awaited, { customAct, onWaitStart: resolver });
   }
 
