@@ -83,7 +83,7 @@ export interface Scheduler<TMetaData = unknown> {
    * Wait and schedule exactly `count` scheduled tasks.
    * @remarks Since 4.2.0
    */
-  waitNext(count: number, customAct?: SchedulerAct): Promise<void>;
+  waitNext: (count: number, customAct?: SchedulerAct) => Promise<void>;
 
   /**
    * Wait as many scheduled tasks as need to resolve the received Promise
