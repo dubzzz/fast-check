@@ -80,6 +80,12 @@ export interface Scheduler<TMetaData = unknown> {
   waitAll: (customAct?: SchedulerAct) => Promise<void>;
 
   /**
+   * Wait and schedule exactly `count` scheduled tasks.
+   * @remarks Since 4.2.0
+   */
+  waitNext(count: number, customAct?: SchedulerAct): Promise<void>;
+
+  /**
    * Wait as many scheduled tasks as need to resolve the received Promise
    *
    * Some tests frameworks like `supertest` are not triggering calls to subsequent queries in a synchronous way,
