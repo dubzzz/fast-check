@@ -249,8 +249,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   async waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
     let taskResolved = false;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    let stopExecution: (err: unknown) => void = null!;
-    const stopExecutionTask = new Promise<T>((_, reject) => (stopExecution = reject));
+    let resolveFinal: (value: T) => void = undefined!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let rejectFinal: (error: unknown) => void = undefined!;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterTicks = 0;
@@ -271,7 +272,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           (err) => {
             awaiterScheduledTaskPromise = null;
             taskResolved = true;
-            stopExecution(err);
+            rejectFinal(err);
             throw err;
           },
         );
@@ -300,40 +301,41 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         this.scheduledWatchers[0]();
       }
     };
-    const rewrappedTask = unscheduledTask.then(
+
+    const finalTask = new Promise<T>((resolve, reject) => {
+      resolveFinal = (value) => {
+        clearAndReplaceWatcher();
+        resolve(value);
+      };
+      rejectFinal = (error: unknown) => {
+        clearAndReplaceWatcher();
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+        reject(error);
+      };
+    });
+
+    unscheduledTask.then(
       (ret) => {
         taskResolved = true;
         if (awaiterScheduledTaskPromise === null) {
-          clearAndReplaceWatcher();
-          return ret;
+          resolveFinal(ret);
+        } else {
+          awaiterScheduledTaskPromise.then(
+            () => resolveFinal(ret),
+            (error) => rejectFinal(error),
+          );
         }
-        return awaiterScheduledTaskPromise.then(
-          () => {
-            clearAndReplaceWatcher();
-            return ret;
-          },
-          (err) => {
-            clearAndReplaceWatcher();
-            throw err;
-          },
-        );
       },
       (err) => {
         taskResolved = true;
         if (awaiterScheduledTaskPromise === null) {
-          clearAndReplaceWatcher();
-          throw err;
+          rejectFinal(err);
+        } else {
+          awaiterScheduledTaskPromise.then(
+            () => rejectFinal(err),
+            () => rejectFinal(err),
+          );
         }
-        return awaiterScheduledTaskPromise.then(
-          () => {
-            clearAndReplaceWatcher();
-            throw err;
-          },
-          () => {
-            clearAndReplaceWatcher();
-            throw err;
-          },
-        );
       },
     );
 
@@ -345,7 +347,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
     this.scheduledWatchers.push(handleNotified);
 
-    return Promise.race([rewrappedTask, stopExecutionTask.finally(clearAndReplaceWatcher)]);
+    return finalTask;
   }
 
   report(): SchedulerReportItem<TMetaData>[] {
