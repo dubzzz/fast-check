@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.2.0",
+    "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "express": "^5.1.0",
     "fast-check": "workspace:*",
@@ -22,10 +22,10 @@
   "devDependencies": {
     "@types/express": "^5.0.1",
     "@types/lodash": "^4.17.16",
-    "@types/react": "^19.0.12",
+    "@types/react": "^19.1.2",
     "@types/supertest": "^6.0.3",
-    "happy-dom": "^17.4.4",
-    "typescript": "~5.8.2",
+    "happy-dom": "^17.4.6",
+    "typescript": "~5.8.3",
     "vitest": "^3.0.9"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",

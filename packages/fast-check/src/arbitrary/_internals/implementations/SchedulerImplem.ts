@@ -101,7 +101,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let trigger: (() => Promise<unknown>) | undefined = undefined;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
-        const promise = Promise.resolve(thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task);
+        const promise = Promise.resolve(
+          thenTaskToBeAwaited !== undefined ? task.then(() => thenTaskToBeAwaited()) : task,
+        );
         promise.then(
           (data) => {
             this.log(schedulingType, taskId, label, metadata, 'resolved', data);
@@ -253,33 +255,41 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const onWaitStart = options.onWaitStart;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
+    let awaiterTicks = 0;
     let awaiterPromise: Promise<void> | null = null;
-    const awaiter = async () => {
-      while (!taskResolved) {
-        for (let i = 0; i !== numTicksBeforeScheduling; ++i) {
-          await Promise.resolve();
-          if (taskResolved) {
-            break;
-          }
+    let awaiterScheduledTaskPromise: Promise<void> | null = null;
+    const awaiter = async (): Promise<void> => {
+      awaiterTicks = numTicksBeforeScheduling;
+      for (awaiterTicks = numTicksBeforeScheduling; !taskResolved && awaiterTicks > 0; --awaiterTicks) {
+        await Promise.resolve();
+      }
+      if (!taskResolved && this.scheduledTasks.length > 0) {
+        if (onWaitStart !== undefined) {
+          onWaitStart();
         }
-        if (this.scheduledTasks.length > 0) {
-          if (onWaitStart !== undefined) {
-            onWaitStart();
-          }
-          await this.waitOne(customAct);
-        } else {
-          break;
-        }
+        awaiterScheduledTaskPromise = this.waitOne(customAct);
+        return awaiterScheduledTaskPromise.then(
+          () => {
+            awaiterScheduledTaskPromise = null;
+            return awaiter(); // NOTE: waitOne does not throw, except throwing "act"
+          },
+          (err) => {
+            awaiterScheduledTaskPromise = null;
+            throw err;
+          },
+        );
       }
       awaiterPromise = null;
     };
     const handleNotified = () => {
       if (awaiterPromise !== null) {
         // Awaiter is currently running, there is no need to relaunch it
+        // but we can ask it for more ticks
+        awaiterTicks = numTicksBeforeScheduling + 1; // +1 as 1 is running
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      awaiterPromise = Promise.resolve().then(awaiter);
+      awaiterPromise = awaiter();
     };
 
     // Define the wrapping task and its resolution strategy
@@ -295,22 +305,22 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const rewrappedTask = unscheduledTask.then(
       (ret) => {
         taskResolved = true;
-        if (awaiterPromise === null) {
+        if (awaiterScheduledTaskPromise === null) {
           clearAndReplaceWatcher();
           return ret;
         }
-        return awaiterPromise.then(() => {
+        return awaiterScheduledTaskPromise.then(() => {
           clearAndReplaceWatcher();
           return ret;
         });
       },
       (err) => {
         taskResolved = true;
-        if (awaiterPromise === null) {
+        if (awaiterScheduledTaskPromise === null) {
           clearAndReplaceWatcher();
           throw err;
         }
-        return awaiterPromise.then(() => {
+        return awaiterScheduledTaskPromise.then(() => {
           clearAndReplaceWatcher();
           throw err;
         });

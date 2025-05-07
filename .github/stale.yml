@@ -6,8 +6,8 @@ daysUntilClose: 7
 exemptLabels:
   - '✔️ Feature Accepted'
   - '✔️ Bug Confirmed'
-  - '✔️ Idea to investigate'
-  - '💥 Next Major'
+  - '💡 Idea to investigate'
+  - '💥 Targeting unplanned major'
   - '🧪 Experiment'
 # Label to use when marking an issue as stale
 staleLabel: stale

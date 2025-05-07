@@ -2,7 +2,7 @@
 title: Advent of PBT 2024 · Day 21
 authors: [dubzzz]
 tags: [advent-of-pbt, advent-of-pbt-2024]
-image: ./social.png
+image: /img/blog/2024-12-21-advent-of-pbt-day-21--social.png
 ---
 
 import {AdventPlaygroundOfTheDay,FormOfTheDay} from './AdventOfTheDay';

@@ -799,7 +799,7 @@ describe('SchedulerImplem', () => {
       await s.waitFor(awaitedTask.p);
 
       // Assert
-      expect(processFlag).toBe(7); // ideally 1, but got 7 with current implementation
+      expect(processFlag).toBe(3); // ideally 1, but got 3 with current implementation
       await process;
     });
 
@@ -828,7 +828,7 @@ describe('SchedulerImplem', () => {
       await process;
     });
 
-    it('should schedule known Promises as quickly as possible when depending on promise ticks', async () => {
+    it('should try to wait enough ticks for all Promises to be registered before scheduling any', async () => {
       // Arrange
       const awaitedTask = buildUnresolved();
       const seenTasks: unknown[][] = [];
@@ -862,22 +862,127 @@ describe('SchedulerImplem', () => {
 
       // Assert
       expect(processFlags).toEqual(expectedFlags);
-      const batchSize = numTicksBeforeScheduling;
-      let expectedCount = batchSize + 2;
       for (let i = 0; i !== expectedFlags.length; ++i) {
-        // Scheduled promises will be partially grouped into common batches, the process we play with does fire in parallel:
+        // Scheduled promises will be grouped into common batches, the process we play with does fire in parallel:
         // - s.schedule(promise[0])
         // - Promise.resolve().then(() => s.schedule(promise[1]))
         // - Promise.resolve().then(() => {}).then(() => s.schedule(promise[2]))
         // - Promise.resolve().then(() => {}).then(() => {}).then(() => s.schedule(promise[3]))...
         // In other words, promise[3] gets scheduled 3 ticks after promise[0].
-        expect(seenTasks[i]).toEqual(
-          promises.slice(i, i + expectedCount).map((p) => expect.objectContaining({ original: p })),
-        );
-        expectedCount += batchSize;
+        expect(seenTasks[i]).toEqual(promises.slice(i).map((p) => expect.objectContaining({ original: p })));
       }
-      expect(seenTasks).toHaveLength(expectedFlags.length); // all promises took part in the first scheduling
     });
+
+    it.each([
+      { gap: numTicksBeforeScheduling, success: true, label: 'and could wait long' },
+      { gap: numTicksBeforeScheduling + 1, success: false, label: 'but may miss some' },
+    ])(
+      'should try to wait enough ticks for all Promises to be registered before scheduling any $label',
+      async ({ gap, success }) => {
+        // Arrange
+        const awaitedTask = buildUnresolved();
+        const seenTasks: unknown[][] = [];
+        const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+          seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+          return 0; // automatically releasing first available promise
+        });
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+        // Act
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        let processFlags: number[] = [];
+        function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+          if (extraTicks === 0) {
+            return s.schedule(promise);
+          }
+          let p = Promise.resolve();
+          for (let i = 1; i !== extraTicks; ++i) {
+            p = p.then(() => {});
+          }
+          return p.then(() => s.schedule(promise));
+        }
+        const p1 = Promise.resolve(1);
+        const p2 = Promise.resolve(2);
+        async function startProcess() {
+          processFlags = await Promise.all([wrapPromise(p1, 0), wrapPromise(p2, gap)]);
+          awaitedTask.resolve();
+        }
+        startProcess();
+        await s.waitFor(awaitedTask.p);
+
+        // Assert
+        expect(processFlags).toEqual([1, 2]);
+        expect(seenTasks[0]).toEqual(
+          success
+            ? [expect.objectContaining({ original: p1 }), expect.objectContaining({ original: p2 })]
+            : [expect.objectContaining({ original: p1 })],
+        );
+        expect(seenTasks[1]).toEqual([expect.objectContaining({ original: p2 })]);
+      },
+    );
+
+    it.each([
+      { gap: numTicksBeforeScheduling, success: true, label: 'and could wait long' },
+      { gap: numTicksBeforeScheduling + 1, success: false, label: 'but may miss some' },
+    ])(
+      'should try to wait enough ticks for all Promises to be registered before scheduling and reset on new scheduling any $label',
+      async ({ gap, success }) => {
+        // Arrange
+        const awaitedTask = buildUnresolved();
+        const seenTasks: unknown[][] = [];
+        const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+          seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+          return 0; // automatically releasing first available promise
+        });
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+        // Act
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        let processFlags: number[] = [];
+        function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+          if (extraTicks === 0) {
+            return s.schedule(promise);
+          }
+          let p = Promise.resolve();
+          for (let i = 1; i !== extraTicks; ++i) {
+            p = p.then(() => {});
+          }
+          return p.then(() => s.schedule(promise));
+        }
+        const belowBatchSize = 10;
+        expect(belowBatchSize).toBeLessThan(numTicksBeforeScheduling);
+        const p1 = Promise.resolve(1);
+        const p2 = Promise.resolve(2);
+        const p3 = Promise.resolve(3);
+        async function startProcess() {
+          processFlags = await Promise.all([
+            wrapPromise(p1, 0),
+            wrapPromise(p2, belowBatchSize),
+            wrapPromise(p3, belowBatchSize + gap),
+          ]);
+          awaitedTask.resolve();
+        }
+        startProcess();
+        await s.waitFor(awaitedTask.p);
+
+        // Assert
+        expect(processFlags).toEqual([1, 2, 3]);
+        expect(seenTasks[0]).toEqual(
+          success
+            ? [
+                expect.objectContaining({ original: p1 }),
+                expect.objectContaining({ original: p2 }),
+                expect.objectContaining({ original: p3 }),
+              ]
+            : [expect.objectContaining({ original: p1 }), expect.objectContaining({ original: p2 })],
+        );
+        expect(seenTasks[1]).toEqual([
+          expect.objectContaining({ original: p2 }),
+          expect.objectContaining({ original: p3 }),
+        ]);
+        expect(seenTasks[2]).toEqual([expect.objectContaining({ original: p3 })]);
+      },
+    );
 
     it('should schedule known Promises without any timeout delay', async () => {
       // Arrange
@@ -921,6 +1026,40 @@ describe('SchedulerImplem', () => {
         // In other words, promise[3] gets scheduled 3 0-timeout timers after promise[0].
         expect(seenTasks[i]).toEqual([expect.objectContaining({ original: promises[i] })]);
       }
+    });
+
+    it('should never overlap tasks from function and sequences', async () => {
+      // Arrange
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+
+      // Act
+      let count = 0;
+      let overlapDetected = false;
+      let running = false;
+      const collisionAct = (f: () => Promise<void>) => {
+        count += 1;
+        overlapDetected ||= running;
+        running = true;
+        const out = f();
+        out.then(() => (running = false));
+        return out;
+      };
+      const builder = () => delay();
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      const fun = s.scheduleFunction(builder, collisionAct);
+      const shortSeq = s.scheduleSequence([{ label: 'short-seq-a', builder }], collisionAct);
+      const longSeq = s.scheduleSequence(
+        [
+          { label: 'long-seq-a', builder },
+          { label: 'long-seq-b', builder },
+        ],
+        collisionAct,
+      );
+      await s.waitFor(Promise.all([fun(), fun().then(fun), fun().then(fun).then(fun), shortSeq.task, longSeq.task]));
+
+      // Assert
+      expect(count).toBe(9);
+      expect(overlapDetected).toBe(false);
     });
 
     it('should end whenever possible while never launching multiple tasks at the same time', async () => {
