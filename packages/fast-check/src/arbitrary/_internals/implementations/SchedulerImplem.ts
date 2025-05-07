@@ -248,6 +248,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
   async waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
     let taskResolved = false;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let stopExecution: (err: unknown) => void = null!;
+    const stopExecutionTask = new Promise<T>((_, reject) => (stopExecution = reject));
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterTicks = 0;
@@ -259,7 +262,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         await Promise.resolve();
       }
       if (!taskResolved && this.scheduledTasks.length > 0) {
-        awaiterScheduledTaskPromise = this.waitOne(customAct);
+        awaiterScheduledTaskPromise = this.waitOne(customAct); // no catch, should be catch by final user
         return awaiterScheduledTaskPromise.then(
           () => {
             awaiterScheduledTaskPromise = null;
@@ -267,6 +270,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           },
           (err) => {
             awaiterScheduledTaskPromise = null;
+            taskResolved = true;
+            stopExecution(err);
             throw err;
           },
         );
@@ -281,7 +286,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      awaiterPromise = awaiter();
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      awaiterPromise = awaiter().catch(() => {});
     };
 
     // Define the wrapping task and its resolution strategy
@@ -301,10 +307,16 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           clearAndReplaceWatcher();
           return ret;
         }
-        return awaiterScheduledTaskPromise.then(() => {
-          clearAndReplaceWatcher();
-          return ret;
-        });
+        return awaiterScheduledTaskPromise.then(
+          () => {
+            clearAndReplaceWatcher();
+            return ret;
+          },
+          (err) => {
+            clearAndReplaceWatcher();
+            throw err;
+          },
+        );
       },
       (err) => {
         taskResolved = true;
@@ -312,10 +324,16 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           clearAndReplaceWatcher();
           throw err;
         }
-        return awaiterScheduledTaskPromise.then(() => {
-          clearAndReplaceWatcher();
-          throw err;
-        });
+        return awaiterScheduledTaskPromise.then(
+          () => {
+            clearAndReplaceWatcher();
+            throw err;
+          },
+          () => {
+            clearAndReplaceWatcher();
+            throw err;
+          },
+        );
       },
     );
 
@@ -327,7 +345,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
     this.scheduledWatchers.push(handleNotified);
 
-    return rewrappedTask;
+    return Promise.race([rewrappedTask, stopExecutionTask.finally(clearAndReplaceWatcher)]);
   }
 
   report(): SchedulerReportItem<TMetaData>[] {

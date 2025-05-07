@@ -1062,6 +1062,66 @@ describe('SchedulerImplem', () => {
       expect(overlapDetected).toBe(false);
     });
 
+    describe('exceptions', () => {
+      it('should forward failure in act linked to scheduler level', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const formatError = (value: unknown) => `This "act" fails if the returned value is not "b", got "${value}"`;
+        const s = new SchedulerImplem(async (f) => {
+          const out: unknown = await f();
+          if (out !== 'b') {
+            throw new Error(formatError(out));
+          }
+          return out;
+        }, taskSelector);
+        s.schedule(Promise.resolve('a'));
+        const taskB = s.schedule(Promise.resolve('b'));
+
+        // Assert
+        await expect(s.waitFor(taskB)).rejects.toThrowError(formatError('a'));
+      });
+
+      it('should forward failure in act linked to local schedule level', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        s.schedule(Promise.resolve('a'), 'label a', {}, async () => {
+          throw new Error(`This "act" fails`);
+        });
+        const taskB = s.schedule(Promise.resolve('b'), 'label b', {}, async (f) => {
+          const out = await f();
+          return out;
+        });
+
+        // Assert
+        await expect(s.waitFor(taskB)).rejects.toThrowError(`This "act" fails`);
+      });
+
+      it('should forward failure from the waited task', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        s.schedule(Promise.resolve('a'));
+        const taskB = s.schedule(Promise.reject(new Error('Oups, I failed!')));
+
+        // Assert
+        await expect(s.waitFor(taskB)).rejects.toThrowError(`Oups, I failed!`);
+        await expect(taskB).rejects.toThrowError(`Oups, I failed!`);
+      });
+
+      it('should forward failure from a non waited task', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        const taskA = s.schedule(Promise.reject(new Error('Oups, I failed!')));
+        const taskB = s.schedule(Promise.resolve('b'));
+
+        // Assert
+        await expect(s.waitFor(taskB)).resolves.toBe(`b`);
+        await expect(taskA).rejects.toThrowError(`Oups, I failed!`);
+      });
+    });
+
     it('should end whenever possible while never launching multiple tasks at the same time', async () => {
       const schedulingTypeArb = fc.constantFrom(...(['none', 'init'] as const));
       const dependenciesArbFor = (currentItem: number) =>
