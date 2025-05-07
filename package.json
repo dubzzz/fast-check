@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f",
+  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -29,21 +29,21 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check:e2e test/e2e/documentation"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.2",
-    "@eslint/js": "^9.25.1",
+    "@changesets/cli": "^2.29.3",
+    "@eslint/js": "^9.26.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.29.1",
+    "@typescript-eslint/utils": "^8.32.0",
     "@vitest/coverage-v8": "^3.0.9",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^7.0.3",
-    "eslint": "^9.25.1",
+    "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",
     "pkg-pr-new": "^0.0.43",
     "prettier": "3.5.3",
     "publint": "^0.3.12",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.29.1",
+    "typescript-eslint": "^8.32.0",
     "vitest": "^3.0.9"
   }
 }
