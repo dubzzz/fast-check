@@ -341,13 +341,16 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   waitNext(count: number, customAct?: SchedulerAct): Promise<void> {
     let resolver: (() => void) | undefined = undefined;
     let remaining = count;
-    const awaited = new Promise<void>((r) => {
-      resolver = () => {
-        if (--remaining <= 0) {
-          r();
-        }
-      };
-    });
+    const awaited =
+      remaining <= 0
+        ? Promise.resolve()
+        : new Promise<void>((r) => {
+            resolver = () => {
+              if (--remaining <= 0) {
+                r();
+              }
+            };
+          });
     return this.internalWaitFor(awaited, { customAct, onWaitStart: resolver });
   }
 
