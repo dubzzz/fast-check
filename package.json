@@ -37,7 +37,7 @@
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^7.0.3",
     "eslint": "^9.26.0",
-    "eslint-config-prettier": "^10.1.2",
+    "eslint-config-prettier": "^10.1.5",
     "globals": "^16.1.0",
     "pkg-pr-new": "^0.0.43",
     "prettier": "3.5.3",
