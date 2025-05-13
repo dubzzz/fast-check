@@ -22,9 +22,6 @@ describe('Docs.md', () => {
   it.each(allPathsFromWebsite)(
     'should check code snippets validity and fix generated values on $shortName',
     ({ filePath }) => {
-      if (filePath.includes('file.md')) {
-        return;
-      }
       const originalFileContent = fs.readFileSync(filePath).toString();
       const { content: fileContent } = refreshContent(originalFileContent);
 
