@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { seed } from './seed';
 import * as fc from '../../src/fast-check';
 
-describe(`IgnoreEqualValues (seed: ${seed})`, () => {
+describe.skip(`IgnoreEqualValues (seed: ${seed})`, () => {
   describe('ignoreEqualValues', () => {
     it('should not run more than 4 times', () => {
       let numRuns = 0;

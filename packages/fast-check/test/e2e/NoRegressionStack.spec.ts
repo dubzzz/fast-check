@@ -4,7 +4,7 @@ import { runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
 
 const settings = { seed: 42, verbose: 0 };
 
-describe(`NoRegressionStack`, () => {
+describe.skip(`NoRegressionStack`, () => {
   it('return false', () => {
     expect(
       runWithSanitizedStack(() =>

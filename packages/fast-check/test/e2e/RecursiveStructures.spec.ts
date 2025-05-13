@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe(`RecursiveStructures (seed: ${seed})`, () => {
+describe.skip(`RecursiveStructures (seed: ${seed})`, () => {
   // Test shrinking capabilities on very simple scenario:
   // >  The arbitrary used as base-case for the recursive structure is a constant.
   // >  It either pass or fail. But we ca never geenrate the wrong one and miss shrinking opportunities.

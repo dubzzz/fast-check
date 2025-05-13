@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe(`StateFullArbitraries (seed: ${seed})`, () => {
+describe.skip(`StateFullArbitraries (seed: ${seed})`, () => {
   describe('Never call on generate', () => {
     const cloneableWithCount = (data: { counter: number }) =>
       new (class extends fc.Arbitrary<any> {

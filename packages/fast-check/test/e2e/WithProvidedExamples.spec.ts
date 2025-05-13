@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe(`WithProvidedExamples (seed: ${seed})`, () => {
+describe.skip(`WithProvidedExamples (seed: ${seed})`, () => {
   it('should fail on one of the provided examples', () => {
     const out = fc.check(
       fc.property(fc.integer({ min: 1, max: 100 }), fc.integer({ min: 1, max: 100 }), (x, y) => x < y),

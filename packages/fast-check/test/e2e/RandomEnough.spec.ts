@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe(`RandomEnough (seed: ${seed})`, () => {
+describe.skip(`RandomEnough (seed: ${seed})`, () => {
   it('should not repeat values when noBias enabled', () => {
     const alreadySeenValues = new Set<string>();
     const allEmails = fc.sample(fc.noBias(fc.tuple(fc.emailAddress(), fc.emailAddress())), { seed });

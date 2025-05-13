@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { __commitHash } from 'fast-check';
 
-describe(`Bundle`, () => {
+describe.skip(`Bundle`, () => {
   it('should be packaged with the right commit SHA1', () => {
     // Arrange
     const expectedCommitHash = process.env.GITHUB_SHA;

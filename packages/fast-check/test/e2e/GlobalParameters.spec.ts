@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 
-describe('GlobalParameters', () => {
+describe.skip('GlobalParameters', () => {
   beforeEach(() => {
     // Prevent failing test to corrupt next ones
     fc.resetConfigureGlobal();

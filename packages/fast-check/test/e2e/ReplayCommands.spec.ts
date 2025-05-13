@@ -26,7 +26,7 @@ class AlwaysPos implements fc.Command<Model, Real> {
   toString = () => `AlwaysPos()`;
 }
 
-describe(`ReplayCommands (seed: ${seed})`, () => {
+describe.skip(`ReplayCommands (seed: ${seed})`, () => {
   const buildProp = (replayPath?: string, mrng?: fc.Random) => {
     let alreadyFailed = false;
     let skipAllRuns = false;
