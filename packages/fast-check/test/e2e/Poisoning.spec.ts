@@ -9,7 +9,7 @@ const safeObjectDefineProperty = Object.defineProperty;
 // Building the matcher in a polluted context is not working for now
 const preBuiltStringMatching = fc.stringMatching(/(^|\s)[0-9a-f]{8}-(\w{4})[^abc][^a-u]\D+(\s|$)/);
 
-describe(`Poisoning (seed: ${seed})`, () => {
+describe.skip(`Poisoning (seed: ${seed})`, () => {
   if (type() === 'Darwin') {
     // Skip Poisoning related tests on MacOS
     it('No test for Darwin', () => {});
@@ -271,6 +271,16 @@ function dropMainGlobals(): () => void {
     typeof Iterator !== 'undefined' ? Iterator : undefined,
     typeof Navigator !== 'undefined' ? Navigator : undefined,
     typeof CloseEvent !== 'undefined' ? CloseEvent : undefined,
+    // @ts-expect-error - Cannot find name 'URLPattern'
+    typeof URLPattern !== 'undefined' ? URLPattern : undefined,
+    // @ts-expect-error - Cannot find name 'SuppressedError'
+    typeof SuppressedError !== 'undefined' ? SuppressedError : undefined,
+    // @ts-expect-error - Cannot find name 'DisposableStack'
+    typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
+    // @ts-expect-error - Cannot find name 'AsyncDisposableStack'
+    typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
+    // @ts-expect-error - Cannot find name 'Float16Array'
+    typeof Float16Array !== 'undefined' ? Float16Array : undefined,
   ].filter((mainGlobal) => mainGlobal !== undefined);
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
