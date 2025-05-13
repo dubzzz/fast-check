@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe.skip(`Timeout (seed: ${seed})`, () => {
+describe(`Timeout (seed: ${seed})`, () => {
   it('should always run beforeEach and afterEach even in case of timeout', async () => {
     let numRuns = 0;
     const beforeEach = vi.fn().mockResolvedValue(undefined);

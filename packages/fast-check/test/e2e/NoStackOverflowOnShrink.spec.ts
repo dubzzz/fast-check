@@ -29,7 +29,7 @@ const maxDepthForArrays = 50_000;
 // The aim is to check if asking for the first maxShrinksToAsk might trigger unwanted stack overflows
 const maxShrinksToAsk = 100;
 
-describe.skip(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
+describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
   const iterateOverShrunkValues = <T>(arb: fc.Arbitrary<T>, v: fc.Value<T>) => {
     const it = arb.shrink(v.value_, v.context).take(maxShrinksToAsk)[Symbol.iterator]();
     let cur = it.next();

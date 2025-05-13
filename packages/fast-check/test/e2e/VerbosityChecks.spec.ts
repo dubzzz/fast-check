@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe.skip(`VerbosityChecks (seed: ${seed})`, () => {
+describe(`VerbosityChecks (seed: ${seed})`, () => {
   it('should produce the right list of failing cases in verbose mode', () => {
     let failed = false;
     const expectedLines: string[] = [];

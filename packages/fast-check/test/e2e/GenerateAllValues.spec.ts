@@ -3,7 +3,7 @@ import * as prand from 'pure-rand';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe.skip(`Generate all values (seed: ${seed})`, () => {
+describe(`Generate all values (seed: ${seed})`, () => {
   /**
    * Check the ability of arbitraries to generate all the values
    * of their type / range

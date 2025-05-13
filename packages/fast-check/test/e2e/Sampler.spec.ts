@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe.skip(`Sampler (seed: ${seed})`, () => {
+describe(`Sampler (seed: ${seed})`, () => {
   it('should be able to sample an Arbitrary', () => {
     // Arrange
     const numRuns = 42;

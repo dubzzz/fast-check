@@ -9,7 +9,7 @@ const safeObjectDefineProperty = Object.defineProperty;
 // Building the matcher in a polluted context is not working for now
 const preBuiltStringMatching = fc.stringMatching(/(^|\s)[0-9a-f]{8}-(\w{4})[^abc][^a-u]\D+(\s|$)/);
 
-describe.skip(`Poisoning (seed: ${seed})`, () => {
+describe(`Poisoning (seed: ${seed})`, () => {
   if (type() === 'Darwin') {
     // Skip Poisoning related tests on MacOS
     it('No test for Darwin', () => {});

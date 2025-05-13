@@ -156,7 +156,7 @@ const SpaceArbitrary = fc
 
 // Test
 
-describe.skip(`Shadows (seed: ${seed})`, () => {
+describe(`Shadows (seed: ${seed})`, () => {
   it('Should detect an implementation issue', () => {
     let failed = false;
     try {

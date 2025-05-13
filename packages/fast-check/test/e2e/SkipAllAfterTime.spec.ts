@@ -5,7 +5,7 @@ import { seed } from './seed';
 const ShortTimeoutMs = 100;
 const LongTimeoutMs = 100 * 1000;
 
-describe.skip(`SkipAllAfterTime (seed: ${seed})`, () => {
+describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   describe('skip', () => {
     it('should skip as soon as delay expires and mark run as failed', async () => {
       // Arrange / Act

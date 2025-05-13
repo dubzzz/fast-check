@@ -11,7 +11,7 @@ import {
 } from './CounterCommands';
 import { seed } from '../seed';
 
-describe.skip(`CommandsArbitrary (seed: ${seed})`, () => {
+describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {
     it('Should shrink up to the shortest failing commands list', () => {
       const out = fc.check(

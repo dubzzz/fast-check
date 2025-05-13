@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe.skip(`PreConditionChecks (seed: ${seed})`, () => {
+describe(`PreConditionChecks (seed: ${seed})`, () => {
   it('should skip property execution whenever pre fails', () => {
     fc.assert(
       fc.property(fc.integer(), fc.integer(), (x, y) => {

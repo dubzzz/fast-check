@@ -45,7 +45,7 @@ const allCommands = [
   fc.constant(new SizeCommand()),
 ];
 
-describe.skip(`Model Based (seed: ${seed})`, () => {
+describe(`Model Based (seed: ${seed})`, () => {
   it('should not detect any issue on built-in list', () => {
     fc.assert(
       fc.property(fc.commands(allCommands, { size: '+1' }), (cmds) => {

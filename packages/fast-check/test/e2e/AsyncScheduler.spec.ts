@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe.skip(`AsyncScheduler (seed: ${seed})`, () => {
+describe(`AsyncScheduler (seed: ${seed})`, () => {
   it('should detect trivial race conditions', async () => {
     // The code below relies on the fact/expectation that fetchA takes less time that fetchB
     // The aim of this test is to show that the code is wrong as soon as this assumption breaks

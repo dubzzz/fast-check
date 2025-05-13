@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from '../../src/fast-check';
 import { seed } from './seed';
 
-describe.skip(`ComplexShrink (seed: ${seed})`, () => {
+describe(`ComplexShrink (seed: ${seed})`, () => {
   it('Should shrink two integers linked by a non-symmetric relation', () => {
     // In fast-check version 2.11.0 and before, this shrinking scenario
     // was causing barely infinite shrink. Some runs may take hours too end.
