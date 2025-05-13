@@ -33,7 +33,6 @@ describe.skip('Docs.md', () => {
         expect(fileContent).toEqual(originalFileContent);
       }
     },
-    300_000, // 300s = 5min
   );
 });
 
