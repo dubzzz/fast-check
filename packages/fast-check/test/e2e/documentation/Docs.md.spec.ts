@@ -18,7 +18,7 @@ const allPathsFromWebsite = globSync(`./website/docs/core-blocks/arbitraries/**/
   shortName: fileDescriptor.name,
 }));
 
-describe.skip('Docs.md', () => {
+describe('Docs.md', () => {
   it.each(allPathsFromWebsite)(
     'should check code snippets validity and fix generated values on $shortName',
     ({ filePath }) => {
