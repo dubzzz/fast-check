@@ -51,24 +51,26 @@ fc.stringMatching(
 Some constraints are hard to express with a single regex.
 For example, valid email addresses that also have a certain length (see [#5562](https://github.com/dubzzz/fast-check/issues/5562)).
 One option is to add a `filter`:
+
 ```js
 // generates email addresses with 10-20 characters:
-fc.stringMatching(emailRegex)
-  .filter(email => 10 <= email.length && email.length <= 20);
+fc.stringMatching(emailRegex).filter((email) => 10 <= email.length && email.length <= 20);
 ```
+
 This always works but can become slow if `filter` has to reject many generated string.
-Another option is to use a library like [regex-utils](https://github.com/gruhn/regex-utils) 
+Another option is to use a library like [regex-utils](https://github.com/gruhn/regex-utils)
 that can combine multiple regex into one:
+
 ```js
-import { intersection } from '@gruhn/regex-utils'
+import { intersection } from '@gruhn/regex-utils';
 
 // specify the length constraint as a dedicated regex:
-const lengthRegex = /^.{10,20}$/
+const lengthRegex = /^.{10,20}$/;
 
 fc.stringMatching(
   // combine both regex into a single one:
-  intersection(emailRegex, lengthRegex)
-)
+  intersection(emailRegex, lengthRegex),
+);
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/stringMatching.html).  
