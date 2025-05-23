@@ -10,7 +10,7 @@ Turn fast-check into a crazy QA
 
 Model-based testing can also be referred to as [Monkey testing](https://en.wikipedia.org/wiki/Monkey_testing) to some extent. The basic concept is to put our system under stress by providing it with random inputs. With model-based testing, we compare our system to a highly simplified version of it: the model.
 
-:::info The model, a optional helper
+:::info The model, an optional helper
 While the model part can assist you in writing your tests by storing intermediate states, past actions, or even mimicking the system, it is entirely optional. Model-based testing can be performed without it as well.
 :::
 
