@@ -45,7 +45,7 @@
     "@fast-check/poisoning": "workspace:*",
     "@types/node": "^22.15.21",
     "typescript": "~5.8.3",
-    "vite": "^6.2.3",
+    "vite": "^6.3.5",
     "vitest": "^3.0.9"
   },
   "keywords": [
