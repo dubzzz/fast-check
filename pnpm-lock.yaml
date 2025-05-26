@@ -12,7 +12,7 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       '@eslint/js':
-        specifier: ^9.26.0
+        specifier: ^9.27.0
         version: 9.27.0
       '@fast-check/packaged':
         specifier: '*'
@@ -30,7 +30,7 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       eslint:
-        specifier: ^9.26.0
+        specifier: ^9.27.0
         version: 9.27.0(jiti@1.21.7)
       eslint-config-prettier:
         specifier: ^10.1.5
