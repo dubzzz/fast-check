@@ -189,7 +189,7 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0
       typedoc:
-        specifier: ^0.28.4
+        specifier: ^0.28.5
         version: 0.28.5(typescript@5.8.3)
       typescript:
         specifier: ~5.8.3
