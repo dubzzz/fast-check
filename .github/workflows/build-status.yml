@@ -219,7 +219,7 @@ jobs:
             os: 'windows-latest'
             shard: '2/2'
     env:
-      ENABLE_COVERAGE: ${{ matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x' }}
+      ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install pnpm
@@ -257,7 +257,7 @@ jobs:
             pnpm run test --shard=${{matrix.shard}}
           fi
       - name: Codecov
-        uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         if: env.ENABLE_COVERAGE == 'true'
         with:
           name: tests

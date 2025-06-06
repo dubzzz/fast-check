@@ -76,12 +76,12 @@
     "@jest/expect": "^29.7.0",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.15.30",
     "fast-check": "workspace:*",
     "jest": "^29.7.0",
     "jest-jasmine2": "^29.7.0",
     "typescript": "~5.8.3",
-    "vite": "^6.2.3",
+    "vite": "^6.3.5",
     "vitest": "^3.0.9"
   },
   "keywords": [

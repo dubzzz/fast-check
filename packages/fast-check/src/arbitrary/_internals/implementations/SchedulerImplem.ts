@@ -253,6 +253,10 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let taskResolved = false;
     const customAct = options.customAct;
     const onWaitStart = options.onWaitStart;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let resolveFinal: (value: T) => void = undefined!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let rejectFinal: (error: unknown) => void = undefined!;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
     let awaiterTicks = 0;
@@ -267,7 +271,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         if (onWaitStart !== undefined) {
           onWaitStart();
         }
-        awaiterScheduledTaskPromise = this.waitOne(customAct);
+        awaiterScheduledTaskPromise = this.waitOne(customAct); // no catch, should be catch by final user
         return awaiterScheduledTaskPromise.then(
           () => {
             awaiterScheduledTaskPromise = null;
@@ -275,6 +279,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           },
           (err) => {
             awaiterScheduledTaskPromise = null;
+            taskResolved = true;
+            rejectFinal(err);
             throw err;
           },
         );
@@ -289,7 +295,8 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      awaiterPromise = awaiter();
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      awaiterPromise = awaiter().catch(() => {});
     };
 
     // Define the wrapping task and its resolution strategy
@@ -302,28 +309,41 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         this.scheduledWatchers[0]();
       }
     };
-    const rewrappedTask = unscheduledTask.then(
+
+    const finalTask = new Promise<T>((resolve, reject) => {
+      resolveFinal = (value) => {
+        clearAndReplaceWatcher();
+        resolve(value);
+      };
+      rejectFinal = (error: unknown) => {
+        clearAndReplaceWatcher();
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+        reject(error);
+      };
+    });
+
+    unscheduledTask.then(
       (ret) => {
         taskResolved = true;
         if (awaiterScheduledTaskPromise === null) {
-          clearAndReplaceWatcher();
-          return ret;
+          resolveFinal(ret);
+        } else {
+          awaiterScheduledTaskPromise.then(
+            () => resolveFinal(ret),
+            (error) => rejectFinal(error),
+          );
         }
-        return awaiterScheduledTaskPromise.then(() => {
-          clearAndReplaceWatcher();
-          return ret;
-        });
       },
       (err) => {
         taskResolved = true;
         if (awaiterScheduledTaskPromise === null) {
-          clearAndReplaceWatcher();
-          throw err;
+          rejectFinal(err);
+        } else {
+          awaiterScheduledTaskPromise.then(
+            () => rejectFinal(err),
+            () => rejectFinal(err),
+          );
         }
-        return awaiterScheduledTaskPromise.then(() => {
-          clearAndReplaceWatcher();
-          throw err;
-        });
       },
     );
 
@@ -335,7 +355,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
     this.scheduledWatchers.push(handleNotified);
 
-    return rewrappedTask;
+    return finalTask;
   }
 
   waitNext(count: number, customAct?: SchedulerAct): Promise<void> {
