@@ -1297,6 +1297,55 @@ describe('SchedulerImplem', () => {
     });
   });
 
+  describe('waitNext', () => {
+    it('should only release the requested number of scheduled promises', async () => {
+      const scheduledCount = 10;
+      await fc.assert(
+        fc.asyncProperty(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
+          // Arrange
+          const nextTaskIndex = vi.fn((tasks: ScheduledTask<unknown>[]) => g(fc.nat, { max: tasks.length - 1 }));
+          const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+          // Act
+          const s = new SchedulerImplem((f) => f(), taskSelector);
+          for (let i = 0; i !== scheduledCount; ++i) {
+            s.schedule(Promise.resolve(i));
+          }
+
+          // Assert
+          await s.waitNext(n);
+          expect(s.count()).toBe(scheduledCount - n); // Still (10 - n) pending scheduled tasks
+        }),
+      );
+    });
+
+    it('should wait for more tasks if tasks are not all ready at invocation time', async () => {
+      const scheduledCount = 10;
+      await fc.assert(
+        fc.asyncProperty(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
+          // Arrange
+          const seenValues: number[] = [];
+          const nextTaskIndex = vi.fn((tasks: ScheduledTask<unknown>[]) => g(fc.nat, { max: tasks.length - 1 }));
+          const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+          // Act
+          let queue = delay(-1);
+          const s = new SchedulerImplem((f) => f(), taskSelector);
+          for (let i = 0; i !== scheduledCount; ++i) {
+            queue = queue
+              .then(() => delay(0))
+              .then(() => s.schedule(Promise.resolve(i)))
+              .then((v) => seenValues.push(v));
+          }
+
+          // Assert
+          await s.waitNext(n);
+          expect(seenValues).toEqual([...Array(n)].map((_, i) => i));
+        }),
+      );
+    });
+  });
+
   describe('schedule', () => {
     it('should postpone completion of promise but call it with right parameters in case of success', async () => {
       // Arrange
