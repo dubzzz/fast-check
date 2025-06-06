@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import * as fs from 'fs';
 import fc from '../../../src/fast-check';
 import { globSync } from 'glob';
@@ -17,6 +17,12 @@ const allPathsFromWebsite = globSync(`./website/docs/core-blocks/arbitraries/**/
   filePath: fileDescriptor.fullpath(),
   shortName: fileDescriptor.name,
 }));
+
+// Linked to https://github.com/vitest-dev/vitest/discussions/6511#discussioncomment-13145786
+afterEach(async () => {
+  // already existing afterEach code goes here
+  await new Promise((res) => setImmediate(res));
+});
 
 describe('Docs.md', () => {
   it.each(allPathsFromWebsite)(
