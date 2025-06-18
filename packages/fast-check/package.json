@@ -68,7 +68,7 @@
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.52.8",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.15.32",
     "cross-env": "^7.0.3",
     "fast-check": "workspace:*",
     "glob": "^11.0.2",
