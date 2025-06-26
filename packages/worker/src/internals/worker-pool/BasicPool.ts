@@ -9,6 +9,7 @@ import {
   type PoolToWorkerMessage,
   WorkerToPoolMessageStatus,
 } from './IWorkerPool.js';
+import { writeFileSync } from 'node:fs';
 
 /**
  * Worker internal API
@@ -40,6 +41,7 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       onFailure: OnErrorCallback;
       onSkipped: OnSkippedCallback;
     } | null = null;
+    writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] BasicPool -> NEW WORKER\n`, { flag: 'a' });
     const worker = new Worker(this.workerFileUrl, { workerData: { fastcheckWorker: true } });
 
     let resolveOnline: () => void = () => undefined;
@@ -50,6 +52,9 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
     });
 
     worker.on('online', () => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] BasicPool -> WORKER is ONLINE\n`, {
+        flag: 'a',
+      });
       // Emitted when the worker thread has started executing JavaScript code.
       // More details at https://nodejs.org/api/worker_threads.html#event-online
       ready = true;
@@ -57,6 +62,9 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
     });
 
     worker.on('message', (data: WorkerToPoolMessage<TSuccess>): void => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] BasicPool -> WORKER sent MESSAGE\n`, {
+        flag: 'a',
+      });
       // Emitted for any incoming message, containing the cloned input of port.postMessage().
       // More details at https://nodejs.org/api/worker_threads.html#event-message
       if (registration === null || data.runId !== registration.currentRunId) {
@@ -73,6 +81,9 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
     });
 
     worker.on('messageerror', (err: Error): void => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] BasicPool -> WORKER sent MESSAGE ERROR\n`, {
+        flag: 'a',
+      });
       // Emitted when deserializing a message failed.
       // More details at https://nodejs.org/api/worker_threads.html#event-messageerror
       if (!ready) {
@@ -86,6 +97,9 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
     });
 
     worker.on('error', (err: Error): void => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] BasicPool -> WORKER error -> ${err}\n`, {
+        flag: 'a',
+      });
       // Emitted if the worker thread throws an uncaught exception. In that case, the worker is terminated.
       // More details at https://nodejs.org/api/worker_threads.html#event-error
       faulty = true;
@@ -98,7 +112,22 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
       registration = null;
     });
 
+    worker.on('uncaughtException', (err): void => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] uncaughtException -> ${err}\n`, {
+        flag: 'a',
+      });
+    });
+
+    worker.on('unhandledRejection', (reason): void => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] unhandledRejection -> ${reason}\n`, {
+        flag: 'a',
+      });
+    });
+
     worker.on('exit', (code: number): void => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] BasicPool -> WORKER exit -> ${code}\n`, {
+        flag: 'a',
+      });
       // Emitted once the worker has stopped. If the worker exited by calling process.exit(), the exitCode parameter is the passed exit code. If the worker was terminated, the exitCode parameter is 1.
       // More details at https://nodejs.org/api/worker_threads.html#event-exit
       faulty = true;
@@ -123,6 +152,13 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
         if (!isAvailable()) {
           throw new Error('This instance of PooledWorker is currently in use');
         }
+        writeFileSync(
+          '/workspaces/fast-check/debug.log',
+          `[${process.pid}] BasicPool -> WORKER registering to ${predicateId}...\n`,
+          {
+            flag: 'a',
+          },
+        );
         const currentRunId = ++runIdInWorker;
         registration = { currentRunId, onSuccess, onFailure, onSkipped };
         const message: PoolToWorkerMessage<TPayload> = {
@@ -154,6 +190,19 @@ export class BasicPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPay
 
   public terminateAllWorkers(): Promise<void> {
     const dropped = this.workers.splice(0, this.workers.length); // clear all workers
-    return Promise.all(dropped.map((w) => w.worker.terminate())).then(() => undefined);
+    writeFileSync(
+      '/workspaces/fast-check/debug.log',
+      `[${process.pid}] BasicPool -> TERMINATING ${dropped.length} workers\n`,
+      {
+        flag: 'a',
+      },
+    );
+    const p = Promise.all(dropped.map((w) => w.worker.terminate())).then(() => undefined);
+    p.then(() => {
+      writeFileSync('/workspaces/fast-check/debug.log', `[${process.pid}] BasicPool -> TERMINATION completed\n`, {
+        flag: 'a',
+      });
+    });
+    return p;
   }
 }
