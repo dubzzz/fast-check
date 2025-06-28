@@ -246,8 +246,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
   }
 
-  async waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
+  async internalWaitFor<T>(
+    unscheduledTask: Promise<T>,
+    options: { customAct: SchedulerAct | undefined; onWaitStart: (() => void) | undefined },
+  ): Promise<T> {
     let taskResolved = false;
+    const customAct = options.customAct;
+    const onWaitStart = options.onWaitStart;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     let resolveFinal: (value: T) => void = undefined!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -263,6 +268,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         await Promise.resolve();
       }
       if (!taskResolved && this.scheduledTasks.length > 0) {
+        if (onWaitStart !== undefined) {
+          onWaitStart();
+        }
         awaiterScheduledTaskPromise = this.waitOne(customAct); // no catch, should be catch by final user
         return awaiterScheduledTaskPromise.then(
           () => {
@@ -348,6 +356,26 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     this.scheduledWatchers.push(handleNotified);
 
     return finalTask;
+  }
+
+  waitNext(count: number, customAct?: SchedulerAct): Promise<void> {
+    let resolver: (() => void) | undefined = undefined;
+    let remaining = count;
+    const awaited =
+      remaining <= 0
+        ? Promise.resolve()
+        : new Promise<void>((r) => {
+            resolver = () => {
+              if (--remaining <= 0) {
+                r();
+              }
+            };
+          });
+    return this.internalWaitFor(awaited, { customAct, onWaitStart: resolver });
+  }
+
+  waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
+    return this.internalWaitFor(unscheduledTask, { customAct, onWaitStart: undefined });
   }
 
   report(): SchedulerReportItem<TMetaData>[] {

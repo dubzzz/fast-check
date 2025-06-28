@@ -10,6 +10,7 @@ function buildFakeScheduler(): Scheduler {
   return {
     count: vi.fn(),
     waitOne: vi.fn(),
+    waitNext: vi.fn(),
     waitAll: vi.fn(),
     waitFor: vi.fn(),
     schedule: vi.fn(),
