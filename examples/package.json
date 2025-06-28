@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
-    "@types/lodash": "^4.17.18",
-    "@types/react": "^19.1.6",
+    "@types/lodash": "^4.17.19",
+    "@types/react": "^19.1.8",
     "@types/supertest": "^6.0.3",
     "happy-dom": "^18.0.1",
     "typescript": "~5.8.3",
