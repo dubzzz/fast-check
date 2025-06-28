@@ -248,11 +248,18 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
 
   async internalWaitFor<T>(
     unscheduledTask: Promise<T>,
-    options: { customAct: SchedulerAct | undefined; onWaitStart: (() => void) | undefined },
+    options: {
+      customAct: SchedulerAct | undefined;
+      onWaitStart: (() => void) | undefined;
+      onWaitIdle: (() => void) | undefined;
+      launchAwaiterOnInit: boolean;
+    },
   ): Promise<T> {
     let taskResolved = false;
     const customAct = options.customAct;
     const onWaitStart = options.onWaitStart;
+    const onWaitIdle = options.onWaitIdle;
+    const launchAwaiterOnInit = options.launchAwaiterOnInit;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     let resolveFinal: (value: T) => void = undefined!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -284,6 +291,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
             throw err;
           },
         );
+      }
+      if (!taskResolved && onWaitIdle !== undefined) {
+        onWaitIdle();
       }
       awaiterPromise = null;
     };
@@ -350,7 +360,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     // Simulate `handleNotified` is the number of waiting tasks is not zero
     // Must be called after unscheduledTask.then otherwise, a promise could be released while
     // we already have the value for unscheduledTask ready
-    if (this.scheduledTasks.length > 0 && this.scheduledWatchers.length === 0) {
+    if ((this.scheduledTasks.length > 0 || launchAwaiterOnInit) && this.scheduledWatchers.length === 0) {
       handleNotified();
     }
     this.scheduledWatchers.push(handleNotified);
@@ -371,11 +381,32 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
               }
             };
           });
-    return this.internalWaitFor(awaited, { customAct, onWaitStart: resolver });
+    return this.internalWaitFor(awaited, {
+      customAct,
+      onWaitStart: resolver,
+      onWaitIdle: undefined,
+      launchAwaiterOnInit: false,
+    });
+  }
+
+  waitIdle(customAct?: SchedulerAct): Promise<void> {
+    let resolver: (() => void) | undefined = undefined;
+    const awaited = new Promise<void>((r) => (resolver = r));
+    return this.internalWaitFor(awaited, {
+      customAct,
+      onWaitStart: undefined,
+      onWaitIdle: resolver,
+      launchAwaiterOnInit: true,
+    });
   }
 
   waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
-    return this.internalWaitFor(unscheduledTask, { customAct, onWaitStart: undefined });
+    return this.internalWaitFor(unscheduledTask, {
+      customAct,
+      onWaitStart: undefined,
+      onWaitIdle: undefined,
+      launchAwaiterOnInit: false,
+    });
   }
 
   report(): SchedulerReportItem<TMetaData>[] {
