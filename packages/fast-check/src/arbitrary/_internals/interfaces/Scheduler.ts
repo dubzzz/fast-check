@@ -86,6 +86,21 @@ export interface Scheduler<TMetaData = unknown> {
   waitNext: (count: number, customAct?: SchedulerAct) => Promise<void>;
 
   /**
+   * Wait until the scheduler becomes idle: all scheduled and reachable tasks have completed.
+   *
+   * It will include tasks scheduled by other tasks, recursively.
+   *
+   * Note: Tasks triggered by uncontrolled sources (like `fetch` or external events) cannot be detected
+   * or awaited and may lead to incomplete waits.
+   *
+   * If you want to wait for a precise event to happen you should rather opt for `waitFor` or `waitNext`
+   * given they offer you a more granular control on what you are exactly waiting for.
+   *
+   * @remarks Since 4.2.0
+   */
+  waitIdle: (customAct?: SchedulerAct) => Promise<void>;
+
+  /**
    * Wait as many scheduled tasks as need to resolve the received Promise
    *
    * Some tests frameworks like `supertest` are not triggering calls to subsequent queries in a synchronous way,
