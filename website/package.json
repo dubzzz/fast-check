@@ -34,7 +34,7 @@
     "@docusaurus/types": "3.8.1",
     "@jest/globals": "^29.7.0",
     "@mdx-js/react": "^3.1.0",
-    "@types/lodash": "^4.17.18",
+    "@types/lodash": "^4.17.19",
     "@types/node": "^22.15.32",
     "@types/react": "^19.1.6",
     "fast-check": "workspace:*",
