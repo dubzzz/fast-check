@@ -52,7 +52,7 @@
     "@fast-check/worker": "workspace:*",
     "@types/node": "^22.15.34",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5",
+    "vite": "^7.0.0",
     "vitest": "^3.0.9"
   },
   "keywords": [
