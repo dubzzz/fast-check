@@ -69,6 +69,7 @@ export interface Scheduler<TMetaData = unknown> {
    * Wait one scheduled task to be executed
    * @throws Whenever there is no task scheduled
    * @remarks Since 1.20.0
+   * @deprecated Use `waitNext(1)` instead, it comes with a more predictable behavior
    */
   waitOne: (customAct?: SchedulerAct) => Promise<void>;
 
@@ -76,6 +77,7 @@ export interface Scheduler<TMetaData = unknown> {
    * Wait all scheduled tasks,
    * including the ones that might be created by one of the resolved task
    * @remarks Since 1.20.0
+   * @deprecated Use `waitIdle()` instead, it comes with a more predictable behavior awaiting all scheduled and reachable tasks to be completed
    */
   waitAll: (customAct?: SchedulerAct) => Promise<void>;
 
