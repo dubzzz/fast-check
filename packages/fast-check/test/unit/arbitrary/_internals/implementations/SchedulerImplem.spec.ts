@@ -1346,6 +1346,103 @@ describe('SchedulerImplem', () => {
     });
   });
 
+  describe('waitIdle', () => {
+    it('should be able to wait for nothing if nothing has to be scheduled', async () => {
+      // Arrange
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      await s.waitIdle();
+
+      // Assert
+      expect(s.count()).toBe(0);
+    });
+
+    it('should wait for all immediatelly scheduled tasks to be executed', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+      const scheduleCount = 5;
+
+      // Act
+      let seen = 0;
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      for (let i = 0; i !== scheduleCount; ++i) {
+        s.schedule(Promise.resolve(i)).then(() => (seen += 1));
+      }
+      await s.waitIdle();
+
+      // Assert
+      expect(seen).toBe(scheduleCount);
+      expect(s.count()).toBe(0);
+    });
+
+    it('should wait for all tasks scheduled via microtasks to be executed', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+      const scheduleCount = 5;
+
+      // Act
+      let seen = 0;
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      for (let i = 0; i !== scheduleCount; ++i) {
+        Promise.resolve(i)
+          .then((v) => v) // one extra tick
+          .then((v) => v) // yet another one
+          .then((v) => v) // and another one
+          .then((v) => v)
+          .then((v) => s.schedule(Promise.resolve(v)))
+          .then(() => (seen += 1));
+      }
+      await s.waitIdle();
+
+      // Assert
+      expect(seen).toBe(scheduleCount);
+      expect(s.count()).toBe(0);
+    });
+
+    it('should wait for all recursively scheduled tasks to be executed', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+      const scheduleCount = 5;
+
+      // Act
+      let seen = 0;
+      let previous: Promise<unknown> = Promise.resolve();
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      for (let i = 0; i !== scheduleCount; ++i) {
+        previous = previous.then(() => s.schedule(Promise.resolve(i)).then(() => (seen += 1)));
+      }
+      await s.waitIdle();
+
+      // Assert
+      expect(seen).toBe(scheduleCount);
+      expect(s.count()).toBe(0);
+    });
+
+    it('should not wait for uncontrollable promises to be resolved', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      let resolveUncontrollable: () => void = null!;
+      const uncontrollable = new Promise<void>((r) => (resolveUncontrollable = r));
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      uncontrollable.then(() => s.schedule(Promise.resolve(1)));
+      await s.waitIdle();
+
+      // Assert
+      expect(s.count()).toBe(0);
+      resolveUncontrollable();
+      await Promise.resolve(); // waiting one tick for s.schedule to be executed (impact of resolveUncontrollable)
+      expect(s.count()).toBe(1);
+    });
+  });
+
   describe('schedule', () => {
     it('should postpone completion of promise but call it with right parameters in case of success', async () => {
       // Arrange
