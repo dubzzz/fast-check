@@ -409,6 +409,18 @@ Related pull requests: [#5590](https://github.com/dubzzz/fast-check/pull/5590)
 
 ### Faster `scheduler`
 
+:::tip Prefer `waitNext`, `waitIdle`, or `waitFor`
+
+Since v4.2.0, `waitOne` and `waitAll` are deprecated in favor of `waitNext`, `waitIdle`, and `waitFor`, which behave more predictably — especially when tasks are scheduled after a few awaits, not immediately.
+
+Use:
+
+- `waitNext(n)` for a known number of tasks
+- `waitIdle()` to wait until all tasks settle
+- `waitFor(promise)` to wait for a specific task, even if not yet scheduled
+
+:::
+
 Since version 1.20.0, fast-check has included a primitive designed to help detect race conditions. This feature unlocked many advanced use cases and elevated the library's capabilities.
 
 However, the previous implementation was slower than intended and allowed intermediate tasks to be created and executed between two scheduled ones. This inconsistency could lead to scenarios where code passed tests but later failed when additional microtasks were introduced. To address this, we have reworked the scheduler in version 4 to be faster, more consistent, and safer.
