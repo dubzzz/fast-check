@@ -76,7 +76,7 @@
     "@jest/expect": "^30.0.4",
     "@jest/globals": "^30.0.4",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.15.34",
+    "@types/node": "^22.16.0",
     "fast-check": "workspace:*",
     "jest": "^30.0.4",
     "jest-jasmine2": "^30.0.4",
