@@ -1,6 +1,6 @@
 # 4.2.0
 
-_TODO Description_
+_New primitives for race condition detection_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.1.1...v4.2.0)]
 
 ## Features
