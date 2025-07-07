@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { letrec } from '../../../src/arbitrary/letrec';
+import { record } from '../../../src/arbitrary/record';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../src/stream/Stream';
@@ -345,5 +346,24 @@ describe('letrec (integration)', () => {
 
   it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(letrecBuilder);
+  });
+});
+
+describe('letrec circular (integration)', () => {
+  const letrecBuilder = () => {
+    const { node } = letrec(
+      (tie) => ({
+        node: record({
+          value: new FakeIntegerArbitrary(),
+          next: tie('node'),
+        }),
+      }),
+      { circular: true },
+    );
+    return node;
+  };
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(letrecBuilder);
   });
 });
