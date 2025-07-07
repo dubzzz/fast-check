@@ -8,6 +8,7 @@ import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/Arbitrar
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertGenerateEquivalentTo,
+  assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -350,8 +351,12 @@ describe('letrec (integration)', () => {
 });
 
 describe('letrec circular (integration)', () => {
+  type Node = {
+    value: number;
+    next: Node;
+  };
   const letrecBuilder = () => {
-    const { node } = letrec(
+    const { node } = letrec<{ node: Node }>(
       (tie) => ({
         node: record({
           value: new FakeIntegerArbitrary(),
@@ -365,5 +370,25 @@ describe('letrec circular (integration)', () => {
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(letrecBuilder);
+  });
+
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(letrecBuilder, (node) => {
+      let circular = false;
+      const visited = new WeakSet();
+      const assertNode = (node: Node) => {
+        if (visited.has(node)) {
+          circular = true;
+          return;
+        }
+        visited.add(node);
+        expect(typeof node.value).toBe('number');
+        assertNode(node.next);
+      };
+      assertNode(node);
+      // Must be circular because `next` isn't optional, so it has to circle
+      // around eventually.
+      expect(circular).toBe(true);
+    });
   });
 });
