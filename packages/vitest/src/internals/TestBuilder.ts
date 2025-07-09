@@ -24,12 +24,15 @@ function adaptParametersForRecord<Ts>(
   parameters: FcParameters<[Ts]>,
   originalParamaters: FcParameters<Ts>,
 ): FcParameters<Ts> {
-  return {
+  const parametersV3OrV4: FcParameters<[Ts]> & { errorWithCause?: boolean } = parameters;
+  const enrichedParameters: FcParameters<Ts> & { errorWithCause?: boolean } = {
     ...(parameters as Required<FcParameters<[Ts]>>),
+    errorWithCause: parametersV3OrV4.errorWithCause !== undefined ? parametersV3OrV4.errorWithCause : true,
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,
     asyncReporter: originalParamaters.asyncReporter,
   };
+  return enrichedParameters;
 }
 
 function adaptExecutionTreeForRecord<Ts>(executionSummary: ExecutionTree<[Ts]>[]): ExecutionTree<Ts>[] {
