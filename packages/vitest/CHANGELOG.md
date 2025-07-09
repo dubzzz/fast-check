@@ -1,3 +1,12 @@
+# 0.2.2
+
+_Better integration with Vitest when using fast-check v3_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.1...vitest%2Fv0.2.2)]
+
+## Fixes
+
+- ([PR#6048](https://github.com/dubzzz/fast-check/pull/6048)) Bug: No shallow diff in Vitest, full diff by default
+
 # 0.2.1
 
 _Forward errors properly when using fast-check v3_
