@@ -1,11 +1,7 @@
 # 0.2.2
 
-_TODO Description_
+_Better integration with Vitest when using fast-check v3_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.1...vitest%2Fv0.2.2)]
-
-## Features
-
-
 
 ## Fixes
 
