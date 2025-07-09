@@ -26,9 +26,8 @@ afterEach(async () => {
 
 describe('Docs.md', () => {
   if (process.env.SKIP_EXPENSIVE === 'true') {
-    it('should skip expensive tests', () => {
-      throw new Error('Skipping expensive tests as requested by environment variable SKIP_EXPENSIVE');
-    });
+    it('should skip expensive tests', () => {});
+    return;
   }
   it.each(allPathsFromWebsite)(
     'should check code snippets validity and fix generated values on $shortName',
