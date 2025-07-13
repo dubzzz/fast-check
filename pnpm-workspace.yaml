@@ -3,7 +3,7 @@ packages:
   - packages/*
   - website
 
-onlyBuiltDependencies:
+ignoredBuiltDependencies:
   - '@swc/core'
   - core-js
   - core-js-pure
