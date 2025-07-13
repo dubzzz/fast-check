@@ -12,9 +12,9 @@ import { sizeArb } from './SizeHelpers';
 function poisoningAfterEach(nestedAfterEach: () => void) {
   nestedAfterEach();
   try {
-    assertNoPoisoning({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
+    assertNoPoisoning({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__|AbortController)$/ });
   } catch (err) {
-    restoreGlobals({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
+    restoreGlobals({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__|AbortController)$/ });
     throw err;
   }
 }

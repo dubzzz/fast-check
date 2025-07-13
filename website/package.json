@@ -35,15 +35,15 @@
     "@jest/globals": "^30.0.4",
     "@mdx-js/react": "^3.1.0",
     "@types/lodash": "^4.17.20",
-    "@types/node": "^22.16.0",
+    "@types/node": "^22.16.2",
     "@types/react": "^19.1.8",
     "fast-check": "workspace:*",
     "glob": "^11.0.3",
     "jest": "^30.0.4",
     "jimp": "^1.6.0",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5",
-    "vitest": "^3.0.9"
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
   },
   "browserslist": {
     "production": [
