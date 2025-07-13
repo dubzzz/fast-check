@@ -220,6 +220,7 @@ jobs:
             shard: '2/2'
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
+      SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install pnpm
@@ -250,6 +251,7 @@ jobs:
         run: |
           export EXPECT_DEFAULT_SEED="true"
           export DEFAULT_SEED=$(node -p "Date.now() ^ (Math.random() * 0x100000000)")
+          export FAST_CI_RUN=$("${ENABLE_COVERAGE}" = "true")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           if [ "${ENABLE_COVERAGE}" = "true" ]; then
             pnpm run test:coverage --shard=${{matrix.shard}}
