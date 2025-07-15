@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { letrec } from '../../../src/arbitrary/letrec';
+import { record } from '../../../src/arbitrary/record';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../src/stream/Stream';
@@ -7,6 +8,7 @@ import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/Arbitrar
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertGenerateEquivalentTo,
+  assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -345,5 +347,48 @@ describe('letrec (integration)', () => {
 
   it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(letrecBuilder);
+  });
+});
+
+describe('letrec circular (integration)', () => {
+  type Node = {
+    value: number;
+    next: Node;
+  };
+  const letrecBuilder = () => {
+    const { node } = letrec<{ node: Node }>(
+      (tie) => ({
+        node: record({
+          value: new FakeIntegerArbitrary(),
+          next: tie('node'),
+        }),
+      }),
+      { circular: true },
+    );
+    return node;
+  };
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(letrecBuilder);
+  });
+
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(letrecBuilder, (node) => {
+      let circular = false;
+      const visited = new WeakSet();
+      const assertNode = (node: Node) => {
+        if (visited.has(node)) {
+          circular = true;
+          return;
+        }
+        visited.add(node);
+        expect(typeof node.value).toBe('number');
+        assertNode(node.next);
+      };
+      assertNode(node);
+      // Must be circular because `next` isn't optional, so it has to circle
+      // around eventually.
+      expect(circular).toBe(true);
+    });
   });
 });
