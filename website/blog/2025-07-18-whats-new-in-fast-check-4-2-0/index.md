@@ -21,17 +21,18 @@ The newly introduced `waitIdle` provides a simple, efficient and predicable way 
 Let see how it simplify the flow of checking race conditions:
 
 ```ts
-import fc from 'fast-check';
-import { test } from 'vitest';
+import { test, expect } from 'vitest';
 
 test('our test', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.scheduler(), (s) => {
-      const fetchIdFor = s.scheduleFunction(vi.fn((name) => `id:${name}`));
+    fc.asyncProperty(fc.scheduler(), async (s) => {
+      const fetchIdFor = s.scheduleFunction(async (name) => `id:${name}`);
       const { doStuff, warmup } = buildDoStuff(fetchIdFor);
       await warmup();
-      doStuff('name');
-      await waitAll();
+      let done = false;
+      doStuff('name').then(() => (done = true));
+      await s.waitAll();
+      expect(done).toBe(true);
     }),
   );
 });
@@ -41,7 +42,7 @@ test('our test', async () => {
 function buildDoStuff(fetchIdFor) {
   return {
     doStuff: async function doStuff(name) {
-      const executeTaskOnId = await import('./executor');
+      const { default: executeTaskOnId } = await import('./executor');
       await executeTaskOnId(await fetchIdFor(name));
     },
     warmup: async function warmup(name) {
@@ -51,9 +52,9 @@ function buildDoStuff(fetchIdFor) {
 }
 ```
 
-On this snippet, when `waitAll` ends the execution of `doStuff('name')` is still be pending. When the scheduler tries to wait for something, it is not aware of the future call to `fetchIdFor` yet. It makes the test harder to reason about as it may fails or not do what you would have expected for non obvious reasons.
+This test does not pass. Actually nothing got scheduled in time so `waitAll` ended immediatelly. Calling `s.report()` after the execution of `waitAll` and checking its output confirms it: nothing has been released by the scheduler and the scheduler has not seen any tasks yet. The whole problem is that the call to `fetchIdFor` is delayed a bit too much for `waitAll` to see it. Overall `waitAll` makes the test harder to reason about as it may trigger failures for non obvious reasons that depends on micro-tasks.
 
-With `waitIdle`, the execution would have been triggered and we would have scheduled all the expected tasks including the one from our call to `fetchIdFor`.
+With `waitIdle`, the test would have passed. The call would have been triggered and we would have scheduled all the expected tasks including the one from our call to `fetchIdFor`.
 
 ## `waitNext` a better `waitOne`
 
