@@ -1,7 +1,6 @@
 import type { UserConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
-
 const config: UserConfig = defineConfig({
   test: {
     testTimeout: 60000, // 60s
