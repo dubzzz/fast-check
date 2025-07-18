@@ -1,6 +1,6 @@
 import { coverageConfigDefaults, defaultExclude, defineConfig } from 'vitest/config';
 import { readdirSync, readFileSync } from 'node:fs';
-import { join, basename } from 'node:path';
+import { join } from 'node:path';
 
 const allProjects = [
   // All packages
@@ -23,7 +23,7 @@ export default defineConfig({
     env: { TEST_TIMEOUT: testTimeout },
     projects: [
       ...allProjects.map((projectPath) => {
-        const projectName = JSON.parse(readFileSync(projectPath).toString()).name;
+        const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
         return {
           extends: true,
           test: {
