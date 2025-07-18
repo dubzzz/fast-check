@@ -38,7 +38,7 @@ export default defineConfig({
         test: {
           root: join(import.meta.dirname, 'packages', 'fast-check'),
           name: 'fast-check',
-          setupFiles: ['vitest.setup.ts'],
+          setupFiles: ['vitest.setup.mjs'],
           include: ['test/unit/**/*.spec.?(c|m)[jt]s?(x)'],
           coverage: {
             name: 'fast-check',
@@ -53,7 +53,7 @@ export default defineConfig({
         test: {
           root: join(import.meta.dirname, 'packages', 'fast-check'),
           name: 'fast-check:e2e',
-          setupFiles: ['vitest.setup.ts'],
+          setupFiles: ['vitest.setup.mjs'],
           include: ['test/e2e/**/*.spec.?(c|m)[jt]s?(x)'],
         },
       },
