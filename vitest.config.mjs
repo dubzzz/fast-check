@@ -13,11 +13,14 @@ const allProjects = [
   join(import.meta.dirname, 'website'),
 ];
 
+const testTimeout = 120_000; // 120s
+
 export default defineConfig({
   test: {
     include: ['**/test/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [...defaultExclude, '**/.test-artifacts/**'],
-    testTimeout: 120000, // 120s
+    testTimeout,
+    env: { TEST_TIMEOUT: testTimeout },
     projects: [
       ...allProjects.map((projectPath) => {
         const projectName = basename(projectPath);
