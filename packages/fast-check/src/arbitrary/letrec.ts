@@ -167,7 +167,6 @@ function refPools(value: unknown, key: PropertyKey, placeholderSymbol: symbol): 
     const index = poolIndices.get(value);
     if (index !== undefined && source !== undefined && sourceKey !== undefined) {
       source[sourceKey] = { [placeholderSymbol]: { key, index } };
-      // return;
     }
 
     if (typeof value !== 'object' || value === null) {
