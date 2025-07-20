@@ -1,6 +1,7 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeAdd, safeHas, safeHasOwnProperty, safeMapHas, safeMapSet } from '../utils/globals';
+import { invertSize, resolveSize, type SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { nat } from './nat.js';
 import { record } from './record.js';
 import { array } from './array.js';
@@ -68,7 +69,20 @@ export interface LetrecConstraints {
    * @defaultValue false
    * @remarks Since 4.2.0
    */
-  withCycles?: boolean;
+  withCycles?: boolean | CycleConstraints;
+}
+
+/**
+ * Constraints to be applied on {@link LetrecConstraints.withCycles}
+ * @remarks Since 4.2.0
+ * @public
+ */
+export interface CycleConstraints {
+  /**
+   * Define how frequently cycles should occur in the generated values (at max)
+   * @remarks Since 4.2.0
+   */
+  frequency?: Exclude<SizeForArbitrary, 'max'>;
 }
 
 /** @internal */
@@ -189,7 +203,10 @@ function refPools(value: unknown, key: PropertyKey, placeholderSymbol: symbol): 
 }
 
 /** @internal */
-function letrecWithCycles<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
+function letrecWithCycles<T>(
+  builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>,
+  constraints: CycleConstraints,
+): LetrecValue<T> {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
   const tie = (key: keyof T): Arbitrary<any> => {
     if (!safeHasOwnProperty(lazyArbs, key)) {
@@ -204,6 +221,12 @@ function letrecWithCycles<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTyped
   // Symbol to replace with a potentially circular reference later.
   const placeholderSymbol = Symbol('placeholder');
   const poolArbs: { [K in keyof T]: Arbitrary<unknown[]> } = safeObjectCreate(null);
+  const poolConstraints = {
+    minLength: 1,
+    // Higher cycle frequency is achieved by using a smaller pool of objects, so
+    // we invert the input `frequency`.
+    size: invertSize(resolveSize(constraints.frequency)),
+  };
   for (const key in strictArbs) {
     if (!safeHasOwnProperty(strictArbs, key)) {
       // Prevents accidental iteration over properties inherited from an object’s prototype
@@ -214,7 +237,7 @@ function letrecWithCycles<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTyped
     lazyArb.underlying = noShrink(nat().map((index) => ({ [placeholderSymbol]: { key, index } })));
     lazyArbs[key] = lazyArb;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    poolArbs[key] = array(strictArbs[key]!, { minLength: 1 });
+    poolArbs[key] = array(strictArbs[key]!, poolConstraints);
   }
 
   for (const key in strictArbs) {
@@ -289,5 +312,7 @@ export function letrec<T>(
   builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>,
   constraints: LetrecConstraints = {},
 ): LetrecValue<T> {
-  return (constraints.withCycles ? letrecWithCycles : letrecWithoutCycles)(builder);
+  return constraints.withCycles
+    ? letrecWithCycles(builder, constraints.withCycles === true ? {} : constraints.withCycles)
+    : letrecWithoutCycles(builder);
 }
