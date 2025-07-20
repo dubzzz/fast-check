@@ -1,12 +1,14 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeHasOwnProperty } from '../utils/globals';
+import { safeAdd, safeHas, safeHasOwnProperty, safeMapHas, safeMapSet } from '../utils/globals';
 import { nat } from './nat.js';
 import { record } from './record.js';
 import { array } from './array.js';
+import { noShrink } from './noShrink.js';
 
 const safeArrayIsArray = Array.isArray;
 const safeObjectCreate = Object.create;
+const safeObjectValues = Object.values;
 const safeObjectEntries = Object.entries;
 
 /**
@@ -66,10 +68,11 @@ export interface LetrecConstraints {
    * @defaultValue false
    * @remarks Since 4.2.0
    */
-  circular?: boolean;
+  withCycles?: boolean;
 }
 
-function nonCircularLetrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
+/** @internal */
+function letrecWithoutCycles<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
   const tie = (key: keyof T): Arbitrary<any> => {
     if (!safeHasOwnProperty(lazyArbs, key)) {
@@ -93,7 +96,101 @@ function nonCircularLetrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecType
   return strictArbs;
 }
 
-function circularLetrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
+/** @internal */
+function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: symbol) {
+  const visited = new Set();
+  function deref(value: unknown, source?: Record<PropertyKey, unknown>, sourceKey?: PropertyKey) {
+    if (typeof value !== 'object' || value === null) {
+      return;
+    }
+
+    if (safeHas(visited, value)) {
+      return;
+    }
+    safeAdd(visited, value);
+
+    if (safeHasOwnProperty(value, placeholderSymbol)) {
+      const { key, index } = (value as { [placeholderSymbol]: { key: keyof T; index: number } })[placeholderSymbol];
+      const pool = pools[key];
+      const poolValue = pool[index % pool.length];
+      if (source !== undefined && sourceKey !== undefined) {
+        source[sourceKey] = poolValue;
+      }
+      return;
+    }
+
+    if (safeArrayIsArray(value)) {
+      for (let i = 0; i < value.length; i++) {
+        deref(value[i], value as unknown as Record<PropertyKey, unknown>, i);
+      }
+    } else {
+      for (const [key, item] of safeObjectEntries(value)) {
+        deref(item, value as Record<PropertyKey, unknown>, key);
+      }
+    }
+  }
+  deref(pools);
+}
+
+/** @internal */
+function refPools(value: unknown, key: PropertyKey, placeholderSymbol: symbol): Record<PropertyKey, unknown> {
+  const poolIndices = new Map<unknown, number>();
+  safeMapSet(poolIndices, value, 0);
+
+  const visited = new Set();
+  function findCycles(value: unknown) {
+    if (typeof value !== 'object' || value === null) {
+      return;
+    }
+
+    if (safeHas(visited, value)) {
+      if (!safeMapHas(poolIndices, value)) {
+        safeMapSet(poolIndices, value, poolIndices.size);
+      }
+      return;
+    }
+    safeAdd(visited, value);
+
+    if (safeArrayIsArray(value)) {
+      for (let i = 0; i < value.length; i++) {
+        findCycles(value[i]);
+      }
+    } else {
+      for (const item of safeObjectValues(value)) {
+        findCycles(item);
+      }
+    }
+  }
+  findCycles(value);
+
+  function ref(value: unknown, source?: Record<PropertyKey, unknown>, sourceKey?: PropertyKey) {
+    const index = poolIndices.get(value);
+    if (index !== undefined && source !== undefined && sourceKey !== undefined) {
+      source[sourceKey] = { [placeholderSymbol]: { key, index } };
+      // return;
+    }
+
+    if (typeof value !== 'object' || value === null) {
+      return;
+    }
+
+    if (safeArrayIsArray(value)) {
+      for (let i = 0; i < value.length; i++) {
+        ref(value[i], value as unknown as Record<PropertyKey, unknown>, i);
+      }
+    } else {
+      for (const [key, item] of safeObjectEntries(value)) {
+        ref(item, value as Record<PropertyKey, unknown>, key);
+      }
+    }
+  }
+  ref(value);
+
+  return { [key]: [...poolIndices.keys()] };
+}
+
+/** @internal */
+function letrecWithCycles<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
   const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
   const tie = (key: keyof T): Arbitrary<any> => {
     if (!safeHasOwnProperty(lazyArbs, key)) {
@@ -115,9 +212,7 @@ function circularLetrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBu
     }
     const lazyAtKey: LazyArbitrary<unknown> | undefined = lazyArbs[key];
     const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
-    lazyArb.underlying = nat().map((index) => ({
-      [placeholderSymbol]: { key, index },
-    }));
+    lazyArb.underlying = noShrink(nat().map((index) => ({ [placeholderSymbol]: { key, index } })));
     lazyArbs[key] = lazyArb;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     poolArbs[key] = array(strictArbs[key]!, { minLength: 1 });
@@ -130,51 +225,16 @@ function circularLetrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBu
     }
 
     const poolsArb = record(poolArbs as any) as Arbitrary<{ [K in keyof T]: unknown[] }>;
-    strictArbs[key] = poolsArb.map((pools) => {
-      const visited = new WeakSet();
-      function deref(value: unknown, source?: Record<PropertyKey, unknown>, sourceKey?: PropertyKey): unknown {
-        if (typeof value !== 'object' || value === null) {
-          return value;
-        }
-
-        if (visited.has(value)) {
-          return value;
-        }
-        visited.add(value);
-
-        if (safeHasOwnProperty(value, placeholderSymbol)) {
-          const { key, index } = (
-            value as {
-              [placeholderSymbol]: { key: keyof T; index: number };
-            }
-          )[placeholderSymbol];
-          const pool = pools[key];
-          const poolValue = pool[index % pool.length];
-          if (source !== undefined && sourceKey !== undefined) {
-            source[sourceKey] = poolValue;
-            return value;
-          } else {
-            return poolValue;
-          }
-        }
-
-        if (safeArrayIsArray(value)) {
-          for (let i = 0; i < value.length; i++) {
-            deref(value[i], value as unknown as Record<PropertyKey, unknown>, i);
-          }
-        } else {
-          for (const [key, item] of safeObjectEntries(value)) {
-            deref(item, value as Record<PropertyKey, unknown>, key);
-          }
-        }
-
-        return value;
-      }
-
-      // TODO: Do we need to clone here?
-      deref(pools);
-      return pools[key][0];
-    }) as (typeof strictArbs)[typeof key];
+    strictArbs[key] = poolsArb.map(
+      (pools) => {
+        derefPools(pools, placeholderSymbol);
+        return pools[key][0];
+      },
+      (value) =>
+        refPools(value, key, placeholderSymbol) as {
+          [K in keyof T]: unknown[];
+        },
+    ) as (typeof strictArbs)[typeof key];
   }
 
   return strictArbs;
@@ -230,5 +290,5 @@ export function letrec<T>(
   builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>,
   constraints: LetrecConstraints = {},
 ): LetrecValue<T> {
-  return (constraints.circular ? circularLetrec : nonCircularLetrec)(builder);
+  return (constraints.withCycles ? letrecWithCycles : letrecWithoutCycles)(builder);
 }

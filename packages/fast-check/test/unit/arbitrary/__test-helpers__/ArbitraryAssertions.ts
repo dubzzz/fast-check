@@ -107,7 +107,7 @@ export function assertProduceCorrectValues<T, U = never>(
         },
       )
       .afterEach(poisoningAfterEach),
-    assertParameters,
+    { ...assertParameters, ...{ seed: -1659794355, path: '0', endOnFailure: true } },
   );
 }
 

@@ -363,7 +363,7 @@ describe('letrec circular (integration)', () => {
           next: tie('node'),
         }),
       }),
-      { circular: true },
+      { withCycles: true },
     );
     return node;
   };
