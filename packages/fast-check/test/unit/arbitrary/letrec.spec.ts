@@ -16,7 +16,7 @@ import {
 
 describe('letrec', () => {
   describe('builder', () => {
-    it('should be able to construct independant arbitraries', () => {
+    it('should be able to construct independent arbitraries', () => {
       // Arrange
       const { instance: expectedArb1 } = fakeArbitrary();
       const { instance: expectedArb2 } = fakeArbitrary();
@@ -30,6 +30,31 @@ describe('letrec', () => {
       // Assert
       expect(arb1).toBe(expectedArb1);
       expect(arb2).toBe(expectedArb2);
+    });
+
+    it('should be able to construct independent arbitraries with cycles', () => {
+      // Arrange
+      const expectedArb1 = new FakeIntegerArbitrary(1, 4);
+      const expectedArb2 = new FakeIntegerArbitrary(6, 4);
+
+      // Act
+      const { arb1, arb2 } = letrec(
+        (_tie) => ({
+          arb1: expectedArb1,
+          arb2: expectedArb2,
+        }),
+        { withCycles: true },
+      );
+
+      // Assert
+      assertProduceCorrectValues(
+        () => arb1,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+      assertProduceCorrectValues(
+        () => arb2,
+        (value) => typeof value === 'number' && value >= 6 && value <= 10,
+      );
     });
 
     it('should not produce LazyArbitrary for no-tie constructs', () => {
@@ -71,12 +96,15 @@ describe('letrec', () => {
       expect(arb).toBeInstanceOf(LazyArbitrary);
     });
 
-    it('should be able to construct mutually recursive arbitraries', () => {
+    it.each([false, true])('should be able to construct mutually recursive arbitraries', (withCycles) => {
       // Arrange / Act
-      const { arb1, arb2 } = letrec((tie) => ({
-        arb1: tie('arb2'),
-        arb2: tie('arb1'),
-      }));
+      const { arb1, arb2 } = letrec(
+        (tie) => ({
+          arb1: tie('arb2'),
+          arb2: tie('arb1'),
+        }),
+        { withCycles },
+      );
 
       // Assert
       expect(arb1).toBeDefined();
@@ -103,6 +131,35 @@ describe('letrec', () => {
       expect(arb3).toBe(expectedArb);
     });
 
+    it('should apply tie correctly with cycles', () => {
+      // Arrange
+      const expectedArb = new FakeIntegerArbitrary(1, 4);
+
+      // Act
+      const { arb1, arb2, arb3 } = letrec(
+        (tie) => ({
+          arb1: tie('arb2'),
+          arb2: tie('arb3'),
+          arb3: expectedArb,
+        }),
+        { withCycles: true },
+      );
+
+      // Assert
+      assertProduceCorrectValues(
+        () => arb1,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+      assertProduceCorrectValues(
+        () => arb2,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+      assertProduceCorrectValues(
+        () => arb3,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+    });
+
     it('should apply tie the same way for a reversed declaration', () => {
       // Arrange
       const { instance: expectedArb } = fakeArbitrary();
@@ -125,6 +182,38 @@ describe('letrec', () => {
       expect((arb2 as any as LazyArbitrary<unknown>).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
+  });
+
+  it('should apply tie the same way for a reversed declaration with cycles', () => {
+    // Arrange
+    const expectedArb = new FakeIntegerArbitrary(1, 4);
+
+    // Act
+    const { arb1, arb2, arb3 } = letrec(
+      (tie) => ({
+        // Same scenario as 'should apply tie correctly'
+        // except we declared arb3 > arb2 > arb1
+        // instead of arb1 > arb2 > arb3
+        arb3: expectedArb,
+        arb2: tie('arb3'),
+        arb1: tie('arb2'),
+      }),
+      { withCycles: true },
+    );
+
+    // Assert
+    assertProduceCorrectValues(
+      () => arb1,
+      (value) => typeof value === 'number' && value >= 1 && value <= 5,
+    );
+    assertProduceCorrectValues(
+      () => arb2,
+      (value) => typeof value === 'number' && value >= 1 && value <= 5,
+    );
+    assertProduceCorrectValues(
+      () => arb3,
+      (value) => typeof value === 'number' && value >= 1 && value <= 5,
+    );
   });
 
   describe('generate', () => {
@@ -152,37 +241,44 @@ describe('letrec', () => {
       expect(generate).toHaveBeenCalledWith(mrng, biasFactor);
     });
 
-    it('should throw on generate if tie receives an invalid parameter', () => {
+    it.each([false, true])('should throw on generate if tie receives an invalid parameter', (withCycles) => {
       // Arrange
       const biasFactor = 42;
-      const { arb1 } = letrec((tie) => ({
-        arb1: tie('missing'),
-      }));
+      const { arb1 } = letrec(
+        (tie) => ({
+          arb1: tie('missing'),
+        }),
+        { withCycles },
+      );
       const { instance: mrng } = fakeRandom();
 
       // Act / Assert
-      expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
-      );
+      expect(() => arb1.generate(mrng, biasFactor)).toThrowError('Lazy arbitrary "missing" not correctly initialized');
     });
 
-    it('should throw on generate if tie receives an invalid parameter after creation', () => {
-      // Arrange
-      const biasFactor = 42;
-      const { arb1 } = letrec((tie) => {
-        const { instance: simpleArb, generate } = fakeArbitrary();
-        generate.mockImplementation((...args) => tie('missing').generate(...args));
-        return {
-          arb1: simpleArb,
-        };
-      });
-      const { instance: mrng } = fakeRandom();
+    it.each([false, true])(
+      'should throw on generate if tie receives an invalid parameter after creation',
+      (withCycles) => {
+        // Arrange
+        const biasFactor = 42;
+        const { arb1 } = letrec(
+          (tie) => {
+            const { instance: simpleArb, generate } = fakeArbitrary();
+            generate.mockImplementation((...args) => tie('missing').generate(...args));
+            return {
+              arb1: simpleArb,
+            };
+          },
+          { withCycles },
+        );
+        const { instance: mrng } = fakeRandom();
 
-      // Act / Assert
-      expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
-      );
-    });
+        // Act / Assert
+        expect(() => arb1.generate(mrng, biasFactor)).toThrowError(
+          'Lazy arbitrary "missing" not correctly initialized',
+        );
+      },
+    );
 
     it('should accept "reserved" keys as output of builder', () => {
       // Arrange
@@ -350,7 +446,7 @@ describe('letrec (integration)', () => {
   });
 });
 
-describe('letrec circular (integration)', () => {
+describe('letrec with cycles (integration)', () => {
   type Node = {
     value: number;
     next: Node;

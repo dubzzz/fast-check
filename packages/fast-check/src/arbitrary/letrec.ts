@@ -124,12 +124,16 @@ function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: 
     safeAdd(visited, value);
 
     if (safeHasOwnProperty(value, placeholderSymbol)) {
-      const { key, index } = (value as { [placeholderSymbol]: { key: keyof T; index: number } })[placeholderSymbol];
-      const pool = pools[key];
-      const poolValue = pool[index % pool.length];
-      if (source !== undefined && sourceKey !== undefined) {
-        source[sourceKey] = poolValue;
-      }
+      // This is a while loop because it's possible for an arbitrary to be defined as just `arb: tie('otherArb')`, in
+      // which case what the `arb` generates is also a placeholder.
+      do {
+        const { key, index } = (value as { [placeholderSymbol]: { key: keyof T; index: number } })[placeholderSymbol];
+        const pool = pools[key];
+        value = pool[index % pool.length];
+        if (source !== undefined && sourceKey !== undefined) {
+          source[sourceKey] = value;
+        }
+      } while (safeHasOwnProperty(value, placeholderSymbol));
       return;
     }
 
@@ -223,8 +227,7 @@ function letrecWithCycles<T>(
   const poolArbs: { [K in keyof T]: Arbitrary<unknown[]> } = safeObjectCreate(null);
   const poolConstraints = {
     minLength: 1,
-    // Higher cycle frequency is achieved by using a smaller pool of objects, so
-    // we invert the input `frequency`.
+    // Higher cycle frequency is achieved by using a smaller pool of objects, so we invert the input `frequency`.
     size: invertSize(resolveSize(constraints.frequency)),
   };
   for (const key in strictArbs) {

@@ -321,13 +321,6 @@ function extractMapSet(instance: Map<unknown, unknown>) {
     return undefined;
   }
 }
-function extractMapHas(instance: Map<unknown, unknown>) {
-  try {
-    return instance.has;
-  } catch (err) {
-    return undefined;
-  }
-}
 function extractMapGet(instance: Map<unknown, unknown>) {
   try {
     return instance.get;
@@ -340,12 +333,6 @@ export function safeMapSet<T, U>(instance: Map<T, U>, key: T, value: U): Map<T, 
     return instance.set(key, value);
   }
   return safeApply(untouchedMapSet, instance, [key, value]);
-}
-export function safeMapHas<T>(instance: Map<T, any>, key: T): boolean {
-  if (extractMapHas(instance) === untouchedMapHas) {
-    return instance.has(key);
-  }
-  return safeApply(untouchedMapHas, instance, [key]);
 }
 export function safeMapGet<T, U>(instance: Map<T, U>, key: T): U | undefined {
   if (extractMapGet(instance) === untouchedMapGet) {
