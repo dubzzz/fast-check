@@ -312,7 +312,6 @@ export function safeGet<T extends object, U>(instance: WeakMap<T, U>, key: T): U
 // Map
 
 const untouchedMapSet = Map.prototype.set;
-const untouchedMapHas = Map.prototype.has;
 const untouchedMapGet = Map.prototype.get;
 function extractMapSet(instance: Map<unknown, unknown>) {
   try {
