@@ -17,7 +17,7 @@
     "pure-rand": "^7.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "supertest": "^7.1.1"
+    "supertest": "^7.1.4"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
