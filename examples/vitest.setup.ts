@@ -1,5 +1,4 @@
 import fc from 'fast-check';
-import { VitestTimeoutMs } from './vitest.config';
 
-const FcTimeoutMs = Math.floor(0.8 * VitestTimeoutMs);
+const FcTimeoutMs = Math.floor(0.8 * Number(process.env.TEST_TIMEOUT));
 fc.configureGlobal({ interruptAfterTimeLimit: FcTimeoutMs, markInterruptAsFailure: true });
