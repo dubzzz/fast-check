@@ -15,8 +15,8 @@
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
     "pure-rand": "^7.0.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "supertest": "^7.1.4"
   },
   "devDependencies": {
