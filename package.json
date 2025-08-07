@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -30,20 +30,20 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.5",
-    "@eslint/js": "^9.31.0",
+    "@eslint/js": "^9.32.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.37.0",
+    "@typescript-eslint/utils": "^8.38.0",
     "@vitest/coverage-v8": "^3.0.9",
     "all-contributors-cli": "^6.26.1",
-    "cross-env": "^7.0.3",
-    "eslint": "^9.31.0",
-    "eslint-config-prettier": "^10.1.5",
+    "cross-env": "^10.0.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
     "globals": "^16.3.0",
     "pkg-pr-new": "^0.0.54",
     "prettier": "3.6.2",
     "publint": "^0.3.12",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.37.0",
+    "typescript-eslint": "^8.38.0",
     "vitest": "^3.2.4"
   }
 }
