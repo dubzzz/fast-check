@@ -17,7 +17,7 @@ const testTimeout = 120_000; // 120s
 
 export default defineConfig({
   test: {
-    include: ['**/test/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    include: ['**/test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [...defaultExclude, '**/.test-artifacts/**'],
     coverage: { include: ['packages/fast-check/src/**'] },
     testTimeout,
