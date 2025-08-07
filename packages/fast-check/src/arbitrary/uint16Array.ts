@@ -10,6 +10,12 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
  * @public
  */
 export function uint16Array(constraints: IntArrayConstraints = {}): Arbitrary<Uint16Array<ArrayBuffer>> {
-  return typedIntArrayArbitraryArbitraryBuilder<Uint16Array, number>(constraints, 0, 65535, Uint16Array, integer);
+  return typedIntArrayArbitraryArbitraryBuilder<Uint16Array<ArrayBuffer>, number>(
+    constraints,
+    0,
+    65535,
+    Uint16Array,
+    integer,
+  );
 }
 export type { IntArrayConstraints };
