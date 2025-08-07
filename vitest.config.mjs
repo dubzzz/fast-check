@@ -1,4 +1,4 @@
-import { coverageConfigDefaults, defaultExclude, defineConfig } from 'vitest/config';
+import { defaultExclude, defineConfig } from 'vitest/config';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -21,6 +21,11 @@ export default defineConfig({
     exclude: [...defaultExclude, '**/.test-artifacts/**'],
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },
+    coverage: {
+      name: 'fast-check',
+      enabled: true,
+      include: ['packages/fast-check/src/**'],
+    },
     projects: [
       ...allProjects.map((projectPath) => {
         const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
@@ -40,12 +45,6 @@ export default defineConfig({
           name: 'fast-check',
           setupFiles: ['vitest.setup.mjs'],
           include: ['test/unit/**/*.spec.?(c|m)[jt]s?(x)'],
-          coverage: {
-            name: 'fast-check',
-            enabled: true,
-            include: ['src/**'],
-            exclude: ['lib/**', 'test/**', ...coverageConfigDefaults.exclude],
-          },
         },
       },
       {
