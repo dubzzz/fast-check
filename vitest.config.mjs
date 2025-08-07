@@ -19,13 +19,9 @@ export default defineConfig({
   test: {
     include: ['**/test/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [...defaultExclude, '**/.test-artifacts/**'],
+    coverage: { include: ['packages/fast-check/src/**'] },
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },
-    coverage: {
-      name: 'fast-check',
-      enabled: true,
-      include: ['packages/fast-check/src/**'],
-    },
     projects: [
       ...allProjects.map((projectPath) => {
         const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
