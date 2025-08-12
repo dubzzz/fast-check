@@ -34,24 +34,6 @@ export default defineConfig({
           },
         };
       }),
-      {
-        extends: true,
-        test: {
-          root: join(import.meta.dirname, 'packages', 'fast-check'),
-          name: 'fast-check',
-          setupFiles: ['vitest.setup.mjs'],
-          include: ['test/unit/**/*.spec.?(c|m)[jt]s?(x)'],
-        },
-      },
-      {
-        extends: true,
-        test: {
-          root: join(import.meta.dirname, 'packages', 'fast-check'),
-          name: 'fast-check:e2e',
-          setupFiles: ['vitest.setup.mjs'],
-          include: ['test/e2e/**/*.spec.?(c|m)[jt]s?(x)'],
-        },
-      },
     ],
   },
 });
