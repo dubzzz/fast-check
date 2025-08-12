@@ -22,18 +22,16 @@ export default defineConfig({
     coverage: { include: ['packages/fast-check/src/**'] },
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },
-    projects: [
-      ...allProjects.map((projectPath) => {
-        const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
-        return {
-          extends: true,
-          test: {
-            root: projectPath,
-            name: projectName,
-            setupFiles: projectName === 'examples' ? ['vitest.setup.ts'] : projectName === 'fast-check' ? ['vitest.setup.mjs'] : [],
-          },
-        };
-      }),
-    ],
+    projects: allProjects.map((projectPath) => {
+      const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
+      return {
+        extends: true,
+        test: {
+          root: projectPath,
+          name: projectName,
+          setupFiles: projectName === 'examples' ? ['vitest.setup.ts'] : projectName === 'fast-check' ? ['vitest.setup.mjs'] : [],
+        },
+      };
+    }),
   },
 });
