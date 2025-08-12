@@ -1,12 +1,12 @@
 node_modules/
 
 # Various generated files
-packages/*/coverage/
-packages/*/dist/
-packages/*/lib/
-packages/*/lib-*/
 packages/fast-check/docs/
-packages/*/.test-artifacts/
+**/coverage/
+**/dist/
+**/lib/
+**/lib-*/
+**/.test-artifacts/
 *.tgz
 deopt.out
 v8.log
@@ -14,12 +14,3 @@ v8.out
 
 # IDE related files
 .idea
-
-# https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions

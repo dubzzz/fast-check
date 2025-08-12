@@ -23,8 +23,10 @@ export type StringConstraints = StringSharedConstraints & {
    *   - Consist of multiple characters (e.g., `'\u{1f431}'`)
    *   - Include non-European and non-ASCII characters.
    *   - **Note:** Graphemes produced by this unit are designed to remain visually distinct when joined together.
+   *   - **Note:** We are relying on the specifications of Unicode 15.
    * - `'grapheme-composite'` - Any printable grapheme limited to a single code point. This option produces graphemes limited to a single code point.
    *   - **Note:** Graphemes produced by this unit are designed to remain visually distinct when joined together.
+   *   - **Note:** We are relying on the specifications of Unicode 15.
    * - `'grapheme-ascii'` - Any printable ASCII character.
    * - `'binary'` - Any possible code point (except half surrogate pairs), regardless of how it may combine with subsequent code points in the produced string. This unit produces a single code point within the full Unicode range (0000-10FFFF).
    * - `'binary-ascii'` - Any possible ASCII character, including control characters. This unit produces any code point in the range 0000-00FF.

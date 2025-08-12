@@ -29,7 +29,6 @@ export type AsyncPropertyHookFunction =
  * @remarks Since 1.19.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
 
 /**

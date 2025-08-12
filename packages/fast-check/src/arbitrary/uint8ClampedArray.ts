@@ -9,8 +9,8 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
  * @remarks Since 2.9.0
  * @public
  */
-export function uint8ClampedArray(constraints: IntArrayConstraints = {}): Arbitrary<Uint8ClampedArray> {
-  return typedIntArrayArbitraryArbitraryBuilder<Uint8ClampedArray, number>(
+export function uint8ClampedArray(constraints: IntArrayConstraints = {}): Arbitrary<Uint8ClampedArray<ArrayBuffer>> {
+  return typedIntArrayArbitraryArbitraryBuilder<Uint8ClampedArray<ArrayBuffer>, number>(
     constraints,
     0,
     255,

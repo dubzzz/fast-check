@@ -1,3 +1,24 @@
+# 0.5.0
+
+_Drop support to fast-check v3_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.2...worker%2Fv0.5.0)]
+
+## Fixes
+
+- ([PR#5769](https://github.com/dubzzz/fast-check/pull/5769)) Clean: Drop support for v3 of fast-check
+
+---
+
+# 0.4.2
+
+_Support fast-check v4_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.4.2)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.4.1...worker%2Fv0.4.2)]
+
+## Fixes
+
+- ([PR#5810](https://github.com/dubzzz/fast-check/pull/5810)) CI: Update tsconfig to common config
+- ([PR#5793](https://github.com/dubzzz/fast-check/pull/5793)) Dependencies: Add support for fast-check v4
+
 # 0.4.1
 
 _Rework our testing stack_

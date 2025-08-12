@@ -2,7 +2,7 @@
 title: fast-check ❤️ docusaurus
 authors: [dubzzz]
 tags: [retrospective]
-image: ./social.png
+image: /img/blog/2023-05-16-fast-check-loves-docusaurus--social.png
 ---
 
 The story of fast-check's documentation: from markdown files accessible in the repository to a proper website available at [fast-check.dev](https://fast-check.dev/).

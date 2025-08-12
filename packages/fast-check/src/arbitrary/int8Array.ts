@@ -9,7 +9,13 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
  * @remarks Since 2.9.0
  * @public
  */
-export function int8Array(constraints: IntArrayConstraints = {}): Arbitrary<Int8Array> {
-  return typedIntArrayArbitraryArbitraryBuilder<Int8Array, number>(constraints, -128, 127, Int8Array, integer);
+export function int8Array(constraints: IntArrayConstraints = {}): Arbitrary<Int8Array<ArrayBuffer>> {
+  return typedIntArrayArbitraryArbitraryBuilder<Int8Array<ArrayBuffer>, number>(
+    constraints,
+    -128,
+    127,
+    Int8Array,
+    integer,
+  );
 }
 export type { IntArrayConstraints };

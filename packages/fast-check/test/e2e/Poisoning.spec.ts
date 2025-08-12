@@ -266,7 +266,22 @@ function dropMainGlobals(): () => void {
     typeof CryptoKey !== 'undefined' ? CryptoKey : undefined,
     typeof SubtleCrypto !== 'undefined' ? SubtleCrypto : undefined,
     typeof CustomEvent !== 'undefined' ? CustomEvent : undefined,
-  ];
+    typeof WebSocket !== 'undefined' ? WebSocket : undefined,
+    // @ts-expect-error - 'Iterator' only refers to a type, but is being used as a value here. ts(2693)
+    typeof Iterator !== 'undefined' ? Iterator : undefined,
+    typeof Navigator !== 'undefined' ? Navigator : undefined,
+    typeof CloseEvent !== 'undefined' ? CloseEvent : undefined,
+    // @ts-expect-error - Cannot find name 'URLPattern'
+    typeof URLPattern !== 'undefined' ? URLPattern : undefined,
+    // @ts-expect-error - Cannot find name 'SuppressedError'
+    typeof SuppressedError !== 'undefined' ? SuppressedError : undefined,
+    // @ts-expect-error - Cannot find name 'DisposableStack'
+    typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
+    // @ts-expect-error - Cannot find name 'AsyncDisposableStack'
+    typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
+    // @ts-expect-error - Cannot find name 'Float16Array'
+    typeof Float16Array !== 'undefined' ? Float16Array : undefined,
+  ].filter((mainGlobal) => mainGlobal !== undefined);
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
@@ -288,12 +303,10 @@ function dropMainGlobals(): () => void {
 
   const restores: (() => void)[] = [];
   for (const mainGlobal of mainGlobals) {
-    if (mainGlobals !== undefined) {
-      if ('prototype' in mainGlobal) {
-        restores.push(...dropAllFromObj(mainGlobal.prototype));
-      }
-      restores.push(...dropAllFromObj(mainGlobal));
+    if ('prototype' in mainGlobal) {
+      restores.push(...dropAllFromObj(mainGlobal.prototype));
     }
+    restores.push(...dropAllFromObj(mainGlobal));
   }
   return () => restores.forEach((restore) => restore());
 }

@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/expect-type",
   "description": "Make sure your types are the ones you expect (similar to tsd)",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "main": "src/main.js",
   "exports": {
@@ -23,10 +23,9 @@
     "src"
   ],
   "scripts": {
-    "build": "yarn build:publish-types",
-    "build-ci": "yarn build",
+    "build": "pnpm run build:publish-types",
+    "build-ci": "pnpm run build",
     "build:publish-types": "cp src/*.d.ts src/cjs/",
-    "test": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -41,7 +40,8 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
   "devDependencies": {
-    "typescript": "~5.7.3"
+    "@fast-check/expect-type": "workspace:*",
+    "typescript": "~5.9.2"
   },
   "keywords": [
     "type",

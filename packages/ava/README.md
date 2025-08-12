@@ -1,6 +1,6 @@
 # `@fast-check/ava`
 
-![fast-check logo](https://media.githubusercontent.com/media/dubzzz/fast-check/main/website/static/img/logo.png)
+![fast-check logo](https://fast-check.dev/assets/images/logo.png)
 
 Bring the power of property based testing framework `fast-check` into AVA.
 `@fast-check/ava` simplifies the integration of `fast-check` into AVA testing framework.
@@ -129,7 +129,14 @@ testProp('should reach terminal state', [fc.string()], (t, received) => {
 
 ## Minimal requirements
 
-| @fast-check/ava | AVA     | fast-check |
-| --------------- | ------- | ---------- |
-| ^2.0.0          | >=4.0.0 | ^3.0.0     |
-| ^1.0.0          | >=4.0.0 | ^3.0.0     |
+| @fast-check/ava | AVA                | fast-check | node                   |
+| --------------- | ------------------ | ---------- | ---------------------- |
+| **2.0**         | ^4 \|\| ^5 \|\| ^6 | ^3 \|\| ^4 | ≥12.22.0<sup>(1)</sup> |
+| **1.0**         | ^4 \|\| ^5 \|\| ^6 | ^3         | ≥12.22.0<sup>(1)</sup> |
+
+<details>
+<summary>More details...</summary>
+
+1. As for ava 4.
+
+</details>

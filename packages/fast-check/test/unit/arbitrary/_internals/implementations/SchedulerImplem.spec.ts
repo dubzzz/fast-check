@@ -4,7 +4,10 @@ import type {
   ScheduledTask,
   TaskSelector,
 } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
-import { SchedulerImplem } from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import {
+  SchedulerImplem,
+  numTicksBeforeScheduling,
+} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
 import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
 
@@ -20,7 +23,7 @@ const buildUnresolved = () => {
   );
   return { p, resolve, hasBeenResolved: () => resolved };
 };
-const delay = () => new Promise((r) => setTimeout(r, 0));
+const delay = (value?: number) => new Promise<number>((r) => setTimeout(() => r(value || 0), 0));
 
 describe('SchedulerImplem', () => {
   describe('waitOne', () => {
@@ -417,7 +420,7 @@ describe('SchedulerImplem', () => {
   });
 
   describe('waitFor', () => {
-    it('should not release any of the scheduled promises if the task has already been resolved', async () => {
+    it('should not release any of the scheduled promises if the task has already been resolved before start', async () => {
       // Arrange
       const p1 = buildUnresolved();
       const p2 = buildUnresolved();
@@ -513,10 +516,10 @@ describe('SchedulerImplem', () => {
       expect(waitForEnded).toBe(false);
       expect(nextTaskIndex).toHaveBeenCalledTimes(1);
 
-      // Let's resolve waiated task
+      // Let's resolve awaited task
       pAwaited.resolve();
       await delay();
-      expect(waitForEnded).toBe(false); // should not be visible yet as we need to wait the running one
+      expect(waitForEnded).toBe(false); // should not be visible yet as we need to wait the running one (aka p1)
 
       // Let's resolve running one
       p1.resolve();
@@ -774,6 +777,351 @@ describe('SchedulerImplem', () => {
       expect(s.count()).toBe(1); // Still one pending scheduled task for p3
     });
 
+    it('should resolve waitFor promptly without scheduling too many extra promise ticks', async () => {
+      // Might be rediscussed in the future
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const nextTaskIndex = vi.fn().mockReturnValue(0); // automatically releasing first available promise
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlag = -1;
+      async function startProcess() {
+        processFlag = 0;
+        processFlag = await s.schedule(Promise.resolve(1));
+        awaitedTask.resolve();
+        for (let i = 2; i !== 1_000; ++i) {
+          processFlag = await Promise.resolve(i);
+        }
+      }
+      const process = startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlag).toBe(3); // ideally 1, but got 3 with current implementation
+      await process;
+    });
+
+    it('should resolve waitFor promptly without scheduling any immediate timeout', async () => {
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const nextTaskIndex = vi.fn().mockReturnValue(0); // automatically releasing first available promise
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlag = -1;
+      async function startProcess() {
+        processFlag = 0;
+        processFlag = await s.schedule(delay(1));
+        awaitedTask.resolve();
+        for (let i = 2; i !== 1_000; ++i) {
+          processFlag = await delay(i);
+        }
+      }
+      const process = startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlag).toBe(1); // nothing else should have been released
+      await process;
+    });
+
+    it('should try to wait enough ticks for all Promises to be registered before scheduling any', async () => {
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const seenTasks: unknown[][] = [];
+      const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+        seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+        return 0; // automatically releasing first available promise
+      });
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlags: number[] = [];
+      const expectedFlags = [...Array(100)].map((_, index) => index);
+      function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+        if (extraTicks === 0) {
+          return s.schedule(promise);
+        }
+        let p = Promise.resolve();
+        for (let i = 1; i !== extraTicks; ++i) {
+          p = p.then(() => {});
+        }
+        return p.then(() => s.schedule(promise));
+      }
+      const promises: Promise<number>[] = expectedFlags.map((value) => Promise.resolve(value));
+      async function startProcess() {
+        processFlags = await Promise.all(promises.map((p, index) => wrapPromise(p, index)));
+        awaitedTask.resolve();
+      }
+      startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlags).toEqual(expectedFlags);
+      for (let i = 0; i !== expectedFlags.length; ++i) {
+        // Scheduled promises will be grouped into common batches, the process we play with does fire in parallel:
+        // - s.schedule(promise[0])
+        // - Promise.resolve().then(() => s.schedule(promise[1]))
+        // - Promise.resolve().then(() => {}).then(() => s.schedule(promise[2]))
+        // - Promise.resolve().then(() => {}).then(() => {}).then(() => s.schedule(promise[3]))...
+        // In other words, promise[3] gets scheduled 3 ticks after promise[0].
+        expect(seenTasks[i]).toEqual(promises.slice(i).map((p) => expect.objectContaining({ original: p })));
+      }
+    });
+
+    it.each([
+      { gap: numTicksBeforeScheduling, success: true, label: 'and could wait long' },
+      { gap: numTicksBeforeScheduling + 1, success: false, label: 'but may miss some' },
+    ])(
+      'should try to wait enough ticks for all Promises to be registered before scheduling any $label',
+      async ({ gap, success }) => {
+        // Arrange
+        const awaitedTask = buildUnresolved();
+        const seenTasks: unknown[][] = [];
+        const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+          seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+          return 0; // automatically releasing first available promise
+        });
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+        // Act
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        let processFlags: number[] = [];
+        function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+          if (extraTicks === 0) {
+            return s.schedule(promise);
+          }
+          let p = Promise.resolve();
+          for (let i = 1; i !== extraTicks; ++i) {
+            p = p.then(() => {});
+          }
+          return p.then(() => s.schedule(promise));
+        }
+        const p1 = Promise.resolve(1);
+        const p2 = Promise.resolve(2);
+        async function startProcess() {
+          processFlags = await Promise.all([wrapPromise(p1, 0), wrapPromise(p2, gap)]);
+          awaitedTask.resolve();
+        }
+        startProcess();
+        await s.waitFor(awaitedTask.p);
+
+        // Assert
+        expect(processFlags).toEqual([1, 2]);
+        expect(seenTasks[0]).toEqual(
+          success
+            ? [expect.objectContaining({ original: p1 }), expect.objectContaining({ original: p2 })]
+            : [expect.objectContaining({ original: p1 })],
+        );
+        expect(seenTasks[1]).toEqual([expect.objectContaining({ original: p2 })]);
+      },
+    );
+
+    it.each([
+      { gap: numTicksBeforeScheduling, success: true, label: 'and could wait long' },
+      { gap: numTicksBeforeScheduling + 1, success: false, label: 'but may miss some' },
+    ])(
+      'should try to wait enough ticks for all Promises to be registered before scheduling and reset on new scheduling any $label',
+      async ({ gap, success }) => {
+        // Arrange
+        const awaitedTask = buildUnresolved();
+        const seenTasks: unknown[][] = [];
+        const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+          seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+          return 0; // automatically releasing first available promise
+        });
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+        // Act
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        let processFlags: number[] = [];
+        function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+          if (extraTicks === 0) {
+            return s.schedule(promise);
+          }
+          let p = Promise.resolve();
+          for (let i = 1; i !== extraTicks; ++i) {
+            p = p.then(() => {});
+          }
+          return p.then(() => s.schedule(promise));
+        }
+        const belowBatchSize = 10;
+        expect(belowBatchSize).toBeLessThan(numTicksBeforeScheduling);
+        const p1 = Promise.resolve(1);
+        const p2 = Promise.resolve(2);
+        const p3 = Promise.resolve(3);
+        async function startProcess() {
+          processFlags = await Promise.all([
+            wrapPromise(p1, 0),
+            wrapPromise(p2, belowBatchSize),
+            wrapPromise(p3, belowBatchSize + gap),
+          ]);
+          awaitedTask.resolve();
+        }
+        startProcess();
+        await s.waitFor(awaitedTask.p);
+
+        // Assert
+        expect(processFlags).toEqual([1, 2, 3]);
+        expect(seenTasks[0]).toEqual(
+          success
+            ? [
+                expect.objectContaining({ original: p1 }),
+                expect.objectContaining({ original: p2 }),
+                expect.objectContaining({ original: p3 }),
+              ]
+            : [expect.objectContaining({ original: p1 }), expect.objectContaining({ original: p2 })],
+        );
+        expect(seenTasks[1]).toEqual([
+          expect.objectContaining({ original: p2 }),
+          expect.objectContaining({ original: p3 }),
+        ]);
+        expect(seenTasks[2]).toEqual([expect.objectContaining({ original: p3 })]);
+      },
+    );
+
+    it('should schedule known Promises without any timeout delay', async () => {
+      // Arrange
+      const awaitedTask = buildUnresolved();
+      const seenTasks: unknown[][] = [];
+      const nextTaskIndex = vi.fn().mockImplementation((tasks) => {
+        seenTasks.push([...tasks]); // cloning as the tasks will be edited in-place
+        return 0; // automatically releasing first available promise
+      });
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      let processFlags: number[] = [];
+      const expectedFlags = [...Array(100)].map((_, index) => index);
+      function wrapPromise(promise: Promise<number>, extraTicks: number): Promise<number> {
+        if (extraTicks === 0) {
+          return s.schedule(promise);
+        }
+        let p = delay();
+        for (let i = 1; i !== extraTicks; ++i) {
+          p = p.then(() => delay());
+        }
+        return p.then(() => s.schedule(promise));
+      }
+      const promises: Promise<number>[] = expectedFlags.map((value) => Promise.resolve(value));
+      async function startProcess() {
+        processFlags = await Promise.all(promises.map((p, index) => wrapPromise(p, index)));
+        awaitedTask.resolve();
+      }
+      startProcess();
+      await s.waitFor(awaitedTask.p);
+
+      // Assert
+      expect(processFlags).toEqual(expectedFlags);
+      for (let i = 0; i !== expectedFlags.length; ++i) {
+        // Scheduled promises will be spread into independant batches, the process we play with does fire in parallel:
+        // - s.schedule(promise[0])
+        // - delay().then(() => s.schedule(promise[1]))
+        // - delay().then(() => delay()).then(() => s.schedule(promise[2]))...
+        // In other words, promise[3] gets scheduled 3 0-timeout timers after promise[0].
+        expect(seenTasks[i]).toEqual([expect.objectContaining({ original: promises[i] })]);
+      }
+    });
+
+    it('should never overlap tasks from function and sequences', async () => {
+      // Arrange
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+
+      // Act
+      let count = 0;
+      let overlapDetected = false;
+      let running = false;
+      const collisionAct = (f: () => Promise<void>) => {
+        count += 1;
+        overlapDetected ||= running;
+        running = true;
+        const out = f();
+        out.then(() => (running = false));
+        return out;
+      };
+      const builder = () => delay();
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      const fun = s.scheduleFunction(builder, collisionAct);
+      const shortSeq = s.scheduleSequence([{ label: 'short-seq-a', builder }], collisionAct);
+      const longSeq = s.scheduleSequence(
+        [
+          { label: 'long-seq-a', builder },
+          { label: 'long-seq-b', builder },
+        ],
+        collisionAct,
+      );
+      await s.waitFor(Promise.all([fun(), fun().then(fun), fun().then(fun).then(fun), shortSeq.task, longSeq.task]));
+
+      // Assert
+      expect(count).toBe(9);
+      expect(overlapDetected).toBe(false);
+    });
+
+    describe('exceptions', () => {
+      it('should forward failure in act linked to scheduler level', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const formatError = (value: unknown) => `This "act" fails if the returned value is not "b", got "${value}"`;
+        const s = new SchedulerImplem(async (f) => {
+          const out: unknown = await f();
+          if (out !== 'b') {
+            throw new Error(formatError(out));
+          }
+          return out;
+        }, taskSelector);
+        s.schedule(Promise.resolve('a'));
+        const taskB = s.schedule(Promise.resolve('b'));
+
+        // Assert
+        await expect(s.waitFor(taskB)).rejects.toThrowError(formatError('a'));
+      });
+
+      it('should forward failure in act linked to local schedule level', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        s.schedule(Promise.resolve('a'), 'label a', {}, async () => {
+          throw new Error(`This "act" fails`);
+        });
+        const taskB = s.schedule(Promise.resolve('b'), 'label b', {}, async (f) => {
+          const out = await f();
+          return out;
+        });
+
+        // Assert
+        await expect(s.waitFor(taskB)).rejects.toThrowError(`This "act" fails`);
+      });
+
+      it('should forward failure from the waited task', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        s.schedule(Promise.resolve('a'));
+        const taskB = s.schedule(Promise.reject(new Error('Oups, I failed!')));
+
+        // Assert
+        await expect(s.waitFor(taskB)).rejects.toThrowError(`Oups, I failed!`);
+        await expect(taskB).rejects.toThrowError(`Oups, I failed!`);
+      });
+
+      it('should forward failure from a non waited task', async () => {
+        // Arrange
+        const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn(() => 0) };
+        const s = new SchedulerImplem((f) => f(), taskSelector);
+        const taskA = s.schedule(Promise.reject(new Error('Oups, I failed!')));
+        const taskB = s.schedule(Promise.resolve('b'));
+
+        // Assert
+        await expect(s.waitFor(taskB)).resolves.toBe(`b`);
+        await expect(taskA).rejects.toThrowError(`Oups, I failed!`);
+      });
+    });
+
     it('should end whenever possible while never launching multiple tasks at the same time', async () => {
       const schedulingTypeArb = fc.constantFrom(...(['none', 'init'] as const));
       const dependenciesArbFor = (currentItem: number) =>
@@ -946,6 +1294,152 @@ describe('SchedulerImplem', () => {
           },
         ),
       );
+    });
+  });
+
+  describe('waitNext', () => {
+    it('should only release the requested number of scheduled promises', async () => {
+      const scheduledCount = 10;
+      await fc.assert(
+        fc.asyncProperty(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
+          // Arrange
+          const nextTaskIndex = vi.fn((tasks: ScheduledTask<unknown>[]) => g(fc.nat, { max: tasks.length - 1 }));
+          const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+          // Act
+          const s = new SchedulerImplem((f) => f(), taskSelector);
+          for (let i = 0; i !== scheduledCount; ++i) {
+            s.schedule(Promise.resolve(i));
+          }
+
+          // Assert
+          await s.waitNext(n);
+          expect(s.count()).toBe(scheduledCount - n); // Still (10 - n) pending scheduled tasks
+        }),
+      );
+    });
+
+    it('should wait for more tasks if tasks are not all ready at invocation time', async () => {
+      const scheduledCount = 10;
+      await fc.assert(
+        fc.asyncProperty(fc.nat({ max: scheduledCount }), fc.gen(), async (n, g) => {
+          // Arrange
+          const seenValues: number[] = [];
+          const nextTaskIndex = vi.fn((tasks: ScheduledTask<unknown>[]) => g(fc.nat, { max: tasks.length - 1 }));
+          const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+          // Act
+          let queue = delay(-1);
+          const s = new SchedulerImplem((f) => f(), taskSelector);
+          for (let i = 0; i !== scheduledCount; ++i) {
+            queue = queue
+              .then(() => delay(0))
+              .then(() => s.schedule(Promise.resolve(i)))
+              .then((v) => seenValues.push(v));
+          }
+
+          // Assert
+          await s.waitNext(n);
+          expect(seenValues).toEqual([...Array(n)].map((_, i) => i));
+        }),
+      );
+    });
+  });
+
+  describe('waitIdle', () => {
+    it('should be able to wait for nothing if nothing has to be scheduled', async () => {
+      // Arrange
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
+
+      // Act
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      await s.waitIdle();
+
+      // Assert
+      expect(s.count()).toBe(0);
+    });
+
+    it('should wait for all immediatelly scheduled tasks to be executed', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+      const scheduleCount = 5;
+
+      // Act
+      let seen = 0;
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      for (let i = 0; i !== scheduleCount; ++i) {
+        s.schedule(Promise.resolve(i)).then(() => (seen += 1));
+      }
+      await s.waitIdle();
+
+      // Assert
+      expect(seen).toBe(scheduleCount);
+      expect(s.count()).toBe(0);
+    });
+
+    it('should wait for all tasks scheduled via microtasks to be executed', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+      const scheduleCount = 5;
+
+      // Act
+      let seen = 0;
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      for (let i = 0; i !== scheduleCount; ++i) {
+        Promise.resolve(i)
+          .then((v) => v) // one extra tick
+          .then((v) => v) // yet another one
+          .then((v) => v) // and another one
+          .then((v) => v)
+          .then((v) => s.schedule(Promise.resolve(v)))
+          .then(() => (seen += 1));
+      }
+      await s.waitIdle();
+
+      // Assert
+      expect(seen).toBe(scheduleCount);
+      expect(s.count()).toBe(0);
+    });
+
+    it('should wait for all recursively scheduled tasks to be executed', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+      const scheduleCount = 5;
+
+      // Act
+      let seen = 0;
+      let previous: Promise<unknown> = Promise.resolve();
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      for (let i = 0; i !== scheduleCount; ++i) {
+        previous = previous.then(() => s.schedule(Promise.resolve(i)).then(() => (seen += 1)));
+      }
+      await s.waitIdle();
+
+      // Assert
+      expect(seen).toBe(scheduleCount);
+      expect(s.count()).toBe(0);
+    });
+
+    it('should not wait for uncontrollable promises to be resolved', async () => {
+      // Arrange
+      const nextTaskIndex = vi.fn(() => 0);
+      const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex };
+
+      // Act
+      let resolveUncontrollable: () => void = null!;
+      const uncontrollable = new Promise<void>((r) => (resolveUncontrollable = r));
+      const s = new SchedulerImplem((f) => f(), taskSelector);
+      uncontrollable.then(() => s.schedule(Promise.resolve(1)));
+      await s.waitIdle();
+
+      // Assert
+      expect(s.count()).toBe(0);
+      resolveUncontrollable();
+      await Promise.resolve(); // waiting one tick for s.schedule to be executed (impact of resolveUncontrollable)
+      expect(s.count()).toBe(1);
     });
   });
 

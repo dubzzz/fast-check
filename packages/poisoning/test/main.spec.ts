@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { assertNoPoisoning, restoreGlobals } from '../src/main.js';
 
-const options = { ignoredRootRegex: /__vitest_worker__/ };
+const options = { ignoredRootRegex: /(__vitest_worker__|__vitest_mocker__|AbortController)/ };
 
 describe('assertNoPoisoning', () => {
   it('should not throw any Error if no poisoning occurred', () => {

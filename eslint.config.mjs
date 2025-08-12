@@ -33,7 +33,7 @@ export default [
       '@typescript-eslint/no-import-type-side-effects': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/no-restricted-types': 'error',
-      '@typescript-eslint/no-empty-object-type': 'error',
+      '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'with-single-extends' }],
       '@typescript-eslint/no-unsafe-function-type': 'error',
       '@typescript-eslint/no-wrapper-object-types': 'error',
       'require-atomic-updates': 'error',
@@ -53,7 +53,7 @@ export default [
     files: [
       '**/*.cjs',
       '**/cjs/**/*.js',
-      'packages/ava/test/testProp.js',
+      'packages/ava/test/ava-specs/testProp.js',
       '**/ava.config.js',
       '**/jest.config.js',
       'packages/expect-type/src/*.js',
@@ -106,7 +106,6 @@ export default [
   {
     ignores: [
       '.github/',
-      '.yarn/',
       'node_modules/',
       'examples/',
       'packages/*/coverage/',
@@ -117,9 +116,6 @@ export default [
       'packages/test-minimal-support/',
       'packages/test-types/',
       'website/',
-      '.pnp*',
-      'jest*.js',
-      'jest*.cjs',
     ],
   },
 ];

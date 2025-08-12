@@ -5,11 +5,6 @@ slug: /migration-guide/from-3.x-to-4.x/
 
 # From 3.x to 4.x
 
-:::warning Work in progress
-
-Version 4 has not been released yet. This guide is still a work in progress document with part of it already actionable from v3.
-:::
-
 Simple migration guide to fast-check v4 starting from fast-check v3
 
 ## Changes in minimal requirements
@@ -20,7 +15,7 @@ Simple migration guide to fast-check v4 starting from fast-check v3
 | ECMAScript specification | ES2020          | ES2017               |
 | TypeScript _(optional)_  | ≥5.0            | ≥4.1                 |
 
-Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5618](https://github.com/dubzzz/fast-check/pull/5618), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635), [#5670](https://github.com/dubzzz/fast-check/pull/5670)
+Related pull requests: [#5577](https://github.com/dubzzz/fast-check/pull/5577), [#5605](https://github.com/dubzzz/fast-check/pull/5605), [#5617](https://github.com/dubzzz/fast-check/pull/5617), [#5618](https://github.com/dubzzz/fast-check/pull/5618), [#5634](https://github.com/dubzzz/fast-check/pull/5634), [#5635](https://github.com/dubzzz/fast-check/pull/5635), [#5670](https://github.com/dubzzz/fast-check/pull/5670), [#5787](https://github.com/dubzzz/fast-check/pull/5787)
 
 ## Update to latest v3.x
 
@@ -413,6 +408,18 @@ If you prefer the previous behavior, you can disable this feature in version 4 b
 Related pull requests: [#5590](https://github.com/dubzzz/fast-check/pull/5590)
 
 ### Faster `scheduler`
+
+:::tip Prefer `waitNext`, `waitIdle`, or `waitFor`
+
+Since v4.2.0, `waitOne` and `waitAll` are deprecated in favor of `waitNext`, `waitIdle`, and `waitFor`, which behave more predictably — especially when tasks are scheduled after a few awaits, not immediately.
+
+Use:
+
+- `waitNext(n)` for a known number of tasks
+- `waitIdle()` to wait until all tasks settle
+- `waitFor(promise)` to wait for a specific task, even if not yet scheduled
+
+:::
 
 Since version 1.20.0, fast-check has included a primitive designed to help detect race conditions. This feature unlocked many advanced use cases and elevated the library's capabilities.
 

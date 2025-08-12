@@ -46,11 +46,8 @@ describe('float', () => {
   declareCleaningHooksForSpies();
 
   it('should accept any valid range of 32-bit floating point numbers (including infinity)', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noInteger, ...withoutNoIntegerRecordConstraints } = defaultFloatRecordConstraints;
-
     fc.assert(
-      fc.property(floatConstraints(withoutNoIntegerRecordConstraints), (ct) => {
+      fc.property(floatConstraints({ ...defaultFloatRecordConstraints, noInteger: undefined }), (ct) => {
         // Arrange
         spyInteger();
 
@@ -265,28 +262,28 @@ describe('float', () => {
   });
 
   describe('without NaN', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noNaN, noInteger, ...noNaNRecordConstraints } = defaultFloatRecordConstraints;
-
     it('should ask integers between the indexes corresponding to min and max', () => {
       fc.assert(
-        fc.property(floatConstraints(noNaNRecordConstraints), (ctDraft) => {
-          // Arrange
-          const ct = { ...ctDraft, noNaN: true };
-          const integer = spyInteger();
-          const { min, max } = minMaxForConstraints(ct);
-          const minIndex = floatToIndex(min);
-          const maxIndex = floatToIndex(max);
-          const expectedMinIndex = ct.minExcluded ? minIndex + 1 : minIndex;
-          const expectedMaxIndex = ct.maxExcluded ? maxIndex - 1 : maxIndex;
+        fc.property(
+          floatConstraints({ ...defaultFloatRecordConstraints, noNaN: undefined, noInteger: undefined }),
+          (ctDraft) => {
+            // Arrange
+            const ct = { ...ctDraft, noNaN: true };
+            const integer = spyInteger();
+            const { min, max } = minMaxForConstraints(ct);
+            const minIndex = floatToIndex(min);
+            const maxIndex = floatToIndex(max);
+            const expectedMinIndex = ct.minExcluded ? minIndex + 1 : minIndex;
+            const expectedMaxIndex = ct.maxExcluded ? maxIndex - 1 : maxIndex;
 
-          // Act
-          float(ct);
+            // Act
+            float(ct);
 
-          // Assert
-          expect(integer).toHaveBeenCalledTimes(1);
-          expect(integer).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
-        }),
+            // Assert
+            expect(integer).toHaveBeenCalledTimes(1);
+            expect(integer).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
+          },
+        ),
       );
     });
   });

@@ -440,7 +440,7 @@
       "name": "Niklas Gruhn",
       "avatar_url": "https://avatars.githubusercontent.com/u/26570572?v=4",
       "profile": "https://github.com/gruhn",
-      "contributions": ["code"]
+      "contributions": ["code", "question"]
     },
     {
       "login": "patroza",
@@ -468,6 +468,27 @@
       "name": "James Vaughan",
       "avatar_url": "https://avatars.githubusercontent.com/u/2906913?v=4",
       "profile": "https://github.com/jamesbvaughan",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "AlexErrant",
+      "name": "Alex Errant",
+      "avatar_url": "https://avatars.githubusercontent.com/u/109672176?v=4",
+      "profile": "https://github.com/AlexErrant",
+      "contributions": ["code"]
+    },
+    {
+      "login": "ahrjarrett",
+      "name": "andrew jarrett",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15133992?v=4",
+      "profile": "https://ahrjarrett.com/",
+      "contributions": ["code"]
+    },
+    {
+      "login": "matthyk",
+      "name": "Matthias Keckl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53833818?v=4",
+      "profile": "https://github.com/matthyk",
       "contributions": ["doc"]
     }
   ],

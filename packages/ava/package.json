@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/ava",
   "description": "Property based testing for AVA based on fast-check",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "module",
   "main": "lib/ava-fast-check.js",
   "exports": {
@@ -23,16 +23,15 @@
     "lib"
   ],
   "scripts": {
-    "build": "yarn build:publish-cjs && yarn build:publish-esm && yarn build:publish-types",
-    "build-ci": "yarn build",
+    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
+    "build-ci": "pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
     "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "ava-test": "ava --config test/ava.config.js -s -t",
-    "test": "sh test.sh",
+    "test": "vitest",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
-    "test-bundle": "yarn test-bundle:cjs && yarn test-bundle:mjs",
+    "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -47,18 +46,21 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/ava#readme",
   "dependencies": {
-    "fast-check": "^3.0.0"
+    "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
     "ava": "^4 || ^5 || ^6"
   },
   "devDependencies": {
-    "@types/node": "^22.13.1",
-    "ava": "^6.2.0",
+    "@fast-check/ava": "workspace:*",
+    "@types/node": "^22.17.1",
+    "ava": "^6.4.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
-    "rxjs": "^7.8.1",
-    "typescript": "~5.7.3"
+    "rxjs": "^7.8.2",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.0",
+    "vitest": "^3.2.4"
   },
   "keywords": [
     "ava",

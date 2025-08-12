@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import * as fs from 'fs';
 import fc from '../../../src/fast-check';
 import { globSync } from 'glob';
@@ -10,7 +10,7 @@ const CommentForGeneratedValues = '// Examples of generated values:';
 const CommentForArbitraryIndicator = '// Use the arbitrary:';
 const CommentForStatistics = '// Computed statistics for 10k generated values:';
 
-const allPathsFromWebsite = globSync(`../../website/docs/core-blocks/arbitraries/**/*.md`, {
+const allPathsFromWebsite = globSync(`./website/docs/core-blocks/arbitraries/**/*.md`, {
   withFileTypes: true,
   nodir: true,
 }).map((fileDescriptor) => ({
@@ -18,32 +18,22 @@ const allPathsFromWebsite = globSync(`../../website/docs/core-blocks/arbitraries
   shortName: fileDescriptor.name,
 }));
 
+// Linked to https://github.com/vitest-dev/vitest/discussions/6511#discussioncomment-13145786
+afterEach(async () => {
+  // already existing afterEach code goes here
+  await new Promise((res) => setImmediate(res));
+});
+
 describe('Docs.md', () => {
+  if (process.env.SKIP_EXPENSIVE === 'true') {
+    it('should skip expensive tests', () => {});
+    return;
+  }
   it.each(allPathsFromWebsite)(
     'should check code snippets validity and fix generated values on $shortName',
     ({ filePath }) => {
       const originalFileContent = fs.readFileSync(filePath).toString();
       const { content: fileContent } = refreshContent(originalFileContent);
-
-      if (Number(process.versions.node.split('.')[0]) < 12) {
-        // There were some updates regarding how to stringify invalid surrogate pairs
-        // between node 10 and node 12 with JSON.stringify.
-        // It directly impacts fc.stringify.
-        //
-        // In node 10: JSON.stringify("\udff5") === '"\udff5"'
-        // In node 12: JSON.stringify("\udff5") === '"\\udff5"'
-        // You may try with: JSON.stringify("\udff5").split('').map(c => c.charCodeAt(0).toString(16))
-
-        console.warn(`Unable to properly check code snippets defined in the documentation...`);
-
-        const sanitize = (s: string) => s.replace(/(\\)(u[0-9a-f]{4})/g, (c) => JSON.parse('"' + c + '"'));
-        expect(sanitize(fileContent)).toEqual(sanitize(originalFileContent));
-
-        if (process.env.UPDATE_CODE_SNIPPETS) {
-          throw new Error('You must use a more recent release of node to update code snippets (>=12)');
-        }
-        return;
-      }
 
       if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
         console.warn(`Updating code snippets defined in the documentation...`);
