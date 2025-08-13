@@ -647,11 +647,11 @@ Execution summary:
 exports[`NoRegression (async) > infiniteStream (to Promise) 1`] = `
 [Error: Property failed after 1 tests
 { seed: 42, path: "0", endOnFailure: true }
-Counterexample: [Stream(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]
+Counterexample: [Stream(10 emitted)(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]
 Shrunk 0 time(s)
 
 Execution summary:
-[31m×[0m [Stream(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]]
+[31m×[0m [Stream(10 emitted)(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]]
 `;
 
 exports[`NoRegression (async) > number 1`] = `
@@ -3237,11 +3237,11 @@ Execution summary:
 exports[`NoRegression > infiniteStream 1`] = `
 [Error: Property failed after 1 tests
 { seed: 42, path: "0", endOnFailure: true }
-Counterexample: [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]
+Counterexample: [Stream(10 emitted)(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]
 Shrunk 0 time(s)
 
 Execution summary:
-[31m×[0m [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]]
+[31m×[0m [Stream(10 emitted)(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]]
 `;
 
 exports[`NoRegression > int8Array 1`] = `

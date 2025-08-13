@@ -9,32 +9,46 @@ import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '
 const safeObjectDefineProperties = Object.defineProperties;
 
 /** @internal */
-function prettyPrint(seenValuesStrings: string[]): string {
-  return `Stream(${safeJoin(seenValuesStrings, ',')}…)`;
+function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
+  const seenSegment = seenValuesStrings !== undefined ? `(${safeJoin(seenValuesStrings, ',')}…)` : '';
+  return `Stream(${numSeen} emitted)${seenSegment}`;
 }
 
 /** @internal */
 export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
-  constructor(readonly arb: Arbitrary<T>) {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly history: boolean,
+  ) {
     super();
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<Stream<T>> {
     const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
     const enrichedProducer = () => {
-      const seenValues: T[] = [];
+      const seenValues: T[] | null = this.history ? [] : null;
+      let numSeenValues = 0;
       const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
         while (true) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
-          safePush(seenValues, value);
+          numSeenValues++;
+          if (seenValues !== null) {
+            safePush(seenValues, value);
+          }
           yield value;
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
       return safeObjectDefineProperties(s, {
-        toString: { value: () => prettyPrint(seenValues.map(stringify)) },
-        [toStringMethod]: { value: () => prettyPrint(seenValues.map(stringify)) },
-        [asyncToStringMethod]: { value: async () => prettyPrint(await Promise.all(seenValues.map(asyncStringify))) },
+        toString: { value: () => prettyPrint(numSeenValues, seenValues?.map(stringify)) },
+        [toStringMethod]: { value: () => prettyPrint(numSeenValues, seenValues?.map(stringify)) },
+        [asyncToStringMethod]: {
+          value: async () =>
+            prettyPrint(
+              numSeenValues,
+              seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
+            ),
+        },
         // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
         [cloneMethod]: { value: enrichedProducer, enumerable: true },
       });
