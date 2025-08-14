@@ -654,6 +654,16 @@ Execution summary:
 [31m×[0m [Stream(Promise.resolve(-2),Promise.resolve(-22),Promise.resolve(24),Promise.resolve(8),Promise.resolve(9975393),Promise.resolve(25),Promise.resolve(-757343395),Promise.resolve(-1407968202),Promise.resolve(6),Promise.resolve(2147483645)…)]]
 `;
 
+exports[`NoRegression (async) > infiniteStream (to Promise) 2`] = `
+[Error: Property failed after 1 tests
+{ seed: 42, path: "0", endOnFailure: true }
+Counterexample: [Stream(10 emitted)]
+Shrunk 0 time(s)
+
+Execution summary:
+[31m×[0m [Stream(10 emitted)]]
+`;
+
 exports[`NoRegression (async) > number 1`] = `
 [Error: Property failed after 2 tests
 { seed: 42, path: "1:4:0:0:0:0:3:0:0:3:0:1:1:0:2", endOnFailure: true }
@@ -3242,6 +3252,16 @@ Shrunk 0 time(s)
 
 Execution summary:
 [31m×[0m [Stream(2147483646,9,24,8,9975393,2147483642,1390140253,739515446,6,28…)]]
+`;
+
+exports[`NoRegression > infiniteStream 2`] = `
+[Error: Property failed after 1 tests
+{ seed: 42, path: "0", endOnFailure: true }
+Counterexample: [Stream(10 emitted)]
+Shrunk 0 time(s)
+
+Execution summary:
+[31m×[0m [Stream(10 emitted)]]
 `;
 
 exports[`NoRegression > int8Array 1`] = `
