@@ -28,7 +28,7 @@ describe('infiniteStream', () => {
     expect(arb).toBe(instance);
   });
 
-  it('should instantiate StreamArbitrary(arb, history) for infiniteStream(arb, history)', () => {
+  it('should instantiate StreamArbitrary(arb, !noHistory) for infiniteStream(arb, { noHistory })', () => {
     fc.assert(
       fc.property(fc.boolean(), (history) => {
         // Arrange
@@ -38,7 +38,7 @@ describe('infiniteStream', () => {
         StreamArbitrary.mockImplementation(() => instance as StreamArbitraryMock.StreamArbitrary<unknown>);
 
         // Act
-        const arb = infiniteStream(sourceArbitrary, history);
+        const arb = infiniteStream(sourceArbitrary, { noHistory: !history });
 
         // Assert
         expect(StreamArbitrary).toHaveBeenCalledWith(sourceArbitrary, history);
