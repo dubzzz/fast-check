@@ -330,6 +330,16 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it('infiniteStream', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.infiniteStream(fc.nat(), { noHistory: true }), (s) => testFunc([...s.take(10)])),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('uniqueArray', () => {
     expect(
       runWithSanitizedStack(() =>
@@ -981,6 +991,18 @@ describe(`NoRegression (async)`, () => {
         async () =>
           await fc.assert(
             fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+            settings,
+          ),
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('infiniteStream (to Promise)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(
+        async () =>
+          await fc.assert(
+            fc.asyncProperty(fc.infiniteStream(asyncNumber, { noHistory: true }), async (s) => testFunc(await Promise.all([...s.take(10)]))),
             settings,
           ),
       ),
