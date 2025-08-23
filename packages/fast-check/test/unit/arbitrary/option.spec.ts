@@ -5,6 +5,7 @@ import { option } from '../../../src/arbitrary/option';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';
+import { constant } from '../../../src/arbitrary/constant';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -119,5 +120,13 @@ describe('option (integration)', () => {
 
   it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(optionBuilder, { extraParameters });
+  });
+
+  it('should always return nil when freq = 1', () => {
+    fc.assert(
+      fc.property(option(constant(true), { freq: 1 }), (o) => {
+        expect(o).toBe(null);
+      }),
+    );
   });
 });

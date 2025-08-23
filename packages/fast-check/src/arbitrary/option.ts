@@ -66,7 +66,7 @@ export function option<T, TNil = null>(
   const nilArb = constant(nilValue);
   const weightedArbs = [
     { arbitrary: nilArb, weight: 1, fallbackValue: { default: nilValue } },
-    { arbitrary: arb, weight: freq },
+    { arbitrary: arb, weight: freq - 1 },
   ];
   const frequencyConstraints: FrequencyContraints = {
     withCrossShrink: true,
