@@ -99,7 +99,7 @@ describe('option', () => {
 
 describe('option (integration)', () => {
   type Extra = { freq?: number };
-  const extraParameters = fc.record({ freq: fc.nat() }, { requiredKeys: [] });
+  const extraParameters = fc.record({ freq: fc.integer({ min: 1 }) }, { requiredKeys: [] });
 
   const isCorrect = (value: number | null, extra: Extra) =>
     value === null || ((extra.freq === undefined || extra.freq > 0) && typeof value === 'number');
