@@ -2654,9 +2654,9 @@ Counterexample: ["aa.aa"]
 Shrunk 11 time(s)
 
 Execution summary:
-[32m√[0m ["s.qf"]
+[32m√[0m ["soh9on3.de"]
 [32m√[0m ["81u3tvl23k4.ref"]
-[32m√[0m ["4.vlj"]
+[32m√[0m ["4w6t83dv.cm"]
 [32m√[0m ["fk71i1i4.uvo"]
 [31m×[0m ["xprotccbcalm.xsx"]
 . [31m×[0m ["aprotccbcalm.xsx"]
@@ -2755,28 +2755,44 @@ Execution summary:
 
 exports[`NoRegression > emailAddress 1`] = `
 [Error: Property failed after 1 tests
-{ seed: 42, path: "0:0:0:0:0:0:5:3:0", endOnFailure: true }
+{ seed: 42, path: "0:0:0:1:4:1:2:3:2:1:1:1:1:1:0", endOnFailure: true }
 Counterexample: ["a@a.aa"]
-Shrunk 8 time(s)
+Shrunk 14 time(s)
 
 Execution summary:
-[31m×[0m ["8i_p#6u@3.ch99e2ux9i70.ccz"]
-. [31m×[0m ["u@3.ch99e2ux9i70.ccz"]
-. . [31m×[0m ["a@3.ch99e2ux9i70.ccz"]
-. . . [31m×[0m ["a@ch99e2ux9i70.ccz"]
-. . . . [31m×[0m ["a@ah99e2ux9i70.ccz"]
-. . . . . [31m×[0m ["a@a.ccz"]
-. . . . . . [32m√[0m ["a@a.cz"]
-. . . . . . [32m√[0m ["a@a.acz"]
-. . . . . . [32m√[0m ["a@a.bcz"]
-. . . . . . [32m√[0m ["a@a.caz"]
-. . . . . . [32m√[0m ["a@a.cbz"]
-. . . . . . [31m×[0m ["a@a.cca"]
-. . . . . . . [32m√[0m ["a@a.ca"]
-. . . . . . . [32m√[0m ["a@a.aca"]
-. . . . . . . [32m√[0m ["a@a.bca"]
-. . . . . . . [31m×[0m ["a@a.caa"]
-. . . . . . . . [31m×[0m ["a@a.aa"]]
+[31m×[0m ["8i_p#6u@37ch99e2uy.w1ygl.je"]
+. [31m×[0m ["u@37ch99e2uy.w1ygl.je"]
+. . [31m×[0m ["a@37ch99e2uy.w1ygl.je"]
+. . . [32m√[0m ["a@w1ygl.je"]
+. . . [31m×[0m ["a@a7ch99e2uy.w1ygl.je"]
+. . . . [32m√[0m ["a@w1ygl.je"]
+. . . . [32m√[0m ["a@a.w1ygl.je"]
+. . . . [32m√[0m ["a@ay.w1ygl.je"]
+. . . . [32m√[0m ["a@a9e2uy.w1ygl.je"]
+. . . . [31m×[0m ["a@ah99e2uy.w1ygl.je"]
+. . . . . [32m√[0m ["a@w1ygl.je"]
+. . . . . [31m×[0m ["a@a99e2uy.w1ygl.je"]
+. . . . . . [32m√[0m ["a@w1ygl.je"]
+. . . . . . [32m√[0m ["a@a9e2uy.w1ygl.je"]
+. . . . . . [31m×[0m ["a@aa9e2uy.w1ygl.je"]
+. . . . . . . [32m√[0m ["a@w1ygl.je"]
+. . . . . . . [32m√[0m ["a@ae2uy.w1ygl.je"]
+. . . . . . . [32m√[0m ["a@a9e2uy.w1ygl.je"]
+. . . . . . . [31m×[0m ["a@aay.w1ygl.je"]
+. . . . . . . . [32m√[0m ["a@w1ygl.je"]
+. . . . . . . . [32m√[0m ["a@ay.w1ygl.je"]
+. . . . . . . . [31m×[0m ["a@aaa.w1ygl.je"]
+. . . . . . . . . [32m√[0m ["a@w1ygl.je"]
+. . . . . . . . . [31m×[0m ["a@aa.w1ygl.je"]
+. . . . . . . . . . [32m√[0m ["a@w1ygl.je"]
+. . . . . . . . . . [31m×[0m ["a@aa.a1ygl.je"]
+. . . . . . . . . . . [32m√[0m ["a@a1ygl.je"]
+. . . . . . . . . . . [31m×[0m ["a@aa.a.je"]
+. . . . . . . . . . . . [32m√[0m ["a@a.je"]
+. . . . . . . . . . . . [31m×[0m ["a@aa.a.ae"]
+. . . . . . . . . . . . . [32m√[0m ["a@a.ae"]
+. . . . . . . . . . . . . [31m×[0m ["a@aa.a.aa"]
+. . . . . . . . . . . . . . [31m×[0m ["a@a.aa"]]
 `;
 
 exports[`NoRegression > float 1`] = `
@@ -4267,16 +4283,18 @@ Execution summary:
 `;
 
 exports[`NoRegression > option 1`] = `
-[Error: Property failed after 4 tests
-{ seed: 42, path: "3", endOnFailure: true }
+[Error: Property failed after 5 tests
+{ seed: 42, path: "4:0", endOnFailure: true }
 Counterexample: [null]
-Shrunk 0 time(s)
+Shrunk 1 time(s)
 
 Execution summary:
 [32m√[0m [2147483646]
 [32m√[0m [29]
 [32m√[0m [20]
-[31m×[0m [null]]
+[32m√[0m [9]
+[31m×[0m [542422934]
+. [31m×[0m [null]]
 `;
 
 exports[`NoRegression > record 1`] = `
@@ -4286,10 +4304,10 @@ Counterexample: [{"k1":210974299}]
 Shrunk 15 time(s)
 
 Execution summary:
-[32m√[0m [{"k1":2147483646}]
-[32m√[0m [{"k1":29,"k2":2147483620}]
+[32m√[0m [{"k1":2147483646,"k2":4}]
+[32m√[0m [{"k1":29}]
 [32m√[0m [{__proto__:null,"k1":20,"k2":2053236037}]
-[32m√[0m [{}]
+[32m√[0m [{__proto__:null,"k1":9,"k2":1673606043}]
 [31m×[0m [{"k1":542422934,"k2":1272193014}]
 . [32m√[0m [{"k2":1272193014}]
 . [32m√[0m [{"k1":0,"k2":1272193014}]

@@ -50,7 +50,7 @@ describe('option', () => {
           expect(from).toHaveBeenCalledWith(
             [
               { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: expectedNil } },
-              { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! : 5 },
+              { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! - 1 : 4 },
             ],
             {
               withCrossShrink: true,
@@ -83,7 +83,7 @@ describe('option', () => {
     expect(from).toHaveBeenCalledWith(
       [
         { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: null } },
-        { arbitrary: arb, weight: 5 },
+        { arbitrary: arb, weight: 4 },
       ],
       {
         withCrossShrink: true,

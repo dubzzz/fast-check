@@ -1,10 +1,12 @@
 import { constant } from './constant';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
+import type { _Constraints as FrequencyConstraints } from './_internals/FrequencyArbitrary';
 import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext';
 import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
 import { safeHasOwnProperty } from '../utils/globals';
+
+const safeMathMax = Math.max;
 
 /**
  * Constraints to be applied on {@link option}
@@ -13,7 +15,8 @@ import { safeHasOwnProperty } from '../utils/globals';
  */
 export interface OptionConstraints<TNil = null> {
   /**
-   * The probability to build a nil value is of `1 / freq`
+   * The probability to build a nil value is of `1 / freq`.
+   * If `freq` is `0`, then nil is never generated.
    * @defaultValue 5
    * @remarks Since 1.17.0
    */
@@ -66,9 +69,11 @@ export function option<T, TNil = null>(
   const nilArb = constant(nilValue);
   const weightedArbs = [
     { arbitrary: nilArb, weight: 1, fallbackValue: { default: nilValue } },
-    { arbitrary: arb, weight: freq - 1 },
+    // If `freq` is 0 then nil should never be generated.
+    // `safeMathMax` makes sure we don't pass negative weights.
+    { arbitrary: arb, weight: safeMathMax(0, freq - 1) },
   ];
-  const frequencyConstraints: FrequencyContraints = {
+  const frequencyConstraints: FrequencyConstraints = {
     withCrossShrink: true,
     depthSize: constraints.depthSize,
     maxDepth: constraints.maxDepth,
