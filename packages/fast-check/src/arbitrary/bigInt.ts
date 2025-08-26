@@ -81,6 +81,15 @@ function bigInt(min: bigint, max: bigint): Arbitrary<bigint>;
  * @public
  */
 function bigInt(constraints: BigIntConstraints): Arbitrary<bigint>;
+/**
+ * For bigint between min (included) and max (included)
+ *
+ * @param args - Either min/max bounds as an object or constraints to apply when building instances
+ *
+ * @remarks Since 2.6.0
+ * @public
+ */
+function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary<bigint>;
 function bigInt(...args: [] | [bigint, bigint] | [BigIntConstraints]): Arbitrary<bigint> {
   const constraints = buildCompleteBigIntConstraints(extractBigIntConstraints(args));
   if (constraints.min > constraints.max) {
