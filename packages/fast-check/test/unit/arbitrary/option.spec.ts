@@ -5,6 +5,7 @@ import { option } from '../../../src/arbitrary/option';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
 import * as ConstantMock from '../../../src/arbitrary/constant';
+import { constant } from '../../../src/arbitrary/constant';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
@@ -49,7 +50,7 @@ describe('option', () => {
           expect(from).toHaveBeenCalledWith(
             [
               { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: expectedNil } },
-              { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! : 5 },
+              { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! - 1 : 5 },
             ],
             {
               withCrossShrink: true,
@@ -98,7 +99,7 @@ describe('option', () => {
 
 describe('option (integration)', () => {
   type Extra = { freq?: number };
-  const extraParameters = fc.record({ freq: fc.nat() }, { requiredKeys: [] });
+  const extraParameters = fc.record({ freq: fc.integer({ min: 1 }) }, { requiredKeys: [] });
 
   const isCorrect = (value: number | null, extra: Extra) =>
     value === null || ((extra.freq === undefined || extra.freq > 0) && typeof value === 'number');
@@ -119,5 +120,13 @@ describe('option (integration)', () => {
 
   it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(optionBuilder, { extraParameters });
+  });
+
+  it('should always return nil when freq = 1', () => {
+    fc.assert(
+      fc.property(option(constant(true), { freq: 1 }), (o) => {
+        expect(o).toBe(null);
+      }),
+    );
   });
 });
