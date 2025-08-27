@@ -40,7 +40,7 @@
     "@types/npm-packlist": "^7.0.3",
     "@types/npmcli__arborist": "^6.3.1",
     "typescript": "~5.9.2",
-    "vite": "^7.1.2",
+    "vite": "^7.1.3",
     "vitest": "^3.2.4"
   },
   "keywords": [],
