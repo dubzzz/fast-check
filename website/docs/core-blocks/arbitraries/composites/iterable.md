@@ -15,12 +15,12 @@ The `Stream` structure provided by fast-check implements `IterableIterator<T>` a
 **Signatures:**
 
 - `fc.infiniteStream(arb)`
-- `fc.infiniteStream(arb, { noHistory })` (since 4.3.0)
+- `fc.infiniteStream(arb, {noHistory?})` (since 4.3.0)
 
 **with:**
 
 - `arb` — _arbitrary instance responsible to generate values_
-- `noHistory` — default: `false` — Omit generated values from the string representation. Recommended for very large tests due to the history's unbounded memory use.
+- `noHistory?` — default: `false` — Omit generated values from the string representation. Recommended for very large tests due to the history's unbounded memory use.
 
 **Usages:**
 

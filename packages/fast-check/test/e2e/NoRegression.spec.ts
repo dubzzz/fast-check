@@ -330,7 +330,7 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
-  it('infiniteStream', () => {
+  it('infiniteStream (noHistory)', () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
@@ -997,7 +997,7 @@ describe(`NoRegression (async)`, () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('infiniteStream (to Promise)', async () => {
+  it('infiniteStream (noHistory) (to Promise)', async () => {
     await expect(
       asyncRunWithSanitizedStack(
         async () =>

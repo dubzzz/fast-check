@@ -181,7 +181,7 @@ describe('StreamArbitrary', () => {
 
           // Assert
           expect(values).toEqual(expectedValues);
-          expect(String(stream).includes(`(${expectedValues.map(fakeStringify).join(',')}…)`)).toBe(true);
+          expect(String(stream)).toEqual(`Stream(${expectedValues.map(fakeStringify).join(',')}…)`);
           expect(stringify).toHaveBeenCalledTimes(expectedValues.length);
           expect(generate).toHaveBeenCalledTimes(expectedValues.length);
           if (expectedValues.length > 0) {
