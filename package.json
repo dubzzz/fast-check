@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.0",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -29,21 +29,21 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check:e2e test/e2e/documentation"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.5",
+    "@changesets/cli": "^2.29.6",
     "@eslint/js": "^9.33.0",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.39.1",
+    "@typescript-eslint/utils": "^8.41.0",
     "@vitest/coverage-v8": "^3.0.9",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.0.0",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.3.0",
-    "pkg-pr-new": "^0.0.54",
+    "pkg-pr-new": "^0.0.58",
     "prettier": "3.6.2",
     "publint": "^0.3.12",
     "typescript": "~5.9.2",
-    "typescript-eslint": "^8.39.1",
+    "typescript-eslint": "^8.41.0",
     "vitest": "^3.2.4"
   }
 }

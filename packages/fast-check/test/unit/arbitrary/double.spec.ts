@@ -190,7 +190,16 @@ describe('double', () => {
           expect(bigInt).toHaveBeenCalledTimes(2);
           const constraintsNoNaN = bigInt.mock.calls[0];
           const constraintsWithNaN = bigInt.mock.calls[1];
+          if (constraintsNoNaN.length !== 1) {
+            expect.fail(`Expected bigInt to be called with one constraints object; got ${constraintsNoNaN}`);
+          }
+          if (constraintsWithNaN.length !== 1) {
+            expect.fail(`Expected bigInt to be called with one constraints object; got ${constraintsWithNaN}`);
+          }
           if (max > Number.MIN_VALUE || (max > 0 && !ct.maxExcluded)) {
+            if (constraintsNoNaN.length !== 1) {
+              expect.fail(`Expected bigInt to be called with one constraints object; got ${constraintsNoNaN}`);
+            }
             // max > 0  --> NaN will be added as the greatest value
             expect(constraintsWithNaN[0]).toEqual({
               min: constraintsNoNaN[0].min,
@@ -226,6 +235,12 @@ describe('double', () => {
             double({ ...ct, noNaN: true });
             const arb = double(ct);
             // Extract NaN "index"
+            if (bigInt.mock.calls[0].length !== 1) {
+              expect.fail(`Expected bigInt to be called with one constraints object; got ${bigInt.mock.calls[0]}`);
+            }
+            if (bigInt.mock.calls[1].length !== 1) {
+              expect.fail(`Expected bigInt to be called with one constraints object; got ${bigInt.mock.calls[1]}`);
+            }
             const [{ min: minNonNaN }] = bigInt.mock.calls[0];
             const [{ min: minNaN, max: maxNaN }] = bigInt.mock.calls[1];
             const indexForNaN = minNonNaN !== minNaN ? minNaN : maxNaN;
