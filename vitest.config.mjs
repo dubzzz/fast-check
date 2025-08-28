@@ -29,7 +29,8 @@ export default defineConfig({
         test: {
           root: projectPath,
           name: projectName,
-          setupFiles: projectName === 'examples' ? ['vitest.setup.ts'] : projectName === 'fast-check' ? ['vitest.setup.mjs'] : [],
+          setupFiles:
+            projectName === 'examples' ? ['vitest.setup.ts'] : projectName === 'fast-check' ? ['vitest.setup.mjs'] : [],
         },
       };
     }),
