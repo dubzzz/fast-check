@@ -22,7 +22,7 @@ export default defineConfig({
       ...defaultExclude,
       '**/test-bundle/**',
       '**/.test-artifacts/**',
-      '**/templates/*-tutorial/**',
+      '**/templates/*-tutorial/**'
     ],
     coverage: { include: ['packages/fast-check/src/**'] },
     testTimeout,
