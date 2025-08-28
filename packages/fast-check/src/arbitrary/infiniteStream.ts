@@ -33,7 +33,11 @@ interface InfiniteStreamConstraints {
  * @public
  */
 function infiniteStream<T>(arb: Arbitrary<T>, constraints?: InfiniteStreamConstraints): Arbitrary<Stream<T>> {
-  return new StreamArbitrary(arb, !(constraints?.noHistory ?? false));
+  const history =
+    constraints !== undefined && typeof constraints === 'object' && 'noHistory' in constraints
+      ? !constraints.noHistory
+      : true;
+  return new StreamArbitrary(arb, history);
 }
 
 export { infiniteStream };
