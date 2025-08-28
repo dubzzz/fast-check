@@ -205,7 +205,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        node-version: [20.x, 22.x, latest]
+        node-version: [20.x, 22.x, 24.5] # TODO - 24.5 should be replaced by latest, once we understand why snippets.spec.mjs started to fail with 24.6.0
         os: ['ubuntu-latest']
         shard: ['1/1']
         include:
@@ -259,7 +259,7 @@ jobs:
             pnpm run test --shard=${{matrix.shard}}
           fi
       - name: Codecov
-        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
+        uses: codecov/codecov-action@fdcc8476540edceab3de004e990f80d881c6cc00 # v5.5.0
         if: env.ENABLE_COVERAGE == 'true'
         with:
           name: tests
@@ -551,13 +551,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish fast-check
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/fast-check/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/fast-check/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -591,13 +593,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/ava
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/ava/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/ava/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -631,13 +635,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/jest
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/jest/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/jest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -671,13 +677,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/packaged
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/packaged/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -711,13 +719,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/poisoning
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/poisoning/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/poisoning/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -751,13 +761,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/vitest
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/vitest/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/vitest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -791,13 +803,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/worker
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/worker/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/worker/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -831,13 +845,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Update npm
+        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: bundles
           path: packages/
       - name: Publish @fast-check/expect-type
-        run: npm publish --provenance --access public --tag ${{env.PUBLISH_TAG}} packages/expect-type/package.tgz
+        run: npm publish --access public --tag ${{env.PUBLISH_TAG}} packages/expect-type/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}

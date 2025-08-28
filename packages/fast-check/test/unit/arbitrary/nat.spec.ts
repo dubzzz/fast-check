@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { nat } from '../../../src/arbitrary/nat';
+import { nat, type NatConstraints } from '../../../src/arbitrary/nat';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
@@ -96,4 +96,30 @@ describe('nat', () => {
       }),
     );
   });
+
+  it('should handle union type of number | NatConstraints', () =>
+    fc.assert(
+      fc.property(
+        fc.oneof(
+          fc.constant(undefined),
+          fc.integer({ min: 0 }),
+          fc.record({}),
+          fc.record({ max: fc.integer({ min: 0 }) }),
+        ),
+        (constraints: number | NatConstraints | undefined) => {
+          // Arrange
+          const expectedMax = typeof constraints === 'number' ? constraints : (constraints?.max ?? null);
+          const instance = fakeIntegerArbitrary();
+          const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+          IntegerArbitrary.mockImplementation(() => instance);
+
+          // Act
+          const arb = constraints === undefined ? nat() : nat(constraints);
+
+          // Assert
+          expect(IntegerArbitrary).toHaveBeenCalledWith(0, expectedMax ?? expect.anything());
+          expect(arb).toBe(instance);
+        },
+      ),
+    ));
 });
