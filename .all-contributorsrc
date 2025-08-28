@@ -490,6 +490,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/53833818?v=4",
       "profile": "https://github.com/matthyk",
       "contributions": ["doc"]
+    },
+    {
+      "login": "dmurvihill",
+      "name": "Dolan Murvihill",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1649120?v=4",
+      "profile": "https://github.com/dmurvihill",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7
