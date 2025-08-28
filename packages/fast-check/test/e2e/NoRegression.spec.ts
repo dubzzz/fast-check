@@ -1002,7 +1002,9 @@ describe(`NoRegression (async)`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.infiniteStream(asyncNumber, { noHistory: true }), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+            fc.asyncProperty(fc.infiniteStream(asyncNumber, { noHistory: true }), async (s) =>
+              testFunc(await Promise.all([...s.take(10)])),
+            ),
             settings,
           ),
       ),

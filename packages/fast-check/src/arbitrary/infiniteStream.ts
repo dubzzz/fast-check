@@ -8,7 +8,6 @@ import { StreamArbitrary } from './_internals/StreamArbitrary';
  * @public
  */
 interface InfiniteStreamConstraints {
-
   /**
    * Do not save items emitted by this arbitrary and print count instead.
    * Recommended for very large tests.
@@ -34,7 +33,6 @@ interface InfiniteStreamConstraints {
  * @public
  */
 function infiniteStream<T>(arb: Arbitrary<T>, constraints?: InfiniteStreamConstraints): Arbitrary<Stream<T>> {
-
   return new StreamArbitrary(arb, !(constraints?.noHistory ?? false));
 }
 

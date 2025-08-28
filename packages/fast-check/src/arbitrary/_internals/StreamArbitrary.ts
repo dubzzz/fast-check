@@ -10,8 +10,7 @@ const safeObjectDefineProperties = Object.defineProperties;
 
 /** @internal */
 function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
-  const seenSegment = seenValuesStrings !== undefined ?
-    `${safeJoin(seenValuesStrings, ',')}…` : `${numSeen} emitted`;
+  const seenSegment = seenValuesStrings !== undefined ? `${safeJoin(seenValuesStrings, ',')}…` : `${numSeen} emitted`;
   return `Stream(${seenSegment})`;
 }
 
