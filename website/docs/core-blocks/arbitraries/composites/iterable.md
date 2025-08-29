@@ -15,7 +15,7 @@ The `Stream` structure provided by fast-check implements `IterableIterator<T>` a
 **Signatures:**
 
 - `fc.infiniteStream(arb)`
-- `fc.infiniteStream(arb, {noHistory?})` (since 4.3.0)
+- `fc.infiniteStream(arb, {noHistory?})`
 
 **with:**
 
