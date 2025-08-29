@@ -5,7 +5,6 @@ _TODO Description_
 
 ## Features
 
-- ([PR#6119](https://github.com/dubzzz/fast-check/pull/6119)) Add union type overloads for nat() and bigInt()
 - ([PR#6107](https://github.com/dubzzz/fast-check/pull/6107)) Add 'history' parameter to infiniteStream
 
 ## Fixes
