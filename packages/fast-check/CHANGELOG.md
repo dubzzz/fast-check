@@ -20,6 +20,7 @@ _TODO Description_
 - ([PR#6131](https://github.com/dubzzz/fast-check/pull/6131)) Doc: Add new contributor dmurvihill
 - ([PR#6038](https://github.com/dubzzz/fast-check/pull/6038)) Script: Update `ignoredBuiltDependencies`
 - ([PR#6059](https://github.com/dubzzz/fast-check/pull/6059)) Test: Drop unneeded retries for Node 23
+- ([PR#6119](https://github.com/dubzzz/fast-check/pull/6119)) Typings: Add union type overloads for nat() and bigInt()
 
 ---
 
