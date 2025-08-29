@@ -40,8 +40,12 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
       };
       const s = new Stream(g(this.arb, mrng.clone()));
       return safeObjectDefineProperties(s, {
-        toString: { value: () => prettyPrint(numSeenValues, seenValues?.map(stringify)) },
-        [toStringMethod]: { value: () => prettyPrint(numSeenValues, seenValues?.map(stringify)) },
+        toString: {
+          value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
+        },
+        [toStringMethod]: {
+          value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
+        },
         [asyncToStringMethod]: {
           value: async () =>
             prettyPrint(
