@@ -1,6 +1,6 @@
 # 4.3.0
 
-_TODO Description_
+_Add memory flag on `infiniteStream`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.2.0...v4.3.0)]
 
 ## Features
