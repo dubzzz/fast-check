@@ -644,6 +644,16 @@ Execution summary:
 }]]
 `;
 
+exports[`NoRegression (async) > infiniteStream (noHistory) (to Promise) 1`] = `
+[Error: Property failed after 1 tests
+{ seed: 42, path: "0", endOnFailure: true }
+Counterexample: [Stream(10 emitted)]
+Shrunk 0 time(s)
+
+Execution summary:
+[31m×[0m [Stream(10 emitted)]]
+`;
+
 exports[`NoRegression (async) > infiniteStream (to Promise) 1`] = `
 [Error: Property failed after 1 tests
 { seed: 42, path: "0", endOnFailure: true }
@@ -3232,6 +3242,16 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,-2]]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . [31m×[0m [[0,-1]]
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [[0,0]]]
+`;
+
+exports[`NoRegression > infiniteStream (noHistory) 1`] = `
+[Error: Property failed after 1 tests
+{ seed: 42, path: "0", endOnFailure: true }
+Counterexample: [Stream(10 emitted)]
+Shrunk 0 time(s)
+
+Execution summary:
+[31m×[0m [Stream(10 emitted)]]
 `;
 
 exports[`NoRegression > infiniteStream 1`] = `

@@ -15,16 +15,21 @@ The `Stream` structure provided by fast-check implements `IterableIterator<T>` a
 **Signatures:**
 
 - `fc.infiniteStream(arb)`
+- `fc.infiniteStream(arb, {noHistory?})`
 
 **with:**
 
 - `arb` — _arbitrary instance responsible to generate values_
+- `noHistory?` — default: `false` — Omit generated values from the string representation. Recommended for very large tests due to the history's unbounded memory use.
 
 **Usages:**
 
 ```js
 fc.infiniteStream(fc.nat(9));
 // Examples of generated values: Stream(…)…
+
+fc.infiniteStream(fc.nat(9), { noHistory: true });
+// Examples of generated values: Stream(0 emitted)…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/infiniteStream.html).  
