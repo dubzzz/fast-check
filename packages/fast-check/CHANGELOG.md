@@ -1,3 +1,29 @@
+# 4.3.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.2.0...v4.3.0)]
+
+## Features
+
+- ([PR#6119](https://github.com/dubzzz/fast-check/pull/6119)) Add union type overloads for nat() and bigInt()
+- ([PR#6107](https://github.com/dubzzz/fast-check/pull/6107)) Add 'history' parameter to infiniteStream
+
+## Fixes
+
+- ([PR#6118](https://github.com/dubzzz/fast-check/pull/6118)) Bug: Fix `fc.option` nil frequency 
+- ([PR#6046](https://github.com/dubzzz/fast-check/pull/6046)) CI: Skip expensive CI checks on Windows runner
+- ([PR#6120](https://github.com/dubzzz/fast-check/pull/6120)) CI: Avoid specs to run against Node >=24.6.0
+- ([PR#6128](https://github.com/dubzzz/fast-check/pull/6128)) CI: Toggle ON experimental-cli on Prettier
+- ([PR#6127](https://github.com/dubzzz/fast-check/pull/6127)) CI: Move to trusted publishing to NPM
+- ([PR#6129](https://github.com/dubzzz/fast-check/pull/6129)) CI: Toggle ON concurrency on ESLint
+- ([PR#6060](https://github.com/dubzzz/fast-check/pull/6060)) CI: Rework configuration of Vitest
+- ([PR#6058](https://github.com/dubzzz/fast-check/pull/6058)) Doc: Release note for version 4.2.0
+- ([PR#6131](https://github.com/dubzzz/fast-check/pull/6131)) Doc: Add new contributor dmurvihill
+- ([PR#6038](https://github.com/dubzzz/fast-check/pull/6038)) Script: Update `ignoredBuiltDependencies`
+- ([PR#6059](https://github.com/dubzzz/fast-check/pull/6059)) Test: Drop unneeded retries for Node 23
+
+---
+
 # 4.2.0
 
 _New primitives for race condition detection_
