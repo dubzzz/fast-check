@@ -110,7 +110,7 @@ function letrecWithoutCycles<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTy
 }
 
 /** @internal */
-function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: symbol) {
+export function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: symbol): void {
   const visited = new Set();
   function deref(value: unknown, source?: Record<PropertyKey, unknown>, sourceKey?: PropertyKey) {
     if (typeof value !== 'object' || value === null) {

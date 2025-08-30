@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { letrec } from '../../../src/arbitrary/letrec';
+import { derefPools, letrec } from '../../../src/arbitrary/letrec';
 import { record } from '../../../src/arbitrary/record';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
@@ -485,6 +485,76 @@ describe('letrec with cycles (integration)', () => {
       // Must be circular because `next` isn't optional, so it has to circle
       // around eventually.
       expect(circular).toBe(true);
+    });
+  });
+});
+
+describe('derefPools', () => {
+  const placeholderSymbol = Symbol('placeholder');
+
+  it('pools without placeholders are not modified', () => {
+    const pools = {
+      a: [1, [2], 3],
+      b: [[4], 5, { x: 6 }],
+      c: [7, 8, { x: [{ y: 9 }] }],
+    };
+    const poolsCopy = structuredClone(pools);
+
+    derefPools(pools, placeholderSymbol);
+
+    expect(pools).toStrictEqual(poolsCopy);
+  });
+
+  it('pools have placeholders replaced', () => {
+    const alreadyCircular: { x: unknown } = { x: null };
+    alreadyCircular.x = alreadyCircular;
+    const pools = {
+      a: [
+        1,
+        // Mutual recursion.
+        [[[[{ x: { [placeholderSymbol]: { key: 'a', index: 2 } } }]]]],
+        { a: 'a', b: 'b', c: { [placeholderSymbol]: { key: 'a', index: 1 } } },
+      ],
+      b: [
+        // Direct recursion.
+        [[[[[['hello', { world: { [placeholderSymbol]: { key: 'b', index: 0 } } }]]]]]],
+        // Recursive placeholder replacement.
+        { value: { [placeholderSymbol]: { key: 'b', index: 2 } } },
+        { [placeholderSymbol]: { key: 'b', index: 3 } },
+        { [placeholderSymbol]: { key: 'b', index: 4 } },
+        { value: 42 },
+        // Cross pool mutual recursion.
+        { values: [{ [placeholderSymbol]: { key: 'c', index: 0 } }] },
+      ],
+      c: [
+        // Cross pool mutual recursion.
+        { value: { [placeholderSymbol]: { key: 'b', index: 5 } } },
+        alreadyCircular,
+      ],
+    };
+
+    derefPools(pools, placeholderSymbol);
+
+    // Mutual recursion.
+    const xObject: { x: unknown } = { x: null };
+    const aValue1 = [[[[xObject]]]];
+    const aValue2 = { a: 'a', b: 'b', c: aValue1 };
+    xObject.x = aValue2;
+    // Direct recursion.
+    const worldObject: { world: unknown } = { world: null };
+    const bValue0 = [[[[[['hello', worldObject]]]]]];
+    worldObject.world = bValue0;
+    // Recursive placeholder replacement.
+    const value42 = { value: 42 };
+    // Cross pool mutual recursion.
+    const bValue5 = { values: [] as unknown[] };
+    const cValue0 = { value: bValue5 };
+    bValue5.values.push(cValue0);
+
+    expect(pools).toStrictEqual({
+      a: [1, aValue1, aValue2],
+      b: [bValue0, { value: value42 }, value42, value42, value42, bValue5],
+      c: [cValue0, alreadyCircular],
     });
   });
 });
