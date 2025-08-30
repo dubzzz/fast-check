@@ -192,3 +192,19 @@ export function resolveSize(size: Exclude<SizeForArbitrary, 'max'> | undefined):
   }
   return relativeSizeToSize(size, defaultSize);
 }
+
+/** @internal */
+export function invertSize(size: Size): Size {
+  switch (size) {
+    case 'xsmall':
+      return 'xlarge';
+    case 'small':
+      return 'large';
+    case 'medium':
+      return 'medium';
+    case 'large':
+      return 'small';
+    case 'xlarge':
+      return 'xsmall';
+  }
+}
