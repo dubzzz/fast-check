@@ -107,6 +107,7 @@ export default [
     ignores: [
       '.github/',
       'node_modules/',
+      'coverage/',
       'examples/',
       'packages/*/coverage/',
       'packages/*/dist/',

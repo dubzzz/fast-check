@@ -31,7 +31,7 @@ export type Float32ArrayConstraints = {
 } & FloatConstraints;
 
 /** @internal */
-function toTypedMapper(data: number[]): Float32Array {
+function toTypedMapper(data: number[]): Float32Array<ArrayBuffer> {
   return Float32Array.from(data);
 }
 

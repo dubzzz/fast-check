@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "module",
   "main": "lib/fast-check.js",
@@ -67,16 +67,16 @@
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.52.8",
-    "@types/node": "^22.16.5",
-    "cross-env": "^7.0.3",
+    "@microsoft/api-extractor": "^7.52.11",
+    "@types/node": "^22.18.0",
+    "cross-env": "^10.0.0",
     "fast-check": "workspace:*",
     "glob": "^11.0.3",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^8.3.0",
-    "typedoc": "^0.28.7",
-    "typescript": "~5.8.3",
+    "typedoc": "^0.28.11",
+    "typescript": "~5.9.2",
     "vitest": "^3.2.4"
   },
   "keywords": [

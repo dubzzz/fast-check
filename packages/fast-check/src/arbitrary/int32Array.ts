@@ -10,7 +10,7 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
  * @public
  */
 export function int32Array(constraints: IntArrayConstraints = {}): Arbitrary<Int32Array<ArrayBuffer>> {
-  return typedIntArrayArbitraryArbitraryBuilder<Int32Array, number>(
+  return typedIntArrayArbitraryArbitraryBuilder<Int32Array<ArrayBuffer>, number>(
     constraints,
     -0x80000000,
     0x7fffffff,

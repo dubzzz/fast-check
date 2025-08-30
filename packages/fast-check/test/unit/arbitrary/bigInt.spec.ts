@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { bigInt } from '../../../src/arbitrary/bigInt';
+import { bigInt, type BigIntConstraints } from '../../../src/arbitrary/bigInt';
 
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
@@ -88,5 +88,45 @@ describe('bigInt', () => {
         // Act / Assert
         expect(() => bigInt({ min: high, max: low })).toThrowError();
       }),
+    ));
+
+  it('should handle union type of [number, number] | BigIntConstraints', () =>
+    fc.assert(
+      fc.property(
+        fc.oneof(
+          // no argument
+          fc.tuple(),
+          // min, max range
+          fc.tuple(fc.bigInt(), fc.bigInt()).map<[bigint, bigint]>((t) => (t[0] < t[1] ? [t[0], t[1]] : [t[1], t[0]])),
+          // both min and max defined
+          fc.tuple(
+            fc.record({ min: fc.bigInt(), max: fc.bigInt() }).map((c) => ({
+              min: c.min < c.max ? c.min : c.max,
+              max: c.min < c.max ? c.max : c.min,
+            })),
+          ),
+          // one or the other maybe defined
+          fc.tuple(fc.record({ min: fc.option(fc.bigInt(), { nil: undefined }) })),
+          fc.tuple(fc.record({ max: fc.option(fc.bigInt(), { nil: undefined }) })),
+        ),
+        (args: [] | [bigint, bigint] | [BigIntConstraints]) => {
+          // Arrange
+          const [expectedMin, expectedMax] =
+            args.length === 0 ? [null, null] : args.length === 1 ? [args[0].min, args[0].max] : [args[0], args[1]];
+          const instance = fakeBigIntArbitrary();
+          const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
+          BigIntArbitrary.mockImplementation(() => instance);
+
+          // Act
+          const arb = bigInt(...args);
+
+          // Assert
+          expect(BigIntArbitrary).toHaveBeenCalledWith(
+            expectedMin ?? expect.any(BigInt),
+            expectedMax ?? expect.any(BigInt),
+          );
+          expect(arb).toBe(instance);
+        },
+      ),
     ));
 });

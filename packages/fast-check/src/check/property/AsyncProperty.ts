@@ -21,7 +21,7 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   const arbs = safeSlice(args, 0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => Promise<boolean | void>;
   safeForEach(arbs, assertIsArbitrary);
-  const mappedArbs = safeMap(arbs, (arb): typeof arb => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
+  const mappedArbs = safeMap(arbs, (arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new AsyncProperty(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 
