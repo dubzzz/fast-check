@@ -1,6 +1,6 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeAdd, safeHas, safeHasOwnProperty, safeMapHas, safeMapSet } from '../utils/globals';
+import { safeAdd, safeHas, safeHasOwnProperty } from '../utils/globals';
 import { invertSize, resolveSize, type SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { nat } from './nat.js';
 import { record } from './record.js';
@@ -9,7 +9,6 @@ import { noShrink } from './noShrink.js';
 
 const safeArrayIsArray = Array.isArray;
 const safeObjectCreate = Object.create;
-const safeObjectValues = Object.values;
 const safeObjectEntries = Object.entries;
 
 /**
@@ -82,7 +81,7 @@ export interface CycleConstraints {
    * Define how frequently cycles should occur in the generated values (at max)
    * @remarks Since 4.2.0
    */
-  frequency?: Exclude<SizeForArbitrary, 'max'>;
+  frequencySize?: Exclude<SizeForArbitrary, 'max'>;
 }
 
 /** @internal */
@@ -126,14 +125,17 @@ function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: 
     if (safeHasOwnProperty(value, placeholderSymbol)) {
       // This is a while loop because it's possible for an arbitrary to be defined as just `arb: tie('otherArb')`, in
       // which case what the `arb` generates is also a placeholder.
+      let currentValue: unknown = value;
       do {
-        const { key, index } = (value as { [placeholderSymbol]: { key: keyof T; index: number } })[placeholderSymbol];
+        const { key, index } = (currentValue as { [placeholderSymbol]: { key: keyof T; index: number } })[
+          placeholderSymbol
+        ];
         const pool = pools[key];
-        value = pool[index % pool.length];
+        currentValue = pool[index % pool.length];
         if (source !== undefined && sourceKey !== undefined) {
-          source[sourceKey] = value;
+          source[sourceKey] = currentValue;
         }
-      } while (safeHasOwnProperty(value, placeholderSymbol));
+      } while (safeHasOwnProperty(currentValue, placeholderSymbol));
       return;
     }
 
@@ -148,62 +150,6 @@ function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: 
     }
   }
   deref(pools);
-}
-
-/** @internal */
-function refPools(value: unknown, key: PropertyKey, placeholderSymbol: symbol): Record<PropertyKey, unknown> {
-  const poolIndices = new Map<unknown, number>();
-  safeMapSet(poolIndices, value, 0);
-
-  const visited = new Set();
-  function findCycles(value: unknown) {
-    if (typeof value !== 'object' || value === null) {
-      return;
-    }
-
-    if (safeHas(visited, value)) {
-      if (!safeMapHas(poolIndices, value)) {
-        safeMapSet(poolIndices, value, poolIndices.size);
-      }
-      return;
-    }
-    safeAdd(visited, value);
-
-    if (safeArrayIsArray(value)) {
-      for (let i = 0; i < value.length; i++) {
-        findCycles(value[i]);
-      }
-    } else {
-      for (const item of safeObjectValues(value)) {
-        findCycles(item);
-      }
-    }
-  }
-  findCycles(value);
-
-  function ref(value: unknown, source?: Record<PropertyKey, unknown>, sourceKey?: PropertyKey) {
-    const index = poolIndices.get(value);
-    if (index !== undefined && source !== undefined && sourceKey !== undefined) {
-      source[sourceKey] = { [placeholderSymbol]: { key, index } };
-    }
-
-    if (typeof value !== 'object' || value === null) {
-      return;
-    }
-
-    if (safeArrayIsArray(value)) {
-      for (let i = 0; i < value.length; i++) {
-        ref(value[i], value as unknown as Record<PropertyKey, unknown>, i);
-      }
-    } else {
-      for (const [key, item] of safeObjectEntries(value)) {
-        ref(item, value as Record<PropertyKey, unknown>, key);
-      }
-    }
-  }
-  ref(value);
-
-  return { [key]: [...poolIndices.keys()] };
 }
 
 /** @internal */
@@ -228,7 +174,7 @@ function letrecWithCycles<T>(
   const poolConstraints = {
     minLength: 1,
     // Higher cycle frequency is achieved by using a smaller pool of objects, so we invert the input `frequency`.
-    size: invertSize(resolveSize(constraints.frequency)),
+    size: invertSize(resolveSize(constraints.frequencySize)),
   };
   for (const key in strictArbs) {
     if (!safeHasOwnProperty(strictArbs, key)) {
@@ -250,16 +196,10 @@ function letrecWithCycles<T>(
     }
 
     const poolsArb = record(poolArbs as any) as Arbitrary<{ [K in keyof T]: unknown[] }>;
-    strictArbs[key] = poolsArb.map(
-      (pools) => {
-        derefPools(pools, placeholderSymbol);
-        return pools[key][0];
-      },
-      (value) =>
-        refPools(value, key, placeholderSymbol) as {
-          [K in keyof T]: unknown[];
-        },
-    ) as (typeof strictArbs)[typeof key];
+    strictArbs[key] = poolsArb.map((pools) => {
+      derefPools(pools, placeholderSymbol);
+      return pools[key][0];
+    }) as (typeof strictArbs)[typeof key];
   }
 
   return strictArbs;
