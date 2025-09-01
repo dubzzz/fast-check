@@ -1,11 +1,10 @@
 // @ts-check
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
 const { writeFileSync, existsSync, rmSync } = require('fs');
 const path = require('path');
 
-const property = propertyFor(pathToFileURL(__filename));
+const property = propertyFor(new URL(import.meta.url));
 
 let index = 0;
 function nextFilenameQuestion() {
@@ -16,7 +15,7 @@ function nextFilenameAnswer() {
   return path.join(__dirname, `concurrent-answer-${++index2}`);
 }
 
-exports.readerAssert = property(
+export const readerAssert = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (_from, _to) => {
@@ -32,7 +31,7 @@ exports.readerAssert = property(
   },
 );
 
-exports.writerAssert = property(
+export const writerAssert = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (_from, _to) => {
