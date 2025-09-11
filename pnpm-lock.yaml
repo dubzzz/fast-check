@@ -137,7 +137,7 @@ importers:
         specifier: ~5.9.2
         version: 5.9.2
       vite:
-        specifier: ^7.1.4
+        specifier: ^7.1.5
         version: 7.1.5(@types/node@22.18.1)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^3.2.4
@@ -232,7 +232,7 @@ importers:
         specifier: ~5.9.2
         version: 5.9.2
       vite:
-        specifier: ^7.1.4
+        specifier: ^7.1.5
         version: 7.1.5(@types/node@22.18.1)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^3.2.4
@@ -257,7 +257,7 @@ importers:
         specifier: ~5.9.2
         version: 5.9.2
       vite:
-        specifier: ^7.1.4
+        specifier: ^7.1.5
         version: 7.1.5(@types/node@22.18.1)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^3.2.4
@@ -275,7 +275,7 @@ importers:
         specifier: ~5.9.2
         version: 5.9.2
       vite:
-        specifier: ^7.1.4
+        specifier: ^7.1.5
         version: 7.1.5(@types/node@22.18.1)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^3.2.4
@@ -297,7 +297,7 @@ importers:
         specifier: ~5.9.2
         version: 5.9.2
       vite:
-        specifier: ^7.1.4
+        specifier: ^7.1.5
         version: 7.1.5(@types/node@22.18.1)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^3.2.4
@@ -322,7 +322,7 @@ importers:
         specifier: ~5.9.2
         version: 5.9.2
       vite:
-        specifier: ^7.1.4
+        specifier: ^7.1.5
         version: 7.1.5(@types/node@22.18.1)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^3.2.4
@@ -410,7 +410,7 @@ importers:
         specifier: ~5.9.2
         version: 5.9.2
       vite:
-        specifier: ^7.1.4
+        specifier: ^7.1.5
         version: 7.1.5(@types/node@22.18.1)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^3.2.4
