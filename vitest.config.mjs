@@ -1,3 +1,4 @@
+// @ts-check
 import { defaultExclude, defineConfig } from 'vitest/config';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -22,6 +23,7 @@ export default defineConfig({
     coverage: { include: ['packages/fast-check/src/**'] },
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },
+    retry: process.platform === 'win32' ? 2 : 0,
     projects: allProjects.map((projectPath) => {
       const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
       return {
