@@ -5,7 +5,7 @@ import { describe, it, expect } from 'vitest';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import { syncThrowProperty } from './__properties__/syncThrow.cjs';
+import { syncThrowProperty } from './__properties__/syncThrow.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
