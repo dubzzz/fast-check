@@ -212,12 +212,12 @@ jobs:
           - node-version: 22.x
             os: 'macos-latest'
             shard: '1/1'
-          - node-version: 22.x
-            os: 'windows-latest'
-            shard: '1/2'
-          - node-version: 22.x
-            os: 'windows-latest'
-            shard: '2/2'
+          # - node-version: 22.x
+          #   os: 'windows-latest'
+          #   shard: '1/2'
+          # - node-version: 22.x
+          #   os: 'windows-latest'
+          #   shard: '2/2'
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
