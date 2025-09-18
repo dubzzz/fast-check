@@ -3,8 +3,9 @@
   "name": "website",
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus start",
-    "build": "cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus build",
+    "sync:sponsors": "[ -f static/img/sponsors.svg ] || curl -o static/img/sponsors.svg https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg",
+    "start": "pnpm run sync:sponsors && cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus start",
+    "build": "pnpm run sync:sponsors && cp ../.all-contributorsrc src/components/HomepageContributors/all-contributors.json && node prebuild/optimize-images.mjs && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
