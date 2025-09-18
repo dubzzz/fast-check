@@ -1,0 +1,89 @@
+name: Format PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref_type:
+        description: 'Type of reference to format'
+        required: true
+        type: choice
+        options:
+          - branch
+          - pull_request
+      ref_value:
+        description: 'Branch name or PR number'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  format:
+    name: 'Format code and commit changes'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine checkout reference
+        id: ref
+        run: |
+          if [ "${{ github.event.inputs.ref_type }}" = "pull_request" ]; then
+            echo "ref=refs/pull/${{ github.event.inputs.ref_value }}/head" >> $GITHUB_OUTPUT
+          else
+            echo "ref=${{ github.event.inputs.ref_value }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ steps.ref.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+      - name: Using Node v22.x
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '22.x'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check if formatting is needed
+        id: format_check
+        run: |
+          if ! pnpm format:check; then
+            echo "changes_needed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes_needed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run format
+        if: steps.format_check.outputs.changes_needed == 'true'
+        run: pnpm format
+
+      - name: Configure git
+        if: steps.format_check.outputs.changes_needed == 'true'
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Commit formatting changes
+        if: steps.format_check.outputs.changes_needed == 'true'
+        run: |
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "style: auto-format code with prettier"
+            git push
+          else
+            echo "No changes to commit after formatting"
+          fi
+
+      - name: Output result
+        run: |
+          if [ "${{ steps.format_check.outputs.changes_needed }}" = "true" ]; then
+            echo "✅ Formatting changes have been committed and pushed"
+          else
+            echo "✅ Code is already properly formatted, no changes needed"
+          fi
