@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { letrec } from '../../../src/arbitrary/letrec';
+import { derefPools, letrec } from '../../../src/arbitrary/letrec';
+import { record } from '../../../src/arbitrary/record';
 import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
 import { Value } from '../../../src/check/arbitrary/definition/Value';
 import { Stream } from '../../../src/stream/Stream';
@@ -7,6 +8,7 @@ import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/Arbitrar
 import { fakeRandom } from './__test-helpers__/RandomHelpers';
 import {
   assertGenerateEquivalentTo,
+  assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
@@ -14,7 +16,7 @@ import {
 
 describe('letrec', () => {
   describe('builder', () => {
-    it('should be able to construct independant arbitraries', () => {
+    it('should be able to construct independent arbitraries', () => {
       // Arrange
       const { instance: expectedArb1 } = fakeArbitrary();
       const { instance: expectedArb2 } = fakeArbitrary();
@@ -28,6 +30,31 @@ describe('letrec', () => {
       // Assert
       expect(arb1).toBe(expectedArb1);
       expect(arb2).toBe(expectedArb2);
+    });
+
+    it('should be able to construct independent arbitraries with cycles', () => {
+      // Arrange
+      const expectedArb1 = new FakeIntegerArbitrary(1, 4);
+      const expectedArb2 = new FakeIntegerArbitrary(6, 4);
+
+      // Act
+      const { arb1, arb2 } = letrec(
+        (_tie) => ({
+          arb1: expectedArb1,
+          arb2: expectedArb2,
+        }),
+        { withCycles: true },
+      );
+
+      // Assert
+      assertProduceCorrectValues(
+        () => arb1,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+      assertProduceCorrectValues(
+        () => arb2,
+        (value) => typeof value === 'number' && value >= 6 && value <= 10,
+      );
     });
 
     it('should not produce LazyArbitrary for no-tie constructs', () => {
@@ -69,12 +96,15 @@ describe('letrec', () => {
       expect(arb).toBeInstanceOf(LazyArbitrary);
     });
 
-    it('should be able to construct mutually recursive arbitraries', () => {
+    it.each([false, true])('should be able to construct mutually recursive arbitraries', (withCycles) => {
       // Arrange / Act
-      const { arb1, arb2 } = letrec((tie) => ({
-        arb1: tie('arb2'),
-        arb2: tie('arb1'),
-      }));
+      const { arb1, arb2 } = letrec(
+        (tie) => ({
+          arb1: tie('arb2'),
+          arb2: tie('arb1'),
+        }),
+        { withCycles },
+      );
 
       // Assert
       expect(arb1).toBeDefined();
@@ -101,6 +131,35 @@ describe('letrec', () => {
       expect(arb3).toBe(expectedArb);
     });
 
+    it('should apply tie correctly with cycles', () => {
+      // Arrange
+      const expectedArb = new FakeIntegerArbitrary(1, 4);
+
+      // Act
+      const { arb1, arb2, arb3 } = letrec(
+        (tie) => ({
+          arb1: tie('arb2'),
+          arb2: tie('arb3'),
+          arb3: expectedArb,
+        }),
+        { withCycles: true },
+      );
+
+      // Assert
+      assertProduceCorrectValues(
+        () => arb1,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+      assertProduceCorrectValues(
+        () => arb2,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+      assertProduceCorrectValues(
+        () => arb3,
+        (value) => typeof value === 'number' && value >= 1 && value <= 5,
+      );
+    });
+
     it('should apply tie the same way for a reversed declaration', () => {
       // Arrange
       const { instance: expectedArb } = fakeArbitrary();
@@ -123,6 +182,38 @@ describe('letrec', () => {
       expect((arb2 as any as LazyArbitrary<unknown>).underlying).toBe(arb3);
       expect(arb3).toBe(expectedArb);
     });
+  });
+
+  it('should apply tie the same way for a reversed declaration with cycles', () => {
+    // Arrange
+    const expectedArb = new FakeIntegerArbitrary(1, 4);
+
+    // Act
+    const { arb1, arb2, arb3 } = letrec(
+      (tie) => ({
+        // Same scenario as 'should apply tie correctly'
+        // except we declared arb3 > arb2 > arb1
+        // instead of arb1 > arb2 > arb3
+        arb3: expectedArb,
+        arb2: tie('arb3'),
+        arb1: tie('arb2'),
+      }),
+      { withCycles: true },
+    );
+
+    // Assert
+    assertProduceCorrectValues(
+      () => arb1,
+      (value) => typeof value === 'number' && value >= 1 && value <= 5,
+    );
+    assertProduceCorrectValues(
+      () => arb2,
+      (value) => typeof value === 'number' && value >= 1 && value <= 5,
+    );
+    assertProduceCorrectValues(
+      () => arb3,
+      (value) => typeof value === 'number' && value >= 1 && value <= 5,
+    );
   });
 
   describe('generate', () => {
@@ -150,37 +241,44 @@ describe('letrec', () => {
       expect(generate).toHaveBeenCalledWith(mrng, biasFactor);
     });
 
-    it('should throw on generate if tie receives an invalid parameter', () => {
+    it.each([false, true])('should throw on generate if tie receives an invalid parameter', (withCycles) => {
       // Arrange
       const biasFactor = 42;
-      const { arb1 } = letrec((tie) => ({
-        arb1: tie('missing'),
-      }));
+      const { arb1 } = letrec(
+        (tie) => ({
+          arb1: tie('missing'),
+        }),
+        { withCycles },
+      );
       const { instance: mrng } = fakeRandom();
 
       // Act / Assert
-      expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
-      );
+      expect(() => arb1.generate(mrng, biasFactor)).toThrowError('Lazy arbitrary "missing" not correctly initialized');
     });
 
-    it('should throw on generate if tie receives an invalid parameter after creation', () => {
-      // Arrange
-      const biasFactor = 42;
-      const { arb1 } = letrec((tie) => {
-        const { instance: simpleArb, generate } = fakeArbitrary();
-        generate.mockImplementation((...args) => tie('missing').generate(...args));
-        return {
-          arb1: simpleArb,
-        };
-      });
-      const { instance: mrng } = fakeRandom();
+    it.each([false, true])(
+      'should throw on generate if tie receives an invalid parameter after creation',
+      (withCycles) => {
+        // Arrange
+        const biasFactor = 42;
+        const { arb1 } = letrec(
+          (tie) => {
+            const { instance: simpleArb, generate } = fakeArbitrary();
+            generate.mockImplementation((...args) => tie('missing').generate(...args));
+            return {
+              arb1: simpleArb,
+            };
+          },
+          { withCycles },
+        );
+        const { instance: mrng } = fakeRandom();
 
-      // Act / Assert
-      expect(() => arb1.generate(mrng, biasFactor)).toThrowErrorMatchingInlineSnapshot(
-        `[Error: Lazy arbitrary "missing" not correctly initialized]`,
-      );
-    });
+        // Act / Assert
+        expect(() => arb1.generate(mrng, biasFactor)).toThrowError(
+          'Lazy arbitrary "missing" not correctly initialized',
+        );
+      },
+    );
 
     it('should accept "reserved" keys as output of builder', () => {
       // Arrange
@@ -345,5 +443,118 @@ describe('letrec (integration)', () => {
 
   it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(letrecBuilder);
+  });
+});
+
+describe('letrec with cycles (integration)', () => {
+  type Node = {
+    value: number;
+    next: Node;
+  };
+  const letrecBuilder = () => {
+    const { node } = letrec<{ node: Node }>(
+      (tie) => ({
+        node: record({
+          value: new FakeIntegerArbitrary(),
+          next: tie('node'),
+        }),
+      }),
+      { withCycles: true },
+    );
+    return node;
+  };
+
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(letrecBuilder);
+  });
+
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(letrecBuilder, (node) => {
+      let circular = false;
+      const visited = new WeakSet();
+      const assertNode = (node: Node) => {
+        if (visited.has(node)) {
+          circular = true;
+          return;
+        }
+        visited.add(node);
+        expect(typeof node.value).toBe('number');
+        assertNode(node.next);
+      };
+      assertNode(node);
+      // Must be circular because `next` isn't optional, so it has to circle
+      // around eventually.
+      expect(circular).toBe(true);
+    });
+  });
+});
+
+describe('derefPools', () => {
+  const placeholderSymbol = Symbol('placeholder');
+
+  it('pools without placeholders are not modified', () => {
+    const pools = {
+      a: [1, [2], 3],
+      b: [[4], 5, { x: 6 }],
+      c: [7, 8, { x: [{ y: 9 }] }],
+    };
+    const poolsCopy = structuredClone(pools);
+
+    derefPools(pools, placeholderSymbol);
+
+    expect(pools).toStrictEqual(poolsCopy);
+  });
+
+  it('pools have placeholders replaced', () => {
+    const alreadyCircular: { x: unknown } = { x: null };
+    alreadyCircular.x = alreadyCircular;
+    const pools = {
+      a: [
+        1,
+        // Mutual recursion.
+        [[[[{ x: { [placeholderSymbol]: { key: 'a', index: 2 } } }]]]],
+        { a: 'a', b: 'b', c: { [placeholderSymbol]: { key: 'a', index: 1 } } },
+      ],
+      b: [
+        // Direct recursion.
+        [[[[[['hello', { world: { [placeholderSymbol]: { key: 'b', index: 0 } } }]]]]]],
+        // Recursive placeholder replacement.
+        { value: { [placeholderSymbol]: { key: 'b', index: 2 } } },
+        { [placeholderSymbol]: { key: 'b', index: 3 } },
+        { [placeholderSymbol]: { key: 'b', index: 4 } },
+        { value: 42 },
+        // Cross pool mutual recursion.
+        { values: [{ [placeholderSymbol]: { key: 'c', index: 0 } }] },
+      ],
+      c: [
+        // Cross pool mutual recursion.
+        { value: { [placeholderSymbol]: { key: 'b', index: 5 } } },
+        alreadyCircular,
+      ],
+    };
+
+    derefPools(pools, placeholderSymbol);
+
+    // Mutual recursion.
+    const xObject: { x: unknown } = { x: null };
+    const aValue1 = [[[[xObject]]]];
+    const aValue2 = { a: 'a', b: 'b', c: aValue1 };
+    xObject.x = aValue2;
+    // Direct recursion.
+    const worldObject: { world: unknown } = { world: null };
+    const bValue0 = [[[[[['hello', worldObject]]]]]];
+    worldObject.world = bValue0;
+    // Recursive placeholder replacement.
+    const value42 = { value: 42 };
+    // Cross pool mutual recursion.
+    const bValue5 = { values: [] as unknown[] };
+    const cValue0 = { value: bValue5 };
+    bValue5.values.push(cValue0);
+
+    expect(pools).toStrictEqual({
+      a: [1, aValue1, aValue2],
+      b: [bValue0, { value: value42 }, value42, value42, value42, bValue5],
+      c: [cValue0, alreadyCircular],
+    });
   });
 });
