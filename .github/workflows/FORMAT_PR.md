@@ -11,7 +11,7 @@ This GitHub Action allows you to automatically format code in pull requests or b
 3. Click "Run workflow"
 4. Fill in the required parameters:
    - **Type of reference**: Choose either "branch" or "pull_request"
-   - **Branch name or PR number**: 
+   - **Branch name or PR number**:
      - For branches: Enter the branch name (e.g., `feature/my-branch`)
      - For PRs: Enter the PR number (e.g., `123`)
 
