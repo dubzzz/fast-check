@@ -7,14 +7,7 @@ export default function HomepageSponsors(props) {
     <BannerSection color={props.color}>
       <h2>They sponsor us…</h2>
       <p>They financially contribute to the fast-check</p>
-      <a href="https://github.com/sponsors/dubzzz" target="_blank" rel="noopener" className={styles.allSponsorsWrapper}>
-        <img
-          align="center"
-          src="https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg"
-          alt="all sponsors"
-          loading="lazy"
-        />
-      </a>
+      <object className={styles.allSponsorsWrapper} data="/img/sponsors.svg" type="image/svg+xml"></object>
       <p>
         You can also become one of them by contributing via{' '}
         <a href="https://github.com/sponsors/dubzzz" target="_blank" rel="noopener">
