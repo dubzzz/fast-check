@@ -110,10 +110,10 @@ describe('with it', () => {
 
 ## Minimal requirements
 
-| @fast-check/vitest | vitest                                                              | fast-check                       | Node                   |
-| ------------------ | ------------------------------------------------------------------- | -------------------------------- | ---------------------- |
-| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(1)</sup> \|\| ^3<sup>(2)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(3)</sup> | ≥14.16.0<sup>(4)</sup> |
-| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                           | ≥14.16.0<sup>(4)</sup> |
+| @fast-check/vitest | vitest                                                                                    | fast-check                       | Node                   |
+| ------------------ | ----------------------------------------------------------------------------------------- | -------------------------------- | ---------------------- |
+| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(1)</sup> \|\| ^3<sup>(2)</sup> \|\| ^4<sup>(5)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(3)</sup> | ≥14.16.0<sup>(4)</sup> |
+| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                                                   | ^3.0.0                           | ≥14.16.0<sup>(4)</sup> |
 
 <details>
 <summary>More details...</summary>
@@ -122,5 +122,6 @@ describe('with it', () => {
 2. Official support for version 3.x of vitest starts at 0.1.5.
 3. Official support for version 4.x of fast-check starts at 0.1.6.
 4. As for vitest 0.28.1 and later.
+5. Official support for version 4.x of vitest starts at 0.2.3.
 
 </details>
