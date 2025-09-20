@@ -1,3 +1,12 @@
+# 0.2.3
+
+_Extend support to vitest v4_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.2...vitest%2Fv0.2.3)]
+
+## Fixes
+
+- CI: Flag vitest v4 as supported
+
 # 0.2.2
 
 _Better integration with Vitest when using fast-check v3_
