@@ -34,21 +34,21 @@ jobs:
             const head = branchName;
             const base = 'main';
             const body = `Updates the llms.txt file for AI bots and crawlers.
-
-This file provides structured information about the fast-check library for AI systems to better understand and reference the project.
-
-Generated file: \`${filePath}\`
-
-The llms.txt file includes:
-- Project description and purpose
-- Key features and capabilities  
-- Documentation links
-- API reference links
-- Installation instructions
-- Basic usage examples
-- License information
-- AI usage guidelines
-
-This follows the llms.txt standard for making websites more accessible to AI crawlers and training systems.`;
+            
+            This file provides structured information about the fast-check library for AI systems to better understand and reference the project.
+            
+            Generated file: \`${filePath}\`
+            
+            The llms.txt file includes:
+            - Project description and purpose
+            - Key features and capabilities  
+            - Documentation links
+            - API reference links
+            - Installation instructions
+            - Basic usage examples
+            - License information
+            - AI usage guidelines
+            
+            This follows the llms.txt standard for making websites more accessible to AI crawlers and training systems.`;
             
             await github.rest.pulls.create({owner, repo, title, head, base, body});
