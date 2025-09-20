@@ -48,7 +48,7 @@ export interface ObjectConstraints {
    * @defaultValue {@link boolean}, {@link integer}, {@link double}, {@link string}, null, undefined, Number.NaN, +0, -0, Number.EPSILON, Number.MIN_VALUE, Number.MAX_VALUE, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY
    * @remarks Since 0.0.7
    */
-  values?: Arbitrary<unknown>[];
+  values?: readonly Arbitrary<unknown>[];
   /**
    * Also generate boxed versions of values
    * @defaultValue false
@@ -150,13 +150,13 @@ function defaultValues(
 }
 
 /** @internal */
-function boxArbitraries(arbs: Arbitrary<unknown>[]): Arbitrary<unknown>[] {
+function boxArbitraries(arbs: readonly Arbitrary<unknown>[]): Arbitrary<unknown>[] {
   return arbs.map((arb) => boxedArbitraryBuilder(arb));
 }
 
 /** @internal */
-function boxArbitrariesIfNeeded(arbs: Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
-  return boxEnabled ? boxArbitraries(arbs).concat(arbs) : arbs;
+function boxArbitrariesIfNeeded(arbs: readonly Arbitrary<unknown>[], boxEnabled: boolean): Arbitrary<unknown>[] {
+  return boxEnabled ? boxArbitraries(arbs).concat(arbs) : [...arbs];
 }
 
 /**

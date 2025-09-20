@@ -63,7 +63,7 @@ export interface ArrayConstraintsInternal<T> extends ArrayConstraints {
    * Each entry must have at least one element of type T into it.
    * Each T must be a value acceptable for the arbitrary passed to the array.
    */
-  experimentalCustomSlices?: T[][];
+  experimentalCustomSlices?: readonly (readonly T[])[];
 }
 
 /**
