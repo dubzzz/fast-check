@@ -16,7 +16,7 @@ This package mostly try to prevent this issue. It can easily be used in monorepo
 
 ## Easy to use
 
-Run the following command at the root of your package to drop any file that will not make it in the final bundle published to npm.
+Run the following command at the root of your package to drop any file that will not be part of the final bundle after publishing to npm.
 
 ```bash
 # With npm
