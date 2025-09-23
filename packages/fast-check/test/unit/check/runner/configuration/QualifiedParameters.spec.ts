@@ -27,6 +27,7 @@ const parametersArbitrary = fc.record(
     reporter: fc.func(fc.constant(undefined)),
     asyncReporter: fc.func(fc.constant(Promise.resolve(undefined))),
     includeErrorInReport: fc.boolean(),
+    observabilityEnabled: fc.option(fc.boolean()),
   },
   { requiredKeys: [] },
 );

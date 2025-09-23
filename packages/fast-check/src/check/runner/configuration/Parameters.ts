@@ -203,4 +203,35 @@ export interface Parameters<T = void> {
    * as part of the message and not as a cause.
    */
   includeErrorInReport?: boolean;
+  /**
+   * Explicit test case identifier for observability and reporting features.
+   *
+   * When provided, this value will be used for test identification instead of
+   * relying on automatic stack trace parsing. Recommended for consistent and
+   * reliable test case naming across different environments.
+   *
+   * @remarks If not specified, fast-check will attempt to derive the test name
+   * from the stack trace, which may be unreliable in certain runtime environments.
+   *
+   * @example
+   * ```typescript
+   * fc.assert(fc.property(fc.integer(), (n) => n === n), {
+   *   testCaseName: "integer_identity_test"
+   * });
+   * ```
+   */
+  testCaseName?: string;
+  /**
+   * Enable observability reporting to collect test execution data.
+   *
+   * When enabled, fast-check will automatically collect and export test execution data
+   * including test cases, their status, and execution details to `.fast-check/observer/` directory.
+   * This data can be used for analysis, debugging, and observability purposes.
+   *
+   * The observability reporter works independently of regular error reporters and does not
+   * affect test execution or failure reporting behavior.
+   *
+   * @defaultValue `false` (or inherited from global configuration)
+   */
+  observabilityEnabled?: boolean;
 }

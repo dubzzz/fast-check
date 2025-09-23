@@ -16,6 +16,7 @@ import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsForma
 import type { IAsyncProperty } from '../property/AsyncProperty';
 import type { IProperty } from '../property/Property';
 import type { Value } from '../arbitrary/definition/Value';
+import { observe } from './reporter/ObservabilityReporter';
 
 /** @internal */
 function runIt<Ts>(
@@ -24,8 +25,9 @@ function runIt<Ts>(
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
+  observabilityEnabled: boolean = false,
 ): RunExecution<Ts> {
-  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
+  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure, observabilityEnabled);
   for (const v of runner) {
     (property.runBeforeEach as () => void)();
     const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
@@ -42,8 +44,9 @@ async function asyncRunIt<Ts>(
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
   interruptedAsFailure: boolean,
+  observabilityEnabled: boolean = false,
 ): Promise<RunExecution<Ts>> {
-  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
+  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure, observabilityEnabled);
   for (const v of runner) {
     await property.runBeforeEach();
     const out = await property.run(v);
@@ -118,14 +121,23 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()
-    ? asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-      )
-    : runIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
-        qParams.seed,
-        qParams.path,
-        maxSkips,
-        qParams,
+    ? asyncRunIt(
+        property,
+        finalShrink,
+        sourceValues,
+        qParams.verbose,
+        qParams.markInterruptAsFailure,
+        qParams.observabilityEnabled,
+      ).then((e) => observe(e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams)))
+    : observe(
+        runIt(
+          property,
+          finalShrink,
+          sourceValues,
+          qParams.verbose,
+          qParams.markInterruptAsFailure,
+          qParams.observabilityEnabled,
+        ).toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
       );
 }
 

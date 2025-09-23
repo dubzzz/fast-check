@@ -38,6 +38,8 @@ export class QualifiedParameters<T> {
   reporter: ((runDetails: RunDetails<T>) => void) | undefined;
   asyncReporter: ((runDetails: RunDetails<T>) => Promise<void>) | undefined;
   includeErrorInReport: boolean;
+  testCaseName: string | undefined;
+  observabilityEnabled: boolean | undefined;
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
@@ -66,6 +68,8 @@ export class QualifiedParameters<T> {
     this.reporter = p.reporter;
     this.asyncReporter = p.asyncReporter;
     this.includeErrorInReport = p.includeErrorInReport === true;
+    this.testCaseName = p.testCaseName;
+    this.observabilityEnabled = p.observabilityEnabled;
   }
 
   toParameters(): Parameters<T> {
@@ -89,6 +93,8 @@ export class QualifiedParameters<T> {
       reporter: this.reporter,
       asyncReporter: this.asyncReporter,
       includeErrorInReport: this.includeErrorInReport,
+      testCaseName: this.testCaseName,
+      observabilityEnabled: this.observabilityEnabled,
     };
     return parameters;
   }
