@@ -115,25 +115,25 @@ Generate random Zod schemas (v4) and data that will always pass/succeed given th
 To see it in action, check out the [demo on StackBlitz](https://stackblitz.com/edit/traversable-valibot-test-example-xegggxwt?file=test%2FtoString.fuzz.test.ts&initialPath=__vitest__/).
 
 ```typescript
-import { z } from 'zod'
-import { zxTest } from '@traversable/zod-test'
+import { z } from 'zod';
+import { zxTest } from '@traversable/zod-test';
 
 const Builder = zxTest.SeedGenerator({
-  include: ["boolean", "string", "object"],
+  include: ['boolean', 'string', 'object'],
   // 𐙘 use `include` to only include certain schema types
-  exclude: ["boolean", "any"],
+  exclude: ['boolean', 'any'],
   // 𐙘 use `exclude` to exclude certain schema types altogether (overrides `include`)
-})
+});
 
-const [mySeed] = fc.sample(Builder['*'], 1)
-const mySchema = zxTest.seedToSchema(mySeed)
-const validData = zxTest.seedToValidData(mySeed)
-const invalidData = zxTest.seedToInvalidData(mySeed)
+const [mySeed] = fc.sample(Builder['*'], 1);
+const mySchema = zxTest.seedToSchema(mySeed);
+const validData = zxTest.seedToValidData(mySeed);
+const invalidData = zxTest.seedToInvalidData(mySeed);
 
-mySchema.parse(validData)   // ✅
+mySchema.parse(validData); // ✅
 // since the `mySeed` was also used to generate `mySchema`, parsing `validData` always succeeds
 
-mySchema.parse(invalidData) // 🚫
+mySchema.parse(invalidData); // 🚫
 // since the `mySeed` was also used to generate `mySchema`, parsing `invalidData` always fails
 ```
 
