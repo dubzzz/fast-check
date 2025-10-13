@@ -25,8 +25,9 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     readonly shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
     verbose: VerbosityLevel,
     interruptedAsFailure: boolean,
+    observabilityEnabled: boolean = false,
   ) {
-    this.runExecution = new RunExecution<Ts>(verbose, interruptedAsFailure);
+    this.runExecution = new RunExecution<Ts>(verbose, interruptedAsFailure, observabilityEnabled);
     this.currentIdx = -1;
     this.nextValues = sourceValues;
   }

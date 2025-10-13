@@ -184,4 +184,11 @@ export interface RunDetailsCommon<Ts> {
    * @remarks Since 1.25.0
    */
   runConfiguration: Parameters<Ts>;
+  /**
+   * Timestamp (in milliseconds since Unix epoch) when the property run was started
+   *
+   * This timestamp is captured at the beginning of the test execution and represents
+   * the exact moment when the runner began generating and testing values for the property.
+   */
+  runStart: number;
 }

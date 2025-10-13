@@ -22,10 +22,12 @@ export class RunExecution<Ts> {
   numSkips: number;
   numSuccesses: number;
   interrupted: boolean;
+  runStart: number;
 
   constructor(
     readonly verbosity: VerbosityLevel,
     readonly interruptedAsFailure: boolean,
+    readonly observabilityEnabled: boolean = false,
   ) {
     this.rootExecutionTrees = [];
     this.currentLevelExecutionTrees = this.rootExecutionTrees;
@@ -33,6 +35,7 @@ export class RunExecution<Ts> {
     this.numSkips = 0;
     this.numSuccesses = 0;
     this.interrupted = false;
+    this.runStart = Date.now();
   }
 
   private appendExecutionTree(status: ExecutionStatus, value: Ts) {
@@ -42,7 +45,7 @@ export class RunExecution<Ts> {
   }
 
   fail(value: Ts, id: number, failure: PropertyFailure): void {
-    if (this.verbosity >= VerbosityLevel.Verbose) {
+    if (this.verbosity >= VerbosityLevel.Verbose || this.observabilityEnabled) {
       const currentTree = this.appendExecutionTree(ExecutionStatus.Failure, value);
       this.currentLevelExecutionTrees = currentTree.children;
     }
@@ -52,7 +55,7 @@ export class RunExecution<Ts> {
     this.failure = failure;
   }
   skip(value: Ts): void {
-    if (this.verbosity >= VerbosityLevel.VeryVerbose) {
+    if (this.verbosity >= VerbosityLevel.VeryVerbose || this.observabilityEnabled) {
       this.appendExecutionTree(ExecutionStatus.Skipped, value);
     }
     if (this.pathToFailure == null) {
@@ -60,7 +63,7 @@ export class RunExecution<Ts> {
     }
   }
   success(value: Ts): void {
-    if (this.verbosity >= VerbosityLevel.VeryVerbose) {
+    if (this.verbosity >= VerbosityLevel.VeryVerbose || this.observabilityEnabled) {
       this.appendExecutionTree(ExecutionStatus.Success, value);
     }
     if (this.pathToFailure == null) {
@@ -125,6 +128,7 @@ export class RunExecution<Ts> {
         executionSummary: this.rootExecutionTrees,
         verbose: this.verbosity,
         runConfiguration: qParams.toParameters(),
+        runStart: this.runStart,
       };
     }
 
@@ -158,6 +162,7 @@ export class RunExecution<Ts> {
       executionSummary: this.rootExecutionTrees,
       verbose: this.verbosity,
       runConfiguration: qParams.toParameters(),
+      runStart: this.runStart,
     };
     return out;
   }

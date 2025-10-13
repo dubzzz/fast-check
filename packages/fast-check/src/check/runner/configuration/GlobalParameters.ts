@@ -85,6 +85,19 @@ export type GlobalParameters = Pick<Parameters<unknown>, Exclude<keyof Parameter
    * @remarks Since 2.22.0
    */
   defaultSizeToMaxWhenMaxSpecified?: boolean;
+  /**
+   * Enable observability reporting to collect test execution data.
+   *
+   * When enabled, fast-check will automatically collect and export test execution data
+   * including test cases, their status, and execution details to `.fast-check/observer/` directory.
+   * This data can be used for analysis, debugging, and observability purposes.
+   *
+   * The observability reporter works independently of regular error reporters and does not
+   * affect test execution or failure reporting behavior.
+   *
+   * @defaultValue `false`
+   */
+  observabilityEnabled?: boolean;
 };
 /**
  * Define global parameters that will be used by all the runners
