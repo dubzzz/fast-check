@@ -42,7 +42,7 @@
     "pkg-pr-new": "^0.0.60",
     "prettier": "3.6.2",
     "publint": "^0.3.14",
-    "typescript": "~5.9.2",
+    "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.0",
     "vitest": "^3.2.4"
   }
