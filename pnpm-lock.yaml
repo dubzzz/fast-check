@@ -242,7 +242,7 @@ importers:
     dependencies:
       '@npmcli/arborist':
         specifier: ^9.0.0
-        version: 9.1.4
+        version: 9.1.6
       npm-packlist:
         specifier: ^10.0.0
         version: 10.0.1
@@ -2340,8 +2340,12 @@ packages:
     resolution: {integrity: sha512-S79NdEgDQd/NGCay6TCoVzXSj74skRZIKJcpJjC5lOq34SZzyI6MqtiiWoiVWoVrTcGjNeC4ipbh1VIHlpfF5Q==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  '@npmcli/arborist@9.1.4':
-    resolution: {integrity: sha512-2Co31oEFlzT9hYjGahGL4PqDXXpA18tX9yu55j5on+m2uDiyBoljQjHNnnNVCji4pFUjawlHi23tQ4j2A5gHow==}
+  '@npmcli/agent@4.0.0':
+    resolution: {integrity: sha512-kAQTcEN9E8ERLVg5AsGwLNoFb+oEG6engbqAU2P43gD4JEIkNGMHdVQ096FsOAAYpZPB0RSt0zgInKIAS1l5QA==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+
+  '@npmcli/arborist@9.1.6':
+    resolution: {integrity: sha512-c5Pr3EG8UP5ollkJy2x+UdEQC5sEHe3H9whYn6hb2HJimAKS4zmoJkx5acCiR/g4P38RnCSMlsYQyyHnKYeLvQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
@@ -2349,21 +2353,21 @@ packages:
     resolution: {integrity: sha512-/xGlezI6xfGO9NwuJlnwz/K14qD1kCSAGtacBHnGzeAIuJGazcp45KP5NuyARXoKb7cwulAGWVsbeSxdG/cb0Q==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  '@npmcli/git@6.0.3':
-    resolution: {integrity: sha512-GUYESQlxZRAdhs3UhbB6pVRNUELQOHXwK9ruDkwmCv2aZ5y0SApQzUJCg02p3A7Ue2J5hxvlk1YI53c00NmRyQ==}
-    engines: {node: ^18.17.0 || >=20.5.0}
+  '@npmcli/git@7.0.0':
+    resolution: {integrity: sha512-vnz7BVGtOctJAIHouCJdvWBhsTVSICMeUgZo2c7XAi5d5Rrl80S1H7oPym7K03cRuinK5Q6s2dw36+PgXQTcMA==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   '@npmcli/installed-package-contents@3.0.0':
     resolution: {integrity: sha512-fkxoPuFGvxyrH+OQzyTkX2LUEamrF4jZSmxjAtPPHHGO0dqsQ8tTKjnIS8SAnPHdk2I03BDtSMR5K/4loKg79Q==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
-  '@npmcli/map-workspaces@4.0.2':
-    resolution: {integrity: sha512-mnuMuibEbkaBTYj9HQ3dMe6L0ylYW+s/gfz7tBDMFY/la0w9Kf44P9aLn4/+/t3aTR3YUHKoT6XQL9rlicIe3Q==}
-    engines: {node: ^18.17.0 || >=20.5.0}
+  '@npmcli/map-workspaces@5.0.0':
+    resolution: {integrity: sha512-+YJN6+BIQEC5QL4EqffJ2I1S9ySspwn7GP7uQINtZhf3uy7P0KnnIg+Ab5WeSUTZYpg+jn3GSfMme2FutB7qEQ==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@npmcli/metavuln-calculator@9.0.1':
-    resolution: {integrity: sha512-B7ziEnkSmnauecEvFbg9h0d2CVa3uJudd9bTDc9vScfYdRETkQkCriFiYCV3PXE++igd5JRw35WJz902HnGrCg==}
+  '@npmcli/metavuln-calculator@9.0.2':
+    resolution: {integrity: sha512-eESzlCRLuD30qYefT2jYZTUepgu9DNJQdXABGGxjkir055x2UtnpNfDZCA6OJxButQNgxNKc9AeTchYxSgbMCw==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
   '@npmcli/name-from-folder@3.0.0':
@@ -2374,12 +2378,8 @@ packages:
     resolution: {integrity: sha512-+t5DZ6mO/QFh78PByMq1fGSAub/agLJZDRfJRMeOSNCt8s9YVlTjmGpIPwPhvXTGUIJk+WszlT0rQa1W33yzNA==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  '@npmcli/package-json@6.2.0':
-    resolution: {integrity: sha512-rCNLSB/JzNvot0SEyXqWZ7tX2B5dD2a1br2Dp0vSYVo5jh8Z0EZ7lS9TsZ1UtziddB1UfNUaMCc538/HztnJGA==}
-    engines: {node: ^18.17.0 || >=20.5.0}
-
-  '@npmcli/package-json@7.0.0':
-    resolution: {integrity: sha512-wy5os0g17akBCVScLyDsDFFf4qC/MmUgIGAFw2pmBGJ/yAQfFbTR9gEaofy4HGm9Jf2MQBnKZICfNds2h3WpEg==}
+  '@npmcli/package-json@7.0.1':
+    resolution: {integrity: sha512-956YUeI0YITbk2+KnirCkD19HLzES0habV+Els+dyZaVsaM6VGSiNwnRu6t3CZaqDLz4KXy2zx+0N/Zy6YjlAA==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
   '@npmcli/promise-spawn@8.0.3':
@@ -2397,10 +2397,6 @@ packages:
   '@npmcli/run-script@10.0.0':
     resolution: {integrity: sha512-vaQj4nccJbAslopIvd49pQH2NhUp7G9pY4byUtmwhe37ZZuubGrx0eB9hW2F37uVNRuDDK6byFGXF+7JCuMSZg==}
     engines: {node: ^20.17.0 || >=22.9.0}
-
-  '@npmcli/run-script@9.1.0':
-    resolution: {integrity: sha512-aoNSbxtkePXUlbZB+anS1LqsJdctG5n3UVhfU47+CDdwMi6uNTBMF9gPcQRnqghQd2FGzcwwIFBruFMxjhBewg==}
-    engines: {node: ^18.17.0 || >=20.5.0}
 
   '@octokit/action@6.1.0':
     resolution: {integrity: sha512-lo+nHx8kAV86bxvOVOI3vFjX3gXPd/L7guAUbvs3pUvnR2KC+R7yjBkA1uACt4gYhs4LcWP3AXSGQzsbeN2XXw==}
@@ -2778,8 +2774,8 @@ packages:
     resolution: {integrity: sha512-MM8XIwUjN2bwvCg1QvrMtbBmpcSHrkhFSCu1D11NyPvDQ25HEc4oG5/OcQfd/Tlf/OxmKWERDj0zGE23jQaMwA==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  '@sigstore/sign@4.0.0':
-    resolution: {integrity: sha512-5+IadiqPzRRMfvftHONzpeH2EzlDNuBiTMC3Lx7+9tLqn/4xbWVfSZA+YaOzKCn86k5BWfJ+aGO9v+pQmIyxqQ==}
+  '@sigstore/sign@4.0.1':
+    resolution: {integrity: sha512-KFNGy01gx9Y3IBPG/CergxR9RZpN43N+lt3EozEfeoyqm8vEiLxwRl3ZO5sPx3Obv1ix/p7FWOlPc2Jgwfp9PA==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
   '@sigstore/tuf@4.0.0':
@@ -4530,8 +4526,8 @@ packages:
       supports-color:
         optional: true
 
-  debug@4.4.1:
-    resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
+  debug@4.4.3:
+    resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -5438,12 +5434,8 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hosted-git-info@8.1.0:
-    resolution: {integrity: sha512-Rw/B2DNQaPBICNXEm8balFz9a6WpZrkCGpcWFpy7nCj+NyhSdqXipmfvtmWt9xGfp0wZnBxB+iVpLmQMYt47Tw==}
-    engines: {node: ^18.17.0 || >=20.5.0}
-
-  hosted-git-info@9.0.0:
-    resolution: {integrity: sha512-gEf705MZLrDPkbbhi8PnoO4ZwYgKoNL+ISZ3AjZMht2r3N5tuTwncyDi6Fv2/qDnMmZxgs0yI8WDOyR8q3G+SQ==}
+  hosted-git-info@9.0.2:
+    resolution: {integrity: sha512-M422h7o/BR3rmCQ8UHi7cyyMqKltdP9Uo+J2fXK+RSAY+wTcKOIRyhTuKv4qn+DJf3g+PL890AzId5KZpX+CBg==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
   hpack.js@2.1.6:
@@ -6348,8 +6340,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lru-cache@11.2.1:
-    resolution: {integrity: sha512-r8LA6i4LP4EeWOhqBaZZjDWwehd1xUJPCJd9Sv300H0ZmcUER4+JPh7bqqZeqs1o5pgtgvXm+d9UGrB5zZGDiQ==}
+  lru-cache@11.2.2:
+    resolution: {integrity: sha512-F9ODfyqML2coTIsQpSkRHnLSZMtkU8Q+mSfcaIyKwy58u+8k5nvAYeiNhsyMARvzNcXJ9QfWVrcPsC9e9rAxtg==}
     engines: {node: 20 || >=22}
 
   lru-cache@5.1.1:
@@ -6383,8 +6375,8 @@ packages:
     resolution: {integrity: sha512-QMjGbFTP0blj97EeidG5hk/QhKQ3T4ICckQGLgz38QF7Vgbk6e6FTARN8KhKxyBbWn8R0HU+bnw8aSoFPD4qtQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  make-fetch-happen@15.0.1:
-    resolution: {integrity: sha512-9GjpQcaUXO2xmre8JfALl8Oji8Jpo+SyY2HpqFFPHVczOld/I+JFRx9FkP/uedZzkJlI9uM5t/j6dGJv4BScQw==}
+  make-fetch-happen@15.0.2:
+    resolution: {integrity: sha512-sI1NY4lWlXBAfjmCtVWIIpBypbBdhHtcjnwnv+gtCnsaOffyFil3aidszGC8hgzJe+fT1qix05sWxmD/Bmf/oQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
   makeerror@1.0.12:
@@ -6750,14 +6742,9 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  minizlib@3.0.2:
-    resolution: {integrity: sha512-oG62iEk+CYt5Xj2YqI5Xi9xWUeZhDI8jjQmC5oThVH5JGCTgIjr7ciJDzC7MBzYd//WvR1OTmP5Q38Q8ShQtVA==}
+  minizlib@3.1.0:
+    resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
     engines: {node: '>= 18'}
-
-  mkdirp@3.0.1:
-    resolution: {integrity: sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   mlly@1.7.4:
     resolution: {integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==}
@@ -6882,25 +6869,17 @@ packages:
     resolution: {integrity: sha512-TZKxPvItzai9kN9H/TkmCtx/ZN/hvr3vUycjlfmH0ootY9yFBzNOpiXAdIn1Iteqsvk4lQn6B5PTrt+n6h8k/w==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  npm-package-arg@12.0.2:
-    resolution: {integrity: sha512-f1NpFjNI9O4VbKMOlA5QoBq/vSQPORHcTZ2feJpFkTHJ9eQkdlmZEKSjcAhxTGInC7RlEyScT9ui67NaOsjFWA==}
-    engines: {node: ^18.17.0 || >=20.5.0}
-
-  npm-package-arg@13.0.0:
-    resolution: {integrity: sha512-+t2etZAGcB7TbbLHfDwooV9ppB2LhhcT6A+L9cahsf9mEUAoQ6CktLEVvEnpD0N5CkX7zJqnPGaFtoQDy9EkHQ==}
+  npm-package-arg@13.0.1:
+    resolution: {integrity: sha512-6zqls5xFvJbgFjB1B2U6yITtyGBjDBORB7suI4zA4T/sZ1OmkMFlaQSNB/4K0LtXNA1t4OprAFxPisadK5O2ag==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
   npm-packlist@10.0.1:
     resolution: {integrity: sha512-vaC03b2PqJA6QqmwHi1jNU8fAPXEnnyv4j/W4PVfgm24C4/zZGSVut3z0YUeN0WIFCo1oGOL02+6LbvFK7JL4Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  npm-pick-manifest@10.0.0:
-    resolution: {integrity: sha512-r4fFa4FqYY8xaM7fHecQ9Z2nE9hgNfJR+EmoKv0+chvzWkBcORX3r0FpTByP+CbOVJDladMXnPQGVN8PBLGuTQ==}
-    engines: {node: ^18.17.0 || >=20.5.0}
-
-  npm-registry-fetch@18.0.2:
-    resolution: {integrity: sha512-LeVMZBBVy+oQb5R6FDV9OlJCcWDU+al10oKpe+nsvcHnG24Z3uM3SvJYKfGJlfGjVU8v9liejCrUR/M5HO5NEQ==}
-    engines: {node: ^18.17.0 || >=20.5.0}
+  npm-pick-manifest@11.0.1:
+    resolution: {integrity: sha512-HnU7FYSWbo7dTVHtK0G+BXbZ0aIfxz/aUCVLN0979Ec6rGUX5cJ6RbgVx5fqb5G31ufz+BVFA7y1SkRTPVNoVQ==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   npm-registry-fetch@19.0.0:
     resolution: {integrity: sha512-DFxSAemHUwT/POaXAOY4NJmEWBPB0oKbwD6FFDE9hnt1nORkt/FXvgjD4hQjoKoHw9u0Ezws9SPXwV7xE/Gyww==}
@@ -7070,8 +7049,8 @@ packages:
   package-manager-detector@1.3.0:
     resolution: {integrity: sha512-ZsEbbZORsyHuO00lY1kV3/t72yp6Ysay6Pd17ZAlNGuGwmWDLCJxFpRs0IzfXfj1o4icJOkUEioexFHzyPurSQ==}
 
-  pacote@21.0.1:
-    resolution: {integrity: sha512-LHGIUQUrcDIJUej53KJz1BPvUuHrItrR2yrnN0Kl9657cJ0ZT6QJHk9wWPBnQZhYT5KLyZWrk9jaYc2aKDu4yw==}
+  pacote@21.0.3:
+    resolution: {integrity: sha512-itdFlanxO0nmQv4ORsvA9K1wv40IPfB9OmWqfaJWvoJ30VKyHsqNgDVeG+TVhI7Gk7XW8slUy7cA9r6dF5qohw==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
@@ -7862,10 +7841,6 @@ packages:
     resolution: {integrity: sha512-SEbJV7tohp3DAAILbEMPXavBjAnMN0tVnh4+9G8ihV4Pq3HYF9h8QNez9zkJ1ILkv9G2BjdzwctznGZXgu/HGw==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  read-package-json-fast@4.0.0:
-    resolution: {integrity: sha512-qpt8EwugBWDw2cgE2W+/3oxC+KTez2uSVR8JU9Q36TXPAGCaozfQUs59v4j4GFpWTaw0i6hAZSvOmu1J0uOEUg==}
-    engines: {node: ^18.17.0 || >=20.5.0}
-
   read-yaml-file@1.1.0:
     resolution: {integrity: sha512-VIMnQi/Z4HT2Fxuwg5KrY174U1VdUIASQVWXXyqtNRtxSr9IYkn1rsI6Tb6HsrHCmB7gVpNwX6JxPTHcH6IoTA==}
     engines: {node: '>=6'}
@@ -8155,8 +8130,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.7.2:
-    resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
+  semver@7.7.3:
+    resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -8573,8 +8548,8 @@ packages:
     resolution: {integrity: sha512-Re10+NauLTMCudc7T5WLFLAwDhQ0JWdrMK+9B2M8zR5hRExKmsRDCBA7/aV/pNJFltmBFO5BAMlQFi/vq3nKOg==}
     engines: {node: '>=6'}
 
-  tar@7.4.3:
-    resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
+  tar@7.5.1:
+    resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
     engines: {node: '>=18'}
 
   temp-dir@2.0.0:
@@ -9548,7 +9523,7 @@ snapshots:
       '@babel/traverse': 7.28.0
       '@babel/types': 7.28.2
       convert-source-map: 2.0.0
-      debug: 4.4.1
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -9600,7 +9575,7 @@ snapshots:
       '@babel/core': 7.28.0
       '@babel/helper-compilation-targets': 7.27.2
       '@babel/helper-plugin-utils': 7.27.1
-      debug: 4.4.1
+      debug: 4.4.3
       lodash.debounce: 4.0.8
       resolve: 1.22.10
     transitivePeerDependencies:
@@ -10341,7 +10316,7 @@ snapshots:
       '@babel/parser': 7.28.0
       '@babel/template': 7.27.2
       '@babel/types': 7.28.2
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10368,7 +10343,7 @@ snapshots:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@changesets/assemble-release-plan@6.0.9':
     dependencies:
@@ -10377,7 +10352,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@changesets/changelog-git@0.2.1':
     dependencies:
@@ -10410,7 +10385,7 @@ snapshots:
       package-manager-detector: 0.2.11
       picocolors: 1.1.1
       resolve-from: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.3
       spawndamnit: 3.0.1
       term-size: 2.2.1
     transitivePeerDependencies:
@@ -10435,7 +10410,7 @@ snapshots:
       '@changesets/types': 6.1.0
       '@manypkg/get-packages': 1.1.3
       picocolors: 1.1.1
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@changesets/get-release-plan@4.0.13':
     dependencies:
@@ -10999,7 +10974,7 @@ snapshots:
       react-router: 5.3.4(react@19.1.1)
       react-router-config: 5.1.1(react-router@5.3.4(react@19.1.1))(react@19.1.1)
       react-router-dom: 5.3.4(react@19.1.1)
-      semver: 7.7.2
+      semver: 7.7.3
       serve-handler: 6.1.6
       tinypool: 1.1.1
       tslib: 2.8.1
@@ -11843,7 +11818,7 @@ snapshots:
   '@eslint/config-array@0.21.0':
     dependencies:
       '@eslint/object-schema': 2.1.6
-      debug: 4.4.1
+      debug: 4.4.3
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -11857,7 +11832,7 @@ snapshots:
   '@eslint/eslintrc@3.3.1':
     dependencies:
       ajv: 6.12.6
-      debug: 4.4.1
+      debug: 4.4.3
       espree: 10.4.0
       globals: 14.0.0
       ignore: 5.3.2
@@ -12404,8 +12379,8 @@ snapshots:
       https-proxy-agent: 7.0.6
       node-fetch: 2.7.0(encoding@0.1.13)
       nopt: 8.1.0
-      semver: 7.7.2
-      tar: 7.4.3
+      semver: 7.7.3
+      tar: 7.5.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -12548,39 +12523,48 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@npmcli/arborist@9.1.4':
+  '@npmcli/agent@4.0.0':
+    dependencies:
+      agent-base: 7.1.4
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.6
+      lru-cache: 11.2.2
+      socks-proxy-agent: 8.0.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@npmcli/arborist@9.1.6':
     dependencies:
       '@isaacs/string-locale-compare': 1.1.0
       '@npmcli/fs': 4.0.0
       '@npmcli/installed-package-contents': 3.0.0
-      '@npmcli/map-workspaces': 4.0.2
-      '@npmcli/metavuln-calculator': 9.0.1
+      '@npmcli/map-workspaces': 5.0.0
+      '@npmcli/metavuln-calculator': 9.0.2
       '@npmcli/name-from-folder': 3.0.0
       '@npmcli/node-gyp': 4.0.0
-      '@npmcli/package-json': 6.2.0
+      '@npmcli/package-json': 7.0.1
       '@npmcli/query': 4.0.1
       '@npmcli/redact': 3.2.2
-      '@npmcli/run-script': 9.1.0
+      '@npmcli/run-script': 10.0.0
       bin-links: 5.0.0
-      cacache: 19.0.1
+      cacache: 20.0.1
       common-ancestor-path: 1.0.1
-      hosted-git-info: 8.1.0
+      hosted-git-info: 9.0.2
       json-stringify-nice: 1.1.4
-      lru-cache: 10.4.3
-      minimatch: 9.0.5
+      lru-cache: 11.2.2
+      minimatch: 10.0.3
       nopt: 8.1.0
       npm-install-checks: 7.1.2
-      npm-package-arg: 12.0.2
-      npm-pick-manifest: 10.0.0
-      npm-registry-fetch: 18.0.2
-      pacote: 21.0.1
+      npm-package-arg: 13.0.1
+      npm-pick-manifest: 11.0.1
+      npm-registry-fetch: 19.0.0
+      pacote: 21.0.3
       parse-conflict-json: 4.0.0
       proc-log: 5.0.0
       proggy: 3.0.0
       promise-all-reject-late: 1.0.1
       promise-call-limit: 3.0.2
-      read-package-json-fast: 4.0.0
-      semver: 7.7.2
+      semver: 7.7.3
       ssri: 12.0.0
       treeverse: 3.0.0
       walk-up-path: 4.0.0
@@ -12589,17 +12573,17 @@ snapshots:
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
-  '@npmcli/git@6.0.3':
+  '@npmcli/git@7.0.0':
     dependencies:
       '@npmcli/promise-spawn': 8.0.3
       ini: 5.0.0
-      lru-cache: 10.4.3
-      npm-pick-manifest: 10.0.0
+      lru-cache: 11.2.2
+      npm-pick-manifest: 11.0.1
       proc-log: 5.0.0
       promise-retry: 2.0.1
-      semver: 7.7.2
+      semver: 7.7.3
       which: 5.0.0
 
   '@npmcli/installed-package-contents@3.0.0':
@@ -12607,20 +12591,20 @@ snapshots:
       npm-bundled: 4.0.0
       npm-normalize-package-bin: 4.0.0
 
-  '@npmcli/map-workspaces@4.0.2':
+  '@npmcli/map-workspaces@5.0.0':
     dependencies:
       '@npmcli/name-from-folder': 3.0.0
-      '@npmcli/package-json': 6.2.0
-      glob: 10.4.5
-      minimatch: 9.0.5
+      '@npmcli/package-json': 7.0.1
+      glob: 11.0.3
+      minimatch: 10.0.3
 
-  '@npmcli/metavuln-calculator@9.0.1':
+  '@npmcli/metavuln-calculator@9.0.2':
     dependencies:
-      cacache: 19.0.1
+      cacache: 20.0.1
       json-parse-even-better-errors: 4.0.0
-      pacote: 21.0.1
+      pacote: 21.0.3
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 
@@ -12628,24 +12612,14 @@ snapshots:
 
   '@npmcli/node-gyp@4.0.0': {}
 
-  '@npmcli/package-json@6.2.0':
+  '@npmcli/package-json@7.0.1':
     dependencies:
-      '@npmcli/git': 6.0.3
-      glob: 10.4.5
-      hosted-git-info: 8.1.0
-      json-parse-even-better-errors: 4.0.0
-      proc-log: 5.0.0
-      semver: 7.7.2
-      validate-npm-package-license: 3.0.4
-
-  '@npmcli/package-json@7.0.0':
-    dependencies:
-      '@npmcli/git': 6.0.3
+      '@npmcli/git': 7.0.0
       glob: 11.0.3
-      hosted-git-info: 9.0.0
+      hosted-git-info: 9.0.2
       json-parse-even-better-errors: 4.0.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.3
       validate-npm-package-license: 3.0.4
 
   '@npmcli/promise-spawn@8.0.3':
@@ -12661,18 +12635,7 @@ snapshots:
   '@npmcli/run-script@10.0.0':
     dependencies:
       '@npmcli/node-gyp': 4.0.0
-      '@npmcli/package-json': 7.0.0
-      '@npmcli/promise-spawn': 8.0.3
-      node-gyp: 11.4.2
-      proc-log: 5.0.0
-      which: 5.0.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@npmcli/run-script@9.1.0':
-    dependencies:
-      '@npmcli/node-gyp': 4.0.0
-      '@npmcli/package-json': 6.2.0
+      '@npmcli/package-json': 7.0.1
       '@npmcli/promise-spawn': 8.0.3
       node-gyp: 11.4.2
       proc-log: 5.0.0
@@ -13033,12 +12996,12 @@ snapshots:
 
   '@sigstore/protobuf-specs@0.5.0': {}
 
-  '@sigstore/sign@4.0.0':
+  '@sigstore/sign@4.0.1':
     dependencies:
       '@sigstore/bundle': 4.0.0
       '@sigstore/core': 3.0.0
       '@sigstore/protobuf-specs': 0.5.0
-      make-fetch-happen: 15.0.1
+      make-fetch-happen: 15.0.2
       proc-log: 5.0.0
       promise-retry: 2.0.1
     transitivePeerDependencies:
@@ -13663,7 +13626,7 @@ snapshots:
       '@typescript-eslint/types': 8.43.0
       '@typescript-eslint/typescript-estree': 8.43.0(typescript@5.9.2)
       '@typescript-eslint/visitor-keys': 8.43.0
-      debug: 4.4.1
+      debug: 4.4.3
       eslint: 9.35.0(jiti@1.21.7)
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -13673,7 +13636,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.43.0(typescript@5.9.2)
       '@typescript-eslint/types': 8.43.0
-      debug: 4.4.1
+      debug: 4.4.3
       typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
@@ -13692,7 +13655,7 @@ snapshots:
       '@typescript-eslint/types': 8.43.0
       '@typescript-eslint/typescript-estree': 8.43.0(typescript@5.9.2)
       '@typescript-eslint/utils': 8.43.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.9.2)
-      debug: 4.4.1
+      debug: 4.4.3
       eslint: 9.35.0(jiti@1.21.7)
       ts-api-utils: 2.1.0(typescript@5.9.2)
       typescript: 5.9.2
@@ -13707,11 +13670,11 @@ snapshots:
       '@typescript-eslint/tsconfig-utils': 8.43.0(typescript@5.9.2)
       '@typescript-eslint/types': 8.43.0
       '@typescript-eslint/visitor-keys': 8.43.0
-      debug: 4.4.1
+      debug: 4.4.3
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       ts-api-utils: 2.1.0(typescript@5.9.2)
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -13818,7 +13781,7 @@ snapshots:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
       ast-v8-to-istanbul: 0.3.4
-      debug: 4.4.1
+      debug: 4.4.3
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
@@ -14206,7 +14169,7 @@ snapshots:
       common-path-prefix: 3.0.0
       concordance: 5.0.4
       currently-unhandled: 0.4.1
-      debug: 4.4.1
+      debug: 4.4.3
       emittery: 1.2.0
       figures: 6.1.0
       globby: 14.1.0
@@ -14384,7 +14347,7 @@ snapshots:
     dependencies:
       bytes: 3.1.2
       content-type: 1.0.5
-      debug: 4.4.1
+      debug: 4.4.3
       http-errors: 2.0.0
       iconv-lite: 0.6.3
       on-finished: 2.4.1
@@ -14472,7 +14435,7 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 7.0.3
       ssri: 12.0.0
-      tar: 7.4.3
+      tar: 7.5.1
       unique-filename: 4.0.0
 
   cacache@20.0.1:
@@ -14480,7 +14443,7 @@ snapshots:
       '@npmcli/fs': 4.0.0
       fs-minipass: 3.0.3
       glob: 11.0.3
-      lru-cache: 11.2.1
+      lru-cache: 11.2.2
       minipass: 7.1.2
       minipass-collect: 2.0.1
       minipass-flush: 1.0.5
@@ -14747,7 +14710,7 @@ snapshots:
       js-string-escape: 1.0.1
       lodash: 4.17.21
       md5-hex: 3.0.1
-      semver: 7.7.2
+      semver: 7.7.3
       well-known-symbols: 2.0.0
 
   confbox@0.1.8: {}
@@ -14870,7 +14833,7 @@ snapshots:
       postcss-modules-scope: 3.2.1(postcss@8.5.6)
       postcss-modules-values: 4.0.0(postcss@8.5.6)
       postcss-value-parser: 4.2.0
-      semver: 7.7.2
+      semver: 7.7.3
     optionalDependencies:
       '@rspack/core': 1.4.11
       webpack: 5.101.1(@swc/core@1.13.3)
@@ -15022,7 +14985,7 @@ snapshots:
     dependencies:
       ms: 2.0.0
 
-  debug@4.4.1:
+  debug@4.4.3:
     dependencies:
       ms: 2.1.3
 
@@ -15091,7 +15054,7 @@ snapshots:
   detect-port@1.6.1:
     dependencies:
       address: 1.2.2
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -15425,7 +15388,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.6
-      debug: 4.4.1
+      debug: 4.4.3
       escape-string-regexp: 4.0.0
       eslint-scope: 8.4.0
       eslint-visitor-keys: 4.2.1
@@ -15614,7 +15577,7 @@ snapshots:
       content-type: 1.0.5
       cookie: 0.7.2
       cookie-signature: 1.2.2
-      debug: 4.4.1
+      debug: 4.4.3
       encodeurl: 2.0.0
       escape-html: 1.0.3
       etag: 1.8.1
@@ -15750,7 +15713,7 @@ snapshots:
 
   finalhandler@2.1.0:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
       encodeurl: 2.0.0
       escape-html: 1.0.3
       on-finished: 2.4.1
@@ -16169,13 +16132,9 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  hosted-git-info@8.1.0:
+  hosted-git-info@9.0.2:
     dependencies:
-      lru-cache: 10.4.3
-
-  hosted-git-info@9.0.0:
-    dependencies:
-      lru-cache: 11.2.1
+      lru-cache: 11.2.2
 
   hpack.js@2.1.6:
     dependencies:
@@ -16261,7 +16220,7 @@ snapshots:
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -16293,7 +16252,7 @@ snapshots:
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -16613,7 +16572,7 @@ snapshots:
       '@babel/parser': 7.28.0
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
 
@@ -16626,7 +16585,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.6:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.30
-      debug: 4.4.1
+      debug: 4.4.3
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -16930,7 +16889,7 @@ snapshots:
       jest-message-util: 30.1.0
       jest-util: 30.0.5
       pretty-format: 30.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       synckit: 0.11.11
     transitivePeerDependencies:
       - supports-color
@@ -17241,7 +17200,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lru-cache@11.2.1: {}
+  lru-cache@11.2.2: {}
 
   lru-cache@5.1.1:
     dependencies:
@@ -17271,7 +17230,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   make-fetch-happen@14.0.3:
     dependencies:
@@ -17289,9 +17248,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  make-fetch-happen@15.0.1:
+  make-fetch-happen@15.0.2:
     dependencies:
-      '@npmcli/agent': 3.0.0
+      '@npmcli/agent': 4.0.0
       cacache: 20.0.1
       http-cache-semantics: 4.2.0
       minipass: 7.1.2
@@ -17828,7 +17787,7 @@ snapshots:
   micromark@4.0.2:
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.4.1
+      debug: 4.4.3
       decode-named-character-reference: 1.2.0
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.3
@@ -17918,7 +17877,7 @@ snapshots:
     dependencies:
       minipass: 7.1.2
       minipass-sized: 1.0.3
-      minizlib: 3.0.2
+      minizlib: 3.1.0
     optionalDependencies:
       encoding: 0.1.13
 
@@ -17940,11 +17899,9 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  minizlib@3.0.2:
+  minizlib@3.1.0:
     dependencies:
       minipass: 7.1.2
-
-  mkdirp@3.0.1: {}
 
   mlly@1.7.4:
     dependencies:
@@ -18014,8 +17971,8 @@ snapshots:
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.2
-      tar: 7.4.3
+      semver: 7.7.3
+      tar: 7.5.1
       tinyglobby: 0.2.15
       which: 5.0.0
     transitivePeerDependencies:
@@ -18043,57 +18000,37 @@ snapshots:
 
   npm-install-checks@7.1.2:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   npm-normalize-package-bin@4.0.0: {}
 
-  npm-package-arg@12.0.2:
+  npm-package-arg@13.0.1:
     dependencies:
-      hosted-git-info: 8.1.0
+      hosted-git-info: 9.0.2
       proc-log: 5.0.0
-      semver: 7.7.2
-      validate-npm-package-name: 6.0.2
-
-  npm-package-arg@13.0.0:
-    dependencies:
-      hosted-git-info: 9.0.0
-      proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.3
       validate-npm-package-name: 6.0.2
 
   npm-packlist@10.0.1:
     dependencies:
       ignore-walk: 8.0.0
 
-  npm-pick-manifest@10.0.0:
+  npm-pick-manifest@11.0.1:
     dependencies:
       npm-install-checks: 7.1.2
       npm-normalize-package-bin: 4.0.0
-      npm-package-arg: 12.0.2
-      semver: 7.7.2
-
-  npm-registry-fetch@18.0.2:
-    dependencies:
-      '@npmcli/redact': 3.2.2
-      jsonparse: 1.3.1
-      make-fetch-happen: 14.0.3
-      minipass: 7.1.2
-      minipass-fetch: 4.0.1
-      minizlib: 3.0.2
-      npm-package-arg: 12.0.2
-      proc-log: 5.0.0
-    transitivePeerDependencies:
-      - supports-color
+      npm-package-arg: 13.0.1
+      semver: 7.7.3
 
   npm-registry-fetch@19.0.0:
     dependencies:
       '@npmcli/redact': 3.2.2
       jsonparse: 1.3.1
-      make-fetch-happen: 15.0.1
+      make-fetch-happen: 15.0.2
       minipass: 7.1.2
       minipass-fetch: 4.0.1
-      minizlib: 3.0.2
-      npm-package-arg: 13.0.0
+      minizlib: 3.1.0
+      npm-package-arg: 13.0.1
       proc-log: 5.0.0
     transitivePeerDependencies:
       - supports-color
@@ -18246,7 +18183,7 @@ snapshots:
       got: 12.6.1
       registry-auth-token: 5.1.0
       registry-url: 6.0.1
-      semver: 7.7.2
+      semver: 7.7.3
 
   package-manager-detector@0.2.11:
     dependencies:
@@ -18254,25 +18191,25 @@ snapshots:
 
   package-manager-detector@1.3.0: {}
 
-  pacote@21.0.1:
+  pacote@21.0.3:
     dependencies:
-      '@npmcli/git': 6.0.3
+      '@npmcli/git': 7.0.0
       '@npmcli/installed-package-contents': 3.0.0
-      '@npmcli/package-json': 7.0.0
+      '@npmcli/package-json': 7.0.1
       '@npmcli/promise-spawn': 8.0.3
       '@npmcli/run-script': 10.0.0
       cacache: 20.0.1
       fs-minipass: 3.0.3
       minipass: 7.1.2
-      npm-package-arg: 13.0.0
+      npm-package-arg: 13.0.1
       npm-packlist: 10.0.1
-      npm-pick-manifest: 10.0.0
+      npm-pick-manifest: 11.0.1
       npm-registry-fetch: 19.0.0
       proc-log: 5.0.0
       promise-retry: 2.0.1
       sigstore: 4.0.0
       ssri: 12.0.0
-      tar: 7.4.3
+      tar: 7.5.1
     transitivePeerDependencies:
       - supports-color
 
@@ -18358,7 +18295,7 @@ snapshots:
 
   path-scurry@2.0.0:
     dependencies:
-      lru-cache: 11.2.1
+      lru-cache: 11.2.2
       minipass: 7.1.2
 
   path-to-regexp@0.1.12: {}
@@ -18581,7 +18518,7 @@ snapshots:
       cosmiconfig: 8.3.6(typescript@5.9.2)
       jiti: 1.21.7
       postcss: 8.5.6
-      semver: 7.7.2
+      semver: 7.7.3
       webpack: 5.101.1(@swc/core@1.13.3)
     transitivePeerDependencies:
       - typescript
@@ -19084,11 +19021,6 @@ snapshots:
 
   read-cmd-shim@5.0.0: {}
 
-  read-package-json-fast@4.0.0:
-    dependencies:
-      json-parse-even-better-errors: 4.0.0
-      npm-normalize-package-bin: 4.0.0
-
   read-yaml-file@1.1.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -19387,7 +19319,7 @@ snapshots:
 
   router@2.2.0:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
       depd: 2.0.0
       is-promise: 4.0.0
       parseurl: 1.3.3
@@ -19480,7 +19412,7 @@ snapshots:
 
   semver-diff@4.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   semver@6.3.1: {}
 
@@ -19488,7 +19420,7 @@ snapshots:
     dependencies:
       lru-cache: 6.0.0
 
-  semver@7.7.2: {}
+  semver@7.7.3: {}
 
   send@0.19.0:
     dependencies:
@@ -19510,7 +19442,7 @@ snapshots:
 
   send@1.2.0:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
       encodeurl: 2.0.0
       escape-html: 1.0.3
       etag: 1.8.1
@@ -19653,7 +19585,7 @@ snapshots:
       '@sigstore/bundle': 4.0.0
       '@sigstore/core': 3.0.0
       '@sigstore/protobuf-specs': 0.5.0
-      '@sigstore/sign': 4.0.0
+      '@sigstore/sign': 4.0.1
       '@sigstore/tuf': 4.0.0
       '@sigstore/verify': 3.0.0
     transitivePeerDependencies:
@@ -19709,7 +19641,7 @@ snapshots:
   socks-proxy-agent@8.0.5:
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.1
+      debug: 4.4.3
       socks: 2.8.7
     transitivePeerDependencies:
       - supports-color
@@ -19766,7 +19698,7 @@ snapshots:
 
   spdy-transport@3.0.0:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -19777,7 +19709,7 @@ snapshots:
 
   spdy@4.0.2:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
@@ -19957,7 +19889,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.4.1
+      debug: 4.4.3
       fast-safe-stringify: 2.1.1
       form-data: 4.0.4
       formidable: 3.5.4
@@ -20015,13 +19947,12 @@ snapshots:
 
   tapable@2.2.2: {}
 
-  tar@7.4.3:
+  tar@7.5.1:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
       minipass: 7.1.2
-      minizlib: 3.0.2
-      mkdirp: 3.0.1
+      minizlib: 3.1.0
       yallist: 5.0.0
 
   temp-dir@2.0.0: {}
@@ -20136,8 +20067,8 @@ snapshots:
   tuf-js@4.0.0:
     dependencies:
       '@tufjs/models': 4.0.0
-      debug: 4.4.1
-      make-fetch-happen: 15.0.1
+      debug: 4.4.3
+      make-fetch-happen: 15.0.2
     transitivePeerDependencies:
       - supports-color
 
@@ -20375,7 +20306,7 @@ snapshots:
       is-yarn-global: 0.4.1
       latest-version: 7.0.0
       pupa: 3.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       semver-diff: 4.0.0
       xdg-basedir: 5.1.0
 
@@ -20445,7 +20376,7 @@ snapshots:
   vite-node@3.2.4(@types/node@22.18.6)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.1
+      debug: 4.4.3
       es-module-lexer: 1.7.0
       pathe: 2.0.3
       vite: 7.1.6(@types/node@22.18.6)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -20490,7 +20421,7 @@ snapshots:
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
       chai: 5.2.1
-      debug: 4.4.1
+      debug: 4.4.3
       expect-type: 1.2.2
       magic-string: 0.30.17
       pathe: 2.0.3
