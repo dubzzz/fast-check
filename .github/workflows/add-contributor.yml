@@ -78,7 +78,8 @@ jobs:
               const base = 'main';
               const body = `This PR adds @${username} as a contributor for: ${contribution}\n\nGenerated automatically by the add-contributor workflow.`;
               
-              await github.rest.pulls.create({owner, repo, title, head, base, body});
+              const pr = await github.rest.pulls.create({owner, repo, title, head, base, body});
+              console.log(`Created pull request: ${pr.data.html_url}`);
             } else {
-              core.info('No changes detected. The contributor might already be added.');
+              console.log('No changes detected. The contributor might already be added.');
             }
