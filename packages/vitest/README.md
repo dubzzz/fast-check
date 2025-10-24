@@ -112,15 +112,17 @@ describe('with it', () => {
 
 | @fast-check/vitest | vitest                                                              | fast-check                       | Node                   |
 | ------------------ | ------------------------------------------------------------------- | -------------------------------- | ---------------------- |
-| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(1)</sup> \|\| ^3<sup>(2)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(3)</sup> | ≥14.16.0<sup>(4)</sup> |
-| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                           | ≥14.16.0<sup>(4)</sup> |
+| **0.2**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4<sup>(1)</sup>                            | ^3.0.0 \|\| ^4.0.0               | ≥18<sup>(2)</sup>      |
+| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(3)</sup> \|\| ^3<sup>(4)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(5)</sup> | ≥14.16.0<sup>(2)</sup> |
+| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                           | ≥14.16.0<sup>(2)</sup> |
 
 <details>
 <summary>More details...</summary>
 
-1. Official support for version 2.x of vitest starts at 0.1.2.
-2. Official support for version 3.x of vitest starts at 0.1.5.
-3. Official support for version 4.x of fast-check starts at 0.1.6.
-4. As for vitest 0.28.1 and later.
+1. Official support for version 4.x of vitest starts at 0.2.3.
+2. Same support as vitest.
+3. Official support for version 2.x of vitest starts at 0.1.2.
+4. Official support for version 3.x of vitest starts at 0.1.5.
+5. Official support for version 4.x of fast-check starts at 0.1.6.
 
 </details>
