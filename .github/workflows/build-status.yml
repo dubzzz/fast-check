@@ -132,7 +132,7 @@ jobs:
       - name: Create bundles
         run: node --run pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -158,7 +158,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -184,7 +184,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -233,7 +233,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -287,7 +287,7 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter website install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -317,7 +317,7 @@ jobs:
       - name: Copy raw logo within documentation
         run: cp website/static/img/logo.png website/build/assets/images/logo.png
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: website
           path: website/build/
@@ -341,7 +341,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -403,7 +403,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -471,7 +471,7 @@ jobs:
       DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: website
           path: artifacts/
@@ -555,7 +555,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -604,7 +604,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -653,7 +653,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -702,7 +702,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -751,7 +751,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -800,7 +800,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -849,7 +849,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
@@ -898,7 +898,7 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: bundles
           path: packages/
