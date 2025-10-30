@@ -241,3 +241,7 @@ When asked to help with property-based testing:
 7. **Recommend arbitraries**: Suggest appropriate fast-check arbitraries for the domain
 
 Remember: Good properties are clear, focused, and test one thing well. Multiple simple properties are better than one complex property.
+
+## Resources and References
+
+  - Fast-check documentation: https://fast-check.dev/
