@@ -19,6 +19,7 @@ An expert agent specialized in property-based testing using the fast-check libra
 #### When to Use
 
 Use this agent when you need help with:
+
 - Writing property-based tests for algorithms or functions
 - Finding good properties to test in your code
 - Understanding which fast-check arbitraries to use
