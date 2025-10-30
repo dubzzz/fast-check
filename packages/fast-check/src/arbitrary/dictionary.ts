@@ -66,6 +66,15 @@ export function dictionary<T>(
   valueArb: Arbitrary<T>,
   constraints?: DictionaryConstraints,
 ): Arbitrary<Record<string, T>>;
+/**
+ * For dictionaries with keys produced by `keyArb` and values from `valueArb`
+ *
+ * @param keyArb - Arbitrary used to generate the keys of the object
+ * @param valueArb - Arbitrary used to generate the values of the object
+ *
+ * @remarks Since 4.4.0
+ * @public
+ */
 export function dictionary<K extends PropertyKey, V>(
   keyArb: Arbitrary<K>,
   valueArb: Arbitrary<V>,
