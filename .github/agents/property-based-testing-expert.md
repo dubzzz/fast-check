@@ -156,23 +156,6 @@ Invalid inputs should fail gracefully.
 
 ### Debugging
 
-- Use verbose mode: `fc.assert(property, {verbose: true})`
-- Use seed replay to reproduce failures: `fc.assert(property, {seed: 1234, path: "0:1:2"})`
-- Add `fc.context()` for logging during test execution
-- Keep properties simple and focused - one property per invariant
-
-### Performance
-
-- Start with fewer runs during development: `{numRuns: 100}`
-- Increase for CI: `{numRuns: 1000}` or more
-- Use `fc.sample()` to preview generated values
-- Be mindful of preconditions - too many rejections slow down tests
-
-### Shrinking
-
-- Fast-check automatically shrinks failures to minimal counterexamples
-- Custom arbitraries should preserve shrinking via `map` and `chain`
-- Review shrunk values to understand root cause of failures
 
 ## Example Property Tests
 
