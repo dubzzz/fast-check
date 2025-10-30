@@ -53,7 +53,7 @@
     "@types/node": "^22.18.13",
     "typescript": "~5.9.3",
     "vite": "^7.1.12",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.5"
   },
   "keywords": [
     "worker",
