@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         id: pnpm-cache
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Update pnpm cache
         if: steps.pnpm-cache.outputs.cache-hit != 'true'
@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         id: pnpm-cache
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Update pnpm cache
         if: steps.pnpm-cache.outputs.cache-hit != 'true'
@@ -72,7 +72,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Ensure no dedupe required
         run: pnpm dedupe --check
@@ -87,7 +87,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Check package score using skypack
         run: cd packages/fast-check && pnpm dlx @skypack/package-check
@@ -104,7 +104,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --filter @fast-check/monorepo install --frozen-lockfile
@@ -123,7 +123,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -153,7 +153,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -179,7 +179,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -282,7 +282,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --filter website install --frozen-lockfile
@@ -336,7 +336,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -398,7 +398,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -549,7 +549,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
@@ -598,7 +598,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
@@ -647,7 +647,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
@@ -696,7 +696,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
@@ -745,7 +745,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
@@ -794,7 +794,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
@@ -843,7 +843,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
@@ -892,7 +892,7 @@ jobs:
       - name: Using Node v22.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Update npm
