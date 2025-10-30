@@ -154,8 +154,15 @@ Invalid inputs should fail gracefully.
 - Use `fc.pre()` to filter out invalid inputs (but sparingly, as it can slow tests)
 - Better: Design arbitraries that only generate valid inputs
 
-### Debugging
+### Immutability
 
+- Do not mutate the values produced by fast-check, prefer cloning them
+
+### Focus
+
+- Do not check multiple properties within the same `fc.property`
+- Use one `fc.property` per property
+- Declare one test per `fc.assert`
 
 ## Example Property Tests
 
