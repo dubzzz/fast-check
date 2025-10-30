@@ -54,13 +54,8 @@ jobs:
             const branchName = `contributor/add-${username}`;
             const commitMessage = `👥 Add ${username} as ${contribution} contributor`;
             
-            // Create and checkout new branch
             await exec.exec('git', ['checkout', '-b', branchName]);
-            
-            // Stage all changes
             await exec.exec('git', ['add', '.']);
-            
-            // Check if there are changes to commit
             const {exitCode} = await exec.getExecOutput('git', ['diff', '--staged', '--quiet'], {ignoreReturnCode: true});
             
             if (exitCode !== 0) {
