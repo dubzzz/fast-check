@@ -40,11 +40,9 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Add contributor
-        run: |
-          pnpm run contributor:add ${{ github.event.inputs.username }} ${{ github.event.inputs.contribution }}
+        run: pnpm run contributor:add ${{ github.event.inputs.username }} ${{ github.event.inputs.contribution }}
       - name: Format files
-        run: |
-          pnpm run format
+        run: pnpm run format
       - name: Create Pull Request
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
