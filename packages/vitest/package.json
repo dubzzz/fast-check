@@ -46,14 +46,14 @@
     "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "vitest": "^1 || ^2 || ^3"
+    "vitest": "^1 || ^2 || ^3 || ^4"
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",
     "@types/node": "^22.18.10",
     "fast-check": "workspace:*",
     "typescript": "~5.9.3",
-    "vite": "^7.1.9",
+    "vite": "^7.1.12",
     "vitest": "^3.2.4"
   },
   "keywords": [
