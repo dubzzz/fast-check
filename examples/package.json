@@ -20,7 +20,7 @@
     "supertest": "^7.1.4"
   },
   "devDependencies": {
-    "@types/express": "^5.0.3",
+    "@types/express": "^5.0.5",
     "@types/lodash": "^4.17.20",
     "@types/react": "^19.2.2",
     "@types/supertest": "^6.0.3",
