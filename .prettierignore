@@ -1,4 +1,5 @@
 .changeset/
+.github/workflows/
 packages/*/coverage/
 packages/*/dist/
 packages/*/lib/
