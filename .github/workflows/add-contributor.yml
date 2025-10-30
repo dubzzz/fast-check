@@ -52,7 +52,7 @@ jobs:
             const username = '${{ github.event.inputs.username }}';
             const contribution = '${{ github.event.inputs.contribution }}';
             const branchName = `contributor/add-${username}`;
-            const commitMessage = `Doc: Add new contributor ${username}`;
+            const commitMessage = `👥 Add ${username} as ${contribution} contributor`;
             
             // Create and checkout new branch
             await exec.exec('git', ['checkout', '-b', branchName]);
