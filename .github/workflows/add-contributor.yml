@@ -51,11 +51,11 @@ jobs:
             const contribution = '${{ github.event.inputs.contribution }}';
             const branchName = `contributor/add-${username}`;
             const commitMessage = `👥 Add ${username} as ${contribution} contributor`;
-            
+
             await exec.exec('git', ['checkout', '-b', branchName]);
             await exec.exec('git', ['add', '.']);
             const {exitCode} = await exec.getExecOutput('git', ['diff', '--staged', '--quiet'], {ignoreReturnCode: true});
-            
+
             if (exitCode !== 0) {
               // Commit changes
               await exec.exec('git', ['commit', '-m', commitMessage]);
