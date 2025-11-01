@@ -8,7 +8,7 @@ import { boolean } from './boolean';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext';
 
 /** @internal */
-function dictionaryKeyExtractor(entry: [string, unknown]): string {
+function dictionaryKeyExtractor<K extends PropertyKey>(entry: [K, unknown]): K {
   return entry[0];
 }
 
@@ -64,8 +64,27 @@ export interface DictionaryConstraints {
 export function dictionary<T>(
   keyArb: Arbitrary<string>,
   valueArb: Arbitrary<T>,
+  constraints?: DictionaryConstraints,
+): Arbitrary<Record<string, T>>;
+/**
+ * For dictionaries with keys produced by `keyArb` and values from `valueArb`
+ *
+ * @param keyArb - Arbitrary used to generate the keys of the object
+ * @param valueArb - Arbitrary used to generate the values of the object
+ *
+ * @remarks Since 4.4.0
+ * @public
+ */
+export function dictionary<K extends PropertyKey, V>(
+  keyArb: Arbitrary<K>,
+  valueArb: Arbitrary<V>,
+  constraints?: DictionaryConstraints,
+): Arbitrary<Record<K, V>>;
+export function dictionary<K extends PropertyKey, V>(
+  keyArb: Arbitrary<K>,
+  valueArb: Arbitrary<V>,
   constraints: DictionaryConstraints = {},
-): Arbitrary<Record<string, T>> {
+): Arbitrary<Record<K, V>> {
   const noNullPrototype = !!constraints.noNullPrototype;
   return tuple(
     uniqueArray(tuple(keyArb, valueArb), {

@@ -8,44 +8,62 @@ import fc from '../../../../../src/fast-check';
 describe('keyValuePairsToObjectMapper', () => {
   it('should create instances with Object prototype when requested to', () => {
     fc.assert(
-      fc.property(fc.uniqueArray(fc.tuple(fc.string(), fc.anything()), { selector: (kv) => kv[0] }), (keyValues) => {
-        // Arrange / Act
-        const obj = keyValuePairsToObjectMapper([keyValues, false]);
+      fc.property(
+        fc.uniqueArray(fc.tuple(fc.oneof(fc.string(), fc.nat(), fc.string().map(Symbol)), fc.anything()), {
+          selector: (kv) =>
+            // Numbers will become strings when used in an object.
+            typeof kv[0] === 'number' ? String(kv[0]) : kv[0],
+        }),
+        (keyValues) => {
+          // Arrange / Act
+          const obj = keyValuePairsToObjectMapper([keyValues, false]);
 
-        // Assert
-        expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
-        if (!keyValues.some(([k]) => k === 'constructor')) {
-          expect(obj.constructor).toBe(Object);
-        }
-        if (!keyValues.some(([k]) => k === '__proto__')) {
-          expect(obj.__proto__).toBe(Object.prototype);
-        }
-      }),
+          // Assert
+          expect(Object.getPrototypeOf(obj)).toBe(Object.prototype);
+          if (!keyValues.some(([k]) => k === 'constructor')) {
+            expect(obj.constructor).toBe(Object);
+          }
+          if (!keyValues.some(([k]) => k === '__proto__')) {
+            expect(obj.__proto__).toBe(Object.prototype);
+          }
+        },
+      ),
     );
   });
 
   it('should create instances with null prototype when requested to', () => {
     fc.assert(
-      fc.property(fc.uniqueArray(fc.tuple(fc.string(), fc.anything()), { selector: (kv) => kv[0] }), (keyValues) => {
-        // Arrange / Act
-        const obj = keyValuePairsToObjectMapper([keyValues, true]);
+      fc.property(
+        fc.uniqueArray(fc.tuple(fc.oneof(fc.string(), fc.nat(), fc.string().map(Symbol)), fc.anything()), {
+          selector: (kv) =>
+            // Numbers will become strings when used in an object.
+            typeof kv[0] === 'number' ? String(kv[0]) : kv[0],
+        }),
+        (keyValues) => {
+          // Arrange / Act
+          const obj = keyValuePairsToObjectMapper([keyValues, true]);
 
-        // Assert
-        expect(Object.getPrototypeOf(obj)).toBe(null);
-        if (!keyValues.some(([k]) => k === 'constructor')) {
-          expect('constructor' in obj).toBe(false);
-        }
-        if (!keyValues.some(([k]) => k === '__proto__')) {
-          expect('__proto__' in obj).toBe(false);
-        }
-      }),
+          // Assert
+          expect(Object.getPrototypeOf(obj)).toBe(null);
+          if (!keyValues.some(([k]) => k === 'constructor')) {
+            expect('constructor' in obj).toBe(false);
+          }
+          if (!keyValues.some(([k]) => k === '__proto__')) {
+            expect('__proto__' in obj).toBe(false);
+          }
+        },
+      ),
     );
   });
 
   it('should create instances with all requested keys', () => {
     fc.assert(
       fc.property(
-        fc.uniqueArray(fc.tuple(fc.string(), fc.anything()), { selector: (kv) => kv[0] }),
+        fc.uniqueArray(fc.tuple(fc.oneof(fc.string(), fc.nat(), fc.string().map(Symbol)), fc.anything()), {
+          selector: (kv) =>
+            // Numbers will become strings when used in an object.
+            typeof kv[0] === 'number' ? String(kv[0]) : kv[0],
+        }),
         fc.boolean(),
         (keyValues, withNullPrototype) => {
           // Arrange / Act
@@ -67,10 +85,18 @@ describe('keyValuePairsToObjectMapper', () => {
       fc.property(
         fc.uniqueArray(
           fc.tuple(
-            fc.string().filter((k) => k !== '__proto__'),
+            fc.oneof(
+              fc.string().filter((k) => k !== '__proto__'),
+              fc.nat(),
+              fc.string().map(Symbol),
+            ),
             fc.anything(),
           ),
-          { selector: (kv) => kv[0] },
+          {
+            selector: (kv) =>
+              // Numbers will become strings when used in an object.
+              typeof kv[0] === 'number' ? String(kv[0]) : kv[0],
+          },
         ),
         fc.boolean(),
         (keyValues, withNullPrototype) => {
@@ -79,8 +105,9 @@ describe('keyValuePairsToObjectMapper', () => {
           const refObj = Object.fromEntries(keyValues); // will miss __proto__ if passed as keys
 
           // Assert
-          expect(obj).toEqual(refObj);
+          expect(Reflect.ownKeys(obj)).toEqual(Reflect.ownKeys(refObj));
           expect(Object.keys(obj).sort()).toEqual(Object.keys(refObj).sort());
+          expect(Object.entries(obj)).toEqual(Object.entries(refObj));
           expect(Object.getOwnPropertyNames(obj).sort()).toEqual(Object.getOwnPropertyNames(refObj).sort());
           expect(Object.getOwnPropertyDescriptors(obj)).toEqual(Object.getOwnPropertyDescriptors(refObj));
         },
@@ -142,16 +169,18 @@ describe('keyValuePairsToObjectUnmapper', () => {
 
   it('should properly unmap basic instances of Object with multiple keys', () => {
     // Arrange
-    const obj = { a: 'e', 1: 'hello', b: undefined };
+    const symbol = Symbol('hi');
+    const obj = { a: 'e', 1: 'hello', b: undefined, [symbol]: '!' };
 
     // Act
     const [keyValues, withNullPrototype] = keyValuePairsToObjectUnmapper(obj);
 
     // Assert
-    expect(keyValues).toHaveLength(3);
+    expect(keyValues).toHaveLength(4);
     expect(keyValues).toContainEqual(['a', 'e']);
     expect(keyValues).toContainEqual(['1', 'hello']);
     expect(keyValues).toContainEqual(['b', undefined]);
+    expect(keyValues).toContainEqual([symbol, '!']);
     expect(withNullPrototype).toBe(false);
   });
 
@@ -176,7 +205,6 @@ describe('keyValuePairsToObjectUnmapper', () => {
     ${0}                                                                 | ${'it is a number'}
     ${null}                                                              | ${'it is null'}
     ${undefined}                                                         | ${'it is undefined'}
-    ${{ [Symbol('my-symbol')]: 5 }}                                      | ${'it contains a symbol property'}
     ${Object.defineProperty({}, 'a', { value: 5, configurable: false })} | ${'it contains a non-configurable property'}
     ${Object.defineProperty({}, 'a', { value: 5, enumerable: false })}   | ${'it contains a non-enumerable property'}
     ${Object.defineProperty({}, 'a', { value: 5, writable: false })}     | ${'it contains a non-writable property'}
