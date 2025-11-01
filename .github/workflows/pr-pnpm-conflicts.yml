@@ -22,7 +22,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_INFO=$(gh pr view "${{ github.event.inputs.ref_value }}" --json headRefName,baseRefName --repo ${{ github.repository }})
+          PR_INFO=$(gh pr view "${{ github.event.inputs.ref_value }}" --repo ${{ github.repository }} --json headRefName,baseRefName)
           HEAD_BRANCH=$(echo "$PR_INFO" | jq -r '.headRefName')
           BASE_BRANCH=$(echo "$PR_INFO" | jq -r '.baseRefName')
           echo "ref=$HEAD_BRANCH" >> $GITHUB_OUTPUT
@@ -30,7 +30,6 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ steps.ref.outputs.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Merge target branch into PR branch
         run: |
@@ -46,9 +45,9 @@ jobs:
           cache: 'pnpm'
       - name: Check current branch info
         run: |
+          echo "Requested PR: ${{ github.event.inputs.ref_value }}"
           echo "Current branch: $(git branch --show-current)"
           echo "Current commit: $(git rev-parse HEAD)"
-          echo "Target PR: ${{ github.event.inputs.ref_value }}"
           echo "Base branch: ${{ steps.ref.outputs.base }}"
       - name: Regenerate pnpm-lock.yaml
         run: |
