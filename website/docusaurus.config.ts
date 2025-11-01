@@ -205,6 +205,24 @@ const config: Config = {
         ],
       },
     ],
+    [
+      'docusaurus-plugin-llms',
+      {
+        // Generate llms.txt with section links
+        generateLLMsTxt: true,
+        // Generate llms-full.txt with all content
+        generateLLMsFullTxt: true,
+        // Title for the documentation
+        title: 'fast-check Documentation',
+        // Description of the documentation
+        description: 'Complete documentation for fast-check - Property-based testing framework for JavaScript/TypeScript',
+        // Include blog posts in the generated files
+        includeBlog: true,
+        // Clean HTML and normalize content for optimal LLM consumption
+        excludeImports: true,
+        removeDuplicateHeadings: true,
+      },
+    ],
   ],
 };
 
