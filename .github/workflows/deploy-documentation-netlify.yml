@@ -1,17 +1,28 @@
 name: Deploy Documentation to Netlify
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       pr_number:
-        description: 'Pull Request number'
-        required: true
+        description: 'Pull Request number (optional, for PR comments)'
+        required: false
         type: number
       draft:
         description: 'Deploy as draft (true) or production (false)'
         required: false
         type: boolean
         default: true
+      artifact_name:
+        description: 'Name of the artifact containing the website build'
+        required: false
+        type: string
+        default: 'website'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Pull Request number'
+        required: true
+        type: number
 
 permissions:
   contents: read
@@ -20,6 +31,7 @@ permissions:
 jobs:
   build_documentation:
     name: 'Build documentation'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -76,12 +88,13 @@ jobs:
   deploy_to_netlify:
     name: 'Deploy to Netlify'
     needs: build_documentation
+    if: always() && (needs.build_documentation.result == 'success' || needs.build_documentation.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - name: Download documentation artifacts
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
-          name: website
+          name: ${{ inputs.artifact_name || 'website' }}
           path: artifacts/
       - name: Alter robots.txt for draft build
         if: inputs.draft == true
@@ -107,7 +120,7 @@ jobs:
           echo "deploy_url=$deploy_url" >> "$GITHUB_OUTPUT"
       - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         name: Comment on PR with success
-        if: success()
+        if: success() && inputs.pr_number != 0 && inputs.pr_number != null
         with:
           script: |
             github.rest.issues.createComment({
@@ -118,7 +131,7 @@ jobs:
             })
       - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         name: Comment on PR with failure
-        if: failure()
+        if: failure() && inputs.pr_number != 0 && inputs.pr_number != null
         with:
           script: |
             const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;

@@ -464,48 +464,14 @@ jobs:
   publish_documentation_netlify:
     name: 'Publish documentation on Netlify'
     needs: documentation
-    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    env:
-      DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
-    steps:
-      - name: Download documentation artifacts
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: website
-          path: artifacts/
-      - name: Alter robots.txt for draft build
-        if: env.DRAFT_BUILD == 'true'
-        run: |
-          echo "User-agent: *" > artifacts/robots.txt
-          echo "Disallow: /" >> artifacts/robots.txt
-      - name: Configure custom headers
-        run: |
-          echo "/*" > artifacts/_headers
-          echo "  Content-Security-Policy: default-src 'self'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com api.securityscorecards.dev bestpractices.coreinfrastructure.org www.bestpractices.dev cdn.bsky.app;connect-src *.algolia.net *.algolianet.com public.api.bsky.app api.counterapi.dev;script-src 'self' 'unsafe-inline' 'unsafe-eval';frame-src 'self' *.codesandbox.io www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
-          echo "/api-reference/*" >> artifacts/_headers
-          echo "  Content-Security-Policy: default-src 'none'; img-src 'self' data:; connect-src data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" >> artifacts/_headers
-      - name: Compress documentation artifacts as zip
-        run: zip -r artifacts.zip artifacts
-      - name: Deploy to Netlify
-        id: deployment_to_netlify
-        run: |
-          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}} > deploy.json
-          cat deploy.json
-          deploy_url=$(jq -r '.deploy_url' --exit-status deploy.json)
-          echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        name: Notify the user of the preview
-        if: env.DRAFT_BUILD == 'true'
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 A preview of the new documentation is available at: ${{steps.deployment_to_netlify.outputs.deploy_url}}'
-            })
+    uses: ./.github/workflows/deploy-documentation-netlify.yml
+    secrets: inherit
+    with:
+      pr_number: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || 0 }}
+      draft: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
+      artifact_name: 'website'
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
