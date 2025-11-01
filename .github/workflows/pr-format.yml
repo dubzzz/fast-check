@@ -1,17 +1,10 @@
-name: Format PR
+name: PR Format
 
 on:
   workflow_dispatch:
     inputs:
-      ref_type:
-        description: 'Type of reference to format'
-        required: true
-        type: choice
-        options:
-          - branch
-          - pull_request
       ref_value:
-        description: 'Branch name or PR number'
+        description: 'PR number'
         required: true
         type: string
 
@@ -27,49 +20,28 @@ jobs:
       - name: Determine checkout reference
         id: ref
         run: |
-          if [ "${{ github.event.inputs.ref_type }}" = "pull_request" ]; then
-            # Validate PR number is numeric
-            if ! [[ "${{ github.event.inputs.ref_value }}" =~ ^[0-9]+$ ]]; then
-              echo "❌ PR number must be a valid integer"
-              exit 1
-            fi
-            echo "ref=refs/pull/${{ github.event.inputs.ref_value }}/head" >> $GITHUB_OUTPUT
-            echo "target_type=pull_request" >> $GITHUB_OUTPUT
-          else
-            # Validate branch name format (basic validation)
-            if [[ "${{ github.event.inputs.ref_value }}" =~ [[:space:]] ]]; then
-              echo "❌ Branch name cannot contain spaces"
-              exit 1
-            fi
-            echo "ref=${{ github.event.inputs.ref_value }}" >> $GITHUB_OUTPUT
-            echo "target_type=branch" >> $GITHUB_OUTPUT
-          fi
-
+          HEAD_BRANCH=$(gh pr view "${{ github.event.inputs.ref_value }}" --repo "${{ github.repository }}" --json headRefName --jq .headRefName)
+          echo "ref=$HEAD_BRANCH" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ steps.ref.outputs.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
-
-      - name: Using Node v22.x
+      - name: Using Node v24.x
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           cache: 'pnpm'
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
       - name: Check current branch info
         run: |
+          echo "Requested PR: ${{ github.event.inputs.ref_value }}"
           echo "Current branch: $(git branch --show-current)"
           echo "Current commit: $(git rev-parse HEAD)"
-          echo "Target type: ${{ steps.ref.outputs.target_type }}"
-          echo "Target ref: ${{ github.event.inputs.ref_value }}"
-
       - name: Check if formatting is needed
         id: format_check
         run: |
@@ -78,35 +50,31 @@ jobs:
           else
             echo "changes_needed=false" >> $GITHUB_OUTPUT
           fi
-
       - name: Run format
         if: steps.format_check.outputs.changes_needed == 'true'
         run: pnpm format
-
       - name: Configure git
         if: steps.format_check.outputs.changes_needed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-
       - name: Commit formatting changes
         if: steps.format_check.outputs.changes_needed == 'true'
         run: |
           git add .
           if ! git diff --cached --quiet; then
             echo "Committing formatting changes..."
-            git commit -m "style: auto-format code with prettier
+            git commit -m "💄 Format code with prettier
 
             Applied by GitHub Action workflow: ${{ github.workflow }}
             Run ID: ${{ github.run_id }}
-            Target: ${{ steps.ref.outputs.target_type }} '${{ github.event.inputs.ref_value }}'"
+            Target PR: ${{ github.event.inputs.ref_value }}"
             
             echo "Pushing changes..."
             git push
           else
             echo "No changes to commit after formatting"
           fi
-
       - name: Output result
         run: |
           if [ "${{ steps.format_check.outputs.changes_needed }}" = "true" ]; then
