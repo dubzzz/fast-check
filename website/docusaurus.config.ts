@@ -215,6 +215,7 @@ const config: Config = {
         includeBlog: true,
         excludeImports: true,
         removeDuplicateHeadings: true,
+        generateMarkdownFiles: true,
       },
     ],
   ],
