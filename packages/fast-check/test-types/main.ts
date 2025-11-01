@@ -254,9 +254,36 @@ fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['c'] });
 fc.record({ a: 1 });
 
 // dictionary arbitrary
-expectType<fc.Arbitrary<Record<string, number>>>()(fc.dictionary(fc.string(), fc.nat()), 'Basic call to "dictionary"');
-// @ts-expect-error - dictionary expects arbitraries producing strings for keys
-fc.dictionary(fc.nat(), fc.nat());
+expectType<fc.Arbitrary<Record<string, number>>>()(
+  fc.dictionary(fc.string(), fc.nat()),
+  'String key call to "dictionary"',
+);
+expectType<fc.Arbitrary<Record<string, number>>>()(
+  fc.dictionary<number>(fc.string(), fc.nat()),
+  'String key call to "dictionary" with single generic',
+);
+expectType<fc.Arbitrary<Record<string, number>>>()(
+  fc.dictionary<string, number>(fc.string(), fc.nat()),
+  'String key call to "dictionary" with two generics',
+);
+expectType<fc.Arbitrary<Record<number, number>>>()(
+  fc.dictionary(fc.nat(), fc.nat()),
+  'Number key call to "dictionary"',
+);
+expectType<fc.Arbitrary<Record<number, number>>>()(
+  fc.dictionary<number, number>(fc.nat(), fc.nat()),
+  'Number key call to "dictionary" with generics',
+);
+expectType<fc.Arbitrary<Record<symbol, number>>>()(
+  fc.dictionary(fc.string().map(Symbol), fc.nat()),
+  'Symbol key call to "dictionary"',
+);
+expectType<fc.Arbitrary<Record<symbol, number>>>()(
+  fc.dictionary<symbol, number>(fc.string().map(Symbol), fc.nat()),
+  'Symbol key call to "dictionary" with generics',
+);
+// @ts-expect-error - dictionary expects arbitraries producing PropertyKey for keys
+fc.dictionary(fc.anything(), fc.string());
 
 // tuple arbitrary
 expectType<fc.Arbitrary<[]>>()(fc.tuple(), '"tuple" with zero argument');
