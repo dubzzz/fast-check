@@ -37,8 +37,7 @@ jobs:
             fi
             
             # Get PR information to extract the head branch
-            PR_DATA=$(gh pr view "${{ github.event.inputs.ref_value }}" --json headRefName)
-            HEAD_BRANCH=$(echo "$PR_DATA" | jq -r '.headRefName')
+            HEAD_BRANCH=$(gh pr view "${{ github.event.inputs.ref_value }}" --json headRefName | jq -r '.headRefName')
             
             # Validate branch name to prevent command injection
             if [[ ! "$HEAD_BRANCH" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
@@ -116,8 +115,7 @@ jobs:
             Target: ${{ steps.ref.outputs.target_type }} '${{ github.event.inputs.ref_value }}'"
             
             echo "Pushing changes..."
-            CURRENT_BRANCH=$(git branch --show-current)
-            git push origin "$CURRENT_BRANCH"
+            git push
           else
             echo "No changes to commit after formatting"
           fi
