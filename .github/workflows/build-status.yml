@@ -572,7 +572,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/fast-check/package.tgz
   check_publish_ava:
@@ -625,7 +625,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/ava/package.tgz
   check_publish_jest:
@@ -678,7 +678,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/jest/package.tgz
   check_publish_packaged:
@@ -731,7 +731,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/packaged/package.tgz
   check_publish_poisoning:
@@ -784,7 +784,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/poisoning/package.tgz
   check_publish_vitest:
@@ -837,7 +837,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/vitest/package.tgz
   check_publish_worker:
@@ -890,7 +890,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/worker/package.tgz
   check_publish_expect_type:
@@ -943,6 +943,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: packages/expect-type/package.tgz
