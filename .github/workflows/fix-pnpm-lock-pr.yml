@@ -1,4 +1,4 @@
-name: PR pnpm lock conflicts
+name: PR PNPM Conflicts
 
 on:
   workflow_dispatch:
