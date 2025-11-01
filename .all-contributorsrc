@@ -468,7 +468,7 @@
       "name": "James Vaughan",
       "avatar_url": "https://avatars.githubusercontent.com/u/2906913?v=4",
       "profile": "https://github.com/jamesbvaughan",
-      "contributions": ["doc"]
+      "contributions": ["doc", "code"]
     },
     {
       "login": "AlexErrant",
@@ -482,7 +482,7 @@
       "name": "andrew jarrett",
       "avatar_url": "https://avatars.githubusercontent.com/u/15133992?v=4",
       "profile": "https://ahrjarrett.com/",
-      "contributions": ["code"]
+      "contributions": ["code", "doc"]
     },
     {
       "login": "matthyk",

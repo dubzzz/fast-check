@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/vitest",
   "description": "Property based testing for Vitest based on fast-check",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "module",
   "main": "lib/vitest-fast-check.js",
   "exports": {
@@ -46,14 +46,14 @@
     "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "vitest": "^1 || ^2 || ^3"
+    "vitest": "^1 || ^2 || ^3 || ^4"
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",
-    "@types/node": "^22.18.6",
+    "@types/node": "^24.9.2",
     "fast-check": "workspace:*",
-    "typescript": "~5.9.2",
-    "vite": "^7.1.6",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.12",
     "vitest": "^3.2.4"
   },
   "keywords": [

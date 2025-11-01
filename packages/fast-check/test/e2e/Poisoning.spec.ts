@@ -271,15 +271,10 @@ function dropMainGlobals(): () => void {
     typeof Iterator !== 'undefined' ? Iterator : undefined,
     typeof Navigator !== 'undefined' ? Navigator : undefined,
     typeof CloseEvent !== 'undefined' ? CloseEvent : undefined,
-    // @ts-expect-error - Cannot find name 'URLPattern'
     typeof URLPattern !== 'undefined' ? URLPattern : undefined,
-    // @ts-expect-error - Cannot find name 'SuppressedError'
     typeof SuppressedError !== 'undefined' ? SuppressedError : undefined,
-    // @ts-expect-error - Cannot find name 'DisposableStack'
     typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
-    // @ts-expect-error - Cannot find name 'AsyncDisposableStack'
     typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
-    // @ts-expect-error - Cannot find name 'Float16Array'
     typeof Float16Array !== 'undefined' ? Float16Array : undefined,
   ].filter((mainGlobal) => mainGlobal !== undefined);
   const skippedGlobals = new Set(['Array']);
