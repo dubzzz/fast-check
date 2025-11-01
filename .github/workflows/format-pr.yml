@@ -1,4 +1,4 @@
-name: Format PR
+name: PR Format
 
 on:
   workflow_dispatch:
