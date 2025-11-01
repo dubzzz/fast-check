@@ -170,14 +170,6 @@ instructions: |
   - Use `fc.scheduler()` for testing concurrent operations
   - Combine with `scheduledModelRun` for race detection
   - Test React components, async operations, timers
-  
-  **Configuration options**
-  - `numRuns`: Number of test cases (default: 100)
-  - `seed`: Fixed seed for reproducibility
-  - `path`: Replay specific failure path
-  - `verbose`: Show all generated values
-  - `endOnFailure`: Stop on first failure
-  - `timeout`: Per-test timeout
 
   ### 7. Common Patterns from Advent of PBT
   
