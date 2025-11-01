@@ -59,21 +59,6 @@ jobs:
           echo "Current commit: $(git rev-parse HEAD)"
           echo "Target PR: ${{ github.event.inputs.ref_value }}"
 
-      - name: Check if pnpm-lock.yaml exists
-        id: lock_check
-        run: |
-          if [ -f "pnpm-lock.yaml" ]; then
-            echo "lock_exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "lock_exists=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Remove pnpm-lock.yaml
-        if: steps.lock_check.outputs.lock_exists == 'true'
-        run: |
-          echo "Removing pnpm-lock.yaml to resolve conflicts..."
-          rm pnpm-lock.yaml
-
       - name: Regenerate pnpm-lock.yaml
         run: |
           echo "Regenerating pnpm-lock.yaml..."
