@@ -30,32 +30,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ github.event.inputs.ref_type }}" = "pull_request" ]; then
-            # Validate PR number is numeric
-            if ! [[ "${{ github.event.inputs.ref_value }}" =~ ^[0-9]+$ ]]; then
-              echo "❌ PR number must be a valid integer"
-              exit 1
-            fi
-            
-            # Get PR information to extract the head branch
             HEAD_BRANCH=$(gh pr view "${{ github.event.inputs.ref_value }}" --json headRefName | jq -r '.headRefName')
-            
-            # Validate branch name to prevent command injection
-            if [[ ! "$HEAD_BRANCH" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
-              echo "❌ Invalid branch name: $HEAD_BRANCH"
-              exit 1
-            fi
-            
-            echo "PR head branch: $HEAD_BRANCH"
             echo "ref=$HEAD_BRANCH" >> $GITHUB_OUTPUT
-            echo "target_type=pull_request" >> $GITHUB_OUTPUT
           else
-            # Validate branch name format (basic validation)
-            if [[ "${{ github.event.inputs.ref_value }}" =~ [[:space:]] ]]; then
-              echo "❌ Branch name cannot contain spaces"
-              exit 1
-            fi
             echo "ref=${{ github.event.inputs.ref_value }}" >> $GITHUB_OUTPUT
-            echo "target_type=branch" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -80,7 +58,6 @@ jobs:
         run: |
           echo "Current branch: $(git branch --show-current)"
           echo "Current commit: $(git rev-parse HEAD)"
-          echo "Target type: ${{ steps.ref.outputs.target_type }}"
           echo "Target ref: ${{ github.event.inputs.ref_value }}"
 
       - name: Check if formatting is needed
@@ -112,7 +89,7 @@ jobs:
 
             Applied by GitHub Action workflow: ${{ github.workflow }}
             Run ID: ${{ github.run_id }}
-            Target: ${{ steps.ref.outputs.target_type }} '${{ github.event.inputs.ref_value }}'"
+            Target branch: ${{ github.event.inputs.ref_value }}"
             
             echo "Pushing changes..."
             git push
