@@ -1,3 +1,14 @@
+# This workflow resolves merge conflicts in pnpm-lock.yaml by regenerating the lock file.
+# It can be manually triggered for a specific PR to fix lock file conflicts.
+# 
+# Usage:
+#   1. Go to Actions > Fix pnpm lock conflicts PR
+#   2. Click "Run workflow"
+#   3. Enter the PR number
+#   4. The workflow will check out the PR branch, regenerate pnpm-lock.yaml, and commit the changes
+#
+# This is based on the Format PR workflow but adapted specifically for pnpm lock file conflicts.
+
 name: Fix pnpm lock conflicts PR
 
 on:
