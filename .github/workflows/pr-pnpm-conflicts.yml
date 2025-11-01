@@ -8,14 +8,13 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: write
-  pull-requests: read
-
 jobs:
   fix-pnpm-lock:
     name: 'Fix pnpm lock conflicts and commit changes'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
     steps:
       - name: Determine checkout reference
         id: ref
