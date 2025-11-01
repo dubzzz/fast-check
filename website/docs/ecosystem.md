@@ -102,6 +102,43 @@ test("User's full name always contains their first and last names", () => {
 
 More details on the [package itself](https://www.npmjs.com/package/zod-fast-check)!
 
+### `@traversable/zod-test` 🥇
+
+![npm version](https://badge.fury.io/js/@traversable%2Fzod-test.svg)
+![monthly downloads](https://img.shields.io/npm/dm/@traversable%2Fzod-test)
+![last commit](https://img.shields.io/github/last-commit/traversable/zod-test)
+![license](https://img.shields.io/npm/l/@traversable%2Fzod-test.svg)
+![third party package](https://img.shields.io/badge/-third%20party%20package-%2300abff.svg)
+
+Generate random Zod schemas (v4) and data that will always pass/succeed given the arbitrary. Supports all schemas except `z.promise`.
+
+To see it in action, check out the [demo on StackBlitz](https://stackblitz.com/edit/traversable-valibot-test-example-xegggxwt?file=test%2FtoString.fuzz.test.ts&initialPath=__vitest__/).
+
+```typescript
+import { z } from 'zod';
+import { zxTest } from '@traversable/zod-test';
+
+const Builder = zxTest.SeedGenerator({
+  include: ['boolean', 'string', 'object'],
+  // 𐙘 use `include` to only include certain schema types
+  exclude: ['boolean', 'any'],
+  // 𐙘 use `exclude` to exclude certain schema types altogether (overrides `include`)
+});
+
+const [mySeed] = fc.sample(Builder['*'], 1);
+const mySchema = zxTest.seedToSchema(mySeed);
+const validData = zxTest.seedToValidData(mySeed);
+const invalidData = zxTest.seedToInvalidData(mySeed);
+
+mySchema.parse(validData); // ✅
+// since the `mySeed` was also used to generate `mySchema`, parsing `validData` always succeeds
+
+mySchema.parse(invalidData); // 🚫
+// since the `mySeed` was also used to generate `mySchema`, parsing `invalidData` always fails
+```
+
+More details on the [package itself](https://www.npmjs.com/package/@traversable/zod-test)!
+
 ### `fast-check-io-ts` 🥈
 
 ![npm version](https://badge.fury.io/js/fast-check-io-ts.svg)
