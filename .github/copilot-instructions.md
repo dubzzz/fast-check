@@ -17,21 +17,21 @@ When creating or naming pull requests, follow the [gitmoji](https://gitmoji.dev/
 
 ### Common Gitmoji Examples
 
-- ✨ `:sparkles:` - Introduce new features
-- 🐛 `:bug:` - Fix a bug
-- 📝 `:memo:` - Add or update documentation
-- ✅ `:white_check_mark:` - Add or update tests
-- 🏷️ `:label:` - Add or update types
-- ⚡️ `:zap:` - Improve performance
-- 👷 `:construction_worker:` - Add or update CI/CD
-- ♻️ `:recycle:` - Refactor code
-- 🔧 `:wrench:` - Add or update configuration files
-- 🎨 `:art:` - Improve structure/format of the code
-- 🔥 `:fire:` - Remove code or files
-- 🚀 `:rocket:` - Deploy stuff
-- 🔒️ `:lock:` - Fix security or privacy issues
-- ⬆️ `:arrow_up:` - Upgrade dependencies
-- ⬇️ `:arrow_down:` - Downgrade dependencies
-- 📦 `:package:` - Add or update compiled files or packages
+- ✨ Introduce new features
+- 🐛 Fix a bug
+- 📝 Add or update documentation
+- ✅ Add or update tests
+- 🏷️ Add or update types
+- ⚡️ Improve performance
+- 👷 Add or update CI/CD
+- ♻️ Refactor code
+- 🔧 Add or update configuration files
+- 🎨 Improve structure/format of the code
+- 🔥 Remove code or files
+- 🚀 Deploy stuff
+- 🔒️ Fix security or privacy issues
+- ⬆️ Upgrade dependencies
+- ⬇️ Downgrade dependencies
+- 📦 Add or update compiled files or packages
 
 For a complete list of gitmoji codes, see https://gitmoji.dev/
