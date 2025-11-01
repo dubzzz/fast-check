@@ -69,6 +69,7 @@ jobs:
           echo "PR head branch: $HEAD_BRANCH"
           
           # Checkout the actual branch to avoid detached HEAD
+          # Using -B to create/reset branch to current HEAD (which is already at PR head commit)
           git checkout -B "$HEAD_BRANCH"
           
           echo "Successfully checked out branch: $HEAD_BRANCH"
