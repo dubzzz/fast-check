@@ -1,15 +1,11 @@
 # 0.2.3
 
-_TODO Description_
+_Support Vitest v4_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.2...vitest%2Fv0.2.3)]
-
-## Features
-
-
 
 ## Fixes
 
-
+- ([PR#6217](https://github.com/dubzzz/fast-check/pull/6217)) Dependencies: Extend peer dependency range to support Vitest v4
 
 # 0.2.2
 
