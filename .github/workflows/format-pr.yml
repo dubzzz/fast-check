@@ -57,12 +57,16 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get PR information to extract the head branch
-          PR_DATA=$(gh pr view ${{ github.event.inputs.ref_value }} --json headRefName,headRepository)
+          PR_DATA=$(gh pr view "${{ github.event.inputs.ref_value }}" --json headRefName)
           HEAD_BRANCH=$(echo "$PR_DATA" | jq -r '.headRefName')
-          HEAD_REPO=$(echo "$PR_DATA" | jq -r '.headRepository.name')
+          
+          # Validate branch name to prevent command injection
+          if [[ ! "$HEAD_BRANCH" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
+            echo "❌ Invalid branch name: $HEAD_BRANCH"
+            exit 1
+          fi
           
           echo "PR head branch: $HEAD_BRANCH"
-          echo "PR head repository: $HEAD_REPO"
           
           # Checkout the actual branch to avoid detached HEAD
           git checkout -B "$HEAD_BRANCH"
