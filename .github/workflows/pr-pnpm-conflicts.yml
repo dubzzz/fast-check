@@ -6,7 +6,7 @@ on:
       ref_value:
         description: 'PR number'
         required: true
-        type: number
+        type: string
 
 permissions:
   contents: write
