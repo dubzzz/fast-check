@@ -58,7 +58,7 @@ jobs:
         run: |
           echo "Current branch: $(git branch --show-current)"
           echo "Current commit: $(git rev-parse HEAD)"
-          echo "Target ref: ${{ github.event.inputs.ref_value }}"
+          echo "Target branch: ${{ github.event.inputs.ref_value }}"
 
       - name: Check if formatting is needed
         id: format_check
