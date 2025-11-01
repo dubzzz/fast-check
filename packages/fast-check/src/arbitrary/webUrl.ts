@@ -23,7 +23,7 @@ export interface WebUrlConstraints {
    * @defaultValue ['http', 'https']
    * @remarks Since 1.14.0
    */
-  validSchemes?: string[];
+  validSchemes?: readonly string[];
   /**
    * Settings for {@link webAuthority}
    * @defaultValue &#123;&#125;

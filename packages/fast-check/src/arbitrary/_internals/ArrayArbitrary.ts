@@ -46,7 +46,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
     // it's output just in case produced values are too small (below minLength)
     readonly setBuilder: CustomSetBuilder<Value<T>> | undefined,
-    readonly customSlices: T[][],
+    readonly customSlices: readonly (readonly T[])[],
   ) {
     super();
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
