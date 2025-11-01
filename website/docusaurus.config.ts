@@ -211,7 +211,8 @@ const config: Config = {
         generateLLMsTxt: true,
         generateLLMsFullTxt: true,
         title: 'fast-check Documentation',
-        description: 'Complete documentation for fast-check - Property-based testing framework for JavaScript/TypeScript',
+        description:
+          'Complete documentation for fast-check - Property-based testing framework for JavaScript/TypeScript',
         includeBlog: true,
         excludeImports: true,
         removeDuplicateHeadings: true,
