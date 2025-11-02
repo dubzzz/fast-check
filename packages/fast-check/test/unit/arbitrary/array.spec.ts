@@ -29,7 +29,7 @@ describe('array', () => {
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+        ArrayArbitrary.mockImplementation(function() { return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>; } as any);
 
         // Act
         const arb = withConfiguredGlobal(config, () => array(childInstance));
@@ -60,7 +60,7 @@ describe('array', () => {
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+        ArrayArbitrary.mockImplementation(function() { return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>; } as any);
 
         // Act
         const arb = withConfiguredGlobal(config, () => array(childInstance, { maxLength }));
@@ -94,7 +94,7 @@ describe('array', () => {
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+        ArrayArbitrary.mockImplementation(function() { return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>; } as any);
 
         // Act
         const arb = withConfiguredGlobal(config, () => array(childInstance, { minLength }));
@@ -134,7 +134,7 @@ describe('array', () => {
           const { instance: childInstance } = fakeArbitrary<unknown>();
           const { instance } = fakeArbitrary<unknown[]>();
           const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-          ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+          ArrayArbitrary.mockImplementation(function() { return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>; } as any);
 
           // Act
           const arb = withConfiguredGlobal(config, () => array(childInstance, { minLength, maxLength }));
@@ -183,7 +183,7 @@ describe('array', () => {
           const { instance: childInstance } = fakeArbitrary<unknown>();
           const { instance } = fakeArbitrary<unknown[]>();
           const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-          ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+          ArrayArbitrary.mockImplementation(function() { return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>; } as any);
 
           // Act
           const arb = withConfiguredGlobal(config, () =>

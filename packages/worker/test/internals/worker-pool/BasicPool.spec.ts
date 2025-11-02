@@ -487,12 +487,11 @@ function mockWorker() {
   const postMessage = vi.fn<typeof WorkerThreadsMock.Worker.prototype.postMessage>();
   const terminate = vi.fn<typeof WorkerThreadsMock.Worker.prototype.terminate>();
   Worker.mockImplementation(
-    () =>
-      ({
-        on,
-        postMessage,
-        terminate,
-      }) as any,
+    class {
+      on = on;
+      postMessage = postMessage;
+      terminate = terminate;
+    } as any,
   );
   return { Worker, on, postMessage, terminate };
 }

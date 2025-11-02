@@ -19,7 +19,7 @@ describe('bigInt', () => {
     // Arrange
     const instance = fakeBigIntArbitrary();
     const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
-    BigIntArbitrary.mockImplementation(() => instance);
+    BigIntArbitrary.mockImplementation(function() { return instance; } as any);
 
     // Act
     const arb = bigInt();
@@ -41,7 +41,7 @@ describe('bigInt', () => {
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
         const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
-        BigIntArbitrary.mockImplementation(() => instance);
+        BigIntArbitrary.mockImplementation(function() { return instance; } as any);
 
         // Act
         const arb = bigInt({ min: withMin ? min : undefined, max: withMax ? max : undefined });
@@ -64,7 +64,7 @@ describe('bigInt', () => {
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeBigIntArbitrary();
         const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
-        BigIntArbitrary.mockImplementation(() => instance);
+        BigIntArbitrary.mockImplementation(function() { return instance; } as any);
 
         // Act
         const arb = bigInt(min, max);
@@ -115,7 +115,7 @@ describe('bigInt', () => {
             args.length === 0 ? [null, null] : args.length === 1 ? [args[0].min, args[0].max] : [args[0], args[1]];
           const instance = fakeBigIntArbitrary();
           const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
-          BigIntArbitrary.mockImplementation(() => instance);
+          BigIntArbitrary.mockImplementation(function() { return instance; } as any);
 
           // Act
           const arb = bigInt(...args);
