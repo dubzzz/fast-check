@@ -16,7 +16,7 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function() { return instance; } as any);
 
     // Act
     const arb = context();
@@ -30,7 +30,7 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function() { return instance; } as any);
 
     // Act
     context();
@@ -44,7 +44,7 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function() { return instance; } as any);
 
     // Act
     context();
@@ -62,7 +62,7 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function() { return instance; } as any);
 
     // Act
     context();

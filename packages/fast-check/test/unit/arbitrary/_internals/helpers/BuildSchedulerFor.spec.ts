@@ -14,7 +14,7 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function() { return instance; } as any);
     const act = vi.fn();
 
     // Act
@@ -32,7 +32,7 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function() { return instance; } as any);
     const act = vi.fn();
     const requestedOrder = [4, 1, 2, 0];
     const fakeLongScheduledTasks = [
@@ -58,7 +58,7 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function() { return instance; } as any);
     const act = vi.fn();
     const requestedOrder = [4, 1, 2, 10];
     const fakeLongScheduledTasks = [
@@ -86,7 +86,7 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function() { return instance; } as any);
     const act = vi.fn();
     const requestedOrder = [4, 1, 2];
     const fakeLongScheduledTasks = [
@@ -114,7 +114,7 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function() { return instance; } as any);
     const act = vi.fn();
     const requestedOrder = [4, 1, 2];
     const fakeLongScheduledTasks = [

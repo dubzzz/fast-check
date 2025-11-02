@@ -19,7 +19,7 @@ describe('nat', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-    IntegerArbitrary.mockImplementation(() => instance);
+    IntegerArbitrary.mockImplementation(function() { return instance; } as any);
 
     // Act
     const arb = nat();
@@ -33,7 +33,7 @@ describe('nat', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-    IntegerArbitrary.mockImplementation(() => instance);
+    IntegerArbitrary.mockImplementation(function() { return instance; } as any);
 
     // Act
     const arb = nat({});
@@ -49,7 +49,7 @@ describe('nat', () => {
         // Arrange
         const instance = fakeIntegerArbitrary();
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-        IntegerArbitrary.mockImplementation(() => instance);
+        IntegerArbitrary.mockImplementation(function() { return instance; } as any);
 
         // Act
         const arb = nat({ max });
@@ -66,7 +66,7 @@ describe('nat', () => {
         // Arrange
         const instance = fakeIntegerArbitrary();
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-        IntegerArbitrary.mockImplementation(() => instance);
+        IntegerArbitrary.mockImplementation(function() { return instance; } as any);
 
         // Act
         const arb = nat(max);
@@ -111,7 +111,7 @@ describe('nat', () => {
           const expectedMax = typeof constraints === 'number' ? constraints : (constraints?.max ?? null);
           const instance = fakeIntegerArbitrary();
           const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-          IntegerArbitrary.mockImplementation(() => instance);
+          IntegerArbitrary.mockImplementation(function() { return instance; } as any);
 
           // Act
           const arb = constraints === undefined ? nat() : nat(constraints);

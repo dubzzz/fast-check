@@ -18,7 +18,7 @@ describe('infiniteStream', () => {
     const { instance: sourceArbitrary } = fakeArbitrary();
     const { instance } = fakeArbitrary();
     const StreamArbitrary = vi.spyOn(StreamArbitraryMock, 'StreamArbitrary');
-    StreamArbitrary.mockImplementation(() => instance as StreamArbitraryMock.StreamArbitrary<unknown>);
+    StreamArbitrary.mockImplementation(function() { return instance as StreamArbitraryMock.StreamArbitrary<unknown>; } as any);
 
     // Act
     const arb = infiniteStream(sourceArbitrary);
@@ -35,7 +35,7 @@ describe('infiniteStream', () => {
         const { instance: sourceArbitrary } = fakeArbitrary();
         const { instance } = fakeArbitrary();
         const StreamArbitrary = vi.spyOn(StreamArbitraryMock, 'StreamArbitrary');
-        StreamArbitrary.mockImplementation(() => instance as StreamArbitraryMock.StreamArbitrary<unknown>);
+        StreamArbitrary.mockImplementation(function() { return instance as StreamArbitraryMock.StreamArbitrary<unknown>; } as any);
 
         // Act
         const arb = infiniteStream(sourceArbitrary, { noHistory: !history });

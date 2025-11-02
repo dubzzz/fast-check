@@ -10,7 +10,7 @@ describe('uint8ClampedArray', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function() { return instance; } as any);
 
     // Act
     const arb = uint8ClampedArray();
@@ -30,7 +30,7 @@ describe('uint8ClampedArray', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function() { return instance; } as any);
 
     // Act
     uint8ClampedArray();
