@@ -23,7 +23,9 @@ describe('SchedulerArbitrary', () => {
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-      SchedulerImplem.mockImplementation(function() { return fakeScheduler; } as any);
+      SchedulerImplem.mockImplementation(function () {
+        return fakeScheduler;
+      } as any);
 
       // Act
       const arb = new SchedulerArbitrary(act);
@@ -51,7 +53,9 @@ describe('SchedulerArbitrary', () => {
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-      SchedulerImplem.mockImplementation(function() { return fakeScheduler; } as any);
+      SchedulerImplem.mockImplementation(function () {
+        return fakeScheduler;
+      } as any);
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
 
@@ -85,7 +89,9 @@ describe('SchedulerArbitrary', () => {
       nextIntBis.mockReturnValueOnce(5).mockReturnValueOnce(2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-      SchedulerImplem.mockImplementation(function() { return fakeScheduler; } as any);
+      SchedulerImplem.mockImplementation(function () {
+        return fakeScheduler;
+      } as any);
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
 

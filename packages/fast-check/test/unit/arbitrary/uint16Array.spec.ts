@@ -10,7 +10,9 @@ describe('uint16Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(function() { return instance; } as any);
+    builder.mockImplementation(function () {
+      return instance;
+    } as any);
 
     // Act
     const arb = uint16Array();
@@ -30,7 +32,9 @@ describe('uint16Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(function() { return instance; } as any);
+    builder.mockImplementation(function () {
+      return instance;
+    } as any);
 
     // Act
     uint16Array();

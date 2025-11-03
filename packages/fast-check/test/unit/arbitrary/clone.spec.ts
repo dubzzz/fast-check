@@ -18,7 +18,9 @@ describe('clone', () => {
     const { instance: sourceArbitrary } = fakeArbitrary();
     const { instance } = fakeArbitrary();
     const CloneArbitrary = vi.spyOn(CloneArbitraryMock, 'CloneArbitrary');
-    CloneArbitrary.mockImplementation(function() { return instance as CloneArbitraryMock.CloneArbitrary<unknown>; } as any);
+    CloneArbitrary.mockImplementation(function () {
+      return instance as CloneArbitraryMock.CloneArbitrary<unknown>;
+    } as any);
 
     // Act
     const arb = clone(sourceArbitrary, numValues);
