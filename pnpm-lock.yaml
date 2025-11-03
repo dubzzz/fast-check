@@ -122,7 +122,7 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.9.2
+        specifier: ^24.10.0
         version: 24.10.0
       ava:
         specifier: ^6.4.1
@@ -168,7 +168,7 @@ importers:
         specifier: ^7.53.3
         version: 7.53.3(@types/node@24.10.0)
       '@types/node':
-        specifier: ^24.9.2
+        specifier: ^24.10.0
         version: 24.10.0
       cross-env:
         specifier: ^10.1.0
@@ -220,7 +220,7 @@ importers:
         specifier: ^30.0.0
         version: 30.0.0
       '@types/node':
-        specifier: ^24.9.2
+        specifier: ^24.10.0
         version: 24.10.0
       jest:
         specifier: ^30.2.0
@@ -269,7 +269,7 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.9.2
+        specifier: ^24.10.0
         version: 24.10.0
       typescript:
         specifier: ~5.9.3
@@ -291,7 +291,7 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.9.2
+        specifier: ^24.10.0
         version: 24.10.0
       typescript:
         specifier: ~5.9.3
@@ -316,7 +316,7 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.9.2
+        specifier: ^24.10.0
         version: 24.10.0
       typescript:
         specifier: ~5.9.3
@@ -389,7 +389,7 @@ importers:
         specifier: ^4.17.20
         version: 4.17.20
       '@types/node':
-        specifier: ^24.9.2
+        specifier: ^24.10.0
         version: 24.10.0
       '@types/react':
         specifier: ^19.2.2
