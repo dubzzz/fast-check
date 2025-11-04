@@ -55,7 +55,8 @@ jobs:
 
             // Extract the emoji and the rest of the title
             // Note: emoji may include variation selectors (uFE0F)
-            const emojiMatch = prTitle.match(/^([\p{Emoji}\uFE0F\u200d]+)(.*)$/u);
+            const emojiMatch =
+              prTitle.match(/^([\p{Emoji}\uFE0F\u200d]+)(.*)$/u);
             if (!emojiMatch) {
               const errorMsg = [
                 '❌ PR title format is invalid.',
