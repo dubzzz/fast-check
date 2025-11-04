@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { SetConstraints } from '../../../src/arbitrary/set';
 import { set } from '../../../src/arbitrary/set';
+import { constantFrom } from '../../../src/arbitrary/constantFrom';
+import { nat } from '../../../src/arbitrary/nat';
 
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
 
@@ -129,7 +131,7 @@ describe('set (integration)', () => {
   it('should handle special numeric values correctly (NaN, -0, +0)', () => {
     // Test that Set uses SameValueZero comparison which treats -0 and +0 as equal
     // but NaN as equal to itself
-    const arb = set(fc.constantFrom(-0, 0, Number.NaN, 1, 2));
+    const arb = set(constantFrom(-0, 0, Number.NaN, 1, 2));
     const sample = fc.sample(arb, { numRuns: 100 });
 
     for (const s of sample) {
@@ -142,7 +144,7 @@ describe('set (integration)', () => {
   });
 
   it('should generate sets with unique values', () => {
-    const arb = set(fc.nat(100), { minLength: 5, maxLength: 20 });
+    const arb = set(nat(100), { minLength: 5, maxLength: 20 });
     const samples = fc.sample(arb, { numRuns: 100 });
 
     for (const s of samples) {
