@@ -1,8 +1,10 @@
 // @ts-check
-const process = require('node:process');
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import process from 'node:process';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
+
+const __filename = fileURLToPath(import.meta.url);
 
 const counters = {};
 function buildProperty(isolationLevel, forceExit) {
@@ -22,7 +24,7 @@ function buildProperty(isolationLevel, forceExit) {
   );
 }
 
-exports.predicateIsolation = {
+export const predicateIsolation = {
   predicateLevel: buildProperty('predicate', false),
   propertyLevel: buildProperty('property', false),
   propertyLevelDepthCheckWithExitWorker: buildProperty('propertyLevelDepthCheckWithExitWorker', true),
