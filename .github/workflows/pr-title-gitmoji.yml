@@ -17,126 +17,49 @@ jobs:
     name: 'Validate PR title follows gitmoji convention'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Validate PR title
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('fs');
+            const path = require('path');
             const prTitle = context.payload.pull_request.title;
-            console.log('Checking PR title: "' + prTitle + '"');
 
-            // List of allowed package names from copilot-instructions.md
-            const allowedPackages = [
-              'ava', 'vitest', 'jest', 'worker',
-              'poisoning', 'packaged', 'expect-type'
-            ];
+            // Get package names from packages/ directory
+            const packagesDir =
+              path.join(process.env.GITHUB_WORKSPACE, 'packages');
+            const packages =
+              fs.readdirSync(packagesDir, { withFileTypes: true })
+              .filter(dirent => dirent.isDirectory())
+              .map(dirent => dirent.name)
+              .filter(name => name !== 'fast-check');
 
-            // Regex to match gitmoji convention
-            // Format 1: emoji Description (for main fast-check package)
-            // Format 2: emoji(package-name) Description (for other packages)
-            // Emojis are Unicode characters in various ranges
-            const emojiRegex = /^[\p{Emoji}\u200d]+/u;
+            // Regex: emoji + optional (package) + description
+            const match =
+              prTitle.match(/^([\p{Emoji}\uFE0F\u200d]+)\s*(?:\(([^)]+)\)\s*)?(.+)$/u);
 
-            if (!emojiRegex.test(prTitle)) {
-              const errorMsg = [
-                '❌ PR title must start with a gitmoji emoji.',
-                '',
-                'Expected format:',
-                '  - For main fast-check package: "emoji Description"',
-                '    Example: "✨ Add new arbitrary for dates"',
-                '',
-                '  - For other packages: "emoji(package-name) Description"',
-                '    Example: "👷(vitest) Add support for new vitest features"',
-                '',
-                'See https://gitmoji.dev/ for available emojis.'
-              ].join('\n');
-              core.setFailed(errorMsg);
-              return;
-            }
-
-            // Extract the emoji and the rest of the title
-            // Note: emoji may include variation selectors (uFE0F)
-            const emojiMatch =
-              prTitle.match(/^([\p{Emoji}\uFE0F\u200d]+)(.*)$/u);
-            if (!emojiMatch) {
-              const errorMsg = [
-                '❌ PR title format is invalid.',
-                'Must have format "emoji Description"',
-                'or "emoji(package-name) Description"'
-              ].join('\n');
-              core.setFailed(errorMsg);
-              return;
-            }
-
-            const emoji = emojiMatch[1];
-            const afterEmoji = emojiMatch[2];
-
-            console.log('Emoji: "' + emoji + '"');
-            console.log('After emoji: "' + afterEmoji + '"');
-
-            // Check if it's a package-specific change
-            const packageMatch = afterEmoji.match(/^\(([^)]+)\)\s*(.*)$/);
-
-            if (packageMatch) {
-              // Package-specific format: emoji(package-name) Description
-              const packageName = packageMatch[1];
-              const afterPackage = packageMatch[2];
-
-              console.log(
-                'Package-specific format detected. Package: "' + packageName +
-                '", After package: "' + afterPackage + '"'
+            if (!match) {
+              core.setFailed(
+                '❌ Invalid format. Use: emoji Description ' +
+                'or emoji(package) Description'
               );
-
-              if (!allowedPackages.includes(packageName)) {
-                const errorMsg = [
-                  '❌ Invalid package name "' + packageName + '".',
-                  '',
-                  'Allowed package names: ' + allowedPackages.join(', '),
-                  '',
-                  'Expected format: "emoji(package-name) Description"',
-                  'Example: "👷(vitest) Add support for new vitest features"'
-                ].join('\n');
-                core.setFailed(errorMsg);
-                return;
-              }
-
-              const description = afterPackage.trim();
-              if (!description) {
-                const errorMsg = [
-                  '❌ PR title must have a description after the package name.',
-                  '',
-                  'Expected format: "emoji(package-name) Description"',
-                  'Example: "👷(vitest) Add support for new vitest features"'
-                ].join('\n');
-                core.setFailed(errorMsg);
-                return;
-              }
-            } else {
-              // Main package format: emoji Description
-              console.log('Main package format detected.');
-
-              // Must start with a space
-              if (!afterEmoji.startsWith(' ')) {
-                const errorMsg = [
-                  '❌ PR title must have a space between emoji and description.',
-                  '',
-                  'Expected format: "emoji Description"',
-                  'Example: "✨ Add new arbitrary for dates"'
-                ].join('\n');
-                core.setFailed(errorMsg);
-                return;
-              }
-
-              const description = afterEmoji.trim();
-              if (!description) {
-                const errorMsg = [
-                  '❌ PR title must have a description after the emoji.',
-                  '',
-                  'Expected format: "emoji Description"',
-                  'Example: "✨ Add new arbitrary for dates"'
-                ].join('\n');
-                core.setFailed(errorMsg);
-                return;
-              }
+              return;
             }
 
-            console.log('✅ PR title follows the gitmoji convention!');
+            const [, emoji, packageName, description] = match;
+
+            if (packageName && !packages.includes(packageName)) {
+              core.setFailed(
+                `❌ Invalid package "${packageName}". ` +
+                `Valid: ${packages.join(', ')}`
+              );
+              return;
+            }
+
+            if (!description.trim()) {
+              core.setFailed('❌ Description required');
+              return;
+            }
+
+            console.log('✅ Valid gitmoji PR title');
