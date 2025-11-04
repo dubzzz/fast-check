@@ -54,7 +54,8 @@ jobs:
             }
 
             // Extract the emoji and the rest of the title
-            const emojiMatch = prTitle.match(/^([\p{Emoji}\u200d]+)\s*(.*)$/u);
+            // Note: emoji may include variation selectors (uFE0F)
+            const emojiMatch = prTitle.match(/^([\p{Emoji}\uFE0F\u200d]+)(.*)$/u);
             if (!emojiMatch) {
               const errorMsg = [
                 '❌ PR title format is invalid.',
@@ -66,13 +67,13 @@ jobs:
             }
 
             const emoji = emojiMatch[1];
-            const restOfTitle = emojiMatch[2];
+            const afterEmoji = emojiMatch[2];
 
             console.log('Emoji: "' + emoji + '"');
-            console.log('Rest of title: "' + restOfTitle + '"');
+            console.log('After emoji: "' + afterEmoji + '"');
 
             // Check if it's a package-specific change
-            const packageMatch = restOfTitle.match(/^\(([^)]+)\)(.*)$/);
+            const packageMatch = afterEmoji.match(/^\(([^)]+)\)\s*(.*)$/);
 
             if (packageMatch) {
               // Package-specific format: emoji(package-name) Description
@@ -98,7 +99,7 @@ jobs:
               }
 
               const description = afterPackage.trim();
-              if (!description || description.length === 0) {
+              if (!description) {
                 const errorMsg = [
                   '❌ PR title must have a description after the package name.',
                   '',
@@ -112,7 +113,20 @@ jobs:
               // Main package format: emoji Description
               console.log('Main package format detected.');
 
-              if (!restOfTitle || restOfTitle.trim().length === 0) {
+              // Must start with a space
+              if (!afterEmoji.startsWith(' ')) {
+                const errorMsg = [
+                  '❌ PR title must have a space between emoji and description.',
+                  '',
+                  'Expected format: "emoji Description"',
+                  'Example: "✨ Add new arbitrary for dates"'
+                ].join('\n');
+                core.setFailed(errorMsg);
+                return;
+              }
+
+              const description = afterEmoji.trim();
+              if (!description) {
                 const errorMsg = [
                   '❌ PR title must have a description after the emoji.',
                   '',
