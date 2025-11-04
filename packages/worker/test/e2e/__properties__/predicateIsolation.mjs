@@ -1,7 +1,6 @@
 // @ts-check
 import process from 'node:process';
-import { pathToFileURL } from 'node:url';
-import { fileURLToPath } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 

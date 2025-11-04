@@ -1,11 +1,10 @@
 // @ts-check
-import { pathToFileURL } from 'node:url';
-import { fileURLToPath } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
+import path from 'node:path';
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 import { writeFileSync, existsSync, rmSync } from 'node:fs';
-import path from 'node:path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
