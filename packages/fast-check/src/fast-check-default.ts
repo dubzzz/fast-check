@@ -95,6 +95,8 @@ import type {
   UniqueArrayConstraintsCustomCompareSelect,
 } from './arbitrary/uniqueArray';
 import { uniqueArray } from './arbitrary/uniqueArray';
+import type { SetConstraints } from './arbitrary/set';
+import { set } from './arbitrary/set';
 import { infiniteStream } from './arbitrary/infiniteStream';
 import { base64String } from './arbitrary/base64String';
 import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
@@ -268,6 +270,7 @@ export type {
   OptionConstraints,
   RecordConstraints,
   SchedulerConstraints,
+  SetConstraints,
   UniqueArrayConstraints,
   UniqueArraySharedConstraints,
   UniqueArrayConstraintsRecommended,
@@ -358,6 +361,7 @@ export {
   array,
   sparseArray,
   infiniteStream,
+  set,
   uniqueArray,
   tuple,
   record,
