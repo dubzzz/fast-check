@@ -165,8 +165,8 @@ importers:
         specifier: workspace:*
         version: link:../poisoning
       '@microsoft/api-extractor':
-        specifier: ^7.53.3
-        version: 7.53.3(@types/node@24.10.0)
+        specifier: ^7.54.0
+        version: 7.54.0(@types/node@24.10.0)
       '@types/node':
         specifier: ^24.10.0
         version: 24.10.0
@@ -2286,8 +2286,8 @@ packages:
   '@microsoft/api-extractor-model@7.31.3':
     resolution: {integrity: sha512-dv4quQI46p0U03TCEpasUf6JrJL3qjMN7JUAobsPElxBv4xayYYvWW9aPpfYV+Jx6hqUcVaLVOeV7+5hxsyoFQ==}
 
-  '@microsoft/api-extractor@7.53.3':
-    resolution: {integrity: sha512-p2HmQaMSVqMBj3bH3643f8xApKAqrF1jNpPsMCTQOYCYgfwLnvzsve8c+bgBWzCOBBgLK54PB6ZLIWMGLg8CZA==}
+  '@microsoft/api-extractor@7.54.0':
+    resolution: {integrity: sha512-t0SEcbVUPy4yAVykPafTNWktBg728X6p9t8qCuGDsYr1/lz2VQFihYDP2CnBFSArP5vwJPcvxktoKVSqH326cA==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.17.1':
@@ -4660,6 +4660,10 @@ packages:
 
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
+
+  diff@8.0.2:
+    resolution: {integrity: sha512-sSuxWU5j5SR9QQji/o2qMvqRNYRDOcBTgsJ/DeCf4iSN4gW+gNMXM7wFIP+fdXZxoNiAnHUTGjCr+TSWXdRDKg==}
+    engines: {node: '>=0.3.1'}
 
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -12463,7 +12467,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.53.3(@types/node@24.10.0)':
+  '@microsoft/api-extractor@7.54.0(@types/node@24.10.0)':
     dependencies:
       '@microsoft/api-extractor-model': 7.31.3(@types/node@24.10.0)
       '@microsoft/tsdoc': 0.15.1
@@ -12472,6 +12476,7 @@ snapshots:
       '@rushstack/rig-package': 0.6.0
       '@rushstack/terminal': 0.19.3(@types/node@24.10.0)
       '@rushstack/ts-command-line': 5.1.3(@types/node@24.10.0)
+      diff: 8.0.2
       lodash: 4.17.21
       minimatch: 10.0.3
       resolve: 1.22.10
@@ -15106,6 +15111,8 @@ snapshots:
       wrappy: 1.0.2
 
   didyoumean@1.2.2: {}
+
+  diff@8.0.2: {}
 
   dir-glob@3.0.1:
     dependencies:
