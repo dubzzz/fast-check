@@ -3,9 +3,7 @@ import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it } from 'vitest';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import { failingProperty } from './__properties__/failing.cjs';
+import { failingProperty } from './__properties__/failing.mjs';
 import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {

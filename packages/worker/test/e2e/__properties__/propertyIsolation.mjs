@@ -1,7 +1,10 @@
 // @ts-check
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
+
+const __filename = fileURLToPath(import.meta.url);
 
 const counters = {};
 function buildPropertyWarmUp(isolationLevel) {
@@ -29,7 +32,7 @@ function buildPropertyRun(isolationLevel) {
   );
 }
 
-exports.propertyIsolation = {
+export const propertyIsolation = {
   predicateLevelWarmUp: buildPropertyWarmUp('predicate'),
   predicateLevelRun: buildPropertyRun('predicate'),
   propertyLevelWarmUp: buildPropertyWarmUp('property'),

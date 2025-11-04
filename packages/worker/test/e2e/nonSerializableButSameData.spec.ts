@@ -7,9 +7,7 @@ import { describe, it, expect } from 'vitest';
 import {
   nonSerializableButSameDataProperty,
   nonSerializableButSameDataRawProperty,
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
-} from './__properties__/nonSerializableButSameData.cjs';
+} from './__properties__/nonSerializableButSameData.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {

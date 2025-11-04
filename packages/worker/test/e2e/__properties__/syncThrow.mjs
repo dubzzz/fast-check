@@ -1,11 +1,13 @@
 // @ts-check
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
 
+const __filename = fileURLToPath(import.meta.url);
 const property = propertyFor(pathToFileURL(__filename));
 
-exports.syncThrowProperty = property(
+export const syncThrowProperty = property(
   fc.integer({ min: -1000, max: 1000 }),
   fc.integer({ min: -1000, max: 1000 }),
   (from, to) => {
