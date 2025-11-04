@@ -3,6 +3,8 @@ import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore
 import { passingProperty } from './__properties__/passing.mjs';
 
 if (isMainThread) {
