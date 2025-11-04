@@ -12,11 +12,10 @@ const execFile = promisify(_execFile);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const rootWebsite = path.join(__dirname, '..', '..', '..');
 
-const generatedTestsDirectoryName = '.test-artifacts';
+const generatedTestsDirectoryName = 'generated-tests';
 const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryName);
 
-const jestBinaryPath = path.join(rootWebsite, './node_modules/jest/bin/jest.js');
-const jestConfigName = `jest.config.cjs`;
+const vitestBinaryPath = path.join(rootWebsite, './node_modules/vitest/vitest.mjs');
 
 const allQueueSpecs = {
   unit: snippets.queueUnitSpecCode,
@@ -75,23 +74,32 @@ describe('Playground', () => {
           const testDirectoryPath = path.join(generatedTestsDirectory, testDirectoryName);
           const sourceFilePath = path.join(testDirectoryPath, `queue.mjs`);
           const specFilePath = path.join(testDirectoryPath, `queue.spec.mjs`);
-          const jestConfigPath = path.join(testDirectoryPath, jestConfigName);
           const sanitizedSpecCode =
-            "import { jest } from '@jest/globals';\n" + specCode.replace('queue.js', 'queue.mjs');
+            "import { vi, test, expect, describe } from 'vitest';\n" + specCode.replace('queue.js', 'queue.mjs').replace(/\bjest\b/g, 'vi');
           try {
             await fs.mkdir(testDirectoryPath, { recursive: true });
             await fs.writeFile(sourceFilePath, snippet.code);
             await fs.writeFile(specFilePath, sanitizedSpecCode);
-            await fs.writeFile(jestConfigPath, `module.exports = { testMatch: ['**.spec.mjs'] }`);
-            const specOutput = await runJest(testDirectoryPath);
+            // Create node_modules symlink to allow resolving fast-check
+            const nodeModulesPath = path.join(testDirectoryPath, 'node_modules');
+            const fastCheckSource = path.join(rootWebsite, 'node_modules', 'fast-check');
+            const fastCheckDest = path.join(nodeModulesPath, 'fast-check');
+            await fs.mkdir(nodeModulesPath, { recursive: true });
+            try {
+              await fs.symlink(fastCheckSource, fastCheckDest, 'dir');
+            } catch (symlinkErr) {
+              // Symlink might already exist, ignore error
+              if (symlinkErr.code !== 'EEXIST') throw symlinkErr;
+            }
+            const specOutput = await runVitest(testDirectoryPath, specFilePath);
             if (expectedSuccess) {
-              expect(specOutput).toContain('1 passed');
-              expect(specOutput).not.toContain('1 failed');
+              expect(specOutput).toMatch(/Tests\s+1 passed/);
+              expect(specOutput).not.toMatch(/Tests\s+1 failed/);
               expect(specOutput).not.toContain('ERR_UNHANDLED_REJECTION');
             } else {
-              expect(specOutput).not.toContain('1 passed');
+              expect(specOutput).not.toMatch(/Tests\s+1 passed/);
               try {
-                expect(specOutput).toContain('1 failed');
+                expect(specOutput).toMatch(/Tests\s+1 failed/);
               } catch (err) {
                 expect(specOutput).toContain('ERR_UNHANDLED_REJECTION');
               }
@@ -107,15 +115,22 @@ describe('Playground', () => {
 
 // Helpers
 
-async function runJest(testDirectoryPath) {
+async function runVitest(testDirectoryPath, specFilePath) {
   try {
-    const { stderr: specOutput } = await execFile(
+    const { stdout: specOutput, stderr: specError } = await execFile(
       'node',
-      ['--experimental-vm-modules', jestBinaryPath, '--config', jestConfigName],
-      { cwd: testDirectoryPath },
+      ['--experimental-vm-modules', vitestBinaryPath, 'run', specFilePath, '--reporter=verbose'],
+      { 
+        cwd: testDirectoryPath, 
+        maxBuffer: 10 * 1024 * 1024, 
+        timeout: 10000
+      }, // 10MB buffer, 10s timeout
     );
-    return specOutput;
+    return specOutput + specError;
   } catch (err) {
-    return err.stderr;
+    if (err.killed) {
+      return (err.stdout || '') + (err.stderr || '') + '\n[TIMEOUT]';
+    }
+    return (err.stdout || '') + (err.stderr || '');
   }
 }
