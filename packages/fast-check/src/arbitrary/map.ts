@@ -24,7 +24,7 @@ export interface MapConstraints {
   minKeys?: number;
   /**
    * Upper bound for the number of entries defined into the generated instance
-   * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
+   * @defaultValue 0x7fffffff
    * @remarks Since 4.4.0
    */
   maxKeys?: number;
@@ -49,6 +49,7 @@ export interface MapConstraints {
  *
  * @param keyArb - Arbitrary used to generate the keys of the Map
  * @param valueArb - Arbitrary used to generate the values of the Map
+ * @param constraints - Constraints to apply when building instances
  *
  * @remarks Since 4.4.0
  * @public
