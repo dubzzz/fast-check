@@ -1,7 +1,6 @@
 // @ts-check
 import { pathToFileURL, fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
-import path from 'node:path';
+import path, { dirname } from 'node:path';
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 import { writeFileSync, existsSync, rmSync } from 'node:fs';
