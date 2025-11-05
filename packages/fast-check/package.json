@@ -65,7 +65,6 @@
     "pure-rand": "^7.0.0"
   },
   "devDependencies": {
-    "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.54.0",
     "@types/node": "^24.10.0",

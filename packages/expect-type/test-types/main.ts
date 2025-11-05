@@ -1,4 +1,4 @@
-import { expectType, expectTypeAssignable } from '@fast-check/expect-type';
+import { expectTypeOf } from 'vitest';
 
-expectType<string>()(''.toLowerCase(), 'toLowerCase outputs a string');
-expectTypeAssignable<string | number>()(''.toLowerCase(), 'toLowerCase outputs a type is assignable to string|number');
+expectTypeOf(''.toLowerCase()).toEqualTypeOf<string>(); // toLowerCase outputs a string
+expectTypeOf(''.toLowerCase()).toMatchTypeOf<string | number>(); // toLowerCase outputs a type is assignable to string|number

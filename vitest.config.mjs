@@ -22,6 +22,10 @@ export default defineConfig({
     coverage: { include: ['packages/fast-check/src/**'] },
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },
+    typecheck: {
+      enabled: true,
+      include: ['**/*.test-d.ts'],
+    },
     projects: allProjects.map((projectPath) => {
       const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
       return {
