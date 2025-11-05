@@ -119,8 +119,8 @@ fc.map(fc.string(), fc.nat(), { minKeys: 2 });
 // • Map(5) { '>YTN<Tt' => 1950414260, 'I6' => 1505301756, '2;]'dH.i!' => 815067799, ':kmC'' => 1948205418, 'g|GTLPe-' => 2101264769 }
 // • …
 
-fc.map(fc.constantFrom('a', 'b', 'c'), fc.boolean());
-// Note: Keys are always in ['a', 'b', 'c']
+fc.map(fc.constantFrom('a', 'b', 'c'), fc.boolean(), { maxKeys: 3 });
+// Note: Keys are always in ['a', 'b', 'c']. Setting maxKeys to 3 makes generation more efficient as it avoids attempting to generate Maps with more than 3 entries when only 3 unique keys are possible.
 // Examples of generated values:
 // • Map(3) { 'c' => false, 'b' => true, 'a' => false }
 // • Map(2) { 'a' => false, 'c' => false }

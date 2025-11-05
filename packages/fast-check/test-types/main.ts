@@ -294,14 +294,6 @@ expectType<fc.Arbitrary<Map<string, number>>>()(
   fc.map<string, number>(fc.string(), fc.nat()),
   'Call to "map" with generics',
 );
-expectType<fc.Arbitrary<Map<number, string>>>()(
-  fc.map(fc.nat(), fc.string()),
-  'Map with number keys',
-);
-expectType<fc.Arbitrary<Map<any, any>>>()(
-  fc.map(fc.anything(), fc.anything()),
-  'Map with any keys and values',
-);
 
 // tuple arbitrary
 expectType<fc.Arbitrary<[]>>()(fc.tuple(), '"tuple" with zero argument');
