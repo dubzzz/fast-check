@@ -18,13 +18,13 @@ import { uint8ClampedArray } from '../../uint8ClampedArray';
 import { sparseArray } from '../../sparseArray';
 import type { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
 import { arrayToMapMapper, arrayToMapUnmapper } from '../mappers/ArrayToMap';
-import { arrayToSetMapper, arrayToSetUnmapper } from '../mappers/ArrayToSet';
 import { letrec } from '../../letrec';
 import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
 import { uniqueArray } from '../../uniqueArray';
 import type { DepthIdentifier } from '../helpers/DepthContext';
 import { createDepthIdentifier } from '../helpers/DepthContext';
 import { dictionary } from '../../dictionary';
+import { set } from '../../set';
 
 /** @internal */
 function mapOf<T, U>(
@@ -58,19 +58,6 @@ function dictOf<U>(
     size,
     depthIdentifier,
   });
-}
-
-/** @internal */
-function setOf<U>(
-  va: Arbitrary<U>,
-  maxKeys: number | undefined,
-  size: SizeForArbitrary | undefined,
-  depthIdentifier: DepthIdentifier,
-) {
-  return uniqueArray(va, { maxLength: maxKeys, size, comparator: 'SameValueZero', depthIdentifier }).map(
-    arrayToSetMapper,
-    arrayToSetUnmapper,
-  );
 }
 
 /** @internal */
@@ -126,7 +113,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
     // anything[]
     array: array(tie('anything'), { maxLength: maxKeys, size, depthIdentifier }),
     // Set<anything>
-    set: setOf(tie('anything'), maxKeys, size, depthIdentifier),
+    set: set(tie('anything'), { maxLength: maxKeys, size, depthIdentifier }),
     // Map<key, anything> | Map<anything, anything>
     map: oneof(
       mapOf(tie('keys') as Arbitrary<string>, tie('anything'), maxKeys, size, depthIdentifier),
