@@ -553,8 +553,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -606,8 +604,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -659,8 +655,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -712,8 +706,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -765,8 +757,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -818,8 +808,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -871,8 +859,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -924,8 +910,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@11.6.2 # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
