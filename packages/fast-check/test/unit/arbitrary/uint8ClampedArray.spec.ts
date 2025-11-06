@@ -12,7 +12,7 @@ describe('uint8ClampedArray', () => {
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = uint8ClampedArray();
@@ -34,7 +34,7 @@ describe('uint8ClampedArray', () => {
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     uint8ClampedArray();

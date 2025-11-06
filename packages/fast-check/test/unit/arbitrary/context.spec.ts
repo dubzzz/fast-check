@@ -18,7 +18,7 @@ describe('context', () => {
     const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = context();
@@ -34,7 +34,7 @@ describe('context', () => {
     const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     context();
@@ -50,7 +50,7 @@ describe('context', () => {
     const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     context();
@@ -70,7 +70,7 @@ describe('context', () => {
     const constant = vi.spyOn(ConstantMock, 'constant');
     constant.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     context();

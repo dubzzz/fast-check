@@ -25,7 +25,7 @@ describe('SchedulerArbitrary', () => {
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
       SchedulerImplem.mockImplementation(function () {
         return fakeScheduler;
-      } as any);
+      });
 
       // Act
       const arb = new SchedulerArbitrary(act);
@@ -55,7 +55,7 @@ describe('SchedulerArbitrary', () => {
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
       SchedulerImplem.mockImplementation(function () {
         return fakeScheduler;
-      } as any);
+      });
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
 
@@ -91,7 +91,7 @@ describe('SchedulerArbitrary', () => {
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
       SchedulerImplem.mockImplementation(function () {
         return fakeScheduler;
-      } as any);
+      });
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
 

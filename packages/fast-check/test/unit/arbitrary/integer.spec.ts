@@ -21,7 +21,7 @@ describe('integer', () => {
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
     IntegerArbitrary.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = integer();
@@ -37,7 +37,7 @@ describe('integer', () => {
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
     IntegerArbitrary.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = integer({});
@@ -55,7 +55,7 @@ describe('integer', () => {
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(function () {
           return instance;
-        } as any);
+        });
 
         // Act
         const arb = integer({ min });
@@ -74,7 +74,7 @@ describe('integer', () => {
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(function () {
           return instance;
-        } as any);
+        });
 
         // Act
         const arb = integer({ max });
@@ -94,7 +94,7 @@ describe('integer', () => {
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(function () {
           return instance;
-        } as any);
+        });
 
         // Act
         const arb = integer({ min, max });

@@ -12,7 +12,7 @@ describe('bigInt64Array', () => {
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = bigInt64Array();
@@ -34,7 +34,7 @@ describe('bigInt64Array', () => {
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
     builder.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     bigInt64Array();

@@ -21,7 +21,7 @@ describe('nat', () => {
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
     IntegerArbitrary.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = nat();
@@ -37,7 +37,7 @@ describe('nat', () => {
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
     IntegerArbitrary.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = nat({});
@@ -55,7 +55,7 @@ describe('nat', () => {
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(function () {
           return instance;
-        } as any);
+        });
 
         // Act
         const arb = nat({ max });
@@ -74,7 +74,7 @@ describe('nat', () => {
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
         IntegerArbitrary.mockImplementation(function () {
           return instance;
-        } as any);
+        });
 
         // Act
         const arb = nat(max);
@@ -121,7 +121,7 @@ describe('nat', () => {
           const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
           IntegerArbitrary.mockImplementation(function () {
             return instance;
-          } as any);
+          });
 
           // Act
           const arb = constraints === undefined ? nat() : nat(constraints);

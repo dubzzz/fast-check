@@ -19,7 +19,7 @@ describe('scheduler', () => {
     const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockImplementation(function () {
       return instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>;
-    } as any);
+    });
 
     // Act
     const s = scheduler();
@@ -35,7 +35,7 @@ describe('scheduler', () => {
     const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockImplementation(function () {
       return instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>;
-    } as any);
+    });
     const outF = new Promise<void>(() => {});
     let numCalls = 0;
     const f = () => {
@@ -58,7 +58,7 @@ describe('scheduler', () => {
     const SchedulerArbitrary = vi.spyOn(SchedulerArbitraryMock, 'SchedulerArbitrary');
     SchedulerArbitrary.mockImplementation(function () {
       return instance as SchedulerArbitraryMock.SchedulerArbitrary<unknown>;
-    } as any);
+    });
     const act = () => Promise.resolve();
 
     // Act

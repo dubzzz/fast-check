@@ -21,7 +21,7 @@ describe('bigInt', () => {
     const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
     BigIntArbitrary.mockImplementation(function () {
       return instance;
-    } as any);
+    });
 
     // Act
     const arb = bigInt();
@@ -45,7 +45,7 @@ describe('bigInt', () => {
         const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
         BigIntArbitrary.mockImplementation(function () {
           return instance;
-        } as any);
+        });
 
         // Act
         const arb = bigInt({ min: withMin ? min : undefined, max: withMax ? max : undefined });
@@ -70,7 +70,7 @@ describe('bigInt', () => {
         const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
         BigIntArbitrary.mockImplementation(function () {
           return instance;
-        } as any);
+        });
 
         // Act
         const arb = bigInt(min, max);
@@ -123,7 +123,7 @@ describe('bigInt', () => {
           const BigIntArbitrary = vi.spyOn(BigIntArbitraryMock, 'BigIntArbitrary');
           BigIntArbitrary.mockImplementation(function () {
             return instance;
-          } as any);
+          });
 
           // Act
           const arb = bigInt(...args);
