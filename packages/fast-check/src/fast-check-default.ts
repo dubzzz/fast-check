@@ -69,6 +69,8 @@ import type {
 import { letrec } from './arbitrary/letrec';
 import type { LoremConstraints } from './arbitrary/lorem';
 import { lorem } from './arbitrary/lorem';
+import type { MapConstraints } from './arbitrary/map';
+import { map } from './arbitrary/map';
 import { mapToConstant } from './arbitrary/mapToConstant';
 import type { Memo } from './arbitrary/memo';
 import { memo } from './arbitrary/memo';
@@ -263,6 +265,7 @@ export type {
   IntegerConstraints,
   JsonSharedConstraints,
   LoremConstraints,
+  MapConstraints,
   MixedCaseConstraints,
   NatConstraints,
   ObjectConstraints,
@@ -366,6 +369,7 @@ export {
   tuple,
   record,
   dictionary,
+  map,
   anything,
   object,
   json,

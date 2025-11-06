@@ -1,11 +1,12 @@
 // @ts-check
-const { pathToFileURL } = require('node:url');
-const fc = require('fast-check');
-const { propertyFor } = require('@fast-check/worker');
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import fc from 'fast-check';
+import { propertyFor } from '@fast-check/worker';
 
+const __filename = fileURLToPath(import.meta.url);
 const property = propertyFor(pathToFileURL(__filename), { randomSource: 'worker' });
 
-exports.nonSerializableButSameDataProperty = property(
+export const nonSerializableButSameDataProperty = property(
   fc.integer({ min: -1000, max: 1000 }).map((v) => Symbol.for(String(v))),
   (symbol) => {
     if (fc.stringify(symbol).includes('0')) {
@@ -14,7 +15,7 @@ exports.nonSerializableButSameDataProperty = property(
   },
 );
 
-exports.nonSerializableButSameDataRawProperty = fc.property(
+export const nonSerializableButSameDataRawProperty = fc.property(
   fc.integer({ min: -1000, max: 1000 }).map((v) => Symbol.for(String(v))),
   (symbol) => {
     if (fc.stringify(symbol).includes('0')) {
