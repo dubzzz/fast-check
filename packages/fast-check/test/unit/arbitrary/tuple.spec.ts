@@ -9,7 +9,7 @@ describe('tuple', () => {
     const { instance } = fakeArbitrary<unknown[]>();
     const TupleArbitrary = vi.spyOn(TupleArbitraryMock, 'TupleArbitrary');
     TupleArbitrary.mockImplementation(function () {
-      return instance as any;
+      return instance;
     });
     const { instance: arb1 } = fakeArbitrary();
     const { instance: arb2 } = fakeArbitrary();
