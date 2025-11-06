@@ -17,7 +17,12 @@ describe('map (integration)', () => {
   type Extra = { keys: unknown[]; values: unknown[]; constraints?: MapConstraints };
   const extraParameters: fc.Arbitrary<Extra> = fc.record(
     {
-      keys: fc.uniqueArray(fc.anything(), { minLength: 35 }),
+      keys: fc.uniqueArray(fc.anything(), {
+        // Enough keys to respect constraints.
+        minLength: 35,
+        // Keys equal in terms of SameValueZero will be merged together in a Map.
+        comparator: 'SameValueZero',
+      }),
       values: fc.uniqueArray(fc.anything(), { minLength: 1 }),
       constraints: fc
         .tuple(fc.nat({ max: 5 }), fc.nat({ max: 30 }), fc.boolean(), fc.boolean())
@@ -31,9 +36,9 @@ describe('map (integration)', () => {
 
   const isCorrect = (value: Map<unknown, unknown>, extra: Extra) => {
     // Check that all keys are from the expected set
+    const extraKeysSet = new Set(extra.keys);
     for (const k of value.keys()) {
-      if (Number.isNaN(k)) expect(extra.keys.some((ek) => Number.isNaN(ek))).toBe(true);
-      else expect(extra.keys).toContain(k); // exact same key (not a copy)
+      expect(extraKeysSet.has(k)).toBe(true); // exact same key (not a copy) in terms of SameValueZero (comparator used by keys of a Map)
     }
     // Check that all values are from the expected set
     for (const v of value.values()) {
@@ -73,19 +78,17 @@ describe('map (integration)', () => {
 // Helpers
 
 class FromKeysArbitrary<K> extends Arbitrary<K> {
+  readonly sourceAsSet: Set<K>;
   constructor(readonly source: K[]) {
     super();
+    this.sourceAsSet = new Set(source);
   }
   generate(mrng: Random, _biasFactor: number): Value<K> {
     const index = mrng.nextInt(0, this.source.length - 1);
     return new Value(this.source[index], undefined);
   }
   canShrinkWithoutContext(value: unknown): value is K {
-    // includes might mix 0 and -0, and will fail with NaN
-    if (Number.isNaN(value)) {
-      return this.source.some((k) => Number.isNaN(k));
-    }
-    return this.source.includes(value as any);
+    return this.sourceAsSet.has(value as K);
   }
   shrink(_value: K, _context?: unknown): Stream<Value<K>> {
     return Stream.nil();
@@ -101,11 +104,7 @@ class FromValuesArbitrary<V> extends Arbitrary<V> {
     return new Value(this.source[index], undefined);
   }
   canShrinkWithoutContext(value: unknown): value is V {
-    // includes might mix 0 and -0, and will fail with NaN
-    if (Number.isNaN(value)) {
-      return this.source.some((v) => Number.isNaN(v));
-    }
-    return this.source.includes(value as any);
+    return this.source.some((v) => Object.is(v, value));
   }
   shrink(_value: V, _context?: unknown): Stream<Value<V>> {
     return Stream.nil();
