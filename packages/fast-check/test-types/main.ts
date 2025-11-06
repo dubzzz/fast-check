@@ -286,10 +286,7 @@ expectType<fc.Arbitrary<Record<symbol, number>>>()(
 fc.dictionary(fc.anything(), fc.string());
 
 // map arbitrary
-expectType<fc.Arbitrary<Map<string, number>>>()(
-  fc.map(fc.string(), fc.nat()),
-  'Basic call to "map"',
-);
+expectType<fc.Arbitrary<Map<string, number>>>()(fc.map(fc.string(), fc.nat()), 'Basic call to "map"');
 expectType<fc.Arbitrary<Map<string, number>>>()(
   fc.map<string, number>(fc.string(), fc.nat()),
   'Call to "map" with generics',
