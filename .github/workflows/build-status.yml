@@ -211,7 +211,10 @@ jobs:
         include:
           - node-version: 24.x
             os: 'macos-latest'
-            shard: '1/1'
+            shard: '1/2'
+          - node-version: 24.x
+            os: 'macos-latest'
+            shard: '2/2'
           - node-version: 24.x
             os: 'windows-latest'
             shard: '1/2'
