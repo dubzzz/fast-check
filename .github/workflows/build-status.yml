@@ -265,8 +265,8 @@ jobs:
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: env.ENABLE_COVERAGE == 'true'
         with:
-          name: lcov-${{matrix.shard[0]}}
-          path: coverage/lcov.info
+          name: coverage-${{matrix.shard[0]}}
+          path: coverage/
           if-no-files-found: error
           retention-days: 1
   publish_test_coverage:
@@ -278,19 +278,14 @@ jobs:
       - name: Download coverage
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
-          pattern: lcov-*
+          pattern: coverage-*
           path: coverage-reports/
-      - name: Merge lcov files
-        run: |
-          mkdir -p coverage-merged
-          cat coverage-reports/lcov-*/lcov.info > coverage-merged/lcov.info
       - name: Codecov
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
         with:
           name: tests
           flags: tests
           token: ${{secrets.CODECOV_TOKEN}}
-          files: coverage-merged/lcov.info
           fail_ci_if_error: true # default: false
           verbose: false # default: false
   documentation:
