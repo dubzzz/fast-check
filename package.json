@@ -26,17 +26,17 @@
     "changelog": "changeset status",
     "pack:all": "pnpm --filter {./packages/**} --parallel exec pnpm pack --out package.tgz",
     "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'",
-    "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check:e2e test/e2e/documentation"
+    "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/e2e/documentation"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
-    "@eslint/js": "^9.39.0",
+    "@eslint/js": "^9.39.1",
     "@fast-check/packaged": "*",
     "@typescript-eslint/utils": "^8.46.3",
     "@vitest/coverage-v8": "^4.0.5",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
-    "eslint": "^9.39.0",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.5.0",
     "pkg-pr-new": "^0.0.60",
