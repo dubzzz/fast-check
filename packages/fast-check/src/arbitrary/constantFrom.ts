@@ -16,7 +16,7 @@ type Elem<T> = T extends any[] ? T[number] : T;
  * @remarks Since 0.0.12
  * @public
  */
-function constantFrom<const T = never>(...values: T[]): Arbitrary<T>;
+function constantFrom<const T = never>(...values: readonly T[]): Arbitrary<T>;
 
 /**
  * For one `...values` values - all equiprobable
@@ -28,9 +28,9 @@ function constantFrom<const T = never>(...values: T[]): Arbitrary<T>;
  * @remarks Since 0.0.12
  * @public
  */
-function constantFrom<TArgs extends any[] | [any]>(...values: TArgs): Arbitrary<TArgs[number]>;
+function constantFrom<TArgs extends readonly any[] | readonly [any]>(...values: TArgs): Arbitrary<TArgs[number]>;
 
-function constantFrom<TArgs extends any[] | [any] | any>(...values: Arrayfy<TArgs>): Arbitrary<Elem<TArgs>> {
+function constantFrom<TArgs extends readonly any[] | readonly [any] | any>(...values: Arrayfy<TArgs>): Arbitrary<Elem<TArgs>> {
   if (values.length === 0) {
     throw new Error('fc.constantFrom expects at least one parameter');
   }

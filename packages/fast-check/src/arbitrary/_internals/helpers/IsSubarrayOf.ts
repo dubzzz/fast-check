@@ -2,7 +2,7 @@ import { Map, safeMapGet, safeMapSet } from '../../../utils/globals';
 
 const safeObjectIs = Object.is;
 
-export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
+export function isSubarrayOf(source: readonly unknown[], small: readonly unknown[]): boolean {
   const countMap = new Map<unknown, number>();
   let countMinusZero = 0;
   for (const sourceEntry of source) {

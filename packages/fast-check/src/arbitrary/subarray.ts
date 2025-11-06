@@ -30,7 +30,7 @@ export interface SubarrayConstraints {
  * @remarks Since 1.5.0
  * @public
  */
-export function subarray<T>(originalArray: T[], constraints: SubarrayConstraints = {}): Arbitrary<T[]> {
+export function subarray<T>(originalArray: readonly T[], constraints: SubarrayConstraints = {}): Arbitrary<T[]> {
   const { minLength = 0, maxLength = originalArray.length } = constraints;
   return new SubarrayArbitrary(originalArray, true, minLength, maxLength);
 }

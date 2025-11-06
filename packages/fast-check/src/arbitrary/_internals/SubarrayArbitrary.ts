@@ -16,7 +16,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly biasedLengthArb: Arbitrary<number>;
   constructor(
-    readonly originalArray: T[],
+    readonly originalArray: readonly T[],
     readonly isOrdered: boolean,
     readonly minLength: number,
     readonly maxLength: number,
@@ -49,7 +49,7 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     const size = lengthArb.generate(mrng, undefined);
     const sizeValue = size.value;
 
-    const remainingElements = safeMap(this.originalArray, (_v, idx) => idx);
+    const remainingElements = safeMap(this.originalArray as T[], (_v, idx) => idx);
     const ids: number[] = [];
     for (let index = 0; index !== sizeValue; ++index) {
       const selectedIdIndex = mrng.nextInt(0, remainingElements.length - 1);

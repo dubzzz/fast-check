@@ -30,7 +30,7 @@ export interface ShuffledSubarrayConstraints {
  * @remarks Since 1.5.0
  * @public
  */
-export function shuffledSubarray<T>(originalArray: T[], constraints: ShuffledSubarrayConstraints = {}): Arbitrary<T[]> {
+export function shuffledSubarray<T>(originalArray: readonly T[], constraints: ShuffledSubarrayConstraints = {}): Arbitrary<T[]> {
   const { minLength = 0, maxLength = originalArray.length } = constraints;
   return new SubarrayArbitrary(originalArray, false, minLength, maxLength);
 }

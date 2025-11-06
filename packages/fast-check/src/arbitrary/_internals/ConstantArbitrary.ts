@@ -13,7 +13,7 @@ class FastConstantValuesLookup<T> {
   private readonly hasPlusZero: boolean;
   private readonly fastValues: Set<unknown>;
 
-  constructor(readonly values: T[]) {
+  constructor(readonly values: readonly T[]) {
     this.fastValues = new Set(this.values);
 
     let hasMinusZero = false;
@@ -44,7 +44,7 @@ class FastConstantValuesLookup<T> {
 export class ConstantArbitrary<T> extends Arbitrary<T> {
   private fastValues: FastConstantValuesLookup<T> | undefined;
 
-  constructor(readonly values: T[]) {
+  constructor(readonly values: readonly T[]) {
     super();
   }
   generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
