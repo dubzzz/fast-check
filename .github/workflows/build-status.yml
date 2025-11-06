@@ -265,7 +265,7 @@ jobs:
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: env.ENABLE_COVERAGE == 'true'
         with:
-          name: coverage-${{matrix.shard[0]}}
+          name: 'coverage-${{matrix.shard}}'
           path: coverage/
           if-no-files-found: error
           retention-days: 1
