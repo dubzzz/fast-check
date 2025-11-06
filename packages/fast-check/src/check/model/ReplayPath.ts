@@ -74,7 +74,7 @@ export class ReplayPath {
     for (let idx = 0; idx < occurences.length; idx += 6) {
       const changesInt = occurences
         .slice(idx, idx + 6)
-        .reduceRight((prev: number, cur: Count) => prev * 2 + (cur.value ? 1 : 0), 0);
+        .reduceRight((prev: number, cur: Count) => (prev << 1) + (cur.value ? 1 : 0), 0);
       serializedChanges += this.intToB64(changesInt);
     }
     return serializedChanges;
