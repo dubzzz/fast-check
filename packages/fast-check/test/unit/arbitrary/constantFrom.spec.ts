@@ -17,7 +17,9 @@ describe('constantFrom', () => {
         // Arrange
         const { instance } = fakeArbitrary();
         const ConstantArbitrary = vi.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');
-        ConstantArbitrary.mockImplementation(() => instance as ConstantArbitraryMock.ConstantArbitrary<unknown>);
+        ConstantArbitrary.mockImplementation(function () {
+          return instance as ConstantArbitraryMock.ConstantArbitrary<unknown>;
+        });
 
         // Act
         const arb = constantFrom(...csts);

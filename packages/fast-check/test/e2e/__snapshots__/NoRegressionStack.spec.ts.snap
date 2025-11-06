@@ -46,7 +46,7 @@ Got error: Property failed by returning false
     at check (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at Module.assert (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
-    at Proxy.methodWrapper (node_modules/.pnpm/chai@<version>/node_modules/chai/chai.js:?:?)
+    at Proxy.methodWrapper (node_modules/.pnpm/chai@<version>/node_modules/chai/index.js:?:?)
     at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
