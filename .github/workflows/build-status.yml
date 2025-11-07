@@ -207,17 +207,34 @@ jobs:
       matrix:
         node-version: [20.x, 22.x, 24.x, latest]
         os: ['ubuntu-latest']
-        shard: ['1/1']
+        shard-id: ['1']
+        shard-count: ['1']
         include:
           - node-version: 24.x
             os: 'macos-latest'
-            shard: '1/1'
+            shard-id: 1
+            shard-count: 3
+          - node-version: 24.x
+            os: 'macos-latest'
+            shard-id: 2
+            shard-count: 3
+          - node-version: 24.x
+          - node-version: 24.x
+            os: 'macos-latest'
+            shard-id: 3
+            shard-count: 3
           - node-version: 24.x
             os: 'windows-latest'
-            shard: '1/2'
+            shard-id: 1
+            shard-count: 3
           - node-version: 24.x
             os: 'windows-latest'
-            shard: '2/2'
+            shard-id: 2
+            shard-count: 3
+          - node-version: 24.x
+            os: 'windows-latest'
+            shard-id: 3
+            shard-count: 3
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
@@ -254,16 +271,35 @@ jobs:
           export FAST_CI_RUN=$("${ENABLE_COVERAGE}" = "true")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           if [ "${ENABLE_COVERAGE}" = "true" ]; then
-            pnpm run test:coverage --shard=${{matrix.shard}}
+            pnpm run test:coverage --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           else
-            pnpm run test --shard=${{matrix.shard}}
+            pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
-      - name: Codecov
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+      - name: Upload coverage
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: env.ENABLE_COVERAGE == 'true'
         with:
+          name: 'coverage-${{matrix.shard-id}}'
+          path: coverage/
+          if-no-files-found: error
+          retention-days: 1
+  publish_test_coverage:
+    name: 'Publish test coverage'
+    needs:
+      - test
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Download coverage
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          pattern: coverage-*
+          path: coverage-reports/
+      - name: Codecov
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+        with:
           name: tests
-          flags: tests, tests-against-${{matrix.node-version}}-on-${{runner.os}}
+          flags: tests
           token: ${{secrets.CODECOV_TOKEN}}
           fail_ci_if_error: true # default: false
           verbose: false # default: false
