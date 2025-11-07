@@ -504,6 +504,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/991554?v=4",
       "profile": "https://github.com/emilianbold",
       "contributions": ["code"]
+    },
+    {
+      "login": "russbiggs",
+      "name": "Russ Biggs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8487728?v=4",
+      "profile": "https://www.russbiggs.com/",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
