@@ -256,7 +256,7 @@ jobs:
           if [ "${ENABLE_COVERAGE}" = "true" ]; then
             pnpm run test:coverage --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           else
-            pnpm run test --shard=${{matrix.shard-id}}
+            pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
       - name: Upload coverage
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
