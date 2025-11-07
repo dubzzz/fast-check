@@ -212,12 +212,20 @@ jobs:
         include:
           - node-version: 24.x
             os: 'macos-latest'
-            shard-id: ['1', '2']
-            shard-count: ['2']
+            shard-id: 1
+            shard-count: 2
+          - node-version: 24.x
+            os: 'macos-latest'
+            shard-id: 2
+            shard-count: 2
           - node-version: 24.x
             os: 'windows-latest'
-            shard-id: ['1', '2']
-            shard-count: ['2']
+            shard-id: 1
+            shard-count: 2
+          - node-version: 24.x
+            os: 'windows-latest'
+            shard-id: 2
+            shard-count: 2
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
@@ -256,7 +264,7 @@ jobs:
           if [ "${ENABLE_COVERAGE}" = "true" ]; then
             pnpm run test:coverage --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           else
-            pnpm run test --shard=${{matrix.shard-id}}
+            pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
       - name: Upload coverage
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
