@@ -213,19 +213,28 @@ jobs:
           - node-version: 24.x
             os: 'macos-latest'
             shard-id: 1
-            shard-count: 2
+            shard-count: 3
           - node-version: 24.x
             os: 'macos-latest'
             shard-id: 2
-            shard-count: 2
+            shard-count: 3
+          - node-version: 24.x
+          - node-version: 24.x
+            os: 'macos-latest'
+            shard-id: 3
+            shard-count: 3
           - node-version: 24.x
             os: 'windows-latest'
             shard-id: 1
-            shard-count: 2
+            shard-count: 3
           - node-version: 24.x
             os: 'windows-latest'
             shard-id: 2
-            shard-count: 2
+            shard-count: 3
+          - node-version: 24.x
+            os: 'windows-latest'
+            shard-id: 3
+            shard-count: 3
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
