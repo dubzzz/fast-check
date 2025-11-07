@@ -464,6 +464,7 @@ jobs:
   publish_documentation_netlify:
     name: 'Publish documentation on Netlify'
     needs: documentation
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     uses: ./.github/workflows/deploy-documentation-netlify.yml
