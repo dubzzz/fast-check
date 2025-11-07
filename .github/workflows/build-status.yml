@@ -467,8 +467,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    uses: ./.github/workflows/deploy-documentation-netlify.yml
-    secrets: inherit
+    steps:
+      - uses: ./.github/workflows/deploy-documentation-netlify.yml
+        secrets: inherit
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
