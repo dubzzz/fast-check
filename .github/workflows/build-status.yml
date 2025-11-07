@@ -468,7 +468,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: ./.github/workflows/deploy-documentation-netlify.yml
+      - uses: ./.github/workflows/build-status.yml
         secrets: inherit
   check_any_package:
     name: 'Check publish any package'
