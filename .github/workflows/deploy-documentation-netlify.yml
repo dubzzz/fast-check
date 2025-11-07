@@ -2,12 +2,6 @@ name: Deploy Documentation to Netlify
 
 on:
   workflow_call:
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: 'PR number'
-        required: true
-        type: string
 
 permissions:
   contents: read
