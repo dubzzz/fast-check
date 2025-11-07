@@ -22,6 +22,7 @@ function beforeEachHook() {
 // the hooks will be resetted within the tests themselves if needed
 //  >  fc.configureGlobal({ beforeEach: beforeEachHook });
 beforeEach(beforeEachHook);
+fc.configureGlobal({ beforeEach: beforeEachHook });
 
 const frequencyValidInputsArb = fc
   .tuple(

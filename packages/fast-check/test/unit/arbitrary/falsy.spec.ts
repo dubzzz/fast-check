@@ -13,7 +13,9 @@ describe('falsy', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
-    constantFrom.mockImplementation(() => instance);
+    constantFrom.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = falsy();
@@ -27,7 +29,9 @@ describe('falsy', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
-    constantFrom.mockImplementation(() => instance);
+    constantFrom.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     falsy();
@@ -45,7 +49,9 @@ describe('falsy', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constantFrom = vi.spyOn(ConstantFromMock, 'constantFrom');
-    constantFrom.mockImplementation(() => instance);
+    constantFrom.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     falsy({ withBigInt: true });

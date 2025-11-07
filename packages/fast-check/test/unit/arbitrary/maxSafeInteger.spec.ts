@@ -21,7 +21,9 @@ describe('maxSafeInteger', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-    IntegerArbitrary.mockImplementation(() => instance);
+    IntegerArbitrary.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = maxSafeInteger();

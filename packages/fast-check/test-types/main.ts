@@ -285,6 +285,13 @@ expectType<fc.Arbitrary<Record<symbol, number>>>()(
 // @ts-expect-error - dictionary expects arbitraries producing PropertyKey for keys
 fc.dictionary(fc.anything(), fc.string());
 
+// map arbitrary
+expectType<fc.Arbitrary<Map<string, number>>>()(fc.map(fc.string(), fc.nat()), 'Basic call to "map"');
+expectType<fc.Arbitrary<Map<string, number>>>()(
+  fc.map<string, number>(fc.string(), fc.nat()),
+  'Call to "map" with generics',
+);
+
 // tuple arbitrary
 expectType<fc.Arbitrary<[]>>()(fc.tuple(), '"tuple" with zero argument');
 expectType<fc.Arbitrary<[number]>>()(fc.tuple(fc.nat()), '"tuple" with a single argument');

@@ -1,5 +1,6 @@
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
+const safeMathImul = Math.imul;
 
 /** @internal */
 export const MIN_VALUE_32: number = 2 ** -126 * 2 ** -23;
@@ -67,7 +68,7 @@ function indexInFloatFromDecomp(exponent: number, significand: number) {
   }
   // Offset due to exp = -126 + Offset of previous exp (excl. -126) + Offset in current exp
   // 2**24 + (exponent - (-126) -1) * 2**23 + (significand - 1) * 2**23
-  return (exponent + 127) * 0x800000 + (significand - 1) * 0x800000;
+  return safeMathImul(exponent + 127, 0x800000) + (significand - 1) * 0x800000;
 }
 
 /**

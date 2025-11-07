@@ -497,6 +497,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1649120?v=4",
       "profile": "https://github.com/dmurvihill",
       "contributions": ["code"]
+    },
+    {
+      "login": "emilianbold",
+      "name": "Emi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/991554?v=4",
+      "profile": "https://github.com/emilianbold",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7

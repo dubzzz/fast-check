@@ -205,19 +205,19 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        node-version: [20.x, 22.x, 24.5] # TODO - 24.5 should be replaced by latest, once we understand why snippets.spec.mjs started to fail with 24.6.0
+        node-version: [20.x, 22.x, 24.x, latest]
         os: ['ubuntu-latest']
         shard: ['1/1']
         include:
-          - node-version: 22.x
+          - node-version: 24.x
             os: 'macos-latest'
             shard: '1/1'
-          # - node-version: 22.x
-          #   os: 'windows-latest'
-          #   shard: '1/2'
-          # - node-version: 22.x
-          #   os: 'windows-latest'
-          #   shard: '2/2'
+          - node-version: 24.x
+            os: 'windows-latest'
+            shard: '1/2'
+          - node-version: 24.x
+            os: 'windows-latest'
+            shard: '2/2'
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
@@ -519,8 +519,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -572,8 +570,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -625,8 +621,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -678,8 +672,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -731,8 +723,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -784,8 +774,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -837,8 +825,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -890,8 +876,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Update npm
-        run: npm install -g npm@latest # TODO - To be dropped once npm 11.5.1 or later becomes the default
       - name: Download production packages
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
