@@ -468,10 +468,6 @@ jobs:
       pull-requests: write
     uses: ./.github/workflows/deploy-documentation-netlify.yml
     secrets: inherit
-    with:
-      pr_number: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || 0 }}
-      draft: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
-      artifact_name: 'website'
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
