@@ -59,7 +59,7 @@ export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => Letre
 
 /**
  * Constraints to be applied on {@link letrec}
- * @remarks Since 4.2.0
+ * @remarks Since 4.4.0
  * @public
  */
 export interface LetrecConstraints {
