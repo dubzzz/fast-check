@@ -79,7 +79,7 @@ export interface LetrecConstraints {
 export interface CycleConstraints {
   /**
    * Define how frequently cycles should occur in the generated values (at max)
-   * @remarks Since 4.2.0
+   * @remarks Since 4.4.0
    */
   frequencySize?: Exclude<SizeForArbitrary, 'max'>;
 }
