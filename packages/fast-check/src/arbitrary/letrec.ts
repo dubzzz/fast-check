@@ -66,7 +66,7 @@ export interface LetrecConstraints {
   /**
    * Generate objects with circular references
    * @defaultValue false
-   * @remarks Since 4.2.0
+   * @remarks Since 4.4.0
    */
   withCycles?: boolean | CycleConstraints;
 }
