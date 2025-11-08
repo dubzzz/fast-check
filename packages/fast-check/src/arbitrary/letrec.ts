@@ -73,7 +73,7 @@ export interface LetrecConstraints {
 
 /**
  * Constraints to be applied on {@link LetrecConstraints.withCycles}
- * @remarks Since 4.2.0
+ * @remarks Since 4.4.0
  * @public
  */
 export interface CycleConstraints {
