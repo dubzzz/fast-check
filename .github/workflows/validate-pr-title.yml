@@ -1,0 +1,53 @@
+name: Validate PR title
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+    branches:
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
+
+jobs:
+  validate-pr-title:
+    name: 'Validate PR title'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Validate PR title
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const prTitle = context.payload.pull_request.title;
+
+            const match = prTitle.match(/^([\p{Emoji}\uFE0F\u200d]+)(?:\(([a-z-]+)\)\s*)? ([^ ].+)$/u);
+            if (match === null) {
+              core.setFailed('❌ Invalid format');
+              return;
+            }
+
+            const [, emoji, packageName, description] = match;
+            if (packageName !== undefined) {
+              const packagesDir = path.join(process.env.GITHUB_WORKSPACE, 'packages');
+              const packages =
+                fs.readdirSync(packagesDir, { withFileTypes: true })
+                .filter(dirent => dirent.isDirectory())
+                .map(dirent => dirent.name)
+                .filter(name => name !== 'fast-check');
+              if (!packages.includes(packageName)) {
+                core.setFailed('❌ Invalid package name');
+                return;
+              }
+            }
+
+            if (!description.trim()) {
+              core.setFailed('❌ Missing description');
+              return;
+            }
+
+            console.log('✅ Valid PR title');

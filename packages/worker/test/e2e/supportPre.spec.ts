@@ -5,7 +5,7 @@ import { describe, it, expect } from 'vitest';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import { supportPreProperty } from './__properties__/supportPre.cjs';
+import { supportPreProperty } from './__properties__/supportPre.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {

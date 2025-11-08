@@ -15,18 +15,18 @@
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
     "pure-rand": "^7.0.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "supertest": "^7.1.4"
   },
   "devDependencies": {
-    "@types/express": "^5.0.3",
+    "@types/express": "^5.0.5",
     "@types/lodash": "^4.17.20",
-    "@types/react": "^19.1.12",
+    "@types/react": "^19.2.2",
     "@types/supertest": "^6.0.3",
-    "happy-dom": "^18.0.1",
-    "typescript": "~5.9.2",
-    "vitest": "^3.2.4"
+    "happy-dom": "^20.0.10",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.5"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT"

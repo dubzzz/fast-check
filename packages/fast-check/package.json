@@ -67,17 +67,17 @@
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.52.11",
-    "@types/node": "^22.18.0",
-    "cross-env": "^10.0.0",
+    "@microsoft/api-extractor": "^7.54.0",
+    "@types/node": "^24.10.0",
+    "cross-env": "^10.1.0",
     "fast-check": "workspace:*",
     "glob": "^11.0.3",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^8.3.0",
-    "typedoc": "^0.28.11",
-    "typescript": "~5.9.2",
-    "vitest": "^3.2.4"
+    "typedoc": "^0.28.14",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.5"
   },
   "keywords": [
     "property-based testing",

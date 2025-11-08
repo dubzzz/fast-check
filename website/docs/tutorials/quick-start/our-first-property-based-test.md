@@ -21,7 +21,7 @@ test('should sort a randomly ordered array in ascending order', () => {
   expect(sortNumbersAscending([3, 1, 2])).toEqual([1, 2, 3]);
 });
 test('should sort a descending ordered array in ascending order', () => {
-  expect(sortNumbersAscending([3, 1, 2])).toEqual([1, 2, 3]);
+  expect(sortNumbersAscending([3, 2, 1])).toEqual([1, 2, 3]);
 });
 ```
 
