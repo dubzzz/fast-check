@@ -167,3 +167,62 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
       };
     });
 }
+
+describe('stringMatching with maxLength constraint', () => {
+  it('should only produce strings with length <= maxLength', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 5, max: 50 }), (maxLength) => {
+        const arb = stringMatching(/[a-z]+/, { maxLength });
+        return fc.sample(arb, 100).every((s) => s.length <= maxLength);
+      }),
+    );
+  });
+
+  it('should produce strings that match both the regex and maxLength constraint', () => {
+    const regex = /^[0-9]+$/;
+    const arb = stringMatching(regex, { maxLength: 10 });
+    fc.assert(
+      fc.property(fc.constant(arb), (arb) => {
+        return fc.sample(arb, 100).every((s) => {
+          return s.length <= 10 && regex.test(s);
+        });
+      }),
+    );
+  });
+
+  it('should work with complex regex patterns', () => {
+    const regex = /^[A-Z][a-z]*$/;
+    const arb = stringMatching(regex, { maxLength: 8 });
+    fc.assert(
+      fc.property(fc.constant(arb), (arb) => {
+        return fc.sample(arb, 100).every((s) => {
+          return s.length <= 8 && regex.test(s);
+        });
+      }),
+    );
+  });
+
+  it('should work with quantifiers in the regex', () => {
+    const regex = /a+b*/;
+    const arb = stringMatching(regex, { maxLength: 6 });
+    fc.assert(
+      fc.property(fc.constant(arb), (arb) => {
+        return fc.sample(arb, 100).every((s) => {
+          return s.length <= 6 && regex.test(s);
+        });
+      }),
+    );
+  });
+
+  it('should work with anchored patterns', () => {
+    const regex = /^[a-z]+$/;
+    const arb = stringMatching(regex, { maxLength: 10 });
+    fc.assert(
+      fc.property(fc.constant(arb), (arb) => {
+        return fc.sample(arb, 100).every((s) => {
+          return s.length <= 10 && regex.test(s);
+        });
+      }),
+    );
+  });
+});
