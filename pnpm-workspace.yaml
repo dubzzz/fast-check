@@ -10,3 +10,5 @@ ignoredBuiltDependencies:
   - es5-ext
   - esbuild
   - unrs-resolver
+
+trustPolicy: no-downgrade
