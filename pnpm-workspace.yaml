@@ -13,6 +13,7 @@ ignoredBuiltDependencies:
 
 trustPolicy: no-downgrade
 trustPolicyExclude:
+  - '@octokit/plugin-paginate-rest@9.2.2'
   - '@swc/core@1.13.3'
   - detect-port@1.6.1
   - rxjs@7.8.2
