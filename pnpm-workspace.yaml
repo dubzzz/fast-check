@@ -13,4 +13,5 @@ ignoredBuiltDependencies:
 
 trustPolicy: no-downgrade
 trustPolicyExclude:
+  - detect-port@1.6.1
   - rxjs@7.8.2
