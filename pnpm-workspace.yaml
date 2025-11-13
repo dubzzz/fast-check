@@ -18,5 +18,6 @@ trustPolicyExclude:
   - detect-port@1.6.1
   - rxjs@7.8.2
   - semver@6.3.1
+  - undici@5.29.0
   - undici@6.21.3
   - undici-types@6.21.0
