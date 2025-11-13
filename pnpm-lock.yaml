@@ -165,8 +165,8 @@ importers:
         specifier: workspace:*
         version: link:../poisoning
       '@microsoft/api-extractor':
-        specifier: ^7.54.0
-        version: 7.54.0(@types/node@24.10.0)
+        specifier: ^7.55.0
+        version: 7.55.0(@types/node@24.10.0)
       '@types/node':
         specifier: ^24.10.0
         version: 24.10.0
@@ -2319,18 +2319,18 @@ packages:
       '@types/react': '>=16'
       react: '>=16'
 
-  '@microsoft/api-extractor-model@7.31.3':
-    resolution: {integrity: sha512-dv4quQI46p0U03TCEpasUf6JrJL3qjMN7JUAobsPElxBv4xayYYvWW9aPpfYV+Jx6hqUcVaLVOeV7+5hxsyoFQ==}
+  '@microsoft/api-extractor-model@7.32.0':
+    resolution: {integrity: sha512-QIVJSreb8fGGJy1Qx0yzGVXxvHJN1WXgkFNHFheVv1iBJNqgvp+xeT3ienJmRwXmPPc5Es/cxBrXtKZJR3i7iw==}
 
-  '@microsoft/api-extractor@7.54.0':
-    resolution: {integrity: sha512-t0SEcbVUPy4yAVykPafTNWktBg728X6p9t8qCuGDsYr1/lz2VQFihYDP2CnBFSArP5vwJPcvxktoKVSqH326cA==}
+  '@microsoft/api-extractor@7.55.0':
+    resolution: {integrity: sha512-TYc5OtAK/9E3HGgd2bIfSjQDYIwPc0dysf9rPiwXZGsq916I6W2oww9bhm1OxPOeg6rMfOX3PoroGd7oCryYog==}
     hasBin: true
 
-  '@microsoft/tsdoc-config@0.17.1':
-    resolution: {integrity: sha512-UtjIFe0C6oYgTnad4q1QP4qXwLhe6tIpNTRStJ2RZEPIkqQPREAwE5spzVxsdn9UaEMUqhh0AqSx3X4nWAKXWw==}
+  '@microsoft/tsdoc-config@0.18.0':
+    resolution: {integrity: sha512-8N/vClYyfOH+l4fLkkr9+myAoR6M7akc8ntBJ4DJdWH2b09uVfr71+LTMpNyG19fNqWDg8KEDZhx5wxuqHyGjw==}
 
-  '@microsoft/tsdoc@0.15.1':
-    resolution: {integrity: sha512-4aErSrCR/On/e5G2hDP0wjooqDdauzEbIq8hIkIe5pXV0rtWJZvdCEKL0ykZxex+IxIwBp0eGeV48hQN07dXtw==}
+  '@microsoft/tsdoc@0.16.0':
+    resolution: {integrity: sha512-xgAyonlVVS+q7Vc7qLW0UrJU7rSFcETRWsqdXZtjzRU8dF+6CkozTK4V4y1LwOX7j8r/vHphjDeMeGI4tNGeGA==}
 
   '@module-federation/error-codes@0.21.2':
     resolution: {integrity: sha512-mGbPAAApgjmQUl4J7WAt20aV04a26TyS21GDEpOGXFEQG5FqmZnSJ6FqB8K19HgTKioBT1+fF/Ctl5bGGao/EA==}
@@ -12552,19 +12552,19 @@ snapshots:
       '@types/react': 19.2.2
       react: 19.2.0
 
-  '@microsoft/api-extractor-model@7.31.3(@types/node@24.10.0)':
+  '@microsoft/api-extractor-model@7.32.0(@types/node@24.10.0)':
     dependencies:
-      '@microsoft/tsdoc': 0.15.1
-      '@microsoft/tsdoc-config': 0.17.1
+      '@microsoft/tsdoc': 0.16.0
+      '@microsoft/tsdoc-config': 0.18.0
       '@rushstack/node-core-library': 5.18.0(@types/node@24.10.0)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.54.0(@types/node@24.10.0)':
+  '@microsoft/api-extractor@7.55.0(@types/node@24.10.0)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.31.3(@types/node@24.10.0)
-      '@microsoft/tsdoc': 0.15.1
-      '@microsoft/tsdoc-config': 0.17.1
+      '@microsoft/api-extractor-model': 7.32.0(@types/node@24.10.0)
+      '@microsoft/tsdoc': 0.16.0
+      '@microsoft/tsdoc-config': 0.18.0
       '@rushstack/node-core-library': 5.18.0(@types/node@24.10.0)
       '@rushstack/rig-package': 0.6.0
       '@rushstack/terminal': 0.19.3(@types/node@24.10.0)
@@ -12579,14 +12579,14 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/tsdoc-config@0.17.1':
+  '@microsoft/tsdoc-config@0.18.0':
     dependencies:
-      '@microsoft/tsdoc': 0.15.1
+      '@microsoft/tsdoc': 0.16.0
       ajv: 8.12.0
       jju: 1.4.0
       resolve: 1.22.10
 
-  '@microsoft/tsdoc@0.15.1': {}
+  '@microsoft/tsdoc@0.16.0': {}
 
   '@module-federation/error-codes@0.21.2': {}
 
