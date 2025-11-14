@@ -55,12 +55,12 @@ export type SetConstraints = {
  * @remarks Since 4.4.0
  * @public
  */
-export function set<T>(arb: Arbitrary<T>, constraints?: SetConstraints): Arbitrary<Set<T>> {
+export function set<T>(arb: Arbitrary<T>, constraints: SetConstraints = {}): Arbitrary<Set<T>> {
   return uniqueArray(arb, {
-    minLength: constraints?.minLength,
-    maxLength: constraints?.maxLength,
-    size: constraints?.size,
-    depthIdentifier: constraints?.depthIdentifier,
+    minLength: constraints.minLength,
+    maxLength: constraints.maxLength,
+    size: constraints.size,
+    depthIdentifier: constraints.depthIdentifier,
     comparator: 'SameValueZero',
   }).map(arrayToSetMapper, arrayToSetUnmapper);
 }
