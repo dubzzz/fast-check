@@ -94,55 +94,49 @@ All the values in the set are unique. Comparison of values relies on `SameValueZ
 ```js
 fc.set(fc.nat());
 // Examples of generated values:
-// • Set(3) {1811605556, 773390791, 2091685325}
-// • Set(0) {}
-// • Set(6) {1782327935, 900193957, 2005682058, 1190044745, 1361174456, 1816521832}
-// • Set(8) {2039519833, 1820186979, 1716322482, 1252099479, 313246778, 1462590114, 1981305846, 1755169295}
-// • Set(1) {1093216677}
+// • new Set([1681938411,278250656,2138206756])
+// • new Set([28,1046862664])
+// • new Set([1521748689,316610179,1601449343,1057761988,2088580527,1974557534,1618733983,882909472])
+// • new Set([269035825,95461057,227736260])
+// • new Set([755444117,555135045,511312424,1358336721,939579971])
 // • …
 
 fc.set(fc.nat(), { minLength: 3 });
 // Examples of generated values:
-// • Set(3) {30, 1812443734, 26}
-// • Set(4) {536894957, 149319825, 1808423364, 1511394264}
-// • Set(5) {1265639866, 1672446215, 356045957, 1686054822, 2086860087}
-// • Set(3) {2147483618, 2147483620, 1209289481}
-// • Set(11) {946187936, 1504050852, 144134225, 2105232789, 194205091, 171397027, 437743867, 328587192, 403202026, 943599425, 272125438}
+// • new Set([602547610,112021681,83201570,693834807,2146945516,698558116,1101096089])
+// • new Set([6,1430479569,702296885,894326742,2147483621])
+// • new Set([1015331865,7,999206705,1519706408,514833092,961783345])
+// • new Set([17,1694060249,16])
+// • new Set([586174988,95340586,9582779,194927067,729188280,293838753,1487439988,689790741])
 // • …
 
 fc.set(fc.nat(), { maxLength: 3 });
-// Examples of generated values: Set(0) {}, Set(1) {536894957}, Set(2) {1265639866, 1672446215}, Set(2) {2147483618, 2147483620}, Set(3) {1396071052, 413181514, 728831399}…
+// Examples of generated values: new Set([]), new Set([1015331865]), new Set([586174988]), new Set([90041247,2029142854]), new Set([2147483622,443201851])…
 
 fc.set(fc.nat(), { minLength: 5, maxLength: 7 });
 // Examples of generated values:
-// • Set(5) {2013730136, 353952753, 1490777806, 634915573, 1978586276}
-// • Set(6) {11, 2147483643, 1549284389, 2, 2085769824, 1046376312}
-// • Set(5) {131262217, 28, 2008543832, 464574638, 2147483621}
-// • Set(5) {29, 1410245876, 741880759, 944485652, 27}
-// • Set(5) {1558059373, 1486409544, 138880328, 1775525007, 1289633061}
+// • new Set([1759373912,1442115536,851584635,195490435,2138804991,584365960,105302036])
+// • new Set([2011675117,1466574499,1048059617,1763350988,647054407,973683117])
+// • new Set([2147483623,16,23,513953320,2016509989,11])
+// • new Set([146428064,24,1830129633,18,8])
+// • new Set([12,11,393990951,1986689091,1210840379,9])
 // • …
 
 fc.set(fc.record({ id: fc.nat(), name: fc.string() }));
 // Note: Set comparison uses SameValueZero, so objects are compared by reference.
 // The generated sets will contain unique object instances.
 // Examples of generated values:
-// • Set(2) {{id: 123, name: "abc"}, {id: 456, name: "def"}}
-// • Set(1) {{id: 789, name: "ghi"}}
-// • Set(0) {}
-// • Set(3) {{id: 1, name: "a"}, {id: 2, name: "b"}, {id: 3, name: "c"}}
-// • Set(4) {{id: 10, name: "xy"}, {id: 20, name: "z"}, {id: 30, name: ""}, {id: 40, name: "!"}}
+// • new Set([])
+// • new Set([{"id":2147483643,"name":"fA#3;&"}])
+// • new Set([{__proto__:null,"id":1,"name":"caller"},{__proto__:null,"id":2147483643,"name":"e"}])
+// • new Set([{__proto__:null,"id":7,"name":"valueOf"},{__proto__:null,"id":6,"name":""},{"id":747148193,"name":"r6piZ_"}])
+// • new Set([{"id":1197887885,"name":"|-y]y!A*y"},{"id":309672783,"name":"?%i]n6"},{"id":1074933601,"name":"~TF!9"},{"id":17,"name":"uy"},{"id":2147483625,"name":"me4"},{"id":17,"name":""}])
 // • …
 
 fc.set(fc.constantFrom(-0, 0, Number.NaN, 1, 2));
 // Note: SameValueZero considers -0 and +0 as equal, and NaN as equal to itself.
 // So generated sets will not contain both -0 and +0, but can contain NaN.
-// Examples of generated values:
-// • Set(3) {0, Number.NaN, 1}
-// • Set(2) {Number.NaN, 2}
-// • Set(4) {-0, 1, 2, Number.NaN}
-// • Set(1) {1}
-// • Set(5) {0, Number.NaN, 1, 2}
-// • …
+// Examples of generated values: new Set([Number.NaN,0,1,2]), new Set([0,2,1,Number.NaN]), new Set([2,1]), new Set([0,Number.NaN,2,1]), new Set([0])…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/set.html).  
