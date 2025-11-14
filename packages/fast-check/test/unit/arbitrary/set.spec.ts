@@ -56,7 +56,7 @@ describe('set (integration)', () => {
     fc.assert(
       fc.property(set(constantFrom(-0, 0, Number.NaN, 1, 2)), (s) => {
         // In SameValueZero, -0 and +0 are considered equal, so we shouldn't have both
-        const zeroCount = Array.from(s).filter((v) => v === 0 || Object.is(v, -0)).length;
+        const zeroCount = Array.from(s).filter((v) => v === 0)).length; // "===" includes 0 and -0
         return zeroCount <= 1;
       }),
     );
