@@ -276,6 +276,8 @@ function dropMainGlobals(): () => void {
     typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
     typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
     typeof Float16Array !== 'undefined' ? Float16Array : undefined,
+    typeof ErrorEvent !== 'undefined' ? ErrorEvent : undefined,
+    typeof Storage !== 'undefined' ? Storage : undefined,
   ].filter((mainGlobal) => mainGlobal !== undefined);
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(

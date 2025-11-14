@@ -53,14 +53,14 @@
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "ava": "^6.4.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
     "rxjs": "^7.8.2",
     "typescript": "~5.9.3",
-    "vite": "^7.2.1",
-    "vitest": "^3.2.4"
+    "vite": "^7.2.2",
+    "vitest": "^4.0.5"
   },
   "keywords": [
     "ava",
