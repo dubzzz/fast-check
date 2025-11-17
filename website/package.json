@@ -40,7 +40,7 @@
     "@types/react": "^19.2.5",
     "docusaurus-plugin-llms": "^0.2.2",
     "fast-check": "workspace:*",
-    "glob": "^11.1.0",
+    "glob": "^12.0.0",
     "jest": "^30.2.0",
     "jimp": "^1.6.0",
     "typescript": "~5.9.3",
