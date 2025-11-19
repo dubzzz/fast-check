@@ -21,6 +21,12 @@ const safeStringFromCodePoint = String.fromCodePoint;
  */
 export type StringMatchingConstraints = {
   /**
+   * Upper bound of the generated string length (included)
+   * @defaultValue 0x7fffffff
+   * @remarks Since 3.23.0
+   */
+  maxLength?: number;
+  /**
    * Define how large the generated values should be (at max)
    * @remarks Since 3.10.0
    */
@@ -107,10 +113,23 @@ function toMatchingArbitrary(
           return string({ ...constraints, minLength: 0, maxLength: 1, unit: node });
         }
         case 'Range': {
+          // Cap quantifiers to user's maxLength constraint to prevent unbounded generation
+          const userMaxLength = constraints.maxLength;
+          const rangeMax = astNode.quantifier.to;
+          let cappedMax: number | undefined;
+          if (rangeMax === undefined) {
+            // Unbounded range like {3,} - use userMaxLength if available
+            cappedMax = userMaxLength;
+          } else if (userMaxLength !== undefined) {
+            // Bounded range - cap to userMaxLength
+            cappedMax = Math.min(rangeMax, userMaxLength);
+          } else {
+            cappedMax = rangeMax;
+          }
           return string({
             ...constraints,
             minLength: astNode.quantifier.from,
-            maxLength: astNode.quantifier.to,
+            maxLength: cappedMax,
             unit: node,
           });
         }
@@ -219,8 +238,25 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }
-  const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size };
+  // Pass constraints to internal generation
+  // Note: maxLength is used to cap quantifiers during generation
+  const sanitizedConstraints: StringMatchingConstraints = {
+    size: constraints.size,
+    maxLength: constraints.maxLength,
+  };
   const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
-  const regexRootToken = addMissingDotStar(tokenizeRegex(regex));
-  return toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
+
+  // Bound implicit wildcards when maxLength is specified
+  const regexRootToken = addMissingDotStar(tokenizeRegex(regex), constraints.maxLength);
+  const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
+
+  // Apply final maxLength filter if specified
+  // Note: We cap quantifiers during generation, but still need a filter because
+  // multiple capped components can sum to exceed maxLength
+  const maxLength = constraints.maxLength;
+  if (maxLength !== undefined) {
+    return baseArbitrary.filter((s) => s.length <= maxLength);
+  }
+
+  return baseArbitrary;
 }
