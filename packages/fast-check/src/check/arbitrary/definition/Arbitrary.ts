@@ -2,6 +2,7 @@ import type { Random } from '../../../random/generator/Random';
 import { Stream } from '../../../stream/Stream';
 import { cloneMethod, hasCloneMethod } from '../../symbols';
 import { Value } from './Value';
+import { PreconditionFailure } from '../../precondition/PreconditionFailure';
 
 /**
  * Abstract class able to generate values on type `T`
@@ -312,12 +313,22 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
     this.bindRefinementOnValue = (v: Value<T>): v is Value<U> => this.refinementOnValue(v);
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
-    while (true) {
+    // Limit the number of attempts to avoid infinite loops
+    // This connects filter to the same rejection mechanism as fc.pre
+    const maxAttempts = 100;
+    let attempts = 0;
+    
+    while (attempts < maxAttempts) {
       const g = this.arb.generate(mrng, biasFactor);
       if (this.refinementOnValue(g)) {
         return g;
       }
+      attempts++;
     }
+    
+    // After too many failed attempts, throw PreconditionFailure to be handled 
+    // by the same rejection mechanism that handles fc.pre
+    throw new PreconditionFailure();
   }
   canShrinkWithoutContext(value: unknown): value is U {
     return this.arb.canShrinkWithoutContext(value) && this.refinement(value);
