@@ -209,7 +209,7 @@ export function letrec<T>(
     return lazyArbs[key]!;
   };
   const strictArbs = builder(tie as any);
-  const underlyingForLazyArbs = createUnderlyingForLazyArbs(strictArbs, false);
+  const underlyingForLazyArbs = createUnderlyingForLazyArbs(strictArbs, withCycles);
   for (const key in underlyingForLazyArbs) {
     if (!safeHasOwnProperty(underlyingForLazyArbs, key)) {
       // Prevents accidental iteration over properties inherited from an object’s prototype
