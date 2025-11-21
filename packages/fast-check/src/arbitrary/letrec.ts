@@ -106,32 +106,6 @@ function createUnderlyingForLazyArbs<T>(strictArbs: LetrecValue<T>, withCycles: 
 }
 
 /** @internal */
-function letrecWithoutCycles<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
-  const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
-  const tie = (key: keyof T): Arbitrary<any> => {
-    if (!safeHasOwnProperty(lazyArbs, key)) {
-      // Call to hasOwnProperty ensures that the property key will be defined
-      lazyArbs[key] = new LazyArbitrary(String(key));
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return lazyArbs[key]!;
-  };
-  const strictArbs = builder(tie as any);
-  const underlyingForLazyArbs = createUnderlyingForLazyArbs(strictArbs, false);
-  for (const key in underlyingForLazyArbs) {
-    if (!safeHasOwnProperty(underlyingForLazyArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-    const lazyAtKey: LazyArbitrary<unknown> | undefined = lazyArbs[key];
-    const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
-    lazyArb.underlying = underlyingForLazyArbs[key];
-    lazyArbs[key] = lazyArb;
-  }
-  return strictArbs;
-}
-
-/** @internal */
 export function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: symbol): void {
   const visited = new Set();
   function deref(value: unknown, source?: Record<PropertyKey, unknown>, sourceKey?: PropertyKey) {
@@ -172,65 +146,6 @@ export function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderS
     }
   }
   deref(pools);
-}
-
-/** @internal */
-function letrecWithCycles<T>(
-  builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>,
-  constraints: CycleConstraints,
-): LetrecValue<T> {
-  const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
-  const tie = (key: keyof T): Arbitrary<any> => {
-    if (!safeHasOwnProperty(lazyArbs, key)) {
-      // Call to hasOwnProperty ensures that the property key will be defined
-      lazyArbs[key] = new LazyArbitrary(String(key));
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return lazyArbs[key]!;
-  };
-  const strictArbs = builder(tie as any);
-  const underlyingForLazyArbs = createUnderlyingForLazyArbs(strictArbs, true);
-
-  // Symbol to replace with a potentially circular reference later.
-  const poolArbs: { [K in keyof T]: Arbitrary<unknown[]> } = safeObjectCreate(null);
-  const poolConstraints = {
-    minLength: 1,
-    // Higher cycle frequency is achieved by using a smaller pool of objects, so we invert the input `frequency`.
-    size: invertSize(resolveSize(constraints.frequencySize)),
-  };
-  for (const key in underlyingForLazyArbs) {
-    if (!safeHasOwnProperty(underlyingForLazyArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-    const lazyAtKey: LazyArbitrary<unknown> | undefined = lazyArbs[key];
-    const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
-    lazyArb.underlying = underlyingForLazyArbs[key];
-    lazyArbs[key] = lazyArb;
-  }
-  for (const key in strictArbs) {
-    if (!safeHasOwnProperty(strictArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    poolArbs[key] = array(strictArbs[key]!, poolConstraints);
-  }
-
-  for (const key in strictArbs) {
-    if (!safeHasOwnProperty(strictArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-
-    const poolsArb = record(poolArbs as any) as Arbitrary<{ [K in keyof T]: unknown[] }>;
-    strictArbs[key] = poolsArb.map((pools) => {
-      derefPools(pools, placeholderSymbol);
-      return pools[key][0];
-    }) as (typeof strictArbs)[typeof key];
-  }
-
-  return strictArbs;
 }
 
 /**
@@ -283,7 +198,63 @@ export function letrec<T>(
   builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>,
   constraints: LetrecConstraints = {},
 ): LetrecValue<T> {
-  return constraints.withCycles
-    ? letrecWithCycles(builder, constraints.withCycles === true ? {} : constraints.withCycles)
-    : letrecWithoutCycles(builder);
+  const withCycles = !!constraints.withCycles;
+  const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
+  const tie = (key: keyof T): Arbitrary<any> => {
+    if (!safeHasOwnProperty(lazyArbs, key)) {
+      // Call to hasOwnProperty ensures that the property key will be defined
+      lazyArbs[key] = new LazyArbitrary(String(key));
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return lazyArbs[key]!;
+  };
+  const strictArbs = builder(tie as any);
+  const underlyingForLazyArbs = createUnderlyingForLazyArbs(strictArbs, false);
+  for (const key in underlyingForLazyArbs) {
+    if (!safeHasOwnProperty(underlyingForLazyArbs, key)) {
+      // Prevents accidental iteration over properties inherited from an object’s prototype
+      continue;
+    }
+    const lazyAtKey: LazyArbitrary<unknown> | undefined = lazyArbs[key];
+    const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
+    lazyArb.underlying = underlyingForLazyArbs[key];
+    lazyArbs[key] = lazyArb;
+  }
+
+  if (!withCycles) {
+    return strictArbs;
+  }
+
+  // Symbol to replace with a potentially circular reference later.
+  const frequencySize = typeof constraints.withCycles === 'object' ? constraints.withCycles.frequencySize : undefined;
+  const poolArbs: { [K in keyof T]: Arbitrary<unknown[]> } = safeObjectCreate(null);
+  const poolConstraints = {
+    minLength: 1,
+    // Higher cycle frequency is achieved by using a smaller pool of objects, so we invert the input `frequency`.
+    size: invertSize(resolveSize(frequencySize)),
+  };
+
+  for (const key in strictArbs) {
+    if (!safeHasOwnProperty(strictArbs, key)) {
+      // Prevents accidental iteration over properties inherited from an object’s prototype
+      continue;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    poolArbs[key] = array(strictArbs[key]!, poolConstraints);
+  }
+
+  for (const key in strictArbs) {
+    if (!safeHasOwnProperty(strictArbs, key)) {
+      // Prevents accidental iteration over properties inherited from an object’s prototype
+      continue;
+    }
+
+    const poolsArb = record(poolArbs as any) as Arbitrary<{ [K in keyof T]: unknown[] }>;
+    strictArbs[key] = poolsArb.map((pools) => {
+      derefPools(pools, placeholderSymbol);
+      return pools[key][0];
+    }) as (typeof strictArbs)[typeof key];
+  }
+
+  return strictArbs;
 }
