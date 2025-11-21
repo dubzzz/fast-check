@@ -1,6 +1,6 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeAdd, safeHas, safeHasOwnProperty } from '../utils/globals';
+import { safeAdd, safeHas, safeHasOwnProperty, Map as SMap, safeMapSet, safeMapGet } from '../utils/globals';
 import { invertSize, resolveSize, type SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { nat } from './nat.js';
 import { record } from './record.js';
@@ -86,6 +86,21 @@ export interface CycleConstraints {
 
 /** @internal */
 const placeholderSymbol = Symbol('placeholder');
+
+/** @internal */
+function createLazyArbsPool<T>() {
+  const lazyArbsPool = new SMap<keyof T, LazyArbitrary<unknown>>();
+  const getLazyFromPool = (key: keyof T): LazyArbitrary<unknown> => {
+    let lazyArb = safeMapGet(lazyArbsPool, key);
+    if (lazyArb !== undefined) {
+      return lazyArb;
+    }
+    lazyArb = new LazyArbitrary(String(key));
+    safeMapSet(lazyArbsPool, key, lazyArb);
+    return lazyArb;
+  };
+  return getLazyFromPool;
+}
 
 /** @internal */
 function createUnderlyingForLazyArbs<T>(strictArbs: LetrecValue<T>, withCycles: boolean): LetrecValue<T> {
@@ -199,26 +214,18 @@ export function letrec<T>(
   constraints: LetrecConstraints = {},
 ): LetrecValue<T> {
   const withCycles = !!constraints.withCycles;
-  const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
-  const tie = (key: keyof T): Arbitrary<any> => {
-    if (!safeHasOwnProperty(lazyArbs, key)) {
-      // Call to hasOwnProperty ensures that the property key will be defined
-      lazyArbs[key] = new LazyArbitrary(String(key));
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return lazyArbs[key]!;
-  };
-  const strictArbs = builder(tie as any);
+  const getLazyFromPool = createLazyArbsPool<T>();
+  const strictArbs = builder(getLazyFromPool as any);
+
+  // Fill the "underlying" field for each arbitrary in the lazy pool
   const underlyingForLazyArbs = createUnderlyingForLazyArbs(strictArbs, withCycles);
   for (const key in underlyingForLazyArbs) {
     if (!safeHasOwnProperty(underlyingForLazyArbs, key)) {
       // Prevents accidental iteration over properties inherited from an object’s prototype
       continue;
     }
-    const lazyAtKey: LazyArbitrary<unknown> | undefined = lazyArbs[key];
-    const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
+    const lazyArb = getLazyFromPool(key);
     lazyArb.underlying = underlyingForLazyArbs[key];
-    lazyArbs[key] = lazyArb;
   }
 
   if (!withCycles) {
