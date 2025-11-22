@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-Property based testing framework for JavaScript/TypeScript
+Property based testing framework for JavaScript/TypeScript*
 </p>
 
 <p align="center">
