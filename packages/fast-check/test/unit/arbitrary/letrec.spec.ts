@@ -216,6 +216,29 @@ describe('letrec', () => {
     );
   });
 
+  it.each([
+    { key: 0, stringKey: '0' },
+    { key: 1, stringKey: '1' },
+    { key: 2147483647, stringKey: '2147483647' }, // max index for an array
+    { key: 2147483648, stringKey: '2147483648' },
+    { key: -1, stringKey: '-1' },
+  ])('should be able to construct arbitraries referenced by the numeric key $key', ({ key, stringKey }) => {
+    // Arrange
+    const expectedArb = new FakeIntegerArbitrary(1, 4);
+
+    // Act
+    const { referenceToKey } = letrec((tie) => ({
+      referenceToKey: tie(stringKey),
+      [key]: expectedArb,
+    }));
+
+    // Assert
+    assertProduceCorrectValues(
+      () => referenceToKey,
+      (value) => typeof value === 'number' && value >= 1 && value <= 5,
+    );
+  });
+
   describe('generate', () => {
     it('should be able to delay calls to tie to generate', () => {
       // Arrange
