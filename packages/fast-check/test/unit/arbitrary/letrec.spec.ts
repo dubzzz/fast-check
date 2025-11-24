@@ -228,8 +228,10 @@ describe('letrec', () => {
 
     // Act
     const { referenceToKey } = letrec((tie) => ({
-      referenceToKey: tie(stringKey),
+      // built with a numeric key...
       [key]: expectedArb,
+      // ...referenced by a string key (can't be referenced by the numeric key typing-wise)
+      referenceToKey: tie(stringKey),
     }));
 
     // Assert
