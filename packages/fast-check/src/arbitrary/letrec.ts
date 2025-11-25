@@ -10,6 +10,7 @@ import { noShrink } from './noShrink.js';
 const safeArrayIsArray = Array.isArray;
 const safeObjectCreate = Object.create;
 const safeObjectEntries = Object.entries;
+const safeGetOwnPropertyNames = Object.getOwnPropertyNames;
 
 /**
  * Type of the value produced by {@link letrec}
@@ -100,24 +101,6 @@ function createLazyArbsPool<T>() {
     return lazyArb;
   };
   return getLazyFromPool;
-}
-
-/** @internal */
-function createUnderlyingForLazyArbs<T>(strictArbs: LetrecValue<T>, withCycles: boolean): LetrecValue<T> {
-  if (!withCycles) {
-    return strictArbs;
-  }
-  const underlyingForLazyArbs: typeof strictArbs = safeObjectCreate(null);
-  for (const key in strictArbs) {
-    if (!safeHasOwnProperty(strictArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-    underlyingForLazyArbs[key] = noShrink(
-      nat().map((index) => ({ [placeholderSymbol]: { key, index } })),
-    ) as (typeof underlyingForLazyArbs)[typeof key];
-  }
-  return underlyingForLazyArbs;
 }
 
 /** @internal */
@@ -214,18 +197,17 @@ export function letrec<T>(
   constraints: LetrecConstraints = {},
 ): LetrecValue<T> {
   const withCycles = !!constraints.withCycles;
+
   const getLazyFromPool = createLazyArbsPool<T>();
   const strictArbs = builder(getLazyFromPool as any);
+  const declaredArbitraryNames = safeGetOwnPropertyNames(strictArbs) as (keyof T)[]; // Own-only: to prevents accidental scan over properties inherited from an object’s prototype
 
   // Fill the "underlying" field for each arbitrary in the lazy pool
-  const underlyingForLazyArbs = createUnderlyingForLazyArbs(strictArbs, withCycles);
-  for (const key in underlyingForLazyArbs) {
-    if (!safeHasOwnProperty(underlyingForLazyArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-    const lazyArb = getLazyFromPool(key);
-    lazyArb.underlying = underlyingForLazyArbs[key];
+  for (const name of declaredArbitraryNames) {
+    const lazyArb = getLazyFromPool(name);
+    lazyArb.underlying = withCycles
+      ? noShrink(nat().map((index) => ({ [placeholderSymbol]: { key: name, index } })))
+      : strictArbs[name];
   }
 
   if (!withCycles) {
@@ -241,26 +223,16 @@ export function letrec<T>(
     size: invertSize(resolveSize(frequencySize)),
   };
 
-  for (const key in strictArbs) {
-    if (!safeHasOwnProperty(strictArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    poolArbs[key] = array(strictArbs[key]!, poolConstraints);
+  for (const name of declaredArbitraryNames) {
+    poolArbs[name] = array(strictArbs[name], poolConstraints);
   }
 
-  for (const key in strictArbs) {
-    if (!safeHasOwnProperty(strictArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-
-    const poolsArb = record(poolArbs as any) as Arbitrary<{ [K in keyof T]: unknown[] }>;
-    strictArbs[key] = poolsArb.map((pools) => {
+  for (const name of declaredArbitraryNames) {
+    const poolsArb = record<Record<keyof T, unknown[]>>(poolArbs);
+    strictArbs[name] = poolsArb.map((pools) => {
       derefPools(pools, placeholderSymbol);
-      return pools[key][0];
-    }) as (typeof strictArbs)[typeof key];
+      return pools[name][0];
+    }) as (typeof strictArbs)[typeof name];
   }
 
   return strictArbs;
