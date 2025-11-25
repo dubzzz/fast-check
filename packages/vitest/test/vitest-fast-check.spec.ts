@@ -335,7 +335,7 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       : (testCode: string) => testCode;
   const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
-    "import {describe} from 'vitest';\n" +
+    "import {describe,afterAll} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
