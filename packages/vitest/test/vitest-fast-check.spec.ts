@@ -13,6 +13,7 @@ import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
+declare const afterAllVi: typeof afterAll;
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
@@ -126,6 +127,59 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectSkip(out);
+    });
+
+    it.concurrent(`should take into account local numRuns in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let numExecutions = 0;
+        const requestedNumExecutions = 5;
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+          ++numExecutions;
+          if (numExecutions > requestedNumExecutions) {
+            throw new Error('Breach on numRuns');
+          }
+          return true;
+        });
+        afterAllVi(() => {
+          if (numExecutions !== requestedNumExecutions) {
+            throw new Error('Breach on numRuns, got: ' + numExecutions);
+          }
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let numExecutions = 0;
+        const requestedNumExecutions = 5;
+        fc.configureGlobal({ numRuns: requestedNumExecutions });
+        runner.prop([fc.string()])('property', (_ignored) => {
+          ++numExecutions;
+          if (numExecutions > requestedNumExecutions) {
+            throw new Error('Breach on numRuns');
+          }
+          return true;
+        });
+        afterAllVi(() => {
+          if (numExecutions !== requestedNumExecutions) {
+            throw new Error('Breach on numRuns, got: ' + numExecutions);
+          }
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
     });
   });
 
@@ -286,7 +340,7 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       : (testCode: string) => testCode;
   const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
-    "import {describe} from 'vitest';\n" +
+    "import {describe,afterAll as afterAllVi} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
