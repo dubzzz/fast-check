@@ -10,19 +10,19 @@ export class LazyArbitrary<T> extends Arbitrary<T> {
     super();
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<T> {
-    if (!this.underlying) {
+    if (this.underlying === null) {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }
     return this.underlying.generate(mrng, biasFactor);
   }
   canShrinkWithoutContext(value: unknown): value is T {
-    if (!this.underlying) {
+    if (this.underlying === null) {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }
     return this.underlying.canShrinkWithoutContext(value);
   }
   shrink(value: T, context?: unknown): Stream<Value<T>> {
-    if (!this.underlying) {
+    if (this.underlying === null) {
       throw new Error(`Lazy arbitrary ${JSON.stringify(this.name)} not correctly initialized`);
     }
     return this.underlying.shrink(value, context);
