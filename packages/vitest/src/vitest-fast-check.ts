@@ -1,6 +1,5 @@
 import * as fc from 'fast-check';
 import { buildTest } from './internals/TestBuilder.js';
-import { test as vitestTest } from 'vitest';
 import { testAPIRefined } from './internals/TestAlongGenerator.js';
 
 import type { FastCheckItBuilder } from './internals/TestBuilder.js';
