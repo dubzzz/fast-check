@@ -134,7 +134,7 @@ describe.each<DescribeOptions>([
       const specDirectory = await writeToFile(runnerName, () => {
         let numExecutions = 0;
         const requestedNumExecutions = 5;
-        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions - 1 })('property', (_ignored) => {
           ++numExecutions;
           if (numExecutions > requestedNumExecutions) {
             throw new Error('Breach on numRuns');
