@@ -13,6 +13,7 @@ import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
+declare const afterAllVi: typeof afterAll;
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
@@ -140,7 +141,7 @@ describe.each<DescribeOptions>([
           }
           return true;
         });
-        afterAll(() => {
+        afterAllVi(() => {
           if (numExecutions !== requestedNumExecutions) {
             throw new Error('Breach on numRuns, got: ' + numExecutions);
           }
@@ -167,7 +168,7 @@ describe.each<DescribeOptions>([
           }
           return true;
         });
-        afterAll(() => {
+        afterAllVi(() => {
           if (numExecutions !== requestedNumExecutions) {
             throw new Error('Breach on numRuns, got: ' + numExecutions);
           }
@@ -339,7 +340,7 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       : (testCode: string) => testCode;
   const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
-    "import {describe,afterAll} from 'vitest';\n" +
+    "import {describe,afterAll as afterAllVi} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
