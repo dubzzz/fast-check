@@ -127,6 +127,55 @@ describe.each<DescribeOptions>([
       // Assert
       expectSkip(out);
     });
+
+    it.concurrent(`should take into account local numRuns in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let numExecutions = 0;
+        const requestedNumExecutions = 5;
+        runner.prop([fc.string()])('property', (_ignored) => {
+          ++numExecutions;
+          if (numExecutions > requestedNumExecutions) {
+            throw new Error('Breach on numRuns');
+          }
+          return true;
+        });
+        if (numExecutions !== requestedNumExecutions) {
+          throw new Error('Breach on numRuns');
+        }
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let numExecutions = 0;
+        const requestedNumExecutions = 5;
+        fc.configureGlobal({ numRuns: requestedNumExecutions });
+        runner.prop([fc.string()])('property', (_ignored) => {
+          ++numExecutions;
+          if (numExecutions > requestedNumExecutions) {
+            throw new Error('Breach on numRuns');
+          }
+          return true;
+        });
+        if (numExecutions !== requestedNumExecutions) {
+          throw new Error('Breach on numRuns');
+        }
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
   });
 
   describe('at depth strictly above 1', () => {
