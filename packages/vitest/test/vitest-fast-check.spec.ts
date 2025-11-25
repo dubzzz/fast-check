@@ -157,7 +157,7 @@ describe.each<DescribeOptions>([
       const specDirectory = await writeToFile(runnerName, () => {
         let numExecutions = 0;
         const requestedNumExecutions = 5;
-        fc.configureGlobal({ numRuns: requestedNumExecutions + 1 });
+        fc.configureGlobal({ numRuns: requestedNumExecutions });
         runner.prop([fc.string()])('property', (_ignored) => {
           ++numExecutions;
           if (numExecutions > requestedNumExecutions) {
