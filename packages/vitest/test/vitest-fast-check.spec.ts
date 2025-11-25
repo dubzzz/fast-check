@@ -140,9 +140,11 @@ describe.each<DescribeOptions>([
           }
           return true;
         });
-        if (numExecutions !== requestedNumExecutions) {
-          throw new Error('Breach on numRuns, got: ' + numExecutions);
-        }
+        afterAll(() => {
+          if (numExecutions !== requestedNumExecutions) {
+            throw new Error('Breach on numRuns, got: ' + numExecutions);
+          }
+        });
       });
 
       // Act
