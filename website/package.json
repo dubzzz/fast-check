@@ -35,7 +35,7 @@
     "@docusaurus/types": "3.9.2",
     "@jest/globals": "^30.2.0",
     "@mdx-js/react": "^3.1.1",
-    "@types/lodash": "^4.17.20",
+    "@types/lodash": "^4.17.21",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "docusaurus-plugin-llms": "^0.2.2",
