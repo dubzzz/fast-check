@@ -15,6 +15,7 @@ import type {
 import { unlinkedToLinkedEntitiesMapper } from './_internals/mappers/UnlinkedToLinkedEntities';
 import { array } from './array';
 import { integer } from './integer';
+import { noBias } from './noBias';
 import { option } from './option';
 import { record } from './record';
 import { uniqueArray } from './uniqueArray';
@@ -48,7 +49,7 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
     mrng: Random,
     biasFactor: number | undefined,
   ): number[] | number | undefined {
-    const linkArbitrary = integer({ min: 0, max: countInTargetType });
+    const linkArbitrary = noBias(integer({ min: 0, max: countInTargetType }));
     switch (arity) {
       case '0-1':
         return option(linkArbitrary, { nil: undefined }).generate(mrng, biasFactor).value;
