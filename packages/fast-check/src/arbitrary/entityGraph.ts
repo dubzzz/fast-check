@@ -21,6 +21,15 @@ import { uniqueArray } from './uniqueArray';
 
 const safeObjectCreate = Object.create;
 
+type EntityGraphContraints = {
+  /**
+   * Do not generate records with null prototype
+   * @defaultValue false
+   * @remarks Since x.x.x
+   */
+  noNullPrototype?: boolean;
+};
+
 // Internal class containing the implementation
 class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> extends Arbitrary<
   EntityGraphValue<TEntityFields, TEntityRelations>
@@ -28,7 +37,7 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
   constructor(
     readonly arbitraries: Arbitraries<TEntityFields>,
     readonly relations: TEntityRelations,
-    readonly constraints: { defaultEntities: (keyof TEntityFields)[] },
+    readonly constraints: { defaultEntities: (keyof TEntityFields)[] } & EntityGraphContraints,
   ) {
     super();
   }
@@ -104,11 +113,15 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
     toBeProducedEntities.length = 0;
 
     // STEP II - Producing entities themselves
+    const recordContraints = { noNullPrototype: this.constraints.noNullPrototype };
     const recordModel: { [K in keyof TEntityFields]: Arbitrary<TEntityFields[K][]> } = safeObjectCreate(null);
     for (const name in this.arbitraries) {
       const entityRecordModel = this.arbitraries[name];
       const count = producedLinks[name].totalCount;
-      recordModel[name] = array(record(entityRecordModel), { minLength: count, maxLength: count }) as any;
+      recordModel[name] = array(record(entityRecordModel, recordContraints), {
+        minLength: count,
+        maxLength: count,
+      }) as any;
     }
     return record<UnlinkedEntities<TEntityFields>>(recordModel)
       .map((unlinkedEntities) => {
@@ -134,7 +147,8 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
 export function entityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   arbitraries: Arbitraries<TEntityFields>,
   relations: TEntityRelations,
+  constraints: EntityGraphContraints = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
   const defaultEntities = Object.keys(arbitraries) as (keyof typeof arbitraries)[];
-  return new EntityGraphArbitrary(arbitraries, relations, { defaultEntities });
+  return new EntityGraphArbitrary(arbitraries, relations, { ...constraints, defaultEntities });
 }
