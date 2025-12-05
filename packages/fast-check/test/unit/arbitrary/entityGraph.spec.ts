@@ -128,4 +128,41 @@ describe('entityGraph (integration)', () => {
       assertProduceCorrectValues(entityGraphBuilder, isCorrect, { extraParameters });
     });
   });
+
+  describe('graph', () => {
+    type Extra = {};
+    const extraParameters: fc.Arbitrary<Extra> = fc.record({});
+
+    const graphBuilder = (_extra: Extra) => {
+      return entityGraph(
+        { node: { id: string() } },
+        { node: { linkTo: { arity: 'many', type: 'node' } } },
+        { noNullPrototype: true },
+      );
+    };
+
+    const isCorrect = (value: UnArbitrary<ReturnType<typeof graphBuilder>>, _extra: Extra) => {
+      const allNodes = new Set(value.node);
+      // Checking basic structure
+      expect(value).toStrictEqual({ node: expect.any(Array) });
+      // Checking nodes
+      for (const node of value.node) {
+        // Basic structure
+        expect(node).toStrictEqual({ id: expect.any(String), linkTo: expect.any(Array) });
+        // Cross-references
+        for (const subNode of node.linkTo) {
+          expect(subNode).toSatisfy((subNode) => allNodes.has(subNode), 'subNode from allNodes');
+        }
+      }
+      return true;
+    };
+
+    it('should produce the same values given the same seed', () => {
+      assertProduceSameValueGivenSameSeed(graphBuilder, { extraParameters });
+    });
+
+    it('should only produce correct values', () => {
+      assertProduceCorrectValues(graphBuilder, isCorrect, { extraParameters });
+    });
+  });
 });
