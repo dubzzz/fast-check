@@ -101,7 +101,7 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
         currentLinks[name] = { type: targetType, index: linkOrLinks };
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
-          if (link === countInTargetType) {
+          if (link >= countInTargetType) {
             safePush(toBeProducedEntities, { type: targetType, indexInType: link }); // should be equal to producedLinksInTargetType.totalCount
             producedLinksInTargetType.totalCount += 1;
           }
