@@ -1,3 +1,16 @@
+# 0.2.4
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.4)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.3...vitest%2Fv0.2.4)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6317](https://github.com/dubzzz/fast-check/pull/6317)) Bug: Don't nest executions of properties
+
 # 0.2.3
 
 _Support Vitest v4_
