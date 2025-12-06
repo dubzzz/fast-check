@@ -1,15 +1,7 @@
 import { LazyArbitrary } from './_internals/LazyArbitrary';
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeAdd, safeHas, safeHasOwnProperty, Map as SMap, safeMapSet, safeMapGet } from '../utils/globals';
-import { invertSize, resolveSize, type SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { nat } from './nat.js';
-import { record } from './record.js';
-import { array } from './array.js';
-import { noShrink } from './noShrink.js';
+import { Map as SMap, safeMapSet, safeMapGet } from '../utils/globals';
 
-const safeArrayIsArray = Array.isArray;
-const safeObjectCreate = Object.create;
-const safeObjectEntries = Object.entries;
 const safeGetOwnPropertyNames = Object.getOwnPropertyNames;
 
 /**
@@ -58,36 +50,6 @@ export type LetrecLooselyTypedTie = (key: string) => Arbitrary<unknown>;
  */
 export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => LetrecValue<T>;
 
-/**
- * Constraints to be applied on {@link letrec}
- * @remarks Since 4.4.0
- * @public
- */
-export interface LetrecConstraints {
-  /**
-   * Generate objects with circular references
-   * @defaultValue false
-   * @remarks Since 4.4.0
-   */
-  withCycles?: boolean | CycleConstraints;
-}
-
-/**
- * Constraints to be applied on {@link LetrecConstraints.withCycles}
- * @remarks Since 4.4.0
- * @public
- */
-export interface CycleConstraints {
-  /**
-   * Define how frequently cycles should occur in the generated values (at max)
-   * @remarks Since 4.4.0
-   */
-  frequencySize?: Exclude<SizeForArbitrary, 'max'>;
-}
-
-/** @internal */
-const placeholderSymbol = Symbol('placeholder');
-
 /** @internal */
 function createLazyArbsPool<T>() {
   const lazyArbsPool = new SMap<keyof T, LazyArbitrary<unknown>>();
@@ -101,49 +63,6 @@ function createLazyArbsPool<T>() {
     return lazyArb;
   };
   return getLazyFromPool;
-}
-
-/** @internal */
-export function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderSymbol: symbol): void {
-  const visited = new Set();
-  function deref(value: unknown, source?: Record<PropertyKey, unknown>, sourceKey?: PropertyKey) {
-    if (typeof value !== 'object' || value === null) {
-      return;
-    }
-
-    if (safeHas(visited, value)) {
-      return;
-    }
-    safeAdd(visited, value);
-
-    if (safeHasOwnProperty(value, placeholderSymbol)) {
-      // This is a while loop because it's possible for an arbitrary to be defined as just `arb: tie('otherArb')`, in
-      // which case what the `arb` generates is also a placeholder.
-      let currentValue: unknown = value;
-      do {
-        const { key, index } = (currentValue as { [placeholderSymbol]: { key: keyof T; index: number } })[
-          placeholderSymbol
-        ];
-        const pool = pools[key];
-        currentValue = pool[index % pool.length];
-        if (source !== undefined && sourceKey !== undefined) {
-          source[sourceKey] = currentValue;
-        }
-      } while (safeHasOwnProperty(currentValue, placeholderSymbol));
-      return;
-    }
-
-    if (safeArrayIsArray(value)) {
-      for (let i = 0; i < value.length; i++) {
-        deref(value[i], value as unknown as Record<PropertyKey, unknown>, i);
-      }
-    } else {
-      for (const [key, item] of safeObjectEntries(value)) {
-        deref(item, value as Record<PropertyKey, unknown>, key);
-      }
-    }
-  }
-  deref(pools);
 }
 
 /**
@@ -168,10 +87,7 @@ export function derefPools<T>(pools: { [K in keyof T]: unknown[] }, placeholderS
  * @remarks Since 1.16.0
  * @public
  */
-export function letrec<T>(
-  builder: T extends Record<string, unknown> ? LetrecTypedBuilder<T> : never,
-  constraints?: LetrecConstraints,
-): LetrecValue<T>;
+export function letrec<T>(builder: T extends Record<string, unknown> ? LetrecTypedBuilder<T> : never): LetrecValue<T>;
 /**
  * For mutually recursive types
  *
@@ -191,48 +107,17 @@ export function letrec<T>(
  * @remarks Since 1.16.0
  * @public
  */
-export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>, constraints?: LetrecConstraints): LetrecValue<T>;
-export function letrec<T>(
-  builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>,
-  constraints: LetrecConstraints = {},
-): LetrecValue<T> {
-  const withCycles = !!constraints.withCycles;
-
+export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>;
+export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
   const getLazyFromPool = createLazyArbsPool<T>();
   const strictArbs = builder(getLazyFromPool as any);
-  const declaredArbitraryNames = safeGetOwnPropertyNames(strictArbs) as (keyof T)[]; // Own-only: to prevents accidental scan over properties inherited from an object’s prototype
 
   // Fill the "underlying" field for each arbitrary in the lazy pool
+  // Iterate on own-only: to prevents accidental scan over properties inherited from an object’s prototype
+  const declaredArbitraryNames = safeGetOwnPropertyNames(strictArbs) as (keyof T)[];
   for (const name of declaredArbitraryNames) {
     const lazyArb = getLazyFromPool(name);
-    lazyArb.underlying = withCycles
-      ? noShrink(nat().map((index) => ({ [placeholderSymbol]: { key: name, index } })))
-      : strictArbs[name];
-  }
-
-  if (!withCycles) {
-    return strictArbs;
-  }
-
-  // Symbol to replace with a potentially circular reference later.
-  const frequencySize = typeof constraints.withCycles === 'object' ? constraints.withCycles.frequencySize : undefined;
-  const poolArbs: { [K in keyof T]: Arbitrary<unknown[]> } = safeObjectCreate(null);
-  const poolConstraints = {
-    minLength: 1,
-    // Higher cycle frequency is achieved by using a smaller pool of objects, so we invert the input `frequency`.
-    size: invertSize(resolveSize(frequencySize)),
-  };
-
-  for (const name of declaredArbitraryNames) {
-    poolArbs[name] = array(strictArbs[name], poolConstraints);
-  }
-
-  for (const name of declaredArbitraryNames) {
-    const poolsArb = record<Record<keyof T, unknown[]>>(poolArbs);
-    strictArbs[name] = poolsArb.map((pools) => {
-      derefPools(pools, placeholderSymbol);
-      return pools[name][0];
-    }) as (typeof strictArbs)[typeof name];
+    lazyArb.underlying = strictArbs[name];
   }
 
   return strictArbs;
