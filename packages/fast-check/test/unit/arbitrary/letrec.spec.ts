@@ -14,7 +14,7 @@ import {
 
 describe('letrec', () => {
   describe('builder', () => {
-    it('should be able to construct independant arbitraries', () => {
+    it('should be able to construct independent arbitraries', () => {
       // Arrange
       const { instance: expectedArb1 } = fakeArbitrary();
       const { instance: expectedArb2 } = fakeArbitrary();
