@@ -1,6 +1,6 @@
 # 4.4.0
 
-_TODO Description_
+_Expose hidden arbitraries and widen capabilities of existing ones from a typing point of view_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.3.0...v4.4.0)]
 
 ## Features
@@ -19,6 +19,7 @@ _TODO Description_
 - ([PR#6205](https://github.com/dubzzz/fast-check/pull/6205)) CI: Add GH Action to add contributors to the project
 - ([PR#6246](https://github.com/dubzzz/fast-check/pull/6246)) CI: Fix PR mode in format-pr workflow
 - ([PR#6184](https://github.com/dubzzz/fast-check/pull/6184)) CI: Add provenance attestation to npm package publishing
+- ([PR#6248](https://github.com/dubzzz/fast-check/pull/6248)) CI: Add workflow to resolve pnpm lock file merge conflicts on PRs
 - ([PR#6251](https://github.com/dubzzz/fast-check/pull/6251)) CI: Restrict Format workflow to PRs
 - ([PR#6253](https://github.com/dubzzz/fast-check/pull/6253)) CI: Fix PR number type in workflows
 - ([PR#6254](https://github.com/dubzzz/fast-check/pull/6254)) CI: Fix PR workflows
@@ -48,6 +49,7 @@ _TODO Description_
 - ([PR#6279](https://github.com/dubzzz/fast-check/pull/6279)) Doc: Add emilianbold as code contributor
 - ([PR#6287](https://github.com/dubzzz/fast-check/pull/6287)) Doc: Fix example in quick start guide
 - ([PR#6288](https://github.com/dubzzz/fast-check/pull/6288)) Doc: Add russbiggs as doc contributor
+- ([PR#6278](https://github.com/dubzzz/fast-check/pull/6278)) Performance: Use Math.imul and shifts in perf-critical paths
 - ([PR#6275](https://github.com/dubzzz/fast-check/pull/6275)) Refactor: Remove unnecessary npm install steps from publish workflows
 - ([PR#6311](https://github.com/dubzzz/fast-check/pull/6311)) Refactor: Factorize `letrec` implementations
 - ([PR#6318](https://github.com/dubzzz/fast-check/pull/6318)) Refactor: Extract logic building lazy arbs
