@@ -67,7 +67,12 @@ import type {
   LetrecTypedTie,
 } from './arbitrary/letrec';
 import { letrec } from './arbitrary/letrec';
-import type { EntityGraphContraints, EntityGraphValue } from './arbitrary/entityGraph';
+import type {
+  EntityGraphArbitraries,
+  EntityGraphContraints,
+  EntityGraphRelations,
+  EntityGraphValue,
+} from './arbitrary/entityGraph';
 import { entityGraph } from './arbitrary/entityGraph';
 import type { LoremConstraints } from './arbitrary/lorem';
 import { lorem } from './arbitrary/lorem';
@@ -301,6 +306,8 @@ export type {
   LetrecTypedBuilder,
   LetrecLooselyTypedTie,
   LetrecLooselyTypedBuilder,
+  EntityGraphArbitraries,
+  EntityGraphRelations,
   CloneValue,
   ContextValue,
   EntityGraphValue,

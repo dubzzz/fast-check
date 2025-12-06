@@ -4,7 +4,11 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 /** @internal */
 export type ArbitraryStructure<TFields> = { [TField in keyof TFields]: Arbitrary<TFields[TField]> };
-/** @internal */
+/**
+ * The type definition for the arbitraries (first argument) passed to {@link entityGraph}
+ * @remarks Since 4.5.0
+ * @public
+ */
 export type Arbitraries<TEntityFields> = {
   [TEntityName in keyof TEntityFields]: ArbitraryStructure<TEntityFields[TEntityName]>;
 };
@@ -15,7 +19,11 @@ export type Arbitraries<TEntityFields> = {
 export type Arity = '0-1' | '1' | 'many';
 /** @internal */
 export type Relationship<TTypeNames> = { arity: Arity; type: TTypeNames };
-/** @internal */
+/**
+ * The type definition for the relations (second argument) passed to {@link entityGraph}
+ * @remarks Since 4.5.0
+ * @public
+ */
 export type EntityRelations<TEntityFields> = {
   [TEntityName in keyof TEntityFields]: { [TField in string]: Relationship<keyof TEntityFields> };
 };
