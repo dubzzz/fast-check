@@ -21,6 +21,7 @@ import { record } from './record';
 import { uniqueArray } from './uniqueArray';
 
 const safeObjectCreate = Object.create;
+const safeObjectKeys = Object.keys;
 
 type EntityGraphContraints = {
   /**
@@ -150,6 +151,6 @@ export function entityGraph<TEntityFields, TEntityRelations extends EntityRelati
   relations: TEntityRelations,
   constraints: EntityGraphContraints = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
-  const defaultEntities = Object.keys(arbitraries) as (keyof typeof arbitraries)[];
+  const defaultEntities = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
   return new EntityGraphArbitrary(arbitraries, relations, { ...constraints, defaultEntities });
 }
