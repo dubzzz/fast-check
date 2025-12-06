@@ -23,6 +23,8 @@ import { uniqueArray } from './uniqueArray';
 const safeObjectCreate = Object.create;
 const safeObjectKeys = Object.keys;
 
+export type { EntityGraphValue };
+
 /**
  * Constraints to be applied on {@link entityGraph}
  * @remarks Since 4.5.0

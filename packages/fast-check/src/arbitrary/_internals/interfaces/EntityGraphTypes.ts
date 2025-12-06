@@ -41,7 +41,11 @@ export type EntityGraphSingleValue<TEntityFields, TEntityRelations extends Entit
       RelationsToValue<TEntityRelations[TEntityName], EntityGraphSingleValue<TEntityFields, TEntityRelations>>
   >;
 };
-/** @internal */
+/**
+ * Infer the type of the Arbitrary produced by {@link entityGraph}
+ * @remarks Since 4.5.0
+ * @public
+ */
 export type EntityGraphValue<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
   [TEntityName in keyof EntityGraphSingleValue<TEntityFields, TEntityRelations>]: EntityGraphSingleValue<
     TEntityFields,
