@@ -268,7 +268,7 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
       // Assert
       // Remark: We don't expect team field of employee to show its content, but rather to link towards it
       expect(stringify(final)).toMatchInlineSnapshot(
-        `"{"employee":[{"name":"Maria","team":"team#0"}],"team":[{"name":"A"}]}"`,
+        `"{"employee":[{"name":"Maria","team":<team#0>}],"team":[{"name":"A"}]}"`,
       );
     });
 
@@ -291,7 +291,7 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
       // Assert
       // Remark: We don't expect projects field of employee to show its content, but rather to link towards it
       expect(stringify(final)).toMatchInlineSnapshot(
-        `"{"employee":[{"name":"Maria","projects":["project#0","project#2"]}],"project":[{"name":"A"},{"name":"B"},{"name":"C"}]}"`,
+        `"{"employee":[{"name":"Maria","projects":[<project#0>,<project#2>]}],"project":[{"name":"A"},{"name":"B"},{"name":"C"}]}"`,
       );
     });
 
@@ -310,7 +310,7 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
       const final = unlinkedToLinkedEntitiesMapper(source, links);
 
       // Assert
-      expect(stringify(final.employee[0])).toMatchInlineSnapshot(`"{"name":"Maria","self":"employee#0"}"`);
+      expect(stringify(final.employee[0])).toMatchInlineSnapshot(`"{"name":"Maria","self":<employee#0>}"`);
       expect(stringify(final.employee[0].self)).toBe(stringify(final.employee[0]));
       expect(stringify(final.employee[0].self.self)).toBe(stringify(final.employee[0]));
     });
@@ -330,7 +330,7 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
       const final = unlinkedToLinkedEntitiesMapper(source, links);
 
       // Assert
-      expect(stringify(final.employee[0])).toMatchInlineSnapshot(`"{"name":"Maria","self":["employee#0"]}"`);
+      expect(stringify(final.employee[0])).toMatchInlineSnapshot(`"{"name":"Maria","self":[<employee#0>]}"`);
       expect(stringify(final.employee[0].self[0])).toBe(stringify(final.employee[0]));
       expect(stringify(final.employee[0].self[0].self[0])).toBe(stringify(final.employee[0]));
     });

@@ -14,6 +14,21 @@ const safeObjectGetPrototypeOf = Object.getPrototypeOf;
 const safeObjectPrototype = Object.prototype;
 
 /** @internal */
+function withTargetStringifiedValue(stringifiedValue: string) {
+  return safeObjectDefineProperty(safeObjectCreate(null), toStringMethod, {
+    configurable: false,
+    enumerable: false,
+    writable: false,
+    value: () => stringifiedValue,
+  });
+}
+
+/** @internal */
+function withReferenceStringifiedValue(type: string | symbol | number, index: number) {
+  return withTargetStringifiedValue(`<${SString(type)}#${index}>`);
+}
+
+/** @internal */
 export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   unlinkedEntities: UnlinkedEntities<TEntityFields>,
   producedLinks: ProducedLinksLight<TEntityFields, TEntityRelations>,
@@ -58,8 +73,8 @@ export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations e
               propValue.index === undefined
                 ? undefined
                 : typeof propValue.index === 'number'
-                  ? `${SString(propValue.type)}#${propValue.index}`
-                  : safeMap(propValue.index, (index) => `${SString(propValue.type)}#${index}`)
+                  ? withReferenceStringifiedValue(propValue.type, propValue.index)
+                  : safeMap(propValue.index, (index) => withReferenceStringifiedValue(propValue.type, index))
             ) as any;
           }
           return stringify(entity);
