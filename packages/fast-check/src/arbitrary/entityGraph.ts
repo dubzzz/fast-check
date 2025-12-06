@@ -26,7 +26,7 @@ type EntityGraphContraints = {
   /**
    * Do not generate records with null prototype
    * @defaultValue false
-   * @remarks Since x.x.x
+   * @remarks Since 4.5.0
    */
   noNullPrototype?: boolean;
 };

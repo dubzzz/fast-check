@@ -67,6 +67,7 @@ import type {
   LetrecTypedTie,
 } from './arbitrary/letrec';
 import { letrec } from './arbitrary/letrec';
+import { entityGraph } from './arbitrary/entityGraph';
 import type { LoremConstraints } from './arbitrary/lorem';
 import { lorem } from './arbitrary/lorem';
 import type { MapConstraints } from './arbitrary/map';
@@ -376,6 +377,7 @@ export {
   jsonValue,
   letrec,
   memo,
+  entityGraph,
   compareBooleanFunc,
   compareFunc,
   func,
