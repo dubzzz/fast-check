@@ -242,3 +242,66 @@ tree(2);
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/memo-1.html).  
 Available since 1.16.0.
+
+## entityGraph
+
+Generate recursive structures based on a schema. These structures may came up with cycles, duplicated instances will be linked by reference to the instance. As such compared the `fc.letrec` this helper can provide you with instances referencing themselves in a built-in way.
+
+**Signatures:**
+
+- `fc.entityGraph(arbitraries, relations)`
+- `fc.entityGraph(arbitraries, relations, {noNullPrototype?})`
+
+**with:**
+
+- `arbitraries` — _declares the shape of each entity, this argument is supposed to be a record with a key being the name of the entity and the value being an object reprensenting the shape of an entity. The value part is similar to the one provided to `fc.record`._
+- `relations` — _declares the relations between entities: from one to many to many to many, declare the relations you want as you would have done on a database schema. This argument is supposed to be a record with the key being the name of the entity and the value being an object reprensenting the links between this entity and another one._
+- `noNullPrototype?` — default: `false` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
+
+**Usages:**
+
+```js
+fc.entityGraph(
+  { node: { id: fc.stringMatching(/^[A-Z][a-z]*$/) } },
+  { node: { linkTo: { arity: 'many', type: 'node' } } },
+  { noNullPrototype: true },
+);
+// Declare a graph made of nodes. Each node comes with an id and links towards other nodes.
+// Nodes will come up with two fields:
+// - an id: declared by the arbitraries section
+// - a linkTo: an array made of other nodes, from 0 to any number of nodes
+// Please note that the current declaration allows the same id to be re-used by different nodes.
+// Examples of generated values:
+// • {"node":[{"id":"Y","linkTo":["node#0","node#1","node#2","node#3","node#4"]},{"id":"C","linkTo":["node#4","node#5","node#3","node#6"]},{"id":"Xegrxaqdoa","linkTo":[]},{"id":"Ea","linkTo":[]},{"id":"Evmealewe","linkTo":["node#1","node#3","node#4","node#5","node#2","node#7","node#8"]},{"id":"Bbbwyx","linkTo":["node#9","node#2","node#8","node#1","node#3","node#4","node#5"]},{"id":"Sfdlfwcp","linkTo":["node#7","node#3","node#4","node#8","node#1","node#0","node#10","node#9","node#5"]},{"id":"Kzoo","linkTo":[]},{"id":"Bxrclea","linkTo":["node#7","node#9","node#6"]},{"id":"Wl","linkTo":["node#10","node#2","node#11","node#7","node#5","node#1"]},{"id":"Esgichtc","linkTo":["node#3","node#2","node#9","node#5","node#1","node#7","node#10","node#0","node#12","node#13"]},{"id":"C","linkTo":[]},{"id":"Cref","linkTo":["node#9","node#8","node#0","node#3","node#5","node#1","node#11","node#2","node#10","node#12"]},{"id":"Da","linkTo":["node#14","node#8","node#4"]},{"id":"Zvqbezlj","linkTo":["node#14"]}]}
+// • {"node":[{"id":"Re","linkTo":["node#0","node#1"]},{"id":"B","linkTo":["node#1","node#0"]}]}
+// • {"node":[{"id":"M","linkTo":["node#1","node#2"]},{"id":"Thxqooo","linkTo":["node#0","node#1","node#3","node#2","node#4","node#5","node#6","node#7","node#8"]},{"id":"Hdoacy","linkTo":["node#8","node#9","node#10","node#6","node#5","node#7","node#4","node#0"]},{"id":"Cble","linkTo":["node#11","node#3","node#8","node#12","node#10","node#9","node#2","node#4","node#6","node#1"]},{"id":"Gkccrqjt","linkTo":["node#11","node#9","node#13","node#1","node#14","node#7","node#3","node#0","node#10","node#15"]},{"id":"Eqcx","linkTo":["node#13","node#2","node#6"]},{"id":"Bukuz","linkTo":["node#8","node#10"]},{"id":"Akchp","linkTo":["node#1","node#4","node#6","node#15","node#2","node#0","node#10","node#13"]},{"id":"Cpmnu","linkTo":["node#5","node#11","node#13","node#10","node#14","node#16","node#8","node#0","node#6","node#3"]},{"id":"Bezyeo","linkTo":["node#3","node#5"]},{"id":"I","linkTo":["node#13","node#2","node#8","node#15","node#12","node#14","node#1","node#3"]},{"id":"P","linkTo":["node#7","node#14"]},{"id":"Al","linkTo":[]},{"id":"Cc","linkTo":["node#12","node#15","node#11","node#16","node#9","node#5","node#10"]},{"id":"A","linkTo":["node#14","node#16"]},{"id":"Rzo","linkTo":["node#17","node#10","node#9","node#8","node#2","node#14","node#1","node#5","node#3","node#12"]},{"id":"Acxmbfyti","linkTo":["node#1","node#14"]},{"id":"Esrfbcgcn","linkTo":["node#18","node#5","node#0","node#1","node#11","node#9","node#15","node#14","node#17","node#6"]},{"id":"V","linkTo":["node#18","node#5","node#13","node#14","node#16","node#2","node#0","node#3","node#15","node#1"]}]}
+// • {"node":[{"id":"Uxviwizmqx","linkTo":["node#1","node#2"]},{"id":"X","linkTo":["node#3","node#4"]},{"id":"N","linkTo":["node#1"]},{"id":"Aapply","linkTo":["node#1","node#2"]},{"id":"Ict","linkTo":["node#2","node#4","node#0","node#3","node#1","node#5","node#6","node#7","node#8"]},{"id":"Pv","linkTo":["node#4"]},{"id":"Ppr","linkTo":["node#7","node#1","node#5","node#3","node#9"]},{"id":"A","linkTo":[]},{"id":"Xluws","linkTo":["node#7","node#10","node#6"]},{"id":"Bcaller","linkTo":["node#8","node#9","node#7","node#4","node#10"]},{"id":"Zl","linkTo":["node#6"]}]}
+// • {"node":[{"id":"C","linkTo":["node#1","node#2","node#0","node#3","node#4","node#5","node#6","node#7","node#8","node#9"]},{"id":"Fajogzjh","linkTo":["node#2"]},{"id":"Bno","linkTo":["node#2","node#3","node#4","node#7","node#6"]},{"id":"Jh","linkTo":["node#10","node#2","node#1","node#0","node#4","node#8","node#7","node#3"]},{"id":"Xmtutmnywb","linkTo":["node#9","node#4"]},{"id":"Wuv","linkTo":["node#7","node#3","node#8","node#9","node#1","node#2","node#0"]},{"id":"Wajlh","linkTo":[]},{"id":"Eyfumt","linkTo":["node#4","node#7","node#9","node#10","node#8"]},{"id":"A","linkTo":["node#7","node#6"]},{"id":"Ib","linkTo":["node#0","node#4","node#5","node#10","node#3","node#9","node#2","node#7"]},{"id":"D","linkTo":[]}]}
+// • …
+
+fc.entityGraph(
+  {
+    employee: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
+    team: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
+  },
+  {
+    employee: { team: { arity: '1', type: 'team' } },
+    team: {},
+  },
+  { noNullPrototype: true },
+);
+// Declare two kinds of entities:
+// - employee: they have a name and one team
+// - team: they have a name
+// But with the current definition, nothing prevents two employees from having the same team or a team rom existing without any employee.
+// Examples of generated values:
+// • {"employee":[{"name":"B","team":"team#0"}],"team":[{"name":"Ad"}]}
+// • {"employee":[{"name":"Dayhdwprsr","team":"team#0"}],"team":[{"name":"Jzcbys"}]}
+// • {"employee":[{"name":"Fc","team":"team#0"}],"team":[{"name":"Bam"}]}
+// • {"employee":[{"name":"Bjssvcrsrnc","team":"team#1"}],"team":[{"name":"Xe"},{"name":"Esck"}]}
+// • {"employee":[{"name":"Oeij","team":"team#1"}],"team":[{"name":"R"},{"name":"Bye"}]}
+// • …
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/entityGraph.html).  
+Available since 4.5.0.
