@@ -23,7 +23,12 @@ import { uniqueArray } from './uniqueArray';
 const safeObjectCreate = Object.create;
 const safeObjectKeys = Object.keys;
 
-type EntityGraphContraints = {
+/**
+ * Constraints to be applied on {@link entityGraph}
+ * @remarks Since 4.5.0
+ * @public
+ */
+export type EntityGraphContraints = {
   /**
    * Do not generate records with null prototype
    * @defaultValue false
@@ -146,6 +151,29 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
   }
 }
 
+/**
+ * Generate values based on a schema. Produced values will automatically come with links between each others when requested to.
+ *
+ * Declaring a directed graph using this helper could easily be achieved with something like:
+ *
+ * @example
+ * ```typescript
+ * fc.entityGraph(
+ *   { node: { id: fc.stringMatching(/^[A-Z][a-z]*$/) } },
+ *   { node: { linkTo: { arity: 'many', type: 'node' } } },
+ * )
+ * ```
+ *
+ * But user can also requests the helper for other values of arity: '0-1' for an optional link, '1' for a compulsory one and 'many' as in the example above.
+ * The type field declares the kind of entity we want to target; In our case we only declared "node", so a "node" will have zero to many "node" accessible from the field "linkTo".
+ *
+ * @param arbitraries - The non-relational part of the produced entities.
+ * @param relations - The relational part of the produced entities. It tells the framework how entities should refer to each others.
+ * @param constraints - A set of constraints to be applied on the produced values.
+ *
+ * @remarks Since 4.5.0
+ * @public
+ */
 export function entityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   arbitraries: Arbitraries<TEntityFields>,
   relations: TEntityRelations,
