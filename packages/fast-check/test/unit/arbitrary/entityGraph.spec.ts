@@ -141,6 +141,18 @@ describe('entityGraph (integration)', () => {
       );
     };
 
+    const isEqual = (
+      value1: UnArbitrary<ReturnType<typeof graphBuilder>>,
+      value2: UnArbitrary<ReturnType<typeof graphBuilder>>,
+      _extra: Extra,
+    ) => {
+      expect(Object.keys(value2)).toEqual(Object.keys(value1));
+      const toId = (node: UnArbitrary<ReturnType<typeof graphBuilder>>['node'][number]) => node.id;
+      expect(value2.node.map(toId)).toEqual(value1.node.map(toId));
+      const toLinkedIds = (node: UnArbitrary<ReturnType<typeof graphBuilder>>['node'][number]) => node.linkTo.map(toId);
+      expect(value2.node.map(toLinkedIds)).toEqual(value1.node.map(toLinkedIds));
+    };
+
     const isCorrect = (value: UnArbitrary<ReturnType<typeof graphBuilder>>, _extra: Extra) => {
       const allNodes = new Set(value.node);
       // Checking basic structure
@@ -158,7 +170,7 @@ describe('entityGraph (integration)', () => {
     };
 
     it('should produce the same values given the same seed', () => {
-      assertProduceSameValueGivenSameSeed(graphBuilder, { extraParameters });
+      assertProduceSameValueGivenSameSeed(graphBuilder, { isEqual, extraParameters });
     });
 
     it('should only produce correct values', () => {
