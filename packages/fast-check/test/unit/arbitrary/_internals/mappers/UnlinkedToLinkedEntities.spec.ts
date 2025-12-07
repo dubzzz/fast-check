@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { unlinkedToLinkedEntitiesMapper } from '../../../../../src/arbitrary/_internals/mappers/UnlinkedToLinkedEntities';
 import type {
-  ProducedLinksLight,
+  ProducedLinks,
   UnlinkedEntities,
 } from '../../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes';
 import { stringify } from '../../../../../src/utils/stringify';
@@ -15,8 +15,8 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         employee: [{ name: 'Maria' }],
       };
       type EntityRelations = { employee: {} };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{}] }, // no links still means "matching {}"
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{}], // no links still means "matching {}"
       };
 
       // Act
@@ -37,8 +37,8 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         employee: [{ name: 'Maria' }],
       };
       type EntityRelations = { employee: { manager: { arity: '0-1'; type: 'employee' } } };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{ manager: { type: 'employee', index: undefined } }] },
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{ manager: { type: 'employee', index: undefined } }],
       };
 
       // Act
@@ -60,9 +60,9 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         team: [{ name: 'A' }],
       };
       type EntityRelations = { employee: { team: { arity: '1'; type: 'team' } }; team: {} };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{ team: { type: 'team', index: 0 } }] },
-        team: { entityLinks: [{}] }, // no links from team to something
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{ team: { type: 'team', index: 0 } }],
+        team: [{}], // no links from team to something
       };
 
       // Act
@@ -87,9 +87,9 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         project: [{ name: 'A' }, { name: 'B' }, { name: 'C' }],
       };
       type EntityRelations = { employee: { projects: { arity: 'many'; type: 'project' } }; project: {} };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{ projects: { type: 'project', index: [0, 2] } }] },
-        project: { entityLinks: [{}, {}, {}] }, // no links from team to something
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{ projects: { type: 'project', index: [0, 2] } }],
+        project: [{}, {}, {}], // no links from team to something
       };
 
       // Act
@@ -134,43 +134,36 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         department: {};
         badge: {};
       };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: {
-          entityLinks: [
-            {
-              manager: { type: 'employee', index: undefined },
-              team: { type: 'team', index: 1 },
-              badges: { type: 'badge', index: [2, 0, 1] },
-              cyclic: { type: 'employee', index: 1 },
-            },
-            {
-              manager: { type: 'employee', index: 2 },
-              team: { type: 'team', index: 0 },
-              badges: { type: 'badge', index: [0, 2] },
-              cyclic: { type: 'employee', index: 2 },
-            },
-            {
-              manager: { type: 'employee', index: 0 },
-              team: { type: 'team', index: 0 },
-              badges: { type: 'badge', index: [1] },
-              cyclic: { type: 'employee', index: 0 },
-            },
-            {
-              manager: { type: 'employee', index: 0 },
-              team: { type: 'team', index: 1 },
-              badges: { type: 'badge', index: [3] },
-              cyclic: { type: 'employee', index: 3 },
-            },
-          ],
-        },
-        team: {
-          entityLinks: [
-            { department: { type: 'department', index: 1 } },
-            { department: { type: 'department', index: 0 } },
-          ],
-        },
-        department: { entityLinks: [{}, {}] },
-        badge: { entityLinks: [{}, {}, {}, {}] },
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [
+          {
+            manager: { type: 'employee', index: undefined },
+            team: { type: 'team', index: 1 },
+            badges: { type: 'badge', index: [2, 0, 1] },
+            cyclic: { type: 'employee', index: 1 },
+          },
+          {
+            manager: { type: 'employee', index: 2 },
+            team: { type: 'team', index: 0 },
+            badges: { type: 'badge', index: [0, 2] },
+            cyclic: { type: 'employee', index: 2 },
+          },
+          {
+            manager: { type: 'employee', index: 0 },
+            team: { type: 'team', index: 0 },
+            badges: { type: 'badge', index: [1] },
+            cyclic: { type: 'employee', index: 0 },
+          },
+          {
+            manager: { type: 'employee', index: 0 },
+            team: { type: 'team', index: 1 },
+            badges: { type: 'badge', index: [3] },
+            cyclic: { type: 'employee', index: 3 },
+          },
+        ],
+        team: [{ department: { type: 'department', index: 1 } }, { department: { type: 'department', index: 0 } }],
+        department: [{}, {}],
+        badge: [{}, {}, {}, {}],
       };
 
       // Act
@@ -228,8 +221,8 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         employee: [{ name: 'Maria' }, Object.assign(Object.create(null), { name: 'Paul' })],
       };
       type EntityRelations = { employee: {} };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{}] }, // no links still means "matching {}"
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{}], // no links still means "matching {}"
       };
 
       // Act
@@ -257,9 +250,9 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         team: [{ name: 'A' }],
       };
       type EntityRelations = { employee: { team: { arity: '1'; type: 'team' } }; team: {} };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{ team: { type: 'team', index: 0 } }] },
-        team: { entityLinks: [{}] }, // no links from team to something
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{ team: { type: 'team', index: 0 } }],
+        team: [{}], // no links from team to something
       };
 
       // Act
@@ -280,9 +273,9 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         project: [{ name: 'A' }, { name: 'B' }, { name: 'C' }],
       };
       type EntityRelations = { employee: { projects: { arity: 'many'; type: 'project' } }; project: {} };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{ projects: { type: 'project', index: [0, 2] } }] },
-        project: { entityLinks: [{}, {}, {}] }, // no links from team to something
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{ projects: { type: 'project', index: [0, 2] } }],
+        project: [{}, {}, {}], // no links from team to something
       };
 
       // Act
@@ -302,8 +295,8 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         employee: [{ name: 'Maria' }],
       };
       type EntityRelations = { employee: { self: { arity: '1'; type: 'employee' } } };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{ self: { type: 'employee', index: 0 } }] },
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{ self: { type: 'employee', index: 0 } }],
       };
 
       // Act
@@ -322,8 +315,8 @@ describe('unlinkedToLinkedEntitiesMapper', () => {
         employee: [{ name: 'Maria' }],
       };
       type EntityRelations = { employee: { self: { arity: 'many'; type: 'employee' } } };
-      const links: ProducedLinksLight<EntityFields, EntityRelations> = {
-        employee: { entityLinks: [{ self: { type: 'employee', index: [0] } }] },
+      const links: ProducedLinks<EntityFields, EntityRelations> = {
+        employee: [{ self: { type: 'employee', index: [0] } }],
       };
 
       // Act

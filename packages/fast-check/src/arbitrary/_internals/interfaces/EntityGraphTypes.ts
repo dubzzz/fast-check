@@ -83,19 +83,9 @@ export type EntityLinks<TEntityFields, TEntityRelations extends EntityRelations<
   { type: keyof TEntityFields; index: number[] | number | undefined }
 >;
 /** @internal */
-export type ProducedLinksValue<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
-  totalCount: number;
-  entityLinks: EntityLinks<TEntityFields, TEntityRelations>[];
-};
-/** @internal */
 export type ProducedLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Record<
   keyof TEntityFields,
-  ProducedLinksValue<TEntityFields, TEntityRelations>
->;
-/** @internal */
-export type ProducedLinksLight<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Record<
-  keyof TEntityFields,
-  Pick<ProducedLinksValue<TEntityFields, TEntityRelations>, 'entityLinks'>
+  EntityLinks<TEntityFields, TEntityRelations>[]
 >;
 /** @internal */
 export type UnlinkedEntities<TEntityFields> = { [K in keyof TEntityFields]: TEntityFields[K][] };
