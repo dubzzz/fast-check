@@ -2,7 +2,11 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
 
 // Inputs: arbitrary part
 
-/** @internal */
+/**
+ * The sub-type of the type definition for the arbitraries (first argument) passed to {@link entityGraph}
+ * @remarks Since 4.5.0
+ * @public
+ */
 export type ArbitraryStructure<TFields> = { [TField in keyof TFields]: Arbitrary<TFields[TField]> };
 /**
  * The type definition for the arbitraries (first argument) passed to {@link entityGraph}
@@ -15,9 +19,22 @@ export type Arbitraries<TEntityFields> = {
 
 // Inputs: relations part
 
-/** @internal */
+/**
+ * Define the arity of a relation in the context of the relations(second argument) passed to {@link entityGraph} with:
+ *
+ * - 0-1 meaning: optional or the entity
+ * - 1 meaning: the entity
+ * - many meaning: an array of entities, possibly empty, but without duplicates in the array
+ *
+ * @remarks Since 4.5.0
+ * @public
+ */
 export type Arity = '0-1' | '1' | 'many';
-/** @internal */
+/**
+ * Define one relation in the context of the relations(second argument) passed to {@link entityGraph}
+ * @remarks Since 4.5.0
+ * @public
+ */
 export type Relationship<TTypeNames> = { arity: Arity; type: TTypeNames };
 /**
  * The type definition for the relations (second argument) passed to {@link entityGraph}
@@ -30,7 +47,6 @@ export type EntityRelations<TEntityFields> = {
 
 // Output
 
-/** @internal */
 export type RelationsToValue<TRelations, TValues> = {
   [TField in keyof TRelations]: TRelations[TField] extends { arity: '0-1'; type: infer TTypeName extends keyof TValues }
     ? TValues[TTypeName] | undefined
@@ -40,9 +56,7 @@ export type RelationsToValue<TRelations, TValues> = {
         ? TValues[TTypeName][]
         : never;
 };
-/** @internal */
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
-/** @internal */
 export type EntityGraphSingleValue<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
   [TEntityName in keyof TEntityFields]: Prettify<
     TEntityFields[TEntityName] &
