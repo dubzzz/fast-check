@@ -3,6 +3,8 @@ import type { Value } from '../check/arbitrary/definition/Value';
 import type { Random } from '../random/generator/Random';
 import { Stream } from '../stream/Stream';
 import { safeMap, safePush } from '../utils/globals';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+import { createDepthIdentifier } from './_internals/helpers/DepthContext';
 import type {
   Arbitraries,
   Arity,
@@ -54,18 +56,21 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
   private static computeLinkIndex(
     arity: Arity,
     countInTargetType: number,
+    currentEntityDepth: DepthIdentifier,
     mrng: Random,
     biasFactor: number | undefined,
   ): number[] | number | undefined {
     const linkArbitrary = noBias(integer({ min: 0, max: countInTargetType }));
     switch (arity) {
       case '0-1':
-        return option(linkArbitrary, { nil: undefined }).generate(mrng, biasFactor).value;
+        return option(linkArbitrary, { nil: undefined, depthIdentifier: currentEntityDepth }).generate(mrng, biasFactor)
+          .value;
       case '1':
         return linkArbitrary.generate(mrng, biasFactor).value;
       case 'many': {
         let randomUnicity = 0;
         const values = uniqueArray(linkArbitrary, {
+          depthIdentifier: currentEntityDepth,
           selector: (v) => (v === countInTargetType ? v + ++randomUnicity : v),
         }).generate(mrng, biasFactor).value;
         let offset = 0;
@@ -81,9 +86,9 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
       producedLinks[name] = { totalCount: 0, entityLinks: [] };
     }
     // Made of any entity whose links have to be created before building the whole graph.
-    const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number }[] = [];
+    const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
     for (const name of this.constraints.defaultEntities) {
-      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].totalCount++ });
+      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].totalCount++, depth: 0 });
     }
 
     // STEP I - Producing links between entities...
@@ -96,6 +101,8 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
       const currentProducedLinks = producedLinks[currentEntity.type];
       // Create all the links going from the current entity to others
       const currentLinks: EntityLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+      const currentEntityDepth = createDepthIdentifier();
+      currentEntityDepth.depth = currentEntity.depth;
       for (const name in currentRelations) {
         const relation = currentRelations[name];
         const targetType = relation.type;
@@ -104,6 +111,7 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
         const linkOrLinks = EntityGraphArbitrary.computeLinkIndex(
           relation.arity,
           producedLinksInTargetType.totalCount,
+          currentEntityDepth,
           mrng,
           biasFactor,
         );
@@ -111,7 +119,7 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
           if (link >= countInTargetType) {
-            safePush(toBeProducedEntities, { type: targetType, indexInType: link }); // should be equal to producedLinksInTargetType.totalCount
+            safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // should be equal to producedLinksInTargetType.totalCount
             producedLinksInTargetType.totalCount += 1;
           }
         }
