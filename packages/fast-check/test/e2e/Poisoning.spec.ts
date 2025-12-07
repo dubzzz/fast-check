@@ -104,6 +104,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // : Recursive structures
     { name: 'letrec', arbitraryBuilder: () => letrecTree() },
     { name: 'memo', arbitraryBuilder: () => memoTree() },
+    { name: 'entityGraph', arbitraryBuilder: () => entityGraphTree() },
     { name: 'gen', arbitraryBuilder: () => fc.gen() },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
@@ -375,4 +376,16 @@ function memoTree() {
   });
   const leaf: () => fc.Arbitrary<Leaf> = fc.nat;
   return tree(2);
+}
+function entityGraphTree() {
+  // Not a tree yet, but will be soon
+  return fc.entityGraph(
+    { node: {} },
+    {
+      node: {
+        left: { arity: '0-1', type: 'node' },
+        right: { arity: '0-1', type: 'node' },
+      },
+    },
+  );
 }

@@ -67,6 +67,13 @@ import type {
   LetrecTypedTie,
 } from './arbitrary/letrec';
 import { letrec } from './arbitrary/letrec';
+import type {
+  EntityGraphArbitraries,
+  EntityGraphContraints,
+  EntityGraphRelations,
+  EntityGraphValue,
+} from './arbitrary/entityGraph';
+import { entityGraph } from './arbitrary/entityGraph';
 import type { LoremConstraints } from './arbitrary/lorem';
 import { lorem } from './arbitrary/lorem';
 import type { MapConstraints } from './arbitrary/map';
@@ -257,6 +264,7 @@ export type {
   DomainConstraints,
   DoubleConstraints,
   EmailAddressConstraints,
+  EntityGraphContraints,
   FalsyContraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
@@ -298,8 +306,11 @@ export type {
   LetrecTypedBuilder,
   LetrecLooselyTypedTie,
   LetrecLooselyTypedBuilder,
+  EntityGraphArbitraries,
+  EntityGraphRelations,
   CloneValue,
   ContextValue,
+  EntityGraphValue,
   FalsyValue,
   GeneratorValue,
   JsonValue,
@@ -376,6 +387,7 @@ export {
   jsonValue,
   letrec,
   memo,
+  entityGraph,
   compareBooleanFunc,
   compareFunc,
   func,
