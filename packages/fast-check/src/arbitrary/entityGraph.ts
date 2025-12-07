@@ -9,7 +9,6 @@ import type {
   Arbitraries,
   Arity,
   EntityGraphValue,
-  EntityLinks,
   EntityRelations,
   ProducedLinks,
   UnlinkedEntities,
@@ -83,12 +82,13 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
     // The set of all produced links between entities.
     const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
     for (const name in this.arbitraries) {
-      producedLinks[name] = { totalCount: 0, entityLinks: [] };
+      producedLinks[name] = [];
     }
     // Made of any entity whose links have to be created before building the whole graph.
     const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
     for (const name of this.constraints.defaultEntities) {
-      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].totalCount++, depth: 0 });
+      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
+      safePush(producedLinks[name], safeObjectCreate(null));
     }
 
     // STEP I - Producing links between entities...
@@ -100,17 +100,17 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
       const currentRelations = this.relations[currentEntity.type];
       const currentProducedLinks = producedLinks[currentEntity.type];
       // Create all the links going from the current entity to others
-      const currentLinks: EntityLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+      const currentLinks = currentProducedLinks[currentEntity.indexInType];
       const currentEntityDepth = createDepthIdentifier();
       currentEntityDepth.depth = currentEntity.depth;
       for (const name in currentRelations) {
         const relation = currentRelations[name];
         const targetType = relation.type;
         const producedLinksInTargetType = producedLinks[targetType];
-        const countInTargetType = producedLinksInTargetType.totalCount;
+        const countInTargetType = producedLinksInTargetType.length;
         const linkOrLinks = EntityGraphArbitrary.computeLinkIndex(
           relation.arity,
-          producedLinksInTargetType.totalCount,
+          producedLinksInTargetType.length,
           currentEntityDepth,
           mrng,
           biasFactor,
@@ -119,12 +119,11 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
           if (link >= countInTargetType) {
-            safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // should be equal to producedLinksInTargetType.totalCount
-            producedLinksInTargetType.totalCount += 1;
+            safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
+            safePush(producedLinksInTargetType, safeObjectCreate(null));
           }
         }
       }
-      safePush(currentProducedLinks.entityLinks, currentLinks); // should be pushed at indexInType
     }
     // Drop any item from the array
     toBeProducedEntities.length = 0;
@@ -134,7 +133,7 @@ class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelatio
     const recordModel: { [K in keyof TEntityFields]: Arbitrary<TEntityFields[K][]> } = safeObjectCreate(null);
     for (const name in this.arbitraries) {
       const entityRecordModel = this.arbitraries[name];
-      const count = producedLinks[name].totalCount;
+      const count = producedLinks[name].length;
       recordModel[name] = array(record(entityRecordModel, recordContraints), {
         minLength: count,
         maxLength: count,

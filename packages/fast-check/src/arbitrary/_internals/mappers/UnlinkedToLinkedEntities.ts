@@ -3,7 +3,7 @@ import { stringify, toStringMethod } from '../../../utils/stringify';
 import type {
   EntityGraphValue,
   EntityRelations,
-  ProducedLinksLight,
+  ProducedLinks,
   UnlinkedEntities,
 } from '../interfaces/EntityGraphTypes';
 
@@ -31,7 +31,7 @@ function withReferenceStringifiedValue(type: string | symbol | number, index: nu
 /** @internal */
 export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   unlinkedEntities: UnlinkedEntities<TEntityFields>,
-  producedLinks: ProducedLinksLight<TEntityFields, TEntityRelations>,
+  producedLinks: ProducedLinks<TEntityFields, TEntityRelations>,
 ): EntityGraphValue<TEntityFields, TEntityRelations> {
   // Create copies of unlinked entities
   const linkedEntities: EntityGraphValue<TEntityFields, TEntityRelations> = safeObjectCreate(safeObjectPrototype);
@@ -46,8 +46,7 @@ export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations e
   }
   // Enrich copies with direct links
   for (const name in producedLinks) {
-    const producedLinksForName = producedLinks[name];
-    const entityLinks = producedLinksForName.entityLinks;
+    const entityLinks = producedLinks[name];
     for (let entityIndex = 0; entityIndex !== entityLinks.length; ++entityIndex) {
       const entityLinksForInstance = entityLinks[entityIndex];
       const linkedInstance = linkedEntities[name][entityIndex];
