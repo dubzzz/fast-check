@@ -1,27 +1,9 @@
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { Value } from '../check/arbitrary/definition/Value';
-import type { Random } from '../random/generator/Random';
-import { Stream } from '../stream/Stream';
-import { safeMap, safePush } from '../utils/globals';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
-import { createDepthIdentifier } from './_internals/helpers/DepthContext';
-import type {
-  Arbitraries,
-  Arity,
-  EntityGraphValue,
-  EntityRelations,
-  ProducedLinks,
-  UnlinkedEntities,
-} from './_internals/interfaces/EntityGraphTypes';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import type { Arbitraries, EntityGraphValue, EntityRelations } from './_internals/interfaces/EntityGraphTypes';
 import { unlinkedToLinkedEntitiesMapper } from './_internals/mappers/UnlinkedToLinkedEntities';
-import { array } from './array';
-import { integer } from './integer';
-import { noBias } from './noBias';
-import { option } from './option';
-import { record } from './record';
-import { uniqueArray } from './uniqueArray';
+import { onTheFlyLinksForEntityGraph } from './_internals/OnTheFlyLinksForEntityGraphArbitrary';
+import { unlinkedEntitiesForEntityGraph } from './_internals/UnlinkedEntitiesForEntityGraph';
 
-const safeObjectCreate = Object.create;
 const safeObjectKeys = Object.keys;
 
 export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRelations as EntityGraphRelations };
@@ -39,126 +21,6 @@ export type EntityGraphContraints = {
    */
   noNullPrototype?: boolean;
 };
-
-// Internal class containing the implementation
-class EntityGraphArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> extends Arbitrary<
-  EntityGraphValue<TEntityFields, TEntityRelations>
-> {
-  constructor(
-    readonly arbitraries: Arbitraries<TEntityFields>,
-    readonly relations: TEntityRelations,
-    readonly constraints: { defaultEntities: (keyof TEntityFields)[] } & EntityGraphContraints,
-  ) {
-    super();
-  }
-
-  private static computeLinkIndex(
-    arity: Arity,
-    countInTargetType: number,
-    currentEntityDepth: DepthIdentifier,
-    mrng: Random,
-    biasFactor: number | undefined,
-  ): number[] | number | undefined {
-    const linkArbitrary = noBias(integer({ min: 0, max: countInTargetType }));
-    switch (arity) {
-      case '0-1':
-        return option(linkArbitrary, { nil: undefined, depthIdentifier: currentEntityDepth }).generate(mrng, biasFactor)
-          .value;
-      case '1':
-        return linkArbitrary.generate(mrng, biasFactor).value;
-      case 'many': {
-        let randomUnicity = 0;
-        const values = uniqueArray(linkArbitrary, {
-          depthIdentifier: currentEntityDepth,
-          selector: (v) => (v === countInTargetType ? v + ++randomUnicity : v),
-        }).generate(mrng, biasFactor).value;
-        let offset = 0;
-        return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
-      }
-    }
-  }
-
-  generate(mrng: Random, biasFactor: number | undefined): Value<EntityGraphValue<TEntityFields, TEntityRelations>> {
-    // The set of all produced links between entities.
-    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
-    for (const name in this.arbitraries) {
-      producedLinks[name] = [];
-    }
-    // Made of any entity whose links have to be created before building the whole graph.
-    const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
-    for (const name of this.constraints.defaultEntities) {
-      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], safeObjectCreate(null));
-    }
-
-    // STEP I - Producing links between entities...
-    // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
-    // we decided to consider an always growing array that will grow up to the numer of entities before being dropped.
-    let lastTreatedEntities = -1;
-    while (++lastTreatedEntities < toBeProducedEntities.length) {
-      const currentEntity = toBeProducedEntities[lastTreatedEntities];
-      const currentRelations = this.relations[currentEntity.type];
-      const currentProducedLinks = producedLinks[currentEntity.type];
-      // Create all the links going from the current entity to others
-      const currentLinks = currentProducedLinks[currentEntity.indexInType];
-      const currentEntityDepth = createDepthIdentifier();
-      currentEntityDepth.depth = currentEntity.depth;
-      for (const name in currentRelations) {
-        const relation = currentRelations[name];
-        const targetType = relation.type;
-        const producedLinksInTargetType = producedLinks[targetType];
-        const countInTargetType = producedLinksInTargetType.length;
-        const linkOrLinks = EntityGraphArbitrary.computeLinkIndex(
-          relation.arity,
-          producedLinksInTargetType.length,
-          currentEntityDepth,
-          mrng,
-          biasFactor,
-        );
-        currentLinks[name] = { type: targetType, index: linkOrLinks };
-        const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
-        for (const link of links) {
-          if (link >= countInTargetType) {
-            safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, safeObjectCreate(null));
-          }
-        }
-      }
-    }
-    // Drop any item from the array
-    toBeProducedEntities.length = 0;
-
-    // STEP II - Producing entities themselves
-    const recordContraints = { noNullPrototype: this.constraints.noNullPrototype };
-    const recordModel: { [K in keyof TEntityFields]: Arbitrary<TEntityFields[K][]> } = safeObjectCreate(null);
-    for (const name in this.arbitraries) {
-      const entityRecordModel = this.arbitraries[name];
-      const count = producedLinks[name].length;
-      recordModel[name] = array(record(entityRecordModel, recordContraints), {
-        minLength: count,
-        maxLength: count,
-      }) as any;
-    }
-    return record<UnlinkedEntities<TEntityFields>>(recordModel)
-      .map((unlinkedEntities) => {
-        // @ts-expect-error - We probably have a fishy typing issue in `record`, as we are supposed to produce `UnlinkedEntities<TEntityFields>`
-        const safeUnlinkedEntities: UnlinkedEntities<TEntityFields> = unlinkedEntities;
-        return unlinkedToLinkedEntitiesMapper(safeUnlinkedEntities, producedLinks);
-      })
-      .generate(mrng, biasFactor);
-  }
-
-  canShrinkWithoutContext(value: unknown): value is EntityGraphValue<TEntityFields, TEntityRelations> {
-    return false; // for now, we reject any shrink without any context
-  }
-
-  shrink(
-    _value: unknown,
-    _context: unknown | undefined,
-  ): Stream<Value<EntityGraphValue<TEntityFields, TEntityRelations>>> {
-    return Stream.nil(); // for now, we don't support any shrink
-  }
-}
 
 /**
  * Generate values based on a schema. Produced values will automatically come with links between each others when requested to.
@@ -189,5 +51,19 @@ export function entityGraph<TEntityFields, TEntityRelations extends EntityRelati
   constraints: EntityGraphContraints = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
   const defaultEntities = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
-  return new EntityGraphArbitrary(arbitraries, relations, { ...constraints, defaultEntities });
+  const unlinkedContraints = { noNullPrototype: constraints.noNullPrototype };
+
+  return (
+    // Step 1, Producing links between entities
+    onTheFlyLinksForEntityGraph(relations, defaultEntities).chain((producedLinks) =>
+      // Step 2, Producing entities themselves
+      // As the number of entities for each kind requires the links to be produced,
+      // it has to be executed as a chained computation
+      unlinkedEntitiesForEntityGraph(arbitraries, (name) => producedLinks[name].length, unlinkedContraints).map(
+        (unlinkedEntities) =>
+          // Step 3, Glueing links and entities together
+          unlinkedToLinkedEntitiesMapper(unlinkedEntities, producedLinks),
+      ),
+    )
+  );
 }
