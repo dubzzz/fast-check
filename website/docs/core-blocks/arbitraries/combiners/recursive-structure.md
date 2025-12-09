@@ -334,23 +334,6 @@ fc.entityGraph(
 // • …
 
 fc.entityGraph(
-  { employee: { name: fc.stringMatching(/^[A-Z][a-z]*$/) } },
-  { employee: { managees: { arity: 'many', type: 'employee', strategy: 'exclusive' } } },
-  { initialPoolConstraints: { employee: { maxLength: 1 } }, noNullPrototype: true },
-);
-// TLDR, We define a structure made of employees having zero or multiple managees without any cycle. Each employee is the managee (transitively) of the first employee.
-// Extra remarks:
-// - We only define one hierarchy. All employees are transitively the managees of the first employee.
-// ↳ We could have allowed multiple hierarchy by dropping the maxLength:1 constraint on employee.
-// Examples of generated values:
-// • {"employee":[{"name":"Cyqjtztkwv","managees":undefined}]}
-// • {"employee":[{"name":"Zwfcctd","managees":undefined}]}
-// • {"employee":[{"name":"Gzhw","managees":undefined}]}
-// • {"employee":[{"name":"Zprot","managees":undefined}]}
-// • {"employee":[{"name":"Rlngzae","managees":undefined}]}
-// • …
-
-fc.entityGraph(
   {
     user: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
     profile: { id: fc.uuid(), pictureUrl: fc.webUrl() },
