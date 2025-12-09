@@ -59,6 +59,7 @@ const untouchedForEach = Array.prototype.forEach;
 const untouchedIndexOf = Array.prototype.indexOf;
 const untouchedJoin = Array.prototype.join;
 const untouchedMap = Array.prototype.map;
+const untouchedFlat = Array.prototype.flat;
 const untouchedFilter = Array.prototype.filter;
 const untouchedPush = Array.prototype.push;
 const untouchedPop = Array.prototype.pop;
@@ -90,6 +91,13 @@ function extractJoin(instance: unknown[]) {
 function extractMap(instance: unknown[]) {
   try {
     return instance.map;
+  } catch {
+    return undefined;
+  }
+}
+function extractFlat(instance: unknown[]) {
+  try {
+    return instance.flat;
   } catch {
     return undefined;
   }
@@ -169,6 +177,13 @@ export function safeMap<T, U>(instance: T[], fn: (value: T, index: number, array
     return instance.map(fn);
   }
   return safeApply(untouchedMap, instance, [fn]);
+}
+export function safeFlat<T, D extends number = 1>(instance: T[], depth?: D): FlatArray<T[], D>[] {
+  if (extractFlat(instance) === untouchedFlat) {
+    [].flat();
+    return instance.flat(depth);
+  }
+  return safeApply(untouchedFlat, instance, [depth]);
 }
 export function safeFilter<T, U extends T>(
   instance: T[],

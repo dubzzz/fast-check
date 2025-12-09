@@ -250,7 +250,7 @@ Generate recursive structures based on a schema. These structures may came up wi
 **Signatures:**
 
 - `fc.entityGraph(arbitraries, relations)`
-- `fc.entityGraph(arbitraries, relations, {noNullPrototype?})`
+- `fc.entityGraph(arbitraries, relations, {initialPoolConstraints?,noNullPrototype?})`
 
 **with:**
 
@@ -259,6 +259,7 @@ Generate recursive structures based on a schema. These structures may came up wi
   - _with a relation having the structure: `{arity, type}`_
     - `arity` — _`"0-1"` for an optional link to one instance from `type`, `"1"` for a link to one instance from `type`, `"many"` for links leading to multiple instances from `type` exposed via an array_
     - `type` — _one of the keys of `arbitraries`, describes what is the target type for this link_
+- `initialPoolConstraints?` — _minimal set of entities being expected in the produced graph_
 - `noNullPrototype?` — default: `false` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
 
 **Usages:**
@@ -267,24 +268,23 @@ Generate recursive structures based on a schema. These structures may came up wi
 fc.entityGraph(
   { node: { id: fc.stringMatching(/^[A-Z][a-z]*$/) } },
   { node: { linkTo: { arity: 'many', type: 'node' } } },
-  { noNullPrototype: true },
+  { initialPoolConstraints: { node: { maxLength: 1 } }, noNullPrototype: true },
 );
 // TLDR, We define a structure made of nodes possibly linking to zero or many other nodes.
 // Full explanation of the requested structure:
 // - The arbitraries (first argument) declares one kind of entity called "node". This entity will come with one field called "id" whose value will be produced by the arbitrary "stringMatching".
 // - The relations (second argument) declares relations linking entities together. In this precise case, each instance of "node" will have an array field called "linkTo" that will reference zero to many other instances of "node".
-// - The constraints (third argument) is just used for convenience on this example. We use it to produce simpler to read instances on this documentation but usually we don't advise users into enforcing noNullPrototype:true except if they really care of such constraint.
+// - The constraints (third argument) has been configured in a way to prevent two distinct nodes from being unrelated. By setting enforcing a maxLength of 1 via "initialPoolConstraints" we make sure that any node in the graph will be accessible from the initial node. If we were not providing it we could have two nodes without any links (even indirect ones). The "noNullPrototype" part is just used for convenience: it makes the values visible in this documentation easier to read.
 // Extra remarks:
 // - We are not enforcing the unicity of ths ids, two distinct instances of "node" may come up with the same value of "id".
 // - We could have cycles between nodes, eg.: A -> B -> C -> A.
 // - We could have self-referencing nodes, eg.: A -> A.
-// - We only have one graph, not two with totally disjoint nodes. Starting from [0] you will be able to reach all nodes by traversing the "linkTo" fields.
 // Examples of generated values:
-// • {"node":[{"id":"Y","linkTo":[<node#0>,<node#1>,<node#2>,<node#3>,<node#4>]},{"id":"C","linkTo":[<node#4>,<node#5>,<node#3>,<node#6>]},{"id":"Xegrxaqdoa","linkTo":[]},{"id":"Ea","linkTo":[]},{"id":"Evmealewe","linkTo":[<node#1>,<node#3>,<node#4>,<node#5>,<node#2>,<node#7>,<node#8>]},{"id":"Bbbwyx","linkTo":[<node#9>,<node#2>,<node#8>,<node#1>,<node#3>,<node#4>,<node#5>]},{"id":"Sfdlfwcp","linkTo":[<node#7>,<node#3>,<node#4>,<node#8>,<node#1>,<node#0>,<node#10>,<node#9>,<node#5>]},{"id":"Kzoo","linkTo":[]},{"id":"Bxrclea","linkTo":[<node#7>,<node#9>,<node#6>]},{"id":"Wl","linkTo":[<node#10>,<node#2>,<node#11>,<node#7>,<node#5>,<node#1>]},{"id":"Esgichtc","linkTo":[<node#3>,<node#2>,<node#9>,<node#5>,<node#1>,<node#7>,<node#10>,<node#0>,<node#12>,<node#13>]},{"id":"C","linkTo":[]},{"id":"Cref","linkTo":[<node#9>,<node#8>,<node#0>,<node#3>,<node#5>,<node#1>,<node#11>,<node#2>,<node#10>,<node#12>]},{"id":"Da","linkTo":[<node#14>,<node#8>,<node#4>]},{"id":"Zvqbezlj","linkTo":[<node#14>]}]}
-// • {"node":[{"id":"Re","linkTo":[<node#0>,<node#1>]},{"id":"B","linkTo":[<node#1>,<node#0>]}]}
-// • {"node":[{"id":"M","linkTo":[<node#1>,<node#2>]},{"id":"Thxqooo","linkTo":[<node#0>,<node#1>,<node#3>,<node#2>,<node#4>,<node#5>,<node#6>,<node#7>,<node#8>]},{"id":"Hdoacy","linkTo":[<node#8>,<node#9>,<node#10>,<node#6>,<node#5>,<node#7>,<node#4>,<node#0>]},{"id":"Cble","linkTo":[<node#11>,<node#3>,<node#8>,<node#12>,<node#10>,<node#9>,<node#2>,<node#4>,<node#6>,<node#1>]},{"id":"Gkccrqjt","linkTo":[<node#11>,<node#9>,<node#13>,<node#1>,<node#14>,<node#7>,<node#3>,<node#0>,<node#10>,<node#15>]},{"id":"Eqcx","linkTo":[<node#13>,<node#2>,<node#6>]},{"id":"Bukuz","linkTo":[<node#8>,<node#10>]},{"id":"Akchp","linkTo":[<node#1>,<node#4>,<node#6>,<node#15>,<node#2>,<node#0>,<node#10>,<node#13>]},{"id":"Cpmnu","linkTo":[<node#5>,<node#11>,<node#13>,<node#10>,<node#14>,<node#16>,<node#8>,<node#0>,<node#6>,<node#3>]},{"id":"Bezyeo","linkTo":[<node#3>,<node#5>]},{"id":"I","linkTo":[<node#13>,<node#2>,<node#8>,<node#15>,<node#12>,<node#14>,<node#1>,<node#3>]},{"id":"P","linkTo":[<node#7>,<node#14>]},{"id":"Al","linkTo":[]},{"id":"Cc","linkTo":[<node#12>,<node#15>,<node#11>,<node#16>,<node#9>,<node#5>,<node#10>]},{"id":"A","linkTo":[<node#14>,<node#16>]},{"id":"Rzo","linkTo":[<node#17>,<node#10>,<node#9>,<node#8>,<node#2>,<node#14>,<node#1>,<node#5>,<node#3>,<node#12>]},{"id":"Acxmbfyti","linkTo":[<node#1>,<node#14>]},{"id":"Esrfbcgcn","linkTo":[<node#18>,<node#5>,<node#0>,<node#1>,<node#11>,<node#9>,<node#15>,<node#14>,<node#17>,<node#6>]},{"id":"V","linkTo":[<node#18>,<node#5>,<node#13>,<node#14>,<node#16>,<node#2>,<node#0>,<node#3>,<node#15>,<node#1>]}]}
-// • {"node":[{"id":"Uxviwizmqx","linkTo":[<node#1>,<node#2>]},{"id":"X","linkTo":[<node#3>,<node#4>]},{"id":"N","linkTo":[<node#1>]},{"id":"Aapply","linkTo":[<node#1>,<node#2>]},{"id":"Ict","linkTo":[<node#2>,<node#4>,<node#0>,<node#3>,<node#1>,<node#5>,<node#6>,<node#7>,<node#8>]},{"id":"Pv","linkTo":[<node#4>]},{"id":"Ppr","linkTo":[<node#7>,<node#1>,<node#5>,<node#3>,<node#9>]},{"id":"A","linkTo":[]},{"id":"Xluws","linkTo":[<node#7>,<node#10>,<node#6>]},{"id":"Bcaller","linkTo":[<node#8>,<node#9>,<node#7>,<node#4>,<node#10>]},{"id":"Zl","linkTo":[<node#6>]}]}
-// • {"node":[{"id":"C","linkTo":[<node#1>,<node#2>,<node#0>,<node#3>,<node#4>,<node#5>,<node#6>,<node#7>,<node#8>,<node#9>]},{"id":"Fajogzjh","linkTo":[<node#2>]},{"id":"Bno","linkTo":[<node#2>,<node#3>,<node#4>,<node#7>,<node#6>]},{"id":"Jh","linkTo":[<node#10>,<node#2>,<node#1>,<node#0>,<node#4>,<node#8>,<node#7>,<node#3>]},{"id":"Xmtutmnywb","linkTo":[<node#9>,<node#4>]},{"id":"Wuv","linkTo":[<node#7>,<node#3>,<node#8>,<node#9>,<node#1>,<node#2>,<node#0>]},{"id":"Wajlh","linkTo":[]},{"id":"Eyfumt","linkTo":[<node#4>,<node#7>,<node#9>,<node#10>,<node#8>]},{"id":"A","linkTo":[<node#7>,<node#6>]},{"id":"Ib","linkTo":[<node#0>,<node#4>,<node#5>,<node#10>,<node#3>,<node#9>,<node#2>,<node#7>]},{"id":"D","linkTo":[]}]}
+// • {"node":[{"id":"Dcuidrapk","linkTo":[<node#0>,<node#1>,<node#2>,<node#3>]},{"id":"Cname","linkTo":[]},{"id":"Btructacc","linkTo":[<node#0>,<node#4>,<node#1>,<node#2>,<node#5>,<node#6>,<node#3>]},{"id":"Re","linkTo":[<node#3>,<node#2>,<node#4>]},{"id":"Bmxcdydm","linkTo":[<node#2>]},{"id":"B","linkTo":[<node#6>,<node#7>,<node#5>,<node#1>,<node#0>,<node#2>,<node#8>,<node#3>,<node#9>]},{"id":"B","linkTo":[<node#4>,<node#5>,<node#10>]},{"id":"Pa","linkTo":[<node#11>,<node#5>,<node#4>]},{"id":"Xwoz","linkTo":[<node#2>,<node#5>]},{"id":"Az","linkTo":[<node#4>,<node#6>,<node#8>,<node#11>,<node#12>,<node#0>,<node#3>,<node#10>]},{"id":"Tcv","linkTo":[<node#12>]},{"id":"Mbi","linkTo":[<node#3>,<node#0>,<node#1>]},{"id":"Csxyjivw","linkTo":[<node#7>,<node#12>,<node#2>,<node#13>]},{"id":"D","linkTo":[<node#8>,<node#5>,<node#13>,<node#9>]}]}
+// • {"node":[{"id":"D","linkTo":[<node#1>,<node#0>,<node#2>,<node#3>,<node#4>,<node#5>,<node#6>,<node#7>,<node#8>,<node#9>]},{"id":"Raa","linkTo":[<node#2>,<node#3>,<node#9>,<node#7>,<node#1>,<node#8>,<node#4>,<node#10>,<node#6>]},{"id":"Bpd","linkTo":[]},{"id":"E","linkTo":[<node#2>,<node#6>,<node#5>,<node#0>,<node#7>]},{"id":"Z","linkTo":[<node#4>,<node#0>]},{"id":"Blqn","linkTo":[]},{"id":"Bcloarxxv","linkTo":[<node#8>,<node#9>,<node#2>]},{"id":"A","linkTo":[<node#5>]},{"id":"Rfcal","linkTo":[]},{"id":"Xkqnseioi","linkTo":[<node#7>,<node#3>,<node#6>]},{"id":"Bm","linkTo":[<node#4>,<node#8>,<node#0>,<node#2>,<node#10>,<node#3>]}]}
+// • {"node":[{"id":"Evceusae","linkTo":[<node#1>]},{"id":"C","linkTo":[<node#1>,<node#0>]}]}
+// • {"node":[{"id":"Enesuu","linkTo":[<node#1>,<node#2>]},{"id":"Fotypkebind","linkTo":[<node#2>]},{"id":"Bd","linkTo":[<node#3>,<node#4>]},{"id":"C","linkTo":[<node#3>,<node#0>]},{"id":"Dqbz","linkTo":[<node#3>]}]}
+// • {"node":[{"id":"Dadyyvooano","linkTo":[<node#1>,<node#2>,<node#3>,<node#4>,<node#5>,<node#6>,<node#7>,<node#0>,<node#8>]},{"id":"Bc","linkTo":[<node#0>,<node#3>,<node#9>]},{"id":"Sdlxslvo","linkTo":[]},{"id":"Vwrxgszwln","linkTo":[<node#7>,<node#5>,<node#6>]},{"id":"Cwga","linkTo":[]},{"id":"Xvskvnqha","linkTo":[<node#2>,<node#7>,<node#5>,<node#10>,<node#8>,<node#9>,<node#0>,<node#11>,<node#6>]},{"id":"Ncpndxcc","linkTo":[<node#1>,<node#10>,<node#9>]},{"id":"Zs","linkTo":[<node#5>,<node#6>,<node#1>,<node#0>,<node#8>,<node#4>,<node#11>,<node#10>]},{"id":"Yjepvu","linkTo":[]},{"id":"Uhusmsw","linkTo":[]},{"id":"Vn","linkTo":[<node#5>,<node#3>,<node#11>,<node#12>,<node#6>,<node#0>,<node#10>]},{"id":"Wo","linkTo":[<node#6>,<node#4>,<node#1>,<node#3>,<node#10>,<node#7>]},{"id":"Fwsuaiw","linkTo":[<node#3>,<node#4>,<node#8>,<node#6>,<node#2>,<node#12>,<node#0>,<node#1>,<node#13>]},{"id":"A","linkTo":[<node#2>,<node#13>,<node#0>,<node#5>,<node#11>,<node#6>,<node#1>,<node#12>,<node#8>]}]}
 // • …
 
 fc.entityGraph(
@@ -296,22 +296,21 @@ fc.entityGraph(
     employee: { team: { arity: '1', type: 'team' } },
     team: {},
   },
-  { noNullPrototype: true },
+  { initialPoolConstraints: { team: { maxLength: 0 } }, noNullPrototype: true },
 );
 // TLDR, We define a structure made of employees and teams with each employee having a reference to exactly one team.
 // Full explanation of the requested structure:
 // - The arbitraries (first argument) declares two kinds of entities called "employee" and "team". In this example, both of them come with one field called "name" whose value will be produced by the arbitrary "stringMatching".
 // - The relations (second argument) declares relations linking entities together. In our case, each instance of "employee" will have one field called "team" referencing an instance of "team" (also accessible in the team part).
-// - The constraints (third argument) is just used for convenience on this example. We use it to produce simpler to read instances on this documentation but usually we don't advise users into enforcing noNullPrototype:true except if they really care of such constraint.
+// - The constraints (third argument) allows us to prevent having a team without any employee. We only create a team if really needed by one of the other generated entities.
 // Extra remarks:
 // - We are not enforcing the unicity of the names, two distinct instances of "employee" or "team" may come up with the same value of "name".
-// - We only create one employee either belonging to the first team or to the second one.
 // Examples of generated values:
-// • {"employee":[{"name":"B","team":<team#0>}],"team":[{"name":"Ad"}]}
-// • {"employee":[{"name":"Dayhdwprsr","team":<team#0>}],"team":[{"name":"Jzcbys"}]}
-// • {"employee":[{"name":"Fc","team":<team#0>}],"team":[{"name":"Bam"}]}
-// • {"employee":[{"name":"Bjssvcrsrnc","team":<team#1>}],"team":[{"name":"Xe"},{"name":"Esck"}]}
-// • {"employee":[{"name":"Oeij","team":<team#1>}],"team":[{"name":"R"},{"name":"Bye"}]}
+// • {"employee":[{"name":"F","team":<team#0>}],"team":[{"name":"Wyck"}]}
+// • {"employee":[{"name":"Opx","team":<team#0>}],"team":[{"name":"Zeexwzg"}]}
+// • {"employee":[{"name":"Wrlhprtz","team":<team#0>},{"name":"Xv","team":<team#0>},{"name":"Href","team":<team#1>},{"name":"Cmfd","team":<team#2>},{"name":"Cntwk","team":<team#1>}],"team":[{"name":"Yklhbeoncbu"},{"name":"Pu"},{"name":"Dvnt"}]}
+// • {"employee":[{"name":"Ohkumvvgf","team":<team#0>},{"name":"Epanzcfch","team":<team#0>},{"name":"Bx","team":<team#0>}],"team":[{"name":"Wca"}]}
+// • {"employee":[{"name":"Yrxwa","team":<team#0>},{"name":"Una","team":<team#1>},{"name":"Asjpwudy","team":<team#0>},{"name":"Zmjl","team":<team#1>},{"name":"Z","team":<team#0>}],"team":[{"name":"Brefuqap"},{"name":"Azdyprot"}]}
 // • …
 
 fc.entityGraph(
@@ -328,12 +327,14 @@ fc.entityGraph(
 // - We are not enforcing the unicity of the names, two distinct instances of "employee" may come up with the same value of "name".
 // - We are not preventing cycles, eg.: A can be managed by B and be managed by A.
 // - We are not preventing self-managing, eg.: A can be managed by A.
+// - We are not preventing two distinct hierarchies, eg.: A can manage B, C can manage D and there are no links between the two groups.
+//   - To enforce a link you could add "initialPoolConstraints: { employee: { maxLength: 1 } }". By doing so, the entityGraph will only generate employees being related to the first employee (as we start the pool with exactly one employee).
 // Examples of generated values:
-// • {"employee":[{"name":"Crefbina","manager":<employee#0>}]}
-// • {"employee":[{"name":"Gkfsye","manager":undefined}]}
-// • {"employee":[{"name":"Jzjwdhbec","manager":<employee#0>}]}
-// • {"employee":[{"name":"Lw","manager":<employee#1>},{"name":"Buhj","manager":<employee#2>},{"name":"Vav","manager":<employee#0>}]}
-// • {"employee":[{"name":"D","manager":undefined}]}
+// • {"employee":[{"name":"Bmen","manager":<employee#0>},{"name":"Ehzoquzvu","manager":undefined},{"name":"Qcwlhung","manager":<employee#0>}]}
+// • {"employee":[{"name":"Yca","manager":<employee#0>},{"name":"Akey","manager":<employee#0>},{"name":"Vprototype","manager":<employee#1>}]}
+// • {"employee":[{"name":"Kguwqbpbxfn","manager":undefined},{"name":"Xddg","manager":<employee#0>},{"name":"Cll","manager":<employee#2>}]}
+// • {"employee":[{"name":"Hg","manager":<employee#4>},{"name":"Eua","manager":<employee#2>},{"name":"V","manager":<employee#7>},{"name":"Apg","manager":<employee#5>},{"name":"Dapply","manager":undefined},{"name":"Plhy","manager":<employee#1>},{"name":"Pkey","manager":undefined},{"name":"Wb","manager":<employee#1>},{"name":"Ee","manager":<employee#4>}]}
+// • {"employee":[{"name":"Rlgb","manager":<employee#1>},{"name":"Xoxoexfuuk","manager":<employee#2>},{"name":"Bsclvbjlef","manager":undefined}]}
 // • …
 ```
 
