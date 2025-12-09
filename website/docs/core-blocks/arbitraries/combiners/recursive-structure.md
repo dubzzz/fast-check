@@ -270,15 +270,15 @@ fc.entityGraph(
   { node: { linkTo: { arity: 'many', type: 'node' } } },
   { initialPoolConstraints: { node: { maxLength: 1 } }, noNullPrototype: true },
 );
-// TLDR, We define a structure made of nodes possibly linking to zero or many other nodes.
-// Full explanation of the requested structure:
-// - The arbitraries (first argument) declares one kind of entity called "node". This entity will come with one field called "id" whose value will be produced by the arbitrary "stringMatching".
-// - The relations (second argument) declares relations linking entities together. In this precise case, each instance of "node" will have an array field called "linkTo" that will reference zero to many other instances of "node".
-// - The constraints (third argument) has been configured in a way to prevent two distinct nodes from being unrelated. By setting enforcing a maxLength of 1 via "initialPoolConstraints" we make sure that any node in the graph will be accessible from the initial node. If we were not providing it we could have two nodes without any links (even indirect ones). The "noNullPrototype" part is just used for convenience: it makes the values visible in this documentation easier to read.
+// TLDR, We define a graph made of nodes being all connected together. Each node link to zero or many other nodes.
 // Extra remarks:
 // - We are not enforcing the unicity of ths ids, two distinct instances of "node" may come up with the same value of "id".
-// - We could have cycles between nodes, eg.: A -> B -> C -> A.
-// - We could have self-referencing nodes, eg.: A -> A.
+// - We can have cycles between nodes, eg.: A -> B -> C -> A.
+// ↳ But, we could have prevented cycles by adding the strategy: successor or exclusive on the definition for linkTo.
+// - We can have self-referencing nodes, eg.: A -> A.
+// ↳ But, we could have prevented self-referencing by adding the strategy: successor or exclusive on the definition for linkTo.
+// - We have all nodes being connected together, eg.: every node in the structure is accessible from node 0 by following some linkTo links.
+// ↳ But, we could have prevented that by not specifying maxLength:1 on initialPoolConstraints. We would have been able to have two or more unrelated graphs.
 // Examples of generated values:
 // • {"node":[{"id":"Dcuidrapk","linkTo":[<node#0>,<node#1>,<node#2>,<node#3>]},{"id":"Cname","linkTo":[]},{"id":"Btructacc","linkTo":[<node#0>,<node#4>,<node#1>,<node#2>,<node#5>,<node#6>,<node#3>]},{"id":"Re","linkTo":[<node#3>,<node#2>,<node#4>]},{"id":"Bmxcdydm","linkTo":[<node#2>]},{"id":"B","linkTo":[<node#6>,<node#7>,<node#5>,<node#1>,<node#0>,<node#2>,<node#8>,<node#3>,<node#9>]},{"id":"B","linkTo":[<node#4>,<node#5>,<node#10>]},{"id":"Pa","linkTo":[<node#11>,<node#5>,<node#4>]},{"id":"Xwoz","linkTo":[<node#2>,<node#5>]},{"id":"Az","linkTo":[<node#4>,<node#6>,<node#8>,<node#11>,<node#12>,<node#0>,<node#3>,<node#10>]},{"id":"Tcv","linkTo":[<node#12>]},{"id":"Mbi","linkTo":[<node#3>,<node#0>,<node#1>]},{"id":"Csxyjivw","linkTo":[<node#7>,<node#12>,<node#2>,<node#13>]},{"id":"D","linkTo":[<node#8>,<node#5>,<node#13>,<node#9>]}]}
 // • {"node":[{"id":"D","linkTo":[<node#1>,<node#0>,<node#2>,<node#3>,<node#4>,<node#5>,<node#6>,<node#7>,<node#8>,<node#9>]},{"id":"Raa","linkTo":[<node#2>,<node#3>,<node#9>,<node#7>,<node#1>,<node#8>,<node#4>,<node#10>,<node#6>]},{"id":"Bpd","linkTo":[]},{"id":"E","linkTo":[<node#2>,<node#6>,<node#5>,<node#0>,<node#7>]},{"id":"Z","linkTo":[<node#4>,<node#0>]},{"id":"Blqn","linkTo":[]},{"id":"Bcloarxxv","linkTo":[<node#8>,<node#9>,<node#2>]},{"id":"A","linkTo":[<node#5>]},{"id":"Rfcal","linkTo":[]},{"id":"Xkqnseioi","linkTo":[<node#7>,<node#3>,<node#6>]},{"id":"Bm","linkTo":[<node#4>,<node#8>,<node#0>,<node#2>,<node#10>,<node#3>]}]}
@@ -299,12 +299,10 @@ fc.entityGraph(
   { initialPoolConstraints: { team: { maxLength: 0 } }, noNullPrototype: true },
 );
 // TLDR, We define a structure made of employees and teams with each employee having a reference to exactly one team.
-// Full explanation of the requested structure:
-// - The arbitraries (first argument) declares two kinds of entities called "employee" and "team". In this example, both of them come with one field called "name" whose value will be produced by the arbitrary "stringMatching".
-// - The relations (second argument) declares relations linking entities together. In our case, each instance of "employee" will have one field called "team" referencing an instance of "team" (also accessible in the team part).
-// - The constraints (third argument) allows us to prevent having a team without any employee. We only create a team if really needed by one of the other generated entities.
 // Extra remarks:
 // - We are not enforcing the unicity of the names, two distinct instances of "employee" or "team" may come up with the same value of "name".
+// - We only have teams that have at least one matching employee.
+// ↳ But, we could have prevented it, by dropping the maxLength:0 constraint defined for team via initialPoolConstraints. By dropping it we would have allowed teams not being referenced by any employee.
 // Examples of generated values:
 // • {"employee":[{"name":"F","team":<team#0>}],"team":[{"name":"Wyck"}]}
 // • {"employee":[{"name":"Opx","team":<team#0>}],"team":[{"name":"Zeexwzg"}]}
@@ -315,26 +313,64 @@ fc.entityGraph(
 
 fc.entityGraph(
   { employee: { name: fc.stringMatching(/^[A-Z][a-z]*$/) } },
-  { employee: { manager: { arity: '0-1', type: 'employee' } } },
+  { employee: { manager: { arity: '0-1', type: 'employee', strategy: 'successor' } } },
   { noNullPrototype: true },
 );
-// TLDR, We define a structure made of employees having zero or one manager.
-// Full explanation of the requested structure:
-// - The arbitraries (first argument) declares one kind of entity called "employee". The entity comes field called "name" whose value will be produced by the arbitrary "stringMatching".
-// - The relations (second argument) declares relations linking entities together. In our case, each instance of "employee" will have zero to one employee. Said differently the employee will have a field called "manager" that could either be undefined or be linking to another instance of employee.
-// - The constraints (third argument) is just used for convenience on this example. We use it to produce simpler to read instances on this documentation but usually we don't advise users into enforcing noNullPrototype:true except if they really care of such constraint.
+// TLDR, We define a structure made of employees having zero or one manager without any cycle.
 // Extra remarks:
 // - We are not enforcing the unicity of the names, two distinct instances of "employee" may come up with the same value of "name".
-// - We are not preventing cycles, eg.: A can be managed by B and be managed by A.
-// - We are not preventing self-managing, eg.: A can be managed by A.
+// - We are preventing cycles, eg.: A can be managed by B and be managed by A.
+// ↳ We could have allowed cycles by switching the strategy to 'any'.
+// - We are preventing self-managing, eg.: A can be managed by A.
+// ↳ We could have allowed cycles by switching the strategy to 'any'.
 // - We are not preventing two distinct hierarchies, eg.: A can manage B, C can manage D and there are no links between the two groups.
-//   - To enforce a link you could add "initialPoolConstraints: { employee: { maxLength: 1 } }". By doing so, the entityGraph will only generate employees being related to the first employee (as we start the pool with exactly one employee).
+// ↳ To enforce a link you could add "initialPoolConstraints: { employee: { maxLength: 1 } }". By doing so, the entityGraph will only generate employees being related to the first employee (as we start the pool with exactly one employee), so all employees (except the first one) will be managers of the first employee (transitively).
 // Examples of generated values:
-// • {"employee":[{"name":"Bmen","manager":<employee#0>},{"name":"Ehzoquzvu","manager":undefined},{"name":"Qcwlhung","manager":<employee#0>}]}
-// • {"employee":[{"name":"Yca","manager":<employee#0>},{"name":"Akey","manager":<employee#0>},{"name":"Vprototype","manager":<employee#1>}]}
-// • {"employee":[{"name":"Kguwqbpbxfn","manager":undefined},{"name":"Xddg","manager":<employee#0>},{"name":"Cll","manager":<employee#2>}]}
-// • {"employee":[{"name":"Hg","manager":<employee#4>},{"name":"Eua","manager":<employee#2>},{"name":"V","manager":<employee#7>},{"name":"Apg","manager":<employee#5>},{"name":"Dapply","manager":undefined},{"name":"Plhy","manager":<employee#1>},{"name":"Pkey","manager":undefined},{"name":"Wb","manager":<employee#1>},{"name":"Ee","manager":<employee#4>}]}
-// • {"employee":[{"name":"Rlgb","manager":<employee#1>},{"name":"Xoxoexfuuk","manager":<employee#2>},{"name":"Bsclvbjlef","manager":undefined}]}
+// • {"employee":[{"name":"Sb","manager":<employee#4>},{"name":"Mgnuulomqpz","manager":<employee#2>},{"name":"Bentck","manager":<employee#5>},{"name":"Zwysadtiri","manager":<employee#5>},{"name":"Qfzzgjqpw","manager":<employee#5>},{"name":"Wb","manager":<employee#6>},{"name":"Uxp","manager":undefined}]}
+// • {"employee":[{"name":"Lwrccd","manager":<employee#1>},{"name":"Lw","manager":<employee#2>},{"name":"A","manager":<employee#3>},{"name":"Cvmjd","manager":undefined}]}
+// • {"employee":[{"name":"Mbwyoevaqd","manager":<employee#1>},{"name":"Eapduphwi","manager":<employee#2>},{"name":"N","manager":<employee#3>},{"name":"Ye","manager":undefined}]}
+// • {"employee":[{"name":"Zyz","manager":<employee#1>},{"name":"Yblkdqezlfj","manager":<employee#2>},{"name":"Ay","manager":<employee#3>},{"name":"E","manager":<employee#4>},{"name":"Ac","manager":undefined}]}
+// • {"employee":[{"name":"Qxixobxj","manager":undefined},{"name":"Ye","manager":<employee#4>},{"name":"Bpczfxif","manager":<employee#5>},{"name":"Eb","manager":<employee#4>},{"name":"By","manager":<employee#6>},{"name":"Af","manager":<employee#6>},{"name":"Xm","manager":<employee#7>},{"name":"Ablhi","manager":<employee#8>},{"name":"Bief","manager":<employee#9>},{"name":"Fosulfs","manager":undefined}]}
+// • …
+
+fc.entityGraph(
+  { employee: { name: fc.stringMatching(/^[A-Z][a-z]*$/) } },
+  { employee: { managees: { arity: 'many', type: 'employee', strategy: 'exclusive' } } },
+  { initialPoolConstraints: { employee: { maxLength: 1 } }, noNullPrototype: true },
+);
+// TLDR, We define a structure made of employees having zero or multiple managees without any cycle. Each employee is the managee (transitively) of the first employee.
+// Extra remarks:
+// - We only define one hierarchy. All employees are transitively the managees of the first employee.
+// ↳ We could have allowed multiple hierarchy by dropping the maxLength:1 constraint on employee.
+// Examples of generated values:
+// • {"employee":[{"name":"Cyqjtztkwv","managees":undefined}]}
+// • {"employee":[{"name":"Zwfcctd","managees":undefined}]}
+// • {"employee":[{"name":"Gzhw","managees":undefined}]}
+// • {"employee":[{"name":"Zprot","managees":undefined}]}
+// • {"employee":[{"name":"Rlngzae","managees":undefined}]}
+// • …
+
+fc.entityGraph(
+  {
+    user: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
+    profile: { id: fc.uuid(), pictureUrl: fc.webUrl() },
+  },
+  {
+    user: { profile: { arity: '1', type: 'profile', strategy: 'exclusive' } },
+    profile: {},
+  },
+  { initialPoolConstraints: { profile: { maxLength: 0 } }, noNullPrototype: true },
+);
+// TLDR, We define a structure made of users and profiles. Each user as its own profile, and we don't have any profile not being linked to a user.
+// Extra remarks:
+// - Every profile is linked to a user
+// ↳ We could have allowed profiles not being connected to any user by dropping the maxLength:0 constraints defined on profile via initialPoolConstraints. By doing so we would allow profiles not being related to any user, while keeping the compulsory link when we have one user.
+// Examples of generated values:
+// • {"user":[{"name":"Ire","profile":<profile#0>},{"name":"Y","profile":<profile#1>},{"name":"Zuriwce","profile":<profile#2>},{"name":"Egym","profile":<profile#3>},{"name":"E","profile":<profile#4>},{"name":"D","profile":<profile#5>},{"name":"Dcbincl","profile":<profile#6>}],"profile":[{"id":"c655e362-0014-1000-bfff-ffec00000010","pictureUrl":"https://rvyx5dcite.oq6-f.dr"},{"id":"acf6b8e4-ffe5-8fff-8000-0006edcacef6","pictureUrl":"https://a.zc//F/o/"},{"id":"8fb31638-49fe-81a1-88f4-fc4cdb26e00c","pictureUrl":"https://ju7hm.rjy.hyc////A"},{"id":"c68cb485-0015-1000-8000-001900000010","pictureUrl":"http://49bzbn.xy/T"},{"id":"6a2b684a-0011-1000-a30e-24c60000000f","pictureUrl":"https://xr.gb/m"},{"id":"fffffff9-e2db-1823-8af9-599e4d462423","pictureUrl":"http://9uwon5eb.i9f.xre"},{"id":"b6a0bbfa-0008-1000-bfff-ffe600000010","pictureUrl":"http://4xko.syr/_///G/:/_/X"}]}
+// • {"user":[{"name":"Cu","profile":<profile#0>},{"name":"Ny","profile":<profile#1>},{"name":"Ua","profile":<profile#2>},{"name":"D","profile":<profile#3>},{"name":"Clctnamcall","profile":<profile#4>},{"name":"Fdvv","profile":<profile#5>},{"name":"A","profile":<profile#6>},{"name":"D","profile":<profile#7>},{"name":"Ytjbuht","profile":<profile#8>}],"profile":[{"id":"00000015-0015-1000-8000-000268fb9e58","pictureUrl":"https://b.bbd"},{"id":"00000005-4875-4b1d-937d-5b8c00000001","pictureUrl":"https://6l8ryqy.gyf/"},{"id":"00000014-c191-6d4e-a3e8-e0ddfffffff2","pictureUrl":"http://zj5-xxel6.wq/"},{"id":"3aff4fcf-0017-1000-8000-00195f21ac12","pictureUrl":"http://0.wlengu.of"},{"id":"b6c334f4-f10f-8576-bfff-ffe915e988ff","pictureUrl":"https://q.fld.yb"},{"id":"fffffff4-13d2-4f5b-88f4-1120dc30d31c","pictureUrl":"http://ao67z.941vr6zq4.ss"},{"id":"f35c06ba-2106-6ea3-bfff-fff6ffffffea","pictureUrl":"http://54.c06-5.xf/ot%F2%B0%B5%B8:"},{"id":"ffffffea-ffe5-8fff-bfff-fffb0000000a","pictureUrl":"https://bcld0gh.hkw"},{"id":"e602a429-c301-8de2-9d0a-973b0000001d","pictureUrl":"http://si.r.av//"}]}
+// • {"user":[{"name":"Aiqgspiwqk","profile":<profile#0>},{"name":"Wewfmec","profile":<profile#1>},{"name":"X","profile":<profile#2>},{"name":"Ell","profile":<profile#3>},{"name":"Yob","profile":<profile#4>},{"name":"Izcmdk","profile":<profile#5>},{"name":"L","profile":<profile#6>},{"name":"Ocallduwdc","profile":<profile#7>}],"profile":[{"id":"f194d4f2-fffa-8fff-8000-0007fffffff1","pictureUrl":"http://dgqinc.yaw/%F1%BE%BB%A2r%F2%8D%B7%98"},{"id":"d154d8ea-001d-1000-8492-3e260000001e","pictureUrl":"https://4pv4mb-8.b3c.sx"},{"id":"ffffffef-000d-1000-b8f8-d6184615fb88","pictureUrl":"http://d6.wh//"},{"id":"0000001d-e28f-3005-ba07-7a7700000019","pictureUrl":"http://fc.kz/_N"},{"id":"0000000b-015c-597f-9893-261c325872cb","pictureUrl":"https://2ivgmw7-2.s4c8.dar/g~"},{"id":"597b1994-0006-1000-8000-0009ffffffea","pictureUrl":"http://feyqt.c.bn/y//%F1%B9%93%BD////o"},{"id":"0000001a-0010-1000-8000-0017d550f770","pictureUrl":"http://6addg.cc///6//////4"},{"id":"bee39683-ffea-8fff-bf98-a295915990e4","pictureUrl":"https://4namejeby.au/J//c/,/@/J//"}]}
+// • {"user":[{"name":"Uar","profile":<profile#0>},{"name":"Zspth","profile":<profile#1>},{"name":"Wcrxwfudcc","profile":<profile#2>},{"name":"Ena","profile":<profile#3>},{"name":"Rw","profile":<profile#4>},{"name":"Acdq","profile":<profile#5>},{"name":"Ckg","profile":<profile#6>},{"name":"Ckbuhlblvm","profile":<profile#7>}],"profile":[{"id":"00000004-fbec-7ca5-8d7f-62172afc8308","pictureUrl":"https://n.urg.hn"},{"id":"7a62c8db-f546-711c-8110-fbb10eab12fc","pictureUrl":"https://i9dvp.rq"},{"id":"0000001d-ffff-8fff-bfff-fffb6a9a86a5","pictureUrl":"https://dpn.rzb"},{"id":"00000009-fff8-8fff-bf9a-64ac1d43e41e","pictureUrl":"https://ied.fab//"},{"id":"0000000a-0019-1000-b02d-8a3db8b3f6f6","pictureUrl":"http://b9up8.b.pmz///S/"},{"id":"535e558c-0014-1000-b680-f6b200000015","pictureUrl":"https://6.wpz/o///////"},{"id":"00000010-0001-1000-8000-00190000001d","pictureUrl":"http://fzda95kfczs.eg/%F2%B4%92%82EFYg&cm+"},{"id":"3ffa3c13-bde6-5064-bfff-ffe300000002","pictureUrl":"https://8zs-h6ltp9t5.vzomtpnp3k.bin/%F4%8F%BB%B4"}]}
+// • {"user":[{"name":"C","profile":<profile#0>},{"name":"Cuoxbprot","profile":<profile#1>},{"name":"Fbwpleng","profile":<profile#2>}],"profile":[{"id":"fffffffc-c177-8c62-9b19-afce0922f4a0","pictureUrl":"https://d.pc//1//"},{"id":"a832a6a0-e6b6-23a0-ab21-a976c92c8c98","pictureUrl":"https://98d.yv/c///!/E//"},{"id":"00000010-fff2-8fff-b4ea-6ae10000000d","pictureUrl":"http://eef.yy"}]}
 // • …
 ```
 

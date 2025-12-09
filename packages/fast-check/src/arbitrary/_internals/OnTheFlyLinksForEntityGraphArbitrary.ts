@@ -2,25 +2,54 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
 import { Value } from '../../check/arbitrary/definition/Value';
 import type { Random } from '../../random/generator/Random';
 import { Stream } from '../../stream/Stream';
-import { safeMap, safePush } from '../../utils/globals';
+import {
+  safeAdd,
+  safeHas,
+  safeMap,
+  safePush,
+  Set as SSet,
+  Error as SError,
+  String as SString,
+} from '../../utils/globals';
+import { constant } from '../constant';
 import { integer } from '../integer';
 import { noBias } from '../noBias';
 import { option } from '../option';
 import { uniqueArray } from '../uniqueArray';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext';
-import type { Arity, EntityRelations, ProducedLinks } from './interfaces/EntityGraphTypes';
+import type { Arity, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes';
 
 const safeObjectCreate = Object.create;
 
 /** @internal */
+function produceLinkUnitaryIndexArbitrary(
+  strategy: Strategy,
+  currentIndexIfSameType: number | undefined,
+  countInTargetType: number,
+): Arbitrary<number> {
+  switch (strategy) {
+    case 'exclusive':
+      return constant(countInTargetType);
+    case 'successor': {
+      const min = currentIndexIfSameType !== undefined ? currentIndexIfSameType + 1 : 0;
+      return noBias(integer({ min, max: countInTargetType }));
+    }
+    case 'any':
+      return noBias(integer({ min: 0, max: countInTargetType }));
+  }
+}
+
+/** @internal */
 function computeLinkIndex(
   arity: Arity,
+  strategy: Strategy,
+  currentIndexIfSameType: number | undefined,
   countInTargetType: number,
   currentEntityDepth: DepthIdentifier,
   mrng: Random,
   biasFactor: number | undefined,
 ): number[] | number | undefined {
-  const linkArbitrary = noBias(integer({ min: 0, max: countInTargetType }));
+  const linkArbitrary = produceLinkUnitaryIndexArbitrary(strategy, currentIndexIfSameType, countInTargetType);
   switch (arity) {
     case '0-1':
       return option(linkArbitrary, { nil: undefined, depthIdentifier: currentEntityDepth }).generate(mrng, biasFactor)
@@ -49,6 +78,33 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     readonly defaultEntities: (keyof TEntityFields)[],
   ) {
     super();
+
+    // Basic sanity checks on the relations
+    const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
+    const exclusiveEntities = new SSet<keyof TEntityRelations>();
+    for (const name in relations) {
+      const relationsForName = relations[name];
+      for (const fieldName in relationsForName) {
+        const relation = relationsForName[fieldName];
+        if (relation.strategy === 'exclusive') {
+          if (safeHas(nonExclusiveEntities, relation.type)) {
+            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+          }
+          safeAdd(exclusiveEntities, relation.type);
+        } else {
+          if (safeHas(exclusiveEntities, relation.type)) {
+            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+          }
+          safeAdd(nonExclusiveEntities, relation.type);
+        }
+        if (relation.strategy === 'successor' && relation.type !== (name as keyof TEntityRelations)) {
+          throw new SError(`Cannot mix types for the strategy successor`);
+        }
+        if (relation.strategy === 'successor' && relation.arity === '1') {
+          throw new SError(`Cannot use an arity of 1 for the strategy successor`);
+        }
+      }
+    }
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
@@ -82,6 +138,8 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         const countInTargetType = producedLinksInTargetType.length;
         const linkOrLinks = computeLinkIndex(
           relation.arity,
+          relation.strategy || 'any',
+          targetType === currentEntity.type ? currentEntity.indexInType : undefined,
           producedLinksInTargetType.length,
           currentEntityDepth,
           mrng,
