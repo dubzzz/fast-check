@@ -1,8 +1,10 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
+import { initialPoolForEntityGraph } from './_internals/InitialPoolForEntityGraphArbitrary';
 import type { Arbitraries, EntityGraphValue, EntityRelations } from './_internals/interfaces/EntityGraphTypes';
 import { unlinkedToLinkedEntitiesMapper } from './_internals/mappers/UnlinkedToLinkedEntities';
 import { onTheFlyLinksForEntityGraph } from './_internals/OnTheFlyLinksForEntityGraphArbitrary';
 import { unlinkedEntitiesForEntityGraph } from './_internals/UnlinkedEntitiesForEntityGraph';
+import type { ArrayConstraints } from './array';
 
 const safeObjectKeys = Object.keys;
 
@@ -13,7 +15,15 @@ export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRel
  * @remarks Since 4.5.0
  * @public
  */
-export type EntityGraphContraints = {
+export type EntityGraphContraints<TEntityNames extends PropertyKey> = {
+  /**
+   * Customize how to select what should be part of the initial pool of entities.
+   * This pool is used as a starting point to ask and create for other entities.
+   *
+   * @defaultValue Unspecified entities take the defaults from {@link array}
+   * @remarks Since 4.5.0
+   */
+  initialPoolConstraints?: { [EntityName in TEntityNames]?: ArrayConstraints };
   /**
    * Do not generate records with null prototype
    * @defaultValue false
@@ -48,21 +58,25 @@ export type EntityGraphContraints = {
 export function entityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   arbitraries: Arbitraries<TEntityFields>,
   relations: TEntityRelations,
-  constraints: EntityGraphContraints = {},
+  constraints: EntityGraphContraints<keyof TEntityFields> = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
-  const defaultEntities = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
+  const allKeys = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
+  const initialPoolConstraints = constraints.initialPoolConstraints || {};
   const unlinkedContraints = { noNullPrototype: constraints.noNullPrototype };
 
   return (
-    // Step 1, Producing links between entities
-    onTheFlyLinksForEntityGraph(relations, defaultEntities).chain((producedLinks) =>
-      // Step 2, Producing entities themselves
-      // As the number of entities for each kind requires the links to be produced,
-      // it has to be executed as a chained computation
-      unlinkedEntitiesForEntityGraph(arbitraries, (name) => producedLinks[name].length, unlinkedContraints).map(
-        (unlinkedEntities) =>
-          // Step 3, Glueing links and entities together
-          unlinkedToLinkedEntitiesMapper(unlinkedEntities, producedLinks),
+    // Step 1, Computing the list of default entities that should take part in the pool
+    initialPoolForEntityGraph<keyof TEntityFields>(allKeys, initialPoolConstraints).chain((defaultEntities) =>
+      // Step 2, Producing links between entities
+      onTheFlyLinksForEntityGraph(relations, defaultEntities).chain((producedLinks) =>
+        // Step 3, Producing entities themselves
+        // As the number of entities for each kind requires the links to be produced,
+        // it has to be executed as a chained computation
+        unlinkedEntitiesForEntityGraph(arbitraries, (name) => producedLinks[name].length, unlinkedContraints).map(
+          (unlinkedEntities) =>
+            // Step 4, Glueing links and entities together
+            unlinkedToLinkedEntitiesMapper(unlinkedEntities, producedLinks),
+        ),
       ),
     )
   );
