@@ -383,8 +383,8 @@ function entityGraphTree() {
     { node: {} },
     {
       node: {
-        left: { arity: '0-1', type: 'node' },
-        right: { arity: '0-1', type: 'node' },
+        left: { arity: '0-1', type: 'node', strategy: 'exclusive' },
+        right: { arity: '0-1', type: 'node', strategy: 'exclusive' },
       },
     },
   );

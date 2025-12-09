@@ -13,23 +13,45 @@ type UnArbitrary<T> = T extends Arbitrary<infer U> ? U : never;
 const withNullPrototype = <T>(value: T): T => Object.assign(Object.create(null), value);
 
 describe('onTheFlyLinksForEntityGraph (integration)', () => {
-  type Kind = 'kind-a' | 'kind-b' | 'kind-c' | 'kind-d';
+  // Remark: kind-e is always referred to with an exclusive strategy
+  type Kind = 'kind-a' | 'kind-b' | 'kind-c' | 'kind-d' | 'kind-e';
   type EntityFields = Record<Kind, unknown>; // no need for more accurate type
   type Extra = { configurations: EntityRelations<EntityFields>; defaultEntities: Kind[] };
 
-  const allKinds = ['kind-a', 'kind-b', 'kind-c', 'kind-d'] as const;
-  const extraParametersOneEntityRelations: fc.Arbitrary<EntityRelations<EntityFields>[Kind]> = fc.dictionary(
-    fc.string(),
-    fc.oneof(
-      fc.record<Relationship<Kind>>({
-        arity: fc.constantFrom('0-1', '1', 'many'),
-        type: fc.constantFrom(...allKinds),
-      }),
-    ),
-    { size: '-1' },
-  );
+  const allKinds = ['kind-a', 'kind-b', 'kind-c', 'kind-d', 'kind-e'] as const;
+  const extraParametersOneEntityRelations = (kind: Kind): fc.Arbitrary<EntityRelations<EntityFields>[Kind]> =>
+    fc.dictionary(
+      fc.string(),
+      fc.oneof(
+        {
+          arbitrary: fc
+            .record<Relationship<Kind>>({
+              arity: fc.constantFrom('0-1', '1', 'many'),
+              type: fc.constantFrom(...allKinds),
+              strategy: fc.constantFrom(undefined, 'any'),
+            })
+            .map((rel): Relationship<Kind> => (rel.type === 'kind-e' ? { ...rel, strategy: 'exclusive' } : rel)),
+          weight: allKinds.length,
+        },
+        {
+          arbitrary: fc.record<Relationship<Kind>>({
+            arity: fc.constant('0-1'), // arity of 1 forbidden for successor, arity of many is allowed but may lead to very deep structures
+            type: fc.constant(kind),
+            strategy: fc.constant('successor'),
+          }),
+          weight: 1,
+        },
+      ),
+      { size: '-1' },
+    );
   const extraParameters: fc.Arbitrary<Extra> = fc.record({
-    configurations: fc.record(Object.fromEntries(allKinds.map((kind) => [kind, extraParametersOneEntityRelations]))),
+    configurations: fc.record(
+      Object.fromEntries(
+        allKinds.map((kind) =>
+          kind === 'kind-e' ? [kind, fc.constant({})] : [kind, extraParametersOneEntityRelations(kind)],
+        ),
+      ),
+    ),
     defaultEntities: fc.array(fc.constantFrom(...allKinds)),
   });
 
@@ -90,6 +112,53 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
         expect(entity).toStrictEqual(withNullPrototype(expectedStructureComplete));
       }
     }
+    // Properly implement strategy successor when requested
+    for (const kind of allKinds) {
+      const requestedConfiguration = extra.configurations[kind];
+      for (const fieldName in requestedConfiguration) {
+        const relation = requestedConfiguration[fieldName];
+        if (relation.strategy !== 'successor') {
+          continue;
+        }
+        for (let entityIndex = 0; entityIndex !== value[kind].length; ++entityIndex) {
+          const entity = value[kind][entityIndex];
+          const fieldIndices: number[] =
+            entity[fieldName].index === undefined
+              ? []
+              : typeof entity[fieldName].index === 'number'
+                ? [entity[fieldName].index]
+                : entity[fieldName].index;
+          expect(fieldIndices).toSatisfy(
+            (fieldIndices: number[]) => fieldIndices.every((index) => index > entityIndex),
+            `all indices for ${kind}[${JSON.stringify(fieldName)}] must be >${entityIndex} for the entity at index ${entityIndex}`,
+          );
+        }
+      }
+    }
+    // Properly implement strategy exclusive when requested
+    // by design of this test: any entity of kind-e
+    const referencesToKindE: number[] = [];
+    for (const kind of allKinds) {
+      const requestedConfiguration = extra.configurations[kind];
+      for (const fieldName in requestedConfiguration) {
+        const relation = requestedConfiguration[fieldName];
+        if (relation.strategy !== 'exclusive') {
+          continue;
+        }
+        for (const entity of value[kind]) {
+          const fieldIndices: number[] =
+            entity[fieldName].index === undefined
+              ? []
+              : typeof entity[fieldName].index === 'number'
+                ? [entity[fieldName].index]
+                : entity[fieldName].index;
+          for (const index of fieldIndices) {
+            referencesToKindE.push(index);
+          }
+        }
+      }
+    }
+    expect(referencesToKindE, 'strategy exclusive properly applied').toHaveLength(new Set(referencesToKindE).size);
   };
 
   const onTheFlyLinksForEntityGraphBuilder = (extra: Extra) =>

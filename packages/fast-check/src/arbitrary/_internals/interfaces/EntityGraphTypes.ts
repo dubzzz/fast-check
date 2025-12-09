@@ -20,22 +20,51 @@ export type Arbitraries<TEntityFields> = {
 // Inputs: relations part
 
 /**
- * Define the arity of a relation in the context of the relations(second argument) passed to {@link entityGraph} with:
- *
- * - 0-1 meaning: optional or the entity
- * - 1 meaning: the entity
- * - many meaning: an array of entities, possibly empty, but without duplicates in the array
- *
+ * Arity of a relation used by {@link entityGraph}
  * @remarks Since 4.5.0
  * @public
  */
 export type Arity = '0-1' | '1' | 'many';
 /**
+ * Strategy of a relation used by {@link entityGraph}
+ *
+ * @default "any"
+ * @remarks Since 4.5.0
+ * @public
+ */
+export type Strategy = 'any' | 'exclusive' | 'successor';
+/**
  * Define one relation in the context of the relations(second argument) passed to {@link entityGraph}
  * @remarks Since 4.5.0
  * @public
  */
-export type Relationship<TTypeNames> = { arity: Arity; type: TTypeNames };
+export type Relationship<TTypeNames> = {
+  /**
+   * Kind of relation:
+   *
+   * - '0-1': optional or an instance from "type"
+   * - '1': an instance from "type"
+   * - 'many': an array of instances from "type", possibly empty and never containing twice the same instance
+   *
+   * @remarks Since 4.5.0
+   */
+  arity: Arity;
+  /**
+   * The type of instance being targeted by the link
+   * @remarks Since 4.5.0
+   */
+  type: TTypeNames;
+  /**
+   * Restrict the set of instances that can be attached as targets for the relation.
+   *
+   * - 'any': any instance can make it
+   * - 'exclusive': the instance being referenced cannot be re-used by any other relation
+   * - 'successor': the instance has to be a (strict) successor of the instance holding the relation (only applies if types are the same for the instance holding the relation and the target instance, otherwise it fallbacks to 'any')
+   *
+   * @remarks Since 4.5.0
+   */
+  strategy?: Strategy;
+};
 /**
  * The type definition for the relations (second argument) passed to {@link entityGraph}
  * @remarks Since 4.5.0
