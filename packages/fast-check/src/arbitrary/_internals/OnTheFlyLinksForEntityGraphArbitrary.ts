@@ -58,10 +58,15 @@ function computeLinkIndex(
       return linkArbitrary.generate(mrng, biasFactor).value;
     case 'many': {
       let randomUnicity = 0;
-      const values = uniqueArray(linkArbitrary, {
-        depthIdentifier: currentEntityDepth,
-        selector: (v) => (v === countInTargetType ? v + ++randomUnicity : v),
-      }).generate(mrng, biasFactor).value;
+      const values = option(
+        // given the depth does not control the size of an array, we cheat and use an option to do so
+        uniqueArray(linkArbitrary, {
+          depthIdentifier: currentEntityDepth, // passed just in case, but probably ignored by arrays
+          selector: (v) => (v === countInTargetType ? v + ++randomUnicity : v),
+          minLength: 1, // we handle length 0 with the option
+        }),
+        { nil: [], depthIdentifier: currentEntityDepth },
+      ).generate(mrng, biasFactor).value;
       let offset = 0;
       return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
     }
