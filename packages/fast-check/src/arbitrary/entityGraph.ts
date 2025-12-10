@@ -27,7 +27,8 @@ export type EntityGraphContraints<TEntityFields> = {
    */
   initialPoolConstraints?: { [EntityName in keyof TEntityFields]?: ArrayConstraints };
   /**
-   *
+   * Unicity rules to be applied on a specific kind. The provided selector function will be leveraged to compare entities of a given kind.
+   * Two entities resulting on an equal output for `Object.is` will be considered equivalent and only one of them will be kept.
    *
    * @defaultValue All values are considered unique
    * @remarks Since 4.5.0

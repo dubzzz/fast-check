@@ -261,7 +261,7 @@ Generate recursive structures based on a schema. These structures may came up wi
     - `type` — _one of the keys of `arbitraries`, describes what is the target type for this link_
     - `strategy?` — default: `'any'` — _`'any'` means any instance can make it, `'exclusive'` means the instance being referenced cannot be re-used by any other relation, `'successor'` means the instance has to be a (strict) successor of the instance holding the relation_
 - `initialPoolConstraints?` — _minimal set of entities being expected in the produced graph_
-- `unicityConstraints?` — _define unicity rules for each kind of entities by providing a selector function_
+- `unicityConstraints?` — _define unicity rules for each kind of entity by providing a selector function, two entities of the same kind will be considered as being incompatible if their outputs are equal for `Object.is`_
 - `noNullPrototype?` — default: `false` — _only generate objects based on the Object-prototype, do not generate any object with null-prototype_
 
 **Usages:**
@@ -405,6 +405,7 @@ fc.entityGraph(
 );
 // TLDR, We define a structure made of users and profiles. Each user as its own profile, and we don't have any profile not being linked to a user.
 // Extra remarks:
+// - We are enforcing the unicity of the names for users and of ids for profiles.
 // - Every profile is linked to a user
 // ↳ We could have allowed profiles not being connected to any user by dropping the maxLength:0 constraints defined on profile via initialPoolConstraints. By doing so we would allow profiles not being related to any user, while keeping the compulsory link when we have one user.
 // Examples of generated values:
