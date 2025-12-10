@@ -72,7 +72,7 @@ export type EntityGraphContraints<TEntityFields> = {
 export function entityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   arbitraries: Arbitraries<TEntityFields>,
   relations: TEntityRelations,
-  constraints: EntityGraphContraints<keyof TEntityFields> = {},
+  constraints: EntityGraphContraints<TEntityFields> = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
   const allKeys = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
   const initialPoolConstraints = constraints.initialPoolConstraints || safeObjectCreate(null);
