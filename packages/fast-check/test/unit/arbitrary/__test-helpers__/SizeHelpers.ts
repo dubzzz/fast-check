@@ -4,7 +4,7 @@ import type {
   RelativeSize,
   Size,
   SizeForArbitrary,
-} from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
+} from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
 
 const allSizeOrdered = ['xsmall', 'small', 'medium', 'large', 'xlarge'] as const;
 export const sizeArb: fc.Arbitrary<Size> = fc.constantFrom<Size>(...allSizeOrdered);

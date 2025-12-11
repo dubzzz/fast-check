@@ -1,13 +1,13 @@
-import { array } from './array';
-import { getOrCreateLowerAlphaNumericArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
-import { domain } from './domain';
-import { string } from './string';
-import { tuple } from './tuple';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import type { AdapterOutput } from './_internals/AdapterArbitrary';
-import { adapter } from './_internals/AdapterArbitrary';
-import { safeJoin, safeSlice, safeSplit } from '../utils/globals';
+import { array } from './array.js';
+import { getOrCreateLowerAlphaNumericArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder.js';
+import { domain } from './domain.js';
+import { string } from './string.js';
+import { tuple } from './tuple.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { AdapterOutput } from './_internals/AdapterArbitrary.js';
+import { adapter } from './_internals/AdapterArbitrary.js';
+import { safeJoin, safeSlice, safeSplit } from '../utils/globals.js';
 
 /** @internal */
 function dotAdapter(a: string[]): AdapterOutput<string[]> {

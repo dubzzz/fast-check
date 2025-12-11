@@ -2,7 +2,7 @@ import { describe, it } from 'vitest';
 import * as prand from 'pure-rand';
 import * as fc from 'fast-check';
 
-import { Random } from '../../../../src/random/generator/Random';
+import { Random } from '../../../../src/random/generator/Random.js';
 
 const MAX_SIZE = 2048;
 describe('Random', () => {

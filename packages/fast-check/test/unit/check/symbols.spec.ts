@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
+import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols.js';
 import * as fc from 'fast-check';
 
 describe('symbols', () => {

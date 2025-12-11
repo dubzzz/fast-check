@@ -1,5 +1,5 @@
-import { safePush } from '../../../utils/globals';
-import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor';
+import { safePush } from '../../../utils/globals.js';
+import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor.js';
 
 const safeObjectCreate = Object.create;
 const safeObjectDefineProperty = Object.defineProperty;

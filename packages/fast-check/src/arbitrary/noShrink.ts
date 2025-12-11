@@ -1,7 +1,7 @@
-import type { Value } from '../check/arbitrary/definition/Value';
-import type { Random } from '../random/generator/Random';
-import { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { Stream } from '../stream/Stream';
+import type { Value } from '../check/arbitrary/definition/Value.js';
+import type { Random } from '../random/generator/Random.js';
+import { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { Stream } from '../stream/Stream.js';
 
 const stableObjectGetPrototypeOf = Object.getPrototypeOf;
 

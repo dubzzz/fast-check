@@ -1,8 +1,8 @@
-import { array, type ArrayConstraints } from '../array';
-import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { tuple } from '../tuple';
-import { constant } from '../constant';
-import { safeFlat, Error as SError } from '../../utils/globals';
+import { array, type ArrayConstraints } from '../array.js';
+import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { tuple } from '../tuple.js';
+import { constant } from '../constant.js';
+import { safeFlat, Error as SError } from '../../utils/globals.js';
 
 type InitialPoolForEntityGraphConstraints<TEntityNames extends PropertyKey> = {
   [EntityName in TEntityNames]?: ArrayConstraints;

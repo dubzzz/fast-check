@@ -1,4 +1,4 @@
-import { Error, safeEvery, safeMap } from '../../../utils/globals';
+import { Error, safeEvery, safeMap } from '../../../utils/globals.js';
 
 type KeyValuePairs<K extends PropertyKey, V> = [K, V][];
 type ObjectDefinition<K extends PropertyKey, V> = [/*items*/ KeyValuePairs<K, V>, /*null prototype*/ boolean];

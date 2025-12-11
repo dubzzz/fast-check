@@ -1,19 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import fc, { stringify } from 'fast-check';
 
-import { anyArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/AnyArbitraryBuilder';
-import type { ObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
-import { toQualifiedObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints';
+import { anyArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/AnyArbitraryBuilder.js';
+import type { ObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints.js';
+import { toQualifiedObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints.js';
 
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceSomeSpecificValues,
   assertProduceValuesShrinkableWithoutContext,
-} from '../../__test-helpers__/ArbitraryAssertions';
-import { computeObjectDepth } from '../../__test-helpers__/ComputeObjectDepth';
-import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKeys';
-import { sizeArb } from '../../__test-helpers__/SizeHelpers';
+} from '../../__test-helpers__/ArbitraryAssertions.js';
+import { computeObjectDepth } from '../../__test-helpers__/ComputeObjectDepth.js';
+import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKeys.js';
+import { sizeArb } from '../../__test-helpers__/SizeHelpers.js';
 
 describe('anyArbitraryBuilder (integration)', () => {
   it('should be able to produce Set (when asked to)', () => {

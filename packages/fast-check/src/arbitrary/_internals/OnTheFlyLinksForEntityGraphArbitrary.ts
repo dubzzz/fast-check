@@ -1,7 +1,7 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
 import {
   safeAdd,
   safeHas,
@@ -10,14 +10,14 @@ import {
   Set as SSet,
   Error as SError,
   String as SString,
-} from '../../utils/globals';
-import { constant } from '../constant';
-import { integer } from '../integer';
-import { noBias } from '../noBias';
-import { option } from '../option';
-import { uniqueArray } from '../uniqueArray';
-import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext';
-import type { Arity, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes';
+} from '../../utils/globals.js';
+import { constant } from '../constant.js';
+import { integer } from '../integer.js';
+import { noBias } from '../noBias.js';
+import { option } from '../option.js';
+import { uniqueArray } from '../uniqueArray.js';
+import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
+import type { Arity, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes.js';
 
 const safeObjectCreate = Object.create;
 

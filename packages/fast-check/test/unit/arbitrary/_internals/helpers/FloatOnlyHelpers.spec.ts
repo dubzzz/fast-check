@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   maxNonIntegerValue,
   onlyIntegersAfterThisValue,
-} from '../../../../../src/arbitrary/_internals/helpers/FloatOnlyHelpers';
-import { floatToIndex, indexToFloat } from '../../../../../src/arbitrary/_internals/helpers/FloatHelpers';
+} from '../../../../../src/arbitrary/_internals/helpers/FloatOnlyHelpers.js';
+import { floatToIndex, indexToFloat } from '../../../../../src/arbitrary/_internals/helpers/FloatHelpers.js';
 
 describe('maxNonIntegerValue', () => {
   it('should be immediately followed by an integer', () => {

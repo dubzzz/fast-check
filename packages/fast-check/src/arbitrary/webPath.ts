@@ -1,7 +1,7 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { resolveSize } from './_internals/helpers/MaxLengthFromMinLength';
-import { buildUriPathArbitrary } from './_internals/builders/UriPathArbitraryBuilder';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { resolveSize } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { buildUriPathArbitrary } from './_internals/builders/UriPathArbitraryBuilder.js';
 
 /**
  * Constraints to be applied on {@link webPath}

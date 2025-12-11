@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import type { WebPathConstraints } from '../../../src/arbitrary/webPath';
-import { webPath } from '../../../src/arbitrary/webPath';
+import type { WebPathConstraints } from '../../../src/arbitrary/webPath.js';
+import { webPath } from '../../../src/arbitrary/webPath.js';
 import { URL } from 'url';
 
 import {
@@ -10,11 +10,11 @@ import {
   assertProduceSomeSpecificValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-import { DefaultSize } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers.js';
+import { DefaultSize } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
 
 describe('webPath (integration)', () => {
   type Extra = WebPathConstraints;

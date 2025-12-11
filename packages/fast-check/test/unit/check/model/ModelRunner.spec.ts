@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import type { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand';
-import type { Command } from '../../../../src/check/model/command/Command';
-import { modelRun, asyncModelRun } from '../../../../src/check/model/ModelRunner';
+import type { AsyncCommand } from '../../../../src/check/model/command/AsyncCommand.js';
+import type { Command } from '../../../../src/check/model/command/Command.js';
+import { modelRun, asyncModelRun } from '../../../../src/check/model/ModelRunner.js';
 
 type Model = Record<string, unknown>;
 type Real = unknown;

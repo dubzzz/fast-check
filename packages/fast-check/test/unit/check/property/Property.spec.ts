@@ -1,16 +1,16 @@
 import { afterEach, describe, it, expect, vi } from 'vitest';
-import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { property } from '../../../../src/check/property/Property';
-import { pre } from '../../../../src/check/precondition/Pre';
-import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
-import { configureGlobal, resetConfigureGlobal } from '../../../../src/check/runner/configuration/GlobalParameters';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
+import { property } from '../../../../src/check/property/Property.js';
+import { pre } from '../../../../src/check/precondition/Pre.js';
+import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
+import { configureGlobal, resetConfigureGlobal } from '../../../../src/check/runner/configuration/GlobalParameters.js';
 
-import * as stubArb from '../../stubs/arbitraries';
-import * as stubRng from '../../stubs/generators';
-import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../../src/stream/Stream';
-import type { PropertyFailure } from '../../../../src/check/property/IRawProperty';
+import * as stubArb from '../../stubs/arbitraries.js';
+import * as stubRng from '../../stubs/generators.js';
+import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { Stream } from '../../../../src/stream/Stream.js';
+import type { PropertyFailure } from '../../../../src/check/property/IRawProperty.js';
 import fc from 'fast-check';
 
 describe('Property', () => {

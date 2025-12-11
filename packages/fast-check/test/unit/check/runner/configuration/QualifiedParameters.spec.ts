@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import * as prand from 'pure-rand';
 
-import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
-import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType';
-import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';
+import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
+import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType.js';
+import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
 
 const parametersArbitrary = fc.record(
   {

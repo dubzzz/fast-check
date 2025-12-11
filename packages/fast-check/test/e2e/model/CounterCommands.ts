@@ -1,4 +1,4 @@
-import type * as fc from '../../../src/fast-check';
+import type * as fc from '../../../src/fast-check.js';
 import { expect } from 'vitest';
 
 type M1 = { count: number };

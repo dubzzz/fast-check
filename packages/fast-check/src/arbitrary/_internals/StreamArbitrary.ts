@@ -1,10 +1,10 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import { cloneMethod } from '../../check/symbols';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { safeJoin, safePush } from '../../utils/globals';
-import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { cloneMethod } from '../../check/symbols.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { safeJoin, safePush } from '../../utils/globals.js';
+import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
 const safeObjectDefineProperties = Object.defineProperties;
 

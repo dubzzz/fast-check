@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   buildValuesAndSeparateKeysToObjectMapper,
   buildValuesAndSeparateKeysToObjectUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/ValuesAndSeparateKeysToObject';
+} from '../../../../../src/arbitrary/_internals/mappers/ValuesAndSeparateKeysToObject.js';
 
 describe('buildValuesAndSeparateKeysToObjectMapper', () => {
   it('should create instances with Object prototype when passed withNullPrototype=false', () => {

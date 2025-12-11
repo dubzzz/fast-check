@@ -3,10 +3,10 @@ import {
   hasAsyncToStringMethod,
   hasToStringMethod,
   toStringMethod,
-} from '../../../utils/stringify';
-import type { WithToStringMethod, WithAsyncToStringMethod } from '../../../utils/stringify';
-import { cloneMethod, hasCloneMethod } from '../../symbols';
-import type { ICommand } from '../command/ICommand';
+} from '../../../utils/stringify.js';
+import type { WithToStringMethod, WithAsyncToStringMethod } from '../../../utils/stringify.js';
+import { cloneMethod, hasCloneMethod } from '../../symbols.js';
+import type { ICommand } from '../command/ICommand.js';
 
 /**
  * Wrapper around commands used internally by fast-check to wrap existing commands

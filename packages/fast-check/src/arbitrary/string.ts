@@ -1,11 +1,11 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { ArrayConstraintsInternal } from './array';
-import { array } from './array';
-import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
-import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder';
-import { stringUnit } from './_internals/StringUnitArbitrary';
-import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString';
-export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { ArrayConstraintsInternal } from './array.js';
+import { array } from './array.js';
+import type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
+import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder.js';
+import { stringUnit } from './_internals/StringUnitArbitrary.js';
+import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString.js';
+export type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
 
 /**
  * Constraints to be applied on arbitrary {@link string}

@@ -1,9 +1,9 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { safeGet, safePush, safeSet } from '../../../utils/globals';
-import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints';
-import { patternsToStringUnmapperIsValidLength } from '../mappers/PatternsToString';
-import { MaxLengthUpperBound } from './MaxLengthFromMinLength';
-import { tokenizeString } from './TokenizeString';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { safeGet, safePush, safeSet } from '../../../utils/globals.js';
+import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints.js';
+import { patternsToStringUnmapperIsValidLength } from '../mappers/PatternsToString.js';
+import { MaxLengthUpperBound } from './MaxLengthFromMinLength.js';
+import { tokenizeString } from './TokenizeString.js';
 
 const dangerousStrings = [
   // Default attributes on raw Object (from ({}).*)

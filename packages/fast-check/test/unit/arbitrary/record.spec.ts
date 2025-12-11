@@ -1,18 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
-import type { RecordConstraints } from '../../../src/arbitrary/record';
-import { record } from '../../../src/arbitrary/record';
-import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import type { RecordConstraints } from '../../../src/arbitrary/record.js';
+import { record } from '../../../src/arbitrary/record.js';
+import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
-import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import * as PartialRecordArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('record', () => {
   declareCleaningHooksForSpies();

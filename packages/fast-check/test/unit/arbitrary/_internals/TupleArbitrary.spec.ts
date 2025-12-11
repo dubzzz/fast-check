@@ -1,20 +1,20 @@
 import { describe, it, expect, vi } from 'vitest';
-import { TupleArbitrary } from '../../../../src/arbitrary/_internals/TupleArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
-import { Stream } from '../../../../src/stream/Stream';
+import { TupleArbitrary } from '../../../../src/arbitrary/_internals/TupleArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
+import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
+import { Stream } from '../../../../src/stream/Stream.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
-import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import type { Random } from '../../../../src/random/generator/Random';
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
+import type { Random } from '../../../../src/random/generator/Random.js';
 
 describe('TupleArbitrary', () => {
   describe('generate', () => {

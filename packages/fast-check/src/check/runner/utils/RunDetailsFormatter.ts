@@ -7,17 +7,17 @@ import {
   safeReplace,
   safeToString,
   String,
-} from '../../../utils/globals';
-import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
-import { VerbosityLevel } from '../configuration/VerbosityLevel';
-import { ExecutionStatus } from '../reporter/ExecutionStatus';
-import type { ExecutionTree } from '../reporter/ExecutionTree';
+} from '../../../utils/globals.js';
+import { stringify, possiblyAsyncStringify } from '../../../utils/stringify.js';
+import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
+import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
+import type { ExecutionTree } from '../reporter/ExecutionTree.js';
 import type {
   RunDetails,
   RunDetailsFailureInterrupted,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
-} from '../reporter/RunDetails';
+} from '../reporter/RunDetails.js';
 
 const safeObjectAssign = Object.assign;
 

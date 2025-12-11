@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { BigInt } from '../utils/globals';
-import { constantFrom } from './constantFrom';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { BigInt } from '../utils/globals.js';
+import { constantFrom } from './constantFrom.js';
 
 /**
  * Constraints to be applied on {@link falsy}

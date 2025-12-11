@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { TupleArbitrary } from './_internals/TupleArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { TupleArbitrary } from './_internals/TupleArbitrary.js';
 
 /**
  * For tuples produced using the provided `arbs`

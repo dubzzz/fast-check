@@ -11,7 +11,7 @@ import {
   possiblyAsyncStringify,
   stringify,
   toStringMethod,
-} from '../../../src/utils/stringify';
+} from '../../../src/utils/stringify.js';
 
 declare function BigInt(n: number | bigint | string): bigint;
 

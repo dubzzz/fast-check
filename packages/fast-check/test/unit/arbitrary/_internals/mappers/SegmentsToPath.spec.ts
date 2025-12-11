@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
   segmentsToPathMapper,
   segmentsToPathUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/SegmentsToPath';
+} from '../../../../../src/arbitrary/_internals/mappers/SegmentsToPath.js';
 
 describe('segmentsToPathUnmapper', () => {
   it('should be able to unmap any mapped value', () =>

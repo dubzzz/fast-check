@@ -3,13 +3,13 @@ import fc from 'fast-check';
 import type {
   ScheduledTask,
   TaskSelector,
-} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem.js';
 import {
   SchedulerImplem,
   numTicksBeforeScheduling,
-} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
-import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler';
-import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
+} from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem.js';
+import type { Scheduler } from '../../../../../src/arbitrary/_internals/interfaces/Scheduler.js';
+import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols.js';
 
 const buildUnresolved = () => {
   let resolved = false;

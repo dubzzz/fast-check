@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { arrayToSetUnmapper } from '../../../../../src/arbitrary/_internals/mappers/ArrayToSet';
+import { arrayToSetUnmapper } from '../../../../../src/arbitrary/_internals/mappers/ArrayToSet.js';
 
 describe('arrayToSetUnmapper', () => {
   it('should be able to unmap a Set with primitives', () => {

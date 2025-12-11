@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { CloneArbitrary } from './_internals/CloneArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { CloneArbitrary } from './_internals/CloneArbitrary.js';
 
 /**
  * Type of the value produced by {@link clone}

@@ -1,13 +1,13 @@
-import { stream } from '../../stream/Stream';
-import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import type { IRawProperty } from '../property/IRawProperty';
-import { Property } from '../property/Property.generic';
-import { UnbiasedProperty } from '../property/UnbiasedProperty';
-import { readConfigureGlobal } from './configuration/GlobalParameters';
-import type { Parameters } from './configuration/Parameters';
-import { QualifiedParameters } from './configuration/QualifiedParameters';
-import { lazyToss, toss } from './Tosser';
-import { pathWalk } from './utils/PathWalker';
+import { stream } from '../../stream/Stream.js';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
+import type { IRawProperty } from '../property/IRawProperty.js';
+import { Property } from '../property/Property.generic.js';
+import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
+import { readConfigureGlobal } from './configuration/GlobalParameters.js';
+import type { Parameters } from './configuration/Parameters.js';
+import { QualifiedParameters } from './configuration/QualifiedParameters.js';
+import { lazyToss, toss } from './Tosser.js';
+import { pathWalk } from './utils/PathWalker.js';
 
 /** @internal */
 function toProperty<Ts>(

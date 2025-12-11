@@ -1,16 +1,16 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { getOrCreateAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
-import { constant } from './constant';
-import { domain } from './domain';
-import { ipV4 } from './ipV4';
-import { ipV4Extended } from './ipV4Extended';
-import { ipV6 } from './ipV6';
-import { nat } from './nat';
-import { oneof } from './oneof';
-import { option } from './option';
-import { string } from './string';
-import { tuple } from './tuple';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { getOrCreateAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder.js';
+import { constant } from './constant.js';
+import { domain } from './domain.js';
+import { ipV4 } from './ipV4.js';
+import { ipV4Extended } from './ipV4Extended.js';
+import { ipV6 } from './ipV6.js';
+import { nat } from './nat.js';
+import { oneof } from './oneof.js';
+import { option } from './option.js';
+import { string } from './string.js';
+import { tuple } from './tuple.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 
 /** @internal */
 function hostUserInfo(size: SizeForArbitrary): Arbitrary<string> {

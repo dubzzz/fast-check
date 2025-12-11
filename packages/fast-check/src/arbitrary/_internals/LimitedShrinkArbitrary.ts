@@ -1,8 +1,8 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { zipIterableIterators } from './helpers/ZipIterableIterators';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { zipIterableIterators } from './helpers/ZipIterableIterators.js';
 
 /** @internal */
 function* iotaFrom(startValue: number) {

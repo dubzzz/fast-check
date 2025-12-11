@@ -1,7 +1,7 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import type { Value } from '../../check/arbitrary/definition/Value';
-import type { Random } from '../../random/generator/Random';
-import type { Stream } from '../../stream/Stream';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import type { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
+import type { Stream } from '../../stream/Stream.js';
 
 /** @internal */
 export class LazyArbitrary<T> extends Arbitrary<T> {

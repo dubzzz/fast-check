@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { compareFunc } from '../../../src/arbitrary/compareFunc';
+import { compareFunc } from '../../../src/arbitrary/compareFunc.js';
 
-import { hasCloneMethod, cloneIfNeeded } from '../../../src/check/symbols';
+import { hasCloneMethod, cloneIfNeeded } from '../../../src/check/symbols.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction.js';
 
 describe('compareFunc (integration)', () => {
   const compareFuncBuilder = () => compareFunc();

@@ -1,22 +1,22 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { MockInstance } from 'vitest';
 import * as fc from 'fast-check';
-import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { IntegerArbitrary } from '../../../../src/arbitrary/_internals/IntegerArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
-import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree';
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
 
-import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange';
-import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers/ShrinkInteger';
-import { Stream } from '../../../../src/stream/Stream';
-import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
+import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange.js';
+import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers/ShrinkInteger.js';
+import { Stream } from '../../../../src/stream/Stream.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('IntegerArbitrary', () => {
   declareCleaningHooksForSpies();

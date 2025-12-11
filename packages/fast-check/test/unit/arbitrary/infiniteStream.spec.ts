@@ -1,10 +1,10 @@
 import * as fc from 'fast-check';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { infiniteStream } from '../../../src/arbitrary/infiniteStream';
+import { infiniteStream } from '../../../src/arbitrary/infiniteStream.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as StreamArbitraryMock from '../../../src/arbitrary/_internals/StreamArbitrary';
+import * as StreamArbitraryMock from '../../../src/arbitrary/_internals/StreamArbitrary.js';
 
 function beforeEachHook() {
   vi.resetModules();

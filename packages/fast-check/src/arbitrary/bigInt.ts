@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { BigInt } from '../utils/globals';
-import { BigIntArbitrary } from './_internals/BigIntArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { BigInt } from '../utils/globals.js';
+import { BigIntArbitrary } from './_internals/BigIntArbitrary.js';
 
 /**
  * Constraints to be applied on {@link bigInt}

@@ -1,7 +1,7 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { tuple } from './tuple';
-import { integer } from './integer';
-import { paddedUintToBase32StringMapper, uintToBase32StringUnmapper } from './_internals/mappers/UintToBase32String';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { tuple } from './tuple.js';
+import { integer } from './integer.js';
+import { paddedUintToBase32StringMapper, uintToBase32StringUnmapper } from './_internals/mappers/UintToBase32String.js';
 
 const padded10Mapper = paddedUintToBase32StringMapper(10);
 const padded8Mapper = paddedUintToBase32StringMapper(8);

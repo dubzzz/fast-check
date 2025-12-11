@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { SubarrayArbitrary } from './_internals/SubarrayArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { SubarrayArbitrary } from './_internals/SubarrayArbitrary.js';
 
 /**
  * Constraints to be applied on {@link shuffledSubarray}

@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { SlicedBasedGenerator } from '../../../../../src/arbitrary/_internals/implementations/SlicedBasedGenerator';
-import { Value } from '../../../../../src/check/arbitrary/definition/Value';
-import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from '../../__test-helpers__/RandomHelpers';
+import { SlicedBasedGenerator } from '../../../../../src/arbitrary/_internals/implementations/SlicedBasedGenerator.js';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
+import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../../__test-helpers__/RandomHelpers.js';
 
 describe('SlicedBasedGenerator', () => {
   describe('attemptExact', () => {

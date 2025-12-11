@@ -1,19 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { string } from '../../../src/arbitrary/string';
-import type { StringConstraints } from '../../../src/arbitrary/string';
+import { string } from '../../../src/arbitrary/string.js';
+import type { StringConstraints } from '../../../src/arbitrary/string.js';
 
-import { Value } from '../../../src/check/arbitrary/definition/Value';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import type { Random } from '../../../src/random/generator/Random';
-import { Stream } from '../../../src/stream/Stream';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import type { Random } from '../../../src/random/generator/Random.js';
+import { Stream } from '../../../src/stream/Stream.js';
 
 describe('string (integration)', () => {
   type Extra = StringConstraints;

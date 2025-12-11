@@ -1,10 +1,10 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { nat } from './nat';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { nat } from './nat.js';
 import {
   indexToMappedConstantMapperFor,
   indexToMappedConstantUnmapperFor,
-} from './_internals/mappers/IndexToMappedConstant';
-import { Error } from '../utils/globals';
+} from './_internals/mappers/IndexToMappedConstant.js';
+import { Error } from '../utils/globals.js';
 
 /** @internal */
 function computeNumChoices<T>(options: { num: number; build: (idInGroup: number) => T }[]): number {

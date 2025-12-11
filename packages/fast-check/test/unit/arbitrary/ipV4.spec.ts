@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { ipV4 } from '../../../src/arbitrary/ipV4';
+import { ipV4 } from '../../../src/arbitrary/ipV4.js';
 
-import { Value } from '../../../src/check/arbitrary/definition/Value';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 
 describe('ipV4 (integration)', () => {
   const isCorrect = (value: string) => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Stream, stream } from '../../../src/stream/Stream';
+import { Stream, stream } from '../../../src/stream/Stream.js';
 
 describe('Stream', () => {
   describe('constructor', () => {

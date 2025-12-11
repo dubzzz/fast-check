@@ -1,13 +1,13 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { boolean } from '../../boolean';
-import { constant } from '../../constant';
-import { double } from '../../double';
-import { maxSafeInteger } from '../../maxSafeInteger';
-import { oneof } from '../../oneof';
-import { string } from '../../string';
-import type { StringConstraints } from '../../string';
-import { boxedArbitraryBuilder } from '../builders/BoxedArbitraryBuilder';
-import type { DepthSize, SizeForArbitrary } from './MaxLengthFromMinLength';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { boolean } from '../../boolean.js';
+import { constant } from '../../constant.js';
+import { double } from '../../double.js';
+import { maxSafeInteger } from '../../maxSafeInteger.js';
+import { oneof } from '../../oneof.js';
+import { string } from '../../string.js';
+import type { StringConstraints } from '../../string.js';
+import { boxedArbitraryBuilder } from '../builders/BoxedArbitraryBuilder.js';
+import type { DepthSize, SizeForArbitrary } from './MaxLengthFromMinLength.js';
 
 /**
  * Constraints for {@link anything} and {@link object}

@@ -1,11 +1,11 @@
-import { safeMap, String as SString } from '../../../utils/globals';
-import { stringify, toStringMethod } from '../../../utils/stringify';
+import { safeMap, String as SString } from '../../../utils/globals.js';
+import { stringify, toStringMethod } from '../../../utils/stringify.js';
 import type {
   EntityGraphValue,
   EntityRelations,
   ProducedLinks,
   UnlinkedEntities,
-} from '../interfaces/EntityGraphTypes';
+} from '../interfaces/EntityGraphTypes.js';
 
 const safeObjectAssign = Object.assign;
 const safeObjectCreate = Object.create;

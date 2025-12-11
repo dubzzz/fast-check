@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../../../src/stream/Stream';
-import * as stubRng from '../../../stubs/generators';
-import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
-import { Random } from '../../../../../src/random/generator/Random';
+import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
+import { Stream } from '../../../../../src/stream/Stream.js';
+import * as stubRng from '../../../stubs/generators.js';
+import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols.js';
+import { Random } from '../../../../../src/random/generator/Random.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 

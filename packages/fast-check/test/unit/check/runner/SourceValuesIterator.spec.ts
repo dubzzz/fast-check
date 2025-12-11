@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { SourceValuesIterator } from '../../../../src/check/runner/SourceValuesIterator';
+import { SourceValuesIterator } from '../../../../src/check/runner/SourceValuesIterator.js';
 
 function iota() {
   function* g() {

@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { integer } from './integer';
-import { noBias } from './noBias';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { integer } from './integer.js';
+import { noBias } from './noBias.js';
 
 /** @internal */
 function booleanMapper(v: number): boolean {

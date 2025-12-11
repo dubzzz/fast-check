@@ -1,9 +1,9 @@
-import { array } from './array';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { oneof } from './oneof';
-import { string } from './string';
-import { tuple } from './tuple';
-import { ipV4 } from './ipV4';
+import { array } from './array.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { oneof } from './oneof.js';
+import { string } from './string.js';
+import { tuple } from './tuple.js';
+import { ipV4 } from './ipV4.js';
 import {
   fullySpecifiedMapper,
   fullySpecifiedUnmapper,
@@ -17,9 +17,9 @@ import {
   singleTrailingUnmapper,
   noTrailingMapper,
   noTrailingUnmapper,
-} from './_internals/mappers/EntitiesToIPv6';
-import { integer } from './integer';
-import { safeCharCodeAt, Error } from '../utils/globals';
+} from './_internals/mappers/EntitiesToIPv6.js';
+import { integer } from './integer.js';
+import { safeCharCodeAt, Error } from '../utils/globals.js';
 
 /** @internal */
 function h16sTol32Mapper([a, b]: [string, string]): string {

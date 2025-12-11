@@ -1,4 +1,4 @@
-import { Value } from '../../../check/arbitrary/definition/Value';
+import { Value } from '../../../check/arbitrary/definition/Value.js';
 
 /** @internal */
 export const UndefinedContextPlaceholder: unique symbol = Symbol('UndefinedContextPlaceholder');

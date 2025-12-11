@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeToUpperCase, safeToLowerCase } from '../utils/globals';
-import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { safeToUpperCase, safeToLowerCase } from '../utils/globals.js';
+import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary.js';
 
 /**
  * Constraints to be applied on {@link mixedCase}

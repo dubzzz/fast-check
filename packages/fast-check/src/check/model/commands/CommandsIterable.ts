@@ -1,6 +1,6 @@
-import { cloneMethod } from '../../symbols';
-import type { WithCloneMethod } from '../../symbols';
-import type { CommandWrapper } from './CommandWrapper';
+import { cloneMethod } from '../../symbols.js';
+import type { WithCloneMethod } from '../../symbols.js';
+import type { CommandWrapper } from './CommandWrapper.js';
 
 /**
  * Iterable datastructure accepted as input for asyncModelRun and modelRun

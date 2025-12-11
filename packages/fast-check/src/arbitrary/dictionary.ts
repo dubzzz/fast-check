@@ -1,11 +1,11 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { tuple } from './tuple';
-import { uniqueArray } from './uniqueArray';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject';
-import { constant } from './constant';
-import { boolean } from './boolean';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { tuple } from './tuple.js';
+import { uniqueArray } from './uniqueArray.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject.js';
+import { constant } from './constant.js';
+import { boolean } from './boolean.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
 /** @internal */
 function dictionaryKeyExtractor<K extends PropertyKey>(entry: [K, unknown]): K {

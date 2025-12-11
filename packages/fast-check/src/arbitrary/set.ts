@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { uniqueArray } from './uniqueArray';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
-import { arrayToSetMapper, arrayToSetUnmapper } from './_internals/mappers/ArrayToSet';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { uniqueArray } from './uniqueArray.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
+import { arrayToSetMapper, arrayToSetUnmapper } from './_internals/mappers/ArrayToSet.js';
 
 /**
  * Constraints to be applied on {@link set}

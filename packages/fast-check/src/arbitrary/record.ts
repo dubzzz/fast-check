@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
-import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder.js';
+import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor.js';
 
 type Prettify<T> = { [K in keyof T]: T[K] } & {};
 

@@ -1,9 +1,9 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { clone } from '../../../src/arbitrary/clone';
+import { clone } from '../../../src/arbitrary/clone.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as CloneArbitraryMock from '../../../src/arbitrary/_internals/CloneArbitrary';
+import * as CloneArbitraryMock from '../../../src/arbitrary/_internals/CloneArbitrary.js';
 
 function beforeEachHook() {
   vi.resetModules();

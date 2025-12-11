@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { array } from '../array';
-import { record } from '../record';
-import type { RecordConstraints } from '../record';
-import type { Arbitraries, UnlinkedEntities } from './interfaces/EntityGraphTypes';
+import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { array } from '../array.js';
+import { record } from '../record.js';
+import type { RecordConstraints } from '../record.js';
+import type { Arbitraries, UnlinkedEntities } from './interfaces/EntityGraphTypes.js';
 
 const safeObjectCreate = Object.create;
 

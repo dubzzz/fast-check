@@ -1,4 +1,4 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 import {
   safeJoin,
   safeMap,
@@ -7,7 +7,7 @@ import {
   safeSubstring,
   safeToLowerCase,
   safeToUpperCase,
-} from '../../../utils/globals';
+} from '../../../utils/globals.js';
 
 /** @internal */
 export function wordsToJoinedStringMapper(words: string[]): string {

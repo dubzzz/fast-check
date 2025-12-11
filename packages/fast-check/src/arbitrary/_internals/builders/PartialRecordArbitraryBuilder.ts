@@ -1,15 +1,15 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { safeIndexOf, safePush } from '../../../utils/globals';
-import { boolean } from '../../boolean';
-import { constant } from '../../constant';
-import { option } from '../../option';
-import { tuple } from '../../tuple';
-import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor';
-import { extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { safeIndexOf, safePush } from '../../../utils/globals.js';
+import { boolean } from '../../boolean.js';
+import { constant } from '../../constant.js';
+import { option } from '../../option.js';
+import { tuple } from '../../tuple.js';
+import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor.js';
+import { extractEnumerableKeys } from '../helpers/EnumerableKeysExtractor.js';
 import {
   buildValuesAndSeparateKeysToObjectMapper,
   buildValuesAndSeparateKeysToObjectUnmapper,
-} from '../mappers/ValuesAndSeparateKeysToObject';
+} from '../mappers/ValuesAndSeparateKeysToObject.js';
 
 const noKeyValue: unique symbol = Symbol('no-key');
 type NoKeyType = typeof noKeyValue;

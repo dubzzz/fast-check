@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import * as fc from '../../src/fast-check';
+import * as fc from '../../src/fast-check.js';
 import * as prand from 'pure-rand';
-import { seed } from './seed';
+import { seed } from './seed.js';
 
 // Fake commands
 type Model = { counter: number };

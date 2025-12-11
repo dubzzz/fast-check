@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { BigInt, BigUint64Array } from '../utils/globals';
-import { bigInt } from './bigInt';
-import type { BigIntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder';
-import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { BigInt, BigUint64Array } from '../utils/globals.js';
+import { bigInt } from './bigInt.js';
+import type { BigIntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
+import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
 
 /**
  * For BigUint64Array

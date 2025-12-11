@@ -1,9 +1,9 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { DoubleConstraints } from './double';
-import { double } from './double';
-import { array } from './array';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { Float64Array } from '../utils/globals';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { DoubleConstraints } from './double.js';
+import { double } from './double.js';
+import { array } from './array.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { Float64Array } from '../utils/globals.js';
 
 /**
  * Constraints to be applied on {@link float64Array}

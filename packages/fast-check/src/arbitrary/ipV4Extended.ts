@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeJoin, safeSplit } from '../utils/globals';
-import { oneof } from './oneof';
-import { tuple } from './tuple';
-import { buildStringifiedNatArbitrary } from './_internals/builders/StringifiedNatArbitraryBuilder';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { safeJoin, safeSplit } from '../utils/globals.js';
+import { oneof } from './oneof.js';
+import { tuple } from './tuple.js';
+import { buildStringifiedNatArbitrary } from './_internals/builders/StringifiedNatArbitraryBuilder.js';
 
 /** @internal */
 function dotJoinerMapper(data: string[]): string {

@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { string } from './string';
-import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder';
-import { jsonConstraintsBuilder } from './_internals/helpers/JsonConstraintsBuilder';
-import { anything } from './anything';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { string } from './string.js';
+import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder.js';
+import { jsonConstraintsBuilder } from './_internals/helpers/JsonConstraintsBuilder.js';
+import { anything } from './anything.js';
 
 export type { JsonSharedConstraints, JsonValue };
 

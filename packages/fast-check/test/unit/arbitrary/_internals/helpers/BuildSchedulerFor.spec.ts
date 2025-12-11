@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { buildSchedulerFor } from '../../../../../src/arbitrary/_internals/helpers/BuildSchedulerFor';
+import { buildSchedulerFor } from '../../../../../src/arbitrary/_internals/helpers/BuildSchedulerFor.js';
 
-import * as SchedulerImplemMock from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import * as SchedulerImplemMock from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem.js';
 
 function beforeEachHook() {
   vi.resetModules();

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { tuple } from '../../../src/arbitrary/tuple';
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import * as TupleArbitraryMock from '../../../src/arbitrary/_internals/TupleArbitrary';
+import { tuple } from '../../../src/arbitrary/tuple.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import * as TupleArbitraryMock from '../../../src/arbitrary/_internals/TupleArbitrary.js';
 
 describe('tuple', () => {
   it('should instantiate a TupleArbitrary based on mapped-to-next arbitraries', () => {

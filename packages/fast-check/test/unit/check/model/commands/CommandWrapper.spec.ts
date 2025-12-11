@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
-import type { Command } from '../../../../../src/check/model/command/Command';
-import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
-import { cloneMethod } from '../../../../../src/check/symbols';
-import { asyncToStringMethod, toStringMethod } from '../../../../../src/utils/stringify';
+import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper.js';
+import type { Command } from '../../../../../src/check/model/command/Command.js';
+import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand.js';
+import { cloneMethod } from '../../../../../src/check/symbols.js';
+import { asyncToStringMethod, toStringMethod } from '../../../../../src/utils/stringify.js';
 
 type Model = Record<string, unknown>;
 type Real = unknown;

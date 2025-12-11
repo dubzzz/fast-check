@@ -1,9 +1,9 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { tuple } from './tuple';
-import { buildPaddedNumberArbitrary } from './_internals/builders/PaddedNumberArbitraryBuilder';
-import { paddedEightsToUuidMapper, paddedEightsToUuidUnmapper } from './_internals/mappers/PaddedEightsToUuid';
-import { Error } from '../utils/globals';
-import { buildVersionsAppliersForUuid } from './_internals/mappers/VersionsApplierForUuid';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { tuple } from './tuple.js';
+import { buildPaddedNumberArbitrary } from './_internals/builders/PaddedNumberArbitraryBuilder.js';
+import { paddedEightsToUuidMapper, paddedEightsToUuidUnmapper } from './_internals/mappers/PaddedEightsToUuid.js';
+import { Error } from '../utils/globals.js';
+import { buildVersionsAppliersForUuid } from './_internals/mappers/VersionsApplierForUuid.js';
 
 /**
  * Constraints to be applied on {@link uuid}

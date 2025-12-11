@@ -1,5 +1,5 @@
-import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalParameters';
-import { safeIndexOf } from '../../../utils/globals';
+import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalParameters.js';
+import { safeIndexOf } from '../../../utils/globals.js';
 
 const safeMathFloor = Math.floor;
 const safeMathMin = Math.min;

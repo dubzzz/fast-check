@@ -1,15 +1,15 @@
-import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { safeNormalize, safePush } from '../../utils/globals';
-import { mapToConstant } from '../mapToConstant';
-import type { GraphemeRange } from './data/GraphemeRanges';
+import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { safeNormalize, safePush } from '../../utils/globals.js';
+import { mapToConstant } from '../mapToConstant.js';
+import type { GraphemeRange } from './data/GraphemeRanges.js';
 import {
   asciiAlphabetRanges,
   autonomousDecomposableGraphemeRanges,
   autonomousGraphemeRanges,
   fullAlphabetRanges,
-} from './data/GraphemeRanges';
-import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers';
-import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers';
+} from './data/GraphemeRanges.js';
+import type { GraphemeRangeEntry } from './helpers/GraphemeRangesHelpers.js';
+import { convertGraphemeRangeToMapToConstantEntry, intersectGraphemeRanges } from './helpers/GraphemeRangesHelpers.js';
 
 /** @internal */
 type StringUnitType = 'grapheme' | 'composite' | 'binary';

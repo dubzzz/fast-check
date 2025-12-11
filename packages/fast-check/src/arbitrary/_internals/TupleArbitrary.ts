@@ -1,11 +1,11 @@
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import type { WithCloneMethod } from '../../check/symbols';
-import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import { safeMap, safePush, safeSlice } from '../../utils/globals';
-import { makeLazy } from '../../stream/LazyIterableIterator';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import type { WithCloneMethod } from '../../check/symbols.js';
+import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
+import { makeLazy } from '../../stream/LazyIterableIterator.js';
 
 const safeArrayIsArray = Array.isArray;
 const safeObjectDefineProperty = Object.defineProperty;

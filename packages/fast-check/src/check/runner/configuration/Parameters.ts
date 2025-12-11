@@ -1,6 +1,6 @@
-import type { RandomType } from './RandomType';
-import type { VerbosityLevel } from './VerbosityLevel';
-import type { RunDetails } from '../reporter/RunDetails';
+import type { RandomType } from './RandomType.js';
+import type { VerbosityLevel } from './VerbosityLevel.js';
+import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from 'pure-rand';
 
 /**
