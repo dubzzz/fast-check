@@ -461,3 +461,64 @@ expectType<void>()(
 );
 // FIXME // @ts-expect-error - reporter cannot be defined with precise type on configureGlobal
 //fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} });
+
+// entityGraph
+type Node = { name: string; linkTo: Node[] };
+expectType<fc.Arbitrary<{ node: Node[] }>>()(
+  fc.entityGraph(
+    { node: { name: fc.string() } },
+    { node: { linkTo: { arity: 'many', type: 'node' } } },
+    { unicityConstraints: { node: (n) => n.name } },
+  ),
+  'translate "many" into an array',
+);
+type Employee = { firstName: string; lastName: string; manager: Employee | undefined };
+expectType<fc.Arbitrary<{ employee: Employee[] }>>()(
+  fc.entityGraph(
+    { employee: { firstName: fc.string(), lastName: fc.string() } },
+    { employee: { manager: { arity: '0-1', type: 'employee', strategy: 'successor' } } },
+  ),
+  'translate "0-1" into a defined value or undefined',
+);
+type Profile = { id: string };
+type User = { userName: string; profile: Profile };
+expectType<fc.Arbitrary<{ profile: Profile[]; user: User[] }>>()(
+  fc.entityGraph(
+    { user: { userName: fc.string() }, profile: { id: fc.uuid() } },
+    { user: { profile: { arity: '1', type: 'profile', strategy: 'exclusive' } }, profile: {} },
+    {
+      unicityConstraints: {
+        user: (u) => {
+          expectType<Omit<User, 'profile'>>()(u, 'non-relational part of an User');
+          return u.userName;
+        },
+        profile: (p) => {
+          expectType<Profile>()(p, 'non-relational part of a Profile');
+          return p.id;
+        },
+      },
+    },
+  ),
+  'translate "1" into a defined value',
+);
+fc.entityGraph(
+  { user: { userName: fc.string() }, profile: { id: fc.uuid() } },
+  // @ts-expect-error - Expect all entities to be declared for relations
+  { user: { profile: { arity: '1', type: 'profile', strategy: 'exclusive' } } },
+  { unicityConstraints: { user: (u) => u.userName, profile: (p) => p.id } },
+);
+fc.entityGraph(
+  { user: { userName: fc.string() }, profile: { id: fc.uuid() } },
+  {
+    user: {
+      profile: {
+        arity: '1',
+        // @ts-expect-error - Expect type to refer to an entity being declared
+        type: 'profil€',
+        strategy: 'exclusive',
+      },
+    },
+    profile: {},
+  },
+  { unicityConstraints: { user: (u) => u.userName, profile: (p) => p.id } },
+);
