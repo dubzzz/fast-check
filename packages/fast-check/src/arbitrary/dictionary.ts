@@ -2,7 +2,10 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { tuple } from './tuple.js';
 import { uniqueArray } from './uniqueArray.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
-import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject.js';
+import {
+  keyValuePairsToObjectMapper,
+  keyValuePairsToObjectUnmapper,
+} from './_internals/mappers/KeyValuePairsToObject.js';
 import { constant } from './constant.js';
 import { boolean } from './boolean.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';

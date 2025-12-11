@@ -4,7 +4,10 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from '../__test-helpers__/ArbitraryAssertions.js';
-import type { EntityRelations, Relationship } from '../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
+import type {
+  EntityRelations,
+  Relationship,
+} from '../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
 import { onTheFlyLinksForEntityGraph } from '../../../../src/arbitrary/_internals/OnTheFlyLinksForEntityGraphArbitrary.js';
 import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 

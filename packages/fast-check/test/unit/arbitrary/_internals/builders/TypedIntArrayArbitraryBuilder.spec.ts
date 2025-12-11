@@ -2,7 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { typedIntArrayArbitraryArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder.js';
 
-import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from '../../__test-helpers__/ArbitraryHelpers.js';
+import {
+  FakeIntegerArbitrary,
+  fakeArbitrary,
+  fakeArbitraryStaticValue,
+} from '../../__test-helpers__/ArbitraryHelpers.js';
 
 import * as ArrayMock from '../../../../../src/arbitrary/array.js';
 import {

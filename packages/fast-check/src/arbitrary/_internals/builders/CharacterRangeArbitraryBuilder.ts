@@ -1,7 +1,13 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 import { oneof } from '../../oneof.js';
 import { mapToConstant } from '../../mapToConstant.js';
-import { safeCharCodeAt, safeNumberToString, encodeURIComponent, safeMapGet, safeMapSet } from '../../../utils/globals.js';
+import {
+  safeCharCodeAt,
+  safeNumberToString,
+  encodeURIComponent,
+  safeMapGet,
+  safeMapSet,
+} from '../../../utils/globals.js';
 import { string } from '../../string.js';
 
 const SMap = Map;
