@@ -509,7 +509,16 @@ fc.entityGraph(
 );
 fc.entityGraph(
   { user: { userName: fc.string() }, profile: { id: fc.uuid() } },
-  // @ts-expect-error - Expect type to refer to an entity being declared
-  { user: { profile: { arity: '1', type: 'profil€', strategy: 'exclusive' } }, profile: {} },
+  {
+    user: {
+      profile: {
+        arity: '1',
+        // @ts-expect-error - Expect type to refer to an entity being declared
+        type: 'profil€',
+        strategy: 'exclusive',
+      },
+    },
+    profile: {},
+  },
   { unicityConstraints: { user: (u) => u.userName, profile: (p) => p.id } },
 );
