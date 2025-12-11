@@ -5,7 +5,9 @@ import { unlinkedToLinkedEntitiesMapper } from './_internals/mappers/UnlinkedToL
 import { onTheFlyLinksForEntityGraph } from './_internals/OnTheFlyLinksForEntityGraphArbitrary.js';
 import { unlinkedEntitiesForEntityGraph } from './_internals/UnlinkedEntitiesForEntityGraph.js';
 import type { ArrayConstraints } from './array.js';
+import type { UniqueArrayConstraintsRecommended } from './uniqueArray.js';
 
+const safeObjectCreate = Object.create;
 const safeObjectKeys = Object.keys;
 
 export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRelations as EntityGraphRelations };
@@ -15,7 +17,7 @@ export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRel
  * @remarks Since 4.5.0
  * @public
  */
-export type EntityGraphContraints<TEntityNames extends PropertyKey> = {
+export type EntityGraphContraints<TEntityFields> = {
   /**
    * Customize how to select what should be part of the initial pool of entities.
    * This pool is used as a starting point to ask and create for other entities.
@@ -23,7 +25,20 @@ export type EntityGraphContraints<TEntityNames extends PropertyKey> = {
    * @defaultValue Unspecified entities take the defaults from {@link array}
    * @remarks Since 4.5.0
    */
-  initialPoolConstraints?: { [EntityName in TEntityNames]?: ArrayConstraints };
+  initialPoolConstraints?: { [EntityName in keyof TEntityFields]?: ArrayConstraints };
+  /**
+   * Unicity rules to be applied on a specific kind. The provided selector function will be leveraged to compare entities of a given kind.
+   * Two entities resulting on an equal output for `Object.is` will be considered equivalent and only one of them will be kept.
+   *
+   * @defaultValue All values are considered unique
+   * @remarks Since 4.5.0
+   */
+  unicityConstraints?: {
+    [EntityName in keyof TEntityFields]?: UniqueArrayConstraintsRecommended<
+      TEntityFields[EntityName],
+      unknown
+    >['selector'];
+  };
   /**
    * Do not generate records with null prototype
    * @defaultValue false
@@ -58,10 +73,11 @@ export type EntityGraphContraints<TEntityNames extends PropertyKey> = {
 export function entityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   arbitraries: Arbitraries<TEntityFields>,
   relations: TEntityRelations,
-  constraints: EntityGraphContraints<keyof TEntityFields> = {},
+  constraints: EntityGraphContraints<TEntityFields> = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
   const allKeys = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
-  const initialPoolConstraints = constraints.initialPoolConstraints || {};
+  const initialPoolConstraints = constraints.initialPoolConstraints || safeObjectCreate(null);
+  const unicityConstraints = constraints.unicityConstraints || safeObjectCreate(null);
   const unlinkedContraints = { noNullPrototype: constraints.noNullPrototype };
 
   return (
@@ -72,10 +88,14 @@ export function entityGraph<TEntityFields, TEntityRelations extends EntityRelati
         // Step 3, Producing entities themselves
         // As the number of entities for each kind requires the links to be produced,
         // it has to be executed as a chained computation
-        unlinkedEntitiesForEntityGraph(arbitraries, (name) => producedLinks[name].length, unlinkedContraints).map(
-          (unlinkedEntities) =>
-            // Step 4, Glueing links and entities together
-            unlinkedToLinkedEntitiesMapper(unlinkedEntities, producedLinks),
+        unlinkedEntitiesForEntityGraph(
+          arbitraries,
+          (name) => producedLinks[name].length,
+          (name) => unicityConstraints[name],
+          unlinkedContraints,
+        ).map((unlinkedEntities) =>
+          // Step 4, Glueing links and entities together
+          unlinkedToLinkedEntitiesMapper(unlinkedEntities, producedLinks),
         ),
       ),
     )
