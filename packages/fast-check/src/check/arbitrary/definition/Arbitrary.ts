@@ -1,7 +1,7 @@
-import type { Random } from '../../../random/generator/Random';
-import { Stream } from '../../../stream/Stream';
-import { cloneMethod, hasCloneMethod } from '../../symbols';
-import { Value } from './Value';
+import type { Random } from '../../../random/generator/Random.js';
+import { Stream } from '../../../stream/Stream.js';
+import { cloneMethod, hasCloneMethod } from '../../symbols.js';
+import { Value } from './Value.js';
 
 /**
  * Abstract class able to generate values on type `T`

@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
   paddedUintToBase32StringMapper,
   uintToBase32StringUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/UintToBase32String';
+} from '../../../../../src/arbitrary/_internals/mappers/UintToBase32String.js';
 
 describe('uintToBase32StringUnmapper', () => {
   it('should be able to unmap any mapped value', () =>

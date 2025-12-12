@@ -1,18 +1,18 @@
-import { array } from './array';
+import { array } from './array.js';
 import {
   getOrCreateLowerAlphaArbitrary,
   getOrCreateLowerAlphaNumericArbitrary,
-} from './_internals/builders/CharacterRangeArbitraryBuilder';
-import { option } from './option';
-import { string } from './string';
-import { tuple } from './tuple';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter';
-import type { Size, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { resolveSize, relativeSizeToSize } from './_internals/helpers/MaxLengthFromMinLength';
-import type { AdapterOutput } from './_internals/AdapterArbitrary';
-import { adapter } from './_internals/AdapterArbitrary';
-import { safeJoin, safeSlice, safeSplit, safeSubstring } from '../utils/globals';
+} from './_internals/builders/CharacterRangeArbitraryBuilder.js';
+import { option } from './option.js';
+import { string } from './string.js';
+import { tuple } from './tuple.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { filterInvalidSubdomainLabel } from './_internals/helpers/InvalidSubdomainLabelFiIter.js';
+import type { Size, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { resolveSize, relativeSizeToSize } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { AdapterOutput } from './_internals/AdapterArbitrary.js';
+import { adapter } from './_internals/AdapterArbitrary.js';
+import { safeJoin, safeSlice, safeSplit, safeSubstring } from '../utils/globals.js';
 
 /** @internal */
 function toSubdomainLabelMapper([f, d]: [string, [string, string] | null]): string {

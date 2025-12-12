@@ -1,5 +1,5 @@
-import { safePop, safePush } from '../../../utils/globals';
-import type { GraphemeRange } from '../data/GraphemeRanges';
+import { safePop, safePush } from '../../../utils/globals.js';
+import type { GraphemeRange } from '../data/GraphemeRanges.js';
 
 /** @internal */
 const safeStringFromCodePoint = String.fromCodePoint;

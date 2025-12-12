@@ -1,12 +1,12 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import type { Value } from '../../check/arbitrary/definition/Value';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { safeMap } from '../../utils/globals';
-import type { GeneratorContext, GeneratorValue, PreBuiltValue } from './builders/GeneratorValueBuilder';
-import { buildGeneratorValue } from './builders/GeneratorValueBuilder';
-import { buildStableArbitraryGeneratorCache, naiveIsEqual } from './builders/StableArbitraryGeneratorCache';
-import { tupleShrink } from './TupleArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import type { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { safeMap } from '../../utils/globals.js';
+import type { GeneratorContext, GeneratorValue, PreBuiltValue } from './builders/GeneratorValueBuilder.js';
+import { buildGeneratorValue } from './builders/GeneratorValueBuilder.js';
+import { buildStableArbitraryGeneratorCache, naiveIsEqual } from './builders/StableArbitraryGeneratorCache.js';
+import { tupleShrink } from './TupleArbitrary.js';
 
 /**
  * The generator arbitrary is responsible to generate instances of {@link GeneratorValue}.

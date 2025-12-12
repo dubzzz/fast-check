@@ -1,28 +1,28 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 
-import { stringify } from '../../../utils/stringify';
-import { array } from '../../array';
-import { oneof } from '../../oneof';
-import { bigInt } from '../../bigInt';
-import { date } from '../../date';
-import { float32Array } from '../../float32Array';
-import { float64Array } from '../../float64Array';
-import { int16Array } from '../../int16Array';
-import { int32Array } from '../../int32Array';
-import { int8Array } from '../../int8Array';
-import { uint16Array } from '../../uint16Array';
-import { uint32Array } from '../../uint32Array';
-import { uint8Array } from '../../uint8Array';
-import { uint8ClampedArray } from '../../uint8ClampedArray';
-import { sparseArray } from '../../sparseArray';
-import type { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints';
-import { letrec } from '../../letrec';
-import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength';
-import type { DepthIdentifier } from '../helpers/DepthContext';
-import { createDepthIdentifier } from '../helpers/DepthContext';
-import { dictionary } from '../../dictionary';
-import { set } from '../../set';
-import { map } from '../../map';
+import { stringify } from '../../../utils/stringify.js';
+import { array } from '../../array.js';
+import { oneof } from '../../oneof.js';
+import { bigInt } from '../../bigInt.js';
+import { date } from '../../date.js';
+import { float32Array } from '../../float32Array.js';
+import { float64Array } from '../../float64Array.js';
+import { int16Array } from '../../int16Array.js';
+import { int32Array } from '../../int32Array.js';
+import { int8Array } from '../../int8Array.js';
+import { uint16Array } from '../../uint16Array.js';
+import { uint32Array } from '../../uint32Array.js';
+import { uint8Array } from '../../uint8Array.js';
+import { uint8ClampedArray } from '../../uint8ClampedArray.js';
+import { sparseArray } from '../../sparseArray.js';
+import type { QualifiedObjectConstraints } from '../helpers/QualifiedObjectConstraints.js';
+import { letrec } from '../../letrec.js';
+import type { SizeForArbitrary } from '../helpers/MaxLengthFromMinLength.js';
+import type { DepthIdentifier } from '../helpers/DepthContext.js';
+import { createDepthIdentifier } from '../helpers/DepthContext.js';
+import { dictionary } from '../../dictionary.js';
+import { set } from '../../set.js';
+import { map } from '../../map.js';
 
 /** @internal */
 function dictOf<U>(

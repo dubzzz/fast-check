@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as fc from '../../src/fast-check';
-import { seed } from './seed';
+import * as fc from '../../src/fast-check.js';
+import { seed } from './seed.js';
 
 // Code under tests
 // Based on the CodinGame https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1

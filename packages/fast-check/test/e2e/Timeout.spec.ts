@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import * as fc from '../../src/fast-check';
-import { seed } from './seed';
+import * as fc from '../../src/fast-check.js';
+import { seed } from './seed.js';
 
 describe(`Timeout (seed: ${seed})`, () => {
   it('should always run beforeEach and afterEach even in case of timeout', async () => {

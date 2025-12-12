@@ -4,7 +4,7 @@ import * as fc from 'fast-check';
 import {
   escapeForTemplateString,
   escapeForMultilineComments,
-} from '../../../../../src/arbitrary/_internals/helpers/TextEscaper';
+} from '../../../../../src/arbitrary/_internals/helpers/TextEscaper.js';
 
 describe('escapeForTemplateString', () => {
   it('should not escape normal characters', () => {

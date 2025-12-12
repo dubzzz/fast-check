@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { unlinkedToLinkedEntitiesMapper } from '../../../../../src/arbitrary/_internals/mappers/UnlinkedToLinkedEntities';
+import { unlinkedToLinkedEntitiesMapper } from '../../../../../src/arbitrary/_internals/mappers/UnlinkedToLinkedEntities.js';
 import type {
   ProducedLinks,
   UnlinkedEntities,
-} from '../../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes';
-import { stringify } from '../../../../../src/utils/stringify';
+} from '../../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
+import { stringify } from '../../../../../src/utils/stringify.js';
 
 describe('unlinkedToLinkedEntitiesMapper', () => {
   describe('links', () => {

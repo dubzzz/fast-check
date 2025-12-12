@@ -1,6 +1,6 @@
-import type { Stream } from '../stream/Stream';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { StreamArbitrary } from './_internals/StreamArbitrary';
+import type { Stream } from '../stream/Stream.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { StreamArbitrary } from './_internals/StreamArbitrary.js';
 
 /**
  * Constraints to be applied on {@link infiniteStream}

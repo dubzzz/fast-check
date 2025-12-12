@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { IntegerArbitrary } from './_internals/IntegerArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { IntegerArbitrary } from './_internals/IntegerArbitrary.js';
 
 const safeMinSafeInteger = Number.MIN_SAFE_INTEGER;
 const safeMaxSafeInteger = Number.MAX_SAFE_INTEGER;

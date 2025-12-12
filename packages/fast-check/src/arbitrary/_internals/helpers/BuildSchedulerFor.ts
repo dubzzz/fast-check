@@ -1,6 +1,6 @@
-import type { Scheduler } from '../interfaces/Scheduler';
-import type { ScheduledTask, TaskSelector } from '../implementations/SchedulerImplem';
-import { SchedulerImplem } from '../implementations/SchedulerImplem';
+import type { Scheduler } from '../interfaces/Scheduler.js';
+import type { ScheduledTask, TaskSelector } from '../implementations/SchedulerImplem.js';
+import { SchedulerImplem } from '../implementations/SchedulerImplem.js';
 
 /** @internal */
 function buildNextTaskIndex<TMetaData>(ordering: number[]): TaskSelector<TMetaData> {

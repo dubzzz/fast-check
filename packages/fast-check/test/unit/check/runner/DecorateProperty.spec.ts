@@ -1,14 +1,14 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { decorateProperty } from '../../../../src/check/runner/DecorateProperty';
-import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../../src/stream/Stream';
+import { decorateProperty } from '../../../../src/check/runner/DecorateProperty.js';
+import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { Stream } from '../../../../src/stream/Stream.js';
 
 // Mocks
-import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty';
-import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty';
-import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty';
-import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
+import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty.js';
+import { TimeoutProperty } from '../../../../src/check/property/TimeoutProperty.js';
+import { UnbiasedProperty } from '../../../../src/check/property/UnbiasedProperty.js';
+import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty.js';
 vi.mock('../../../../src/check/property/SkipAfterProperty');
 vi.mock('../../../../src/check/property/TimeoutProperty');
 vi.mock('../../../../src/check/property/UnbiasedProperty');

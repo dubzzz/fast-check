@@ -1,4 +1,4 @@
-import { safeSubstring } from '../../../utils/globals';
+import { safeSubstring } from '../../../utils/globals.js';
 
 /** @internal - s is supposed to be composed of valid base64 values, not any '=' */
 export function stringToBase64Mapper(s: string): string {

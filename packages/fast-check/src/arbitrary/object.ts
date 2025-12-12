@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { dictionary } from './dictionary';
-import { anyArbitraryBuilder } from './_internals/builders/AnyArbitraryBuilder';
-import type { QualifiedObjectConstraints, ObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
-import { toQualifiedObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { dictionary } from './dictionary.js';
+import { anyArbitraryBuilder } from './_internals/builders/AnyArbitraryBuilder.js';
+import type { QualifiedObjectConstraints, ObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints.js';
+import { toQualifiedObjectConstraints } from './_internals/helpers/QualifiedObjectConstraints.js';
 
 export type { ObjectConstraints };
 

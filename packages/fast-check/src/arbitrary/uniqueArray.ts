@@ -1,17 +1,17 @@
-import { ArrayArbitrary } from './_internals/ArrayArbitrary';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import { ArrayArbitrary } from './_internals/ArrayArbitrary.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
   MaxLengthUpperBound,
-} from './_internals/helpers/MaxLengthFromMinLength';
-import type { CustomSetBuilder } from './_internals/interfaces/CustomSet';
-import { CustomEqualSet } from './_internals/helpers/CustomEqualSet';
-import type { Value } from '../check/arbitrary/definition/Value';
-import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet';
-import { SameValueSet } from './_internals/helpers/SameValueSet';
-import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+} from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { CustomSetBuilder } from './_internals/interfaces/CustomSet.js';
+import { CustomEqualSet } from './_internals/helpers/CustomEqualSet.js';
+import type { Value } from '../check/arbitrary/definition/Value.js';
+import { StrictlyEqualSet } from './_internals/helpers/StrictlyEqualSet.js';
+import { SameValueSet } from './_internals/helpers/SameValueSet.js';
+import { SameValueZeroSet } from './_internals/helpers/SameValueZeroSet.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
 /** @internal */
 function buildUniqueArraySetBuilder<T, U>(constraints: UniqueArrayConstraints<T, U>): CustomSetBuilder<Value<T>> {

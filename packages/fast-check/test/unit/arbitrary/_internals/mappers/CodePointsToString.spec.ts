@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
   codePointsToStringMapper,
   codePointsToStringUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/CodePointsToString';
+} from '../../../../../src/arbitrary/_internals/mappers/CodePointsToString.js';
 
 describe('codePointsToStringUnmapper', () => {
   it.each`

@@ -1,9 +1,9 @@
-import type { Value } from '../arbitrary/definition/Value';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import type { PropertyFailure } from '../property/IRawProperty';
-import type { VerbosityLevel } from './configuration/VerbosityLevel';
-import { RunExecution } from './reporter/RunExecution';
-import type { SourceValuesIterator } from './SourceValuesIterator';
+import type { Value } from '../arbitrary/definition/Value.js';
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { PropertyFailure } from '../property/IRawProperty.js';
+import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
+import { RunExecution } from './reporter/RunExecution.js';
+import type { SourceValuesIterator } from './SourceValuesIterator.js';
 
 /**
  * Responsible for the iteration logic

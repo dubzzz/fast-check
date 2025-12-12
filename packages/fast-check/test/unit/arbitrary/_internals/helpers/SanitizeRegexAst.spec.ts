@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { addMissingDotStar } from '../../../../../src/arbitrary/_internals/helpers/SanitizeRegexAst';
-import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex';
+import { addMissingDotStar } from '../../../../../src/arbitrary/_internals/helpers/SanitizeRegexAst.js';
+import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
 
 describe('addMissingDotStar', () => {
   it.each`

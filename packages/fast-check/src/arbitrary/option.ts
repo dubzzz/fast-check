@@ -1,10 +1,10 @@
-import { constant } from './constant';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { _Constraints as FrequencyConstraints } from './_internals/FrequencyArbitrary';
-import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
-import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
-import { safeHasOwnProperty } from '../utils/globals';
+import { constant } from './constant.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { _Constraints as FrequencyConstraints } from './_internals/FrequencyArbitrary.js';
+import { FrequencyArbitrary } from './_internals/FrequencyArbitrary.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
+import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { safeHasOwnProperty } from '../utils/globals.js';
 
 /**
  * Constraints to be applied on {@link option}

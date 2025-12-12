@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   keyValuePairsToObjectMapper,
   keyValuePairsToObjectUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/KeyValuePairsToObject';
-import fc from '../../../../../src/fast-check';
+} from '../../../../../src/arbitrary/_internals/mappers/KeyValuePairsToObject.js';
+import fc from '../../../../../src/fast-check.js';
 
 describe('keyValuePairsToObjectMapper', () => {
   it('should create instances with Object prototype when requested to', () => {

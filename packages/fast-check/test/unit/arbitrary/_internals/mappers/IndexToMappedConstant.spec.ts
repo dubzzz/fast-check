@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import {
   indexToMappedConstantMapperFor,
   indexToMappedConstantUnmapperFor,
-} from '../../../../../src/arbitrary/_internals/mappers/IndexToMappedConstant';
+} from '../../../../../src/arbitrary/_internals/mappers/IndexToMappedConstant.js';
 
 describe('indexToMappedConstantMapperFor', () => {
   it.each`

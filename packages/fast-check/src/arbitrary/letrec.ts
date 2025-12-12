@@ -1,6 +1,6 @@
-import { LazyArbitrary } from './_internals/LazyArbitrary';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { Map as SMap, safeMapSet, safeMapGet } from '../utils/globals';
+import { LazyArbitrary } from './_internals/LazyArbitrary.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { Map as SMap, safeMapSet, safeMapGet } from '../utils/globals.js';
 
 const safeGetOwnPropertyNames = Object.getOwnPropertyNames;
 

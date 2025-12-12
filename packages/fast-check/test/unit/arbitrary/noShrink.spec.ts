@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { noShrink } from '../../../src/arbitrary/noShrink';
-import * as stubRng from '../stubs/generators';
-import type { Stream } from '../../../src/stream/Stream';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { noShrink } from '../../../src/arbitrary/noShrink.js';
+import * as stubRng from '../stubs/generators.js';
+import type { Stream } from '../../../src/stream/Stream.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 

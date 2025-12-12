@@ -1,6 +1,6 @@
-import type { FloatConstraints } from '../../float';
-import { MAX_VALUE_32 } from './FloatHelpers';
-import { refineConstraintsForFloatingOnly } from './FloatingOnlyHelpers';
+import type { FloatConstraints } from '../../float.js';
+import { MAX_VALUE_32 } from './FloatHelpers.js';
+import { refineConstraintsForFloatingOnly } from './FloatingOnlyHelpers.js';
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;

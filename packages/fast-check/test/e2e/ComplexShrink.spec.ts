@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as fc from '../../src/fast-check';
-import { seed } from './seed';
+import * as fc from '../../src/fast-check.js';
+import { seed } from './seed.js';
 
 describe(`ComplexShrink (seed: ${seed})`, () => {
   it('Should shrink two integers linked by a non-symmetric relation', () => {

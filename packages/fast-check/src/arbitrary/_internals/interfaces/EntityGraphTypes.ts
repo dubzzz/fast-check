@@ -1,4 +1,4 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 
 // Inputs: arbitrary part
 

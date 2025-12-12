@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
-import { falsy } from '../../../src/arbitrary/falsy';
+import { falsy } from '../../../src/arbitrary/falsy.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
-import * as ConstantFromMock from '../../../src/arbitrary/constantFrom';
+import * as ConstantFromMock from '../../../src/arbitrary/constantFrom.js';
 
 describe('falsy', () => {
   declareCleaningHooksForSpies();

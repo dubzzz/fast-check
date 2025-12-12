@@ -1,17 +1,17 @@
-import type { Random } from '../../random/generator/Random';
-import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import type { PropertyFailure, IRawProperty } from './IRawProperty';
-import { runIdToFrequency } from './IRawProperty';
-import type { GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
-import type { Value } from '../arbitrary/definition/Value';
-import { Stream } from '../../stream/Stream';
+import type { Random } from '../../random/generator/Random.js';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { PropertyFailure, IRawProperty } from './IRawProperty.js';
+import { runIdToFrequency } from './IRawProperty.js';
+import type { GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters.js';
+import { readConfigureGlobal } from '../runner/configuration/GlobalParameters.js';
+import type { Value } from '../arbitrary/definition/Value.js';
+import { Stream } from '../../stream/Stream.js';
 import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
-} from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
-import { Error } from '../../utils/globals';
+} from '../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
+import { Error } from '../../utils/globals.js';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`

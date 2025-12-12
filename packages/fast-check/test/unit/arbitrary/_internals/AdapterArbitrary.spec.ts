@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
-import { adapter } from '../../../../src/arbitrary/_internals/AdapterArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { Stream } from '../../../../src/stream/Stream';
+import type { AdapterOutput } from '../../../../src/arbitrary/_internals/AdapterArbitrary.js';
+import { adapter } from '../../../../src/arbitrary/_internals/AdapterArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
+import { Stream } from '../../../../src/stream/Stream.js';
 import fc from 'fast-check';
 
 describe('AdapterArbitrary', () => {

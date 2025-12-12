@@ -1,5 +1,5 @@
-import type { Value } from '../../arbitrary/definition/Value';
-import type { Stream } from '../../../stream/Stream';
+import type { Value } from '../../arbitrary/definition/Value.js';
+import type { Stream } from '../../../stream/Stream.js';
 
 /** @internal */
 function produce<Ts>(producer: () => Value<Ts>): Value<Ts> {

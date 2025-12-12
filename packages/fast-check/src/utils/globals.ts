@@ -1,4 +1,4 @@
-import { safeApply } from './apply';
+import { safeApply } from './apply.js';
 
 // Globals
 

@@ -1,14 +1,14 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import type { ICommand } from '../../check/model/command/ICommand';
-import { CommandsIterable } from '../../check/model/commands/CommandsIterable';
-import { CommandWrapper } from '../../check/model/commands/CommandWrapper';
-import { ReplayPath } from '../../check/model/ReplayPath';
-import type { Random } from '../../random/generator/Random';
-import { makeLazy } from '../../stream/LazyIterableIterator';
-import { Stream } from '../../stream/Stream';
-import { oneof } from '../oneof';
-import { restrictedIntegerArbitraryBuilder } from './builders/RestrictedIntegerArbitraryBuilder';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { ICommand } from '../../check/model/command/ICommand.js';
+import { CommandsIterable } from '../../check/model/commands/CommandsIterable.js';
+import { CommandWrapper } from '../../check/model/commands/CommandWrapper.js';
+import { ReplayPath } from '../../check/model/ReplayPath.js';
+import type { Random } from '../../random/generator/Random.js';
+import { makeLazy } from '../../stream/LazyIterableIterator.js';
+import { Stream } from '../../stream/Stream.js';
+import { oneof } from '../oneof.js';
+import { restrictedIntegerArbitraryBuilder } from './builders/RestrictedIntegerArbitraryBuilder.js';
 
 type CommandsArbitraryContext<Model extends object, Real, RunResult, CheckAsync extends boolean> = {
   shrunkOnce: boolean;

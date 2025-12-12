@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { letrec } from '../../../src/arbitrary/letrec';
-import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../src/stream/Stream';
-import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from './__test-helpers__/RandomHelpers';
+import { letrec } from '../../../src/arbitrary/letrec.js';
+import { LazyArbitrary } from '../../../src/arbitrary/_internals/LazyArbitrary.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { Stream } from '../../../src/stream/Stream.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
 import {
   assertGenerateEquivalentTo,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('letrec', () => {
   describe('builder', () => {

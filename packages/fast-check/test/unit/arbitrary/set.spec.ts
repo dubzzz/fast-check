@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import type { SetConstraints } from '../../../src/arbitrary/set';
-import { set } from '../../../src/arbitrary/set';
-import { nat } from '../../../src/arbitrary/nat';
-import { constantFrom } from '../../../src/arbitrary/constantFrom';
+import type { SetConstraints } from '../../../src/arbitrary/set.js';
+import { set } from '../../../src/arbitrary/set.js';
+import { nat } from '../../../src/arbitrary/nat.js';
+import { constantFrom } from '../../../src/arbitrary/constantFrom.js';
 
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('set (integration)', () => {
   type Extra = SetConstraints;

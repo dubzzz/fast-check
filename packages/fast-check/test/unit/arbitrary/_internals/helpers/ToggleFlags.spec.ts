@@ -6,7 +6,7 @@ import {
   computeNextFlags,
   computeTogglePositions,
   countToggledBits,
-} from '../../../../../src/arbitrary/_internals/helpers/ToggleFlags';
+} from '../../../../../src/arbitrary/_internals/helpers/ToggleFlags.js';
 
 describe('countToggledBits', () => {
   it('should properly count when zero bits are toggled', () => {

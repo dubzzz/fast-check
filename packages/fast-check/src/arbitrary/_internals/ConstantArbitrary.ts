@@ -1,9 +1,9 @@
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import { cloneMethod, hasCloneMethod } from '../../check/symbols';
-import { Set, safeHas } from '../../utils/globals';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { cloneMethod, hasCloneMethod } from '../../check/symbols.js';
+import { Set, safeHas } from '../../utils/globals.js';
 
 const safeObjectIs = Object.is;
 

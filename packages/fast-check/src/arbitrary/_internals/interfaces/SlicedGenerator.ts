@@ -1,4 +1,4 @@
-import type { Value } from '../../../check/arbitrary/definition/Value';
+import type { Value } from '../../../check/arbitrary/definition/Value.js';
 
 /**
  * Internal helper responsible to fallback from time to time to already pre-computed entries

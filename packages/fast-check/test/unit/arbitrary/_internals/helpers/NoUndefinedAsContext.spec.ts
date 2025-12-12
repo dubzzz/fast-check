@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
-} from '../../../../../src/arbitrary/_internals/helpers/NoUndefinedAsContext';
-import { Value } from '../../../../../src/check/arbitrary/definition/Value';
+} from '../../../../../src/arbitrary/_internals/helpers/NoUndefinedAsContext.js';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
 
 describe('noUndefinedAsContext', () => {
   it('should never alter value if context is not undefined', () => {

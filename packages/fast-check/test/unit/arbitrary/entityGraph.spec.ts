@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import fc, { stringify } from 'fast-check';
-import { string } from '../../../src/arbitrary/string';
-import { entityGraph } from '../../../src/arbitrary/entityGraph';
+import { string } from '../../../src/arbitrary/string.js';
+import { entityGraph } from '../../../src/arbitrary/entityGraph.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 
 type UnArbitrary<T> = T extends Arbitrary<infer U> ? U : never;
 

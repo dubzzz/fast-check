@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper';
-import { CommandsIterable } from '../../../../../src/check/model/commands/CommandsIterable';
-import type { Command } from '../../../../../src/check/model/command/Command';
-import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
+import { CommandWrapper } from '../../../../../src/check/model/commands/CommandWrapper.js';
+import { CommandsIterable } from '../../../../../src/check/model/commands/CommandsIterable.js';
+import type { Command } from '../../../../../src/check/model/command/Command.js';
+import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols.js';
 
 type Model = Record<string, unknown>;
 type Real = unknown;

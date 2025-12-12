@@ -1,9 +1,9 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import { cloneMethod } from '../../check/symbols';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { safeMap, safePush } from '../../utils/globals';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { cloneMethod } from '../../check/symbols.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { safeMap, safePush } from '../../utils/globals.js';
 
 const safeSymbolIterator: typeof Symbol.iterator = Symbol.iterator;
 const safeIsArray = Array.isArray;

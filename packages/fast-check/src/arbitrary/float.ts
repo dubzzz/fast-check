@@ -1,11 +1,11 @@
-import { integer } from './integer';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers';
+import { integer } from './integer.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { floatToIndex, indexToFloat, MAX_VALUE_32 } from './_internals/helpers/FloatHelpers.js';
 import {
   floatOnlyMapper,
   floatOnlyUnmapper,
   refineConstraintsForFloatOnly,
-} from './_internals/helpers/FloatOnlyHelpers';
+} from './_internals/helpers/FloatOnlyHelpers.js';
 
 const safeNumberIsInteger = Number.isInteger;
 const safeNumberIsNaN = Number.isNaN;

@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { buildCompareFunctionArbitrary } from './_internals/builders/CompareFunctionArbitraryBuilder';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { buildCompareFunctionArbitrary } from './_internals/builders/CompareFunctionArbitraryBuilder.js';
 
 const safeObjectAssign = Object.assign;
 

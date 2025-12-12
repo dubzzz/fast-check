@@ -1,7 +1,7 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import type { Value } from '../../../check/arbitrary/definition/Value';
-import type { Random } from '../../../random/generator/Random';
-import type { SlicedGenerator } from '../interfaces/SlicedGenerator';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import type { Value } from '../../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../../random/generator/Random.js';
+import type { SlicedGenerator } from '../interfaces/SlicedGenerator.js';
 
 /** @internal */
 export class NoopSlicedGenerator<T> implements SlicedGenerator<T> {

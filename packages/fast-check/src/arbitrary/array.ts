@@ -1,11 +1,11 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { ArrayArbitrary } from './_internals/ArrayArbitrary';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { ArrayArbitrary } from './_internals/ArrayArbitrary.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import {
   MaxLengthUpperBound,
   maxGeneratedLengthFromSizeForArbitrary,
-} from './_internals/helpers/MaxLengthFromMinLength';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+} from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
 /**
  * Constraints to be applied on {@link array}

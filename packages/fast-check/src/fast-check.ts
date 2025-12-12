@@ -1,4 +1,4 @@
-import * as fc from './fast-check-default';
+import * as fc from './fast-check-default.js';
 export default fc;
 
-export * from './fast-check-default';
+export * from './fast-check-default.js';

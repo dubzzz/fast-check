@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { integer } from '../../../src/arbitrary/integer';
+import { integer } from '../../../src/arbitrary/integer.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 function fakeIntegerArbitrary() {
   const instance = fakeArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;

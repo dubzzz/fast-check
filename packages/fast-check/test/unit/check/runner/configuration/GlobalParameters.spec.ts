@@ -3,7 +3,7 @@ import {
   configureGlobal,
   readConfigureGlobal,
   resetConfigureGlobal,
-} from '../../../../../src/check/runner/configuration/GlobalParameters';
+} from '../../../../../src/check/runner/configuration/GlobalParameters.js';
 import * as fc from 'fast-check';
 
 describe('GlobalParameters', () => {

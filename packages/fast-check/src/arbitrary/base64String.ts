@@ -1,14 +1,14 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { ArrayConstraintsInternal } from './array';
-import { array } from './array';
-import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength';
-import type { StringSharedConstraints } from './_shared/StringSharedConstraints';
-import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString';
-import { stringToBase64Mapper, stringToBase64Unmapper } from './_internals/mappers/StringToBase64';
-import { createSlicesForStringLegacy } from './_internals/helpers/SlicesForStringBuilder';
-import { integer } from './integer';
-import { Error, safeCharCodeAt } from '../utils/globals';
-export type { StringSharedConstraints } from './_shared/StringSharedConstraints';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { ArrayConstraintsInternal } from './array.js';
+import { array } from './array.js';
+import { MaxLengthUpperBound } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
+import { codePointsToStringMapper, codePointsToStringUnmapper } from './_internals/mappers/CodePointsToString.js';
+import { stringToBase64Mapper, stringToBase64Unmapper } from './_internals/mappers/StringToBase64.js';
+import { createSlicesForStringLegacy } from './_internals/helpers/SlicesForStringBuilder.js';
+import { integer } from './integer.js';
+import { Error, safeCharCodeAt } from '../utils/globals.js';
+export type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
 
 const safeStringFromCharCode = String.fromCharCode;
 

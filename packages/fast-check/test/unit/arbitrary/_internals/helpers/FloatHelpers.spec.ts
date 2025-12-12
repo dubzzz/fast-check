@@ -6,7 +6,7 @@ import {
   isNotNaN32bits,
   isStrictlySmaller,
   isFiniteNotNaN32bits,
-} from '../../__test-helpers__/FloatingPointHelpers';
+} from '../../__test-helpers__/FloatingPointHelpers.js';
 import {
   decomposeFloat,
   EPSILON_32,
@@ -14,7 +14,7 @@ import {
   indexToFloat,
   MAX_VALUE_32,
   MIN_VALUE_32,
-} from '../../../../../src/arbitrary/_internals/helpers/FloatHelpers';
+} from '../../../../../src/arbitrary/_internals/helpers/FloatHelpers.js';
 
 describe('decomposeFloat', () => {
   it('should properly decompose basic values', () => {

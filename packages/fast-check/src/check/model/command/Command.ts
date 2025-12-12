@@ -1,4 +1,4 @@
-import type { ICommand } from './ICommand';
+import type { ICommand } from './ICommand.js';
 
 /**
  * Interface that should be implemented in order to define

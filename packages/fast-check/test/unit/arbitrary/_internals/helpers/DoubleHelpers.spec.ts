@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { float64raw, isStrictlySmaller } from '../../__test-helpers__/FloatingPointHelpers';
+import { float64raw, isStrictlySmaller } from '../../__test-helpers__/FloatingPointHelpers.js';
 import {
   decomposeDouble,
   doubleToIndex,
   indexToDouble,
-} from '../../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
+} from '../../../../../src/arbitrary/_internals/helpers/DoubleHelpers.js';
 
 describe('decomposeDouble', () => {
   it('should properly decompose basic values', () => {

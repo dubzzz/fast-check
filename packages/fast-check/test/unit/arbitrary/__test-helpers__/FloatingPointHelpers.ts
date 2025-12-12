@@ -1,10 +1,10 @@
 import * as fc from 'fast-check';
-import type { DoubleConstraints } from '../../../../src/arbitrary/double';
-import type { FloatConstraints } from '../../../../src/arbitrary/float';
-import { MAX_VALUE_32, floatToIndex } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers';
-import { doubleToIndex } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
-import { refineConstraintsForDoubleOnly } from '../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers';
-import { refineConstraintsForFloatOnly } from '../../../../src/arbitrary/_internals/helpers/FloatOnlyHelpers';
+import type { DoubleConstraints } from '../../../../src/arbitrary/double.js';
+import type { FloatConstraints } from '../../../../src/arbitrary/float.js';
+import { MAX_VALUE_32, floatToIndex } from '../../../../src/arbitrary/_internals/helpers/FloatHelpers.js';
+import { doubleToIndex } from '../../../../src/arbitrary/_internals/helpers/DoubleHelpers.js';
+import { refineConstraintsForDoubleOnly } from '../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers.js';
+import { refineConstraintsForFloatOnly } from '../../../../src/arbitrary/_internals/helpers/FloatOnlyHelpers.js';
 
 export function float32raw(): fc.Arbitrary<number> {
   return fc.integer().map((n32) => new Float32Array(new Int32Array([n32]).buffer)[0]);

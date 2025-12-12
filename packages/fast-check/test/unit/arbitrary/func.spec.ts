@@ -1,18 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { func } from '../../../src/arbitrary/func';
+import { func } from '../../../src/arbitrary/func.js';
 
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols';
-import type { Random } from '../../../src/random/generator/Random';
-import { Stream } from '../../../src/stream/Stream';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols.js';
+import type { Random } from '../../../src/random/generator/Random.js';
+import { Stream } from '../../../src/stream/Stream.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { FakeIntegerArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { FakeIntegerArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameFunction.js';
 
 describe('func (integration)', () => {
   const funcBuilder = () => func(new FakeIntegerArbitrary());

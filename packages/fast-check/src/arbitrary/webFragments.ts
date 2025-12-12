@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { buildUriQueryOrFragmentArbitrary } from './_internals/builders/UriQueryOrFragmentArbitraryBuilder';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { buildUriQueryOrFragmentArbitrary } from './_internals/builders/UriQueryOrFragmentArbitraryBuilder.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 
 /**
  * Constraints to be applied on {@link webFragments}

@@ -1,4 +1,4 @@
-import { BigInt, Number } from '../../../utils/globals';
+import { BigInt, Number } from '../../../utils/globals.js';
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;

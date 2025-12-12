@@ -1,8 +1,8 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import type { Value } from '../../check/arbitrary/definition/Value';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { noUndefinedAsContext, UndefinedContextPlaceholder } from './helpers/NoUndefinedAsContext';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import type { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { noUndefinedAsContext, UndefinedContextPlaceholder } from './helpers/NoUndefinedAsContext.js';
 
 /**
  * Arbitrary considering any value as shrinkable whatever the received context.

@@ -1,4 +1,4 @@
-import { Error, safeSubstring } from '../../../utils/globals';
+import { Error, safeSubstring } from '../../../utils/globals.js';
 
 /** @internal */
 const quickNumberToHexaString = '0123456789abcdef';

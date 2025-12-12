@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import fc from '../../src/fast-check';
-import { asyncRunWithSanitizedStack, runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
+import fc from '../../src/fast-check.js';
+import { asyncRunWithSanitizedStack, runWithSanitizedStack } from './__test-helpers__/StackSanitizer.js';
 import {
   IncreaseCommand,
   DecreaseCommand,
   EvenCommand,
   OddCommand,
   CheckLessThanCommand,
-} from './model/CounterCommands';
+} from './model/CounterCommands.js';
 
 const testFunc = (value: unknown) => {
   const repr = fc

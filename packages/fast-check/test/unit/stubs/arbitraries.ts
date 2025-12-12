@@ -1,7 +1,7 @@
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import type { Random } from '../../../src/random/generator/Random';
-import { Stream } from '../../../src/stream/Stream';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import type { Random } from '../../../src/random/generator/Random.js';
+import { Stream } from '../../../src/stream/Stream.js';
 
 /**
  * CounterArbitrary

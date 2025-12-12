@@ -1,5 +1,5 @@
-import { safeIndexOf } from '../../../utils/globals';
-import { TokenizerBlockMode, readFrom } from './ReadRegex';
+import { safeIndexOf } from '../../../utils/globals.js';
+import { TokenizerBlockMode, readFrom } from './ReadRegex.js';
 
 const safeStringFromCodePoint = String.fromCodePoint;
 

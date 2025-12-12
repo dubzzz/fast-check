@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { LazyArbitrary } from '../../../../src/arbitrary/_internals/LazyArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../../src/stream/Stream';
-import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { LazyArbitrary } from '../../../../src/arbitrary/_internals/LazyArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { Stream } from '../../../../src/stream/Stream.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
 describe('LazyArbitrary', () => {
   describe('generate', () => {

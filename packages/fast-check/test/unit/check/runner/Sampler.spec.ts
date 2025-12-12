@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { sample, statistics } from '../../../../src/check/runner/Sampler';
+import { sample, statistics } from '../../../../src/check/runner/Sampler.js';
 
-import * as stubArb from '../../stubs/arbitraries';
-import { noShrink } from '../../../../src/arbitrary/noShrink';
-import { cloneMethod } from '../../../../src/check/symbols';
-import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
+import * as stubArb from '../../stubs/arbitraries.js';
+import { noShrink } from '../../../../src/arbitrary/noShrink.js';
+import { cloneMethod } from '../../../../src/check/symbols.js';
+import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {

@@ -1,9 +1,9 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { tuple } from './tuple';
-import { uniqueArray } from './uniqueArray';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { arrayToMapMapper, arrayToMapUnmapper } from './_internals/mappers/ArrayToMap';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { tuple } from './tuple.js';
+import { uniqueArray } from './uniqueArray.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { arrayToMapMapper, arrayToMapUnmapper } from './_internals/mappers/ArrayToMap.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
 /** @internal */
 function mapKeyExtractor<K, V>(entry: [K, V]): K {

@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import type { LoremConstraints } from '../../../src/arbitrary/lorem';
-import { lorem } from '../../../src/arbitrary/lorem';
+import type { LoremConstraints } from '../../../src/arbitrary/lorem.js';
+import { lorem } from '../../../src/arbitrary/lorem.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('lorem', () => {
   it('should reject any negative or zero maxCount whatever the mode', () =>

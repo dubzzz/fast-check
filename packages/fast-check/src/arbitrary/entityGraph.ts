@@ -1,11 +1,11 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { initialPoolForEntityGraph } from './_internals/InitialPoolForEntityGraphArbitrary';
-import type { Arbitraries, EntityGraphValue, EntityRelations } from './_internals/interfaces/EntityGraphTypes';
-import { unlinkedToLinkedEntitiesMapper } from './_internals/mappers/UnlinkedToLinkedEntities';
-import { onTheFlyLinksForEntityGraph } from './_internals/OnTheFlyLinksForEntityGraphArbitrary';
-import { unlinkedEntitiesForEntityGraph } from './_internals/UnlinkedEntitiesForEntityGraph';
-import type { ArrayConstraints } from './array';
-import type { UniqueArrayConstraintsRecommended } from './uniqueArray';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { initialPoolForEntityGraph } from './_internals/InitialPoolForEntityGraphArbitrary.js';
+import type { Arbitraries, EntityGraphValue, EntityRelations } from './_internals/interfaces/EntityGraphTypes.js';
+import { unlinkedToLinkedEntitiesMapper } from './_internals/mappers/UnlinkedToLinkedEntities.js';
+import { onTheFlyLinksForEntityGraph } from './_internals/OnTheFlyLinksForEntityGraphArbitrary.js';
+import { unlinkedEntitiesForEntityGraph } from './_internals/UnlinkedEntitiesForEntityGraph.js';
+import type { ArrayConstraints } from './array.js';
+import type { UniqueArrayConstraintsRecommended } from './uniqueArray.js';
 
 const safeObjectCreate = Object.create;
 const safeObjectKeys = Object.keys;

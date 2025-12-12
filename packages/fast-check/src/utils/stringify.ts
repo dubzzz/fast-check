@@ -10,7 +10,7 @@ import {
   Map,
   String,
   Symbol as StableSymbol,
-} from './globals';
+} from './globals.js';
 
 const safeArrayFrom = Array.from;
 const safeBufferIsBuffer = typeof Buffer !== 'undefined' ? Buffer.isBuffer : undefined;

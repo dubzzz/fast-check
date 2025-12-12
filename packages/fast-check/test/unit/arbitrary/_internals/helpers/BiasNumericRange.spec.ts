@@ -4,7 +4,7 @@ import {
   biasNumericRange,
   bigIntLogLike,
   integerLogLike,
-} from '../../../../../src/arbitrary/_internals/helpers/BiasNumericRange';
+} from '../../../../../src/arbitrary/_internals/helpers/BiasNumericRange.js';
 
 describe('biasNumericRange', () => {
   it('should bias close to extreme values and zero if min and max have opposite signs', () =>

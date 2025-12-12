@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import type { WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority';
-import { webAuthority } from '../../../src/arbitrary/webAuthority';
+import type { WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority.js';
+import { webAuthority } from '../../../src/arbitrary/webAuthority.js';
 import { URL } from 'url';
 
 import {
@@ -9,8 +9,8 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers.js';
 
 describe('webAuthority (integration)', () => {
   type Extra = WebAuthorityConstraints;

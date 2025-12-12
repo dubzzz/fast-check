@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { LimitedShrinkArbitrary } from './_internals/LimitedShrinkArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { LimitedShrinkArbitrary } from './_internals/LimitedShrinkArbitrary.js';
 
 /**
  * Create another Arbitrary with a limited (or capped) number of shrink values

@@ -5,7 +5,7 @@ import {
   timeToDateMapperWithNaN,
   timeToDateUnmapper,
   timeToDateUnmapperWithNaN,
-} from '../../../../../src/arbitrary/_internals/mappers/TimeToDate';
+} from '../../../../../src/arbitrary/_internals/mappers/TimeToDate.js';
 
 describe('timeToDateUnmapper', () => {
   it('should be able to revert any mapped date correctly even invalid ones', () => {

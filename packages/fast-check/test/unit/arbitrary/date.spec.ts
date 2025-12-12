@@ -1,17 +1,17 @@
 import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
-import { date } from '../../../src/arbitrary/date';
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { date } from '../../../src/arbitrary/date.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceCorrectValues,
   assertShrinkProducesStrictlySmallerValue,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
-import * as IntegerMock from '../../../src/arbitrary/integer';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import * as IntegerMock from '../../../src/arbitrary/integer.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('date', () => {
   declareCleaningHooksForSpies();

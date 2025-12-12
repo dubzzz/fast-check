@@ -1,10 +1,10 @@
-import { VerbosityLevel } from '../configuration/VerbosityLevel';
-import { ExecutionStatus } from './ExecutionStatus';
-import type { ExecutionTree } from './ExecutionTree';
-import type { RunDetails } from './RunDetails';
-import type { QualifiedParameters } from '../configuration/QualifiedParameters';
-import type { PropertyFailure } from '../../property/IRawProperty';
-import { safeSplit } from '../../../utils/globals';
+import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
+import { ExecutionStatus } from './ExecutionStatus.js';
+import type { ExecutionTree } from './ExecutionTree.js';
+import type { RunDetails } from './RunDetails.js';
+import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
+import type { PropertyFailure } from '../../property/IRawProperty.js';
+import { safeSplit } from '../../../utils/globals.js';
 
 /**
  * Report the status of a run

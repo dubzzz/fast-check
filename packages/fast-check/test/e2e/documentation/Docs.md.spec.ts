@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import * as fs from 'fs';
-import fc from '../../../src/fast-check';
+import fc from '../../../src/fast-check.js';
 import { globSync } from 'glob';
 
 const TargetNumExamples = 5;

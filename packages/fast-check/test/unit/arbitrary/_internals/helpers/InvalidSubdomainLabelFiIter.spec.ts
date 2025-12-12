@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { filterInvalidSubdomainLabel } from '../../../../../src/arbitrary/_internals/helpers/InvalidSubdomainLabelFiIter';
+import { filterInvalidSubdomainLabel } from '../../../../../src/arbitrary/_internals/helpers/InvalidSubdomainLabelFiIter.js';
 
 describe('filterInvalidSubdomainLabel', () => {
   // Internal function:
