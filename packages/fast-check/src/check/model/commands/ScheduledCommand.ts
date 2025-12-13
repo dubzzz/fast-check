@@ -3,9 +3,12 @@ import type { AsyncCommand } from '../command/AsyncCommand.js';
 import type { Scheduler } from '../../../arbitrary/scheduler.js';
 
 /** @internal */
-export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync extends boolean>
-  implements AsyncCommand<Model, Real, true>
-{
+export class ScheduledCommand<
+  Model extends object,
+  Real,
+  RunResult,
+  CheckAsync extends boolean,
+> implements AsyncCommand<Model, Real, true> {
   constructor(
     readonly s: Scheduler,
     readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>,

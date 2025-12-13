@@ -7,5 +7,9 @@ import type { ICommand } from './ICommand.js';
  * @remarks Since 1.5.0
  * @public
  */
-export interface AsyncCommand<Model extends object, Real, CheckAsync extends boolean = false>
-  extends ICommand<Model, Real, Promise<void>, CheckAsync> {}
+export interface AsyncCommand<Model extends object, Real, CheckAsync extends boolean = false> extends ICommand<
+  Model,
+  Real,
+  Promise<void>,
+  CheckAsync
+> {}

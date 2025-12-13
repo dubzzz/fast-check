@@ -12,9 +12,12 @@ import type { ICommand } from '../command/ICommand.js';
  * Wrapper around commands used internally by fast-check to wrap existing commands
  * in order to add them a flag to know whether or not they already have been executed
  */
-export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean>
-  implements ICommand<Model, Real, RunResult, CheckAsync>
-{
+export class CommandWrapper<Model extends object, Real, RunResult, CheckAsync extends boolean> implements ICommand<
+  Model,
+  Real,
+  RunResult,
+  CheckAsync
+> {
   hasRan = false;
   constructor(readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>) {
     if (hasToStringMethod(cmd)) {
