@@ -15,14 +15,14 @@
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
     "pure-rand": "^7.0.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "supertest": "^7.1.4"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",
     "@types/lodash": "^4.17.21",
-    "@types/react": "^19.2.5",
+    "@types/react": "^19.2.7",
     "@types/supertest": "^6.0.3",
     "happy-dom": "^20.0.10",
     "typescript": "~5.9.3",
