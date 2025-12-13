@@ -5,9 +5,12 @@ import type { CommandWrapper } from './CommandWrapper.js';
 /**
  * Iterable datastructure accepted as input for asyncModelRun and modelRun
  */
-export class CommandsIterable<Model extends object, Real, RunResult, CheckAsync extends boolean = false>
-  implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>>
-{
+export class CommandsIterable<
+  Model extends object,
+  Real,
+  RunResult,
+  CheckAsync extends boolean = false,
+> implements Iterable<CommandWrapper<Model, Real, RunResult, CheckAsync>> {
   constructor(
     readonly commands: CommandWrapper<Model, Real, RunResult, CheckAsync>[],
     readonly metadataForReplay: () => string,
