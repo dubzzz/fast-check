@@ -242,7 +242,7 @@ importers:
     dependencies:
       '@npmcli/arborist':
         specifier: ^9.0.0
-        version: 9.1.8
+        version: 9.1.9
       npm-packlist:
         specifier: ^10.0.0
         version: 10.0.3
@@ -2379,8 +2379,8 @@ packages:
     resolution: {integrity: sha512-kAQTcEN9E8ERLVg5AsGwLNoFb+oEG6engbqAU2P43gD4JEIkNGMHdVQ096FsOAAYpZPB0RSt0zgInKIAS1l5QA==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@npmcli/arborist@9.1.8':
-    resolution: {integrity: sha512-TYAzq0oaXQU+uLfXFbR2wYx62qHIOSg/TYhGWJSphJDypyjdNXC7B/+k29ElC2vWlWfX4OJnhmSY5DTwSFiNpg==}
+  '@npmcli/arborist@9.1.9':
+    resolution: {integrity: sha512-O/rLeBo64mkUn1zU+1tFDWXvbAA9UXe9eUldwTwRLxOLFx9obqjNoozW65LmYqgWb0DG40i9lNZSv78VX2GKhw==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
@@ -6444,8 +6444,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lru-cache@11.2.2:
-    resolution: {integrity: sha512-F9ODfyqML2coTIsQpSkRHnLSZMtkU8Q+mSfcaIyKwy58u+8k5nvAYeiNhsyMARvzNcXJ9QfWVrcPsC9e9rAxtg==}
+  lru-cache@11.2.4:
+    resolution: {integrity: sha512-B5Y16Jr9LB9dHVkh6ZevG+vAbOsNOYCX+sXvFWFu7B3Iz5mijW3zdbMyhsh8ANd2mSWBYdJgnqi+mL7/LrOPYg==}
     engines: {node: 20 || >=22}
 
   lru-cache@5.1.1:
@@ -12684,12 +12684,12 @@ snapshots:
       agent-base: 7.1.4
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
-      lru-cache: 11.2.2
+      lru-cache: 11.2.4
       socks-proxy-agent: 8.0.5
     transitivePeerDependencies:
       - supports-color
 
-  '@npmcli/arborist@9.1.8':
+  '@npmcli/arborist@9.1.9':
     dependencies:
       '@isaacs/string-locale-compare': 1.1.0
       '@npmcli/fs': 5.0.0
@@ -12707,7 +12707,7 @@ snapshots:
       common-ancestor-path: 1.0.1
       hosted-git-info: 9.0.2
       json-stringify-nice: 1.1.4
-      lru-cache: 11.2.2
+      lru-cache: 11.2.4
       minimatch: 10.1.1
       nopt: 9.0.0
       npm-install-checks: 8.0.0
@@ -12735,7 +12735,7 @@ snapshots:
     dependencies:
       '@npmcli/promise-spawn': 9.0.1
       ini: 6.0.0
-      lru-cache: 11.2.2
+      lru-cache: 11.2.4
       npm-pick-manifest: 11.0.3
       proc-log: 6.1.0
       promise-retry: 2.0.1
@@ -14587,7 +14587,7 @@ snapshots:
       '@npmcli/fs': 5.0.0
       fs-minipass: 3.0.3
       glob: 13.0.0
-      lru-cache: 11.2.2
+      lru-cache: 11.2.4
       minipass: 7.1.2
       minipass-collect: 2.0.1
       minipass-flush: 1.0.5
@@ -16276,7 +16276,7 @@ snapshots:
 
   hosted-git-info@9.0.2:
     dependencies:
-      lru-cache: 11.2.2
+      lru-cache: 11.2.4
 
   hpack.js@2.1.6:
     dependencies:
@@ -17352,7 +17352,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lru-cache@11.2.2: {}
+  lru-cache@11.2.4: {}
 
   lru-cache@5.1.1:
     dependencies:
@@ -18453,7 +18453,7 @@ snapshots:
 
   path-scurry@2.0.1:
     dependencies:
-      lru-cache: 11.2.2
+      lru-cache: 11.2.4
       minipass: 7.1.2
 
   path-to-regexp@0.1.12: {}
