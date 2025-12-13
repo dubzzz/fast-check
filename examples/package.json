@@ -11,7 +11,7 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "fast-check": "workspace:*",
     "lodash": "^4.17.21",
     "pure-rand": "^7.0.0",
@@ -20,7 +20,7 @@
     "supertest": "^7.1.4"
   },
   "devDependencies": {
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "@types/lodash": "^4.17.21",
     "@types/react": "^19.2.7",
     "@types/supertest": "^6.0.3",
