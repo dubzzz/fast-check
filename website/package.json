@@ -17,6 +17,8 @@
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
     "@codesandbox/sandpack-themes": "^2.0.21",
+    "@docsearch/css": "^3.9.0",
+    "@docsearch/react": "^3.9.0",
     "@docusaurus/core": "3.9.2",
     "@docusaurus/faster": "3.9.2",
     "@docusaurus/plugin-pwa": "3.9.2",
