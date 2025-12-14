@@ -12,7 +12,11 @@ export default function SearchBar() {
     apiKey: string;
     indexName: string;
     searchParameters?: Record<string, unknown>;
-  };
+  } | undefined;
+
+  if (!algoliaConfig) {
+    return null;
+  }
 
   return (
     <DocSearch
