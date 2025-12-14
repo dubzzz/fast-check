@@ -7,13 +7,19 @@ import '@docsearch/css/dist/style.css';
 export default function SearchBar() {
   const { siteConfig } = useDocusaurusContext();
   const history = useHistory();
+  const algoliaConfig = siteConfig.themeConfig.algolia as {
+    appId: string;
+    apiKey: string;
+    indexName: string;
+    searchParameters?: Record<string, unknown>;
+  };
 
   return (
     <DocSearch
-      appId={siteConfig.themeConfig.algolia.appId}
-      apiKey={siteConfig.themeConfig.algolia.apiKey}
-      indexName={siteConfig.themeConfig.algolia.indexName}
-      searchParameters={siteConfig.themeConfig.algolia.searchParameters}
+      appId={algoliaConfig.appId}
+      apiKey={algoliaConfig.apiKey}
+      indexName={algoliaConfig.indexName}
+      searchParameters={algoliaConfig.searchParameters}
       navigator={{
         navigate({ itemUrl }) {
           history.push(itemUrl);
