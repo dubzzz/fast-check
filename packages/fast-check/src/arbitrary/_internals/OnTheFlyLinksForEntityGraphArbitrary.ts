@@ -126,7 +126,7 @@ function processAllEntities<TEntityFields, TEntityRelations extends EntityRelati
     const relationFields = Object.keys(currentRelations) as (keyof typeof currentRelations)[];
     
     if (relationFields.length === 0) {
-      return processFrom(index + 1);
+      return constant(undefined).chain(() => processFrom(index + 1));
     }
 
     const linkArbitraries: Arbitrary<number[] | number | undefined>[] = [];
