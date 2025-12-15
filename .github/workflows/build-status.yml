@@ -69,6 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - name: Install pnpm
@@ -329,6 +330,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
       - name: Install pnpm
@@ -573,6 +575,7 @@ jobs:
       tag_count: ${{steps.tag_count.outputs.count}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: tag_count
@@ -589,6 +592,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
@@ -640,6 +644,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
@@ -691,6 +696,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
@@ -742,6 +748,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
@@ -793,6 +800,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
@@ -844,6 +852,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
@@ -895,6 +904,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
@@ -946,6 +956,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
           persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
