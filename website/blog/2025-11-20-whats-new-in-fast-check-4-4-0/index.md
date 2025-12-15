@@ -24,7 +24,7 @@ fc.map(fc.string(), fc.nat());
 fc.map(fc.string(), fc.nat(), { minKeys: 1, maxKeys: 10 });
 ```
 
-Like other collection arbitraries in fast-check, `fc.map` comes with sensible defaults while allowing you to customize the size constraints.
+Like other arbitraries in fast-check, `fc.map` comes with sensible defaults while allowing you to customize it deeply.
 
 ## New `fc.set` arbitrary
 
