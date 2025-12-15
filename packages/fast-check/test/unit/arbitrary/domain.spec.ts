@@ -71,12 +71,14 @@ describe('domain (integration)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(domainBuilder, { extraParameters });
   });
 
-  // prettier-ignore
   it.each`
     source
-    ${'very-very-very-very-very-very-very-very-very-very-very-long-label.com' /* label too long >63 */}
-    ${`${'a.'.repeat(128)}com` /* domain too long >255 */}
+    ${'very-very-very-very-very-very-very-very-very-very-very-long-label.com'}
+    ${`${'a.'.repeat(128)}com`}
   `('should not be able to generate $source with fc.domain()', ({ source }) => {
+    // Test cases:
+    // - label too long >63
+    // - domain too long >255
     // Arrange / Act
     const arb = domain();
     const out = arb.canShrinkWithoutContext(source);

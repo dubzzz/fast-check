@@ -211,16 +211,18 @@ describe('sparseArray (integration)', () => {
     expect(out).toBe(false);
   });
 
-  // prettier-ignore
   it.each`
-    rawValue                                                                                                          | constraints
-    ${[1, , , , ,]}                                                                                                   | ${{ noTrailingHole: false }}
-    ${[, , , , , 3, , , , , , , , , , 6]}                                                                             | ${{ minNumElements: 2 }}
-    ${[, , , , , 3, 4, , , 5, , , , , , 6]}                                                                           | ${{ maxNumElements: 4 }}
-    ${[, , , 4]}                                                                                                      | ${{ maxLength: 4 }}
-    ${Object.assign(Array(200), { 1: 7 }) /* length longer than default maxGeneratedLength but ok for shrink */}      | ${{}}
-    ${[...Array(50)].map((_, i) => i) /* non-holey items higher than default maxGeneratedLength but ok for shrink */} | ${{}}
+    rawValue                                | constraints
+    ${[1, , , , ,]}                         | ${{ noTrailingHole: false }}
+    ${[, , , , , 3, , , , , , , , , , 6]}   | ${{ minNumElements: 2 }}
+    ${[, , , , , 3, 4, , , 5, , , , , , 6]} | ${{ maxNumElements: 4 }}
+    ${[, , , 4]}                            | ${{ maxLength: 4 }}
+    ${Object.assign(Array(200), { 1: 7 })}  | ${{}}
+    ${[...Array(50)].map((_, i) => i)}      | ${{}}
   `('should be able to shrink $rawValue with fc.sparseArray(..., $constraints)', ({ rawValue, constraints }) => {
+    // Test cases include:
+    // - Object.assign(Array(200), { 1: 7 }): length longer than default maxGeneratedLength but ok for shrink
+    // - [...Array(50)].map((_, i) => i): non-holey items higher than default maxGeneratedLength but ok for shrink
     // Arrange
     const arb = sparseArray(new FakeIntegerArbitrary(), constraints);
     const value = new Value(rawValue, undefined);
