@@ -3,6 +3,10 @@ name: Zizmor Security Audit
 on:
   # Run when workflow files are modified
   pull_request:
+    branches:
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
     paths:
       - '.github/workflows/**'
   push:
