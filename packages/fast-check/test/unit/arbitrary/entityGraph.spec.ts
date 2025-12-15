@@ -35,9 +35,7 @@ describe('entityGraph (integration)', () => {
             ...(extra.withExactlyOne ? { team: { arity: '1', type: 'team' } } : {}),
             ...(extra.withMany ? { competencies: { arity: 'many', type: 'competency' } } : {}),
           },
-          team: {
-            ...(extra.withExactlyOne ? { department: { arity: '1', type: 'department' } } : {}),
-          },
+          team: (extra.withExactlyOne ? { department: { arity: '1', type: 'department' } } : {}),
           department: {},
           competency: {},
         },
