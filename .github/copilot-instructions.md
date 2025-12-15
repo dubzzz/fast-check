@@ -45,7 +45,7 @@ When making code changes to this repository, ensure you run the following comman
 - **Check formatting**: `pnpm format:check`
 - **Apply formatting**: `pnpm format`
 
-Always run format checks before committing to ensure code follows the project's style guidelines enforced by Prettier.
+Always run format checks before committing to ensure code follows the project's style guidelines enforced by our code formatter.
 
 ### Lint
 
