@@ -35,3 +35,34 @@ When creating or naming pull requests, follow the [gitmoji](https://gitmoji.dev/
 - 📦 Add or update compiled files or packages
 
 For a complete list of gitmoji codes, see https://gitmoji.dev/
+
+## Development Workflow
+
+When making code changes to this repository, ensure you run the following commands as appropriate:
+
+### Format
+
+- **Check formatting**: `pnpm format:check`
+- **Apply formatting**: `pnpm format`
+
+Always run format checks before committing to ensure code follows the project's style guidelines enforced by Prettier.
+
+### Lint
+
+- **Check linting**: `pnpm lint:check`
+- **Fix linting issues**: `pnpm lint`
+
+Run lint checks to ensure code follows the project's coding standards and best practices.
+
+### Typecheck
+
+- **Run typecheck**: `pnpm typecheck:all`
+
+Run typecheck to ensure TypeScript types are correct across all packages.
+
+### Build
+
+- **Build all packages**: `pnpm build:all`
+- **Build for CI**: `pnpm build-ci:all`
+
+Build the project to ensure all packages compile correctly. Use `build:all` for local development and `build-ci:all` for CI environments.
