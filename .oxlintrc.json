@@ -1,10 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "unicorn",
-    "typescript",
-    "oxc"
-  ],
+  "plugins": ["unicorn", "typescript", "oxc"],
   "categories": {},
   "rules": {
     "constructor-super": "warn",
@@ -106,41 +102,17 @@
     "unicorn/no-single-promise-in-promise-methods": "warn",
     "unicorn/no-thenable": "warn",
     // Disabled to preserve intentional await on non-promise values used for timing in scheduler tests
+    // (see packages/fast-check/test/unit/arbitrary/_internals/implementations/SchedulerImplem.spec.ts)
     "unicorn/no-unnecessary-await": "off",
     "unicorn/no-useless-fallback-in-spread": "warn",
     "unicorn/no-useless-length-check": "warn",
-    // Disabled because spreads are necessary to convert Stream objects to arrays for comparison/destructuring
+    // Disabled because spreads are necessary to convert Stream objects (IterableIterator) to arrays for comparison/destructuring
+    // See usage in packages/fast-check/src/stream/Stream.ts and related tests
     "unicorn/no-useless-spread": "off",
     "unicorn/prefer-set-size": "warn",
     "unicorn/prefer-string-starts-ends-with": "warn"
   },
-  "settings": {
-    "jsx-a11y": {
-      "polymorphicPropName": null,
-      "components": {},
-      "attributes": {}
-    },
-    "next": {
-      "rootDir": []
-    },
-    "react": {
-      "formComponents": [],
-      "linkComponents": []
-    },
-    "jsdoc": {
-      "ignorePrivate": false,
-      "ignoreInternal": false,
-      "ignoreReplacesDocs": true,
-      "overrideReplacesDocs": true,
-      "augmentsExtendsReplacesDocs": false,
-      "implementsReplacesDocs": false,
-      "exemptDestructuredRootsFromChecks": false,
-      "tagNamePreference": {}
-    },
-    "vitest": {
-      "typecheck": false
-    }
-  },
+  "settings": {},
   "env": {
     "builtin": true
   },
