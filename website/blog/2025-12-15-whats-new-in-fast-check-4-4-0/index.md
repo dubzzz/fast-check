@@ -24,11 +24,11 @@ fc.map(fc.string(), fc.nat());
 fc.map(fc.string(), fc.nat(), { minKeys: 1, maxKeys: 10 });
 ```
 
-Like other collection arbitraries in fast-check, `fc.map` comes with sensible defaults while allowing you to customize the size constraints.
+Like other arbitraries in fast-check, `fc.map` comes with sensible defaults while allowing you to customize it deeply.
 
 ## New `fc.set` arbitrary
 
-Alongside `Map`, we're also introducing `fc.set` for generating instances of JavaScript `Set`.
+Alongside `fc.map`, we're also introducing `fc.set` for generating instances of `Set`.
 
 ```js
 // Generate a set of strings
@@ -42,7 +42,7 @@ The `fc.set` arbitrary ensures all elements in the generated set are unique acco
 
 ## Full `PropertyKey` support in `fc.dictionary`
 
-Prior to this release, `fc.dictionary` only supported string keys. However, JavaScript objects can have properties keyed by strings, numbers, or symbols. With 4.4.0, `fc.dictionary` now accepts the full range of property keys.
+Prior to this release, `fc.dictionary` only supported string keys. However, JavaScript objects can have properties keyed by strings, numbers or symbols. With 4.4.0, `fc.dictionary` now accepts the full range of property keys.
 
 ## Changelog since 4.3.0
 
@@ -52,7 +52,9 @@ The version 4.4.0 is based on version 4.3.0.
 
 - ([PR#6232](https://github.com/dubzzz/fast-check/pull/6232)) Support full `PropertyKey` in `fc.dictionary(...)`
 - ([PR#6267](https://github.com/dubzzz/fast-check/pull/6267)) Add `fc.map` arbitrary
+- ([PR#6040](https://github.com/dubzzz/fast-check/pull/6040)) Add `circular` option to `fc.letrec`
 - ([PR#6270](https://github.com/dubzzz/fast-check/pull/6270)) Add `fc.set` arbitrary
+- ([PR#6334](https://github.com/dubzzz/fast-check/pull/6334)) REVERT-6040: Self-referencing capabilities from `letrec`
 
 ### Fixes
 
