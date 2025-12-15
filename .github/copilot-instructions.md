@@ -44,6 +44,8 @@ When making code changes to this repository, ensure you run the following comman
 
 - **Check formatting**: `pnpm format:check`
 - **Apply formatting**: `pnpm format`
+- **Format specific files**: `pnpm format <file-or-glob>`
+  - Example: `pnpm format packages/fast-check/src/**/*.ts`
 
 Always run format checks before committing to ensure code follows the project's style guidelines enforced by our code formatter.
 
@@ -51,12 +53,16 @@ Always run format checks before committing to ensure code follows the project's 
 
 - **Check linting**: `pnpm lint:check`
 - **Fix linting issues**: `pnpm lint`
+- **Lint specific files**: `pnpm exec eslint <file-or-dir>`
+  - Example: `pnpm exec eslint packages/fast-check/src/`
 
 Run lint checks to ensure code follows the project's coding standards and best practices.
 
 ### Typecheck
 
 - **Run typecheck**: `pnpm typecheck:all`
+- **Typecheck specific package**: `pnpm --filter <package-name> run typecheck`
+  - Example: `pnpm --filter fast-check run typecheck`
 
 Run typecheck to ensure TypeScript types are correct across all packages.
 
