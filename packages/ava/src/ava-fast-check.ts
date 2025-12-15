@@ -38,8 +38,8 @@ function wrapProp<Context, Ts extends NonEmptyArray<any>>(
 
     try {
       await fc.assert(
-        (fc.asyncProperty as any)(
-          ...(arbitraries as any),
+        fc.asyncProperty<unknown[], Ts>(
+          ...(arbitraries as unknown[]),
           async (...args: Ts) => {
             const tryResult = await t.try((tt) => prop(tt, ...args));
 
