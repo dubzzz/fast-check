@@ -105,9 +105,11 @@
     "unicorn/no-new-array": "warn",
     "unicorn/no-single-promise-in-promise-methods": "warn",
     "unicorn/no-thenable": "warn",
+    // Disabled to preserve intentional await on non-promise values used for timing in scheduler tests
     "unicorn/no-unnecessary-await": "off",
     "unicorn/no-useless-fallback-in-spread": "warn",
     "unicorn/no-useless-length-check": "warn",
+    // Disabled because spreads are necessary to convert Stream objects to arrays for comparison/destructuring
     "unicorn/no-useless-spread": "off",
     "unicorn/prefer-set-size": "warn",
     "unicorn/prefer-string-starts-ends-with": "warn"
