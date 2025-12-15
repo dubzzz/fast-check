@@ -31,10 +31,12 @@ describe('Tosser', () => {
       fc.assert(
         fc.property(fc.integer(), fc.nat(100), (seed, start) => {
           const s = stream(toss(wrap(stubArb.forwardArray(4)), seed, rngProducer, []));
-          const [g1, g2] = s
+          const [g1, g2] = [
+            ...s
               .drop(start)
               .take(2)
-              .map((f) => f.value);
+              .map((f) => f.value),
+          ];
           expect(g1).not.toStrictEqual(g2);
           return true;
         }),
@@ -42,11 +44,15 @@ describe('Tosser', () => {
     it('Should produce the same sequence for the same seed', () =>
       fc.assert(
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
-          expect(stream(toss(wrap(stubArb.forward()), seed, rngProducer, []))
+          expect([
+            ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, []))
               .take(num)
-              .map((f) => f.value)).toStrictEqual(stream(toss(wrap(stubArb.forward()), seed, rngProducer, []))
+              .map((f) => f.value),
+          ]).toStrictEqual([
+            ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, []))
               .take(num)
-              .map((f) => f.value));
+              .map((f) => f.value),
+          ]);
         }),
       ));
     it('Should not depend on the order of iteration', () =>

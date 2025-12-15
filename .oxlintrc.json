@@ -108,7 +108,7 @@
     "unicorn/no-unnecessary-await": "off",
     "unicorn/no-useless-fallback-in-spread": "warn",
     "unicorn/no-useless-length-check": "warn",
-    "unicorn/no-useless-spread": "warn",
+    "unicorn/no-useless-spread": "off",
     "unicorn/prefer-set-size": "warn",
     "unicorn/prefer-string-starts-ends-with": "warn"
   },
