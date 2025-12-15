@@ -56,7 +56,7 @@ Always run format checks before committing to ensure code follows the project's 
 - **Lint specific files**: `pnpm exec eslint <file-or-dir>`
   - Example: `pnpm exec eslint packages/fast-check/src/`
 
-Run lint checks to ensure code follows the project's coding standards and best practices.
+Run lint checks to ensure code follows the project's coding standards and best practices. Note that linting may depend on type inference, so you may need to build dependencies first.
 
 ### Typecheck
 
@@ -64,7 +64,7 @@ Run lint checks to ensure code follows the project's coding standards and best p
 - **Typecheck specific package**: `pnpm --filter <package-name> run typecheck`
   - Example: `pnpm --filter fast-check run typecheck`
 
-Run typecheck to ensure TypeScript types are correct across all packages.
+Run typecheck to ensure TypeScript types are correct across all packages. Note that you need to build dependencies first before typechecking a package.
 
 ### Build
 
