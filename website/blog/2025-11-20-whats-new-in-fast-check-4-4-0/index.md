@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [what's new, arbitrary, collection]
 ---
 
-The 4.4.0 release expands fast-check's collection of arbitraries with two highly requested data structures: `Map` and `Set`. These native JavaScript collections are now first-class citizens in fast-check, making it easier to test code that relies on them. We've also improved the flexibility of `fc.dictionary` to support the full range of property keys.
+We expand fast-check's collection of arbitraries with two data structures: `Map` and `Set`. These native collections are now first-class citizens in fast-check, making it easier to test code that relies on them. We've also improved the flexibility of `fc.dictionary` to support the full range of property keys.
 
 Continue reading to explore the detailed updates it brings.
 
@@ -12,7 +12,7 @@ Continue reading to explore the detailed updates it brings.
 
 ## New `fc.map` arbitrary
 
-JavaScript's `Map` is a powerful collection type that offers better performance characteristics than plain objects for certain use cases. With this release, fast-check now provides a dedicated `fc.map` arbitrary for generating maps.
+With this release, fast-check now provides a dedicated `fc.map` arbitrary for generating JavaScript's `Map`.
 
 The new arbitrary works similarly to `fc.dictionary` and `fc.object`, accepting key and value arbitraries:
 
@@ -24,11 +24,11 @@ fc.map(fc.string(), fc.nat());
 fc.map(fc.string(), fc.nat(), { minKeys: 1, maxKeys: 10 });
 ```
 
-Like other collection arbitraries in fast-check, `fc.map` comes with sensible defaults while allowing you to customize the size constraints. The generated maps can be used directly in your property-based tests, making it straightforward to verify map-related logic.
+Like other collection arbitraries in fast-check, `fc.map` comes with sensible defaults while allowing you to customize the size constraints.
 
 ## New `fc.set` arbitrary
 
-Alongside `Map`, we're also introducing `fc.set` for generating JavaScript `Set` instances. Sets are ideal for maintaining unique collections of values, and having a dedicated arbitrary makes testing set-based logic much more convenient.
+Alongside `Map`, we're also introducing `fc.set` for generating instances of JavaScript `Set`.
 
 ```js
 // Generate a set of strings
@@ -38,39 +38,11 @@ fc.set(fc.string());
 fc.set(fc.nat(), { minLength: 2, maxLength: 20 });
 ```
 
-The `fc.set` arbitrary ensures all elements in the generated set are unique according to JavaScript's equality semantics. This matches the behavior of native `Set` objects and helps you write tests that accurately reflect real-world usage.
+The `fc.set` arbitrary ensures all elements in the generated set are unique according to equality semantics of a `Set`.
 
 ## Full `PropertyKey` support in `fc.dictionary`
 
-Prior to this release, `fc.dictionary` only supported string keys. However, JavaScript objects can have properties keyed by strings, numbers, or symbols — collectively known as `PropertyKey`.
-
-With 4.4.0, `fc.dictionary` now accepts the full range of property keys:
-
-```js
-// Use string keys (as before)
-fc.dictionary(fc.string(), fc.nat());
-
-// Use numeric keys
-fc.dictionary(fc.nat(), fc.string());
-
-// Use symbol keys
-fc.dictionary(
-  fc.string().map((s) => Symbol(s)),
-  fc.boolean(),
-);
-
-// Mix different key types using fc.oneof
-fc.dictionary(
-  fc.oneof(
-    fc.string(),
-    fc.nat(),
-    fc.string().map((s) => Symbol(s)),
-  ),
-  fc.anything(),
-);
-```
-
-This enhancement brings `fc.dictionary` closer to the true flexibility of JavaScript objects, allowing you to test code that relies on non-string property keys.
+Prior to this release, `fc.dictionary` only supported string keys. However, JavaScript objects can have properties keyed by strings, numbers, or symbols. With 4.4.0, `fc.dictionary` now accepts the full range of property keys.
 
 ## Changelog since 4.3.0
 
