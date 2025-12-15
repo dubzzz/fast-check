@@ -4,13 +4,13 @@
     "vscode": {
       "extensions": [
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
+        "oxc-project.oxc-vscode",
         "ms-azuretools.vscode-docker",
         "eamodio.gitlens",
         "GitHub.vscode-github-actions"
       ],
       "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.defaultFormatter": "oxc-project.oxc-vscode",
         "editor.formatOnSave": true,
         "editor.stickyScroll.enabled": true,
         "terminal.integrated.defaultProfile.linux": "bash",

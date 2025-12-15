@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    ".changeset/",
+    "packages/*/coverage/",
+    "packages/*/dist/",
+    "packages/*/lib/",
+    "packages/*/lib-*/",
+    "packages/fast-check/docs/",
+    "packages/fast-check/documentation/Arbitraries.md",
+    "website/.docusaurus/",
+    "website/build/",
+    "pnpm-lock.yaml"
+  ],
+  "printWidth": 120,
+  "tabWidth": 2,
+  "singleQuote": true
+}

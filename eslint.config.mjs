@@ -1,14 +1,12 @@
 // @ts-check
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import eslintConfigPrettier from 'eslint-config-prettier';
 import globals from 'globals';
 
 /** @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile} */
 export default [
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  eslintConfigPrettier,
   {
     languageOptions: {
       parserOptions: {

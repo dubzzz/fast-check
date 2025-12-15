@@ -1,9 +1,8 @@
 {
-  "private": true,
   "name": "@fast-check/monorepo",
+  "private": true,
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "pnpm@10.25.0",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -17,8 +16,8 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "typecheck:all": "pnpm --parallel run typecheck",
-    "format": "prettier --experimental-cli --cache --write .",
-    "format:check": "prettier --experimental-cli --cache --list-different .",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "lint": "eslint --concurrency=auto . --fix",
     "lint:check": "eslint --concurrency=auto .",
     "publint:all": "pnpm --filter {./packages/**} --parallel exec publint --strict",
@@ -37,13 +36,13 @@
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.2",
-    "eslint-config-prettier": "^10.1.8",
     "globals": "^16.5.0",
+    "oxfmt": "^0.18.0",
     "pkg-pr-new": "^0.0.62",
-    "prettier": "3.7.4",
     "publint": "^0.3.16",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.49.0",
     "vitest": "^4.0.5"
-  }
+  },
+  "packageManager": "pnpm@10.25.0"
 }

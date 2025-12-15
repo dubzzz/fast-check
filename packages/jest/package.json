@@ -1,29 +1,58 @@
 {
   "name": "@fast-check/jest",
-  "description": "Property based testing for Jest based on fast-check",
   "version": "2.1.1",
+  "description": "Property based testing for Jest based on fast-check",
+  "keywords": [
+    "fast-check",
+    "generative",
+    "jest",
+    "property-based testing",
+    "quickcheck",
+    "testing"
+  ],
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/jest"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ],
+  "license": "MIT",
   "type": "module",
   "main": "lib/jest-fast-check.js",
   "exports": {
-    "./package.json": "./package.json",
-    "./worker": {
-      "require": {
-        "types": "./lib/cjs/jest-fast-check-worker.d.ts",
-        "default": "./lib/cjs/jest-fast-check-worker.js"
-      },
-      "import": {
-        "types": "./lib/jest-fast-check-worker.d.ts",
-        "default": "./lib/jest-fast-check-worker.js"
-      }
-    },
     ".": {
-      "require": {
-        "types": "./lib/cjs/jest-fast-check.d.ts",
-        "default": "./lib/cjs/jest-fast-check.js"
-      },
       "import": {
         "types": "./lib/jest-fast-check.d.ts",
         "default": "./lib/jest-fast-check.js"
+      },
+      "require": {
+        "types": "./lib/cjs/jest-fast-check.d.ts",
+        "default": "./lib/cjs/jest-fast-check.js"
+      }
+    },
+    "./package.json": "./package.json",
+    "./worker": {
+      "import": {
+        "types": "./lib/jest-fast-check-worker.d.ts",
+        "default": "./lib/jest-fast-check-worker.js"
+      },
+      "require": {
+        "types": "./lib/cjs/jest-fast-check-worker.d.ts",
+        "default": "./lib/cjs/jest-fast-check-worker.js"
       }
     }
   },
@@ -43,32 +72,8 @@
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git",
-    "directory": "packages/jest"
-  },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/dubzzz/fast-check/issues"
-  },
-  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/jest#readme",
   "dependencies": {
     "fast-check": "^3.0.0 || ^4.0.0"
-  },
-  "peerDependencies": {
-    "@fast-check/worker": ">=0.0.7 <0.6.0",
-    "@jest/expect": ">=28.0.0",
-    "@jest/globals": ">=25.5.2"
-  },
-  "peerDependenciesMeta": {
-    "@fast-check/worker": {
-      "optional": true
-    },
-    "@jest/expect": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@fast-check/jest": "workspace:*",
@@ -84,22 +89,17 @@
     "vite": "^7.2.7",
     "vitest": "^4.0.5"
   },
-  "keywords": [
-    "jest",
-    "generative",
-    "property-based testing",
-    "testing",
-    "quickcheck",
-    "fast-check"
-  ],
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://github.com/sponsors/dubzzz"
+  "peerDependencies": {
+    "@fast-check/worker": ">=0.0.7 <0.6.0",
+    "@jest/expect": ">=28.0.0",
+    "@jest/globals": ">=25.5.2"
+  },
+  "peerDependenciesMeta": {
+    "@fast-check/worker": {
+      "optional": true
     },
-    {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
+    "@jest/expect": {
+      "optional": true
     }
-  ]
+  }
 }

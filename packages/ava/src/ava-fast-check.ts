@@ -38,26 +38,29 @@ function wrapProp<Context, Ts extends NonEmptyArray<any>>(
 
     try {
       await fc.assert(
-        (fc.asyncProperty as any)(...(arbitraries as any), async (...args: Ts) => {
-          const tryResult = await t.try((tt) => prop(tt, ...args));
+        (fc.asyncProperty as any)(
+          ...(arbitraries as any),
+          async (...args: Ts) => {
+            const tryResult = await t.try((tt) => prop(tt, ...args));
 
-          if (tryResult.passed) {
-            tryResult.commit();
-            return true;
-          }
+            if (tryResult.passed) {
+              tryResult.commit();
+              return true;
+            }
 
-          const encounteredPreconditionFailure = tryResult.errors.some(
-            (error) =>
-              fc.PreconditionFailure.isFailure(error.savedError) || fc.PreconditionFailure.isFailure(error.cause),
-          );
-          if (encounteredPreconditionFailure) {
-            tryResult.discard();
-            fc.pre(false); // precondition failed
-          }
+            const encounteredPreconditionFailure = tryResult.errors.some(
+              (error) =>
+                fc.PreconditionFailure.isFailure(error.savedError) || fc.PreconditionFailure.isFailure(error.cause),
+            );
+            if (encounteredPreconditionFailure) {
+              tryResult.discard();
+              fc.pre(false); // precondition failed
+            }
 
-          failingTry = tryResult;
-          return false;
-        }),
+            failingTry = tryResult;
+            return false;
+          },
+        ),
         params,
       );
     } catch (error) {

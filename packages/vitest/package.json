@@ -1,21 +1,50 @@
 {
   "name": "@fast-check/vitest",
-  "description": "Property based testing for Vitest based on fast-check",
   "version": "0.2.4",
+  "description": "Property based testing for Vitest based on fast-check",
+  "keywords": [
+    "fast-check",
+    "generative",
+    "property-based testing",
+    "quickcheck",
+    "testing",
+    "vitest"
+  ],
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/vitest#readme",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/vitest"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ],
+  "license": "MIT",
   "type": "module",
   "main": "lib/vitest-fast-check.js",
   "exports": {
-    "./package.json": "./package.json",
     ".": {
-      "require": {
-        "types": "./lib/cjs/vitest-fast-check.d.ts",
-        "default": "./lib/cjs/vitest-fast-check.js"
-      },
       "import": {
         "types": "./lib/vitest-fast-check.d.ts",
         "default": "./lib/vitest-fast-check.js"
+      },
+      "require": {
+        "types": "./lib/cjs/vitest-fast-check.d.ts",
+        "default": "./lib/cjs/vitest-fast-check.js"
       }
-    }
+    },
+    "./package.json": "./package.json"
   },
   "module": "lib/vitest-fast-check.js",
   "types": "lib/vitest-fast-check.d.ts",
@@ -31,22 +60,8 @@
     "test-bundle": "node test-bundle/basic.mjs && vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git",
-    "directory": "packages/vitest"
-  },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/dubzzz/fast-check/issues"
-  },
-  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/vitest#readme",
   "dependencies": {
     "fast-check": "^3.0.0 || ^4.0.0"
-  },
-  "peerDependencies": {
-    "vitest": "^1 || ^2 || ^3 || ^4"
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",
@@ -56,22 +71,7 @@
     "vite": "^7.2.7",
     "vitest": "^4.0.5"
   },
-  "keywords": [
-    "vitest",
-    "generative",
-    "property-based testing",
-    "testing",
-    "quickcheck",
-    "fast-check"
-  ],
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://github.com/sponsors/dubzzz"
-    },
-    {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
-    }
-  ]
+  "peerDependencies": {
+    "vitest": "^1 || ^2 || ^3 || ^4"
+  }
 }
