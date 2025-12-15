@@ -31,6 +31,8 @@ jobs:
       - name: Install zizmor
         run: |
           # Install zizmor using pipx for isolated environment
+          # Note: We intentionally don't pin the version to ensure the scheduled
+          # runs benefit from the latest security checks and issue detection
           pipx install zizmor
       
       - name: Run zizmor
