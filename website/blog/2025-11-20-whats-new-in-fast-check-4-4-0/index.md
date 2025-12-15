@@ -42,7 +42,7 @@ The `fc.set` arbitrary ensures all elements in the generated set are unique acco
 
 ## Full `PropertyKey` support in `fc.dictionary`
 
-Prior to this release, `fc.dictionary` only supported string keys. However, JavaScript objects can have properties keyed by strings, numbers, or symbols. With 4.4.0, `fc.dictionary` now accepts the full range of property keys.
+Prior to this release, `fc.dictionary` only supported string keys. However, JavaScript objects can have properties keyed by strings, numbers or symbols. With 4.4.0, `fc.dictionary` now accepts the full range of property keys.
 
 ## Changelog since 4.3.0
 
