@@ -32,7 +32,7 @@ jobs:
         with:
           ref: ${{ steps.ref.outputs.ref }}
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true
       - name: Configure git
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
