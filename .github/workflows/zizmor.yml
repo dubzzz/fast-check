@@ -1,7 +1,6 @@
 name: Zizmor Security Audit
 
 on:
-  # Run when workflow files are modified
   pull_request:
     branches:
       - main
@@ -16,11 +15,6 @@ on:
       - 'fix-v*'
     paths:
       - '.github/workflows/**'
-  # Run weekly to catch new zizmor releases and newly discovered issues
-  schedule:
-    - cron: '0 3 * * 1' # Every Monday at 3 AM UTC
-  # Allow manual runs
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,11 +31,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       
       - name: Install zizmor
-        run: |
-          # Install zizmor using pipx for isolated environment
-          pipx install zizmor==1.18.0
+        run: pipx install zizmor==1.18.0
       
       - name: Run zizmor
-        run: |
-          # Run zizmor on the repository to audit all workflows
-          zizmor .
+        run: zizmor .
