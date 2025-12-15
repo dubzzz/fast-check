@@ -105,7 +105,7 @@
     "unicorn/no-new-array": "warn",
     "unicorn/no-single-promise-in-promise-methods": "warn",
     "unicorn/no-thenable": "warn",
-    "unicorn/no-unnecessary-await": "warn",
+    "unicorn/no-unnecessary-await": "off",
     "unicorn/no-useless-fallback-in-spread": "warn",
     "unicorn/no-useless-length-check": "warn",
     "unicorn/no-useless-spread": "warn",

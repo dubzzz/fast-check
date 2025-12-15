@@ -210,7 +210,7 @@ describe('SchedulerImplem', () => {
       // Act
       const s = new SchedulerImplem(act, taskSelector);
       s.schedule(Promise.resolve(1)).then(async () => {
-        'something already resolved';
+        await 'something already resolved';
         s.schedule(Promise.resolve(2));
       });
 
@@ -218,7 +218,7 @@ describe('SchedulerImplem', () => {
       expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
       await s.waitOne();
       expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
-      'just awaiting something';
+      await 'just awaiting something';
       expect(s.count()).toBe(1); // ...but it will after a simple await
     });
 
@@ -230,8 +230,8 @@ describe('SchedulerImplem', () => {
       // Act
       const s = new SchedulerImplem(act, taskSelector);
       s.schedule(Promise.resolve(1)).then(async () => {
-        'something already resolved';
-        'another something already resolved';
+        await 'something already resolved';
+        await 'another something already resolved';
         s.schedule(Promise.resolve(2));
       });
 
@@ -239,9 +239,9 @@ describe('SchedulerImplem', () => {
       expect(s.count()).toBe(1); // The promise returning 1 should be queued into the scheduler
       await s.waitOne();
       expect(s.count()).toBe(0); // The promise returning 2 should NOT be queued into the scheduler...
-      'just awaiting something';
+      await 'just awaiting something';
       expect(s.count()).toBe(0);
-      'just awaiting one more time';
+      await 'just awaiting one more time';
       expect(s.count()).toBe(1); // ...but it will after two simple await
     });
   });
@@ -354,7 +354,7 @@ describe('SchedulerImplem', () => {
       // Act
       const s = new SchedulerImplem(act, taskSelector);
       s.schedule(Promise.resolve(1)).then(async () => {
-        'something already resolved';
+        await 'something already resolved';
         s.schedule(Promise.resolve(2)).then(f2);
       });
 
@@ -389,8 +389,8 @@ describe('SchedulerImplem', () => {
       // Act
       const s = new SchedulerImplem(act, taskSelector);
       s.schedule(Promise.resolve(1)).then(async () => {
-        'something already resolved';
-        'another something already resolved';
+        await 'something already resolved';
+        await 'another something already resolved';
         s.schedule(Promise.resolve(2)).then(f2);
       });
 
@@ -403,7 +403,7 @@ describe('SchedulerImplem', () => {
         expect.objectContaining({ status: 'resolved', outputValue: '1' }), // The promise returning 1 has been completed...
         // ...but the promise returning 2 has not even been scheduled...
       ]);
-      'just awaiting something';
+      await 'just awaiting something';
       expect(s.report()).toEqual([
         expect.objectContaining({ status: 'resolved', outputValue: '1' }),
         expect.objectContaining({ status: 'pending' }), // ...but it will after a simple await
@@ -1617,7 +1617,7 @@ describe('SchedulerImplem', () => {
 
             expect(resolved).toEqual({ ...everythingResolved, 5: false });
             expect(s.count()).toBe(0); // Well, Promise.all just received the last completion it was waiting for...
-            'just awaiting to get the proper count'; // It needs one extra await to move forward and schedule the item 5
+            await 'just awaiting to get the proper count'; // It needs one extra await to move forward and schedule the item 5
             expect(s.count()).not.toBe(0);
             await s.waitAll(); // extra waitAll should make it pass
           }
@@ -2337,24 +2337,24 @@ describe('SchedulerImplem', () => {
     it('should execute a whole scheduled sequence made of async long steps using a single waitAll', async () => {
       // Arrange
       const b1 = vi.fn(async () => {
-        1;
-        2;
-        3;
+        await 1;
+        await 2;
+        await 3;
       });
       const b2 = vi.fn(async () => {
-        1;
-        2;
-        3;
+        await 1;
+        await 2;
+        await 3;
       });
       const b3 = vi.fn(async () => {
-        1;
-        2;
-        3;
+        await 1;
+        await 2;
+        await 3;
       });
       const b4 = vi.fn(async () => {
-        1;
-        2;
-        3;
+        await 1;
+        await 2;
+        await 3;
       });
       const act = (f: () => Promise<void>) => f();
       const taskSelector: TaskSelector<unknown> = { clone: vi.fn(), nextTaskIndex: vi.fn() };
