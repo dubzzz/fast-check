@@ -28,7 +28,7 @@ Like other arbitraries in fast-check, `fc.map` comes with sensible defaults whil
 
 ## New `fc.set` arbitrary
 
-Alongside `Map`, we're also introducing `fc.set` for generating instances of JavaScript `Set`.
+Alongside `fc.map`, we're also introducing `fc.set` for generating instances of `Set`.
 
 ```js
 // Generate a set of strings
