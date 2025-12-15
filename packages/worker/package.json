@@ -1,46 +1,21 @@
 {
   "name": "@fast-check/worker",
-  "version": "0.5.0",
   "description": "Provide built-ins to run predicates directly within dedicated workers",
-  "keywords": [
-    "fast-check",
-    "worker"
-  ],
-  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
-  "bugs": {
-    "url": "https://github.com/dubzzz/fast-check/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git",
-    "directory": "packages/worker"
-  },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://github.com/sponsors/dubzzz"
-    },
-    {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
-    }
-  ],
-  "license": "MIT",
+  "version": "0.5.0",
   "type": "module",
   "main": "lib/main.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types": "./lib/main.d.ts",
-        "default": "./lib/main.js"
-      },
       "require": {
         "types": "./lib/cjs/main.d.ts",
         "default": "./lib/cjs/main.js"
+      },
+      "import": {
+        "types": "./lib/main.d.ts",
+        "default": "./lib/main.js"
       }
-    },
-    "./package.json": "./package.json"
+    }
   },
   "module": "lib/main.js",
   "types": "lib/main.d.ts",
@@ -58,6 +33,17 @@
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit --module nodenext --moduleResolution nodenext"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/worker"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
   "dependencies": {
     "fast-check": "^4.0.0",
     "pure-rand": "^7.0.0"
@@ -68,5 +54,19 @@
     "typescript": "~5.9.3",
     "vite": "^7.2.7",
     "vitest": "^4.0.5"
-  }
+  },
+  "keywords": [
+    "worker",
+    "fast-check"
+  ],
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
 }

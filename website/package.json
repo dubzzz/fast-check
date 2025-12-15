@@ -1,6 +1,6 @@
 {
-  "name": "website",
   "private": true,
+  "name": "website",
   "scripts": {
     "docusaurus": "docusaurus",
     "sync:sponsors": "[ -f static/img/sponsors.svg ] || curl -o static/img/sponsors.svg https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg",

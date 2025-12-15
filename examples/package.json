@@ -1,9 +1,7 @@
 {
-  "name": "@fast-check/examples",
   "private": true,
+  "name": "@fast-check/examples",
   "description": "Examples of usage of fast-check",
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "license": "MIT",
   "type": "module",
   "scripts": {
     "test": "vitest",
@@ -29,5 +27,7 @@
     "happy-dom": "^20.0.11",
     "typescript": "~5.9.3",
     "vitest": "^4.0.5"
-  }
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT"
 }

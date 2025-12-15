@@ -2,57 +2,22 @@
   "name": "fast-check",
   "version": "4.4.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
-  "keywords": [
-    "end-to-end testing",
-    "faker",
-    "fuzz",
-    "fuzzer",
-    "jest",
-    "jscheck",
-    "jsverify",
-    "property-based testing",
-    "quickcheck",
-    "testing",
-    "unit testing"
-  ],
-  "homepage": "https://fast-check.dev/",
-  "bugs": {
-    "url": "https://github.com/dubzzz/fast-check/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git",
-    "directory": "packages/fast-check"
-  },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://github.com/sponsors/dubzzz"
-    },
-    {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
-    }
-  ],
-  "license": "MIT",
-  "sideEffects": false,
   "type": "module",
   "main": "lib/fast-check.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types@<5.7": "./lib/types57/fast-check.d.ts",
-        "types": "./lib/types/fast-check.d.ts",
-        "default": "./lib/fast-check.js"
-      },
       "require": {
         "types@<5.7": "./lib/cjs/types57/fast-check.d.ts",
         "types": "./lib/cjs/types/fast-check.d.ts",
         "default": "./lib/cjs/fast-check.js"
+      },
+      "import": {
+        "types@<5.7": "./lib/types57/fast-check.d.ts",
+        "types": "./lib/types/fast-check.d.ts",
+        "default": "./lib/fast-check.js"
       }
-    },
-    "./package.json": "./package.json"
+    }
   },
   "module": "lib/fast-check.js",
   "types": "lib/types/fast-check.d.ts",
@@ -67,6 +32,8 @@
     "lib",
     "runkit.cjs"
   ],
+  "sideEffects": false,
+  "runkitExampleFilename": "runkit.cjs",
   "scripts": {
     "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types && node postbuild/main.mjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run build",
@@ -79,6 +46,20 @@
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run docs",
     "docs:serve": "pnpm run dlx serve docs/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/fast-check"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://fast-check.dev/",
+  "engines": {
+    "node": ">=12.17.0"
   },
   "dependencies": {
     "pure-rand": "^7.0.0"
@@ -98,11 +79,30 @@
     "typescript": "~5.9.3",
     "vitest": "^4.0.5"
   },
-  "engines": {
-    "node": ">=12.17.0"
-  },
-  "runkitExampleFilename": "runkit.cjs",
+  "keywords": [
+    "property-based testing",
+    "end-to-end testing",
+    "unit testing",
+    "testing",
+    "quickcheck",
+    "jscheck",
+    "jsverify",
+    "faker",
+    "fuzzer",
+    "fuzz",
+    "jest"
+  ],
   "tsd": {
     "directory": "test/type"
-  }
+  },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
 }

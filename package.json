@@ -1,8 +1,9 @@
 {
-  "name": "@fast-check/monorepo",
   "private": true,
+  "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
+  "packageManager": "pnpm@10.25.0",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -43,6 +44,5 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.49.0",
     "vitest": "^4.0.5"
-  },
-  "packageManager": "pnpm@10.25.0"
+  }
 }

@@ -1,12 +1,12 @@
 {
+  "private": "true",
   "name": "fast-check-tutorial",
   "version": "0.0.0",
-  "private": "true",
-  "scripts": {
-    "test": "vitest"
-  },
   "devDependencies": {
     "fast-check": "*",
     "vitest": "*"
+  },
+  "scripts": {
+    "test": "vitest"
   }
 }

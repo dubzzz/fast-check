@@ -1,49 +1,21 @@
 {
   "name": "@fast-check/expect-type",
-  "version": "0.2.1",
   "description": "Make sure your types are the ones you expect (similar to tsd)",
-  "keywords": [
-    "assert",
-    "checker",
-    "tsd",
-    "type",
-    "typescript"
-  ],
-  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
-  "bugs": {
-    "url": "https://github.com/dubzzz/fast-check/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git",
-    "directory": "packages/expect-type"
-  },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://github.com/sponsors/dubzzz"
-    },
-    {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
-    }
-  ],
-  "license": "MIT",
+  "version": "0.2.1",
   "type": "module",
   "main": "src/main.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types": "./src/main.d.ts",
-        "default": "./src/main.js"
-      },
       "require": {
         "types": "./src/cjs/main.d.ts",
         "default": "./src/cjs/main.js"
+      },
+      "import": {
+        "types": "./src/main.d.ts",
+        "default": "./src/main.js"
       }
-    },
-    "./package.json": "./package.json"
+    }
   },
   "module": "src/main.js",
   "types": "src/main.d.ts",
@@ -56,8 +28,36 @@
     "build:publish-types": "cp src/*.d.ts src/cjs/",
     "typecheck": "tsc --noEmit"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/expect-type"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/expect-type#readme",
   "devDependencies": {
     "@fast-check/expect-type": "workspace:*",
     "typescript": "~5.9.3"
-  }
+  },
+  "keywords": [
+    "type",
+    "checker",
+    "tsd",
+    "assert",
+    "typescript"
+  ],
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
 }

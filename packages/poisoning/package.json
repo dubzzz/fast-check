@@ -1,49 +1,21 @@
 {
   "name": "@fast-check/poisoning",
-  "version": "0.2.3",
   "description": "Set of utilities to ease detection and revert of poisoning",
-  "keywords": [
-    "cve",
-    "detection",
-    "fast-check",
-    "poisoning",
-    "prototype"
-  ],
-  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
-  "bugs": {
-    "url": "https://github.com/dubzzz/fast-check/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dubzzz/fast-check.git",
-    "directory": "packages/poisoning"
-  },
-  "author": "Nicolas DUBIEN <github@dubien.org>",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://github.com/sponsors/dubzzz"
-    },
-    {
-      "type": "opencollective",
-      "url": "https://opencollective.com/fast-check"
-    }
-  ],
-  "license": "MIT",
+  "version": "0.2.3",
   "type": "module",
   "main": "lib/main.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types": "./lib/main.d.ts",
-        "default": "./lib/main.js"
-      },
       "require": {
         "types": "./lib/cjs/main.d.ts",
         "default": "./lib/cjs/main.js"
+      },
+      "import": {
+        "types": "./lib/main.d.ts",
+        "default": "./lib/main.js"
       }
-    },
-    "./package.json": "./package.json"
+    }
   },
   "module": "lib/main.js",
   "types": "lib/main.d.ts",
@@ -58,11 +30,39 @@
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
     "typecheck": "tsc --noEmit"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dubzzz/fast-check.git",
+    "directory": "packages/poisoning"
+  },
+  "author": "Nicolas DUBIEN <github@dubien.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dubzzz/fast-check/issues"
+  },
+  "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
     "@types/node": "^24.10.3",
     "typescript": "~5.9.3",
     "vite": "^7.2.7",
     "vitest": "^4.0.5"
-  }
+  },
+  "keywords": [
+    "poisoning",
+    "cve",
+    "prototype",
+    "detection",
+    "fast-check"
+  ],
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/dubzzz"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/fast-check"
+    }
+  ]
 }
