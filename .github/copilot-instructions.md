@@ -63,6 +63,5 @@ Run typecheck to ensure TypeScript types are correct across all packages.
 ### Build
 
 - **Build all packages**: `pnpm build:all`
-- **Build for CI**: `pnpm build-ci:all`
 
-Build the project to ensure all packages compile correctly. Use `build:all` for local development and `build-ci:all` for CI environments.
+Build the project to ensure all packages compile correctly.
