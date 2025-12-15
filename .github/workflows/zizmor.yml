@@ -1,4 +1,4 @@
-name: Zizmor Security Audit
+name: Workflow Security Audit
 
 on:
   pull_request:
