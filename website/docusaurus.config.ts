@@ -131,7 +131,7 @@ const config: Config = {
       // The application ID provided by Algolia
       appId: 'XIUK9DGBYC',
       // Public API key: it is safe to commit it
-      apiKey: '3d6340d4de21361b286217d4edd1ef52',
+      apiKey: 'e4f0293eb2e2c09903abbd32fe972a3c',
       indexName: 'fast-check documentation',
       // Optional: see doc section below
       contextualSearch: true,
