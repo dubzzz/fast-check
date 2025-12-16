@@ -131,8 +131,8 @@ const config: Config = {
       // The application ID provided by Algolia
       appId: 'XIUK9DGBYC',
       // Public API key: it is safe to commit it
-      apiKey: '3d6340d4de21361b286217d4edd1ef52',
-      indexName: 'fast-check',
+      apiKey: 'e4f0293eb2e2c09903abbd32fe972a3c',
+      indexName: 'fast-check documentation',
       // Optional: see doc section below
       contextualSearch: true,
       // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
@@ -147,6 +147,12 @@ const config: Config = {
       // Optional: path for search page that enabled by default (`false` to disable it)
       searchPagePath: 'search',
       //... other Algolia params
+      askAi: {
+        assistantId: 'oXlQHyhfOwgY',
+        indexName: 'llms',
+        apiKey: 'e4f0293eb2e2c09903abbd32fe972a3c',
+        appId: 'XIUK9DGBYC',
+      },
     },
   } satisfies Preset.ThemeConfig,
 
