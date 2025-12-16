@@ -150,7 +150,7 @@ const config: Config = {
       askAi: {
         assistantId: 'oXlQHyhfOwgY',
         indexName: 'llms',
-        apiKey: '3d6340d4de21361b286217d4edd1ef52',
+        apiKey: 'e4f0293eb2e2c09903abbd32fe972a3c',
         appId: 'XIUK9DGBYC',
       },
     },
