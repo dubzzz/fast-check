@@ -19,18 +19,35 @@ export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRel
  */
 export type EntityGraphContraints<TEntityFields> = {
   /**
-   * Customize how to select what should be part of the initial pool of entities.
-   * This pool is used as a starting point to ask and create for other entities.
+   * Controls the minimum number of entities generated for each entity type in the initial pool.
    *
-   * @defaultValue Unspecified entities take the defaults from {@link array}
+   * The initial pool defines the baseline set of entities that are created before any relationships
+   * are established. Other entities may be created later to satisfy relationship requirements.
+   *
+   * @example
+   * ```typescript
+   * // Ensure at least 2 employees and at most 5 teams in the initial pool
+   * // But possibly more than 5 teams at the end
+   * { initialPoolConstraints: { employee: { minLength: 2 }, team: { maxLength: 5 } } }
+   * ```
+   *
+   * @defaultValue When unspecified, defaults from {@link array} are used for each entity type
    * @remarks Since 4.5.0
    */
   initialPoolConstraints?: { [EntityName in keyof TEntityFields]?: ArrayConstraints };
   /**
-   * Unicity rules to be applied on a specific kind. The provided selector function will be leveraged to compare entities of a given kind.
-   * Two entities resulting on an equal output for `Object.is` will be considered equivalent and only one of them will be kept.
+   * Defines uniqueness criteria for entities of each type to prevent duplicate values.
    *
-   * @defaultValue All values are considered unique
+   * The selector function extracts a key from each entity. Entities with identical keys
+   * (compared using `Object.is`) are considered duplicates and only one instance will be kept.
+   *
+   * @example
+   * ```typescript
+   * // Ensure employees have unique names
+   * { unicityConstraints: { employee: (emp) => emp.name } }
+   * ```
+   *
+   * @defaultValue All entities are considered unique (no deduplication is performed)
    * @remarks Since 4.5.0
    */
   unicityConstraints?: {
@@ -40,7 +57,7 @@ export type EntityGraphContraints<TEntityFields> = {
     >['selector'];
   };
   /**
-   * Do not generate records with null prototype
+   * Do not generate values with null prototype
    * @defaultValue false
    * @remarks Since 4.5.0
    */
@@ -48,24 +65,46 @@ export type EntityGraphContraints<TEntityFields> = {
 };
 
 /**
- * Generate values based on a schema. Produced values will automatically come with links between each others when requested to.
+ * Generates interconnected entities with relationships based on a schema definition.
  *
- * Declaring a directed graph using this helper could easily be achieved with something like:
+ * This arbitrary creates structured data where entities can reference each other through defined
+ * relationships. The generated values automatically include links between entities, making it
+ * ideal for testing graph structures, relational data, or interconnected object models.
+ *
+ * The output is an object where each key corresponds to an entity type and the value is an array
+ * of entities of that type. Entities contain both their data fields and relationship links.
  *
  * @example
  * ```typescript
+ * // Generate a simple directed graph where nodes link to other nodes
  * fc.entityGraph(
  *   { node: { id: fc.stringMatching(/^[A-Z][a-z]*$/) } },
  *   { node: { linkTo: { arity: 'many', type: 'node' } } },
  * )
+ * // Produces: { node: [{ id: "Abc", linkTo: [<node#1>, <node#0>] }, ...] }
  * ```
  *
- * But user can also requests the helper for other values of arity: '0-1' for an optional link, '1' for a compulsory one and 'many' as in the example above.
- * The type field declares the kind of entity we want to target; In our case we only declared "node", so a "node" will have zero to many "node" accessible from the field "linkTo".
+ * @example
+ * ```typescript
+ * // Generate employees with managers and teams
+ * fc.entityGraph(
+ *   {
+ *     employee: { name: fc.string() },
+ *     team: { name: fc.string() }
+ *   },
+ *   {
+ *     employee: {
+ *       manager: { arity: '0-1', type: 'employee' },  // Optional manager
+ *       team: { arity: '1', type: 'team' }           // Required team
+ *     },
+ *     team: {}
+ *   }
+ * )
+ * ```
  *
- * @param arbitraries - The non-relational part of the produced entities.
- * @param relations - The relational part of the produced entities. It tells the framework how entities should refer to each others.
- * @param constraints - A set of constraints to be applied on the produced values.
+ * @param arbitraries - Defines the data fields for each entity type (non-relational properties)
+ * @param relations - Defines how entities reference each other (relational properties)
+ * @param constraints - Optional configuration to customize generation behavior
  *
  * @remarks Since 4.5.0
  * @public
