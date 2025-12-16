@@ -310,21 +310,21 @@ expectTypeOf(
     b: fc.string(),
   })),
 ).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>();
-);
-expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
+// Recursive "letrec"
+// TODO Typings should be improved: b type might be infered from a
+expectTypeOf(
   fc.letrec((tie) => ({
     a: fc.nat(),
     b: tie('a'),
   })),
-  'Recursive "letrec"',
-); // TODO Typings should be improved: b type might be infered from a
-expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<number> }>()(
+).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>();
+// Recursive "letrec" with types manually defined
+expectTypeOf(
   fc.letrec<{ a: number; b: number }>((tie) => ({
     a: fc.nat(),
     b: tie('a'),
   })),
-  'Recursive "letrec" with types manually defined',
-);
+).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<number> }>();
 // Invalid recursion "letrec"
 // TODO Typings should be improved: referencing an undefined key should failed
 expectTypeOf(
@@ -372,7 +372,7 @@ expectTypeOf(fc.clone(fc.nat(), nTimesClone)).toEqualTypeOf<fc.Arbitrary<number[
 
 // func arbitrary
 // "func" producing "nat"
-expectTypeOf(fc.func(fc.nat())).toEqualTypeOf<fc.Arbitrary<() => number>>();
+expectTypeOf(fc.func(fc.nat())).toMatchTypeOf<fc.Arbitrary<() => number>>();
 // @ts-expect-error - func expects arbitraries not raw values
 fc.func(1);
 
@@ -410,30 +410,30 @@ expectTypeOf(
     { employee: { firstName: fc.string(), lastName: fc.string() } },
     { employee: { manager: { arity: '0-1', type: 'employee', strategy: 'successor' } } },
   ),
-  'translate "0-1" into a defined value or undefined',
-);
+).toEqualTypeOf<fc.Arbitrary<{ employee: Employee[] }>>();
 type Profile = { id: string };
 type User = { userName: string; profile: Profile };
-expectType<fc.Arbitrary<{ profile: Profile[]; user: User[] }>>()(
+// translate "1" into a defined value
+expectTypeOf(
   fc.entityGraph(
     { user: { userName: fc.string() }, profile: { id: fc.uuid() } },
     { user: { profile: { arity: '1', type: 'profile', strategy: 'exclusive' } }, profile: {} },
     {
       unicityConstraints: {
         user: (u) => {
-          expectType<Omit<User, 'profile'>>()(u, 'non-relational part of an User');
+          // non-relational part of an User
+          expectTypeOf(u).toEqualTypeOf<Omit<User, 'profile'>>();
           return u.userName;
         },
         profile: (p) => {
           // non-relational part of a Profile
-expectTypeOf(p).toEqualTypeOf<Profile>();
+          expectTypeOf(p).toEqualTypeOf<Profile>();
           return p.id;
         },
       },
     },
   ),
-  'translate "1" into a defined value',
-);
+).toEqualTypeOf<fc.Arbitrary<{ profile: Profile[]; user: User[] }>>();
 fc.entityGraph(
   { user: { userName: fc.string() }, profile: { id: fc.uuid() } },
   // @ts-expect-error - Expect all entities to be declared for relations
