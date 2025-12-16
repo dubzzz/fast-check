@@ -111,78 +111,80 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
   // Validate relations upfront
   validateRelations(relations);
 
-  // Create an inline arbitrary that encapsulates the imperative logic
-  // This avoids impure chain callbacks while still dropping the named class
-  return new (class extends Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
-    generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
-      // The set of all produced links between entities.
-      const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
-      for (const name in relations) {
-        producedLinks[name as Extract<keyof TEntityFields, string>] = [];
-      }
-      
-      // Made of any entity whose links have to be created before building the whole graph.
-      const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
-      for (const name of defaultEntities) {
-        safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-        safePush(producedLinks[name], safeObjectCreate(null));
-      }
+  // Use chain to initialize state, keeping the callback pure (no side effects on environment)
+  return constant(undefined).chain(() => {
+    // All state is local to this callback - no mutations to captured variables
+    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+    for (const name in relations) {
+      producedLinks[name as Extract<keyof TEntityFields, string>] = [];
+    }
+    
+    const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
+    for (const name of defaultEntities) {
+      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
+      safePush(producedLinks[name], safeObjectCreate(null));
+    }
 
-      // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
-      // we decided to consider an always growing array that will grow up to the number of entities before being dropped.
-      let lastTreatedEntities = -1;
-      while (++lastTreatedEntities < toBeProducedEntities.length) {
-        const currentEntity = toBeProducedEntities[lastTreatedEntities];
-        const currentRelations = relations[currentEntity.type];
-        const currentProducedLinks = producedLinks[currentEntity.type];
-        // Create all the links going from the current entity to others
-        const currentLinks = currentProducedLinks[currentEntity.indexInType];
-        const currentEntityDepth = createDepthIdentifier();
-        currentEntityDepth.depth = currentEntity.depth;
-        
-        for (const name in currentRelations) {
-          const relation = currentRelations[name];
-          const targetType = relation.type;
-          const producedLinksInTargetType = producedLinks[targetType];
-          const countInTargetType = producedLinksInTargetType.length;
+    // Return an arbitrary that will process all entities
+    // This arbitrary encapsulates the imperative logic without using impure chains
+    return new (class extends Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
+      generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
+        // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
+        // we decided to consider an always growing array that will grow up to the number of entities before being dropped.
+        let lastTreatedEntities = -1;
+        while (++lastTreatedEntities < toBeProducedEntities.length) {
+          const currentEntity = toBeProducedEntities[lastTreatedEntities];
+          const currentRelations = relations[currentEntity.type];
+          const currentProducedLinks = producedLinks[currentEntity.type];
+          // Create all the links going from the current entity to others
+          const currentLinks = currentProducedLinks[currentEntity.indexInType];
+          const currentEntityDepth = createDepthIdentifier();
+          currentEntityDepth.depth = currentEntity.depth;
           
-          // Use chain to generate link indices - this models the recursive relationship structure
-          const linkOrLinks = computeLinkIndexArbitrary(
-            relation.arity,
-            relation.strategy || 'any',
-            targetType === currentEntity.type ? currentEntity.indexInType : undefined,
-            producedLinksInTargetType.length,
-            currentEntityDepth,
-          ).generate(mrng, biasFactor).value;
-          
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (currentLinks as any)[name] = { type: targetType, index: linkOrLinks };
-          
-          const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
-          for (const link of links) {
-            if (link >= countInTargetType) {
-              safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-              safePush(producedLinksInTargetType, safeObjectCreate(null));
+          for (const name in currentRelations) {
+            const relation = currentRelations[name];
+            const targetType = relation.type;
+            const producedLinksInTargetType = producedLinks[targetType];
+            const countInTargetType = producedLinksInTargetType.length;
+            
+            // Generate link indices using the arbitrary
+            const linkOrLinks = computeLinkIndexArbitrary(
+              relation.arity,
+              relation.strategy || 'any',
+              targetType === currentEntity.type ? currentEntity.indexInType : undefined,
+              producedLinksInTargetType.length,
+              currentEntityDepth,
+            ).generate(mrng, biasFactor).value;
+            
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (currentLinks as any)[name] = { type: targetType, index: linkOrLinks };
+            
+            const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
+            for (const link of links) {
+              if (link >= countInTargetType) {
+                safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
+                safePush(producedLinksInTargetType, safeObjectCreate(null));
+              }
             }
           }
         }
+        
+        // Drop any item from the array
+        toBeProducedEntities.length = 0;
+
+        return new Value(producedLinks, undefined);
       }
-      
-      // Drop any item from the array
-      toBeProducedEntities.length = 0;
 
-      return new Value(producedLinks, undefined);
-    }
+      canShrinkWithoutContext(value: unknown): value is ProducedLinks<TEntityFields, TEntityRelations> {
+        return false; // for now, we reject any shrink without context
+      }
 
-    canShrinkWithoutContext(value: unknown): value is ProducedLinks<TEntityFields, TEntityRelations> {
-      return false; // for now, we reject any shrink without context
-    }
-
-    shrink(
-      _value: ProducedLinks<TEntityFields, TEntityRelations>,
-      _context: unknown | undefined,
-    ): Stream<Value<ProducedLinks<TEntityFields, TEntityRelations>>> {
-      return Stream.nil(); // for now, we don't support any shrink
-    }
-  })();
+      shrink(
+        _value: ProducedLinks<TEntityFields, TEntityRelations>,
+        _context: unknown | undefined,
+      ): Stream<Value<ProducedLinks<TEntityFields, TEntityRelations>>> {
+        return Stream.nil(); // for now, we don't support any shrink
+      }
+    })();
+  });
 }
