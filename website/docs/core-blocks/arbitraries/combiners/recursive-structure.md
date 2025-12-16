@@ -284,7 +284,6 @@ fc.entityGraph(
 // - Entity type: node with an id field (string matching pattern)
 // - Relationship: linkTo with arity 'many' allows each node to reference zero or more other nodes
 // - Produces: { node: [{ id: "Abc", linkTo: [<node#1>, <node#0>] }, ...] }
-// 
 // Characteristics of this configuration:
 // - Enforces unique ids (unicityConstraints)
 // - Allows cycles between nodes (e.g., A → B → C → A) — use strategy: 'successor' to prevent
@@ -317,7 +316,6 @@ fc.entityGraph(
 // - Entity types: employee and team, both with name fields
 // - Relationship: each employee has a required reference to one team (arity: '1')
 // - Produces: { employee: [{ name: "Alice", team: <team#0> }, ...], team: [{ name: "Engineering" }, ...] }
-// 
 // Characteristics of this configuration:
 // - Enforces unique names for both employees and teams (unicityConstraints)
 // - Every team has at least one employee (maxLength: 0 for team in initialPoolConstraints) — remove this to allow teams without employees
@@ -338,7 +336,6 @@ fc.entityGraph(
 // - Entity type: employee with name field
 // - Relationship: manager with arity '0-1' (optional) and strategy 'successor' (prevents cycles)
 // - Produces: { employee: [{ name: "Alice", manager: <employee#1> }, { name: "Bob", manager: undefined }, ...] }
-// 
 // Characteristics of this configuration:
 // - Enforces unique names (unicityConstraints)
 // - Prevents cycles (e.g., A manages B who manages A) due to strategy: 'successor' — use 'any' to allow cycles
@@ -365,7 +362,6 @@ fc.entityGraph(
 // - Entity type: employee with name field
 // - Relationship: managees with arity 'many' (array) and strategy 'exclusive' (each employee can only be a managee of one manager)
 // - Produces: { employee: [{ name: "Alice", managees: [<employee#1>, <employee#2>] }, { name: "Bob", managees: [] }, ...] }
-// 
 // Characteristics of this configuration:
 // - Enforces unique names (unicityConstraints)
 // - Prevents shared managees (each employee can only be managed by one person) due to strategy: 'exclusive'
@@ -392,7 +388,6 @@ fc.entityGraph(
 // - Entity type: node with no data fields (empty object)
 // - Relationships: left and right, both with arity '0-1' (optional) and strategy 'exclusive' (prevents shared nodes)
 // - Produces: { node: [{ left: <node#1>, right: <node#2> }, { left: undefined, right: undefined }, ...] }
-// 
 // Characteristics of this configuration:
 // - Prevents cycles and creates proper trees (strategy: 'exclusive' ensures each node is referenced at most once) — use 'any' to allow shared nodes and cycles
 // - Creates a single tree rooted at the first node (maxLength: 1 in initialPoolConstraints) — remove this to allow multiple disconnected trees
@@ -423,7 +418,6 @@ fc.entityGraph(
 // - Entity types: user with name field, profile with id and pictureUrl fields
 // - Relationship: each user has a required reference to one profile (arity: '1') with strategy 'exclusive' (prevents profile sharing)
 // - Produces: { user: [{ name: "Alice", profile: <profile#0> }, ...], profile: [{ id: "...", pictureUrl: "..." }, ...] }
-// 
 // Characteristics of this configuration:
 // - Enforces unique names for users and unique ids for profiles (unicityConstraints)
 // - Each user has their own profile (strategy: 'exclusive' prevents sharing)
