@@ -247,7 +247,7 @@ Available since 1.16.0.
 
 Generate interconnected entities with relationships based on a schema definition.
 
-This arbitrary creates structured data where entities can reference each other through defined relationships. The generated values automatically include links between entities, making it ideal for testing graph structures, relational data, or interconnected object models. Unlike `fc.letrec`, this helper provides built-in support for cycles and shared references between instances.
+This arbitrary creates structured data where entities can reference each other through defined relationships. The generated values automatically include links between entities, making it ideal for testing graph structures, relational data, or interconnected object models. Unlike `fc.letrec`, this helper supports cycles and shared references between instances by default, though these can be controlled through strategy options.
 
 The output is an object where each key corresponds to an entity type and the value is an array of entities of that type. Entities contain both their data fields and relationship links.
 
@@ -261,10 +261,10 @@ The output is an object where each key corresponds to an entity type and the val
 - `arbitraries` — _defines the data fields for each entity type (non-relational properties). This is a record where each key is an entity type name and the value defines the arbitraries for that entity's fields, similar to `fc.record`_
 - `relations` — _defines how entities reference each other (relational properties). This is a record where each key is an entity type name and the value defines the relationships from that entity to others_
   - _each relationship has the structure: `{arity, type, strategy?}`_
-    - `arity` — _cardinality of the relationship. `"0-1"` for an optional reference (produces undefined or a single instance), `"1"` for a required reference (always produces a single instance), `"many"` for a multi-valued reference (produces an array, possibly empty, with no duplicates)_
+    - `arity` — _cardinality of the relationship. `"0-1"` for an optional reference (produces undefined or a single instance), `"1"` for a required reference (always produces a single instance), `"many"` for a multi-valued reference (produces an array, possibly empty, with no duplicate references based on object identity)_
     - `type` — _the name of the target entity type (must be one of the keys in `arbitraries`)_
     - `strategy?` — default: `'any'` — _constrains which target entities are eligible. `'any'` means no restrictions, `'exclusive'` means each target can only be referenced once (prevents sharing), `'successor'` means target must appear after the source in the entity array (prevents cycles and self-references)_
-- `initialPoolConstraints?` — _controls the minimum number of entities generated for each entity type in the initial pool (baseline set created before relationships are established). Provide an object mapping entity type names to `ArrayConstraints`. Other entities may be created later to satisfy relationship requirements_
+- `initialPoolConstraints?` — _controls the minimum number of entities generated for each entity type in the initial pool (baseline set created before relationships are established). Provide an object mapping entity type names to constraints objects with `minLength?` and `maxLength?` properties (same as used by `fc.array`). Other entities may be created later to satisfy relationship requirements_
 - `unicityConstraints?` — _defines uniqueness criteria for entities of each type to prevent duplicates. Provide a selector function that extracts a key from each entity. Entities with identical keys (compared using `Object.is`) are considered duplicates and only one instance will be kept_
 - `noNullPrototype?` — default: `false` — _do not generate values with null prototype, only generate objects based on the Object-prototype_
 
