@@ -632,10 +632,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish fast-check
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/fast-check/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -689,10 +685,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish @fast-check/ava
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/ava/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -746,10 +738,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish @fast-check/jest
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/jest/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -803,10 +791,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish @fast-check/packaged
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/packaged/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -860,10 +844,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish @fast-check/poisoning
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/poisoning/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -917,10 +897,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish @fast-check/vitest
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/vitest/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -974,10 +950,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish @fast-check/worker
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/worker/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
@@ -1031,10 +1003,6 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Publish @fast-check/expect-type
-<<<<<<< HEAD
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag "$PUBLISH_TAG" packages/expect-type/package.tgz
-=======
->>>>>>> origin/main
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
