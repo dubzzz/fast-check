@@ -13,7 +13,7 @@ const safeObjectKeys = Object.keys;
 export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRelations as EntityGraphRelations };
 
 /**
- * Configuration options for customizing the behavior of {@link entityGraph}
+ * Constraints to be applied on {@link entityGraph}
  *
  * @remarks Since 4.5.0
  * @public
@@ -28,6 +28,7 @@ export type EntityGraphContraints<TEntityFields> = {
    * @example
    * ```typescript
    * // Ensure at least 2 employees and at most 5 teams in the initial pool
+   * // But possibly more than 5 teams at the end
    * { initialPoolConstraints: { employee: { minLength: 2 }, team: { maxLength: 5 } } }
    * ```
    *
@@ -39,7 +40,7 @@ export type EntityGraphContraints<TEntityFields> = {
    * Defines uniqueness criteria for entities of each type to prevent duplicate values.
    *
    * The selector function extracts a key from each entity. Entities with identical keys
-   * (compared using `Object.is`) are considered duplicates, and only one instance will be kept.
+   * (compared using `Object.is`) are considered duplicates and only one instance will be kept.
    *
    * @example
    * ```typescript
@@ -57,11 +58,7 @@ export type EntityGraphContraints<TEntityFields> = {
     >['selector'];
   };
   /**
-   * When `true`, prevents the output object from having a null prototype.
-   *
-   * By default, the generated structure may use objects with null prototypes for efficiency.
-   * Setting this to `true` ensures all generated objects have normal prototypes.
-   *
+   * Do not generate values with null prototype
    * @defaultValue false
    * @remarks Since 4.5.0
    */
@@ -75,7 +72,7 @@ export type EntityGraphContraints<TEntityFields> = {
  * relationships. The generated values automatically include links between entities, making it
  * ideal for testing graph structures, relational data, or interconnected object models.
  *
- * The output is an object where each key corresponds to an entity type, and the value is an array
+ * The output is an object where each key corresponds to an entity type and the value is an array
  * of entities of that type. Entities contain both their data fields and relationship links.
  *
  * @example
@@ -99,17 +96,12 @@ export type EntityGraphContraints<TEntityFields> = {
  *   {
  *     employee: {
  *       manager: { arity: '0-1', type: 'employee' },  // Optional manager
- *       team: { arity: '1', type: 'team' }             // Required team
+ *       team: { arity: '1', type: 'team' }           // Required team
  *     },
  *     team: {}
  *   }
  * )
  * ```
- *
- * **Relationship Arities:**
- * - `'0-1'`: Optional reference (value or undefined)
- * - `'1'`: Required reference (always present)
- * - `'many'`: Array of references (can be empty, no duplicates)
  *
  * @param arbitraries - Defines the data fields for each entity type (non-relational properties)
  * @param relations - Defines how entities reference each other (relational properties)
