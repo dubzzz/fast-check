@@ -181,130 +181,96 @@ expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] })
 expectTypeOf(fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] })).toEqualTypeOf<fc.Arbitrary<{ a: number; b?: string; c: string }>>();
 // prettier-ignore
 // @fc-expect-error-require-exactOptionalPropertyTypes
-expectType<fc.Arbitrary<{ a?: number; b?: string | undefined }>>()(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] }), '"record" only applies optional on keys declared within requiredKeys by adding ? without |undefined');
+// "record" only applies optional on keys declared within requiredKeys by adding ? without |undefined
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string | undefined }>>();
 // prettier-ignore-end
-expectType<fc.Arbitrary<{ a?: number; b?: string | undefined }>>()(
-  fc.record({ a: fc.nat(), b: fc.option(fc.string(), { nil: undefined }) }, { requiredKeys: [] }),
-  '"record" only applies optional on keys declared within requiredKeys and preserves existing |undefined when adding ?',
-);
-expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string }>>()(
-  fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [mySymbol1] as [typeof mySymbol1] }),
-  '"record" only applies optional on keys declared within requiredKeys even if it contains symbols',
-);
+// "record" only applies optional on keys declared within requiredKeys and preserves existing |undefined when adding ?
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.option(fc.string(), { nil: undefined }) }, { requiredKeys: [] })).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string | undefined }>>();
+// "record" only applies optional on keys declared within requiredKeys even if it contains symbols
+expectTypeOf(fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [mySymbol1] as [typeof mySymbol1] })).toEqualTypeOf<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string }>>();
 // Related to https://github.com/microsoft/TypeScript/issues/27525
 //expectType<fc.Arbitrary<{ [Symbol.iterator]: number; [mySymbol2]?: string }>>()(
 //  fc.record({ [Symbol.iterator]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [Symbol.iterator] })
 //);
 // See workaround above
-expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string; a: number; b?: string }>>()(
+// "record" only applies optional on keys declared within requiredKeys even if it contains symbols and normal keys
+expectTypeOf(
   fc.record(
     { [mySymbol1]: fc.nat(), [mySymbol2]: fc.string(), a: fc.nat(), b: fc.string() },
     { requiredKeys: [mySymbol1, 'a'] as [typeof mySymbol1, 'a'] },
   ),
-  '"record" only applies optional on keys declared within requiredKeys even if it contains symbols and normal keys',
-);
+).toEqualTypeOf<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string; a: number; b?: string }>>();
 type Query = { data: { field: 'X' } };
-expectType<fc.Arbitrary<Query>>()(
-  // issue 1453
-  fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) }),
-  '"record" can be passed the requested type in <*>',
-);
-expectType<fc.Arbitrary<Partial<Query>>>()(
-  // issue 1453
-  fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) }),
-  '"record" can be passed something assignable to the requested type in <*>',
-);
+// "record" can be passed the requested type in <*>
+// issue 1453
+expectTypeOf(fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) })).toEqualTypeOf<fc.Arbitrary<Query>>();
+// "record" can be passed something assignable to the requested type in <*>
+// issue 1453
+expectTypeOf(fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) })).toEqualTypeOf<fc.Arbitrary<Partial<Query>>>();
 // @ts-expect-error - requiredKeys references an unknown key
 fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['c'] });
 // @ts-expect-error - record expects arbitraries not raw values
 fc.record({ a: 1 });
 
 // dictionary arbitrary
-expectType<fc.Arbitrary<Record<string, number>>>()(
-  fc.dictionary(fc.string(), fc.nat()),
-  'String key call to "dictionary"',
-);
-expectType<fc.Arbitrary<Record<string, number>>>()(
-  fc.dictionary<number>(fc.string(), fc.nat()),
-  'String key call to "dictionary" with single generic',
-);
-expectType<fc.Arbitrary<Record<string, number>>>()(
-  fc.dictionary<string, number>(fc.string(), fc.nat()),
-  'String key call to "dictionary" with two generics',
-);
-expectType<fc.Arbitrary<Record<number, number>>>()(
-  fc.dictionary(fc.nat(), fc.nat()),
-  'Number key call to "dictionary"',
-);
-expectType<fc.Arbitrary<Record<number, number>>>()(
-  fc.dictionary<number, number>(fc.nat(), fc.nat()),
-  'Number key call to "dictionary" with generics',
-);
-expectType<fc.Arbitrary<Record<symbol, number>>>()(
-  fc.dictionary(fc.string().map(Symbol), fc.nat()),
-  'Symbol key call to "dictionary"',
-);
-expectType<fc.Arbitrary<Record<symbol, number>>>()(
-  fc.dictionary<symbol, number>(fc.string().map(Symbol), fc.nat()),
-  'Symbol key call to "dictionary" with generics',
-);
+// String key call to "dictionary"
+expectTypeOf(fc.dictionary(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<string, number>>>();
+// String key call to "dictionary" with single generic
+expectTypeOf(fc.dictionary<number>(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<string, number>>>();
+// String key call to "dictionary" with two generics
+expectTypeOf(fc.dictionary<string, number>(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<string, number>>>();
+// Number key call to "dictionary"
+expectTypeOf(fc.dictionary(fc.nat(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<number, number>>>();
+// Number key call to "dictionary" with generics
+expectTypeOf(fc.dictionary<number, number>(fc.nat(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<number, number>>>();
+// Symbol key call to "dictionary"
+expectTypeOf(fc.dictionary(fc.string().map(Symbol), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<symbol, number>>>();
+// Symbol key call to "dictionary" with generics
+expectTypeOf(fc.dictionary<symbol, number>(fc.string().map(Symbol), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<symbol, number>>>();
 // @ts-expect-error - dictionary expects arbitraries producing PropertyKey for keys
 fc.dictionary(fc.anything(), fc.string());
 
 // map arbitrary
-expectType<fc.Arbitrary<Map<string, number>>>()(fc.map(fc.string(), fc.nat()), 'Basic call to "map"');
-expectType<fc.Arbitrary<Map<string, number>>>()(
-  fc.map<string, number>(fc.string(), fc.nat()),
-  'Call to "map" with generics',
-);
+// Basic call to "map"
+expectTypeOf(fc.map(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Map<string, number>>>();
+// Call to "map" with generics
+expectTypeOf(fc.map<string, number>(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Map<string, number>>>();
 
 // tuple arbitrary
-expectType<fc.Arbitrary<[]>>()(fc.tuple(), '"tuple" with zero argument');
-expectType<fc.Arbitrary<[number]>>()(fc.tuple(fc.nat()), '"tuple" with a single argument');
-expectType<fc.Arbitrary<[number, string]>>()(fc.tuple(fc.nat(), fc.string()), '"tuple" with multiple arguments');
-expectType<fc.Arbitrary<number[]>>()(fc.tuple(...([] as fc.Arbitrary<number>[])), '"tuple" with spread arrays');
+// "tuple" with zero argument
+expectTypeOf(fc.tuple()).toEqualTypeOf<fc.Arbitrary<[]>>();
+// "tuple" with a single argument
+expectTypeOf(fc.tuple(fc.nat())).toEqualTypeOf<fc.Arbitrary<[number]>>();
+// "tuple" with multiple arguments
+expectTypeOf(fc.tuple(fc.nat(), fc.string())).toEqualTypeOf<fc.Arbitrary<[number, string]>>();
+// "tuple" with spread arrays
+expectTypeOf(fc.tuple(...([] as fc.Arbitrary<number>[]))).toEqualTypeOf<fc.Arbitrary<number[]>>();
 // @ts-expect-error - tuple expects arbitraries not raw values
 fc.tuple(fc.nat(), '');
 
 // oneof arbitrary
-expectType<fc.Arbitrary<string>>()(
-  fc.oneof(fc.string(), fc.string({ unit: 'binary' })),
-  '"oneof" with multiple arguments having the same type',
-);
-expectType<fc.Arbitrary<string | number>>()(
-  fc.oneof(fc.string(), fc.nat()),
-  '"oneof" with multiple arguments of different types',
-);
-expectType<fc.Arbitrary<string | number>>()(
-  fc.oneof({}, fc.string(), fc.nat()),
-  '"oneof" with different types and empty constraints',
-);
-expectType<fc.Arbitrary<string | number>>()(
-  fc.oneof({ withCrossShrink: true }, fc.string(), fc.nat()),
-  '"oneof" with different types and some constraints',
-);
-expectType<fc.Arbitrary<string>>()(
-  fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.string({ unit: 'binary' }), weight: 1 }),
-  '"oneof" with weighted arbitraries and multiple arguments having the same type',
-);
-expectType<fc.Arbitrary<number | string>>()(
-  fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 }),
-  '"oneof" with weighted arbitraries and multiple arguments of different types',
-);
-expectType<fc.Arbitrary<string | number>>()(
-  fc.oneof({}, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 }),
-  '"oneof" with weighted arbitraries and different types and empty constraints',
-);
-expectType<fc.Arbitrary<string | number>>()(
-  fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 }),
-  '"oneof" with weighted arbitraries and different types and some constraints',
-);
-expectType<fc.Arbitrary<string | number>>()(
-  fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, fc.nat()),
-  '"oneof" with weighted arbitraries and non-weighted arbitraries',
-);
-expectType<fc.Arbitrary<number>>()(fc.oneof(...([] as fc.Arbitrary<number>[])), '"oneof" from array of arbitraries');
-expectType<fc.Arbitrary<never>>()(fc.oneof(), '"oneof" must receive at least one arbitrary');
+// "oneof" with multiple arguments having the same type
+expectTypeOf(fc.oneof(fc.string(), fc.string({ unit: 'binary' }))).toEqualTypeOf<fc.Arbitrary<string>>();
+// "oneof" with multiple arguments of different types
+expectTypeOf(fc.oneof(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<string | number>>();
+// "oneof" with different types and empty constraints
+expectTypeOf(fc.oneof({}, fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<string | number>>();
+// "oneof" with different types and some constraints
+expectTypeOf(fc.oneof({ withCrossShrink: true }, fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<string | number>>();
+// "oneof" with weighted arbitraries and multiple arguments having the same type
+expectTypeOf(fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.string({ unit: 'binary' }), weight: 1 })).toEqualTypeOf<fc.Arbitrary<string>>();
+// "oneof" with weighted arbitraries and multiple arguments of different types
+expectTypeOf(fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<fc.Arbitrary<number | string>>();
+// "oneof" with weighted arbitraries and different types and empty constraints
+expectTypeOf(fc.oneof({}, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<fc.Arbitrary<string | number>>();
+// "oneof" with weighted arbitraries and different types and some constraints
+expectTypeOf(fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<fc.Arbitrary<string | number>>();
+// "oneof" with weighted arbitraries and non-weighted arbitraries
+expectTypeOf(fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, fc.nat())).toEqualTypeOf<fc.Arbitrary<string | number>>();
+// "oneof" from array of arbitraries
+expectTypeOf(fc.oneof(...([] as fc.Arbitrary<number>[]))).toEqualTypeOf<fc.Arbitrary<number>>();
+// "oneof" must receive at least one arbitrary
+expectTypeOf(fc.oneof()).toEqualTypeOf<fc.Arbitrary<never>>();
 
 // @ts-expect-error - oneof expects arbitraries not raw values
 fc.oneof(fc.string(), '1');
@@ -312,15 +278,12 @@ fc.oneof(fc.string(), '1');
 fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: '1', weight: 1 });
 
 // option arbitrary
-expectType<fc.Arbitrary<number | null>>()(fc.option(fc.nat()), '"option" without any constraints');
-expectType<fc.Arbitrary<number | null>>()(
-  fc.option(fc.nat(), { nil: null }),
-  '"option" with nil overriden to null (the original default)',
-);
-expectType<fc.Arbitrary<number | 'custom_default'>>()(
-  fc.option(fc.nat(), { nil: 'custom_default' as const }),
-  '"option" with nil overriden to custom value',
-);
+// "option" without any constraints
+expectTypeOf(fc.option(fc.nat())).toEqualTypeOf<fc.Arbitrary<number | null>>();
+// "option" with nil overriden to null (the original default)
+expectTypeOf(fc.option(fc.nat(), { nil: null })).toEqualTypeOf<fc.Arbitrary<number | null>>();
+// "option" with nil overriden to custom value
+expectTypeOf(fc.option(fc.nat(), { nil: 'custom_default' as const })).toEqualTypeOf<fc.Arbitrary<number | 'custom_default'>>();
 // @ts-expect-error - option expects arbitraries not raw values
 fc.option(1);
 
@@ -333,19 +296,20 @@ expectTypeOf(
 expectTypeOf(
   fc.letrec<{}>((_tie) => ({})),
 ).toEqualTypeOf<{}>();
-expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>()(
+// No recursion "letrec"
+expectTypeOf(
   fc.letrec((_tie) => ({
     a: fc.nat(),
     b: fc.string(),
   })),
-  'No recursion "letrec"',
-);
-expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>()(
+).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>();
+// No recursion "letrec" with types manually defined
+expectTypeOf(
   fc.letrec<{ a: number; b: string }>((_tie) => ({
     a: fc.nat(),
     b: fc.string(),
   })),
-  'No recursion "letrec" with types manually defined',
+).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>();
 );
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
   fc.letrec((tie) => ({
@@ -361,64 +325,66 @@ expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<number> }>()(
   })),
   'Recursive "letrec" with types manually defined',
 );
-expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
+// Invalid recursion "letrec"
+// TODO Typings should be improved: referencing an undefined key should failed
+expectTypeOf(
   fc.letrec((tie) => ({
     a: fc.nat(),
     b: tie('c'),
   })),
-  'Invalid recursion "letrec"',
-); // TODO Typings should be improved: referencing an undefined key should failed
-expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>()(
+).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>();
+// Invalid recursion "letrec" with types manually defined
+// TODO Even when fully typed we accept undeclared keys from being used on tie (see why PR-2968)
+expectTypeOf(
   fc.letrec<{ a: number; b: unknown }>((tie) => ({
     a: fc.nat(),
     b: tie('c'),
   })),
-  'Invalid recursion "letrec" with types manually defined',
-); // TODO Even when fully typed we accept undeclared keys from being used on tie (see why PR-2968)
-expectType<{ a: fc.Arbitrary<number> }>()(
+).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<unknown> }>();
+// Accept additional keys within "letrec" but do not expose them outside
+expectTypeOf(
   fc.letrec<{ a: number }>((_tie) => ({
     a: fc.nat(),
     b: fc.nat(),
   })),
-  'Accept additional keys within "letrec" but do not expose them outside',
-);
+).toEqualTypeOf<{ a: fc.Arbitrary<number> }>();
 fc.letrec<{ a: string }>((_tie) => ({
   // @ts-expect-error - reject builders implying 'wrongly typed keys' when type declared
   a: fc.nat(),
 }));
 
 // clone arbitrary
-expectType<fc.Arbitrary<[]>>()(fc.clone(fc.nat(), 0), '"clone" 0-time');
-expectType<fc.Arbitrary<[number]>>()(fc.clone(fc.nat(), 1), '"clone" 1-time');
-expectType<fc.Arbitrary<[number, number]>>()(fc.clone(fc.nat(), 2), '"clone" 2-times');
-expectType<fc.Arbitrary<[number, number, number]>>()(fc.clone(fc.nat(), 3), '"clone" 3-times');
-expectType<fc.Arbitrary<[number, number, number, number]>>()(fc.clone(fc.nat(), 4), '"clone" 4-times');
-expectType<fc.Arbitrary<[number, number, number, number, number]>>()(fc.clone(fc.nat(), 5), '"clone" 5-times');
+// "clone" 0-time
+expectTypeOf(fc.clone(fc.nat(), 0)).toEqualTypeOf<fc.Arbitrary<[]>>();
+// "clone" 1-time
+expectTypeOf(fc.clone(fc.nat(), 1)).toEqualTypeOf<fc.Arbitrary<[number]>>();
+// "clone" 2-times
+expectTypeOf(fc.clone(fc.nat(), 2)).toEqualTypeOf<fc.Arbitrary<[number, number]>>();
+// "clone" 3-times
+expectTypeOf(fc.clone(fc.nat(), 3)).toEqualTypeOf<fc.Arbitrary<[number, number, number]>>();
+// "clone" 4-times
+expectTypeOf(fc.clone(fc.nat(), 4)).toEqualTypeOf<fc.Arbitrary<[number, number, number, number]>>();
+// "clone" 5-times
+expectTypeOf(fc.clone(fc.nat(), 5)).toEqualTypeOf<fc.Arbitrary<[number, number, number, number, number]>>();
 declare const nTimesClone: number;
-expectType<fc.Arbitrary<number[]>>()(fc.clone(fc.nat(), nTimesClone), '"clone" with non-precise number of times');
+// "clone" with non-precise number of times
+expectTypeOf(fc.clone(fc.nat(), nTimesClone)).toEqualTypeOf<fc.Arbitrary<number[]>>();
 
 // func arbitrary
-expectType<fc.Arbitrary<() => number>>()(fc.func(fc.nat()), '"func" producing "nat"');
+// "func" producing "nat"
+expectTypeOf(fc.func(fc.nat())).toEqualTypeOf<fc.Arbitrary<() => number>>();
 // @ts-expect-error - func expects arbitraries not raw values
 fc.func(1);
 
 // falsy arbitary
-expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>()(
-  fc.falsy(),
-  'falsy" without any constraints',
-);
-expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>()(
-  fc.falsy({}),
-  'falsy" with empty constraints',
-);
-expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>()(
-  fc.falsy({ withBigInt: false }),
-  'falsy" with withBigInt=false',
-);
-expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>>()(
-  fc.falsy({ withBigInt: true }),
-  'falsy" with withBigInt=true',
-);
+// "falsy" without any constraints
+expectTypeOf(fc.falsy()).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>();
+// "falsy" with empty constraints
+expectTypeOf(fc.falsy({})).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>();
+// "falsy" with withBigInt=false
+expectTypeOf(fc.falsy({ withBigInt: false })).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>();
+// "falsy" with withBigInt=true
+expectTypeOf(fc.falsy({ withBigInt: true })).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>>();
 
 // configureGlobal
 // "configureGlobal" with custom reporter
@@ -430,16 +396,16 @@ expectTypeOf(
 
 // entityGraph
 type Node = { name: string; linkTo: Node[] };
-expectType<fc.Arbitrary<{ node: Node[] }>>()(
+// translate "many" into an array
+expectTypeOf(
   fc.entityGraph(
     { node: { name: fc.string() } },
     { node: { linkTo: { arity: 'many', type: 'node' } } },
     { unicityConstraints: { node: (n) => n.name } },
   ),
-  'translate "many" into an array',
-);
+).toEqualTypeOf<fc.Arbitrary<{ node: Node[] }>>();
 type Employee = { firstName: string; lastName: string; manager: Employee | undefined };
-expectType<fc.Arbitrary<{ employee: Employee[] }>>()(
+expectTypeOf(
   fc.entityGraph(
     { employee: { firstName: fc.string(), lastName: fc.string() } },
     { employee: { manager: { arity: '0-1', type: 'employee', strategy: 'successor' } } },
