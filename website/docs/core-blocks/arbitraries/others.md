@@ -158,5 +158,5 @@ Scheduler for asynchronous tasks.
 
 - `act` — _ensure that all scheduled tasks will be executed in the right context_
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/scheduler-1.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/scheduler.html).  
 Available since 1.20.0.
