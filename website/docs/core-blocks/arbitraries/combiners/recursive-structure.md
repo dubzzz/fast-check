@@ -240,7 +240,7 @@ tree(2);
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/memo-1.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/memo.html).  
 Available since 1.16.0.
 
 ## entityGraph

@@ -220,7 +220,7 @@ fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
 // • 5 to 9 items.......1.34%
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/jsonValue-1.html).  
+Resources: [API reference](https://fast-check.dev/api-reference/functions/jsonValue.html).  
 Available since 2.20.0.
 
 ## lorem
