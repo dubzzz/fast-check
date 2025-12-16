@@ -3,14 +3,13 @@
 // and unknown syntaxes at build time
 
 import fc from 'fast-check';
-import { expectType, expectTypeAssignable } from '@fast-check/expect-type';
+import { expectTypeOf } from 'vitest';
 
 // assert
-expectType<void>()(fc.assert(fc.property(fc.nat(), () => {})), 'Synchronous property means synchronous assert');
-expectType<Promise<void>>()(
-  fc.assert(fc.asyncProperty(fc.nat(), async () => {})),
-  'Asynchronous property means asynchronous assert',
-);
+// Synchronous property means synchronous assert
+expectTypeOf(fc.assert(fc.property(fc.nat(), () => {}))).toEqualTypeOf<void>();
+// Asynchronous property means asynchronous assert
+expectTypeOf(fc.assert(fc.asyncProperty(fc.nat(), async () => {}))).toEqualTypeOf<Promise<void>>();
 
 // assert (beforeEach, afterEach)
 // @ts-expect-error - Synchronous properties do not accept asynchronous beforeEach
@@ -19,13 +18,13 @@ fc.assert(fc.property(fc.nat(), () => {}).beforeEach(async () => {}));
 fc.assert(fc.property(fc.nat(), () => {}).afterEach(async () => {}));
 
 // assert (reporter)
-expectType<void>()(
+// Accept a reporter featuring the right types
+expectTypeOf(
   fc.assert(
     fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
     { reporter: (_out: fc.RunDetails<[number, string]>) => {} },
   ),
-  'Accept a reporter featuring the right types',
-);
+).toEqualTypeOf<void>();
 // prettier-ignore
 // @ts-expect-error - Reporter must be compatible with generated values
 fc.assert(fc.property(fc.nat(), () => {}), { reporter: (_out: fc.RunDetails<[string, string]>) => {} });
@@ -33,128 +32,107 @@ fc.assert(fc.property(fc.nat(), () => {}), { reporter: (_out: fc.RunDetails<[str
 fc.property(fc.nat(), fc.string(), async (_a: number) => {});
 
 // property
-expectTypeAssignable<fc.IProperty<[number]>>()(
-  fc.property(fc.nat(), (_a) => {}),
-  '"property" instanciates instances compatible with IProperty',
-);
-expectTypeAssignable<fc.IProperty<[number, string]>>()(
-  fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
-  '"property" handles tuples',
-);
-expectType<void>()(
+// "property" instanciates instances compatible with IProperty
+expectTypeOf(fc.property(fc.nat(), (_a) => {})).toMatchTypeOf<fc.IProperty<[number]>>();
+// "property" handles tuples
+expectTypeOf(fc.property(fc.nat(), fc.string(), (_a, _b) => {})).toMatchTypeOf<fc.IProperty<[number, string]>>();
+// Synchronous property accepts synchronous hooks
+expectTypeOf(
   fc.assert(
     fc
       .property(fc.nat(), () => {})
       .beforeEach(() => 123)
       .afterEach(() => 'anything'),
   ),
-  'Synchronous property accepts synchronous hooks',
-);
+).toEqualTypeOf<void>();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.property(fc.nat(), fc.string(), (_a: number, _b: number) => {});
 
 // asyncProperty
-expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
-  fc.asyncProperty(fc.nat(), async (_a) => {}),
-  '"asyncProperty" instanciates instances compatible with IAsyncProperty',
-);
-expectTypeAssignable<fc.IAsyncProperty<[number, string]>>()(
-  fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {}),
-  '"asyncProperty" handles tuples',
-);
-expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
+// "asyncProperty" instanciates instances compatible with IAsyncProperty
+expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
+// "asyncProperty" handles tuples
+expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<fc.IAsyncProperty<[number, string]>>();
+// Asynchronous property accepts asynchronous hooks
+expectTypeOf(
   fc
     .asyncProperty(fc.nat(), async (_a) => {})
     .beforeEach(async () => 123)
     .afterEach(async () => 'anything'),
-  'Asynchronous property accepts asynchronous hooks',
-);
-expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
+).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
+// Asynchronous property accepts synchronous hooks
+expectTypeOf(
   fc
     .asyncProperty(fc.nat(), async (_a) => {})
     .beforeEach(() => 123)
     .afterEach(() => 'anything'),
-  'Asynchronous property accepts synchronous hooks',
-);
+).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {});
 
 // base arbitrary (chain)
-expectType<fc.Arbitrary<string[]>>()(
-  fc.nat().chain((n) => fc.array(fc.string(), { maxLength: n })),
-  'Type of "chain" corresponds to the return type of the passed lambda',
-);
-expectType<fc.Arbitrary<1 | 2 | 3>>()(
-  fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value)),
-  'Type of "chain" corresponds to the return type of the passed lambda',
-);
-expectType<fc.Arbitrary<1 | 2 | 3>>()(
-  // without the as, TypeScript refused to compile as constantFrom requires t least one argument
-  fc.constantFrom(...([1, 2, 3] as [1, 2, 3])).chain((value) => fc.constant(value)),
-  'Type of "chain" should not simplify the type to something more general (no "1 -> number" expected)',
-);
+// Type of "chain" corresponds to the return type of the passed lambda
+expectTypeOf(fc.nat().chain((n) => fc.array(fc.string(), { maxLength: n }))).toEqualTypeOf<fc.Arbitrary<string[]>>();
+// Type of "chain" corresponds to the return type of the passed lambda
+expectTypeOf(fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
+// Type of "chain" should not simplify the type to something more general (no "1 -> number" expected)
+// without the as, TypeScript refused to compile as constantFrom requires t least one argument
+expectTypeOf(fc.constantFrom(...([1, 2, 3] as [1, 2, 3])).chain((value) => fc.constant(value))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
 
 // base arbitrary (filter)
-expectType<fc.Arbitrary<number>>()(
-  fc.option(fc.nat()).filter((n): n is number => n !== null),
-  '"filter" preserves the source type',
-);
+// "filter" preserves the source type
+expectTypeOf(fc.option(fc.nat()).filter((n): n is number => n !== null)).toEqualTypeOf<fc.Arbitrary<number>>();
 
 // base arbitrary (map)
-expectType<fc.Arbitrary<string>>()(
-  fc.nat().map((n) => String(n)),
-  '"map" alters the resulting type',
-);
+// "map" alters the resulting type
+expectTypeOf(fc.nat().map((n) => String(n))).toEqualTypeOf<fc.Arbitrary<string>>();
 
 // constant arbitrary
-expectType<fc.Arbitrary<1>>()(fc.constant(1), 'By default, "constant" preserves the precise type');
-expectType<fc.Arbitrary<number>>()(fc.constant<number>(1), 'But it also accepts to receive the type');
+// By default, "constant" preserves the precise type
+expectTypeOf(fc.constant(1)).toEqualTypeOf<fc.Arbitrary<1>>();
+// But it also accepts to receive the type
+expectTypeOf(fc.constant<number>(1)).toEqualTypeOf<fc.Arbitrary<number>>();
 
 // constantFrom arbitrary
-expectType<fc.Arbitrary<1 | 2>>()(fc.constantFrom(1, 2), 'By default, "constantFrom" preserves the precise type');
-expectType<fc.Arbitrary<number>>()(fc.constantFrom<number[]>(1, 2), 'But it also accepts to receive the type');
-expectType<fc.Arbitrary<1 | 2>>()(
-  fc.constantFrom(...([1, 2] as const)),
-  '"as const" was a way to prevent extra simplification of "constantFrom", it\'s now not needed anymore',
-);
-expectType<fc.Arbitrary<number | string>>()(
-  fc.constantFrom(1, 2, 'hello'),
-  '"constantFrom" accepts arguments not having the same types without any typing trick',
-);
-expectType<fc.Arbitrary<1 | 2 | 'hello'>>()(
-  fc.constantFrom(...([1, 2, 'hello'] as const)),
-  '"as const" was a way to prevent extra simplification of "constantFrom"',
-);
+// By default, "constantFrom" preserves the precise type
+expectTypeOf(fc.constantFrom(1, 2)).toEqualTypeOf<fc.Arbitrary<1 | 2>>();
+// But it also accepts to receive the type
+expectTypeOf(fc.constantFrom<number[]>(1, 2)).toEqualTypeOf<fc.Arbitrary<number>>();
+// "as const" was a way to prevent extra simplification of "constantFrom", it's now not needed anymore
+expectTypeOf(fc.constantFrom(...([1, 2] as const))).toEqualTypeOf<fc.Arbitrary<1 | 2>>();
+// "constantFrom" accepts arguments not having the same types without any typing trick
+expectTypeOf(fc.constantFrom(1, 2, 'hello')).toEqualTypeOf<fc.Arbitrary<number | string>>();
+// "as const" was a way to prevent extra simplification of "constantFrom"
+expectTypeOf(fc.constantFrom(...([1, 2, 'hello'] as const))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 'hello'>>();
 
 // uniqueArray arbitrary
-expectType<fc.Arbitrary<string[]>>()(fc.uniqueArray(fc.string()), 'simple arrays of unique values');
-expectType<fc.Arbitrary<{ name: string }[]>>()(
+// simple arrays of unique values
+expectTypeOf(fc.uniqueArray(fc.string())).toEqualTypeOf<fc.Arbitrary<string[]>>();
+// arrays of unique values based on a selector
+expectTypeOf(
   fc.uniqueArray(fc.record({ name: fc.string() }), {
     selector: (item) => item.name,
   }),
-  'arrays of unique values based on a selector',
-);
-expectType<fc.Arbitrary<{ name: string }[]>>()(
+).toEqualTypeOf<fc.Arbitrary<{ name: string }[]>>();
+// arrays of unique values using a custom comparison function
+expectTypeOf(
   fc.uniqueArray(fc.record({ name: fc.string() }), {
     comparator: (itemA, itemB) => itemA.name === itemB.name,
   }),
-  'arrays of unique values using a custom comparison function',
-);
-expectType<fc.Arbitrary<{ name: string }[]>>()(
+).toEqualTypeOf<fc.Arbitrary<{ name: string }[]>>();
+// arrays of unique values using a custom comparison function and a complex selector (need an explicit typing)
+// Ideally we should not need to explicitely type `itemA`, but so far it is needed
+expectTypeOf(
   fc.uniqueArray(fc.record({ name: fc.string() }), {
-    // Ideally we should not need to explicitely type `itemA`, but so far it is needed
     comparator: (itemA: { toto: string }, itemB) => itemA.toto === itemB.toto,
     selector: (item) => ({ toto: item.name }),
   }),
-  'arrays of unique values using a custom comparison function and a complex selector (need an explicit typing)',
-);
+).toEqualTypeOf<fc.Arbitrary<{ name: string }[]>>();
+// arrays of unique values accept the aggregated type as input
 declare const constraintsUniqueArray1: fc.UniqueArrayConstraints<{ name: string }, { toto: string }>;
-expectType<fc.Arbitrary<{ name: string }[]>>()(
-  fc.uniqueArray(fc.record({ name: fc.string() }), constraintsUniqueArray1),
-  'arrays of unique values accept the aggregated type as input',
-);
+expectTypeOf(fc.uniqueArray(fc.record({ name: fc.string() }), constraintsUniqueArray1)).toEqualTypeOf<fc.Arbitrary<{ name: string }[]>>();
 
 fc.uniqueArray(fc.record({ name: fc.string() }), {
   // @ts-expect-error - Custom comparison function is not compatible with default selector
@@ -178,14 +156,10 @@ fc.uniqueArray(fc.record({ name: fc.string() }), {
 // record arbitrary
 declare const mySymbol1: unique symbol;
 declare const mySymbol2: unique symbol;
-expectType<fc.Arbitrary<{ a: number; b: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }),
-  '"record" can contain multiple types',
-);
-expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]: string }>>()(
-  fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() }),
-  '"record" can be indexed using unique symbols as keys',
-);
+// "record" can contain multiple types
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() })).toEqualTypeOf<fc.Arbitrary<{ a: number; b: string }>>();
+// "record" can be indexed using unique symbols as keys
+expectTypeOf(fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() })).toEqualTypeOf<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]: string }>>();
 // Related to https://github.com/microsoft/TypeScript/issues/27525:
 //expectType<fc.Arbitrary<{ [Symbol.iterator]: number; [mySymbol2]: string }>>()(
 //  fc.record({ [Symbol.iterator]: fc.nat(), [mySymbol2]: fc.string() }),
@@ -197,22 +171,14 @@ expectType<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]: string }>>()(
 //  fc.record({ [symbolIterator]: fc.nat(), [mySymbol2]: fc.string() }),
 //  '"record" can be indexed using known symbols as keys based on a workaround'
 //);
-expectType<fc.Arbitrary<{ a: number; b: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, {}),
-  '"record" accepts empty constraints',
-);
-expectType<fc.Arbitrary<{ a?: number; b?: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] }),
-  '"record" only applies optional on keys declared within requiredKeys even when empty',
-);
-expectType<fc.Arbitrary<{ a: number; b?: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] }),
-  '"record" only applies optional on keys declared within requiredKeys even if unique',
-);
-expectType<fc.Arbitrary<{ a: number; b?: string; c: string }>>()(
-  fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] }),
-  '"record" only applies optional on keys declared within requiredKeys even if multiple ones specified',
-);
+// "record" accepts empty constraints
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, {})).toEqualTypeOf<fc.Arbitrary<{ a: number; b: string }>>();
+// "record" only applies optional on keys declared within requiredKeys even when empty
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string }>>();
+// "record" only applies optional on keys declared within requiredKeys even if unique
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] })).toEqualTypeOf<fc.Arbitrary<{ a: number; b?: string }>>();
+// "record" only applies optional on keys declared within requiredKeys even if multiple ones specified
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] })).toEqualTypeOf<fc.Arbitrary<{ a: number; b?: string; c: string }>>();
 // prettier-ignore
 // @fc-expect-error-require-exactOptionalPropertyTypes
 expectType<fc.Arbitrary<{ a?: number; b?: string | undefined }>>()(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] }), '"record" only applies optional on keys declared within requiredKeys by adding ? without |undefined');
@@ -359,14 +325,14 @@ expectType<fc.Arbitrary<number | 'custom_default'>>()(
 fc.option(1);
 
 // tie arbitrary
-expectType<{}>()(
+// Empty "letrec"
+expectTypeOf(
   fc.letrec((_tie) => ({})),
-  'Empty "letrec"',
-);
-expectType<{}>()(
+).toEqualTypeOf<{}>();
+// Empty "letrec" with types manually defined
+expectTypeOf(
   fc.letrec<{}>((_tie) => ({})),
-  'Empty "letrec" with types manually defined',
-);
+).toEqualTypeOf<{}>();
 expectType<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>()(
   fc.letrec((_tie) => ({
     a: fc.nat(),
@@ -455,10 +421,10 @@ expectType<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>>()(
 );
 
 // configureGlobal
-expectType<void>()(
+// "configureGlobal" with custom reporter
+expectTypeOf(
   fc.configureGlobal({ reporter: (_out: fc.RunDetails<unknown>) => {} }),
-  '"configureGlobal" with custom reporter',
-);
+).toEqualTypeOf<void>();
 // FIXME // @ts-expect-error - reporter cannot be defined with precise type on configureGlobal
 //fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} });
 
@@ -493,7 +459,8 @@ expectType<fc.Arbitrary<{ profile: Profile[]; user: User[] }>>()(
           return u.userName;
         },
         profile: (p) => {
-          expectType<Profile>()(p, 'non-relational part of a Profile');
+          // non-relational part of a Profile
+expectTypeOf(p).toEqualTypeOf<Profile>();
           return p.id;
         },
       },
