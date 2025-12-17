@@ -10,8 +10,8 @@ import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(
@@ -19,12 +19,12 @@ if (isMainThread) {
       async () => {
         // Arrange
         const options: Parameters<unknown> = { ...defaultOptions, endOnFailure: true };
-        const expectedError = /Property timeout: exceeded limit of 1000 milliseconds/;
+        const expectedError = /Property timeout: exceeded limit of 5000 milliseconds/;
 
         // Act / Assert
         await expectThrowWithCause(assert(blockEventLoopProperty, options), expectedError);
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

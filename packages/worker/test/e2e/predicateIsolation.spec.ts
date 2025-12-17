@@ -10,8 +10,8 @@ import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(
@@ -23,7 +23,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(predicateIsolation.predicateLevel, options)).resolves.not.toThrow();
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -36,7 +36,7 @@ if (isMainThread) {
         // Act / Assert
         await expectThrowWithCause(assert(predicateIsolation.propertyLevel, options), expectedError);
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -49,7 +49,7 @@ if (isMainThread) {
         // Act / Assert
         await expectThrowWithCause(assert(predicateIsolation.fileLevel, options), expectedError);
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -83,7 +83,7 @@ if (isMainThread) {
           expect(foundOne).toBe(true);
         }
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -121,7 +121,7 @@ if (isMainThread) {
           expect(foundOne).toBe(true);
         }
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

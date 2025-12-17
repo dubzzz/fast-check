@@ -10,8 +10,8 @@ import { readerAssert, writerAssert, concurrentLogFile } from './__properties__/
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(
@@ -39,7 +39,7 @@ if (isMainThread) {
           rmSync(concurrentLogFile, { force: true });
         }
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

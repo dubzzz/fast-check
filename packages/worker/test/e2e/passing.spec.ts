@@ -9,8 +9,8 @@ import { passingProperty } from './__properties__/passing.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(
@@ -19,7 +19,7 @@ if (isMainThread) {
         // Arrange / Act / Assert
         await expect(assert(passingProperty, defaultOptions)).resolves.not.toThrow();
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

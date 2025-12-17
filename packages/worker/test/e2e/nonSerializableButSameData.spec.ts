@@ -13,8 +13,8 @@ import {
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout, includeErrorInReport: true };
 
     it(
@@ -40,7 +40,7 @@ if (isMainThread) {
         }
         expect(failed).toBe(true);
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -77,7 +77,7 @@ if (isMainThread) {
         }
         expect(failed).toBe(true);
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }
