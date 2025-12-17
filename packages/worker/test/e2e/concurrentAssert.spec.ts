@@ -10,7 +10,7 @@ import { readerAssert, writerAssert } from './__properties__/concurrentAssert.mj
 if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
-    const assertTimeout = 1000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(

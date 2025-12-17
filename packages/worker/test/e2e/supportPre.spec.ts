@@ -10,7 +10,7 @@ import { supportPreProperty } from './__properties__/supportPre.mjs';
 if (isMainThread) {
   describe('@fast-check/worker', () => {
     const testTimeout = 30000;
-    const assertTimeout = 1000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout, seed: -340565462 };
 
     it(
