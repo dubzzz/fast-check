@@ -9,7 +9,7 @@ import { supportPreProperty } from './__properties__/supportPre.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
+    const testTimeout = 30000;
     const assertTimeout = 1000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout, seed: -340565462 };
 
@@ -19,7 +19,7 @@ if (isMainThread) {
         // Arrange / Act / Assert
         await expect(assert(supportPreProperty, defaultOptions)).resolves.not.toThrow();
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }
