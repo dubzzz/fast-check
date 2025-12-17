@@ -84,7 +84,7 @@ describe.each<DescribeOptions>([
       expectFail(out);
     });
 
-    it.skip(`should support ${runnerName}.only.prop`, async () => {
+    it.concurrent(`should support ${runnerName}.only.prop`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
         runner.only.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
@@ -93,7 +93,7 @@ describe.each<DescribeOptions>([
       });
 
       // Act
-      const out = await runSpec(specDirectory);
+      const out = await runSpec(specDirectory, { allowOnly: true });
 
       // Assert
       expectPass(out);
@@ -208,7 +208,7 @@ describe.each<DescribeOptions>([
       });
 
       // Act
-      const out = await runSpec(specDirectory);
+      const out = await runSpec(specDirectory, { allowOnly: true });
 
       // Assert
       expectFail(out);
@@ -363,19 +363,19 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
   return specDirectory;
 }
 
-async function runSpec(specDirectory: string): Promise<string> {
+async function runSpec(specDirectory: string, options?: { allowOnly?: boolean }): Promise<string> {
   try {
-    const { stdout: specOutput } = await execFile(
-      'node',
-      [
-        '../../node_modules/vitest/vitest.mjs',
-        '--config',
-        vitestConfigName,
-        '--run', // no watch
-        '--no-color',
-      ],
-      { cwd: specDirectory },
-    );
+    const args = [
+      '../../node_modules/vitest/vitest.mjs',
+      '--config',
+      vitestConfigName,
+      '--run', // no watch
+      '--no-color',
+    ];
+    if (options?.allowOnly) {
+      args.push('--allowOnly');
+    }
+    const { stdout: specOutput } = await execFile('node', args, { cwd: specDirectory });
     return specOutput;
   } catch (err) {
     return (err as any).stderr;
