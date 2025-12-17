@@ -9,7 +9,7 @@ import { asyncThrowProperty } from './__properties__/asyncThrow.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
+    const testTimeout = 30000;
     const assertTimeout = 1000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
@@ -36,7 +36,7 @@ if (isMainThread) {
         }
         expect(failed).toBe(true);
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

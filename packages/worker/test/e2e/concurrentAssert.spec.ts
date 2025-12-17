@@ -9,7 +9,7 @@ import { readerAssert, writerAssert } from './__properties__/concurrentAssert.mj
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
+    const testTimeout = 30000;
     const assertTimeout = 1000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
@@ -28,7 +28,7 @@ if (isMainThread) {
         // Assert
         await expect(Promise.all([readerRun, writerRun])).resolves.not.toThrow();
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

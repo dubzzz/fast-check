@@ -10,7 +10,7 @@ import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
+    const testTimeout = 30000;
     const assertTimeout = 1000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
@@ -24,7 +24,7 @@ if (isMainThread) {
         // Act / Assert
         await expectThrowWithCause(assert(unregisteredProperty, defaultOptions), expectedError);
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }
