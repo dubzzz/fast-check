@@ -25,7 +25,7 @@ function nextFilenameAnswer() {
  * @param {string} content
  */
 function appendLog(sender, content) {
-  writeFileSync(concurrentLogFile, `[${sender}] ${content}\n`, { flag: 'a' });
+  writeFileSync(concurrentLogFile, `[${sender}]@${Date.now()} ${content}\n`, { flag: 'a' });
 }
 
 export const readerAssert = property(
