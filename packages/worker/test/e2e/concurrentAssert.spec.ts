@@ -31,7 +31,7 @@ if (isMainThread) {
           await expect(Promise.all([readerRun, writerRun])).resolves.not.toThrow();
         } catch (err) {
           throw new Error(
-            'Failed to run concurrentAssert, with log file:\n\n' + readFileSync(concurrentLogFile),
+            'Failed to run concurrentAssert, with log file:\n\n' + readFileSync(concurrentLogFile).toString(),
             // @ts-expect-error - Not yet supported by our TS target
             { cause: err },
           );
