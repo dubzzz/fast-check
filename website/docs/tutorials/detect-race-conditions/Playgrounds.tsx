@@ -8,7 +8,6 @@ import {
   UnstyledOpenInCodeSandboxButton,
 } from '@codesandbox/sandpack-react';
 import { atomDark } from '@codesandbox/sandpack-themes';
-// @ts-expect-error - CSS module import without type definitions
 import styles from './Playgrounds.module.css';
 import * as snippets from './snippets.mjs';
 
