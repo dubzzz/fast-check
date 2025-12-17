@@ -6,7 +6,6 @@ import { describe, it, expect } from 'vitest';
 import {
   nonSerializableDataProperty,
   nonSerializableDataPropertyMainThread,
-   
   // @ts-expect-error - Importing .mjs file without type definitions
 } from './__properties__/nonSerializableData.mjs';
 

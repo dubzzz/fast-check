@@ -7,7 +7,6 @@ import { describe, it, expect } from 'vitest';
 import {
   nonSerializableButSameDataProperty,
   nonSerializableButSameDataRawProperty,
-   
   // @ts-expect-error - Importing .mjs file without type definitions
 } from './__properties__/nonSerializableButSameData.mjs';
 

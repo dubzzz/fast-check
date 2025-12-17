@@ -3,7 +3,6 @@ import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
- 
 // @ts-expect-error - Importing .mjs file without type definitions
 import { passingProperty } from './__properties__/passing.mjs';
 

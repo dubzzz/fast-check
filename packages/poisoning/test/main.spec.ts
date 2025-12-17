@@ -15,7 +15,6 @@ describe('assertNoPoisoning', () => {
 
   it('should throw an Error if new global appeared and be able to revert the change', () => {
     // Arrange
-     
     // @ts-expect-error - Property 'a' does not exist on globalThis, intentionally adding it for testing
     globalThis.a = 'Hello';
 
@@ -25,8 +24,7 @@ describe('assertNoPoisoning', () => {
       restoreGlobals(options);
       expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
-       
-      // @ts-expect-error - Property 'a' does not exist on globalThis, intentionally deleting test property
+      // @ts-expect-error - Property 'a' has been added on globalThis during the test, deleting it
       delete globalThis.a;
     }
   });
@@ -34,7 +32,6 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if global removed and be able to revert the change', () => {
     // Arrange
     const F = globalThis.Function;
-     
     // @ts-expect-error - Cannot delete required property 'Function' from globalThis, intentionally doing so for testing
     delete globalThis.Function;
 
@@ -119,7 +116,6 @@ describe('assertNoPoisoning', () => {
       let numDeleted = 0;
       for (const k of own(obj)) {
         try {
-           
           // @ts-expect-error - Cannot delete required property from object, intentionally doing so for testing
           delete obj[k];
           ++numDeleted;
