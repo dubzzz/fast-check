@@ -8,7 +8,6 @@ import {
   UnstyledOpenInCodeSandboxButton,
 } from '@codesandbox/sandpack-react';
 import { atomDark } from '@codesandbox/sandpack-themes';
-// @ts-ignore
 import styles from './Playgrounds.module.css';
 import * as snippets from './snippets.mjs';
 
