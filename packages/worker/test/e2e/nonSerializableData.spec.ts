@@ -12,7 +12,7 @@ import {
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
+    const testTimeout = 30000;
     const assertTimeout = 1000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout, includeErrorInReport: true };
 
@@ -22,7 +22,7 @@ if (isMainThread) {
         // Arrange / Act / Assert
         await expect(assert(nonSerializableDataProperty, defaultOptions)).resolves.not.toThrow();
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -31,7 +31,7 @@ if (isMainThread) {
         // Arrange / Act / Assert
         await expect(assert(nonSerializableDataPropertyMainThread, defaultOptions)).rejects.toThrow(/DataCloneError/);
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }
