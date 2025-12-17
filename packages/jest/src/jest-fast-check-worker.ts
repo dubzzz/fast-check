@@ -69,8 +69,8 @@ export const init = (url: URL, options?: PropertyForOptions): InitOutput => {
     } else {
       // But in ES Modules mode, it cannot be accessed directly, thus users have to directly import it
       // But root import of it is failing in the context of workers, so only dynamic version is acceptable
-       
-      // @ts-expect-error - Dynamic import of @jest/globals doesn't have proper type inference in worker context
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - Dynamic imports cause TS1323 error only in ESM build (not CJS), so @ts-expect-error would fail CJS build
       return import('@jest/globals').then(
         ({ jest }): InitOutput => ({
           test: buildTest(test as It, jest, fcExtra),
