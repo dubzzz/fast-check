@@ -7,8 +7,8 @@ import { describe, it, expect } from 'vitest';
 import {
   nonSerializableButSameDataProperty,
   nonSerializableButSameDataRawProperty,
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
+   
+  // @ts-expect-error - Importing .mjs file without type definitions
 } from './__properties__/nonSerializableButSameData.mjs';
 
 if (isMainThread) {

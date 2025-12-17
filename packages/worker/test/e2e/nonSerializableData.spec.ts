@@ -6,8 +6,8 @@ import { describe, it, expect } from 'vitest';
 import {
   nonSerializableDataProperty,
   nonSerializableDataPropertyMainThread,
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
+   
+  // @ts-expect-error - Importing .mjs file without type definitions
 } from './__properties__/nonSerializableData.mjs';
 
 if (isMainThread) {
