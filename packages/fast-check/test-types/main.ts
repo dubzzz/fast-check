@@ -32,7 +32,7 @@ fc.assert(fc.property(fc.nat(), () => {}), { reporter: (_out: fc.RunDetails<[str
 fc.property(fc.nat(), fc.string(), async (_a: number) => {});
 
 // property
-// "property" instanciates instances compatible with IProperty
+// "property" instantiates instances compatible with IProperty
 expectTypeOf(fc.property(fc.nat(), (_a) => {})).toMatchTypeOf<fc.IProperty<[number]>>();
 // "property" handles tuples
 expectTypeOf(fc.property(fc.nat(), fc.string(), (_a, _b) => {})).toMatchTypeOf<fc.IProperty<[number, string]>>();
@@ -49,7 +49,7 @@ expectTypeOf(
 fc.property(fc.nat(), fc.string(), (_a: number, _b: number) => {});
 
 // asyncProperty
-// "asyncProperty" instanciates instances compatible with IAsyncProperty
+// "asyncProperty" instantiates instances compatible with IAsyncProperty
 expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
 // "asyncProperty" handles tuples
 expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<fc.IAsyncProperty<[number, string]>>();
@@ -78,7 +78,7 @@ expectTypeOf(fc.nat().chain((n) => fc.array(fc.string(), { maxLength: n }))).toE
 // Type of "chain" corresponds to the return type of the passed lambda
 expectTypeOf(fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
 // Type of "chain" should not simplify the type to something more general (no "1 -> number" expected)
-// without the as, TypeScript refused to compile as constantFrom requires t least one argument
+// without the as, TypeScript refused to compile as constantFrom requires at least one argument
 expectTypeOf(fc.constantFrom(...([1, 2, 3] as [1, 2, 3])).chain((value) => fc.constant(value))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
 
 // base arbitrary (filter)
@@ -372,11 +372,11 @@ expectTypeOf(fc.clone(fc.nat(), nTimesClone)).toEqualTypeOf<fc.Arbitrary<number[
 
 // func arbitrary
 // "func" producing "nat"
-expectTypeOf(fc.func(fc.nat())).toMatchTypeOf<fc.Arbitrary<() => number>>();
+expectTypeOf(fc.func(fc.nat())).toEqualTypeOf<fc.Arbitrary<() => number>>();
 // @ts-expect-error - func expects arbitraries not raw values
 fc.func(1);
 
-// falsy arbitary
+// falsy arbitrary
 // "falsy" without any constraints
 expectTypeOf(fc.falsy()).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>();
 // "falsy" with empty constraints
@@ -405,6 +405,7 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<fc.Arbitrary<{ node: Node[] }>>();
 type Employee = { firstName: string; lastName: string; manager: Employee | undefined };
+// translate "0-1" into a defined value or undefined
 expectTypeOf(
   fc.entityGraph(
     { employee: { firstName: fc.string(), lastName: fc.string() } },
