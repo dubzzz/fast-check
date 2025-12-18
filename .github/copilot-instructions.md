@@ -15,6 +15,8 @@ When creating or naming pull requests, follow the [gitmoji](https://gitmoji.dev/
   - Example: `🐛(jest) Fix compatibility with jest 29`
   - Example: `📝(ava) Update documentation for ava integration`
 
+Limit the name of the PR to at most 50 characters for the part after `emoji(package-name)`. It forces the author to summarize the changes succinctly, making it easier for others to understand the main purpose of the PR at a glance.
+
 ### Common Gitmoji Examples
 
 - ✨ Introduce new features
