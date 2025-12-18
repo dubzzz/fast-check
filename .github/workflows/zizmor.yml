@@ -8,6 +8,7 @@ on:
       - 'fix-v*'
     paths:
       - '.github/workflows/**'
+      - '.github/zizmor.yml'
   push:
     branches:
       - main
@@ -15,6 +16,7 @@ on:
       - 'fix-v*'
     paths:
       - '.github/workflows/**'
+      - '.github/zizmor.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
