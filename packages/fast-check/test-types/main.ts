@@ -522,3 +522,18 @@ fc.entityGraph(
   },
   { unicityConstraints: { user: (u) => u.userName, profile: (p) => p.id } },
 );
+type EmployeeWithTeam = { firstName: string; lastName: string; team: TeamWithEmployees };
+type TeamWithEmployees = { name: string; members: EmployeeWithTeam[] };
+expectType<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>()(
+  fc.entityGraph(
+    {
+      employee: { firstName: fc.string(), lastName: fc.string() },
+      team: { name: fc.string() },
+    },
+    {
+      employee: { team: { arity: '1', type: 'team' } },
+      team: { members: { arity: 'backlink', type: 'employee', originalProperty: 'team' } },
+    },
+  ),
+  'support backlink',
+);

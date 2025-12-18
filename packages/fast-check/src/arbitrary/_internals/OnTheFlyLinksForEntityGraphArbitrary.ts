@@ -17,7 +17,7 @@ import { noBias } from '../noBias.js';
 import { option } from '../option.js';
 import { uniqueArray } from '../uniqueArray.js';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
-import type { Arity, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes.js';
+import type { Arity, EntityLinks, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes.js';
 
 const safeObjectCreate = Object.create;
 
@@ -41,7 +41,7 @@ function produceLinkUnitaryIndexArbitrary(
 
 /** @internal */
 function computeLinkIndex(
-  arity: Arity,
+  arity: Exclude<Arity, 'backlink'>,
   strategy: Strategy,
   currentIndexIfSameType: number | undefined,
   countInTargetType: number,
@@ -91,6 +91,9 @@ class OnTheFlyLinksForEntityGraphArbitrary<
       const relationsForName = relations[name];
       for (const fieldName in relationsForName) {
         const relation = relationsForName[fieldName];
+        if (relation.arity === 'backlink') {
+          continue;
+        }
         if (relation.strategy === 'exclusive') {
           if (safeHas(nonExclusiveEntities, relation.type)) {
             throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
@@ -110,6 +113,18 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         }
       }
     }
+  }
+
+  createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
+    const emptyLinksInstance = safeObjectCreate(null);
+    const relationsForType = this.relations[targetType];
+    for (const name in relationsForType) {
+      const relation = relationsForType[name];
+      if (relation.arity === 'backlink') {
+        emptyLinksInstance[name] = [];
+      }
+    }
+    return emptyLinksInstance;
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
@@ -138,6 +153,9 @@ class OnTheFlyLinksForEntityGraphArbitrary<
       currentEntityDepth.depth = currentEntity.depth;
       for (const name in currentRelations) {
         const relation = currentRelations[name];
+        if (relation.arity === 'backlink') {
+          continue;
+        }
         const targetType = relation.type;
         const producedLinksInTargetType = producedLinks[targetType];
         const countInTargetType = producedLinksInTargetType.length;
@@ -155,7 +173,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         for (const link of links) {
           if (link >= countInTargetType) {
             safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, safeObjectCreate(null));
+            safePush(producedLinksInTargetType, this.createEmptyLinksInstanceFor(targetType));
           }
         }
       }

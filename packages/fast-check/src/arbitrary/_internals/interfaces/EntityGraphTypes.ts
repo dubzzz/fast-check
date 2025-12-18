@@ -48,11 +48,12 @@ export type Arbitraries<TEntityFields> = {
  * - `'0-1'`: Optional relationship — references zero or one target entity (value or undefined)
  * - `'1'`: Required relationship — always references exactly one target entity
  * - `'many'`: Multi-valued relationship — references an array of target entities (may be empty, no duplicates)
+ * - `'backlink'`: Back reference to the entities holding the reference
  *
  * @remarks Since 4.5.0
  * @public
  */
-export type Arity = '0-1' | '1' | 'many';
+export type Arity = '0-1' | '1' | 'many' | 'backlink';
 
 /**
  * Defines restrictions on which entities can be targeted by a relationship.
@@ -107,18 +108,30 @@ export type Relationship<TTypeNames> = {
    * @remarks Since 4.5.0
    */
   type: TTypeNames;
-  /**
-   * Constrains which target entities are eligible to be referenced.
-   *
-   * - `'any'`: No restrictions — any entity of the target type can be selected
-   * - `'exclusive'`: Each target can only be used once — prevents multiple relationships from referencing the same entity
-   * - `'successor'`: Target must appear after the source in the entity array — prevents self-references and cycles
-   *
-   * @defaultValue 'any'
-   * @remarks Since 4.5.0
-   */
-  strategy?: Strategy;
-};
+} & (
+  | {
+      arity: Exclude<Arity, 'backlink'>;
+      /**
+       * Constrains which target entities are eligible to be referenced.
+       *
+       * - `'any'`: No restrictions — any entity of the target type can be selected
+       * - `'exclusive'`: Each target can only be used once — prevents multiple relationships from referencing the same entity
+       * - `'successor'`: Target must appear after the source in the entity array — prevents self-references and cycles
+       *
+       * @defaultValue 'any'
+       * @remarks Since 4.5.0
+       */
+      strategy?: Strategy;
+    }
+  | {
+      arity: 'backlink';
+      /**
+       * Name of the original property holding the reference in type
+       * @remarks Since 4.5.0
+       */
+      originalProperty: string;
+    }
+);
 /**
  * Defines all relationships between entity types for {@link entityGraph}.
  *
@@ -153,7 +166,9 @@ export type RelationsToValue<TRelations, TValues> = {
       ? TValues[TTypeName]
       : TRelations[TField] extends { arity: 'many'; type: infer TTypeName extends keyof TValues }
         ? TValues[TTypeName][]
-        : never;
+        : TRelations[TField] extends { arity: 'backlink'; type: infer TTypeName extends keyof TValues }
+          ? TValues[TTypeName][]
+          : never;
 };
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
 export type EntityGraphSingleValue<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
