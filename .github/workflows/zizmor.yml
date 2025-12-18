@@ -36,4 +36,4 @@ jobs:
       - name: Install zizmor
         run: pipx install zizmor==1.18.0
       - name: Run zizmor
-        run: zizmor .
+        run: zizmor --config .github/zizmor.yml .
