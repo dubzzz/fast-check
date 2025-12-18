@@ -1,5 +1,7 @@
 rules:
   use-trusted-publishing:
     ignore:
+      # These are not real npm publish commands, but pnpm dlx pkg-pr-new publish
+      # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
       - build-status.yml:210
       - build-status.yml:213
