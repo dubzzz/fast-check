@@ -1,0 +1,5 @@
+rules:
+  use-trusted-publishing:
+    ignore:
+      - build-status.yml:210
+      - build-status.yml:213
