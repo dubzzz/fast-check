@@ -8,6 +8,7 @@ on:
       - 'fix-v*'
     paths:
       - '.github/workflows/**'
+      - '.github/zizmor.yml'
   push:
     branches:
       - main
@@ -15,6 +16,7 @@ on:
       - 'fix-v*'
     paths:
       - '.github/workflows/**'
+      - '.github/zizmor.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,4 +36,4 @@ jobs:
       - name: Install zizmor
         run: pipx install zizmor==1.18.0
       - name: Run zizmor
-        run: zizmor .
+        run: zizmor --config .github/zizmor.yml .
