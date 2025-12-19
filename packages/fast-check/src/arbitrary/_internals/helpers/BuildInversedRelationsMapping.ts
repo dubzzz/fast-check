@@ -1,24 +1,13 @@
 import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
 
 /**
- * Represents an entry in the inversed relations mapping.
- * Contains the entity type and property name that defines the forward relationship
- * corresponding to an inverse relationship.
+ * Entry mapping an inverse relationship to its forward counterpart
  * @internal
  */
 export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
 
 /**
- * Build a mapping from inverse relationships to their corresponding forward relationships.
- *
- * This function analyzes the entity relations to find all inverse relationships and validates
- * that they correctly reference existing forward relationships. It creates a mapping that
- * allows the entity graph generator to automatically populate inverse relationships based
- * on their forward counterparts.
- *
- * @param relations - The complete entity relations configuration to analyze
- * @returns A map from each inverse relationship to its corresponding forward relationship entry
- * @throws When an inverse relationship references a non-existent or mismatched forward relationship
+ * Build mapping from inverse to forward relationships
  * @internal
  */
 export function buildInversedRelationsMapping<TEntityFields>(
