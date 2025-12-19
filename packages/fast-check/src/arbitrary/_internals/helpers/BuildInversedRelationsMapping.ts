@@ -1,8 +1,13 @@
 import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
 import { Error as SError, String as SString } from '../../../utils/globals.js';
 
+/** @internal */
 export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
 
+/**
+ * Build mapping from forward to inverse relationships
+ * @internal
+ */
 export function buildInversedRelationsMapping<TEntityFields>(
   relations: EntityRelations<TEntityFields>,
 ): Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>> {
@@ -41,7 +46,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
     }
     for (const fieldName in relationsForName) {
       const relation = relationsForName[fieldName];
-      if (relation.arity !== 'inverse') {
+      if (relation.arity === 'inverse') {
         continue;
       }
       const requestedIfAny = requestedInversedRelationsForName.get(fieldName);
@@ -50,16 +55,14 @@ export function buildInversedRelationsMapping<TEntityFields>(
       }
       if (requestedIfAny.type !== relation.type) {
         throw new SError(
-          `Inverse relationship ${SString(fieldName)} on type ${SString(name)} references forward relationship ${SString(relation.forwardRelationship)} but types do not match`,
+          `Inverse relationship ${SString(requestedIfAny.property)} on type ${SString(requestedIfAny.type)} references forward relationship ${SString(fieldName)} but types do not match`,
         );
       }
       inversedRelations.set(relation, requestedIfAny);
     }
   }
   if (inversedRelations.size !== foundInversedRelations) {
-    throw new SError(
-      `Some inverse relationships could not be matched with their corresponding forward relationships`,
-    );
+    throw new SError(`Some inverse relationships could not be matched with their corresponding forward relationships`);
   }
   return inversedRelations;
 }
