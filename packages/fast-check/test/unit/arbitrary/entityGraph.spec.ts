@@ -113,8 +113,9 @@ describe('entityGraph (integration)', () => {
           );
         }
         if ('managees' in employee) {
-          for (const managee of employee.managees as any) {
-            expect(managee).toSatisfy((managee) => allEmployees.has(managee), 'managee from allEmployess');
+          for (const managee of employee.managees as unknown as (typeof value)['employee']) {
+            expect(managee).toSatisfy((managee) => allEmployees.has(managee), 'managee from allEmployees');
+            expect(managee.manager, 'managee defines the right manager').toBe(employee);
           }
         }
         if ('team' in employee) {
@@ -145,8 +146,9 @@ describe('entityGraph (integration)', () => {
           );
         }
         if ('members' in team) {
-          for (const member of team.members as any) {
-            expect(member).toSatisfy((member) => allEmployees.has(member), 'member from allEmployess');
+          for (const member of team.members as unknown as (typeof value)['employee']) {
+            expect(member).toSatisfy((member) => allEmployees.has(member), 'member from allEmployees');
+            expect(member.team, 'member defines the right team').toBe(team);
           }
         }
       }
@@ -159,8 +161,9 @@ describe('entityGraph (integration)', () => {
         });
         // Cross-references
         if ('teams' in department) {
-          for (const team of department.teams as any) {
+          for (const team of department.teams as unknown as (typeof value)['team']) {
             expect(team).toSatisfy((team) => allTeams.has(team), 'team from allTeams');
+            expect(team.department, 'team defines the right department').toBe(department);
           }
         }
       }
@@ -173,8 +176,12 @@ describe('entityGraph (integration)', () => {
         });
         // Cross-references
         if ('employees' in competency) {
-          for (const employee of competency.employees as any) {
-            expect(employee).toSatisfy((employee) => allEmployees.has(employee), 'employee from allEmployess');
+          for (const employee of competency.employees as unknown as (typeof value)['employee']) {
+            expect(employee).toSatisfy((employee) => allEmployees.has(employee), 'employee from allEmployees');
+            expect(employee.competencies).toSatisfy(
+              (competencies) => competencies.includes(competency),
+              'employee defines the right competency',
+            );
           }
         }
       }
