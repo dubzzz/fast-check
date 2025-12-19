@@ -16,8 +16,17 @@ import { integer } from '../integer.js';
 import { noBias } from '../noBias.js';
 import { option } from '../option.js';
 import { uniqueArray } from '../uniqueArray.js';
+import { buildInversedRelationsMapping } from './helpers/BuildInversedRelationsMapping.js';
+import type { InversedRelationsEntry } from './helpers/BuildInversedRelationsMapping.js';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
-import type { Arity, EntityLinks, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes.js';
+import type {
+  Arity,
+  EntityLinks,
+  EntityRelations,
+  ProducedLinks,
+  Relationship,
+  Strategy,
+} from './interfaces/EntityGraphTypes.js';
 
 const safeObjectCreate = Object.create;
 
@@ -78,6 +87,8 @@ class OnTheFlyLinksForEntityGraphArbitrary<
   TEntityFields,
   TEntityRelations extends EntityRelations<TEntityFields>,
 > extends Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
+  private inversedRelations: Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>;
+
   constructor(
     readonly relations: TEntityRelations,
     readonly defaultEntities: (keyof TEntityFields)[],
@@ -113,6 +124,9 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         }
       }
     }
+
+    // Building inversed relations map
+    this.inversedRelations = buildInversedRelationsMapping(relations);
   }
 
   createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
@@ -121,7 +135,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     for (const name in relationsForType) {
       const relation = relationsForType[name];
       if (relation.arity === 'backlink') {
-        emptyLinksInstance[name] = [];
+        emptyLinksInstance[name] = { type: relation.type, index: [] };
       }
     }
     return emptyLinksInstance;
@@ -137,7 +151,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
     for (const name of this.defaultEntities) {
       safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], safeObjectCreate(null));
+      safePush(producedLinks[name], this.createEmptyLinksInstanceFor(name));
     }
 
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
@@ -174,6 +188,11 @@ class OnTheFlyLinksForEntityGraphArbitrary<
           if (link >= countInTargetType) {
             safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
             safePush(producedLinksInTargetType, this.createEmptyLinksInstanceFor(targetType));
+          }
+          const inversed = this.inversedRelations.get(relation);
+          if (inversed !== undefined) {
+            const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
+            safePush(knownInversedLinks as number[], currentEntity.indexInType);
           }
         }
       }
