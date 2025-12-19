@@ -8,10 +8,7 @@ import type { EntityRelations, Relationship } from '../../../../../src/arbitrary
 describe('buildInversedRelationsMapping', () => {
   it('should return empty map when no inverse relationships are defined', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      team: {};
-    };
+    type EntityFields = { employee: {}; team: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         team: { arity: '1', type: 'team' },
@@ -28,10 +25,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should build mapping for simple inverse relationship with arity 1 forward relationship', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      team: {};
-    };
+    type EntityFields = { employee: {}; team: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         team: { arity: '1', type: 'team' },
@@ -52,9 +46,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should build mapping for inverse relationship with arity 0-1 forward relationship', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-    };
+    type EntityFields = { employee: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         manager: { arity: '0-1', type: 'employee' },
@@ -73,10 +65,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should build mapping for inverse relationship with arity many forward relationship', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      competency: {};
-    };
+    type EntityFields = { employee: {}; competency: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         competencies: { arity: 'many', type: 'competency' },
@@ -97,11 +86,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should build mapping for multiple inverse relationships on different types', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      team: {};
-      department: {};
-    };
+    type EntityFields = { employee: {}; team: {}; department: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         team: { arity: '1', type: 'team' },
@@ -124,10 +109,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should throw error when multiple inverse relationships target the same forward relationship', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      team: {};
-    };
+    type EntityFields = { employee: {}; team: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         team: { arity: '1', type: 'team' },
@@ -146,11 +128,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should throw error when inverse relationship type does not match forward relationship target type', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      team: {};
-      department: {};
-    };
+    type EntityFields = { employee: {}; team: {}; department: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         myTeam: { arity: '1', type: 'team' },
@@ -169,10 +147,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should throw error when inverse relationship has no matching forward relationship', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      team: {};
-    };
+    type EntityFields = { employee: {}; team: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {},
       team: {
@@ -188,10 +163,7 @@ describe('buildInversedRelationsMapping', () => {
 
   it('should throw error when forward relationship name does not exist on target type', () => {
     // Arrange
-    type EntityFields = {
-      employee: {};
-      team: {};
-    };
+    type EntityFields = { employee: {}; team: {} };
     const relations: EntityRelations<EntityFields> = {
       employee: {
         team: { arity: '1', type: 'team' },
