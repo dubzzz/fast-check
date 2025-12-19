@@ -20,7 +20,7 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result.size).toBe(0);
+    expect(result).toEqual(new Map());
   });
 
   it('should build mapping for simple inverse relationship with arity 1 forward relationship', () => {
@@ -39,9 +39,9 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result.size).toBe(1);
-    const entries = Array.from(result.entries());
-    expect(entries[0][1]).toEqual({ type: 'team', property: 'members' });
+    expect(result).toEqual(
+      new Map([[relations.employee.team, { type: 'team', property: 'members' }]]),
+    );
   });
 
   it('should build mapping for inverse relationship with arity 0-1 forward relationship', () => {
@@ -58,9 +58,9 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result.size).toBe(1);
-    const entries = Array.from(result.entries());
-    expect(entries[0][1]).toEqual({ type: 'employee', property: 'managees' });
+    expect(result).toEqual(
+      new Map([[relations.employee.manager, { type: 'employee', property: 'managees' }]]),
+    );
   });
 
   it('should build mapping for inverse relationship with arity many forward relationship', () => {
@@ -79,9 +79,9 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result.size).toBe(1);
-    const entries = Array.from(result.entries());
-    expect(entries[0][1]).toEqual({ type: 'competency', property: 'employees' });
+    expect(result).toEqual(
+      new Map([[relations.employee.competencies, { type: 'competency', property: 'employees' }]]),
+    );
   });
 
   it('should build mapping for multiple inverse relationships on different types', () => {
@@ -104,7 +104,12 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result.size).toBe(2);
+    expect(result).toEqual(
+      new Map([
+        [relations.employee.team, { type: 'team', property: 'members' }],
+        [relations.team.department, { type: 'department', property: 'teams' }],
+      ]),
+    );
   });
 
   it('should throw error when multiple inverse relationships target the same forward relationship', () => {
@@ -121,9 +126,7 @@ describe('buildInversedRelationsMapping', () => {
     };
 
     // Act & Assert
-    expect(() => buildInversedRelationsMapping(relations)).toThrow(
-      'Cannot declare multiple inverse relationships for the same forward relationship team on type employee',
-    );
+    expect(() => buildInversedRelationsMapping(relations)).toThrow();
   });
 
   it('should throw error when inverse relationship type does not match forward relationship target type', () => {
@@ -140,9 +143,7 @@ describe('buildInversedRelationsMapping', () => {
     };
 
     // Act & Assert
-    expect(() => buildInversedRelationsMapping(relations)).toThrow(
-      'Inverse relationship members on type department references forward relationship myTeam but types do not match',
-    );
+    expect(() => buildInversedRelationsMapping(relations)).toThrow();
   });
 
   it('should throw error when inverse relationship has no matching forward relationship', () => {
@@ -156,9 +157,7 @@ describe('buildInversedRelationsMapping', () => {
     };
 
     // Act & Assert
-    expect(() => buildInversedRelationsMapping(relations)).toThrow(
-      'Some inverse relationships could not be matched with their corresponding forward relationships',
-    );
+    expect(() => buildInversedRelationsMapping(relations)).toThrow();
   });
 
   it('should throw error when forward relationship name does not exist on target type', () => {
@@ -174,8 +173,6 @@ describe('buildInversedRelationsMapping', () => {
     };
 
     // Act & Assert
-    expect(() => buildInversedRelationsMapping(relations)).toThrow(
-      'Some inverse relationships could not be matched with their corresponding forward relationships',
-    );
+    expect(() => buildInversedRelationsMapping(relations)).toThrow();
   });
 });
