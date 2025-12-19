@@ -38,15 +38,29 @@ describe('entityGraph (integration)', () => {
         },
         {
           employee: {
-            ...(extra.withZeroOrOne ? { manager: { arity: '0-1', type: 'employee' } } : {}),
-            ...(extra.withExactlyOne ? { team: { arity: '1', type: 'team' } } : {}),
-            ...(extra.withMany ? { competencies: { arity: 'many', type: 'competency' } } : {}),
+            ...(extra.withZeroOrOne !== WithValues.No ? { manager: { arity: '0-1', type: 'employee' } } : {}),
+            ...(extra.withZeroOrOne === WithValues.ForwardAndReverse
+              ? { managees: { arity: 'inverse', type: 'employee', forwardRelationship: 'manager' } }
+              : {}),
+            ...(extra.withExactlyOne !== WithValues.No ? { team: { arity: '1', type: 'team' } } : {}),
+            ...(extra.withMany !== WithValues.No ? { competencies: { arity: 'many', type: 'competency' } } : {}),
           },
           team: {
             ...(extra.withExactlyOne ? { department: { arity: '1', type: 'department' } } : {}),
+            ...(extra.withExactlyOne === WithValues.ForwardAndReverse
+              ? { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } }
+              : {}),
           },
-          department: {},
-          competency: {},
+          department: {
+            ...(extra.withExactlyOne === WithValues.ForwardAndReverse
+              ? { members: { arity: 'inverse', type: 'team', forwardRelationship: 'department' } }
+              : {}),
+          },
+          competency: {
+            ...(extra.withMany === WithValues.ForwardAndReverse
+              ? { employees: { arity: 'inverse', type: 'employee', forwardRelationship: 'competencies' } }
+              : {}),
+          },
         },
         {
           noNullPrototype: true,
@@ -87,6 +101,7 @@ describe('entityGraph (integration)', () => {
           ...(extra.withZeroOrOne !== WithValues.No
             ? { manager: expect.toBeOneOf([expectUndefined, expect.any(Object)]) }
             : {}),
+          ...(extra.withZeroOrOne === WithValues.ForwardAndReverse ? { managees: expect.any(Array) } : {}),
           ...(extra.withExactlyOne !== WithValues.No ? { team: expect.any(Object) } : {}),
           ...(extra.withMany !== WithValues.No ? { competencies: expect.any(Array) } : {}),
         });
@@ -96,6 +111,11 @@ describe('entityGraph (integration)', () => {
             (manager) => manager === undefined || allEmployees.has(manager),
             'manager from allEmployees',
           );
+        }
+        if ('managees' in employee) {
+          for (const managee of employee.managees as any) {
+            expect(managee).toSatisfy((managee) => allEmployees.has(managee), 'managee from allEmployess');
+          }
         }
         if ('team' in employee) {
           expect(employee.team).toSatisfy((team) => allTeams.has(team), 'team from allTeams');
@@ -114,7 +134,8 @@ describe('entityGraph (integration)', () => {
         // Basic structure
         expect(team).toStrictEqual({
           name: expect.any(String),
-          ...(extra.withExactlyOne ? { department: expect.any(Object) } : {}),
+          ...(extra.withExactlyOne !== WithValues.No ? { department: expect.any(Object) } : {}),
+          ...(extra.withExactlyOne === WithValues.ForwardAndReverse ? { members: expect.any(Array) } : {}),
         });
         // Cross-references
         if ('department' in team) {
@@ -123,20 +144,39 @@ describe('entityGraph (integration)', () => {
             'department from allDepartments',
           );
         }
+        if ('members' in team) {
+          for (const member of team.members as any) {
+            expect(member).toSatisfy((member) => allEmployees.has(member), 'member from allEmployess');
+          }
+        }
       }
       // Checking departments
       for (const department of value.department) {
         // Basic structure
         expect(department).toStrictEqual({
           name: expect.any(String),
+          ...(extra.withExactlyOne === WithValues.ForwardAndReverse ? { teams: expect.any(Array) } : {}),
         });
+        // Cross-references
+        if ('teams' in department) {
+          for (const team of department.teams as any) {
+            expect(team).toSatisfy((team) => allTeams.has(team), 'team from allTeams');
+          }
+        }
       }
       // Checking competencies
       for (const competency of value.competency) {
         // Basic structure
         expect(competency).toStrictEqual({
           name: expect.any(String),
+          ...(extra.withMany === WithValues.ForwardAndReverse ? { employees: expect.any(Array) } : {}),
         });
+        // Cross-references
+        if ('employees' in competency) {
+          for (const employee of competency.employees as any) {
+            expect(employee).toSatisfy((employee) => allEmployees.has(employee), 'employee from allEmployess');
+          }
+        }
       }
       return true;
     };
