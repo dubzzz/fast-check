@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  buildInversedRelationsMapping,
-} from '../../../../../src/arbitrary/_internals/helpers/BuildInversedRelationsMapping.js';
+import { buildInversedRelationsMapping } from '../../../../../src/arbitrary/_internals/helpers/BuildInversedRelationsMapping.js';
 import type { EntityRelations } from '../../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
 
 describe('buildInversedRelationsMapping', () => {
@@ -38,9 +36,7 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result).toEqual(
-      new Map([[relations.employee.team, { type: 'team', property: 'members' }]]),
-    );
+    expect(result).toEqual(new Map([[relations.employee.team, { type: 'team', property: 'members' }]]));
   });
 
   it('should build mapping for inverse relationship with arity 0-1 forward relationship', () => {
@@ -57,9 +53,7 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result).toEqual(
-      new Map([[relations.employee.manager, { type: 'employee', property: 'managees' }]]),
-    );
+    expect(result).toEqual(new Map([[relations.employee.manager, { type: 'employee', property: 'managees' }]]));
   });
 
   it('should build mapping for inverse relationship with arity many forward relationship', () => {
@@ -78,9 +72,7 @@ describe('buildInversedRelationsMapping', () => {
     const result = buildInversedRelationsMapping(relations);
 
     // Assert
-    expect(result).toEqual(
-      new Map([[relations.employee.competencies, { type: 'competency', property: 'employees' }]]),
-    );
+    expect(result).toEqual(new Map([[relations.employee.competencies, { type: 'competency', property: 'employees' }]]));
   });
 
   it('should build mapping for multiple inverse relationships on different types', () => {
