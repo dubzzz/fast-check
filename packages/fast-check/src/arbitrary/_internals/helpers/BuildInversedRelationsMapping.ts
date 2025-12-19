@@ -1,5 +1,12 @@
 import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
-import { Error as SError, String as SString } from '../../../utils/globals.js';
+import {
+  Error as SError,
+  String as SString,
+  Map as SMap,
+  safeMapGet,
+  safeMapSet,
+  safeMapHas,
+} from '../../../utils/globals.js';
 
 /** @internal */
 export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
@@ -12,7 +19,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
   relations: EntityRelations<TEntityFields>,
 ): Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>> {
   let foundInversedRelations = 0;
-  const requestedInversedRelations = new Map<keyof TEntityFields, Map<string, InversedRelationsEntry<TEntityFields>>>();
+  const requestedInversedRelations = new SMap<keyof TEntityFields, Map<string, InversedRelationsEntry<TEntityFields>>>();
   for (const name in relations) {
     const relationsForName = relations[name];
     for (const fieldName in relationsForName) {
@@ -20,27 +27,27 @@ export function buildInversedRelationsMapping<TEntityFields>(
       if (relation.arity !== 'inverse') {
         continue;
       }
-      let existingOnes = requestedInversedRelations.get(relation.type);
+      let existingOnes = safeMapGet(requestedInversedRelations, relation.type);
       if (existingOnes === undefined) {
-        existingOnes = new Map();
-        requestedInversedRelations.set(relation.type, existingOnes);
+        existingOnes = new SMap();
+        safeMapSet(requestedInversedRelations, relation.type, existingOnes);
       }
-      if (existingOnes.has(relation.forwardRelationship)) {
+      if (safeMapHas(existingOnes, relation.forwardRelationship)) {
         throw new SError(
           `Cannot declare multiple inverse relationships for the same forward relationship ${SString(relation.forwardRelationship)} on type ${SString(relation.type)}`,
         );
       }
-      existingOnes.set(relation.forwardRelationship, { type: name, property: fieldName });
+      safeMapSet(existingOnes, relation.forwardRelationship, { type: name, property: fieldName });
       foundInversedRelations += 1;
     }
   }
-  const inversedRelations = new Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>();
+  const inversedRelations = new SMap<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>();
   if (foundInversedRelations === 0) {
     return inversedRelations;
   }
   for (const name in relations) {
     const relationsForName = relations[name];
-    const requestedInversedRelationsForName = requestedInversedRelations.get(name);
+    const requestedInversedRelationsForName = safeMapGet(requestedInversedRelations, name);
     if (requestedInversedRelationsForName === undefined) {
       continue;
     }
@@ -49,7 +56,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
       if (relation.arity === 'inverse') {
         continue;
       }
-      const requestedIfAny = requestedInversedRelationsForName.get(fieldName);
+      const requestedIfAny = safeMapGet(requestedInversedRelationsForName, fieldName);
       if (requestedIfAny === undefined) {
         continue;
       }
@@ -58,7 +65,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
           `Inverse relationship ${SString(requestedIfAny.property)} on type ${SString(requestedIfAny.type)} references forward relationship ${SString(fieldName)} but types do not match`,
         );
       }
-      inversedRelations.set(relation, requestedIfAny);
+      safeMapSet(inversedRelations, relation, requestedIfAny);
     }
   }
   if (inversedRelations.size !== foundInversedRelations) {
