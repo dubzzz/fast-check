@@ -532,8 +532,8 @@ expectType<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[
     },
     {
       employee: { team: { arity: '1', type: 'team' } },
-      team: { members: { arity: 'backlink', type: 'employee', originalProperty: 'team' } },
+      team: { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } },
     },
   ),
-  'support backlink',
+  'support inverse relationships',
 );

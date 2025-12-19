@@ -50,7 +50,7 @@ function produceLinkUnitaryIndexArbitrary(
 
 /** @internal */
 function computeLinkIndex(
-  arity: Exclude<Arity, 'backlink'>,
+  arity: Exclude<Arity, 'inverse'>,
   strategy: Strategy,
   currentIndexIfSameType: number | undefined,
   countInTargetType: number,
@@ -102,7 +102,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
       const relationsForName = relations[name];
       for (const fieldName in relationsForName) {
         const relation = relationsForName[fieldName];
-        if (relation.arity === 'backlink') {
+        if (relation.arity === 'inverse') {
           continue;
         }
         if (relation.strategy === 'exclusive') {
@@ -134,7 +134,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     const relationsForType = this.relations[targetType];
     for (const name in relationsForType) {
       const relation = relationsForType[name];
-      if (relation.arity === 'backlink') {
+      if (relation.arity === 'inverse') {
         emptyLinksInstance[name] = { type: relation.type, index: [] };
       }
     }
@@ -167,7 +167,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
       currentEntityDepth.depth = currentEntity.depth;
       for (const name in currentRelations) {
         const relation = currentRelations[name];
-        if (relation.arity === 'backlink') {
+        if (relation.arity === 'inverse') {
           continue;
         }
         const targetType = relation.type;

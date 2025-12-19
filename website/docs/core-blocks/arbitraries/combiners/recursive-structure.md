@@ -260,10 +260,11 @@ The output is an object where each key corresponds to an entity type and the val
 
 - `arbitraries` — _defines the data fields for each entity type (non-relational properties). This is a record where each key is an entity type name and the value defines the arbitraries for that entity's fields, similar to `fc.record`_
 - `relations` — _defines how entities reference each other (relational properties). This is a record where each key is an entity type name and the value defines the relationships from that entity to others_
-  - _each relationship has the structure: `{arity, type, strategy?}`_
-    - `arity` — _cardinality of the relationship. `"0-1"` for an optional reference (produces undefined or a single instance), `"1"` for a required reference (always produces a single instance), `"many"` for a multi-valued reference (produces an array, possibly empty, with no duplicate references based on object identity)_
+  - _each relationship has the structure: `{arity, type, strategy?}` or `{arity: 'inverse', type, forwardRelationship}`_
+    - `arity` — _cardinality of the relationship. `"0-1"` for an optional reference (produces undefined or a single instance), `"1"` for a required reference (always produces a single instance), `"many"` for a multi-valued reference (produces an array, possibly empty, with no duplicate references based on object identity), `"inverse"` for an inverse relationship (automatically computed array of entities that reference this entity through a specified forward relationship)_
     - `type` — _the name of the target entity type (must be one of the keys in `arbitraries`)_
-    - `strategy?` — default: `'any'` — _constrains which target entities are eligible. `'any'` means no restrictions, `'exclusive'` means each target can only be referenced once (prevents sharing), `'successor'` means target must appear after the source in the entity array (prevents cycles and self-references)_
+    - `strategy?` — default: `'any'` — _constrains which target entities are eligible (not applicable for inverse relationships). `'any'` means no restrictions, `'exclusive'` means each target can only be referenced once (prevents sharing), `'successor'` means target must appear after the source in the entity array (prevents cycles and self-references)_
+    - `forwardRelationship` — _for inverse relationships only: the name of the forward relationship property in the target type that references this entity type. The inverse relationship will automatically contain all entities that reference this entity through that forward relationship_
 - `initialPoolConstraints?` — _controls the minimum number of entities generated for each entity type in the initial pool (baseline set created before relationships are established). Provide an object mapping entity type names to constraints objects with `minLength?` and `maxLength?` properties (same as used by `fc.array`). Other entities may be created later to satisfy relationship requirements_
 - `unicityConstraints?` — _defines uniqueness criteria for entities of each type to prevent duplicates. Provide a selector function that extracts a key from each entity. Entities with identical keys (compared using `Object.is`) are considered duplicates and only one instance will be kept_
 - `noNullPrototype?` — default: `false` — _do not generate values with null prototype, only generate objects based on the Object-prototype_
@@ -428,6 +429,39 @@ fc.entityGraph(
 // • {"user":[{"name":"Kpr","profile":<profile#0>},{"name":"Yh","profile":<profile#1>},{"name":"Eortnaylp","profile":<profile#2>},{"name":"A","profile":<profile#3>},{"name":"Thypdgpjgst","profile":<profile#4>},{"name":"Eaiyre","profile":<profile#5>}],"profile":[{"id":"1f1df5af-4f97-823b-85cb-be3dffffffed","pictureUrl":"http://mvauyjp11.ag//*/9/J//w/"},{"id":"0000000a-0017-1000-97b3-eedea40117a3","pictureUrl":"https://mfj.wiw"},{"id":"00000003-fff8-8fff-8000-0016170efcc7","pictureUrl":"https://hm9pc1.jmr//*/"},{"id":"559f6db7-f23f-5db2-bfff-ffe2ffffffe8","pictureUrl":"https://aale4d86e.7.qc"},{"id":"94b18704-000a-1000-8508-81010000001c","pictureUrl":"http://k.lxtn3ystb.mq/Z/t//K/o/v/y//p"},{"id":"e1787553-001d-1000-bfff-fffcfffffff8","pictureUrl":"https://d.fa///o/l"}]}
 // • {"user":[{"name":"Wwwljikwkm","profile":<profile#0>},{"name":"Rgruovyzom","profile":<profile#1>}],"profile":[{"id":"c89c3b4a-7e10-55e2-8000-001b997fcc45","pictureUrl":"http://53.70.la//7"},{"id":"00000004-0019-1000-8000-000271fb94e6","pictureUrl":"https://5.jvw"}]}
 // • {"user":[{"name":"Ac","profile":<profile#0>}],"profile":[{"id":"21c8a9ec-fff4-8fff-bfff-fffd00000012","pictureUrl":"http://da37m0ov.na"}]}
+// • …
+
+fc.entityGraph(
+  {
+    employee: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
+    team: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
+  },
+  {
+    employee: { team: { arity: '1', type: 'team' } },
+    team: { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } },
+  },
+  {
+    initialPoolConstraints: { team: { maxLength: 0 } },
+    unicityConstraints: { employee: (value) => value.name, team: (value) => value.name },
+    noNullPrototype: true,
+  },
+);
+// Note: Generate employees and teams with inverse relationships
+// - Entity types: employee with name field, team with name field
+// - Forward relationship: each employee has a required reference to one team (arity: '1')
+// - Inverse relationship: each team automatically gets a 'members' array containing all employees that reference it
+// - Produces: { employee: [{ name: "Alice", team: <team#0> }, ...], team: [{ name: "Engineering", members: [<employee#0>, <employee#2>] }, ...] }
+// Characteristics of this configuration:
+// - Enforces unique names for both employees and teams (unicityConstraints)
+// - The 'members' field is automatically populated based on the 'team' forward relationship - no manual linking required
+// - Every team has at least one employee (maxLength: 0 for team in initialPoolConstraints) — remove this to allow teams without employees
+// - Inverse relationships are read-only and always contain an array (even if empty)
+// Examples of generated values:
+// • {"employee":[{"name":"Dcaller","team":<team#0>},{"name":"Fcaller","team":<team#1>},{"name":"Xarguments","team":<team#0>}],"team":[{"name":"Qname","members":[<employee#0>,<employee#2>]},{"name":"Eref","members":[<employee#1>]}]}
+// • {"employee":[{"name":"Zprot","team":<team#0>}],"team":[{"name":"Gkey","members":[<employee#0>]}]}
+// • {"employee":[{"name":"Aapply","team":<team#0>},{"name":"Zto","team":<team#1>},{"name":"Ebind","team":<team#0>},{"name":"Wcall","team":<team#2>}],"team":[{"name":"Dlength","members":[<employee#0>,<employee#2>]},{"name":"Vhas","members":[<employee#1>]},{"name":"Kown","members":[<employee#3>]}]}
+// • {"employee":[{"name":"Ocaller","team":<team#0>},{"name":"Ykey","team":<team#0>}],"team":[{"name":"Uname","members":[<employee#0>,<employee#1>]}]}
+// • {"employee":[{"name":"Hlength","team":<team#0>},{"name":"Tbind","team":<team#1>},{"name":"Iref","team":<team#0>},{"name":"Qcall","team":<team#1>}],"team":[{"name":"Xkey","members":[<employee#0>,<employee#2>]},{"name":"Aname","members":[<employee#1>,<employee#3>]}]}
 // • …
 ```
 

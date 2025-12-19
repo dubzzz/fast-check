@@ -11,7 +11,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
     const relationsForName = relations[name];
     for (const fieldName in relationsForName) {
       const relation = relationsForName[fieldName];
-      if (relation.arity !== 'backlink') {
+      if (relation.arity !== 'inverse') {
         continue;
       }
       let existingOnes = requestedInversedRelations.get(relation.type);
@@ -19,10 +19,10 @@ export function buildInversedRelationsMapping<TEntityFields>(
         existingOnes = new Map();
         requestedInversedRelations.set(relation.type, existingOnes);
       }
-      if (existingOnes.has(relation.originalProperty)) {
+      if (existingOnes.has(relation.forwardRelationship)) {
         throw new Error(''); // TODO SError
       }
-      existingOnes.set(relation.originalProperty, { type: name, property: fieldName });
+      existingOnes.set(relation.forwardRelationship, { type: name, property: fieldName });
       foundInversedRelations += 1;
     }
   }
@@ -38,7 +38,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
     }
     for (const fieldName in relationsForName) {
       const relation = relationsForName[fieldName];
-      if (relation.arity !== 'backlink') {
+      if (relation.arity !== 'inverse') {
         continue;
       }
       const requestedIfAny = requestedInversedRelationsForName.get(fieldName);
