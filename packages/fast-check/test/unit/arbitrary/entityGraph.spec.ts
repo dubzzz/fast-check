@@ -140,7 +140,7 @@ describe('entityGraph (integration)', () => {
           for (const competency of competencies) {
             expect(competency).toSatisfy(
               (competency) => allCompetencies.has(competency),
-              'compentency from allCompetencies',
+              'competency from allCompetencies',
             );
             if ('employees' in competency) {
               expect(competency.employees).toSatisfy(
