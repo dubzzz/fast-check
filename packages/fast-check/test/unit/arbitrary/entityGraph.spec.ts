@@ -8,17 +8,24 @@ import {
 } from './__test-helpers__/ArbitraryAssertions.js';
 import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 
+enum WithValues {
+  No,
+  ForwardOnly,
+  ForwardAndReverse,
+}
+
 type UnArbitrary<T> = T extends Arbitrary<infer U> ? U : never;
 
+const withValuesArbitrary = fc.constantFrom(WithValues.No, WithValues.ForwardOnly, WithValues.ForwardAndReverse);
 const expectUndefined = expect.toSatisfy((v) => v === undefined, 'be undefined');
 
 describe('entityGraph (integration)', () => {
   describe('organization', () => {
-    type Extra = { withZeroOrOne: boolean; withExactlyOne: boolean; withMany: boolean };
+    type Extra = { withZeroOrOne: WithValues; withExactlyOne: WithValues; withMany: WithValues };
     const extraParameters: fc.Arbitrary<Extra> = fc.record({
-      withZeroOrOne: fc.boolean(),
-      withExactlyOne: fc.boolean(),
-      withMany: fc.boolean(),
+      withZeroOrOne: withValuesArbitrary,
+      withExactlyOne: withValuesArbitrary,
+      withMany: withValuesArbitrary,
     });
 
     const entityGraphBuilder = (extra: Extra) => {
@@ -77,9 +84,11 @@ describe('entityGraph (integration)', () => {
         expect(employee).toStrictEqual({
           firstName: expect.any(String),
           lastName: expect.any(String),
-          ...(extra.withZeroOrOne ? { manager: expect.toBeOneOf([expectUndefined, expect.any(Object)]) } : {}),
-          ...(extra.withExactlyOne ? { team: expect.any(Object) } : {}),
-          ...(extra.withMany ? { competencies: expect.any(Array) } : {}),
+          ...(extra.withZeroOrOne !== WithValues.No
+            ? { manager: expect.toBeOneOf([expectUndefined, expect.any(Object)]) }
+            : {}),
+          ...(extra.withExactlyOne !== WithValues.No ? { team: expect.any(Object) } : {}),
+          ...(extra.withMany !== WithValues.No ? { competencies: expect.any(Array) } : {}),
         });
         // Cross-references
         if ('manager' in employee) {
