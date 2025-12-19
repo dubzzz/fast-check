@@ -46,7 +46,7 @@ describe('entityGraph (integration)', () => {
             ...(extra.withMany !== WithValues.No ? { competencies: { arity: 'many', type: 'competency' } } : {}),
           },
           team: {
-            ...(extra.withExactlyOne ? { department: { arity: '1', type: 'department' } } : {}),
+            ...(extra.withExactlyOne !== WithValues.No ? { department: { arity: '1', type: 'department' } } : {}),
             ...(extra.withExactlyOne === WithValues.ForwardAndReverse
               ? { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } }
               : {}),
