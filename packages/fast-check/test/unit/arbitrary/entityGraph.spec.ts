@@ -107,10 +107,17 @@ describe('entityGraph (integration)', () => {
         });
         // Cross-references
         if ('manager' in employee) {
-          expect(employee.manager).toSatisfy(
+          const manager = employee.manager as unknown as (typeof value)['employee'][number];
+          expect(manager).toSatisfy(
             (manager) => manager === undefined || allEmployees.has(manager),
             'manager from allEmployees',
           );
+          if (manager !== undefined && 'managees' in manager) {
+            expect(manager.managees).toSatisfy(
+              (managees) => managees.includes(employee),
+              'manager has the employee as a managee',
+            );
+          }
         }
         if ('managees' in employee) {
           for (const managee of employee.managees as unknown as (typeof value)['employee']) {
@@ -119,14 +126,28 @@ describe('entityGraph (integration)', () => {
           }
         }
         if ('team' in employee) {
-          expect(employee.team).toSatisfy((team) => allTeams.has(team), 'team from allTeams');
+          const team = employee.team as unknown as (typeof value)['team'][number];
+          expect(team).toSatisfy((team) => allTeams.has(team), 'team from allTeams');
+          if ('members' in team) {
+            expect(team.members).toSatisfy(
+              (members) => members.includes(employee),
+              'team has the employee as a member',
+            );
+          }
         }
         if ('competencies' in employee) {
-          for (const competency of employee.competencies as any) {
+          const competencies = employee.competencies as unknown as (typeof value)['competency'];
+          for (const competency of competencies) {
             expect(competency).toSatisfy(
               (competency) => allCompetencies.has(competency),
               'compentency from allCompetencies',
             );
+            if ('employees' in competency) {
+              expect(competency.employees).toSatisfy(
+                (members) => members.includes(employee),
+                'competency has the employee as an employee',
+              );
+            }
           }
         }
       }
@@ -140,10 +161,14 @@ describe('entityGraph (integration)', () => {
         });
         // Cross-references
         if ('department' in team) {
-          expect(team.department).toSatisfy(
+          const department = team.department as unknown as (typeof value)['department'][number];
+          expect(department).toSatisfy(
             (department) => allDepartments.has(department),
             'department from allDepartments',
           );
+          if ('teams' in department) {
+            expect(department.teams).toSatisfy((teams) => teams.includes(team), 'department has the team as a team');
+          }
         }
         if ('members' in team) {
           for (const member of team.members as unknown as (typeof value)['employee']) {
