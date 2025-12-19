@@ -6,6 +6,7 @@ import {
   safeAdd,
   safeHas,
   safeMap,
+  safeMapGet,
   safePush,
   Set as SSet,
   Error as SError,
@@ -189,7 +190,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
             safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
             safePush(producedLinksInTargetType, this.createEmptyLinksInstanceFor(targetType));
           }
-          const inversed = this.inversedRelations.get(relation);
+          const inversed = safeMapGet(this.inversedRelations, relation);
           if (inversed !== undefined) {
             const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
             safePush(knownInversedLinks as number[], currentEntity.indexInType);
