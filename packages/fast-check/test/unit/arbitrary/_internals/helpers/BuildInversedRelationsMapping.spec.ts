@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
   buildInversedRelationsMapping,
-  type InversedRelationsEntry,
 } from '../../../../../src/arbitrary/_internals/helpers/BuildInversedRelationsMapping.js';
 import type { EntityRelations, Relationship } from '../../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
 
