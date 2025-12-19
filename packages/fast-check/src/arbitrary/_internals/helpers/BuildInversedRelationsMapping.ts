@@ -55,7 +55,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
       }
       if (requestedIfAny.type !== relation.type) {
         throw new SError(
-          `Inverse relationship ${SString(fieldName)} on type ${SString(name)} references forward relationship ${SString(relation.forwardRelationship)} but types do not match`,
+          `Inverse relationship ${SString(requestedIfAny.property)} on type ${SString(requestedIfAny.type)} references forward relationship ${SString(fieldName)} but types do not match`,
         );
       }
       inversedRelations.set(relation, requestedIfAny);
