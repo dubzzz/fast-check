@@ -53,7 +53,7 @@ describe('entityGraph (integration)', () => {
           },
           department: {
             ...(extra.withExactlyOne === WithValues.ForwardAndReverse
-              ? { members: { arity: 'inverse', type: 'team', forwardRelationship: 'department' } }
+              ? { teams: { arity: 'inverse', type: 'team', forwardRelationship: 'department' } }
               : {}),
           },
           competency: {
