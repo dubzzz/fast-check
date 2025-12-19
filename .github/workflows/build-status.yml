@@ -637,7 +637,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/fast-check/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/fast-check/package.tgz
   check_publish_ava:
@@ -690,7 +690,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/ava/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/ava/package.tgz
   check_publish_jest:
@@ -743,7 +743,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/jest/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/jest/package.tgz
   check_publish_packaged:
@@ -796,7 +796,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/packaged/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/packaged/package.tgz
   check_publish_poisoning:
@@ -849,7 +849,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/poisoning/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/poisoning/package.tgz
   check_publish_vitest:
@@ -902,7 +902,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/vitest/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/vitest/package.tgz
   check_publish_worker:
@@ -955,7 +955,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/worker/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/worker/package.tgz
   check_publish_expect_type:
@@ -1008,6 +1008,6 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/expect-type/package.tgz
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/expect-type/package.tgz
