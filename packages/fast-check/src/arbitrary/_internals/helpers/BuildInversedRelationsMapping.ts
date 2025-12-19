@@ -1,8 +1,13 @@
 import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
 import { Error as SError, String as SString } from '../../../utils/globals.js';
 
+/** @internal */
 export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
 
+/**
+ * Build mapping from forward to inverse relationships
+ * @internal
+ */
 export function buildInversedRelationsMapping<TEntityFields>(
   relations: EntityRelations<TEntityFields>,
 ): Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>> {
