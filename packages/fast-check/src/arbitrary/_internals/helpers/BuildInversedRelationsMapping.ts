@@ -19,7 +19,10 @@ export function buildInversedRelationsMapping<TEntityFields>(
   relations: EntityRelations<TEntityFields>,
 ): Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>> {
   let foundInversedRelations = 0;
-  const requestedInversedRelations = new SMap<keyof TEntityFields, Map<string, InversedRelationsEntry<TEntityFields>>>();
+  const requestedInversedRelations = new SMap<
+    keyof TEntityFields,
+    Map<string, InversedRelationsEntry<TEntityFields>>
+  >();
   for (const name in relations) {
     const relationsForName = relations[name];
     for (const fieldName in relationsForName) {
