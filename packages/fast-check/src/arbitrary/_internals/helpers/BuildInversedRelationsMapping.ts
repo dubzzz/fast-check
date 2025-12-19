@@ -7,7 +7,7 @@ import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTyp
 export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
 
 /**
- * Build mapping from inverse to forward relationships
+ * Build mapping from forward to inverse relationships
  * @internal
  */
 export function buildInversedRelationsMapping<TEntityFields>(
