@@ -9,8 +9,8 @@ describe('buildInversedRelationsMapping', () => {
   it('should return empty map when no inverse relationships are defined', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string; lastName: string };
-      team: { name: string };
+      employee: {};
+      team: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {
@@ -29,8 +29,8 @@ describe('buildInversedRelationsMapping', () => {
   it('should build mapping for bidirectional inverse relationships', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string };
-      team: { name: string };
+      employee: {};
+      team: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {
@@ -51,7 +51,7 @@ describe('buildInversedRelationsMapping', () => {
   it('should build mapping for self-referential bidirectional inverse relationships', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string };
+      employee: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {
@@ -84,9 +84,9 @@ describe('buildInversedRelationsMapping', () => {
   it('should build mapping for multiple pairs of bidirectional inverse relationships', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string };
-      team: { name: string };
-      department: { name: string };
+      employee: {};
+      team: {};
+      department: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {
@@ -111,8 +111,8 @@ describe('buildInversedRelationsMapping', () => {
   it('should throw error when multiple inverse relationships target the same forward relationship', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string };
-      team: { name: string };
+      employee: {};
+      team: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {
@@ -133,9 +133,9 @@ describe('buildInversedRelationsMapping', () => {
   it('should throw error when inverse relationship type does not match bidirectional pair', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string };
-      team: { name: string };
-      department: { name: string };
+      employee: {};
+      team: {};
+      department: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {
@@ -158,8 +158,8 @@ describe('buildInversedRelationsMapping', () => {
   it('should throw error when inverse relationship has no matching bidirectional pair', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string };
-      team: { name: string };
+      employee: {};
+      team: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {},
@@ -177,8 +177,8 @@ describe('buildInversedRelationsMapping', () => {
   it('should throw error when forward relationship name does not exist on target type', () => {
     // Arrange
     type EntityFields = {
-      employee: { firstName: string };
-      team: { name: string };
+      employee: {};
+      team: {};
     };
     const relations: EntityRelations<EntityFields> = {
       employee: {
