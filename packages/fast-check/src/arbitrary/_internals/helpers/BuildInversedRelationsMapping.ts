@@ -12,9 +12,9 @@ export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields;
  * Build a mapping from inverse relationships to their corresponding forward relationships.
  *
  * This function analyzes the entity relations to find all inverse relationships and validates
- * that they correctly reference existing forward relationships. It creates a bidirectional
- * mapping that allows the entity graph generator to automatically populate inverse relationships
- * based on their forward counterparts.
+ * that they correctly reference existing forward relationships. It creates a mapping that
+ * allows the entity graph generator to automatically populate inverse relationships based
+ * on their forward counterparts.
  *
  * @param relations - The complete entity relations configuration to analyze
  * @returns A map from each inverse relationship to its corresponding forward relationship entry
