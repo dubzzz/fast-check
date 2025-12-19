@@ -1,4 +1,5 @@
 import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
+import { Error as SError, String as SString } from '../../../utils/globals.js';
 
 export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
 
@@ -20,7 +21,9 @@ export function buildInversedRelationsMapping<TEntityFields>(
         requestedInversedRelations.set(relation.type, existingOnes);
       }
       if (existingOnes.has(relation.forwardRelationship)) {
-        throw new Error(''); // TODO SError
+        throw new SError(
+          `Cannot declare multiple inverse relationships for the same forward relationship ${SString(relation.forwardRelationship)} on type ${SString(relation.type)}`,
+        );
       }
       existingOnes.set(relation.forwardRelationship, { type: name, property: fieldName });
       foundInversedRelations += 1;
@@ -46,13 +49,15 @@ export function buildInversedRelationsMapping<TEntityFields>(
         continue;
       }
       if (requestedIfAny.type !== relation.type) {
-        throw new Error(''); // TODO SError
+        throw new SError(
+          `Inverse relationship ${SString(fieldName)} on type ${SString(name)} references forward relationship ${SString(relation.forwardRelationship)} but types do not match`,
+        );
       }
       inversedRelations.set(relation, requestedIfAny);
     }
   }
   if (inversedRelations.size !== foundInversedRelations) {
-    throw new Error(''); // TODO SError
+    throw new SError(`Some inverse relationships could not be matched with their corresponding forward relationships`);
   }
   return inversedRelations;
 }
