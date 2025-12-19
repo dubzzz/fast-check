@@ -38,7 +38,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
     }
     for (const fieldName in relationsForName) {
       const relation = relationsForName[fieldName];
-      if (relation.arity !== 'inverse') {
+      if (relation.arity === 'inverse') {
         continue;
       }
       const requestedIfAny = requestedInversedRelationsForName.get(fieldName);
