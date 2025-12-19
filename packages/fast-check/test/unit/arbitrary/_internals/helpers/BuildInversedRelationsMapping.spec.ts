@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   buildInversedRelationsMapping,
 } from '../../../../../src/arbitrary/_internals/helpers/BuildInversedRelationsMapping.js';
-import type { EntityRelations, Relationship } from '../../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
+import type { EntityRelations } from '../../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
 
 describe('buildInversedRelationsMapping', () => {
   it('should return empty map when no inverse relationships are defined', () => {
