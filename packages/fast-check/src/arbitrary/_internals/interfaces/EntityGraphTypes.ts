@@ -48,12 +48,12 @@ export type Arbitraries<TEntityFields> = {
  * - `'0-1'`: Optional relationship — references zero or one target entity (value or undefined)
  * - `'1'`: Required relationship — always references exactly one target entity
  * - `'many'`: Multi-valued relationship — references an array of target entities (may be empty, no duplicates)
- * - `'backlink'`: Back reference to the entities holding the reference
+ * - `'inverse'`: Inverse relationship — automatically computed array of entities that reference this entity through a specified forward relationship
  *
  * @remarks Since 4.5.0
  * @public
  */
-export type Arity = '0-1' | '1' | 'many' | 'backlink';
+export type Arity = '0-1' | '1' | 'many' | 'inverse';
 
 /**
  * Defines restrictions on which entities can be targeted by a relationship.
@@ -96,6 +96,7 @@ export type Relationship<TTypeNames> = {
    * - `'0-1'`: Optional — produces undefined or a single instance of the target type
    * - `'1'`: Required — always produces a single instance of the target type
    * - `'many'`: Multi-valued — produces an array of target instances (may be empty, contains no duplicates)
+   * - `'inverse'`: Inverse — automatically produces an array of entities that reference this entity via the specified forward relationship
    *
    * @remarks Since 4.5.0
    */
@@ -110,7 +111,7 @@ export type Relationship<TTypeNames> = {
   type: TTypeNames;
 } & (
   | {
-      arity: Exclude<Arity, 'backlink'>;
+      arity: Exclude<Arity, 'inverse'>;
       /**
        * Constrains which target entities are eligible to be referenced.
        *
@@ -124,12 +125,20 @@ export type Relationship<TTypeNames> = {
       strategy?: Strategy;
     }
   | {
-      arity: 'backlink';
+      arity: 'inverse';
       /**
-       * Name of the original property holding the reference in type
+       * Name of the forward relationship property in the target type that references this entity type.
+       * The inverse relationship will contain all entities that reference this entity through that forward relationship.
+       *
+       * @example
+       * ```typescript
+       * // If 'employee' has 'team: { arity: "1", type: "team" }'
+       * // Then 'team' can have 'members: { arity: "inverse", type: "employee", forwardRelationship: "team" }'
+       * ```
+       *
        * @remarks Since 4.5.0
        */
-      originalProperty: string;
+      forwardRelationship: string;
     }
 );
 /**
@@ -166,7 +175,7 @@ export type RelationsToValue<TRelations, TValues> = {
       ? TValues[TTypeName]
       : TRelations[TField] extends { arity: 'many'; type: infer TTypeName extends keyof TValues }
         ? TValues[TTypeName][]
-        : TRelations[TField] extends { arity: 'backlink'; type: infer TTypeName extends keyof TValues }
+        : TRelations[TField] extends { arity: 'inverse'; type: infer TTypeName extends keyof TValues }
           ? TValues[TTypeName][]
           : never;
 };
