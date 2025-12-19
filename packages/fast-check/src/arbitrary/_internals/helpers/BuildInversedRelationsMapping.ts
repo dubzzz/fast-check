@@ -1,10 +1,7 @@
 import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
 
-/**
- * Entry mapping an inverse relationship to its forward counterpart
- * @internal
- */
-export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
+/** @internal */
+ export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
 
 /**
  * Build mapping from forward to inverse relationships
