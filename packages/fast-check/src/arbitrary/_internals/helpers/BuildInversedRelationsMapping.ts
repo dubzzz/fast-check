@@ -57,9 +57,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
     }
   }
   if (inversedRelations.size !== foundInversedRelations) {
-    throw new SError(
-      `Some inverse relationships could not be matched with their corresponding forward relationships`,
-    );
+    throw new SError(`Some inverse relationships could not be matched with their corresponding forward relationships`);
   }
   return inversedRelations;
 }
