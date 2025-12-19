@@ -454,7 +454,7 @@ fc.entityGraph(
 // Characteristics of this configuration:
 // - Enforces unique names for both employees and teams (unicityConstraints)
 // - The 'members' field is automatically populated based on the 'team' forward relationship - no manual linking required
-// - Every team has at least one employee (maxLength: 0 for team in initialPoolConstraints) — remove this to allow teams without employees
+// - Teams are created on-demand for employees (maxLength: 0 for team in initialPoolConstraints); because employees require a team (arity: '1'), any created team will have at least one employee — remove this to allow teams without employees
 // - Inverse relationships are read-only and always contain an array (even if empty)
 // Examples of generated values:
 // • {"employee":[{"name":"Atssipmorso","team":<team#0>},{"name":"Xe","team":<team#0>},{"name":"Vxk","team":<team#1>},{"name":"O","team":<team#1>}],"team":[{"name":"Larprototyp","members":[<employee#0>,<employee#1>]},{"name":"Avbdlmgbf","members":[<employee#2>,<employee#3>]}]}
