@@ -11,7 +11,6 @@ _TODO Description_
 - ([PR#6341](https://github.com/dubzzz/fast-check/pull/6341)) Add strategies to `entityGraph`
 - ([PR#6342](https://github.com/dubzzz/fast-check/pull/6342)) Allow recursions on many rels for `entityGraph`
 - ([PR#6343](https://github.com/dubzzz/fast-check/pull/6343)) Tweak unicity of entities produced by `entityGraph`
-- ([PR#6370](https://github.com/dubzzz/fast-check/pull/6370)) Add workflow security audit with zizmor
 - ([PR#6400](https://github.com/dubzzz/fast-check/pull/6400)) Support inverse relations in `entityGraph`
 
 ## Fixes
