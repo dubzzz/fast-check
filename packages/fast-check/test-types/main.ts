@@ -78,8 +78,10 @@ expectTypeOf(fc.nat().chain((n) => fc.array(fc.string(), { maxLength: n }))).toE
 // Type of "chain" corresponds to the return type of the passed lambda
 expectTypeOf(fc.constantFrom(1, 2, 3).chain((value) => fc.constant(value))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
 // Type of "chain" should not simplify the type to something more general (no "1 -> number" expected)
-// without the as, TypeScript refused to compile as constantFrom requires at least one argument
-expectTypeOf(fc.constantFrom(...([1, 2, 3] as [1, 2, 3])).chain((value) => fc.constant(value))).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
+expectTypeOf(
+  // without the as, TypeScript refused to compile as constantFrom requires at least one argument
+  fc.constantFrom(...([1, 2, 3] as [1, 2, 3])).chain((value) => fc.constant(value)),
+).toEqualTypeOf<fc.Arbitrary<1 | 2 | 3>>();
 
 // base arbitrary (filter)
 // "filter" preserves the source type
@@ -123,9 +125,9 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<fc.Arbitrary<{ name: string }[]>>();
 // arrays of unique values using a custom comparison function and a complex selector (need an explicit typing)
-// Ideally we should not need to explicitely type `itemA`, but so far it is needed
 expectTypeOf(
   fc.uniqueArray(fc.record({ name: fc.string() }), {
+    // Ideally we should not need to explicitely type `itemA`, but so far it is needed
     comparator: (itemA: { toto: string }, itemB) => itemA.toto === itemB.toto,
     selector: (item) => ({ toto: item.name }),
   }),
