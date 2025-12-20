@@ -1,11 +1,7 @@
 # 4.5.1
 
-_TODO Description_
+_Rename tarballs before publishing_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.0...v4.5.1)]
-
-## Features
-
-
 
 ## Fixes
 
