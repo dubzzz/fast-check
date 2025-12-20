@@ -631,13 +631,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=fast-check-$(jq -r '.version' packages/fast-check/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/fast-check
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="fast-check-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/fast-check/package.tgz packages/fast-check/$TGZ_NAME
       - name: Publish fast-check
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -691,13 +688,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=ava-$(jq -r '.version' packages/ava/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/ava
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="ava-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/ava/package.tgz packages/ava/$TGZ_NAME
       - name: Publish @fast-check/ava
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -751,13 +745,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=jest-$(jq -r '.version' packages/jest/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/jest
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="jest-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/jest/package.tgz packages/jest/$TGZ_NAME
       - name: Publish @fast-check/jest
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -811,13 +802,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=packaged-$(jq -r '.version' packages/packaged/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/packaged
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="packaged-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/packaged/package.tgz packages/packaged/$TGZ_NAME
       - name: Publish @fast-check/packaged
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -871,13 +859,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=poisoning-$(jq -r '.version' packages/poisoning/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/poisoning
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="poisoning-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/poisoning/package.tgz packages/poisoning/$TGZ_NAME
       - name: Publish @fast-check/poisoning
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -931,13 +916,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=vitest-$(jq -r '.version' packages/vitest/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/vitest
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="vitest-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/vitest/package.tgz packages/vitest/$TGZ_NAME
       - name: Publish @fast-check/vitest
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -991,13 +973,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=worker-$(jq -r '.version' packages/worker/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/worker
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="worker-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/worker/package.tgz packages/worker/$TGZ_NAME
       - name: Publish @fast-check/worker
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -1051,13 +1030,10 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=expect-type-$(jq -r '.version' packages/expect-type/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: |
-          cd packages/expect-type
-          VERSION=$(jq -r '.version' package.json)
-          TGZ_NAME="expect-type-${VERSION}.tgz"
-          mv package.tgz "$TGZ_NAME"
-          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+        run: mv packages/expect-type/package.tgz packages/expect-type/$TGZ_NAME
       - name: Publish @fast-check/expect-type
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
