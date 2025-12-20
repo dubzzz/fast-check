@@ -1,3 +1,16 @@
+# 4.5.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.0...v4.5.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6413](https://github.com/dubzzz/fast-check/pull/6413)) CI: Rename tarballs before publishing
+
 # 4.5.0
 
 _Add an arbitrary based on a schema definition_
