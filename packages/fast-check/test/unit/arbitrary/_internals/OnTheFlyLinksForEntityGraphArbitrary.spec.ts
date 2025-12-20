@@ -5,6 +5,7 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from '../__test-helpers__/ArbitraryAssertions.js';
 import type {
+  Arity,
   EntityRelations,
   Relationship,
 } from '../../../../src/arbitrary/_internals/interfaces/EntityGraphTypes.js';
@@ -28,16 +29,19 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
       fc.oneof(
         {
           arbitrary: fc
-            .record<Relationship<Kind>>({
+            .record({
               arity: fc.constantFrom('0-1', '1', 'many'),
               type: fc.constantFrom(...allKinds),
               strategy: fc.constantFrom(undefined, 'any'),
             })
-            .map((rel): Relationship<Kind> => (rel.type === 'kind-e' ? { ...rel, strategy: 'exclusive' } : rel)),
+            .map(
+              (rel: Relationship<Kind> & { arity: Exclude<Arity, 'inverse'> }): Relationship<Kind> =>
+                rel.type === 'kind-e' ? { ...rel, strategy: 'exclusive' } : rel,
+            ),
           weight: allKinds.length,
         },
         {
-          arbitrary: fc.record<Relationship<Kind>>({
+          arbitrary: fc.record({
             arity: fc.constant('0-1'), // arity of 1 forbidden for successor, arity of many is allowed but may lead to very deep structures
             type: fc.constant(kind),
             strategy: fc.constant('successor'),
@@ -120,6 +124,9 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
       const requestedConfiguration = extra.configurations[kind];
       for (const fieldName in requestedConfiguration) {
         const relation = requestedConfiguration[fieldName];
+        if (relation.arity === 'inverse') {
+          throw new Error('Not supported by this test');
+        }
         if (relation.strategy !== 'successor') {
           continue;
         }
@@ -145,6 +152,9 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
       const requestedConfiguration = extra.configurations[kind];
       for (const fieldName in requestedConfiguration) {
         const relation = requestedConfiguration[fieldName];
+        if (relation.arity === 'inverse') {
+          throw new Error('Not supported by this test');
+        }
         if (relation.strategy !== 'exclusive') {
           continue;
         }
