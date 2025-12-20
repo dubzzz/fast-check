@@ -146,7 +146,7 @@ jobs:
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: bundles
-          path: packages/**/*.tgz
+          path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
 
@@ -631,15 +631,21 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/fast-check
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish fast-check
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/fast-check/fast-check-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/fast-check/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/fast-check/fast-check-*.tgz
+          subject-path: packages/fast-check/${{env.PACKAGE_FILE}}
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -684,15 +690,21 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/ava
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish @fast-check/ava
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/ava/ava-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/ava/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/ava/ava-*.tgz
+          subject-path: packages/ava/${{env.PACKAGE_FILE}}
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -737,15 +749,21 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/jest
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish @fast-check/jest
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/jest/jest-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/jest/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/jest/jest-*.tgz
+          subject-path: packages/jest/${{env.PACKAGE_FILE}}
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -790,15 +808,21 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/packaged
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish @fast-check/packaged
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/packaged/packaged-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/packaged/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/packaged/packaged-*.tgz
+          subject-path: packages/packaged/${{env.PACKAGE_FILE}}
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -843,15 +867,21 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/poisoning
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish @fast-check/poisoning
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/poisoning/poisoning-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/poisoning/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/poisoning/poisoning-*.tgz
+          subject-path: packages/poisoning/${{env.PACKAGE_FILE}}
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -896,15 +926,21 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/vitest
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish @fast-check/vitest
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/vitest/vitest-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/vitest/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/vitest/vitest-*.tgz
+          subject-path: packages/vitest/${{env.PACKAGE_FILE}}
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -949,15 +985,21 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/worker
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish @fast-check/worker
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/worker/worker-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/worker/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/worker/worker-*.tgz
+          subject-path: packages/worker/${{env.PACKAGE_FILE}}
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -1002,12 +1044,18 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Rename package for publication
+        run: |
+          cd packages/expect-type
+          FILENAME=$(node ../../.github/scripts/get-pack-filename.mjs)
+          mv package.tgz "$FILENAME"
+          echo "PACKAGE_FILE=$FILENAME" >> $GITHUB_ENV
       - name: Publish @fast-check/expect-type
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/expect-type/expect-type-*.tgz
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/expect-type/$PACKAGE_FILE
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
-          subject-path: packages/expect-type/expect-type-*.tgz
+          subject-path: packages/expect-type/${{env.PACKAGE_FILE}}

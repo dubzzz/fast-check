@@ -24,8 +24,8 @@
     "publint:all": "pnpm --filter {./packages/**} --parallel exec publint --strict",
     "bump": "changeset",
     "changelog": "changeset status",
-    "pack:all": "pnpm --filter {./packages/**} --parallel exec sh -c 'pnpm pack --out $(node ../../.github/scripts/get-pack-filename.mjs)'",
-    "unpack:all": "pnpm --filter {./packages/**} --parallel exec sh -c 'tar -xf $(node ../../.github/scripts/get-pack-filename.mjs) --strip-components=1 --exclude=package/package.json'",
+    "pack:all": "pnpm --filter {./packages/**} --parallel exec pnpm pack --out package.tgz",
+    "unpack:all": "pnpm --filter {./packages/**} --parallel exec tar -xf package.tgz --strip-components=1 --exclude='package/package.json'",
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/e2e/documentation"
   },
   "devDependencies": {
