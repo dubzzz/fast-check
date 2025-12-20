@@ -1,5 +1,5 @@
 ---
-fast-check: "patch"
+"fast-check": patch
 ---
 
 🔧 Rename tarballs before publishing
