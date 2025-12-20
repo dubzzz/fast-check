@@ -52,7 +52,9 @@ fc.property(fc.nat(), fc.string(), (_a: number, _b: number) => {});
 // "asyncProperty" instantiates instances compatible with IAsyncProperty
 expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
 // "asyncProperty" handles tuples
-expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<fc.IAsyncProperty<[number, string]>>();
+expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<
+  fc.IAsyncProperty<[number, string]>
+>();
 // Asynchronous property accepts asynchronous hooks
 expectTypeOf(
   fc
@@ -134,7 +136,9 @@ expectTypeOf(
 ).toEqualTypeOf<fc.Arbitrary<{ name: string }[]>>();
 // arrays of unique values accept the aggregated type as input
 declare const constraintsUniqueArray1: fc.UniqueArrayConstraints<{ name: string }, { toto: string }>;
-expectTypeOf(fc.uniqueArray(fc.record({ name: fc.string() }), constraintsUniqueArray1)).toEqualTypeOf<fc.Arbitrary<{ name: string }[]>>();
+expectTypeOf(fc.uniqueArray(fc.record({ name: fc.string() }), constraintsUniqueArray1)).toEqualTypeOf<
+  fc.Arbitrary<{ name: string }[]>
+>();
 
 fc.uniqueArray(fc.record({ name: fc.string() }), {
   // @ts-expect-error - Custom comparison function is not compatible with default selector
@@ -161,7 +165,9 @@ declare const mySymbol2: unique symbol;
 // "record" can contain multiple types
 expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() })).toEqualTypeOf<fc.Arbitrary<{ a: number; b: string }>>();
 // "record" can be indexed using unique symbols as keys
-expectTypeOf(fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() })).toEqualTypeOf<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]: string }>>();
+expectTypeOf(fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() })).toEqualTypeOf<
+  fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]: string }>
+>();
 // Related to https://github.com/microsoft/TypeScript/issues/27525:
 //expectType<fc.Arbitrary<{ [Symbol.iterator]: number; [mySymbol2]: string }>>()(
 //  fc.record({ [Symbol.iterator]: fc.nat(), [mySymbol2]: fc.string() }),
@@ -176,20 +182,30 @@ expectTypeOf(fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() })).toE
 // "record" accepts empty constraints
 expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, {})).toEqualTypeOf<fc.Arbitrary<{ a: number; b: string }>>();
 // "record" only applies optional on keys declared within requiredKeys even when empty
-expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string }>>();
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<
+  fc.Arbitrary<{ a?: number; b?: string }>
+>();
 // "record" only applies optional on keys declared within requiredKeys even if unique
-expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] })).toEqualTypeOf<fc.Arbitrary<{ a: number; b?: string }>>();
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] })).toEqualTypeOf<
+  fc.Arbitrary<{ a: number; b?: string }>
+>();
 // "record" only applies optional on keys declared within requiredKeys even if multiple ones specified
-expectTypeOf(fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] })).toEqualTypeOf<fc.Arbitrary<{ a: number; b?: string; c: string }>>();
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] })).toEqualTypeOf<
+  fc.Arbitrary<{ a: number; b?: string; c: string }>
+>();
 // prettier-ignore
 // @fc-expect-error-require-exactOptionalPropertyTypes
 // "record" only applies optional on keys declared within requiredKeys by adding ? without |undefined
 expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string | undefined }>>();
 // prettier-ignore-end
 // "record" only applies optional on keys declared within requiredKeys and preserves existing |undefined when adding ?
-expectTypeOf(fc.record({ a: fc.nat(), b: fc.option(fc.string(), { nil: undefined }) }, { requiredKeys: [] })).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string | undefined }>>();
+expectTypeOf(
+  fc.record({ a: fc.nat(), b: fc.option(fc.string(), { nil: undefined }) }, { requiredKeys: [] }),
+).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string | undefined }>>();
 // "record" only applies optional on keys declared within requiredKeys even if it contains symbols
-expectTypeOf(fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [mySymbol1] as [typeof mySymbol1] })).toEqualTypeOf<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string }>>();
+expectTypeOf(
+  fc.record({ [mySymbol1]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [mySymbol1] as [typeof mySymbol1] }),
+).toEqualTypeOf<fc.Arbitrary<{ [mySymbol1]: number; [mySymbol2]?: string }>>();
 // Related to https://github.com/microsoft/TypeScript/issues/27525
 //expectType<fc.Arbitrary<{ [Symbol.iterator]: number; [mySymbol2]?: string }>>()(
 //  fc.record({ [Symbol.iterator]: fc.nat(), [mySymbol2]: fc.string() }, { requiredKeys: [Symbol.iterator] })
@@ -208,7 +224,9 @@ type Query = { data: { field: 'X' } };
 expectTypeOf(fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) })).toEqualTypeOf<fc.Arbitrary<Query>>();
 // "record" can be passed something assignable to the requested type in <*>
 // issue 1453
-expectTypeOf(fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) })).toEqualTypeOf<fc.Arbitrary<Partial<Query>>>();
+expectTypeOf(fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) })).toEqualTypeOf<
+  fc.Arbitrary<Partial<Query>>
+>();
 // @ts-expect-error - requiredKeys references an unknown key
 fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['c'] });
 // @ts-expect-error - record expects arbitraries not raw values
@@ -220,7 +238,9 @@ expectTypeOf(fc.dictionary(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Re
 // String key call to "dictionary" with single generic
 expectTypeOf(fc.dictionary<number>(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<string, number>>>();
 // String key call to "dictionary" with two generics
-expectTypeOf(fc.dictionary<string, number>(fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<string, number>>>();
+expectTypeOf(fc.dictionary<string, number>(fc.string(), fc.nat())).toEqualTypeOf<
+  fc.Arbitrary<Record<string, number>>
+>();
 // Number key call to "dictionary"
 expectTypeOf(fc.dictionary(fc.nat(), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<number, number>>>();
 // Number key call to "dictionary" with generics
@@ -228,7 +248,9 @@ expectTypeOf(fc.dictionary<number, number>(fc.nat(), fc.nat())).toEqualTypeOf<fc
 // Symbol key call to "dictionary"
 expectTypeOf(fc.dictionary(fc.string().map(Symbol), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<symbol, number>>>();
 // Symbol key call to "dictionary" with generics
-expectTypeOf(fc.dictionary<symbol, number>(fc.string().map(Symbol), fc.nat())).toEqualTypeOf<fc.Arbitrary<Record<symbol, number>>>();
+expectTypeOf(fc.dictionary<symbol, number>(fc.string().map(Symbol), fc.nat())).toEqualTypeOf<
+  fc.Arbitrary<Record<symbol, number>>
+>();
 // @ts-expect-error - dictionary expects arbitraries producing PropertyKey for keys
 fc.dictionary(fc.anything(), fc.string());
 
@@ -260,15 +282,25 @@ expectTypeOf(fc.oneof({}, fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<str
 // "oneof" with different types and some constraints
 expectTypeOf(fc.oneof({ withCrossShrink: true }, fc.string(), fc.nat())).toEqualTypeOf<fc.Arbitrary<string | number>>();
 // "oneof" with weighted arbitraries and multiple arguments having the same type
-expectTypeOf(fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.string({ unit: 'binary' }), weight: 1 })).toEqualTypeOf<fc.Arbitrary<string>>();
+expectTypeOf(
+  fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.string({ unit: 'binary' }), weight: 1 }),
+).toEqualTypeOf<fc.Arbitrary<string>>();
 // "oneof" with weighted arbitraries and multiple arguments of different types
-expectTypeOf(fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<fc.Arbitrary<number | string>>();
+expectTypeOf(fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<
+  fc.Arbitrary<number | string>
+>();
 // "oneof" with weighted arbitraries and different types and empty constraints
-expectTypeOf(fc.oneof({}, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<fc.Arbitrary<string | number>>();
+expectTypeOf(fc.oneof({}, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<
+  fc.Arbitrary<string | number>
+>();
 // "oneof" with weighted arbitraries and different types and some constraints
-expectTypeOf(fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 })).toEqualTypeOf<fc.Arbitrary<string | number>>();
+expectTypeOf(
+  fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, { arbitrary: fc.nat(), weight: 1 }),
+).toEqualTypeOf<fc.Arbitrary<string | number>>();
 // "oneof" with weighted arbitraries and non-weighted arbitraries
-expectTypeOf(fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, fc.nat())).toEqualTypeOf<fc.Arbitrary<string | number>>();
+expectTypeOf(fc.oneof({ withCrossShrink: true }, { arbitrary: fc.string(), weight: 1 }, fc.nat())).toEqualTypeOf<
+  fc.Arbitrary<string | number>
+>();
 // "oneof" from array of arbitraries
 expectTypeOf(fc.oneof(...([] as fc.Arbitrary<number>[]))).toEqualTypeOf<fc.Arbitrary<number>>();
 // "oneof" must receive at least one arbitrary
@@ -285,19 +317,17 @@ expectTypeOf(fc.option(fc.nat())).toEqualTypeOf<fc.Arbitrary<number | null>>();
 // "option" with nil overriden to null (the original default)
 expectTypeOf(fc.option(fc.nat(), { nil: null })).toEqualTypeOf<fc.Arbitrary<number | null>>();
 // "option" with nil overriden to custom value
-expectTypeOf(fc.option(fc.nat(), { nil: 'custom_default' as const })).toEqualTypeOf<fc.Arbitrary<number | 'custom_default'>>();
+expectTypeOf(fc.option(fc.nat(), { nil: 'custom_default' as const })).toEqualTypeOf<
+  fc.Arbitrary<number | 'custom_default'>
+>();
 // @ts-expect-error - option expects arbitraries not raw values
 fc.option(1);
 
 // tie arbitrary
 // Empty "letrec"
-expectTypeOf(
-  fc.letrec((_tie) => ({})),
-).toEqualTypeOf<{}>();
+expectTypeOf(fc.letrec((_tie) => ({}))).toEqualTypeOf<{}>();
 // Empty "letrec" with types manually defined
-expectTypeOf(
-  fc.letrec<{}>((_tie) => ({})),
-).toEqualTypeOf<{}>();
+expectTypeOf(fc.letrec<{}>((_tie) => ({}))).toEqualTypeOf<{}>();
 // No recursion "letrec"
 expectTypeOf(
   fc.letrec((_tie) => ({
@@ -384,15 +414,17 @@ expectTypeOf(fc.falsy()).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | type
 // "falsy" with empty constraints
 expectTypeOf(fc.falsy({})).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>();
 // "falsy" with withBigInt=false
-expectTypeOf(fc.falsy({ withBigInt: false })).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>>();
+expectTypeOf(fc.falsy({ withBigInt: false })).toEqualTypeOf<
+  fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined>
+>();
 // "falsy" with withBigInt=true
-expectTypeOf(fc.falsy({ withBigInt: true })).toEqualTypeOf<fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>>();
+expectTypeOf(fc.falsy({ withBigInt: true })).toEqualTypeOf<
+  fc.Arbitrary<false | null | 0 | '' | typeof NaN | undefined | 0n>
+>();
 
 // configureGlobal
 // "configureGlobal" with custom reporter
-expectTypeOf(
-  fc.configureGlobal({ reporter: (_out: fc.RunDetails<unknown>) => {} }),
-).toEqualTypeOf<void>();
+expectTypeOf(fc.configureGlobal({ reporter: (_out: fc.RunDetails<unknown>) => {} })).toEqualTypeOf<void>();
 // FIXME // @ts-expect-error - reporter cannot be defined with precise type on configureGlobal
 //fc.configureGlobal({ reporter: (out: fc.RunDetails<[number]>) => {} });
 
