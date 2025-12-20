@@ -634,13 +634,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=fast-check-$(jq -r '.version' packages/fast-check/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/fast-check/package.tgz packages/fast-check/$TGZ_NAME
+        run: mv packages/fast-check/package.tgz "packages/fast-check/$TGZ_NAME"
       - name: Publish fast-check
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/fast-check/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
@@ -691,13 +691,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=ava-$(jq -r '.version' packages/ava/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/ava/package.tgz packages/ava/$TGZ_NAME
+        run: mv packages/ava/package.tgz "packages/ava/$TGZ_NAME"
       - name: Publish @fast-check/ava
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/ava/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
@@ -748,13 +748,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=jest-$(jq -r '.version' packages/jest/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/jest/package.tgz packages/jest/$TGZ_NAME
+        run: mv packages/jest/package.tgz "packages/jest/$TGZ_NAME"
       - name: Publish @fast-check/jest
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/jest/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
@@ -805,13 +805,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=packaged-$(jq -r '.version' packages/packaged/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/packaged/package.tgz packages/packaged/$TGZ_NAME
+        run: mv packages/packaged/package.tgz "packages/packaged/$TGZ_NAME"
       - name: Publish @fast-check/packaged
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/packaged/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
@@ -862,13 +862,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=poisoning-$(jq -r '.version' packages/poisoning/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/poisoning/package.tgz packages/poisoning/$TGZ_NAME
+        run: mv packages/poisoning/package.tgz "packages/poisoning/$TGZ_NAME"
       - name: Publish @fast-check/poisoning
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/poisoning/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
@@ -919,13 +919,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=vitest-$(jq -r '.version' packages/vitest/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/vitest/package.tgz packages/vitest/$TGZ_NAME
+        run: mv packages/vitest/package.tgz "packages/vitest/$TGZ_NAME"
       - name: Publish @fast-check/vitest
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/vitest/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
@@ -976,13 +976,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=worker-$(jq -r '.version' packages/worker/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/worker/package.tgz packages/worker/$TGZ_NAME
+        run: mv packages/worker/package.tgz "packages/worker/$TGZ_NAME"
       - name: Publish @fast-check/worker
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/worker/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
@@ -1033,13 +1033,13 @@ jobs:
       - name: Set package filename
         run: echo "TGZ_NAME=expect-type-$(jq -r '.version' packages/expect-type/package.json).tgz" >> $GITHUB_ENV
       - name: Rename package for publication
-        run: mv packages/expect-type/package.tgz packages/expect-type/$TGZ_NAME
+        run: mv packages/expect-type/package.tgz "packages/expect-type/$TGZ_NAME"
       - name: Publish @fast-check/expect-type
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" packages/expect-type/$TGZ_NAME
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/expect-type/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
         with:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
