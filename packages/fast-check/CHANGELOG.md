@@ -1,6 +1,6 @@
 # 4.5.0
 
-_TODO Description_
+_Add an arbitrary based on a schema definition_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.4.0...v4.5.0)]
 
 ## Features
