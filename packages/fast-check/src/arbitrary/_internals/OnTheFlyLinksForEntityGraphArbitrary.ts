@@ -6,6 +6,7 @@ import {
   safeAdd,
   safeHas,
   safeMap,
+  safeMapGet,
   safePush,
   Set as SSet,
   Error as SError,
@@ -16,8 +17,17 @@ import { integer } from '../integer.js';
 import { noBias } from '../noBias.js';
 import { option } from '../option.js';
 import { uniqueArray } from '../uniqueArray.js';
+import { buildInversedRelationsMapping } from './helpers/BuildInversedRelationsMapping.js';
+import type { InversedRelationsEntry } from './helpers/BuildInversedRelationsMapping.js';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
-import type { Arity, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes.js';
+import type {
+  Arity,
+  EntityLinks,
+  EntityRelations,
+  ProducedLinks,
+  Relationship,
+  Strategy,
+} from './interfaces/EntityGraphTypes.js';
 
 const safeObjectCreate = Object.create;
 
@@ -41,7 +51,7 @@ function produceLinkUnitaryIndexArbitrary(
 
 /** @internal */
 function computeLinkIndex(
-  arity: Arity,
+  arity: Exclude<Arity, 'inverse'>,
   strategy: Strategy,
   currentIndexIfSameType: number | undefined,
   countInTargetType: number,
@@ -78,6 +88,8 @@ class OnTheFlyLinksForEntityGraphArbitrary<
   TEntityFields,
   TEntityRelations extends EntityRelations<TEntityFields>,
 > extends Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
+  private inversedRelations: Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>;
+
   constructor(
     readonly relations: TEntityRelations,
     readonly defaultEntities: (keyof TEntityFields)[],
@@ -91,6 +103,9 @@ class OnTheFlyLinksForEntityGraphArbitrary<
       const relationsForName = relations[name];
       for (const fieldName in relationsForName) {
         const relation = relationsForName[fieldName];
+        if (relation.arity === 'inverse') {
+          continue;
+        }
         if (relation.strategy === 'exclusive') {
           if (safeHas(nonExclusiveEntities, relation.type)) {
             throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
@@ -110,6 +125,21 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         }
       }
     }
+
+    // Building inversed relations map
+    this.inversedRelations = buildInversedRelationsMapping(relations);
+  }
+
+  createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
+    const emptyLinksInstance = safeObjectCreate(null);
+    const relationsForType = this.relations[targetType];
+    for (const name in relationsForType) {
+      const relation = relationsForType[name];
+      if (relation.arity === 'inverse') {
+        emptyLinksInstance[name] = { type: relation.type, index: [] };
+      }
+    }
+    return emptyLinksInstance;
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
@@ -122,7 +152,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
     for (const name of this.defaultEntities) {
       safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], safeObjectCreate(null));
+      safePush(producedLinks[name], this.createEmptyLinksInstanceFor(name));
     }
 
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
@@ -138,6 +168,9 @@ class OnTheFlyLinksForEntityGraphArbitrary<
       currentEntityDepth.depth = currentEntity.depth;
       for (const name in currentRelations) {
         const relation = currentRelations[name];
+        if (relation.arity === 'inverse') {
+          continue;
+        }
         const targetType = relation.type;
         const producedLinksInTargetType = producedLinks[targetType];
         const countInTargetType = producedLinksInTargetType.length;
@@ -155,7 +188,12 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         for (const link of links) {
           if (link >= countInTargetType) {
             safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, safeObjectCreate(null));
+            safePush(producedLinksInTargetType, this.createEmptyLinksInstanceFor(targetType));
+          }
+          const inversed = safeMapGet(this.inversedRelations, relation);
+          if (inversed !== undefined) {
+            const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
+            safePush(knownInversedLinks as number[], currentEntity.indexInType);
           }
         }
       }
