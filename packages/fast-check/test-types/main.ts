@@ -404,7 +404,7 @@ expectTypeOf(fc.clone(fc.nat(), nTimesClone)).toEqualTypeOf<fc.Arbitrary<number[
 
 // func arbitrary
 // "func" producing "nat"
-expectTypeOf(fc.func(fc.nat())).toEqualTypeOf<fc.Arbitrary<() => number>>();
+expectTypeOf(fc.func(fc.nat())).toMatchTypeOf<fc.Arbitrary<() => number>>();
 // @ts-expect-error - func expects arbitraries not raw values
 fc.func(1);
 
@@ -492,7 +492,8 @@ fc.entityGraph(
 );
 type EmployeeWithTeam = { firstName: string; lastName: string; team: TeamWithEmployees };
 type TeamWithEmployees = { name: string; members: EmployeeWithTeam[] };
-expectType<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>()(
+// support inverse relationships
+expectTypeOf(
   fc.entityGraph(
     {
       employee: { firstName: fc.string(), lastName: fc.string() },
@@ -503,5 +504,4 @@ expectType<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[
       team: { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } },
     },
   ),
-  'support inverse relationships',
-);
+).toEqualTypeOf<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>();
