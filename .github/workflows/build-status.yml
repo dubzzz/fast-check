@@ -609,10 +609,13 @@ jobs:
     if: needs.check_publish_fc.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -642,8 +645,42 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/fast-check/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/fast-check@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -666,10 +703,13 @@ jobs:
     if: needs.check_publish_ava.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -699,8 +739,42 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#ava/v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/ava/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/@fast-check/ava@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-ava-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -723,10 +797,13 @@ jobs:
     if: needs.check_publish_jest.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -756,8 +833,42 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#jest/v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/jest/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/@fast-check/jest@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-jest-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -780,10 +891,13 @@ jobs:
     if: needs.check_publish_packaged.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -813,8 +927,42 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#packaged/v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/packaged/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/@fast-check/packaged@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-packaged-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -837,10 +985,13 @@ jobs:
     if: needs.check_publish_poisoning.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -870,8 +1021,42 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#poisoning/v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/poisoning/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/@fast-check/poisoning@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-poisoning-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -894,10 +1079,13 @@ jobs:
     if: needs.check_publish_vitest.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -927,8 +1115,42 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#vitest/v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/vitest/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/@fast-check/vitest@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-vitest-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -951,10 +1173,13 @@ jobs:
     if: needs.check_publish_worker.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -984,8 +1209,42 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#worker/v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/worker/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/@fast-check/worker@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-worker-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -1008,10 +1267,13 @@ jobs:
     if: needs.check_publish_expect_type.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -1041,5 +1303,39 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/expect-type/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
+      - name: Get release tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#expect-type/v}" >> "$GITHUB_OUTPUT"
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{steps.get_tag.outputs.tag}}
+          files: |
+            packages/expect-type/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+            ## Attestation
+            
+            This release includes build provenance attestation for enhanced security and supply chain transparency.
+            
+            ### How to verify the attestation
+            
+            You can verify the authenticity of the published package using the GitHub CLI:
+            
+            ```bash
+            gh attestation verify oci://registry.npmjs.org/@fast-check/expect-type@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
+            ```
+            
+            Or verify the downloaded tarball:
+            
+            ```bash
+            gh attestation verify fast-check-expect-type-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
+            ```
+            
+            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
