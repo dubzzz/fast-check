@@ -602,9 +602,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_fc:
     name: Publish fast-check
@@ -674,9 +672,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_ava:
     name: Publish @fast-check/ava
@@ -746,9 +742,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_jest:
     name: Publish @fast-check/jest
@@ -818,9 +812,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_packaged:
     name: Publish @fast-check/packaged
@@ -890,9 +882,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_poisoning:
     name: Publish @fast-check/poisoning
@@ -962,9 +952,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_vitest:
     name: Publish @fast-check/vitest
@@ -1034,9 +1022,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_worker:
     name: Publish @fast-check/worker
@@ -1106,9 +1092,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: |
-          TAG=$(git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_expect_type:
     name: Publish @fast-check/expect-type
