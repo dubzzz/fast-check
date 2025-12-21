@@ -594,6 +594,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -601,7 +602,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_fc:
     name: Publish fast-check
@@ -613,10 +616,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -649,20 +648,17 @@ jobs:
         id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for fast-check'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_fc.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/fast-check/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/dubzzz/fast-check/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -670,6 +666,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -677,7 +674,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_ava:
     name: Publish @fast-check/ava
@@ -689,10 +688,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -725,20 +720,17 @@ jobs:
         id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^ava/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/ava'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_ava.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/ava/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -746,6 +738,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -753,7 +746,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_jest:
     name: Publish @fast-check/jest
@@ -765,10 +760,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -801,20 +792,17 @@ jobs:
         id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^jest/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/jest'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_jest.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/jest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -822,6 +810,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -829,7 +818,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_packaged:
     name: Publish @fast-check/packaged
@@ -841,10 +832,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -877,20 +864,17 @@ jobs:
         id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^packaged/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/packaged'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_packaged.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/packaged/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -898,6 +882,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -905,7 +890,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_poisoning:
     name: Publish @fast-check/poisoning
@@ -917,10 +904,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -953,20 +936,17 @@ jobs:
         id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^poisoning/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/poisoning'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/poisoning/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -974,6 +954,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -981,7 +962,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_vitest:
     name: Publish @fast-check/vitest
@@ -993,10 +976,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -1029,20 +1008,17 @@ jobs:
         id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^vitest/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/vitest'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_vitest.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/vitest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -1050,6 +1026,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -1057,7 +1034,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_worker:
     name: Publish @fast-check/worker
@@ -1069,10 +1048,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -1105,20 +1080,17 @@ jobs:
         id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^worker/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/worker'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_worker.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/worker/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -1126,6 +1098,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -1133,7 +1106,9 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: |
+          TAG=$(git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_expect_type:
     name: Publish @fast-check/expect-type
@@ -1145,10 +1120,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
@@ -1181,17 +1152,14 @@ jobs:
         id: attest
         with:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
-      - name: Get release tag
-        id: get_tag
-        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^expect-type/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/expect-type'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
-          tag_name: ${{steps.get_tag.outputs.tag}}
+          tag_name: ${{needs.check_publish_expect_type.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
             packages/expect-type/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
