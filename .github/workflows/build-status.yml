@@ -656,7 +656,10 @@ jobs:
           files: |
             packages/fast-check/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -726,7 +729,10 @@ jobs:
           files: |
             packages/ava/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -796,7 +802,10 @@ jobs:
           files: |
             packages/jest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -866,7 +875,10 @@ jobs:
           files: |
             packages/packaged/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -936,7 +948,10 @@ jobs:
           files: |
             packages/poisoning/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -1006,7 +1021,10 @@ jobs:
           files: |
             packages/vitest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -1076,7 +1094,10 @@ jobs:
           files: |
             packages/worker/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -1146,4 +1167,7 @@ jobs:
           files: |
             packages/expect-type/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: |
+            
+            
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
