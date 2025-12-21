@@ -647,7 +647,7 @@ jobs:
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_fc.outputs.tag}}
           append_body: true
@@ -719,7 +719,7 @@ jobs:
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_ava.outputs.tag}}
           append_body: true
@@ -791,7 +791,7 @@ jobs:
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_jest.outputs.tag}}
           append_body: true
@@ -863,7 +863,7 @@ jobs:
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_packaged.outputs.tag}}
           append_body: true
@@ -935,7 +935,7 @@ jobs:
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
           append_body: true
@@ -1007,7 +1007,7 @@ jobs:
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_vitest.outputs.tag}}
           append_body: true
@@ -1079,7 +1079,7 @@ jobs:
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_worker.outputs.tag}}
           append_body: true
@@ -1151,7 +1151,7 @@ jobs:
         with:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{needs.check_publish_expect_type.outputs.tag}}
           append_body: true
