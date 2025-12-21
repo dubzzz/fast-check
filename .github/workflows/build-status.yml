@@ -651,7 +651,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for fast-check"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
@@ -745,7 +745,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^ava/v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^ava/v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for @fast-check/ava"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#ava/v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
@@ -839,7 +839,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^jest/v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^jest/v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for @fast-check/jest"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#jest/v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
@@ -933,7 +933,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^packaged/v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^packaged/v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for @fast-check/packaged"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#packaged/v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
@@ -1027,7 +1027,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^poisoning/v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^poisoning/v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for @fast-check/poisoning"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#poisoning/v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
@@ -1121,7 +1121,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^vitest/v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^vitest/v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for @fast-check/vitest"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#vitest/v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
@@ -1215,7 +1215,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^worker/v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^worker/v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for @fast-check/worker"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#worker/v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
@@ -1309,7 +1309,7 @@ jobs:
       - name: Get release tag
         id: get_tag
         run: |
-          TAG=$(git tag --points-at HEAD | grep '^expect-type/v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          TAG=$(git tag --points-at HEAD | grep '^expect-type/v[0-9]\+\.[0-9]\+\.[0-9]\+') || { echo "Error: No matching tag found for @fast-check/expect-type"; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#expect-type/v}" >> "$GITHUB_OUTPUT"
       - name: Update GitHub Release
