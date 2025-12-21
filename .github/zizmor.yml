@@ -17,3 +17,15 @@ rules:
       - build-status.yml:988 # vitest
       - build-status.yml:1062 # worker
       - build-status.yml:1136 # expect-type
+  template-injection:
+    ignore:
+      # These are safe - TGZ_NAME is set from package.json version in controlled environment
+      # bundle-path is output from attest-build-provenance action (trusted GitHub action)
+      - build-status.yml:650 # fast-check
+      - build-status.yml:724 # ava
+      - build-status.yml:798 # jest
+      - build-status.yml:872 # packaged
+      - build-status.yml:946 # poisoning
+      - build-status.yml:1020 # vitest
+      - build-status.yml:1094 # worker
+      - build-status.yml:1168 # expect-type
