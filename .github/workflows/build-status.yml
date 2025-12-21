@@ -615,6 +615,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -658,6 +659,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/fast-check/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
@@ -691,6 +694,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -734,6 +738,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/ava/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
@@ -767,6 +773,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -810,6 +817,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/jest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
@@ -843,6 +852,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -886,6 +896,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/packaged/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
@@ -919,6 +931,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -962,6 +975,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/poisoning/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
@@ -995,6 +1010,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -1038,6 +1054,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/vitest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
@@ -1071,6 +1089,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -1114,6 +1133,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/worker/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
@@ -1147,6 +1168,7 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Using Node v24.x
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -1190,6 +1212,8 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
           files: |
             packages/expect-type/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
