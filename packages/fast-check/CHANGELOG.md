@@ -1,3 +1,17 @@
+# 4.5.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.1...v4.5.2)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6416](https://github.com/dubzzz/fast-check/pull/6416)) CI: Extract package version from tarball
+- ([PR#6417](https://github.com/dubzzz/fast-check/pull/6417)) CI: Update GitHub releases at publish time
+
 # 4.5.1
 
 _Rename tarballs before publishing_
