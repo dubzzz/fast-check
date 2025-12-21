@@ -1,11 +1,7 @@
 # 4.5.2
 
-_TODO Description_
+_Attach tarballs to GitHub releases_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.5.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.1...v4.5.2)]
-
-## Features
-
-
 
 ## Fixes
 
