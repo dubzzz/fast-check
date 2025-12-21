@@ -10,10 +10,10 @@ rules:
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
       - build-status.yml:618 # fast-check
-      - build-status.yml:690 # ava
-      - build-status.yml:762 # jest
-      - build-status.yml:834 # packaged
-      - build-status.yml:906 # poisoning
-      - build-status.yml:978 # vitest
-      - build-status.yml:1050 # worker
-      - build-status.yml:1122 # expect-type
+      - build-status.yml:692 # ava
+      - build-status.yml:766 # jest
+      - build-status.yml:840 # packaged
+      - build-status.yml:914 # poisoning
+      - build-status.yml:988 # vitest
+      - build-status.yml:1062 # worker
+      - build-status.yml:1136 # expect-type
