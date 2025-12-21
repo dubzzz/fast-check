@@ -662,7 +662,7 @@ jobs:
           files: |
             packages/fast-check/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
+          body: '[View attestation](https://github.com/dubzzz/fast-check/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
