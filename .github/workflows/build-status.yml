@@ -662,25 +662,7 @@ jobs:
             packages/fast-check/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/fast-check@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -756,25 +738,7 @@ jobs:
             packages/ava/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/@fast-check/ava@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-ava-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -850,25 +814,7 @@ jobs:
             packages/jest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/@fast-check/jest@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-jest-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -944,25 +890,7 @@ jobs:
             packages/packaged/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/@fast-check/packaged@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-packaged-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -1038,25 +966,7 @@ jobs:
             packages/poisoning/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/@fast-check/poisoning@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-poisoning-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -1132,25 +1042,7 @@ jobs:
             packages/vitest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/@fast-check/vitest@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-vitest-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -1226,25 +1118,7 @@ jobs:
             packages/worker/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/@fast-check/worker@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-worker-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -1320,22 +1194,4 @@ jobs:
             packages/expect-type/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
           body: |
-            ## Attestation
-            
-            This release includes build provenance attestation for enhanced security and supply chain transparency.
-            
-            ### How to verify the attestation
-            
-            You can verify the authenticity of the published package using the GitHub CLI:
-            
-            ```bash
-            gh attestation verify oci://registry.npmjs.org/@fast-check/expect-type@${{steps.get_tag.outputs.version}} --owner ${{github.repository_owner}}
-            ```
-            
-            Or verify the downloaded tarball:
-            
-            ```bash
-            gh attestation verify fast-check-expect-type-${{steps.get_tag.outputs.version}}.tgz --owner ${{github.repository_owner}}
-            ```
-            
-            For more information about attestations, see [GitHub's documentation on artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations).
+            [View attestation](${{github.server_url}}/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
