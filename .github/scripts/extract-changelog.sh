@@ -5,8 +5,6 @@
 # Example: ./extract-changelog.sh fast-check 4.5.2
 # Example: ./extract-changelog.sh ava 2.0.2
 
-set -e
-
 # Check if correct number of arguments provided
 if [ "$#" -ne 2 ]; then
     echo "Usage: $0 <package-dir> <version>" >&2
@@ -38,7 +36,9 @@ awk -v version="$VERSION" '
     
     # Match version header (e.g., "# 4.5.2")
     /^# / {
-        if ($2 == version) {
+        # Extract version from the header line (everything after "# ")
+        header_version = substr($0, 3)
+        if (header_version == version) {
             found = 1
             printing = 1
             print
@@ -47,6 +47,7 @@ awk -v version="$VERSION" '
             # We hit the next version header, stop printing
             exit
         }
+        next
     }
     
     # Match separator line (---)
@@ -55,13 +56,12 @@ awk -v version="$VERSION" '
             # Stop before the separator
             exit
         }
+        next
     }
     
     # Print lines if we are in the target version section
-    {
-        if (printing) {
-            print
-        }
+    printing {
+        print
     }
     
     END {
@@ -71,3 +71,5 @@ awk -v version="$VERSION" '
         }
     }
 ' "$CHANGELOG_PATH"
+exit_code=$?
+exit $exit_code
