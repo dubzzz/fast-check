@@ -651,19 +651,18 @@ jobs:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for fast-check' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for fast-check'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/fast-check/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -728,19 +727,18 @@ jobs:
           subject-path: packages/ava/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^ava/v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for @fast-check/ava' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^ava/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/ava'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/ava/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -805,19 +803,18 @@ jobs:
           subject-path: packages/jest/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^jest/v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for @fast-check/jest' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^jest/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/jest'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/jest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -882,19 +879,18 @@ jobs:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^packaged/v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for @fast-check/packaged' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^packaged/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/packaged'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/packaged/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -959,19 +955,18 @@ jobs:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^poisoning/v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for @fast-check/poisoning' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^poisoning/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/poisoning'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/poisoning/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -1036,19 +1031,18 @@ jobs:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^vitest/v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for @fast-check/vitest' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^vitest/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/vitest'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/vitest/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -1113,19 +1107,18 @@ jobs:
           subject-path: packages/worker/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^worker/v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for @fast-check/worker' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^worker/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/worker'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/worker/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -1190,16 +1183,15 @@ jobs:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
       - name: Get release tag
         id: get_tag
-        run: |
-          echo "tag=$(git tag --points-at HEAD | grep -E '^expect-type/v[0-9]+\.[0-9]+\.[0-9]+$' || { echo 'Error: No matching tag found for @fast-check/expect-type' >&2; exit 1; })" >> "$GITHUB_OUTPUT"
+        run: 'echo "tag=$(git tag --points-at HEAD | grep -E ''^expect-type/v[0-9]+\.[0-9]+\.[0-9]+$'' || { echo ''Error: No matching tag found for @fast-check/expect-type'' >&2; exit 1; })" >> "$GITHUB_OUTPUT"'
       - name: Update GitHub Release
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
         with:
           tag_name: ${{steps.get_tag.outputs.tag}}
           append_body: true
           fail_on_unmatched_files: true
+          overwrite_files: false
           files: |
             packages/expect-type/${{env.TGZ_NAME}}
             ${{steps.attest.outputs.bundle-path}}
-          body: |
-            [View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+          body: '[View attestation](https://github.com/${{github.repository}}/attestations/${{steps.get_tag.outputs.tag}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)'
