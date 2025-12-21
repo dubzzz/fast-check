@@ -646,6 +646,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/fast-check/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -655,7 +657,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/fast-check/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/fast-check/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
@@ -718,6 +720,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/ava/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -727,7 +731,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/ava/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/ava/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
@@ -790,6 +794,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/jest/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -799,7 +805,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/jest/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/jest/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
@@ -862,6 +868,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/packaged/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -871,7 +879,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/packaged/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/packaged/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
@@ -934,6 +942,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/poisoning/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -943,7 +953,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/poisoning/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/poisoning/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
@@ -1006,6 +1016,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/vitest/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1015,7 +1027,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/vitest/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/vitest/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
@@ -1078,6 +1090,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/worker/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1087,7 +1101,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/worker/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/worker/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
@@ -1150,6 +1164,8 @@ jobs:
         id: attest
         with:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/expect-type/${{env.TGZ_NAME}}.intoto.jsonl"
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1159,7 +1175,7 @@ jobs:
           overwrite_files: false
           files: |
             packages/expect-type/${{env.TGZ_NAME}}
-            ${{steps.attest.outputs.bundle-path}}
+            packages/expect-type/${{env.TGZ_NAME}}.intoto.jsonl
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
