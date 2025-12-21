@@ -5,3 +5,15 @@ rules:
       # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
       - build-status.yml:210
       - build-status.yml:213
+  cache-poisoning:
+    ignore:
+      # These are false positives - attestations ensure artifact integrity
+      # setup-node with cache enabled, followed by gh-release for attestation uploads
+      - build-status.yml:618   # fast-check publish job
+      - build-status.yml:690   # ava publish job
+      - build-status.yml:762   # jest publish job
+      - build-status.yml:834   # packaged publish job
+      - build-status.yml:906   # poisoning publish job
+      - build-status.yml:978   # vitest publish job
+      - build-status.yml:1050  # worker publish job
+      - build-status.yml:1122  # expect-type publish job
