@@ -594,6 +594,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -601,7 +602,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_fc:
     name: Publish fast-check
@@ -609,7 +610,7 @@ jobs:
     if: needs.check_publish_fc.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -642,8 +643,22 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_fc.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/fast-check/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -651,6 +666,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -658,7 +674,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_ava:
     name: Publish @fast-check/ava
@@ -666,7 +682,7 @@ jobs:
     if: needs.check_publish_ava.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -699,8 +715,22 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_ava.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/ava/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -708,6 +738,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -715,7 +746,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_jest:
     name: Publish @fast-check/jest
@@ -723,7 +754,7 @@ jobs:
     if: needs.check_publish_jest.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -756,8 +787,22 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_jest.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/jest/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -765,6 +810,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -772,7 +818,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_packaged:
     name: Publish @fast-check/packaged
@@ -780,7 +826,7 @@ jobs:
     if: needs.check_publish_packaged.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -813,8 +859,22 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_packaged.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/packaged/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -822,6 +882,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -829,7 +890,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_poisoning:
     name: Publish @fast-check/poisoning
@@ -837,7 +898,7 @@ jobs:
     if: needs.check_publish_poisoning.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -870,8 +931,22 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/poisoning/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -879,6 +954,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -886,7 +962,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_vitest:
     name: Publish @fast-check/vitest
@@ -894,7 +970,7 @@ jobs:
     if: needs.check_publish_vitest.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -927,8 +1003,22 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_vitest.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/vitest/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -936,6 +1026,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -943,7 +1034,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_worker:
     name: Publish @fast-check/worker
@@ -951,7 +1042,7 @@ jobs:
     if: needs.check_publish_worker.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -984,8 +1075,22 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_worker.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/worker/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_expect_type:
     name: Check publish @fast-check/expect-type
     needs: check_any_package
@@ -993,6 +1098,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -1000,7 +1106,7 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
+        run: echo "tag=$(git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
         continue-on-error: true
   publish_package_expect_type:
     name: Publish @fast-check/expect-type
@@ -1008,7 +1114,7 @@ jobs:
     if: needs.check_publish_expect_type.outputs.status == 'success'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
@@ -1041,5 +1147,19 @@ jobs:
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/expect-type/$TGZ_NAME"
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+        id: attest
         with:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.2.0
+        with:
+          tag_name: ${{needs.check_publish_expect_type.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/expect-type/${{env.TGZ_NAME}}
+            ${{steps.attest.outputs.bundle-path}}
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
