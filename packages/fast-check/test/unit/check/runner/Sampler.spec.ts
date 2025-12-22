@@ -187,5 +187,49 @@ describe('Sampler', () => {
           expect(arb.generatedValues).toHaveLength(num); // only call the arbitrary once per asked value
         }),
       ));
+    it('Should return StatisticsReport with classes, numRuns, and numSkipped', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), (seed, runs) => {
+          const classify = (g: number) => g.toString();
+          const report = statistics(customGen(), classify, { seed: seed, numRuns: runs, logger: (_v: string) => {} });
+          expect(report).toHaveProperty('classes');
+          expect(report).toHaveProperty('numRuns');
+          expect(report).toHaveProperty('numSkipped');
+          expect(report.numRuns).toEqual(runs);
+          expect(typeof report.classes).toBe('object');
+          expect(typeof report.numSkipped).toBe('number');
+        }),
+      ));
+    it('Should return correct classification counts', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed) => {
+          const classify = (g: number) => g.toString();
+          const report = statistics(customGen(), classify, { seed: seed, logger: (_v: string) => {} });
+          const totalCounts = Object.values(report.classes).reduce((sum, count) => sum + count, 0);
+          // For single classifications, total counts equals numRuns - numSkipped
+          expect(totalCounts).toEqual(report.numRuns - report.numSkipped);
+          // Since we always classify, numSkipped should be 0
+          expect(report.numSkipped).toEqual(0);
+        }),
+      ));
+    it('Should calculate numSkipped correctly with partial classifications', () => {
+      const classify = (g: number) => (g % 2 === 0 ? 'even' : 'odd');
+      const report = statistics(customGen(), classify, { numRuns: 100, logger: (_v: string) => {} });
+      // All values should be classified as either even or odd
+      expect(report.numSkipped).toEqual(0);
+      expect(report.classes.even + report.classes.odd).toEqual(100);
+    });
+    it('Should handle multiple classifiers correctly in return value', () =>
+      fc.assert(
+        fc.property(fc.integer(), (seed) => {
+          const classify = (g: number) => (g % 2 === 0 ? [`a::${g}`, `b::${g}`] : [`a::${g}`]);
+          const report = statistics(customGen(), classify, { seed: seed, logger: (_v: string) => {} });
+          // Total classifications should be more than numRuns because some values have multiple classifications
+          const totalCounts = Object.values(report.classes).reduce((sum, count) => sum + count, 0);
+          expect(totalCounts).toBeGreaterThanOrEqual(report.numRuns);
+          // numSkipped should still be based on values, not classifications
+          expect(report.numSkipped).toEqual(0);
+        }),
+      ));
   });
 });

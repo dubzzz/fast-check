@@ -68,13 +68,34 @@ function round2(n: number): string {
 }
 
 /**
+ * Statistics report returned by {@link statistics}
+ *
+ * @remarks Since 3.25.0
+ * @public
+ */
+export type StatisticsReport = {
+  /**
+   * Mapping from classification labels to their counts
+   */
+  classes: { [label: string]: number };
+  /**
+   * Total number of generated values
+   */
+  numRuns: number;
+  /**
+   * Number of generated values that were skipped (not classified)
+   */
+  numSkipped: number;
+};
+
+/**
  * Gather useful statistics concerning generated values
  *
- * Print the result in `console.log` or `params.logger` (if defined)
+ * Print the result in `console.log` or `params.logger` (if defined) and return the statistics report
  *
  * @example
  * ```typescript
- * fc.statistics(
+ * const report = fc.statistics(
  *     fc.nat(999),
  *     v => v < 100 ? 'Less than 100' : 'More or equal to 100',
  *     {numRuns: 1000, logger: console.log});
@@ -82,11 +103,13 @@ function round2(n: number): string {
  * // - Less than 100
  * // - More or equal to 100
  * // The output will be sent line by line to the logger
+ * // The report contains the classification counts: report.classes['Less than 100']
  * ```
  *
  * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
+ * @returns Statistics report containing classification counts and metadata
  *
  * @remarks Since 0.0.6
  * @public
@@ -95,16 +118,20 @@ function statistics<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: Parameters<Ts> | number,
-): void {
+): StatisticsReport {
   const extendedParams =
     typeof params === 'number'
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
   const recorded: { [key: string]: number } = {};
+  let numClassified = 0;
   for (const g of streamSample(generator, params)) {
     const out = classify(g);
     const categories: string[] = Array.isArray(out) ? out : [out];
+    if (categories.length > 0) {
+      numClassified++;
+    }
     for (const c of categories) {
       recorded[c] = (recorded[c] || 0) + 1;
     }
@@ -117,6 +144,12 @@ function statistics<Ts>(
   for (const item of data) {
     qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
+  
+  return {
+    classes: recorded,
+    numRuns: qParams.numRuns,
+    numSkipped: qParams.numRuns - numClassified,
+  };
 }
 
 export { sample, statistics };
