@@ -162,7 +162,6 @@ describe('anyArbitraryBuilder (integration)', () => {
     }
     if (!extra.withTypedArray) {
       expect(isTypedArray(v)).toBe(false);
-      expect(isBigIntTypedArray(v)).toBe(false);
     }
     if (!extra.withBigInt || !extra.withTypedArray) {
       expect(isBigIntTypedArray(v)).toBe(false);
