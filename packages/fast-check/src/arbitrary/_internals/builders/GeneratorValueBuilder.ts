@@ -101,7 +101,6 @@ export function buildGeneratorValue(
     // possibly leading from totally different sets of functions.
     // In other words: `preBuiltValue !== undefined && context.history.length === 0` is a legit case!
     // If we start to mismatch we run a new random value computation
-    localMrng.unsafeJump();
     const g = arb.generate(localMrng, biasFactor);
     safePush(context.history, { arb, value: g.value_, context: g.context, mrng: localMrng.clone() });
     return g.value;
