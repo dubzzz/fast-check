@@ -58,8 +58,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b  # v2.5.0
         with:
-          tag_name: ${{steps.release_info.outputs.tag}}
-          name: ${{steps.release_info.outputs.title}}
-          body: ${{steps.release_info.outputs.body}}
+          tag_name: ${{ steps.release_info.outputs.tag }}
+          name: ${{ steps.release_info.outputs.title }}
+          body: ${{ steps.release_info.outputs.body }}
           draft: false
           prerelease: false
