@@ -1,4 +1,22 @@
 // @ts-check
+/**
+ * Script to extract release information from CHANGELOG.md files
+ * 
+ * This script is used by the create-release.yml GitHub Action workflow
+ * to parse CHANGELOG.md files and extract the latest release notes for
+ * creating GitHub releases.
+ * 
+ * Package naming conventions:
+ * - fast-check: Uses tags like v4.5.2
+ * - Other packages: Use tags like ava/v2.0.2, jest/v2.1.1, etc.
+ * 
+ * CHANGELOG format expected:
+ * # VERSION
+ * _Description_
+ * [[Code]...][[Diff]...]
+ * ## Features/Fixes/Breaking changes
+ * - PR links and descriptions
+ */
 const {
   promises: { readFile },
 } = require('fs');
