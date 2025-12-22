@@ -4,6 +4,8 @@ import { stringify } from '../../../utils/stringify.js';
 import { array } from '../../array.js';
 import { oneof } from '../../oneof.js';
 import { bigInt } from '../../bigInt.js';
+import { bigInt64Array } from '../../bigInt64Array.js';
+import { bigUint64Array } from '../../bigUint64Array.js';
 import { date } from '../../date.js';
 import { float32Array } from '../../float32Array.js';
 import { float64Array } from '../../float64Array.js';
@@ -42,7 +44,7 @@ function dictOf<U>(
 }
 
 /** @internal */
-function typedArray(constraints: { maxLength: number | undefined; size: SizeForArbitrary }) {
+function typedArray(constraints: { maxLength: number | undefined; size: SizeForArbitrary }, withBigInt: boolean) {
   return oneof(
     int8Array(constraints),
     uint8Array(constraints),
@@ -53,6 +55,7 @@ function typedArray(constraints: { maxLength: number | undefined; size: SizeForA
     uint32Array(constraints),
     float32Array(constraints),
     float64Array(constraints),
+    ...(withBigInt ? [bigInt64Array(constraints), bigUint64Array(constraints)] : []),
   );
 }
 
@@ -79,7 +82,7 @@ export function anyArbitraryBuilder(constraints: QualifiedObjectConstraints): Ar
       ...(constraints.withMap ? [tie('map')] : []),
       ...(constraints.withSet ? [tie('set')] : []),
       ...(constraints.withObjectString ? [tie('anything').map((o) => stringify(o))] : []),
-      ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size })] : []),
+      ...(constraints.withTypedArray ? [typedArray({ maxLength: maxKeys, size }, constraints.withBigInt)] : []),
       ...(constraints.withSparseArray
         ? [sparseArray(tie('anything'), { maxNumElements: maxKeys, size, depthIdentifier })]
         : []),

@@ -86,6 +86,13 @@ describe('anyArbitraryBuilder (integration)', () => {
     );
   });
 
+  it('should be able to produce bigint typed arrays (when asked to with both withBigInt and withTypedArray)', () => {
+    assertProduceSomeSpecificValues(
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBigInt: true, withTypedArray: true })),
+      isBigIntTypedArray,
+    );
+  });
+
   type Extra = ObjectConstraints;
   const extraParameters: fc.Arbitrary<Extra> = fc
     .record(
@@ -155,6 +162,10 @@ describe('anyArbitraryBuilder (integration)', () => {
     }
     if (!extra.withTypedArray) {
       expect(isTypedArray(v)).toBe(false);
+      expect(isBigIntTypedArray(v)).toBe(false);
+    }
+    if (!extra.withBigInt || !extra.withTypedArray) {
+      expect(isBigIntTypedArray(v)).toBe(false);
     }
     if (!extra.withUnicodeString && !('stringUnit' in extra)) {
       expect(stringify(v)).toSatisfy(doesNotIncludeAnySurrogateCharacter);
@@ -218,6 +229,10 @@ function isTypedArray(v: unknown): boolean {
     v instanceof Float32Array ||
     v instanceof Float64Array
   );
+}
+
+function isBigIntTypedArray(v: unknown): boolean {
+  return v instanceof BigInt64Array || v instanceof BigUint64Array;
 }
 
 function isSparseArray(v: unknown): boolean {

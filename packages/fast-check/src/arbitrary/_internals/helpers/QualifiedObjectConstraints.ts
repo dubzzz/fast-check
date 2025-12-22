@@ -93,7 +93,7 @@ export interface ObjectConstraints {
   withDate?: boolean;
   /**
    * Also generate typed arrays in: (Uint|Int)(8|16|32)Array and Float(32|64)Array
-   * Remark: no typed arrays made of bigint
+   * Also includes (Big(U)int64Array) when withBigInt is enabled
    * @defaultValue false
    * @remarks Since 2.9.0
    */
