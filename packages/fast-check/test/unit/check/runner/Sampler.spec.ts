@@ -231,5 +231,13 @@ describe('Sampler', () => {
           expect(report.numSkipped).toEqual(0);
         }),
       ));
+    it('Should correctly count skipped values when classifier returns empty arrays', () => {
+      const classify = (g: number) => (g < 5 ? [] : 'classified'); // Skip values < 5
+      const report = statistics(customGen(10), classify, { numRuns: 100, logger: (_v: string) => {} });
+      // Some values should be skipped (those < 5)
+      expect(report.numSkipped).toBeGreaterThan(0);
+      // Classified values + skipped values should equal total runs
+      expect(report.classes.classified + report.numSkipped).toEqual(100);
+    });
   });
 });
