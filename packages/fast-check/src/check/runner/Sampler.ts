@@ -144,7 +144,7 @@ function statistics<Ts>(
   for (const item of data) {
     qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
-  
+
   return {
     classes: recorded,
     numRuns: qParams.numRuns,
