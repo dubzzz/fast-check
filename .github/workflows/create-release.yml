@@ -31,7 +31,8 @@ jobs:
         with:
           persist-credentials: true
           fetch-depth: 0
-      - name: Create Release
+      - name: Extract release info
+        id: release_info
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
           script: |
@@ -39,9 +40,6 @@ jobs:
             const {run} =
               require('./.github/workflows/scripts/create-release.cjs');
             const result = await run(pkg);
-
-            const owner = context.payload.repository.owner.login;
-            const repo = context.payload.repository.name;
 
             if (result.error) {
               core.setFailed(`Failed: ${result.error}`);
@@ -54,14 +52,14 @@ jobs:
             core.info(`Title: ${title}`);
             core.info(`Body length: ${body.length} characters`);
 
-            await github.rest.repos.createRelease({
-              owner,
-              repo,
-              tag_name: tag,
-              name: title,
-              body: body,
-              draft: false,
-              prerelease: false
-            });
-
-            core.info(`Successfully created release for ${tag}`);
+            core.setOutput('tag', tag);
+            core.setOutput('title', title);
+            core.setOutput('body', body);
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b  # v2.5.0
+        with:
+          tag_name: ${{steps.release_info.outputs.tag}}
+          name: ${{steps.release_info.outputs.title}}
+          body: ${{steps.release_info.outputs.body}}
+          draft: false
+          prerelease: false
