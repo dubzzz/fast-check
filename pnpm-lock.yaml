@@ -58,7 +58,7 @@ importers:
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.4)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
 
   examples:
-    dependencies:
+    devDependencies:
       '@testing-library/dom':
         specifier: ^10.4.1
         version: 10.4.1
@@ -68,12 +68,27 @@ importers:
       '@testing-library/user-event':
         specifier: ^14.6.1
         version: 14.6.1(@testing-library/dom@10.4.1)
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/lodash':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/react':
+        specifier: ^19.2.7
+        version: 19.2.7
+      '@types/supertest':
+        specifier: ^6.0.3
+        version: 6.0.3
       express:
         specifier: ^5.2.1
         version: 5.2.1
       fast-check:
         specifier: workspace:*
         version: link:../packages/fast-check
+      happy-dom:
+        specifier: ^20.0.11
+        version: 20.0.11
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -89,22 +104,6 @@ importers:
       supertest:
         specifier: ^7.1.4
         version: 7.1.4
-    devDependencies:
-      '@types/express':
-        specifier: ^5.0.6
-        version: 5.0.6
-      '@types/lodash':
-        specifier: ^4.17.21
-        version: 4.17.21
-      '@types/react':
-        specifier: ^19.2.7
-        version: 19.2.7
-      '@types/supertest':
-        specifier: ^6.0.3
-        version: 6.0.3
-      happy-dom:
-        specifier: ^20.0.11
-        version: 20.0.11
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
