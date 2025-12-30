@@ -5,7 +5,7 @@ _Proper attestation file naming_
 
 ## Fixes
 
-- ([PR#6421](https://github.com/dubzzz/fast-check/pull/6421)) CI: Rename attestation bundles to *.sigstore.json
+- ([PR#6421](https://github.com/dubzzz/fast-check/pull/6421)) CI: Rename attestation bundles to \*.sigstore.json
 
 # 4.5.2
 
