@@ -825,6 +825,7 @@ jobs:
       - id: check_has_tag
         name: Check if one tag matches the package
         run: echo "tag=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
   publish_package_packaged:
     name: Publish @fast-check/packaged
     needs: check_publish_packaged
