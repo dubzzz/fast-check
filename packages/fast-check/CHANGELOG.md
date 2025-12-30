@@ -1,3 +1,16 @@
+# 4.5.3
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.2...v4.5.3)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6421](https://github.com/dubzzz/fast-check/pull/6421)) CI: Rename attestation bundles to *.sigstore.json
+
 # 4.5.2
 
 _Attach tarballs to GitHub releases_
