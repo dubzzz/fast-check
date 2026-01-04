@@ -38,7 +38,7 @@
     "cross-env": "^10.1.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
-    "globals": "^16.5.0",
+    "globals": "^17.0.0",
     "pkg-pr-new": "^0.0.62",
     "prettier": "3.7.4",
     "publint": "^0.3.16",
