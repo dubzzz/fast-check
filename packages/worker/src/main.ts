@@ -129,7 +129,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
  * Otherwise workers will stay forever.
  *
  *
- * @param url - URL towards the worker file: usually `pathToFileURL(import.meta.filename)` for es modules and `pathToFileURL(__filename)` for commonjs
+ * @param url - URL towards the worker file: usually `new URL(import.meta.url)` for es modules and `pathToFileURL(__filename)` for commonjs
  * @param options - Set of options to configure our worker-based properties
  * @public
  */
