@@ -226,7 +226,9 @@ function isTypedArray(v: unknown): boolean {
     v instanceof Int32Array ||
     v instanceof Uint32Array ||
     v instanceof Float32Array ||
-    v instanceof Float64Array
+    v instanceof Float64Array ||
+    v instanceof BigInt64Array ||
+    v instanceof BigUint64Array
   );
 }
 
