@@ -1,12 +1,10 @@
 import * as path from 'path';
-import * as url from 'url';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import { describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
-// @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const __dirname = import.meta.dirname;
 const avaPackageRoot = path.join(__dirname, '..');
 
 describe('ava', () => {

@@ -2,12 +2,11 @@ import { Jimp } from 'jimp';
 import { existsSync, mkdirSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import { glob } from 'glob';
-import { fileURLToPath } from 'url';
 import path, { join } from 'path';
 import { createHash } from 'crypto';
 import allContributors from '../src/components/HomepageContributors/all-contributors.json' with { type: 'json' };
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Collecting AVATARs for contributors
 

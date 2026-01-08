@@ -89,8 +89,8 @@ The CommonJS approach would be:
 const { init, fc } = require('@fast-check/jest/worker');
 const { pathToFileURL } = require('node:url');
 
-const { test, expect } = init(pathToFileURL(__filename));
-// can also be passed options such as isolationLevel: init(pathToFileURL(__filename), {})
+const { test, expect } = init(pathToFileURL(import.meta.filename));
+// can also be passed options such as isolationLevel: init(pathToFileURL(import.meta.filename), {})
 
 test.prop([fc.constant(null)])('should pass', (value) => {
   expect(value).toBe(null);

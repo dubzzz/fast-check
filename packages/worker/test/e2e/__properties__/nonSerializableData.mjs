@@ -1,9 +1,9 @@
 // @ts-check
-import { pathToFileURL, fileURLToPath } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 
-const __filename = fileURLToPath(import.meta.url);
+const __filename = import.meta.filename;
 const property = propertyFor(pathToFileURL(__filename), { randomSource: 'worker' });
 const propertyMainThread = propertyFor(pathToFileURL(__filename), { randomSource: 'main-thread' });
 

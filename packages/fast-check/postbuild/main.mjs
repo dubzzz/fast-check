@@ -3,9 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { replaceInFileSync } from 'replace-in-file';
-import * as url from 'url';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const __dirname = import.meta.dirname;
 
 // Fill metas related to the package
 

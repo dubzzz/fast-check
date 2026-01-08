@@ -1,12 +1,12 @@
 // @ts-check
-import { pathToFileURL, fileURLToPath } from 'node:url';
-import path, { dirname } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import path from 'node:path';
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 import { writeFileSync, existsSync, rmSync } from 'node:fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = import.meta.filename;
+const __dirname = import.meta.dirname;
 const property = propertyFor(pathToFileURL(__filename));
 
 export const concurrentLogFile = path.join(__dirname, `concurrent-log-file`);
