@@ -8,7 +8,6 @@ import type { test as _test, it as _it } from '@fast-check/jest';
 import type { jest as _jest, expect as _jestExpect } from '@jest/globals';
 
 const execFile = promisify(_execFile);
-const __dirname = import.meta.dirname;
 
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
@@ -16,7 +15,7 @@ declare const jest: typeof _jest;
 declare const jestExpect: typeof _jestExpect;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
+const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 
 const specFileName = `generated.spec.cjs`;
 const jestConfigName = `jest.config.cjs`;

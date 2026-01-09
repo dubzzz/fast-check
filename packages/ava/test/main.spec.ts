@@ -4,8 +4,7 @@ import { execFile as _execFile } from 'child_process';
 import { describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
-const __dirname = import.meta.dirname;
-const avaPackageRoot = path.join(__dirname, '..');
+const avaPackageRoot = path.join(import.meta.dirname, '..');
 
 describe('ava', () => {
   it('should pass', async () => {

@@ -4,14 +4,12 @@ import path from 'path';
 import process from 'process';
 import { replaceInFileSync } from 'replace-in-file';
 
-const __dirname = import.meta.dirname;
-
 // Fill metas related to the package
 
 // eslint-disable-next-line
 const commitHash = getCommitHash();
 
-fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
+fs.readFile(path.join(import.meta.dirname, '../package.json'), (err, data) => {
   if (err) {
     console.error(err.message);
     process.exit(2);

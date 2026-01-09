@@ -3,8 +3,7 @@ import { pathToFileURL } from 'node:url';
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 
-const __filename = import.meta.filename;
-const property = propertyFor(pathToFileURL(__filename));
+const property = propertyFor(pathToFileURL(import.meta.filename));
 
 export const supportPreProperty = property(
   fc.integer({ min: -1000, max: 1000 }),

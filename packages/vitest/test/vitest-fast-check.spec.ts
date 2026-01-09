@@ -5,7 +5,6 @@ import { execFile as _execFile } from 'child_process';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
-const __dirname = import.meta.dirname;
 
 import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/vitest';
@@ -14,7 +13,7 @@ declare const runner: typeof _test | typeof _it;
 declare const afterAllVi: typeof afterAll;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
+const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 const specFileName = `generated.spec.mjs`;
 const vitestConfigName = `vitest.config.mjs`;
 

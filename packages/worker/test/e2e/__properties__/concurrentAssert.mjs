@@ -5,19 +5,17 @@ import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 import { writeFileSync, existsSync, rmSync } from 'node:fs';
 
-const __filename = import.meta.filename;
-const __dirname = import.meta.dirname;
-const property = propertyFor(pathToFileURL(__filename));
+const property = propertyFor(pathToFileURL(import.meta.filename));
 
-export const concurrentLogFile = path.join(__dirname, `concurrent-log-file`);
+export const concurrentLogFile = path.join(import.meta.dirname, `concurrent-log-file`);
 
 let index = 0;
 function nextFilenameQuestion() {
-  return path.join(__dirname, `concurrent-question-${++index}`);
+  return path.join(import.meta.dirname, `concurrent-question-${++index}`);
 }
 let index2 = 0;
 function nextFilenameAnswer() {
-  return path.join(__dirname, `concurrent-answer-${++index2}`);
+  return path.join(import.meta.dirname, `concurrent-answer-${++index2}`);
 }
 
 /**

@@ -8,8 +8,7 @@ import * as snippets from './snippets.mjs';
 import { cwd } from 'process';
 
 const execFile = promisify(_execFile);
-const __dirname = import.meta.dirname;
-const rootWebsite = path.join(__dirname, '..', '..', '..');
+const rootWebsite = path.join(import.meta.dirname, '..', '..', '..');
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryName);

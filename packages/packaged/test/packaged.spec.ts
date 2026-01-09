@@ -3,8 +3,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { removeNonPublishedFiles } from '../src/packaged';
 
-const __dirname = import.meta.dirname;
-const testDirname = path.join(__dirname, '..', '.test-artifacts');
+const testDirname = path.join(import.meta.dirname, '..', '.test-artifacts');
 
 afterAll(async () => {
   await fs.rmdir(testDirname);
