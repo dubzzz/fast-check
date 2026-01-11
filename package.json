@@ -32,7 +32,7 @@
     "@changesets/cli": "^2.29.8",
     "@eslint/js": "^9.39.2",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.50.1",
+    "@typescript-eslint/utils": "^8.52.0",
     "@vitest/coverage-v8": "^4.0.5",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
@@ -43,7 +43,7 @@
     "prettier": "3.7.4",
     "publint": "^0.3.16",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.50.1",
+    "typescript-eslint": "^8.52.0",
     "vitest": "^4.0.5"
   }
 }
