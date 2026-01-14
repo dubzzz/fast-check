@@ -12,17 +12,19 @@ Continue reading to explore the detailed updates it brings.
 
 <!--truncate-->
 
-## Why supporting relation structures
+## Why support relational structures?
 
-Many higher level algorithms have to deal with data having cross-links. As such is your algorithm wants to deal with an organigram of employees chances are that you will want employees to have a single manager and manager not to be managed even transitively by one of their managees. Before this release building such structure was doable but required a bit of hard work to glue everything together and get your wonderful organigram. Among the various problems of building manually was that it was easy to make it wrong and thus your test was somehow something to be tested too.
+Many higher-level algorithms operate on data with cross-links. For instance, if your algorithm works with an organizational chart of employees, you probably want each employee to have a single manager and do not want a manager to be managed by one of their subordinates even transitively.
 
-With this release we bring relational schemas as a first class citizen in fast-check. We believe that such helper would prove useful for many extended usages of the library. As such it may help users to extend property based testing paradigm to a broader class of problems making it a non optional option whenever having to test a piece of code.
+Without `entityGraph`, building such structures requires a fair amount of code. That code was often tricky to get right and mistakes could easily slip in. As a result, the test code itself sometimes became something that needed to be tested.
+
+With `entityGraph`, relational schemas become first-class citizens. We believe this helper will prove useful for many advanced use cases and will help extend the property-based testing paradigm to a broader class of problems.
 
 ## Examples backed by `entityGraph`
 
 ### Graph
 
-A graph is nothing more than a relational structure with nodes being connected to each others. Using `entityGraph` we can easily come up with graphs. The arbitrary could be leveraged to build the structure `{ node: Node[] }` with `Node` being:
+A graph is nothing more than a relational structure with nodes being connected to one another. With `entityGraph`, we can easily generate graphs. For example, we will show how to use it to produce values of the shape `{ node: Node[] }`, with `Node` defined as:
 
 ```ts
 type Node = {
@@ -31,7 +33,7 @@ type Node = {
 };
 ```
 
-We can consider that we are ok with set of nodes that might be totally unrelated, that might have cycles, that might have self-reference... Here is an example of such set:
+Let’s start with a very permissive definition. We will allow nodes to be totally unrelated, to form cycles, or even to reference themselves. A possible generated graph could look like this:
 
 ```mermaid
 stateDiagram-v2
@@ -45,7 +47,7 @@ stateDiagram-v2
     n4
 ```
 
-If we are good with that kind of graph, the declaration would consist of:
+To describe such graphs, you can write:
 
 ```ts
 fc.entityGraph(
