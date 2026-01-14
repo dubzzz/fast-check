@@ -4,7 +4,9 @@ authors: [dubzzz]
 tags: [what's new, arbitrary, relational]
 ---
 
-Relational structures are among the hardest to generate. They not only need the entity data to be properly defined but also its links to refer to existing entities with some constraints being fulfilled. This new minor of fast-check brings to you a built-in helper that makes you able to describe your schema and get relationally linked entities out of it. It may be relevant to push fast-check further than just simple unit tests by providing primitives to build way more complex structures.
+Relational structures are among the hardest kinds of data to generate. Not only do entities need to be well-defined, but their links must also point to existing entities while satisfying a set of constraints. This release introduces a built-in helper that lets you describe your schema to generate properly linked relational data from it.
+
+With this release, we aim to go beyond simple unit-level data and offers primitives to build significantly more complex inputs. This should make it easier to extend your usage of property-based testing further. Why not trying it against higher-level algorithms?
 
 Continue reading to explore the detailed updates it brings.
 
