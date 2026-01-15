@@ -30,13 +30,13 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
       let numSeenValues = 0;
       const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
         while (true) {
-          clonedMrng.unsafeJump();
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
           numSeenValues++;
           if (seenValues !== null) {
             safePush(seenValues, value);
           }
           yield value;
+          clonedMrng.jump();
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));

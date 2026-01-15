@@ -35,8 +35,12 @@ export class Random {
    * Jump the random number generator by a fixed amount
    * @internal
    */
-  unsafeJump(): void {
-    unsafeSkipN(this.internalRng, 42);
+  jump(): void {
+    if ('unsafeJump' in this.internalRng && typeof this.internalRng.unsafeJump === 'function') {
+      this.internalRng.unsafeJump();
+    } else {
+      unsafeSkipN(this.internalRng, 42);
+    }
   }
 
   /**
