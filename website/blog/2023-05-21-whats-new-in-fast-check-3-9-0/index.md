@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.9.0?
 authors: [dubzzz]
-tags: [what's new, race conditions]
+tags: [release, scheduler, race-conditions, async-testing]
 ---
 
 import Tabs from '@theme/Tabs';

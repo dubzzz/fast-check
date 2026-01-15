@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.3.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary, memory]
+tags: [release, infiniteStream, memory, performance]
 ---
 
 Dealing with potentially infinite data structures can quickly lead to memory issues. Up until now, the arbitrary responsible for generating infinite streams was keeping every generated element in memory for debugging and reporting purposes. While helpful, this behavior could cause unwanted memory growth when users pulled from these streams for a long time. This release introduces a way to avoid that intentional leak.

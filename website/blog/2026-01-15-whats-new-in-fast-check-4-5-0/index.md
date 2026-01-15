@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.5.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary, relational]
+tags: [release, entityGraph, graphs, data-modeling]
 ---
 
 Relational structures are among the hardest kinds of data to generate. Not only do entities need to be well-defined, but their links must also point to existing entities while satisfying a set of constraints. This release introduces a built-in helper that lets you describe your schema to generate properly linked relational data from it.

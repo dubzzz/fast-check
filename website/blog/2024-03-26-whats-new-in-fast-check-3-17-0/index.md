@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.17.0?
 authors: [dubzzz]
-tags: [what's new, worker]
+tags: [release, worker, threading, performance]
 ---
 
 This release exposes additional details regarding the random generator passed to the property. It unlocks the ability to delegate random value generation in the workers in the context of [`@fast-check/worker`](https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme).

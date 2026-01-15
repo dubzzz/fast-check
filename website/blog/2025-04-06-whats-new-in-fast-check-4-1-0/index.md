@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.1.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary, reliability]
+tags: [release, scheduler, race-conditions, reliability]
 ---
 
 With fast-check, reliability has always been at the heart of our mission. We strive to detect bugs that are not only rare but also extremely complex. With this release, we're making our scheduler even more effective — especially in scenarios that can realistically occur in production codebases. Our goal is for the scheduler to suggest as many execution orderings as possible, helping you surface those sneaky race conditions with confidence.

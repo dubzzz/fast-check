@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.16.0?
 authors: [dubzzz]
-tags: [what's new, seo]
+tags: [release, typescript, documentation, performance]
 ---
 
 This release makes `fc.pre` safer in terms of typings. It leverages the "[assertion function](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)" capability offered by TypeScript. This version has also been focused on preparing the monorepo to move to ECMAScript modules to build itself and on making our documentation better.

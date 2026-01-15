@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.15.0?
 authors: [dubzzz]
-tags: [what's new]
+tags: [release, dictionary, recursion]
 ---
 
 This release added support for the parameter `depthIdentifier` on `dictionary`.
