@@ -8,6 +8,7 @@ import type { Parameters } from './configuration/Parameters.js';
 import { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
+import { Map, safeMapGet, safeMapSet } from '../../utils/globals.js';
 
 /** @internal */
 function toProperty<Ts>(
@@ -77,15 +78,11 @@ export type StatisticsReport = {
   /**
    * Mapping from classification labels to their counts
    */
-  classes: { [label: string]: number };
+  classes: Map<string, number>;
   /**
-   * Total number of generated values
+   * Number of values that have been generated and considered
    */
-  numRuns: number;
-  /**
-   * Number of generated values that were skipped (not classified)
-   */
-  numSkipped: number;
+  count: number;
 };
 
 /**
@@ -103,7 +100,7 @@ export type StatisticsReport = {
  * // - Less than 100
  * // - More or equal to 100
  * // The output will be sent line by line to the logger
- * // The report contains the classification counts: report.classes['Less than 100']
+ * // The report contains the classification counts: report.classes.get('Less than 100')
  * ```
  *
  * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
@@ -124,19 +121,16 @@ function statistics<Ts>(
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
-  const recorded: { [key: string]: number } = {};
-  let numClassified = 0;
+  const recorded = new Map<string, number>();
   for (const g of streamSample(generator, params)) {
     const out = classify(g);
     const categories: string[] = Array.isArray(out) ? out : [out];
-    if (categories.length > 0) {
-      numClassified++;
-    }
     for (const c of categories) {
-      recorded[c] = (recorded[c] || 0) + 1;
+      const oldCount = safeMapGet(recorded, c) || 0;
+      safeMapSet(recorded, c, oldCount + 1);
     }
   }
-  const data = Object.entries(recorded)
+  const data = Array.from(recorded.entries())
     .sort((a, b) => b[1] - a[1])
     .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
   const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
@@ -147,8 +141,7 @@ function statistics<Ts>(
 
   return {
     classes: recorded,
-    numRuns: qParams.numRuns,
-    numSkipped: qParams.numRuns - numClassified,
+    count: qParams.numRuns,
   };
 }
 
