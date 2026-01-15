@@ -6,7 +6,7 @@ tags: [what's new, arbitrary, relational]
 
 Relational structures are among the hardest kinds of data to generate. Not only do entities need to be well-defined, but their links must also point to existing entities while satisfying a set of constraints. This release introduces a built-in helper that lets you describe your schema to generate properly linked relational data from it.
 
-With this release, we aim to go beyond simple unit-level data and offers primitives to build significantly more complex inputs. This should make it easier to extend your usage of property-based testing further. Why not trying it against higher-level algorithms?
+With this release, we aim to go beyond simple unit-level data and offer primitives to build significantly more complex inputs. This should make it easier to extend your usage of property-based testing further. Why not trying it against higher-level algorithms?
 
 Continue reading to explore the detailed updates it brings.
 
@@ -16,7 +16,7 @@ Continue reading to explore the detailed updates it brings.
 
 Many higher-level algorithms operate on data with cross-links. For instance, if your algorithm works with an organizational chart of employees, you probably want each employee to have a single manager and do not want a manager to be managed by one of their subordinates even transitively.
 
-Without `entityGraph`, building such structures requires a fair amount of code. That code was often tricky to get right and mistakes could easily slip in. As a result, the test code itself sometimes became something that needed to be tested.
+Without `entityGraph`, building such structure would have required a fair amount of code. That code was often tricky to get right and mistakes could easily slip in. As a result, the test code itself sometimes became something that needed to be tested.
 
 With `entityGraph`, relational schemas become first-class citizens. We believe this helper will prove useful for many advanced use cases and will help extend the property-based testing paradigm to a broader class of problems.
 
@@ -33,7 +33,7 @@ type Node = {
 };
 ```
 
-Let’s start with a very permissive definition. We will allow nodes to be totally unrelated, to form cycles, or even to reference themselves. A possible generated graph could look like this:
+Let’s start with a very permissive definition. We will allow nodes to be totally unrelated, to form cycles or even to reference themselves. A possible generated graph could look like this:
 
 ```mermaid
 stateDiagram-v2
@@ -47,7 +47,7 @@ stateDiagram-v2
     n4
 ```
 
-To describe such graphs, you can write:
+To build such graphs, you can write:
 
 ```ts
 fc.entityGraph(
@@ -77,7 +77,7 @@ stateDiagram-v2
     n2 --> n5
 ```
 
-To request this kind of structure, you need to tweak the declaration as follow:
+To request this kind of structure, you need to tweak our previous declaration as follows:
 
 ```ts
 fc.entityGraph(
@@ -121,7 +121,7 @@ fc.entityGraph(
 );
 ```
 
-By selecting the successor strategy, we ensure that links only point forward to prevent the introduction of cycles.
+By selecting the successor strategy, we ensure that links only point forward to prevent cycles.
 
 ### Graph with backlinks
 
@@ -155,8 +155,6 @@ fc.entityGraph(
 ```
 
 With this configuration, whenever a node appears in the `linkTo` list of one node, it will automatically be listed in the corresponding `linkFrom` array.
-
-This concludes our overview of graph-related examples. Many more constraints and configurations are possible, but covering them all is beyond the scope of this section. We hope this introduction gives you a clear idea of how to work with `entityGraph` and how it can help you model richer relational data for your tests.
 
 ### Organigram
 
