@@ -157,9 +157,6 @@ importers:
         specifier: ^7.0.0
         version: 7.0.1
     devDependencies:
-      '@fast-check/expect-type':
-        specifier: workspace:*
-        version: link:../expect-type
       '@fast-check/poisoning':
         specifier: workspace:*
         version: link:../poisoning
