@@ -20,9 +20,9 @@ Without `entityGraph`, building such structures requires a fair amount of code. 
 
 With `entityGraph`, relational schemas become first-class citizens. We believe this helper will prove useful for many advanced use cases and will help extend the property-based testing paradigm to a broader class of problems.
 
-## Examples backed by `entityGraph`
+## Modeling relational data
 
-### Graph
+### Unconstrained graph
 
 A graph is nothing more than a relational structure with nodes being connected to one another. With `entityGraph`, we can easily generate graphs. For example, we will show how to use it to produce values of the shape `{ node: Node[] }`, with `Node` defined as:
 
@@ -57,9 +57,13 @@ fc.entityGraph(
 );
 ```
 
-That said in many cases you will probably want to bring more constraints to your nodes. As an example you may come with the need to only have nodes being connected to each others. With fast-check you can easily create a graph with a node able to link you to all others either directly or transitively.
+This definition puts almost no restrictions on the generated structure, making it a good starting point for experimentation.
 
-Such set of nodes could possibly be:
+### Connected graph
+
+While being able to generate an arbitrary graph is useful, most real-world use cases require additional guarantees to make the data suitable for testing.
+
+For example, you might require all nodes to be reacheable from a single entry point. Here is an example of such a graph:
 
 ```mermaid
 stateDiagram-v2
@@ -73,7 +77,7 @@ stateDiagram-v2
     n2 --> n5
 ```
 
-To ask for it to us, you'd have to update your declaration as follows:
+To request this kind of structure, you need to tweak the declaration as follow:
 
 ```ts
 fc.entityGraph(
@@ -86,11 +90,13 @@ fc.entityGraph(
 );
 ```
 
-With that configuration all nodes will be accessible from the first node in the array of nodes.
+With this configuration, all nodes are guaranteed to be reachable from the first node in the generated array.
 
-But from time to time constraints might be even higher. Some users may want to build directed acyclic graph also refered as DAG. Such structure would forbid cycles to exist and can bring some extra details to your test to make more asumptions on the output.
+### Directed acyclic graph
 
-Here is an example of such graph:
+In some cases, connectivity alone is not sufficient. You may want to enforce even stronger structural constraints.
+
+For instance, you may want to generate a directed acyclic graph — DAG. Such a structure forbids cycles and can encode additional assumptions in your tests. Here is an example of a DAG:
 
 ```mermaid
 stateDiagram-v2
@@ -102,7 +108,7 @@ stateDiagram-v2
     n1 --> n3
 ```
 
-To be coded with:
+A DAG can be expressed as follows:
 
 ```ts
 fc.entityGraph(
@@ -115,7 +121,93 @@ fc.entityGraph(
 );
 ```
 
-todo add back links linkFrom
+By selecting the successor strategy, we ensure that links only point forward to prevent the introduction of cycles.
+
+### Graph with backlinks
+
+So far, we have only modeled outgoing relationships. However, in some scenarios it is just as important to reason about incoming ones.
+
+To support this use case, `entityGraph` lets you define inverse relations so that backlinks are automatically populated in the generated structure.
+
+In this scenario, we expect nodes of the following shape:
+
+```ts
+type Node = {
+  id: string; // each node has its own id, no duplicated ids
+  linkTo: Node[];
+  linkFrom: Node[];
+};
+```
+
+This can be achieved with a small change:
+
+```ts
+fc.entityGraph(
+  { node: { id: fc.uuid() } },
+  {
+    node: {
+      linkTo: { arity: 'many', type: 'node' },
+      linkFrom: { arity: 'inverse', type: 'node', forwardRelationship: 'linkTo' }, // line added
+    },
+  },
+  { unicityConstraints: { node: (value) => value.id } },
+);
+```
+
+With this configuration, whenever a node appears in the `linkTo` list of one node, it will automatically be listed in the corresponding `linkFrom` array.
+
+This concludes our overview of graph-related examples. Many more constraints and configurations are possible, but covering them all is beyond the scope of this section. We hope this introduction gives you a clear idea of how to work with `entityGraph` and how it can help you model richer relational data for your tests.
+
+### Organigram
+
+A company organigram can be seen as a particular kind of graph. In our organigram, we want each employee to have zero or one manager and cycles to be forbidden.
+
+This structure fits naturally on top of the graph examples we have already seen. For instance, if we want employees to have the following shape:
+
+```ts
+type Employee = {
+  name: string;
+  manager: Employee | undefined;
+};
+```
+
+We can describe it as follows:
+
+```ts
+fc.entityGraph(
+  { employee: { name: fc.string() } },
+  { employee: { manager: { arity: '0-1', type: 'employee', strategy: 'successor' } } },
+);
+```
+
+The arity set to 0-1 enforces that each employee has at most one manager, while the successor strategy prevents cycles by ensuring that management relationships always go forward.
+
+### Organigram with a single root
+
+While the previous organigram enforces a valid management hierarchy, it may produce multiple roots meaning several top managers.
+
+In some cases, you may want to enforce a single root, such as a CEO. One way to achieve this with `entityGraph` is to invert the relationship and generate managees from their manager.
+
+In this variant, employees have the following shape:
+
+```ts
+type Employee = {
+  name: string;
+  managees: Employee[];
+};
+```
+
+This structure can be defined as follows:
+
+```ts
+fc.entityGraph(
+  { employee: { name: fc.string() } },
+  { employee: { managees: { arity: 'many', type: 'employee', strategy: 'exclusive' } } },
+  { initialPoolConstraints: { employee: { maxLength: 1 } } }, // single root, at index 0
+);
+```
+
+The exclusive strategy ensures that no employee appears in the managees list of more than one manager, while the initial pool constraint enforces a single root. Together, these constraints guarantee a tree-shaped organigram with exactly one top-level employee.
 
 ## Changelog since 4.4.0
 
