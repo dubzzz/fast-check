@@ -88,9 +88,9 @@ For posts about specific integrations or tools:
 ## Tag Naming Conventions
 
 - Use lowercase with hyphens for multi-word tags: `data-modeling`, not `DataModeling`
-- Use plural for collections: `graphs`, not `graph`
-- Use full feature names: `entityGraph`, not `entity`
-- Be specific over generic: `maps` over `collections`
+- Use plural for general topics: `graphs`, `strings`, `numbers`
+- Use singular for specific features: `entityGraph`, `scheduler`, `ulid`
+- Be specific over generic: `maps` and `sets` over just `collections`
 
 ## How Many Tags?
 
