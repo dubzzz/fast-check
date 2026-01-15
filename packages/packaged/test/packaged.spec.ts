@@ -1,12 +1,10 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import * as url from 'url';
 import { removeNonPublishedFiles } from '../src/packaged';
 
 // @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const testDirname = path.join(__dirname, '..', '.test-artifacts');
+const testDirname = path.join(import.meta.dirname, '..', '.test-artifacts');
 
 afterAll(async () => {
   await fs.rmdir(testDirname);
