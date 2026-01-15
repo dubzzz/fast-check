@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.4.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary, collection]
+tags: [release, maps, sets, collections]
 ---
 
 We expand fast-check's collection of arbitraries with two data structures: `Map` and `Set`. These native collections are now first-class citizens in fast-check, making it easier to test code that relies on them. We've also improved the flexibility of `fc.dictionary` to support the full range of property keys.

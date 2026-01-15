@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.2.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary, reliability]
+tags: [release, scheduler, race-conditions, async-testing]
 ---
 
 With version 4.2.0, we are re-affirming our will to provide our users with efficient and easy to use primitives around race condition detection. Because race conditions are far from easy to detect and think of we want to make them easy to track. For that reason we decided to introduce two new primitives to help you waiting for the scheduler to be done.

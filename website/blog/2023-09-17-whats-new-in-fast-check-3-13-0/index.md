@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.13.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, dates, edge-cases]
 ---
 
 This release introduces some new opt-in options on `date`, `dictionary` and `record`. They open ways to detect new classes of bugs.

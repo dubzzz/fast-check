@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 4.0.0?
 authors: [dubzzz]
-tags: [what's new]
+tags: [release, major-version, migration, breaking-changes]
 ---
 
 The release of fast-check 4.0.0 marks the end of the 3.x series. With this new version, we've streamlined and refined our APIs, embraced modern standards, and removed unnecessary polyfills to enhance performance and maintainability.
