@@ -14,6 +14,7 @@ declare const runner: typeof _test | typeof _it;
 declare const jest: typeof _jest;
 declare const jestExpect: typeof _jestExpect;
 
+// @ts-expect-error --module must be higher
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 

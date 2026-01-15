@@ -12,6 +12,7 @@ declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 declare const afterAllVi: typeof afterAll;
 
+// @ts-expect-error --module must be higher
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 const specFileName = `generated.spec.mjs`;

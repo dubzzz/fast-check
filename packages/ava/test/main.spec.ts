@@ -4,6 +4,7 @@ import { execFile as _execFile } from 'child_process';
 import { describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
+// @ts-expect-error --module must be higher
 const avaPackageRoot = path.join(import.meta.dirname, '..');
 
 describe('ava', () => {
