@@ -3,12 +3,8 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { removeNonPublishedFiles } from '../src/packaged';
 
-const testDirname = path.join(
-  // @ts-expect-error --module must be higher
-  import.meta.dirname,
-  '..',
-  '.test-artifacts',
-);
+// @ts-expect-error --module must be higher
+const testDirname = path.join(import.meta.dirname, '..', '.test-artifacts');
 
 afterAll(async () => {
   await fs.rmdir(testDirname);

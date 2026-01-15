@@ -15,12 +15,8 @@ declare const jest: typeof _jest;
 declare const jestExpect: typeof _jestExpect;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(
-  // @ts-expect-error --module must be higher
-  import.meta.dirname,
-  '..',
-  generatedTestsDirectoryName,
-);
+// @ts-expect-error --module must be higher
+const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 
 const specFileName = `generated.spec.cjs`;
 const jestConfigName = `jest.config.cjs`;
