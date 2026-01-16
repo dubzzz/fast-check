@@ -71,9 +71,17 @@ export class RunExecution<Ts> {
     this.interrupted = true;
   }
 
-  private isSuccess = (): boolean => this.pathToFailure === undefined;
-  private firstFailure = (): number => (this.pathToFailure ? +safeSplit(this.pathToFailure, ':')[0] : -1);
-  private numShrinks = (): number => (this.pathToFailure ? safeSplit(this.pathToFailure, ':').length - 1 : 0);
+  private isSuccess(): boolean {
+    return this.pathToFailure === undefined;
+  }
+
+  private firstFailure(): number {
+    return this.pathToFailure ? +safeSplit(this.pathToFailure, ':')[0] : -1;
+  }
+
+  private numShrinks(): number {
+    return this.pathToFailure ? safeSplit(this.pathToFailure, ':').length - 1 : 0;
+  }
 
   private extractFailures() {
     if (this.isSuccess()) {
@@ -89,13 +97,13 @@ export class RunExecution<Ts> {
     return failures;
   }
 
-  private static mergePaths = (offsetPath: string, path: string) => {
+  private static mergePaths(offsetPath: string, path: string): string {
     if (offsetPath.length === 0) return path;
     const offsetItems = offsetPath.split(':');
     const remainingItems = path.split(':');
     const middle = +offsetItems[offsetItems.length - 1] + +remainingItems[0];
     return [...offsetItems.slice(0, offsetItems.length - 1), `${middle}`, ...remainingItems.slice(1)].join(':');
-  };
+  }
 
   toRunDetails(seed: number, basePath: string, maxSkips: number, qParams: QualifiedParameters<Ts>): RunDetails<Ts> {
     if (!this.isSuccess()) {
