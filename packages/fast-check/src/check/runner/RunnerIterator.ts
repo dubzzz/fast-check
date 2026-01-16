@@ -46,7 +46,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     // WARNING: This function has to be called after a call to next
     //          Otherwise it will not be able to execute with the right currentShrinkable (or crash)
     // As a consequence: currentShrinkable is always defined in the code below
-    if (result !== null && result !== undefined && typeof result === 'object' && !PreconditionFailure.isFailure(result)) {
+    if (result !== null && typeof result === 'object' && !PreconditionFailure.isFailure(result)) {
       // failed run
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result);
