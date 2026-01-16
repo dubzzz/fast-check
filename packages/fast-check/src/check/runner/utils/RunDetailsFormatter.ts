@@ -38,8 +38,8 @@ function formatFailures<Ts>(failures: Ts[], stringifyOne: (value: Ts) => string)
 function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringifyOne: (value: Ts) => string): string {
   const summaryLines: string[] = [];
   const remainingTreesAndDepth: { depth: number; tree: ExecutionTree<Ts> }[] = [];
-  for (const tree of executionTrees.slice().reverse()) {
-    remainingTreesAndDepth.push({ depth: 1, tree });
+  for (let i = executionTrees.length - 1; i >= 0; --i) {
+    remainingTreesAndDepth.push({ depth: 1, tree: executionTrees[i] });
   }
   while (remainingTreesAndDepth.length !== 0) {
     // There is at least one item to pop (remainingTreesAndDepth.length !== 0)
@@ -56,12 +56,12 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
         : currentTree.status === ExecutionStatus.Failure
           ? '\x1b[31m\xD7\x1b[0m'
           : '\x1b[33m!\x1b[0m';
-    const leftPadding = Array(currentDepth).join('. ');
+    const leftPadding = currentDepth !== 0 ? '. '.repeat(currentDepth - 1) : '';
     summaryLines.push(`${leftPadding}${statusIcon} ${stringifyOne(currentTree.value)}`);
 
     // push its children to the queue
-    for (const tree of currentTree.children.slice().reverse()) {
-      remainingTreesAndDepth.push({ depth: currentDepth + 1, tree });
+    for (let i = currentTree.children.length - 1; i >= 0; --i) {
+      remainingTreesAndDepth.push({ depth: currentDepth + 1, tree: currentTree.children[i] });
     }
   }
   return `Execution summary:\n${summaryLines.join('\n')}`;
