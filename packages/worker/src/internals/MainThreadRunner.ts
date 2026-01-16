@@ -6,6 +6,8 @@ import { OneTimePool } from './worker-pool/OneTimePool.js';
 import { GlobalPool } from './worker-pool/GlobalPool.js';
 import { buildWorkerProperty } from './worker-property/WorkerPropertyBuilder.js';
 import { PreconditionFailure } from 'fast-check';
+import type { WorkerPropertyFromWorker } from './worker-property/WorkerPropertyFromWorker.js';
+import type { GlobalAsyncPropertyHookFunction } from 'fast-check';
 
 /**
  * Create a property able to run in the main thread and firing workers whenever required
@@ -48,13 +50,16 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
     },
     randomSource === 'worker',
   );
-  property.beforeEach(async (hookFunction) => {
-    await hookFunction(); // run outside of the worker, can throw
+  
+  // Access the internal property to register hooks
+  const internalProperty = (property as WorkerPropertyFromWorker<Ts>).internalProperty ?? property;
+  internalProperty.beforeEach(async (previousHook: GlobalAsyncPropertyHookFunction) => {
+    await previousHook(); // run outside of the worker, can throw
     const acquired = await lock.acquire();
     releaseLock = acquired.release;
     worker = pool.getFirstAvailableWorker() || (await pool.spawnNewWorker()); // can throw
   });
-  property.afterEach(async (hookFunction) => {
+  internalProperty.afterEach(async (previousHook: GlobalAsyncPropertyHookFunction) => {
     if (worker !== undefined) {
       worker.terminateIfStillRunning().catch(() => void 0); // no need to wait for the termination
       worker = undefined;
@@ -63,7 +68,7 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
       releaseLock();
       releaseLock = undefined;
     }
-    await hookFunction(); // run outside of the worker, can throw
+    await previousHook(); // run outside of the worker, can throw
   });
   const terminateAllWorkers = () => pool.terminateAllWorkers();
   return { property, terminateAllWorkers };

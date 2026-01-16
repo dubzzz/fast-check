@@ -1,5 +1,4 @@
 import type {
-  AsyncPropertyHookFunction,
   IAsyncPropertyWithHooks,
   IRawProperty,
   PreconditionFailure,
@@ -59,9 +58,9 @@ function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
  * A WorkerProperty delegating generating the values to the Worker thread
  * instead of running it into the main thread
  */
-export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
+export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements IRawProperty<Ts, true> {
   private readonly numArbitraries: number;
-  private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
+  readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
@@ -90,16 +89,6 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
 
   run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
     return this.internalProperty.run(v);
-  }
-
-  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
-    this.internalProperty.beforeEach(hookFunction);
-    return this;
-  }
-
-  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
-    this.internalProperty.afterEach(hookFunction);
-    return this;
   }
 
   runBeforeEach(): Promise<void> {
