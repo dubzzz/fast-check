@@ -63,7 +63,7 @@ function record<T>(
   constraints?: RecordConstraints<keyof T>,
 ): unknown {
   const noNullPrototype = constraints !== undefined && !!constraints.noNullPrototype;
-  if (constraints === null || constraints === undefined) {
+  if (constraints === undefined) {
     return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
