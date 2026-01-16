@@ -44,7 +44,7 @@ export class Random {
    */
 
   nextBoolean(): boolean {
-    return unsafeUniformIntDistribution(0, 1, this.internalRng) == 1;
+    return unsafeUniformIntDistribution(0, 1, this.internalRng) === 1;
   }
 
   /**
@@ -60,8 +60,8 @@ export class Random {
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
     return unsafeUniformIntDistribution(
-      min == null ? Random.MIN_INT : min,
-      max == null ? Random.MAX_INT : max,
+      min === null || min === undefined ? Random.MIN_INT : min,
+      max === null || max === undefined ? Random.MAX_INT : max,
       this.internalRng,
     );
   }

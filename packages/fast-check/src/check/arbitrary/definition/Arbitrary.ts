@@ -214,7 +214,8 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
   }
   private isSafeContext(context: unknown): context is ChainArbitraryContext<T, U> {
     return (
-      context != null &&
+      context !== null &&
+      context !== undefined &&
       typeof context === 'object' &&
       'originalBias' in (context as any) &&
       'originalValue' in (context as any) &&
@@ -293,7 +294,8 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
   }
   private isSafeContext(context: unknown): context is MapArbitraryContext<T> {
     return (
-      context != null &&
+      context !== null &&
+      context !== undefined &&
       typeof context === 'object' &&
       'originalValue' in (context as any) &&
       'originalContext' in (context as any)

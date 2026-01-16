@@ -13,6 +13,6 @@ export class PreconditionFailure extends Error {
     this.footprint = PreconditionFailure.SharedFootPrint;
   }
   static isFailure(err: unknown): err is PreconditionFailure {
-    return err != null && (err as PreconditionFailure).footprint === PreconditionFailure.SharedFootPrint;
+    return err !== null && err !== undefined && (err as PreconditionFailure).footprint === PreconditionFailure.SharedFootPrint;
   }
 }

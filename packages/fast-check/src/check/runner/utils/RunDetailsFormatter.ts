@@ -182,7 +182,7 @@ function defaultReportMessageInternal<Ts>(
       : preFormatFailure(out, stringifyOne);
 
   let errorMessage = message;
-  if (details != null) errorMessage += `\n\n${details}`;
+  if (details !== null && details !== undefined) errorMessage += `\n\n${details}`;
   if (hints.length > 0) errorMessage += `\n\n${formatHints(hints)}`;
   return errorMessage;
 }
