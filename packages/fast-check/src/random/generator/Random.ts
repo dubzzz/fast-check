@@ -60,8 +60,8 @@ export class Random {
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
     return unsafeUniformIntDistribution(
-      min === null || min === undefined ? Random.MIN_INT : min,
-      max === null || max === undefined ? Random.MAX_INT : max,
+      min === undefined ? Random.MIN_INT : min,
+      max === undefined ? Random.MAX_INT : max,
       this.internalRng,
     );
   }
