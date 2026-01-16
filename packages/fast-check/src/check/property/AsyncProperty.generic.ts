@@ -97,7 +97,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   }
 
   shrink(value: Value<Ts>): Stream<Value<Ts>> {
-    if (value.context === undefined && !this.arb.canShrinkWithoutContext(value.value_)) {
+    if (value.context === undefined && this.arb.canShrinkWithoutContext(value.value_) === false) {
       // `undefined` can only be coming from values derived from examples provided by the user
       // context set to `undefined` are automatically replaced by `UndefinedContextPlaceholder` in generate
       return Stream.nil();

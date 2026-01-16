@@ -172,7 +172,7 @@ function defaultReportMessageInternal<Ts>(
   out: RunDetails<Ts>,
   stringifyOne: (value: Ts) => string,
 ): string | undefined {
-  if (!out.failed) return;
+  if (out.failed === false) return;
 
   const { message, details, hints } =
     out.counterexamplePath === null
@@ -301,13 +301,13 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
 
 /** @internal */
 function throwIfFailed<Ts>(out: RunDetails<Ts>): void {
-  if (!out.failed) return;
+  if (out.failed === false) return;
   throw buildError<Ts>(defaultReportMessage(out), out);
 }
 
 /** @internal */
 async function asyncThrowIfFailed<Ts>(out: RunDetails<Ts>): Promise<void> {
-  if (!out.failed) return;
+  if (out.failed === false) return;
   throw buildError<Ts>(await asyncDefaultReportMessage(out), out);
 }
 

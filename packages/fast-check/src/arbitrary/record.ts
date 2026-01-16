@@ -68,7 +68,7 @@ function record<T>(
   }
 
   const requireDeletedKeys = 'requiredKeys' in constraints && constraints.requiredKeys !== undefined;
-  if (!requireDeletedKeys) {
+  if (requireDeletedKeys === false) {
     return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
@@ -78,7 +78,7 @@ function record<T>(
     if (descriptor === undefined) {
       throw new Error(`requiredKeys cannot reference keys that have not been defined in recordModel`);
     }
-    if (!descriptor.enumerable) {
+    if (descriptor.enumerable === false) {
       throw new Error(`requiredKeys cannot reference keys that have are enumerable in recordModel`);
     }
   }
