@@ -13,10 +13,8 @@ const UuidRegex = /^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-
 
 /** @internal */
 export function paddedEightsToUuidUnmapper(value: unknown): [string, string, string, string] {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported type');
-  }
-  const m = UuidRegex.exec(value);
+  const v = value as string;
+  const m = UuidRegex.exec(v);
   if (m === null) {
     throw new Error('Unsupported type');
   }

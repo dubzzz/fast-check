@@ -30,10 +30,10 @@ export function floatOnlyMapper(value: number): number {
 }
 
 export function floatOnlyUnmapper(value: unknown): number {
-  if (typeof value !== 'number') throw new Error('Unsupported type');
-  return value === safePositiveInfinity
+  const v = value as number;
+  return v === safePositiveInfinity
     ? onlyIntegersAfterThisValue
-    : value === safeNegativeInfinity
+    : v === safeNegativeInfinity
       ? -onlyIntegersAfterThisValue
-      : value;
+      : v;
 }

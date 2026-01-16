@@ -10,11 +10,9 @@ export function segmentsToPathMapper(segments: string[]): string {
 
 /** @internal */
 export function segmentsToPathUnmapper(value: unknown): string[] {
-  if (typeof value !== 'string') {
-    throw new Error('Incompatible value received: type');
-  }
-  if (value.length !== 0 && value[0] !== '/') {
+  const v = value as string;
+  if (v.length !== 0 && v[0] !== '/') {
     throw new Error('Incompatible value received: start');
   }
-  return safeSplice(safeSplit(value, '/'), 1);
+  return safeSplice(safeSplit(v, '/'), 1);
 }

@@ -29,10 +29,7 @@ function percentCharArbMapper(c: string): string {
 }
 /** @internal */
 function percentCharArbUnmapper(value: unknown): string {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported');
-  }
-  const decoded = decodeURIComponent(value);
+  const decoded = decodeURIComponent(value as string);
   return decoded;
 }
 

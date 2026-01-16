@@ -7,8 +7,5 @@ export function codePointsToStringMapper(tab: string[]): string {
 
 /** @internal */
 export function codePointsToStringUnmapper(value: unknown): string[] {
-  if (typeof value !== 'string') {
-    throw new Error('Cannot unmap the passed value');
-  }
-  return [...value];
+  return [...(value as string)];
 }

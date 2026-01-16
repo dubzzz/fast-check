@@ -20,11 +20,12 @@ function toSubdomainLabelMapper([f, d]: [string, [string, string] | null]): stri
 }
 /** @internal */
 function toSubdomainLabelUnmapper(value: unknown): [string, [string, string] | null] {
-  if (typeof value !== 'string' || value.length === 0) {
+  const v = value as string;
+  if (v.length === 0) {
     throw new Error('Unsupported');
   }
-  if (value.length === 1) {
-    return [value[0], null];
+  if (v.length === 1) {
+    return [v[0], null];
   }
   return [value[0], [safeSubstring(value, 1, value.length - 1), value[value.length - 1]]];
 }
@@ -60,11 +61,9 @@ function labelsMapper(elements: [string[], string]): string {
 }
 /** @internal */
 function labelsUnmapper(value: unknown): [string[], string] {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported type');
-  }
-  const lastDotIndex = value.lastIndexOf('.');
-  return [safeSplit(safeSubstring(value, 0, lastDotIndex), '.'), safeSubstring(value, lastDotIndex + 1)];
+  const v = value as string;
+  const lastDotIndex = v.lastIndexOf('.');
+  return [safeSplit(safeSubstring(v, 0, lastDotIndex), '.'), safeSubstring(v, lastDotIndex + 1)];
 }
 
 /** @internal */

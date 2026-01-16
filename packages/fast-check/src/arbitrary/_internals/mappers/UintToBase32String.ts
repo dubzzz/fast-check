@@ -106,14 +106,12 @@ export function paddedUintToBase32StringMapper(paddingLength: number) {
 
 /** @internal */
 export function uintToBase32StringUnmapper(value: unknown): number {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported type');
-  }
+  const v = value as string;
 
   let accumulated = 0;
   let power = 1;
-  for (let index = value.length - 1; index >= 0; --index) {
-    const char = value[index];
+  for (let index = v.length - 1; index >= 0; --index) {
+    const char = v[index];
     const numericForChar = decodeSymbolLookupTable[char];
     if (numericForChar === undefined) {
       throw new Error('Unsupported type');

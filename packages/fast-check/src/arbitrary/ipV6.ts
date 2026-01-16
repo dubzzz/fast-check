@@ -28,9 +28,9 @@ function h16sTol32Mapper([a, b]: [string, string]): string {
 
 /** @internal */
 function h16sTol32Unmapper(value: unknown): [string, string] {
-  if (typeof value !== 'string') throw new Error('Invalid type');
-  if (!value.includes(':')) throw new Error('Invalid value');
-  return value.split(':', 2) as [string, string];
+  const v = value as string;
+  if (!v.includes(':')) throw new Error('Invalid value');
+  return v.split(':', 2) as [string, string];
 }
 
 const items = '0123456789abcdef';
@@ -41,13 +41,11 @@ function hexa(): Arbitrary<string> {
     cachedHexa = integer({ min: 0, max: 15 }).map(
       (n) => items[n],
       (c) => {
-        if (typeof c !== 'string') {
-          throw new Error('Not a string');
-        }
-        if (c.length !== 1) {
+        const s = c as string;
+        if (s.length !== 1) {
           throw new Error('Invalid length');
         }
-        const code = safeCharCodeAt(c, 0); // 0=48,..,9=57,a=97,..,f=102
+        const code = safeCharCodeAt(s, 0); // 0=48,..,9=57,a=97,..,f=102
         if (code <= 57) {
           return code - 48; // any char before '0' will lead to <0 (rejected by integer)
         }

@@ -7,14 +7,12 @@ export function numberToPaddedEightMapper(n: number): string {
 
 /** @internal */
 export function numberToPaddedEightUnmapper(value: unknown): number {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported type');
-  }
-  if (value.length !== 8) {
+  const v = value as string;
+  if (v.length !== 8) {
     throw new Error('Unsupported value: invalid length');
   }
-  const n = parseInt(value, 16);
-  if (value !== numberToPaddedEightMapper(n)) {
+  const n = parseInt(v, 16);
+  if (v !== numberToPaddedEightMapper(n)) {
     throw new Error('Unsupported value: invalid content');
   }
   return n;

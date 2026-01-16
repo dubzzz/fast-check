@@ -28,10 +28,7 @@ function dotMapper(a: string[]): string {
 }
 /** @internal */
 function dotUnmapper(value: unknown): string[] {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported');
-  }
-  return safeSplit(value, '.');
+  return safeSplit(value as string, '.');
 }
 /** @internal */
 function atMapper(data: [string, string]): string {
@@ -39,10 +36,7 @@ function atMapper(data: [string, string]): string {
 }
 /** @internal */
 function atUnmapper(value: unknown): [string, string] {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported');
-  }
-  return safeSplit(value, '@', 2) as [string, string];
+  return safeSplit(value as string, '@', 2) as [string, string];
 }
 
 /**

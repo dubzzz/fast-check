@@ -85,8 +85,7 @@ function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints)
 
 /** @internal */
 function unmapperDoubleToIndex(value: unknown): bigint {
-  if (typeof value !== 'number') throw new Error('Unsupported type');
-  return doubleToIndex(value);
+  return doubleToIndex(value as number);
 }
 
 /** @internal */

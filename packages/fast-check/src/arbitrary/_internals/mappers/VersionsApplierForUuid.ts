@@ -20,14 +20,12 @@ export function buildVersionsAppliersForUuid(versions: number[]): {
     return mapping[value[0]] + safeSubstring(value, 1);
   }
   function versionsApplierUnmapper(value: unknown): string {
-    if (typeof value !== 'string') {
-      throw new Error('Cannot produce non-string values');
-    }
-    const rev = reversedMapping[value[0]];
+    const v = value as string;
+    const rev = reversedMapping[v[0]];
     if (rev === undefined) {
       throw new Error('Cannot produce strings not starting by the version in hexa code');
     }
-    return rev + safeSubstring(value, 1);
+    return rev + safeSubstring(v, 1);
   }
   return { versionsApplierMapper, versionsApplierUnmapper };
 }

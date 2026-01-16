@@ -9,8 +9,7 @@ function booleanMapper(v: number): boolean {
 
 /** @internal */
 function booleanUnmapper(v: unknown): number {
-  if (typeof v !== 'boolean') throw new Error('Unsupported input type');
-  return v === true ? 1 : 0;
+  return (v as boolean) === true ? 1 : 0;
 }
 
 /**

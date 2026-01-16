@@ -87,8 +87,7 @@ function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
 
 /** @internal */
 function unmapperFloatToIndex(value: unknown): number {
-  if (typeof value !== 'number') throw new Error('Unsupported type');
-  return floatToIndex(value);
+  return floatToIndex(value as number);
 }
 
 /** @internal */

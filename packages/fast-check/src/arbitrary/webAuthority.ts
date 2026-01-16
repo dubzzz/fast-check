@@ -23,16 +23,14 @@ function userHostPortMapper([u, h, p]: [string | null, string, number | null]): 
 }
 /** @internal */
 function userHostPortUnmapper(value: unknown): [string | null, string, number | null] {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported');
-  }
-  const atPosition = value.indexOf('@');
-  const user = atPosition !== -1 ? value.substring(0, atPosition) : null;
+  const v = value as string;
+  const atPosition = v.indexOf('@');
+  const user = atPosition !== -1 ? v.substring(0, atPosition) : null;
   const portRegex = /:(\d+)$/;
-  const m = portRegex.exec(value);
+  const m = portRegex.exec(v);
   const port = m !== null ? Number(m[1]) : null;
   const host =
-    m !== null ? value.substring(atPosition + 1, value.length - m[1].length - 1) : value.substring(atPosition + 1);
+    m !== null ? v.substring(atPosition + 1, v.length - m[1].length - 1) : v.substring(atPosition + 1);
   return [user, host, port];
 }
 /** @internal */
@@ -41,10 +39,11 @@ function bracketedMapper(s: string): string {
 }
 /** @internal */
 function bracketedUnmapper(value: unknown): string {
-  if (typeof value !== 'string' || value[0] !== '[' || value[value.length - 1] !== ']') {
+  const v = value as string;
+  if (v[0] !== '[' || v[v.length - 1] !== ']') {
     throw new Error('Unsupported');
   }
-  return value.substring(1, value.length - 1);
+  return v.substring(1, v.length - 1);
 }
 
 /**

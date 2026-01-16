@@ -28,8 +28,7 @@ export function fullySpecifiedMapper(data: [/*eh*/ string[], /*l*/ string]): str
 export function fullySpecifiedUnmapper(value: unknown): [string[], string] {
   // Shape:
   // >  6( h16 ":" ) ls32
-  if (typeof value !== 'string') throw new Error('Invalid type');
-  return extractEhAndL(value);
+  return extractEhAndL(value as string);
 }
 
 /** @internal */
@@ -40,9 +39,9 @@ export function onlyTrailingMapper(data: [/*eh*/ string[], /*l*/ string]): strin
 export function onlyTrailingUnmapper(value: unknown): [string[], string] {
   // Shape:
   // >  "::" 5( h16 ":" ) ls32
-  if (typeof value !== 'string') throw new Error('Invalid type');
-  if (!safeStartsWith(value, '::')) throw new Error('Invalid value');
-  return extractEhAndL(safeSubstring(value, 2));
+  const v = value as string;
+  if (!safeStartsWith(v, '::')) throw new Error('Invalid value');
+  return extractEhAndL(safeSubstring(v, 2));
 }
 
 /** @internal */
@@ -56,8 +55,8 @@ export function multiTrailingUnmapper(value: unknown): [string[], string[], stri
   // >  [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
   // >  [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
   // >  [ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32
-  if (typeof value !== 'string') throw new Error('Invalid type');
-  const [bhString, trailingString] = safeSplit(value, '::', 2);
+  const v = value as string;
+  const [bhString, trailingString] = safeSplit(v, '::', 2);
   const [eh, l] = extractEhAndL(trailingString);
   return [readBh(bhString), eh, l];
 }
@@ -83,8 +82,8 @@ export function singleTrailingUnmapper(value: unknown): [string[], string] {
   // Shape:
   // >  [ *4( h16 ":" ) h16 ] "::" ls32
   // >  [ *5( h16 ":" ) h16 ] "::" h16
-  if (typeof value !== 'string') throw new Error('Invalid type');
-  const [bhString, trailing] = safeSplit(value, '::', 2);
+  const v = value as string;
+  const [bhString, trailing] = safeSplit(v, '::', 2);
   return [readBh(bhString), trailing];
 }
 
@@ -96,7 +95,7 @@ export function noTrailingMapper(data: [/*bh*/ string[]]): string {
 export function noTrailingUnmapper(value: unknown): [string[]] {
   // Shape:
   // >  [ *6( h16 ":" ) h16 ] "::"
-  if (typeof value !== 'string') throw new Error('Invalid type');
-  if (!safeEndsWith(value, '::')) throw new Error('Invalid value');
-  return [readBh(safeSubstring(value, 0, value.length - 2))];
+  const v = value as string;
+  if (!safeEndsWith(v, '::')) throw new Error('Invalid value');
+  return [readBh(safeSubstring(v, 0, v.length - 2))];
 }

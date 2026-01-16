@@ -21,11 +21,9 @@ export function wordsToJoinedStringMapper(words: string[]): string {
 /** @internal */
 export function wordsToJoinedStringUnmapperFor(wordsArbitrary: Arbitrary<string>): (value: unknown) => string[] {
   return function wordsToJoinedStringUnmapper(value: unknown): string[] {
-    if (typeof value !== 'string') {
-      throw new Error('Unsupported type');
-    }
+    const v = value as string;
     const words: string[] = [];
-    for (const candidate of safeSplit(value, ' ')) {
+    for (const candidate of safeSplit(v, ' ')) {
       if (wordsArbitrary.canShrinkWithoutContext(candidate)) safePush(words, candidate);
       else if (wordsArbitrary.canShrinkWithoutContext(candidate + ',')) safePush(words, candidate + ',');
       else throw new Error('Unsupported word');
@@ -47,18 +45,16 @@ export function wordsToSentenceMapper(words: string[]): string {
 /** @internal */
 export function wordsToSentenceUnmapperFor(wordsArbitrary: Arbitrary<string>): (value: unknown) => string[] {
   return function wordsToSentenceUnmapper(value: unknown): string[] {
-    if (typeof value !== 'string') {
-      throw new Error('Unsupported type');
-    }
+    const v = value as string;
     if (
-      value.length < 2 ||
-      value[value.length - 1] !== '.' ||
-      value[value.length - 2] === ',' ||
-      safeToUpperCase(safeToLowerCase(value[0])) !== value[0]
+      v.length < 2 ||
+      v[v.length - 1] !== '.' ||
+      v[v.length - 2] === ',' ||
+      safeToUpperCase(safeToLowerCase(v[0])) !== v[0]
     ) {
       throw new Error('Unsupported value');
     }
-    const adaptedValue = safeToLowerCase(value[0]) + safeSubstring(value, 1, value.length - 1);
+    const adaptedValue = safeToLowerCase(v[0]) + safeSubstring(v, 1, v.length - 1);
     const words: string[] = [];
     const candidates = safeSplit(adaptedValue, ' ');
     for (let idx = 0; idx !== candidates.length; ++idx) {
@@ -80,10 +76,8 @@ export function sentencesToParagraphMapper(sentences: string[]): string {
 
 /** @internal */
 export function sentencesToParagraphUnmapper(value: unknown): string[] {
-  if (typeof value !== 'string') {
-    throw new Error('Unsupported type');
-  }
-  const sentences = safeSplit(value, '. ');
+  const v = value as string;
+  const sentences = safeSplit(v, '. ');
   for (let idx = 0; idx < sentences.length - 1; ++idx) {
     sentences[idx] += '.'; // re-add removed '.'
   }

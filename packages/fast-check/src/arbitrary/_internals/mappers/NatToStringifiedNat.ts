@@ -27,14 +27,12 @@ export function tryParseStringifiedNat(stringValue: string, radix: number): numb
 
 /** @internal */
 export function natToStringifiedNatUnmapper(value: unknown): ['dec' | 'oct' | 'hex', number] {
-  if (typeof value !== 'string') {
-    throw new Error('Invalid type');
-  }
-  if (value.length >= 2 && value[0] === '0') {
-    if (value[1] === 'x') {
-      return ['hex', tryParseStringifiedNat(safeSubstring(value, 2), 16)];
+  const v = value as string;
+  if (v.length >= 2 && v[0] === '0') {
+    if (v[1] === 'x') {
+      return ['hex', tryParseStringifiedNat(safeSubstring(v, 2), 16)];
     }
-    return ['oct', tryParseStringifiedNat(safeSubstring(value, 1), 8)];
+    return ['oct', tryParseStringifiedNat(safeSubstring(v, 1), 8)];
   }
-  return ['dec', tryParseStringifiedNat(value, 10)];
+  return ['dec', tryParseStringifiedNat(v, 10)];
 }

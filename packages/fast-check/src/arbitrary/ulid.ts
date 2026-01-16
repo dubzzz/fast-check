@@ -18,11 +18,12 @@ function ulidMapper(parts: MapperIn): MapperOut {
 }
 
 function ulidUnmapper(value: unknown): MapperIn {
-  if (typeof value !== 'string' || value.length !== 26) {
+  const v = value as string;
+  if (v.length !== 26) {
     throw new Error('Unsupported type');
   }
   return [
-    uintToBase32StringUnmapper(value.slice(0, 10)),
+    uintToBase32StringUnmapper(v.slice(0, 10)),
     uintToBase32StringUnmapper(value.slice(10, 18)),
     uintToBase32StringUnmapper(value.slice(18)),
   ];

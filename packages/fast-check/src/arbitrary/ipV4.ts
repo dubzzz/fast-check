@@ -11,10 +11,7 @@ function dotJoinerMapper(data: number[]): string {
 
 /** @internal */
 function dotJoinerUnmapper(value: unknown): number[] {
-  if (typeof value !== 'string') {
-    throw new Error('Invalid type');
-  }
-  return safeMap(safeSplit(value, '.'), (v) => tryParseStringifiedNat(v, 10));
+  return safeMap(safeSplit(value as string, '.'), (v) => tryParseStringifiedNat(v, 10));
 }
 
 /**

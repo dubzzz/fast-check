@@ -30,11 +30,9 @@ export function patternsToStringUnmapperFor(
   constraints: StringSharedConstraints,
 ): (value: unknown) => string[] {
   return function patternsToStringUnmapper(value: unknown): string[] {
-    if (typeof value !== 'string') {
-      throw new Error('Unsupported value');
-    }
+    const v = value as string;
 
-    const tokens = tokenizeString(patternsArb, value, minLengthFrom(constraints), maxLengthFrom(constraints));
+    const tokens = tokenizeString(patternsArb, v, minLengthFrom(constraints), maxLengthFrom(constraints));
     if (tokens === undefined) {
       throw new Error('Unable to unmap received string');
     }

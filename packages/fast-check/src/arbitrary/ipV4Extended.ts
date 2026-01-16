@@ -11,10 +11,7 @@ function dotJoinerMapper(data: string[]): string {
 
 /** @internal */
 function dotJoinerUnmapper(value: unknown): string[] {
-  if (typeof value !== 'string') {
-    throw new Error('Invalid type');
-  }
-  return safeSplit(value, '.');
+  return safeSplit(value as string, '.');
 }
 
 /**

@@ -12,10 +12,8 @@ const UrlSplitRegex =
 
 /** @internal */
 export function partsToUrlUnmapper(value: unknown): [string, string, string, string | null, string | null] {
-  if (typeof value !== 'string') {
-    throw new Error('Incompatible value received: type');
-  }
-  const m = UrlSplitRegex.exec(value);
+  const v = value as string;
+  const m = UrlSplitRegex.exec(v);
   if (m === null) {
     throw new Error('Incompatible value received');
   }

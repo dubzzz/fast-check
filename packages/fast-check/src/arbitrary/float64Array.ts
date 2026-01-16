@@ -37,8 +37,7 @@ function toTypedMapper(data: number[]): Float64Array<ArrayBuffer> {
 
 /** @internal */
 function fromTypedUnmapper(value: unknown): number[] {
-  if (!(value instanceof Float64Array)) throw new Error('Unexpected type');
-  return [...value];
+  return [...(value as Float64Array)];
 }
 
 /**
