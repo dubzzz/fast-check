@@ -56,7 +56,7 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
         : currentTree.status === ExecutionStatus.Failure
           ? '\x1b[31m\xD7\x1b[0m'
           : '\x1b[33m!\x1b[0m';
-    const leftPadding = '. '.repeat(Math.max(0, currentDepth - 1));
+    const leftPadding = currentDepth !== 0 ? '. '.repeat(currentDepth - 1) : '';
     summaryLines.push(`${leftPadding}${statusIcon} ${stringifyOne(currentTree.value)}`);
 
     // push its children to the queue
