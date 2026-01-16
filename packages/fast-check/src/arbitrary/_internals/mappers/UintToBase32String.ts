@@ -69,26 +69,25 @@ function encodeSymbol(symbol: number) {
 
 /** @internal */
 function pad(value: string, paddingLength: number) {
-  const numZeros = Math.max(0, paddingLength - value.length);
-  return '0'.repeat(numZeros) + value;
+  let extraPadding = '';
+  while (value.length + extraPadding.length < paddingLength) {
+    extraPadding += '0';
+  }
+  return extraPadding + value;
 }
 
 /** @internal */
 function smallUintToBase32StringMapper(num: number): string {
-  if (num === 0) {
-    return '';
-  }
-  const symbols: string[] = [];
+  let base32Str = '';
   // num must be in 0 (incl.), 0x7fff_ffff (incl.)
   // >>5 is equivalent to /32 and <<5 to x32
   for (let remaining = num; remaining !== 0; ) {
     const next = remaining >> 5;
     const current = remaining - (next << 5);
-    symbols.push(encodeSymbol(current));
+    base32Str = encodeSymbol(current) + base32Str;
     remaining = next;
   }
-  // Built backwards, so reverse before joining
-  return symbols.reverse().join('');
+  return base32Str;
 }
 
 /** @internal */

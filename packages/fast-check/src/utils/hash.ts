@@ -47,8 +47,7 @@ export function hash(repr: string): number {
   // Based on https://github.com/SheetJS/js-crc32/blob/master/crc32.js
   // and https://msdn.microsoft.com/en-us/library/dd905031.aspx
   let crc = 0xffffffff;
-  const len = repr.length;
-  for (let idx = 0; idx !== len; ++idx) {
+  for (let idx = 0; idx < repr.length; ++idx) {
     const c = safeCharCodeAt(repr, idx);
     if (c < 0x80) {
       crc = crc32Table[(crc & 0xff) ^ c] ^ (crc >> 8);
