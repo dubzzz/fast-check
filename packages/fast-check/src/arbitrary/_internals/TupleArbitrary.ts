@@ -87,7 +87,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     super();
     for (let idx = 0; idx !== arbs.length; ++idx) {
       const arb = arbs[idx];
-      if (arb == null || arb.generate == null)
+      if (arb === null || arb === undefined || arb.generate === null || arb.generate === undefined)
         throw new Error(`Invalid parameter encountered at index ${idx}: expecting an Arbitrary`);
     }
   }

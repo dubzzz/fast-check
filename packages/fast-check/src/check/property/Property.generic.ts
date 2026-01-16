@@ -108,7 +108,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
-    const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
+    const value = this.arb.generate(mrng, runId !== undefined ? runIdToFrequency(runId) : undefined);
     return noUndefinedAsContext(value);
   }
 
