@@ -93,9 +93,9 @@ export class QualifiedParameters<T> {
     return parameters;
   }
 
-  private static createQualifiedRandomGenerator = (
+  private static createQualifiedRandomGenerator(
     random: (seed: number) => RandomGenerator,
-  ): ((seed: number) => QualifiedRandomGenerator) => {
+  ): (seed: number) => QualifiedRandomGenerator {
     return (seed) => {
       const rng = random(seed);
       if (rng.unsafeJump === undefined) {
@@ -103,9 +103,9 @@ export class QualifiedParameters<T> {
       }
       return rng as QualifiedRandomGenerator;
     };
-  };
+  }
 
-  private static readSeed = <T>(p: Parameters<T>): number => {
+  private static readSeed<T>(p: Parameters<T>): number {
     // No seed specified
     if (p.seed === undefined) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
 
@@ -116,8 +116,8 @@ export class QualifiedParameters<T> {
     // Seed is either a double or an integer outside the authorized 32 bits
     const gap = p.seed - seed32;
     return seed32 ^ (gap * 0x100000000);
-  };
-  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => QualifiedRandomGenerator) => {
+  }
+  private static readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomGenerator {
     if (p.randomType === undefined) return prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
     if (typeof p.randomType === 'string') {
       switch (p.randomType) {
@@ -145,14 +145,14 @@ export class QualifiedParameters<T> {
       return p.randomType as (seed: number) => QualifiedRandomGenerator;
     }
     return QualifiedParameters.createQualifiedRandomGenerator(p.randomType);
-  };
-  private static readNumRuns = <T>(p: Parameters<T>): number => {
+  }
+  private static readNumRuns<T>(p: Parameters<T>): number {
     const defaultValue = 100;
     if (p.numRuns !== undefined) return p.numRuns;
     if ((p as { num_runs?: number }).num_runs !== undefined) return (p as { num_runs: number }).num_runs;
     return defaultValue;
-  };
-  private static readVerbose = <T>(p: Parameters<T>): VerbosityLevel => {
+  }
+  private static readVerbose<T>(p: Parameters<T>): VerbosityLevel {
     if (p.verbose === undefined) return VerbosityLevel.None;
     if (typeof p.verbose === 'boolean') {
       return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
@@ -164,13 +164,13 @@ export class QualifiedParameters<T> {
       return VerbosityLevel.VeryVerbose;
     }
     return p.verbose | 0;
-  };
-  private static safeTimeout = (value: number | undefined): number | undefined => {
+  }
+  private static safeTimeout(value: number | undefined): number | undefined {
     if (value === undefined) {
       return undefined;
     }
     return safeMathMin(value, 0x7fffffff);
-  };
+  }
 
   /**
    * Extract a runner configuration from Parameters

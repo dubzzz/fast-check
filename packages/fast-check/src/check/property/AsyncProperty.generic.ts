@@ -62,7 +62,7 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   // Default hook is a no-op
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
+  static dummyHook(): void {}
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
   constructor(
