@@ -79,7 +79,7 @@ function record<T>(
       throw new Error(`requiredKeys cannot reference keys that have not been defined in recordModel`);
     }
     if (descriptor.enumerable === false) {
-      throw new Error(`requiredKeys cannot reference keys that have are enumerable in recordModel`);
+      throw new Error(`requiredKeys cannot reference keys that are not enumerable in recordModel`);
     }
   }
 
