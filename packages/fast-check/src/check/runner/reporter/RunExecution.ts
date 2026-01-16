@@ -76,11 +76,11 @@ export class RunExecution<Ts> {
   }
 
   private firstFailure(): number {
-    return this.pathToFailure ? +safeSplit(this.pathToFailure, ':')[0] : -1;
+    return this.pathToFailure !== undefined ? +safeSplit(this.pathToFailure, ':')[0] : -1;
   }
 
   private numShrinks(): number {
-    return this.pathToFailure ? safeSplit(this.pathToFailure, ':').length - 1 : 0;
+    return this.pathToFailure !== undefined ? safeSplit(this.pathToFailure, ':').length - 1 : 0;
   }
 
   private extractFailures() {
