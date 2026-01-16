@@ -52,7 +52,9 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
   );
   
   // Access the internal property to register hooks
-  const internalProperty = (property as WorkerPropertyFromWorker<Ts>).internalProperty ?? property;
+  // When property is WorkerPropertyFromWorker, use its internalProperty
+  // When property is a standard fc.asyncProperty, use it directly (it has beforeEach/afterEach)
+  const internalProperty = (property as WorkerPropertyFromWorker<Ts>).internalProperty ?? (property as any);
   internalProperty.beforeEach(async (previousHook: GlobalAsyncPropertyHookFunction) => {
     await previousHook(); // run outside of the worker, can throw
     const acquired = await lock.acquire();
