@@ -27,7 +27,7 @@ function toSubdomainLabelUnmapper(value: unknown): [string, [string, string] | n
   if (v.length === 1) {
     return [v[0], null];
   }
-  return [value[0], [safeSubstring(value, 1, value.length - 1), value[value.length - 1]]];
+  return [v[0], [safeSubstring(v, 1, v.length - 1), v[v.length - 1]]];
 }
 
 /** @internal */

@@ -24,8 +24,8 @@ function ulidUnmapper(value: unknown): MapperIn {
   }
   return [
     uintToBase32StringUnmapper(v.slice(0, 10)),
-    uintToBase32StringUnmapper(value.slice(10, 18)),
-    uintToBase32StringUnmapper(value.slice(18)),
+    uintToBase32StringUnmapper(v.slice(10, 18)),
+    uintToBase32StringUnmapper(v.slice(18)),
   ];
 }
 
