@@ -46,7 +46,7 @@ export class RunExecution<Ts> {
       const currentTree = this.appendExecutionTree(ExecutionStatus.Failure, value);
       this.currentLevelExecutionTrees = currentTree.children;
     }
-    if (this.pathToFailure == null) this.pathToFailure = `${id}`;
+    if (this.pathToFailure === undefined) this.pathToFailure = `${id}`;
     else this.pathToFailure += `:${id}`;
     this.value = value;
     this.failure = failure;
@@ -55,7 +55,7 @@ export class RunExecution<Ts> {
     if (this.verbosity >= VerbosityLevel.VeryVerbose) {
       this.appendExecutionTree(ExecutionStatus.Skipped, value);
     }
-    if (this.pathToFailure == null) {
+    if (this.pathToFailure === undefined) {
       ++this.numSkips;
     }
   }
@@ -63,7 +63,7 @@ export class RunExecution<Ts> {
     if (this.verbosity >= VerbosityLevel.VeryVerbose) {
       this.appendExecutionTree(ExecutionStatus.Success, value);
     }
-    if (this.pathToFailure == null) {
+    if (this.pathToFailure === undefined) {
       ++this.numSuccesses;
     }
   }
@@ -71,7 +71,7 @@ export class RunExecution<Ts> {
     this.interrupted = true;
   }
 
-  private isSuccess = (): boolean => this.pathToFailure == null;
+  private isSuccess = (): boolean => this.pathToFailure === undefined;
   private firstFailure = (): number => (this.pathToFailure ? +safeSplit(this.pathToFailure, ':')[0] : -1);
   private numShrinks = (): number => (this.pathToFailure ? safeSplit(this.pathToFailure, ':').length - 1 : 0);
 
@@ -107,14 +107,14 @@ export class RunExecution<Ts> {
         numSkips: this.numSkips,
         numShrinks: this.numShrinks(),
         seed,
-        // Rq: isSuccess() true <=> this.pathToFailure == null
+        // Rq: isSuccess() true <=> this.pathToFailure === undefined
         //     The only path assigning a value to this.pathToFailure is fail
         //     At the same time it also assigns a non-null value to this.value
         //     And this is the only path assigning a value to this.value
         // =>  this.value !== undefined
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         counterexample: this.value!,
-        // See isSuccess: true <=> this.pathToFailure == null
+        // See isSuccess: true <=> this.pathToFailure === undefined
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
         // Rq: Same as this.value
