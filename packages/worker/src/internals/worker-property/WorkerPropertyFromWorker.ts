@@ -93,25 +93,21 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
   }
 
   beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
-    return this.internalProperty.beforeEach(hookFunction);
+    this.internalProperty.beforeEach(hookFunction);
+    return this;
   }
 
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
-    return this.internalProperty.afterEach(hookFunction);
+    this.internalProperty.afterEach(hookFunction);
+    return this;
   }
 
   runBeforeEach(): Promise<void> {
-    if (this.internalProperty.runBeforeEach !== undefined) {
-      return this.internalProperty.runBeforeEach();
-    }
-    return Promise.resolve();
+    return this.internalProperty.runBeforeEach();
   }
 
   runAfterEach(): Promise<void> {
-    if (this.internalProperty.runAfterEach !== undefined) {
-      return this.internalProperty.runAfterEach();
-    }
-    return Promise.resolve();
+    return this.internalProperty.runAfterEach();
   }
 
   getPayload(inputs: Ts): Payload<Ts> {
