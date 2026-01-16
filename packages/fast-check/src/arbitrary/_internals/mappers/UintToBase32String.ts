@@ -69,10 +69,7 @@ function encodeSymbol(symbol: number) {
 
 /** @internal */
 function pad(value: string, paddingLength: number) {
-  const numZeros = paddingLength - value.length;
-  if (numZeros <= 0) {
-    return value;
-  }
+  const numZeros = Math.max(0, paddingLength - value.length);
   return '0'.repeat(numZeros) + value;
 }
 
