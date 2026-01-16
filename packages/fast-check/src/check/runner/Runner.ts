@@ -116,7 +116,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
       ? toss(property, qParams.seed, qParams.randomType, qParams.examples)
       : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
-  const finalShrink = qParams.endOnFailure === false ? shrink : Stream.nil;
+  const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
   return property.isAsync()
     ? asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
         e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),

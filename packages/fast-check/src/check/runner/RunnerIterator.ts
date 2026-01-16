@@ -54,7 +54,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.nextValues = this.shrink(this.currentValue!);
     } else if (result !== null) {
-      if (result.interruptExecution === false) {
+      if (!result.interruptExecution) {
         // skipped run
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.runExecution.skip(this.currentValue!.value_);
