@@ -61,7 +61,7 @@ export function option<T, TNil = null>(
   arb: Arbitrary<T>,
   constraints: OptionConstraints<TNil> = {},
 ): Arbitrary<T | TNil> {
-  const freq = constraints.freq === null || constraints.freq === undefined ? 6 : constraints.freq;
+  const freq = constraints.freq === undefined ? 6 : constraints.freq;
   const nilValue = safeHasOwnProperty(constraints, 'nil') ? constraints.nil : (null as any);
   const nilArb = constant(nilValue);
   const weightedArbs = [
