@@ -45,9 +45,16 @@ async function asyncRunIt<Ts>(
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    await property.runBeforeEach();
-    const out = await property.run(v);
-    await property.runAfterEach();
+    const beforeEachOut = property.runBeforeEach();
+    if (beforeEachOut !== undefined) {
+      await beforeEachOut;
+    }
+    const syncOut = property.run(v);
+    const out = syncOut !== null && typeof syncOut === 'object' && 'then' in syncOut ? await syncOut : syncOut;
+    const afterEachOut = property.runAfterEach();
+    if (afterEachOut !== undefined) {
+      await afterEachOut;
+    }
     runner.handleResult(out);
   }
   return runner.runExecution;
