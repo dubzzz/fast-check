@@ -52,6 +52,10 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
+function outputToPropertyAnswer(output: boolean | void) {
+  return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
+}
+
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -116,10 +120,12 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
 
   async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
     try {
-      const output = await this.predicate(v);
-      return output === undefined || output === true
-        ? null
-        : { error: new Error('Property failed by returning false') };
+      const syncOutput = this.predicate(v);
+      if (typeof syncOutput !== 'object') {
+        return outputToPropertyAnswer(syncOutput);
+      }
+      const output = await syncOutput;
+      return outputToPropertyAnswer(output);
     } catch (err) {
       // precondition failure considered as success for the first version
       if (PreconditionFailure.isFailure(err)) return err;
