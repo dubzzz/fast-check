@@ -22,7 +22,7 @@
     "pure-rand": "^7.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "supertest": "^7.1.4",
+    "supertest": "^7.2.2",
     "typescript": "~5.9.3",
     "vitest": "^4.0.5"
   },
