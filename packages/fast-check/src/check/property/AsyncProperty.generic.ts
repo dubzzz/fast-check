@@ -117,12 +117,20 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  async runBeforeEach(): Promise<void> {
-    await this.beforeEachHook();
+  runBeforeEach(): Promise<void> | void {
+    const out = this.beforeEachHook();
+    if (out === undefined) {
+      return;
+    }
+    return out.then(() => undefined);
   }
 
-  async runAfterEach(): Promise<void> {
-    await this.afterEachHook();
+  runAfterEach(): Promise<void> | void {
+    const out = this.afterEachHook();
+    if (out === undefined) {
+      return;
+    }
+    return out.then(() => undefined);
   }
 
   run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {

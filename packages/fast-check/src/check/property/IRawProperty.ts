@@ -74,13 +74,13 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
    * Run before each hook
    * @remarks Since 3.4.0
    */
-  runBeforeEach: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runBeforeEach: () => (IsAsync extends true ? Promise<void> | void : never) | (IsAsync extends false ? void : never);
 
   /**
    * Run after each hook
    * @remarks Since 3.4.0
    */
-  runAfterEach: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runAfterEach: () => (IsAsync extends true ? Promise<void> | void : never) | (IsAsync extends false ? void : never);
 }
 
 /**
