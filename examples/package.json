@@ -12,7 +12,7 @@
     "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
     "@types/express": "^5.0.6",
-    "@types/lodash": "^4.17.21",
+    "@types/lodash": "^4.17.23",
     "@types/react": "^19.2.7",
     "@types/supertest": "^6.0.3",
     "express": "^5.2.1",
