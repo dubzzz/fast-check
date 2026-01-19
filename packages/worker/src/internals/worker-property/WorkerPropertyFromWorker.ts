@@ -88,7 +88,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return fc.Stream.nil();
   }
 
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
     return this.internalProperty.run(v);
   }
 
@@ -100,18 +100,18 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return this.internalProperty.afterEach(hookFunction);
   }
 
-  runBeforeEach(): Promise<void> {
-    if (this.internalProperty.runBeforeEach !== undefined) {
-      return this.internalProperty.runBeforeEach();
+  runBeforeEach(): Promise<void> | void {
+    if (this.internalProperty.runBeforeEach === undefined) {
+      return;
     }
-    return Promise.resolve();
+    return this.internalProperty.runBeforeEach();
   }
 
-  runAfterEach(): Promise<void> {
-    if (this.internalProperty.runAfterEach !== undefined) {
-      return this.internalProperty.runAfterEach();
+  runAfterEach(): Promise<void> | void {
+    if (this.internalProperty.runAfterEach === undefined) {
+      return;
     }
-    return Promise.resolve();
+    return this.internalProperty.runAfterEach();
   }
 
   getPayload(inputs: Ts): Payload<Ts> {
