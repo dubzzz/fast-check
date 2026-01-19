@@ -67,7 +67,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   private afterEachHook: GlobalAsyncPropertyHookFunction;
   constructor(
     readonly arb: Arbitrary<Ts>,
-    readonly predicate: (t: Ts) => Promise<boolean | void>,
+    readonly predicate: (t: Ts) => Promise<boolean | void> | boolean | void,
   ) {
     const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
 
