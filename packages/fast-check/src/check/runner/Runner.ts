@@ -50,7 +50,7 @@ async function asyncRunIt<Ts>(
       await beforeEachOut;
     }
     const syncOut = property.run(v);
-    const out = syncOut !== null && typeof syncOut === 'object' && 'then' in syncOut ? await syncOut : syncOut;
+    const out = syncOut !== null && syncOut !== undefined && 'then' in syncOut ? await syncOut : syncOut;
     const afterEachOut = property.runAfterEach();
     if (afterEachOut !== undefined) {
       await afterEachOut;
