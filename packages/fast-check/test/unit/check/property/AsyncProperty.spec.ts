@@ -114,7 +114,7 @@ describe('AsyncProperty', () => {
     });
     await p.runBeforeEach();
     const runner = p.run(p.generate(stubRng.mutable.nocall()).value);
-    runner.then(() => (runnerHasCompleted = true));
+    Promise.resolve(runner).then(() => (runnerHasCompleted = true));
 
     await delay(); // give back the control for other threads
     expect(runnerHasCompleted).toBe(false);

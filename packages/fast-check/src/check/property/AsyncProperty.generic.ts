@@ -56,6 +56,13 @@ function outputToPropertyAnswer(output: boolean | void) {
   return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
 }
 
+function errorToPropertyAnswer(err: unknown) {
+  // precondition failure considered as success for the first version
+  if (PreconditionFailure.isFailure(err)) return err;
+  // exception as PropertyFailure in case of real failure
+  return { error: err };
+}
+
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -118,19 +125,15 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
     await this.afterEachHook();
   }
 
-  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
     try {
       const syncOutput = this.predicate(v);
       if (typeof syncOutput !== 'object') {
         return outputToPropertyAnswer(syncOutput);
       }
-      const output = await syncOutput;
-      return outputToPropertyAnswer(output);
+      return syncOutput.then(outputToPropertyAnswer, errorToPropertyAnswer);
     } catch (err) {
-      // precondition failure considered as success for the first version
-      if (PreconditionFailure.isFailure(err)) return err;
-      // exception as PropertyFailure in case of real failure
-      return { error: err };
+      return errorToPropertyAnswer(err);
     }
   }
 
