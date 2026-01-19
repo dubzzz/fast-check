@@ -136,8 +136,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.0
-        version: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -231,8 +231,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.0
-        version: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -256,8 +256,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.0
-        version: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -274,8 +274,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.0
-        version: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -296,8 +296,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.0
-        version: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -321,8 +321,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.0
-        version: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -415,8 +415,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.0
-        version: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
@@ -9107,6 +9107,7 @@ packages:
   tar@7.5.2:
     resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -9550,8 +9551,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vite@7.3.0:
-    resolution: {integrity: sha512-dZwN5L1VlUBewiP6H9s2+B3e3Jg96D0vzN+Ry73sOefebhYr9f94wwkMNN/9ouoU8pV1BqA1d1zGk8928cx0rg==}
+  vite@7.3.1:
+    resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -14697,13 +14698,13 @@ snapshots:
       chai: 6.2.0
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.5(vite@7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1))':
+  '@vitest/mocker@4.0.5(vite@7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1))':
     dependencies:
       '@vitest/spy': 4.0.5
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+      vite: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
 
   '@vitest/pretty-format@4.0.5':
     dependencies:
@@ -21593,7 +21594,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1):
+  vite@7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -21612,7 +21613,7 @@ snapshots:
   vitest@4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.0.11)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.5
-      '@vitest/mocker': 4.0.5(vite@7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.5(vite@7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1))
       '@vitest/pretty-format': 4.0.5
       '@vitest/runner': 4.0.5
       '@vitest/snapshot': 4.0.5
@@ -21629,7 +21630,7 @@ snapshots:
       tinyexec: 0.3.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.0(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
+      vite: 7.3.1(@types/node@24.10.7)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/debug': 4.1.12
