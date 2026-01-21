@@ -117,10 +117,9 @@ describe('AsyncProperty', () => {
     });
     const out = p.run(p.generate(stubRng.mutable.nocall()).value);
     expect(out).not.toBe(null);
-    expect(called).toBe(false);
+    expect(called).toBe(true);
     expect(out).toBeInstanceOf(Promise);
     expect(await out).not.toBe(null);
-    expect(called).toBe(true);
   });
   it('Should wait until completion of the check to follow', async () => {
     const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
