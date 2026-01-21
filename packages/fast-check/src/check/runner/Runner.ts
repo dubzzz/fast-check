@@ -45,9 +45,19 @@ async function asyncRunIt<Ts>(
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    await property.runBeforeEach();
-    const out = await property.run(v);
-    await property.runAfterEach();
+    const beforeEachOut = property.runBeforeEach();
+    if (beforeEachOut !== undefined) {
+      await beforeEachOut;
+    }
+    const syncOut = property.run(v);
+    // Awaiting on an already resolved value brings a performance drop.
+    // As such we try to only await on Promises. Given the shape of the values produced by run
+    // we do a best effort check and drop unwanted await calls only on synchronous success cases.
+    const out = syncOut !== null ? await syncOut : syncOut;
+    const afterEachOut = property.runAfterEach();
+    if (afterEachOut !== undefined) {
+      await afterEachOut;
+    }
     runner.handleResult(out);
   }
   return runner.runExecution;
