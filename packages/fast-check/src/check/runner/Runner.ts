@@ -55,16 +55,30 @@ async function asyncRunIt<Ts>(
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
   for (const v of runner) {
-    const out = await run(v);
+    const syncOut = await run(v);
+    // Awaiting on an already resolved value brings a performance drop.
+    // As such we try to only await on Promises. Given the shape of the values produced by run
+    // we do a best effort check and drop unwanted await calls only on synchronous success cases.
+    const out = syncOut !== null ? await syncOut : syncOut;
     runner.handleResult(out);
   }
   return runner.runExecution;
 }
 
 async function asyncPropertyExecution<Ts>(property: IRawProperty<Ts>, v: Ts) {
-  await property.runBeforeEach();
-  const out = await property.run(v);
-  await property.runAfterEach();
+  const beforeEachOut = property.runBeforeEach();
+  if (beforeEachOut !== undefined) {
+    await beforeEachOut;
+  }
+  const syncOut = property.run(v);
+  // Awaiting on an already resolved value brings a performance drop.
+  // As such we try to only await on Promises. Given the shape of the values produced by run
+  // we do a best effort check and drop unwanted await calls only on synchronous success cases.
+  const out = syncOut !== null ? await syncOut : syncOut;
+  const afterEachOut = property.runAfterEach();
+  if (afterEachOut !== undefined) {
+    await afterEachOut;
+  }
   return out;
 }
 
@@ -223,7 +237,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   // Apply and decorate with plugins
   let surchargedGenerate: typeof property.generate | undefined = undefined;
   let run: typeof property.run = property.isAsync()
-    ? async (v) => asyncPropertyExecution(property, v)
+    ? (v) => asyncPropertyExecution(property, v)
     : (v) => propertyExecution(property, v);
   for (let index = pluginInstances.length - 1; index >= 0; --index) {
     const pluginInstance = pluginInstances[index];
