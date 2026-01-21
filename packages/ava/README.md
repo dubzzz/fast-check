@@ -131,12 +131,14 @@ testProp('should reach terminal state', [fc.string()], (t, received) => {
 
 | @fast-check/ava | AVA                | fast-check | node                   |
 | --------------- | ------------------ | ---------- | ---------------------- |
-| **2.0**         | ^4 \|\| ^5 \|\| ^6 | ^3 \|\| ^4 | ≥12.22.0<sup>(1)</sup> |
-| **1.0**         | ^4 \|\| ^5 \|\| ^6 | ^3         | ≥12.22.0<sup>(1)</sup> |
+| **3.0**         | ^4 \|\| ^5 \|\| ^6 | ^3 \|\| ^4 | ≥20.19.0<sup>(1)</sup> |
+| **2.0**         | ^4 \|\| ^5 \|\| ^6 | ^3 \|\| ^4 | ≥12.22.0<sup>(2)</sup> |
+| **1.0**         | ^4 \|\| ^5 \|\| ^6 | ^3         | ≥12.22.0<sup>(2)</sup> |
 
 <details>
 <summary>More details...</summary>
 
-1. As for ava 4.
+1. Requires support for `require(esm)`.
+2. As for ava 4.
 
 </details>
