@@ -52,6 +52,19 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
+/** @internal */
+function outputToPropertyAnswer(output: boolean | void) {
+  return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
+}
+
+/** @internal */
+function errorToPropertyAnswer(err: unknown) {
+  // precondition failure considered as success for the first version
+  if (PreconditionFailure.isFailure(err)) return err;
+  // exception as PropertyFailure in case of real failure
+  return { error: err };
+}
+
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -106,25 +119,31 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  async runBeforeEach(): Promise<void> {
-    await this.beforeEachHook();
+  runBeforeEach(): Promise<void> | void {
+    const out = this.beforeEachHook();
+    if (out === undefined) {
+      return;
+    }
+    return out.then(() => undefined);
   }
 
-  async runAfterEach(): Promise<void> {
-    await this.afterEachHook();
+  runAfterEach(): Promise<void> | void {
+    const out = this.afterEachHook();
+    if (out === undefined) {
+      return;
+    }
+    return out.then(() => undefined);
   }
 
-  async run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
     try {
-      const output = await this.predicate(v);
-      return output === undefined || output === true
-        ? null
-        : { error: new Error('Property failed by returning false') };
+      const syncOutput = this.predicate(v);
+      if (typeof syncOutput !== 'object') {
+        return outputToPropertyAnswer(syncOutput);
+      }
+      return syncOutput.then(outputToPropertyAnswer, errorToPropertyAnswer);
     } catch (err) {
-      // precondition failure considered as success for the first version
-      if (PreconditionFailure.isFailure(err)) return err;
-      // exception as PropertyFailure in case of real failure
-      return { error: err };
+      return errorToPropertyAnswer(err);
     }
   }
 
