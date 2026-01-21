@@ -65,20 +65,22 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
   run(
     v: Ts,
   ):
-    | (IsAsync extends true ? Promise<PreconditionFailure | PropertyFailure | null> : never)
+    | (IsAsync extends true
+        ? Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null
+        : never)
     | (IsAsync extends false ? PreconditionFailure | PropertyFailure | null : never);
 
   /**
    * Run before each hook
    * @remarks Since 3.4.0
    */
-  runBeforeEach: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runBeforeEach: () => (IsAsync extends true ? Promise<void> | void : never) | (IsAsync extends false ? void : never);
 
   /**
    * Run after each hook
    * @remarks Since 3.4.0
    */
-  runAfterEach: () => (IsAsync extends true ? Promise<void> : never) | (IsAsync extends false ? void : never);
+  runAfterEach: () => (IsAsync extends true ? Promise<void> | void : never) | (IsAsync extends false ? void : never);
 }
 
 /**
