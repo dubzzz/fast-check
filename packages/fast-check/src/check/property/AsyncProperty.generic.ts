@@ -124,7 +124,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
     if (out === undefined) {
       return;
     }
-    return out.then(() => undefined);
+    return Promise.resolve(out).then(() => undefined);
   }
 
   runAfterEach(): Promise<void> | void {
@@ -132,7 +132,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
     if (out === undefined) {
       return;
     }
-    return out.then(() => undefined);
+    return Promise.resolve(out).then(() => undefined);
   }
 
   run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
