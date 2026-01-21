@@ -3,31 +3,28 @@
   "description": "Property based testing for AVA based on fast-check",
   "version": "2.0.2",
   "type": "module",
-  "main": "lib/ava-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "require": {
-        "types": "./lib/cjs/ava-fast-check.d.ts",
-        "default": "./lib/cjs/ava-fast-check.js"
-      },
-      "import": {
-        "types": "./lib/ava-fast-check.d.ts",
-        "default": "./lib/ava-fast-check.js"
-      }
+      "types": "./lib/ava-fast-check.d.ts",
+      "default": "./lib/ava-fast-check.js"
     }
   },
-  "module": "lib/ava-fast-check.js",
-  "types": "lib/ava-fast-check.d.ts",
+  "typesVersions": {
+    "*": {
+      "index": [
+        "./lib/ava-fast-check.d.ts"
+      ]
+    }
+  },
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
+    "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
     "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json",
     "test": "vitest",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
