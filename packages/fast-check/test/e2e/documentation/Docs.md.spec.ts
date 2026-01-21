@@ -138,7 +138,10 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         try {
           return eval(evalCode);
         } catch (err) {
-          throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
+          const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
+          throw new ErrorWithCause(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
+            cause: err,
+          });
         }
       })(fc);
 
