@@ -98,6 +98,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return this.internalProperty.afterEach(hookFunction);
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async runBeforeEach(): Promise<void> {
     if (this.internalProperty.runBeforeEach !== undefined) {
       return this.internalProperty.runBeforeEach();
@@ -105,6 +106,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async runAfterEach(): Promise<void> {
     if (this.internalProperty.runAfterEach !== undefined) {
       return this.internalProperty.runAfterEach();
