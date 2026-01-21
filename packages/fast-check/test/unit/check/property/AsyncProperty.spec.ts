@@ -102,7 +102,7 @@ describe('AsyncProperty', () => {
     expect(await p.run(p.generate(stubRng.mutable.nocall()).value)).toBe(null);
     await p.runAfterEach();
   });
-  it('Should behave synchronously on run when predicate is synchronous', async () => {
+  it('Should behave synchronously on run when predicate is synchronous', () => {
     let called = false;
     const p = asyncProperty(stubArb.single(8), (_arg: number) => {
       called = true;
