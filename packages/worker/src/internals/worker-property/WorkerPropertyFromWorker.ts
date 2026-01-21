@@ -2,8 +2,6 @@ import type {
   AsyncPropertyHookFunction,
   IAsyncPropertyWithHooks,
   IRawProperty,
-  PreconditionFailure,
-  PropertyFailure,
   Random,
   Stream,
   Value,
@@ -88,7 +86,7 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return fc.Stream.nil();
   }
 
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> {
+  run(v: Ts): ReturnType<IAsyncPropertyWithHooks<Ts>['run']> {
     return this.internalProperty.run(v);
   }
 
@@ -100,18 +98,20 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return this.internalProperty.afterEach(hookFunction);
   }
 
-  runBeforeEach(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async runBeforeEach(): Promise<void> {
     if (this.internalProperty.runBeforeEach !== undefined) {
       return this.internalProperty.runBeforeEach();
     }
-    return Promise.resolve();
+    return;
   }
 
-  runAfterEach(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async runAfterEach(): Promise<void> {
     if (this.internalProperty.runAfterEach !== undefined) {
       return this.internalProperty.runAfterEach();
     }
-    return Promise.resolve();
+    return;
   }
 
   getPayload(inputs: Ts): Payload<Ts> {
