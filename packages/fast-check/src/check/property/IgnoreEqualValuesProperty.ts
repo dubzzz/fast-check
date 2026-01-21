@@ -25,7 +25,10 @@ function fromCached<Ts>(
 function fromCached<Ts>(
   ...data: [ReturnType<IRawProperty<Ts, true>['run']>, true] | [ReturnType<IRawProperty<Ts, false>['run']>, false]
 ) {
-  if (data[1]) return data[0].then(fromSyncCached);
+  // if not async
+  if (!data[1]) return fromSyncCached(data[0]);
+  // if potentially async, check if really async
+  if (data[0] !== null && typeof data[0] === 'object' && 'then' in data[0]) return data[0].then(fromSyncCached);
   return fromSyncCached(data[0]);
 }
 
