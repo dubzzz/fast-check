@@ -119,7 +119,7 @@ describe('AsyncProperty', () => {
     expect(out).not.toBe(null);
     expect(called).toBe(true);
     expect(out).toBeInstanceOf(Promise);
-    expect(await out).not.toBe(null);
+    expect(await out).toBe(null);
   });
   it('Should wait until completion of the check to follow', async () => {
     const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
