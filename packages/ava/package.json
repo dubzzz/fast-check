@@ -17,7 +17,7 @@
     "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
     "build-ci": "pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build:publish-esm": "tsc -p tsconfig.publish.json",
     "test": "vitest",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
