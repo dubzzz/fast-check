@@ -3,7 +3,6 @@
   "description": "Property based testing for AVA based on fast-check",
   "version": "2.0.2",
   "type": "module",
-  "main": "lib/ava-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -11,8 +10,6 @@
       "default": "./lib/ava-fast-check.js"
     }
   },
-  "module": "lib/ava-fast-check.js",
-  "types": "lib/ava-fast-check.d.ts",
   "files": [
     "lib"
   ],
