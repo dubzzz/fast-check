@@ -10,7 +10,7 @@ When creating or naming pull requests, follow the [gitmoji](https://gitmoji.dev/
   - Example: `✨ Add new arbitrary for dates`
   - Example: `🐛 Fix edge case in integer shrinking`
 
-- **For changes to other packages** (ava, vitest, jest, worker, poisoning, packaged, expect-type): Use the format `emoji(package-name) Description`
+- **For changes to other packages** (ava, vitest, jest, worker, poisoning, packaged): Use the format `emoji(package-name) Description`
   - Example: `👷(vitest) Add support for new vitest features`
   - Example: `🐛(jest) Fix compatibility with jest 29`
   - Example: `📝(ava) Update documentation for ava integration`
