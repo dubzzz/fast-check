@@ -9,14 +9,14 @@ rules:
     ignore:
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
-      - build-status.yml:644 # fast-check
-      - build-status.yml:718 # ava
-      - build-status.yml:792 # jest
-      - build-status.yml:866 # packaged
-      - build-status.yml:940 # poisoning
-      - build-status.yml:1014 # vitest
-      - build-status.yml:1088 # worker
-      - build-status.yml:1162 # expect-type
+      - build-status.yml:635 # fast-check
+      - build-status.yml:709 # ava
+      - build-status.yml:783 # jest
+      - build-status.yml:857 # packaged
+      - build-status.yml:931 # poisoning
+      - build-status.yml:1005 # vitest
+      - build-status.yml:1079 # worker
+      - build-status.yml:1153 # expect-type
   template-injection:
     ignore:
       # These are safe - TGZ_NAME is set from package.json version in controlled environment
