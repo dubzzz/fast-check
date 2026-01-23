@@ -56,7 +56,6 @@ export default [
       'packages/ava/test/ava-specs/testProp.js',
       '**/ava.config.js',
       '**/jest.config.js',
-      'packages/expect-type/src/*.js',
       'packages/packaged/bin/*.js',
     ],
     languageOptions: {

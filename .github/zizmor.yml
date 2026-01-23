@@ -16,7 +16,6 @@ rules:
       - build-status.yml:940 # poisoning
       - build-status.yml:1014 # vitest
       - build-status.yml:1088 # worker
-      - build-status.yml:1162 # expect-type
   template-injection:
     ignore:
       # These are safe - TGZ_NAME is set from package.json version in controlled environment
@@ -28,4 +27,3 @@ rules:
       - build-status.yml:972 # poisoning
       - build-status.yml:1046 # vitest
       - build-status.yml:1120 # worker
-      - build-status.yml:1194 # expect-type
