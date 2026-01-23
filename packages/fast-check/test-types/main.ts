@@ -314,9 +314,9 @@ fc.oneof({ arbitrary: fc.string(), weight: 1 }, { arbitrary: '1', weight: 1 });
 // option arbitrary
 // "option" without any constraints
 expectTypeOf(fc.option(fc.nat())).toEqualTypeOf<fc.Arbitrary<number | null>>();
-// "option" with nil overriden to null (the original default)
+// "option" with nil overridden to null (the original default)
 expectTypeOf(fc.option(fc.nat(), { nil: null })).toEqualTypeOf<fc.Arbitrary<number | null>>();
-// "option" with nil overriden to custom value
+// "option" with nil overridden to custom value
 expectTypeOf(fc.option(fc.nat(), { nil: 'custom_default' as const })).toEqualTypeOf<
   fc.Arbitrary<number | 'custom_default'>
 >();
@@ -343,7 +343,7 @@ expectTypeOf(
   })),
 ).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<string> }>();
 // Recursive "letrec"
-// TODO Typings should be improved: b type might be infered from a
+// TODO Typings should be improved: b type might be inferred from a
 expectTypeOf(
   fc.letrec((tie) => ({
     a: fc.nat(),
@@ -358,7 +358,7 @@ expectTypeOf(
   })),
 ).toEqualTypeOf<{ a: fc.Arbitrary<number>; b: fc.Arbitrary<number> }>();
 // Invalid recursion "letrec"
-// TODO Typings should be improved: referencing an undefined key should failed
+// TODO Typings should be improved: referencing an undefined key should fail
 expectTypeOf(
   fc.letrec((tie) => ({
     a: fc.nat(),
