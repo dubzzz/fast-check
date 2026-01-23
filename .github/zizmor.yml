@@ -21,11 +21,11 @@ rules:
     ignore:
       # These are safe - TGZ_NAME is set from package.json version in controlled environment
       # bundle-path is output from attest-build-provenance action (trusted GitHub action)
-      - build-status.yml:676 # fast-check
-      - build-status.yml:750 # ava
-      - build-status.yml:824 # jest
-      - build-status.yml:898 # packaged
-      - build-status.yml:972 # poisoning
-      - build-status.yml:1046 # vitest
-      - build-status.yml:1120 # worker
-      - build-status.yml:1194 # expect-type
+      - build-status.yml:667 # fast-check
+      - build-status.yml:741 # ava
+      - build-status.yml:815 # jest
+      - build-status.yml:889 # packaged
+      - build-status.yml:963 # poisoning
+      - build-status.yml:1037 # vitest
+      - build-status.yml:1111 # worker
+      - build-status.yml:1185 # expect-type
