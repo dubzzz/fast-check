@@ -475,12 +475,7 @@ jobs:
       - name: Retrieve dropped test-types
         run: pnpm --filter {./packages/**} --parallel -c --workspace-concurrency=1 exec "git restore -s@ -SW -- test-types"
       - name: Switch folder to CommonJS
-        run: |
-          if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
-          else
-            pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
-          fi
+        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
         run: |
           if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
@@ -496,12 +491,7 @@ jobs:
             pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
           fi
       - name: Switch folder to ES Modules
-        run: |
-          if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
-          else
-            pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
-          fi
+        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
         run: |
           if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
