@@ -10,6 +10,13 @@
       "default": "./lib/ava-fast-check.js"
     }
   },
+  "typesVersions": {
+    "*": {
+      "index": [
+        "./lib/ava-fast-check.d.ts"
+      ]
+    }
+  },
   "files": [
     "lib"
   ],
