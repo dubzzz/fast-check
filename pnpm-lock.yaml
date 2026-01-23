@@ -142,24 +142,12 @@ importers:
         specifier: ^4.0.5
         version: 4.0.5(@types/debug@4.1.12)(@types/node@24.10.7)(happy-dom@20.3.4)(jiti@1.21.7)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.1)
 
-  packages/expect-type:
-    devDependencies:
-      '@fast-check/expect-type':
-        specifier: workspace:*
-        version: 'link:'
-      typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
-
   packages/fast-check:
     dependencies:
       pure-rand:
         specifier: ^7.0.0
         version: 7.0.1
     devDependencies:
-      '@fast-check/expect-type':
-        specifier: workspace:*
-        version: link:../expect-type
       '@fast-check/poisoning':
         specifier: workspace:*
         version: link:../poisoning
