@@ -673,7 +673,9 @@ jobs:
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/fast-check/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/fast-check/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -747,7 +749,9 @@ jobs:
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/ava/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/ava/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -821,7 +825,9 @@ jobs:
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/jest/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/jest/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -895,7 +901,9 @@ jobs:
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/packaged/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/packaged/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -969,7 +977,9 @@ jobs:
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/poisoning/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/poisoning/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1043,7 +1053,9 @@ jobs:
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/vitest/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/vitest/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1117,7 +1129,9 @@ jobs:
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/worker/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/worker/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1191,7 +1205,9 @@ jobs:
         with:
           subject-path: packages/expect-type/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/expect-type/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "${STEPS_ATTEST_OUTPUTS_BUNDLE_PATH}" "packages/expect-type/${TGZ_NAME}.sigstore.json"
+        env:
+          STEPS_ATTEST_OUTPUTS_BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
