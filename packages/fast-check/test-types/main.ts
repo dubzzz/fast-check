@@ -193,11 +193,11 @@ expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['a'] })
 expectTypeOf(fc.record({ a: fc.nat(), b: fc.string(), c: fc.string() }, { requiredKeys: ['a', 'c'] })).toEqualTypeOf<
   fc.Arbitrary<{ a: number; b?: string; c: string }>
 >();
-// prettier-ignore
-// "record" only applies optional on keys declared within requiredKeys by adding ? without |undefined
-// @fc-expect-error-require-exactOptionalPropertyTypes
-expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<fc.Arbitrary<{ a?: number; b?: string | undefined }>>();
-// prettier-ignore-end
+// "record" only applies optional on keys declared within requiredKeys by adding ? without |undefined when exactOptionalPropertyTypes
+// unfortunately expectTypeOf cannot capture such subtleties
+expectTypeOf(fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: [] })).toEqualTypeOf<
+  fc.Arbitrary<{ a?: number; b?: string | undefined }>
+>();
 // "record" only applies optional on keys declared within requiredKeys and preserves existing |undefined when adding ?
 expectTypeOf(
   fc.record({ a: fc.nat(), b: fc.option(fc.string(), { nil: undefined }) }, { requiredKeys: [] }),
