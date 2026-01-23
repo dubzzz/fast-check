@@ -1,3 +1,68 @@
+# 4.5.3
+
+_Proper attestation file naming_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.2...v4.5.3)]
+
+## Fixes
+
+- ([PR#6421](https://github.com/dubzzz/fast-check/pull/6421)) CI: Rename attestation bundles to \*.sigstore.json
+
+# 4.5.2
+
+_Attach tarballs to GitHub releases_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.2)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.1...v4.5.2)]
+
+## Fixes
+
+- ([PR#6416](https://github.com/dubzzz/fast-check/pull/6416)) CI: Extract package version from tarball
+- ([PR#6417](https://github.com/dubzzz/fast-check/pull/6417)) CI: Update GitHub releases at publish time
+
+# 4.5.1
+
+_Rename tarballs before publishing_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.1)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.0...v4.5.1)]
+
+## Fixes
+
+- ([PR#6413](https://github.com/dubzzz/fast-check/pull/6413)) CI: Rename tarballs before publishing
+
+# 4.5.0
+
+_Add an arbitrary based on a schema definition_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.4.0...v4.5.0)]
+
+## Features
+
+- ([PR#6333](https://github.com/dubzzz/fast-check/pull/6333)) Add `entityGraph` for schema-based structures
+- ([PR#6336](https://github.com/dubzzz/fast-check/pull/6336)) Take into account the depth in `entityGraph`
+- ([PR#6340](https://github.com/dubzzz/fast-check/pull/6340)) Add initial pool constraints to `entityGraph`
+- ([PR#6341](https://github.com/dubzzz/fast-check/pull/6341)) Add strategies to `entityGraph`
+- ([PR#6342](https://github.com/dubzzz/fast-check/pull/6342)) Allow recursions on many rels for `entityGraph`
+- ([PR#6343](https://github.com/dubzzz/fast-check/pull/6343)) Tweak unicity of entities produced by `entityGraph`
+- ([PR#6400](https://github.com/dubzzz/fast-check/pull/6400)) Support inverse relations in `entityGraph`
+
+## Fixes
+
+- ([PR#6375](https://github.com/dubzzz/fast-check/pull/6375)) Bug: Fix workflow authentication by enabling credential persistence
+- ([PR#6369](https://github.com/dubzzz/fast-check/pull/6369)) CI: Fix vulnerabilities in our GitHub workflows
+- ([PR#6370](https://github.com/dubzzz/fast-check/pull/6370)) CI: Add workflow security audit with zizmor
+- ([PR#6374](https://github.com/dubzzz/fast-check/pull/6374)) CI: Fix vulnerabilities in build-status workflow
+- ([PR#6397](https://github.com/dubzzz/fast-check/pull/6397)) CI: Ignore trusted publishing for pkg-pr-new
+- ([PR#6410](https://github.com/dubzzz/fast-check/pull/6410)) CI: Fix generate-changelog script
+- ([PR#6365](https://github.com/dubzzz/fast-check/pull/6365)) Doc: Release note for version 4.4.0
+- ([PR#6379](https://github.com/dubzzz/fast-check/pull/6379)) Doc: Fix dead links in the documentation
+- ([PR#6378](https://github.com/dubzzz/fast-check/pull/6378)) Doc: Connect AskAI in docsearch from Algolia
+- ([PR#6380](https://github.com/dubzzz/fast-check/pull/6380)) Doc: Update Content-Security-Policy for AskAI
+- ([PR#6367](https://github.com/dubzzz/fast-check/pull/6367)) Doc: Rework JSDoc for entityGraph and related types
+- ([PR#6383](https://github.com/dubzzz/fast-check/pull/6383)) Doc: Enhance `entityGraph` documentation
+- ([PR#6337](https://github.com/dubzzz/fast-check/pull/6337)) Refactor: Allocate unlinked versions earlier in `entityGraph`
+- ([PR#6339](https://github.com/dubzzz/fast-check/pull/6339)) Refactor: Split code of `entityGraph` into sub-helpers
+- ([PR#6345](https://github.com/dubzzz/fast-check/pull/6345)) Refactor: Import all files with an extension
+- ([PR#6398](https://github.com/dubzzz/fast-check/pull/6398)) Script: Ask AIs to be concise when naming PRs
+- ([PR#6389](https://github.com/dubzzz/fast-check/pull/6389)) Test: Replace @ts-ignore with @ts-expect-error
+
+---
+
 # 4.4.0
 
 _Expose hidden arbitraries and widen capabilities of existing ones from a typing point of view_

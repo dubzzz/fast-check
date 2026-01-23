@@ -2,12 +2,9 @@ import { Jimp } from 'jimp';
 import { existsSync, mkdirSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import { glob } from 'glob';
-import { fileURLToPath } from 'url';
 import path, { join } from 'path';
 import { createHash } from 'crypto';
 import allContributors from '../src/components/HomepageContributors/all-contributors.json' with { type: 'json' };
-
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 // Collecting AVATARs for contributors
 
@@ -42,7 +39,7 @@ async function syncAvatars() {
       size: 48,
     })),
   ];
-  const pathFinalAvatarDirectory = join(__dirname, '..', 'static', 'img', '_');
+  const pathFinalAvatarDirectory = join(import.meta.dirname, '..', 'static', 'img', '_');
   const pendingRequests = allAvatars.map(async (avatar) => {
     const { url, login, size } = avatar;
     const pathFinalImage = join(pathFinalAvatarDirectory, `avatar_${size}_${login}.jpg`);
@@ -105,7 +102,7 @@ async function collectAsset(assetName, assetHash, resultingFilePath) {
   await writeFile(resultingFilePath, bytes);
 }
 async function syncStaticAssets() {
-  const pathFinalImageDirectory = join(__dirname, '..', 'static', 'img');
+  const pathFinalImageDirectory = join(import.meta.dirname, '..', 'static', 'img');
   const pendingImages = staticAssets.map(async (asset) => {
     const assetName = asset[0];
     const assetHash = asset[1];

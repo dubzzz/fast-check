@@ -1,7 +1,6 @@
 // @ts-check
 import { afterAll, describe, it, expect, beforeAll } from 'vitest';
 import * as path from 'path';
-import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
@@ -9,8 +8,7 @@ import * as snippets from './snippets.mjs';
 import { cwd } from 'process';
 
 const execFile = promisify(_execFile);
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const rootWebsite = path.join(__dirname, '..', '..', '..');
+const rootWebsite = path.join(import.meta.dirname, '..', '..', '..');
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryName);

@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "4.4.0",
+  "version": "4.5.3",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "module",
   "main": "lib/fast-check.js",
@@ -67,7 +67,7 @@
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
     "@microsoft/api-extractor": "^7.55.2",
-    "@types/node": "^24.10.4",
+    "@types/node": "^24.10.7",
     "cross-env": "^10.1.0",
     "fast-check": "workspace:*",
     "glob": "^13.0.0",

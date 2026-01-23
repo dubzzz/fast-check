@@ -1,13 +1,10 @@
 import * as path from 'path';
-import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
-// @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/vitest';
@@ -16,7 +13,8 @@ declare const runner: typeof _test | typeof _it;
 declare const afterAllVi: typeof afterAll;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
+// @ts-expect-error --module must be higher
+const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 const specFileName = `generated.spec.mjs`;
 const vitestConfigName = `vitest.config.mjs`;
 

@@ -1,6 +1,5 @@
 import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import * as path from 'path';
-import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
@@ -9,8 +8,6 @@ import type { test as _test, it as _it } from '@fast-check/jest';
 import type { jest as _jest, expect as _jestExpect } from '@jest/globals';
 
 const execFile = promisify(_execFile);
-// @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
@@ -18,7 +15,8 @@ declare const jest: typeof _jest;
 declare const jestExpect: typeof _jestExpect;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
+// @ts-expect-error --module must be higher
+const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 
 const specFileName = `generated.spec.cjs`;
 const jestConfigName = `jest.config.cjs`;
