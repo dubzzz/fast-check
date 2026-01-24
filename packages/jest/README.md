@@ -83,6 +83,22 @@ describe('with it', () => {
 
 **The following feature is experimental!** When used it makes runners able to kill long running synchonous code. Meaning that it will make fast-check able to kill infinite loops blocking the main thread. So far, the feature does not fully support transformations performed via transform steps defined with jest.
 
+The CommonJS approach would be:
+
+```js
+const { init, fc } = require('@fast-check/jest/worker');
+const { pathToFileURL } = require('node:url');
+
+const { test, expect } = init(pathToFileURL(__filename));
+// can also be passed options such as isolationLevel: init(pathToFileURL(__filename), {})
+
+test.prop([fc.constant(null)])('should pass', (value) => {
+  expect(value).toBe(null);
+});
+```
+
+The ES Modules approach would be:
+
 ```js
 import { init, fc } from '@fast-check/jest/worker';
 
@@ -94,7 +110,7 @@ test.prop([fc.constant(null)])('should pass', (value) => {
 });
 ```
 
-⚠️ Do not forget to add the `await` before `init`!
+⚠️ Do not forget to add the `await` before `init` for the ES Module version!
 
 ## Minimal requirements
 
