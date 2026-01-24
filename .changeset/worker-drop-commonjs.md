@@ -1,5 +1,5 @@
 ---
-"@fast-check/worker": major
+"@fast-check/worker": minor
 ---
 
 💥(worker) Drop CommonJS support
