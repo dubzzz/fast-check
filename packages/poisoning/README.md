@@ -23,4 +23,15 @@ The package comes with:
 
 ## Minimal requirements
 
-- Node ≥12.17.0
+| @fast-check/poisoning | node                   |
+| --------------------- | ---------------------- |
+| **1.0**               | ≥20.19.0<sup>(1)</sup> |
+| **0.2**               | ≥12.17.0<sup>(2)</sup> |
+
+<details>
+<summary>More details...</summary>
+
+1. Requires support for `require(esm)`.
+2. Previous versions.
+
+</details>
