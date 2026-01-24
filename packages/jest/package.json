@@ -3,41 +3,35 @@
   "description": "Property based testing for Jest based on fast-check",
   "version": "2.1.1",
   "type": "module",
-  "main": "lib/jest-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     "./worker": {
-      "require": {
-        "types": "./lib/cjs/jest-fast-check-worker.d.ts",
-        "default": "./lib/cjs/jest-fast-check-worker.js"
-      },
-      "import": {
-        "types": "./lib/jest-fast-check-worker.d.ts",
-        "default": "./lib/jest-fast-check-worker.js"
-      }
+      "types": "./lib/jest-fast-check-worker.d.ts",
+      "default": "./lib/jest-fast-check-worker.js"
     },
     ".": {
-      "require": {
-        "types": "./lib/cjs/jest-fast-check.d.ts",
-        "default": "./lib/cjs/jest-fast-check.js"
-      },
-      "import": {
-        "types": "./lib/jest-fast-check.d.ts",
-        "default": "./lib/jest-fast-check.js"
-      }
+      "types": "./lib/jest-fast-check.d.ts",
+      "default": "./lib/jest-fast-check.js"
     }
   },
-  "module": "lib/jest-fast-check.js",
-  "types": "lib/jest-fast-check.d.ts",
+  "typesVersions": {
+    "*": {
+      "index": [
+        "./lib/jest-fast-check.d.ts"
+      ],
+      "worker": [
+        "./lib/jest-fast-check-worker.d.ts"
+      ]
+    }
+  },
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
+    "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
     "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json",
     "test-bundle:cjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.cjs",
     "test-bundle:mjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.mjs",
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",

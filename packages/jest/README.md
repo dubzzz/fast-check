@@ -116,10 +116,12 @@ test.prop([fc.constant(null)])('should pass', (value) => {
 
 | @fast-check/jest | jest                                    | fast-check | node                                                                                  |
 | ---------------- | --------------------------------------- | ---------- | ------------------------------------------------------------------------------------- |
-| ^2.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20 |
-| ^1.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(3)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(4)</sup>, &gt;=20 |
+| ^3.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=20.19.0<sup>(3)</sup>                                                            |
+| ^2.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(4)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(5)</sup>, &gt;=20 |
+| ^1.0.0           | &gt;=26.5.0<sup>(1)</sup><sup>(2)</sup> | ^3.0.0     | &gt;=14.15.0<sup>(4)</sup> and &lt;18, &gt;=18.17.0 and &lt;19<sup>(5)</sup>, &gt;=20 |
 
 - (1) any version of `jest` should be greater or equal than 26.5.0 if you are using `commonjs`
 - (2) in order to use `esm` build, you may need to enable experimental features of node, see [here](https://github.com/dubzzz/fast-check/blob/main/packages/test-jest-bundle-esm/package.json)
-- (3) &gt;=14.15.0 is the minimal requirements for `jest`, &gt;=12.17.0 is the one for `@fast-check/jest`
-- (4) timeout defined on jest might not be properly applied to fast-check for node 18 (until 18.17.0) and node 19, see [#4004](https://github.com/dubzzz/fast-check/pull/4004)
+- (3) Requires support for `require(esm)`.
+- (4) &gt;=14.15.0 is the minimal requirements for `jest`, &gt;=12.17.0 is the one for `@fast-check/jest`
+- (5) timeout defined on jest might not be properly applied to fast-check for node 18 (until 18.17.0) and node 19, see [#4004](https://github.com/dubzzz/fast-check/pull/4004)
