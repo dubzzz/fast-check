@@ -84,12 +84,11 @@
     "unit testing",
     "testing",
     "quickcheck",
-    "jscheck",
-    "jsverify",
     "faker",
     "fuzzer",
     "fuzz",
-    "jest"
+    "jest",
+    "vitest"
   ],
   "tsd": {
     "directory": "test/type"
