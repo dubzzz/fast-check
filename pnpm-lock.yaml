@@ -90,7 +90,7 @@ importers:
         specifier: ^20.3.4
         version: 20.3.4
       lodash:
-        specifier: ^4.17.21
+        specifier: ^4.17.23
         version: 4.17.23
       pure-rand:
         specifier: ^7.0.0
@@ -345,7 +345,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       lodash:
-        specifier: ^4.17.21
+        specifier: ^4.17.23
         version: 4.17.23
       prism-react-renderer:
         specifier: ^2.4.1
