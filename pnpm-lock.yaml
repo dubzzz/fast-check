@@ -45,8 +45,8 @@ importers:
         specifier: 3.7.4
         version: 3.7.4
       publint:
-        specifier: ^0.3.16
-        version: 0.3.16
+        specifier: ^0.3.17
+        version: 0.3.17
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -2587,8 +2587,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@publint/pack@0.1.2':
-    resolution: {integrity: sha512-S+9ANAvUmjutrshV4jZjaiG8XQyuJIZ8a4utWmN/vW1sgQ9IfBnPndwkmQYw53QmouOIytT874u65HEmu6H5jw==}
+  '@publint/pack@0.1.3':
+    resolution: {integrity: sha512-dHDWeutAerz+Z2wFYAce7Y51vd4rbLBfUh0BNnyul4xKoVsPUVJBrOAFsJvtvYBwGFJSqKsxyyHf/7evZ8+Q5Q==}
     engines: {node: '>=18'}
 
   '@react-hook/intersection-observer@3.1.2':
@@ -8236,8 +8236,8 @@ packages:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
 
-  publint@0.3.16:
-    resolution: {integrity: sha512-MFqyfRLAExPVZdTQFwkAQELzA8idyXzROVOytg6nEJ/GEypXBUmMGrVaID8cTuzRS1U5L8yTOdOJtMXgFUJAeA==}
+  publint@0.3.17:
+    resolution: {integrity: sha512-Q3NLegA9XM6usW+dYQRG1g9uEHiYUzcCVBJDJ7yMcWRqVU9LYZUWdqbwMZfmTCFC5PZLQpLAmhvRcQRl3exqkw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -13480,7 +13480,7 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@publint/pack@0.1.2': {}
+  '@publint/pack@0.1.3': {}
 
   '@react-hook/intersection-observer@3.1.2(react@19.2.3)':
     dependencies:
@@ -20054,9 +20054,9 @@ snapshots:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
 
-  publint@0.3.16:
+  publint@0.3.17:
     dependencies:
-      '@publint/pack': 0.1.2
+      '@publint/pack': 0.1.3
       package-manager-detector: 1.6.0
       picocolors: 1.1.1
       sade: 1.8.1
