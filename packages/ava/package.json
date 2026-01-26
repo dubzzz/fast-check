@@ -5,10 +5,7 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "types": "./lib/ava-fast-check.d.ts",
-      "default": "./lib/ava-fast-check.js"
-    }
+    ".": "./lib/ava-fast-check.js"
   },
   "typesVersions": {
     "*": {
