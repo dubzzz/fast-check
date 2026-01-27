@@ -83,6 +83,45 @@ describe('with it', () => {
 
 **The following feature is experimental!** When used it makes runners able to kill long running synchonous code. Meaning that it will make fast-check able to kill infinite loops blocking the main thread. So far, the feature does not fully support transformations performed via transform steps defined with jest.
 
+#### Configuration for CommonJS with Workers
+
+**Note:** Starting from version 3.0.0 of `@fast-check/worker`, the package is ESM-only. To use the worker feature in CommonJS mode with Jest, you need to configure Babel to transform the ES modules:
+
+1. Install the required dependencies:
+```bash
+npm install --save-dev babel-jest @babel/core @babel/preset-env
+```
+
+2. Create a `babel.config.cjs` file in your project root:
+```js
+module.exports = {
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: { node: 'current' },
+        modules: 'commonjs'
+      }
+    ]
+  ]
+};
+```
+
+3. Update your `jest.config.js` to use Babel for transformation:
+```js
+module.exports = {
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest'
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!@fast-check/worker)',
+    '\\.pnp\\.[^\\/]+$'
+  ],
+};
+```
+
+#### Usage Examples
+
 The CommonJS approach would be:
 
 ```js
