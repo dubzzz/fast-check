@@ -591,7 +591,7 @@ async function writeToFile(
       ? (testCode: string) => `describe('test suite', () => {\n${testCode}\n});`
       : (testCode: string) => testCode;
   const importFromFastCheckJest = useWorkers
-    ? `import {pathToFileURL} from 'node:url';\nimport {init as initWorker} from '@fast-check/jest/worker';\nconst {${runner}: runner, expect} = initWorker(pathToFileURL(import.meta.filename));\n`
+    ? `import {pathToFileURL} from 'node:url';\nimport {init as initWorker} from '@fast-check/jest/worker';\nconst {${runner}: runner, expect} = await initWorker(new URL(import.meta.url));\n`
     : `import {${runner} as runner} from '@fast-check/jest';\n`;
   const specContent =
     "import fc from 'fast-check';\n" +
