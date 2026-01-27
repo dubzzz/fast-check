@@ -5,14 +5,8 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    "./worker": {
-      "types": "./lib/jest-fast-check-worker.d.ts",
-      "default": "./lib/jest-fast-check-worker.js"
-    },
-    ".": {
-      "types": "./lib/jest-fast-check.d.ts",
-      "default": "./lib/jest-fast-check.js"
-    }
+    "./worker": "./lib/jest-fast-check-worker.js",
+    ".": "./lib/jest-fast-check.js"
   },
   "typesVersions": {
     "*": {
