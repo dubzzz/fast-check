@@ -479,7 +479,8 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than Jest config timeout/);
     });
 
-    it.concurrent('should fail as test takes longer than Jest setTimeout', async () => {
+    // Not supported when running in ESM mode
+    it.concurrent.skip('should fail as test takes longer than Jest setTimeout', async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, options, () => {
         if (typeof jest !== 'undefined') {
@@ -499,7 +500,8 @@ describe.each<DescribeOptions>([
       expect(out).toMatch(/[×✕] property takes longer than Jest setTimeout/);
     });
 
-    it.concurrent('should fail as test takes longer than Jest CLI timeout', async () => {
+    // Not supported when running in ESM mode
+    it.concurrent.skip('should fail as test takes longer than Jest CLI timeout', async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, options, () => {
         runner.prop([fc.nat()])('property takes longer than Jest CLI timeout', async () => {
