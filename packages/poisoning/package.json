@@ -5,10 +5,7 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "types": "./lib/main.d.ts",
-      "default": "./lib/main.js"
-    }
+    ".": "./lib/main.js"
   },
   "typesVersions": {
     "*": {
