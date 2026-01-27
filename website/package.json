@@ -24,7 +24,7 @@
     "@docusaurus/remark-plugin-npm2yarn": "3.9.2",
     "@docusaurus/theme-mermaid": "3.9.2",
     "clsx": "^2.1.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
