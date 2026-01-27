@@ -191,12 +191,6 @@ importers:
         specifier: ^3.0.0 || ^4.0.0
         version: link:../fast-check
     devDependencies:
-      '@babel/core':
-        specifier: ^7.26.0
-        version: 7.28.0
-      '@babel/preset-env':
-        specifier: ^7.26.0
-        version: 7.28.0(@babel/core@7.28.0)
       '@fast-check/jest':
         specifier: workspace:*
         version: 'link:'
@@ -215,9 +209,6 @@ importers:
       '@types/node':
         specifier: ^24.10.7
         version: 24.10.7
-      babel-jest:
-        specifier: ^30.2.0
-        version: 30.2.0(@babel/core@7.28.0)
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@24.10.7)
