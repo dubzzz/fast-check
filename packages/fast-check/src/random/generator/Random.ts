@@ -1,5 +1,5 @@
 import type { RandomGenerator } from 'pure-rand';
-import { unsafeUniformBigIntDistribution, unsafeUniformIntDistribution } from 'pure-rand';
+import { unsafeUniformBigIntDistribution, unsafeUniformIntDistribution, unsafeSkipN } from 'pure-rand';
 
 /**
  * Wrapper around an instance of a `pure-rand`'s random number generator
@@ -29,6 +29,18 @@ export class Random {
    */
   clone(): Random {
     return new Random(this.internalRng);
+  }
+
+  /**
+   * Jump the random number generator by a fixed amount
+   * @internal
+   */
+  jump(): void {
+    if ('unsafeJump' in this.internalRng && typeof this.internalRng.unsafeJump === 'function') {
+      this.internalRng.unsafeJump();
+    } else {
+      unsafeSkipN(this.internalRng, 42);
+    }
   }
 
   /**
