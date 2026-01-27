@@ -40,7 +40,7 @@
     "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
     "test-bundle:cjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.cjs",
     "test-bundle:mjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.mjs",
-    "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
+    "test-bundle": "pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {

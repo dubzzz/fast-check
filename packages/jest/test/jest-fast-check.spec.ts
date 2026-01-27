@@ -18,8 +18,8 @@ const generatedTestsDirectoryName = '.test-artifacts';
 // @ts-expect-error --module must be higher
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 
-const specFileName = `generated.spec.cjs`;
-const jestConfigName = `jest.config.cjs`;
+const specFileName = `generated.spec.mjs`;
+const jestConfigName = `jest.config.mjs`;
 
 type RunnerType = 'test' | 'it';
 
@@ -578,7 +578,7 @@ async function writeToFile(
   await fs.mkdir(specDirectory, { recursive: true });
 
   // Prepare test file itself
-  const specFileName = `generated.spec.cjs`;
+  const specFileName = `generated.spec.mjs`;
   const specFilePath = path.join(specDirectory, specFileName);
   let fileContentString = String(fileContent);
   if (fileContentString.includes('expect')) {
@@ -591,10 +591,10 @@ async function writeToFile(
       ? (testCode: string) => `describe('test suite', () => {\n${testCode}\n});`
       : (testCode: string) => testCode;
   const importFromFastCheckJest = useWorkers
-    ? `const {pathToFileURL} = require('node:url');\nconst {${runner}: runner, expect} = require('@fast-check/jest/worker').init(pathToFileURL(__filename));\n`
-    : `const {${runner}: runner} = require('@fast-check/jest');\n`;
+    ? `import {pathToFileURL} from 'node:url';\nimport {init as initWorker} from '@fast-check/jest/worker';\nconst {${runner}: runner, expect} = initWorker(pathToFileURL(import.meta.filename));\n`
+    : `import {${runner} as runner} from '@fast-check/jest';\n`;
   const specContent =
-    "const fc = require('fast-check');\n" +
+    "import fc from 'fast-check';\n" +
     importFromFastCheckJest +
     wrapInDescribeIfNeeded(
       fileContentString.substring(fileContentString.indexOf('{') + 1, fileContentString.lastIndexOf('}')),
@@ -608,7 +608,7 @@ async function writeToFile(
     fs.writeFile(specFilePath, specContent),
     fs.writeFile(
       jestConfigPath,
-      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
+      `export default { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
         options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
       }${options.testRunner !== undefined ? `testRunner: 'jest-jasmine2',` : ''} };`,
     ),
@@ -625,6 +625,7 @@ async function runSpec(
     const { stderr: specOutput } = await execFile(
       'node',
       [
+        '--experimental-vm-modules',
         '../../node_modules/jest/bin/jest.js',
         '--config',
         jestConfigName,
