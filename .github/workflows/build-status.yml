@@ -412,9 +412,7 @@ jobs:
       - name: Check publication lint
         run: node --run publint:all
       - name: Check bundles
-        run: pnpm --filter {./packages/**} --filter '!@fast-check/jest' --parallel run test-bundle
-      - name: Check bundles for jest (CJS tests expected to fail with Jest VM modules)
-        run: pnpm --filter @fast-check/jest run test-bundle || echo "Jest CJS tests failed as expected (Jest VM modules don't support require(esm))"
+        run: pnpm --filter {./packages/**} --parallel run test-bundle
       - name: Check legacy bundles
         run: |
           export NODE_VERSION="$(node --version)"
