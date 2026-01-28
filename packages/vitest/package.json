@@ -3,31 +3,28 @@
   "description": "Property based testing for Vitest based on fast-check",
   "version": "0.2.4",
   "type": "module",
-  "main": "lib/vitest-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "require": {
-        "types": "./lib/cjs/vitest-fast-check.d.ts",
-        "default": "./lib/cjs/vitest-fast-check.js"
-      },
-      "import": {
-        "types": "./lib/vitest-fast-check.d.ts",
-        "default": "./lib/vitest-fast-check.js"
-      }
+      "types": "./lib/vitest-fast-check.d.ts",
+      "default": "./lib/vitest-fast-check.js"
     }
   },
-  "module": "lib/vitest-fast-check.js",
-  "types": "lib/vitest-fast-check.d.ts",
+  "typesVersions": {
+    "*": {
+      "index": [
+        "./lib/vitest-fast-check.d.ts"
+      ]
+    }
+  },
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
+    "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
     "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json",
     "test-bundle": "node test-bundle/basic.mjs && vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },
