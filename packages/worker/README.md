@@ -72,10 +72,10 @@ const property = propertyFor(new URL(import.meta.url), { randomSource: 'worker' 
 
 ## Minimal requirements
 
-- Node ≥14.18.0<sup>(1)</sup><sup>(2)</sup><sup>(3)</sup>
+- Node ≥20.19.0<sup>(1)</sup><sup>(2)</sup><sup>(3)</sup>
 - TypeScript ≥4.1 (optional)
 
-_(1): `worker_threads` alone would only require Node ≥10.5.0, but our usage of `require(node:*)` forces us to request at least Node ≥14.18.0_
+_(1): Requires support for `require(esm)`._
 
 _(2): this package targets ES2020 specification which is quite well supported (more than 94%) by any Node ≥14.5.0_
 
