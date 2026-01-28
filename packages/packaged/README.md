@@ -66,8 +66,5 @@ const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, ke
 <summary>More details...</summary>
 
 1. Requires support for `require(esm)`.
-2. In theory 14.14.0, should be enough but as the package uses `pacote@^15.0.0` internally, we have to align with its requirements: `^14.17.0 || ^16.13.0 || >=18.0.0`.
-3. Same reason as above, we have to align with the requirements of `pacote@^17.0.0`: `^16.14.0 || >=18.0.0`.
-4. Same reason as above, we have to align with the requirements of `pacote@^17.0.0` which is one of the dependencies of `@npmcli/arborist`.
 
 </details>
