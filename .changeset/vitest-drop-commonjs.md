@@ -1,5 +1,5 @@
 ---
-"@fast-check/vitest": major
+"@fast-check/vitest": minor
 ---
 
 💥(vitest) Drop CommonJS support
