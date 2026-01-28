@@ -57,15 +57,17 @@ const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, ke
 
 | @fast-check/packaged | node                   |
 | -------------------- | ---------------------- |
-| **0.2.x**            | ≥16.14.0<sup>(3)</sup> |
-| **0.1.x**            | ≥16.14.0<sup>(2)</sup> |
-| **0.0.x**            | ≥14.17.0<sup>(1)</sup> |
+| **0.6.x**            | ≥20.19.0<sup>(1)</sup> |
+| **0.2.x**            | ≥16.14.0<sup>(4)</sup> |
+| **0.1.x**            | ≥16.14.0<sup>(3)</sup> |
+| **0.0.x**            | ≥14.17.0<sup>(2)</sup> |
 
 <details>
 <summary>More details...</summary>
 
-1. In theory 14.14.0, should be enough but as the package uses `pacote@^15.0.0` internally, we have to align with its requirements: `^14.17.0 || ^16.13.0 || >=18.0.0`.
-2. Same reason as above, we have to align with the requirements of `pacote@^17.0.0`: `^16.14.0 || >=18.0.0`.
-3. Same reason as above, we have to align with the requirements of `pacote@^17.0.0` which is one of the dependencies of `@npmcli/arborist`.
+1. Requires support for `require(esm)`.
+2. In theory 14.14.0, should be enough but as the package uses `pacote@^15.0.0` internally, we have to align with its requirements: `^14.17.0 || ^16.13.0 || >=18.0.0`.
+3. Same reason as above, we have to align with the requirements of `pacote@^17.0.0`: `^16.14.0 || >=18.0.0`.
+4. Same reason as above, we have to align with the requirements of `pacote@^17.0.0` which is one of the dependencies of `@npmcli/arborist`.
 
 </details>
