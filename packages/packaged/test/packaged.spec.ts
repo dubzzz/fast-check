@@ -1,9 +1,8 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { removeNonPublishedFiles } from '../src/packaged';
+import { removeNonPublishedFiles } from '../src/packaged.js';
 
-// @ts-expect-error --module must be higher
 const testDirname = path.join(import.meta.dirname, '..', '.test-artifacts');
 
 afterAll(async () => {
