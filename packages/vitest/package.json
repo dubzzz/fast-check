@@ -5,10 +5,7 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "types": "./lib/vitest-fast-check.d.ts",
-      "default": "./lib/vitest-fast-check.js"
-    }
+    ".": "./lib/vitest-fast-check.js"
   },
   "typesVersions": {
     "*": {
