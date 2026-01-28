@@ -608,9 +608,17 @@ async function writeToFile(
     fs.writeFile(specFilePath, specContent),
     fs.writeFile(
       jestConfigPath,
-      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
-        options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
-      }${options.testRunner !== undefined ? `testRunner: 'jest-jasmine2',` : ''} };`,
+      `module.exports = ${JSON.stringify(
+        {
+          testMatch: [`<rootDir>/${specFileName}`],
+          transform: {},
+          testTimeout: options.testTimeoutConfig,
+          testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
+          runner: useWorkers ? 'jest-light-runner' : undefined,
+        },
+        undefined,
+        2,
+      )};`,
     ),
   ]);
 
