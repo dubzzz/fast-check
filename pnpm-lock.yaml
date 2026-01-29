@@ -246,6 +246,9 @@ importers:
       '@types/npmcli__arborist':
         specifier: ^6.3.1
         version: 6.3.1
+      rolldown:
+        specifier: ^1.0.0-rc.2
+        version: 1.0.0-rc.2
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
