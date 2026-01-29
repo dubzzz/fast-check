@@ -7,13 +7,6 @@
     "./package.json": "./package.json",
     ".": "./lib/main.js"
   },
-  "typesVersions": {
-    "*": {
-      "index": [
-        "./lib/main.d.ts"
-      ]
-    }
-  },
   "files": [
     "lib"
   ],
