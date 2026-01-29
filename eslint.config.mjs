@@ -113,6 +113,7 @@ export default [
       'packages/*/lib/',
       'packages/*/lib-*/',
       'packages/*/runkit.cjs',
+      'packages/*/rolldown.config.js'
       'packages/test-minimal-support/',
       'packages/test-types/',
       'website/',
