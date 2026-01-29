@@ -7,13 +7,6 @@
     "./package.json": "./package.json",
     ".": "./lib/packaged.js"
   },
-  "typesVersions": {
-    "*": {
-      "index": [
-        "./lib/packaged.d.ts"
-      ]
-    }
-  },
   "bin": "./bin/packaged.js",
   "files": [
     "bin",
