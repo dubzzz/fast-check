@@ -55,6 +55,7 @@ describe.each<DescribeOptions>([
   { specName: 'it', runnerName: 'it', useWorkers: false, testRunner: undefined },
 ])('$specName', ({ runnerName, useWorkers, testRunner }) => {
   const options = { useWorkers, testRunner };
+  const useESMOnlyWorkers = useWorkers;
 
   it.concurrent('should pass on successful no prop mode', async () => {
     // Arrange
@@ -87,6 +88,24 @@ describe.each<DescribeOptions>([
     expectFail(out);
     expect(out).toMatch(/[×✕] failing no prop/);
   });
+
+  if (useWorkers && !useESMOnlyWorkers) {
+    it.concurrent('should fail on property blocking the main thread', async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, options, () => {
+        runner.prop([fc.nat()], { timeout: 500 })('property block main thread', () => {
+          while (true);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectFail(out);
+      expect(out).toMatch(/[×✕] property block main thread/);
+    });
+  }
 
   it.concurrent('should pass on truthy synchronous property', async () => {
     // Arrange
@@ -134,7 +153,7 @@ describe.each<DescribeOptions>([
 
     // Assert
     expectFail(out);
-    expectAlignedSeeds(out, { noAlignWithJest: useWorkers });
+    expectAlignedSeeds(out, { noAlignWithJest: useESMOnlyWorkers });
     expect(out).toMatch(/[×✕] property fail sync \(with seed=-?\d+\)/);
   });
 
@@ -152,7 +171,7 @@ describe.each<DescribeOptions>([
 
     // Assert
     expectFail(out);
-    expectAlignedSeeds(out, { noAlignWithJest: useWorkers });
+    expectAlignedSeeds(out, { noAlignWithJest: useESMOnlyWorkers });
     expect(out).toMatch(/[×✕] property fail async \(with seed=-?\d+\)/);
   });
 
@@ -188,7 +207,7 @@ describe.each<DescribeOptions>([
 
     // Assert
     expectFail(out);
-    expectAlignedSeeds(out, { noAlignWithJest: useWorkers });
+    expectAlignedSeeds(out, { noAlignWithJest: useESMOnlyWorkers });
     expect(out).toMatch(/[×✕] property fail record \(with seed=-?\d+\)/);
   });
 
@@ -246,7 +265,7 @@ describe.each<DescribeOptions>([
   // But for now 0.6.0 is not published and we have not found ways to force pnpm to get
   // the worker package from npm registry rather than taking the local instance.
 
-  if (!useWorkers) {
+  if (!useESMOnlyWorkers) {
     it.concurrent('should fail with seed requested at jest level', async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, options, () => {
@@ -258,12 +277,12 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out);
-      expectAlignedSeeds(out, { noAlignWithJest: useWorkers });
+      expectAlignedSeeds(out, { noAlignWithJest: useESMOnlyWorkers });
       expect(out).toMatch(/[×✕] property fail with globally requested seed \(with seed=6969\)/);
     });
   }
 
-  if (!useWorkers) {
+  if (!useESMOnlyWorkers) {
     describe('.skip', () => {
       it.concurrent('should never be executed', async () => {
         // Arrange
@@ -281,7 +300,7 @@ describe.each<DescribeOptions>([
     });
   }
 
-  if (testRunner === undefined && !useWorkers) {
+  if (testRunner === undefined && !useESMOnlyWorkers) {
     describe('.failing', () => {
       it.concurrent('should fail on successful no prop mode', async () => {
         // Arrange
@@ -371,11 +390,11 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out);
-      expectAlignedSeeds(out, { noAlignWithJest: useWorkers });
+      expectAlignedSeeds(out, { noAlignWithJest: useESMOnlyWorkers });
       expect(out).toMatch(/[×✕] property fail on falsy property \(with seed=-?\d+\)/);
     });
 
-    if (testRunner === undefined && !useWorkers) {
+    if (testRunner === undefined && !useESMOnlyWorkers) {
       describe('.failing', () => {
         it.concurrent('should pass because failing', async () => {
           // Arrange
@@ -414,46 +433,46 @@ describe.each<DescribeOptions>([
     }
   });
 
-  describe('timeout', () => {
-    it.concurrent('should fail as test takes longer than global Jest timeout', async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, options, () => {
-        runner.prop([fc.nat()])('property takes longer than global Jest timeout', async () => {
-          await new Promise(() => {}); // never resolving
-        });
-      });
-
-      // Act
-      const out = await runSpec(specDirectory);
-
-      // Assert
-      expectFail(out);
-      expectTimeout(out, 5000);
-      expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
-    });
-
-    it.concurrent('should fail as test takes longer than Jest local timeout', async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, options, () => {
-        runner.prop([fc.nat()])(
-          'property takes longer than Jest local timeout',
-          async () => {
+  if (!useWorkers) {
+    describe('timeout', () => {
+      it.concurrent('should fail as test takes longer than global Jest timeout', async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, options, () => {
+          runner.prop([fc.nat()])('property takes longer than global Jest timeout', async () => {
             await new Promise(() => {}); // never resolving
-          },
-          1000,
-        );
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectFail(out);
+        expectTimeout(out, 5000);
+        expect(out).toMatch(/[×✕] property takes longer than global Jest timeout/);
       });
 
-      // Act
-      const out = await runSpec(specDirectory);
+      it.concurrent('should fail as test takes longer than Jest local timeout', async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, options, () => {
+          runner.prop([fc.nat()])(
+            'property takes longer than Jest local timeout',
+            async () => {
+              await new Promise(() => {}); // never resolving
+            },
+            1000,
+          );
+        });
 
-      // Assert
-      expectFail(out);
-      expectTimeout(out, 1000);
-      expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
-    });
+        // Act
+        const out = await runSpec(specDirectory);
 
-    if (!useWorkers) {
+        // Assert
+        expectFail(out);
+        expectTimeout(out, 1000);
+        expect(out).toMatch(/[×✕] property takes longer than Jest local timeout/);
+      });
+
       it.concurrent('should fail as test takes longer than Jest config timeout', async () => {
         // Arrange
         const specDirectory = await writeToFile(runnerName, { ...options, testTimeoutConfig: 1000 }, () => {
@@ -551,8 +570,8 @@ describe.each<DescribeOptions>([
         expectTimeout(out, 1000); // neither 2000 (cli), nor 5000 (default)
         expect(out).toMatch(/[×✕] property favor Jest setTimeout over Jest CLI timeout/);
       });
-    }
-  });
+    });
+  }
 });
 
 // Helper
