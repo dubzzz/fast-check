@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.publish.json",
   "compilerOptions": {
     "outDir": "lib/",
-    "esModuleInterop": true,
-    "module": "node20"
+    "esModuleInterop": true
   },
   "include": ["src/"]
 }

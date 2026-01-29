@@ -1,6 +1,3 @@
 {
-  "extends": "../../tsconfig.common.json",
-  "compilerOptions": {
-    "module": "node20"
-  }
+  "extends": "../../tsconfig.common.json"
 }

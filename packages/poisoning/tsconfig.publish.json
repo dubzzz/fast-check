@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig.publish.json",
   "compilerOptions": {
-    "outDir": "lib/",
-    "module": "node20"
+    "outDir": "lib/"
   },
   "include": ["src/"]
 }
