@@ -13,7 +13,6 @@ declare const runner: typeof _test | typeof _it;
 declare const afterAllVi: typeof afterAll;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-// @ts-expect-error --module must be higher
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 const specFileName = `generated.spec.mjs`;
 const vitestConfigName = `vitest.config.mjs`;
