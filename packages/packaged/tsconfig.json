@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.common.json",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "module": "node20"
+    "esModuleInterop": true
   }
 }
