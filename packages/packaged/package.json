@@ -21,10 +21,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -48,6 +46,7 @@
   "devDependencies": {
     "@types/npm-packlist": "^7.0.3",
     "@types/npmcli__arborist": "^6.3.1",
+    "rolldown": "^1.0.0-rc.2",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.5"
