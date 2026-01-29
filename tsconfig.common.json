@@ -6,7 +6,7 @@
     "incremental": false,
     "sourceMap": true,
     "target": "es2020",
-    "module": "node20",
+    "module": "node18",
     "importHelpers": false,
     "preserveConstEnums": true,
     "noFallthroughCasesInSwitch": true,
