@@ -21,7 +21,7 @@ export default function buildConfigFor(pkg, dirname) {
         return `${relativeFilePathWithTsExtension.replace(/\.ts$/, '')}.js`;
       },
     },
-    external: [...Object.keys(pkg.dependencies), ...Object.keys(pkg.peerDependencies)],
+    external: /^[^./]/, // as recommended by https://rolldown.rs/reference/InputOptions.external#avoid-node-modules-for-npm-packages
     treeshake: {
       moduleSideEffects: false,
     },
