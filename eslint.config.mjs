@@ -109,6 +109,7 @@ export default [
       'coverage/',
       'examples/',
       'packages/*/coverage/',
+      'packages/*/docs/',
       'packages/*/dist/',
       'packages/*/lib/',
       'packages/*/lib-*/',
