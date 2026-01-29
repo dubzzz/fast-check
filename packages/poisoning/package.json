@@ -18,10 +18,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -38,6 +36,7 @@
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
     "@types/node": "^24.10.7",
+    "rolldown": "^1.0.0-rc.2",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.5"
