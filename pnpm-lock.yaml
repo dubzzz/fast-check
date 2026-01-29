@@ -135,6 +135,9 @@ importers:
       esm:
         specifier: ^3.2.25
         version: 3.2.25
+      rolldown:
+        specifier: ^1.0.0-rc.2
+        version: 1.0.0-rc.2
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
