@@ -36,6 +36,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
             safePush(seenValues, value);
           }
           yield value;
+          clonedMrng.jump();
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
