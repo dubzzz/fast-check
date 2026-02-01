@@ -188,6 +188,17 @@ The risk being that you may end up rewriting the code being tested in the test
 Eg.: if the algorithm has no restriction for the length of a string let fast-check generate any string, if the length causes performance issues to your algorithm or test consider using the `size` constraint available on string (and others) to ask for smaller strings  
 Eg.: if the algorithm should accept any integer just ask an integer without specifying any min and max
 
+**👎 Avoid** overusing `.filter` and `fc.pre`  
+Why? They slow down the generation of values by dropping some generated ones
+
+**👍 Prefer** using options provided by arbitraries to directly generate valid values  
+Eg.: use `fc.string({ minLength: 2 })` instead of `fc.string().filter(s => s.length >= 2)`  
+Eg.: use `fc.integer({ min: 1 })` instead of `fc.integer().filter(n => n >= 1)`, or use `fc.nat()` instead of `fc.integer().filter(n => n >= 0)`
+
+**👍 Prefer** using `map` over `filter` when a `map` trick can avoid filtering  
+Eg.: use `fc.nat().map(n => n * 2)` for even numbers  
+Eg.: use `fc.tuple(fc.string(), fc.string()).map(([start, end]) => start + 'A' + end)` for strings always having an 'A' character
+
 Some classical properties:
 
 1. Characteristics independent of the inputs. _Eg.: for any floating point number d, Math.floor(d) is an integer. for any integer n, Math.abs(n) ≥ 0_
