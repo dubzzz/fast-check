@@ -1,0 +1,18 @@
+{
+  "name": "@fast-check/playwright-examples",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:playwright": "playwright test",
+    "test:unit": "vitest run simple-app/calculator.spec.ts"
+  },
+  "devDependencies": {
+    "@fast-check/vitest": "workspace:*",
+    "@playwright/test": "^1.58.1",
+    "fast-check": "workspace:*",
+    "playwright": "^1.58.1",
+    "vitest": "^4.0.18"
+  }
+}
