@@ -11,7 +11,7 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 4. challenge the code
 
 **🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `msw` installed as devDependencies.  
-**🔧 For browser/UI testing:** additionally install `@playwright/test` and `playwright` as devDependencies.  
+**🔧 For browser/UI testing:** additionally install `@playwright/test`, `playwright`, and optionally `@vitest/browser` as devDependencies.  
 **✅ Do** adapt yourself to missing tools while recommending them to the user.
 
 ## File and code layout
@@ -245,7 +245,7 @@ it('should resolve in call order', async () => {
 });
 ```
 
-**✅ Do** combine Playwright with `fast-check` for property-based UI testing, limiting `numRuns` for performance
+**✅ Do** combine Playwright with `fast-check` for property-based UI testing, limiting `numRuns` for performance (e.g., 10-20 runs instead of the default 100)
 
 ```ts
 import { test, expect } from '@playwright/test';
