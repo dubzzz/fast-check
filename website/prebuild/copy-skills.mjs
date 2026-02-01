@@ -23,9 +23,12 @@ async function copySkills() {
     },
   ];
 
+  let hasErrors = false;
+
   for (const skill of skills) {
     if (!existsSync(skill.sourcePath)) {
-      console.warn(`Warning: Skill file not found at ${skill.sourcePath}`);
+      console.error(`Error: Skill file not found at ${skill.sourcePath}`);
+      hasErrors = true;
       continue;
     }
 
@@ -56,6 +59,10 @@ async function copySkills() {
     // Write the file to docs directory
     await writeFile(skill.targetPath, newContent, 'utf-8');
     console.log(`Copied skill from ${skill.sourcePath} to ${skill.targetPath}`);
+  }
+
+  if (hasErrors) {
+    process.exit(1);
   }
 }
 
