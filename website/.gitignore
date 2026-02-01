@@ -13,6 +13,7 @@ static/img/sponsors.svg
 static/img/_
 static/img/**/*.gif
 static/img/**/*.png
+docs/javascript-testing-expert.md
 
 # Misc
 .DS_Store
