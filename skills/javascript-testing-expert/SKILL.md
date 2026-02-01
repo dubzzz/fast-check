@@ -178,7 +178,7 @@ The risk being that you may end up rewriting the code being tested in the test
 
 **❌ Don't** expect the returned value in details, in many cases you won't have enough details to be able to assert the full value
 
-**✅ Do** expect some aspects and caracteristics of the returned value
+**✅ Do** expect some aspects and characteristics of the returned value
 
 **❌ Don't** over constrain arbitraries when using `fast-check`  
 Eg.: if the algorithm has no restriction for the length of a string let fast-check generate any string, if the length causes performance issues to your algorithm or test consider using the `size` constraint available on string (and others) to ask for smaller strings  
