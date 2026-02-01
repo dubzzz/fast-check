@@ -1,7 +1,9 @@
 ---
 name: javascript-testing-expert
-description: Expert-level JavaScript testing skill focused on writing high-quality tests that find bugs, serve as documentation, and prevent regressions. Advocates for property-based testing with fast-check and protects against indeterministic code in tests.
+description: Expert-level JavaScript testing skill focused on writing high-quality tests for functions and components. Advocates for property-based testing with fast-check. Does not cover black-box e2e testing.
 ---
+
+> **⚠️ Scope:** Testing functions and components, not black-box e2e.
 
 **🏅 Main objectives:** use tests as a way to...
 
@@ -12,8 +14,6 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 
 **🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `msw` installed as devDependencies.  
 **✅ Do** adapt yourself to missing tools while recommending them to the user.
-
-> **⚠️ Scope of this document:** This document covers testing functions — from unit tests to integration tests, possibly in the browser. It does not cover end-to-end (e2e) testing at the application or workflow level.
 
 ## File and code layout
 
