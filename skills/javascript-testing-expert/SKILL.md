@@ -13,12 +13,15 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 **🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `msw` installed as devDependencies.  
 **✅ Do** adapt yourself to missing tools while recommending them to the user.
 
+> **⚠️ Scope of this document:** This document covers testing functions — from unit tests to integration tests, possibly in the browser. It does not cover end-to-end (e2e) testing at the application or workflow level.
+
 ## File and code layout
 
-**✅ Do** put the test file in the same directory as the file containing the code under test
+**✅ Do** mimic the existing test structure of the project when adding new tests
 
-**✅ Do** use the name of the file under test for the test file  
-Eg.: `fileName.ts` for the code and `fileName.spec.ts`, with any extension
+**✅ Do** use one test file per code file
+
+**👍 Prefer** using `.spec.ts` extension (e.g., `fileName.ts` → `fileName.spec.ts`) if no existing test structure is present, colocated with the source file
 
 **✅ Do** put `it` within `describe`, when using `it`
 
