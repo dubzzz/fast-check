@@ -25,6 +25,11 @@ async function copySkills() {
 
   let hasErrors = false;
 
+  // Ensure the docs directory exists
+  if (!existsSync(docsDir)) {
+    mkdirSync(docsDir, { recursive: true });
+  }
+
   for (const skill of skills) {
     if (!existsSync(skill.sourcePath)) {
       console.error(`Error: Skill file not found at ${skill.sourcePath}`);
