@@ -189,7 +189,7 @@ Eg.: if the algorithm has no restriction for the length of a string let fast-che
 Eg.: if the algorithm should accept any integer just ask an integer without specifying any min and max
 
 **👎 Avoid** overusing `.filter` and `fc.pre`  
-Why? They slow down the generation of values by dropping some generated.  
+Why? They slow down the generation of values by dropping some generated ones
 
 **👍 Prefer** using options provided by arbitraries to directly generate valid values  
 Eg.: use `fc.string({ minLength: 2 })` instead of `fc.string().filter(s => s.length >= 2)`  
