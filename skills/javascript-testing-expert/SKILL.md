@@ -197,7 +197,7 @@ Eg.: use `fc.integer({ min: 1 })` instead of `fc.integer().filter(n => n >= 1)`,
 
 **👍 Prefer** using `map` over `filter` when a `map` trick can avoid filtering  
 Eg.: use `fc.nat().map(n => n * 2)` for even numbers  
-Eg.: use `fc.tuple(fc.string(), fc.string()).map(([start, end]) => start + 'A' + end)` for strings always having a A character
+Eg.: use `fc.tuple(fc.string(), fc.string()).map(([start, end]) => start + 'A' + end)` for strings always having an 'A' character
 
 Some classical properties:
 
