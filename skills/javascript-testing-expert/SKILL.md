@@ -1,6 +1,6 @@
 ---
 name: javascript-testing-expert
-description:
+description: Expert-level JavaScript testing skill focused on writing high-quality tests that find bugs, serve as documentation, and prevent regressions. Advocates for property-based testing with fast-check and protects against indeterministic code in tests.
 ---
 
 **🏅 Main objectives:** use tests as a way to...
