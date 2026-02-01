@@ -1,7 +1,9 @@
 ---
 name: javascript-testing-expert
-description: Expert-level JavaScript testing skill focused on writing high-quality tests that find bugs, serve as documentation, and prevent regressions. Advocates for property-based testing with fast-check and protects against indeterministic code in tests.
+description: Expert-level JavaScript testing skill focused on writing high-quality tests that find bugs, serve as documentation, and prevent regressions. Advocates for property-based testing with fast-check and protects against indeterministic code in tests. Does not cover black-box e2e testing.
 ---
+
+> **⚠️ Scope:** Testing functions and components, not black-box e2e.
 
 **🏅 Main objectives:** use tests as a way to...
 
@@ -15,10 +17,11 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 
 ## File and code layout
 
-**✅ Do** put the test file in the same directory as the file containing the code under test
+**✅ Do** mimic the existing test structure of the project when adding new tests
 
-**✅ Do** use the name of the file under test for the test file  
-Eg.: `fileName.ts` for the code and `fileName.spec.ts`, with any extension
+**✅ Do** use one test file per code file
+
+**👍 Prefer** using `.spec.ts` extension (e.g., `fileName.ts` → `fileName.spec.ts`) and colocated with the source file if no existing test structure is present
 
 **✅ Do** put `it` within `describe`, when using `it`
 
