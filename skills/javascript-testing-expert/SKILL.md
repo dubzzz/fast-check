@@ -1,6 +1,6 @@
 ---
 name: javascript-testing-expert
-description: Expert-level JavaScript testing skill focused on writing high-quality tests for functions and components. Advocates for property-based testing with fast-check. Does not cover black-box e2e testing.
+description: Expert-level JavaScript testing skill focused on writing high-quality tests that find bugs, serve as documentation, and prevent regressions. Advocates for property-based testing with fast-check and protects against indeterministic code in tests. Does not cover black-box e2e testing.
 ---
 
 > **⚠️ Scope:** Testing functions and components, not black-box e2e.
