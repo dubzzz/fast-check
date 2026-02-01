@@ -121,10 +121,6 @@ describe('computeAge', () => {
 });
 ```
 
-**⚠️ Important:** When using `g` from `@fast-check/vitest`, pass the arbitrary **function** (e.g., `fc.string`, `fc.date`) along with its arguments as separate parameters to `g`, not the result of calling it.  
-Correct: `g(fc.string)`, `g(fc.date, { min: new Date('2010-01-01') })`  
-Incorrect: `g(fc.string())`, `g(fc.date({ min: new Date('2010-01-01') }))`
-
 **👍 Prefer** leveraging `fast-check`, if installed but not `@fast-check/vitest`
 
 **👎 Avoid** writing tests depending on unstable values  
@@ -174,6 +170,10 @@ it.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', 
 ## Guidelines for properties
 
 All this section considers that we are in the context of property based tests!
+
+**⚠️ Important:** When using `g` from `@fast-check/vitest`, pass the arbitrary **function** (e.g., `fc.string`, `fc.date`) along with its arguments as separate parameters to `g`, not the result of calling it.  
+Correct: `g(fc.string)`, `g(fc.date, { min: new Date('2010-01-01') })`  
+Incorrect: `g(fc.string())`, `g(fc.date({ min: new Date('2010-01-01') }))`
 
 **❌ Don't** generate inputs directly  
 The risk being that you may end up rewriting the code being tested in the test
