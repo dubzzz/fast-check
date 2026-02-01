@@ -242,6 +242,100 @@ it('should resolve in call order', async () => {
 });
 ```
 
+## Guidelines for component testing
+
+**✅ Do** extract complex logic from components into dedicated, testable functions  
+Why? Testing complex logic within a component test is often as hard as writing the code itself. By extracting the logic into pure functions, you can test it independently with simpler, faster tests.
+
+**❌ Don't** test trivial component logic that has minimal complexity  
+Why? If a component only contains simple rendering logic without complex state management or business rules, the test will be as complex as the code, providing little value.
+
+**👍 Prefer** testing the DOM structure and user interactions over implementation details  
+Why? This approach tests what users actually see and interact with, making tests more resilient to refactoring.
+
+**✅ Do** use testing-library (e.g., `@testing-library/react`) to test components  
+Why? Testing-library encourages testing components from the user's perspective, querying by role, label, or text rather than implementation details.
+
+**✅ Do** test user interactions and component behavior  
+Examples: clicking buttons, filling forms, toggling checkboxes, navigating between views
+
+**👍 Prefer** querying by accessible attributes and user-visible text  
+Use `getByRole`, `getByLabelText`, `getByText` over `getByTestId` when possible  
+Why? These queries match how users interact with your application and encourage better accessibility
+
+**✅ Do** use `data-testid` attributes for elements that are hard to query otherwise  
+Eg.: dynamic content, elements without clear roles or labels
+
+**👎 Avoid** snapshot tests for components unless the expected output is crystal clear  
+Why? Component snapshots tend to capture too many implementation details. When they break, it's often unclear what the actual expectation was versus what changed incidentally.
+
+**✅ Do** use targeted snapshots for specific parts of the output when appropriate  
+Eg.: snapshot a formatted date string, an error message structure, or a specific section of rendered HTML where the exact format matters
+
+**❌ Don't** snapshot entire component trees unless you have a specific reason  
+Why? Large snapshots become maintenance burdens and obscure the intent of the test
+
+**✅ Do** extract and test complex business logic separately from component rendering  
+Eg.: form validation rules, data transformations, state management logic
+
+Example of a well-structured component test:
+
+```ts
+/**
+ * @vitest-environment happy-dom
+ */
+import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Counter } from './Counter';
+
+describe('Counter', () => {
+  it('should display the initial count', () => {
+    // Arrange & Act
+    render(<Counter initialCount={5} />);
+
+    // Assert
+    expect(screen.getByRole('status')).toHaveTextContent('Count: 5');
+  });
+
+  it('should increment count when button is clicked', () => {
+    // Arrange
+    render(<Counter initialCount={0} />);
+
+    // Act
+    fireEvent.click(screen.getByRole('button', { name: /increment/i }));
+
+    // Assert
+    expect(screen.getByRole('status')).toHaveTextContent('Count: 1');
+  });
+});
+```
+
+Example of extracting complex logic:
+
+```ts
+// ❌ Don't test complex logic within component tests
+describe('PriceCalculator', () => {
+  it('should calculate discounted price correctly', () => {
+    render(<PriceCalculator price={100} discountRules={complexRules} />);
+    // Complex assertions about discount calculation...
+  });
+});
+
+// ✅ Do extract and test logic separately
+describe('calculateDiscount', () => {
+  it('should apply 10% discount for orders over $100', () => {
+    expect(calculateDiscount(150, standardRules)).toBe(15);
+  });
+});
+
+describe('PriceCalculator', () => {
+  it('should display the discounted price', () => {
+    render(<PriceCalculator price={100} discount={10} />);
+    expect(screen.getByText('Final price: $90')).toBeInTheDocument();
+  });
+});
+```
+
 ## Recommendation for faker users
 
 If using `faker` to fake data, we recommend wiring any fake data generation within `fast-check` by leveraging this code snippet:
