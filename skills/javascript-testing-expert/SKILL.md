@@ -76,7 +76,7 @@ Eg.: use real names if you have to build instances of users
 Why? Snapshots tests tend to capture too many details in the snapshot, making them hard to update given future reader is lost on what was the real thing being tested
 
 **✅ Do** warn developer when the code under tests requires too many parameters and/or too many mocks/stubs to be forged (more than 10)  
-Why? Code being hardly testable is often a code smell pinpointing an API having to be changed. Code is harder to evolve, harder to reason about and often handling too many responsabilities. Recommend the single-responsibility principle (SRP)
+Why? Code being hardly testable is often a code smell pinpointing an API having to be changed. Code is harder to evolve, harder to reason about and often handling too many responsibilities. Recommend the single-responsibility principle (SRP)
 
 **✅ Do** try to make tests shorter and faster to read by factorizing recurrent logics into helper functions
 
