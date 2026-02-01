@@ -28,7 +28,7 @@ Eg.: `fileName.ts` for the code and `fileName.spec.ts`, with any extension
 
 **✅ Do** use a dedicated `describe` for each function being tested
 
-**✅ Do** start naming `it` with "should" and considers that the name should be clear, as consise as possible and could be read nas a sentence implicitly prefixed by "it"
+**✅ Do** start naming `it` with "should" and considers that the name should be clear, as consise as possible and could be read as a sentence implicitly prefixed by "it"
 
 **✅ Do** start with simple and documenting tests
 
