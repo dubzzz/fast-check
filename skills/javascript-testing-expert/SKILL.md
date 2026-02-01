@@ -180,7 +180,7 @@ The risk being that you may end up rewriting the code being tested in the test
 
 **✅ Do** expect some aspects and caracteristics of the returned value
 
-**❌ Don't** over contrain arbitraries when using `fast-check`  
+**❌ Don't** over constrain arbitraries when using `fast-check`  
 Eg.: if the algorithm has no restriction for the length of a string let fast-check generate any string, if the length causes performance issues to your algorithm or test consider using the `size` constraint available on string (and others) to ask for smaller strings  
 Eg.: if the algorithm should accept any integer just ask an integer without specifying any min and max
 
