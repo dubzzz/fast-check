@@ -43,7 +43,7 @@ For a complete list of gitmoji codes, see https://gitmoji.dev/
 When creating pull requests, always use the PR template located at `.github/PULL_REQUEST_TEMPLATE.md`. The template includes:
 
 - **Description**: Provide a short description and link to related issues (if any)
-- **Checklist**: Only check the fulfilled items.
+- **Checklist**: Keep the entire checklist and all of its items; only check the boxes for the items that are fulfilled.
 - **Advanced**: Fill in the Category and Impacts sections to help reviewers understand the changes
 
-Make sure to fill out all sections of the template completely and accurately.
+Make sure to fill out all sections of the template completely and accurately, and do not delete or reorder any sections or checklist items—only update their content and checkbox states.
