@@ -223,7 +223,7 @@ it('should resolve in call order', async () => {
     fc.asyncProperty(fc.scheduler(), async (s) => {
       // Arrange
       const seenAnswers = [];
-      const call = jest.fn().mockImplementation((v) => Promise.resolve(v));
+      const call = vi.fn().mockImplementation((v) => Promise.resolve(v));
 
       // Act
       const queued = queue(s.scheduleFunction(call));
