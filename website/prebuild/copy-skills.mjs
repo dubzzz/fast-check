@@ -42,7 +42,7 @@ async function copySkills() {
 
     // Remove existing frontmatter if present (between --- delimiters)
     let contentWithoutFrontmatter = sourceContent;
-    const frontmatterRegex = /^---\n[\s\S]*?\n---\n/;
+    const frontmatterRegex = /^---\r?\n[\s\S]*?\r?\n---\r?\n/;
     if (frontmatterRegex.test(sourceContent)) {
       contentWithoutFrontmatter = sourceContent.replace(frontmatterRegex, '');
     }
