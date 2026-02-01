@@ -37,3 +37,17 @@ Limit the name of the PR to at most 50 characters for the Description part (that
 - 📦 Add or update compiled files or packages
 
 For a complete list of gitmoji codes, see https://gitmoji.dev/
+
+## Pull Request Template
+
+When creating pull requests, always use the PR template located at `.github/PULL_REQUEST_TEMPLATE.md`. The template includes:
+
+- **Description**: Provide a short description and link to related issues
+- **Checklist**: Complete all checklist items before opening the PR, including:
+  - Ensuring the PR name follows gitmoji specification
+  - Referencing related issues
+  - Running `pnpm run bump` to include bump details
+  - Adding relevant tests
+- **Advanced**: Fill in the Category and Impacts sections to help reviewers understand the changes
+
+Make sure to fill out all sections of the template completely and accurately.
