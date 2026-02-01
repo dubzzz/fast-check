@@ -342,7 +342,6 @@ test('addition should be commutative in UI', async ({ page }) => {
 
 ## Recommendation for faker users
 
-
 If using `faker` to fake data, we recommend wiring any fake data generation within `fast-check` by leveraging this code snippet:
 
 ```ts

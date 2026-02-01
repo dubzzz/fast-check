@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { fc } from '@fast-check/vitest';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
