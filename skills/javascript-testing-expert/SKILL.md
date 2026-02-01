@@ -11,6 +11,7 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 4. challenge the code
 
 **🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `msw` installed as devDependencies.  
+**🔧 For browser/UI testing:** `@playwright/test`, `playwright`, `@vitest/browser` installed as devDependencies.  
 **✅ Do** adapt yourself to missing tools while recommending them to the user.
 
 ## File and code layout
@@ -242,7 +243,105 @@ it('should resolve in call order', async () => {
 });
 ```
 
+## Guidelines for browser and UI testing with Playwright
+
+**✅ Do** use Playwright for integration and end-to-end tests that require real browser interaction
+
+**✅ Do** combine Playwright with `fast-check` for property-based UI testing
+
+**👍 Prefer** testing user-visible behavior over implementation details
+
+**✅ Do** use descriptive selectors (prefer `role`, `label`, and `text` over `id` or `class`)
+
+**✅ Do** wait for elements to be in the expected state using Playwright's auto-waiting
+
+**❌ Don't** add arbitrary `wait` or `sleep` calls; use Playwright's built-in waiting mechanisms
+
+**✅ Do** isolate tests by navigating to the page in `beforeEach`
+
+**✅ Do** keep property-based tests with Playwright focused and limit `numRuns` for performance
+
+Example of basic Playwright test:
+
+```ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Calculator UI', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:3000');
+  });
+
+  test('should add two numbers', async ({ page }) => {
+    // Arrange
+    await page.fill('#num1', '5');
+    await page.fill('#num2', '3');
+
+    // Act
+    await page.click('#add');
+
+    // Assert
+    await expect(page.locator('#result')).toHaveText('Result: 8');
+  });
+});
+```
+
+Example of property-based Playwright test:
+
+```ts
+import { test, expect } from '@playwright/test';
+import fc from 'fast-check';
+
+test('addition should be commutative in UI', async ({ page }) => {
+  await page.goto('http://localhost:3000');
+  
+  await fc.assert(
+    fc.asyncProperty(
+      fc.integer({ min: -1000, max: 1000 }),
+      fc.integer({ min: -1000, max: 1000 }),
+      async (a, b) => {
+        // Arrange - Test a + b
+        await page.fill('#num1', String(a));
+        await page.fill('#num2', String(b));
+        await page.click('#add');
+        const result1 = await page.locator('#result').textContent();
+
+        // Arrange - Test b + a
+        await page.fill('#num1', String(b));
+        await page.fill('#num2', String(a));
+        await page.click('#add');
+        const result2 = await page.locator('#result').textContent();
+
+        // Assert
+        expect(result1).toBe(result2);
+      }
+    ),
+    { numRuns: 10 } // Limit runs for integration tests
+  );
+});
+```
+
+**⚠️ Important:** When combining Playwright with `fast-check`, limit `numRuns` to keep tests performant (e.g., 10-20 runs instead of the default 100)
+
+**✅ Do** test mathematical or logical properties in the UI layer, such as:
+- Commutativity (a + b = b + a)
+- Consistency (same inputs always produce same outputs)
+- Error handling (invalid inputs always show errors)
+
+**👍 Prefer** unit tests with `fast-check` for pure logic, and reserve Playwright for verifying that the UI correctly implements that logic
+
+**✅ Do** use Playwright's built-in assertions that auto-retry:
+- `await expect(locator).toHaveText(...)`
+- `await expect(locator).toBeVisible()`
+- `await expect(locator).toHaveValue(...)`
+
+**❌ Don't** use synchronous assertions on potentially async UI states
+
+**✅ Do** organize tests by user journey or feature area
+
+**✅ Do** use page object pattern for complex UIs to reduce duplication
+
 ## Recommendation for faker users
+
 
 If using `faker` to fake data, we recommend wiring any fake data generation within `fast-check` by leveraging this code snippet:
 
