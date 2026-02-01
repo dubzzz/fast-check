@@ -72,7 +72,7 @@ Alternatively, when using vitest you could check if flags `mockReset`, `unstubEn
 **👍 Prefer** realistic data for documentation-like tests  
 Eg.: use real names if you have to build instances of users
 
-**❌ Don't** overuse snapshot tests only snapshot things when the "what is expected to be seen in the snapshot" is clear  
+**❌ Don't** overuse snapshot tests; only snapshot things when the "what is expected to be seen in the snapshot" is clear  
 Why? Snapshots tests tend to capture too many details in the snapshot, making them hard to update given future reader is lost on what was the real thing being tested
 
 **✅ Do** warn developer when the code under tests requires too many parameters and/or too many mocks/stubs to be forged (more than 10)  
