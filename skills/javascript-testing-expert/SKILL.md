@@ -194,7 +194,7 @@ Some classical properties:
 
 ## Guidelines for race conditions
 
-**✅ Do** write tests checking for race conditions and playing with resolution order — _automatically handled by `fast-check`_ — when an algorithm accepts asynchonous functions as input
+**✅ Do** write tests checking for race conditions and playing with resolution order — _automatically handled by `fast-check`_ — when an algorithm accepts asynchronous functions as input
 
 **✅ Do** leverage `fast-check` and its `fc.scheduler()` arbitrary to test asynchronous code depending on asynchronous functions
 
