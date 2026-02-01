@@ -154,6 +154,9 @@ Remark: consider these tests as advanced and put them after the documentation te
 
 **👍 Prefer** using property based testing for edge case detection instead of writing all cases one by one
 
+**❌ Don't** try to test 100% of the algorithm cases using property-based testing
+Why? Property-based testing and example-based testing are complementary. Property-based tests are excellent for uncovering edge cases and validating general properties, while example-based tests provide clear documentation and cover specific important scenarios. Use both approaches together for comprehensive test coverage.
+
 ```ts
 // for all a, b, c strings
 // b is a substring of a + b + c
