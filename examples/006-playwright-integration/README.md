@@ -9,18 +9,25 @@ These examples showcase:
 1. **Unit Tests** - Testing pure JavaScript functions with property-based testing
 2. **Integration Tests** - Testing UI interactions with Playwright
 3. **Property-Based Integration Tests** - Combining Playwright with fast-check for exhaustive UI testing
+4. **Stateful UI Testing** - Testing complex user interactions and state management
 
 ## Structure
 
 ```
 006-playwright-integration/
-├── simple-app/
+├── simple-app/                     # Simple calculator example
 │   ├── index.html                  # Simple calculator web app
 │   ├── calculator.js               # Calculator logic
 │   ├── calculator.spec.ts          # Unit tests with property-based testing
 │   ├── integration.spec.ts         # Integration tests with Playwright
 │   └── property-based.spec.ts      # Property-based integration tests
+├── todo-app/                       # Advanced todo list example
+│   ├── index.html                  # Todo list web app
+│   ├── todo.js                     # Todo state management
+│   └── todo-stateful.spec.ts       # Advanced stateful property-based tests
 ├── playwright.config.ts            # Playwright configuration
+├── vitest.config.ts                # Vitest configuration
+├── package.json                    # Package dependencies
 └── README.md                       # This file
 ```
 
@@ -160,6 +167,21 @@ Focus on testing observable behaviors and mathematical properties:
 3. **Reproducible Failures** - fast-check provides seeds to reproduce failures
 4. **Real Browser Testing** - Playwright tests run in real browsers
 5. **Combined Strengths** - Fast unit tests + thorough integration tests = confidence
+6. **Edge Case Discovery** - Property-based testing automatically finds edge cases (e.g., floating-point precision, input validation)
+
+## What These Examples Teach
+
+### Simple Calculator (`simple-app/`)
+- Basic unit testing with property-based testing
+- Browser automation with Playwright
+- Combining both approaches for UI property testing
+- Handling floating-point precision issues
+
+### Todo App (`todo-app/`)
+- Testing stateful UI interactions
+- Property-based testing with sequences of operations
+- Managing page state between test iterations
+- Validating complex user workflows
 
 ## Additional Resources
 
