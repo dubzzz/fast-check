@@ -21,7 +21,7 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 
 **✅ Do** use one test file per code file
 
-**👍 Prefer** using `.spec.ts` extension (e.g., `fileName.ts` → `fileName.spec.ts`) if no existing test structure is present, colocated with the source file
+**👍 Prefer** using `.spec.ts` extension (e.g., `fileName.ts` → `fileName.spec.ts`) and colocated with the source file if no existing test structure is present
 
 **✅ Do** put `it` within `describe`, when using `it`
 
