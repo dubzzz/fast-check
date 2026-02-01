@@ -45,7 +45,7 @@ async function copySkills() {
       if (typeof value === 'number') {
         frontmatterLines.push(`${key}: ${value}`);
       } else {
-        frontmatterLines.push(`${key}: ${value}`);
+        frontmatterLines.push(`${key}: "${value}"`);
       }
     }
     frontmatterLines.push('---');
