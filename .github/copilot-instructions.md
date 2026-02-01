@@ -42,7 +42,7 @@ For a complete list of gitmoji codes, see https://gitmoji.dev/
 
 When creating pull requests, always use the PR template located at `.github/PULL_REQUEST_TEMPLATE.md`. The template includes:
 
-- **Description**: Provide a short description and link to related issues
+- **Description**: Provide a short description and link to related issues (if any)
 - **Checklist**: Only check the fulfilled items.
 - **Advanced**: Fill in the Category and Impacts sections to help reviewers understand the changes
 
