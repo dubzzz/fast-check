@@ -12,5 +12,9 @@ deopt.out
 v8.log
 v8.out
 
+# Playwright
+**/playwright-report/
+**/test-results/
+
 # IDE related files
 .idea

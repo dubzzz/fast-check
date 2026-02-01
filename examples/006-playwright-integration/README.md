@@ -28,11 +28,14 @@ These examples showcase:
 
 ### Unit Tests
 
-Unit tests use Vitest with `@fast-check/vitest` for property-based testing:
+Unit tests use Vitest with `fast-check` for property-based testing:
 
 ```bash
-# From the repository root
-pnpm test -- simple-app/calculator.spec.ts
+# From this directory
+pnpm test -- --run
+
+# Or from the repository root
+pnpm test -- --project @fast-check/playwright-examples
 ```
 
 ### Integration Tests
@@ -60,7 +63,7 @@ npx playwright test property-based.spec.ts
 npx playwright test
 
 # Run unit tests
-pnpm test -- calculator.spec.ts
+pnpm test -- --run
 ```
 
 ## Key Concepts

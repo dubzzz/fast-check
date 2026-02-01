@@ -7,7 +7,8 @@ import { defineConfig, devices } from '@playwright/test';
  * for integration and property-based testing.
  */
 export default defineConfig({
-  testDir: './simple-app',
+  testDir: './',
+  testMatch: ['**/*integration.spec.ts', '**/*property-based.spec.ts', '**/*stateful.spec.ts'],
   
   /* Run tests in files in parallel */
   fullyParallel: true,
