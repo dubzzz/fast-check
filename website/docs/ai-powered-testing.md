@@ -8,7 +8,7 @@ sidebar_label: AI-Powered Testing
 
 Enhance your testing workflow with AI assistance while maintaining high-quality test coverage using fast-check.
 
-## Configure AI for JavaScript Testing Excellence
+## Configure your AI for Testing Excellence
 
 fast-check provides an expert-level JavaScript testing skill that teaches AI assistants best practices for writing high-quality tests.
 
