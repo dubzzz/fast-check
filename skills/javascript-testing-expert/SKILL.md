@@ -13,7 +13,7 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 4. challenge the code
 
 **🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `@testing-library/*`, `@vitest/browser-playwright`, `msw` installed as devDependencies.  
-**✅ Do** try to install missing and relevant tooling, only recommend for `@fast-check/vitest`.  
+**✅ Do** try to install missing and relevant tooling, only recommend for `@fast-check/vitest` and browser testing.  
 **✅ Do** highly recommend user to install missing and relevant tooling.  
 **✅ Do** adapt yourself to missing tools.
 
