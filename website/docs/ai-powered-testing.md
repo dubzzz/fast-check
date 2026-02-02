@@ -27,15 +27,6 @@ The `javascript-testing-expert` skill focuses on four main objectives:
 3. Avoid regressions
 4. Challenge the code
 
-The skill ensures your AI-generated tests:
-
-- Find real bugs through property-based testing and edge case exploration
-- Serve as documentation with clear, readable test cases
-- Prevent regressions with focused assertions
-- Avoid common pitfalls like flaky tests, over-mocking, and brittle snapshots
-- Follow the AAA (Arrange-Act-Assert) pattern
-- Control non-determinism by stubbing dates, randomness, and external dependencies
-
 ## External resources
 
 - [View the skill on skills.sh](https://skills.sh/dubzzz/fast-check/javascript-testing-expert)
