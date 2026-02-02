@@ -38,7 +38,5 @@ The skill ensures your AI-generated tests:
 
 ## Learn More
 
-- [View the skill on skills.sh](https://skills.sh/dubzzz/fast-check/javascript-testing-expert) - Full documentation and examples
-- [View the skill definition on GitHub](https://github.com/dubzzz/fast-check/tree/main/skills/javascript-testing-expert) - Contribute or customize
-- [Introduction to Property-Based Testing](./introduction/why-property-based.md)
-- [Quick Start Guide](./tutorials/quick-start/index.md)
+- [View the skill on skills.sh](https://skills.sh/dubzzz/fast-check/javascript-testing-expert)
+- [View the skill definition on GitHub](https://github.com/dubzzz/fast-check/tree/main/skills/javascript-testing-expert)
