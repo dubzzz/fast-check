@@ -4,7 +4,7 @@ slug: /ai-powered-testing/
 sidebar_label: AI-Powered Testing
 ---
 
-# AI-Powered Testing
+# AI-Powered Testing 🧙
 
 Enhance your testing workflow with AI assistance while maintaining high-quality test coverage using fast-check.
 
