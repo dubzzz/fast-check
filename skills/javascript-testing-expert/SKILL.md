@@ -213,6 +213,8 @@ Eg.: use `fc.integer({ min: 1 })` instead of `fc.integer().filter(n => n >= 1)`,
 Eg.: use `fc.nat().map(n => n * 2)` for even numbers  
 Eg.: use `fc.tuple(fc.string(), fc.string()).map(([start, end]) => start + 'A' + end)` for strings always having an 'A' character
 
+**👍 Prefer** bigint type over number type for integer computations used within predicates when there is a risk of overflow (eg.: when running pow, multiply.. on generated values)
+
 Some classical properties:
 
 1. Characteristics independent of the inputs. _Eg.: for any floating point number d, Math.floor(d) is an integer. for any integer n, Math.abs(n) ≥ 0_
