@@ -18,7 +18,7 @@ Install the skill to your AI assistant:
 npx skills add dubzzz/fast-check --skill javascript-testing-expert
 ```
 
-## What the Skill Provides
+## Objectives of the skill
 
 The `javascript-testing-expert` skill focuses on four main objectives:
 
