@@ -20,12 +20,12 @@ npx skills add dubzzz/fast-check --skill javascript-testing-expert
 
 ## What the Skill Provides
 
-The `javascript-testing-expert` skill focuses on testing functions and components (not black-box e2e testing) with four main objectives:
+The `javascript-testing-expert` skill focuses on four main objectives:
 
-1. **Uncover hard-to-detect bugs** through property-based testing
-2. **Document how to use the code** with clear example-based tests
-3. **Avoid regressions** with targeted assertions
-4. **Challenge the code** with edge cases and random inputs
+1. Uncover hard to detect bugs
+2. Document how to use the code
+3. Avoid regressions
+4. Challenge the code
 
 The skill ensures your AI-generated tests:
 
