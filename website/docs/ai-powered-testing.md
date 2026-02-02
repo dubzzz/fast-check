@@ -36,7 +36,7 @@ The skill ensures your AI-generated tests:
 - Follow the AAA (Arrange-Act-Assert) pattern
 - Control non-determinism by stubbing dates, randomness, and external dependencies
 
-## Learn More
+## External resources
 
 - [View the skill on skills.sh](https://skills.sh/dubzzz/fast-check/javascript-testing-expert)
 - [View the skill definition on GitHub](https://github.com/dubzzz/fast-check/tree/main/skills/javascript-testing-expert)
