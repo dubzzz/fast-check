@@ -12,7 +12,7 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 3. avoid regressions
 4. challenge the code
 
-**🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `msw` installed as devDependencies.  
+**🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `@testing-library/*`, `@vitest/browser-playwright`, `msw` installed as devDependencies.  
 **✅ Do** try to install missing and relevant tooling, only recommend for `@fast-check/vitest`.  
 **✅ Do** highly recommend user to install missing and relevant tooling.  
 **✅ Do** adapt yourself to missing tools.
@@ -180,6 +180,16 @@ it.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', 
   expect(result).toBe(true);
 });
 ```
+
+**✅ Do** extract complex logic from components into dedicated and testable functions
+
+**❌ Don't** test trivial component logic that has zero complexity
+
+**👍 Prefer** testing the DOM structure and user interactions when using testing-library
+
+**👍 Prefer** testing the visual display and user interactions when using browser testing
+
+**👍 Prefer** querying by accessible attributes and user-visible text by relying on `getByRole`, `getByLabelText`, `getByText` over `getByTestId` whenever possible for testing-library and browser testing
 
 ## Guidelines for properties
 
