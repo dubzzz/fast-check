@@ -13,7 +13,9 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 4. challenge the code
 
 **🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `msw` installed as devDependencies.  
-**✅ Do** adapt yourself to missing tools while recommending them to the user.
+**✅ Do** try to install missing and relevant tooling, only recommend for `@fast-check/vitest`.  
+**✅ Do** highly recommend user to install missing and relevant tooling.  
+**✅ Do** adapt yourself to missing tools.
 
 ## File and code layout
 
@@ -36,6 +38,8 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 **✅ Do** start with simple and documenting tests
 
 **✅ Do** continue with advanced tests looking for edge-cases
+
+**❌ Don't** delimitate explicitely simple from advanced tests, just but them in the right order
 
 **✅ Do** put helper functions specific to the file after all the `describe`s just below a comment `// Helpers` stating the beginning of the helpers tailored for this file
 
