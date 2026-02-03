@@ -198,8 +198,11 @@ The risk being that you may end up rewriting the code being tested in the test
 
 **✅ Do** expect some aspects and characteristics of the returned value
 
-**❌ Don't** over constrain arbitraries when using `fast-check`  
-Eg.: if the algorithm has no restriction for the length of a string let fast-check generate any string, if the length causes performance issues to your algorithm or test consider using the `size` constraint available on string (and others) to ask for smaller strings  
+**❌ NEVER** specify any `maxLength` on an arbitrary if it is a not a requirement of the algorithm  
+**👍 Prefer** specifying a `size: '-1'` if you feel that the algorithm will take very long on large inputs (by default fast-check generates up to 10 items, so only use `size` when clearly required)  
+Eg.: No `fc.string({maxLength: 5})` or `fc.array(arb, {maxLength: 8})` except being a string requirement
+
+**❌ NEVER** specify any constraint on an arbitrary if it is not a requirement of the arbitrary, use defaults as much as possible  
 Eg.: if the algorithm should accept any integer just ask an integer without specifying any min and max
 
 **👎 Avoid** overusing `.filter` and `fc.pre`  
