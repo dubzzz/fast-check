@@ -118,7 +118,9 @@ it.prop([fc.string(), fc.string()])('should be able to login', async (username, 
 });
 ```
 
-### Connecting `@faker-js/faker` in `fast-check`...
+### Connecting fake data libraries in `fast-check`...
+
+**✅ Do** pass the random generator provided by `fast-check` up to the fake library and wraps everything within an instance of arbitrary
 
 ```ts
 // Source: https://fast-check.dev/blog/2024/07/18/integrating-faker-with-fast-check/
