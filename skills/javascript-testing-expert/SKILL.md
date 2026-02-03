@@ -191,6 +191,9 @@ it.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', 
 
 **👍 Prefer** querying by accessible attributes and user-visible text by relying on `getByRole`, `getByLabelText`, `getByText` over `getByTestId` whenever possible for testing-library and browser testing
 
+**✅ Do** ensure non visual regression of Design System components and more generally visual components by leveraging screenshot tests in browser when available  
+**✅ Do** fallback to snapshot tests capturing the DOM structure if screenshot tests cannot be ran
+
 ## Guidelines for properties
 
 All this section considers that we are in the context of property based tests!
