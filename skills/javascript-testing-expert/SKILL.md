@@ -43,6 +43,8 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 
 ## Decision tree
 
+**❌ Don't** reimplement the logic of the code in assertions
+
 **✅ Do** follow the AAA pattern and make it visible in the test
 
 ```ts
@@ -194,115 +196,5 @@ it.prop([fc.string(), fc.string(), fc.string()])('should detect the substring', 
 
 **✅ Do** ensure non visual regression of Design System components and more generally visual components by leveraging screenshot tests in browser when available  
 **✅ Do** fallback to snapshot tests capturing the DOM structure if screenshot tests cannot be ran
-
-## Guidelines for properties
-
-All this section considers that we are in the context of property based tests!
-
-**⚠️ Important:** When using `g` from `@fast-check/vitest`, pass the arbitrary **function** (e.g., `fc.string`, `fc.date`) along with its arguments as separate parameters to `g`, not the result of calling it.  
-Correct: `g(fc.string)`, `g(fc.date, { min: new Date('2010-01-01') })`  
-Incorrect: `g(fc.string())`, `g(fc.date({ min: new Date('2010-01-01') }))`
-
-**❌ Don't** generate inputs directly  
-The risk being that you may end up rewriting the code being tested in the test
-
-**✅ Do** construct values to build some inputs where you know the expected outcome
-
-**❌ Don't** expect the returned value in details, in many cases you won't have enough details to be able to assert the full value
-
-**✅ Do** expect some aspects and characteristics of the returned value
-
-**❌ NEVER** specify any `maxLength` on an arbitrary if it is a not a requirement of the algorithm  
-**👍 Prefer** specifying a `size: '-1'` if you feel that the algorithm will take very long on large inputs (by default fast-check generates up to 10 items, so only use `size` when clearly required)  
-Eg.: No `fc.string({maxLength: 5})` or `fc.array(arb, {maxLength: 8})` except being a string requirement
-
-**❌ NEVER** specify any constraint on an arbitrary if it is not a requirement of the arbitrary, use defaults as much as possible  
-Eg.: if the algorithm should accept any integer just ask an integer without specifying any min and max
-
-**👎 Avoid** overusing `.filter` and `fc.pre`  
-Why? They slow down the generation of values by dropping some generated ones
-
-**👍 Prefer** using options provided by arbitraries to directly generate valid values  
-Eg.: use `fc.string({ minLength: 2 })` instead of `fc.string().filter(s => s.length >= 2)`  
-Eg.: use `fc.integer({ min: 1 })` instead of `fc.integer().filter(n => n >= 1)`, or use `fc.nat()` instead of `fc.integer().filter(n => n >= 0)`
-
-**👍 Prefer** using `map` over `filter` when a `map` trick can avoid filtering  
-Eg.: use `fc.nat().map(n => n * 2)` for even numbers  
-Eg.: use `fc.tuple(fc.string(), fc.string()).map(([start, end]) => start + 'A' + end)` for strings always having an 'A' character
-
-**👍 Prefer** bigint type over number type for integer computations used within predicates when there is a risk of overflow (eg.: when running pow, multiply.. on generated values)
-
-Some classical properties:
-
-1. Characteristics independent of the inputs. _Eg.: for any floating point number d, Math.floor(d) is an integer. for any integer n, Math.abs(n) ≥ 0_
-2. Characteristics derived from the inputs. _Eg.: for any a and b integers, the average of a and b is between a and b. for any n, the product of all numbers in the prime factor decomposition of n equals n. for any array of data, sorted(data) and data contains the same elements. for any n1, n2 integers such that n1 != n2, romanString(n1) != romanString(n2). for any floating point number d, Math.floor(d) is an integer such as d-1 ≤ Math.floor(d) ≤ d_
-3. Restricted set of inputs with useful characteristics. _Eg.: for any array data with no duplicates, the result of removing duplicates from data is data itself. for any a, b and c strings, the concatenation of a, b and c always contains b. for any prime number p, its decomposition into prime factors is itself_
-4. Characteristics on combination of functions. _Eg.: zipping then unzipping a file should result in the original file. lcm(a,b) times gcd(a,b) must be equal to a times b_
-5. Comparison with a simpler implementation. _Eg.: c is contained inside sorted array data for binary search is equivalent to c is contained inside data for linear search_
-
-## Equivalence `fast-check` and `@fast-check/vitest`
-
-Example 1.
-
-```ts
-// with @fast-check/vitest
-import { it, fc } from '@fast-check/vitest';
-it('...', ({ g }) => {
-  //...
-});
-
-// with fast-check
-import { it } from 'vitest';
-import fc from 'fast-check';
-it('...', () => {
-  fc.assert(
-    fc.property(fc.gen(), (g) => {
-      //...
-    }),
-  );
-});
-```
-
-Example 2.
-
-```ts
-// with @fast-check/vitest
-import { it, fc } from '@fast-check/vitest';
-it.prop([...arbitraries])('...', (...values) => {
-  //...
-});
-
-// with fast-check
-import { it } from 'vitest';
-import fc from 'fast-check';
-it('...', () => {
-  fc.assert(
-    fc.property(...arbitraries, (...values) => {
-      //...
-    }),
-  );
-});
-```
-
-Example 3. If the predicate of `it` or `it.prop` is asynchronous, when using only `fast-check` the property has to be instantiated via `asyncProperty` and `assert` has to be awaited.
-
-```ts
-// with @fast-check/vitest
-import { it, fc } from '@fast-check/vitest';
-it.prop([...arbitraries])('...', async (...values) => {
-  //...
-});
-
-// with fast-check
-import { it } from 'vitest';
-import fc from 'fast-check';
-it('...', async () => {
-  await fc.assert(
-    fc.asyncProperty(...arbitraries, async (...values) => {
-      //...
-    }),
-  );
-});
-```
 
 ## Precise guidelines
