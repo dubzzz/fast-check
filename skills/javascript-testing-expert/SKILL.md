@@ -17,33 +17,31 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 **✅ Do** highly recommend user to install missing and relevant tooling.  
 **✅ Do** adapt yourself to missing tools.
 
-## File and code layout
+## Core Guidelines
 
-**✅ Do** mimic the existing test structure of the project when adding new tests
+| For...                                                                | Reference                                                       |
+| --------------------------------------------------------------------- | --------------------------------------------------------------- |
+| File location in project (skip if project structure is already known) | [`project-structure.md`](./references/project-structure.md)     |
+| Organizing describes, its, and helpers inside a spec file             | [`spec-file-structure.md`](./references/spec-file-structure.md) |
 
-**✅ Do** use one test file per code file
+## Testing recipes
 
-**👍 Prefer** using `.spec.ts` extension (e.g., `fileName.ts` → `fileName.spec.ts`) and colocated with the source file if no existing test structure is present
+| When testing...                                                  | Reference                                               |
+| ---------------------------------------------------------------- | ------------------------------------------------------- |
+| Async functions                                                  | [`test-async-code.md`](./references/test-async-code.md) |
+| Glue code wiring dependencies together (adapters, orchestrators) | [`test-glue-code.md`](./references/test-glue-code.md)   |
 
-**✅ Do** put `it` within `describe`, when using `it`
+## Detailed patterns
 
-**👍 Prefer** `it` over `test`
+| When...                                                 | Reference                                                               |
+| ------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Handling dates, randomness, or platform-specific values | [`deterministic-test-data.md`](./references/deterministic-test-data.md) |
+| Writing property-based tests                            | [`property-based-testing.md`](./references/property-based-testing.md)   |
+| Migrating between `fast-check` and `@fast-check/vitest` | [`fc-vitest-migration.md`](./references/fc-vitest-migration.md)         |
 
-**✅ Do** name the `describe` with the name of the function being tested
+---
 
-**✅ Do** use a dedicated `describe` for each function being tested
-
-**✅ Do** start naming `it` with "should" and considers that the name should be clear, as consise as possible and could be read as a sentence implicitly prefixed by "it"
-
-**✅ Do** start with simple and documenting tests
-
-**✅ Do** continue with advanced tests looking for edge-cases
-
-**❌ Don't** delimitate explicitely simple from advanced tests, just but them in the right order
-
-**✅ Do** put helper functions specific to the file after all the `describe`s just below a comment `// Helpers` stating the beginning of the helpers tailored for this file
-
-## Core guidelines
+## Decision tree
 
 **✅ Do** follow the AAA pattern and make it visible in the test
 
@@ -306,3 +304,5 @@ it('...', async () => {
   );
 });
 ```
+
+## Precise guidelines
