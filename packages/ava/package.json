@@ -49,7 +49,7 @@
     "ava": "^6.4.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
-    "rolldown": "^1.0.0-rc.2",
+    "rolldown": "^1.0.0-rc.3",
     "rxjs": "^7.8.2",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
