@@ -2,6 +2,9 @@
 
 > **⚠️ Scope:** How to test asynchronous functions?
 
+**🔧 Recommended tooling:** `vitest`, `fast-check`  
+**🔧 Optional tooling:** `@fast-check/vitest`, `msw`
+
 ## If the function relies on several asynchronously retrieved values...
 
 **✅ Do** write tests playing with relative ordering of async results

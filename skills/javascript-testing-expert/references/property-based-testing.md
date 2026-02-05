@@ -2,6 +2,9 @@
 
 > **⚠️ Scope:** How to write effective property-based tests with fast-check?
 
+**🔧 Recommended tooling:** `fast-check`  
+**🔧 Optional tooling:** `vitest`, `@fast-check/vitest`
+
 ## Guidelines
 
 **✅ Do** construct values to build some inputs where you know the expected outcome

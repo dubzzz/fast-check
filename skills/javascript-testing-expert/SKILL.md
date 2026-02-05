@@ -12,12 +12,11 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 3. avoid regressions
 4. challenge the code
 
-**🔧 Recommended tooling:** `vitest`, `fast-check`, `@fast-check/vitest`, `@testing-library/*`, `@vitest/browser-playwright`, `msw` installed as devDependencies.  
-**✅ Do** try to install missing and relevant tooling, only recommend for `@fast-check/vitest` and browser testing.  
-**✅ Do** highly recommend user to install missing and relevant tooling.  
-**✅ Do** adapt yourself to missing tools.
+**⚠️ IMPORTANT:** Try to install "Recommended tooling" and to recommend installing optional one when applicable. Adapt yourself to missing tools.
 
 ## Core Guidelines
+
+**⚠️ IMPORTANT:** Always read the **must-read-test-writing.md** guide before writing or suggesting any line of test. Consider is as a recommended reading to review tests.
 
 | For...                                                                | Reference                                                       |
 | --------------------------------------------------------------------- | --------------------------------------------------------------- |
@@ -26,12 +25,16 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 
 ## Testing recipes
 
+**⚠️ IMPORTANT:** Do not hesitate to grab details from multiple recipes if the code matches several of them. Read them with the lens of **must-read-test-writing.md**.
+
 | When testing...                                                  | Reference                                               |
 | ---------------------------------------------------------------- | ------------------------------------------------------- |
 | Async functions                                                  | [`test-async-code.md`](./references/test-async-code.md) |
 | Glue code wiring dependencies together (adapters, orchestrators) | [`test-glue-code.md`](./references/test-glue-code.md)   |
 
 ## Detailed patterns
+
+Tricks to push deeper some patterns. Reading them might be of interest if you touch one of the discussed concepts.
 
 | When...                                                 | Reference                                                               |
 | ------------------------------------------------------- | ----------------------------------------------------------------------- |
