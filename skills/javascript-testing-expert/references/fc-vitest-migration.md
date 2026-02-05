@@ -47,6 +47,27 @@ it('...', () => {
 });
 ```
 
+## Using `it.prop` for property-based tests with custom seed
+  
+ ```ts 
+ // with @fast-check/vitest 
+ import { it, fc } from '@fast-check/vitest'; 
+ it.prop([...arbitraries], { seed: 42 })('...', (...values) => { 
+   //... 
+ }); 
+  
+ // with fast-check 
+ import { it } from 'vitest'; 
+ import fc from 'fast-check'; 
+ it('...', () => { 
+   fc.assert( 
+     fc.property(...arbitraries, (...values) => { 
+       //... 
+     }), {seed:42}
+   ); 
+ }); 
+ ```
+
 ## Async properties
 
 If the predicate of `it` or `it.prop` is asynchronous, when using only `fast-check` the property has to be instantiated via `asyncProperty` and `assert` has to be awaited.
@@ -70,6 +91,4 @@ it('...', async () => {
 });
 ```
 
-TODO: everything is async by default in @vitest
 
-TODO: how to pass custom options to assert
