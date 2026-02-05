@@ -2,6 +2,9 @@
 
 > **⚠️ Scope:** How to translate between `fast-check` and `@fast-check/vitest` syntax?
 
+**🔧 Recommended tooling:** `fast-check`  
+**🔧 Optional tooling:** `vitest`, `@fast-check/vitest`
+
 ## Using `g` for inline generation
 
 ```ts
@@ -66,3 +69,7 @@ it('...', async () => {
   );
 });
 ```
+
+TODO: everything is async by default in @vitest
+
+TODO: how to pass custom options to assert
