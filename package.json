@@ -32,7 +32,7 @@
     "@changesets/cli": "^2.29.8",
     "@eslint/js": "^9.39.2",
     "@fast-check/packaged": "*",
-    "@typescript-eslint/utils": "^8.53.1",
+    "@typescript-eslint/utils": "^8.54.0",
     "@vitest/coverage-v8": "^4.0.5",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
@@ -45,7 +45,7 @@
     "rolldown": "^1.0.0-rc.3",
     "rolldown-plugin-dts": "^0.21.7",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.53.1",
+    "typescript-eslint": "^8.54.0",
     "vitest": "^4.0.5"
   }
 }
