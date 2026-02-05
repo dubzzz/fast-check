@@ -9,21 +9,10 @@ rules:
     ignore:
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
-      - build-status.yml:635 # fast-check
-      - build-status.yml:709 # ava
-      - build-status.yml:783 # jest
-      - build-status.yml:857 # packaged
-      - build-status.yml:931 # poisoning
+      - build-status.yml:625 # fast-check
+      - build-status.yml:701 # ava
+      - build-status.yml:777 # jest
+      - build-status.yml:853 # packaged
+      - build-status.yml:929 # poisoning
       - build-status.yml:1005 # vitest
-      - build-status.yml:1079 # worker
-  template-injection:
-    ignore:
-      # These are safe - TGZ_NAME is set from package.json version in controlled environment
-      # bundle-path is output from attest-build-provenance action (trusted GitHub action)
-      - build-status.yml:667 # fast-check
-      - build-status.yml:741 # ava
-      - build-status.yml:815 # jest
-      - build-status.yml:889 # packaged
-      - build-status.yml:963 # poisoning
-      - build-status.yml:1037 # vitest
-      - build-status.yml:1111 # worker
+      - build-status.yml:1081 # worker
