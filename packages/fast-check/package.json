@@ -76,7 +76,7 @@
     "replace-in-file": "^8.4.0",
     "typedoc": "^0.28.16",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.5"
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "property-based testing",
