@@ -1,0 +1,65 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to release'
+        required: true
+        type: choice
+        options:
+          - fast-check
+          - ava
+          - jest
+          - vitest
+          - worker
+          - poisoning
+          - packaged
+          - expect-type
+
+permissions:
+  contents: read
+
+jobs:
+  create_release:
+    name: 'Create GitHub Release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - name: Extract release info
+        id: release_info
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
+        with:
+          script: |
+            const pkg = '${{ github.event.inputs.package }}';
+            const {run} =
+              require('./.github/workflows/scripts/create-release.cjs');
+            const result = await run(pkg);
+
+            if (result.error) {
+              core.setFailed(`Failed: ${result.error}`);
+              return;
+            }
+
+            const {tag, title, body} = result;
+
+            core.info(`Creating release for tag: ${tag}`);
+            core.info(`Title: ${title}`);
+            core.info(`Body length: ${body.length} characters`);
+
+            core.setOutput('tag', tag);
+            core.setOutput('title', title);
+            core.setOutput('body', body);
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b  # v2.5.0
+        with:
+          tag_name: ${{ steps.release_info.outputs.tag }}
+          name: ${{ steps.release_info.outputs.title }}
+          body: ${{ steps.release_info.outputs.body }}
+          draft: false
+          prerelease: false
