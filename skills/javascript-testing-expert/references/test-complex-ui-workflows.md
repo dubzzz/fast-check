@@ -68,7 +68,7 @@ import { page } from '@vitest/browser/context';
 
 it('should render the checkout page correctly with items', async () => {
   // Arrange
-  const screen = page.render(<CheckoutPage items={sampleItems} />);
+  page.render(<CheckoutPage items={sampleItems} />);
 
   // Assert
   await expect(page.screenshot()).toMatchScreenshot();
@@ -76,7 +76,7 @@ it('should render the checkout page correctly with items', async () => {
 
 it('should render the empty state correctly', async () => {
   // Arrange
-  const screen = page.render(<CheckoutPage items={[]} />);
+  page.render(<CheckoutPage items={[]} />);
 
   // Assert
   await expect(page.screenshot()).toMatchScreenshot();

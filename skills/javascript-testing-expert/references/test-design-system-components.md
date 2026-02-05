@@ -27,7 +27,7 @@ import { page } from '@vitest/browser/context';
 
 it('should render the primary button correctly', async () => {
   // Arrange
-  const screen = page.render(<Button variant="primary">Click me</Button>);
+  page.render(<Button variant="primary">Click me</Button>);
 
   // Act — no action, just render
 
@@ -37,7 +37,7 @@ it('should render the primary button correctly', async () => {
 
 it('should render the disabled state correctly', async () => {
   // Arrange
-  const screen = page.render(<Button variant="primary" disabled>Click me</Button>);
+  page.render(<Button variant="primary" disabled>Click me</Button>);
 
   // Assert
   await expect(page.screenshot()).toMatchScreenshot();
