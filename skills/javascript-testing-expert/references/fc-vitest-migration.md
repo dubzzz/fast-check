@@ -48,25 +48,26 @@ it('...', () => {
 ```
 
 ## Using `it.prop` for property-based tests with custom seed
-  
- ```ts 
- // with @fast-check/vitest 
- import { it, fc } from '@fast-check/vitest'; 
- it.prop([...arbitraries], { seed: 42 })('...', (...values) => { 
-   //... 
- }); 
-  
- // with fast-check 
- import { it } from 'vitest'; 
- import fc from 'fast-check'; 
- it('...', () => { 
-   fc.assert( 
-     fc.property(...arbitraries, (...values) => { 
-       //... 
-     }), {seed:42}
-   ); 
- }); 
- ```
+
+```ts
+// with @fast-check/vitest
+import { it, fc } from '@fast-check/vitest';
+it.prop([...arbitraries], { seed: 42 })('...', (...values) => {
+  //...
+});
+
+// with fast-check
+import { it } from 'vitest';
+import fc from 'fast-check';
+it('...', () => {
+  fc.assert(
+    fc.property(...arbitraries, (...values) => {
+      //...
+    }),
+    { seed: 42 },
+  );
+});
+```
 
 ## Async properties
 
@@ -90,5 +91,3 @@ it('...', async () => {
   );
 });
 ```
-
-
