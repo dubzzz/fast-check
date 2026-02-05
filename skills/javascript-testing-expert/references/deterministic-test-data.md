@@ -2,6 +2,9 @@
 
 > **⚠️ Scope:** How to keep tests reproducible and deterministic when dealing with random data, fake data generators or platform-dependent values like dates?
 
+**🔧 Recommended tooling:** `vitest`, `fast-check`  
+**🔧 Optional tooling:** `@fast-check/vitest`
+
 ## If test depends on unused data...
 
 **✅ Do** suggest to change the type definition to only pick the required fields if the data is never used and the limitation occurs due to type system
