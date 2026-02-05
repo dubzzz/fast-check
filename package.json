@@ -39,7 +39,7 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.0.0",
-    "pkg-pr-new": "^0.0.62",
+    "pkg-pr-new": "^0.0.63",
     "prettier": "3.7.4",
     "publint": "^0.3.17",
     "rolldown": "^1.0.0-rc.2",
