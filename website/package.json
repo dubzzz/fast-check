@@ -26,8 +26,8 @@
     "clsx": "^2.1.1",
     "lodash": "^4.17.23",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.9.2",
@@ -38,7 +38,7 @@
     "@mdx-js/react": "^3.1.1",
     "@types/lodash": "^4.17.23",
     "@types/node": "^24.10.7",
-    "@types/react": "^19.2.9",
+    "@types/react": "^19.2.13",
     "docusaurus-plugin-llms": "^0.2.2",
     "fast-check": "workspace:*",
     "glob": "^13.0.0",
