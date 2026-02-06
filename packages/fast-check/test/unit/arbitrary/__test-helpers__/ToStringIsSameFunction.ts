@@ -21,7 +21,7 @@ export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
       expect(dataFromToStringBefore).toStrictEqual(data);
       expect(dataFromToString).toStrictEqual(data);
     } catch (err) {
-      throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`);
+      throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`, { cause: err });
     }
   })(hash, stringify);
 

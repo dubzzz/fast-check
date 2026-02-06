@@ -187,7 +187,7 @@ function refreshContent(originalContent: string): { content: string; numExecuted
             eval(evalCode);
             return lines;
           } catch (err) {
-            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
+            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, { cause: err });
           } finally {
             console.log = originalConsoleLog;
             fc.configureGlobal(originalGlobal);

@@ -30,7 +30,7 @@ describe('escapeForTemplateString', () => {
       try {
         expect(eval('`' + escapedCharacter + '`')).toBe(character);
       } catch (err) {
-        throw new Error(`Failed for i = ${i}, got error: ${err}`);
+        throw new Error(`Failed for i = ${i}, got error: ${err}`, { cause: err });
       }
     }
   });
