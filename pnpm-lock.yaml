@@ -247,8 +247,8 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       '@types/npmcli__arborist':
-        specifier: ^6.3.1
-        version: 6.3.1
+        specifier: ^6.3.2
+        version: 6.3.2
       rolldown:
         specifier: ^1.0.0-rc.3
         version: 1.0.0-rc.3
@@ -3612,8 +3612,8 @@ packages:
   '@types/npm-registry-fetch@8.0.8':
     resolution: {integrity: sha512-VL/chssZawBkaQ5gFD5njblJce/ny9OICBlWAG9X6/m/ypPNJMWYiM22SY2mhLIGoknd4AyEJyi+FGyrBnsr+A==}
 
-  '@types/npmcli__arborist@6.3.1':
-    resolution: {integrity: sha512-CUADRvIKRFwVuiroLQ0wWzOpeOcL8OacCbODtZZxMOA+PBg1au/D8ry/zBnQWdEH+i0IXKeNL2Nt0er30bYWng==}
+  '@types/npmcli__arborist@6.3.2':
+    resolution: {integrity: sha512-NzMPpGt7pk0s+7UzBVFSbyj8FWsL5cgRM6uTWIEV6CGh01n4AyvUG+Ey+xYRMgkSWYOvUWOaRkPkQ9uLz1yfrw==}
 
   '@types/npmcli__package-json@4.0.4':
     resolution: {integrity: sha512-6QjlFUSHBmZJWuC08bz1ZCx6tm4t+7+OJXAdvM6tL2pI7n6Bh5SIp/YxQvnOLFf8MzCXs2ijyFgrzaiu1UFBGA==}
@@ -14591,7 +14591,7 @@ snapshots:
   '@types/npm-packlist@7.0.3':
     dependencies:
       '@types/ignore-walk': 4.0.3
-      '@types/npmcli__arborist': 6.3.1
+      '@types/npmcli__arborist': 6.3.2
 
   '@types/npm-registry-fetch@8.0.8':
     dependencies:
@@ -14601,7 +14601,7 @@ snapshots:
       '@types/npmlog': 7.0.0
       '@types/ssri': 7.1.5
 
-  '@types/npmcli__arborist@6.3.1':
+  '@types/npmcli__arborist@6.3.2':
     dependencies:
       '@npm/types': 1.0.2
       '@types/cacache': 19.0.0
