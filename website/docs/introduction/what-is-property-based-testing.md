@@ -49,6 +49,6 @@ In order to ensure good coverage of the possibility space fast-check will produc
 
 Tests are most useful if they both detect failures and help developers to diagnose the root cause of the failure. When fast-check detects a failed test it will provide the developer with a "counterexample" showing an input in which the test failed. Fast-check will attempt to make sure this counterexample is as small as possible. For example, if the test failed when given an array, fast-check will try removing elements and check whether the test still fails. As a result a failure caused by an array with dozens of elements may result in the developer being shown a failing input with only 2 or 3 items. This makes it much easier to diagnose and debug the root cause of failures, and is a major differentiator between property-based testing libraries like fast-check and more naive approaches to random input generation.
 
-# Next steps
+## Next steps
 
 To see how fast-check puts these concepts into action, check out the [getting started](/docs/introduction/getting-started) section of this guide. For a deeper discussion of the motivations behind property-based testing, check out our page on [why property based testing](/docs/introduction/why-property-based).
