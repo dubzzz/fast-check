@@ -69,7 +69,7 @@ Although property-based testing is a powerful technique, it should not be viewed
 
 A common objection to property-based or random testing is that test suites should be deterministic, in order to prevent flaky tests. Property-based testing with fast-check can be made fully deterministic by setting a constant `seed` value in the [fast-check global config](/docs/configuration/global-settings/). With this configuration all tests are launched with a precise seed, so you will get the same set of values every time.
 
-Even without setting a global seed, fast-check provides a seed for failed tests. This seed can be provided as an argument to `fc.property` during debugging, making it easy to reproduce errors.
+Even without setting a global seed, fast-check provides a seed for failed tests. This seed can be provided as an argument to `fc.assert` during debugging, making it easy to reproduce errors.
 
 ### Full compatibility with existing tools
 
