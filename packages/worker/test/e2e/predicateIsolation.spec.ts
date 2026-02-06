@@ -74,7 +74,7 @@ if (isMainThread) {
               try {
                 expect(summaryLine).toContain('\x1b[32m\u221A\x1b[0m'); // success tick
               } catch (subErr) {
-                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
+                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`, { cause: subErr });
               }
               previousLevel = currentLevel;
             }
@@ -112,7 +112,7 @@ if (isMainThread) {
                   expect(summaryLine).toContain('\x1b[31m\xD7\x1b[0m'); // error tick, we are still running on the same worker
                 }
               } catch (subErr) {
-                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
+                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`, { cause: subErr });
               }
               previousLevel = currentLevel;
             }
