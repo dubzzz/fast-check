@@ -41,7 +41,7 @@ It can be beneficial to have a fully-deterministic test suite which always succe
 
 ## Large numbers of test runs
 
-As stated previously, a property should hold for all valid input values. It is not generally possible to test every single value, so property-based testing libraries sample a very large number of inputs. The higher the number of inputs sampled, the more confidence we can have that the property always holds. Fast-check will sample 100 inputs per test by default. This value is configurable globally and per-test.
+As stated previously, a property should hold for all valid input values. It is not generally possible to test every single value, so property-based testing libraries sample a very large number of inputs. The higher the number of inputs sampled, the more confidence we can have that the property always holds. fast-check will sample 100 inputs per test by default. This value is configurable globally and per-test.
 
 In order to ensure good coverage of the possibility space fast-check will produce a range of different sizes of inputs. Numbers will be both small and large, arrays will be both short and long, etc.
 
