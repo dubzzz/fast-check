@@ -73,7 +73,7 @@ Even without setting a global seed, fast-check provides a seed for failed tests.
 
 ### Full compatibility with existing tools
 
-Fast-check does not sit in opposition to well-established testing frameworks like Jest, Vitest, Mocha or Jasmine. It is a tool which can be used in conjunction with them. Property-based tests are defined inside of these framework's test blocks, and are run like any other tests in these frameworks. This means that fast-check can be added incrementally to existing codebases without needing to rewrite or migrate existing tests.
+Fast-check does not sit in opposition to well-established testing frameworks like Jest, Vitest, Mocha or Jasmine. It is a tool which can be used in conjunction with them. Property-based tests are defined inside of these frameworks' test blocks, and are run like any other tests in these frameworks. This means that fast-check can be added incrementally to existing codebases without needing to rewrite or migrate existing tests.
 
 ## Alternatives
 
