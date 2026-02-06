@@ -37,7 +37,7 @@ For example, say that a function takes an array of numbers as an argument. A com
 
 It's common for numerical code to have edge cases around the values `0`, `1`, or `-1`, or when handling unexpectedly large inputs. For this reason, fast-check numerical arbitraries ensure coverage of values close to the edges of their valid ranges, as well as values spread throughout their range.
 
-Fast-check even supports detecting some security vulnerabilities, such as by including the potentially dangerous string `__proto__` when generating objects. This has successfully detected CVEs in open source projects; see the [track record](/docs/introduction/track-record/) for more details.
+fast-check even supports detecting some security vulnerabilities, such as by including the potentially dangerous string `__proto__` when generating objects. This has successfully detected CVEs in open source projects; see the [track record](/docs/introduction/track-record/) for more details.
 
 This is not a complete list; the takeaway is that property-based testing libraries are more than just naive value generators, and can be tailored to detecting common real-world mistakes without imposing additional difficulty on the developers who are writing the tests.
 
