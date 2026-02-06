@@ -301,7 +301,9 @@ function assertEquality<T, U>(
       expect(v1).toStrictEqual(v2);
     }
   } catch (err) {
-    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`, { cause: err });
+    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`, {
+      cause: err,
+    });
   }
 }
 
