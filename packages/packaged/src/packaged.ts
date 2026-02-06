@@ -8,7 +8,7 @@ import * as path from 'path';
  * @param packageRoot - The path to the root of the package, eg.: .
  */
 export async function computePublishedFiles(packageRoot: string): Promise<string[]> {
-  const arborist: typeof Arborist = new (Arborist as any)({ path: packageRoot });
+  const arborist = new Arborist({ path: packageRoot });
   const tree = await arborist.loadActual();
   const files = await packlist(tree);
   return files;
