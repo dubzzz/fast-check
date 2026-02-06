@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "4.5.2",
+  "version": "4.5.3",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "module",
   "main": "lib/fast-check.js",
@@ -38,8 +38,8 @@
     "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types && node postbuild/main.mjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs/types",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json --module commonjs --moduleResolution node10 --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json",
     "typecheck": "tsc --noEmit",
     "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
     "test-legacy-bundle": "nvs add 12.17 && $(nvs which 12.17) test-bundle/run.cjs && $(nvs which 12.17) test-bundle/run-advanced.cjs",
@@ -65,17 +65,16 @@
     "pure-rand": "^7.0.0"
   },
   "devDependencies": {
-    "@fast-check/expect-type": "workspace:*",
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.55.2",
-    "@types/node": "^24.10.4",
+    "@microsoft/api-extractor": "^7.56.2",
+    "@types/node": "^24.10.11",
     "cross-env": "^10.1.0",
     "fast-check": "workspace:*",
-    "glob": "^13.0.0",
+    "glob": "^13.0.1",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^8.4.0",
-    "typedoc": "^0.28.15",
+    "typedoc": "^0.28.16",
     "typescript": "~5.9.3",
     "vitest": "^4.0.5"
   },
@@ -85,12 +84,12 @@
     "unit testing",
     "testing",
     "quickcheck",
-    "jscheck",
-    "jsverify",
     "faker",
     "fuzzer",
     "fuzz",
-    "jest"
+    "jest",
+    "vitest",
+    "random"
   ],
   "tsd": {
     "directory": "test/type"

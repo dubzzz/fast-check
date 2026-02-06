@@ -7,24 +7,22 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
+  "devDependencies": {
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.1",
+    "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/express": "^5.0.6",
+    "@types/lodash": "^4.17.23",
+    "@types/react": "^19.2.13",
+    "@types/supertest": "^6.0.3",
     "express": "^5.2.1",
     "fast-check": "workspace:*",
-    "lodash": "^4.17.21",
+    "happy-dom": "^20.5.0",
+    "lodash": "^4.17.23",
     "pure-rand": "^7.0.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "supertest": "^7.1.4"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/lodash": "^4.17.21",
-    "@types/react": "^19.2.7",
-    "@types/supertest": "^6.0.3",
-    "happy-dom": "^20.0.11",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "supertest": "^7.2.2",
     "typescript": "~5.9.3",
     "vitest": "^4.0.5"
   },

@@ -3,31 +3,23 @@
   "description": "Property based testing for AVA based on fast-check",
   "version": "2.0.2",
   "type": "module",
-  "main": "lib/ava-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "require": {
-        "types": "./lib/cjs/ava-fast-check.d.ts",
-        "default": "./lib/cjs/ava-fast-check.js"
-      },
-      "import": {
-        "types": "./lib/ava-fast-check.d.ts",
-        "default": "./lib/ava-fast-check.js"
-      }
+    ".": "./lib/ava-fast-check.js"
+  },
+  "typesVersions": {
+    "*": {
+      "index": [
+        "./lib/ava-fast-check.d.ts"
+      ]
     }
   },
-  "module": "lib/ava-fast-check.js",
-  "types": "lib/ava-fast-check.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "test": "vitest",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
@@ -53,13 +45,14 @@
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "@types/node": "^24.10.4",
+    "@types/node": "^24.10.11",
     "ava": "^6.4.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
+    "rolldown": "^1.0.0-rc.3",
     "rxjs": "^7.8.2",
     "typescript": "~5.9.3",
-    "vite": "^7.3.0",
+    "vite": "^7.3.1",
     "vitest": "^4.0.5"
   },
   "keywords": [

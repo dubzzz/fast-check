@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.14.0?
 authors: [dubzzz]
-tags: [what's new]
+tags: [release, internal, performance]
 ---
 
 This release changes the way we import type-only files internally in fast-check. While it should not have any visible impact on our clients we preferred to make it a minor.

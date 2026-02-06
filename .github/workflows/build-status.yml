@@ -25,13 +25,13 @@ jobs:
     name: 'Warm up pnpm cache'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         id: pnpm-cache
         with:
           node-version: '24.x'
@@ -46,13 +46,13 @@ jobs:
       matrix:
         os: ['macos-latest', 'windows-latest']
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         id: pnpm-cache
         with:
           node-version: '24.x'
@@ -68,14 +68,14 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -86,13 +86,13 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -105,13 +105,13 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -126,13 +126,13 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -158,13 +158,13 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -186,13 +186,13 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -254,13 +254,13 @@ jobs:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: ${{matrix.node-version}}
           cache: 'pnpm'
@@ -306,7 +306,7 @@ jobs:
       - test
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Download coverage
@@ -329,14 +329,14 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -354,7 +354,7 @@ jobs:
         shell: bash
         run: echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
       - name: Cache for assets
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: |
             website/static/img/sponsors.svg
@@ -386,13 +386,13 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -445,18 +445,19 @@ jobs:
           # Latest version of TypeScript
           - 'latest'
           # Various intermediate versions of Typescript (if any required)
+          - '5.8' # First version supporting require(esm)
           - '5.7' # First version adding generics on Uint8Array
           # Minimal requirement for TypeScript
           - '5.0'
           # Other release channels for TypeScript
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -476,19 +477,25 @@ jobs:
       - name: Switch folder to CommonJS
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
-      - name: Check in ES Modules mode with NodeNext
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
-      - name: Check in ES Modules mode with exactOptionalPropertyTypes
         run: |
-          pnpm --filter {./packages/**} --parallel -c exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
-          pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+          if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+          else
+            pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+          fi
+      - name: Check in ES Modules mode with NodeNext
+        run: |
+          if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+          else
+            pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+          fi
 
   # Job to confirm every required job passed
   pre_all_checks_passed:
@@ -578,7 +585,7 @@ jobs:
     outputs:
       tag_count: ${{steps.tag_count.outputs.count}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -596,7 +603,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -615,7 +622,7 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -642,12 +649,14 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/fast-check/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "$BUNDLE_PATH" "packages/fast-check/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -670,7 +679,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -689,7 +698,7 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -716,12 +725,14 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/ava/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "$BUNDLE_PATH" "packages/ava/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -744,7 +755,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -763,7 +774,7 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -790,12 +801,14 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/jest/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "$BUNDLE_PATH" "packages/jest/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -818,7 +831,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -837,7 +850,7 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -864,12 +877,14 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/packaged/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "$BUNDLE_PATH" "packages/packaged/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -892,7 +907,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -911,7 +926,7 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -938,12 +953,14 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/poisoning/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "$BUNDLE_PATH" "packages/poisoning/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -966,7 +983,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -985,7 +1002,7 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -1012,12 +1029,14 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/vitest/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "$BUNDLE_PATH" "packages/vitest/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1040,7 +1059,7 @@ jobs:
       status: ${{steps.check_has_tag.outcome}}
       tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -1059,7 +1078,7 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -1086,12 +1105,14 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
         id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}
       - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/worker/${{env.TGZ_NAME}}.sigstore.json"
+        run: mv "$BUNDLE_PATH" "packages/worker/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -1102,80 +1123,6 @@ jobs:
           files: |
             packages/worker/${{env.TGZ_NAME}}
             packages/worker/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
-  check_publish_expect_type:
-    name: Check publish @fast-check/expect-type
-    needs: check_any_package
-    if: needs.check_any_package.outputs.tag_count != '0'
-    runs-on: ubuntu-latest
-    outputs:
-      status: ${{steps.check_has_tag.outcome}}
-      tag: ${{steps.check_has_tag.outputs.tag}}
-    steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - id: check_has_tag
-        name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
-  publish_package_expect_type:
-    name: Publish @fast-check/expect-type
-    needs: check_publish_expect_type
-    if: needs.check_publish_expect_type.outputs.status == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      id-token: write
-      attestations: write
-    steps:
-      - name: Using Node v24.x
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
-        with:
-          node-version: '24.x'
-          registry-url: 'https://registry.npmjs.org'
-          check-latest: true
-      - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
-        with:
-          name: bundles
-          path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
-      - name: Set package filename
-        run: echo "TGZ_NAME=expect-type-$(tar -xzOf packages/expect-type/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
-      - name: Rename package for publication
-        run: mv packages/expect-type/package.tgz "packages/expect-type/$TGZ_NAME"
-      - name: Publish @fast-check/expect-type
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/expect-type/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
-        id: attest
-        with:
-          subject-path: packages/expect-type/${{env.TGZ_NAME}}
-      - name: Rename attestation bundle
-        run: mv "${{steps.attest.outputs.bundle-path}}" "packages/expect-type/${{env.TGZ_NAME}}.sigstore.json"
-      - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          tag_name: ${{needs.check_publish_expect_type.outputs.tag}}
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/expect-type/${{env.TGZ_NAME}}
-            packages/expect-type/${{env.TGZ_NAME}}.sigstore.json
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)

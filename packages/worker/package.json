@@ -26,12 +26,12 @@
     "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
     "build-ci": "pnpm run build",
     "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build:publish-cjs": "tsc -p tsconfig.publish.json --module commonjs --moduleResolution node10 --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
+    "build:publish-esm": "tsc -p tsconfig.publish.json",
     "test-bundle:cjs": "node test-bundle/main.cjs",
     "test-bundle:mjs": "node test-bundle/main.mjs",
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
-    "typecheck": "tsc --noEmit --module nodenext --moduleResolution nodenext"
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -50,9 +50,9 @@
   },
   "devDependencies": {
     "@fast-check/worker": "workspace:*",
-    "@types/node": "^24.10.4",
+    "@types/node": "^24.10.11",
     "typescript": "~5.9.3",
-    "vite": "^7.3.0",
+    "vite": "^7.3.1",
     "vitest": "^4.0.5"
   },
   "keywords": [

@@ -94,9 +94,14 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails
  */
 function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
 function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
-  if (rawProperty == null || rawProperty.generate == null)
+  if (
+    rawProperty === null ||
+    rawProperty === undefined ||
+    rawProperty.generate === null ||
+    rawProperty.generate === undefined
+  )
     throw new Error('Invalid property encountered, please use a valid property');
-  if (rawProperty.run == null)
+  if (rawProperty.run === null || rawProperty.run === undefined)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
     ...(readConfigureGlobal() as Parameters<Ts>),
