@@ -37,7 +37,7 @@ These are mostly orthogonal to the feature sets provided by most testing framewo
 
 A property-based testing framework provides tools for generating arbitrary values of some given type. fast-check refers to these as "arbitraries". An arbitrary may be very simple; for example, the `string` arbitrary produces random strings, and the `integer` arbitrary produces random integers. Arbitraries can also be used as building blocks to make more complex arbitraries. The `array` combiner can turn our arbitrary for generating strings into an arbitrary for generating arrays of strings. The `record` arbitrary can produce objects of a desired type, whose keys are strings and whose values are produced by other arbitraries.
 
-It can be beneficial to have a fully-deterministic test suite which always succeeds or fails the same way every time it is run. Fast-check's arbitraries use a seeded random number generator, so while the generated values are "random" in the sense that they do not follow an obvious pattern, providing a seed can ensure that they are still deterministic and repeatable.
+It can be beneficial to have a fully-deterministic test suite which always succeeds or fails the same way every time it is run. fast-check's arbitraries use a seeded random number generator, so while the generated values are "random" in the sense that they do not follow an obvious pattern, providing a seed can ensure that they are still deterministic and repeatable.
 
 ## Large numbers of test runs
 
