@@ -220,7 +220,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        node-version: [20.x, 22.x, 24.x, latest]
+        node-version: [22.x, 24.x, latest]
         os: ['ubuntu-latest']
         shard-id: ['1']
         shard-count: ['1']
