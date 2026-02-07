@@ -2,7 +2,7 @@ name: PR Changelog
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, edited, reopened, synchronize]
     branches:
       - main
 
@@ -25,7 +25,7 @@ jobs:
         with:
           script: |
             const {extractLatestChangelog} = require('./.github/workflows/scripts/extract-changelog.cjs');
-            const {version, changelog} = extractLatestChangelog();
+            const {version, changelog} = extractLatestChangelog('fast-check');
             const body = `Changelog for version ${version}:\n\n${changelog}`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,

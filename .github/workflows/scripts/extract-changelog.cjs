@@ -3,12 +3,13 @@ const { readFileSync } = require('fs');
 const path = require('path');
 
 /**
- * Extract the changelog for the latest version of fast-check.
+ * Extract the changelog for the latest version of a package.
  * Scans the CHANGELOG.md file line by line until finding the start of another release note.
+ * @param {string} packageDir - Sub-directory name under packages/ (e.g. 'fast-check', 'ava', 'jest')
  * @returns {{version: string, changelog: string}}
  */
-function extractLatestChangelog() {
-  const changelogPath = path.join(process.env.GITHUB_WORKSPACE || process.cwd(), 'packages', 'fast-check', 'CHANGELOG.md');
+function extractLatestChangelog(packageDir) {
+  const changelogPath = path.join(process.env.GITHUB_WORKSPACE || process.cwd(), 'packages', packageDir, 'CHANGELOG.md');
   const content = readFileSync(changelogPath, 'utf-8');
   const lines = content.split('\n');
 
