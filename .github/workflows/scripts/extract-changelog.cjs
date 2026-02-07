@@ -45,8 +45,9 @@ function extractLatestChangelog(packageDir) {
       const releaseNameMatch = line.match(/^_(.+)_$/);
       if (releaseNameMatch !== null && releaseName === '') {
         releaseName = releaseNameMatch[1];
+      } else {
+        changelogLines.push(line);
       }
-      changelogLines.push(line);
     }
   }
 
