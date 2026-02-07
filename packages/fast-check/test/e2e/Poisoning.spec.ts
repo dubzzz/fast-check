@@ -218,8 +218,6 @@ function dropMainGlobals(): () => void {
     TypeError,
     URIError,
     Atomics,
-    // @ts-expect-error Unknown for TypeScript given our current compilation options
-    WebAssembly,
     URL,
     CompressionStream,
     DecompressionStream,
@@ -228,17 +226,23 @@ function dropMainGlobals(): () => void {
     // The following globals are unknown for TypeScript
     AggregateError,
     // @ts-expect-error Unknown for TypeScript given our current compilation options
+    WebAssembly,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
     FinalizationRegistry,
     // @ts-expect-error Unknown for TypeScript given our current compilation options
     WeakRef,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof Performance !== 'undefined' ? Performance : undefined,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof ErrorEvent !== 'undefined' ? ErrorEvent : undefined,
+    // @ts-expect-error - 'Iterator' only refers to a type, but is being used as a value here. ts(2693)
+    typeof Iterator !== 'undefined' ? Iterator : undefined,
     // The following globals used to be unknown on MacOS,
     // as such we check they exist before referencing them
     typeof File !== 'undefined' ? File : undefined,
     typeof BroadcastChannel !== 'undefined' ? BroadcastChannel : undefined,
     typeof DOMException !== 'undefined' ? DOMException : undefined,
     typeof Blob !== 'undefined' ? Blob : undefined,
-    // @ts-expect-error Unknown for TypeScript given our current compilation options
-    typeof Performance !== 'undefined' ? Performance : undefined,
     typeof ReadableStream !== 'undefined' ? ReadableStream : undefined,
     typeof ReadableStreamDefaultReader !== 'undefined' ? ReadableStreamDefaultReader : undefined,
     typeof ReadableStreamBYOBReader !== 'undefined' ? ReadableStreamBYOBReader : undefined,
@@ -269,8 +273,6 @@ function dropMainGlobals(): () => void {
     typeof SubtleCrypto !== 'undefined' ? SubtleCrypto : undefined,
     typeof CustomEvent !== 'undefined' ? CustomEvent : undefined,
     typeof WebSocket !== 'undefined' ? WebSocket : undefined,
-    // @ts-expect-error - 'Iterator' only refers to a type, but is being used as a value here. ts(2693)
-    typeof Iterator !== 'undefined' ? Iterator : undefined,
     typeof Navigator !== 'undefined' ? Navigator : undefined,
     typeof CloseEvent !== 'undefined' ? CloseEvent : undefined,
     typeof URLPattern !== 'undefined' ? URLPattern : undefined,
@@ -278,8 +280,6 @@ function dropMainGlobals(): () => void {
     typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
     typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
     typeof Float16Array !== 'undefined' ? Float16Array : undefined,
-    // @ts-expect-error Unknown for TypeScript given our current compilation options
-    typeof ErrorEvent !== 'undefined' ? ErrorEvent : undefined,
     typeof Storage !== 'undefined' ? Storage : undefined,
   ].filter((mainGlobal) => mainGlobal !== undefined);
   const skippedGlobals = new Set(['Array']);
