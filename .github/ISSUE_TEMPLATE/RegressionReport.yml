@@ -1,0 +1,58 @@
+name: 💥 Regression Report
+description: Something that used to work is now broken? Let us know!
+labels: ['💥 Regression Report']
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for flagging this regression! 🔎 These reports help us maintain the reliability you count on.
+  - type: textarea
+    id: regression-description
+    attributes:
+      label: Regression description
+      description: Clear and concise description of the regression.
+    validations:
+      required: true
+  - type: input
+    id: worked-version
+    attributes:
+      label: Worked up to version
+    validations:
+      required: false
+  - type: input
+    id: broken-version
+    attributes:
+      label: Stopped working in version
+    validations:
+      required: false
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: To reproduce
+      description: Steps to reproduce the behavior. A minimal reproduction (repo, snippet, or playground) is very helpful but not required.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Clear and concise description of what you expected to happen.
+    validations:
+      required: false
+  - type: input
+    id: fc-version
+    attributes:
+      label: fast-check version
+    validations:
+      required: false
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+    validations:
+      required: false
+  - type: input
+    id: ts-version
+    attributes:
+      label: TypeScript version (if applicable)
+    validations:
+      required: false
