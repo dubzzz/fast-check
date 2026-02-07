@@ -1,0 +1,35 @@
+import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { maxSafeNat } from '../../../src/arbitrary/maxSafeNat.js';
+
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+
+import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary.js';
+
+function fakeIntegerArbitrary() {
+  const instance = fakeArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
+  return instance;
+}
+
+function beforeEachHook() {
+  vi.resetModules();
+  vi.restoreAllMocks();
+}
+beforeEach(beforeEachHook);
+
+describe('maxSafeInteger', () => {
+  it('should instantiate IntegerArbitrary(0, MAX_SAFE_INTEGER) for maxSafeInteger()', () => {
+    // Arrange
+    const instance = fakeIntegerArbitrary();
+    const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+    IntegerArbitrary.mockImplementation(function () {
+      return instance;
+    });
+
+    // Act
+    const arb = maxSafeNat();
+
+    // Assert
+    expect(IntegerArbitrary).toHaveBeenCalledWith(0, Number.MAX_SAFE_INTEGER);
+    expect(arb).toBe(instance);
+  });
+});

@@ -1,0 +1,15 @@
+:root {
+  --light-color-background: #f6f6f6;
+}
+
+.tsd-signatures .tsd-signature.current {
+  font-weight: bold;
+}
+
+.tsd-signatures .tsd-signature.current > * {
+  font-weight: inherit;
+}
+
+.tsd-signatures .tsd-signature:not(.current):hover {
+  background-color: var(--color-background);
+}

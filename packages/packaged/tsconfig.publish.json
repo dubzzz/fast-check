@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.publish.json",
+  "compilerOptions": {
+    "outDir": "lib/",
+    "esModuleInterop": true
+  },
+  "include": ["src/"]
+}
