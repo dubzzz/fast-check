@@ -1,35 +1,51 @@
-name: PR Changelog
+name: Create Release
 
 on:
-  pull_request:
-    types: [opened, edited, reopened, synchronize]
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to release'
+        required: true
+        type: choice
+        options:
+          - fast-check
+          - ava
+          - jest
+          - vitest
+          - worker
+          - poisoning
+          - packaged
 
 permissions:
   contents: read
 
 jobs:
-  post-changelog:
-    name: 'Post changelog comment'
+  create-release:
+    name: 'Create release'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: write
+      contents: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - name: Post changelog comment
+      - name: Extract changelog
+        id: changelog
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        env:
+          PACKAGE_DIR: ${{ github.event.inputs.package }}
         with:
           script: |
             const {extractLatestChangelog} = require('./.github/workflows/scripts/extract-changelog.cjs');
-            const {version, changelog} = extractLatestChangelog('fast-check');
-            const body = `Changelog for version ${version}:\n\n${changelog}`;
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body,
-            });
+            const {version, tag, releaseName, changelog} = extractLatestChangelog(process.env.PACKAGE_DIR);
+            core.setOutput('version', version);
+            core.setOutput('tag', tag);
+            core.setOutput('release_name', releaseName);
+            core.setOutput('changelog', changelog);
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          make_latest: ${{ github.event.inputs.package == 'fast-check' }}
