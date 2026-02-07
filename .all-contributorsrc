@@ -518,6 +518,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/85580454?v=4",
       "profile": "https://github.com/adamni21",
       "contributions": ["doc"]
+    },
+    {
+      "login": "josephjunker",
+      "name": "Joseph Junker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1519098?v=4",
+      "profile": "https://github.com/josephjunker",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7

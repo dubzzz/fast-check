@@ -11,10 +11,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "test": "vitest",
     "test-bundle:cjs": "ava --config test-bundle/ava.config.cjs",
     "test-bundle:mjs": "ava --config test-bundle/ava.config.mjs",
@@ -40,14 +38,15 @@
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "@types/node": "^24.10.7",
+    "@types/node": "^24.10.11",
     "ava": "^6.4.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
+    "rolldown": "^1.0.0-rc.3",
     "rxjs": "^7.8.2",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
-    "vitest": "^4.0.5"
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "ava",
