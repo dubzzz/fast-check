@@ -218,6 +218,7 @@ function dropMainGlobals(): () => void {
     TypeError,
     URIError,
     Atomics,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
     WebAssembly,
     URL,
     CompressionStream,
@@ -225,7 +226,6 @@ function dropMainGlobals(): () => void {
     TextDecoder,
     globalThis,
     // The following globals are unknown for TypeScript
-    // @ts-expect-error Unknown for TypeScript given our current compilation options
     AggregateError,
     // @ts-expect-error Unknown for TypeScript given our current compilation options
     FinalizationRegistry,
@@ -237,6 +237,7 @@ function dropMainGlobals(): () => void {
     typeof BroadcastChannel !== 'undefined' ? BroadcastChannel : undefined,
     typeof DOMException !== 'undefined' ? DOMException : undefined,
     typeof Blob !== 'undefined' ? Blob : undefined,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
     typeof Performance !== 'undefined' ? Performance : undefined,
     typeof ReadableStream !== 'undefined' ? ReadableStream : undefined,
     typeof ReadableStreamDefaultReader !== 'undefined' ? ReadableStreamDefaultReader : undefined,
@@ -277,6 +278,7 @@ function dropMainGlobals(): () => void {
     typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
     typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
     typeof Float16Array !== 'undefined' ? Float16Array : undefined,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
     typeof ErrorEvent !== 'undefined' ? ErrorEvent : undefined,
     typeof Storage !== 'undefined' ? Storage : undefined,
   ].filter((mainGlobal) => mainGlobal !== undefined);
