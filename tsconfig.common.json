@@ -6,6 +6,7 @@
     "incremental": false,
     "sourceMap": true,
     "target": "es2020",
+    "lib": ["ES2020", "ES2022.Error"],
     "module": "node18",
     "importHelpers": false,
     "preserveConstEnums": true,
