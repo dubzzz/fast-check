@@ -41,7 +41,7 @@ export function runMainThread<Ts extends [unknown, ...unknown[]]>(
           return;
         }
         worker.register(predicateId, property.getPayload(inputs), resolve, reject, () =>
-           
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
           reject(new PreconditionFailure()),
         );
       });
