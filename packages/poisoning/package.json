@@ -39,7 +39,7 @@
     "rolldown": "^1.0.0-rc.3",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
-    "vitest": "^4.0.5"
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "poisoning",
