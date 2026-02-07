@@ -31,7 +31,7 @@ By generating random inputs and applying them to the code being tested, property
 
 ### Designed for bugs
 
-The aim of property-based testing is not to generate random data for its own sake, but specifically to generate data which finds bugs. Property-based testing frameworks are designed to detect common problems with a higher probability. 
+The aim of property-based testing is not to generate random data for its own sake, but specifically to generate data which finds bugs. Property-based testing frameworks are designed to detect common problems with a higher probability.
 
 For example, say that a function takes an array of numbers as an argument. A common source of real-world bugs is when such functions expect their inputs to not contain duplicates, but don't contain the proper checks for this. To address these bugs fast-check will ensure that tests which depend on arrays will receive some arrays with duplicate values and some without them.
 
