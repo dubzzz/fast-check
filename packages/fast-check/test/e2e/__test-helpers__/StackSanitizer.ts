@@ -18,7 +18,6 @@ function sanitizeStack(initialMessage: string) {
 }
 
 type ErrorWithCause = Error & { cause: unknown };
-const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
 
 /** Wrap a potentially throwing code within a caller that would sanitize the returned Error */
 export function runWithSanitizedStack(run: () => void) {
@@ -26,7 +25,7 @@ export function runWithSanitizedStack(run: () => void) {
     try {
       run();
     } catch (err) {
-      throw new ErrorWithCause(sanitizeStack((err as Error).message), { cause: (err as ErrorWithCause).cause });
+      throw new Error(sanitizeStack((err as Error).message), { cause: (err as ErrorWithCause).cause });
     }
   };
 }
@@ -37,7 +36,7 @@ export function asyncRunWithSanitizedStack(run: () => Promise<void>) {
     try {
       await run();
     } catch (err) {
-      throw new ErrorWithCause(sanitizeStack((err as Error).message), { cause: (err as ErrorWithCause).cause });
+      throw new Error(sanitizeStack((err as Error).message), { cause: (err as ErrorWithCause).cause });
     }
   };
 }
