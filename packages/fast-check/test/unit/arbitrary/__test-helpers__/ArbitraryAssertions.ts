@@ -209,6 +209,7 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
       } catch (err) {
         throw new Error(
           `Expect: ${fc.stringify(vNew)} to be strictly smaller than ${fc.stringify(vOld)}\n\nGot error: ${err}`,
+          { cause: err },
         );
       }
     } finally {
@@ -300,7 +301,9 @@ function assertEquality<T, U>(
       expect(v1).toStrictEqual(v2);
     }
   } catch (err) {
-    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`);
+    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`, {
+      cause: err,
+    });
   }
 }
 
@@ -314,6 +317,6 @@ function assertCorrectness<T, U>(
     const out = isCorrect(v, extraParameters, arb);
     expect(out).not.toBe(false);
   } catch (err) {
-    throw new Error(`Expect: ${fc.stringify(v)} to be a correct value\n\nGot error: ${err}`);
+    throw new Error(`Expect: ${fc.stringify(v)} to be a correct value\n\nGot error: ${err}`, { cause: err });
   }
 }

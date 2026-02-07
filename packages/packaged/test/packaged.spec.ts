@@ -37,7 +37,7 @@ describe('removeNonPublishedFiles', () => {
       await fileSystem.createFile(['node_modules', 'dep-a', 'main.js'], 'console.log("main.js")');
 
       // Act
-      let requestedPath = '';
+      let requestedPath;
       const lastFolderName = path.basename(fileSystem.packagePath);
       const beforeLastFolderName = path.basename(path.dirname(fileSystem.packagePath));
       switch (pathStyle) {
