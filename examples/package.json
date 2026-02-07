@@ -13,18 +13,18 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/express": "^5.0.6",
     "@types/lodash": "^4.17.23",
-    "@types/react": "^19.2.9",
+    "@types/react": "^19.2.13",
     "@types/supertest": "^6.0.3",
     "express": "^5.2.1",
     "fast-check": "workspace:*",
-    "happy-dom": "^20.3.4",
+    "happy-dom": "^20.5.0",
     "lodash": "^4.17.23",
     "pure-rand": "^7.0.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "supertest": "^7.2.2",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.5"
+    "vitest": "^4.0.18"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT"
