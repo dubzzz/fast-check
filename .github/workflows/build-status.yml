@@ -609,12 +609,11 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_fc:
     name: Publish fast-check
     needs: check_publish_fc
-    if: needs.check_publish_fc.outputs.status == 'success'
+    if: needs.check_publish_fc.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -685,12 +684,11 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_ava:
     name: Publish @fast-check/ava
     needs: check_publish_ava
-    if: needs.check_publish_ava.outputs.status == 'success'
+    if: needs.check_publish_ava.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -761,12 +759,11 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_jest:
     name: Publish @fast-check/jest
     needs: check_publish_jest
-    if: needs.check_publish_jest.outputs.status == 'success'
+    if: needs.check_publish_jest.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -837,12 +834,11 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_packaged:
     name: Publish @fast-check/packaged
     needs: check_publish_packaged
-    if: needs.check_publish_packaged.outputs.status == 'success'
+    if: needs.check_publish_packaged.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -913,12 +909,11 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_poisoning:
     name: Publish @fast-check/poisoning
     needs: check_publish_poisoning
-    if: needs.check_publish_poisoning.outputs.status == 'success'
+    if: needs.check_publish_poisoning.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -989,12 +984,11 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_vitest:
     name: Publish @fast-check/vitest
     needs: check_publish_vitest
-    if: needs.check_publish_vitest.outputs.status == 'success'
+    if: needs.check_publish_vitest.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -1065,12 +1059,11 @@ jobs:
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: echo "tag=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_worker:
     name: Publish @fast-check/worker
     needs: check_publish_worker
-    if: needs.check_publish_worker.outputs.status == 'success'
+    if: needs.check_publish_worker.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
