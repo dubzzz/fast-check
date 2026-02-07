@@ -7,13 +7,6 @@
     "./package.json": "./package.json",
     ".": "./lib/vitest-fast-check.js"
   },
-  "typesVersions": {
-    "*": {
-      "index": [
-        "./lib/vitest-fast-check.d.ts"
-      ]
-    }
-  },
   "files": [
     "lib"
   ],
