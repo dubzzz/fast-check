@@ -1,8 +1,10 @@
 ---
 name: 🐛 Bug Report
 labels: '🐛 Bug Report'
-about: Create a bug report to help us improve
+about: Something not working as expected? Let us know!
 ---
+
+Thanks for reporting this issue! 🙏 Bug reports help us make fast-check better for everyone.
 
 ## 🐛 Bug Report
 
@@ -16,7 +18,7 @@ Steps to reproduce:
 
 Clear and concise description of what you expected to happen.
 
-If you have one, please provide a minimal repository reproducing the issue on GitHub.
+<!-- A minimal reproduction (repo, snippet, or playground) is very helpful but not required. -->
 
 ## Your environment
 

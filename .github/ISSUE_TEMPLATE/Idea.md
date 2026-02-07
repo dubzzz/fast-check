@@ -1,8 +1,10 @@
 ---
 name: 💡 Idea
 label: '💡 Idea'
-about: Any idea that could benefit to fast-check
+about: Share any idea that could benefit fast-check — big or small!
 ---
+
+Thanks for sharing your idea! ✨ We love hearing from the community.
 
 ## 💡 Idea
 
@@ -10,8 +12,8 @@ Clear and concise description of the idea.
 
 ## Motivation
 
-Please outline the motivation for the idea.
+Why do you think this would be valuable?
 
 ## Example
 
-Please provide an example for how this idea would be used.
+How might this idea work in practice?

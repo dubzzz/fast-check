@@ -1,8 +1,10 @@
 ---
 name: 🚀 Feature Request
 labels: ':rocket: Feature Request'
-about: Suggest an idea for fast-check
+about: Have an idea to improve fast-check? We'd love to hear it!
 ---
+
+Thanks for suggesting a feature! 💡 Community ideas are what drive fast-check forward.
 
 ## 🚀 Feature Request
 
@@ -10,8 +12,8 @@ Clear and concise description of the feature.
 
 ## Motivation
 
-Please outline the motivation for the proposal.
+Why would this feature be useful? What problem does it solve?
 
 ## Example
 
-Please provide an example for how this feature would be used.
+How would this feature be used in practice?

@@ -1,41 +1,26 @@
+Thanks for contributing to fast-check! 🎉 Every contribution matters, whether it's a bug fix, a new feature, or a documentation improvement.
+
 **Description**
 
-<!-- Please provide a short description and potentially linked issues justifying the need for this PR -->
+<!-- Describe what this PR does and why. Link any related issues. -->
+<!-- Feel free to include context, code snippets, or screenshots that help reviewers understand your change. -->
 
-<!-- * Your PR is fixing a bug or regression? Check for existing issues related to this bug and link them -->
-<!-- * Your PR is adding a new feature? Make sure there is a related issue or discussion attached to it -->
-
-<!-- You can provide any additional context to help into understanding what's this PR is attempting to solve: reproduction of a bug, code snippets... -->
-
-**Checklist** — _Don't delete this checklist and make sure you do the following before opening the PR_
+**Checklist**
 
 - [ ] The name of my PR follows [gitmoji](https://gitmoji.dev/) specification
-- [ ] My PR references one of several related issues (if any)
-  - [ ] New features or breaking changes must come with an associated Issue or Discussion
+- [ ] My PR references related issues, if any
+  - [ ] New features or breaking changes come with an associated Issue or Discussion
   - [ ] My PR does not add any new dependency without an associated Issue or Discussion
-- [ ] My PR includes bumps details, please run `pnpm run bump` and flag the impacts properly
+- [ ] My PR includes bump details — run `pnpm run bump` to flag the impacts
 - [ ] My PR adds relevant tests and they would have failed without my PR (when applicable)
 
-<!-- More about contributing at https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md -->
+<!-- Need help? Check out https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md -->
 
-**Advanced**
+**Category and Impacts**
 
-<!-- How to fill the advanced section is detailed below! -->
+<!-- Pick a category and note any user-facing impacts (generated values, shrink values, performance, typings…) -->
 
 - [ ] Category: ...
 - [ ] Impacts: ...
 
-<!-- [Category] Please use one of the categories below, it will help us into better understanding the urgency of the PR -->
-<!-- * ✨ Introduce new features -->
-<!-- * 📝 Add or update documentation -->
-<!-- * ✅ Add or update tests -->
-<!-- * 🐛 Fix a bug -->
-<!-- * 🏷️ Add or update types -->
-<!-- * ⚡️ Improve performance -->
-<!-- * _Other(s):_ ... -->
-
-<!-- [Impacts] Please provide a comma separated list of the potential impacts that might be introduced by this change -->
-<!-- * Generated values: Can your change impact any of the existing generators in terms of generated values, if so which ones? when? -->
-<!-- * Shrink values:    Can your change impact any of the existing generators in terms of shrink values, if so which ones? when? -->
-<!-- * Performance:      Can it require some typings changes on user side? Please give more details -->
-<!-- * Typings:          Is there a potential performance impact? In which cases? -->
+<!-- Categories: ✨ Feature · 📝 Documentation · ✅ Tests · 🐛 Bug fix · 🏷️ Types · ⚡️ Performance · Other -->

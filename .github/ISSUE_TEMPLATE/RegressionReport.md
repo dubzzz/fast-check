@@ -1,8 +1,10 @@
 ---
 name: 💥 Regression Report
 labels: '💥 Regression Report'
-about: Report unexpected behavior that worked in previous versions
+about: Something that used to work is now broken? Let us know!
 ---
+
+Thanks for flagging this regression! 🔎 These reports help us maintain the reliability you count on.
 
 ## 💥 Regression Report
 
@@ -22,7 +24,7 @@ Steps to reproduce the behavior:
 
 Clear and concise description of what you expected to happen.
 
-If you have one, please provide a minimal repository reproducing the issue on GitHub.
+<!-- A minimal reproduction (repo, snippet, or playground) is very helpful but not required. -->
 
 ## Your environment
 
