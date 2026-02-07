@@ -1,0 +1,63 @@
+name: "\U0001F4A5 Regression Report"
+description: Report unexpected behavior that worked in previous versions
+labels: ["💥 Regression Report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this regression! Knowing which versions are affected helps us identify and fix the issue quickly.
+  - type: textarea
+    id: regression-description
+    attributes:
+      label: Regression description
+      description: A clear and concise description of the regression.
+      placeholder: Describe what stopped working...
+    validations:
+      required: true
+  - type: input
+    id: last-working-version
+    attributes:
+      label: Last working version
+      description: The last version of fast-check where the behavior was correct.
+      placeholder: e.g. 3.15.0
+    validations:
+      required: true
+  - type: input
+    id: broken-version
+    attributes:
+      label: Broken in version
+      description: The first version of fast-check where the behavior broke.
+      placeholder: e.g. 3.16.0
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: To reproduce
+      description: Steps to reproduce the behavior. A minimal reproduction is very helpful.
+      placeholder: |
+        1. Create a property with...
+        2. Run...
+        3. See error...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please provide details about your environment.
+      value: |
+        - fast-check version:
+        - Node.js version:
+        - TypeScript version (if applicable):
+        - Operating system:
+    validations:
+      required: false

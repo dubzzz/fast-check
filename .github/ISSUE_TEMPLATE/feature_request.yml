@@ -1,0 +1,43 @@
+name: "\U0001F680 Feature Request"
+description: Suggest a new feature or an improvement for fast-check
+labels: [":rocket: Feature Request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in improving fast-check! Please describe the feature you'd like to see.
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature description
+      description: A clear and concise description of what you'd like.
+      placeholder: I'd like fast-check to...
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why would this feature be useful? What problem does it solve?
+      placeholder: This would help me because...
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example
+      description: If possible, show how this feature would be used in practice.
+      placeholder: |
+        ```ts
+        import fc from 'fast-check';
+        // example usage...
+        ```
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or workarounds
+      description: Have you considered any alternative solutions or workarounds?
+    validations:
+      required: false

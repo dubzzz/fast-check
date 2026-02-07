@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & Help
+    url: https://github.com/dubzzz/fast-check/discussions/new?category=q-a
+    about: Ask questions and get help from the community using GitHub Discussions.
+  - name: 📚 Documentation
+    url: https://fast-check.dev/
+    about: Check out the documentation for guides, tutorials, and API references.
