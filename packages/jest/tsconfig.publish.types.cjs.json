@@ -1,8 +1,0 @@
-{
-  "extends": "../../tsconfig.publish.types.json",
-  "compilerOptions": {
-    "outDir": "lib/cjs"
-  },
-  "include": ["src/"],
-  "exclude": ["src/jest-fast-check-worker.ts"]
-}

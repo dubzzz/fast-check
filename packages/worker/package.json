@@ -7,14 +7,14 @@
     "./package.json": "./package.json",
     ".": "./lib/main.js"
   },
+  "types": "lib/main.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
     "build": "rolldown -c",
     "build-ci": "rolldown -c",
-    "test-bundle:mjs": "node test-bundle/main.mjs",
-    "test-bundle": "pnpm run test-bundle:mjs",
+    "test-bundle": "node test-bundle/main.cjs && node test-bundle/main.mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {

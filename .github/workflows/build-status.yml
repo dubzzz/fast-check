@@ -477,22 +477,22 @@ jobs:
       - name: Switch folder to CommonJS
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
         run: |
           if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
           else
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
           fi
       - name: Check in ES Modules mode with NodeNext
         run: |
           if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
           else
             pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
           fi
