@@ -14,7 +14,9 @@
   "scripts": {
     "build": "rolldown -c",
     "build-ci": "rolldown -c",
-    "test-bundle": "node test-bundle/main.cjs && node test-bundle/main.mjs",
+    "test-bundle:cjs": "node test-bundle/main.cjs",
+    "test-bundle:mjs": "node test-bundle/main.mjs",
+    "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit"
   },
   "repository": {

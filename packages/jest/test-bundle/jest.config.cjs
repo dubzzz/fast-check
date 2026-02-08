@@ -1,4 +1,4 @@
 module.exports = {
-  testMatch: ['<rootDir>/main.spec.cjs'],
+  testMatch: ['<rootDir>/*.spec.cjs'],
   testTimeout: 20_000,
 };
