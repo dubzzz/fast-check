@@ -23,7 +23,7 @@ export function runWithSanitizedStack(run: () => void) {
     try {
       run();
     } catch (err) {
-      throw new Error(sanitizeStack((err as Error).message), { cause: (err as Error).cause });
+      throw new Error(sanitizeStack((err as Error).message), { cause: err });
     }
   };
 }
@@ -34,7 +34,7 @@ export function asyncRunWithSanitizedStack(run: () => Promise<void>) {
     try {
       await run();
     } catch (err) {
-      throw new Error(sanitizeStack((err as Error).message), { cause: (err as Error).cause });
+      throw new Error(sanitizeStack((err as Error).message), { cause: err });
     }
   };
 }
