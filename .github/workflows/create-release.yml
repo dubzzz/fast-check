@@ -1,0 +1,63 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to release'
+        required: true
+        type: choice
+        options:
+          - fast-check
+          - ava
+          - jest
+          - vitest
+          - worker
+          - poisoning
+          - packaged
+      dry_run:
+        description: 'Dry run (skip release creation)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  create-release:
+    name: 'Create release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Extract changelog
+        id: changelog
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        env:
+          PACKAGE_DIR: ${{ github.event.inputs.package }}
+        with:
+          script: |
+            const {extractLatestChangelog} = require('./.github/workflows/scripts/extract-changelog.cjs');
+            const {version, tag, releaseName, changelog} = extractLatestChangelog(process.env.PACKAGE_DIR);
+            console.log(`Version: ${version}`);
+            console.log(`Tag: ${tag}`);
+            console.log(`Release name: ${releaseName}`);
+            console.log(`Changelog:\n${changelog}`);
+            core.setOutput('version', version);
+            core.setOutput('tag', tag);
+            core.setOutput('release_name', releaseName);
+            core.setOutput('changelog', changelog);
+      - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.release_name }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          make_latest: ${{ github.event.inputs.package == 'fast-check' }}
+          discussion_category_name: Announcements
