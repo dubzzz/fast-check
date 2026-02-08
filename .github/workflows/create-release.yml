@@ -48,4 +48,5 @@ jobs:
           tag_name: ${{ steps.changelog.outputs.tag }}
           name: ${{ steps.changelog.outputs.release_name }}
           body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
           make_latest: ${{ github.event.inputs.package == 'fast-check' }}
