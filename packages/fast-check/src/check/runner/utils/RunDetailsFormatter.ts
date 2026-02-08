@@ -291,8 +291,7 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
   if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
-  const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
-  const error = new ErrorWithCause(errorMessage, { cause: out.errorInstance });
+  const error = new Error(errorMessage, { cause: out.errorInstance });
   if (!('cause' in error)) {
     safeObjectAssign(error, { cause: out.errorInstance });
   }

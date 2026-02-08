@@ -109,8 +109,7 @@ describe('captureAllGlobals', () => {
       if (flattenGlobalsValuesToName.has(globalValue)) {
         const associatedName = flattenGlobalsValuesToName.get(globalValue);
         const errorMessage = `Found value for ${globalName} attached to ${associatedName}`;
-        const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
-        throw new ErrorWithCause(errorMessage, { cause: err });
+        throw new Error(errorMessage, { cause: err });
       }
       throw err;
     }
