@@ -7,14 +7,8 @@
   "exports": {
     "./package.json": "./package.json",
     "./worker": {
-      "require": {
-        "types": "./lib/cjs/jest-fast-check-worker.d.ts",
-        "default": "./lib/cjs/jest-fast-check-worker.js"
-      },
-      "import": {
-        "types": "./lib/jest-fast-check-worker.d.ts",
-        "default": "./lib/jest-fast-check-worker.js"
-      }
+      "types": "./lib/jest-fast-check-worker.d.ts",
+      "default": "./lib/jest-fast-check-worker.js"
     },
     ".": {
       "require": {
@@ -35,8 +29,8 @@
   "scripts": {
     "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
     "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --module commonjs --moduleResolution node10 --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
+    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.cjs.json",
+    "build:publish-cjs": "tsc -p tsconfig.publish.cjs.json --module commonjs --moduleResolution node10 && cp package.cjs-template.json lib/cjs/package.json",
     "build:publish-esm": "tsc -p tsconfig.publish.json",
     "test-bundle:cjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.cjs",
     "test-bundle:mjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/jest.config.mjs",
