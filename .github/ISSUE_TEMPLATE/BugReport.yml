@@ -26,21 +26,22 @@ body:
       description: Clear and concise description of what you expected to happen.
     validations:
       required: false
-  - type: input
-    id: fc-version
+  - type: textarea
+    id: environment
     attributes:
-      label: fast-check version
-    validations:
-      required: false
-  - type: input
-    id: node-version
-    attributes:
-      label: Node version
-    validations:
-      required: false
-  - type: input
-    id: ts-version
-    attributes:
-      label: TypeScript version (if applicable)
+      label: Environment
+      description: |
+        Paste the output of the following command run at the root of your project:
+        ```bash
+        node -e "
+          var l=['node: '+process.version];
+          try{l.push('typescript: '+require('typescript/package.json').version)}catch{}
+          try{l.push('fast-check: '+require('fast-check/package.json').version)}catch{}
+          var p=['ava','jest','vitest','worker','poisoning'];
+          p.forEach(function(s){try{l.push('@fast-check/'+s+': '+require('@fast-check/'+s+'/package.json').version)}catch{}});
+          console.log(l.join('\n'))
+        "
+        ```
+      render: text
     validations:
       required: false
