@@ -15,6 +15,11 @@ on:
           - worker
           - poisoning
           - packaged
+      dry_run:
+        description: 'Dry run (skip release creation)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -43,6 +48,7 @@ jobs:
             core.setOutput('release_name', releaseName);
             core.setOutput('changelog', changelog);
       - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{ steps.changelog.outputs.tag }}
