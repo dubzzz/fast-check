@@ -403,6 +403,70 @@ describe('stringify', () => {
       BigUint64Array.from.bind(BigUint64Array),
     );
   });
+  // Run these detached `ArrayBuffer` tests if that state is possible in the
+  // current version of Node.
+  if ((ArrayBuffer.prototype as { transfer?: () => void }).transfer) {
+    const detach = (buffer: ArrayBuffer) => {
+      (buffer as unknown as { transfer: () => void }).transfer();
+    };
+
+    // Skipped due to: https://github.com/vitest-dev/vitest/issues/9612
+    it.skip('Should be able to stringify detached Buffer', () => {
+      const buffer = Buffer.from([1, 2, 3, 4]);
+      detach(buffer.buffer);
+      expect(stringify(buffer)).toEqual('Buffer.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Int8Array', () => {
+      const array = new Int8Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Int8Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Uint8Array', () => {
+      const array = new Uint8Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Uint8Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Int16Array', () => {
+      const array = new Int16Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Int16Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Uint16Array', () => {
+      const array = new Uint16Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Uint16Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Int32Array', () => {
+      const array = new Int32Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Int32Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Uint32Array', () => {
+      const array = new Uint32Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Uint32Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Float32Array', () => {
+      const array = new Float32Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Float32Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached Float64Array', () => {
+      const array = new Float64Array([1, 2, 3, 4]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('Float64Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached BigInt64Array', () => {
+      const array = new BigInt64Array([1n, 2n, 3n, 4n]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('BigInt64Array.from(/*detached ArrayBuffer*/)');
+    });
+    it('Should be able to stringify detached BigUint64Array', () => {
+      const array = new BigUint64Array([1n, 2n, 3n, 4n]);
+      detach(array.buffer);
+      expect(stringify(array)).toEqual('BigUint64Array.from(/*detached ArrayBuffer*/)');
+    });
+  }
   it('Should be only produce toStringTag for failing toString', () => {
     expect(stringify(new ThrowingToString())).toEqual('[object Object]');
     expect(stringify(new CustomTagThrowingToString())).toEqual('[object CustomTagThrowingToString]');
