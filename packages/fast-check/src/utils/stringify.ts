@@ -291,7 +291,15 @@ export function stringifyInternal<Ts>(
     case '[object BigUint64Array]': {
       if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(value)) {
         // Warning: value.values() may crash at runtime if Buffer got poisoned
-        return `Buffer.from(${stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)})`;
+        return `Buffer.from(${
+          // This cast is necessary because `detached` only exists in ES2024,
+          // but we target ES2020.
+          (value.buffer as { detached?: boolean }).detached
+            ? // Don't try to access the buffer contents if its underlying
+              // `ArrayBuffer` is detached because it will throw.
+              '/*detached ArrayBuffer*/'
+            : stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)
+        })`;
       }
       const valuePrototype = safeObjectGetPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
@@ -308,6 +316,14 @@ export function stringifyInternal<Ts>(
           | Float64Array
           | BigInt64Array
           | BigUint64Array;
+        // This cast is necessary because `detached` only exists in ES2024,
+        // but we target ES2020.
+        if ((typedArray.buffer as { detached?: boolean }).detached) {
+          // Don't try to access the buffer contents if its underlying
+          // `ArrayBuffer` is detached because it will throw.
+          return `${className}.from(/*detached ArrayBuffer*/)`;
+        }
+
         // Warning: typedArray.values() may crash at runtime if type got poisoned
         const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
         return `${className}.from(${stringifyInternal(
