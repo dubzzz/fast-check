@@ -43,6 +43,10 @@ jobs:
           script: |
             const {extractLatestChangelog} = require('./.github/workflows/scripts/extract-changelog.cjs');
             const {version, tag, releaseName, changelog} = extractLatestChangelog(process.env.PACKAGE_DIR);
+            console.log(`Version: ${version}`);
+            console.log(`Tag: ${tag}`);
+            console.log(`Release name: ${releaseName}`);
+            console.log(`Changelog:\n${changelog}`);
             core.setOutput('version', version);
             core.setOutput('tag', tag);
             core.setOutput('release_name', releaseName);
