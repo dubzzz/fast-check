@@ -50,3 +50,4 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           make_latest: ${{ github.event.inputs.package == 'fast-check' }}
+          discussion_category_name: Announcements
