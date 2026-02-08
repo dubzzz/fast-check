@@ -39,7 +39,7 @@
     "@types/lodash": "^4.17.23",
     "@types/node": "^24.10.11",
     "@types/react": "^19.2.13",
-    "docusaurus-plugin-llms": "^0.2.2",
+    "docusaurus-plugin-llms": "^0.3.0",
     "fast-check": "workspace:*",
     "glob": "^13.0.1",
     "jest": "^30.2.0",
