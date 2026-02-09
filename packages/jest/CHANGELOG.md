@@ -1,3 +1,16 @@
+# 2.1.2
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv2.1.2)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.1.1...jest%2Fv2.1.2)]
+
+## Features
+
+
+
+## Fixes
+
+
+
 # 2.1.1
 
 _Support for most recent version of `@fast-check/worker`_
