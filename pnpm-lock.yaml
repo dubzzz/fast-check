@@ -93,7 +93,7 @@ importers:
         specifier: workspace:*
         version: link:../packages/fast-check
       happy-dom:
-        specifier: ^20.5.1
+        specifier: ^20.5.3
         version: 20.5.3
       lodash:
         specifier: ^4.17.23
