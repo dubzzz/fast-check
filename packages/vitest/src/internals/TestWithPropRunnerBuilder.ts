@@ -129,6 +129,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
 
       const beforeEachHooks = collectBeforeEachHooks(suite);
       const afterEachHooks = collectAfterEachHooks(suite);
+      const pendingCleanups: (() => unknown)[] = [];
 
       if (beforeEachHooks.length > 0 || afterEachHooks.length > 0) {
         let isFirstRun = true;
@@ -141,18 +142,38 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
             return;
           }
 
-          // Between runs: close previous iteration, then open next
+          // Between runs: close previous iteration, then open next.
+          // Vitest calls beforeEach cleanup functions before afterEach hooks,
+          // so we replicate that order here.
+          for (let i = pendingCleanups.length - 1; i >= 0; i--) {
+            await pendingCleanups[i]();
+          }
+          // Clear the array in-place so the same reference stays valid
+          // inside the closure across iterations.
+          pendingCleanups.length = 0;
+
           for (const hook of afterEachHooks) {
             await hook(test.context, suite);
           }
 
           for (const hook of beforeEachHooks) {
-            await hook(test.context, suite);
+            const result = await hook(test.context, suite);
+            if (typeof result === 'function') {
+              pendingCleanups.push(result as () => unknown);
+            }
           }
         });
       }
 
       await fc.assert(propertyInstance, customParams);
+
+      // Run remaining cleanup functions from the last manual beforeEach call.
+      // Vitest supports returning a cleanup function from beforeEach; the first
+      // iteration's cleanup is handled by vitest's own afterEach lifecycle, but
+      // cleanups from iterations 2..N are captured and invoked by us.
+      for (let i = pendingCleanups.length - 1; i >= 0; i--) {
+        await pendingCleanups[i]();
+      }
     },
     timeout,
   );

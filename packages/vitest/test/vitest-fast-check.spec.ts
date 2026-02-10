@@ -302,6 +302,78 @@ describe.each<DescribeOptions>([
       },
     );
 
+    it.concurrent(
+      `should call beforeEach cleanup functions for each run in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          let cleanupCount = 0;
+          const requestedNumExecutions = 5;
+          beforeEachVi(() => {
+            return () => {
+              ++cleanupCount;
+            };
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            return true;
+          });
+          afterAllVi(() => {
+            if (cleanupCount !== requestedNumExecutions) {
+              throw new Error('beforeEach cleanup count mismatch, got: ' + cleanupCount);
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
+    it.concurrent(
+      `should call beforeEach cleanup before afterEach between runs in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          const requestedNumExecutions = 5;
+          let cleanupRan = false;
+          let sawCleanupBeforeAfterEach = true;
+          let transitions = 0;
+
+          beforeEachVi(() => {
+            cleanupRan = false;
+            return () => {
+              cleanupRan = true;
+            };
+          });
+          afterEachVi(() => {
+            transitions++;
+            // Skip the first transition — its cleanup is managed by vitest auto-lifecycle,
+            // not by our manual invocation, so ordering is outside our control.
+            if (transitions > 1 && !cleanupRan) {
+              sawCleanupBeforeAfterEach = false;
+            }
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            return true;
+          });
+          afterAllVi(() => {
+            if (!sawCleanupBeforeAfterEach) {
+              throw new Error('beforeEach cleanup was not called before afterEach');
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
