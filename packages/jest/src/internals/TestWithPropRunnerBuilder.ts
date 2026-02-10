@@ -164,33 +164,31 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
       //
       // Result: exactly N beforeEach + N afterEach for N property runs.
       const jestState = getJestCircusState();
-      if (jestState?.currentlyRunningTest) {
-        const testEntry = jestState.currentlyRunningTest;
-        const describeBlock = testEntry.parent;
-        const beforeEachHooks = collectJestBeforeEachHooks(describeBlock);
-        const afterEachHooks = collectJestAfterEachHooks(describeBlock);
+      const testEntry = jestState?.currentlyRunningTest;
+      const describeBlock = testEntry?.parent;
+      const beforeEachHooks = describeBlock ? collectJestBeforeEachHooks(describeBlock) : [];
+      const afterEachHooks = describeBlock ? collectJestAfterEachHooks(describeBlock) : [];
 
-        if (beforeEachHooks.length > 0 || afterEachHooks.length > 0) {
-          let isFirstRun = true;
+      if (beforeEachHooks.length > 0 || afterEachHooks.length > 0) {
+        let isFirstRun = true;
 
-          propertyInstance.beforeEach(async (previousHook: () => Promise<void>) => {
-            await previousHook();
+        propertyInstance.beforeEach(async (previousHook: () => Promise<void>) => {
+          await previousHook();
 
-            if (isFirstRun) {
-              isFirstRun = false;
-              return;
-            }
+          if (isFirstRun) {
+            isFirstRun = false;
+            return;
+          }
 
-            // Between runs: close previous iteration, then open next
-            for (const hook of afterEachHooks) {
-              await hook();
-            }
+          // Between runs: close previous iteration, then open next
+          for (const hook of afterEachHooks) {
+            await hook();
+          }
 
-            for (const hook of beforeEachHooks) {
-              await hook();
-            }
-          });
-        }
+          for (const hook of beforeEachHooks) {
+            await hook();
+          }
+        });
       }
 
       await fc.assert(propertyInstance, customParams);
