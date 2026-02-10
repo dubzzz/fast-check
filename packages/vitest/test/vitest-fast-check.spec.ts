@@ -2,6 +2,7 @@ import * as path from 'path';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
+import type { afterEach, beforeEach } from 'vitest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
@@ -11,6 +12,8 @@ import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 declare const afterAllVi: typeof afterAll;
+declare const beforeEachVi: typeof beforeEach;
+declare const afterEachVi: typeof afterEach;
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
@@ -141,6 +144,56 @@ describe.each<DescribeOptions>([
         afterAllVi(() => {
           if (numExecutions !== requestedNumExecutions) {
             throw new Error('Breach on numRuns, got: ' + numExecutions);
+          }
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(`should call beforeEach for each run in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let beforeEachCount = 0;
+        const requestedNumExecutions = 5;
+        beforeEachVi(() => {
+          ++beforeEachCount;
+        });
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+          return true;
+        });
+        afterAllVi(() => {
+          if (beforeEachCount !== requestedNumExecutions) {
+            throw new Error('beforeEach count mismatch, got: ' + beforeEachCount);
+          }
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(`should call afterEach for each run in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let afterEachCount = 0;
+        const requestedNumExecutions = 5;
+        afterEachVi(() => {
+          ++afterEachCount;
+        });
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+          return true;
+        });
+        afterAllVi(() => {
+          if (afterEachCount !== requestedNumExecutions) {
+            throw new Error('afterEach count mismatch, got: ' + afterEachCount);
           }
         });
       });
@@ -337,7 +390,7 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       : (testCode: string) => testCode;
   const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
-    "import {describe,afterAll as afterAllVi} from 'vitest';\n" +
+    "import {describe,afterAll as afterAllVi,beforeEach as beforeEachVi,afterEach as afterEachVi} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
