@@ -205,6 +205,103 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          const requestedNumExecutions = 5;
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          beforeEachVi(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          afterEachVi(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            if (beforeEachCount - afterEachCount !== 1) {
+              throw new Error('run: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+            return true;
+          });
+
+          afterAllVi(() => {
+            if (errors.length > 0) {
+              throw new Error('Hook order violations: ' + errors.join('; '));
+            }
+            if (beforeEachCount !== requestedNumExecutions) {
+              throw new Error('beforeEach count mismatch, got: ' + beforeEachCount);
+            }
+            if (afterEachCount !== requestedNumExecutions) {
+              throw new Error('afterEach count mismatch, got: ' + afterEachCount);
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run including shrinks in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          beforeEachVi(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          afterEachVi(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.fails.prop([fc.integer({ min: 10, max: 1000 })], { numRuns: 10 })(
+            'property',
+            (_n) => false,
+          );
+
+          afterAllVi(() => {
+            if (errors.length > 0) {
+              throw new Error('Hook order violations: ' + errors.join('; '));
+            }
+            if (beforeEachCount !== afterEachCount) {
+              throw new Error('bE/aE mismatch: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+            if (beforeEachCount < 2) {
+              throw new Error('Expected at least 2 runs (including shrinks), got: ' + beforeEachCount);
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
