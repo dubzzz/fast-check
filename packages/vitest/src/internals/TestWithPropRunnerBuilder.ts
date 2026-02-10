@@ -15,12 +15,19 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
  */
 function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
   const chain: RunnerTestSuite[] = [];
+
   let current = suite;
+
   while (current) {
     chain.push(current);
-    if ('filepath' in current) break;
-    current = current.suite || current.file;
+
+    if ('filepath' in current) {
+      break;
+    }
+
+    current = current.suite ?? current.file;
   }
+
   return chain;
 }
 
@@ -31,10 +38,15 @@ function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
 function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['beforeEach'] {
   const chain = getSuiteChain(suite);
   const hooks: ReturnType<typeof getHooks>['beforeEach'] = [];
+
   for (let i = chain.length - 1; i >= 0; i--) {
     const h = getHooks(chain[i]);
-    if (h?.beforeEach) hooks.push(...h.beforeEach);
+
+    if (h?.beforeEach !== undefined) {
+      hooks.push(...h.beforeEach);
+    }
   }
+
   return hooks;
 }
 
@@ -45,11 +57,18 @@ function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHo
  */
 function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['afterEach'] {
   const chain = getSuiteChain(suite);
+
   const hooks: ReturnType<typeof getHooks>['afterEach'] = [];
+
   for (let i = 0; i < chain.length; i++) {
     const h = getHooks(chain[i]);
-    if (h?.afterEach) hooks.push(...[...h.afterEach].reverse());
+    if (h?.afterEach !== undefined) {
+      for (let j = h.afterEach.length - 1; j >= 0; j--) {
+        hooks.push(h.afterEach[j]);
   }
+    }
+  }
+
   return hooks;
 }
 
@@ -96,7 +115,15 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
       // Result: exactly N beforeEach + N afterEach for N property runs.
       const test = getCurrentTest();
       const suite = test?.suite || test?.file;
-      if (suite) {
+
+      // `test` is undefined when called outside a test callback (e.g. in a worker thread
+      // where vitest's _test state is not set).
+      // `suite` is undefined when the test has neither a parent suite nor a file
+      // reference (top-level or detached test).
+      if (test === undefined || suite === undefined) {
+        return;
+      }
+
         const beforeEachHooks = collectBeforeEachHooks(suite);
         const afterEachHooks = collectAfterEachHooks(suite);
 
@@ -120,7 +147,6 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
               await hook(test.context, suite);
             }
           });
-        }
       }
 
       await fc.assert(propertyInstance, customParams);
