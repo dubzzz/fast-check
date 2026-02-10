@@ -16,9 +16,12 @@ function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
 function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
   const chain: RunnerTestSuite[] = [];
 
-  let current = suite;
+  let current: RunnerTestSuite = suite;
 
-  while (current) {
+  // Suite.file is required, so `current.suite ?? current.file` always yields
+  // a valid Suite or File.  The loop terminates when we reach the File node
+  // (which carries `filepath`).
+  while (true) {
     chain.push(current);
 
     if ('filepath' in current) {
@@ -65,7 +68,7 @@ function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHoo
     if (h?.afterEach !== undefined) {
       for (let j = h.afterEach.length - 1; j >= 0; j--) {
         hooks.push(h.afterEach[j]);
-  }
+      }
     }
   }
 
@@ -124,29 +127,29 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
         return;
       }
 
-        const beforeEachHooks = collectBeforeEachHooks(suite);
-        const afterEachHooks = collectAfterEachHooks(suite);
+      const beforeEachHooks = collectBeforeEachHooks(suite);
+      const afterEachHooks = collectAfterEachHooks(suite);
 
-        if (beforeEachHooks.length > 0 || afterEachHooks.length > 0) {
-          let isFirstRun = true;
+      if (beforeEachHooks.length > 0 || afterEachHooks.length > 0) {
+        let isFirstRun = true;
 
-          propertyInstance.beforeEach(async (previousHook: () => Promise<void>) => {
-            await previousHook();
+        propertyInstance.beforeEach(async (previousHook: () => Promise<void>) => {
+          await previousHook();
 
-            if (isFirstRun) {
-              isFirstRun = false;
-              return;
-            }
+          if (isFirstRun) {
+            isFirstRun = false;
+            return;
+          }
 
-            // Between runs: close previous iteration, then open next
-            for (const hook of afterEachHooks) {
-              await hook(test.context, suite);
-            }
+          // Between runs: close previous iteration, then open next
+          for (const hook of afterEachHooks) {
+            await hook(test.context, suite);
+          }
 
-            for (const hook of beforeEachHooks) {
-              await hook(test.context, suite);
-            }
-          });
+          for (const hook of beforeEachHooks) {
+            await hook(test.context, suite);
+          }
+        });
       }
 
       await fc.assert(propertyInstance, customParams);
