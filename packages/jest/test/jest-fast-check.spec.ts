@@ -328,6 +328,90 @@ describe.each<DescribeOptions>([
       // Assert
       expectPass(out);
     });
+
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, options, () => {
+          const requestedNumExecutions = 10;
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          jestBeforeEach(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          jestAfterEach(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            if (beforeEachCount - afterEachCount !== 1) {
+              throw new Error('run: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+
+          jestAfterAll(() => {
+            jestExpect(errors).toEqual([]);
+            jestExpect(beforeEachCount).toBe(requestedNumExecutions);
+            jestExpect(afterEachCount).toBe(requestedNumExecutions);
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run including shrinks in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, options, () => {
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          jestBeforeEach(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          jestAfterEach(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.failing.prop([fc.integer({ min: 10, max: 1000 })], { numRuns: 10 })(
+            'property',
+            (_n) => false,
+          );
+
+          jestAfterAll(() => {
+            jestExpect(errors).toEqual([]);
+            jestExpect(beforeEachCount).toBe(afterEachCount);
+            jestExpect(beforeEachCount).toBeGreaterThanOrEqual(2);
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
   }
 
   describe('.skip', () => {
