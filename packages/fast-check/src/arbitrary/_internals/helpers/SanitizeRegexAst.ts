@@ -7,18 +7,13 @@ function raiseUnsupportedASTNode(astNode: never): Error {
 
 type TraversalResults = { hasStart: boolean; hasEnd: boolean };
 
-function addMissingDotStarTraversalAddMissing(
-  astNode: RegexToken,
-  isFirst: boolean,
-  isLast: boolean,
-  maxLength?: number,
-): RegexToken {
+function addMissingDotStarTraversalAddMissing(astNode: RegexToken, isFirst: boolean, isLast: boolean): RegexToken {
   if (!isFirst && !isLast) {
     return astNode;
   }
   const traversalResults = { hasStart: false, hasEnd: false };
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const revampedNode = addMissingDotStarTraversal(astNode, isFirst, isLast, traversalResults, maxLength);
+  const revampedNode = addMissingDotStarTraversal(astNode, isFirst, isLast, traversalResults);
   const missingStart = isFirst && !traversalResults.hasStart;
   const missingEnd = isLast && !traversalResults.hasEnd;
   if (!missingStart && !missingEnd) {
@@ -29,10 +24,7 @@ function addMissingDotStarTraversalAddMissing(
     expressions.push({ type: 'Assertion', kind: '^' });
     expressions.push({
       type: 'Repetition',
-      quantifier:
-        maxLength !== undefined
-          ? { type: 'Quantifier', kind: 'Range', greedy: true, from: 0, to: maxLength }
-          : { type: 'Quantifier', kind: '*', greedy: true },
+      quantifier: { type: 'Quantifier', kind: '*', greedy: true },
       expression: { type: 'Char', kind: 'meta', symbol: '.', value: '.', codePoint: Number.NaN },
     });
   }
@@ -40,10 +32,7 @@ function addMissingDotStarTraversalAddMissing(
   if (missingEnd) {
     expressions.push({
       type: 'Repetition',
-      quantifier:
-        maxLength !== undefined
-          ? { type: 'Quantifier', kind: 'Range', greedy: true, from: 0, to: maxLength }
-          : { type: 'Quantifier', kind: '*', greedy: true },
+      quantifier: { type: 'Quantifier', kind: '*', greedy: true },
       expression: { type: 'Char', kind: 'meta', symbol: '.', value: '.', codePoint: Number.NaN },
     });
     expressions.push({ type: 'Assertion', kind: '$' });
@@ -56,7 +45,6 @@ function addMissingDotStarTraversal(
   isFirst: boolean,
   isLast: boolean,
   traversalResults: TraversalResults,
-  maxLength?: number,
 ): RegexToken {
   switch (astNode.type) {
     case 'Char':
@@ -75,7 +63,6 @@ function addMissingDotStarTraversal(
             node,
             isFirst && index === 0,
             isLast && index === astNode.expressions.length - 1,
-            maxLength,
           ),
         ),
       };
@@ -86,7 +73,7 @@ function addMissingDotStarTraversal(
     case 'Group': {
       return {
         ...astNode,
-        expression: addMissingDotStarTraversal(astNode.expression, isFirst, isLast, traversalResults, maxLength),
+        expression: addMissingDotStarTraversal(astNode.expression, isFirst, isLast, traversalResults),
       };
     }
     case 'Disjunction': {
@@ -94,12 +81,8 @@ function addMissingDotStarTraversal(
       traversalResults.hasEnd = true;
       return {
         ...astNode,
-        left:
-          astNode.left !== null ? addMissingDotStarTraversalAddMissing(astNode.left, isFirst, isLast, maxLength) : null,
-        right:
-          astNode.right !== null
-            ? addMissingDotStarTraversalAddMissing(astNode.right, isFirst, isLast, maxLength)
-            : null,
+        left: astNode.left !== null ? addMissingDotStarTraversalAddMissing(astNode.left, isFirst, isLast) : null,
+        right: astNode.right !== null ? addMissingDotStarTraversalAddMissing(astNode.right, isFirst, isLast) : null,
       };
     }
     case 'Assertion': {
@@ -128,6 +111,6 @@ function addMissingDotStarTraversal(
  *
  * @internal
  */
-export function addMissingDotStar(astNode: RegexToken, maxLength?: number): RegexToken {
-  return addMissingDotStarTraversalAddMissing(astNode, true, true, maxLength);
+export function addMissingDotStar(astNode: RegexToken): RegexToken {
+  return addMissingDotStarTraversalAddMissing(astNode, true, true);
 }

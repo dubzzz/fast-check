@@ -53,6 +53,23 @@ type RegexFlags = {
   dotAll: boolean;
 };
 
+function clampRangeQuantifier<TQuantifier extends { to: number | undefined }>(
+  quantifier: TQuantifier,
+  constraints: StringMatchingConstraints,
+): TQuantifier {
+  if (constraints.maxLength === undefined) {
+    // No constraints on the length requested
+    return quantifier;
+  }
+  if (quantifier.to === undefined || quantifier.to > constraints.maxLength) {
+    // On unbounded range like {3,} or on bounded range with upper bound strictly higher than the requested maxLength,
+    // fallback to the requested maxLength
+    return { ...quantifier, to: constraints.maxLength };
+  }
+  // Quantifier already bounded at or below maxLength, no adjustment needed
+  return quantifier;
+}
+
 /**
  * Convert an AST of tokens into an arbitrary able to produce the requested pattern
  * @internal
@@ -113,23 +130,11 @@ function toMatchingArbitrary(
           return string({ ...constraints, minLength: 0, maxLength: 1, unit: node });
         }
         case 'Range': {
-          // Cap quantifiers to user's maxLength constraint to prevent unbounded generation
-          const userMaxLength = constraints.maxLength;
-          const rangeMax = astNode.quantifier.to;
-          let cappedMax: number | undefined;
-          if (rangeMax === undefined) {
-            // Unbounded range like {3,} - use userMaxLength if available
-            cappedMax = userMaxLength;
-          } else if (userMaxLength !== undefined) {
-            // Bounded range - cap to userMaxLength
-            cappedMax = Math.min(rangeMax, userMaxLength);
-          } else {
-            cappedMax = rangeMax;
-          }
+          const refinedQuantifier = clampRangeQuantifier(astNode.quantifier, constraints);
           return string({
             ...constraints,
-            minLength: astNode.quantifier.from,
-            maxLength: cappedMax,
+            minLength: refinedQuantifier.from,
+            maxLength: refinedQuantifier.to,
             unit: node,
           });
         }
@@ -238,25 +243,13 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }
-  // Pass constraints to internal generation
-  // Note: maxLength is used to cap quantifiers during generation
-  const sanitizedConstraints: StringMatchingConstraints = {
-    size: constraints.size,
-    maxLength: constraints.maxLength,
-  };
-  const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
-
-  // Bound implicit wildcards when maxLength is specified
-  const regexRootToken = addMissingDotStar(tokenizeRegex(regex), constraints.maxLength);
-  const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
-
-  // Apply final maxLength filter if specified
-  // Note: We cap quantifiers during generation, but still need a filter because
-  // multiple capped components can sum to exceed maxLength
   const maxLength = constraints.maxLength;
+  const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size, maxLength };
+  const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
+  const regexRootToken = addMissingDotStar(tokenizeRegex(regex));
+  const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
   if (maxLength !== undefined) {
     return baseArbitrary.filter((s) => s.length <= maxLength);
   }
-
   return baseArbitrary;
 }
