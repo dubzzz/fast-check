@@ -70,7 +70,7 @@
     "@types/node": "^24.10.13",
     "cross-env": "^10.1.0",
     "fast-check": "workspace:*",
-    "glob": "^13.0.2",
+    "glob": "^13.0.3",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
     "replace-in-file": "^8.4.0",
