@@ -24,7 +24,7 @@ export type StringMatchingConstraints = {
   /**
    * Upper bound of the generated string length (included)
    * @defaultValue 0x7fffffff
-   * @remarks Since 3.23.0
+   * @remarks Since 4.6.0
    */
   maxLength?: number;
   /**
