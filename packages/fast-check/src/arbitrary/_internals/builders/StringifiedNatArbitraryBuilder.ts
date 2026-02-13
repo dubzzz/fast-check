@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { constantFrom } from '../../constantFrom';
-import { nat } from '../../nat';
-import { tuple } from '../../tuple';
-import { natToStringifiedNatMapper, natToStringifiedNatUnmapper } from '../mappers/NatToStringifiedNat';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { constantFrom } from '../../constantFrom.js';
+import { nat } from '../../nat.js';
+import { tuple } from '../../tuple.js';
+import { natToStringifiedNatMapper, natToStringifiedNatUnmapper } from '../mappers/NatToStringifiedNat.js';
 
 /** @internal */
 export function buildStringifiedNatArbitrary(maxValue: number): Arbitrary<string> {

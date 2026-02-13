@@ -1,19 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 
-import type { DoubleConstraints } from '../../../src/arbitrary/double';
-import { double } from '../../../src/arbitrary/double';
+import type { DoubleConstraints } from '../../../src/arbitrary/double.js';
+import { double } from '../../../src/arbitrary/double.js';
 import {
   defaultDoubleRecordConstraints,
   doubleConstraints,
   float64raw,
   isStrictlySmaller,
-} from './__test-helpers__/FloatingPointHelpers';
-import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/helpers/DoubleHelpers';
+} from './__test-helpers__/FloatingPointHelpers.js';
+import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/helpers/DoubleHelpers.js';
 
-import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from './__test-helpers__/RandomHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 import {
   assertProduceCorrectValues,
@@ -21,9 +21,9 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
-import * as BigIntMock from '../../../src/arbitrary/bigInt';
+import * as BigIntMock from '../../../src/arbitrary/bigInt.js';
 
 describe('double', () => {
   declareCleaningHooksForSpies();

@@ -1,19 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import type { OptionConstraints } from '../../../src/arbitrary/option';
-import { option } from '../../../src/arbitrary/option';
-import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
-import * as ConstantMock from '../../../src/arbitrary/constant';
-import { constant } from '../../../src/arbitrary/constant';
+import type { OptionConstraints } from '../../../src/arbitrary/option.js';
+import { option } from '../../../src/arbitrary/option.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary.js';
+import * as ConstantMock from '../../../src/arbitrary/constant.js';
+import { constant } from '../../../src/arbitrary/constant.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { sizeArb } from './__test-helpers__/SizeHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { sizeArb } from './__test-helpers__/SizeHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('option', () => {
   declareCleaningHooksForSpies();

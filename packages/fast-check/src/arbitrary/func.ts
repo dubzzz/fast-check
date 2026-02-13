@@ -1,13 +1,13 @@
-import { hash } from '../utils/hash';
-import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../utils/stringify';
-import { cloneMethod, hasCloneMethod } from '../check/symbols';
-import { array } from './array';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { integer } from './integer';
-import { noShrink } from './noShrink';
-import { tuple } from './tuple';
-import { escapeForMultilineComments } from './_internals/helpers/TextEscaper';
-import { safeMap, safeSort } from '../utils/globals';
+import { hash } from '../utils/hash.js';
+import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../utils/stringify.js';
+import { cloneMethod, hasCloneMethod } from '../check/symbols.js';
+import { array } from './array.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { integer } from './integer.js';
+import { noShrink } from './noShrink.js';
+import { tuple } from './tuple.js';
+import { escapeForMultilineComments } from './_internals/helpers/TextEscaper.js';
+import { safeMap, safeSort } from '../utils/globals.js';
 
 const safeObjectDefineProperties = Object.defineProperties;
 const safeObjectKeys = Object.keys;

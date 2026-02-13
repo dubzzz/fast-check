@@ -1,17 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import type { MapConstraints } from '../../../src/arbitrary/map';
-import { map } from '../../../src/arbitrary/map';
+import type { MapConstraints } from '../../../src/arbitrary/map.js';
+import { map } from '../../../src/arbitrary/map.js';
 
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import type { Random } from '../../../src/random/generator/Random';
-import { Stream } from '../../../src/stream/Stream';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import type { Random } from '../../../src/random/generator/Random.js';
+import { Stream } from '../../../src/stream/Stream.js';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('map (integration)', () => {
   type Extra = { keys: unknown[]; values: unknown[]; constraints?: MapConstraints };

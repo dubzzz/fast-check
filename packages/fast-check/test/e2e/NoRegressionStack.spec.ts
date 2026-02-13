@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import fc from '../../src/fast-check';
-import { runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
+import fc from '../../src/fast-check.js';
+import { runWithSanitizedStack } from './__test-helpers__/StackSanitizer.js';
 
 const settings = { seed: 42, verbose: 0 };
 

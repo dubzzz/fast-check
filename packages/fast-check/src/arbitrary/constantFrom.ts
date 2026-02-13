@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { ConstantArbitrary } from './_internals/ConstantArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { ConstantArbitrary } from './_internals/ConstantArbitrary.js';
 
 /** @internal */
 type Arrayfy<T> = T extends any[] ? T : T[];

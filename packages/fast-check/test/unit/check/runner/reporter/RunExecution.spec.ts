@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { RunExecution } from '../../../../../src/check/runner/reporter/RunExecution';
-import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel';
-import { ExecutionStatus } from '../../../../../src/fast-check';
-import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters';
+import { RunExecution } from '../../../../../src/check/runner/reporter/RunExecution.js';
+import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
+import { ExecutionStatus } from '../../../../../src/fast-check.js';
+import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 
 describe('RunExecution', () => {
   it('Should expose data coming from the last failure', () =>

@@ -2,21 +2,21 @@ import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import prand from 'pure-rand';
 
-import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { MaxLengthUpperBound } from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import type { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/CustomSet';
-import { Stream } from '../../../../src/stream/Stream';
-import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
-import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Random } from '../../../../src/random/generator/Random';
+import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { MaxLengthUpperBound } from '../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
+import type { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/CustomSet.js';
+import { Stream } from '../../../../src/stream/Stream.js';
+import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
+import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Random } from '../../../../src/random/generator/Random.js';
 
-import * as IntegerMock from '../../../../src/arbitrary/integer';
-import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
-import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree';
-import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
-import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
+import * as IntegerMock from '../../../../src/arbitrary/integer.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
+import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
+import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('ArrayArbitrary', () => {
   declareCleaningHooksForSpies();

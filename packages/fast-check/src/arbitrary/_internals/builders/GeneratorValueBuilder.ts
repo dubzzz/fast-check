@@ -1,10 +1,10 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../check/arbitrary/definition/Value';
-import { cloneMethod } from '../../../check/symbols';
-import type { Random } from '../../../random/generator/Random';
-import { safeMap, safePush } from '../../../utils/globals';
-import { stringify, toStringMethod } from '../../../utils/stringify';
-import type { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../check/arbitrary/definition/Value.js';
+import { cloneMethod } from '../../../check/symbols.js';
+import type { Random } from '../../../random/generator/Random.js';
+import { safeMap, safePush } from '../../../utils/globals.js';
+import { stringify, toStringMethod } from '../../../utils/stringify.js';
+import type { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache.js';
 
 export type InternalGeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
 

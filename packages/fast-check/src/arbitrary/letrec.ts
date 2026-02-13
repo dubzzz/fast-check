@@ -1,8 +1,8 @@
-import { LazyArbitrary } from './_internals/LazyArbitrary';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeHasOwnProperty } from '../utils/globals';
+import { LazyArbitrary } from './_internals/LazyArbitrary.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { Map as SMap, safeMapSet, safeMapGet } from '../utils/globals.js';
 
-const safeObjectCreate = Object.create;
+const safeGetOwnPropertyNames = Object.getOwnPropertyNames;
 
 /**
  * Type of the value produced by {@link letrec}
@@ -50,6 +50,21 @@ export type LetrecLooselyTypedTie = (key: string) => Arbitrary<unknown>;
  */
 export type LetrecLooselyTypedBuilder<T> = (tie: LetrecLooselyTypedTie) => LetrecValue<T>;
 
+/** @internal */
+function createLazyArbsPool<T>() {
+  const lazyArbsPool = new SMap<keyof T, LazyArbitrary<unknown>>();
+  const getLazyFromPool = (key: keyof T): LazyArbitrary<unknown> => {
+    let lazyArb = safeMapGet(lazyArbsPool, key);
+    if (lazyArb !== undefined) {
+      return lazyArb;
+    }
+    lazyArb = new LazyArbitrary(String(key));
+    safeMapSet(lazyArbsPool, key, lazyArb);
+    return lazyArb;
+  };
+  return getLazyFromPool;
+}
+
 /**
  * For mutually recursive types
  *
@@ -94,25 +109,16 @@ export function letrec<T>(builder: T extends Record<string, unknown> ? LetrecTyp
  */
 export function letrec<T>(builder: LetrecLooselyTypedBuilder<T>): LetrecValue<T>;
 export function letrec<T>(builder: LetrecLooselyTypedBuilder<T> | LetrecTypedBuilder<T>): LetrecValue<T> {
-  const lazyArbs: { [K in keyof T]?: LazyArbitrary<unknown> } = safeObjectCreate(null);
-  const tie = (key: keyof T): Arbitrary<any> => {
-    if (!safeHasOwnProperty(lazyArbs, key)) {
-      // Call to hasOwnProperty ensures that the property key will be defined
-      lazyArbs[key] = new LazyArbitrary(String(key));
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return lazyArbs[key]!;
-  };
-  const strictArbs = builder(tie as any);
-  for (const key in strictArbs) {
-    if (!safeHasOwnProperty(strictArbs, key)) {
-      // Prevents accidental iteration over properties inherited from an object’s prototype
-      continue;
-    }
-    const lazyAtKey: LazyArbitrary<unknown> | undefined = lazyArbs[key];
-    const lazyArb = lazyAtKey !== undefined ? lazyAtKey : new LazyArbitrary(key);
-    lazyArb.underlying = strictArbs[key];
-    lazyArbs[key] = lazyArb;
+  const getLazyFromPool = createLazyArbsPool<T>();
+  const strictArbs = builder(getLazyFromPool as any);
+
+  // Fill the "underlying" field for each arbitrary in the lazy pool
+  // Iterate on own-only: to prevents accidental scan over properties inherited from an object’s prototype
+  const declaredArbitraryNames = safeGetOwnPropertyNames(strictArbs) as (keyof T)[];
+  for (const name of declaredArbitraryNames) {
+    const lazyArb = getLazyFromPool(name);
+    lazyArb.underlying = strictArbs[name];
   }
+
   return strictArbs;
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { SameValueZeroSet } from '../../../../../src/arbitrary/_internals/helpers/SameValueZeroSet';
+import { SameValueZeroSet } from '../../../../../src/arbitrary/_internals/helpers/SameValueZeroSet.js';
 
 describe('SameValueZeroSet', () => {
   it('should discard strictly equal items', () => {

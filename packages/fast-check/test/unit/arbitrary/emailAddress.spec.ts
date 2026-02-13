@@ -1,18 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import type { EmailAddressConstraints } from '../../../src/arbitrary/emailAddress';
-import { emailAddress } from '../../../src/arbitrary/emailAddress';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
+import type { EmailAddressConstraints } from '../../../src/arbitrary/emailAddress.js';
+import { emailAddress } from '../../../src/arbitrary/emailAddress.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('emailAddress (integration)', () => {
   declareCleaningHooksForSpies();

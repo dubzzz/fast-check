@@ -1,19 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { base64String } from '../../../src/arbitrary/base64String';
+import { base64String } from '../../../src/arbitrary/base64String.js';
 
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
-import * as ArrayMock from '../../../src/arbitrary/array';
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers';
+import * as ArrayMock from '../../../src/arbitrary/array.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers.js';
 
 describe('base64String', () => {
   declareCleaningHooksForSpies();

@@ -1,8 +1,8 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import type { Random } from '../../../random/generator/Random';
-import { NoopSlicedGenerator } from '../implementations/NoopSlicedGenerator';
-import { SlicedBasedGenerator } from '../implementations/SlicedBasedGenerator';
-import type { SlicedGenerator } from '../interfaces/SlicedGenerator';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import type { Random } from '../../../random/generator/Random.js';
+import { NoopSlicedGenerator } from '../implementations/NoopSlicedGenerator.js';
+import { SlicedBasedGenerator } from '../implementations/SlicedBasedGenerator.js';
+import type { SlicedGenerator } from '../interfaces/SlicedGenerator.js';
 
 /**
  * Build a {@link SlicedGenerator}

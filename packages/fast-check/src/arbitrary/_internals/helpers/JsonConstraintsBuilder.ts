@@ -1,10 +1,10 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { boolean } from '../../boolean';
-import { constant } from '../../constant';
-import { double } from '../../double';
-import type { StringConstraints } from '../../string';
-import type { DepthSize } from './MaxLengthFromMinLength';
-import type { ObjectConstraints } from './QualifiedObjectConstraints';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { boolean } from '../../boolean.js';
+import { constant } from '../../constant.js';
+import { double } from '../../double.js';
+import type { StringConstraints } from '../../string.js';
+import type { DepthSize } from './MaxLengthFromMinLength.js';
+import type { ObjectConstraints } from './QualifiedObjectConstraints.js';
 
 /**
  * Shared constraints for:

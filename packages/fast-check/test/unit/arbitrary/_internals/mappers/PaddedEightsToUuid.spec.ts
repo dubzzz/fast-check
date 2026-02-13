@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
   paddedEightsToUuidMapper,
   paddedEightsToUuidUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/PaddedEightsToUuid';
+} from '../../../../../src/arbitrary/_internals/mappers/PaddedEightsToUuid.js';
 
 const items = '0123456789abcdef';
 function hexa(): fc.Arbitrary<string> {

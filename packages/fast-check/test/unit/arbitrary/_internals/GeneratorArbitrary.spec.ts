@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { GeneratorArbitrary } from '../../../../src/arbitrary/_internals/GeneratorArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import type { Random } from '../../../../src/random/generator/Random';
-import { Stream } from '../../../../src/stream/Stream';
-import type { MockWithArgs } from '../../__test-helpers__/Mocked';
-import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { GeneratorArbitrary } from '../../../../src/arbitrary/_internals/GeneratorArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import type { Random } from '../../../../src/random/generator/Random.js';
+import { Stream } from '../../../../src/stream/Stream.js';
+import type { MockWithArgs } from '../../__test-helpers__/Mocked.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
 describe('GeneratorArbitrary', () => {
   describe('generate', () => {

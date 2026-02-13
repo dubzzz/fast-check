@@ -162,8 +162,7 @@ describe('trackDiffsOnGlobals', () => {
     const allGlobals: AllGlobals = PoisoningFreeMap.from<unknown, GlobalDetails>([
       [globalA, extractGlobalDetailsFor('globalA', globalA)],
     ]);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error - Cannot delete required property 'hello' from object, intentionally deleting for testing prototype chain behavior
     delete globalA.hello; // deleting hello from globalA but globalA.hello can still be called (prototype call)
 
     // Act

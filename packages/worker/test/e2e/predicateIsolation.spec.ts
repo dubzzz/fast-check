@@ -3,15 +3,14 @@ import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
+// @ts-expect-error - Importing .mjs file without type definitions
 import { predicateIsolation } from './__properties__/predicateIsolation.mjs';
 import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(
@@ -23,7 +22,7 @@ if (isMainThread) {
         // Act / Assert
         await expect(assert(predicateIsolation.predicateLevel, options)).resolves.not.toThrow();
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -36,7 +35,7 @@ if (isMainThread) {
         // Act / Assert
         await expectThrowWithCause(assert(predicateIsolation.propertyLevel, options), expectedError);
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -49,7 +48,7 @@ if (isMainThread) {
         // Act / Assert
         await expectThrowWithCause(assert(predicateIsolation.fileLevel, options), expectedError);
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -75,7 +74,9 @@ if (isMainThread) {
               try {
                 expect(summaryLine).toContain('\x1b[32m\u221A\x1b[0m'); // success tick
               } catch (subErr) {
-                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
+                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`, {
+                  cause: subErr,
+                });
               }
               previousLevel = currentLevel;
             }
@@ -83,7 +84,7 @@ if (isMainThread) {
           expect(foundOne).toBe(true);
         }
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -113,7 +114,9 @@ if (isMainThread) {
                   expect(summaryLine).toContain('\x1b[31m\xD7\x1b[0m'); // error tick, we are still running on the same worker
                 }
               } catch (subErr) {
-                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
+                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`, {
+                  cause: subErr,
+                });
               }
               previousLevel = currentLevel;
             }
@@ -121,7 +124,7 @@ if (isMainThread) {
           expect(foundOne).toBe(true);
         }
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

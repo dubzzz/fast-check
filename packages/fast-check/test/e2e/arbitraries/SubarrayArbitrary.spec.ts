@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as fc from '../../../src/fast-check';
-import { seed } from '../seed';
+import * as fc from '../../../src/fast-check.js';
+import { seed } from '../seed.js';
 
 const src = [1, 25, 42, 0, -12];
 

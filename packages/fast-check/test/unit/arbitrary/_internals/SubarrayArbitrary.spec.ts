@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { SubarrayArbitrary } from '../../../../src/arbitrary/_internals/SubarrayArbitrary';
+import { SubarrayArbitrary } from '../../../../src/arbitrary/_internals/SubarrayArbitrary.js';
 
 import {
   assertProduceSameValueGivenSameSeed,
@@ -8,7 +8,7 @@ import {
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from '../__test-helpers__/ArbitraryAssertions';
+} from '../__test-helpers__/ArbitraryAssertions.js';
 
 describe('SubarrayArbitrary', () => {
   describe('constructor', () => {

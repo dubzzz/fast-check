@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { arrayToMapUnmapper } from '../../../../../src/arbitrary/_internals/mappers/ArrayToMap';
+import { arrayToMapUnmapper } from '../../../../../src/arbitrary/_internals/mappers/ArrayToMap.js';
 
 describe('arrayToMapUnmapper', () => {
   it('should be able to unmap a Map with primitives', () => {

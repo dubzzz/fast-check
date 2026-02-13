@@ -1,13 +1,13 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { AsyncCommand } from '../check/model/command/AsyncCommand';
-import type { Command } from '../check/model/command/Command';
-import type { ICommand } from '../check/model/command/ICommand';
-import type { CommandsContraints } from '../check/model/commands/CommandsContraints';
-import { CommandsArbitrary } from './_internals/CommandsArbitrary';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { AsyncCommand } from '../check/model/command/AsyncCommand.js';
+import type { Command } from '../check/model/command/Command.js';
+import type { ICommand } from '../check/model/command/ICommand.js';
+import type { CommandsContraints } from '../check/model/commands/CommandsContraints.js';
+import { CommandsArbitrary } from './_internals/CommandsArbitrary.js';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
   MaxLengthUpperBound,
-} from './_internals/helpers/MaxLengthFromMinLength';
+} from './_internals/helpers/MaxLengthFromMinLength.js';
 
 /**
  * For arrays of {@link AsyncCommand} to be executed by {@link asyncModelRun}

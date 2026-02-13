@@ -1,4 +1,4 @@
-import { safeEndsWith, safeJoin, safeSlice, safeSplit, safeStartsWith, safeSubstring } from '../../../utils/globals';
+import { safeEndsWith, safeJoin, safeSlice, safeSplit, safeStartsWith, safeSubstring } from '../../../utils/globals.js';
 
 /** @internal */
 function readBh(value: string): string[] {

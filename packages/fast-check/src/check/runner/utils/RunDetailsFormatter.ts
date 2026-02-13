@@ -7,17 +7,17 @@ import {
   safeReplace,
   safeToString,
   String,
-} from '../../../utils/globals';
-import { stringify, possiblyAsyncStringify } from '../../../utils/stringify';
-import { VerbosityLevel } from '../configuration/VerbosityLevel';
-import { ExecutionStatus } from '../reporter/ExecutionStatus';
-import type { ExecutionTree } from '../reporter/ExecutionTree';
+} from '../../../utils/globals.js';
+import { stringify, possiblyAsyncStringify } from '../../../utils/stringify.js';
+import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
+import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
+import type { ExecutionTree } from '../reporter/ExecutionTree.js';
 import type {
   RunDetails,
   RunDetailsFailureInterrupted,
   RunDetailsFailureProperty,
   RunDetailsFailureTooManySkips,
-} from '../reporter/RunDetails';
+} from '../reporter/RunDetails.js';
 
 const safeObjectAssign = Object.assign;
 
@@ -38,8 +38,8 @@ function formatFailures<Ts>(failures: Ts[], stringifyOne: (value: Ts) => string)
 function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringifyOne: (value: Ts) => string): string {
   const summaryLines: string[] = [];
   const remainingTreesAndDepth: { depth: number; tree: ExecutionTree<Ts> }[] = [];
-  for (const tree of executionTrees.slice().reverse()) {
-    remainingTreesAndDepth.push({ depth: 1, tree });
+  for (let i = executionTrees.length - 1; i >= 0; --i) {
+    remainingTreesAndDepth.push({ depth: 1, tree: executionTrees[i] });
   }
   while (remainingTreesAndDepth.length !== 0) {
     // There is at least one item to pop (remainingTreesAndDepth.length !== 0)
@@ -56,12 +56,12 @@ function formatExecutionSummary<Ts>(executionTrees: ExecutionTree<Ts>[], stringi
         : currentTree.status === ExecutionStatus.Failure
           ? '\x1b[31m\xD7\x1b[0m'
           : '\x1b[33m!\x1b[0m';
-    const leftPadding = Array(currentDepth).join('. ');
+    const leftPadding = currentDepth !== 0 ? '. '.repeat(currentDepth - 1) : '';
     summaryLines.push(`${leftPadding}${statusIcon} ${stringifyOne(currentTree.value)}`);
 
     // push its children to the queue
-    for (const tree of currentTree.children.slice().reverse()) {
-      remainingTreesAndDepth.push({ depth: currentDepth + 1, tree });
+    for (let i = currentTree.children.length - 1; i >= 0; --i) {
+      remainingTreesAndDepth.push({ depth: currentDepth + 1, tree: currentTree.children[i] });
     }
   }
   return `Execution summary:\n${summaryLines.join('\n')}`;
@@ -72,7 +72,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
   const message = `Failed to run property, too many pre-condition failures encountered\n{ seed: ${out.seed} }\n\nRan ${out.numRuns} time(s)\nSkipped ${out.numSkips} time(s)`;
   let details: string | null = null;
   const hints = [
-    'Try to reduce the number of rejected values by combining map, flatMap and built-in arbitraries',
+    'Try to reduce the number of rejected values by combining map, chain and built-in arbitraries',
     'Increase failure tolerance by setting maxSkipsPerRun to an higher value',
   ];
 
@@ -182,7 +182,7 @@ function defaultReportMessageInternal<Ts>(
       : preFormatFailure(out, stringifyOne);
 
   let errorMessage = message;
-  if (details != null) errorMessage += `\n\n${details}`;
+  if (details !== null) errorMessage += `\n\n${details}`;
   if (hints.length > 0) errorMessage += `\n\n${formatHints(hints)}`;
   return errorMessage;
 }
@@ -291,8 +291,7 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
   if (out.runConfiguration.includeErrorInReport) {
     throw new Error(errorMessage);
   }
-  const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
-  const error = new ErrorWithCause(errorMessage, { cause: out.errorInstance });
+  const error = new Error(errorMessage, { cause: out.errorInstance });
   if (!('cause' in error)) {
     safeObjectAssign(error, { cause: out.errorInstance });
   }

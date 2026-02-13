@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 slug: /support-us/
 sidebar_label: Support us ❤️
 ---

@@ -10,3 +10,15 @@ ignoredBuiltDependencies:
   - es5-ext
   - esbuild
   - unrs-resolver
+
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - '@octokit/endpoint@9.0.6'
+  - '@octokit/plugin-paginate-rest@9.2.2'
+  - '@swc/core@1.13.3'
+  - detect-port@1.6.1
+  - langium@3.3.1
+  - rxjs@7.8.2
+  - semver@6.3.1
+  - undici@5.29.0 || 6.21.3
+  - undici-types@6.21.0

@@ -1,14 +1,14 @@
-import { pre } from './check/precondition/Pre';
+import { pre } from './check/precondition/Pre.js';
 import type {
   IAsyncProperty,
   IAsyncPropertyWithHooks,
   AsyncPropertyHookFunction,
-} from './check/property/AsyncProperty';
-import { asyncProperty } from './check/property/AsyncProperty';
-import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './check/property/Property';
-import { property } from './check/property/Property';
-import type { IRawProperty, PropertyFailure } from './check/property/IRawProperty';
-import type { Parameters } from './check/runner/configuration/Parameters';
+} from './check/property/AsyncProperty.js';
+import { asyncProperty } from './check/property/AsyncProperty.js';
+import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './check/property/Property.js';
+import { property } from './check/property/Property.js';
+import type { IRawProperty, PropertyFailure } from './check/property/IRawProperty.js';
+import type { Parameters } from './check/runner/configuration/Parameters.js';
 import type {
   RunDetails,
   RunDetailsFailureProperty,
@@ -16,139 +16,148 @@ import type {
   RunDetailsFailureInterrupted,
   RunDetailsSuccess,
   RunDetailsCommon,
-} from './check/runner/reporter/RunDetails';
-import { assert, check } from './check/runner/Runner';
-import { sample, statistics } from './check/runner/Sampler';
+} from './check/runner/reporter/RunDetails.js';
+import { assert, check } from './check/runner/Runner.js';
+import { sample, statistics } from './check/runner/Sampler.js';
 
-import type { GeneratorValue } from './arbitrary/gen';
-import { gen } from './arbitrary/gen';
-import type { ArrayConstraints } from './arbitrary/array';
-import { array } from './arbitrary/array';
-import type { BigIntConstraints } from './arbitrary/bigInt';
-import { bigInt } from './arbitrary/bigInt';
-import { boolean } from './arbitrary/boolean';
-import type { FalsyContraints, FalsyValue } from './arbitrary/falsy';
-import { falsy } from './arbitrary/falsy';
-import { constant } from './arbitrary/constant';
-import { constantFrom } from './arbitrary/constantFrom';
-import type { ContextValue } from './arbitrary/context';
-import { context } from './arbitrary/context';
-import type { DateConstraints } from './arbitrary/date';
-import { date } from './arbitrary/date';
-import type { CloneValue } from './arbitrary/clone';
-import { clone } from './arbitrary/clone';
-import type { DictionaryConstraints } from './arbitrary/dictionary';
-import { dictionary } from './arbitrary/dictionary';
-import type { EmailAddressConstraints } from './arbitrary/emailAddress';
-import { emailAddress } from './arbitrary/emailAddress';
-import type { DoubleConstraints } from './arbitrary/double';
-import { double } from './arbitrary/double';
-import type { FloatConstraints } from './arbitrary/float';
-import { float } from './arbitrary/float';
-import { compareBooleanFunc } from './arbitrary/compareBooleanFunc';
-import { compareFunc } from './arbitrary/compareFunc';
-import { func } from './arbitrary/func';
-import type { DomainConstraints } from './arbitrary/domain';
-import { domain } from './arbitrary/domain';
-import type { IntegerConstraints } from './arbitrary/integer';
-import { integer } from './arbitrary/integer';
-import { maxSafeInteger } from './arbitrary/maxSafeInteger';
-import { maxSafeNat } from './arbitrary/maxSafeNat';
-import type { NatConstraints } from './arbitrary/nat';
-import { nat } from './arbitrary/nat';
-import { ipV4 } from './arbitrary/ipV4';
-import { ipV4Extended } from './arbitrary/ipV4Extended';
-import { ipV6 } from './arbitrary/ipV6';
+import type { GeneratorValue } from './arbitrary/gen.js';
+import { gen } from './arbitrary/gen.js';
+import type { ArrayConstraints } from './arbitrary/array.js';
+import { array } from './arbitrary/array.js';
+import type { BigIntConstraints } from './arbitrary/bigInt.js';
+import { bigInt } from './arbitrary/bigInt.js';
+import { boolean } from './arbitrary/boolean.js';
+import type { FalsyContraints, FalsyValue } from './arbitrary/falsy.js';
+import { falsy } from './arbitrary/falsy.js';
+import { constant } from './arbitrary/constant.js';
+import { constantFrom } from './arbitrary/constantFrom.js';
+import type { ContextValue } from './arbitrary/context.js';
+import { context } from './arbitrary/context.js';
+import type { DateConstraints } from './arbitrary/date.js';
+import { date } from './arbitrary/date.js';
+import type { CloneValue } from './arbitrary/clone.js';
+import { clone } from './arbitrary/clone.js';
+import type { DictionaryConstraints } from './arbitrary/dictionary.js';
+import { dictionary } from './arbitrary/dictionary.js';
+import type { EmailAddressConstraints } from './arbitrary/emailAddress.js';
+import { emailAddress } from './arbitrary/emailAddress.js';
+import type { DoubleConstraints } from './arbitrary/double.js';
+import { double } from './arbitrary/double.js';
+import type { FloatConstraints } from './arbitrary/float.js';
+import { float } from './arbitrary/float.js';
+import { compareBooleanFunc } from './arbitrary/compareBooleanFunc.js';
+import { compareFunc } from './arbitrary/compareFunc.js';
+import { func } from './arbitrary/func.js';
+import type { DomainConstraints } from './arbitrary/domain.js';
+import { domain } from './arbitrary/domain.js';
+import type { IntegerConstraints } from './arbitrary/integer.js';
+import { integer } from './arbitrary/integer.js';
+import { maxSafeInteger } from './arbitrary/maxSafeInteger.js';
+import { maxSafeNat } from './arbitrary/maxSafeNat.js';
+import type { NatConstraints } from './arbitrary/nat.js';
+import { nat } from './arbitrary/nat.js';
+import { ipV4 } from './arbitrary/ipV4.js';
+import { ipV4Extended } from './arbitrary/ipV4Extended.js';
+import { ipV6 } from './arbitrary/ipV6.js';
 import type {
   LetrecValue,
   LetrecLooselyTypedBuilder,
   LetrecLooselyTypedTie,
   LetrecTypedBuilder,
   LetrecTypedTie,
-} from './arbitrary/letrec';
-import { letrec } from './arbitrary/letrec';
-import type { LoremConstraints } from './arbitrary/lorem';
-import { lorem } from './arbitrary/lorem';
-import type { MapConstraints } from './arbitrary/map';
-import { map } from './arbitrary/map';
-import { mapToConstant } from './arbitrary/mapToConstant';
-import type { Memo } from './arbitrary/memo';
-import { memo } from './arbitrary/memo';
-import type { MixedCaseConstraints } from './arbitrary/mixedCase';
-import { mixedCase } from './arbitrary/mixedCase';
-import type { ObjectConstraints } from './arbitrary/object';
-import { object } from './arbitrary/object';
-import type { JsonSharedConstraints } from './arbitrary/json';
-import { json } from './arbitrary/json';
-import { anything } from './arbitrary/anything';
-import type { JsonValue } from './arbitrary/jsonValue';
-import { jsonValue } from './arbitrary/jsonValue';
-import type { OneOfValue, OneOfConstraints, MaybeWeightedArbitrary, WeightedArbitrary } from './arbitrary/oneof';
-import { oneof } from './arbitrary/oneof';
-import type { OptionConstraints } from './arbitrary/option';
-import { option } from './arbitrary/option';
-import type { RecordConstraints, RecordValue } from './arbitrary/record';
-import { record } from './arbitrary/record';
+} from './arbitrary/letrec.js';
+import { letrec } from './arbitrary/letrec.js';
+import type {
+  EntityGraphArbitraries,
+  EntityGraphContraints,
+  EntityGraphRelations,
+  EntityGraphValue,
+} from './arbitrary/entityGraph.js';
+import { entityGraph } from './arbitrary/entityGraph.js';
+import type { LoremConstraints } from './arbitrary/lorem.js';
+import { lorem } from './arbitrary/lorem.js';
+import type { MapConstraints } from './arbitrary/map.js';
+import { map } from './arbitrary/map.js';
+import { mapToConstant } from './arbitrary/mapToConstant.js';
+import type { Memo } from './arbitrary/memo.js';
+import { memo } from './arbitrary/memo.js';
+import type { MixedCaseConstraints } from './arbitrary/mixedCase.js';
+import { mixedCase } from './arbitrary/mixedCase.js';
+import type { ObjectConstraints } from './arbitrary/object.js';
+import { object } from './arbitrary/object.js';
+import type { JsonSharedConstraints } from './arbitrary/json.js';
+import { json } from './arbitrary/json.js';
+import { anything } from './arbitrary/anything.js';
+import type { JsonValue } from './arbitrary/jsonValue.js';
+import { jsonValue } from './arbitrary/jsonValue.js';
+import type { OneOfValue, OneOfConstraints, MaybeWeightedArbitrary, WeightedArbitrary } from './arbitrary/oneof.js';
+import { oneof } from './arbitrary/oneof.js';
+import type { OptionConstraints } from './arbitrary/option.js';
+import { option } from './arbitrary/option.js';
+import type { RecordConstraints, RecordValue } from './arbitrary/record.js';
+import { record } from './arbitrary/record.js';
 import type {
   UniqueArrayConstraints,
   UniqueArraySharedConstraints,
   UniqueArrayConstraintsRecommended,
   UniqueArrayConstraintsCustomCompare,
   UniqueArrayConstraintsCustomCompareSelect,
-} from './arbitrary/uniqueArray';
-import { uniqueArray } from './arbitrary/uniqueArray';
-import { infiniteStream } from './arbitrary/infiniteStream';
-import { base64String } from './arbitrary/base64String';
-import type { StringSharedConstraints, StringConstraints } from './arbitrary/string';
-import { string } from './arbitrary/string';
-import type { SubarrayConstraints } from './arbitrary/subarray';
-import { subarray } from './arbitrary/subarray';
-import type { ShuffledSubarrayConstraints } from './arbitrary/shuffledSubarray';
-import { shuffledSubarray } from './arbitrary/shuffledSubarray';
-import { tuple } from './arbitrary/tuple';
-import { ulid } from './arbitrary/ulid';
-import { uuid } from './arbitrary/uuid';
-import type { UuidConstraints } from './arbitrary/uuid';
-import type { WebAuthorityConstraints } from './arbitrary/webAuthority';
-import { webAuthority } from './arbitrary/webAuthority';
-import type { WebFragmentsConstraints } from './arbitrary/webFragments';
-import { webFragments } from './arbitrary/webFragments';
-import type { WebPathConstraints } from './arbitrary/webPath';
-import { webPath } from './arbitrary/webPath';
-import type { WebQueryParametersConstraints } from './arbitrary/webQueryParameters';
-import { webQueryParameters } from './arbitrary/webQueryParameters';
-import type { WebSegmentConstraints } from './arbitrary/webSegment';
-import { webSegment } from './arbitrary/webSegment';
-import type { WebUrlConstraints } from './arbitrary/webUrl';
-import { webUrl } from './arbitrary/webUrl';
+} from './arbitrary/uniqueArray.js';
+import { uniqueArray } from './arbitrary/uniqueArray.js';
+import type { SetConstraints } from './arbitrary/set.js';
+import { set } from './arbitrary/set.js';
+import { infiniteStream } from './arbitrary/infiniteStream.js';
+import { base64String } from './arbitrary/base64String.js';
+import type { StringSharedConstraints, StringConstraints } from './arbitrary/string.js';
+import { string } from './arbitrary/string.js';
+import type { SubarrayConstraints } from './arbitrary/subarray.js';
+import { subarray } from './arbitrary/subarray.js';
+import type { ShuffledSubarrayConstraints } from './arbitrary/shuffledSubarray.js';
+import { shuffledSubarray } from './arbitrary/shuffledSubarray.js';
+import { tuple } from './arbitrary/tuple.js';
+import { ulid } from './arbitrary/ulid.js';
+import { uuid } from './arbitrary/uuid.js';
+import type { UuidConstraints } from './arbitrary/uuid.js';
+import type { WebAuthorityConstraints } from './arbitrary/webAuthority.js';
+import { webAuthority } from './arbitrary/webAuthority.js';
+import type { WebFragmentsConstraints } from './arbitrary/webFragments.js';
+import { webFragments } from './arbitrary/webFragments.js';
+import type { WebPathConstraints } from './arbitrary/webPath.js';
+import { webPath } from './arbitrary/webPath.js';
+import type { WebQueryParametersConstraints } from './arbitrary/webQueryParameters.js';
+import { webQueryParameters } from './arbitrary/webQueryParameters.js';
+import type { WebSegmentConstraints } from './arbitrary/webSegment.js';
+import { webSegment } from './arbitrary/webSegment.js';
+import type { WebUrlConstraints } from './arbitrary/webUrl.js';
+import { webUrl } from './arbitrary/webUrl.js';
 
-import type { AsyncCommand } from './check/model/command/AsyncCommand';
-import type { Command } from './check/model/command/Command';
-import type { ICommand } from './check/model/command/ICommand';
-import { commands } from './arbitrary/commands';
-import type { ModelRunSetup, ModelRunAsyncSetup } from './check/model/ModelRunner';
-import { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelRunner';
+import type { AsyncCommand } from './check/model/command/AsyncCommand.js';
+import type { Command } from './check/model/command/Command.js';
+import type { ICommand } from './check/model/command/ICommand.js';
+import { commands } from './arbitrary/commands.js';
+import type { ModelRunSetup, ModelRunAsyncSetup } from './check/model/ModelRunner.js';
+import { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelRunner.js';
 
-import { Random } from './random/generator/Random';
+import { Random } from './random/generator/Random.js';
 
 import type {
   GlobalParameters,
   GlobalAsyncPropertyHookFunction,
   GlobalPropertyHookFunction,
-} from './check/runner/configuration/GlobalParameters';
+} from './check/runner/configuration/GlobalParameters.js';
 import {
   configureGlobal,
   readConfigureGlobal,
   resetConfigureGlobal,
-} from './check/runner/configuration/GlobalParameters';
-import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel';
-import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus';
-import type { ExecutionTree } from './check/runner/reporter/ExecutionTree';
-import type { WithCloneMethod } from './check/symbols';
-import { cloneMethod, cloneIfNeeded, hasCloneMethod } from './check/symbols';
-import { Stream, stream } from './stream/Stream';
-import { hash } from './utils/hash';
-import type { WithToStringMethod, WithAsyncToStringMethod } from './utils/stringify';
+} from './check/runner/configuration/GlobalParameters.js';
+import { VerbosityLevel } from './check/runner/configuration/VerbosityLevel.js';
+import { ExecutionStatus } from './check/runner/reporter/ExecutionStatus.js';
+import type { ExecutionTree } from './check/runner/reporter/ExecutionTree.js';
+import type { WithCloneMethod } from './check/symbols.js';
+import { cloneMethod, cloneIfNeeded, hasCloneMethod } from './check/symbols.js';
+import { Stream, stream } from './stream/Stream.js';
+import { hash } from './utils/hash.js';
+import type { WithToStringMethod, WithAsyncToStringMethod } from './utils/stringify.js';
 import {
   stringify,
   asyncStringify,
@@ -156,46 +165,46 @@ import {
   hasToStringMethod,
   asyncToStringMethod,
   hasAsyncToStringMethod,
-} from './utils/stringify';
+} from './utils/stringify.js';
 import type {
   Scheduler,
   SchedulerSequenceItem,
   SchedulerReportItem,
   SchedulerConstraints,
-} from './arbitrary/scheduler';
-import { scheduler, schedulerFor } from './arbitrary/scheduler';
-import { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter';
-import type { CommandsContraints } from './check/model/commands/CommandsContraints';
-import { PreconditionFailure } from './check/precondition/PreconditionFailure';
-import type { RandomType } from './check/runner/configuration/RandomType';
-import type { IntArrayConstraints } from './arbitrary/int8Array';
-import { int8Array } from './arbitrary/int8Array';
-import { int16Array } from './arbitrary/int16Array';
-import { int32Array } from './arbitrary/int32Array';
-import { uint8Array } from './arbitrary/uint8Array';
-import { uint8ClampedArray } from './arbitrary/uint8ClampedArray';
-import { uint16Array } from './arbitrary/uint16Array';
-import { uint32Array } from './arbitrary/uint32Array';
-import type { Float32ArrayConstraints } from './arbitrary/float32Array';
-import { float32Array } from './arbitrary/float32Array';
-import type { Float64ArrayConstraints } from './arbitrary/float64Array';
-import { float64Array } from './arbitrary/float64Array';
-import type { SparseArrayConstraints } from './arbitrary/sparseArray';
-import { sparseArray } from './arbitrary/sparseArray';
-import { Arbitrary } from './check/arbitrary/definition/Arbitrary';
-import { Value } from './check/arbitrary/definition/Value';
-import type { Size, SizeForArbitrary, DepthSize } from './arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import type { DepthContext, DepthIdentifier } from './arbitrary/_internals/helpers/DepthContext';
-import { createDepthIdentifier, getDepthContextFor } from './arbitrary/_internals/helpers/DepthContext';
-import type { BigIntArrayConstraints } from './arbitrary/bigInt64Array';
-import { bigInt64Array } from './arbitrary/bigInt64Array';
-import { bigUint64Array } from './arbitrary/bigUint64Array';
-import type { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler';
-import type { StringMatchingConstraints } from './arbitrary/stringMatching';
-import { stringMatching } from './arbitrary/stringMatching';
-import { noShrink } from './arbitrary/noShrink';
-import { noBias } from './arbitrary/noBias';
-import { limitShrink } from './arbitrary/limitShrink';
+} from './arbitrary/scheduler.js';
+import { scheduler, schedulerFor } from './arbitrary/scheduler.js';
+import { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter.js';
+import type { CommandsContraints } from './check/model/commands/CommandsContraints.js';
+import { PreconditionFailure } from './check/precondition/PreconditionFailure.js';
+import type { RandomType } from './check/runner/configuration/RandomType.js';
+import type { IntArrayConstraints } from './arbitrary/int8Array.js';
+import { int8Array } from './arbitrary/int8Array.js';
+import { int16Array } from './arbitrary/int16Array.js';
+import { int32Array } from './arbitrary/int32Array.js';
+import { uint8Array } from './arbitrary/uint8Array.js';
+import { uint8ClampedArray } from './arbitrary/uint8ClampedArray.js';
+import { uint16Array } from './arbitrary/uint16Array.js';
+import { uint32Array } from './arbitrary/uint32Array.js';
+import type { Float32ArrayConstraints } from './arbitrary/float32Array.js';
+import { float32Array } from './arbitrary/float32Array.js';
+import type { Float64ArrayConstraints } from './arbitrary/float64Array.js';
+import { float64Array } from './arbitrary/float64Array.js';
+import type { SparseArrayConstraints } from './arbitrary/sparseArray.js';
+import { sparseArray } from './arbitrary/sparseArray.js';
+import { Arbitrary } from './check/arbitrary/definition/Arbitrary.js';
+import { Value } from './check/arbitrary/definition/Value.js';
+import type { Size, SizeForArbitrary, DepthSize } from './arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthContext, DepthIdentifier } from './arbitrary/_internals/helpers/DepthContext.js';
+import { createDepthIdentifier, getDepthContextFor } from './arbitrary/_internals/helpers/DepthContext.js';
+import type { BigIntArrayConstraints } from './arbitrary/bigInt64Array.js';
+import { bigInt64Array } from './arbitrary/bigInt64Array.js';
+import { bigUint64Array } from './arbitrary/bigUint64Array.js';
+import type { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler.js';
+import type { StringMatchingConstraints } from './arbitrary/stringMatching.js';
+import { stringMatching } from './arbitrary/stringMatching.js';
+import { noShrink } from './arbitrary/noShrink.js';
+import { noBias } from './arbitrary/noBias.js';
+import { limitShrink } from './arbitrary/limitShrink.js';
 
 // Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
 /**
@@ -255,6 +264,7 @@ export type {
   DomainConstraints,
   DoubleConstraints,
   EmailAddressConstraints,
+  EntityGraphContraints,
   FalsyContraints,
   Float32ArrayConstraints,
   Float64ArrayConstraints,
@@ -271,6 +281,7 @@ export type {
   OptionConstraints,
   RecordConstraints,
   SchedulerConstraints,
+  SetConstraints,
   UniqueArrayConstraints,
   UniqueArraySharedConstraints,
   UniqueArrayConstraintsRecommended,
@@ -295,8 +306,11 @@ export type {
   LetrecTypedBuilder,
   LetrecLooselyTypedTie,
   LetrecLooselyTypedBuilder,
+  EntityGraphArbitraries,
+  EntityGraphRelations,
   CloneValue,
   ContextValue,
+  EntityGraphValue,
   FalsyValue,
   GeneratorValue,
   JsonValue,
@@ -361,6 +375,7 @@ export {
   array,
   sparseArray,
   infiniteStream,
+  set,
   uniqueArray,
   tuple,
   record,
@@ -372,6 +387,7 @@ export {
   jsonValue,
   letrec,
   memo,
+  entityGraph,
   compareBooleanFunc,
   compareFunc,
   func,

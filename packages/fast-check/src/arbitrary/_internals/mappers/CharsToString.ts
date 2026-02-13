@@ -1,4 +1,4 @@
-import { safeJoin, safeSplit } from '../../../utils/globals';
+import { safeJoin, safeSplit } from '../../../utils/globals.js';
 
 /** @internal */
 export function charsToStringMapper(tab: string[]): string {

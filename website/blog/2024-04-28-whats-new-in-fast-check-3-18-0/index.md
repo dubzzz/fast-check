@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.18.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, floating-point, numbers]
 ---
 
 This release introduces some new opt-in options on floating point number arbitraries such as `float` and `double`. They offer simpler ways to only produce non-integer numerical values.

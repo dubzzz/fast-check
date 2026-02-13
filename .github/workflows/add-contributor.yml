@@ -20,13 +20,14 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          persist-credentials: true
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -37,15 +38,21 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - name: Add contributor
-        run: pnpm run contributor:add ${{ github.event.inputs.username }} ${{ github.event.inputs.contribution }}
+        env:
+          USERNAME: ${{ github.event.inputs.username }}
+          CONTRIBUTION: ${{ github.event.inputs.contribution }}
+        run: pnpm run contributor:add "$USERNAME" "$CONTRIBUTION"
       - name: Format files
         run: pnpm run format
       - name: Create Pull Request
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        env:
+          USERNAME: ${{ github.event.inputs.username }}
+          CONTRIBUTION: ${{ github.event.inputs.contribution }}
         with:
           script: |
-            const username = '${{ github.event.inputs.username }}';
-            const contribution = '${{ github.event.inputs.contribution }}';
+            const username = process.env.USERNAME;
+            const contribution = process.env.CONTRIBUTION;
             const branchName = `contributor/add-${username}`;
             const commitMessage = `👥 Add ${username} as ${contribution} contributor`;
 

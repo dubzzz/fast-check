@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as fc from '../../../src/fast-check';
-import { FailureCommand, SuccessCommand } from './StepCommands';
+import * as fc from '../../../src/fast-check.js';
+import { FailureCommand, SuccessCommand } from './StepCommands.js';
 import {
   IncreaseCommand,
   DecreaseCommand,
@@ -8,8 +8,8 @@ import {
   OddCommand,
   CheckLessThanCommand,
   SuccessAlwaysCommand,
-} from './CounterCommands';
-import { seed } from '../seed';
+} from './CounterCommands.js';
+import { seed } from '../seed.js';
 
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {

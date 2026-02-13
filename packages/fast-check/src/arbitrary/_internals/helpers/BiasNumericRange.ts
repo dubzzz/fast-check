@@ -1,4 +1,4 @@
-import { BigInt, String } from '../../../utils/globals';
+import { BigInt, String } from '../../../utils/globals.js';
 
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;

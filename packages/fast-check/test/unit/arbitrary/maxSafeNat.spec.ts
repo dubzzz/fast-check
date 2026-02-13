@@ -1,9 +1,9 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { maxSafeNat } from '../../../src/arbitrary/maxSafeNat';
+import { maxSafeNat } from '../../../src/arbitrary/maxSafeNat.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
+import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary.js';
 
 function fakeIntegerArbitrary() {
   const instance = fakeArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;

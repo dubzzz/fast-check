@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import fc from '../../src/fast-check';
-import { seed } from './seed';
+import fc from '../../src/fast-check.js';
+import { seed } from './seed.js';
 
 describe(`AsyncScheduler (seed: ${seed})`, () => {
   it('should detect trivial race conditions', async () => {

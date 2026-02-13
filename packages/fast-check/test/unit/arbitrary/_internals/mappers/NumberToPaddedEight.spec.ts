@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
   numberToPaddedEightMapper,
   numberToPaddedEightUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/NumberToPaddedEight';
+} from '../../../../../src/arbitrary/_internals/mappers/NumberToPaddedEight.js';
 
 describe('numberToPaddedEightUnmapper', () => {
   it('should be able to unmap any mapped value', () =>

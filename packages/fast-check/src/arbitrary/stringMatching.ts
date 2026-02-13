@@ -1,17 +1,17 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals';
-import { stringify } from '../utils/stringify';
-import { clampRegexAst } from './_internals/helpers/ClampRegexAst';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst';
-import type { RegexToken } from './_internals/helpers/TokenizeRegex';
-import { tokenizeRegex } from './_internals/helpers/TokenizeRegex';
-import { constant } from './constant';
-import { constantFrom } from './constantFrom';
-import { integer } from './integer';
-import { oneof } from './oneof';
-import { string } from './string';
-import { tuple } from './tuple';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals.js';
+import { stringify } from '../utils/stringify.js';
+import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
+import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
+import { tokenizeRegex } from './_internals/helpers/TokenizeRegex.js';
+import { constant } from './constant.js';
+import { constantFrom } from './constantFrom.js';
+import { integer } from './integer.js';
+import { oneof } from './oneof.js';
+import { string } from './string.js';
+import { tuple } from './tuple.js';
 
 const safeStringFromCodePoint = String.fromCodePoint;
 
@@ -230,7 +230,7 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
   const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size, maxLength };
   const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
   let regexRootToken = addMissingDotStar(tokenizeRegex(regex));
-  if (constraints.maxLength !== undefined) {
+  if (maxLength !== undefined) {
     regexRootToken = clampRegexAst(regexRootToken, maxLength);
   }
   const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);

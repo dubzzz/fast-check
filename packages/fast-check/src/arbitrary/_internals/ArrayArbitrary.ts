@@ -1,15 +1,15 @@
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { cloneIfNeeded, cloneMethod } from '../../check/symbols';
-import { integer } from '../integer';
-import { makeLazy } from '../../stream/LazyIterableIterator';
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import type { CustomSetBuilder } from './interfaces/CustomSet';
-import type { DepthContext, DepthIdentifier } from './helpers/DepthContext';
-import { getDepthContextFor } from './helpers/DepthContext';
-import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator';
-import { safeMap, safePush, safeSlice } from '../../utils/globals';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
+import { integer } from '../integer.js';
+import { makeLazy } from '../../stream/LazyIterableIterator.js';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { CustomSetBuilder } from './interfaces/CustomSet.js';
+import type { DepthContext, DepthIdentifier } from './helpers/DepthContext.js';
+import { getDepthContextFor } from './helpers/DepthContext.js';
+import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator.js';
+import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
 
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;

@@ -1,4 +1,4 @@
-import { Error, String } from '../../../utils/globals';
+import { Error, String } from '../../../utils/globals.js';
 
 /** @internal */
 const encodeSymbolLookupTable: Record<number, string> = {

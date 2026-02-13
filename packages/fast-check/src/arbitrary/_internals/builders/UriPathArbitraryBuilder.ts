@@ -1,9 +1,9 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import type { Size } from '../helpers/MaxLengthFromMinLength';
-import { webSegment } from '../../webSegment';
-import { array } from '../../array';
-import { segmentsToPathMapper, segmentsToPathUnmapper } from '../mappers/SegmentsToPath';
-import { oneof } from '../../oneof';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import type { Size } from '../helpers/MaxLengthFromMinLength.js';
+import { webSegment } from '../../webSegment.js';
+import { array } from '../../array.js';
+import { segmentsToPathMapper, segmentsToPathUnmapper } from '../mappers/SegmentsToPath.js';
+import { oneof } from '../../oneof.js';
 
 /** @internal */
 function sqrtSize(size: Size): [Size, Size] {

@@ -4,7 +4,7 @@ import {
   natToStringifiedNatUnmapper,
   natToStringifiedNatMapper,
   tryParseStringifiedNat,
-} from '../../../../../src/arbitrary/_internals/mappers/NatToStringifiedNat';
+} from '../../../../../src/arbitrary/_internals/mappers/NatToStringifiedNat.js';
 
 describe('tryParseStringifiedNat', () => {
   it('should be able to parse any nat serialized with toString(radix)', () =>

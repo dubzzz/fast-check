@@ -1,5 +1,5 @@
-import type { DoubleConstraints } from '../../double';
-import { refineConstraintsForFloatingOnly } from './FloatingOnlyHelpers';
+import type { DoubleConstraints } from '../../double.js';
+import { refineConstraintsForFloatingOnly } from './FloatingOnlyHelpers.js';
 
 const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
 const safePositiveInfinity = Number.POSITIVE_INFINITY;

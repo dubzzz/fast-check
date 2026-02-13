@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import type { Float32ArrayConstraints } from '../../../src/arbitrary/float32Array';
-import { float32Array } from '../../../src/arbitrary/float32Array';
+import type { Float32ArrayConstraints } from '../../../src/arbitrary/float32Array.js';
+import { float32Array } from '../../../src/arbitrary/float32Array.js';
 
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('float32Array (integration)', () => {
   type Extra = Float32ArrayConstraints;

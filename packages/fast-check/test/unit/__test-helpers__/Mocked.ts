@@ -5,8 +5,9 @@ type MockableFunction = (...args: any[]) => any;
 type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never;
 type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never;
 
-export interface MockWithArgs<T extends MockableFunction>
-  extends MockInstance<(...args: ArgumentsOf<T>) => ReturnType<T>> {
+export interface MockWithArgs<T extends MockableFunction> extends MockInstance<
+  (...args: ArgumentsOf<T>) => ReturnType<T>
+> {
   new (...args: ConstructorArgumentsOf<T>): T;
   (...args: ArgumentsOf<T>): ReturnType<T>;
 }

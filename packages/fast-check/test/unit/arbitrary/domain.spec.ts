@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import type { DomainConstraints } from '../../../src/arbitrary/domain';
-import { domain } from '../../../src/arbitrary/domain';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
+import type { DomainConstraints } from '../../../src/arbitrary/domain.js';
+import { domain } from '../../../src/arbitrary/domain.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import { URL } from 'url';
 
 import {
@@ -10,10 +10,10 @@ import {
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { relativeSizeArb, sizeArb } from './__test-helpers__/SizeHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('domain (integration)', () => {
   declareCleaningHooksForSpies();

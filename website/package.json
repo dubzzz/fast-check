@@ -22,11 +22,12 @@
     "@docusaurus/plugin-pwa": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
     "@docusaurus/remark-plugin-npm2yarn": "3.9.2",
+    "@docusaurus/theme-mermaid": "3.9.2",
     "clsx": "^2.1.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.9.2",
@@ -35,17 +36,17 @@
     "@docusaurus/types": "3.9.2",
     "@jest/globals": "^30.2.0",
     "@mdx-js/react": "^3.1.1",
-    "@types/lodash": "^4.17.20",
-    "@types/node": "^24.10.0",
-    "@types/react": "^19.2.2",
-    "docusaurus-plugin-llms": "^0.2.2",
+    "@types/lodash": "^4.17.23",
+    "@types/node": "^24.10.13",
+    "@types/react": "^19.2.14",
+    "docusaurus-plugin-llms": "^0.3.0",
     "fast-check": "workspace:*",
-    "glob": "^11.0.3",
+    "glob": "^13.0.3",
     "jest": "^30.2.0",
     "jimp": "^1.6.0",
     "typescript": "~5.9.3",
-    "vite": "^7.2.1",
-    "vitest": "^4.0.5"
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   },
   "browserslist": {
     "production": [

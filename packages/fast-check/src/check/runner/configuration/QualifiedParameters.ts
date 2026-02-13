@@ -1,7 +1,7 @@
 import prand, { unsafeSkipN } from 'pure-rand';
-import type { Parameters } from './Parameters';
-import { VerbosityLevel } from './VerbosityLevel';
-import type { RunDetails } from '../reporter/RunDetails';
+import type { Parameters } from './Parameters.js';
+import { VerbosityLevel } from './VerbosityLevel.js';
+import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from 'pure-rand';
 
 const safeDateNow = Date.now;

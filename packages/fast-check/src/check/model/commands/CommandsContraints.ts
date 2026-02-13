@@ -1,4 +1,4 @@
-import type { SizeForArbitrary } from '../../../arbitrary/_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../../../arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
 
 /**
  * Parameters for {@link commands}

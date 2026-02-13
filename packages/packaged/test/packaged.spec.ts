@@ -1,12 +1,9 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import * as url from 'url';
-import { removeNonPublishedFiles } from '../src/packaged';
+import { removeNonPublishedFiles } from '../src/packaged.js';
 
-// @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const testDirname = path.join(__dirname, '..', '.test-artifacts');
+const testDirname = path.join(import.meta.dirname, '..', '.test-artifacts');
 
 afterAll(async () => {
   await fs.rmdir(testDirname);
@@ -40,7 +37,7 @@ describe('removeNonPublishedFiles', () => {
       await fileSystem.createFile(['node_modules', 'dep-a', 'main.js'], 'console.log("main.js")');
 
       // Act
-      let requestedPath = '';
+      let requestedPath;
       const lastFolderName = path.basename(fileSystem.packagePath);
       const beforeLastFolderName = path.basename(path.dirname(fileSystem.packagePath));
       switch (pathStyle) {

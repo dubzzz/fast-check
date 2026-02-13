@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import * as fs from 'fs';
-import fc from '../../../src/fast-check';
+import fc from '../../../src/fast-check.js';
 import { globSync } from 'glob';
 
 const TargetNumExamples = 5;
@@ -138,7 +138,9 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         try {
           return eval(evalCode);
         } catch (err) {
-          throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
+          throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, {
+            cause: err,
+          });
         }
       })(fc);
 
@@ -184,7 +186,7 @@ function refreshContent(originalContent: string): { content: string; numExecuted
             eval(evalCode);
             return lines;
           } catch (err) {
-            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`);
+            throw new Error(`Failed to run code snippet:\n\n${evalCode}\n\nWith error message: ${err}`, { cause: err });
           } finally {
             console.log = originalConsoleLog;
             fc.configureGlobal(originalGlobal);

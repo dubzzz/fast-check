@@ -1,11 +1,11 @@
 import { describe, it } from 'vitest';
 import * as fc from 'fast-check';
-import { stringMatching } from '../../../src/arbitrary/stringMatching';
+import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
 
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('stringMatching (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc.oneof(hardcodedRegex(), regexBasedOnChunks());

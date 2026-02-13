@@ -1,4 +1,4 @@
-import { Map, safeMapGet, safeMapSet } from '../../../utils/globals';
+import { Map, safeMapGet, safeMapSet } from '../../../utils/globals.js';
 
 const safeObjectIs = Object.is;
 

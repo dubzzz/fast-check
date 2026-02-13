@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { seed } from './seed';
-import * as fc from '../../src/fast-check';
+import { seed } from './seed.js';
+import * as fc from '../../src/fast-check.js';
 
 describe(`IgnoreEqualValues (seed: ${seed})`, () => {
   describe('ignoreEqualValues', () => {

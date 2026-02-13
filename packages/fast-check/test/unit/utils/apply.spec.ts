@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { safeApply } from '../../../src/utils/apply';
+import { safeApply } from '../../../src/utils/apply.js';
 
 describe('safeApply', () => {
   it('should apply if no poisoning', () => {

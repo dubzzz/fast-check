@@ -1,18 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { cloneIfNeeded, cloneMethod, hasCloneMethod } from '../../../../src/check/symbols';
-import { Stream } from '../../../../src/stream/Stream';
+import { StreamArbitrary } from '../../../../src/arbitrary/_internals/StreamArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { cloneIfNeeded, cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
+import { Stream } from '../../../../src/stream/Stream.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
-} from '../__test-helpers__/ArbitraryAssertions';
-import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+} from '../__test-helpers__/ArbitraryAssertions.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
-import * as StringifyMock from '../../../../src/utils/stringify';
-import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner';
+import * as StringifyMock from '../../../../src/utils/stringify.js';
+import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('StreamArbitrary', () => {
   declareCleaningHooksForSpies();

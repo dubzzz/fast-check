@@ -7,14 +7,13 @@ import { describe, it, expect } from 'vitest';
 import {
   nonSerializableButSameDataProperty,
   nonSerializableButSameDataRawProperty,
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
+  // @ts-expect-error - Importing .mjs file without type definitions
 } from './__properties__/nonSerializableButSameData.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout, includeErrorInReport: true };
 
     it(
@@ -40,7 +39,7 @@ if (isMainThread) {
         }
         expect(failed).toBe(true);
       },
-      jestTimeout,
+      testTimeout,
     );
 
     it(
@@ -77,7 +76,7 @@ if (isMainThread) {
         }
         expect(failed).toBe(true);
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

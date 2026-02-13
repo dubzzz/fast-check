@@ -25,11 +25,13 @@ jobs:
     name: 'Warm up pnpm cache'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         id: pnpm-cache
         with:
           node-version: '24.x'
@@ -44,11 +46,13 @@ jobs:
       matrix:
         os: ['macos-latest', 'windows-latest']
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         id: pnpm-cache
         with:
           node-version: '24.x'
@@ -64,13 +68,14 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -81,11 +86,13 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -98,11 +105,13 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -117,11 +126,13 @@ jobs:
     needs: warmup_pnpm_cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -132,7 +143,7 @@ jobs:
       - name: Create bundles
         run: node --run pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -147,18 +158,20 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -173,18 +186,20 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -205,35 +220,54 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        node-version: [20.x, 22.x, 24.x, latest]
+        node-version: [22.x, 24.x, latest]
         os: ['ubuntu-latest']
-        shard: ['1/1']
+        shard-id: ['1']
+        shard-count: ['1']
         include:
           - node-version: 24.x
             os: 'macos-latest'
-            shard: '1/1'
+            shard-id: 1
+            shard-count: 3
+          - node-version: 24.x
+            os: 'macos-latest'
+            shard-id: 2
+            shard-count: 3
+          - node-version: 24.x
+          - node-version: 24.x
+            os: 'macos-latest'
+            shard-id: 3
+            shard-count: 3
           - node-version: 24.x
             os: 'windows-latest'
-            shard: '1/2'
+            shard-id: 1
+            shard-count: 3
           - node-version: 24.x
             os: 'windows-latest'
-            shard: '2/2'
+            shard-id: 2
+            shard-count: 3
+          - node-version: 24.x
+            os: 'windows-latest'
+            shard-id: 3
+            shard-count: 3
     env:
       ENABLE_COVERAGE: ${{ matrix.os == 'macos-latest' }}
       SKIP_EXPENSIVE: ${{ matrix.os == 'windows-latest' }}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: ${{matrix.node-version}}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -254,16 +288,37 @@ jobs:
           export FAST_CI_RUN=$("${ENABLE_COVERAGE}" = "true")
           echo "DEFAULT_SEED is: ${DEFAULT_SEED}"
           if [ "${ENABLE_COVERAGE}" = "true" ]; then
-            pnpm run test:coverage --shard=${{matrix.shard}}
+            pnpm run test:coverage --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           else
-            pnpm run test --shard=${{matrix.shard}}
+            pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
-      - name: Codecov
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+      - name: Upload coverage
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: env.ENABLE_COVERAGE == 'true'
         with:
+          name: 'coverage-${{matrix.shard-id}}'
+          path: coverage/
+          if-no-files-found: error
+          retention-days: 1
+  publish_test_coverage:
+    name: 'Publish test coverage'
+    needs:
+      - test
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Download coverage
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: coverage-*
+          path: coverage-reports/
+      - name: Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
           name: tests
-          flags: tests, tests-against-${{matrix.node-version}}-on-${{runner.os}}
+          flags: tests
           token: ${{secrets.CODECOV_TOKEN}}
           fail_ci_if_error: true # default: false
           verbose: false # default: false
@@ -274,20 +329,21 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --filter website install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -298,7 +354,7 @@ jobs:
         shell: bash
         run: echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
       - name: Cache for assets
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: |
             website/static/img/sponsors.svg
@@ -317,7 +373,7 @@ jobs:
       - name: Copy raw logo within documentation
         run: cp website/static/img/logo.png website/build/assets/images/logo.png
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: website
           path: website/build/
@@ -330,18 +386,20 @@ jobs:
       - production_packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -387,23 +445,26 @@ jobs:
           # Latest version of TypeScript
           - 'latest'
           # Various intermediate versions of Typescript (if any required)
+          - '5.8' # First version supporting require(esm)
           - '5.7' # First version adding generics on Uint8Array
           # Minimal requirement for TypeScript
           - '5.0'
           # Other release channels for TypeScript
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -416,19 +477,25 @@ jobs:
       - name: Switch folder to CommonJS
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
-      - name: Check in ES Modules mode with NodeNext
-        run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
-      - name: Check in ES Modules mode with exactOptionalPropertyTypes
         run: |
-          pnpm --filter {./packages/**} --parallel -c exec "sed -i 's/fc-expect-error-require-exactOptionalPropertyTypes/ts-expect-error/g' test-types/*.mts"
-          pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --exactOptionalPropertyTypes *.mts"
+          if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+          else
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+          fi
+      - name: Check in ES Modules mode with NodeNext
+        run: |
+          if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+          else
+            pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+          fi
 
   # Job to confirm every required job passed
   pre_all_checks_passed:
@@ -471,7 +538,7 @@ jobs:
       DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: website
           path: artifacts/
@@ -483,28 +550,32 @@ jobs:
       - name: Configure custom headers
         run: |
           echo "/*" > artifacts/_headers
-          echo "  Content-Security-Policy: default-src 'self'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com api.securityscorecards.dev bestpractices.coreinfrastructure.org www.bestpractices.dev cdn.bsky.app;connect-src *.algolia.net *.algolianet.com public.api.bsky.app api.counterapi.dev;script-src 'self' 'unsafe-inline' 'unsafe-eval';frame-src 'self' *.codesandbox.io www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
+          echo "  Content-Security-Policy: default-src 'self'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com api.securityscorecards.dev bestpractices.coreinfrastructure.org www.bestpractices.dev cdn.bsky.app;connect-src *.algolia.net askai.algolia.com *.algolianet.com public.api.bsky.app api.counterapi.dev;script-src 'self' 'unsafe-inline' 'unsafe-eval';frame-src 'self' *.codesandbox.io www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
           echo "/api-reference/*" >> artifacts/_headers
           echo "  Content-Security-Policy: default-src 'none'; img-src 'self' data:; connect-src data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" >> artifacts/_headers
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
         id: deployment_to_netlify
+        env:
+          DRAFT_BUILD_VALUE: ${{env.DRAFT_BUILD}}
         run: |
-          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=${{env.DRAFT_BUILD}} > deploy.json
+          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE > deploy.json
           cat deploy.json
           deploy_url=$(jq -r '.deploy_url' --exit-status deploy.json)
           echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
       - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         name: Notify the user of the preview
         if: env.DRAFT_BUILD == 'true'
+        env:
+          DEPLOY_URL: ${{steps.deployment_to_netlify.outputs.deploy_url}}
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 A preview of the new documentation is available at: ${{steps.deployment_to_netlify.outputs.deploy_url}}'
+              body: `👋 A preview of the new documentation is available at: ${process.env.DEPLOY_URL}`
             })
   check_any_package:
     name: 'Check publish any package'
@@ -514,8 +585,9 @@ jobs:
     outputs:
       tag_count: ${{steps.tag_count.outputs.count}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: tag_count
         name: Check if one tag matches the package
@@ -529,32 +601,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_fc:
     name: Publish fast-check
     needs: check_publish_fc
-    if: needs.check_publish_fc.outputs.status == 'success'
+    if: needs.check_publish_fc.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -565,14 +638,37 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=fast-check-$(tar -xzOf packages/fast-check/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/fast-check/package.tgz "packages/fast-check/$TGZ_NAME"
       - name: Publish fast-check
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/fast-check/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        id: attest
         with:
-          subject-path: packages/fast-check/package.tgz
+          subject-path: packages/fast-check/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/fast-check/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{needs.check_publish_fc.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/fast-check/${{env.TGZ_NAME}}
+            packages/fast-check/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -580,32 +676,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^ava/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_ava:
     name: Publish @fast-check/ava
     needs: check_publish_ava
-    if: needs.check_publish_ava.outputs.status == 'success'
+    if: needs.check_publish_ava.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -616,14 +713,37 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=ava-$(tar -xzOf packages/ava/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/ava/package.tgz "packages/ava/$TGZ_NAME"
       - name: Publish @fast-check/ava
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/ava/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        id: attest
         with:
-          subject-path: packages/ava/package.tgz
+          subject-path: packages/ava/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/ava/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{needs.check_publish_ava.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/ava/${{env.TGZ_NAME}}
+            packages/ava/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -631,32 +751,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^jest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_jest:
     name: Publish @fast-check/jest
     needs: check_publish_jest
-    if: needs.check_publish_jest.outputs.status == 'success'
+    if: needs.check_publish_jest.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -667,14 +788,37 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=jest-$(tar -xzOf packages/jest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/jest/package.tgz "packages/jest/$TGZ_NAME"
       - name: Publish @fast-check/jest
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/jest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        id: attest
         with:
-          subject-path: packages/jest/package.tgz
+          subject-path: packages/jest/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/jest/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{needs.check_publish_jest.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/jest/${{env.TGZ_NAME}}
+            packages/jest/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -682,32 +826,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^packaged/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_packaged:
     name: Publish @fast-check/packaged
     needs: check_publish_packaged
-    if: needs.check_publish_packaged.outputs.status == 'success'
+    if: needs.check_publish_packaged.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -718,14 +863,37 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=packaged-$(tar -xzOf packages/packaged/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/packaged/package.tgz "packages/packaged/$TGZ_NAME"
       - name: Publish @fast-check/packaged
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/packaged/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        id: attest
         with:
-          subject-path: packages/packaged/package.tgz
+          subject-path: packages/packaged/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/packaged/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{needs.check_publish_packaged.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/packaged/${{env.TGZ_NAME}}
+            packages/packaged/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -733,32 +901,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^poisoning/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_poisoning:
     name: Publish @fast-check/poisoning
     needs: check_publish_poisoning
-    if: needs.check_publish_poisoning.outputs.status == 'success'
+    if: needs.check_publish_poisoning.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -769,14 +938,37 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=poisoning-$(tar -xzOf packages/poisoning/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/poisoning/package.tgz "packages/poisoning/$TGZ_NAME"
       - name: Publish @fast-check/poisoning
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/poisoning/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        id: attest
         with:
-          subject-path: packages/poisoning/package.tgz
+          subject-path: packages/poisoning/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/poisoning/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/poisoning/${{env.TGZ_NAME}}
+            packages/poisoning/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -784,32 +976,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^vitest/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_vitest:
     name: Publish @fast-check/vitest
     needs: check_publish_vitest
-    if: needs.check_publish_vitest.outputs.status == 'success'
+    if: needs.check_publish_vitest.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -820,14 +1013,37 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=vitest-$(tar -xzOf packages/vitest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/vitest/package.tgz "packages/vitest/$TGZ_NAME"
       - name: Publish @fast-check/vitest
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/vitest/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        id: attest
         with:
-          subject-path: packages/vitest/package.tgz
+          subject-path: packages/vitest/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/vitest/$TGZ_NAME.sigstore.json"
+        env:
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          tag_name: ${{needs.check_publish_vitest.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/vitest/${{env.TGZ_NAME}}
+            packages/vitest/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -835,32 +1051,33 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       status: ${{steps.check_has_tag.outcome}}
+      tag: ${{steps.check_has_tag.outputs.tag}}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
       - id: check_has_tag
         name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
+        run: echo "tag=$(git tag --points-at HEAD | grep '^worker/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' || true)" >> "$GITHUB_OUTPUT"
   publish_package_worker:
     name: Publish @fast-check/worker
     needs: check_publish_worker
-    if: needs.check_publish_worker.outputs.status == 'success'
+    if: needs.check_publish_worker.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: bundles
           path: packages/
@@ -871,62 +1088,34 @@ jobs:
             OTP: 
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Set package filename
+        run: echo "TGZ_NAME=worker-$(tar -xzOf packages/worker/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+      - name: Rename package for publication
+        run: mv packages/worker/package.tgz "packages/worker/$TGZ_NAME"
       - name: Publish @fast-check/worker
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/worker/package.tgz
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        id: attest
         with:
-          subject-path: packages/worker/package.tgz
-  check_publish_expect_type:
-    name: Check publish @fast-check/expect-type
-    needs: check_any_package
-    if: needs.check_any_package.outputs.tag_count != '0'
-    runs-on: ubuntu-latest
-    outputs:
-      status: ${{steps.check_has_tag.outcome}}
-    steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          fetch-depth: 0
-      - id: check_has_tag
-        name: Check if one tag matches the package
-        run: git tag --points-at HEAD | grep '^expect-type/v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*'
-        continue-on-error: true
-  publish_package_expect_type:
-    name: Publish @fast-check/expect-type
-    needs: check_publish_expect_type
-    if: needs.check_publish_expect_type.outputs.status == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-      attestations: write
-    steps:
-      - name: Using Node v24.x
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
-        with:
-          node-version: '24.x'
-          registry-url: 'https://registry.npmjs.org'
-          check-latest: true
-      - name: Download production packages
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: bundles
-          path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
-      - name: Publish @fast-check/expect-type
-        run: npm publish --access public --otp ${{steps.wait-for-secrets.outputs.OTP}} --tag ${{env.PUBLISH_TAG}} packages/expect-type/package.tgz
+          subject-path: packages/worker/${{env.TGZ_NAME}}
+      - name: Rename attestation bundle
+        run: mv "$BUNDLE_PATH" "packages/worker/$TGZ_NAME.sigstore.json"
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+          BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
-          subject-path: packages/expect-type/package.tgz
+          tag_name: ${{needs.check_publish_worker.outputs.tag}}
+          append_body: true
+          fail_on_unmatched_files: true
+          overwrite_files: false
+          files: |
+            packages/worker/${{env.TGZ_NAME}}
+            packages/worker/${{env.TGZ_NAME}}.sigstore.json
+          body: |
+
+            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)

@@ -1,8 +1,8 @@
-import { escapeForTemplateString } from '../helpers/TextEscaper';
-import { cloneMethod } from '../../../check/symbols';
-import type { WithCloneMethod } from '../../../check/symbols';
-import { stringify } from '../../../utils/stringify';
-import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
+import { escapeForTemplateString } from '../helpers/TextEscaper.js';
+import { cloneMethod } from '../../../check/symbols.js';
+import type { WithCloneMethod } from '../../../check/symbols.js';
+import { stringify } from '../../../utils/stringify.js';
+import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler.js';
 
 const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
 

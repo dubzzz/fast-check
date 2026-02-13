@@ -1,17 +1,17 @@
-import type { Random } from '../../random/generator/Random';
-import type { Stream } from '../../stream/Stream';
-import { bigInt } from '../bigInt';
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import { makeLazy } from '../../stream/LazyIterableIterator';
+import type { Random } from '../../random/generator/Random.js';
+import type { Stream } from '../../stream/Stream.js';
+import { bigInt } from '../bigInt.js';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { makeLazy } from '../../stream/LazyIterableIterator.js';
 import {
   applyFlagsOnChars,
   computeFlagsFromChars,
   computeNextFlags,
   computeTogglePositions,
-} from './helpers/ToggleFlags';
-import { safeJoin, safeSlice } from '../../utils/globals';
-import { BigInt } from '../../utils/globals';
+} from './helpers/ToggleFlags.js';
+import { safeJoin, safeSlice } from '../../utils/globals.js';
+import { BigInt } from '../../utils/globals.js';
 
 /** @internal */
 type MixedCaseArbitraryContext = {

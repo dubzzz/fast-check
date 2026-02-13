@@ -1,7 +1,7 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { getOrCreateAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder';
-import { string } from './string';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { getOrCreateAlphaNumericPercentArbitrary } from './_internals/builders/CharacterRangeArbitraryBuilder.js';
+import { string } from './string.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 
 /**
  * Constraints to be applied on {@link webSegment}

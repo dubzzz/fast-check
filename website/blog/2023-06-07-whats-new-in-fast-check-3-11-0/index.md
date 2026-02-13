@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.11.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, ulid, identifiers]
 ---
 
 This release comes with a new arbitrary called `ulid`. This arbitrary is responsible to generate ULID strings

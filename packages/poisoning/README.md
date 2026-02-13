@@ -23,4 +23,4 @@ The package comes with:
 
 ## Minimal requirements
 
-- Node ≥12.17.0
+- Node ≥20.19.0

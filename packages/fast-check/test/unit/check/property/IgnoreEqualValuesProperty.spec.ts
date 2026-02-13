@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty';
-import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure';
-import { fakeProperty } from './__test-helpers__/PropertyHelpers';
+import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty.js';
+import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
+import { fakeProperty } from './__test-helpers__/PropertyHelpers.js';
 
 describe('IgnoreEqualValuesProperty', () => {
   it.each`

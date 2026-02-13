@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { uint16Array } from '../../../src/arbitrary/uint16Array';
+import { uint16Array } from '../../../src/arbitrary/uint16Array.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
+import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder.js';
 
 describe('uint16Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder for Uint16Array', () => {

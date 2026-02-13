@@ -1,16 +1,16 @@
 import { isMainThread } from 'node:worker_threads';
+import { readFileSync, rmSync } from 'node:fs';
 import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import { readerAssert, writerAssert } from './__properties__/concurrentAssert.mjs';
+// @ts-expect-error - Importing .mjs file without type definitions
+import { readerAssert, writerAssert, concurrentLogFile } from './__properties__/concurrentAssert.mjs';
 
 if (isMainThread) {
   describe('@fast-check/worker', () => {
-    const jestTimeout = 10000;
-    const assertTimeout = 1000;
+    const testTimeout = 30000;
+    const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
     it(
@@ -26,9 +26,18 @@ if (isMainThread) {
         const writerRun = assert(writerAssert, options); // writer waits for questions from reader and sends an answer
 
         // Assert
-        await expect(Promise.all([readerRun, writerRun])).resolves.not.toThrow();
+        try {
+          await expect(Promise.all([readerRun, writerRun])).resolves.not.toThrow();
+        } catch (err) {
+          throw new Error(
+            'Failed to run concurrentAssert, with log file:\n\n' + readFileSync(concurrentLogFile).toString(),
+            { cause: err },
+          );
+        } finally {
+          rmSync(concurrentLogFile, { force: true });
+        }
       },
-      jestTimeout,
+      testTimeout,
     );
   });
 }

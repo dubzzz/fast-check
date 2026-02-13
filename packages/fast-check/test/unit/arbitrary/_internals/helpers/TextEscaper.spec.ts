@@ -4,7 +4,7 @@ import * as fc from 'fast-check';
 import {
   escapeForTemplateString,
   escapeForMultilineComments,
-} from '../../../../../src/arbitrary/_internals/helpers/TextEscaper';
+} from '../../../../../src/arbitrary/_internals/helpers/TextEscaper.js';
 
 describe('escapeForTemplateString', () => {
   it('should not escape normal characters', () => {
@@ -30,7 +30,7 @@ describe('escapeForTemplateString', () => {
       try {
         expect(eval('`' + escapedCharacter + '`')).toBe(character);
       } catch (err) {
-        throw new Error(`Failed for i = ${i}, got error: ${err}`);
+        throw new Error(`Failed for i = ${i}, got error: ${err}`, { cause: err });
       }
     }
   });

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { hash } from '../../../src/utils/hash';
+import { hash } from '../../../src/utils/hash.js';
 
 describe('hash', () => {
   it('Should produce hash values in 0x00000000 and 0xffffffff', () =>

@@ -111,7 +111,7 @@ Failed to run property, too many pre-condition failures encountered
 Ran 0 time(s)
 Skipped 10001 time(s)
 
-Hint (1): Try to reduce the number of rejected values by combining map, flatMap and built-in arbitraries
+Hint (1): Try to reduce the number of rejected values by combining map, chain and built-in arbitraries
 Hint (2): Increase failure tolerance by setting maxSkipsPerRun to an higher value
 Hint (3): Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status
     at buildError (/workspaces/fast-check/packages/fast-check/lib/check/runner/utils/RunDetailsFormatter.js:131:15)

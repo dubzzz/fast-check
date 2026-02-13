@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { safePop, safePush, safeSubstring } from '../../../utils/globals';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { safePop, safePush, safeSubstring } from '../../../utils/globals.js';
 
 /**
  * Split a string into valid tokens of patternsArb

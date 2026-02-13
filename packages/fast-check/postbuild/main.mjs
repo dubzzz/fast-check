@@ -3,31 +3,13 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { replaceInFileSync } from 'replace-in-file';
-import * as url from 'url';
-
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-
-// Append *.js file extension on all local imports
-
-const options = {
-  files: ['lib/**/*.js', 'lib/**/*.d.ts'],
-  from: [/from '\.(.*)(?<!\.js)'/g, /from "\.(.*)(?<!\.js)"/g],
-  to: ["from '.$1.js'", 'from ".$1.js"'],
-};
-
-const results = replaceInFileSync(options);
-for (const { file, hasChanged } of results) {
-  if (hasChanged) {
-    console.info(`Extensions added to: ${file}`);
-  }
-}
 
 // Fill metas related to the package
 
 // eslint-disable-next-line
 const commitHash = getCommitHash();
 
-fs.readFile(path.join(__dirname, '../package.json'), (err, data) => {
+fs.readFile(path.join(import.meta.dirname, '../package.json'), (err, data) => {
   if (err) {
     console.error(err.message);
     process.exit(2);

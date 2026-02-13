@@ -1,19 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { UuidConstraints } from '../../../src/arbitrary/uuid';
-import { uuid } from '../../../src/arbitrary/uuid';
-import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
+import type { UuidConstraints } from '../../../src/arbitrary/uuid.js';
+import { uuid } from '../../../src/arbitrary/uuid.js';
+import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
 import fc from 'fast-check';
 
-import * as _IntegerMock from '../../../src/arbitrary/integer';
-import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { fakeRandom } from './__test-helpers__/RandomHelpers';
+import * as _IntegerMock from '../../../src/arbitrary/integer.js';
+import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 const IntegerMock: { integer: (ct: { min: number; max: number }) => Arbitrary<number> } = _IntegerMock;
 
 describe('uuid', () => {

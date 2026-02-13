@@ -504,6 +504,27 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/991554?v=4",
       "profile": "https://github.com/emilianbold",
       "contributions": ["code"]
+    },
+    {
+      "login": "russbiggs",
+      "name": "Russ Biggs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8487728?v=4",
+      "profile": "https://www.russbiggs.com/",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "adamni21",
+      "name": "adamni21",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85580454?v=4",
+      "profile": "https://github.com/adamni21",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "josephjunker",
+      "name": "Joseph Junker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1519098?v=4",
+      "profile": "https://github.com/josephjunker",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7

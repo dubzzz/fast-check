@@ -1,21 +1,21 @@
-import { Stream, stream } from '../../stream/Stream';
-import type { PreconditionFailure } from '../precondition/PreconditionFailure';
-import type { PropertyFailure, IRawProperty } from '../property/IRawProperty';
-import { readConfigureGlobal } from './configuration/GlobalParameters';
-import type { Parameters } from './configuration/Parameters';
-import { QualifiedParameters } from './configuration/QualifiedParameters';
-import type { VerbosityLevel } from './configuration/VerbosityLevel';
-import { decorateProperty } from './DecorateProperty';
-import type { RunDetails } from './reporter/RunDetails';
-import type { RunExecution } from './reporter/RunExecution';
-import { RunnerIterator } from './RunnerIterator';
-import { SourceValuesIterator } from './SourceValuesIterator';
-import { lazyToss, toss } from './Tosser';
-import { pathWalk } from './utils/PathWalker';
-import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter';
-import type { IAsyncProperty } from '../property/AsyncProperty';
-import type { IProperty } from '../property/Property';
-import type { Value } from '../arbitrary/definition/Value';
+import { Stream, stream } from '../../stream/Stream.js';
+import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { PropertyFailure, IRawProperty } from '../property/IRawProperty.js';
+import { readConfigureGlobal } from './configuration/GlobalParameters.js';
+import type { Parameters } from './configuration/Parameters.js';
+import { QualifiedParameters } from './configuration/QualifiedParameters.js';
+import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
+import { decorateProperty } from './DecorateProperty.js';
+import type { RunDetails } from './reporter/RunDetails.js';
+import type { RunExecution } from './reporter/RunExecution.js';
+import { RunnerIterator } from './RunnerIterator.js';
+import { SourceValuesIterator } from './SourceValuesIterator.js';
+import { lazyToss, toss } from './Tosser.js';
+import { pathWalk } from './utils/PathWalker.js';
+import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter.js';
+import type { IAsyncProperty } from '../property/AsyncProperty.js';
+import type { IProperty } from '../property/Property.js';
+import type { Value } from '../arbitrary/definition/Value.js';
 
 /** @internal */
 function runIt<Ts>(
@@ -94,9 +94,14 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails
  */
 function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
 function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
-  if (rawProperty == null || rawProperty.generate == null)
+  if (
+    rawProperty === null ||
+    rawProperty === undefined ||
+    rawProperty.generate === null ||
+    rawProperty.generate === undefined
+  )
     throw new Error('Invalid property encountered, please use a valid property');
-  if (rawProperty.run == null)
+  if (rawProperty.run === null || rawProperty.run === undefined)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
     ...(readConfigureGlobal() as Parameters<Ts>),

@@ -1,17 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import type { DictionaryConstraints } from '../../../src/arbitrary/dictionary';
-import { dictionary } from '../../../src/arbitrary/dictionary';
+import type { DictionaryConstraints } from '../../../src/arbitrary/dictionary.js';
+import { dictionary } from '../../../src/arbitrary/dictionary.js';
 
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import type { Random } from '../../../src/random/generator/Random';
-import { Stream } from '../../../src/stream/Stream';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import type { Random } from '../../../src/random/generator/Random.js';
+import { Stream } from '../../../src/stream/Stream.js';
 import {
   assertProduceSameValueGivenSameSeed,
   assertProduceCorrectValues,
   assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('dictionary (integration)', () => {
   type Extra = { keys: PropertyKey[]; values: unknown[]; constraints?: DictionaryConstraints };

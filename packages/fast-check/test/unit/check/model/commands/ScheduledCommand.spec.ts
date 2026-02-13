@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { ScheduledCommand } from '../../../../../src/check/model/commands/ScheduledCommand';
-import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand';
-import type { Scheduler, SchedulerSequenceItem } from '../../../../../src/arbitrary/scheduler';
+import { ScheduledCommand } from '../../../../../src/check/model/commands/ScheduledCommand.js';
+import type { AsyncCommand } from '../../../../../src/check/model/command/AsyncCommand.js';
+import type { Scheduler, SchedulerSequenceItem } from '../../../../../src/arbitrary/scheduler.js';
 
 type Model = Record<string, unknown>;
 type Real = unknown;

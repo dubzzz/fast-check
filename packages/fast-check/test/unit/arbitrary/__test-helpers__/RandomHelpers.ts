@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
-import type { MaybeMocked } from '../../__test-helpers__/Mocked';
-import { Random } from '../../../../src/random/generator/Random';
+import type { MaybeMocked } from '../../__test-helpers__/Mocked.js';
+import { Random } from '../../../../src/random/generator/Random.js';
 
 export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
   const clone = vi.fn();

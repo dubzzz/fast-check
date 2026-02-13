@@ -1,16 +1,16 @@
-import { constantFrom } from './constantFrom';
-import { constant } from './constant';
-import { option } from './option';
-import { tuple } from './tuple';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { webQueryParameters } from './webQueryParameters';
-import { webFragments } from './webFragments';
-import type { WebAuthorityConstraints } from './webAuthority';
-import { webAuthority } from './webAuthority';
-import { partsToUrlMapper, partsToUrlUnmapper } from './_internals/mappers/PartsToUrl';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { relativeSizeToSize, resolveSize } from './_internals/helpers/MaxLengthFromMinLength';
-import { webPath } from './webPath';
+import { constantFrom } from './constantFrom.js';
+import { constant } from './constant.js';
+import { option } from './option.js';
+import { tuple } from './tuple.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { webQueryParameters } from './webQueryParameters.js';
+import { webFragments } from './webFragments.js';
+import type { WebAuthorityConstraints } from './webAuthority.js';
+import { webAuthority } from './webAuthority.js';
+import { partsToUrlMapper, partsToUrlUnmapper } from './_internals/mappers/PartsToUrl.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { relativeSizeToSize, resolveSize } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { webPath } from './webPath.js';
 
 /**
  * Constraints to be applied on {@link webUrl}
