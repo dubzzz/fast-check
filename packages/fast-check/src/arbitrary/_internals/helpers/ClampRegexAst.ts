@@ -71,7 +71,7 @@ export function clampRegexAst(astNode: RegexToken, maxLength: number): RegexToke
       return astNode;
     }
     case 'Group': {
-      return { ...astNode, expression: clampRegexAst(astNode, maxLength) };
+      return { ...astNode, expression: clampRegexAst(astNode.expression, maxLength) };
     }
     case 'Disjunction': {
       return {
