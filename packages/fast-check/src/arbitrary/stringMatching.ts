@@ -249,7 +249,7 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
   const regexRootToken = addMissingDotStar(tokenizeRegex(regex));
   const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
   if (maxLength !== undefined) {
-    return baseArbitrary.filter((s) => s.length <= maxLength);
+    return baseArbitrary.filter((s) => [...s].length <= maxLength);
   }
   return baseArbitrary;
 }
