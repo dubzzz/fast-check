@@ -1,6 +1,7 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
 import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals';
 import { stringify } from '../utils/stringify';
+import { clampRegexAst } from './_internals/helpers/ClampRegexAst';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex';
@@ -52,23 +53,6 @@ type RegexFlags = {
   multiline: boolean;
   dotAll: boolean;
 };
-
-function clampRangeQuantifier<TQuantifier extends { to: number | undefined }>(
-  quantifier: TQuantifier,
-  constraints: StringMatchingConstraints,
-): TQuantifier {
-  if (constraints.maxLength === undefined) {
-    // No constraints on the length requested
-    return quantifier;
-  }
-  if (quantifier.to === undefined || quantifier.to > constraints.maxLength) {
-    // On unbounded range like {3,} or on bounded range with upper bound strictly higher than the requested maxLength,
-    // fallback to the requested maxLength
-    return { ...quantifier, to: constraints.maxLength };
-  }
-  // Quantifier already bounded at or below maxLength, no adjustment needed
-  return quantifier;
-}
 
 /**
  * Convert an AST of tokens into an arbitrary able to produce the requested pattern
@@ -130,11 +114,10 @@ function toMatchingArbitrary(
           return string({ ...constraints, minLength: 0, maxLength: 1, unit: node });
         }
         case 'Range': {
-          const refinedQuantifier = clampRangeQuantifier(astNode.quantifier, constraints);
           return string({
             ...constraints,
-            minLength: refinedQuantifier.from,
-            maxLength: refinedQuantifier.to,
+            minLength: astNode.quantifier.from,
+            maxLength: astNode.quantifier.to,
             unit: node,
           });
         }
@@ -246,7 +229,10 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
   const maxLength = constraints.maxLength;
   const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size, maxLength };
   const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
-  const regexRootToken = addMissingDotStar(tokenizeRegex(regex));
+  let regexRootToken = addMissingDotStar(tokenizeRegex(regex));
+  if (constraints.maxLength !== undefined) {
+    regexRootToken = clampRegexAst(regexRootToken, maxLength);
+  }
   const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
   if (maxLength !== undefined) {
     return baseArbitrary.filter((s) => [...s].length <= maxLength);
