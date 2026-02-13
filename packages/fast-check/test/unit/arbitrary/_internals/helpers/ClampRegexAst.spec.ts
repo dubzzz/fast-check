@@ -16,6 +16,7 @@ describe('clampRegexAst', () => {
     { source: /a*|b*/, target: /a{0,10}|b{0,10}/, maxLength: 10 }, // forward clamping through "<something>|<something>"
     { source: /a*b*/, target: /a{0,10}b{0,10}/, maxLength: 10 }, // forward clamping through "<something><something>"
     { source: /[a-z]*/, target: /[a-z]{0,10}/, maxLength: 10 }, // unbound "*" range must be clamped
+    { source: /[^a-z]*/, target: /[^a-z]{0,10}/, maxLength: 10 }, // unbound "*" range must be clamped
   ])('should transform $source into $target for $maxLength', ({ source, target, maxLength }) => {
     const sourceAst = tokenizeRegex(source);
     const targetAst = tokenizeRegex(target);
