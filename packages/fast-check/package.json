@@ -29,11 +29,9 @@
     }
   },
   "files": [
-    "lib",
-    "runkit.cjs"
+    "lib"
   ],
   "sideEffects": false,
-  "runkitExampleFilename": "runkit.cjs",
   "scripts": {
     "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types && node postbuild/main.mjs",
     "build-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run build",
