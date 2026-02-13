@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex';
-import { clampRegexAst } from '../../../../../src/arbitrary/_internals/helpers/ClampRegexAst';
+import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
+import { clampRegexAst } from '../../../../../src/arbitrary/_internals/helpers/ClampRegexAst.js';
 
 describe('clampRegexAst', () => {
   it.each([
