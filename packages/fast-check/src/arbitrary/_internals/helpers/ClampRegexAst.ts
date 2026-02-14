@@ -56,15 +56,19 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
           if (astNode.quantifier.to === undefined || astNode.quantifier.to * (clamped.minLength || 1) > maxLength) {
             // On unbounded range like {3,} or on bounded range with upper bound strictly higher than the requested maxLength,
             // fallback to the requested maxLength
+            const reclamped =
+              astNode.quantifier.from > 1
+                ? clampRegexAstInternal(clamped.astNode, safeMathFloor(maxLength / astNode.quantifier.from))
+                : clamped;
             return {
               astNode: {
                 type: 'Repetition',
                 quantifier: {
                   ...astNode.quantifier,
                   kind: 'Range',
-                  to: safeMathFloor(maxLength / (clamped.minLength || 1)),
+                  to: safeMathFloor(maxLength / (reclamped.minLength || 1)),
                 },
-                expression: clamped.astNode,
+                expression: reclamped.astNode,
               },
               minLength: astNode.quantifier.from * clamped.minLength,
             };
