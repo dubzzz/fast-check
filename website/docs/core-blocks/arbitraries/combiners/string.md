@@ -18,7 +18,7 @@ String matching the passed regex.
 **with:**
 
 - `regex` — _the regex to be matched by produced strings_
-- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of units (included)_
+- `maxLength?` — default: `0x7fffffff` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _maximal number of code-points (included)_
 - `size?` — default: `undefined` [more](/docs/configuration/larger-entries-by-default/#size-explained) — _how large should the generated values be?_
 
 **Usages:**
