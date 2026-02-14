@@ -32,6 +32,10 @@ describe('clampRegexAst', () => {
     { source: /a{2,}b{3,}c{2,5}d+/, target: /a{2,4}b{3,5}c{2,4}d{1,3}/, maxLength: 10 }, // distribute allowance to all parts, we have to restrict c to max 4, given 5 cannot make it
     { source: /(a|bc){2,}(de|fgh){3,}/, target: /(a|bc){2,4}(de){3,4}/, maxLength: 10 }, // distribute allowance to all parts even with Disjunction running
     { source: /(a|bc){2,}(de|fgh){3,}/, target: /(a|bc){2,5}(de|fgh){3,4}/, maxLength: 11 }, // distribute allowance to all parts even with Disjunction running
+    { source: /((a{2,}){3,}){5,}/, target: /((a{2,2}){3,3}){5,5}/, maxLength: 30 }, // restrict range repetition on range repetition on range repetion when no capping in source
+    { source: /((a{2,}){3,}){5,}/, target: /((a{2,2}){3,3}){5,6}/, maxLength: 36 }, // restrict range repetition on range repetition on range repetion when no capping in source and slightly larger flexibility
+    { source: /((a{2,}){3,}){5,}/, target: /((a{2,3}){3,4}){5,7}/, maxLength: 45 }, // restrict range repetition on range repetition on range repetion when no capping in source and even larger flexibility
+    { source: /((a{2,3}){3,4}){5,6}/, target: /((a{2,2}){3,3}){5,5}/, maxLength: 30 }, // restrict range repetition on range repetition on range repetion when capping in source
     { source: /(cd){5,}/, target: /(cd){5,5}/, maxLength: 10 }, // complex mix A (step 1)
     { source: /(h?iZk*){5,}/, target: /(h{0,0}iZk{0,0}){5,5}/, maxLength: 10 }, // complex mix A (step 2)
     { source: /(h?i[a-z]k*){5,}/, target: /(h{0,0}i[a-z]k{0,0}){5,5}/, maxLength: 10 }, // complex mix A (step 3)
