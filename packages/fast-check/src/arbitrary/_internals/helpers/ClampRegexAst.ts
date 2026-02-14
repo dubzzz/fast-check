@@ -12,9 +12,9 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
       return { astNode, minLength: 1 };
     }
     case 'Repetition': {
-      const clamped = clampRegexAstInternal(astNode.expression, maxLength);
       switch (astNode.quantifier.kind) {
         case '*': {
+          const clamped = clampRegexAstInternal(astNode.expression, maxLength);
           return {
             astNode: {
               type: 'Repetition',
@@ -25,6 +25,8 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
           };
         }
         case '+': {
+          const clamped = clampRegexAstInternal(astNode.expression, maxLength);
+          const scaledClampedMinLength = clamped.minLength > 1 ? clamped.minLength : 1;
           return {
             astNode: {
               type: 'Repetition',
@@ -32,7 +34,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
                 ...astNode.quantifier,
                 kind: 'Range',
                 from: 1,
-                to: safeMathFloor(maxLength / (clamped.minLength || 1)),
+                to: safeMathFloor(maxLength / scaledClampedMinLength),
               },
               expression: clamped.astNode,
             },
@@ -40,6 +42,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
           };
         }
         case '?': {
+          const clamped = clampRegexAstInternal(astNode.expression, maxLength);
           if (maxLength < clamped.minLength) {
             return {
               astNode: {
@@ -53,22 +56,22 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
           return { astNode: { ...astNode, expression: clamped.astNode }, minLength: 0 };
         }
         case 'Range': {
-          if (astNode.quantifier.to === undefined || astNode.quantifier.to * (clamped.minLength || 1) > maxLength) {
+          const scaledMaxLength =
+            astNode.quantifier.from > 1 ? safeMathFloor(maxLength / astNode.quantifier.from) : maxLength;
+          const clamped = clampRegexAstInternal(astNode.expression, scaledMaxLength);
+          const scaledClampedMinLength = clamped.minLength > 1 ? clamped.minLength : 1;
+          if (astNode.quantifier.to === undefined || astNode.quantifier.to * scaledClampedMinLength > maxLength) {
             // On unbounded range like {3,} or on bounded range with upper bound strictly higher than the requested maxLength,
             // fallback to the requested maxLength
-            const reclamped =
-              astNode.quantifier.from > 1
-                ? clampRegexAstInternal(clamped.astNode, safeMathFloor(maxLength / astNode.quantifier.from))
-                : clamped;
             return {
               astNode: {
                 type: 'Repetition',
                 quantifier: {
                   ...astNode.quantifier,
                   kind: 'Range',
-                  to: safeMathFloor(maxLength / (reclamped.minLength || 1)),
+                  to: safeMathFloor(maxLength / scaledClampedMinLength),
                 },
-                expression: reclamped.astNode,
+                expression: clamped.astNode,
               },
               minLength: astNode.quantifier.from * clamped.minLength,
             };
