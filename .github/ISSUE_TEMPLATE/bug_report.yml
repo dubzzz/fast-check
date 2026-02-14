@@ -1,0 +1,54 @@
+name: "\U0001F41B Bug Report"
+description: Report a bug to help us improve fast-check
+labels: ["🐛 Bug Report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug! Please fill out the sections below so we can reproduce and fix the issue.
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe what went wrong...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: To reproduce
+      description: Steps to reproduce the behavior. A minimal reproduction is very helpful.
+      placeholder: |
+        1. Create a property with...
+        2. Run...
+        3. See error...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please provide details about your environment.
+      value: |
+        - fast-check version:
+        - Node.js version:
+        - TypeScript version (if applicable):
+        - Operating system:
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Any other context, error messages, or screenshots about the bug.
+    validations:
+      required: false
