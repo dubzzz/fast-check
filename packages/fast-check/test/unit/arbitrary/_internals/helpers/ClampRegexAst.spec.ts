@@ -34,8 +34,11 @@ describe('clampRegexAst', () => {
     { source: /(a|bc){2,}(de|fgh){3,}/, target: /(a|bc){2,5}(de|fgh){3,4}/, maxLength: 11 }, // distribute allowance to all parts even with Disjunction running
     { source: /((a{2,}){3,}){5,}/, target: /((a{2,2}){3,3}){5,5}/, maxLength: 30 }, // restrict range repetition on range repetition on range repetion when no capping in source
     { source: /((a{2,}){3,}){5,}/, target: /((a{2,2}){3,3}){5,6}/, maxLength: 36 }, // restrict range repetition on range repetition on range repetion when no capping in source and slightly larger flexibility
+    { source: /((a{2,}){3,}){5,}/, target: /((a{2,2}){3,3}){5,5}/, maxLength: 35 }, // restrict range repetition on range repetition on range repetion when no capping in source and slightly larger flexibility minus one
+    { source: /((a{2,}){3,}){5,}/, target: /((a{2,2}){3,3}){5,6}/, maxLength: 37 }, // restrict range repetition on range repetition on range repetion when no capping in source and slightly larger flexibility plus one
     { source: /((a{2,}){3,}){5,}/, target: /((a{2,3}){3,4}){5,7}/, maxLength: 45 }, // restrict range repetition on range repetition on range repetion when no capping in source and even larger flexibility
-    { source: /((a{2,3}){3,4}){5,6}/, target: /((a{2,2}){3,3}){5,5}/, maxLength: 30 }, // restrict range repetition on range repetition on range repetion when capping in source
+    { source: /((a{2,3}){3,4}){5,6}/, target: /((a{2,2}){3,3}){5,5}/, maxLength: 30 }, // restrict range repetition on range repetition on range repetion when short capping in source
+    { source: /((a{2,100}){3,100}){5,100}/, target: /((a{2,2}){3,3}){5,5}/, maxLength: 30 }, // restrict range repetition on range repetition on range repetion when large capping in source
     { source: /(cd){5,}/, target: /(cd){5,5}/, maxLength: 10 }, // complex mix A (step 1)
     { source: /(h?iZk*){5,}/, target: /(h{0,0}iZk{0,0}){5,5}/, maxLength: 10 }, // complex mix A (step 2)
     { source: /(h?i[a-z]k*){5,}/, target: /(h{0,0}i[a-z]k{0,0}){5,5}/, maxLength: 10 }, // complex mix A (step 3)
