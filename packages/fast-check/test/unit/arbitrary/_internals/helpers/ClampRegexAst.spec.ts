@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import type { RegexToken } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
 import { clampRegexAst } from '../../../../../src/arbitrary/_internals/helpers/ClampRegexAst.js';
+import { addMissingDotStar } from '../../../../../src/arbitrary/_internals/helpers/SanitizeRegexAst.js';
 
 describe('clampRegexAst', () => {
   it.each([
@@ -49,5 +51,19 @@ describe('clampRegexAst', () => {
     const sourceAst = tokenizeRegex(source);
     const targetAst = tokenizeRegex(target);
     expect(clampRegexAst(sourceAst, maxLength)).toEqual(targetAst);
+  });
+
+  it('should integrate well within the full flow', () => {
+    // Arrange
+    const maxLength = 10;
+    const sourceAst = addMissingDotStar(tokenizeRegex(/a/));
+    const targetAst = tokenizeRegex(/^.{0,9}a.{0,9}$/);
+
+    // Act
+    const transformedAst = clampRegexAst(sourceAst, maxLength);
+
+    // Assert
+    expect(transformedAst.type).toBe('Group');
+    expect((transformedAst as RegexToken & { type: 'Group' }).expression).toEqual(targetAst);
   });
 });
