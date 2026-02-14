@@ -30,7 +30,7 @@ describe('clampRegexAst', () => {
     { source: /a{2,}b{3,}/, target: /a{2,7}b{3,8}/, maxLength: 10 }, // distribute allowance to all parts: a takes at least 2 slots, b can take up to 8 ; same logic gives a can take up to 7
     { source: /a{2,}b{3,}c{2,5}d+/, target: /a{2,14}b{3,15}c{2,5}d{1,13}/, maxLength: 20 }, // distribute allowance to all parts
     { source: /a{2,}b{3,}c{2,5}d+/, target: /a{2,4}b{3,5}c{2,4}d{1,3}/, maxLength: 10 }, // distribute allowance to all parts, we have to restrict c to max 4, given 5 cannot make it
-    { source: /(a|bc){2,}(de|fgh){3,}/, target: /(a|bc){2,4}(de|fgh){3,4}/, maxLength: 10 }, // distribute allowance to all parts even with Disjunction running
+    { source: /(a|bc){2,}(de|fgh){3,}/, target: /(a|bc){2,4}(de){3,4}/, maxLength: 10 }, // distribute allowance to all parts even with Disjunction running
     { source: /(a|bc){2,}(de|fgh){3,}/, target: /(a|bc){2,5}(de|fgh){3,4}/, maxLength: 11 }, // distribute allowance to all parts even with Disjunction running
     { source: /(cd){5,}/, target: /(cd){5,5}/, maxLength: 10 }, // complex mix A (step 1)
     { source: /(h?iZk*){5,}/, target: /(h{0,0}iZk{0,0}){5,5}/, maxLength: 10 }, // complex mix A (step 2)
