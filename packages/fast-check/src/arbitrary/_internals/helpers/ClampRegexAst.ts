@@ -1,5 +1,5 @@
-import { safeMap } from '../../../utils/globals';
-import type { RegexToken } from './TokenizeRegex';
+import { safeMap } from '../../../utils/globals.js';
+import type { RegexToken } from './TokenizeRegex.js';
 
 /**
  * Adapt an AST Node to fit within a maxLength constraint
