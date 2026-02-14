@@ -4639,20 +4639,45 @@ Execution summary:
 `;
 
 exports[`NoRegression > stringMatching 1`] = `
-[Error: Property failed after 1 tests
-{ seed: 42, path: "0:1:1:1", endOnFailure: true }
-Counterexample: ["aa B "]
-Shrunk 3 time(s)
+[Error: Property failed after 3 tests
+{ seed: 42, path: "2:1:0:1:1:1:1", endOnFailure: true }
+Counterexample: ["--@a.a"]
+Shrunk 6 time(s)
 
 Execution summary:
-[31m×[0m ["aa\\"Ex"]
-. [32m√[0m ["a\\"Ex"]
-. [31m×[0m ["aa Ex"]
-. . [32m√[0m ["a Ex"]
-. . [31m×[0m ["aa Bx"]
-. . . [32m√[0m ["a Bx"]
-. . . [31m×[0m ["aa B "]
-. . . . [32m√[0m ["a B "]]
+[32m√[0m ["e@X.-"]
+[32m√[0m ["rUCO.8y.9Y2@V-mM3.i.-0P-M-"]
+[31m×[0m ["I+---@5r.prototypeCar"]
+. [32m√[0m ["-@5r.prototypeCar"]
+. [31m×[0m ["---@5r.prototypeCar"]
+. . [31m×[0m ["--@5r.prototypeCar"]
+. . . [32m√[0m ["-@5r.prototypeCar"]
+. . . [31m×[0m ["--@r.prototypeCar"]
+. . . . [32m√[0m ["-@r.prototypeCar"]
+. . . . [31m×[0m ["--@a.prototypeCar"]
+. . . . . [32m√[0m ["-@a.prototypeCar"]
+. . . . . [31m×[0m ["--@a.r"]
+. . . . . . [32m√[0m ["-@a.r"]
+. . . . . . [31m×[0m ["--@a.a"]
+. . . . . . . [32m√[0m ["-@a.a"]]
+`;
+
+exports[`NoRegression > stringMatching({maxLength:10}) 1`] = `
+[Error: Property failed after 2 tests
+{ seed: 42, path: "1:0:0:0:1:0", endOnFailure: true }
+Counterexample: ["0@A.--"]
+Shrunk 5 time(s)
+
+Execution summary:
+[32m√[0m ["5@i6.Ia"]
+[31m×[0m ["7@2B.ref--"]
+. [31m×[0m ["0@2B.ref--"]
+. . [31m×[0m ["0@B.ref--"]
+. . . [31m×[0m ["0@A.ref--"]
+. . . . [32m√[0m ["0@A.-"]
+. . . . [31m×[0m ["0@A.f--"]
+. . . . . [31m×[0m ["0@A.--"]
+. . . . . . [32m√[0m ["0@A.-"]]
 `;
 
 exports[`NoRegression > subarray 1`] = `
