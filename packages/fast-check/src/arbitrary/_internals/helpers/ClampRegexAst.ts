@@ -1,4 +1,5 @@
 import { safeMap } from '../../../utils/globals.js';
+import { noSuchValue } from '../../../utils/noSuchValue.js';
 import type { RegexToken } from './TokenizeRegex.js';
 
 /**
@@ -52,9 +53,7 @@ export function clampRegexAst(astNode: RegexToken, maxLength: number): RegexToke
           return { ...astNode, expression: refinedExpression };
         }
         default: {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const _unused: never = astNode.quantifier;
-          return astNode;
+          return noSuchValue(astNode.quantifier, astNode);
         }
       }
     }
