@@ -47,6 +47,10 @@ fc.stringMatching(
 );
 // Note: Regex matching IP v4, we rather recommend you to rely on `fc.ipV4()`
 // Examples of generated values: "226.4.220.240", "206.2.148.227", "247.32.128.41", "165.252.212.135", "18.225.51.96"…
+
+fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 });
+// Note: Regex matching very simple email addresses, but we ask for no more than 10 characters for generated email addresses
+// Examples of generated values: "G9-_+@-1..", "U05@--1.yK", "+@tW.dfw", "_@u..t", "dal@2-Z..8"…
 ```
 
 Some constraints are hard to express with a single regex.

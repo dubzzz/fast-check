@@ -160,7 +160,19 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.stringMatching(/(^|\s)a+[^a][b-eB-E]+[^b-eB-E](\s|$)/), (v) => testFunc(v)),
+          fc.property(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('stringMatching({maxLength:10})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 }), (v) =>
+            testFunc(v),
+          ),
           settings,
         ),
       ),
