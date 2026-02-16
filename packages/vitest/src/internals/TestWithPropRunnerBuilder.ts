@@ -142,14 +142,10 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
             return;
           }
 
-          // Between runs: close previous iteration, then open next.
-          // Vitest calls beforeEach cleanup functions before afterEach hooks,
-          // so we replicate that order here.
+          // Vitest calls beforeEach cleanup functions before afterEach hooks, so we replicate that order here.
           for (let i = pendingCleanups.length - 1; i >= 0; i--) {
             await pendingCleanups[i]();
           }
-          // Clear the array in-place so the same reference stays valid
-          // inside the closure across iterations.
           pendingCleanups.length = 0;
 
           for (const hook of afterEachHooks) {
