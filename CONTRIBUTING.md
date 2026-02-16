@@ -188,3 +188,13 @@ The spec is responsible to check that the typings are correct. It also ensures t
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @internal */` tag to hide internals - otherwise they would get published into the generated documentation
 
 - Add the arbitrary into the list of Built-in Arbitraries - see https://fast-check.dev/docs/core-blocks/arbitraries/
+
+## Can I use AI?
+
+AI is a tool like any other. We're fine with contributions leveraging AI as long as...
+
+1. Contributors understand the change they produced. No matter if the contribution closes a long running issue, when using AI, make sure you understand and agree with each line and character it wrote.
+
+2. Contributors review the change before opening any Pull Request.
+
+3. Contributors tell us about their change. We prefer human-written summaries on Pull Requests rather than AI-generated ones.
