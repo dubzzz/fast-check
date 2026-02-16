@@ -145,7 +145,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
             return;
           }
 
-          // Vitest calls beforeEach cleanup functions before afterEach hooks, so we replicate that order here.
+          // Run pending beforeEach cleanup functions, then afterEach hooks.
           for (let i = pendingCleanups.length - 1; i >= 0; i--) {
             await pendingCleanups[i]();
           }
@@ -166,10 +166,10 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
 
       await fc.assert(propertyInstance, customParams);
 
-      // Run remaining cleanup functions from the last manual beforeEach call.
-      // Vitest supports returning a cleanup function from beforeEach; the first
-      // iteration's cleanup is handled by vitest's own afterEach lifecycle, but
-      // cleanups from iterations 2..N are captured and invoked by us.
+      // Cleanup from the last iteration (N). Cleanups 2..N-1 run inside
+      // fc's beforeEach hook above. Cleanup#1 is held by vitest in a local
+      // variable of runTest and runs after vitest's own afterEach — we cannot
+      // intercept it.
       for (let i = pendingCleanups.length - 1; i >= 0; i--) {
         await pendingCleanups[i]();
       }
