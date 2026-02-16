@@ -1,6 +1,7 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
+import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
@@ -20,6 +21,12 @@ const safeStringFromCodePoint = String.fromCodePoint;
  * @public
  */
 export type StringMatchingConstraints = {
+  /**
+   * Upper bound of the generated string length (included)
+   * @defaultValue 0x7fffffff
+   * @remarks Since 4.6.0
+   */
+  maxLength?: number;
   /**
    * Define how large the generated values should be (at max)
    * @remarks Since 3.10.0
@@ -219,8 +226,16 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }
-  const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size };
+  const maxLength = constraints.maxLength;
+  const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size, maxLength };
   const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
-  const regexRootToken = addMissingDotStar(tokenizeRegex(regex));
-  return toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
+  let regexRootToken = addMissingDotStar(tokenizeRegex(regex));
+  if (maxLength !== undefined) {
+    regexRootToken = clampRegexAst(regexRootToken, maxLength);
+  }
+  const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
+  if (maxLength !== undefined) {
+    return baseArbitrary.filter((s) => [...s].length <= maxLength);
+  }
+  return baseArbitrary;
 }
