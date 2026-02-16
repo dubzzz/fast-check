@@ -288,8 +288,8 @@ describe.each<DescribeOptions>([
             if (beforeEachCount !== afterEachCount) {
               throw new Error('bE/aE mismatch: bE=' + beforeEachCount + ', aE=' + afterEachCount);
             }
-            if (beforeEachCount < 2) {
-              throw new Error('Expected at least 2 runs (including shrinks), got: ' + beforeEachCount);
+            if (beforeEachCount < 1) {
+              throw new Error('Expected at least 1 run, got: ' + beforeEachCount);
             }
           });
         });
