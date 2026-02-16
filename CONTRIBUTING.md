@@ -8,6 +8,22 @@ Use your best judgment, and feel free to propose changes to this document in a p
 
 **Feel free to contribute, ask questions, report bugs and issue pull requests**
 
+## Table of Contents
+
+- [How Can I Contribute?](#how-can-i-contribute)
+  - [Asking questions](#asking-questions)
+  - [Reporting bugs](#reporting-bugs)
+  - [Issuing pull requests](#issuing-pull-requests)
+    - [Getting started](#getting-started)
+    - [Code style](#code-style)
+    - [GitHub Actions integration](#github-actions-integration)
+    - [Notify how impactful your change will be](#notify-how-impactful-your-change-will-be)
+    - [Update your PR](#update-your-pr)
+    - [Resync PR with main](#resync-pr-with-main)
+  - [Examples](#examples)
+    - [Adding a new arbitrary](#adding-a-new-arbitrary)
+- [Can I use AI?](#can-i-use-ai)
+
 ## How Can I Contribute?
 
 ### Asking questions
