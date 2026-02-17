@@ -1,6 +1,6 @@
 name: 🚀 Feature Request
 description: Have an idea to improve fast-check? We'd love to hear it!
-labels: [':rocket: Feature Request']
+labels: ['🚀 Feature Request']
 body:
   - type: markdown
     attributes:
