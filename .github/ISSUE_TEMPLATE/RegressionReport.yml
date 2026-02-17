@@ -1,0 +1,56 @@
+name: 💥 Regression Report
+description: Something that used to work is now broken? Let us know!
+labels: ['💥 Regression Report']
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for flagging this regression! 🔎 These reports help us maintain the reliability you count on.
+  - type: textarea
+    id: regression-description
+    attributes:
+      label: Regression description
+      description: Clear and concise description of the regression.
+    validations:
+      required: true
+  - type: input
+    id: worked-version
+    attributes:
+      label: Worked up to version
+    validations:
+      required: false
+  - type: input
+    id: broken-version
+    attributes:
+      label: Stopped working in version
+    validations:
+      required: false
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: To reproduce
+      description: Steps to reproduce the behavior. A minimal reproduction (repo, snippet, or playground) is very helpful but not required.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Clear and concise description of what you expected to happen.
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Paste the output of the following command run at the root of your project:
+        ```bash
+        node -e "
+          var l=['node: '+process.version];
+          ['typescript','fast-check','@fast-check/ava','@fast-check/jest','@fast-check/vitest','@fast-check/worker','@fast-check/poisoning'].forEach(function(s){try{l.push(s+': '+require(s+'/package.json').version)}catch{}});
+          console.log(l.join('\n'))
+        "
+        ```
+      render: text
+    validations:
+      required: false
