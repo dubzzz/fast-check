@@ -35,10 +35,7 @@ body:
         ```bash
         node -e "
           var l=['node: '+process.version];
-          try{l.push('typescript: '+require('typescript/package.json').version)}catch{}
-          try{l.push('fast-check: '+require('fast-check/package.json').version)}catch{}
-          var p=['ava','jest','vitest','worker','poisoning'];
-          p.forEach(function(s){try{l.push('@fast-check/'+s+': '+require('@fast-check/'+s+'/package.json').version)}catch{}});
+          ['typescript','fast-check','@fast-check/ava','@fast-check/jest','@fast-check/vitest','@fast-check/worker','@fast-check/poisoning'].forEach(function(s){try{l.push(s+': '+require(s+'/package.json').version)}catch{}});
           console.log(l.join('\n'))
         "
         ```
