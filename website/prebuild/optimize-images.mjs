@@ -130,7 +130,8 @@ async function assessMissingSocialImage() {
   const knownAssets = new Set(staticAssets.map((asset) => asset[0]));
   for await (const fileDescriptor of fs.promises.glob(`./{blog,docs}/**/*.{md,mdx}`, { withFileTypes: true })) {
     if (!fileDescriptor.isFile()) continue;
-    const fileContentBuffer = await readFile(path.join(fileDescriptor.parentPath, fileDescriptor.name));
+    const filePath = path.join(fileDescriptor.parentPath, fileDescriptor.name);
+    const fileContentBuffer = await readFile(filePath);
     const fileContent = fileContentBuffer.toString();
     for (const line of fileContent.split('\n')) {
       if (!line.startsWith('image: /img/')) {
@@ -138,7 +139,7 @@ async function assessMissingSocialImage() {
       }
       const expectedAsset = line.slice(12);
       if (!knownAssets.has(expectedAsset)) {
-        throw new Error(`Unknown asset ${expectedAsset} referred as social image from ${path.join(fileDescriptor.parentPath, fileDescriptor.name)}`);
+        throw new Error(`Unknown asset ${expectedAsset} referred as social image from ${filePath}`);
       }
     }
   }
