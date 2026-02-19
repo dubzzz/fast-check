@@ -530,12 +530,11 @@ jobs:
   # Publication jobs
   publish_documentation_netlify:
     name: 'Publish documentation on Netlify'
+    if: github.event_name == 'push'
     needs: documentation
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     env:
-      DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
+      DRAFT_BUILD: ${{github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
@@ -556,27 +555,11 @@ jobs:
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
-        id: deployment_to_netlify
         env:
           DRAFT_BUILD_VALUE: ${{env.DRAFT_BUILD}}
         run: |
           curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE > deploy.json
           cat deploy.json
-          deploy_url=$(jq -r '.deploy_url' --exit-status deploy.json)
-          echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        name: Notify the user of the preview
-        if: env.DRAFT_BUILD == 'true'
-        env:
-          DEPLOY_URL: ${{steps.deployment_to_netlify.outputs.deploy_url}}
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `👋 A preview of the new documentation is available at: ${process.env.DEPLOY_URL}`
-            })
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
