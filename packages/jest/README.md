@@ -112,6 +112,41 @@ test.prop([fc.constant(null)])('should pass', (value) => {
 
 ⚠️ Do not forget to add the `await` before `init` for the ES Module version!
 
+#### Extra setup for `@fast-check/worker` 0.6.0 and later
+
+Since `@fast-check/worker` is an ESM-only package, running it under Jest in CommonJS mode requires `babel-jest` to transpile it. Install the following dependencies:
+
+```bash
+npm install --save-dev babel-jest @babel/core @babel/preset-env
+```
+
+Then add a `babel.config.cjs` at the root of your project:
+
+```js
+module.exports = {
+  presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]],
+};
+```
+
+And update your Jest configuration to use `babel-jest` while excluding `@fast-check/worker` from the ignore patterns:
+
+```js
+module.exports = {
+  transform: {
+    '^.+\\.[t|j]sx?$': 'babel-jest',
+  },
+  transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'],
+};
+```
+
+This ensures `@fast-check/worker` gets transpiled to CommonJS by Babel instead of being skipped. Without it, Jest will fail to load the ESM-only package.
+
+For ES Modules mode, no extra setup is needed — just make sure to run Jest with `--experimental-vm-modules`:
+
+```bash
+node --experimental-vm-modules node_modules/jest/bin/jest.js
+```
+
 ## Minimal requirements
 
 | @fast-check/jest | jest                                    | fast-check | node                                                                                  |
