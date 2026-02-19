@@ -2,7 +2,7 @@
 
 <!-- Describe your change and explain what this PR is trying to solve -->
 
-Resolves #issue-number
+Fixes #issue-number
 
 <!-- Add any additional context here -->
 
