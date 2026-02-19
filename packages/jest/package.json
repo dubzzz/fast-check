@@ -71,7 +71,7 @@
     }
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.22.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.28.6",
     "@fast-check/jest": "workspace:*",
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^30.2.0",
