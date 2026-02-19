@@ -1,7 +1,6 @@
 import { Jimp } from 'jimp';
-import { existsSync, mkdirSync } from 'fs';
+import fs, { existsSync, mkdirSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
-import { glob } from 'glob';
 import path, { join } from 'path';
 import { createHash } from 'crypto';
 import allContributors from '../src/components/HomepageContributors/all-contributors.json' with { type: 'json' };
@@ -129,9 +128,9 @@ async function assessMissingSocialImage() {
   // With expected pattern from /blog:
   // >  image: /img/blog/2024-12-11-advent-of-pbt-day-11--social.png
   const knownAssets = new Set(staticAssets.map((asset) => asset[0]));
-  const consideredFiles = await glob(`./{blog,docs}/**/*.{md,mdx}`, { withFileTypes: true, nodir: true });
-  for (const fileDescriptor of consideredFiles) {
-    const fileContentBuffer = await readFile(fileDescriptor.fullpath());
+  for await (const fileDescriptor of fs.promises.glob(`./{blog,docs}/**/*.{md,mdx}`, { withFileTypes: true })) {
+    if (!fileDescriptor.isFile()) continue;
+    const fileContentBuffer = await readFile(path.join(fileDescriptor.parentPath, fileDescriptor.name));
     const fileContent = fileContentBuffer.toString();
     for (const line of fileContent.split('\n')) {
       if (!line.startsWith('image: /img/')) {
@@ -139,7 +138,7 @@ async function assessMissingSocialImage() {
       }
       const expectedAsset = line.slice(12);
       if (!knownAssets.has(expectedAsset)) {
-        throw new Error(`Unknown asset ${expectedAsset} referred as social image from ${fileDescriptor.fullpath()}`);
+        throw new Error(`Unknown asset ${expectedAsset} referred as social image from ${path.join(fileDescriptor.parentPath, fileDescriptor.name)}`);
       }
     }
   }

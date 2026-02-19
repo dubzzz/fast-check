@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import * as fs from 'fs';
+import * as path from 'path';
 import fc from '../../../src/fast-check.js';
-import { globSync } from 'glob';
 
 const TargetNumExamples = 5;
 const JsBlockStart = '```js';
@@ -10,13 +10,15 @@ const CommentForGeneratedValues = '// Examples of generated values:';
 const CommentForArbitraryIndicator = '// Use the arbitrary:';
 const CommentForStatistics = '// Computed statistics for 10k generated values:';
 
-const allPathsFromWebsite = globSync(`./website/docs/core-blocks/arbitraries/**/*.md`, {
-  withFileTypes: true,
-  nodir: true,
-}).map((fileDescriptor) => ({
-  filePath: fileDescriptor.fullpath(),
-  shortName: fileDescriptor.name,
-}));
+const allPathsFromWebsite = fs
+  .globSync(`./website/docs/core-blocks/arbitraries/**/*.md`, {
+    withFileTypes: true,
+  })
+  .filter((fileDescriptor) => fileDescriptor.isFile())
+  .map((fileDescriptor) => ({
+    filePath: path.join(fileDescriptor.parentPath, fileDescriptor.name),
+    shortName: fileDescriptor.name,
+  }));
 
 // Linked to https://github.com/vitest-dev/vitest/discussions/6511#discussioncomment-13145786
 afterEach(async () => {
