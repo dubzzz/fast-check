@@ -601,16 +601,30 @@ async function writeToFile(
 
   // Prepare jest config itself
   const jestConfigPath = path.join(specDirectory, jestConfigName);
+  const jestConfig = {
+    testMatch: [`<rootDir>/${specFileName}`],
+    transform: {},
+    testTimeout: options.testTimeoutConfig,
+    testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
+    ...(useWorkers
+      ? {
+          transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
+          transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'],
+        }
+      : {}),
+  };
+
+  // Prepare babel config (if needed)
+  const babelConfigPath = path.join(specDirectory, 'babel.config.cjs');
+  const babelConfig = useWorkers
+    ? `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`
+    : undefined;
 
   // Write the files
   await Promise.all([
     fs.writeFile(specFilePath, specContent),
-    fs.writeFile(
-      jestConfigPath,
-      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
-        options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
-      }${options.testRunner !== undefined ? `testRunner: 'jest-jasmine2',` : ''} };`,
-    ),
+    fs.writeFile(jestConfigPath, `module.exports = ${JSON.stringify(jestConfig)};`),
+    ...(babelConfig !== undefined ? [fs.writeFile(babelConfigPath, babelConfig)] : []),
   ]);
 
   return specDirectory;
