@@ -6,7 +6,9 @@ Resolves #issue-number
 
 <!-- Add any additional context here -->
 
-**Checklist** — _Don't delete this checklist and make sure you do the following before opening the PR_
+## Checklist
+
+— _Don't delete this checklist and make sure you do the following before opening the PR_
 
 - [ ] I have a full understanding of every line in this PR — whether the code was hand-written, AI-generated, copied from external sources or produced by any other tool
 - [ ] I flagged the impact of my change (minor / patch / major) either by running `pnpm run bump` or by following the instructions from the changeset bot
