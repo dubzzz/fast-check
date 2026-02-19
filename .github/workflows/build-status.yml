@@ -557,8 +557,12 @@ jobs:
       - name: Deploy to Netlify
         env:
           DRAFT_BUILD_VALUE: ${{env.DRAFT_BUILD}}
-        run: curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE
-   check_any_package:
+        run: >-
+          curl -H "Content-Type: application/zip"
+          -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}"
+          --data-binary "@artifacts.zip"
+          https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE
+  check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
     if: github.event_name == 'push'
