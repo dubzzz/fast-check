@@ -200,6 +200,9 @@ importers:
         specifier: ^3.0.0 || ^4.0.0
         version: link:../fast-check
     devDependencies:
+      '@babel/plugin-transform-modules-commonjs':
+        specifier: ^7.22.5
+        version: 7.28.6(@babel/core@7.29.0)
       '@fast-check/jest':
         specifier: workspace:*
         version: 'link:'
@@ -218,6 +221,9 @@ importers:
       '@types/node':
         specifier: ^24.10.13
         version: 24.10.13
+      babel-jest:
+        specifier: ^30.2.0
+        version: 30.2.0(@babel/core@7.29.0)
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@24.10.13)
@@ -225,8 +231,8 @@ importers:
         specifier: ^30.2.0
         version: 30.2.0
       typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
+        specifier: 6.0.0-beta
+        version: 6.0.0-beta
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.10.13)(jiti@1.21.7)(lightningcss@1.31.1)(terser@5.46.0)(yaml@2.8.2)
@@ -9671,6 +9677,11 @@ packages:
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  typescript@6.0.0-beta:
+    resolution: {integrity: sha512-CldZdztDpQRLM1HC6WDQjQkQN5Ub5zRau737a1diGh3lPmb9oRsaWHk1y5iqK0o7+1bNJ0oXfEGRkAogFZBL+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -22016,6 +22027,8 @@ snapshots:
   typescript@5.8.2: {}
 
   typescript@5.9.3: {}
+
+  typescript@6.0.0-beta: {}
 
   uc.micro@2.1.0: {}
 
