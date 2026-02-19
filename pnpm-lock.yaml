@@ -201,7 +201,7 @@ importers:
         version: link:../fast-check
     devDependencies:
       '@babel/plugin-transform-modules-commonjs':
-        specifier: ^7.22.5
+        specifier: ^7.28.6
         version: 7.28.6(@babel/core@7.29.0)
       '@fast-check/jest':
         specifier: workspace:*
