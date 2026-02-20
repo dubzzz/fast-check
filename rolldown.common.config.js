@@ -5,11 +5,20 @@ const inputDir = 'src';
 const outputDir = 'lib';
 
 export default function buildConfigFor(pkg, dirname) {
+  let isDual = false;
   const inputs = Object.values(pkg.exports)
+    .map((exportValue) => {
+      if (typeof exportValue === 'string') {
+        return exportValue;
+      }
+      isDual = true;
+      return exportValue.import.default;
+    })
     .filter((filePath) => filePath.endsWith('.js'))
     .map((filePath) => filePath.replace(`./${outputDir}/`, `./${inputDir}/`));
 
-  return defineConfig({
+  /** @type {RolldownOptions} */
+  const sharedOptions = {
     input: inputs,
     output: {
       cleanDir: true,
@@ -25,6 +34,27 @@ export default function buildConfigFor(pkg, dirname) {
     treeshake: {
       moduleSideEffects: false,
     },
-    plugins: [dts({ tsconfig: './tsconfig.publish.types.json' })],
-  });
+  };
+  return defineConfig([
+    {
+      ...sharedOptions,
+      output: {
+        ...sharedOptions.output,
+        format: 'esm',
+      },
+      plugins: [dts({ tsconfig: './tsconfig.publish.types.json' })],
+    },
+    ...(isDual
+      ? [
+          {
+            ...sharedOptions,
+            output: {
+              ...sharedOptions.output,
+              format: 'cjs',
+              dir: outputDir + '/cjs',
+            },
+          },
+        ]
+      : []),
+  ]);
 }

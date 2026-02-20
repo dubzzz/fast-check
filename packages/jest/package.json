@@ -33,11 +33,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --module commonjs --moduleResolution bundler --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json",
+    "build": "rolldown -c && cp package.cjs-template.json lib/cjs/package.json && cp lib/*.d.ts lib/cjs/",
+    "build-ci": "rolldown -c && cp package.cjs-template.json lib/cjs/package.json && cp lib/*.d.ts lib/cjs/",
     "test-bundle:cjs": "jest --config test-bundle/cjs/jest.config.cjs",
     "test-bundle:mjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/mjs/jest.config.mjs",
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
