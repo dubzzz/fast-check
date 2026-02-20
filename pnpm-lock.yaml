@@ -161,8 +161,8 @@ importers:
         specifier: workspace:*
         version: link:../poisoning
       '@microsoft/api-extractor':
-        specifier: ^7.57.0
-        version: 7.57.0(@types/node@24.10.13)
+        specifier: ^7.57.2
+        version: 7.57.2(@types/node@24.10.13)
       '@types/node':
         specifier: ^24.10.13
         version: 24.10.13
@@ -2096,14 +2096,6 @@ packages:
       '@types/node':
         optional: true
 
-  '@isaacs/balanced-match@4.0.1':
-    resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
-    engines: {node: 20 || >=22}
-
-  '@isaacs/brace-expansion@5.0.1':
-    resolution: {integrity: sha512-WMz71T1JS624nWj2n2fnYAuPovhv7EUhk69R6i9dsVyzxt5eM3bjwvgk9L+APE1TRscGysAVMANkB0jh0LQZrQ==}
-    engines: {node: 20 || >=22}
-
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -2519,11 +2511,11 @@ packages:
   '@mermaid-js/parser@0.6.3':
     resolution: {integrity: sha512-lnjOhe7zyHjc+If7yT4zoedx2vo4sHaTmtkl1+or8BRTnCtDmcTpAjpzDSfCZrshM5bCoz0GyidzadJAH1xobA==}
 
-  '@microsoft/api-extractor-model@7.33.0':
-    resolution: {integrity: sha512-cMrvErE9yJz8aImpRztUfbO085WRSI4nsvMQ+VNGgHxiQO7s5LAXrt+B35RUghIsn0JdNdqIzusXXtKgSnXh7Q==}
+  '@microsoft/api-extractor-model@7.33.1':
+    resolution: {integrity: sha512-KX0LI6xzI0gcBOXXmr5mnnbdhsK2W93pqvJo8OgJgWvRRh+wMEp0Ccj38h1XKeJ29E1tuAZKSUOfHUQ1WA8fZg==}
 
-  '@microsoft/api-extractor@7.57.0':
-    resolution: {integrity: sha512-ZWflRQNLRBgG4DPRDUB6DQR2AL2Z+gYU/1PIwFKna8c8c9IGF4h0FHtb73MbV0LfufqfzDVnpaLPXmOtDAeUaA==}
+  '@microsoft/api-extractor@7.57.2':
+    resolution: {integrity: sha512-Dih58xLlG+M6k2qVSksk9xJx8HvmJEyK3LcHrcqXE7eK/U7pg/8cTT8j1TKijU4P4639wvCy1zhDuvtjRy+02Q==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.18.0':
@@ -3115,35 +3107,35 @@ packages:
   '@rspack/lite-tapable@1.1.0':
     resolution: {integrity: sha512-E2B0JhYFmVAwdDiG14+DW0Di4Ze4Jg10Pc4/lILUrd5DRCaklduz2OvJ5HYQ6G+hd+WTzqQb3QnDNfK4yvAFYw==}
 
-  '@rushstack/node-core-library@5.20.0':
-    resolution: {integrity: sha512-yix/WFzuMPvbECgQjdzjDqynv7YQnrcGUfy56WU7QWAVcoN4uB1wCwpt3heo/ghHp2nINrRecPtVS7sQmqY+OA==}
+  '@rushstack/node-core-library@5.20.1':
+    resolution: {integrity: sha512-QvxZyh+RsTJ77JpQkS9K9lJujh6lj5WyMxieT0bdACtwqxEkGB9zCuSMX5UlXRweaIgSpu1ztdHmhV07fKUpMg==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
 
-  '@rushstack/problem-matcher@0.2.0':
-    resolution: {integrity: sha512-IHV2qdypwqEatMg8Ka9e/q26pu2tOyhG3fuJZtrrPA3O++ctW8y1p6oCeeeIV8v1/kJ3xJPtg1xdZshyNZb8sg==}
+  '@rushstack/problem-matcher@0.2.1':
+    resolution: {integrity: sha512-gulfhBs6n+I5b7DvjKRfhMGyUejtSgOHTclF/eONr8hcgF1APEDjhxIsfdUYYMzC3rvLwGluqLjbwCFZ8nxrog==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
 
-  '@rushstack/rig-package@0.7.0':
-    resolution: {integrity: sha512-iPHSnI/DtLPv2lydP9WWZczhD9knVCJWwLle1H01IYnvYNkhZX8rbnuUH+HEwcANd3YlLjCpXydWN3LMoLOxPw==}
+  '@rushstack/rig-package@0.7.1':
+    resolution: {integrity: sha512-hLwDnp4yMcAd/gcUol8NPWNctpIXzVOgMyhZ8DagnEJls9TOZd0xF//5hS+YTiX7/+4rLfBra+NoB3rtFxjDdA==}
 
-  '@rushstack/terminal@0.22.0':
-    resolution: {integrity: sha512-z5O2g5dws5iFNe3hAutAKLPmQARJs/VEWMxdpyew+xm0ohw1qh1G6+wY0nUzFPrLiKQjU+8KNA11VAEMb46ETg==}
+  '@rushstack/terminal@0.22.1':
+    resolution: {integrity: sha512-Mdtu0VN7v31O5Zcno8ZZH5kQHF13Ez7WN9Aio7nFJVcR36i4bkERionYrWgBDQJ0JdVPLKGecZER/xRU5IvGLw==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
 
-  '@rushstack/ts-command-line@5.3.0':
-    resolution: {integrity: sha512-4hneaVxA5zPC8cwUGZtdvCUzGbW8A+b+qrBK3hYs/xO7TyWkgAMKxq/6FJY91fPG8awgmJ+s1w8GuqNXgxsTyw==}
+  '@rushstack/ts-command-line@5.3.1':
+    resolution: {integrity: sha512-mid/JIZSJafwy3x9e4v0wVLuAqSSYYErEHV0HXPALYLSBN13YNkR5caOk0hf97lSRKrxhtvQjGaDKSEelR3sMg==}
 
   '@shikijs/engine-oniguruma@3.22.0':
     resolution: {integrity: sha512-DyXsOG0vGtNtl7ygvabHd7Mt5EY8gCNqR9Y7Lpbbd/PbJvgWrqaKzH1JW6H6qFkuUa8aCxoiYVv8/YfFljiQxA==}
@@ -7521,8 +7513,8 @@ packages:
   minimalistic-assert@1.0.1:
     resolution: {integrity: sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A==}
 
-  minimatch@10.1.2:
-    resolution: {integrity: sha512-fu656aJ0n2kcXwsnwnv9g24tkU5uSmOlTjd6WyyaKm2Z+h1qmY6bAjrcaIxF/BslFqbZ8UBtbJi7KgQOZD2PTw==}
+  minimatch@10.2.1:
+    resolution: {integrity: sha512-MClCe8IL5nRRmawL6ib/eT4oLyeKMGCghibcDWK+J0hh0Q8kqSdia6BvbRMVk6mPa6WqUa5uR2oxt6C5jd533A==}
     engines: {node: 20 || >=22}
 
   minimatch@10.2.2:
@@ -12911,12 +12903,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.10.13
 
-  '@isaacs/balanced-match@4.0.1': {}
-
-  '@isaacs/brace-expansion@5.0.1':
-    dependencies:
-      '@isaacs/balanced-match': 4.0.1
-
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -13584,26 +13570,26 @@ snapshots:
     dependencies:
       langium: 3.3.1
 
-  '@microsoft/api-extractor-model@7.33.0(@types/node@24.10.13)':
+  '@microsoft/api-extractor-model@7.33.1(@types/node@24.10.13)':
     dependencies:
       '@microsoft/tsdoc': 0.16.0
       '@microsoft/tsdoc-config': 0.18.0
-      '@rushstack/node-core-library': 5.20.0(@types/node@24.10.13)
+      '@rushstack/node-core-library': 5.20.1(@types/node@24.10.13)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.57.0(@types/node@24.10.13)':
+  '@microsoft/api-extractor@7.57.2(@types/node@24.10.13)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.33.0(@types/node@24.10.13)
+      '@microsoft/api-extractor-model': 7.33.1(@types/node@24.10.13)
       '@microsoft/tsdoc': 0.16.0
       '@microsoft/tsdoc-config': 0.18.0
-      '@rushstack/node-core-library': 5.20.0(@types/node@24.10.13)
-      '@rushstack/rig-package': 0.7.0
-      '@rushstack/terminal': 0.22.0(@types/node@24.10.13)
-      '@rushstack/ts-command-line': 5.3.0(@types/node@24.10.13)
+      '@rushstack/node-core-library': 5.20.1(@types/node@24.10.13)
+      '@rushstack/rig-package': 0.7.1
+      '@rushstack/terminal': 0.22.1(@types/node@24.10.13)
+      '@rushstack/ts-command-line': 5.3.1(@types/node@24.10.13)
       diff: 8.0.3
       lodash: 4.17.23
-      minimatch: 10.1.2
+      minimatch: 10.2.1
       resolve: 1.22.11
       semver: 7.5.4
       source-map: 0.6.1
@@ -14234,7 +14220,7 @@ snapshots:
 
   '@rspack/lite-tapable@1.1.0': {}
 
-  '@rushstack/node-core-library@5.20.0(@types/node@24.10.13)':
+  '@rushstack/node-core-library@5.20.1(@types/node@24.10.13)':
     dependencies:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
@@ -14247,26 +14233,26 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.10.13
 
-  '@rushstack/problem-matcher@0.2.0(@types/node@24.10.13)':
+  '@rushstack/problem-matcher@0.2.1(@types/node@24.10.13)':
     optionalDependencies:
       '@types/node': 24.10.13
 
-  '@rushstack/rig-package@0.7.0':
+  '@rushstack/rig-package@0.7.1':
     dependencies:
       resolve: 1.22.11
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.22.0(@types/node@24.10.13)':
+  '@rushstack/terminal@0.22.1(@types/node@24.10.13)':
     dependencies:
-      '@rushstack/node-core-library': 5.20.0(@types/node@24.10.13)
-      '@rushstack/problem-matcher': 0.2.0(@types/node@24.10.13)
+      '@rushstack/node-core-library': 5.20.1(@types/node@24.10.13)
+      '@rushstack/problem-matcher': 0.2.1(@types/node@24.10.13)
       supports-color: 8.1.1
     optionalDependencies:
       '@types/node': 24.10.13
 
-  '@rushstack/ts-command-line@5.3.0(@types/node@24.10.13)':
+  '@rushstack/ts-command-line@5.3.1(@types/node@24.10.13)':
     dependencies:
-      '@rushstack/terminal': 0.22.0(@types/node@24.10.13)
+      '@rushstack/terminal': 0.22.1(@types/node@24.10.13)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -19603,9 +19589,9 @@ snapshots:
 
   minimalistic-assert@1.0.1: {}
 
-  minimatch@10.1.2:
+  minimatch@10.2.1:
     dependencies:
-      '@isaacs/brace-expansion': 5.0.1
+      brace-expansion: 5.0.2
 
   minimatch@10.2.2:
     dependencies:
