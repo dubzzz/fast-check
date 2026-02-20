@@ -172,9 +172,6 @@ importers:
       fast-check:
         specifier: workspace:*
         version: 'link:'
-      glob:
-        specifier: ^13.0.5
-        version: 13.0.6
       not-node-buffer:
         specifier: npm:buffer@^6.0.3
         version: buffer@6.0.3
@@ -414,9 +411,6 @@ importers:
       fast-check:
         specifier: workspace:*
         version: link:../packages/fast-check
-      glob:
-        specifier: ^13.0.5
-        version: 13.0.6
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@24.10.13)
