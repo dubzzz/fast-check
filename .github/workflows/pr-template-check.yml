@@ -20,6 +20,12 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
+            const author = context.payload.pull_request.user.login;
+            if (author === 'renovate[bot]') {
+              console.log('⏭️ Skipping PR template check for Renovate bot');
+              return;
+            }
+
             const body = context.payload.pull_request.body ?? '';
 
             // Check for the two secondary titles from the PR template
