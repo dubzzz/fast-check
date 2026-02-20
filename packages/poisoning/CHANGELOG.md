@@ -1,3 +1,23 @@
+# 0.3.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.2.3...poisoning%2Fv0.3.0)]
+
+## Breaking changes
+
+- ([PR#6489](https://github.com/dubzzz/fast-check/pull/6489)) Drop CommonJS support
+- ([PR#6505](https://github.com/dubzzz/fast-check/pull/6505)) Drop useless "typesVersions"
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6509](https://github.com/dubzzz/fast-check/pull/6509)) CI: Speed-up build with rolldown
+
+---
+
 # 0.2.3
 
 _Update build scripts_

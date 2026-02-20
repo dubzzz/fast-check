@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/poisoning",
   "description": "Set of utilities to ease detection and revert of poisoning",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",

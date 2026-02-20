@@ -1,3 +1,24 @@
+# 0.3.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.4...vitest%2Fv0.3.0)]
+
+## Breaking changes
+
+- ([PR#6499](https://github.com/dubzzz/fast-check/pull/6499)) Drop CommonJS support
+- ([PR#6504](https://github.com/dubzzz/fast-check/pull/6504)) Drop useless "typesVersions"
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6508](https://github.com/dubzzz/fast-check/pull/6508)) CI: Speed-up build with rolldown
+- ([PR#6382](https://github.com/dubzzz/fast-check/pull/6382)) Test: Reactivate skipped .only.prop tests
+
+---
+
 # 0.2.4
 
 _Fix support for global configurations of numRuns and others_
