@@ -16,3 +16,9 @@ rules:
       - build-status.yml:924 # poisoning
       - build-status.yml:999 # vitest
       - build-status.yml:1074 # worker
+  dangerous-triggers:
+    ignore:
+      # We moved these workflows to "pull_request_target".
+      # It makes them able to run before any approval.
+      # None of these workflows relies on uncontrolled code coming from the PR.
+      - pr-template-check.yml:3
