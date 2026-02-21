@@ -8,6 +8,7 @@ import type { Parameters } from './configuration/Parameters.js';
 import { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
+import { Map, safeMapGet, safeMapSet } from '../../utils/globals.js';
 
 /** @internal */
 function toProperty<Ts>(
@@ -68,13 +69,30 @@ function round2(n: number): string {
 }
 
 /**
+ * Statistics report returned by {@link statistics}
+ *
+ * @remarks Since 3.25.0
+ * @public
+ */
+export type StatisticsReport = {
+  /**
+   * Mapping from classification labels to their counts
+   */
+  classes: Map<string, number>;
+  /**
+   * Number of values that have been generated and considered
+   */
+  count: number;
+};
+
+/**
  * Gather useful statistics concerning generated values
  *
- * Print the result in `console.log` or `params.logger` (if defined)
+ * Print the result in `console.log` or `params.logger` (if defined) and return the statistics report
  *
  * @example
  * ```typescript
- * fc.statistics(
+ * const report = fc.statistics(
  *     fc.nat(999),
  *     v => v < 100 ? 'Less than 100' : 'More or equal to 100',
  *     {numRuns: 1000, logger: console.log});
@@ -82,11 +100,13 @@ function round2(n: number): string {
  * // - Less than 100
  * // - More or equal to 100
  * // The output will be sent line by line to the logger
+ * // The report contains the classification counts: report.classes.get('Less than 100')
  * ```
  *
  * @param generator - {@link IProperty} or {@link Arbitrary} to extract the values from
  * @param classify - Classifier function that can classify the generated value in zero, one or more categories (with free labels)
  * @param params - Integer representing the number of values to generate or `Parameters` as in {@link assert}
+ * @returns Statistics report containing classification counts and metadata
  *
  * @remarks Since 0.0.6
  * @public
@@ -95,28 +115,34 @@ function statistics<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: Parameters<Ts> | number,
-): void {
+): StatisticsReport {
   const extendedParams =
     typeof params === 'number'
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
   const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
-  const recorded: { [key: string]: number } = {};
+  const recorded = new Map<string, number>();
   for (const g of streamSample(generator, params)) {
     const out = classify(g);
     const categories: string[] = Array.isArray(out) ? out : [out];
     for (const c of categories) {
-      recorded[c] = (recorded[c] || 0) + 1;
+      const oldCount = safeMapGet(recorded, c) || 0;
+      safeMapSet(recorded, c, oldCount + 1);
     }
   }
-  const data = Object.entries(recorded)
+  const data = Array.from(recorded.entries())
     .sort((a, b) => b[1] - a[1])
-    .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
-  const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
-  const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
+    .map((entry) => [entry[0], `${round2((entry[1] * 100.0) / qParams.numRuns)}%`]);
+  const longestName = data.map((entry) => entry[0].length).reduce((p, c) => Math.max(p, c), 0);
+  const longestPercent = data.map((entry) => entry[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
     qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
+
+  return {
+    classes: recorded,
+    count: qParams.numRuns,
+  };
 }
 
 export { sample, statistics };
