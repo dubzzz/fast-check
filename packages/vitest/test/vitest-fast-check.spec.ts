@@ -2,6 +2,7 @@ import * as path from 'path';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
+import type { afterEach, beforeEach } from 'vitest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
@@ -11,6 +12,8 @@ import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 declare const afterAllVi: typeof afterAll;
+declare const beforeEachVi: typeof beforeEach;
+declare const afterEachVi: typeof afterEach;
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
@@ -151,6 +154,225 @@ describe.each<DescribeOptions>([
       // Assert
       expectPass(out);
     });
+
+    it.concurrent(`should call beforeEach for each run in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let beforeEachCount = 0;
+        const requestedNumExecutions = 5;
+        beforeEachVi(() => {
+          ++beforeEachCount;
+        });
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+          return true;
+        });
+        afterAllVi(() => {
+          if (beforeEachCount !== requestedNumExecutions) {
+            throw new Error('beforeEach count mismatch, got: ' + beforeEachCount);
+          }
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(`should call afterEach for each run in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        let afterEachCount = 0;
+        const requestedNumExecutions = 5;
+        afterEachVi(() => {
+          ++afterEachCount;
+        });
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+          return true;
+        });
+        afterAllVi(() => {
+          if (afterEachCount !== requestedNumExecutions) {
+            throw new Error('afterEach count mismatch, got: ' + afterEachCount);
+          }
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          const requestedNumExecutions = 5;
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          beforeEachVi(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          afterEachVi(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            if (beforeEachCount - afterEachCount !== 1) {
+              throw new Error('run: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+            return true;
+          });
+
+          afterAllVi(() => {
+            if (errors.length > 0) {
+              throw new Error('Hook order violations: ' + errors.join('; '));
+            }
+            if (beforeEachCount !== requestedNumExecutions) {
+              throw new Error('beforeEach count mismatch, got: ' + beforeEachCount);
+            }
+            if (afterEachCount !== requestedNumExecutions) {
+              throw new Error('afterEach count mismatch, got: ' + afterEachCount);
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run including shrinks in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          beforeEachVi(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          afterEachVi(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.fails.prop([fc.integer({ min: 10, max: 1000 })], { numRuns: 10 })(
+            'property',
+            (_n) => false,
+          );
+
+          afterAllVi(() => {
+            if (errors.length > 0) {
+              throw new Error('Hook order violations: ' + errors.join('; '));
+            }
+            if (beforeEachCount !== afterEachCount) {
+              throw new Error('bE/aE mismatch: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+            if (beforeEachCount < 1) {
+              throw new Error('Expected at least 1 run, got: ' + beforeEachCount);
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
+    it.concurrent(
+      `should call beforeEach cleanup functions for each run in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          let cleanupCount = 0;
+          const requestedNumExecutions = 5;
+          beforeEachVi(() => {
+            return () => {
+              ++cleanupCount;
+            };
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            return true;
+          });
+          afterAllVi(() => {
+            if (cleanupCount !== requestedNumExecutions) {
+              throw new Error('beforeEach cleanup count mismatch, got: ' + cleanupCount);
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
+    it.concurrent(
+      `should call beforeEach cleanup before afterEach between runs in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          const requestedNumExecutions = 5;
+          let cleanupRan = false;
+          let sawCleanupBeforeAfterEach = true;
+          let transitions = 0;
+
+          beforeEachVi(() => {
+            cleanupRan = false;
+            return () => {
+              cleanupRan = true;
+            };
+          });
+          afterEachVi(() => {
+            transitions++;
+            // Skip the first transition — its cleanup is managed by vitest auto-lifecycle,
+            // not by our manual invocation, so ordering is outside our control.
+            if (transitions > 1 && !cleanupRan) {
+              sawCleanupBeforeAfterEach = false;
+            }
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            return true;
+          });
+          afterAllVi(() => {
+            if (!sawCleanupBeforeAfterEach) {
+              throw new Error('beforeEach cleanup was not called before afterEach');
+            }
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
 
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
@@ -337,7 +559,7 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       : (testCode: string) => testCode;
   const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
-    "import {describe,afterAll as afterAllVi} from 'vitest';\n" +
+    "import {describe,afterAll as afterAllVi,beforeEach as beforeEachVi,afterEach as afterEachVi} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
