@@ -206,25 +206,25 @@ import { noShrink } from './arbitrary/noShrink.js';
 import { noBias } from './arbitrary/noBias.js';
 import { limitShrink } from './arbitrary/limitShrink.js';
 
-// Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
+// Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
  * Type of module (commonjs or module)
  * @remarks Since 1.22.0
  * @public
  */
-const __type = '__PACKAGE_TYPE__' as string;
+const __type = process.env.__PACKAGE_TYPE__ as string;
 /**
- * Version of fast-check used by your project (eg.: __PACKAGE_VERSION__)
+ * Version of fast-check used by your project (eg.: process.env.__PACKAGE_VERSION__)
  * @remarks Since 1.22.0
  * @public
  */
-const __version = '__PACKAGE_VERSION__' as string;
+const __version = process.env.__PACKAGE_VERSION__ as string;
 /**
- * Commit hash of the current code (eg.: __COMMIT_HASH__)
+ * Commit hash of the current code (eg.: process.env.__COMMIT_HASH__)
  * @remarks Since 2.7.0
  * @public
  */
-const __commitHash = '__COMMIT_HASH__' as string;
+const __commitHash = process.env.__COMMIT_HASH__ as string;
 
 // boolean
 // floating point types

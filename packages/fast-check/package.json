@@ -9,21 +9,21 @@
     ".": {
       "require": {
         "types@<5.7": "./lib/cjs/types57/fast-check.d.ts",
-        "types": "./lib/cjs/types/fast-check.d.ts",
+        "types": "./lib/cjs/fast-check.d.ts",
         "default": "./lib/cjs/fast-check.js"
       },
       "import": {
         "types@<5.7": "./lib/types57/fast-check.d.ts",
-        "types": "./lib/types/fast-check.d.ts",
+        "types": "./lib/fast-check.d.ts",
         "default": "./lib/fast-check.js"
       }
     }
   },
   "module": "lib/fast-check.js",
-  "types": "lib/types/fast-check.d.ts",
+  "types": "lib/fast-check.d.ts",
   "typesVersions": {
     "<5.7": {
-      "lib/types/fast-check.d.ts": [
+      "lib/fast-check.d.ts": [
         "lib/types57/fast-check.d.ts"
       ]
     }
@@ -33,13 +33,11 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types && node postbuild/main.mjs",
-    "build-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs/types",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --module commonjs --moduleResolution node10 --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json",
+    "build:post-build": "mkdir -p lib/types57 && cp lib/*.d.ts lib/types57/ && for f in lib/types57/*.d.ts; do [ -f \"$f\" ] && sed -i 's/Array<ArrayBuffer>>/Array>/g' \"$f\"; done && cp lib/*.d.ts lib/cjs/ && cp -r lib/types57 lib/cjs/ && cp package.cjs-template.json lib/cjs/package.json",
+    "build": "rolldown -c && pnpm run build:post-build",
+    "build-ci": "rolldown -c && pnpm run build:post-build",
     "typecheck": "tsc --noEmit",
-    "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
+    "test-bundle": "for f in test-bundle/*.mjs test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && node \"$f\" || exit 1; done",
     "test-legacy-bundle": "nvs add 12.17 && $(nvs which 12.17) test-bundle/run.cjs && $(nvs which 12.17) test-bundle/run-advanced.cjs",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run docs",
