@@ -36,7 +36,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
-    "eslint": "^10.0.1",
+    "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.3.0",
     "pkg-pr-new": "^0.0.63",
