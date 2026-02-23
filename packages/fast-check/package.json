@@ -88,9 +88,6 @@
     "vitest",
     "random"
   ],
-  "tsd": {
-    "directory": "test/type"
-  },
   "funding": [
     {
       "type": "individual",
