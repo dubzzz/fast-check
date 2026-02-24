@@ -1,6 +1,11 @@
 import type { RandomGenerator } from 'pure-rand';
 import { unsafeUniformBigIntDistribution, unsafeUniformIntDistribution } from 'pure-rand';
 
+const MIN_INT: number = 0x80000000 | 0;
+const MAX_INT: number = 0x7fffffff | 0;
+const DBL_FACTOR: number = Math.pow(2, 27);
+const DBL_DIVISOR: number = Math.pow(2, -53);
+
 /**
  * Wrapper around an instance of a `pure-rand`'s random number generator
  * offering a simpler interface to deal with random with impure patterns
@@ -8,11 +13,6 @@ import { unsafeUniformBigIntDistribution, unsafeUniformIntDistribution } from 'p
  * @public
  */
 export class Random {
-  private static MIN_INT: number = 0x80000000 | 0;
-  private static MAX_INT: number = 0x7fffffff | 0;
-  private static DBL_FACTOR: number = Math.pow(2, 27);
-  private static DBL_DIVISOR: number = Math.pow(2, -53);
-
   /** @internal */
   private internalRng: RandomGenerator;
 
@@ -60,8 +60,8 @@ export class Random {
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
     return unsafeUniformIntDistribution(
-      min === undefined ? Random.MIN_INT : min,
-      max === undefined ? Random.MAX_INT : max,
+      min === undefined ? MIN_INT : min,
+      max === undefined ? MAX_INT : max,
       this.internalRng,
     );
   }
@@ -81,7 +81,7 @@ export class Random {
   nextDouble(): number {
     const a = this.next(26);
     const b = this.next(27);
-    return (a * Random.DBL_FACTOR + b) * Random.DBL_DIVISOR;
+    return (a * DBL_FACTOR + b) * DBL_DIVISOR;
   }
 
   /**
