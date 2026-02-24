@@ -58,7 +58,6 @@ function testArbitrary(arb) {
   assert.notEqual(stats.length, 0);
 }
 
-console.log('Starting ' + __filename + '...');
 testArbitrary(fc.nat());
 testArbitrary(fc.subarray([1, 42, 360]));
 testArbitrary(fc.array(fc.nat()));

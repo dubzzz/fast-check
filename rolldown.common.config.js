@@ -1,10 +1,11 @@
 import { defineConfig } from 'rolldown';
 import { dts } from 'rolldown-plugin-dts';
+import replace from '@rollup/plugin-replace';
 
 const inputDir = 'src';
 const outputDir = 'lib';
 
-export default function buildConfigFor(pkg, dirname) {
+export default function buildConfigFor(pkg, dirname, replacementsFor) {
   let isDual = false;
   const inputs = Object.values(pkg.exports)
     .map((exportValue) => {
@@ -34,6 +35,7 @@ export default function buildConfigFor(pkg, dirname) {
     treeshake: {
       moduleSideEffects: false,
     },
+    plugins: [],
   };
   return defineConfig([
     {
@@ -42,7 +44,11 @@ export default function buildConfigFor(pkg, dirname) {
         ...sharedOptions.output,
         format: 'esm',
       },
-      plugins: [dts({ tsconfig: './tsconfig.publish.types.json' })],
+      plugins: [
+        ...sharedOptions.plugins,
+        ...(replacementsFor !== undefined ? [replace(replacementsFor(true))] : []),
+        dts({ tsconfig: './tsconfig.publish.types.json' }),
+      ],
     },
     ...(isDual
       ? [
@@ -53,6 +59,10 @@ export default function buildConfigFor(pkg, dirname) {
               format: 'cjs',
               dir: outputDir + '/cjs',
             },
+            plugins: [
+              ...sharedOptions.plugins,
+              ...(replacementsFor !== undefined ? [replace(replacementsFor(false))] : []),
+            ],
           },
         ]
       : []),
