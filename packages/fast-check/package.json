@@ -33,7 +33,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build:post-build": "mkdir -p lib/types57 && cp lib/*.d.ts lib/types57/ && for f in lib/types57/*.d.ts; do [ -f \"$f\" ] && sed -i 's/Array<ArrayBuffer>>/Array>/g' \"$f\"; done && cp lib/*.d.ts lib/cjs/ && cp -r lib/types57 lib/cjs/ && cp package.cjs-template.json lib/cjs/package.json",
+    "build:post-build": "sed -i 's/^declare namespace fast_check_default_d_exports {/\\/\\*\\* @public \\*\\/ declare namespace fast_check_default_d_exports {/' lib/fast-check.d.ts && sed -i 's/fast_check_default_d_exports/fc/' lib/fast-check.d.ts && mkdir -p lib/types57 && cp lib/*.d.ts lib/types57/ && for f in lib/types57/*.d.ts; do [ -f \"$f\" ] && sed -i 's/Array<ArrayBuffer>>/Array>/g' \"$f\"; done && cp lib/*.d.ts lib/cjs/ && cp -r lib/types57 lib/cjs/ && cp package.cjs-template.json lib/cjs/package.json",
     "build": "rolldown -c && pnpm run build:post-build",
     "build-ci": "rolldown -c && pnpm run build:post-build",
     "typecheck": "tsc --noEmit",
