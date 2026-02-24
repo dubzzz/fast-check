@@ -66,11 +66,10 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
    */
   afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
 }
-  
-  
-  // Default hook is a no-op
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const dummyHook: GlobalPropertyHookFunction = () => {};
+
+// Default hook is a no-op
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const dummyHook: GlobalPropertyHookFunction = () => {};
 
 /**
  * Property, see {@link IProperty}
