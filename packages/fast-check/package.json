@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit",
     "test-bundle": "for f in test-bundle/*.mjs test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && node \"$f\" || exit 1; done",
     "test-legacy-bundle": "nvs add 12.17 && for f in test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && $(nvs which 12.17) \"$f\" || exit 1; done",
-    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
+    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run docs",
     "docs:serve": "pnpm run dlx serve docs/"
   },
