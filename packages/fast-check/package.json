@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.57.2",
+    "@microsoft/api-extractor": "^7.57.3",
     "@types/node": "^24.10.13",
     "cross-env": "^10.1.0",
     "fast-check": "workspace:*",
@@ -85,9 +85,6 @@
     "vitest",
     "random"
   ],
-  "tsd": {
-    "directory": "test/type"
-  },
   "funding": [
     {
       "type": "individual",
