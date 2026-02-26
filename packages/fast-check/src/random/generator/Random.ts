@@ -1,5 +1,6 @@
-import type { RandomGenerator } from 'pure-rand';
-import { unsafeUniformBigIntDistribution, unsafeUniformIntDistribution } from 'pure-rand';
+import { unsafeUniformBigIntDistribution } from 'pure-rand/distribution/UnsafeUniformBigIntDistribution';
+import { unsafeUniformIntDistribution } from 'pure-rand/distribution/UnsafeUniformIntDistribution';
+import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 
 const MIN_INT: number = 0x80000000 | 0;
 const MAX_INT: number = 0x7fffffff | 0;

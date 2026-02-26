@@ -9,10 +9,10 @@ import type { Random } from '../../../../src/random/generator/Random.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 
 import * as stubArb from '../../stubs/arbitraries.js';
-import prand from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import type { QualifiedRandomGenerator } from '../../../../src/check/runner/configuration/QualifiedParameters.js';
 
-const rngProducer = prand.xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+const rngProducer = xorshift128plus as (seed: number) => QualifiedRandomGenerator;
 
 const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
   new (class implements IRawProperty<T> {

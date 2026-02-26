@@ -38,7 +38,7 @@
     "build-ci": "rolldown -c && pnpm run build:post-build",
     "typecheck": "tsc --noEmit",
     "test-bundle": "for f in test-bundle/*.mjs test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && node \"$f\" || exit 1; done",
-    "test-legacy-bundle": "nvs add 12.17 && for f in test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && $(nvs which 12.17) \"$f\" || exit 1; done",
+    "test-legacy-bundle": "nvs add 12.20.0 && for f in test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && $(nvs which 12.20.0) \"$f\" || exit 1; done",
     "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run docs",
     "docs:serve": "pnpm run dlx serve docs/"
@@ -55,10 +55,10 @@
   },
   "homepage": "https://fast-check.dev/",
   "engines": {
-    "node": ">=12.17.0"
+    "node": ">=12.20.0"
   },
   "dependencies": {
-    "pure-rand": "^7.0.0"
+    "pure-rand": "^7.0.1"
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",

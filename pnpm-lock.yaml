@@ -157,7 +157,7 @@ importers:
   packages/fast-check:
     dependencies:
       pure-rand:
-        specifier: ^7.0.0
+        specifier: ^7.0.1
         version: 7.0.1
     devDependencies:
       '@fast-check/poisoning':

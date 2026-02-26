@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
-import prand from 'pure-rand';
+import { mersenne } from 'pure-rand/generator/MersenneTwister';
 
 import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
@@ -544,7 +544,7 @@ describe('ArrayArbitrary (integration)', () => {
   it('should not re-use twice the same instance of cloneable', () => {
     // Arrange
     const alreadySeenCloneable = new Set<unknown>();
-    const mrng = new Random(prand.mersenne(0));
+    const mrng = new Random(mersenne(0));
     const arb = new ArrayArbitrary(new CloneableArbitrary(), 0, 5, 100, undefined, undefined, []); // 0 to 5 generated items
 
     // Act

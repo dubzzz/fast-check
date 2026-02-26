@@ -115,20 +115,21 @@ It also proved useful in finding bugs among major open source projects such as [
 
 Here are the minimal requirements to use fast-check properly without any polyfills:
 
-| fast-check | node                   | ECMAScript version | _TypeScript (optional)_ |
-| ---------- | ---------------------- | ------------------ | ----------------------- |
-| **4.x**    | ≥12.17.0<sup>(1)</sup> | ES2020             | ≥5.0                    |
-| **3.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥4.1<sup>(3)</sup>      |
-| **2.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥3.2<sup>(4)</sup>      |
-| **1.x**    | ≥0.12<sup>(2)</sup>    | ES3                | ≥3.0<sup>(4)</sup>      |
+| fast-check | node                                 | ECMAScript version | _TypeScript (optional)_ |
+| ---------- | ------------------------------------ | ------------------ | ----------------------- |
+| **4.x**    | ≥12.20.0<sup>(1)</sup><sup>(2)</sup> | ES2020             | ≥5.0                    |
+| **3.x**    | ≥8<sup>(3)</sup>                     | ES2017             | ≥4.1<sup>(4)</sup>      |
+| **2.x**    | ≥8<sup>(3)</sup>                     | ES2017             | ≥3.2<sup>(5)</sup>      |
+| **1.x**    | ≥0.12<sup>(3)</sup>                  | ES3                | ≥3.0<sup>(5)</sup>      |
 
 <details>
 <summary>More details...</summary>
 
 1. Even if version 12.x should support most of the ES2020 features that will be leveraged by the version 4, we recommend relying at least on version 14.x of Node as it supports all the targeted specification. In addition, we highly encourage switching to still supported LTS versions of Node and not sticking to unsupported versions for too long.
-2. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
-3. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
-4. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
+2. Starting at 4.6.0 we require at least the version 12.20.0 of node, while we used to consider 12.17.0 as good enough until now. We agreed to introduce this breaking change outside of a major release given it only implies moving to a more recent release of the 12.x without having to switch to another major of node.
+3. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
+4. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
+5. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
 
 </details>
 

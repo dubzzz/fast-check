@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import * as prand from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
@@ -280,7 +280,7 @@ export function assertGenerateIndependentOfSize<T, U = never>(
 // Various helpers
 
 function randomFromSeed(seed: number): Random {
-  return new Random(prand.xorshift128plus(seed));
+  return new Random(xorshift128plus(seed));
 }
 
 function biasFactorArbitrary() {

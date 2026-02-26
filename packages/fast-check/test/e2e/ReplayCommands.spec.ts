@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { mersenne } from 'pure-rand/generator/MersenneTwister';
 import * as fc from '../../src/fast-check.js';
-import * as prand from 'pure-rand';
 import { seed } from './seed.js';
 
 // Fake commands
@@ -65,7 +65,7 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
     expect(outReplayed.numRuns).toEqual(1);
   });
   it('Should be able to resume a stopped run by specifying replayPath in fc.commands', () => {
-    const mrng = new fc.Random(prand.mersenne(seed));
+    const mrng = new fc.Random(mersenne(seed));
     const out = fc.check(buildProp(undefined, mrng), { seed: seed });
     expect(out.failed).toBe(true);
 

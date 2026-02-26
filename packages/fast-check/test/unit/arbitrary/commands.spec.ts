@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { commands } from '../../../src/arbitrary/commands.js';
 
-import prand from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import type { Command } from '../../../src/check/model/command/Command.js';
 import { Random } from '../../../src/random/generator/Random.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
@@ -35,7 +35,7 @@ describe('commands (integration)', () => {
     fc.assert(
       fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
-        const mrng = new Random(prand.xorshift128plus(seed));
+        const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
@@ -55,7 +55,7 @@ describe('commands (integration)', () => {
     fc.assert(
       fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
-        const mrng = new Random(prand.xorshift128plus(seed));
+        const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
@@ -82,7 +82,7 @@ describe('commands (integration)', () => {
     fc.assert(
       fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
-        const mrng = new Random(prand.xorshift128plus(seed));
+        const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
@@ -113,7 +113,7 @@ describe('commands (integration)', () => {
     fc.assert(
       fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
-        const mrng = new Random(prand.xorshift128plus(seed));
+        const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
 
         // Act
@@ -168,7 +168,7 @@ describe('commands (integration)', () => {
         (seed, shrinkPath, biasFactor) => {
           // Generate the first Value
           const it = shrinkPath[Symbol.iterator]();
-          const mrng = new Random(prand.xorshift128plus(seed));
+          const mrng = new Random(xorshift128plus(seed));
           let currentValue: Value<[number, Iterable<Cmd>, number]> | null = manyArbsIncludingCommandsOne.generate(
             mrng,
             biasFactor,
@@ -206,7 +206,7 @@ describe('commands (integration)', () => {
         (seed, shrinkPath, biasFactor) => {
           // Generate the first Value
           const it = shrinkPath[Symbol.iterator]();
-          const mrng = new Random(prand.xorshift128plus(seed));
+          const mrng = new Random(xorshift128plus(seed));
           let currentValue: Value<Iterable<Cmd>> | null = commandsArb.generate(mrng, biasFactor);
 
           // Run all commands of first Value
@@ -245,7 +245,7 @@ describe('commands (integration)', () => {
           const logOnCheck: { data: string[] } = { data: [] };
 
           // generate scenario and simulate execution
-          const rng = prand.xorshift128plus(seed);
+          const rng = xorshift128plus(seed);
           const refArbitrary = commands([
             new FakeConstant(new SuccessCommand(logOnCheck)),
             new FakeConstant(new SkippedCommand(logOnCheck)),

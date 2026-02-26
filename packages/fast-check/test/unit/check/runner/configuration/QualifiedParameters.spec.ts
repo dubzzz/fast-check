@@ -1,15 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import * as prand from 'pure-rand';
+import { mersenne } from 'pure-rand/generator/MersenneTwister';
+import { congruential32 } from 'pure-rand/generator/LinearCongruential';
+import { xoroshiro128plus } from 'pure-rand/generator/XoroShiro';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 
 import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType.js';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
 
+const prand = { mersenne, congruential32, xorshift128plus, xoroshiro128plus };
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
-    randomType: fc.constantFrom(prand.mersenne, prand.congruential32, prand.xorshift128plus, prand.xoroshiro128plus),
+    randomType: fc.constantFrom(mersenne, congruential32, xorshift128plus, xoroshiro128plus),
     numRuns: fc.nat(),
     maxSkipsPerRun: fc.nat(),
     timeout: fc.nat(),
@@ -70,7 +74,7 @@ describe('QualifiedParameters', () => {
           (params, randomType) => {
             const qparams = read({ ...params, randomType });
             const resolvedRandomType = randomType === 'congruential' ? 'congruential32' : randomType;
-            const defaultRandomType = prand.xorshift128plus;
+            const defaultRandomType = xorshift128plus;
             if (resolvedRandomType === undefined) {
               expect(qparams.randomType).toBe(defaultRandomType);
             } else if (resolvedRandomType === 'congruential32' || resolvedRandomType === 'mersenne') {
