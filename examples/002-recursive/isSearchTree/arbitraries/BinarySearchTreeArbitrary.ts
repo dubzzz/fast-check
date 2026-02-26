@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { Tree } from '../src/isSearchTree';
+import { Tree } from '../src/isSearchTree.js';
 
 export const binarySearchTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tree<number>> => {
   const leaf = (minValue: number, maxValue: number): fc.Arbitrary<Tree<number>> =>

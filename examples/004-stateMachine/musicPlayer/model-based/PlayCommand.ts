@@ -1,5 +1,5 @@
-import { MusicPlayerCommand, MusicPlayerModel } from './MusicPlayerModel';
-import { MusicPlayer } from '../src/MusicPlayer';
+import { MusicPlayerCommand, MusicPlayerModel } from './MusicPlayerModel.js';
+import { MusicPlayer } from '../src/MusicPlayer.js';
 import * as assert from 'assert';
 
 export class PlayCommand implements MusicPlayerCommand {

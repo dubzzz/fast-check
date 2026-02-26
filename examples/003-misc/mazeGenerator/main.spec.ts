@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mazeGenerator, CellType, Point } from './src/mazeGenerator';
+import { mazeGenerator, CellType, Point } from './src/mazeGenerator.js';
 import fc from 'fast-check';
 import _ from 'lodash';
 

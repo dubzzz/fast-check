@@ -4,14 +4,14 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import React from 'react';
-import TodoList from './src/TodoList';
+import TodoList from './src/TodoList.js';
 
 import { render, act, cleanup } from '@testing-library/react';
 
-import { AddItemCommand } from './model-based/AddItemCommand';
-import { ToggleItemCommand } from './model-based/ToggleItemCommand';
-import { RemoveItemCommand } from './model-based/RemoveItemCommand';
-import { listTodos, sortTodos } from './model-based/Model';
+import { AddItemCommand } from './model-based/AddItemCommand.js';
+import { ToggleItemCommand } from './model-based/ToggleItemCommand.js';
+import { RemoveItemCommand } from './model-based/RemoveItemCommand.js';
+import { listTodos, sortTodos } from './model-based/Model.js';
 
 describe('TodoList', () => {
   it('should detect potential issues with the TodoList', async () => {

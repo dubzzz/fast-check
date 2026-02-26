@@ -5,13 +5,13 @@ import { describe, it, vi } from 'vitest';
 import fc from 'fast-check';
 import * as React from 'react';
 
-import AutocompleteField from './src/AutocompleteField';
-//import AutocompleteField from './src/AutocompleteFieldMostRecentQuery';
-//import AutocompleteField from './src/AutocompleteFieldSimple';
+import AutocompleteField from './src/AutocompleteField.js';
+//import AutocompleteField from './src/AutocompleteFieldMostRecentQuery.js';
+//import AutocompleteField from './src/AutocompleteFieldSimple.js';
 
 import { render, cleanup, fireEvent, act, getNodeText, screen } from '@testing-library/react';
 
-import { search } from './src/Api';
+import { search } from './src/Api.js';
 
 // If you want to test the behaviour of fast-check in case of a bug:
 const bugs = {
