@@ -109,13 +109,13 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
       //
       // Result: exactly N beforeEach + N afterEach for N property runs.
       const test = getCurrentTest();
-      const suite = test?.suite || test?.file;
-
       if (test === undefined) {
         throw new Error(
           'Could not find the running test context. Make sure your property-based test is defined inside a vitest test() or it() block. Running outside a standard vitest test callback (e.g. in a worker thread) is not supported.',
         );
       }
+      
+      const suite = test.suite ?? test.file;
       if (suite === undefined) {
         throw new Error(
           'Could not find a parent suite or file for the current test. Make sure your test is defined inside a describe() block or a test file, not as a standalone detached test.',
