@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { doubleToIndex, indexToDouble } from '../../../../../src/arbitrary/_internals/helpers/DoubleHelpers';
+import { doubleToIndex, indexToDouble } from '../../../../../src/arbitrary/_internals/helpers/DoubleHelpers.js';
 import {
   maxNonIntegerValue,
   onlyIntegersAfterThisValue,
   refineConstraintsForDoubleOnly,
-} from '../../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers';
-import type { DoubleConstraints } from '../../../../../src/arbitrary/double';
+} from '../../../../../src/arbitrary/_internals/helpers/DoubleOnlyHelpers.js';
+import type { DoubleConstraints } from '../../../../../src/arbitrary/double.js';
 
 describe('maxNonIntegerValue', () => {
   it('should be immediately followed by an integer', () => {

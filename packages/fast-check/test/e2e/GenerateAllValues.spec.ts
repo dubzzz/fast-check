@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { xorshift128plus } from 'pure-rand/generator/XorShift';
-import * as fc from '../../src/fast-check';
-import { seed } from './seed';
+import * as fc from '../../src/fast-check.js';
+import { seed } from './seed.js';
 
 describe(`Generate all values (seed: ${seed})`, () => {
   /**

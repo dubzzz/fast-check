@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.21.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, uuid, identifiers]
 ---
 
 This release introduces support for UUIDs version 6 to 15. It also extends `uuid` to allow specifying a single version or a set of versions.

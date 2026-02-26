@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img align="center" src="https://media.githubusercontent.com/media/dubzzz/fast-check/main/website/static/img/logo.png" alt="fast-check logo" />
+  <img align="center" src="https://fast-check.dev/assets/images/logo.png" alt="fast-check logo" />
 </h1>
 
 <p align="center">
@@ -7,15 +7,14 @@ Property based testing framework for JavaScript/TypeScript
 </p>
 
 <p align="center">
-  <a href="https://github.com/dubzzz/fast-check/actions?query=branch%3Amain+workflow%3A%22Build+Status%22"><img src="https://github.com/dubzzz/fast-check/workflows/Build%20Status/badge.svg?branch=main" alt="Build Status" /></a>
-  <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
+  <a href="https://github.com/dubzzz/fast-check/actions?query=branch%3Amain+workflow%3A%22Build+Status%22"><img src="https://github.com/dubzzz/fast-check/actions/workflows/build-status.yml/badge.svg?branch=main" alt="Build Status" /></a>
+  <a href="https://npmx.dev/package/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
+  <a href="https://npmx.dev/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
   <a href="https://fast-check.dev/"><img src="https://img.shields.io/badge/-Documentation-%23282ea9.svg" title="Documentation" /></a>
 </p>
 <p align="center">
   <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/main"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/main/graph/badge.svg" alt="Coverage Status (unit tests)" /></a>
   <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
-  <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
   <a href="https://securityscorecards.dev/viewer/?platform=github.com&org=dubzzz&repo=fast-check"><img src="https://api.securityscorecards.dev/projects/github.com/dubzzz/fast-check/badge" alt="OpenSSF Scorecard" /></a>
   <a href="https://bestpractices.coreinfrastructure.org/projects/7450"><img src="https://bestpractices.coreinfrastructure.org/projects/7450/badge" alt="OpenSSF Best Practices" /></a>
 </p>
@@ -116,25 +115,22 @@ It also proved useful in finding bugs among major open source projects such as [
 
 Here are the minimal requirements to use fast-check properly without any polyfills:
 
-| fast-check | node                | ECMAScript version | _TypeScript (optional)_ |
-| ---------- | ------------------- | ------------------ | ----------------------- |
-| **4.x**    | ≥12.17.0            | ES2020             | ≥5.0                    |
-| **3.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥4.1<sup>(2)</sup>      |
-| **2.x**    | ≥8<sup>(1)</sup>    | ES2017             | ≥3.2<sup>(3)</sup>      |
-| **1.x**    | ≥0.12<sup>(1)</sup> | ES3                | ≥3.0<sup>(3)</sup>      |
+| fast-check | node                   | ECMAScript version | _TypeScript (optional)_ |
+| ---------- | ---------------------- | ------------------ | ----------------------- |
+| **4.x**    | ≥12.17.0<sup>(1)</sup> | ES2020             | ≥5.0                    |
+| **3.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥4.1<sup>(3)</sup>      |
+| **2.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥3.2<sup>(4)</sup>      |
+| **1.x**    | ≥0.12<sup>(2)</sup>    | ES3                | ≥3.0<sup>(4)</sup>      |
 
 <details>
 <summary>More details...</summary>
 
-1. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
-2. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
-3. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
+1. Even if version 12.x should support most of the ES2020 features that will be leveraged by the version 4, we recommend relying at least on version 14.x of Node as it supports all the targeted specification. In addition, we highly encourage switching to still supported LTS versions of Node and not sticking to unsupported versions for too long.
+2. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
+3. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
+4. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
 
 </details>
-
-### ReScript bindings
-
-Bindings to use fast-check in [ReScript](https://rescript-lang.org) are available in package [rescript-fast-check](https://www.npmjs.com/rescript-fast-check). They are maintained by [@TheSpyder](https://github.com/TheSpyder) as an external project.
 
 ## Contributors ✨
 
@@ -223,13 +219,23 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/bennettp123"><img src="https://avatars.githubusercontent.com/u/1610227?v=4?s=100" width="100px;" alt="Bennett Perkins"/><br /><sub><b>Bennett Perkins</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=bennettp123" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nielk"><img src="https://avatars.githubusercontent.com/u/4980521?v=4?s=100" width="100px;" alt="Alexandre Oger"/><br /><sub><b>Alexandre Oger</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ej-shafran"><img src="https://avatars.githubusercontent.com/u/116496520?v=4?s=100" width="100px;" alt="ej shafran"/><br /><sub><b>ej shafran</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=ej-shafran" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gruhn"><img src="https://avatars.githubusercontent.com/u/26570572?v=4?s=100" width="100px;" alt="Niklas Gruhn"/><br /><sub><b>Niklas Gruhn</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gruhn" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gruhn"><img src="https://avatars.githubusercontent.com/u/26570572?v=4?s=100" width="100px;" alt="Niklas Gruhn"/><br /><sub><b>Niklas Gruhn</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gruhn" title="Code">💻</a> <a href="#question-gruhn" title="Answering Questions">💬</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://patrickroza.com/"><img src="https://avatars.githubusercontent.com/u/42661?v=4?s=100" width="100px;" alt="Patrick Roza"/><br /><sub><b>Patrick Roza</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=patroza" title="Code">💻</a></td>
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/cindywu"><img src="https://avatars.githubusercontent.com/u/1177031?v=4?s=100" width="100px;" alt="Cindy Wu"/><br /><sub><b>Cindy Wu</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=cindywu" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nmay231"><img src="https://avatars.githubusercontent.com/u/35386821?v=4?s=100" width="100px;" alt="Noah"/><br /><sub><b>Noah</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nmay231" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jamesbvaughan"><img src="https://avatars.githubusercontent.com/u/2906913?v=4?s=100" width="100px;" alt="James Vaughan"/><br /><sub><b>James Vaughan</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=jamesbvaughan" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jamesbvaughan"><img src="https://avatars.githubusercontent.com/u/2906913?v=4?s=100" width="100px;" alt="James Vaughan"/><br /><sub><b>James Vaughan</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=jamesbvaughan" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=jamesbvaughan" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AlexErrant"><img src="https://avatars.githubusercontent.com/u/109672176?v=4?s=100" width="100px;" alt="Alex Errant"/><br /><sub><b>Alex Errant</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=AlexErrant" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://ahrjarrett.com/"><img src="https://avatars.githubusercontent.com/u/15133992?v=4?s=100" width="100px;" alt="andrew jarrett"/><br /><sub><b>andrew jarrett</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=ahrjarrett" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=ahrjarrett" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/matthyk"><img src="https://avatars.githubusercontent.com/u/53833818?v=4?s=100" width="100px;" alt="Matthias Keckl"/><br /><sub><b>Matthias Keckl</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=matthyk" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dmurvihill"><img src="https://avatars.githubusercontent.com/u/1649120?v=4?s=100" width="100px;" alt="Dolan Murvihill"/><br /><sub><b>Dolan Murvihill</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=dmurvihill" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/emilianbold"><img src="https://avatars.githubusercontent.com/u/991554?v=4?s=100" width="100px;" alt="Emi"/><br /><sub><b>Emi</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=emilianbold" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.russbiggs.com/"><img src="https://avatars.githubusercontent.com/u/8487728?v=4?s=100" width="100px;" alt="Russ Biggs"/><br /><sub><b>Russ Biggs</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=russbiggs" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/adamni21"><img src="https://avatars.githubusercontent.com/u/85580454?v=4?s=100" width="100px;" alt="adamni21"/><br /><sub><b>adamni21</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=adamni21" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/josephjunker"><img src="https://avatars.githubusercontent.com/u/1519098?v=4?s=100" width="100px;" alt="Joseph Junker"/><br /><sub><b>Joseph Junker</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=josephjunker" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

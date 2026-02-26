@@ -1,9 +1,9 @@
-import type { IRawProperty } from './IRawProperty';
-import type { Random } from '../../random/generator/Random';
-import { stringify } from '../../utils/stringify';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import type { Value } from '../arbitrary/definition/Value';
-import type { Stream } from '../../stream/Stream';
+import type { IRawProperty } from './IRawProperty.js';
+import type { Random } from '../../random/generator/Random.js';
+import { stringify } from '../../utils/stringify.js';
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { Value } from '../arbitrary/definition/Value.js';
+import type { Stream } from '../../stream/Stream.js';
 
 /** @internal */
 function fromSyncCached<Ts>(

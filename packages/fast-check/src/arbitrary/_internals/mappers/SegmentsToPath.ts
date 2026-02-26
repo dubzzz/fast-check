@@ -1,4 +1,4 @@
-import { safeJoin, safeMap, safeSplice, safeSplit } from '../../../utils/globals';
+import { safeJoin, safeMap, safeSplice, safeSplit } from '../../../utils/globals.js';
 
 /** @internal */
 export function segmentsToPathMapper(segments: string[]): string {

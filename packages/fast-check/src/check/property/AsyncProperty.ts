@@ -1,10 +1,10 @@
-import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { assertIsArbitrary } from '../arbitrary/definition/Arbitrary';
-import { tuple } from '../../arbitrary/tuple';
-import type { IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction } from './AsyncProperty.generic';
-import { AsyncProperty } from './AsyncProperty.generic';
-import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary';
-import { safeForEach, safeMap, safeSlice } from '../../utils/globals';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
+import { assertIsArbitrary } from '../arbitrary/definition/Arbitrary.js';
+import { tuple } from '../../arbitrary/tuple.js';
+import type { IAsyncProperty, IAsyncPropertyWithHooks, AsyncPropertyHookFunction } from './AsyncProperty.generic.js';
+import { AsyncProperty } from './AsyncProperty.generic.js';
+import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary.js';
+import { safeForEach, safeMap, safeSlice } from '../../utils/globals.js';
 
 /**
  * Instantiate a new {@link fast-check#IAsyncProperty}
@@ -21,7 +21,7 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   const arbs = safeSlice(args, 0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => Promise<boolean | void>;
   safeForEach(arbs, assertIsArbitrary);
-  const mappedArbs = safeMap(arbs, (arb): typeof arb => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
+  const mappedArbs = safeMap(arbs, (arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new AsyncProperty(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 

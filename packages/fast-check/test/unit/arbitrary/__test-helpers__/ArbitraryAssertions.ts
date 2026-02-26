@@ -3,18 +3,24 @@ import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
-import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { Random } from '../../../../src/random/generator/Random';
-import { withConfiguredGlobal } from './GlobalSettingsHelpers';
-import { sizeArb } from './SizeHelpers';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { Random } from '../../../../src/random/generator/Random.js';
+import { withConfiguredGlobal } from './GlobalSettingsHelpers.js';
+import { sizeArb } from './SizeHelpers.js';
 
 function poisoningAfterEach(nestedAfterEach: () => void) {
   nestedAfterEach();
   try {
-    assertNoPoisoning({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
+    assertNoPoisoning({
+      ignoredRootRegex:
+        /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__|AbortController|Symbol\(undici\.globalDispatcher\.\d+\))$/,
+    });
   } catch (err) {
-    restoreGlobals({ ignoredRootRegex: /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__)$/ });
+    restoreGlobals({
+      ignoredRootRegex:
+        /^(__vitest_[a-z]+__|__VITEST_[A-Z]+__|AbortController|Symbol\(undici\.globalDispatcher\.\d+\))$/,
+    });
     throw err;
   }
 }
@@ -203,6 +209,7 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
       } catch (err) {
         throw new Error(
           `Expect: ${fc.stringify(vNew)} to be strictly smaller than ${fc.stringify(vOld)}\n\nGot error: ${err}`,
+          { cause: err },
         );
       }
     } finally {
@@ -294,7 +301,9 @@ function assertEquality<T, U>(
       expect(v1).toStrictEqual(v2);
     }
   } catch (err) {
-    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`);
+    throw new Error(`Expect: ${fc.stringify(v1)} to be equal to ${fc.stringify(v2)}\n\nGot error: ${err}`, {
+      cause: err,
+    });
   }
 }
 
@@ -308,6 +317,6 @@ function assertCorrectness<T, U>(
     const out = isCorrect(v, extraParameters, arb);
     expect(out).not.toBe(false);
   } catch (err) {
-    throw new Error(`Expect: ${fc.stringify(v)} to be a correct value\n\nGot error: ${err}`);
+    throw new Error(`Expect: ${fc.stringify(v)} to be a correct value\n\nGot error: ${err}`, { cause: err });
   }
 }

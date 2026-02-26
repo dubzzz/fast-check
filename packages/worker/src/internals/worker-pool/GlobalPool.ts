@@ -3,6 +3,7 @@ import type { IWorkerPool, PooledWorker } from './IWorkerPool.js';
 
 const poolPerFile = new Map<string, BasicPool<unknown, unknown>>();
 const pendingTerminationPerFile = new Map<string, ReturnType<typeof setTimeout>>();
+const activeUsersPerFile = new Map<string, number>();
 
 function cancelPendingTerminationIfAny(workerFileUrl: URL) {
   const key = workerFileUrl.toString();
@@ -33,6 +34,7 @@ export class GlobalPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPa
       this.internalPool = freshPool;
       poolPerFile.set(key, freshPool as BasicPool<unknown, unknown>);
     }
+    activeUsersPerFile.set(key, (activeUsersPerFile.get(key) ?? 0) + 1);
     cancelPendingTerminationIfAny(workerFileUrl);
   }
 
@@ -47,9 +49,16 @@ export class GlobalPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPa
   }
 
   terminateAllWorkers(): Promise<void> {
+    const key = this.workerFileUrl.toString();
+    const activeUsers = (activeUsersPerFile.get(key) ?? 0) - 1;
+    if (activeUsers > 0) {
+      activeUsersPerFile.set(key, activeUsers);
+      return Promise.resolve();
+    }
+    activeUsersPerFile.delete(key);
     cancelPendingTerminationIfAny(this.workerFileUrl);
     pendingTerminationPerFile.set(
-      this.workerFileUrl.toString(),
+      key,
       setTimeout(() => {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.internalPool.terminateAllWorkers();

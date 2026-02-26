@@ -1,12 +1,12 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { doubleToIndex, indexToDouble } from './_internals/helpers/DoubleHelpers.js';
 import {
   doubleOnlyMapper,
   doubleOnlyUnmapper,
   refineConstraintsForDoubleOnly,
-} from './_internals/helpers/DoubleOnlyHelpers';
-import { bigInt } from './bigInt';
-import { BigInt } from '../utils/globals';
+} from './_internals/helpers/DoubleOnlyHelpers.js';
+import { bigInt } from './bigInt.js';
+import { BigInt } from '../utils/globals.js';
 
 const safeNumberIsInteger = Number.isInteger;
 const safeNumberIsNaN = Number.isNaN;

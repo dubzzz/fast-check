@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   convertGraphemeRangeToMapToConstantEntry,
   intersectGraphemeRanges,
-} from '../../../../../src/arbitrary/_internals/helpers/GraphemeRangesHelpers';
-import type { GraphemeRange } from '../../../../../src/arbitrary/_internals/data/GraphemeRanges';
+} from '../../../../../src/arbitrary/_internals/helpers/GraphemeRangesHelpers.js';
+import type { GraphemeRange } from '../../../../../src/arbitrary/_internals/data/GraphemeRanges.js';
 import * as fc from 'fast-check';
 
 describe('convertGraphemeRangeToMapToConstantEntry', () => {

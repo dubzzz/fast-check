@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { Map, safeMapGet, safeMapSet, safePush } from '../../../utils/globals';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { Map, safeMapGet, safeMapSet, safePush } from '../../../utils/globals.js';
 
 const safeArrayIsArray = Array.isArray;
 const safeObjectKeys = Object.keys;

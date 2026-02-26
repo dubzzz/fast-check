@@ -1,9 +1,9 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { DoubleConstraints } from './double';
-import { double } from './double';
-import { array } from './array';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { Float64Array } from '../utils/globals';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { DoubleConstraints } from './double.js';
+import { double } from './double.js';
+import { array } from './array.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { Float64Array as SFloat64Array } from '../utils/globals.js';
 
 /**
  * Constraints to be applied on {@link float64Array}
@@ -31,13 +31,13 @@ export type Float64ArrayConstraints = {
 } & DoubleConstraints;
 
 /** @internal */
-function toTypedMapper(data: number[]): Float64Array {
-  return Float64Array.from(data);
+function toTypedMapper(data: number[]): Float64Array<ArrayBuffer> {
+  return SFloat64Array.from(data);
 }
 
 /** @internal */
 function fromTypedUnmapper(value: unknown): number[] {
-  if (!(value instanceof Float64Array)) throw new Error('Unexpected type');
+  if (!(value instanceof SFloat64Array)) throw new Error('Unexpected type');
   return [...value];
 }
 
@@ -46,6 +46,6 @@ function fromTypedUnmapper(value: unknown): number[] {
  * @remarks Since 2.9.0
  * @public
  */
-export function float64Array(constraints: Float64ArrayConstraints = {}): Arbitrary<Float64Array> {
+export function float64Array(constraints: Float64ArrayConstraints = {}): Arbitrary<Float64Array<ArrayBuffer>> {
   return array(double(constraints), constraints).map(toTypedMapper, fromTypedUnmapper);
 }

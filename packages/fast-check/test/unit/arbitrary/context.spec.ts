@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { ContextValue } from '../../../src/arbitrary/context';
-import { context } from '../../../src/arbitrary/context';
+import type { ContextValue } from '../../../src/arbitrary/context.js';
+import { context } from '../../../src/arbitrary/context.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import type { WithCloneMethod } from '../../../src/check/symbols';
-import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import type { WithCloneMethod } from '../../../src/check/symbols.js';
+import { cloneMethod, hasCloneMethod } from '../../../src/check/symbols.js';
 
-import * as ConstantMock from '../../../src/arbitrary/constant';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import * as ConstantMock from '../../../src/arbitrary/constant.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('context', () => {
   declareCleaningHooksForSpies();
@@ -16,7 +16,9 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = context();
@@ -30,7 +32,9 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     context();
@@ -44,7 +48,9 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     context();
@@ -62,7 +68,9 @@ describe('context', () => {
     // Arrange
     const { instance } = fakeArbitrary();
     const constant = vi.spyOn(ConstantMock, 'constant');
-    constant.mockImplementation(() => instance);
+    constant.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     context();

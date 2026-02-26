@@ -1,4 +1,4 @@
-import { Date, Error, safeGetTime } from '../../../utils/globals';
+import { Date, Error, safeGetTime } from '../../../utils/globals.js';
 
 const safeNaN = Number.NaN;
 const safeNumberIsNaN = Number.isNaN;

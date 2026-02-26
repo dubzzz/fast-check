@@ -1,23 +1,23 @@
 /* eslint-disable no-sparse-arrays */
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import type { SparseArrayConstraints } from '../../../src/arbitrary/sparseArray';
-import { sparseArray } from '../../../src/arbitrary/sparseArray';
+import type { SparseArrayConstraints } from '../../../src/arbitrary/sparseArray.js';
+import { sparseArray } from '../../../src/arbitrary/sparseArray.js';
 
-import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as RestrictedIntegerArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/RestrictedIntegerArbitraryBuilder';
-import * as TupleMock from '../../../src/arbitrary/tuple';
-import * as UniqueMock from '../../../src/arbitrary/uniqueArray';
+import * as RestrictedIntegerArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/RestrictedIntegerArbitraryBuilder.js';
+import * as TupleMock from '../../../src/arbitrary/tuple.js';
+import * as UniqueMock from '../../../src/arbitrary/uniqueArray.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { MaxLengthUpperBound } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { MaxLengthUpperBound } from '../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('sparseArray', () => {
   declareCleaningHooksForSpies();

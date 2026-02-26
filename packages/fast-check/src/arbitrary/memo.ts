@@ -1,5 +1,5 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeHasOwnProperty } from '../utils/globals';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { safeHasOwnProperty } from '../utils/globals.js';
 
 /**
  * Output type for {@link memo}

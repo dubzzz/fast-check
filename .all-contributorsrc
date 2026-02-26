@@ -440,7 +440,7 @@
       "name": "Niklas Gruhn",
       "avatar_url": "https://avatars.githubusercontent.com/u/26570572?v=4",
       "profile": "https://github.com/gruhn",
-      "contributions": ["code"]
+      "contributions": ["code", "question"]
     },
     {
       "login": "patroza",
@@ -468,6 +468,62 @@
       "name": "James Vaughan",
       "avatar_url": "https://avatars.githubusercontent.com/u/2906913?v=4",
       "profile": "https://github.com/jamesbvaughan",
+      "contributions": ["doc", "code"]
+    },
+    {
+      "login": "AlexErrant",
+      "name": "Alex Errant",
+      "avatar_url": "https://avatars.githubusercontent.com/u/109672176?v=4",
+      "profile": "https://github.com/AlexErrant",
+      "contributions": ["code"]
+    },
+    {
+      "login": "ahrjarrett",
+      "name": "andrew jarrett",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15133992?v=4",
+      "profile": "https://ahrjarrett.com/",
+      "contributions": ["code", "doc"]
+    },
+    {
+      "login": "matthyk",
+      "name": "Matthias Keckl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53833818?v=4",
+      "profile": "https://github.com/matthyk",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "dmurvihill",
+      "name": "Dolan Murvihill",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1649120?v=4",
+      "profile": "https://github.com/dmurvihill",
+      "contributions": ["code"]
+    },
+    {
+      "login": "emilianbold",
+      "name": "Emi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/991554?v=4",
+      "profile": "https://github.com/emilianbold",
+      "contributions": ["code"]
+    },
+    {
+      "login": "russbiggs",
+      "name": "Russ Biggs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8487728?v=4",
+      "profile": "https://www.russbiggs.com/",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "adamni21",
+      "name": "adamni21",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85580454?v=4",
+      "profile": "https://github.com/adamni21",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "josephjunker",
+      "name": "Joseph Junker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1519098?v=4",
+      "profile": "https://github.com/josephjunker",
       "contributions": ["doc"]
     }
   ],

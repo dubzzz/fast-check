@@ -9,7 +9,10 @@
 .cache-loader
 generated-tests
 src/components/HomepageContributors/all-contributors.json
+static/img/sponsors.svg
 static/img/_
+static/img/**/*.gif
+static/img/**/*.png
 
 # Misc
 .DS_Store

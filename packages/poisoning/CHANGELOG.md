@@ -1,3 +1,12 @@
+# 0.2.3
+
+_Update build scripts_
+[[Code](https://github.com/dubzzz/fast-check/tree/poisoning%2Fv0.2.3)][[Diff](https://github.com/dubzzz/fast-check/compare/poisoning%2Fv0.2.2...poisoning%2Fv0.2.3)]
+
+## Fixes
+
+- ([PR#5809](https://github.com/dubzzz/fast-check/pull/5809)) CI: Update tsconfig to ES2020
+
 # 0.2.2
 
 _Rework our testing stack_

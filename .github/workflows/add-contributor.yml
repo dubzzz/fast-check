@@ -1,0 +1,82 @@
+name: Add Contributor
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'GitHub username of the contributor'
+        required: true
+        type: string
+      contribution:
+        description: 'Type of contribution (e.g., code, doc, test, design, infra)'
+        required: true
+        type: string
+
+jobs:
+  add_contributor:
+    name: 'Add Contributor'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+      - name: Using Node v24.x
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: '24.x'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Configure GIT
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Add contributor
+        env:
+          USERNAME: ${{ github.event.inputs.username }}
+          CONTRIBUTION: ${{ github.event.inputs.contribution }}
+        run: pnpm run contributor:add "$USERNAME" "$CONTRIBUTION"
+      - name: Format files
+        run: pnpm run format
+      - name: Create Pull Request
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        env:
+          USERNAME: ${{ github.event.inputs.username }}
+          CONTRIBUTION: ${{ github.event.inputs.contribution }}
+        with:
+          script: |
+            const username = process.env.USERNAME;
+            const contribution = process.env.CONTRIBUTION;
+            const branchName = `contributor/add-${username}`;
+            const commitMessage = `👥 Add ${username} as ${contribution} contributor`;
+
+            await exec.exec('git', ['checkout', '-b', branchName]);
+            await exec.exec('git', ['add', '.']);
+            const {exitCode} = await exec.getExecOutput('git', ['diff', '--staged', '--quiet'], {ignoreReturnCode: true});
+
+            if (exitCode !== 0) {
+              // Commit changes
+              await exec.exec('git', ['commit', '-m', commitMessage]);
+              
+              // Push branch
+              await exec.exec('git', ['push', 'origin', branchName]);
+              
+              // Create pull request
+              const owner = context.payload.repository.owner.login;
+              const repo = context.payload.repository.name;
+              const title = commitMessage;
+              const head = branchName;
+              const base = 'main';
+              const body = `This PR adds @${username} as a contributor for: ${contribution}\n\nGenerated automatically by the add-contributor workflow.`;
+              
+              const pr = await github.rest.pulls.create({owner, repo, title, head, base, body});
+              console.log(`Created pull request: ${pr.data.html_url}`);
+            } else {
+              console.log('No changes detected. The contributor might already be added.');
+            }

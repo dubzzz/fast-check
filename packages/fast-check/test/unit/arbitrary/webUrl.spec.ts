@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
-import type { WebUrlConstraints } from '../../../src/arbitrary/webUrl';
-import { webUrl } from '../../../src/arbitrary/webUrl';
+import type { WebUrlConstraints } from '../../../src/arbitrary/webUrl.js';
+import { webUrl } from '../../../src/arbitrary/webUrl.js';
 import { URL } from 'url';
 
 import {
@@ -9,18 +9,18 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { relativeSizeArb, sizeArb, sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers.js';
 
-import * as WebAuthorityMock from '../../../src/arbitrary/webAuthority';
-import * as WebFragmentsMock from '../../../src/arbitrary/webFragments';
-import * as WebQueryParametersMock from '../../../src/arbitrary/webQueryParameters';
-import * as WebPathMock from '../../../src/arbitrary/webPath';
-import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import * as WebAuthorityMock from '../../../src/arbitrary/webAuthority.js';
+import * as WebFragmentsMock from '../../../src/arbitrary/webFragments.js';
+import * as WebQueryParametersMock from '../../../src/arbitrary/webQueryParameters.js';
+import * as WebPathMock from '../../../src/arbitrary/webPath.js';
+import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('webUrl', () => {
   declareCleaningHooksForSpies();

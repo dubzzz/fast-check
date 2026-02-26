@@ -1,17 +1,17 @@
-import type { Random } from '../../random/generator/Random';
-import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import { PreconditionFailure } from '../precondition/PreconditionFailure';
-import type { PropertyFailure, IRawProperty } from './IRawProperty';
-import { runIdToFrequency } from './IRawProperty';
-import type { GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters';
-import { readConfigureGlobal } from '../runner/configuration/GlobalParameters';
-import type { Value } from '../arbitrary/definition/Value';
-import { Stream } from '../../stream/Stream';
+import type { Random } from '../../random/generator/Random.js';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
+import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
+import type { PropertyFailure, IRawProperty } from './IRawProperty.js';
+import { runIdToFrequency } from './IRawProperty.js';
+import type { GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters.js';
+import { readConfigureGlobal } from '../runner/configuration/GlobalParameters.js';
+import type { Value } from '../arbitrary/definition/Value.js';
+import { Stream } from '../../stream/Stream.js';
 import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
-} from '../../arbitrary/_internals/helpers/NoUndefinedAsContext';
-import { Error } from '../../utils/globals';
+} from '../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
+import { Error } from '../../utils/globals.js';
 
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
@@ -29,7 +29,6 @@ export type AsyncPropertyHookFunction =
  * @remarks Since 1.19.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
 
 /**
@@ -53,6 +52,10 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
+// Default hook is a no-op
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const dummyHook: GlobalAsyncPropertyHookFunction = () => {};
+
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -61,9 +64,6 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
-  // Default hook is a no-op
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
   constructor(
@@ -84,8 +84,8 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       );
     }
 
-    this.beforeEachHook = asyncBeforeEach || beforeEach || AsyncProperty.dummyHook;
-    this.afterEachHook = asyncAfterEach || afterEach || AsyncProperty.dummyHook;
+    this.beforeEachHook = asyncBeforeEach || beforeEach || dummyHook;
+    this.afterEachHook = asyncAfterEach || afterEach || dummyHook;
   }
 
   isAsync(): true {
@@ -93,7 +93,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
-    const value = this.arb.generate(mrng, runId != null ? runIdToFrequency(runId) : undefined);
+    const value = this.arb.generate(mrng, runId !== undefined ? runIdToFrequency(runId) : undefined);
     return noUndefinedAsContext(value);
   }
 

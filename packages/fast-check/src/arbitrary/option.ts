@@ -1,10 +1,10 @@
-import { constant } from './constant';
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import type { _Constraints as FrequencyContraints } from './_internals/FrequencyArbitrary';
-import { FrequencyArbitrary } from './_internals/FrequencyArbitrary';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
-import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength';
-import { safeHasOwnProperty } from '../utils/globals';
+import { constant } from './constant.js';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import type { _Constraints as FrequencyConstraints } from './_internals/FrequencyArbitrary.js';
+import { FrequencyArbitrary } from './_internals/FrequencyArbitrary.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
+import type { DepthSize } from './_internals/helpers/MaxLengthFromMinLength.js';
+import { safeHasOwnProperty } from '../utils/globals.js';
 
 /**
  * Constraints to be applied on {@link option}
@@ -13,8 +13,8 @@ import { safeHasOwnProperty } from '../utils/globals';
  */
 export interface OptionConstraints<TNil = null> {
   /**
-   * The probability to build a nil value is of `1 / freq`
-   * @defaultValue 5
+   * The probability to build a nil value is of `1 / freq`.
+   * @defaultValue 6
    * @remarks Since 1.17.0
    */
   freq?: number;
@@ -61,14 +61,14 @@ export function option<T, TNil = null>(
   arb: Arbitrary<T>,
   constraints: OptionConstraints<TNil> = {},
 ): Arbitrary<T | TNil> {
-  const freq = constraints.freq == null ? 5 : constraints.freq;
+  const freq = constraints.freq === undefined ? 6 : constraints.freq;
   const nilValue = safeHasOwnProperty(constraints, 'nil') ? constraints.nil : (null as any);
   const nilArb = constant(nilValue);
   const weightedArbs = [
     { arbitrary: nilArb, weight: 1, fallbackValue: { default: nilValue } },
-    { arbitrary: arb, weight: freq },
+    { arbitrary: arb, weight: freq - 1 },
   ];
-  const frequencyConstraints: FrequencyContraints = {
+  const frequencyConstraints: FrequencyConstraints = {
     withCrossShrink: true,
     depthSize: constraints.depthSize,
     maxDepth: constraints.maxDepth,

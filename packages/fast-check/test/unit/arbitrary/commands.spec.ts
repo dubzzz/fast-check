@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { commands } from '../../../src/arbitrary/commands';
+import { commands } from '../../../src/arbitrary/commands.js';
 
 import { xorshift128plus } from 'pure-rand/generator/XorShift';
-import type { Command } from '../../../src/check/model/command/Command';
-import { Random } from '../../../src/random/generator/Random';
-import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { Stream } from '../../../src/stream/Stream';
-import { tuple } from '../../../src/arbitrary/tuple';
-import { nat } from '../../../src/arbitrary/nat';
-import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
+import type { Command } from '../../../src/check/model/command/Command.js';
+import { Random } from '../../../src/random/generator/Random.js';
+import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { Stream } from '../../../src/stream/Stream.js';
+import { tuple } from '../../../src/arbitrary/tuple.js';
+import { nat } from '../../../src/arbitrary/nat.js';
+import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers.js';
 
 type Model = Record<string, unknown>;
 type Real = unknown;

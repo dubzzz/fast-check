@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildVersionsAppliersForUuid } from '../../../../../src/arbitrary/_internals/mappers/VersionsApplierForUuid';
+import { buildVersionsAppliersForUuid } from '../../../../../src/arbitrary/_internals/mappers/VersionsApplierForUuid.js';
 import fc from 'fast-check';
 
 describe('versionsApplierMapper', () => {

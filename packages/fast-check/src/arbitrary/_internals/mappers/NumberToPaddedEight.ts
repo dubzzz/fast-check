@@ -1,4 +1,4 @@
-import { safeNumberToString, safePadStart } from '../../../utils/globals';
+import { safeNumberToString, safePadStart } from '../../../utils/globals.js';
 
 /** @internal */
 export function numberToPaddedEightMapper(n: number): string {

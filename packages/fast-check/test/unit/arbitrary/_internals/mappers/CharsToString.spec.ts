@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
   charsToStringMapper,
   charsToStringUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/CharsToString';
+} from '../../../../../src/arbitrary/_internals/mappers/CharsToString.js';
 
 describe('charsToStringUnmapper', () => {
   it.each`

@@ -1,10 +1,16 @@
-import { escapeForTemplateString } from '../helpers/TextEscaper';
-import { cloneMethod } from '../../../check/symbols';
-import type { WithCloneMethod } from '../../../check/symbols';
-import { stringify } from '../../../utils/stringify';
-import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler';
+import { escapeForTemplateString } from '../helpers/TextEscaper.js';
+import { cloneMethod } from '../../../check/symbols.js';
+import type { WithCloneMethod } from '../../../check/symbols.js';
+import { stringify } from '../../../utils/stringify.js';
+import type { Scheduler, SchedulerAct, SchedulerReportItem, SchedulerSequenceItem } from '../interfaces/Scheduler.js';
 
 const defaultSchedulerAct: SchedulerAct = (f: () => Promise<void>) => f();
+
+/**
+ * Number of ticks we perform before scheduling anything in waitFor
+ * @internal
+ */
+export const numTicksBeforeScheduling = 50;
 
 /** @internal */
 type TriggeredTask<TMetaData> = {
@@ -95,7 +101,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     let trigger: (() => Promise<unknown>) | undefined = undefined;
     const scheduledPromise = new Promise<T>((resolve, reject) => {
       trigger = () => {
-        const promise = Promise.resolve(thenTaskToBeAwaited ? task.then(() => thenTaskToBeAwaited()) : task);
+        const promise = Promise.resolve(
+          thenTaskToBeAwaited !== undefined ? task.then(() => thenTaskToBeAwaited()) : task,
+        );
         promise.then(
           (data) => {
             this.log(schedulingType, taskId, label, metadata, 'resolved', data);
@@ -238,24 +246,67 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     }
   }
 
-  async waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
+  async internalWaitFor<T>(
+    unscheduledTask: Promise<T>,
+    options: {
+      customAct: SchedulerAct | undefined;
+      onWaitStart: (() => void) | undefined;
+      onWaitIdle: (() => void) | undefined;
+      launchAwaiterOnInit: boolean;
+    },
+  ): Promise<T> {
     let taskResolved = false;
+    const customAct = options.customAct;
+    const onWaitStart = options.onWaitStart;
+    const onWaitIdle = options.onWaitIdle;
+    const launchAwaiterOnInit = options.launchAwaiterOnInit;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let resolveFinal: (value: T) => void = undefined!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let rejectFinal: (error: unknown) => void = undefined!;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
+    let awaiterTicks = 0;
     let awaiterPromise: Promise<void> | null = null;
-    const awaiter = async () => {
-      while (!taskResolved && this.scheduledTasks.length > 0) {
-        await this.waitOne(customAct);
+    let awaiterScheduledTaskPromise: Promise<void> | null = null;
+    const awaiter = async (): Promise<void> => {
+      awaiterTicks = numTicksBeforeScheduling;
+      for (awaiterTicks = numTicksBeforeScheduling; !taskResolved && awaiterTicks > 0; --awaiterTicks) {
+        await Promise.resolve();
+      }
+      if (!taskResolved && this.scheduledTasks.length > 0) {
+        if (onWaitStart !== undefined) {
+          onWaitStart();
+        }
+        awaiterScheduledTaskPromise = this.waitOne(customAct); // no catch, should be catch by final user
+        return awaiterScheduledTaskPromise.then(
+          () => {
+            awaiterScheduledTaskPromise = null;
+            return awaiter(); // NOTE: waitOne does not throw, except throwing "act"
+          },
+          (err) => {
+            awaiterScheduledTaskPromise = null;
+            taskResolved = true;
+            rejectFinal(err);
+            throw err;
+          },
+        );
+      }
+      if (!taskResolved && onWaitIdle !== undefined) {
+        onWaitIdle();
       }
       awaiterPromise = null;
     };
     const handleNotified = () => {
       if (awaiterPromise !== null) {
         // Awaiter is currently running, there is no need to relaunch it
+        // but we can ask it for more ticks
+        awaiterTicks = numTicksBeforeScheduling + 1; // +1 as 1 is running
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      awaiterPromise = Promise.resolve().then(awaiter);
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      awaiterPromise = awaiter().catch(() => {});
     };
 
     // Define the wrapping task and its resolution strategy
@@ -268,40 +319,94 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         this.scheduledWatchers[0]();
       }
     };
-    const rewrappedTask = unscheduledTask.then(
+
+    const finalTask = new Promise<T>((resolve, reject) => {
+      resolveFinal = (value) => {
+        clearAndReplaceWatcher();
+        resolve(value);
+      };
+      rejectFinal = (error: unknown) => {
+        clearAndReplaceWatcher();
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+        reject(error);
+      };
+    });
+
+    unscheduledTask.then(
       (ret) => {
         taskResolved = true;
-        if (awaiterPromise === null) {
-          clearAndReplaceWatcher();
-          return ret;
+        if (awaiterScheduledTaskPromise === null) {
+          resolveFinal(ret);
+        } else {
+          awaiterScheduledTaskPromise.then(
+            () => resolveFinal(ret),
+            (error) => rejectFinal(error),
+          );
         }
-        return awaiterPromise.then(() => {
-          clearAndReplaceWatcher();
-          return ret;
-        });
       },
       (err) => {
         taskResolved = true;
-        if (awaiterPromise === null) {
-          clearAndReplaceWatcher();
-          throw err;
+        if (awaiterScheduledTaskPromise === null) {
+          rejectFinal(err);
+        } else {
+          awaiterScheduledTaskPromise.then(
+            () => rejectFinal(err),
+            () => rejectFinal(err),
+          );
         }
-        return awaiterPromise.then(() => {
-          clearAndReplaceWatcher();
-          throw err;
-        });
       },
     );
 
     // Simulate `handleNotified` is the number of waiting tasks is not zero
     // Must be called after unscheduledTask.then otherwise, a promise could be released while
     // we already have the value for unscheduledTask ready
-    if (this.scheduledTasks.length > 0 && this.scheduledWatchers.length === 0) {
+    if ((this.scheduledTasks.length > 0 || launchAwaiterOnInit) && this.scheduledWatchers.length === 0) {
       handleNotified();
     }
     this.scheduledWatchers.push(handleNotified);
 
-    return rewrappedTask;
+    return finalTask;
+  }
+
+  waitNext(count: number, customAct?: SchedulerAct): Promise<void> {
+    let resolver: (() => void) | undefined = undefined;
+    let remaining = count;
+    const awaited =
+      remaining <= 0
+        ? Promise.resolve()
+        : new Promise<void>((r) => {
+            resolver = () => {
+              if (--remaining <= 0) {
+                r();
+              }
+            };
+          });
+    return this.internalWaitFor(awaited, {
+      customAct,
+      onWaitStart: resolver,
+      onWaitIdle: undefined,
+      launchAwaiterOnInit: false,
+    });
+  }
+
+  waitIdle(customAct?: SchedulerAct): Promise<void> {
+    let resolver: (() => void) | undefined = undefined;
+    const awaited = new Promise<void>((r) => (resolver = r));
+    return this.internalWaitFor(awaited, {
+      customAct,
+      onWaitStart: undefined,
+      onWaitIdle: resolver,
+      launchAwaiterOnInit: true,
+    });
+  }
+
+  waitFor<T>(unscheduledTask: Promise<T>, customAct?: SchedulerAct): Promise<T> {
+    return this.internalWaitFor(unscheduledTask, {
+      customAct,
+      onWaitStart: undefined,
+      onWaitIdle: undefined,
+      launchAwaiterOnInit: false,
+    });
   }
 
   report(): SchedulerReportItem<TMetaData>[] {

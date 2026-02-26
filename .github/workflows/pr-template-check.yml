@@ -1,0 +1,58 @@
+name: PR Template Check
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+    branches:
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
+
+jobs:
+  check-template:
+    name: 'Check PR template usage'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check PR template
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            const author = context.payload.pull_request.user.login;
+            if (author === 'renovate[bot]') {
+              console.log('⏭️ Skipping PR template check for Renovate bot');
+              return;
+            }
+
+            const body = context.payload.pull_request.body ?? '';
+
+            // Check for the two secondary titles from the PR template
+            const hasDescriptionTitle = body.includes('## Description');
+            const hasChecklistTitle = body.includes('## Checklist');
+
+            // Check for all 5 checkboxes (checked or unchecked) from the PR template
+            const checkboxMatches = body.match(/- \[[ x]\]/g) ?? [];
+            const hasAllCheckboxes = checkboxMatches.length >= 5;
+
+            if (!hasDescriptionTitle || !hasChecklistTitle || !hasAllCheckboxes) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: [
+                  '👋 It looks like the PR template was not used for this pull request.',
+                  '',
+                  'Please **edit the PR description** to use the template, or close this PR and open a new one that uses it.',
+                  'Not using the template may result in your change not being reviewed.',
+                  '',
+                  'The template includes:',
+                  '- A **Description** section',
+                  '- A **Checklist** section with items to verify before submitting',
+                  '',
+                  'Thank you for your contribution! 🙏',
+                ].join('\n'),
+              });
+              core.setFailed('PR template not used');
+            }

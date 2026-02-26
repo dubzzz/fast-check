@@ -1,16 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
-import { bigInt64Array } from '../../../src/arbitrary/bigInt64Array';
+import { bigInt64Array } from '../../../src/arbitrary/bigInt64Array.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
+import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder.js';
 
 describe('bigInt64Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder for BigInt64Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = bigInt64Array();
@@ -30,7 +32,9 @@ describe('bigInt64Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     bigInt64Array();

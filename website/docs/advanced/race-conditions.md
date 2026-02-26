@@ -20,14 +20,19 @@ Identifying and fixing race conditions can be challenging as they can occur unex
 
 The [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) arbitrary is able to generate instances of [`Scheduler`](https://fast-check.dev/api-reference/interfaces/Scheduler.html). They come with following interface:
 
-- `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata, act?: SchedulerAct) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitOne` and `waitAll` methods).
+- `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata, act?: SchedulerAct) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitFor`, `waitNext` and `waitIdle` methods).
 - `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>, act?: SchedulerAct) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
 - `scheduleSequence(sequenceBuilders: SchedulerSequenceItem<TMetadata>[], act?: SchedulerAct): { done: boolean; faulty: boolean, task: Promise<{ done: boolean; faulty: boolean }> }` - Schedule a sequence of operations. Each operation requires the previous one to be resolved before being started. Each of the operations will be executed until its end before starting any other scheduled operation.
-- `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler.
-- `waitOne: (act?: SchedulerAct) => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks.
-- `waitAll: (act?: SchedulerAct) => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - _see CodeSandbox example on userProfile_.
+- `waitNext: (count: number, customAct?: SchedulerAct)=> Promise<void>` - Wait and schedule exactly `count` scheduled tasks.
+- `waitIdle: (customAct?: SchedulerAct) => Promise<void>` - Wait until the scheduler becomes idle. This includes currently scheduled tasks and any additional ones they recursively schedule. Cannot await tasks triggered by uncontrolled sources like `fetch` or external event emitters. Prefer `waitNext` or `waitFor` if you know what you are waiting for.
 - `waitFor: <T>(unscheduledTask: Promise<T>, act?: SchedulerAct) => Promise<T>` - Wait as many scheduled tasks as need to resolve the received task. Contrary to `waitOne` or `waitAll` it can be used to wait for calls not yet scheduled when calling it (some test solutions like supertest use such trick not to run any query before the user really calls then on the request itself). Be aware that while this helper will wait eveything to be ready for `unscheduledTask` to resolve, having uncontrolled tasks triggering stuff required for `unscheduledTask` might make replay of failures harder as such asynchronous triggers stay out-of-control for fast-check.
 - `report: () => SchedulerReportItem<TMetaData>[]` - Produce an array containing all the scheduled tasks so far with their execution status. If the task has been executed, it includes a string representation of the associated output or error produced by the task if any. Tasks will be returned in the order they get executed by the scheduler.
+
+And deprecated primitives:
+
+- `count(): number` - Number of pending tasks waiting to be scheduled by the scheduler — _deprecated since v4.2.0, no replacement_
+- `waitOne: (act?: SchedulerAct) => Promise<void>` - Wait one scheduled task to be executed. Throws if there is no more pending tasks — _deprecated since v4.2.0, prefer `waitNext(1)`_
+- `waitAll: (act?: SchedulerAct) => Promise<void>` - Wait all scheduled tasks, including the ones that might be created by one of the resolved task. Do not use if `waitAll` call has to be wrapped into an helper function such as `act` that can relaunch new tasks afterwards. In this specific case use a `while` loop running while `count() !== 0` and calling `waitOne` - _see CodeSandbox example on userProfile_ — _deprecated since v4.2.0, prefer `waitIdle`_
 
 With:
 
@@ -86,7 +91,7 @@ const scheduledLongTask = s.schedule(longTask);
 // If the scheduler selected longTask to end first,
 // it will wait longTask to end, then once ended it will resolve scheduledLongTask,
 // while scheduledShortTask will still be pending until scheduled.
-await s.waitOne();
+await s.waitNext(1);
 ```
 
 ### scheduleFunction
@@ -132,8 +137,9 @@ getUserDetailsScheduled('user-001')
   });
 
 // Unlock one of the scheduled Promise registered on s
-// Not necessarily the first one that resolves
-await s.waitOne();
+// Not necessarily the first one that resolves,
+// not necessarily the first one that got scheduled
+await s.waitNext(1);
 ```
 
 ### scheduleSequence
@@ -182,7 +188,7 @@ s.scheduleSequence([
   async () => rerender(<UserProfilePage userId={otherUserId2} />),
 ]);
 
-await s.waitAll();
+await s.waitIdle();
 // expect to see profile for user otherUserId2
 ```
 
@@ -244,29 +250,10 @@ const scheduleMockedServerFunction = <TArgs extends unknown[], TOut>(
 
 ```js
 fc.assert(
-  fc.asyncProperty(fc.scheduler(), async s => () {
-    // Pushing tasks into the scheduler ...
-    // ....................................
-    while (s.count() !== 0) {
-      await act(async () => {
-        // This construct is mostly needed when you want to test stuff in React
-        // In the context of act from React, using waitAll would not have worked
-        // as some scheduled tasks are triggered after waitOne resolved
-        // and because of act (effects...)
-        await s.waitOne();
-      });
-    }
-  }))
-```
-
-Is equivalent to:
-
-```js
-fc.assert(
   fc.asyncProperty(fc.scheduler({ act }), async s => () {
     // Pushing tasks into the scheduler ...
     // ....................................
-    await s.waitAll();
+    await s.waitIdle();
   }))
 ```
 
@@ -289,7 +276,7 @@ The code snippet below defines a custom `act` function able to schedule timers. 
 // It detects any timer added when tasks get resolved by the scheduler (via the act pattern).
 
 // Instead of calling `await s.waitFor(p)`, you can call `await s.waitFor(p, buildWrapWithTimersAct(s))`.
-// Instead of calling `await s.waitAll()`, you can call `await s.waitAll(buildWrapWithTimersAct(s))`.
+// Instead of calling `await s.waitIdle()`, you can call `await s.waitIdle(buildWrapWithTimersAct(s))`.
 
 function buildWrapWithTimersAct(s: fc.Scheduler) {
   let timersAlreadyScheduled = false;

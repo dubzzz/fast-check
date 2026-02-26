@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
   unboxedToBoxedMapper,
   unboxedToBoxedUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/UnboxedToBoxed';
+} from '../../../../../src/arbitrary/_internals/mappers/UnboxedToBoxed.js';
 
 describe('unboxedToBoxedMapper', () => {
   it.each`

@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { BigInt } from '../utils/globals';
-import { constantFrom } from './constantFrom';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { BigInt } from '../utils/globals.js';
+import { constantFrom } from './constantFrom.js';
 
 /**
  * Constraints to be applied on {@link falsy}
@@ -20,8 +20,7 @@ export interface FalsyContraints {
  * @remarks Since 2.2.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type FalsyValue<TConstraints extends FalsyContraints = {}> =
+export type FalsyValue<TConstraints extends FalsyContraints = object> =
   | false
   | null
   | 0

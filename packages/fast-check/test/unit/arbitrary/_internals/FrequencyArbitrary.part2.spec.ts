@@ -1,11 +1,11 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import type { _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
-import { FrequencyArbitrary } from '../../../../src/arbitrary/_internals/FrequencyArbitrary';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
-import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers';
-import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext';
-import { sizeArb } from '../__test-helpers__/SizeHelpers';
+import type { _Constraints } from '../../../../src/arbitrary/_internals/FrequencyArbitrary.js';
+import { FrequencyArbitrary } from '../../../../src/arbitrary/_internals/FrequencyArbitrary.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
+import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext.js';
+import { sizeArb } from '../__test-helpers__/SizeHelpers.js';
 
 function beforeEachHook() {
   vi.restoreAllMocks();
@@ -14,6 +14,7 @@ function beforeEachHook() {
 // the hooks will be resetted within the tests themselves if needed
 //  >  fc.configureGlobal({ beforeEach: beforeEachHook });
 beforeEach(beforeEachHook);
+fc.configureGlobal({ beforeEach: beforeEachHook });
 
 const frequencyValidInputsArb = fc
   .tuple(

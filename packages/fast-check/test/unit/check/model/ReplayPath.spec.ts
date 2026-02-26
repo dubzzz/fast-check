@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { ReplayPath } from '../../../../src/check/model/ReplayPath';
+import { ReplayPath } from '../../../../src/check/model/ReplayPath.js';
 
 const biasedBoolean = fc.oneof(
   { weight: 1000, arbitrary: fc.constant(true) },

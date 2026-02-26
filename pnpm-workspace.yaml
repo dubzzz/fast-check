@@ -1,4 +1,17 @@
 packages:
-  - 'examples'
-  - 'packages/*'
-  - 'website'
+  - examples
+  - packages/*
+  - website
+
+ignoredBuiltDependencies:
+  - '@swc/core'
+  - core-js
+  - core-js-pure
+  - es5-ext
+  - esbuild
+  - unrs-resolver
+
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 20160
+
+blockExoticSubdeps: true

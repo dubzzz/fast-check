@@ -1,5 +1,5 @@
-import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalParameters';
-import { safeIndexOf } from '../../../utils/globals';
+import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalParameters.js';
+import { safeIndexOf } from '../../../utils/globals.js';
 
 const safeMathFloor = Math.floor;
 const safeMathMin = Math.min;
@@ -191,4 +191,20 @@ export function resolveSize(size: Exclude<SizeForArbitrary, 'max'> | undefined):
     return defaultSize;
   }
   return relativeSizeToSize(size, defaultSize);
+}
+
+/** @internal */
+export function invertSize(size: Size): Size {
+  switch (size) {
+    case 'xsmall':
+      return 'xlarge';
+    case 'small':
+      return 'large';
+    case 'medium':
+      return 'medium';
+    case 'large':
+      return 'small';
+    case 'xlarge':
+      return 'xsmall';
+  }
 }

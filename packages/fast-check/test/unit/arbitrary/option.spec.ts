@@ -1,18 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import type { OptionConstraints } from '../../../src/arbitrary/option';
-import { option } from '../../../src/arbitrary/option';
-import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary';
-import * as ConstantMock from '../../../src/arbitrary/constant';
+import type { OptionConstraints } from '../../../src/arbitrary/option.js';
+import { option } from '../../../src/arbitrary/option.js';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary.js';
+import * as ConstantMock from '../../../src/arbitrary/constant.js';
+import { constant } from '../../../src/arbitrary/constant.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { sizeArb } from './__test-helpers__/SizeHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { sizeArb } from './__test-helpers__/SizeHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('option', () => {
   declareCleaningHooksForSpies();
@@ -49,7 +50,7 @@ describe('option', () => {
           expect(from).toHaveBeenCalledWith(
             [
               { arbitrary: expectedConstantArb, weight: 1, fallbackValue: { default: expectedNil } },
-              { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! : 5 },
+              { arbitrary: arb, weight: 'freq' in constraints ? constraints.freq! - 1 : 5 },
             ],
             {
               withCrossShrink: true,
@@ -98,7 +99,7 @@ describe('option', () => {
 
 describe('option (integration)', () => {
   type Extra = { freq?: number };
-  const extraParameters = fc.record({ freq: fc.nat() }, { requiredKeys: [] });
+  const extraParameters = fc.record({ freq: fc.integer({ min: 1 }) }, { requiredKeys: [] });
 
   const isCorrect = (value: number | null, extra: Extra) =>
     value === null || ((extra.freq === undefined || extra.freq > 0) && typeof value === 'number');
@@ -119,5 +120,14 @@ describe('option (integration)', () => {
 
   it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(optionBuilder, { extraParameters });
+  });
+
+  it('should always return nil when freq = 1', () => {
+    assertProduceCorrectValues(
+      () => option(constant(true), { freq: 1 }),
+      (o) => {
+        expect(o).toBe(null);
+      },
+    );
   });
 });

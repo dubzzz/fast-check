@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { nat } from '../../../src/arbitrary/nat';
+import { nat, type NatConstraints } from '../../../src/arbitrary/nat.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import * as IntegerArbitraryMock from '../../../src/arbitrary/_internals/IntegerArbitrary.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 function fakeIntegerArbitrary() {
   const instance = fakeArbitrary<number>().instance as IntegerArbitraryMock.IntegerArbitrary;
@@ -19,7 +19,9 @@ describe('nat', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-    IntegerArbitrary.mockImplementation(() => instance);
+    IntegerArbitrary.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = nat();
@@ -33,7 +35,9 @@ describe('nat', () => {
     // Arrange
     const instance = fakeIntegerArbitrary();
     const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-    IntegerArbitrary.mockImplementation(() => instance);
+    IntegerArbitrary.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = nat({});
@@ -49,7 +53,9 @@ describe('nat', () => {
         // Arrange
         const instance = fakeIntegerArbitrary();
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-        IntegerArbitrary.mockImplementation(() => instance);
+        IntegerArbitrary.mockImplementation(function () {
+          return instance;
+        });
 
         // Act
         const arb = nat({ max });
@@ -66,7 +72,9 @@ describe('nat', () => {
         // Arrange
         const instance = fakeIntegerArbitrary();
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
-        IntegerArbitrary.mockImplementation(() => instance);
+        IntegerArbitrary.mockImplementation(function () {
+          return instance;
+        });
 
         // Act
         const arb = nat(max);
@@ -96,4 +104,32 @@ describe('nat', () => {
       }),
     );
   });
+
+  it('should handle union type of number | NatConstraints', () =>
+    fc.assert(
+      fc.property(
+        fc.oneof(
+          fc.constant(undefined),
+          fc.integer({ min: 0 }),
+          fc.record({}),
+          fc.record({ max: fc.integer({ min: 0 }) }),
+        ),
+        (constraints: number | NatConstraints | undefined) => {
+          // Arrange
+          const expectedMax = typeof constraints === 'number' ? constraints : (constraints?.max ?? null);
+          const instance = fakeIntegerArbitrary();
+          const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
+          IntegerArbitrary.mockImplementation(function () {
+            return instance;
+          });
+
+          // Act
+          const arb = constraints === undefined ? nat() : nat(constraints);
+
+          // Assert
+          expect(IntegerArbitrary).toHaveBeenCalledWith(0, expectedMax ?? expect.anything());
+          expect(arb).toBe(instance);
+        },
+      ),
+    ));
 });

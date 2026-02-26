@@ -1,11 +1,11 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import type { Random } from '../../random/generator/Random';
-import { makeLazy } from '../../stream/LazyIterableIterator';
-import { Stream } from '../../stream/Stream';
-import { safeMap, safePush, safeSlice, safeSort, safeSplice } from '../../utils/globals';
-import { isSubarrayOf } from './helpers/IsSubarrayOf';
-import { IntegerArbitrary } from './IntegerArbitrary';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
+import { makeLazy } from '../../stream/LazyIterableIterator.js';
+import { Stream } from '../../stream/Stream.js';
+import { safeMap, safePush, safeSlice, safeSort, safeSplice } from '../../utils/globals.js';
+import { isSubarrayOf } from './helpers/IsSubarrayOf.js';
+import { IntegerArbitrary } from './IntegerArbitrary.js';
 
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;

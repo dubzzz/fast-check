@@ -1,6 +1,6 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { integer } from '../../integer';
-import { numberToPaddedEightMapper, numberToPaddedEightUnmapper } from '../mappers/NumberToPaddedEight';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { integer } from '../../integer.js';
+import { numberToPaddedEightMapper, numberToPaddedEightUnmapper } from '../mappers/NumberToPaddedEight.js';
 
 /** @internal */
 export function buildPaddedNumberArbitrary(min: number, max: number): Arbitrary<string> {

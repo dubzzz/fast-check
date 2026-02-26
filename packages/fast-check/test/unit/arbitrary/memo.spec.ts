@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { memo } from '../../../src/arbitrary/memo';
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from './__test-helpers__/RandomHelpers';
+import { memo } from '../../../src/arbitrary/memo.js';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
 
 describe('memo', () => {
   it('should return the produced instance of arbitrary', () => {

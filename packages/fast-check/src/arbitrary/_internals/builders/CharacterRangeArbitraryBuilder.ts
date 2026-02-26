@@ -1,8 +1,14 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { oneof } from '../../oneof';
-import { mapToConstant } from '../../mapToConstant';
-import { safeCharCodeAt, safeNumberToString, encodeURIComponent, safeMapGet, safeMapSet } from '../../../utils/globals';
-import { string } from '../../string';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { oneof } from '../../oneof.js';
+import { mapToConstant } from '../../mapToConstant.js';
+import {
+  safeCharCodeAt,
+  safeNumberToString,
+  encodeURIComponent,
+  safeMapGet,
+  safeMapSet,
+} from '../../../utils/globals.js';
+import { string } from '../../string.js';
 
 const SMap = Map;
 const safeStringFromCharCode = String.fromCharCode;

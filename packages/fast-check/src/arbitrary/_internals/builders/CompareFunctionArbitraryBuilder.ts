@@ -1,12 +1,12 @@
-import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary';
-import { escapeForMultilineComments } from '../helpers/TextEscaper';
-import { cloneMethod } from '../../../check/symbols';
-import { hash } from '../../../utils/hash';
-import { stringify } from '../../../utils/stringify';
-import { integer } from '../../integer';
-import { noShrink } from '../../noShrink';
-import { tuple } from '../../tuple';
-import { safeJoin } from '../../../utils/globals';
+import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { escapeForMultilineComments } from '../helpers/TextEscaper.js';
+import { cloneMethod } from '../../../check/symbols.js';
+import { hash } from '../../../utils/hash.js';
+import { stringify } from '../../../utils/stringify.js';
+import { integer } from '../../integer.js';
+import { noShrink } from '../../noShrink.js';
+import { tuple } from '../../tuple.js';
+import { safeJoin } from '../../../utils/globals.js';
 
 const safeObjectAssign = Object.assign;
 const safeObjectKeys = Object.keys;

@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { assertNoPoisoning, restoreGlobals } from '../src/main.js';
 
-const options = { ignoredRootRegex: /__vitest_worker__/ };
+const options = {
+  ignoredRootRegex: /(__vitest_worker__|__vitest_mocker__|AbortController|Symbol\(undici\.globalDispatcher\.\d+\))/,
+};
 
 describe('assertNoPoisoning', () => {
   it('should not throw any Error if no poisoning occurred', () => {
@@ -13,8 +15,7 @@ describe('assertNoPoisoning', () => {
 
   it('should throw an Error if new global appeared and be able to revert the change', () => {
     // Arrange
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error - Property 'a' does not exist on globalThis, intentionally adding it for testing
     globalThis.a = 'Hello';
 
     // Act / Assert
@@ -23,8 +24,7 @@ describe('assertNoPoisoning', () => {
       restoreGlobals(options);
       expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error - Property 'a' has been added on globalThis during the test, deleting it
       delete globalThis.a;
     }
   });
@@ -32,8 +32,7 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if global removed and be able to revert the change', () => {
     // Arrange
     const F = globalThis.Function;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-expect-error - Cannot delete required property 'Function' from globalThis, intentionally doing so for testing
     delete globalThis.Function;
 
     // Act / Assert
@@ -117,8 +116,7 @@ describe('assertNoPoisoning', () => {
       let numDeleted = 0;
       for (const k of own(obj)) {
         try {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // @ts-expect-error - Cannot delete required property from object, intentionally doing so for testing
           delete obj[k];
           ++numDeleted;
         } catch {

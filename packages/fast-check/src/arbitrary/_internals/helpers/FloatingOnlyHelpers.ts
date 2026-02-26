@@ -1,4 +1,4 @@
-import type { DoubleConstraints } from '../../double';
+import type { DoubleConstraints } from '../../double.js';
 
 const safeNumberIsInteger = Number.isInteger;
 const safeObjectIs = Object.is;

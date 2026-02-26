@@ -1,6 +1,6 @@
-import type { VerbosityLevel } from '../configuration/VerbosityLevel';
-import type { ExecutionTree } from './ExecutionTree';
-import type { Parameters } from '../configuration/Parameters';
+import type { VerbosityLevel } from '../configuration/VerbosityLevel.js';
+import type { ExecutionTree } from './ExecutionTree.js';
+import type { Parameters } from '../configuration/Parameters.js';
 
 /**
  * Post-run details produced by {@link check}

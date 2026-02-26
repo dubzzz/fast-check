@@ -1,11 +1,11 @@
-import type { Parameters } from './Parameters';
-import { VerbosityLevel } from './VerbosityLevel';
-import type { RunDetails } from '../reporter/RunDetails';
+import type { Parameters } from './Parameters.js';
+import { VerbosityLevel } from './VerbosityLevel.js';
+import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 import { unsafeSkipN } from 'pure-rand/distribution/UnsafeSkipN';
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
-import { mersenne } from 'pure-rand/generator/MersenneTwister';
 import { congruential32 } from 'pure-rand/generator/LinearCongruential';
+import { mersenne } from 'pure-rand/generator/MersenneTwister';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import { xoroshiro128plus } from 'pure-rand/generator/XoroShiro';
 
 const safeDateNow = Date.now;
@@ -45,14 +45,14 @@ export class QualifiedParameters<T> {
 
   constructor(op?: Parameters<T>) {
     const p = op || {};
-    this.seed = QualifiedParameters.readSeed(p);
-    this.randomType = QualifiedParameters.readRandomType(p);
-    this.numRuns = QualifiedParameters.readNumRuns(p);
-    this.verbose = QualifiedParameters.readVerbose(p);
+    this.seed = readSeed(p);
+    this.randomType = readRandomType(p);
+    this.numRuns = readNumRuns(p);
+    this.verbose = readVerbose(p);
     this.maxSkipsPerRun = p.maxSkipsPerRun !== undefined ? p.maxSkipsPerRun : 100;
-    this.timeout = QualifiedParameters.safeTimeout(p.timeout);
-    this.skipAllAfterTimeLimit = QualifiedParameters.safeTimeout(p.skipAllAfterTimeLimit);
-    this.interruptAfterTimeLimit = QualifiedParameters.safeTimeout(p.interruptAfterTimeLimit);
+    this.timeout = safeTimeout(p.timeout);
+    this.skipAllAfterTimeLimit = safeTimeout(p.skipAllAfterTimeLimit);
+    this.interruptAfterTimeLimit = safeTimeout(p.interruptAfterTimeLimit);
     this.markInterruptAsFailure = p.markInterruptAsFailure === true;
     this.skipEqualValues = p.skipEqualValues === true;
     this.ignoreEqualValues = p.ignoreEqualValues === true;
@@ -96,91 +96,101 @@ export class QualifiedParameters<T> {
     };
     return parameters;
   }
+}
 
-  private static createQualifiedRandomGenerator = (
-    random: (seed: number) => RandomGenerator,
-  ): ((seed: number) => QualifiedRandomGenerator) => {
-    return (seed) => {
-      const rng = random(seed);
-      if (rng.unsafeJump === undefined) {
-        rng.unsafeJump = () => unsafeSkipN(rng, 42);
-      }
-      return rng as QualifiedRandomGenerator;
-    };
+/** @internal */
+function createQualifiedRandomGenerator(
+  random: (seed: number) => RandomGenerator,
+): (seed: number) => QualifiedRandomGenerator {
+  return (seed) => {
+    const rng = random(seed);
+    if (rng.unsafeJump === undefined) {
+      rng.unsafeJump = () => unsafeSkipN(rng, 42);
+    }
+    return rng as QualifiedRandomGenerator;
   };
+}
 
-  private static readSeed = <T>(p: Parameters<T>): number => {
-    // No seed specified
-    if (p.seed === undefined) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
+/** @internal */
+function readSeed<T>(p: Parameters<T>): number {
+  // No seed specified
+  if (p.seed === undefined) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
 
-    // Seed is a 32 bits signed integer
-    const seed32 = p.seed | 0;
-    if (p.seed === seed32) return seed32;
+  // Seed is a 32 bits signed integer
+  const seed32 = p.seed | 0;
+  if (p.seed === seed32) return seed32;
 
-    // Seed is either a double or an integer outside the authorized 32 bits
-    const gap = p.seed - seed32;
-    return seed32 ^ (gap * 0x100000000);
-  };
-  private static readRandomType = <T>(p: Parameters<T>): ((seed: number) => QualifiedRandomGenerator) => {
-    if (p.randomType === undefined) return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
-    if (typeof p.randomType === 'string') {
-      switch (p.randomType) {
-        case 'mersenne':
-          return QualifiedParameters.createQualifiedRandomGenerator(mersenne);
-        case 'congruential':
-        case 'congruential32':
-          return QualifiedParameters.createQualifiedRandomGenerator(congruential32);
-        case 'xorshift128plus':
-          return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
-        case 'xoroshiro128plus':
-          return xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
-        default:
-          throw new Error(`Invalid random specified: '${p.randomType}'`);
-      }
-    }
-    const mrng = p.randomType(0);
-    if ('min' in mrng && mrng.min !== -0x80000000) {
-      throw new Error(`Invalid random number generator: min must equal -0x80000000, got ${String(mrng.min)}`);
-    }
-    if ('max' in mrng && mrng.max !== 0x7fffffff) {
-      throw new Error(`Invalid random number generator: max must equal 0x7fffffff, got ${String(mrng.max)}`);
-    }
-    if ('unsafeJump' in mrng) {
-      return p.randomType as (seed: number) => QualifiedRandomGenerator;
-    }
-    return QualifiedParameters.createQualifiedRandomGenerator(p.randomType);
-  };
-  private static readNumRuns = <T>(p: Parameters<T>): number => {
-    const defaultValue = 100;
-    if (p.numRuns !== undefined) return p.numRuns;
-    if ((p as { num_runs?: number }).num_runs !== undefined) return (p as { num_runs: number }).num_runs;
-    return defaultValue;
-  };
-  private static readVerbose = <T>(p: Parameters<T>): VerbosityLevel => {
-    if (p.verbose === undefined) return VerbosityLevel.None;
-    if (typeof p.verbose === 'boolean') {
-      return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
-    }
-    if (p.verbose <= VerbosityLevel.None) {
-      return VerbosityLevel.None;
-    }
-    if (p.verbose >= VerbosityLevel.VeryVerbose) {
-      return VerbosityLevel.VeryVerbose;
-    }
-    return p.verbose | 0;
-  };
-  private static safeTimeout = (value: number | undefined): number | undefined => {
-    if (value === undefined) {
-      return undefined;
-    }
-    return safeMathMin(value, 0x7fffffff);
-  };
+  // Seed is either a double or an integer outside the authorized 32 bits
+  const gap = p.seed - seed32;
+  return seed32 ^ (gap * 0x100000000);
+}
 
-  /**
-   * Extract a runner configuration from Parameters
-   * @param p - Incoming Parameters
-   */
-  static read<T>(op?: Parameters<T>): QualifiedParameters<T> {
-    return new QualifiedParameters(op);
+/** @internal */
+function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomGenerator {
+  if (p.randomType === undefined) return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+  if (typeof p.randomType === 'string') {
+    switch (p.randomType) {
+      case 'mersenne':
+        return createQualifiedRandomGenerator(mersenne);
+      case 'congruential':
+      case 'congruential32':
+        return createQualifiedRandomGenerator(congruential32);
+      case 'xorshift128plus':
+        return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+      case 'xoroshiro128plus':
+        return xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
+      default:
+        throw new Error(`Invalid random specified: '${p.randomType}'`);
+    }
   }
+  const mrng = p.randomType(0);
+  if ('min' in mrng && mrng.min !== -0x80000000) {
+    throw new Error(`Invalid random number generator: min must equal -0x80000000, got ${String(mrng.min)}`);
+  }
+  if ('max' in mrng && mrng.max !== 0x7fffffff) {
+    throw new Error(`Invalid random number generator: max must equal 0x7fffffff, got ${String(mrng.max)}`);
+  }
+  if ('unsafeJump' in mrng) {
+    return p.randomType as (seed: number) => QualifiedRandomGenerator;
+  }
+  return createQualifiedRandomGenerator(p.randomType);
+}
+
+/** @internal */
+function readNumRuns<T>(p: Parameters<T>): number {
+  const defaultValue = 100;
+  if (p.numRuns !== undefined) return p.numRuns;
+  if ((p as { num_runs?: number }).num_runs !== undefined) return (p as { num_runs: number }).num_runs;
+  return defaultValue;
+}
+
+/** @internal */
+function readVerbose<T>(p: Parameters<T>): VerbosityLevel {
+  if (p.verbose === undefined) return VerbosityLevel.None;
+  if (typeof p.verbose === 'boolean') {
+    return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
+  }
+  if (p.verbose <= VerbosityLevel.None) {
+    return VerbosityLevel.None;
+  }
+  if (p.verbose >= VerbosityLevel.VeryVerbose) {
+    return VerbosityLevel.VeryVerbose;
+  }
+  return p.verbose | 0;
+}
+
+/** @internal */
+function safeTimeout(value: number | undefined): number | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+  return safeMathMin(value, 0x7fffffff);
+}
+
+/**
+ * Extract a runner configuration from Parameters
+ * @param p - Incoming Parameters
+ */
+export function read<T>(op?: Parameters<T>): QualifiedParameters<T> {
+  return new QualifiedParameters(op);
 }

@@ -1,34 +1,18 @@
 {
   "name": "@fast-check/vitest",
   "description": "Property based testing for Vitest based on fast-check",
-  "version": "0.1.5",
+  "version": "0.2.4",
   "type": "module",
-  "main": "lib/vitest-fast-check.js",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "require": {
-        "types": "./lib/cjs/vitest-fast-check.d.ts",
-        "default": "./lib/cjs/vitest-fast-check.js"
-      },
-      "import": {
-        "types": "./lib/vitest-fast-check.d.ts",
-        "default": "./lib/vitest-fast-check.js"
-      }
-    }
+    ".": "./lib/vitest-fast-check.js"
   },
-  "module": "lib/vitest-fast-check.js",
-  "types": "lib/vitest-fast-check.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "test": "vitest",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "test-bundle": "node test-bundle/basic.mjs && vitest --config test-bundle/vitest.config.mjs",
     "typecheck": "tsc --noEmit"
   },
@@ -44,18 +28,19 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/vitest#readme",
   "dependencies": {
-    "fast-check": "^3.0.0"
+    "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "vitest": ">=0.28.1 <1.0.0 || ^1 || ^2 || ^3"
+    "vitest": "^1 || ^2 || ^3 || ^4"
   },
   "devDependencies": {
     "@fast-check/vitest": "workspace:*",
-    "@types/node": "^22.13.4",
+    "@types/node": "^24.10.15",
     "fast-check": "workspace:*",
-    "typescript": "~5.7.3",
-    "vite": "^6.1.0",
-    "vitest": "^2.1.9"
+    "rolldown": "^1.0.0-rc.6",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "vitest",

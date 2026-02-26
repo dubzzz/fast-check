@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
-import type { MaybeMocked } from '../../../__test-helpers__/Mocked';
-import type { IRawProperty } from '../../../../../src/check/property/IRawProperty';
+import type { MaybeMocked } from '../../../__test-helpers__/Mocked.js';
+import type { IRawProperty } from '../../../../../src/check/property/IRawProperty.js';
 
 /**
  * Generate a fake instance inheriting from IRawProperty with all methods being mocked

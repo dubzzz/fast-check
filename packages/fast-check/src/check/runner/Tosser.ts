@@ -1,11 +1,11 @@
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 import { skipN } from 'pure-rand/distribution/SkipN';
 
-import { Random } from '../../random/generator/Random';
-import type { IRawProperty } from '../property/IRawProperty';
-import { Value } from '../arbitrary/definition/Value';
-import { safeMap } from '../../utils/globals';
-import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters';
+import { Random } from '../../random/generator/Random.js';
+import type { IRawProperty } from '../property/IRawProperty.js';
+import { Value } from '../arbitrary/definition/Value.js';
+import { safeMap } from '../../utils/globals.js';
+import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters.js';
 
 /**
  * Extracting tossNext out of toss was dropping some bailout reasons on v8 side

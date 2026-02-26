@@ -1,4 +1,4 @@
-import type { ExecutionStatus } from './ExecutionStatus';
+import type { ExecutionStatus } from './ExecutionStatus.js';
 
 /**
  * Summary of the execution process

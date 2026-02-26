@@ -7,26 +7,24 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.6.1",
-    "express": "^4.21.2",
-    "fast-check": "workspace:*",
-    "lodash": "^4.17.21",
-    "pure-rand": "^7.0.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "supertest": "^7.0.0"
-  },
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/lodash": "^4.17.15",
-    "@types/react": "^19.0.8",
-    "@types/supertest": "^6.0.2",
-    "happy-dom": "^17.1.0",
-    "typescript": "~5.7.3",
-    "vitest": "^2.1.9"
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/express": "^5.0.6",
+    "@types/lodash": "^4.17.24",
+    "@types/react": "^19.2.14",
+    "@types/supertest": "^7.2.0",
+    "express": "^5.2.1",
+    "fast-check": "workspace:*",
+    "happy-dom": "^20.7.0",
+    "lodash": "^4.17.23",
+    "pure-rand": "^7.0.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "supertest": "^7.2.2",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
   "license": "MIT"

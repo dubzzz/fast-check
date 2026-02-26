@@ -1,8 +1,8 @@
-import type { AsyncCommand } from './command/AsyncCommand';
-import type { Command } from './command/Command';
-import type { ICommand } from './command/ICommand';
-import type { Scheduler } from '../../arbitrary/scheduler';
-import { scheduleCommands } from './commands/ScheduledCommand';
+import type { AsyncCommand } from './command/AsyncCommand.js';
+import type { Command } from './command/Command.js';
+import type { ICommand } from './command/ICommand.js';
+import type { Scheduler } from '../../arbitrary/scheduler.js';
+import { scheduleCommands } from './commands/ScheduledCommand.js';
 
 /**
  * Synchronous definition of model and real

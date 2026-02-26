@@ -1,6 +1,8 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder';
-import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { buildPartialRecordArbitrary } from './_internals/builders/PartialRecordArbitraryBuilder.js';
+import type { EnumerableKeyOf } from './_internals/helpers/EnumerableKeysExtractor.js';
+
+type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
 /**
  * Constraints to be applied on {@link record}
@@ -34,26 +36,8 @@ export type RecordConstraints<T = unknown> = {
  * @remarks Since 2.2.0
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type RecordValue<T, TConstraints = {}> = TConstraints extends { requiredKeys: (infer TKeys)[] }
-  ? Partial<T> & Pick<T, TKeys & keyof T>
-  : T;
+export type RecordValue<T, K> = Prettify<Partial<T> & Pick<T, K & keyof T>>;
 
-/**
- * For records following the `recordModel` schema
- *
- * @example
- * ```typescript
- * record({ x: someArbitraryInt, y: someArbitraryInt }): Arbitrary<{x:number,y:number}>
- * // merge two integer arbitraries to produce a {x, y} record
- * ```
- *
- * @param recordModel - Schema of the record
- *
- * @remarks Since 0.0.12
- * @public
- */
-function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }>>;
 /**
  * For records following the `recordModel` schema
  *
@@ -69,16 +53,17 @@ function record<T>(recordModel: { [K in keyof T]: Arbitrary<T[K]> }): Arbitrary<
  * @remarks Since 0.0.12
  * @public
  */
-function record<T, TConstraints extends RecordConstraints<keyof T>>(
-  recordModel: { [K in keyof T]: Arbitrary<T[K]> },
-  constraints: TConstraints,
-): Arbitrary<RecordValue<{ [K in keyof T]: T[K] }, TConstraints>>;
+function record<T, K extends keyof T = keyof T>(
+  model: { [K in keyof T]: Arbitrary<T[K]> },
+  constraints?: RecordConstraints<K>,
+): Arbitrary<RecordValue<T, K>>;
+
 function record<T>(
   recordModel: { [K in keyof T]: Arbitrary<T[K]> },
   constraints?: RecordConstraints<keyof T>,
 ): unknown {
   const noNullPrototype = constraints !== undefined && !!constraints.noNullPrototype;
-  if (constraints == null) {
+  if (constraints === undefined) {
     return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
@@ -94,7 +79,7 @@ function record<T>(
       throw new Error(`requiredKeys cannot reference keys that have not been defined in recordModel`);
     }
     if (!descriptor.enumerable) {
-      throw new Error(`requiredKeys cannot reference keys that have are enumerable in recordModel`);
+      throw new Error(`requiredKeys cannot reference keys that are not enumerable in recordModel`);
     }
   }
 

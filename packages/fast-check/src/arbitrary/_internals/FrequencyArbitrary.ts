@@ -1,12 +1,12 @@
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import type { DepthContext, DepthIdentifier } from './helpers/DepthContext';
-import { getDepthContextFor } from './helpers/DepthContext';
-import type { DepthSize } from './helpers/MaxLengthFromMinLength';
-import { depthBiasFromSizeForArbitrary } from './helpers/MaxLengthFromMinLength';
-import { safePush } from '../../utils/globals';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { DepthContext, DepthIdentifier } from './helpers/DepthContext.js';
+import { getDepthContextFor } from './helpers/DepthContext.js';
+import type { DepthSize } from './helpers/MaxLengthFromMinLength.js';
+import { depthBiasFromSizeForArbitrary } from './helpers/MaxLengthFromMinLength.js';
+import { safePush } from '../../utils/globals.js';
 
 const safePositiveInfinity = Number.POSITIVE_INFINITY;
 const safeMaxSafeInteger = Number.MAX_SAFE_INTEGER;
@@ -44,7 +44,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     const sanitizedConstraints: _SanitizedConstraints = {
       depthBias: depthBiasFromSizeForArbitrary(constraints.depthSize, constraints.maxDepth !== undefined),
-      maxDepth: constraints.maxDepth != undefined ? constraints.maxDepth : safePositiveInfinity,
+      maxDepth: constraints.maxDepth !== undefined ? constraints.maxDepth : safePositiveInfinity,
       withCrossShrink: !!constraints.withCrossShrink,
     };
     return new FrequencyArbitrary(warbs, sanitizedConstraints, getDepthContextFor(constraints.depthIdentifier));

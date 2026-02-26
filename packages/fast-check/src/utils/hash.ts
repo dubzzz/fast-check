@@ -1,4 +1,4 @@
-import { safeCharCodeAt } from './globals';
+import { safeCharCodeAt } from './globals.js';
 
 /** @internal */
 const crc32Table = [

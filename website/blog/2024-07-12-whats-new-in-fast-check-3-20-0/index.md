@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.20.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, shrinking, api-changes]
 ---
 
 This release introduces new arbitraries to enhance shrinking capabilities and deprecates the `noShrink` and `noBias` methods in favor of these new arbitraries.

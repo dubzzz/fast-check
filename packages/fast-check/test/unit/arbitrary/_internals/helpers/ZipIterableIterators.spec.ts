@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
-import { zipIterableIterators } from '../../../../../src/arbitrary/_internals/helpers/ZipIterableIterators';
+import { zipIterableIterators } from '../../../../../src/arbitrary/_internals/helpers/ZipIterableIterators.js';
 
 describe('zipIterableIterators', () => {
   it('should zip two iterators having the same size together', () => {

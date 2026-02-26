@@ -6,7 +6,7 @@ import {
   noTrailingUnmapper,
   onlyTrailingUnmapper,
   singleTrailingUnmapper,
-} from '../../../../../src/arbitrary/_internals/mappers/EntitiesToIPv6';
+} from '../../../../../src/arbitrary/_internals/mappers/EntitiesToIPv6.js';
 
 describe('fullySpecifiedUnmapper', () => {
   it.each`

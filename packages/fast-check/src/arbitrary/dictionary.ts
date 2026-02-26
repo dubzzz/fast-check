@@ -1,14 +1,17 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { tuple } from './tuple';
-import { uniqueArray } from './uniqueArray';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength';
-import { keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper } from './_internals/mappers/KeyValuePairsToObject';
-import { constant } from './constant';
-import { boolean } from './boolean';
-import type { DepthIdentifier } from './_internals/helpers/DepthContext';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { tuple } from './tuple.js';
+import { uniqueArray } from './uniqueArray.js';
+import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import {
+  keyValuePairsToObjectMapper,
+  keyValuePairsToObjectUnmapper,
+} from './_internals/mappers/KeyValuePairsToObject.js';
+import { constant } from './constant.js';
+import { boolean } from './boolean.js';
+import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
 /** @internal */
-function dictionaryKeyExtractor(entry: [string, unknown]): string {
+function dictionaryKeyExtractor<K extends PropertyKey>(entry: [K, unknown]): K {
   return entry[0];
 }
 
@@ -25,7 +28,7 @@ export interface DictionaryConstraints {
    */
   minKeys?: number;
   /**
-   * Lower bound for the number of keys defined into the generated instance
+   * Upper bound for the number of keys defined into the generated instance
    * @defaultValue 0x7fffffff — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
    * @remarks Since 2.22.0
    */
@@ -64,8 +67,27 @@ export interface DictionaryConstraints {
 export function dictionary<T>(
   keyArb: Arbitrary<string>,
   valueArb: Arbitrary<T>,
+  constraints?: DictionaryConstraints,
+): Arbitrary<Record<string, T>>;
+/**
+ * For dictionaries with keys produced by `keyArb` and values from `valueArb`
+ *
+ * @param keyArb - Arbitrary used to generate the keys of the object
+ * @param valueArb - Arbitrary used to generate the values of the object
+ *
+ * @remarks Since 4.4.0
+ * @public
+ */
+export function dictionary<K extends PropertyKey, V>(
+  keyArb: Arbitrary<K>,
+  valueArb: Arbitrary<V>,
+  constraints?: DictionaryConstraints,
+): Arbitrary<Record<K, V>>;
+export function dictionary<K extends PropertyKey, V>(
+  keyArb: Arbitrary<K>,
+  valueArb: Arbitrary<V>,
   constraints: DictionaryConstraints = {},
-): Arbitrary<Record<string, T>> {
+): Arbitrary<Record<K, V>> {
   const noNullPrototype = !!constraints.noNullPrototype;
   return tuple(
     uniqueArray(tuple(keyArb, valueArb), {

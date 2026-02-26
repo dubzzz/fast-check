@@ -1,19 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 
-import type { DoubleConstraints } from '../../../src/arbitrary/double';
-import { double } from '../../../src/arbitrary/double';
+import type { DoubleConstraints } from '../../../src/arbitrary/double.js';
+import { double } from '../../../src/arbitrary/double.js';
 import {
   defaultDoubleRecordConstraints,
   doubleConstraints,
   float64raw,
   isStrictlySmaller,
-} from './__test-helpers__/FloatingPointHelpers';
-import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/helpers/DoubleHelpers';
+} from './__test-helpers__/FloatingPointHelpers.js';
+import { doubleToIndex, indexToDouble } from '../../../src/arbitrary/_internals/helpers/DoubleHelpers.js';
 
-import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers';
-import { fakeRandom } from './__test-helpers__/RandomHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import { fakeArbitrary, fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
+import { fakeRandom } from './__test-helpers__/RandomHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 import {
   assertProduceCorrectValues,
@@ -21,19 +21,16 @@ import {
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
+} from './__test-helpers__/ArbitraryAssertions.js';
 
-import * as BigIntMock from '../../../src/arbitrary/bigInt';
+import * as BigIntMock from '../../../src/arbitrary/bigInt.js';
 
 describe('double', () => {
   declareCleaningHooksForSpies();
 
   it('should accept any valid range of floating point numbers (including infinity)', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noInteger, ...withoutNoIntegerRecordConstraints } = defaultDoubleRecordConstraints;
-
     fc.assert(
-      fc.property(doubleConstraints(withoutNoIntegerRecordConstraints), (ct) => {
+      fc.property(doubleConstraints({ ...defaultDoubleRecordConstraints, noInteger: undefined }), (ct) => {
         // Arrange
         spyBigInt();
 
@@ -193,7 +190,16 @@ describe('double', () => {
           expect(bigInt).toHaveBeenCalledTimes(2);
           const constraintsNoNaN = bigInt.mock.calls[0];
           const constraintsWithNaN = bigInt.mock.calls[1];
+          if (constraintsNoNaN.length !== 1) {
+            expect.fail(`Expected bigInt to be called with one constraints object; got ${constraintsNoNaN}`);
+          }
+          if (constraintsWithNaN.length !== 1) {
+            expect.fail(`Expected bigInt to be called with one constraints object; got ${constraintsWithNaN}`);
+          }
           if (max > Number.MIN_VALUE || (max > 0 && !ct.maxExcluded)) {
+            if (constraintsNoNaN.length !== 1) {
+              expect.fail(`Expected bigInt to be called with one constraints object; got ${constraintsNoNaN}`);
+            }
             // max > 0  --> NaN will be added as the greatest value
             expect(constraintsWithNaN[0]).toEqual({
               min: constraintsNoNaN[0].min,
@@ -229,6 +235,12 @@ describe('double', () => {
             double({ ...ct, noNaN: true });
             const arb = double(ct);
             // Extract NaN "index"
+            if (bigInt.mock.calls[0].length !== 1) {
+              expect.fail(`Expected bigInt to be called with one constraints object; got ${bigInt.mock.calls[0]}`);
+            }
+            if (bigInt.mock.calls[1].length !== 1) {
+              expect.fail(`Expected bigInt to be called with one constraints object; got ${bigInt.mock.calls[1]}`);
+            }
             const [{ min: minNonNaN }] = bigInt.mock.calls[0];
             const [{ min: minNaN, max: maxNaN }] = bigInt.mock.calls[1];
             const indexForNaN = minNonNaN !== minNaN ? minNaN : maxNaN;
@@ -247,28 +259,28 @@ describe('double', () => {
   });
 
   describe('without NaN', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { noNaN, noInteger, ...noNaNRecordConstraints } = defaultDoubleRecordConstraints;
-
     it('should ask integers between the indexes corresponding to min and max', () => {
       fc.assert(
-        fc.property(doubleConstraints(noNaNRecordConstraints), (ctDraft) => {
-          // Arrange
-          const ct = { ...ctDraft, noNaN: true };
-          const bigInt = spyBigInt();
-          const { min, max } = minMaxForConstraints(ct);
-          const minIndex = doubleToIndex(min);
-          const maxIndex = doubleToIndex(max);
-          const expectedMinIndex = ct.minExcluded ? minIndex + BigInt(1) : minIndex;
-          const expectedMaxIndex = ct.maxExcluded ? maxIndex - BigInt(1) : maxIndex;
+        fc.property(
+          doubleConstraints({ ...defaultDoubleRecordConstraints, noNaN: undefined, noInteger: undefined }),
+          (ctDraft) => {
+            // Arrange
+            const ct = { ...ctDraft, noNaN: true };
+            const bigInt = spyBigInt();
+            const { min, max } = minMaxForConstraints(ct);
+            const minIndex = doubleToIndex(min);
+            const maxIndex = doubleToIndex(max);
+            const expectedMinIndex = ct.minExcluded ? minIndex + BigInt(1) : minIndex;
+            const expectedMaxIndex = ct.maxExcluded ? maxIndex - BigInt(1) : maxIndex;
 
-          // Act
-          double(ct);
+            // Act
+            double(ct);
 
-          // Assert
-          expect(bigInt).toHaveBeenCalledTimes(1);
-          expect(bigInt).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
-        }),
+            // Assert
+            expect(bigInt).toHaveBeenCalledTimes(1);
+            expect(bigInt).toHaveBeenCalledWith({ min: expectedMinIndex, max: expectedMaxIndex });
+          },
+        ),
       );
     });
   });
@@ -323,7 +335,7 @@ describe('double (integration)', () => {
       }
       if (extra.max === undefined) {
         expect(v).not.toBe(Number.POSITIVE_INFINITY); // should not produce +infinity when noInfinity and max unset
-        if (extra.minExcluded) {
+        if (extra.maxExcluded) {
           expect(v).not.toBe(Number.MAX_VALUE); // nor max_value
         }
       }

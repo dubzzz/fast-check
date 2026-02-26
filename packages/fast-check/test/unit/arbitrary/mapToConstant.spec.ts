@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
-import { mapToConstant } from '../../../src/arbitrary/mapToConstant';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
+import { mapToConstant } from '../../../src/arbitrary/mapToConstant.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import {
   assertProduceValuesShrinkableWithoutContext,
   assertProduceCorrectValues,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertProduceSameValueGivenSameSeed,
-} from './__test-helpers__/ArbitraryAssertions';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 
 describe('mapToConstant', () => {
   it('should reject any inputs containing at least one strictly negative entry', () =>

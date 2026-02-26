@@ -1,16 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
-import { uint8Array } from '../../../src/arbitrary/uint8Array';
+import { uint8Array } from '../../../src/arbitrary/uint8Array.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
+import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder.js';
 
 describe('uint8Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder for Uint8Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = uint8Array();
@@ -30,7 +32,9 @@ describe('uint8Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     uint8Array();

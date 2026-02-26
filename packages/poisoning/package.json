@@ -1,34 +1,18 @@
 {
   "name": "@fast-check/poisoning",
   "description": "Set of utilities to ease detection and revert of poisoning",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "module",
-  "main": "lib/main.js",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "require": {
-        "types": "./lib/cjs/main.d.ts",
-        "default": "./lib/cjs/main.js"
-      },
-      "import": {
-        "types": "./lib/main.d.ts",
-        "default": "./lib/main.js"
-      }
-    }
+    ".": "./lib/main.js"
   },
-  "module": "lib/main.js",
-  "types": "lib/main.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "pnpm run build:publish-cjs && pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json && tsc -p tsconfig.publish.types.json --outDir lib/cjs",
-    "build:publish-cjs": "tsc -p tsconfig.publish.json --outDir lib/cjs && cp package.cjs-template.json lib/cjs/package.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
-    "test": "vitest",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -44,9 +28,11 @@
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@types/node": "^22.13.4",
-    "typescript": "~5.7.3",
-    "vitest": "^2.1.9"
+    "@types/node": "^24.10.15",
+    "rolldown": "^1.0.0-rc.6",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "poisoning",

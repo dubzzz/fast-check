@@ -1,4 +1,4 @@
-import { safeSubstring } from '../../../utils/globals';
+import { safeSubstring } from '../../../utils/globals.js';
 
 /** @internal */
 export function paddedEightsToUuidMapper(t: [string, string, string, string]): string {

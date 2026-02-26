@@ -1,6 +1,6 @@
-import { Value } from '../../../check/arbitrary/definition/Value';
-import type { Stream } from '../../../stream/Stream';
-import { stream } from '../../../stream/Stream';
+import { Value } from '../../../check/arbitrary/definition/Value.js';
+import type { Stream } from '../../../stream/Stream.js';
+import { stream } from '../../../stream/Stream.js';
 
 const safeMathCeil = Math.ceil;
 const safeMathFloor = Math.floor;

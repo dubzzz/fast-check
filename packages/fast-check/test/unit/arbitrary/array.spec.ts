@@ -1,23 +1,23 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { array } from '../../../src/arbitrary/array';
+import { array } from '../../../src/arbitrary/array.js';
 
-import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary';
+import * as ArrayArbitraryMock from '../../../src/arbitrary/_internals/ArrayArbitrary.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
   assertShrinkProducesStrictlySmallerValue,
-} from './__test-helpers__/ArbitraryAssertions';
-import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers';
-import { Value } from '../../../src/check/arbitrary/definition/Value';
-import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree';
-import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers';
-import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { isStrictlySmallerArray } from './__test-helpers__/ArrayHelpers.js';
+import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import { sizeRelatedGlobalConfigArb } from './__test-helpers__/SizeHelpers.js';
+import { withConfiguredGlobal } from './__test-helpers__/GlobalSettingsHelpers.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('array', () => {
   declareCleaningHooksForSpies();
@@ -29,7 +29,9 @@ describe('array', () => {
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+        ArrayArbitrary.mockImplementation(function () {
+          return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>;
+        });
 
         // Act
         const arb = withConfiguredGlobal(config, () => array(childInstance));
@@ -60,7 +62,9 @@ describe('array', () => {
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+        ArrayArbitrary.mockImplementation(function () {
+          return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>;
+        });
 
         // Act
         const arb = withConfiguredGlobal(config, () => array(childInstance, { maxLength }));
@@ -94,7 +98,9 @@ describe('array', () => {
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
         const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-        ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+        ArrayArbitrary.mockImplementation(function () {
+          return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>;
+        });
 
         // Act
         const arb = withConfiguredGlobal(config, () => array(childInstance, { minLength }));
@@ -134,7 +140,9 @@ describe('array', () => {
           const { instance: childInstance } = fakeArbitrary<unknown>();
           const { instance } = fakeArbitrary<unknown[]>();
           const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-          ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+          ArrayArbitrary.mockImplementation(function () {
+            return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>;
+          });
 
           // Act
           const arb = withConfiguredGlobal(config, () => array(childInstance, { minLength, maxLength }));
@@ -183,7 +191,9 @@ describe('array', () => {
           const { instance: childInstance } = fakeArbitrary<unknown>();
           const { instance } = fakeArbitrary<unknown[]>();
           const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
-          ArrayArbitrary.mockImplementation(() => instance as ArrayArbitraryMock.ArrayArbitrary<unknown>);
+          ArrayArbitrary.mockImplementation(function () {
+            return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>;
+          });
 
           // Act
           const arb = withConfiguredGlobal(config, () =>

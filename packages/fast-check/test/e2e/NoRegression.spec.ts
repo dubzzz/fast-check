@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import fc from '../../src/fast-check';
-import { asyncRunWithSanitizedStack, runWithSanitizedStack } from './__test-helpers__/StackSanitizer';
+import fc from '../../src/fast-check.js';
+import { asyncRunWithSanitizedStack, runWithSanitizedStack } from './__test-helpers__/StackSanitizer.js';
 import {
   IncreaseCommand,
   DecreaseCommand,
   EvenCommand,
   OddCommand,
   CheckLessThanCommand,
-} from './model/CounterCommands';
+} from './model/CounterCommands.js';
 
 const testFunc = (value: unknown) => {
   const repr = fc
@@ -160,7 +160,19 @@ describe(`NoRegression`, () => {
     expect(
       runWithSanitizedStack(() =>
         fc.assert(
-          fc.property(fc.stringMatching(/(^|\s)a+[^a][b-eB-E]+[^b-eB-E](\s|$)/), (v) => testFunc(v)),
+          fc.property(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/), (v) => testFunc(v)),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('stringMatching({maxLength:10})', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 }), (v) =>
+            testFunc(v),
+          ),
           settings,
         ),
       ),
@@ -325,6 +337,16 @@ describe(`NoRegression`, () => {
       runWithSanitizedStack(() =>
         fc.assert(
           fc.property(fc.infiniteStream(fc.nat()), (s) => testFunc([...s.take(10)])),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+  it('infiniteStream (noHistory)', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(fc.infiniteStream(fc.nat(), { noHistory: true }), (s) => testFunc([...s.take(10)])),
           settings,
         ),
       ),
@@ -981,6 +1003,20 @@ describe(`NoRegression (async)`, () => {
         async () =>
           await fc.assert(
             fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+            settings,
+          ),
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it('infiniteStream (noHistory) (to Promise)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(
+        async () =>
+          await fc.assert(
+            fc.asyncProperty(fc.infiniteStream(asyncNumber, { noHistory: true }), async (s) =>
+              testFunc(await Promise.all([...s.take(10)])),
+            ),
             settings,
           ),
       ),

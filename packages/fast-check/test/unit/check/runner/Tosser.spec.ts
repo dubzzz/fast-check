@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
-import { toss } from '../../../../src/check/runner/Tosser';
-import { Stream, stream } from '../../../../src/stream/Stream';
-import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary';
-import type { IRawProperty } from '../../../../src/check/property/IRawProperty';
-import type { Random } from '../../../../src/random/generator/Random';
-import { Value } from '../../../../src/check/arbitrary/definition/Value';
+import { toss } from '../../../../src/check/runner/Tosser.js';
+import { Stream, stream } from '../../../../src/stream/Stream.js';
+import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
+import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import type { Random } from '../../../../src/random/generator/Random.js';
+import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 
-import * as stubArb from '../../stubs/arbitraries';
+import * as stubArb from '../../stubs/arbitraries.js';
 import { xorshift128plus } from 'pure-rand/generator/XorShift';
-import type { QualifiedRandomGenerator } from '../../../../src/check/runner/configuration/QualifiedParameters';
+import type { QualifiedRandomGenerator } from '../../../../src/check/runner/configuration/QualifiedParameters.js';
 
 const rngProducer = xorshift128plus as (seed: number) => QualifiedRandomGenerator;
 

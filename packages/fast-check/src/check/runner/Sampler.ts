@@ -1,13 +1,14 @@
-import { stream } from '../../stream/Stream';
-import type { Arbitrary } from '../arbitrary/definition/Arbitrary';
-import type { IRawProperty } from '../property/IRawProperty';
-import { Property } from '../property/Property.generic';
-import { UnbiasedProperty } from '../property/UnbiasedProperty';
-import { readConfigureGlobal } from './configuration/GlobalParameters';
-import type { Parameters } from './configuration/Parameters';
-import { QualifiedParameters } from './configuration/QualifiedParameters';
-import { lazyToss, toss } from './Tosser';
-import { pathWalk } from './utils/PathWalker';
+import { stream } from '../../stream/Stream.js';
+import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
+import type { IRawProperty } from '../property/IRawProperty.js';
+import { Property } from '../property/Property.generic.js';
+import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
+import { readConfigureGlobal } from './configuration/GlobalParameters.js';
+import type { Parameters } from './configuration/Parameters.js';
+import { read } from './configuration/QualifiedParameters.js';
+import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
+import { lazyToss, toss } from './Tosser.js';
+import { pathWalk } from './utils/PathWalker.js';
 
 /** @internal */
 function toProperty<Ts>(
@@ -29,7 +30,7 @@ function streamSample<Ts>(
     typeof params === 'number'
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
+  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues =
@@ -100,7 +101,7 @@ function statistics<Ts>(
     typeof params === 'number'
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
+  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
   const recorded: { [key: string]: number } = {};
   for (const g of streamSample(generator, params)) {
     const out = classify(g);

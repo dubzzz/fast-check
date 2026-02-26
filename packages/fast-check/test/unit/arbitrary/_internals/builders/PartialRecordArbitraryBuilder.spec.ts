@@ -1,12 +1,12 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers';
-import { buildPartialRecordArbitrary } from '../../../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder';
+import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
+import { buildPartialRecordArbitrary } from '../../../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder.js';
 
-import * as BooleanMock from '../../../../../src/arbitrary/boolean';
-import * as ConstantMock from '../../../../../src/arbitrary/constant';
-import * as OptionMock from '../../../../../src/arbitrary/option';
-import * as TupleMock from '../../../../../src/arbitrary/tuple';
-import * as ValuesAndSeparateKeysToObjectMock from '../../../../../src/arbitrary/_internals/mappers/ValuesAndSeparateKeysToObject';
+import * as BooleanMock from '../../../../../src/arbitrary/boolean.js';
+import * as ConstantMock from '../../../../../src/arbitrary/constant.js';
+import * as OptionMock from '../../../../../src/arbitrary/option.js';
+import * as TupleMock from '../../../../../src/arbitrary/tuple.js';
+import * as ValuesAndSeparateKeysToObjectMock from '../../../../../src/arbitrary/_internals/mappers/ValuesAndSeparateKeysToObject.js';
 
 function beforeEachHook() {
   vi.resetModules();

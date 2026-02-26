@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { addMissingDotStar } from '../../../../../src/arbitrary/_internals/helpers/SanitizeRegexAst';
-import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex';
+import { addMissingDotStar } from '../../../../../src/arbitrary/_internals/helpers/SanitizeRegexAst.js';
+import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
 
 describe('addMissingDotStar', () => {
   it.each`
@@ -13,9 +13,7 @@ describe('addMissingDotStar', () => {
     ${/(a|b)/}          | ${/((?:^.*a.*$)|(?:^.*b.*$))/ /* original group altered */}
     ${/(a|^b$)/}        | ${/((?:^.*a.*$)|^b$)/ /* original group altered */}
     ${/(^|b)a($|c)/}    | ${/(^|(?:^.*b))a($|(?:c.*$))/ /* original group altered */}
-    ${// @ts-expect-error ES2018+ Regex
-/(?<toto>a)/} | ${// @ts-expect-error ES2018+ Regex
-/(?:^.*(?<toto>a).*$)/}
+    ${/(?<toto>a)/}     | ${/(?:^.*(?<toto>a).*$)/}
     ${/(^|\s)a+(\s|$)/} | ${/(^|(?:^.*\s))a+((?:\s.*$)|$)/}
   `('should transform $source into $target', ({ source, target }) => {
     const sourceAst = tokenizeRegex(source);

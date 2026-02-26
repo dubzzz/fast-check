@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { buildSchedulerFor } from '../../../../../src/arbitrary/_internals/helpers/BuildSchedulerFor';
+import { buildSchedulerFor } from '../../../../../src/arbitrary/_internals/helpers/BuildSchedulerFor.js';
 
-import * as SchedulerImplemMock from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import * as SchedulerImplemMock from '../../../../../src/arbitrary/_internals/implementations/SchedulerImplem.js';
 
 function beforeEachHook() {
   vi.resetModules();
@@ -14,7 +14,9 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function () {
+      return instance;
+    });
     const act = vi.fn();
 
     // Act
@@ -32,7 +34,9 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function () {
+      return instance;
+    });
     const act = vi.fn();
     const requestedOrder = [4, 1, 2, 0];
     const fakeLongScheduledTasks = [
@@ -58,7 +62,9 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function () {
+      return instance;
+    });
     const act = vi.fn();
     const requestedOrder = [4, 1, 2, 10];
     const fakeLongScheduledTasks = [
@@ -86,7 +92,9 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function () {
+      return instance;
+    });
     const act = vi.fn();
     const requestedOrder = [4, 1, 2];
     const fakeLongScheduledTasks = [
@@ -114,7 +122,9 @@ describe('buildSchedulerFor', () => {
     // Arrange
     const instance = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
     const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-    SchedulerImplem.mockImplementation(() => instance);
+    SchedulerImplem.mockImplementation(function () {
+      return instance;
+    });
     const act = vi.fn();
     const requestedOrder = [4, 1, 2];
     const fakeLongScheduledTasks = [

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Value } from '../../../../../src/check/arbitrary/definition/Value';
-import { cloneMethod } from '../../../../../src/check/symbols';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
+import { cloneMethod } from '../../../../../src/check/symbols.js';
 
 describe('Value', () => {
   describe('cloneable values', () => {

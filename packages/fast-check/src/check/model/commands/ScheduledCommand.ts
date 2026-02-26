@@ -1,11 +1,14 @@
-import type { ICommand } from '../command/ICommand';
-import type { AsyncCommand } from '../command/AsyncCommand';
-import type { Scheduler } from '../../../arbitrary/scheduler';
+import type { ICommand } from '../command/ICommand.js';
+import type { AsyncCommand } from '../command/AsyncCommand.js';
+import type { Scheduler } from '../../../arbitrary/scheduler.js';
 
 /** @internal */
-export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync extends boolean>
-  implements AsyncCommand<Model, Real, true>
-{
+export class ScheduledCommand<
+  Model extends object,
+  Real,
+  RunResult,
+  CheckAsync extends boolean,
+> implements AsyncCommand<Model, Real, true> {
   constructor(
     readonly s: Scheduler,
     readonly cmd: ICommand<Model, Real, RunResult, CheckAsync>,
@@ -41,7 +44,6 @@ export class ScheduledCommand<Model extends object, Real, RunResult, CheckAsync 
         label: `run@${this.cmd.toString()}`,
         builder: async () => {
           try {
-            // eslint-disable-next-line @typescript-eslint/await-thenable
             await this.cmd.run(m, r);
           } catch (err) {
             error = err;

@@ -1,10 +1,10 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import type { Scheduler } from './interfaces/Scheduler';
-import type { ScheduledTask, TaskSelector } from './implementations/SchedulerImplem';
-import { SchedulerImplem } from './implementations/SchedulerImplem';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import type { Scheduler } from './interfaces/Scheduler.js';
+import type { ScheduledTask, TaskSelector } from './implementations/SchedulerImplem.js';
+import { SchedulerImplem } from './implementations/SchedulerImplem.js';
 
 /**
  * @internal

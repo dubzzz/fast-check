@@ -1,10 +1,10 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { boolean } from '../../../src/arbitrary/boolean';
+import { boolean } from '../../../src/arbitrary/boolean.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as IntegerMock from '../../../src/arbitrary/integer';
-import * as NoBiasMock from '../../../src/arbitrary/noBias';
+import * as IntegerMock from '../../../src/arbitrary/integer.js';
+import * as NoBiasMock from '../../../src/arbitrary/noBias.js';
 
 function beforeEachHook() {
   vi.resetModules();

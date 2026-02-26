@@ -1,4 +1,4 @@
-import { safeMapGet, safeMapSet } from '../../../utils/globals';
+import { safeMapGet, safeMapSet } from '../../../utils/globals.js';
 
 /**
  * Internal symbol used to declare an opaque type for DepthIdentifier

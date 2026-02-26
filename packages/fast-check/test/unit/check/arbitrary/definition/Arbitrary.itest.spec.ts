@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary';
+import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary.js';
 
-import { Value } from '../../../../../src/check/arbitrary/definition/Value';
-import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols';
-import type { Random } from '../../../../../src/random/generator/Random';
-import { Stream } from '../../../../../src/stream/Stream';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
+import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols.js';
+import type { Random } from '../../../../../src/random/generator/Random.js';
+import { Stream } from '../../../../../src/stream/Stream.js';
 
-import * as stubRng from '../../../stubs/generators';
-import { buildShrinkTree, renderTree, walkTree } from '../../../arbitrary/__test-helpers__/ShrinkTree';
+import * as stubRng from '../../../stubs/generators.js';
+import { buildShrinkTree, renderTree, walkTree } from '../../../arbitrary/__test-helpers__/ShrinkTree.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 

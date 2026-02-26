@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import * as fc from '../../src/fast-check';
-import { seed } from './seed';
+import * as fc from '../../src/fast-check.js';
+import { seed } from './seed.js';
 import { type } from 'os';
 
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -104,6 +104,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // : Recursive structures
     { name: 'letrec', arbitraryBuilder: () => letrecTree() },
     { name: 'memo', arbitraryBuilder: () => memoTree() },
+    { name: 'entityGraph', arbitraryBuilder: () => entityGraphTree() },
     { name: 'gen', arbitraryBuilder: () => fc.gen() },
   ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
     // Arrange
@@ -217,26 +218,31 @@ function dropMainGlobals(): () => void {
     TypeError,
     URIError,
     Atomics,
-    WebAssembly,
     URL,
     CompressionStream,
     DecompressionStream,
     TextDecoder,
     globalThis,
     // The following globals are unknown for TypeScript
-    // @ts-expect-error Unknown for TypeScript given our current compilation options
     AggregateError,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    WebAssembly,
     // @ts-expect-error Unknown for TypeScript given our current compilation options
     FinalizationRegistry,
     // @ts-expect-error Unknown for TypeScript given our current compilation options
     WeakRef,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof Performance !== 'undefined' ? Performance : undefined,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof ErrorEvent !== 'undefined' ? ErrorEvent : undefined,
+    // @ts-expect-error - 'Iterator' only refers to a type, but is being used as a value here. ts(2693)
+    typeof Iterator !== 'undefined' ? Iterator : undefined,
     // The following globals used to be unknown on MacOS,
     // as such we check they exist before referencing them
     typeof File !== 'undefined' ? File : undefined,
     typeof BroadcastChannel !== 'undefined' ? BroadcastChannel : undefined,
     typeof DOMException !== 'undefined' ? DOMException : undefined,
     typeof Blob !== 'undefined' ? Blob : undefined,
-    typeof Performance !== 'undefined' ? Performance : undefined,
     typeof ReadableStream !== 'undefined' ? ReadableStream : undefined,
     typeof ReadableStreamDefaultReader !== 'undefined' ? ReadableStreamDefaultReader : undefined,
     typeof ReadableStreamBYOBReader !== 'undefined' ? ReadableStreamBYOBReader : undefined,
@@ -266,7 +272,16 @@ function dropMainGlobals(): () => void {
     typeof CryptoKey !== 'undefined' ? CryptoKey : undefined,
     typeof SubtleCrypto !== 'undefined' ? SubtleCrypto : undefined,
     typeof CustomEvent !== 'undefined' ? CustomEvent : undefined,
-  ];
+    typeof WebSocket !== 'undefined' ? WebSocket : undefined,
+    typeof Navigator !== 'undefined' ? Navigator : undefined,
+    typeof CloseEvent !== 'undefined' ? CloseEvent : undefined,
+    typeof URLPattern !== 'undefined' ? URLPattern : undefined,
+    typeof SuppressedError !== 'undefined' ? SuppressedError : undefined,
+    typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
+    typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
+    typeof Float16Array !== 'undefined' ? Float16Array : undefined,
+    typeof Storage !== 'undefined' ? Storage : undefined,
+  ].filter((mainGlobal) => mainGlobal !== undefined);
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
@@ -288,12 +303,10 @@ function dropMainGlobals(): () => void {
 
   const restores: (() => void)[] = [];
   for (const mainGlobal of mainGlobals) {
-    if (mainGlobals !== undefined) {
-      if ('prototype' in mainGlobal) {
-        restores.push(...dropAllFromObj(mainGlobal.prototype));
-      }
-      restores.push(...dropAllFromObj(mainGlobal));
+    if ('prototype' in mainGlobal) {
+      restores.push(...dropAllFromObj(mainGlobal.prototype));
     }
+    restores.push(...dropAllFromObj(mainGlobal));
   }
   return () => restores.forEach((restore) => restore());
 }
@@ -365,4 +378,16 @@ function memoTree() {
   });
   const leaf: () => fc.Arbitrary<Leaf> = fc.nat;
   return tree(2);
+}
+function entityGraphTree() {
+  // Not a tree yet, but will be soon
+  return fc.entityGraph(
+    { node: {} },
+    {
+      node: {
+        left: { arity: '0-1', type: 'node', strategy: 'exclusive' },
+        right: { arity: '0-1', type: 'node', strategy: 'exclusive' },
+      },
+    },
+  );
 }

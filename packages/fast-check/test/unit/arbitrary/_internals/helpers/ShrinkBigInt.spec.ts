@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { shrinkBigInt } from '../../../../../src/arbitrary/_internals/helpers/ShrinkBigInt';
+import { shrinkBigInt } from '../../../../../src/arbitrary/_internals/helpers/ShrinkBigInt.js';
 
 describe('shrinkBigInt', () => {
   it('should always return empty stream when current equals target', () =>

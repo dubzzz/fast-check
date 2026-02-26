@@ -17,16 +17,13 @@ function sanitizeStack(initialMessage: string) {
   return lines.filter((line) => !line.includes('node:internal')).join('\n');
 }
 
-type ErrorWithCause = Error & { cause: unknown };
-const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
-
 /** Wrap a potentially throwing code within a caller that would sanitize the returned Error */
 export function runWithSanitizedStack(run: () => void) {
   return (): void => {
     try {
       run();
     } catch (err) {
-      throw new ErrorWithCause(sanitizeStack((err as Error).message), { cause: (err as ErrorWithCause).cause });
+      throw new Error(sanitizeStack((err as Error).message), { cause: err });
     }
   };
 }
@@ -37,7 +34,7 @@ export function asyncRunWithSanitizedStack(run: () => Promise<void>) {
     try {
       await run();
     } catch (err) {
-      throw new ErrorWithCause(sanitizeStack((err as Error).message), { cause: (err as ErrorWithCause).cause });
+      throw new Error(sanitizeStack((err as Error).message), { cause: err });
     }
   };
 }

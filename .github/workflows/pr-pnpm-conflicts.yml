@@ -1,0 +1,89 @@
+name: PR PNPM Conflicts
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref_value:
+        description: 'PR number'
+        required: true
+        type: string
+
+jobs:
+  fix-pnpm-lock:
+    name: 'Fix pnpm lock conflicts and commit changes'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Determine checkout reference
+        id: ref
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.inputs.ref_value }}
+          REPO: ${{ github.repository }}
+        run: |
+          PR_INFO=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,baseRefName)
+          HEAD_BRANCH=$(echo "$PR_INFO" | jq -r '.headRefName')
+          BASE_BRANCH=$(echo "$PR_INFO" | jq -r '.baseRefName')
+          echo "ref=$HEAD_BRANCH" >> $GITHUB_OUTPUT
+          echo "base=$BASE_BRANCH" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ steps.ref.outputs.ref }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Configure git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Merge target branch into PR branch
+        env:
+          BASE_BRANCH: ${{ steps.ref.outputs.base }}
+        run: |
+          echo "Merging $BASE_BRANCH into current branch..."
+          git merge "origin/$BASE_BRANCH" --no-edit || true
+          echo "Merge completed (conflicts expected and will be resolved by pnpm)"
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+      - name: Using Node v24.x
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: '24.x'
+          cache: 'pnpm'
+      - name: Check current branch info
+        env:
+          PR_NUMBER: ${{ github.event.inputs.ref_value }}
+          BASE_BRANCH: ${{ steps.ref.outputs.base }}
+        run: |
+          echo "Requested PR: $PR_NUMBER"
+          echo "Current branch: $(git branch --show-current)"
+          echo "Current commit: $(git rev-parse HEAD)"
+          echo "Base branch: $BASE_BRANCH"
+      - name: Regenerate pnpm-lock.yaml
+        run: |
+          echo "Regenerating pnpm-lock.yaml..."
+          pnpm install --lockfile-only
+      - name: Commit lock file changes
+        env:
+          WORKFLOW_NAME: ${{ github.workflow }}
+          RUN_ID: ${{ github.run_id }}
+          PR_NUMBER: ${{ github.event.inputs.ref_value }}
+        run: |
+          git add pnpm-lock.yaml
+          if ! git diff --cached --quiet; then
+            echo "Committing pnpm-lock.yaml changes..."
+            git commit -m "🔒 Regenerate pnpm-lock.yaml to resolve conflicts
+
+            Applied by GitHub Action workflow: $WORKFLOW_NAME
+            Run ID: $RUN_ID
+            Target PR: $PR_NUMBER"
+            
+            echo "Pushing changes..."
+            git push
+          else
+            echo "No changes to commit after regenerating lock file"
+          fi
+      - name: Output result
+        run: |
+          echo "✅ pnpm-lock.yaml has been regenerated and committed"

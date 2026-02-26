@@ -8,15 +8,15 @@ import {
   MaxLengthUpperBound,
   relativeSizeToSize,
   resolveSize,
-} from '../../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength';
-import { withConfiguredGlobal } from '../../__test-helpers__/GlobalSettingsHelpers';
+} from '../../../../../src/arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
+import { withConfiguredGlobal } from '../../__test-helpers__/GlobalSettingsHelpers.js';
 import {
   sizeArb,
   isSmallerSize,
   relativeSizeArb,
   sizeForArbitraryArb,
   sizeRelatedGlobalConfigArb,
-} from '../../__test-helpers__/SizeHelpers';
+} from '../../__test-helpers__/SizeHelpers.js';
 
 describe('maxLengthFromMinLength', () => {
   it('should result into higher or equal maxLength given higher size', () => {

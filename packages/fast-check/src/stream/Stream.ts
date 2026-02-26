@@ -6,7 +6,7 @@ import {
   nilHelper,
   takeNHelper,
   takeWhileHelper,
-} from './StreamHelpers';
+} from './StreamHelpers.js';
 
 const safeSymbolIterator: typeof Symbol.iterator = Symbol.iterator;
 

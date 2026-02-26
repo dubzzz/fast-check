@@ -1,9 +1,9 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { SchedulerArbitrary } from '../../../../src/arbitrary/_internals/SchedulerArbitrary';
-import { fakeRandom } from '../__test-helpers__/RandomHelpers';
+import { SchedulerArbitrary } from '../../../../src/arbitrary/_internals/SchedulerArbitrary.js';
+import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
-import * as SchedulerImplemMock from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
-import type { ScheduledTask } from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem';
+import * as SchedulerImplemMock from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem.js';
+import type { ScheduledTask } from '../../../../src/arbitrary/_internals/implementations/SchedulerImplem.js';
 
 function beforeEachHook() {
   vi.resetModules();
@@ -23,7 +23,9 @@ describe('SchedulerArbitrary', () => {
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-      SchedulerImplem.mockReturnValue(fakeScheduler);
+      SchedulerImplem.mockImplementation(function () {
+        return fakeScheduler;
+      });
 
       // Act
       const arb = new SchedulerArbitrary(act);
@@ -51,7 +53,9 @@ describe('SchedulerArbitrary', () => {
       clone1.mockReturnValueOnce(mrng2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-      SchedulerImplem.mockReturnValue(fakeScheduler);
+      SchedulerImplem.mockImplementation(function () {
+        return fakeScheduler;
+      });
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
 
@@ -85,7 +89,9 @@ describe('SchedulerArbitrary', () => {
       nextIntBis.mockReturnValueOnce(5).mockReturnValueOnce(2);
       const fakeScheduler = {} as SchedulerImplemMock.SchedulerImplem<unknown>;
       const SchedulerImplem = vi.spyOn(SchedulerImplemMock, 'SchedulerImplem');
-      SchedulerImplem.mockReturnValue(fakeScheduler);
+      SchedulerImplem.mockImplementation(function () {
+        return fakeScheduler;
+      });
       const arb = new SchedulerArbitrary(act);
       arb.generate(mrng, undefined);
 

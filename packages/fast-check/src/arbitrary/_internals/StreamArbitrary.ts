@@ -1,40 +1,58 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary';
-import { Value } from '../../check/arbitrary/definition/Value';
-import { cloneMethod } from '../../check/symbols';
-import type { Random } from '../../random/generator/Random';
-import { Stream } from '../../stream/Stream';
-import { safeJoin, safePush } from '../../utils/globals';
-import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { cloneMethod } from '../../check/symbols.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Stream } from '../../stream/Stream.js';
+import { safeJoin, safePush } from '../../utils/globals.js';
+import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
 const safeObjectDefineProperties = Object.defineProperties;
 
 /** @internal */
-function prettyPrint(seenValuesStrings: string[]): string {
-  return `Stream(${safeJoin(seenValuesStrings, ',')}…)`;
+function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
+  const seenSegment = seenValuesStrings !== undefined ? `${safeJoin(seenValuesStrings, ',')}…` : `${numSeen} emitted`;
+  return `Stream(${seenSegment})`;
 }
 
 /** @internal */
 export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
-  constructor(readonly arb: Arbitrary<T>) {
+  constructor(
+    readonly arb: Arbitrary<T>,
+    readonly history: boolean,
+  ) {
     super();
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<Stream<T>> {
     const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
     const enrichedProducer = () => {
-      const seenValues: T[] = [];
+      const seenValues: T[] | null = this.history ? [] : null;
+      let numSeenValues = 0;
       const g = function* (arb: Arbitrary<T>, clonedMrng: Random) {
         while (true) {
           const value = arb.generate(clonedMrng, appliedBiasFactor).value;
-          safePush(seenValues, value);
+          numSeenValues++;
+          if (seenValues !== null) {
+            safePush(seenValues, value);
+          }
           yield value;
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
       return safeObjectDefineProperties(s, {
-        toString: { value: () => prettyPrint(seenValues.map(stringify)) },
-        [toStringMethod]: { value: () => prettyPrint(seenValues.map(stringify)) },
-        [asyncToStringMethod]: { value: async () => prettyPrint(await Promise.all(seenValues.map(asyncStringify))) },
+        toString: {
+          value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
+        },
+        [toStringMethod]: {
+          value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
+        },
+        [asyncToStringMethod]: {
+          value: async () =>
+            prettyPrint(
+              numSeenValues,
+              seenValues !== null ? await Promise.all(seenValues.map(asyncStringify)) : undefined,
+            ),
+        },
         // We allow reconfiguration of the [cloneMethod] as caller might want to enforce its own
         [cloneMethod]: { value: enrichedProducer, enumerable: true },
       });

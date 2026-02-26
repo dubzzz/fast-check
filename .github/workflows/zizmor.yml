@@ -1,0 +1,39 @@
+name: Workflow Security Audit
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
+    paths:
+      - '.github/workflows/**'
+      - '.github/zizmor.yml'
+  push:
+    branches:
+      - main
+      - 'next-*_*_*'
+      - 'fix-v*'
+    paths:
+      - '.github/workflows/**'
+      - '.github/zizmor.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: 'Audit GitHub Actions workflows'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install zizmor
+        run: pipx install zizmor==1.18.0
+      - name: Run zizmor
+        run: zizmor --config .github/zizmor.yml .

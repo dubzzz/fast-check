@@ -1,7 +1,7 @@
 ---
 title: What's new in fast-check 3.22.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, strings, unicode, internationalization]
 ---
 
 This release extends `string` capabilities to generate not only printable ASCII characters but also a wider range of values, finely definable by the user. It also includes several deprecations.
@@ -14,7 +14,7 @@ Continue reading to explore the detailed updates it brings.
 
 Since its introduction in fast-check version 0.0.1, our arbitrary for strings has always been limited to generating strings made of printable characters from the ASCII range. It was only responsible for characters ranging between 0x20 (inclusive) and 0x7E (inclusive), with any other character being either outside of the ASCII range or non-printable. The image below shows the characters considered by the range with a white background, while others are shown with a red background.
 
-![Printable ASCII characters](printable-ascii.png)
+![Printable ASCII characters](@site/static/img/blog/2024-08-29-whats-new-in-fast-check-3-22-0--printable-ascii.png)
 
 This release makes our string arbitrary polyglot. It can now generate strings made of not only printable ASCII characters but also a wide variety of other characters, including user-defined ones. This new capability is accessible via the `unit` constraint we added to the arbitrary.
 

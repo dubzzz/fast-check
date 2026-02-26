@@ -1,12 +1,12 @@
-import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary';
-import { safeGetTime } from '../utils/globals';
-import { integer } from './integer';
+import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import { safeGetTime } from '../utils/globals.js';
+import { integer } from './integer.js';
 import {
   timeToDateMapper,
   timeToDateMapperWithNaN,
   timeToDateUnmapper,
   timeToDateUnmapperWithNaN,
-} from './_internals/mappers/TimeToDate';
+} from './_internals/mappers/TimeToDate.js';
 
 const safeNumberIsNaN = Number.isNaN;
 

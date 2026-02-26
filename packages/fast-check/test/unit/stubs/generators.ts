@@ -1,5 +1,5 @@
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
-import { Random } from '../../../src/random/generator/Random';
+import { Random } from '../../../src/random/generator/Random.js';
 
 /**
  * NoCallGenerator

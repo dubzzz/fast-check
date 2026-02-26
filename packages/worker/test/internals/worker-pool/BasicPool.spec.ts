@@ -486,14 +486,9 @@ function mockWorker() {
   const on = vi.fn<typeof WorkerThreadsMock.Worker.prototype.on>();
   const postMessage = vi.fn<typeof WorkerThreadsMock.Worker.prototype.postMessage>();
   const terminate = vi.fn<typeof WorkerThreadsMock.Worker.prototype.terminate>();
-  Worker.mockImplementation(
-    () =>
-      ({
-        on,
-        postMessage,
-        terminate,
-      }) as any,
-  );
+  Worker.mockImplementation(function () {
+    return { on, postMessage, terminate };
+  });
   return { Worker, on, postMessage, terminate };
 }
 

@@ -1,3 +1,5 @@
 .allSponsorsWrapper {
   align-self: center;
+  width: 100%;
+  max-width: 800px;
 }

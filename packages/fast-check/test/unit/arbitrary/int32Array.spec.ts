@@ -1,16 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
-import { int32Array } from '../../../src/arbitrary/int32Array';
+import { int32Array } from '../../../src/arbitrary/int32Array.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 
-import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder';
+import * as TypedIntArrayArbitraryArbitraryBuilderMock from '../../../src/arbitrary/_internals/builders/TypedIntArrayArbitraryBuilder.js';
 
 describe('int32Array', () => {
   it('should call typedIntArrayArbitraryArbitraryBuilder for Int32Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     const arb = int32Array();
@@ -30,7 +32,9 @@ describe('int32Array', () => {
     // Arrange
     const instance = fakeArbitrary();
     const builder = vi.spyOn(TypedIntArrayArbitraryArbitraryBuilderMock, 'typedIntArrayArbitraryArbitraryBuilder');
-    builder.mockImplementation(() => instance);
+    builder.mockImplementation(function () {
+      return instance;
+    });
 
     // Act
     int32Array();

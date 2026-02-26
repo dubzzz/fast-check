@@ -1,4 +1,4 @@
-import type { SizeForArbitrary } from '../_internals/helpers/MaxLengthFromMinLength';
+import type { SizeForArbitrary } from '../_internals/helpers/MaxLengthFromMinLength.js';
 
 /**
  * Constraints to be applied on arbitraries for strings

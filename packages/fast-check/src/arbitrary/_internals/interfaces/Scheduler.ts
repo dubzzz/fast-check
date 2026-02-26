@@ -69,6 +69,7 @@ export interface Scheduler<TMetaData = unknown> {
    * Wait one scheduled task to be executed
    * @throws Whenever there is no task scheduled
    * @remarks Since 1.20.0
+   * @deprecated Use `waitNext(1)` instead, it comes with a more predictable behavior
    */
   waitOne: (customAct?: SchedulerAct) => Promise<void>;
 
@@ -76,8 +77,30 @@ export interface Scheduler<TMetaData = unknown> {
    * Wait all scheduled tasks,
    * including the ones that might be created by one of the resolved task
    * @remarks Since 1.20.0
+   * @deprecated Use `waitIdle()` instead, it comes with a more predictable behavior awaiting all scheduled and reachable tasks to be completed
    */
   waitAll: (customAct?: SchedulerAct) => Promise<void>;
+
+  /**
+   * Wait and schedule exactly `count` scheduled tasks.
+   * @remarks Since 4.2.0
+   */
+  waitNext: (count: number, customAct?: SchedulerAct) => Promise<void>;
+
+  /**
+   * Wait until the scheduler becomes idle: all scheduled and reachable tasks have completed.
+   *
+   * It will include tasks scheduled by other tasks, recursively.
+   *
+   * Note: Tasks triggered by uncontrolled sources (like `fetch` or external events) cannot be detected
+   * or awaited and may lead to incomplete waits.
+   *
+   * If you want to wait for a precise event to happen you should rather opt for `waitFor` or `waitNext`
+   * given they offer you a more granular control on what you are exactly waiting for.
+   *
+   * @remarks Since 4.2.0
+   */
+  waitIdle: (customAct?: SchedulerAct) => Promise<void>;
 
   /**
    * Wait as many scheduled tasks as need to resolve the received Promise

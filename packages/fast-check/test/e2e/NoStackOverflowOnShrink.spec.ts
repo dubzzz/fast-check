@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import * as fc from '../../src/fast-check';
-import { seed } from './seed';
 import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import * as fc from '../../src/fast-check.js';
+import { seed } from './seed.js';
 
 const computeMaximalStackSize = () => {
   // Compute the maximal call stack size

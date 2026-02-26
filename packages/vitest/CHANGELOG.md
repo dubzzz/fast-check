@@ -1,3 +1,62 @@
+# 0.2.4
+
+_Fix support for global configurations of numRuns and others_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.4)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.3...vitest%2Fv0.2.4)]
+
+## Fixes
+
+- ([PR#6317](https://github.com/dubzzz/fast-check/pull/6317)) Bug: Don't nest executions of properties
+
+# 0.2.3
+
+_Support Vitest v4_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.3)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.2...vitest%2Fv0.2.3)]
+
+## Fixes
+
+- ([PR#6217](https://github.com/dubzzz/fast-check/pull/6217)) Dependencies: Extend peer dependency range to support Vitest v4
+
+# 0.2.2
+
+_Better integration with Vitest when using fast-check v3_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.2)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.1...vitest%2Fv0.2.2)]
+
+## Fixes
+
+- ([PR#6048](https://github.com/dubzzz/fast-check/pull/6048)) Bug: No shallow diff in Vitest, full diff by default
+
+# 0.2.1
+
+_Forward errors properly when using fast-check v3_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.1)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.0...vitest%2Fv0.2.1)]
+
+## Fixes
+
+- ([PR#5913](https://github.com/dubzzz/fast-check/pull/5913)) Bug: Forward errors with fast-check@3
+
+# 0.2.0
+
+_Extend property based capabilities to basic tests_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.2.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.6...vitest%2Fv0.2.0)]
+
+## Features
+
+- ([PR#5846](https://github.com/dubzzz/fast-check/pull/5846)) Access random from any test
+
+---
+
+# 0.1.6
+
+_Support fast-check v4_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.1.6)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.1.5...vitest%2Fv0.1.6)]
+
+## Fixes
+
+- ([PR#5811](https://github.com/dubzzz/fast-check/pull/5811)) CI: Update tsconfig to common config
+- ([PR#5792](https://github.com/dubzzz/fast-check/pull/5792)) Dependencies: Add support for fast-check v4
+- ([PR#5764](https://github.com/dubzzz/fast-check/pull/5764)) Lint: Abide by lint rule `no-duplicate-type-constituents`
+- ([PR#5766](https://github.com/dubzzz/fast-check/pull/5766)) Typings: No intermediate var to declare our types
+
 # 0.1.5
 
 _Extend support to vitest v3_

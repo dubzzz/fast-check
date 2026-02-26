@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
-import { hash } from '../../../../src/utils/hash';
-import { stringify } from '../../../../src/utils/stringify';
+import { hash } from '../../../../src/utils/hash.js';
+import { stringify } from '../../../../src/utils/stringify.js';
 
 export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
   f: (...args: T) => TOut,
@@ -21,7 +21,7 @@ export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
       expect(dataFromToStringBefore).toStrictEqual(data);
       expect(dataFromToString).toStrictEqual(data);
     } catch (err) {
-      throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`);
+      throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`, { cause: err });
     }
   })(hash, stringify);
 

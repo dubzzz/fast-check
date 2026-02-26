@@ -1,17 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 
-import type { JsonSharedConstraints } from '../../../src/arbitrary/jsonValue';
-import { jsonValue } from '../../../src/arbitrary/jsonValue';
+import type { JsonSharedConstraints } from '../../../src/arbitrary/jsonValue.js';
+import { jsonValue } from '../../../src/arbitrary/jsonValue.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
   assertProduceValuesShrinkableWithoutContext,
   assertShrinkProducesSameValueWithoutInitialContext,
-} from './__test-helpers__/ArbitraryAssertions';
-import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth';
-import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKeys';
-import { sizeArb } from './__test-helpers__/SizeHelpers';
+} from './__test-helpers__/ArbitraryAssertions.js';
+import { computeObjectDepth } from './__test-helpers__/ComputeObjectDepth.js';
+import { isObjectWithNumericKeys } from './__test-helpers__/ObjectWithNumericKeys.js';
+import { sizeArb } from './__test-helpers__/SizeHelpers.js';
 
 describe('jsonValue (integration)', () => {
   type Extra = JsonSharedConstraints | undefined;

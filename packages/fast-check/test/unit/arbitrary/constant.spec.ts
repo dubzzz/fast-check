@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
-import { constant } from '../../../src/arbitrary/constant';
+import { constant } from '../../../src/arbitrary/constant.js';
 
-import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers';
-import { cloneMethod } from '../../../src/check/symbols';
+import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
+import { cloneMethod } from '../../../src/check/symbols.js';
 
-import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary';
-import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner';
+import * as ConstantArbitraryMock from '../../../src/arbitrary/_internals/ConstantArbitrary.js';
+import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 
 describe('constant', () => {
   declareCleaningHooksForSpies();
@@ -17,7 +17,9 @@ describe('constant', () => {
         // Arrange
         const { instance } = fakeArbitrary();
         const ConstantArbitrary = vi.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');
-        ConstantArbitrary.mockImplementation(() => instance as ConstantArbitraryMock.ConstantArbitrary<unknown>);
+        ConstantArbitrary.mockImplementation(function () {
+          return instance as ConstantArbitraryMock.ConstantArbitrary<unknown>;
+        });
 
         // Act
         const arb = constant(c);

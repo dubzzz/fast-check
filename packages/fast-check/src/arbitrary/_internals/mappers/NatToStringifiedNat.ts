@@ -1,4 +1,4 @@
-import { safeNumberToString, safeSubstring } from '../../../utils/globals';
+import { safeNumberToString, safeSubstring } from '../../../utils/globals.js';
 
 const safeNumberParseInt = Number.parseInt;
 
