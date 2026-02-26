@@ -50,11 +50,7 @@ function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHo
   return hooks;
 }
 
-/**
- * Collect afterEach hooks in bottom-up order (current suite first),
- * with hooks within each suite in reverse registration order (stack behavior),
- * matching vitest's callSuiteHook behavior for "afterEach".
- */
+/** Collect afterEach hooks in bottom-up order (current suite first) as vitest does */
 function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['afterEach'] {
   const chain = getSuiteChain(suite);
   const hooks: ReturnType<typeof getHooks>['afterEach'] = [];
