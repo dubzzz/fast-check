@@ -38,15 +38,10 @@ function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
 function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['beforeEach'] {
   const chain = getSuiteChain(suite);
   const hooks: ReturnType<typeof getHooks>['beforeEach'] = [];
-
   for (let i = chain.length - 1; i >= 0; i--) {
     const h = getHooks(chain[i]);
-
-    if (h?.beforeEach !== undefined) {
-      hooks.push(...h.beforeEach);
-    }
+    hooks.push(...h.beforeEach);
   }
-
   return hooks;
 }
 
