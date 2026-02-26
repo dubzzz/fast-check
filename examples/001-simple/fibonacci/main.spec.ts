@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { fibo } from './src/fibonacci';
+import { fibo } from './src/fibonacci.js';
 
 // The complexity of the algorithm is O(n)
 // As a consequence we limit the value of n to 1000

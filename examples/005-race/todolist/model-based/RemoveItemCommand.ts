@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 import { act } from '@testing-library/react';
-import { TodolistCommand, TodolistModel, TodolistReal, listTodos, ExtractedTodoItem, prettyDetails } from './Model';
+import { TodolistCommand, TodolistModel, TodolistReal, listTodos, ExtractedTodoItem, prettyDetails } from './Model.js';
 
 export class RemoveItemCommand implements TodolistCommand {
   private runDetails = '';

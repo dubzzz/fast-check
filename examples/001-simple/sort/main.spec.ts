@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import _ from 'lodash';
-import { sort } from './src/sort';
+import { sort } from './src/sort.js';
 
 describe('sort', () => {
   it('should have the same length as source', () => {

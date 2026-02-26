@@ -1,4 +1,4 @@
-import { DbConnection } from './DbConnection';
+import { DbConnection } from './DbConnection.js';
 
 export class SynchronizedCounter {
   // Hacky trick to avoid using compare-and-swap

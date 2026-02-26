@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 import fc from 'fast-check';
 
-import { dependencyTree, PackageDefinition } from './src/dependencyTree';
+import { dependencyTree, PackageDefinition } from './src/dependencyTree.js';
 
 if (!fc.readConfigureGlobal()) {
   // Global config of Jest has been ignored, we will have a timeout after 5000ms
