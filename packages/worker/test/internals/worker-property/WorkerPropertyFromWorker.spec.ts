@@ -1,6 +1,6 @@
 import { WorkerPropertyFromWorker } from '../../../src/internals/worker-property/WorkerPropertyFromWorker.js';
 import fc from 'fast-check';
-import { xorshift128plus } from 'pure-rand';
+import { xorshift128plus } from 'pure-rand/generator/XorShift';
 import { describe, it, expect, vi } from 'vitest';
 
 describe('WorkerPropertyFromWorker', () => {
