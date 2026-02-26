@@ -14,7 +14,7 @@
     "@types/express": "^5.0.6",
     "@types/lodash": "^4.17.24",
     "@types/react": "^19.2.14",
-    "@types/supertest": "^6.0.3",
+    "@types/supertest": "^7.2.0",
     "express": "^5.2.1",
     "fast-check": "workspace:*",
     "happy-dom": "^20.7.0",
