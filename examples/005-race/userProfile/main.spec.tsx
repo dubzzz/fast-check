@@ -5,7 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import * as React from 'react';
 
-import UserProfilePage from './src/UserProfilePage';
+import UserProfilePage from './src/UserProfilePage.js';
 
 import { render, cleanup, act, screen } from '@testing-library/react';
 

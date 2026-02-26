@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
-import { TodolistCommand, TodolistModel, TodolistReal, listTodos, sortTodos, ExtractedTodoItem } from './Model';
+import { TodolistCommand, TodolistModel, TodolistReal, listTodos, sortTodos, ExtractedTodoItem } from './Model.js';
 import { screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 
 // Copied from https://github.com/testing-library/user-event/issues/586
 function escapeKeyboardInput(value: string): string {
@@ -11,11 +11,11 @@ function escapeKeyboardInput(value: string): string {
 export class AddItemCommand implements TodolistCommand {
   constructor(readonly label: string) {}
 
-  async check(m: TodolistModel) {
+  async check(m: TodolistModel): Promise<boolean> {
     return true;
   }
 
-  async run(m: TodolistModel, r: TodolistReal) {
+  async run(m: TodolistModel, r: TodolistReal): Promise<void> {
     const todosBefore = await listTodos();
 
     await act(async () => {

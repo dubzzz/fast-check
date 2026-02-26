@@ -1,4 +1,4 @@
-import { Space } from './space';
+import { Space } from './space.js';
 
 // This implementation is supposed to solve the CodinGame:
 // https://www.codingame.com/training/medium/shadows-of-the-knight-episode-1

@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 
-import { CasCounter as Counter } from './src/CasCounter';
-//import { Counter } from './src/Counter';
-// import { SynchronizedCounter as Counter } from './src/SynchronizedCounter';
+import { CasCounter as Counter } from './src/CasCounter.js';
+//import { Counter } from './src/Counter.js';
+// import { SynchronizedCounter as Counter } from './src/SynchronizedCounter.js';
 
 if (!fc.readConfigureGlobal()) {
   // Global config of Jest has been ignored, we will have a timeout after 5000ms

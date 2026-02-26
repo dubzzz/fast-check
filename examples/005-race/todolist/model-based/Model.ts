@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 
 export type TodolistModel = {
   todos: { label: string; checked: boolean }[];

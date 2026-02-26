@@ -2,7 +2,7 @@ import React from 'react';
 
 // Injected as a props because CodeSandbox fails to provide jest.mock
 // So it makes such import difficult to test
-//// import { search } from './Api';
+//// import { search } from './Api.js';
 
 type Props = {
   enableBugUnrelatedResults?: boolean;

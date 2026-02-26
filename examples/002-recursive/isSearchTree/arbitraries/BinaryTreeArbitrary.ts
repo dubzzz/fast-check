@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { Tree } from '../src/isSearchTree';
+import { Tree } from '../src/isSearchTree.js';
 
 export const binaryTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tree<number>> => {
   const { tree } = fc.letrec((tie) => ({
