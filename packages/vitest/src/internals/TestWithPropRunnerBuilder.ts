@@ -34,10 +34,7 @@ function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
   return chain;
 }
 
-/**
- * Collect beforeEach hooks in top-down order (parent suites first),
- * matching vitest's callSuiteHook behavior for "beforeEach".
- */
+/** Collect beforeEach hooks in top-down order (parent suites first) as vitest does */
 function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['beforeEach'] {
   const chain = getSuiteChain(suite);
   const hooks: ReturnType<typeof getHooks>['beforeEach'] = [];
