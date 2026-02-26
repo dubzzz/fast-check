@@ -4,8 +4,8 @@
 
 Set of utilities to ease detection and revert of poisoning
 
-<a href="https://badge.fury.io/js/@fast-check%2Fpoisoning"><img src="https://badge.fury.io/js/@fast-check%2Fpoisoning.svg" alt="npm version" /></a>
-<a href="https://www.npmjs.com/package/@fast-check/poisoning"><img src="https://img.shields.io/npm/dm/@fast-check%2Fpoisoning" alt="monthly downloads" /></a>
+<a href="https://npmx.dev/package/@fast-check/poisoning"><img src="https://badge.fury.io/js/@fast-check%2Fpoisoning.svg" alt="npm version" /></a>
+<a href="https://npmx.dev/package/@fast-check/poisoning"><img src="https://img.shields.io/npm/dm/@fast-check%2Fpoisoning" alt="monthly downloads" /></a>
 <a href="https://github.com/dubzzz/fast-check/blob/main/packages/poisoning/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fpoisoning.svg" alt="License" /></a>
 
 ---
