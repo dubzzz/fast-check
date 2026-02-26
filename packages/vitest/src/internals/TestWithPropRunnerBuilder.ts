@@ -57,18 +57,13 @@ function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHo
  */
 function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['afterEach'] {
   const chain = getSuiteChain(suite);
-
   const hooks: ReturnType<typeof getHooks>['afterEach'] = [];
-
   for (let i = 0; i < chain.length; i++) {
     const h = getHooks(chain[i]);
-    if (h?.afterEach !== undefined) {
-      for (let j = h.afterEach.length - 1; j >= 0; j--) {
-        hooks.push(h.afterEach[j]);
-      }
+    for (let j = h.afterEach.length - 1; j >= 0; j--) {
+      hooks.push(h.afterEach[j]);
     }
   }
-
   return hooks;
 }
 
