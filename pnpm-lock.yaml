@@ -224,6 +224,9 @@ importers:
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@24.10.13)
+      jest-circus:
+        specifier: ^30.2.0
+        version: 30.2.0
       jest-jasmine2:
         specifier: ^30.2.0
         version: 30.2.0

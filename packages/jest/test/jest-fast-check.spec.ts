@@ -5,7 +5,13 @@ import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/jest';
-import type { jest as _jest, expect as _jestExpect } from '@jest/globals';
+import type {
+  jest as _jest,
+  expect as _jestExpect,
+  beforeEach as _beforeEach,
+  afterEach as _afterEach,
+  afterAll as _afterAll,
+} from '@jest/globals';
 
 const execFile = promisify(_execFile);
 
@@ -13,6 +19,9 @@ declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
 declare const jest: typeof _jest;
 declare const jestExpect: typeof _jestExpect;
+declare const jestBeforeEach: typeof _beforeEach;
+declare const jestAfterEach: typeof _afterEach;
+declare const jestAfterAll: typeof _afterAll;
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
@@ -272,6 +281,138 @@ describe.each<DescribeOptions>([
     expectAlignedSeeds(out);
     expect(out).toMatch(/[×✕] property fail with globally requested seed \(with seed=6969\)/);
   });
+
+  if (testRunner === undefined && !useWorkers) {
+    it.concurrent(`should call beforeEach for each run in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, options, () => {
+        const requestedNumExecutions = 10;
+        let beforeEachCount = 0;
+
+        jestBeforeEach(() => {
+          beforeEachCount++;
+        });
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {});
+
+        jestAfterAll(() => {
+          jestExpect(beforeEachCount).toBe(requestedNumExecutions);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(`should call afterEach for each run in ${runnerName}.prop`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, options, () => {
+        const requestedNumExecutions = 10;
+        let afterEachCount = 0;
+
+        jestAfterEach(() => {
+          afterEachCount++;
+        });
+        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {});
+
+        jestAfterAll(() => {
+          jestExpect(afterEachCount).toBe(requestedNumExecutions);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, options, () => {
+          const requestedNumExecutions = 10;
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          jestBeforeEach(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          jestAfterEach(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            if (beforeEachCount - afterEachCount !== 1) {
+              throw new Error('run: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+
+          jestAfterAll(() => {
+            jestExpect(errors).toEqual([]);
+            jestExpect(beforeEachCount).toBe(requestedNumExecutions);
+            jestExpect(afterEachCount).toBe(requestedNumExecutions);
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
+    it.concurrent(
+      `should never call beforeEach/afterEach twice per run including shrinks in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, options, () => {
+          let beforeEachCount = 0;
+          let afterEachCount = 0;
+          const errors: string[] = [];
+
+          jestBeforeEach(() => {
+            beforeEachCount++;
+            if (beforeEachCount - afterEachCount !== 1) {
+              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          jestAfterEach(() => {
+            afterEachCount++;
+            if (beforeEachCount - afterEachCount !== 0) {
+              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
+            }
+          });
+          runner.failing.prop([fc.integer({ min: 10, max: 1000 })], { numRuns: 10 })(
+            'property',
+            (_n) => false,
+          );
+
+          jestAfterAll(() => {
+            jestExpect(errors).toEqual([]);
+            jestExpect(beforeEachCount).toBe(afterEachCount);
+            jestExpect(beforeEachCount).toBeGreaterThanOrEqual(2);
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+  }
 
   describe('.skip', () => {
     it.concurrent('should never be executed', async () => {
@@ -584,6 +725,9 @@ async function writeToFile(
     // "expect" would be replaced by Vitest by "__vite_ssr_import_0__.expect"
     throw new Error('Drop any reference to expect to avoid running against the one from Vitest: use jestExpect');
   }
+  fileContentString = fileContentString.replace(/jestBeforeEach/g, 'beforeEach');
+  fileContentString = fileContentString.replace(/jestAfterEach/g, 'afterEach');
+  fileContentString = fileContentString.replace(/jestAfterAll/g, 'afterAll');
   fileContentString = fileContentString.replace(/jestExpect/g, 'expect');
   const wrapInDescribeIfNeeded =
     runner === 'it'
