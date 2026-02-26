@@ -5,8 +5,8 @@
 Bring the power of property based testing framework `fast-check` into Jest.
 `@fast-check/jest` simplifies the integration of `fast-check` into Jest testing framework.
 
-<a href="https://badge.fury.io/js/@fast-check%2Fjest"><img src="https://badge.fury.io/js/@fast-check%2Fjest.svg" alt="npm version" /></a>
-<a href="https://www.npmjs.com/package/@fast-check/jest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fjest" alt="monthly downloads" /></a>
+<a href="https://npmx.dev/package/@fast-check/jest"><img src="https://badge.fury.io/js/@fast-check%2Fjest.svg" alt="npm version" /></a>
+<a href="https://npmx.dev/package/@fast-check/jest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fjest" alt="monthly downloads" /></a>
 <a href="https://github.com/dubzzz/fast-check/blob/main/packages/jest/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fjest.svg" alt="License" /></a>
 
 ---
