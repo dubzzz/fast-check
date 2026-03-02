@@ -61,7 +61,9 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
             },
             plugins: [
               ...sharedOptions.plugins,
-              ...(replacementsFor !== undefined ? [replacePlugin(replacementsFor(false), { preventAssignment: true })] : []),
+              ...(replacementsFor !== undefined
+                ? [replacePlugin(replacementsFor(false), { preventAssignment: true })]
+                : []),
             ],
           },
         ]
