@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
-import { mersenne } from 'pure-rand/generator/MersenneTwister';
+import { mersenne } from 'pure-rand/generator/mersenne';
 
 import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';

@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { mersenne } from 'pure-rand/generator/MersenneTwister';
-import { congruential32 } from 'pure-rand/generator/LinearCongruential';
-import { xoroshiro128plus } from 'pure-rand/generator/XoroShiro';
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { mersenne } from 'pure-rand/generator/mersenne';
+import { congruential32 } from 'pure-rand/generator/congruential32';
+import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 
 import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType.js';

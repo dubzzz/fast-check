@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
