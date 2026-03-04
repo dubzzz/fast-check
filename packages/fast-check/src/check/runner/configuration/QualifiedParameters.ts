@@ -151,7 +151,7 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
   if ('max' in mrng && mrng.max !== 0x7fffffff) {
     throw new Error(`Invalid random number generator: max must equal 0x7fffffff, got ${String(mrng.max)}`);
   }
-  if ('unsafeJump' in mrng) {
+  if ('jump' in mrng) {
     return p.randomType as (seed: number) => QualifiedRandomGenerator;
   }
   return createQualifiedRandomGenerator(p.randomType);

@@ -1,5 +1,5 @@
 // Implementation inspired from https://github.com/dubzzz/various-algorithms/blob/main/algorithms/graph/maze-generator/implem.cpp
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { Random } from 'fast-check';
 
 export type Dimension = {

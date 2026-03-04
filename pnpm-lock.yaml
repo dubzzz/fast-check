@@ -102,8 +102,8 @@ importers:
         specifier: ^4.17.23
         version: 4.17.23
       pure-rand:
-        specifier: ^7.0.1
-        version: 7.0.1
+        specifier: https://pkg.pr.new/pure-rand@894
+        version: https://pkg.pr.new/pure-rand@894
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -317,8 +317,8 @@ importers:
         specifier: ^4.0.0
         version: link:../fast-check
       pure-rand:
-        specifier: ^7.0.1
-        version: 7.0.1
+        specifier: https://pkg.pr.new/pure-rand@894
+        version: https://pkg.pr.new/pure-rand@894
     devDependencies:
       '@fast-check/worker':
         specifier: workspace:*
