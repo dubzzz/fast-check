@@ -1,5 +1,5 @@
-import { unsafeUniformBigIntDistribution } from 'pure-rand/distribution/UnsafeUniformBigIntDistribution';
-import { unsafeUniformIntDistribution } from 'pure-rand/distribution/UnsafeUniformIntDistribution';
+import { uniformBigInt } from 'pure-rand/distribution/uniformBigInt';
+import { uniformInt } from 'pure-rand/distribution/uniformInt';
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 
 const MIN_INT: number = 0x80000000 | 0;
@@ -37,7 +37,7 @@ export class Random {
    * @param bits - Number of bits to generate
    */
   next(bits: number): number {
-    return unsafeUniformIntDistribution(0, (1 << bits) - 1, this.internalRng);
+    return uniformInt(this.internalRng, 0, (1 << bits) - 1);
   }
 
   /**
@@ -45,7 +45,7 @@ export class Random {
    */
 
   nextBoolean(): boolean {
-    return unsafeUniformIntDistribution(0, 1, this.internalRng) === 1;
+    return uniformInt(this.internalRng, 0, 1) === 1;
   }
 
   /**
@@ -60,11 +60,7 @@ export class Random {
    */
   nextInt(min: number, max: number): number;
   nextInt(min?: number, max?: number): number {
-    return unsafeUniformIntDistribution(
-      min === undefined ? MIN_INT : min,
-      max === undefined ? MAX_INT : max,
-      this.internalRng,
-    );
+    return uniformInt(this.internalRng, min === undefined ? MIN_INT : min, max === undefined ? MAX_INT : max);
   }
 
   /**
@@ -73,7 +69,7 @@ export class Random {
    * @param max - Maximal bigint value
    */
   nextBigInt(min: bigint, max: bigint): bigint {
-    return unsafeUniformBigIntDistribution(min, max, this.internalRng);
+    return uniformBigInt(this.internalRng, min, max);
   }
 
   /**

@@ -157,8 +157,8 @@ importers:
   packages/fast-check:
     dependencies:
       pure-rand:
-        specifier: ^7.0.1
-        version: 7.0.1
+        specifier: https://pkg.pr.new/pure-rand@894
+        version: https://pkg.pr.new/pure-rand@894
     devDependencies:
       '@fast-check/poisoning':
         specifier: workspace:*
@@ -8563,6 +8563,10 @@ packages:
 
   pure-rand@7.0.1:
     resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
+
+  pure-rand@https://pkg.pr.new/pure-rand@894:
+    resolution: {integrity: sha512-QivEz1ZkaX/b9WXg4ULulDa6jDSTckmLtu5j5Uy1WGPPs1/6szNmJWTVGzxxI6ki9BcdjiGwyrxUl4ITMq8P/g==, tarball: https://pkg.pr.new/pure-rand@894}
+    version: 7.0.1
 
   pvtsutils@1.3.6:
     resolution: {integrity: sha512-PLgQXQ6H2FWCaeRak8vvk1GW462lMxB5s3Jm673N82zI4vqtVUPuZdffdZbPDFRoU8kAhItWFtPCWiPpp4/EDg==}
@@ -20650,6 +20654,8 @@ snapshots:
       escape-goat: 4.0.0
 
   pure-rand@7.0.1: {}
+
+  pure-rand@https://pkg.pr.new/pure-rand@894: {}
 
   pvtsutils@1.3.6:
     dependencies:
