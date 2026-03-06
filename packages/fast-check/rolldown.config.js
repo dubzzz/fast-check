@@ -19,7 +19,6 @@ function getCommitHash() {
 }
 
 export default buildConfigFor(pkg, import.meta.dirname, (isESM) => ({
-  preventAssignment: true,
   'process.env.__PACKAGE_TYPE__': isESM ? JSON.stringify('module') : JSON.stringify('commonjs'),
   'process.env.__PACKAGE_VERSION__': JSON.stringify(pkg.version),
   'process.env.__COMMIT_HASH__': JSON.stringify(getCommitHash()),
