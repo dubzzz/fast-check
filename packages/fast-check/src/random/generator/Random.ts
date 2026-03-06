@@ -1,6 +1,6 @@
 import { uniformBigInt } from 'pure-rand/distribution/uniformBigInt';
 import { uniformInt } from 'pure-rand/distribution/uniformInt';
-import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
+import { adaptRandomGeneratorTo8x, type RandomGenerator, type RandomGeneratorInternal } from './RandomGenerator.js';
 
 const MIN_INT: number = 0x80000000 | 0;
 const MAX_INT: number = 0x7fffffff | 0;
@@ -15,14 +15,14 @@ const DBL_DIVISOR: number = Math.pow(2, -53);
  */
 export class Random {
   /** @internal */
-  private internalRng: RandomGenerator;
+  private internalRng: RandomGeneratorInternal;
 
   /**
    * Create a mutable random number generator by cloning the passed one and mutate it
    * @param sourceRng - Immutable random generator from pure-rand library, will not be altered (a clone will be)
    */
   constructor(sourceRng: RandomGenerator) {
-    this.internalRng = sourceRng.clone();
+    this.internalRng = adaptRandomGeneratorTo8x(sourceRng.clone());
   }
 
   /**
