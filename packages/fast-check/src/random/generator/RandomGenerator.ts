@@ -1,5 +1,6 @@
 import type { RandomGenerator as RandomGenerator8x } from 'pure-rand/types/RandomGenerator';
 import type { JumpableRandomGenerator as JumpableRandomGenerator8x } from 'pure-rand/types/JumpableRandomGenerator';
+import { skipN } from 'pure-rand/utils/skipN';
 
 interface RandomGenerator7x {
   clone(): RandomGenerator7x;
@@ -11,10 +12,10 @@ interface RandomGenerator7x {
 }
 
 export type RandomGenerator = RandomGenerator7x | RandomGenerator8x | JumpableRandomGenerator8x;
-export type RandomGeneratorInternal = RandomGenerator8x | JumpableRandomGenerator8x;
+export type RandomGeneratorInternal = JumpableRandomGenerator8x;
 
 /** @internal */
-export function adaptRandomGeneratorTo8x(rng: RandomGenerator): RandomGeneratorInternal {
+function adaptRandomGeneratorTo8x(rng: RandomGenerator): RandomGenerator8x | JumpableRandomGenerator8x {
   if ('unsafeNext' in rng) {
     // 7.x generation
     if (rng.unsafeJump === undefined) {
@@ -34,4 +35,22 @@ export function adaptRandomGeneratorTo8x(rng: RandomGenerator): RandomGeneratorI
   }
   // 8.x generation
   return rng;
+}
+
+/** @internal */
+function adaptRandomGeneratorToInternal(rng: RandomGenerator8x | JumpableRandomGenerator8x): RandomGeneratorInternal {
+  if ('jump' in rng && typeof rng.jump === 'function') {
+    return rng;
+  }
+  return {
+    clone: () => adaptRandomGeneratorToInternal(rng),
+    next: () => rng.next(),
+    jump: () => skipN(rng, 42),
+    getState: () => rng.getState(),
+  };
+}
+
+/** @internal */
+export function adaptRandomGenerator(rng: RandomGenerator): RandomGeneratorInternal {
+  return adaptRandomGeneratorToInternal(adaptRandomGeneratorTo8x(rng));
 }

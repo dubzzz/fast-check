@@ -1,6 +1,7 @@
 import { uniformBigInt } from 'pure-rand/distribution/uniformBigInt';
 import { uniformInt } from 'pure-rand/distribution/uniformInt';
-import { adaptRandomGeneratorTo8x, type RandomGenerator, type RandomGeneratorInternal } from './RandomGenerator.js';
+import { adaptRandomGenerator } from './RandomGenerator.js';
+import type { RandomGenerator, RandomGeneratorInternal } from './RandomGenerator.js';
 
 const MIN_INT: number = 0x80000000 | 0;
 const MAX_INT: number = 0x7fffffff | 0;
@@ -22,7 +23,7 @@ export class Random {
    * @param sourceRng - Immutable random generator from pure-rand library, will not be altered (a clone will be)
    */
   constructor(sourceRng: RandomGenerator) {
-    this.internalRng = adaptRandomGeneratorTo8x(sourceRng.clone());
+    this.internalRng = adaptRandomGenerator(sourceRng.clone());
   }
 
   /**
