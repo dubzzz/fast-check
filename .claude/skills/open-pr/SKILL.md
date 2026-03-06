@@ -22,6 +22,7 @@ Follow the [gitmoji](https://gitmoji.dev/) specification:
 Limit the description part (after the emoji/package prefix) to at most 50 characters.
 
 Common gitmoji:
+
 - ✨ New features
 - 🐛 Bug fix
 - 📝 Documentation
