@@ -12,6 +12,9 @@ fi
 # Format only the impacted file (not the whole project)
 pnpm exec prettier --experimental-cli --write "$FILE_PATH" 2>&1 || true
 
+# Build
+pnpm build:all 2>&1
+
 # Typecheck
 pnpm typecheck:all 2>&1
 
