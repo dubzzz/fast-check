@@ -12,6 +12,8 @@ interface RandomGenerator7x {
 }
 
 export type RandomGenerator = RandomGenerator7x | RandomGenerator8x | JumpableRandomGenerator8x;
+
+/** @internal */
 export type RandomGeneratorInternal = JumpableRandomGenerator8x;
 
 /** @internal */
