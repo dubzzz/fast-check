@@ -36,6 +36,7 @@ export class Random {
   /**
    * Generate an integer having `bits` random bits
    * @param bits - Number of bits to generate
+   * @deprecated
    */
   next(bits: number): number {
     return uniformInt(this.internalRng, 0, (1 << bits) - 1);
@@ -51,6 +52,7 @@ export class Random {
 
   /**
    * Generate a random integer (32 bits)
+   * @deprecated
    */
   nextInt(): number;
 
