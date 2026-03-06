@@ -314,8 +314,8 @@ importers:
         specifier: ^4.0.0
         version: link:../fast-check
       pure-rand:
-        specifier: ^7.0.1
-        version: 7.0.1
+        specifier: ^8.0.0
+        version: 8.0.0
     devDependencies:
       '@fast-check/worker':
         specifier: workspace:*
