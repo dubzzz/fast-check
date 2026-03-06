@@ -1,4 +1,11 @@
-Before opening a pull request, make sure to follow these guidelines:
+---
+name: open-pr
+description: Guidelines for opening pull requests in this repository. Use when the user wants to open, create, or submit a pull request. Provides PR naming convention (gitmoji format) and PR body template requirements.
+---
+
+# Open PR
+
+Follow these guidelines when opening a pull request in this repository.
 
 ## PR Title / Naming Convention
 

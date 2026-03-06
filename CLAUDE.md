@@ -2,4 +2,4 @@
 
 ## Pull Request Guidelines
 
-Before opening a pull request, always run the `/open-pr` skill. It contains the naming convention and PR template guidelines to follow.
+Before opening a pull request, always use the `open-pr` skill. It contains the naming convention and PR template guidelines to follow.
