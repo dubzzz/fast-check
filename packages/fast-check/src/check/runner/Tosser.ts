@@ -1,12 +1,11 @@
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
-import { skipN } from 'pure-rand/utils/skipN';
 
 import { Random } from '../../random/generator/Random.js';
 import type { IRawProperty } from '../property/IRawProperty.js';
 import { Value } from '../arbitrary/definition/Value.js';
 import { safeMap } from '../../utils/globals.js';
 import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters.js';
-import type { JumpableRandomGenerator } from 'pure-rand/types/JumpableRandomGenerator';
+import { adaptRandomGenerator } from '../../random/generator/RandomGenerator.js';
 
 /**
  * Extracting tossNext out of toss was dropping some bailout reasons on v8 side
@@ -46,10 +45,9 @@ export function* lazyToss<Ts>(
 ): IterableIterator<() => Value<Ts>> {
   yield* safeMap(examples, (e) => () => new Value(e, undefined));
   let idx = 0;
-  const rng = random(seed) as RandomGenerator & Partial<JumpableRandomGenerator>;
+  const rng = adaptRandomGenerator(random(seed));
   for (;;) {
-    if (rng.jump !== undefined) rng.jump();
-    else skipN(rng, 42);
+    rng.jump();
     yield lazyGenerate(generator, rng, idx++);
   }
 }

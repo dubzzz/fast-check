@@ -2,19 +2,18 @@ import type { Parameters } from './Parameters.js';
 import { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
-import { skipN } from 'pure-rand/utils/skipN';
 import { congruential32 } from 'pure-rand/generator/congruential32';
 import { mersenne } from 'pure-rand/generator/mersenne';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
-import type { JumpableRandomGenerator } from 'pure-rand/types/JumpableRandomGenerator';
+import { adaptRandomGenerator, type RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
 
 const safeDateNow = Date.now;
 const safeMathMin = Math.min;
 const safeMathRandom = Math.random;
 
 /** @internal */
-export type QualifiedRandomGenerator = JumpableRandomGenerator;
+export type QualifiedRandomGenerator = RandomGeneratorInternal;
 
 /**
  * Configuration extracted from incoming Parameters
@@ -104,11 +103,8 @@ function createQualifiedRandomGenerator(
   random: (seed: number) => RandomGenerator,
 ): (seed: number) => QualifiedRandomGenerator {
   return (seed) => {
-    const rng = random(seed) as RandomGenerator & Partial<JumpableRandomGenerator>;
-    if (rng.jump === undefined) {
-      rng.jump = () => skipN(rng, 42);
-    }
-    return rng as QualifiedRandomGenerator;
+    const rng = random(seed);
+    return adaptRandomGenerator(rng);
   };
 }
 
