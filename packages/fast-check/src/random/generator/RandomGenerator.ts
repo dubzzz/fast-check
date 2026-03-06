@@ -11,6 +11,10 @@ interface RandomGenerator7x {
   getState(): readonly number[];
 }
 
+/**
+ * Merged type supporting both pure-rand v7 and v8 random generators.
+ * Keeping compatibility with v7 avoids a breaking API change and a new major version.
+ */
 export type RandomGenerator = RandomGenerator7x | RandomGenerator8x | JumpableRandomGenerator8x;
 
 /** @internal */
