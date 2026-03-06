@@ -13,7 +13,7 @@ fi
 pnpm exec prettier --experimental-cli --write "$FILE_PATH" 2>&1 || true
 
 # Typecheck
-pnpm typecheck 2>&1
+pnpm typecheck:all 2>&1
 
 # Run related tests (non-watch, single run)
 pnpm test run --reporter=verbose "$FILE_PATH" 2>&1 || true
