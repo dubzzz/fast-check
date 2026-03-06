@@ -1,19 +1,20 @@
 import type { Parameters } from './Parameters.js';
 import { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
-import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
-import { unsafeSkipN } from 'pure-rand/distribution/UnsafeSkipN';
-import { congruential32 } from 'pure-rand/generator/LinearCongruential';
-import { mersenne } from 'pure-rand/generator/MersenneTwister';
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
-import { xoroshiro128plus } from 'pure-rand/generator/XoroShiro';
+import { congruential32 } from 'pure-rand/generator/congruential32';
+import { mersenne } from 'pure-rand/generator/mersenne';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
+import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
+import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
+
+import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
 
 const safeDateNow = Date.now;
 const safeMathMin = Math.min;
 const safeMathRandom = Math.random;
 
 /** @internal */
-export type QualifiedRandomGenerator = RandomGenerator & Required<Pick<RandomGenerator, 'unsafeJump'>>;
+export type QualifiedRandomGenerator = RandomGeneratorInternal;
 
 /**
  * Configuration extracted from incoming Parameters
@@ -104,10 +105,7 @@ function createQualifiedRandomGenerator(
 ): (seed: number) => QualifiedRandomGenerator {
   return (seed) => {
     const rng = random(seed);
-    if (rng.unsafeJump === undefined) {
-      rng.unsafeJump = () => unsafeSkipN(rng, 42);
-    }
-    return rng as QualifiedRandomGenerator;
+    return adaptRandomGenerator(rng);
   };
 }
 
@@ -150,7 +148,7 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
   if ('max' in mrng && mrng.max !== 0x7fffffff) {
     throw new Error(`Invalid random number generator: max must equal 0x7fffffff, got ${String(mrng.max)}`);
   }
-  if ('unsafeJump' in mrng) {
+  if (mrng === adaptRandomGenerator(mrng)) {
     return p.randomType as (seed: number) => QualifiedRandomGenerator;
   }
   return createQualifiedRandomGenerator(p.randomType);

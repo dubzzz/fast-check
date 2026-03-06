@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { commands } from '../../../src/arbitrary/commands.js';
 
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import type { Command } from '../../../src/check/model/command/Command.js';
 import { Random } from '../../../src/random/generator/Random.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';

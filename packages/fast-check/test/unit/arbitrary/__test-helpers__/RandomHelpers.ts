@@ -21,6 +21,7 @@ export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, '
 
   // Calling `new MyRandom` triggers a call to the default ctor of `Random`.
   // As we don't use anything from this base class, we just pass the ctor with a value that looks ok for it.
-  const instance = new MyRandom({ clone: () => null } as any);
+  const buildInternal = () => ({ clone: () => buildInternal() });
+  const instance = new MyRandom(buildInternal() as any);
   return { instance, clone, next, nextBoolean, nextInt, nextBigInt, nextDouble, getState };
 }

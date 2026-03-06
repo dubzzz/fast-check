@@ -11,16 +11,10 @@ class NoCallGenerator implements RandomGenerator {
   clone(): RandomGenerator {
     return this;
   }
-  next(): [number, RandomGenerator] {
+  next(): number {
     throw new Error('Method not implemented.');
   }
-  unsafeNext(): number {
-    throw new Error('Method not implemented.');
-  }
-  min(): number {
-    throw new Error('Method not implemented.');
-  }
-  max(): number {
+  jump(): number {
     throw new Error('Method not implemented.');
   }
   getState(): readonly number[] {
@@ -44,24 +38,13 @@ class FastIncreaseRandomGenerator implements RandomGenerator {
   clone(): RandomGenerator {
     return new FastIncreaseRandomGenerator(this.value, this.incr);
   }
-  next(): [number, RandomGenerator] {
-    // need to tweak incr in order to use a large range of values
-    // uniform distribution expects some entropy
-    return [this.value, new FastIncreaseRandomGenerator((this.value + this.incr) | 0, 2 * this.incr + 1)];
-  }
-  unsafeNext(): number {
+  next(): number {
     // need to tweak incr in order to use a large range of values
     // uniform distribution expects some entropy
     const out = this.value;
     this.value = (this.value + this.incr) | 0;
     this.incr = 2 * this.incr + 1;
     return out;
-  }
-  min(): number {
-    return -0x80000000;
-  }
-  max(): number {
-    return 0x7fffffff;
   }
   getState(): readonly number[] {
     throw new Error('Method not implemented.');
@@ -82,19 +65,10 @@ class CounterRandomGenerator implements RandomGenerator {
   clone(): RandomGenerator {
     return new CounterRandomGenerator(this.value);
   }
-  next(): [number, RandomGenerator] {
-    return [this.value, new CounterRandomGenerator((this.value + 1) | 0)];
-  }
-  unsafeNext(): number {
+  next(): number {
     const out = this.value;
     this.value = (this.value + 1) | 0;
     return out;
-  }
-  min(): number {
-    return -0x80000000;
-  }
-  max(): number {
-    return 0x7fffffff;
   }
   getState(): readonly number[] {
     throw new Error('Method not implemented.');
