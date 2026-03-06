@@ -1,4 +1,4 @@
-import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
+import { xorshift128plusFromState } from 'pure-rand/generator/xorshift128plus';
 import { Random } from 'fast-check';
 import type { IRawProperty } from 'fast-check';
 
@@ -12,6 +12,6 @@ export type ValueState = { rngState: number[]; runId: number | undefined };
  * @param state - The state defining the Value to be generated (the how)
  */
 export function generateValueFromState<Ts>(property: IRawProperty<Ts>, state: ValueState): Ts {
-  const mrng = new Random(xorshift128plus.fromState(state.rngState));
+  const mrng = new Random(xorshift128plusFromState(state.rngState));
   return property.generate(mrng, state.runId).value_;
 }
