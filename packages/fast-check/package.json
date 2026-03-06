@@ -58,7 +58,7 @@
     "node": ">=12.17.0"
   },
   "dependencies": {
-    "pure-rand": "https://pkg.pr.new/pure-rand@894"
+    "pure-rand": "^8.0.0"
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
