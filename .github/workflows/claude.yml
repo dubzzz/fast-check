@@ -40,6 +40,26 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           trigger_phrase: '@claude'
           assignee_trigger: 'dubzzz'
+          claude_args: '--model claude-opus-4-6-20260306'
+          custom_instructions: |
+            ## Pull Request Guidelines
+
+            When opening a pull request, follow the gitmoji specification:
+
+            - For changes to the main `fast-check` package: `emoji Description`
+              - Example: `✨ Add new arbitrary for dates`
+            - For changes to other packages (ava, vitest, jest, worker, poisoning, packaged): `emoji(package-name) Description`
+              - Example: `🐛(jest) Fix compatibility with jest 29`
+
+            Limit the description part to at most 50 characters.
+
+            Common gitmoji: ✨ features, 🐛 bug fix, 📝 docs, ✅ tests, 🏷️ types, ⚡️ perf, 👷 CI, ♻️ refactor, 🔧 config, 🎨 format, 🔥 remove, ⬆️ upgrade, 🗑️ deprecate
+
+            Always use the PR template from `.github/PULL_REQUEST_TEMPLATE.md`. The body must include:
+            1. **Description** section — short description and link to related issues
+            2. **Checklist** section — keep all checklist items; only check boxes that are fulfilled
+
+            Do not delete, reorder, or skip any sections or checklist items from the template.
 
           # Optional: Customize the trigger phrase (default: @claude)
           # trigger_phrase: "/claude"
