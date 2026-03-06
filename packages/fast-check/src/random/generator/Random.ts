@@ -36,7 +36,7 @@ export class Random {
   /**
    * Generate an integer having `bits` random bits
    * @param bits - Number of bits to generate
-   * @deprecated Prefer `nextInt(0, (1 << bits) - 1)` instead
+   * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(0, (1 << bits) - 1)`
    */
   next(bits: number): number {
     return uniformInt(this.internalRng, 0, (1 << bits) - 1);
@@ -52,7 +52,7 @@ export class Random {
 
   /**
    * Generate a random integer (32 bits)
-   * @deprecated Prefer `nextInt(0x80000000 | 0, 0x7fffffff | 0)` for a full 32-bit signed integer range, or `nextInt(min, max)` with explicit bounds
+   * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(-2147483648, 2147483647)`
    */
   nextInt(): number;
 
