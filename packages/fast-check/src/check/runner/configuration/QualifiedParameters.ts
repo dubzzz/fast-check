@@ -1,12 +1,13 @@
 import type { Parameters } from './Parameters.js';
 import { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
-import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 import { congruential32 } from 'pure-rand/generator/congruential32';
 import { mersenne } from 'pure-rand/generator/mersenne';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
-import { adaptRandomGenerator, type RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
+import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
+
+import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
 
 const safeDateNow = Date.now;
 const safeMathMin = Math.min;
@@ -147,7 +148,7 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
   if ('max' in mrng && mrng.max !== 0x7fffffff) {
     throw new Error(`Invalid random number generator: max must equal 0x7fffffff, got ${String(mrng.max)}`);
   }
-  if ('jump' in mrng) {
+  if (mrng === adaptRandomGenerator(mrng)) {
     return p.randomType as (seed: number) => QualifiedRandomGenerator;
   }
   return createQualifiedRandomGenerator(p.randomType);
