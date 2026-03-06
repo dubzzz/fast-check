@@ -14,6 +14,9 @@ class NoCallGenerator implements RandomGenerator {
   next(): number {
     throw new Error('Method not implemented.');
   }
+  jump(): number {
+    throw new Error('Method not implemented.');
+  }
   getState(): readonly number[] {
     throw new Error('Method not implemented.');
   }
