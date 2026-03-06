@@ -9,8 +9,8 @@ if [[ "$FILE_PATH" != *.ts && "$FILE_PATH" != *.tsx && "$FILE_PATH" != *.js && "
   exit 0
 fi
 
-# Format
-pnpm format "$FILE_PATH" 2>&1 || true
+# Format only the impacted file (not the whole project)
+pnpm exec prettier --experimental-cli --write "$FILE_PATH" 2>&1 || true
 
 # Typecheck
 pnpm typecheck 2>&1
