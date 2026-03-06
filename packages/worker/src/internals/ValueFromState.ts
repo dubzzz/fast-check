@@ -1,4 +1,4 @@
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { Random } from 'fast-check';
 import type { IRawProperty } from 'fast-check';
 
