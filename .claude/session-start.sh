@@ -5,10 +5,10 @@
 
 set -e
 
-# Detect pnpm — corepack should make it available via packageManager field,
-# but enable it explicitly if needed.
+# Install pnpm via npm if not already available
 if ! command -v pnpm &>/dev/null; then
-  corepack enable 2>/dev/null || true
+  echo "pnpm not found, installing via npm..."
+  npm install -g pnpm
 fi
 
 # Install dependencies if node_modules is missing or empty
