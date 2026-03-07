@@ -1,11 +1,7 @@
-# 3.0.0
+# 2.2.0
 
-_TODO Description_
+_Add support for `@fast-check/worker` version 0.6.0_
 [[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv3.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.1.1...jest%2Fv3.0.0)]
-
-## Features
-
-
 
 ## Fixes
 
