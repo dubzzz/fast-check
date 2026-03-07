@@ -1,6 +1,6 @@
 # 4.6.0
 
-_TODO Description_
+_Better `stringMatching` with `maxLength`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.3...v4.6.0)]
 
 ## Features
