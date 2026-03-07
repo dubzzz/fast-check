@@ -1,15 +1,11 @@
 # 0.6.0
 
-_TODO Description_
+_Only publish ESM bundle_
 [[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.5.0...worker%2Fv0.6.0)]
 
 ## Breaking changes
 
 - ([PR#6615](https://github.com/dubzzz/fast-check/pull/6615)) Drop CommonJS support
-
-## Features
-
-
 
 ## Fixes
 
