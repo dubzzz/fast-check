@@ -1,6 +1,6 @@
 # 0.6.0
 
-_TODO Description_
+_Only publish ESM bundle_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.5.0...packaged%2Fv0.6.0)]
 
 ## Breaking changes
