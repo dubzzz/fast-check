@@ -8,6 +8,8 @@ on:
         required: true
         type: string
 
+permissions: {}
+
 jobs:
   fix-pnpm-lock:
     name: 'Fix pnpm lock conflicts and commit changes'
