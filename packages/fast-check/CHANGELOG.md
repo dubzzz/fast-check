@@ -68,6 +68,8 @@ _TODO Description_
 - ([PR#6448](https://github.com/dubzzz/fast-check/pull/6448)) Performance: Optimize RunDetailsFormatter array allocations
 - ([PR#5718](https://github.com/dubzzz/fast-check/pull/5718)) Performance: Import less from pure-rand
 - ([PR#6679](https://github.com/dubzzz/fast-check/pull/6679)) Performance: Bump pure-rand to v8
+- ([PR#6446](https://github.com/dubzzz/fast-check/pull/6446)) Performance: Replace loose equality by strict one
+- ([PR#6444](https://github.com/dubzzz/fast-check/pull/6444)) Performance: Slightly faster code for RunExecution
 - ([PR#6437](https://github.com/dubzzz/fast-check/pull/6437)) Refactor: Replace fileURLToPath patterns with import.meta.*
 - ([PR#6567](https://github.com/dubzzz/fast-check/pull/6567)) Refactor: Remove ErrorWithCause, use Error directly
 - ([PR#6621](https://github.com/dubzzz/fast-check/pull/6621)) Refactor: Replace glob package with native Node.js fs.glob
