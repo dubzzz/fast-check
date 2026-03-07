@@ -128,15 +128,14 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
             return;
           }
 
-          // Run pending beforeEach cleanup functions, then afterEach hooks.
+          for (const hook of afterEachHooks) {
+            await hook(test.context, suite);
+          }
+
           for (let i = pendingCleanups.length - 1; i >= 0; i--) {
             await pendingCleanups[i]();
           }
           pendingCleanups.length = 0;
-
-          for (const hook of afterEachHooks) {
-            await hook(test.context, suite);
-          }
 
           for (const hook of beforeEachHooks) {
             const result = await hook(test.context, suite);
