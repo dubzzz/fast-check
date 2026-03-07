@@ -8,6 +8,8 @@ on:
       - 'next-*_*_*'
       - 'fix-v*'
 
+permissions: {}
+
 jobs:
   check-template:
     name: 'Check PR template usage'
