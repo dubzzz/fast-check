@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { String } from '../../../utils/globals.js';
 import { boolean } from '../../boolean.js';
 import { constant } from '../../constant.js';
 import { double } from '../../double.js';
@@ -7,22 +6,12 @@ import type { StringConstraints } from '../../string.js';
 import type { DepthSize } from './MaxLengthFromMinLength.js';
 import type { ObjectConstraints } from './QualifiedObjectConstraints.js';
 
-const safeJsonParse = JSON.parse;
 const safeObjectIs = Object.is;
 
 /** @internal */
-function jsonDoubleArbitrary(): Arbitrary<number> {
-  return double({ noDefaultInfinity: true, noNaN: true }).map(
-    (v) => {
-      // Ensure the generated double is exactly what JSON.parse would produce,
-      // preventing subtle round-trip mismatches between String(v) and JSON.parse.
-      // For -0, we preserve it directly as it is a valid JSON.parse output
-      // but String(-0) returns "0" which would lose the sign.
-      if (safeObjectIs(v, -0)) return v;
-      return safeJsonParse(String(v)) as number;
-    },
-    (v) => v,
-  );
+function isValidInJSON(n: number) {
+  // n is a finite number, ie. neither NaN nor infinities
+  return !safeObjectIs(n, -0);
 }
 
 /**
@@ -75,7 +64,7 @@ export function jsonConstraintsBuilder(
   const key = stringArbitrary;
   const values = [
     boolean(), // any boolean
-    jsonDoubleArbitrary(), // any number valid in JSON
+    double({ noDefaultInfinity: true, noNaN: true }).filter(isValidInJSON), // any number valid in JSON
     stringArbitrary, // any string
     constant(null),
   ];
