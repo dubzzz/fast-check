@@ -525,6 +525,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1519098?v=4",
       "profile": "https://github.com/josephjunker",
       "contributions": ["doc"]
+    },
+    {
+      "login": "rushelex",
+      "name": "Aleksey Shelementev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41122157?v=4",
+      "profile": "https://github.com/rushelex",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7
