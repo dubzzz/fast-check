@@ -1,7 +1,7 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { tuple } from './tuple.js';
 import { uniqueArray } from './uniqueArray.js';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { arrayToMapMapper, arrayToMapUnmapper } from './_internals/mappers/ArrayToMap.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 
@@ -42,6 +42,22 @@ export interface MapConstraints {
    * @remarks Since 4.4.0
    */
   depthIdentifier?: DepthIdentifier | string;
+  /**
+   * While going deeper and deeper within a recursive structure (see {@link letrec}),
+   * this factor will be used to increase the probability to generate smaller maps.
+   *
+   * @remarks Since 4.x.0
+   */
+  depthSize?: DepthSize;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only maps of {@link MapConstraints.minKeys | minKeys}
+   * will be generated.
+   *
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
+   * @remarks Since 4.x.0
+   */
+  maxDepth?: number;
 }
 
 /**
@@ -65,6 +81,8 @@ export function map<K, V>(
     size: constraints.size,
     selector: mapKeyExtractor,
     depthIdentifier: constraints.depthIdentifier,
+    depthSize: constraints.depthSize,
+    maxDepth: constraints.maxDepth,
     comparator: 'SameValueZero',
   }).map(arrayToMapMapper, arrayToMapUnmapper);
 }

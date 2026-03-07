@@ -4,7 +4,7 @@ import { tuple } from './tuple.js';
 import { uniqueArray } from './uniqueArray.js';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import {
   maxGeneratedLengthFromSizeForArbitrary,
   MaxLengthUpperBound,
@@ -58,12 +58,25 @@ export interface SparseArrayConstraints {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * For the moment, the depth is not taken into account to compute the number of items to
-   * define for a precise generate call of the array. Just applied onto eligible items.
-   *
    * @remarks Since 2.25.0
    */
   depthIdentifier?: DepthIdentifier | string;
+  /**
+   * While going deeper and deeper within a recursive structure (see {@link letrec}),
+   * this factor will be used to increase the probability to generate smaller arrays.
+   *
+   * @remarks Since 3.x.0
+   */
+  depthSize?: DepthSize;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only arrays of {@link SparseArrayConstraints.minNumElements | minNumElements}
+   * will be generated.
+   *
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
+   * @remarks Since 3.x.0
+   */
+  maxDepth?: number;
 }
 
 /** @internal */
@@ -135,6 +148,8 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       maxLength: resultedMaxNumElements,
       selector: (item) => item[0],
       depthIdentifier,
+      depthSize: constraints.depthSize,
+      maxDepth: constraints.maxDepth,
     },
   ).map(
     (items) => {

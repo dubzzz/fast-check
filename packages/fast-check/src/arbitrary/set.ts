@@ -1,6 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { uniqueArray } from './uniqueArray.js';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import type { DepthIdentifier } from './_internals/helpers/DepthContext.js';
 import { arrayToSetMapper, arrayToSetUnmapper } from './_internals/mappers/ArrayToSet.js';
 
@@ -35,12 +35,25 @@ export type SetConstraints = {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * For the moment, the depth is not taken into account to compute the number of items to
-   * define for a precise generate call of the set. Just applied onto eligible items.
-   *
    * @remarks Since 4.4.0
    */
   depthIdentifier?: DepthIdentifier | string;
+  /**
+   * While going deeper and deeper within a recursive structure (see {@link letrec}),
+   * this factor will be used to increase the probability to generate smaller sets.
+   *
+   * @remarks Since 4.x.0
+   */
+  depthSize?: DepthSize;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only sets of {@link SetConstraints.minLength | minLength}
+   * will be generated.
+   *
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
+   * @remarks Since 4.x.0
+   */
+  maxDepth?: number;
 };
 
 /**
@@ -61,6 +74,8 @@ export function set<T>(arb: Arbitrary<T>, constraints: SetConstraints = {}): Arb
     maxLength: constraints.maxLength,
     size: constraints.size,
     depthIdentifier: constraints.depthIdentifier,
+    depthSize: constraints.depthSize,
+    maxDepth: constraints.maxDepth,
     comparator: 'SameValueZero',
   }).map(arrayToSetMapper, arrayToSetUnmapper);
 }

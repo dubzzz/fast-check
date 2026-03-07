@@ -1,6 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { ArrayArbitrary } from './_internals/ArrayArbitrary.js';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import {
   MaxLengthUpperBound,
   maxGeneratedLengthFromSizeForArbitrary,
@@ -43,12 +43,25 @@ export interface ArrayConstraints {
    * then the generated items will tend to be less deep to avoid creating structures a lot
    * larger than expected.
    *
-   * For the moment, the depth is not taken into account to compute the number of items to
-   * define for a precise generate call of the array. Just applied onto eligible items.
-   *
    * @remarks Since 2.25.0
    */
   depthIdentifier?: DepthIdentifier | string;
+  /**
+   * While going deeper and deeper within a recursive structure (see {@link letrec}),
+   * this factor will be used to increase the probability to generate smaller arrays.
+   *
+   * @remarks Since 3.x.0
+   */
+  depthSize?: DepthSize;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only arrays of {@link ArrayConstraints.minLength | minLength}
+   * will be generated.
+   *
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
+   * @remarks Since 3.x.0
+   */
+  maxDepth?: number;
 }
 
 /**
@@ -84,6 +97,18 @@ function array<T>(arb: Arbitrary<T>, constraints: ArrayConstraints = {}): Arbitr
   const specifiedMaxLength = maxLengthOrUnset !== undefined;
   const maxGeneratedLength = maxGeneratedLengthFromSizeForArbitrary(size, minLength, maxLength, specifiedMaxLength);
   const customSlices = (constraints as ArrayConstraintsInternal<T>).experimentalCustomSlices || [];
-  return new ArrayArbitrary<T>(arb, minLength, maxGeneratedLength, maxLength, depthIdentifier, undefined, customSlices);
+  const depthSize = constraints.depthSize;
+  const maxDepth = constraints.maxDepth;
+  return new ArrayArbitrary<T>(
+    arb,
+    minLength,
+    maxGeneratedLength,
+    maxLength,
+    depthIdentifier,
+    undefined,
+    customSlices,
+    depthSize,
+    maxDepth,
+  );
 }
 export { array };

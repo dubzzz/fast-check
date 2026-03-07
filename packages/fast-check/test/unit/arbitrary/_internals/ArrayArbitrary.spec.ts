@@ -230,6 +230,70 @@ describe('ArrayArbitrary', () => {
       );
     });
 
+    it('should cap generated length based on current depth when maxDepth is set', () => {
+      // Arrange
+      const depthContext = { depth: 3 };
+      const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
+      getDepthContextFor.mockReturnValue(depthContext);
+      const { instance, generate } = fakeArbitrary();
+      generate.mockReturnValue(new Value(42, undefined));
+      const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
+      generateInteger.mockReturnValue(new Value(0, undefined)); // generate 0-length arrays at maxDepth
+      const integer = vi.spyOn(IntegerMock, 'integer');
+      integer.mockReturnValue(integerInstance);
+      const { instance: mrng } = fakeRandom();
+
+      // Act
+      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, undefined, [], undefined, 3);
+      const g = arb.generate(mrng, undefined);
+
+      // Assert - at depth 3 with maxDepth 3, should generate minLength (0) items
+      expect(g.value).toEqual([]);
+    });
+
+    it('should reduce generated length based on depth when depthSize is set', () => {
+      // Arrange
+      const depthContext = { depth: 2 };
+      const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
+      getDepthContextFor.mockReturnValue(depthContext);
+      const { instance, generate } = fakeArbitrary();
+      generate.mockReturnValue(new Value(42, undefined));
+      const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
+      generateInteger.mockReturnValue(new Value(10, undefined)); // would generate 10 items without depth
+      const integer = vi.spyOn(IntegerMock, 'integer');
+      integer.mockReturnValue(integerInstance);
+      const { instance: mrng } = fakeRandom();
+
+      // Act
+      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, undefined, [], 'xsmall', undefined);
+      const g = arb.generate(mrng, undefined);
+
+      // Assert - at depth 2 with depthBias=1 (xsmall), adjustedMax = floor(10 / pow(2,2)) = floor(2.5) = 2
+      // so the generated 10 should be capped to 2
+      expect(g.value.length).toBeLessThanOrEqual(2);
+    });
+
+    it('should not adjust generated length when depthSize and maxDepth are not set', () => {
+      // Arrange
+      const depthContext = { depth: 5 };
+      const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
+      getDepthContextFor.mockReturnValue(depthContext);
+      const { instance, generate } = fakeArbitrary();
+      generate.mockReturnValue(new Value(42, undefined));
+      const { instance: integerInstance, generate: generateInteger } = fakeArbitrary();
+      generateInteger.mockReturnValue(new Value(10, undefined));
+      const integer = vi.spyOn(IntegerMock, 'integer');
+      integer.mockReturnValue(integerInstance);
+      const { instance: mrng } = fakeRandom();
+
+      // Act
+      const arb = new ArrayArbitrary(instance, 0, 10, 100, undefined, undefined, []);
+      const g = arb.generate(mrng, undefined);
+
+      // Assert - without depth constraints, should generate 10 items even at depth 5
+      expect(g.value.length).toBe(10);
+    });
+
     it('should produce a cloneable instance if provided one cloneable underlying', () => {
       // Arrange
       const { instance, generate } = fakeArbitrary<string[]>();

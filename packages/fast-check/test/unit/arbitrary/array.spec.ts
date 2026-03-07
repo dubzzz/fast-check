@@ -45,6 +45,8 @@ describe('array', () => {
           undefined,
           undefined,
           [],
+          undefined,
+          undefined,
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThan(0);
@@ -78,13 +80,15 @@ describe('array', () => {
           undefined,
           undefined,
           [],
+          undefined,
+          undefined,
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(0);
         expect(receivedGeneratedMaxLength).toBeLessThanOrEqual(maxLength);
         expect(Number.isInteger(receivedGeneratedMaxLength)).toBe(true);
         if (config.defaultSizeToMaxWhenMaxSpecified) {
-          expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, undefined, undefined, []);
+          expect(ArrayArbitrary).toHaveBeenCalledWith(childInstance, 0, maxLength, maxLength, undefined, undefined, [], undefined, undefined);
         }
         expect(arb).toBe(instance);
       }),
@@ -114,6 +118,8 @@ describe('array', () => {
           undefined,
           undefined,
           [],
+          undefined,
+          undefined,
         );
         const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
         if (minLength !== 2 ** 31 - 1) {
@@ -156,6 +162,8 @@ describe('array', () => {
             undefined,
             undefined,
             [],
+            undefined,
+            undefined,
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
@@ -170,6 +178,8 @@ describe('array', () => {
               undefined,
               undefined,
               [],
+              undefined,
+              undefined,
             );
           }
           expect(arb).toBe(instance);
@@ -209,6 +219,8 @@ describe('array', () => {
             depthIdentifier,
             undefined,
             [],
+            undefined,
+            undefined,
           );
           const receivedGeneratedMaxLength = ArrayArbitrary.mock.calls[0][2]; // Expecting the real value would check an implementation detail
           expect(receivedGeneratedMaxLength).toBeGreaterThanOrEqual(minLength);
@@ -223,8 +235,46 @@ describe('array', () => {
               depthIdentifier,
               undefined,
               [],
+              undefined,
+              undefined,
             );
           }
+          expect(arb).toBe(instance);
+        },
+      ),
+    );
+  });
+
+  it('should pass depthSize and maxDepth to ArrayArbitrary for array(arb, {depthSize, maxDepth})', () => {
+    fc.assert(
+      fc.property(
+        sizeRelatedGlobalConfigArb,
+        fc.constantFrom('xsmall' as const, 'small' as const, 'medium' as const),
+        fc.nat({ max: 10 }),
+        (config, depthSize, maxDepth) => {
+          // Arrange
+          const { instance: childInstance } = fakeArbitrary<unknown>();
+          const { instance } = fakeArbitrary<unknown[]>();
+          const ArrayArbitrary = vi.spyOn(ArrayArbitraryMock, 'ArrayArbitrary');
+          ArrayArbitrary.mockImplementation(function () {
+            return instance as ArrayArbitraryMock.ArrayArbitrary<unknown>;
+          });
+
+          // Act
+          const arb = withConfiguredGlobal(config, () => array(childInstance, { depthSize, maxDepth }));
+
+          // Assert
+          expect(ArrayArbitrary).toHaveBeenCalledWith(
+            childInstance,
+            0,
+            expect.any(Number),
+            0x7fffffff,
+            undefined,
+            undefined,
+            [],
+            depthSize,
+            maxDepth,
+          );
           expect(arb).toBe(instance);
         },
       ),

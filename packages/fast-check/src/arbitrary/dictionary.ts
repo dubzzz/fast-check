@@ -1,7 +1,7 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { tuple } from './tuple.js';
 import { uniqueArray } from './uniqueArray.js';
-import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
+import type { DepthSize, SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import {
   keyValuePairsToObjectMapper,
   keyValuePairsToObjectUnmapper,
@@ -47,6 +47,22 @@ export interface DictionaryConstraints {
    * @remarks Since 3.15.0
    */
   depthIdentifier?: DepthIdentifier | string;
+  /**
+   * While going deeper and deeper within a recursive structure (see {@link letrec}),
+   * this factor will be used to increase the probability to generate smaller dictionaries.
+   *
+   * @remarks Since 3.x.0
+   */
+  depthSize?: DepthSize;
+  /**
+   * Maximal authorized depth.
+   * Once this depth has been reached only dictionaries of {@link DictionaryConstraints.minKeys | minKeys}
+   * will be generated.
+   *
+   * @defaultValue Number.POSITIVE_INFINITY — _defaulting seen as "max non specified" when `defaultSizeToMaxWhenMaxSpecified=true`_
+   * @remarks Since 3.x.0
+   */
+  maxDepth?: number;
   /**
    * Do not generate objects with null prototype
    * @defaultValue false
@@ -96,6 +112,8 @@ export function dictionary<K extends PropertyKey, V>(
       size: constraints.size,
       selector: dictionaryKeyExtractor,
       depthIdentifier: constraints.depthIdentifier,
+      depthSize: constraints.depthSize,
+      maxDepth: constraints.maxDepth,
     }),
     noNullPrototype ? constant(false) : boolean(),
   ).map(keyValuePairsToObjectMapper, keyValuePairsToObjectUnmapper);

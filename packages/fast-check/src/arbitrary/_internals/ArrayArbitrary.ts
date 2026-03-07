@@ -9,12 +9,17 @@ import type { CustomSetBuilder } from './interfaces/CustomSet.js';
 import type { DepthContext, DepthIdentifier } from './helpers/DepthContext.js';
 import { getDepthContextFor } from './helpers/DepthContext.js';
 import { buildSlicedGenerator } from './helpers/BuildSlicedGenerator.js';
+import type { DepthSize } from './helpers/MaxLengthFromMinLength.js';
+import { depthBiasFromSizeForArbitrary } from './helpers/MaxLengthFromMinLength.js';
 import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
 
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;
 const safeMathMax = Math.max;
+const safeMathMin = Math.min;
+const safeMathPow = Math.pow;
 const safeArrayIsArray = Array.isArray;
+const safePositiveInfinity = Number.POSITIVE_INFINITY;
 
 /** @internal */
 type ArrayArbitraryContext = {
@@ -36,6 +41,9 @@ function biasedMaxLength(minLength: number, maxLength: number): number {
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly depthContext: DepthContext;
+  readonly depthBias: number;
+  readonly maxDepth: number;
+  readonly hasDepthConstraints: boolean;
 
   constructor(
     readonly arb: Arbitrary<T>,
@@ -47,10 +55,15 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     // it's output just in case produced values are too small (below minLength)
     readonly setBuilder: CustomSetBuilder<Value<T>> | undefined,
     readonly customSlices: T[][],
+    depthSize?: DepthSize,
+    maxDepth?: number,
   ) {
     super();
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
     this.depthContext = getDepthContextFor(depthIdentifier);
+    this.hasDepthConstraints = depthSize !== undefined || maxDepth !== undefined;
+    this.depthBias = depthBiasFromSizeForArbitrary(depthSize, maxDepth !== undefined);
+    this.maxDepth = maxDepth !== undefined ? maxDepth : safePositiveInfinity;
   }
 
   private preFilter(tab: Value<T>[]): Value<T>[] {
@@ -170,9 +183,26 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     return new Value(vs, context);
   }
 
+  private computeDepthAdjustedMaxGeneratedLength(): number {
+    if (!this.hasDepthConstraints || this.minLength === this.maxGeneratedLength) {
+      return this.maxGeneratedLength;
+    }
+    if (this.maxDepth <= this.depthContext.depth) {
+      return this.minLength;
+    }
+    if (this.depthBias <= 0) {
+      return this.maxGeneratedLength;
+    }
+    const scaleFactor = safeMathPow(1 + this.depthBias, this.depthContext.depth);
+    return safeMathMax(
+      this.minLength,
+      this.minLength + safeMathFloor((this.maxGeneratedLength - this.minLength) / scaleFactor),
+    );
+  }
+
   generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {
     const biasMeta = this.applyBias(mrng, biasFactor);
-    const targetSize = biasMeta.size;
+    const targetSize = safeMathMin(biasMeta.size, this.computeDepthAdjustedMaxGeneratedLength());
     const items =
       this.setBuilder !== undefined
         ? this.safeGenerateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasMeta.biasFactorItems)
