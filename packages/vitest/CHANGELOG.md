@@ -10,6 +10,7 @@ _TODO Description_
 
 ## Features
 
+- ([PR#6695](https://github.com/dubzzz/fast-check/pull/6695)) Support for `beforeEach`/`afterEach` in `@fast-check/vitest`
 
 
 ## Fixes
