@@ -86,29 +86,7 @@ Please note that the properties accepted by `@fast-check/vitest` as input can ei
 
 ### Hooks: `beforeEach` / `afterEach`
 
-Vitest's `beforeEach` and `afterEach` hooks are automatically wired into predicates. They are called respectively before and after each execution of the predicate. If a predicate runs _n_ times, `beforeEach` will be called _n_ times before it and `afterEach` _n_ times after it.
-
-```javascript
-import { test, fc } from '@fast-check/vitest';
-import { beforeEach, afterEach, expect } from 'vitest';
-
-beforeEach(() => {
-  setupMocks();
-  return () => {
-    cleanupMocks();
-  };
-});
-
-afterEach(() => {
-  restoreState();
-});
-
-test.prop([fc.string()])('should work with hooks', (value) => {
-  expect(myFunction(value)).toBeDefined();
-});
-```
-
-> **Note:** Cleanup functions returned by `beforeEach` on the first predicate execution are delayed until the end of the test (handled by vitest's own teardown). All other cleanups run between predicate executions as expected. In other words, `beforeEach` and `afterEach` are always called before and after each predicate execution, but the cleanup of the first `beforeEach` is deferred.
+Vitest's `beforeEach` and `afterEach` hooks are automatically wired into predicates. They are called respectively before and after each execution of the predicate. If a predicate runs _n_ times, `beforeEach` will be called _n_ times before it and `afterEach` _n_ times after it. The only caveat is that cleanup functions returned by `beforeEach` on the first predicate execution are deferred until the end of the test, as they are handled by vitest's own teardown mechanism. All other cleanups run between predicate executions as expected.
 
 ### Advanced
 
