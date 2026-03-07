@@ -42,9 +42,9 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           trigger_phrase: '@claude'
           assignee_trigger: 'dubzzz'
-          claude_args: '--model opus'
-          custom_instructions: |
-            ## Pull Request Guidelines
+          claude_args: |
+            --model opus
+            --append-system-prompt "## Pull Request Guidelines
 
             When opening a pull request, follow the gitmoji specification:
 
@@ -61,7 +61,7 @@ jobs:
             1. **Description** section — short description and link to related issues
             2. **Checklist** section — keep all checklist items; only check boxes that are fulfilled
 
-            Do not delete, reorder, or skip any sections or checklist items from the template.
+            Do not delete, reorder, or skip any sections or checklist items from the template."
 
           # Optional: Customize the trigger phrase (default: @claude)
           # trigger_phrase: "/claude"
