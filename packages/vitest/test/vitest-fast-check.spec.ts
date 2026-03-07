@@ -157,84 +157,43 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
-    it.concurrent.only(`should call beforeEach in the right order`, async () => {
+    it.concurrent(`should call beforeEach, afterEach and clean-ups in proper order`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
-        const requestedNumExecutions = 3;
+        const requestedNumExecutions = 4;
+        let runId = 0;
         // @ts-expect-error - No type specified, but expected
         const probes = [];
         beforeEachVi(() => {
           probes.push(`beforeEach A`);
+          return () => probes.push(`clean-up beforeEach A`);
         });
-        describeVi('describe', () => {
-          beforeEachVi(() => {
-            probes.push(`beforeEach AA`);
-          });
-          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-            probes.push(`predicate`);
-            return true;
-          });
-          beforeEachVi(() => {
-            probes.push(`beforeEach BB`);
-          });
-        });
-        beforeEachVi(() => {
-          probes.push(`beforeEach B`);
-        });
-        afterAllVi(() => {
-          // @ts-expect-error - No type specified, but expected
-          expectVi(probes).toEqual([
-            // outer level in order of declaration first
-            'beforeEach A',
-            'beforeEach B',
-            // then inner level in order of declaration
-            'beforeEach AA',
-            'beforeEach BB',
-            // then predicate
-            'predicate',
-            // and same for second run
-            'beforeEach A',
-            'beforeEach B',
-            'beforeEach AA',
-            'beforeEach BB',
-            'predicate',
-            // and same for third run
-            'beforeEach A',
-            'beforeEach B',
-            'beforeEach AA',
-            'beforeEach BB',
-            'predicate',
-          ]);
-        });
-      });
-
-      // Act
-      const out = await runSpec(specDirectory);
-
-      // Assert
-      expectPass(out);
-    });
-
-    it.concurrent.only(`should call afterEach in the right order`, async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, () => {
-        const requestedNumExecutions = 3;
-        // @ts-expect-error - No type specified, but expected
-        const probes = [];
         afterEachVi(() => {
           probes.push(`afterEach A`);
         });
         describeVi('describe', () => {
+          beforeEachVi(() => {
+            probes.push(`beforeEach AA`);
+            return () => probes.push(`clean-up beforeEach AA`);
+          });
           afterEachVi(() => {
             probes.push(`afterEach AA`);
           });
           runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-            probes.push(`predicate`);
+            probes.push(`predicate ${++runId}`);
             return true;
+          });
+          beforeEachVi(() => {
+            probes.push(`beforeEach BB`);
+            return () => probes.push(`clean-up beforeEach BB`);
           });
           afterEachVi(() => {
             probes.push(`afterEach BB`);
           });
+        });
+        beforeEachVi(() => {
+          probes.push(`beforeEach B`);
+          return () => probes.push(`clean-up beforeEach B`);
         });
         afterEachVi(() => {
           probes.push(`afterEach B`);
@@ -242,80 +201,65 @@ describe.each<DescribeOptions>([
         afterAllVi(() => {
           // @ts-expect-error - No type specified, but expected
           expectVi(probes).toEqual([
-            // predicate
-            'predicate',
-            // then inner level in reverse order of declaration
-            'afterEach BB',
-            'afterEach AA',
-            // outer level in reverse order of declaration first
-            'afterEach B',
-            'afterEach A',
-            // and same for second run
-            'predicate',
-            'afterEach BB',
-            'afterEach AA',
-            'afterEach B',
-            'afterEach A',
-            // and same for third run
-            'predicate',
+            // WARNING: First and last run behave differently from other runs!
+            // Normal order being:
+            // - beforeEach from outer-most level to inner level in order of declaration
+            // - test itself
+            // - afterEach from inner-most level to outer level in reversed order of declaration
+            // - clean-ups for beforeEach from inner-most level to outer level in reversed order of declaration
+            // First run: clean-ups of beforeEach are delayed to the end
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 1',
             'afterEach BB',
             'afterEach AA',
             'afterEach B',
             'afterEach A',
-          ]);
-        });
-      });
-
-      // Act
-      const out = await runSpec(specDirectory);
-
-      // Assert
-      expectPass(out);
-    });
-
-    it.concurrent.only(`should call beforeEach clean-up in best-effort`, async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, () => {
-        const requestedNumExecutions = 3;
-        // @ts-expect-error - No type specified, but expected
-        const probes = [];
-        beforeEachVi(() => {
-          return () => probes.push(`clean-up beforeEach A`);
-        });
-        describeVi('describe', () => {
-          beforeEachVi(() => {
-            return () => probes.push(`clean-up beforeEach AA`);
-          });
-          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-            probes.push(`predicate`);
-            return true;
-          });
-          beforeEachVi(() => {
-            return () => probes.push(`clean-up beforeEach BB`);
-          });
-        });
-        beforeEachVi(() => {
-          return () => probes.push(`clean-up beforeEach B`);
-        });
-        afterAllVi(() => {
-          // @ts-expect-error - No type specified, but expected
-          expectVi(probes).toEqual([
-            // predicate
-            'predicate',
-            // and for second run: predicate then clean-up of beforeEach in reverse order
-            'predicate',
+            // Second run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 2',
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
             'clean-up beforeEach BB',
             'clean-up beforeEach AA',
             'clean-up beforeEach B',
             'clean-up beforeEach A',
-            // and for third run: predicate then clean-up of beforeEach in reverse order
-            'predicate',
+            // Third run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 3',
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
             'clean-up beforeEach BB',
             'clean-up beforeEach AA',
             'clean-up beforeEach B',
             'clean-up beforeEach A',
-            // Ideally these clean-ups should be executed earlier
-            // late clean-ups for first run
+            // Fourth run: we let Vitest handling the afterEach for this run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 4',
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+            // Vitest handling: clean-ups for first run and afterEach for last one
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
             'clean-up beforeEach BB',
             'clean-up beforeEach AA',
             'clean-up beforeEach B',
@@ -330,74 +274,6 @@ describe.each<DescribeOptions>([
       // Assert
       expectPass(out);
     });
-
-    it.concurrent.only(
-      `should call beforeEach/afterEach and clean-ups in proper order (at least for next runs)`,
-      async () => {
-        // Arrange
-        const specDirectory = await writeToFile(runnerName, () => {
-          const requestedNumExecutions = 3;
-          // @ts-expect-error - No type specified, but expected
-          const probes = [];
-          beforeEachVi(() => {
-            probes.push(`beforeEach A`);
-            return () => probes.push(`clean-up beforeEach A`);
-          });
-          afterEachVi(() => {
-            probes.push(`afterEach A`);
-          });
-          describeVi('describe', () => {
-            beforeEachVi(() => {
-              probes.push(`beforeEach AA`);
-              return () => probes.push(`clean-up beforeEach AA`);
-            });
-            afterEachVi(() => {
-              probes.push(`afterEach AA`);
-            });
-            runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-              probes.push(`predicate`);
-              return true;
-            });
-          });
-          afterAllVi(() => {
-            // @ts-expect-error - No type specified, but expected
-            expectVi(probes).toEqual([
-              // First run (except clean-ups for beforeEach)
-              'beforeEach A',
-              'beforeEach AA',
-              'predicate',
-              'afterEach AA',
-              'afterEach A',
-              // Second run
-              'beforeEach A',
-              'beforeEach AA',
-              'predicate',
-              'afterEach AA',
-              'afterEach A',
-              'clean-up beforeEach AA',
-              'clean-up beforeEach BB',
-              // Third run
-              'beforeEach A',
-              'beforeEach AA',
-              'predicate',
-              'afterEach AA',
-              'afterEach A',
-              'clean-up beforeEach AA',
-              'clean-up beforeEach BB',
-              // Clean-ups for first run
-              'clean-up beforeEach AA',
-              'clean-up beforeEach BB',
-            ]);
-          });
-        });
-
-        // Act
-        const out = await runSpec(specDirectory);
-
-        // Assert
-        expectPass(out);
-      },
-    );
 
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
