@@ -1,6 +1,6 @@
 # 0.3.0
 
-_TODO Description_
+_Support `beforeEach`/`afterEach` hooks and ESM-only bundle_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.4...vitest%2Fv0.3.0)]
 
 ## Breaking changes
