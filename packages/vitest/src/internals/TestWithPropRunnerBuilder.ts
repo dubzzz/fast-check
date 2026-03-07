@@ -105,7 +105,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
           'Could not find the running test context. Make sure your property-based test is defined inside a vitest test() or it() block. Running outside a standard vitest test callback (e.g. in a worker thread) is not supported.',
         );
       }
-      
+
       const suite = test.suite ?? test.file;
       if (suite === undefined) {
         throw new Error(
