@@ -8,7 +8,6 @@ _TODO Description_
 - ([PR#6599](https://github.com/dubzzz/fast-check/pull/6599)) Add basic `maxLength` support to `stringMatching`
 - ([PR#6600](https://github.com/dubzzz/fast-check/pull/6600)) Better clamp on regexes when `maxLength` on `stringMatching`
 - ([PR#6687](https://github.com/dubzzz/fast-check/pull/6687)) Deprecate `Random::next(n)` and `Random::nextInt()`
-- ([PR#6695](https://github.com/dubzzz/fast-check/pull/6695)) Support for `beforeEach`/`afterEach` in `@fast-check/vitest`
 
 ## Fixes
 
