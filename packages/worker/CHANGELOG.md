@@ -1,3 +1,29 @@
+# 0.6.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/worker%2Fv0.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/worker%2Fv0.5.0...worker%2Fv0.6.0)]
+
+## Breaking changes
+
+- ([PR#6615](https://github.com/dubzzz/fast-check/pull/6615)) Drop CommonJS support
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6564](https://github.com/dubzzz/fast-check/pull/6564)) Bug: Fix GlobalPool premature worker termination
+- ([PR#6658](https://github.com/dubzzz/fast-check/pull/6658)) Doc: Update Readme to point to npmx
+- ([PR#6661](https://github.com/dubzzz/fast-check/pull/6661)) Performance: Import less from `pure-rand`
+- ([PR#6689](https://github.com/dubzzz/fast-check/pull/6689)) Performance: Bump pure-rand to v8
+- ([PR#6268](https://github.com/dubzzz/fast-check/pull/6268)) Test: Migrate tests from CJS to ESM
+- ([PR#6384](https://github.com/dubzzz/fast-check/pull/6384)) Test: Increase test timeout to 30s
+- ([PR#6386](https://github.com/dubzzz/fast-check/pull/6386)) Test: Bump e2e test timeouts from 1s to 5s
+- ([PR#6385](https://github.com/dubzzz/fast-check/pull/6385)) Test: Log to troubleshoot concurrentAssert
+
+---
+
 # 0.5.0
 
 _Drop support to fast-check v3_
