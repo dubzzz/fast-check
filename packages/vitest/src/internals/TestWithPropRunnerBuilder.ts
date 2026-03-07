@@ -2,6 +2,7 @@ import { readConfigureGlobal } from 'fast-check';
 
 import type { Parameters as FcParameters } from 'fast-check';
 import type { Prop, PromiseProp, It, ArbitraryTuple, FcExtra } from './types.js';
+import { readVitestSeed } from './VitestSeedReader.js';
 
 function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
@@ -23,7 +24,8 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     if (seedFromGlobals !== undefined) {
       customParams.seed = seedFromGlobals;
     } else {
-      customParams.seed = Date.now() ^ (Math.random() * 0x100000000);
+      const seedFromVitest = readVitestSeed();
+      customParams.seed = seedFromVitest !== undefined ? seedFromVitest : Date.now() ^ (Math.random() * 0x100000000);
     }
   }
   // Handle timeout

@@ -152,6 +152,26 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
+    it.concurrent(
+      `should use vitest sequence.seed as the default seed in ${runnerName}.prop`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          runner.prop([fc.string(), fc.string(), fc.string()])('property', (a, b, c) => {
+            return `${a}${b}${c}`.includes(b);
+          });
+        });
+
+        // Act
+        const vitestSeed = 12345;
+        const out = await runSpec(specDirectory, { sequenceSeed: vitestSeed });
+
+        // Assert
+        expectPass(out);
+        expect(out).toContain(`(with seed=${vitestSeed})`);
+      },
+    );
+
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
@@ -360,7 +380,10 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
   return specDirectory;
 }
 
-async function runSpec(specDirectory: string, options?: { allowOnly?: boolean }): Promise<string> {
+async function runSpec(
+  specDirectory: string,
+  options?: { allowOnly?: boolean; sequenceSeed?: number },
+): Promise<string> {
   try {
     const args = [
       '../../node_modules/vitest/vitest.mjs',
@@ -371,6 +394,9 @@ async function runSpec(specDirectory: string, options?: { allowOnly?: boolean })
     ];
     if (options?.allowOnly) {
       args.push('--allowOnly');
+    }
+    if (options?.sequenceSeed !== undefined) {
+      args.push(`--sequence.seed=${options.sequenceSeed}`);
     }
     const { stdout: specOutput } = await execFile('node', args, { cwd: specDirectory });
     return specOutput;

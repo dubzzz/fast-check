@@ -4,6 +4,7 @@ import type { ExtraContext } from './types.js';
 
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
 import { assert, asyncProperty, gen, readConfigureGlobal } from 'fast-check';
+import { readVitestSeed } from './VitestSeedReader.js';
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
@@ -33,6 +34,7 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
               const parameters: Parameters<unknown> = {
                 // Remark: We should turn it back to 1 in case g never gets called by the first execution of the predicate
                 numRuns: config.numRuns ?? 1,
+                seed: config.seed ?? readVitestSeed(),
                 endOnFailure: config.endOnFailure ?? true,
                 includeErrorInReport: false,
                 // @ts-expect-error - Added for backward compatility with fast-check@3
