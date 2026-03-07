@@ -1,15 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import * as prand from 'pure-rand';
+import { mersenne } from 'pure-rand/generator/mersenne';
+import { congruential32 } from 'pure-rand/generator/congruential32';
+import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 
-import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
+import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType.js';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
 
+const prand = { mersenne, congruential32, xorshift128plus, xoroshiro128plus };
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
-    randomType: fc.constantFrom(prand.mersenne, prand.congruential32, prand.xorshift128plus, prand.xoroshiro128plus),
+    randomType: fc.constantFrom(mersenne, congruential32, xorshift128plus, xoroshiro128plus),
     numRuns: fc.nat(),
     maxSkipsPerRun: fc.nat(),
     timeout: fc.nat(),
@@ -44,7 +48,7 @@ describe('QualifiedParameters', () => {
     it('Should forward as-is values already set in Parameters', () =>
       fc.assert(
         fc.property(parametersArbitrary, (params) => {
-          const qualifiedParams = QualifiedParameters.read(params);
+          const qualifiedParams = read(params);
           for (const key of Object.keys(params)) {
             expect(qualifiedParams).toHaveProperty(key);
             if (key !== 'randomType') {
@@ -58,7 +62,7 @@ describe('QualifiedParameters', () => {
       fc.assert(
         fc.property(parametersArbitrary, fc.boolean(), (params, verbose) => {
           const expectedVerbosityLevel = verbose ? VerbosityLevel.Verbose : VerbosityLevel.None;
-          const qparams = QualifiedParameters.read({ ...params, verbose });
+          const qparams = read({ ...params, verbose });
           return qparams.verbose === expectedVerbosityLevel;
         }),
       ));
@@ -68,9 +72,9 @@ describe('QualifiedParameters', () => {
           parametersArbitrary,
           fc.option(hardCodedRandomTypeWithJump, { nil: undefined }),
           (params, randomType) => {
-            const qparams = QualifiedParameters.read({ ...params, randomType });
+            const qparams = read({ ...params, randomType });
             const resolvedRandomType = randomType === 'congruential' ? 'congruential32' : randomType;
-            const defaultRandomType = prand.xorshift128plus;
+            const defaultRandomType = xorshift128plus;
             if (resolvedRandomType === undefined) {
               expect(qparams.randomType).toBe(defaultRandomType);
             } else if (resolvedRandomType === 'congruential32' || resolvedRandomType === 'mersenne') {
@@ -85,7 +89,7 @@ describe('QualifiedParameters', () => {
     it('Should throw on invalid randomType', () =>
       fc.assert(
         fc.property(parametersArbitrary, (params) => {
-          expect(() => QualifiedParameters.read({ ...params, randomType: 'invalid' as RandomType })).toThrowError();
+          expect(() => read({ ...params, randomType: 'invalid' as RandomType })).toThrowError();
         }),
       ));
     describe('Seeds outside of 32 bits range', () => {
@@ -98,15 +102,15 @@ describe('QualifiedParameters', () => {
       it('Should produce 32 bits signed seed', () =>
         fc.assert(
           fc.property(seedsOutsideRangeArb, (unsafeSeed) => {
-            const qparams = QualifiedParameters.read({ seed: unsafeSeed });
+            const qparams = read({ seed: unsafeSeed });
             return (qparams.seed | 0) === qparams.seed;
           }),
         ));
       it('Should produce the same seed given the same input', () =>
         fc.assert(
           fc.property(seedsOutsideRangeArb, (unsafeSeed) => {
-            const qparams1 = QualifiedParameters.read({ seed: unsafeSeed });
-            const qparams2 = QualifiedParameters.read({ seed: unsafeSeed });
+            const qparams1 = read({ seed: unsafeSeed });
+            const qparams2 = read({ seed: unsafeSeed });
             return qparams1.seed === qparams2.seed;
           }),
         ));
@@ -117,8 +121,8 @@ describe('QualifiedParameters', () => {
             fc.double({ min: 0, max: 1 - Number.EPSILON }),
             (unsafeSeed1, unsafeSeed2) => {
               fc.pre(Math.abs(unsafeSeed1 * 0xffffffff - unsafeSeed2 * 0xffffffff) >= 1);
-              const qparams1 = QualifiedParameters.read({ seed: unsafeSeed1 });
-              const qparams2 = QualifiedParameters.read({ seed: unsafeSeed2 });
+              const qparams1 = read({ seed: unsafeSeed1 });
+              const qparams2 = read({ seed: unsafeSeed2 });
               return qparams1.seed !== qparams2.seed;
             },
           ),
@@ -126,7 +130,7 @@ describe('QualifiedParameters', () => {
       it('Should truncate integer values into a 32 signed bits seed', () =>
         fc.assert(
           fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (unsafeSeed) => {
-            const qparams = QualifiedParameters.read({ seed: unsafeSeed });
+            const qparams = read({ seed: unsafeSeed });
             return qparams.seed === (unsafeSeed | 0);
           }),
         ));

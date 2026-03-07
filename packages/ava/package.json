@@ -34,15 +34,15 @@
     "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "ava": "^4 || ^5 || ^6"
+    "ava": "^7.0.0"
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "@types/node": "^24.10.13",
-    "ava": "^6.4.1",
+    "@types/node": "^24.12.0",
+    "ava": "^7.0.0",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
-    "rolldown": "^1.0.0-rc.4",
+    "rolldown": "^1.0.0-rc.7",
     "rxjs": "^7.8.2",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",

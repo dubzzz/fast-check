@@ -31,7 +31,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         id: pnpm-cache
         with:
           node-version: '24.x'
@@ -52,7 +52,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         id: pnpm-cache
         with:
           node-version: '24.x'
@@ -75,7 +75,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -92,7 +92,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -111,7 +111,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -132,7 +132,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
@@ -143,7 +143,7 @@ jobs:
       - name: Create bundles
         run: node --run pack:all
       - name: Upload production packages
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: bundles
           path: packages/**/package.tgz
@@ -164,14 +164,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -192,14 +192,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -260,14 +260,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v${{matrix.node-version}}
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{matrix.node-version}}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -293,7 +293,7 @@ jobs:
             pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
       - name: Upload coverage
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         if: env.ENABLE_COVERAGE == 'true'
         with:
           name: 'coverage-${{matrix.shard-id}}'
@@ -310,7 +310,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Download coverage
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           pattern: coverage-*
           path: coverage-reports/
@@ -336,14 +336,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm --filter website install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -373,7 +373,7 @@ jobs:
       - name: Copy raw logo within documentation
         run: cp website/static/img/logo.png website/build/assets/images/logo.png
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: website
           path: website/build/
@@ -392,14 +392,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -457,14 +457,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -477,22 +477,22 @@ jobs:
       - name: Switch folder to CommonJS
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
-        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.cts"
       - name: Check in CommonJS mode with NodeNext
-        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
+        run: pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.cts"
       - name: Switch folder to ES Modules
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh cts mts"
       - name: Check in ES Modules mode
         run: |
           if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
           else
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict *.mts"
           fi
       - name: Check in ES Modules mode with NodeNext
         run: |
           if [ "${{ matrix.ts-version }}" = "5.0" ] || [ "${{ matrix.ts-version }}" = "5.7" ]; then
-            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
+            pnpm --filter {./packages/**} --filter '!@fast-check/ava' --filter '!@fast-check/packaged' --filter '!@fast-check/poisoning' --filter '!@fast-check/vitest' --filter '!@fast-check/worker' --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
           else
             pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
           fi
@@ -530,15 +530,14 @@ jobs:
   # Publication jobs
   publish_documentation_netlify:
     name: 'Publish documentation on Netlify'
+    if: github.event_name == 'push'
     needs: documentation
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     env:
-      DRAFT_BUILD: ${{github.event_name == 'push' && github.ref == 'refs/heads/main' && 'false' || 'true'}}
+      DRAFT_BUILD: ${{github.ref == 'refs/heads/main' && 'false' || 'true'}}
     steps:
       - name: Download documentation artifacts
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: website
           path: artifacts/
@@ -556,27 +555,13 @@ jobs:
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
-        id: deployment_to_netlify
         env:
           DRAFT_BUILD_VALUE: ${{env.DRAFT_BUILD}}
-        run: |
-          curl -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@artifacts.zip" https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE > deploy.json
-          cat deploy.json
-          deploy_url=$(jq -r '.deploy_url' --exit-status deploy.json)
-          echo "deploy_url=$deploy_url" >> $GITHUB_OUTPUT
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        name: Notify the user of the preview
-        if: env.DRAFT_BUILD == 'true'
-        env:
-          DEPLOY_URL: ${{steps.deployment_to_netlify.outputs.deploy_url}}
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `👋 A preview of the new documentation is available at: ${process.env.DEPLOY_URL}`
-            })
+        run: >-
+          curl -H "Content-Type: application/zip"
+          -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}"
+          --data-binary "@artifacts.zip"
+          https://api.netlify.com/api/v1/sites/${{secrets.NETLIFY_SITE_ID}}/deploys?draft=$DRAFT_BUILD_VALUE
   check_any_package:
     name: 'Check publish any package'
     needs: all_checks_passed
@@ -621,13 +606,13 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -648,7 +633,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
           subject-path: packages/fast-check/${{env.TGZ_NAME}}
@@ -696,13 +681,13 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -723,7 +708,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
           subject-path: packages/ava/${{env.TGZ_NAME}}
@@ -771,13 +756,13 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -798,7 +783,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
           subject-path: packages/jest/${{env.TGZ_NAME}}
@@ -846,13 +831,13 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -873,7 +858,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
           subject-path: packages/packaged/${{env.TGZ_NAME}}
@@ -921,13 +906,13 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -948,7 +933,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
           subject-path: packages/poisoning/${{env.TGZ_NAME}}
@@ -996,13 +981,13 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -1023,7 +1008,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
           subject-path: packages/vitest/${{env.TGZ_NAME}}
@@ -1071,13 +1056,13 @@ jobs:
       attestations: write
     steps:
       - name: Using Node v24.x
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
       - name: Download production packages
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bundles
           path: packages/
@@ -1098,7 +1083,7 @@ jobs:
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
         run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
-      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
           subject-path: packages/worker/${{env.TGZ_NAME}}

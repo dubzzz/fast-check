@@ -5,8 +5,8 @@
 Bring the power of property based testing framework `fast-check` into Vitest.
 `@fast-check/vitest` simplifies the integration of `fast-check` into Vitest.
 
-<a href="https://badge.fury.io/js/@fast-check%2Fvitest"><img src="https://badge.fury.io/js/@fast-check%2Fvitest.svg" alt="npm version" /></a>
-<a href="https://www.npmjs.com/package/@fast-check/vitest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fvitest" alt="monthly downloads" /></a>
+<a href="https://npmx.dev/package/@fast-check/vitest"><img src="https://badge.fury.io/js/@fast-check%2Fvitest.svg" alt="npm version" /></a>
+<a href="https://npmx.dev/package/@fast-check/vitest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fvitest" alt="monthly downloads" /></a>
 <a href="https://github.com/dubzzz/fast-check/blob/main/packages/jest/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fvitest.svg" alt="License" /></a>
 
 ---

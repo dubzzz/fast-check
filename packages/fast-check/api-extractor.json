@@ -6,7 +6,7 @@
   "tsdocMetadata": {
     "enabled": false
   },
-  "mainEntryPointFilePath": "lib/types/fast-check-default.d.ts",
+  "mainEntryPointFilePath": "lib/fast-check.d.ts",
   "dtsRollup": {
     "enabled": false
   },

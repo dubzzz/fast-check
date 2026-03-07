@@ -1,4 +1,4 @@
-import { DbConnection } from './DbConnection';
+import { DbConnection } from './DbConnection.js';
 
 export class Counter {
   constructor(private readonly db: DbConnection) {}

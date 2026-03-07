@@ -8,14 +8,13 @@ Property based testing framework for JavaScript/TypeScript
 
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/actions?query=branch%3Amain+workflow%3A%22Build+Status%22"><img src="https://github.com/dubzzz/fast-check/actions/workflows/build-status.yml/badge.svg?branch=main" alt="Build Status" /></a>
-  <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
+  <a href="https://npmx.dev/package/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
+  <a href="https://npmx.dev/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
   <a href="https://fast-check.dev/"><img src="https://img.shields.io/badge/-Documentation-%23282ea9.svg" title="Documentation" /></a>
 </p>
 <p align="center">
   <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/main"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/main/graph/badge.svg" alt="Coverage Status (unit tests)" /></a>
   <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
-  <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
   <a href="https://securityscorecards.dev/viewer/?platform=github.com&org=dubzzz&repo=fast-check"><img src="https://api.securityscorecards.dev/projects/github.com/dubzzz/fast-check/badge" alt="OpenSSF Scorecard" /></a>
   <a href="https://bestpractices.coreinfrastructure.org/projects/7450"><img src="https://bestpractices.coreinfrastructure.org/projects/7450/badge" alt="OpenSSF Best Practices" /></a>
 </p>

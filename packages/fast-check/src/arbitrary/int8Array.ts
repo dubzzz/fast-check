@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Int8Array } from '../utils/globals.js';
+import { Int8Array as SInt8Array } from '../utils/globals.js';
 import { integer } from './integer.js';
 import type { IntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
 import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
@@ -14,7 +14,7 @@ export function int8Array(constraints: IntArrayConstraints = {}): Arbitrary<Int8
     constraints,
     -128,
     127,
-    Int8Array,
+    SInt8Array,
     integer,
   );
 }

@@ -123,10 +123,11 @@ describe('option (integration)', () => {
   });
 
   it('should always return nil when freq = 1', () => {
-    fc.assert(
-      fc.property(option(constant(true), { freq: 1 }), (o) => {
+    assertProduceCorrectValues(
+      () => option(constant(true), { freq: 1 }),
+      (o) => {
         expect(o).toBe(null);
-      }),
+      },
     );
   });
 });

@@ -3,7 +3,8 @@ import type { PreconditionFailure } from '../precondition/PreconditionFailure.js
 import type { PropertyFailure, IRawProperty } from '../property/IRawProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
-import { QualifiedParameters } from './configuration/QualifiedParameters.js';
+import { read } from './configuration/QualifiedParameters.js';
+import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import { decorateProperty } from './DecorateProperty.js';
 import type { RunDetails } from './reporter/RunDetails.js';
@@ -103,7 +104,7 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid property encountered, please use a valid property');
   if (rawProperty.run === null || rawProperty.run === undefined)
     throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>({
+  const qParams: QualifiedParameters<Ts> = read<Ts>({
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
   });

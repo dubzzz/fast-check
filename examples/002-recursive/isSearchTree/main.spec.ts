@@ -1,9 +1,9 @@
 import { describe, it } from 'vitest';
 import fc from 'fast-check';
 import _ from 'lodash';
-import { binarySearchTreeWithMaxDepth } from './arbitraries/BinarySearchTreeArbitrary';
-import { isSearchTree, Tree } from './src/isSearchTree';
-import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary';
+import { binarySearchTreeWithMaxDepth } from './arbitraries/BinarySearchTreeArbitrary.js';
+import { isSearchTree, Tree } from './src/isSearchTree.js';
+import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary.js';
 
 describe('isSearchTree', () => {
   it('should always mark binary search trees as search trees', () => {

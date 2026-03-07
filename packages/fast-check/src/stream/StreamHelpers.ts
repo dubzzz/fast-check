@@ -11,12 +11,14 @@ class Nil<T> implements IterableIterator<T> {
   next(value?: any): IteratorResult<T> {
     return { value, done: true };
   }
-  static nil = new Nil<any>();
 }
 
 /** @internal */
+const nil = new Nil<any>();
+
+/** @internal */
 export function nilHelper<T>(): IterableIterator<T> {
-  return Nil.nil;
+  return nil;
 }
 
 /** @internal */

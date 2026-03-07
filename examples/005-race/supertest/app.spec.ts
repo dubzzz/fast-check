@@ -2,10 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { MockedFunction } from 'vitest';
 import fc from 'fast-check';
 import request from 'supertest';
-import type { User } from './src/db';
-import { app, dropDeactivatedInternal } from './src/app';
+import { app, dropDeactivatedInternal } from './src/app.js';
 // import { app, dropDeactivatedInternal } from'./src/appBug';
-import * as DbMock from './src/db';
+import * as DbMock from './src/db.js';
 
 vi.mock('./src/db');
 

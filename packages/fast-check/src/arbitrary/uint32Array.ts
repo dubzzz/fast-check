@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Uint32Array } from '../utils/globals.js';
+import { Uint32Array as SUint32Array } from '../utils/globals.js';
 import { integer } from './integer.js';
 import type { IntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
 import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
@@ -14,7 +14,7 @@ export function uint32Array(constraints: IntArrayConstraints = {}): Arbitrary<Ui
     constraints,
     0,
     0xffffffff,
-    Uint32Array,
+    SUint32Array,
     integer,
   );
 }

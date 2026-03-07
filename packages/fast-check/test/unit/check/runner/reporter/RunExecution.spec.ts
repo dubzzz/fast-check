@@ -4,7 +4,7 @@ import * as fc from 'fast-check';
 import { RunExecution } from '../../../../../src/check/runner/reporter/RunExecution.js';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
 import { ExecutionStatus } from '../../../../../src/fast-check.js';
-import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
+import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 
 describe('RunExecution', () => {
   it('Should expose data coming from the last failure', () =>
@@ -31,7 +31,7 @@ describe('RunExecution', () => {
           }
           // Assert the value
           const lastFailure = failuresDesc[failuresDesc.length - 1];
-          const details = run.toRunDetails(seed, '', 10000, QualifiedParameters.read({}));
+          const details = run.toRunDetails(seed, '', 10000, read({}));
           expect(details.failed).toBe(true);
           expect(details.interrupted).toBe(false);
           expect(details.counterexamplePath).not.toBe(null);
@@ -65,9 +65,7 @@ describe('RunExecution', () => {
           run.fail(42, failureId, { error: new Error('Failed') });
         }
         // Assert the value
-        expect(run.toRunDetails(seed, '', 10000, QualifiedParameters.read({})).counterexamplePath).toEqual(
-          path.join(':'),
-        );
+        expect(run.toRunDetails(seed, '', 10000, read({})).counterexamplePath).toEqual(path.join(':'));
       }),
     ));
   it('Should generate correct counterexamplePath given initial offset', () =>
@@ -89,9 +87,9 @@ describe('RunExecution', () => {
           const joinedPath = [...offsetPath, ...addedPath.slice(1)];
           joinedPath[offsetPath.length - 1] += addedPath[0];
           // Assert the value
-          expect(
-            run.toRunDetails(seed, offsetPath.join(':'), 10000, QualifiedParameters.read({})).counterexamplePath,
-          ).toEqual(joinedPath.join(':'));
+          expect(run.toRunDetails(seed, offsetPath.join(':'), 10000, read({})).counterexamplePath).toEqual(
+            joinedPath.join(':'),
+          );
         },
       ),
     ));
@@ -124,7 +122,7 @@ describe('RunExecution', () => {
                 break;
             }
           }
-          const details = run.toRunDetails(0, '', executionStatuses.length + 1, QualifiedParameters.read({}));
+          const details = run.toRunDetails(0, '', executionStatuses.length + 1, read({}));
           let currentExecutionTrees = details.executionSummary;
           for (let idx = 0, idxInTrees = 0; idx !== executionStatuses.length; ++idx, ++idxInTrees) {
             // Ordered like execution: same value and status

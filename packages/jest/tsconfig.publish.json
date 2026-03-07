@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.publish.json",
   "compilerOptions": {
-    "outDir": "lib/"
+    "rootDir": "src/",
+    "outDir": "lib/",
+    "types": ["node", "jest"]
   },
   "include": ["src/"]
 }

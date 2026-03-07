@@ -1,15 +1,25 @@
 import { defineConfig } from 'rolldown';
 import { dts } from 'rolldown-plugin-dts';
+import { replacePlugin } from 'rolldown/plugins';
 
 const inputDir = 'src';
 const outputDir = 'lib';
 
-export default function buildConfigFor(pkg, dirname) {
+export default function buildConfigFor(pkg, dirname, replacementsFor) {
+  let isDual = false;
   const inputs = Object.values(pkg.exports)
+    .map((exportValue) => {
+      if (typeof exportValue === 'string') {
+        return exportValue;
+      }
+      isDual = true;
+      return exportValue.import.default;
+    })
     .filter((filePath) => filePath.endsWith('.js'))
     .map((filePath) => filePath.replace(`./${outputDir}/`, `./${inputDir}/`));
 
-  return defineConfig({
+  /** @type {RolldownOptions} */
+  const sharedOptions = {
     input: inputs,
     output: {
       cleanDir: true,
@@ -25,6 +35,38 @@ export default function buildConfigFor(pkg, dirname) {
     treeshake: {
       moduleSideEffects: false,
     },
-    plugins: [dts({ tsconfig: './tsconfig.publish.types.json' })],
-  });
+    plugins: [],
+  };
+  return defineConfig([
+    {
+      ...sharedOptions,
+      output: {
+        ...sharedOptions.output,
+        format: 'esm',
+      },
+      plugins: [
+        ...sharedOptions.plugins,
+        ...(replacementsFor !== undefined ? [replacePlugin(replacementsFor(true), { preventAssignment: true })] : []),
+        dts({ tsconfig: './tsconfig.publish.types.json' }),
+      ],
+    },
+    ...(isDual
+      ? [
+          {
+            ...sharedOptions,
+            output: {
+              ...sharedOptions.output,
+              format: 'cjs',
+              dir: outputDir + '/cjs',
+            },
+            plugins: [
+              ...sharedOptions.plugins,
+              ...(replacementsFor !== undefined
+                ? [replacePlugin(replacementsFor(false), { preventAssignment: true })]
+                : []),
+            ],
+          },
+        ]
+      : []),
+  ]);
 }

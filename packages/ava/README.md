@@ -5,8 +5,8 @@
 Bring the power of property based testing framework `fast-check` into AVA.
 `@fast-check/ava` simplifies the integration of `fast-check` into AVA testing framework.
 
-<a href="https://badge.fury.io/js/@fast-check%2Fava"><img src="https://badge.fury.io/js/@fast-check%2Fava.svg" alt="npm version" /></a>
-<a href="https://www.npmjs.com/package/@fast-check/ava"><img src="https://img.shields.io/npm/dm/@fast-check%2Fava" alt="monthly downloads" /></a>
+<a href="https://npmx.dev/package/@fast-check/ava"><img src="https://badge.fury.io/js/@fast-check%2Fava.svg" alt="npm version" /></a>
+<a href="https://npmx.dev/package/@fast-check/ava"><img src="https://img.shields.io/npm/dm/@fast-check%2Fava" alt="monthly downloads" /></a>
 <a href="https://github.com/dubzzz/fast-check/blob/main/packages/ava/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fava.svg" alt="License" /></a>
 
 ---

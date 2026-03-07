@@ -1,4 +1,4 @@
-import { DbConnection } from './DbConnection';
+import { DbConnection } from './DbConnection.js';
 
 export class CasCounter {
   constructor(private readonly db: DbConnection) {}

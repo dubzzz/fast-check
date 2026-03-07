@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { SpaceArbitrary } from './arbitraries/SpaceArbitrary';
-import { SpaceBuilder } from './src/space';
-import { knight } from './src/knight';
+import { SpaceArbitrary } from './arbitraries/SpaceArbitrary.js';
+import { SpaceBuilder } from './src/space.js';
+import { knight } from './src/knight.js';
 
 // const solver = buggyKnight; // with bugs
 const solver = knight;

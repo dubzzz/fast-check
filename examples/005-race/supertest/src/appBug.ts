@@ -1,7 +1,7 @@
 import express from 'express';
-import { getAllUsers, removeUsers } from './db';
+import { getAllUsers, removeUsers } from './db.js';
 
-const app = express();
+const app: express.Application = express();
 
 async function dropDeactivatedInternal(): Promise<{ status: string }> {
   const allUsers = await getAllUsers();

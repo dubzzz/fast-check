@@ -1,8 +1,8 @@
 import fc from 'fast-check';
-import { PlayCommand } from './PlayCommand';
-import { PauseCommand } from './PauseCommand';
-import { NextCommand } from './NextCommand';
-import { AddTrackCommand } from './AddTrackCommand';
+import { PlayCommand } from './PlayCommand.js';
+import { PauseCommand } from './PauseCommand.js';
+import { NextCommand } from './NextCommand.js';
+import { AddTrackCommand } from './AddTrackCommand.js';
 
 export const TrackNameArb = fc.string({ minLength: 1 });
 

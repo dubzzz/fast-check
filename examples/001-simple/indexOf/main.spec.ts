@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest';
 import fc from 'fast-check';
-import { indexOf } from './src/indexOf';
+import { indexOf } from './src/indexOf.js';
 
 describe('indexOf', () => {
   it('should confirm b is a substring of a + b + c', () => {

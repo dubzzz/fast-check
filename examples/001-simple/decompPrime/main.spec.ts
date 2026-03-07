@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { decompPrime } from './src/decompPrime';
+import { decompPrime } from './src/decompPrime.js';
 
 // Above this number a*b can be over 2**31-1
 const MAX_INPUT = 65536;

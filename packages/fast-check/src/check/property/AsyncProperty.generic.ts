@@ -52,6 +52,10 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
   afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
 }
 
+// Default hook is a no-op
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const dummyHook: GlobalAsyncPropertyHookFunction = () => {};
+
 /**
  * Asynchronous property, see {@link IAsyncProperty}
  *
@@ -60,9 +64,6 @@ export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
  * @internal
  */
 export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
-  // Default hook is a no-op
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  static dummyHook: GlobalAsyncPropertyHookFunction = () => {};
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
   constructor(
@@ -83,8 +84,8 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
       );
     }
 
-    this.beforeEachHook = asyncBeforeEach || beforeEach || AsyncProperty.dummyHook;
-    this.afterEachHook = asyncAfterEach || afterEach || AsyncProperty.dummyHook;
+    this.beforeEachHook = asyncBeforeEach || beforeEach || dummyHook;
+    this.afterEachHook = asyncAfterEach || afterEach || dummyHook;
   }
 
   isAsync(): true {

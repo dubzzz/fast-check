@@ -1,0 +1,28 @@
+name: 💡 Idea
+description: Share any idea that could benefit fast-check — big or small!
+labels: ['💡 Idea']
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for sharing your idea! ✨ We love hearing from the community.
+  - type: textarea
+    id: idea-description
+    attributes:
+      label: Idea description
+      description: Clear and concise description of the idea.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why do you think this would be valuable?
+    validations:
+      required: false
+  - type: textarea
+    id: example
+    attributes:
+      label: Example
+      description: How might this idea work in practice?
+    validations:
+      required: false
