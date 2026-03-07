@@ -74,8 +74,8 @@ describe('domain (integration)', () => {
   it.each`
     source
     ${'very-very-very-very-very-very-very-very-very-very-very-long-label.com' /* label too long >63 */}
-    ${`${'a.'.repeat(128)}com` /* domain too long >255 */}
-  `('should not be able to generate $source with fc.domain()', ({ source }) => {
+    ${`${'a.'.repeat(128)}com`}
+  `(/* domain too long >255 */ 'should not be able to generate $source with fc.domain()', ({ source }) => {
     // Arrange / Act
     const arb = domain();
     const out = arb.canShrinkWithoutContext(source);
