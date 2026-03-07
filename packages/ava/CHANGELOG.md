@@ -8,10 +8,6 @@ _TODO Description_
 - ([PR#6476](https://github.com/dubzzz/fast-check/pull/6476)) Drop CommonJS support
 - ([PR#6503](https://github.com/dubzzz/fast-check/pull/6503)) Drop useless "typesVersions"
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#6497](https://github.com/dubzzz/fast-check/pull/6497)) CI: More concise exports
