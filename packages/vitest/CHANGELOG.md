@@ -12,7 +12,6 @@ _TODO Description_
 
 - ([PR#6695](https://github.com/dubzzz/fast-check/pull/6695)) Support for `beforeEach`/`afterEach` in `@fast-check/vitest`
 
-
 ## Fixes
 
 - ([PR#6508](https://github.com/dubzzz/fast-check/pull/6508)) CI: Speed-up build with rolldown
