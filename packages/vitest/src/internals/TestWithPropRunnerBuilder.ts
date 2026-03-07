@@ -146,14 +146,16 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
         });
       }
 
-      await fc.assert(propertyInstance, customParams);
-
-      // Cleanup from the last iteration (N). Cleanups 2..N-1 run inside
-      // fc's beforeEach hook above. Cleanup#1 is held by vitest in a local
-      // variable of runTest and runs after vitest's own afterEach — we cannot
-      // intercept it.
-      for (let i = pendingCleanups.length - 1; i >= 0; i--) {
-        await pendingCleanups[i]();
+      try {
+        await fc.assert(propertyInstance, customParams);
+      } finally {
+        // Cleanup from the last iteration (N). Cleanups 2..N-1 run inside
+        // fc's beforeEach hook above. Cleanup#1 is held by vitest in a local
+        // variable of runTest and runs after vitest's own afterEach — we cannot
+        // intercept it.
+        for (let i = pendingCleanups.length - 1; i >= 0; i--) {
+          await pendingCleanups[i]();
+        }
       }
     },
     timeout,
