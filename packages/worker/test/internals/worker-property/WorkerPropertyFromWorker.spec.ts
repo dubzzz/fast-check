@@ -79,15 +79,15 @@ describe('WorkerPropertyFromWorker', () => {
 
     mrngStates.push(mrng.getState());
     const value1 = property.generate(mrng, 0);
-    mrng.nextInt();
+    fc.nextInt(mrng, -0x80000000, 0x7fffffff);
 
     mrngStates.push(mrng.getState());
     const value2 = property.generate(mrng, 0);
-    mrng.nextInt();
+    fc.nextInt(mrng, -0x80000000, 0x7fffffff);
 
     mrngStates.push(mrng.getState());
     const value3 = property.generate(mrng, 0);
-    mrng.nextInt();
+    fc.nextInt(mrng, -0x80000000, 0x7fffffff);
 
     const stringified2 = fc.stringify(value2.value_);
     const stringified3 = fc.stringify(value3.value_);
@@ -124,5 +124,5 @@ function buildTrackedArbitrary() {
 }
 
 function buildMrng() {
-  return new fc.Random(xorshift128plus(0));
+  return fc.createRandom(xorshift128plus(0));
 }

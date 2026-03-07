@@ -1,6 +1,7 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod } from '../../check/symbols.js';
+import { nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
 import { safeJoin, safePush } from '../../utils/globals.js';
@@ -24,7 +25,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<Stream<T>> {
-    const appliedBiasFactor = biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? biasFactor : undefined;
+    const appliedBiasFactor = biasFactor !== undefined && nextInt(mrng, 1, biasFactor) === 1 ? biasFactor : undefined;
     const enrichedProducer = () => {
       const seenValues: T[] | null = this.history ? [] : null;
       let numSeenValues = 0;

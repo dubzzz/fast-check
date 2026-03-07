@@ -5,6 +5,7 @@ import { func } from '../../../src/arbitrary/func.js';
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import { hasCloneMethod, cloneIfNeeded, cloneMethod } from '../../../src/check/symbols.js';
+import { nextInt } from '../../../src/random/generator/Random.js';
 import type { Random } from '../../../src/random/generator/Random.js';
 import { Stream } from '../../../src/stream/Stream.js';
 import {
@@ -103,7 +104,7 @@ describe('func (integration)', () => {
         return Object.defineProperty([value, 1], cloneMethod, { value: () => this.instance(value, cloneable) });
       }
       generate(mrng: Random): Value<number[]> {
-        return new Value(this.instance(mrng.nextInt(), mrng.nextBoolean()), { shrunkOnce: false });
+        return new Value(this.instance(nextInt(mrng, -0x80000000, 0x7fffffff), nextInt(mrng, 0, 1) === 1), { shrunkOnce: false });
       }
       canShrinkWithoutContext(_value: unknown): _value is number[] {
         throw new Error('No call expected in that scenario');

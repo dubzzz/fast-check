@@ -27,6 +27,13 @@ class AlwaysPos implements fc.Command<Model, Real> {
 }
 
 describe(`ReplayCommands (seed: ${seed})`, () => {
+  const nextDouble = (mrng: fc.Random): number => {
+    const DBL_FACTOR = Math.pow(2, 27);
+    const DBL_DIVISOR = Math.pow(2, -53);
+    const a = fc.nextInt(mrng, 0, (1 << 26) - 1);
+    const b = fc.nextInt(mrng, 0, (1 << 27) - 1);
+    return (a * DBL_FACTOR + b) * DBL_DIVISOR;
+  };
   const buildProp = (replayPath?: string, mrng?: fc.Random) => {
     let alreadyFailed = false;
     let skipAllRuns = false;
@@ -40,7 +47,7 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
       (cmds) => {
         if (alreadyFailed && mrng !== undefined) {
           // Simulate the behaviour of skipAllAfterTimeLimit
-          skipAllRuns = skipAllRuns || mrng.nextDouble() < 0.05;
+          skipAllRuns = skipAllRuns || nextDouble(mrng) < 0.05;
           fc.pre(!skipAllRuns);
         }
         try {
@@ -65,7 +72,7 @@ describe(`ReplayCommands (seed: ${seed})`, () => {
     expect(outReplayed.numRuns).toEqual(1);
   });
   it('Should be able to resume a stopped run by specifying replayPath in fc.commands', () => {
-    const mrng = new fc.Random(mersenne(seed));
+    const mrng = fc.createRandom(mersenne(seed));
     const out = fc.check(buildProp(undefined, mrng), { seed: seed });
     expect(out.failed).toBe(true);
 

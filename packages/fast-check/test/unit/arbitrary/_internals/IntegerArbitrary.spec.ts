@@ -15,6 +15,7 @@ import { buildShrinkTree, renderTree, walkTree } from '../__test-helpers__/Shrin
 
 import * as BiasNumericRangeMock from '../../../../src/arbitrary/_internals/helpers/BiasNumericRange.js';
 import * as ShrinkIntegerMock from '../../../../src/arbitrary/_internals/helpers/ShrinkInteger.js';
+import * as RandomModule from '../../../../src/random/generator/Random.js';
 import { Stream } from '../../../../src/stream/Stream.js';
 import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
@@ -27,7 +28,8 @@ describe('IntegerArbitrary', () => {
         fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
-          const { instance: mrng, nextInt } = fakeRandom();
+          const { instance: mrng } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
           nextInt.mockReturnValueOnce(mid);
 
           // Act
@@ -37,7 +39,7 @@ describe('IntegerArbitrary', () => {
           // Assert
           expect(out.value).toBe(mid);
           expect(nextInt).toHaveBeenCalledTimes(1);
-          expect(nextInt).toHaveBeenCalledWith(min, max);
+          expect(nextInt).toHaveBeenCalledWith(mrng, min, max);
         }),
       ));
 
@@ -51,7 +53,8 @@ describe('IntegerArbitrary', () => {
           (a, b, c, biasFactor) => {
             // Arrange
             const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt.mockReturnValueOnce(2); // 1 means bias, all others are unbiased
             nextInt.mockReturnValueOnce(mid);
 
@@ -62,8 +65,8 @@ describe('IntegerArbitrary', () => {
             // Assert
             expect(out.value).toBe(mid);
             expect(nextInt).toHaveBeenCalledTimes(2);
-            expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
-            expect(nextInt).toHaveBeenCalledWith(min, max);
+            expect(nextInt).toHaveBeenCalledWith(mrng, 1, biasFactor);
+            expect(nextInt).toHaveBeenCalledWith(mrng, min, max);
           },
         ),
       ));
@@ -88,10 +91,11 @@ describe('IntegerArbitrary', () => {
           (a, b, c, biasFactor, mod, ranges) => {
             // Arrange
             const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt.mockReturnValueOnce(1); // 1 means bias
             if (ranges.length !== 1) {
-              nextInt.mockImplementationOnce((min, max) => min + (mod % (max - min + 1)));
+              nextInt.mockImplementationOnce((_mrng, min, max) => min + (mod % (max - min + 1)));
             }
             nextInt.mockReturnValueOnce(mid); // Remark: this value will most of the time be outside of requested range
             const biasNumericRange = vi.spyOn(BiasNumericRangeMock, 'biasNumericRange') as unknown as MockInstance<
@@ -109,18 +113,18 @@ describe('IntegerArbitrary', () => {
             expect(biasNumericRange).toHaveBeenCalledWith(min, max, expect.any(Function));
             if (ranges.length === 1) {
               expect(nextInt).toHaveBeenCalledTimes(2);
-              expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
-              expect(nextInt).toHaveBeenCalledWith(ranges[0].min, ranges[0].max);
+              expect(nextInt).toHaveBeenCalledWith(mrng, 1, biasFactor);
+              expect(nextInt).toHaveBeenCalledWith(mrng, ranges[0].min, ranges[0].max);
             } else {
               expect(nextInt).toHaveBeenCalledTimes(3);
-              expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
+              expect(nextInt).toHaveBeenCalledWith(mrng, 1, biasFactor);
               const secondNextIntParams = nextInt.mock.calls[1];
-              expect(secondNextIntParams[0]).toBeLessThan(0); // arbitrary is supposed to prefer the first entry
-              expect(secondNextIntParams[1]).toBe(ranges.length - 2); // other entries do not have any special treatments
+              expect(secondNextIntParams[1]).toBeLessThan(0); // arbitrary is supposed to prefer the first entry
+              expect(secondNextIntParams[2]).toBe(ranges.length - 2); // other entries do not have any special treatments
               // negative values for [0], positive value n means ranges[n+1]
               const secondNextIntResult = nextInt.mock.results[1].value;
               const selectedRange = secondNextIntResult < 0 ? 0 : secondNextIntResult + 1;
-              expect(nextInt).toHaveBeenCalledWith(ranges[selectedRange].min, ranges[selectedRange].max);
+              expect(nextInt).toHaveBeenCalledWith(mrng, ranges[selectedRange].min, ranges[selectedRange].max);
             }
           },
         ),

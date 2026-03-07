@@ -9,7 +9,8 @@ import type { CustomSet } from '../../../../src/arbitrary/_internals/interfaces/
 import { Stream } from '../../../../src/stream/Stream.js';
 import { cloneMethod, hasCloneMethod } from '../../../../src/check/symbols.js';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
-import { Random } from '../../../../src/random/generator/Random.js';
+import { createRandom } from '../../../../src/random/generator/Random.js';
+import type { Random } from '../../../../src/random/generator/Random.js';
 
 import * as IntegerMock from '../../../../src/arbitrary/integer.js';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
@@ -544,7 +545,7 @@ describe('ArrayArbitrary (integration)', () => {
   it('should not re-use twice the same instance of cloneable', () => {
     // Arrange
     const alreadySeenCloneable = new Set<unknown>();
-    const mrng = new Random(mersenne(0));
+    const mrng = createRandom(mersenne(0));
     const arb = new ArrayArbitrary(new CloneableArbitrary(), 0, 5, 100, undefined, undefined, []); // 0 to 5 generated items
 
     // Act

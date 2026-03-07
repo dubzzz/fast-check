@@ -12,6 +12,7 @@ import { FakeIntegerArbitrary, fakeArbitrary } from '../__test-helpers__/Arbitra
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 
 import * as StringifyMock from '../../../../src/utils/stringify.js';
+import * as RandomModule from '../../../../src/random/generator/Random.js';
 import { declareCleaningHooksForSpies } from '../__test-helpers__/SpyCleaner.js';
 
 describe('StreamArbitrary', () => {
@@ -43,7 +44,8 @@ describe('StreamArbitrary', () => {
           // Arrange
           const biasFactor = 48;
           const { instance: sourceArb, generate } = fakeArbitrary();
-          const { instance: mrng, nextInt } = fakeRandom();
+          const { instance: mrng } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
 
           // Act
           const arb = new StreamArbitrary(sourceArb, history);
@@ -52,7 +54,7 @@ describe('StreamArbitrary', () => {
 
           // Assert
           expect(nextInt).toHaveBeenCalledTimes(1);
-          expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
+          expect(nextInt).toHaveBeenCalledWith(mrng, 1, biasFactor);
           expect(generate).not.toHaveBeenCalled();
         }),
       ));
@@ -65,7 +67,8 @@ describe('StreamArbitrary', () => {
           const { instance: sourceArb, generate } = fakeArbitrary();
           const internalValue = { [cloneMethod]: () => internalValue };
           generate.mockReturnValue(new Value(internalValue, undefined));
-          const { instance: mrng, nextInt } = fakeRandom();
+          const { instance: mrng } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
 
           // Act
           const arb = new StreamArbitrary(sourceArb, history);
@@ -75,7 +78,7 @@ describe('StreamArbitrary', () => {
 
           // Assert
           expect(nextInt).toHaveBeenCalledTimes(1);
-          expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
+          expect(nextInt).toHaveBeenCalledWith(mrng, 1, biasFactor);
           if (Object.is(s1, s2)) {
             throw new Error(`We do not expect s1 to be identical to s2`);
           }
@@ -92,7 +95,8 @@ describe('StreamArbitrary', () => {
           const expectedValues = [...Array(numValuesToPull)].map(() => Symbol());
           const { instance: sourceArb, generate } = fakeArbitrary();
           generate.mockImplementation(() => new Value(expectedValues[index++], undefined));
-          const { instance: mrng, clone, nextInt } = fakeRandom();
+          const { instance: mrng, clone } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
           nextInt.mockReturnValueOnce(1); // for bias
           const { instance: mrngCloned } = fakeRandom();
           clone.mockReturnValueOnce(mrngCloned);
@@ -120,7 +124,8 @@ describe('StreamArbitrary', () => {
           const biasFactor = 48;
           const { instance: sourceArb, generate } = fakeArbitrary();
           generate.mockImplementation(() => new Value(Symbol(), undefined));
-          const { instance: mrng, clone, nextInt } = fakeRandom();
+          const { instance: mrng, clone } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
           nextInt.mockReturnValueOnce(1); // for bias
           const { instance: mrngClonedA } = fakeRandom();
           const { instance: mrngClonedB } = fakeRandom();
@@ -166,7 +171,8 @@ describe('StreamArbitrary', () => {
           let index = 0;
           const { instance: sourceArb, generate } = fakeArbitrary<number>();
           generate.mockImplementation(() => new Value(expectedValues[index++], undefined));
-          const { instance: mrng, clone, nextInt } = fakeRandom();
+          const { instance: mrng, clone } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
           nextInt.mockReturnValueOnce(2); // for no bias
           const { instance: mrngCloned } = fakeRandom();
           clone.mockReturnValueOnce(mrngCloned);
@@ -198,7 +204,8 @@ describe('StreamArbitrary', () => {
           let index = 0;
           const { instance: sourceArb, generate } = fakeArbitrary<number>();
           generate.mockImplementation(() => new Value(expectedValues[index++], undefined));
-          const { instance: mrng, clone, nextInt } = fakeRandom();
+          const { instance: mrng, clone } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
           nextInt.mockReturnValueOnce(2); // for no bias
           const { instance: mrngCloned } = fakeRandom();
           clone.mockReturnValueOnce(mrngCloned);
@@ -225,7 +232,8 @@ describe('StreamArbitrary', () => {
           let index = 0;
           const { instance: sourceArb, generate } = fakeArbitrary<number>();
           generate.mockImplementation(() => new Value(index++, undefined));
-          const { instance: mrng, clone, nextInt } = fakeRandom();
+          const { instance: mrng, clone } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
           nextInt.mockReturnValueOnce(2); // for no bias
           const { instance: mrngCloned } = fakeRandom();
           clone.mockReturnValueOnce(mrngCloned);

@@ -5,7 +5,8 @@ import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
 import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
-import { Random } from '../../../../src/random/generator/Random.js';
+import { createRandom } from '../../../../src/random/generator/Random.js';
+import type { Random } from '../../../../src/random/generator/Random.js';
 import { withConfiguredGlobal } from './GlobalSettingsHelpers.js';
 import { sizeArb } from './SizeHelpers.js';
 
@@ -280,7 +281,7 @@ export function assertGenerateIndependentOfSize<T, U = never>(
 // Various helpers
 
 function randomFromSeed(seed: number): Random {
-  return new Random(xorshift128plus(seed));
+  return createRandom(xorshift128plus(seed));
 }
 
 function biasFactorArbitrary() {

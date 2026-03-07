@@ -1,5 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
+import { nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
 import type { Scheduler } from './interfaces/Scheduler.js';
@@ -16,7 +17,7 @@ function buildNextTaskIndex<TMetaData>(mrng: Random): TaskSelector<TMetaData> {
   return {
     clone: (): TaskSelector<TMetaData> => buildNextTaskIndex(clonedMrng),
     nextTaskIndex: (scheduledTasks: ScheduledTask<TMetaData>[]): number => {
-      return mrng.nextInt(0, scheduledTasks.length - 1);
+      return nextInt(mrng, 0, scheduledTasks.length - 1);
     },
   };
 }

@@ -1,6 +1,6 @@
 import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 
-import { Random } from '../../random/generator/Random.js';
+import { createRandom } from '../../random/generator/Random.js';
 import type { IRawProperty } from '../property/IRawProperty.js';
 import { Value } from '../arbitrary/definition/Value.js';
 import { safeMap } from '../../utils/globals.js';
@@ -13,7 +13,7 @@ import { adaptRandomGenerator } from '../../random/generator/RandomGenerator.js'
  */
 function tossNext<Ts>(generator: IRawProperty<Ts>, rng: QualifiedRandomGenerator, index: number): Value<Ts> {
   rng.jump();
-  return generator.generate(new Random(rng), index);
+  return generator.generate(createRandom(rng), index);
 }
 
 /** @internal */
@@ -33,7 +33,7 @@ export function* toss<Ts>(
 
 /** @internal */
 function lazyGenerate<Ts>(generator: IRawProperty<Ts>, rng: RandomGenerator, idx: number): () => Value<Ts> {
-  return () => generator.generate(new Random(rng), idx);
+  return () => generator.generate(createRandom(rng), idx);
 }
 
 /** @internal */

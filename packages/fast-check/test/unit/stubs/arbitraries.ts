@@ -1,5 +1,6 @@
 import { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
+import { nextInt } from '../../../src/random/generator/Random.js';
 import type { Random } from '../../../src/random/generator/Random.js';
 import { Stream } from '../../../src/stream/Stream.js';
 
@@ -37,7 +38,7 @@ class ForwardArbitrary extends Arbitrary<number> {
     super();
   }
   generate(rng: Random): Value<number> {
-    return new Value(rng.nextInt(), undefined);
+    return new Value(nextInt(rng, -0x80000000, 0x7fffffff), undefined);
   }
   canShrinkWithoutContext(value: unknown): value is number {
     return false;
@@ -59,7 +60,7 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
   generate(mrng: Random): Value<number[]> {
     const out = [];
     for (let idx = 0; idx !== this.num; ++idx) {
-      out.push(mrng.nextInt());
+      out.push(nextInt(mrng, -0x80000000, 0x7fffffff));
     }
     return new Value(out, undefined);
   }

@@ -1,5 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
+import { nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange.js';
@@ -20,7 +21,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
 
   generate(mrng: Random, biasFactor: number | undefined): Value<number> {
     const range = this.computeGenerateRange(mrng, biasFactor);
-    return new Value(mrng.nextInt(range.min, range.max), undefined);
+    return new Value(nextInt(mrng, range.min, range.max), undefined);
   }
 
   canShrinkWithoutContext(value: unknown): value is number {
@@ -62,14 +63,14 @@ export class IntegerArbitrary extends Arbitrary<number> {
   }
 
   private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: number; max: number } {
-    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+    if (biasFactor === undefined || nextInt(mrng, 1, biasFactor) !== 1) {
       return { min: this.min, max: this.max };
     }
     const ranges = biasNumericRange(this.min, this.max, integerLogLike);
     if (ranges.length === 1) {
       return ranges[0];
     }
-    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
+    const id = nextInt(mrng, -2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
     return id < 0 ? ranges[0] : ranges[id + 1];
   }
 

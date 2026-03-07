@@ -1,3 +1,4 @@
+import { nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
@@ -48,7 +49,7 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
     super();
   }
   generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
-    const idx = this.values.length === 1 ? 0 : mrng.nextInt(0, this.values.length - 1);
+    const idx = this.values.length === 1 ? 0 : nextInt(mrng, 0, this.values.length - 1);
     const value = this.values[idx];
     if (!hasCloneMethod(value)) {
       return new Value(value, idx);

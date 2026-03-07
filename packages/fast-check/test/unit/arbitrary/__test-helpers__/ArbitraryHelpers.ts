@@ -2,6 +2,7 @@ import { vi } from 'vitest';
 import type { MaybeMocked, MockWithArgs } from '../../__test-helpers__/Mocked.js';
 import { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { nextInt } from '../../../../src/random/generator/Random.js';
 import type { Random } from '../../../../src/random/generator/Random.js';
 import { Stream } from '../../../../src/stream/Stream.js';
 
@@ -71,7 +72,7 @@ export class FakeIntegerArbitrary extends Arbitrary<number> {
     // Worst case: 0-minRange
     // No bias   : 0-maxRange
     const maxLimit = biasFactor !== undefined ? Math.max(minRange, maxRange - biasFactor) : maxRange;
-    return new Value(mrng.nextInt(0, maxLimit) + this.offset, { step: 2 });
+    return new Value(nextInt(mrng, 0, maxLimit) + this.offset, { step: 2 });
   }
   canShrinkWithoutContext(value: unknown): value is number {
     return (

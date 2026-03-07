@@ -336,7 +336,7 @@ function noop() {
 }
 class BasicArbitrary extends fc.Arbitrary<number> {
   generate(mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
-    return new fc.Value<number>(mrng.nextInt() % 1000, undefined);
+    return new fc.Value<number>(fc.nextInt(mrng, -0x80000000, 0x7fffffff) % 1000, undefined);
   }
   canShrinkWithoutContext(value: unknown): value is number {
     return false;

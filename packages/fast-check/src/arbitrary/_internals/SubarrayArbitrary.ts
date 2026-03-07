@@ -1,5 +1,6 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
+import { nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
 import { Stream } from '../../stream/Stream.js';
@@ -45,14 +46,14 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
 
   generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {
     const lengthArb =
-      biasFactor !== undefined && mrng.nextInt(1, biasFactor) === 1 ? this.biasedLengthArb : this.lengthArb;
+      biasFactor !== undefined && nextInt(mrng, 1, biasFactor) === 1 ? this.biasedLengthArb : this.lengthArb;
     const size = lengthArb.generate(mrng, undefined);
     const sizeValue = size.value;
 
     const remainingElements = safeMap(this.originalArray, (_v, idx) => idx);
     const ids: number[] = [];
     for (let index = 0; index !== sizeValue; ++index) {
-      const selectedIdIndex = mrng.nextInt(0, remainingElements.length - 1);
+      const selectedIdIndex = nextInt(mrng, 0, remainingElements.length - 1);
       safePush(ids, remainingElements[selectedIdIndex]);
       safeSplice(remainingElements, selectedIdIndex, 1);
     }

@@ -1,3 +1,4 @@
+import { nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
@@ -190,12 +191,12 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
       // We only apply bias on items
       return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
     }
-    if (mrng.nextInt(1, biasFactor) !== 1) {
+    if (nextInt(mrng, 1, biasFactor) !== 1) {
       // We don't bias anything
       return { size: this.lengthArb.generate(mrng, undefined).value };
     }
     // We apply bias (1 chance over biasFactor)
-    if (mrng.nextInt(1, biasFactor) !== 1 || this.minLength === this.maxGeneratedLength) {
+    if (nextInt(mrng, 1, biasFactor) !== 1 || this.minLength === this.maxGeneratedLength) {
       // We only apply bias on items ((biasFactor-1) chances over biasFactor²)
       return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
     }

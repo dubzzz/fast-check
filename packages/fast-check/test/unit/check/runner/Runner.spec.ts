@@ -5,6 +5,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { integer } from '../../../../src/arbitrary/integer.js';
 import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner.js';
+import { nextInt } from '../../../../src/random/generator/Random.js';
 import type { Random } from '../../../../src/random/generator/Random.js';
 import type { RunDetails } from '../../../../src/check/runner/reporter/RunDetails.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
@@ -328,7 +329,7 @@ describe('Runner', () => {
             const p: IRawProperty<[number]> = {
               isAsync: () => false,
               generate: (rng: Random) => {
-                return new Value([rng.nextInt()], undefined);
+                return new Value([nextInt(rng, -0x80000000, 0x7fffffff)], undefined);
               },
               shrink: () => Stream.nil(),
               runBeforeEach: () => {},

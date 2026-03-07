@@ -138,7 +138,8 @@ import { commands } from './arbitrary/commands.js';
 import type { ModelRunSetup, ModelRunAsyncSetup } from './check/model/ModelRunner.js';
 import { asyncModelRun, modelRun, scheduledModelRun } from './check/model/ModelRunner.js';
 
-import { Random } from './random/generator/Random.js';
+import { createRandom, nextInt, nextBigInt } from './random/generator/Random.js';
+import type { Random } from './random/generator/Random.js';
 
 import type {
   GlobalParameters,
@@ -326,6 +327,7 @@ export type {
   GlobalAsyncPropertyHookFunction,
   GlobalPropertyHookFunction,
   Parameters,
+  Random,
   RandomType,
   RandomGenerator,
   ExecutionTree,
@@ -446,7 +448,9 @@ export {
   readConfigureGlobal,
   resetConfigureGlobal,
   ExecutionStatus,
-  Random,
+  createRandom,
+  nextInt,
+  nextBigInt,
   Stream,
   stream,
   createDepthIdentifier,

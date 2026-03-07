@@ -12,6 +12,7 @@ import {
   assertShrinkProducesStrictlySmallerValue,
 } from '../__test-helpers__/ArbitraryAssertions.js';
 import * as DepthContextMock from '../../../../src/arbitrary/_internals/helpers/DepthContext.js';
+import * as RandomModule from '../../../../src/random/generator/Random.js';
 import { Stream } from '../../../../src/stream/Stream.js';
 import { sizeArb } from '../__test-helpers__/SizeHelpers.js';
 
@@ -83,8 +84,9 @@ describe('FrequencyArbitrary', () => {
             fc.pre(constraints.maxDepth !== 0);
             const warbs = fromValidInputs(validInputs);
             const totalWeight = warbs.reduce((acc, cur) => acc + cur.weight, 0);
-            const { instance: mrng, nextInt } = fakeRandom();
-            nextInt.mockImplementation((a = 0, b = 0) => a + (generateSeed % (b - a + 1)));
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
+            nextInt.mockImplementation((_mrng, a = 0, b = 0) => a + (generateSeed % (b - a + 1)));
 
             // Act
             const arb = FrequencyArbitrary.from(warbs, constraints, 'test');
@@ -92,7 +94,7 @@ describe('FrequencyArbitrary', () => {
 
             // Assert
             expect(nextInt).toHaveBeenCalledTimes(1);
-            expect(nextInt).toHaveBeenCalledWith(0, totalWeight - 1);
+            expect(nextInt).toHaveBeenCalledWith(mrng, 0, totalWeight - 1);
           },
         ),
       ));
@@ -114,7 +116,8 @@ describe('FrequencyArbitrary', () => {
             fc.pre(selectedArbitrary.weight > 0);
 
             const totalWeightBefore = warbs.slice(0, selectedArbitraryIndex).reduce((acc, cur) => acc + cur.weight, 0);
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
 
             // Act
@@ -140,7 +143,8 @@ describe('FrequencyArbitrary', () => {
             // Arrange
             const warbs = fromValidInputs(validInputs);
             const requestedMaxDepth = constraints.maxDepth!;
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue({ depth: requestedMaxDepth + overflowFromMaxDepth });
 
@@ -167,8 +171,9 @@ describe('FrequencyArbitrary', () => {
             // Arrange
             let calledOnce = false;
             const warbs = fromValidInputs(validInputs);
-            const { instance: mrng, nextInt } = fakeRandom();
-            nextInt.mockImplementation((a = 0, b = 0) => a + (generateSeed % (b - a + 1)));
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
+            nextInt.mockImplementation((_mrng, a = 0, b = 0) => a + (generateSeed % (b - a + 1)));
             const depthContext = { depth: initialDepth };
             const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
             getDepthContextFor.mockReturnValue(depthContext);
@@ -202,7 +207,8 @@ describe('FrequencyArbitrary', () => {
             // Arrange
             const warbs = fromValidInputs(validInputs);
             fc.pre(warbs[0].weight > 0);
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt.mockReturnValue(0);
             const depthContext = { depth: 0 };
             const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
@@ -215,18 +221,18 @@ describe('FrequencyArbitrary', () => {
               depthContext.depth = currentDepth;
               arb.generate(mrng, biasFactor);
               expect(depthContext.depth).toBe(currentDepth); // ensures the depth was properly reset
-              if (nextInt.mock.calls[nextInt.mock.calls.length - 1][0] < 0) {
+              if (nextInt.mock.calls[nextInt.mock.calls.length - 1][1] < 0) {
                 break; // we have been called with a negative value once
               }
               ++currentDepth;
             }
             // first run (depth=0) will always call us with 0->?
             // subsequent calls (depth>0) may call us with negative boundaries
-            expect(nextInt).toHaveBeenCalledWith(0, expect.any(Number));
+            expect(nextInt).toHaveBeenCalledWith(mrng, 0, expect.any(Number));
             // but all the runs will call us with the same max
-            const distinctMax = new Set(nextInt.mock.calls.map(([_min, max]) => max));
+            const distinctMax = new Set(nextInt.mock.calls.map(([_mrng, _min, max]) => max));
             expect([...distinctMax]).toHaveLength(1);
-            const distinctMin = new Set(nextInt.mock.calls.map(([min, _max]) => min));
+            const distinctMin = new Set(nextInt.mock.calls.map(([_mrng, min, _max]) => min));
             expect([...distinctMin]).toHaveLength(2);
           },
         ),
@@ -241,7 +247,8 @@ describe('FrequencyArbitrary', () => {
           (validInputs, constraints, biasFactor) => {
             // Arrange
             const warbs = fromValidInputs(validInputs);
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt.mockReturnValue(0);
             const depthContext = { depth: 0 };
             const getDepthContextFor = vi.spyOn(DepthContextMock, 'getDepthContextFor');
@@ -254,9 +261,9 @@ describe('FrequencyArbitrary', () => {
               arb.generate(mrng, biasFactor);
               expect(depthContext.depth).toBe(currentDepth); // ensures the depth was properly reset
             }
-            const distinctMin = new Set(nextInt.mock.calls.map(([min, _max]) => min));
+            const distinctMin = new Set(nextInt.mock.calls.map(([_mrng, min, _max]) => min));
             expect([...distinctMin]).toHaveLength(1);
-            const distinctMax = new Set(nextInt.mock.calls.map(([_min, max]) => max));
+            const distinctMax = new Set(nextInt.mock.calls.map(([_mrng, _min, max]) => max));
             expect([...distinctMax]).toHaveLength(1);
           },
         ),
@@ -402,7 +409,8 @@ describe('FrequencyArbitrary', () => {
             fc.pre(selectedArbitrary.weight > 0);
 
             const totalWeightBefore = warbs.slice(0, selectedArbitraryIndex).reduce((acc, cur) => acc + cur.weight, 0);
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
             selectedArbitrary.arbitraryMeta.shrink.mockReturnValue(
               Stream.of(new Value(1, undefined), new Value(42, undefined)),
@@ -443,7 +451,8 @@ describe('FrequencyArbitrary', () => {
             fc.pre(selectedArbitraryIndex !== 0);
 
             const totalWeightBefore = warbs.slice(0, selectedArbitraryIndex).reduce((acc, cur) => acc + cur.weight, 0);
-            const { instance: mrng, nextInt, clone } = fakeRandom();
+            const { instance: mrng, clone } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             const { instance: anotherMrng } = fakeRandom();
             clone.mockReturnValue(anotherMrng);
             nextInt.mockImplementation(() => totalWeightBefore + (generateSeed % selectedArbitrary.weight));
@@ -480,7 +489,8 @@ describe('FrequencyArbitrary', () => {
             const warbs = fromValidInputs(validInputs);
             fc.pre(warbs[0].weight > 0);
 
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt.mockReturnValue(0);
             warbs[0].arbitraryMeta.shrink.mockReturnValue(Stream.of(new Value(1, undefined), new Value(42, undefined)));
 

@@ -1,3 +1,4 @@
+import { nextBigInt, nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
@@ -17,17 +18,17 @@ export class BigIntArbitrary extends Arbitrary<bigint> {
 
   generate(mrng: Random, biasFactor: number | undefined): Value<bigint> {
     const range = this.computeGenerateRange(mrng, biasFactor);
-    return new Value(mrng.nextBigInt(range.min, range.max), undefined);
+    return new Value(nextBigInt(mrng, range.min, range.max), undefined);
   }
   private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: bigint; max: bigint } {
-    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+    if (biasFactor === undefined || nextInt(mrng, 1, biasFactor) !== 1) {
       return { min: this.min, max: this.max };
     }
     const ranges = biasNumericRange(this.min, this.max, bigIntLogLike);
     if (ranges.length === 1) {
       return ranges[0];
     }
-    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
+    const id = nextInt(mrng, -2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
     return id < 0 ? ranges[0] : ranges[id + 1];
   }
 

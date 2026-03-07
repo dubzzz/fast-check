@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { ConstantArbitrary } from '../../../../src/arbitrary/_internals/ConstantArbitrary.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
@@ -10,8 +10,13 @@ import {
   assertProduceSameValueGivenSameSeed,
 } from '../__test-helpers__/ArbitraryAssertions.js';
 import { buildShrinkTree, walkTree } from '../__test-helpers__/ShrinkTree.js';
+import * as RandomModule from '../../../../src/random/generator/Random.js';
 
 describe('ConstantArbitrary', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('generate', () => {
     it('should never call Random when provided a single value', () => {
       // Arrange
@@ -36,8 +41,9 @@ describe('ConstantArbitrary', () => {
           fc.nat(),
           (values, biasFactor, mod) => {
             // Arrange
-            const { instance: mrng, nextInt } = fakeRandom();
-            nextInt.mockImplementation((a, b) => a + (mod % (b - a + 1)));
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
+            nextInt.mockImplementation((_mrng, a, b) => a + (mod % (b - a + 1)));
 
             // Act
             const arb = new ConstantArbitrary(values);
@@ -45,7 +51,7 @@ describe('ConstantArbitrary', () => {
 
             // Assert
             expect(nextInt).toHaveBeenCalledTimes(1);
-            expect(nextInt).toHaveBeenCalledWith(0, values.length - 1);
+            expect(nextInt).toHaveBeenCalledWith(mrng, 0, values.length - 1);
             expect(values).toContainEqual(g.value);
           },
         ),
@@ -58,13 +64,14 @@ describe('ConstantArbitrary', () => {
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (values, biasFactor) => {
             // Arrange
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
 
             // Act / Assert
             const arb = new ConstantArbitrary(values);
             const notSeenValues = [...values];
             for (let idx = 0; idx !== values.length; ++idx) {
-              nextInt.mockImplementationOnce((a, _b) => a + idx);
+              nextInt.mockImplementationOnce((_mrng, a, _b) => a + idx);
               const g = arb.generate(mrng, biasFactor);
               const index = notSeenValues.findIndex((v) => Object.is(g.value, v));
               expect(index).not.toBe(-1);
@@ -202,8 +209,9 @@ describe('ConstantArbitrary', () => {
       fc.assert(
         fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
-          const { instance: mrng, nextInt } = fakeRandom();
-          nextInt.mockImplementation((a, b) => a + (mod % (b - a + 1)));
+          const { instance: mrng } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
+          nextInt.mockImplementation((_mrng, a, b) => a + (mod % (b - a + 1)));
 
           // Act
           const arb = new ConstantArbitrary(values);
@@ -223,8 +231,9 @@ describe('ConstantArbitrary', () => {
       fc.assert(
         fc.property(fc.array(fc.anything(), { minLength: 1 }), fc.nat(), (values, mod) => {
           // Arrange
-          const { instance: mrng, nextInt } = fakeRandom();
-          nextInt.mockImplementation((a, b) => a + (mod % (b - a + 1)));
+          const { instance: mrng } = fakeRandom();
+          const nextInt = vi.spyOn(RandomModule, 'nextInt');
+          nextInt.mockImplementation((_mrng, a, b) => a + (mod % (b - a + 1)));
 
           // Act
           const arb = new ConstantArbitrary(values);
@@ -242,7 +251,8 @@ describe('ConstantArbitrary', () => {
 
     it('should not shrink towards the first value if generated value is equal to the first one regarding `Object.is`', () => {
       // Arrange
-      const { instance: mrng, nextInt } = fakeRandom();
+      const { instance: mrng } = fakeRandom();
+      const nextInt = vi.spyOn(RandomModule, 'nextInt');
 
       // Act / Assert
       const arb = new ConstantArbitrary([Number.NaN, Number.NaN, Number.NaN]);

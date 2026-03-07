@@ -1,96 +1,44 @@
+import type { JumpableRandomGenerator } from 'pure-rand/types/JumpableRandomGenerator';
 import { uniformBigInt } from 'pure-rand/distribution/uniformBigInt';
 import { uniformInt } from 'pure-rand/distribution/uniformInt';
 import { adaptRandomGenerator } from './RandomGenerator.js';
-import type { RandomGenerator, RandomGeneratorInternal } from './RandomGenerator.js';
-
-const MIN_INT: number = 0x80000000 | 0;
-const MAX_INT: number = 0x7fffffff | 0;
-const DBL_FACTOR: number = Math.pow(2, 27);
-const DBL_DIVISOR: number = Math.pow(2, -53);
+import type { RandomGenerator } from './RandomGenerator.js';
 
 /**
- * Wrapper around an instance of a `pure-rand`'s random number generator
- * offering a simpler interface to deal with random with impure patterns
+ * Type alias for pure-rand's JumpableRandomGenerator
  *
+ * @remarks Since 4.6.0
  * @public
  */
-export class Random {
-  /** @internal */
-  private internalRng: RandomGeneratorInternal;
+export type Random = JumpableRandomGenerator;
 
-  /**
-   * Create a mutable random number generator by cloning the passed one and mutate it
-   * @param sourceRng - Immutable random generator from pure-rand library, will not be altered (a clone will be)
-   */
-  constructor(sourceRng: RandomGenerator) {
-    this.internalRng = adaptRandomGenerator(sourceRng.clone());
-  }
+/**
+ * Create a mutable random number generator by cloning the passed one
+ * @param sourceRng - Random generator, will not be altered (a clone will be)
+ * @internal
+ */
+export function createRandom(sourceRng: RandomGenerator): Random {
+  return adaptRandomGenerator(sourceRng.clone());
+}
 
-  /**
-   * Clone the random number generator
-   */
-  clone(): Random {
-    return new Random(this.internalRng);
-  }
+/**
+ * Generate a random integer between min (included) and max (included)
+ * @param mrng - Random number generator
+ * @param min - Minimal integer value
+ * @param max - Maximal integer value
+ * @internal
+ */
+export function nextInt(mrng: Random, min: number, max: number): number {
+  return uniformInt(mrng, min, max);
+}
 
-  /**
-   * Generate an integer having `bits` random bits
-   * @param bits - Number of bits to generate
-   * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(0, (1 << bits) - 1)`
-   */
-  next(bits: number): number {
-    return uniformInt(this.internalRng, 0, (1 << bits) - 1);
-  }
-
-  /**
-   * Generate a random boolean
-   */
-
-  nextBoolean(): boolean {
-    return uniformInt(this.internalRng, 0, 1) === 1;
-  }
-
-  /**
-   * Generate a random integer (32 bits)
-   * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(-2147483648, 2147483647)`
-   */
-  nextInt(): number;
-
-  /**
-   * Generate a random integer between min (included) and max (included)
-   * @param min - Minimal integer value
-   * @param max - Maximal integer value
-   */
-  nextInt(min: number, max: number): number;
-  nextInt(min?: number, max?: number): number {
-    return uniformInt(this.internalRng, min === undefined ? MIN_INT : min, max === undefined ? MAX_INT : max);
-  }
-
-  /**
-   * Generate a random bigint between min (included) and max (included)
-   * @param min - Minimal bigint value
-   * @param max - Maximal bigint value
-   */
-  nextBigInt(min: bigint, max: bigint): bigint {
-    return uniformBigInt(this.internalRng, min, max);
-  }
-
-  /**
-   * Generate a random floating point number between 0.0 (included) and 1.0 (excluded)
-   */
-  nextDouble(): number {
-    const a = this.next(26);
-    const b = this.next(27);
-    return (a * DBL_FACTOR + b) * DBL_DIVISOR;
-  }
-
-  /**
-   * Extract the internal state of the internal RandomGenerator backing the current instance of Random
-   */
-  getState(): readonly number[] | undefined {
-    if ('getState' in this.internalRng && typeof this.internalRng.getState === 'function') {
-      return this.internalRng.getState();
-    }
-    return undefined;
-  }
+/**
+ * Generate a random bigint between min (included) and max (included)
+ * @param mrng - Random number generator
+ * @param min - Minimal bigint value
+ * @param max - Maximal bigint value
+ * @internal
+ */
+export function nextBigInt(mrng: Random, min: bigint, max: bigint): bigint {
+  return uniformBigInt(mrng, min, max);
 }

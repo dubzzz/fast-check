@@ -1,3 +1,4 @@
+import { nextInt } from '../../random/generator/Random.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
@@ -70,7 +71,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
       // index=0 can be selected even if it has a weight equal to zero
       return this.safeGenerateForIndex(mrng, 0, biasFactor);
     }
-    const selected = mrng.nextInt(this.computeNegDepthBenefit(), this.totalWeight - 1);
+    const selected = nextInt(mrng, this.computeNegDepthBenefit(), this.totalWeight - 1);
     for (let idx = 0; idx !== this.cumulatedWeights.length; ++idx) {
       if (selected < this.cumulatedWeights[idx]) {
         return this.safeGenerateForIndex(mrng, idx, biasFactor);

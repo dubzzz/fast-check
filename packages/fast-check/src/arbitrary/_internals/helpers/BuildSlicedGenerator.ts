@@ -1,4 +1,5 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
+import { nextInt } from '../../../random/generator/Random.js';
 import type { Random } from '../../../random/generator/Random.js';
 import { NoopSlicedGenerator } from '../implementations/NoopSlicedGenerator.js';
 import { SlicedBasedGenerator } from '../implementations/SlicedBasedGenerator.js';
@@ -24,7 +25,7 @@ export function buildSlicedGenerator<T>(
   // - no bias
   // - no slices
   // - not our turn: we only apply the slices fallbacks on 1 run over biasFactor
-  if (biasFactor === undefined || slices.length === 0 || mrng.nextInt(1, biasFactor) !== 1) {
+  if (biasFactor === undefined || slices.length === 0 || nextInt(mrng, 1, biasFactor) !== 1) {
     return new NoopSlicedGenerator(arb, mrng, biasFactor);
   }
   return new SlicedBasedGenerator(arb, mrng, slices, biasFactor);

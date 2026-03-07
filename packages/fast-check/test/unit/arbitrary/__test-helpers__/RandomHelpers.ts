@@ -1,27 +1,46 @@
 import { vi } from 'vitest';
-import type { MaybeMocked } from '../../__test-helpers__/Mocked.js';
-import { Random } from '../../../../src/random/generator/Random.js';
+import type { Random } from '../../../../src/random/generator/Random.js';
+import * as RandomModule from '../../../../src/random/generator/Random.js';
 
-export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
+export function fakeRandom(): { instance: Random } & {
+  clone: ReturnType<typeof vi.fn>;
+  next: ReturnType<typeof vi.fn>;
+  jump: ReturnType<typeof vi.fn>;
+  getState: ReturnType<typeof vi.fn>;
+} {
   const clone = vi.fn();
   const next = vi.fn();
-  const nextBoolean = vi.fn();
-  const nextInt = vi.fn();
-  const nextBigInt = vi.fn();
-  const nextDouble = vi.fn();
+  const jump = vi.fn();
   const getState = vi.fn();
-  class MyRandom extends Random {
-    clone = clone;
-    next = next;
-    nextBoolean = nextBoolean;
-    nextInt = nextInt;
-    nextBigInt = nextBigInt;
-    getState = getState;
-  }
 
-  // Calling `new MyRandom` triggers a call to the default ctor of `Random`.
-  // As we don't use anything from this base class, we just pass the ctor with a value that looks ok for it.
-  const buildInternal = () => ({ clone: () => buildInternal() });
-  const instance = new MyRandom(buildInternal() as any);
-  return { instance, clone, next, nextBoolean, nextInt, nextBigInt, nextDouble, getState };
+  const instance: Random = {
+    clone,
+    next,
+    jump,
+    getState,
+  };
+
+  clone.mockReturnValue(instance);
+
+  return { instance, clone, next, jump, getState };
+}
+
+/**
+ * Mock the `nextInt` function from the Random module.
+ * Returns the mock so tests can control returned values.
+ */
+export function mockNextInt(): ReturnType<typeof vi.fn> {
+  const mock = vi.fn();
+  vi.spyOn(RandomModule, 'nextInt').mockImplementation(mock);
+  return mock;
+}
+
+/**
+ * Mock the `nextBigInt` function from the Random module.
+ * Returns the mock so tests can control returned values.
+ */
+export function mockNextBigInt(): ReturnType<typeof vi.fn> {
+  const mock = vi.fn();
+  vi.spyOn(RandomModule, 'nextBigInt').mockImplementation(mock);
+  return mock;
 }

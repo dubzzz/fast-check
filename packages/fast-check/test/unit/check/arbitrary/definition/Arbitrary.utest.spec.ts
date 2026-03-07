@@ -4,7 +4,6 @@ import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
 import { Stream } from '../../../../../src/stream/Stream.js';
 import * as stubRng from '../../../stubs/generators.js';
 import { cloneMethod, hasCloneMethod } from '../../../../../src/check/symbols.js';
-import { Random } from '../../../../../src/random/generator/Random.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
@@ -502,7 +501,7 @@ describe('NextArbitrary', () => {
         shrinkChained1.value,
         shrinkChained2.value,
       ]); // shrink of source chained, then the one of original chained
-      expect(generateChained).toHaveBeenNthCalledWith(4, expect.any(Random), expectedBiasFactor); // sub-sequent calls re-use the original bias
+      expect(generateChained).toHaveBeenNthCalledWith(4, expect.objectContaining({ clone: expect.any(Function) }), expectedBiasFactor); // sub-sequent calls re-use the original bias
       expect(chainer).toHaveBeenCalledWith(choiceRoot.value); // original call
       expect(chainer).toHaveBeenCalledWith(shrinkRoot1.value); // chained during shrink
       expect(chainer).toHaveBeenCalledWith(shrinkRoot2.value); // chained during shrink
@@ -564,7 +563,7 @@ describe('NextArbitrary', () => {
         shrinkChained11.value,
         shrinkChained12.value,
       ]);
-      expect(generateChained).toHaveBeenNthCalledWith(2, expect.any(Random), expectedBiasFactor); // sub-sequent calls re-use the original bias
+      expect(generateChained).toHaveBeenNthCalledWith(2, expect.objectContaining({ clone: expect.any(Function) }), expectedBiasFactor); // sub-sequent calls re-use the original bias
       expect(chainer).toHaveBeenCalledWith(choiceRoot.value); // original call
       expect(chainer).toHaveBeenCalledWith(shrinkRoot1.value); // chained during shrink
       expect(chainer).not.toHaveBeenCalledWith(shrinkRoot2.value); // chained during shrink (skipped due to getNthOrLast(0)

@@ -1,11 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
 import { SlicedBasedGenerator } from '../../../../../src/arbitrary/_internals/implementations/SlicedBasedGenerator.js';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../../__test-helpers__/RandomHelpers.js';
+import * as RandomModule from '../../../../../src/random/generator/Random.js';
 
 describe('SlicedBasedGenerator', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('attemptExact', () => {
     it('should take one of the provided slices and return it item by item', () => {
       fc.assert(
@@ -17,10 +22,11 @@ describe('SlicedBasedGenerator', () => {
           (slices, targetLengthMod, selectOneMod, biasFactor) => {
             // Arrange
             const { instance: arb } = fakeArbitrary();
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             nextInt
               .mockReturnValueOnce(1) // 1 to go for "value from slices"
-              .mockImplementationOnce((min, max) => (selectOneMod % (max - min + 1)) + min);
+              .mockImplementationOnce((_mrng, min, max) => (selectOneMod % (max - min + 1)) + min);
             const targetLength = slices[targetLengthMod % slices.length].length;
 
             // Act
@@ -33,7 +39,7 @@ describe('SlicedBasedGenerator', () => {
 
             // Assert
             expect(nextInt).toHaveBeenCalledTimes(2); // only called twice: 1/ to bias to one of the slices 2/ to select which one
-            expect(nextInt).toHaveBeenCalledWith(1, biasFactor);
+            expect(nextInt).toHaveBeenCalledWith(mrng, 1, biasFactor);
             expect(slices).toContainEqual(readFromGenerator);
           },
         ),
@@ -59,8 +65,9 @@ describe('SlicedBasedGenerator', () => {
               producedValues.push(value);
               return new Value(value, context);
             });
-            const { instance: mrng, nextInt } = fakeRandom();
-            nextInt.mockImplementation((_min, max) => max); // >min ie in [min+1,max] corresponds to unbiased
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
+            nextInt.mockImplementation((_mrng, _min, max) => max); // >min ie in [min+1,max] corresponds to unbiased
 
             // Act
             const generator = new SlicedBasedGenerator(arb, mrng, slices, biasFactor);
@@ -89,19 +96,20 @@ describe('SlicedBasedGenerator', () => {
           (slices, streamModValues, targetLength, biasFactor, withAttemptExact) => {
             // Arrange
             const { instance: arb, generate } = fakeArbitrary();
-            const { instance: mrng, nextInt } = fakeRandom();
+            const { instance: mrng } = fakeRandom();
+            const nextInt = vi.spyOn(RandomModule, 'nextInt');
             const allValuesFromSlices = slices.flat();
 
             // Act
             const generator = new SlicedBasedGenerator(arb, mrng, slices, biasFactor);
             const readFromGenerator: unknown[] = [];
             if (withAttemptExact) {
-              nextInt.mockImplementation((_min, max) => max); // no bias for attemptExact
+              nextInt.mockImplementation((_mrng, _min, max) => max); // no bias for attemptExact
               generator.attemptExact(targetLength);
             }
             for (let index = 0; index !== targetLength; ++index) {
               let returnedBias = false;
-              nextInt.mockImplementation((min, max) => {
+              nextInt.mockImplementation((_mrng, min, max) => {
                 if (!returnedBias) {
                   returnedBias = true;
                   return min; // ask for bias, to make sure we use slices
