@@ -8,10 +8,6 @@ _Only publish ESM bundle_
 - ([PR#6500](https://github.com/dubzzz/fast-check/pull/6500)) Drop CommonJS support
 - ([PR#6506](https://github.com/dubzzz/fast-check/pull/6506)) Drop useless "typesVersions"
 
-## Features
-
-
-
 ## Fixes
 
 - ([PR#6511](https://github.com/dubzzz/fast-check/pull/6511)) CI: Speed-up build with rolldown
