@@ -275,6 +275,41 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
+    it.concurrent(
+      `should call beforeEach, afterEach and clean-ups the same number of times even in failure cases`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          // @ts-expect-error - No Typescript here
+          const probes = [];
+          beforeEachVi(() => {
+            probes.push(`beforeEach`);
+            return () => probes.push(`clean-up beforeEach`);
+          });
+          afterEachVi(() => {
+            probes.push(`afterEach`);
+          });
+          runner.fails.prop([fc.string()])('property', (s) => {
+            probes.push(`predicate`);
+            return s.length % 2 === 0;
+          });
+          afterAllVi(() => {
+            // @ts-expect-error - No Typescript here
+            const counOf = (value) => probes.filter((v) => v === value).length;
+            expectVi(counOf('beforeEach')).toBe(counOf('predicate'));
+            expectVi(counOf('afterEach')).toBe(counOf('predicate'));
+            expectVi(counOf('clean-up beforeEach')).toBe(counOf('predicate'));
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
