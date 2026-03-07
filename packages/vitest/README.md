@@ -84,9 +84,9 @@ test.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('should detect the
 
 Please note that the properties accepted by `@fast-check/vitest` as input can either be synchronous or asynchronous (even just `PromiseLike` instances).
 
-### Hooks: `beforeEach` / `afterEach`
+### Seamless integration with Vitest's `beforeEach` / `afterEach`
 
-Vitest's `beforeEach` and `afterEach` hooks are automatically wired into predicates. They are called respectively before and after each execution of the predicate. If a predicate runs _n_ times, `beforeEach` will be called _n_ times before it and `afterEach` _n_ times after it. The only caveat is that cleanup functions returned by `beforeEach` on the first predicate execution are deferred until the end of the test, as they are handled by vitest's own teardown mechanism. All other cleanups run between predicate executions as expected.
+Vitest's `beforeEach` and `afterEach` hooks are natively integrated into predicates. They are called respectively before and after each execution of the predicate. If a predicate runs _n_ times, `beforeEach` will be called _n_ times before it and `afterEach` _n_ times after it. The only caveat is that cleanup functions returned by `beforeEach` on the first predicate execution are deferred until the end of the test, as they are handled by vitest's own teardown mechanism. All other cleanups run between predicate executions as expected.
 
 ### Advanced
 
