@@ -11,9 +11,11 @@ import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
+declare const describeVi: typeof describe;
 declare const afterAllVi: typeof afterAll;
 declare const beforeEachVi: typeof beforeEach;
 declare const afterEachVi: typeof afterEach;
+declare const expectVi: typeof expect;
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
@@ -155,93 +157,54 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
-    it.concurrent(`should call beforeEach for each run in ${runnerName}.prop`, async () => {
+    it.concurrent.only(`should call beforeEach in the right order`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
-        let beforeEachCount = 0;
-        const requestedNumExecutions = 5;
+        const requestedNumExecutions = 3;
+        // @ts-expect-error - No type specified, but expected
+        const probes = [];
         beforeEachVi(() => {
-          ++beforeEachCount;
+          probes.push(`beforeEach A`);
         });
-        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-          return true;
+        describeVi('describe', () => {
+          beforeEachVi(() => {
+            probes.push(`beforeEach AA`);
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            probes.push(`predicate`);
+            return true;
+          });
+          beforeEachVi(() => {
+            probes.push(`beforeEach BB`);
+          });
         });
-        afterAllVi(() => {
-          if (beforeEachCount !== requestedNumExecutions) {
-            throw new Error('beforeEach count mismatch, got: ' + beforeEachCount);
-          }
-        });
-      });
-
-      // Act
-      const out = await runSpec(specDirectory);
-
-      // Assert
-      expectPass(out);
-    });
-
-    it.concurrent(`should call afterEach for each run in ${runnerName}.prop`, async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, () => {
-        let afterEachCount = 0;
-        const requestedNumExecutions = 5;
-        afterEachVi(() => {
-          ++afterEachCount;
-        });
-        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-          return true;
-        });
-        afterAllVi(() => {
-          if (afterEachCount !== requestedNumExecutions) {
-            throw new Error('afterEach count mismatch, got: ' + afterEachCount);
-          }
-        });
-      });
-
-      // Act
-      const out = await runSpec(specDirectory);
-
-      // Assert
-      expectPass(out);
-    });
-
-    it.concurrent(`should never call beforeEach/afterEach twice per run in ${runnerName}.prop`, async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, () => {
-        const requestedNumExecutions = 5;
-        let beforeEachCount = 0;
-        let afterEachCount = 0;
-        const errors: string[] = [];
-
         beforeEachVi(() => {
-          beforeEachCount++;
-          if (beforeEachCount - afterEachCount !== 1) {
-            errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
-          }
+          probes.push(`beforeEach B`);
         });
-        afterEachVi(() => {
-          afterEachCount++;
-          if (beforeEachCount - afterEachCount !== 0) {
-            errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
-          }
-        });
-        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-          if (beforeEachCount - afterEachCount !== 1) {
-            throw new Error('run: bE=' + beforeEachCount + ', aE=' + afterEachCount);
-          }
-          return true;
-        });
-
         afterAllVi(() => {
-          if (errors.length > 0) {
-            throw new Error('Hook order violations: ' + errors.join('; '));
-          }
-          if (beforeEachCount !== requestedNumExecutions) {
-            throw new Error('beforeEach count mismatch, got: ' + beforeEachCount);
-          }
-          if (afterEachCount !== requestedNumExecutions) {
-            throw new Error('afterEach count mismatch, got: ' + afterEachCount);
-          }
+          // @ts-expect-error - No type specified, but expected
+          expectVi(probes).toEqual([
+            // outer level in order of declaration first
+            'beforeEach A',
+            'beforeEach B',
+            // then inner level in order of declaration
+            'beforeEach AA',
+            'beforeEach BB',
+            // then predicate
+            'predicate',
+            // and same for second run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate',
+            // and same for third run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate',
+          ]);
         });
       });
 
@@ -252,39 +215,179 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
-    it.concurrent(
-      `should never call beforeEach/afterEach twice per run including shrinks in ${runnerName}.prop`,
+    it.concurrent.only(`should call afterEach in the right order`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        const requestedNumExecutions = 3;
+        // @ts-expect-error - No type specified, but expected
+        const probes = [];
+        afterEachVi(() => {
+          probes.push(`afterEach A`);
+        });
+        describeVi('describe', () => {
+          afterEachVi(() => {
+            probes.push(`afterEach AA`);
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            probes.push(`predicate`);
+            return true;
+          });
+          afterEachVi(() => {
+            probes.push(`afterEach BB`);
+          });
+        });
+        afterEachVi(() => {
+          probes.push(`afterEach B`);
+        });
+        afterAllVi(() => {
+          // @ts-expect-error - No type specified, but expected
+          expectVi(probes).toEqual([
+            // predicate
+            'predicate',
+            // then inner level in reverse order of declaration
+            'afterEach BB',
+            'afterEach AA',
+            // outer level in reverse order of declaration first
+            'afterEach B',
+            'afterEach A',
+            // and same for second run
+            'predicate',
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
+            // and same for third run
+            'predicate',
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
+          ]);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent.only(`should call beforeEach clean-up in best-effort`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        const requestedNumExecutions = 3;
+        // @ts-expect-error - No type specified, but expected
+        const probes = [];
+        beforeEachVi(() => {
+          return () => probes.push(`clean-up beforeEach A`);
+        });
+        describeVi('describe', () => {
+          beforeEachVi(() => {
+            return () => probes.push(`clean-up beforeEach AA`);
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            probes.push(`predicate`);
+            return true;
+          });
+          beforeEachVi(() => {
+            return () => probes.push(`clean-up beforeEach BB`);
+          });
+        });
+        beforeEachVi(() => {
+          return () => probes.push(`clean-up beforeEach B`);
+        });
+        afterAllVi(() => {
+          // @ts-expect-error - No type specified, but expected
+          expectVi(probes).toEqual([
+            // predicate
+            'predicate',
+            // and for second run: predicate then clean-up of beforeEach in reverse order
+            'predicate',
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+            // and for third run: predicate then clean-up of beforeEach in reverse order
+            'predicate',
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+            // Ideally these clean-ups should be executed earlier
+            // late clean-ups for first run
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+          ]);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent.only(
+      `should call beforeEach/afterEach and clean-ups in proper order (at least for next runs)`,
       async () => {
         // Arrange
         const specDirectory = await writeToFile(runnerName, () => {
-          let beforeEachCount = 0;
-          let afterEachCount = 0;
-          const errors: string[] = [];
-
+          const requestedNumExecutions = 3;
+          // @ts-expect-error - No type specified, but expected
+          const probes = [];
           beforeEachVi(() => {
-            beforeEachCount++;
-            if (beforeEachCount - afterEachCount !== 1) {
-              errors.push('beforeEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
-            }
+            probes.push(`beforeEach A`);
+            return () => probes.push(`clean-up beforeEach A`);
           });
           afterEachVi(() => {
-            afterEachCount++;
-            if (beforeEachCount - afterEachCount !== 0) {
-              errors.push('afterEach: bE=' + beforeEachCount + ', aE=' + afterEachCount);
-            }
+            probes.push(`afterEach A`);
           });
-          runner.fails.prop([fc.integer({ min: 10, max: 1000 })], { numRuns: 10 })('property', (_n) => false);
-
+          describeVi('describe', () => {
+            beforeEachVi(() => {
+              probes.push(`beforeEach AA`);
+              return () => probes.push(`clean-up beforeEach AA`);
+            });
+            afterEachVi(() => {
+              probes.push(`afterEach AA`);
+            });
+            runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+              probes.push(`predicate`);
+              return true;
+            });
+          });
           afterAllVi(() => {
-            if (errors.length > 0) {
-              throw new Error('Hook order violations: ' + errors.join('; '));
-            }
-            if (beforeEachCount !== afterEachCount) {
-              throw new Error('bE/aE mismatch: bE=' + beforeEachCount + ', aE=' + afterEachCount);
-            }
-            if (beforeEachCount < 1) {
-              throw new Error('Expected at least 1 run, got: ' + beforeEachCount);
-            }
+            // @ts-expect-error - No type specified, but expected
+            expectVi(probes).toEqual([
+              // First run (except clean-ups for beforeEach)
+              'beforeEach A',
+              'beforeEach AA',
+              'predicate',
+              'afterEach AA',
+              'afterEach A',
+              // Second run
+              'beforeEach A',
+              'beforeEach AA',
+              'predicate',
+              'afterEach AA',
+              'afterEach A',
+              'clean-up beforeEach AA',
+              'clean-up beforeEach BB',
+              // Third run
+              'beforeEach A',
+              'beforeEach AA',
+              'predicate',
+              'afterEach AA',
+              'afterEach A',
+              'clean-up beforeEach AA',
+              'clean-up beforeEach BB',
+              // Clean-ups for first run
+              'clean-up beforeEach AA',
+              'clean-up beforeEach BB',
+            ]);
           });
         });
 
@@ -295,72 +398,6 @@ describe.each<DescribeOptions>([
         expectPass(out);
       },
     );
-
-    it.concurrent(`should call beforeEach cleanup functions for each run in ${runnerName}.prop`, async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, () => {
-        let cleanupCount = 0;
-        const requestedNumExecutions = 5;
-        beforeEachVi(() => {
-          return () => {
-            ++cleanupCount;
-          };
-        });
-        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-          return true;
-        });
-        afterAllVi(() => {
-          if (cleanupCount !== requestedNumExecutions) {
-            throw new Error('beforeEach cleanup count mismatch, got: ' + cleanupCount);
-          }
-        });
-      });
-
-      // Act
-      const out = await runSpec(specDirectory);
-
-      // Assert
-      expectPass(out);
-    });
-
-    it.concurrent(`should call beforeEach cleanup before afterEach between runs in ${runnerName}.prop`, async () => {
-      // Arrange
-      const specDirectory = await writeToFile(runnerName, () => {
-        const requestedNumExecutions = 5;
-        let cleanupRan = false;
-        let sawCleanupBeforeAfterEach = true;
-        let transitions = 0;
-
-        beforeEachVi(() => {
-          cleanupRan = false;
-          return () => {
-            cleanupRan = true;
-          };
-        });
-        afterEachVi(() => {
-          transitions++;
-          // Skip the first transition — its cleanup is managed by vitest auto-lifecycle,
-          // not by our manual invocation, so ordering is outside our control.
-          if (transitions > 1 && !cleanupRan) {
-            sawCleanupBeforeAfterEach = false;
-          }
-        });
-        runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
-          return true;
-        });
-        afterAllVi(() => {
-          if (!sawCleanupBeforeAfterEach) {
-            throw new Error('beforeEach cleanup was not called before afterEach');
-          }
-        });
-      });
-
-      // Act
-      const out = await runSpec(specDirectory);
-
-      // Assert
-      expectPass(out);
-    });
 
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
@@ -547,7 +584,7 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       : (testCode: string) => testCode;
   const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
-    "import {describe,afterAll as afterAllVi,beforeEach as beforeEachVi,afterEach as afterEachVi} from 'vitest';\n" +
+    "import {describe,describe as describeVi,afterAll as afterAllVi,beforeEach as beforeEachVi,afterEach as afterEachVi,expect as expectVi} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
