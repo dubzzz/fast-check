@@ -84,47 +84,37 @@ test.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('should detect the
 
 Please note that the properties accepted by `@fast-check/vitest` as input can either be synchronous or asynchronous (even just `PromiseLike` instances).
 
-### Advanced
-
-If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
-
-`@fast-check/vitest` also comes with `.only`, `.skip`, `.todo` and `.concurrent` from vitest. It also accepts more complex ones such as `.concurrent.skip`.
-
 ### Hooks: `beforeEach` / `afterEach`
 
-When using `test.prop` or `it.prop`, vitest's `beforeEach` and `afterEach` hooks are called **once per property run**, not just once per test. This means that if a property executes 100 runs inside a single `it.prop`, hooks will fire 100 times — once for each generated input.
-
-This is especially useful for setup/teardown logic such as restoring mocks, cleaning up the DOM, or resetting database state between runs.
+Vitest's `beforeEach` and `afterEach` hooks are automatically wired into predicates. They are called respectively before and after each execution of the predicate. If a predicate runs _n_ times, `beforeEach` will be called _n_ times before it and `afterEach` _n_ times after it.
 
 ```javascript
 import { test, fc } from '@fast-check/vitest';
 import { beforeEach, afterEach, expect } from 'vitest';
 
 beforeEach(() => {
-  // Runs before each property run, not just before the test
   setupMocks();
   return () => {
-    // Optional cleanup function, called after each run
     cleanupMocks();
   };
 });
 
 afterEach(() => {
-  // Runs after each property run
   restoreState();
 });
 
 test.prop([fc.string()])('should work with hooks', (value) => {
-  // Each run gets fresh setup/teardown
   expect(myFunction(value)).toBeDefined();
 });
 ```
 
-**Limitations:**
+> **Note:** Cleanup functions returned by `beforeEach` on the first predicate execution are delayed until the end of the test (handled by vitest's own teardown). All other cleanups run between predicate executions as expected. In other words, `beforeEach` and `afterEach` are always called before and after each predicate execution, but the cleanup of the first `beforeEach` is deferred.
 
-- **First and last runs behave slightly differently:** The first `beforeEach` and the last `afterEach` are handled by vitest itself, while intermediate runs are managed by `@fast-check/vitest`. In practice, every run still gets exactly one `beforeEach` and one `afterEach` call, but cleanup functions returned by `beforeEach` on the first run are deferred until after the entire test completes (handled by vitest's own teardown). This is generally transparent but may matter if cleanup ordering is critical.
-- **Worker threads:** Hook support relies on vitest's `getCurrentTest()` and `getHooks()` APIs to collect hooks from the suite chain. Running property-based tests inside worker threads is not supported.
-- **`test.context` is shared:** All property runs within a single `test.prop` share the same vitest test context object. Hooks that modify `test.context` should be aware that mutations persist across runs.
+### Advanced
+
+If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
+
+`@fast-check/vitest` also comes with `.only`, `.skip`, `.todo` and `.concurrent` from vitest. It also accepts more complex ones such as `.concurrent.skip`.
 
 ```javascript
 import { it, test, fc } from '@fast-check/vitest';
