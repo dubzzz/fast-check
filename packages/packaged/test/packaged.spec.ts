@@ -11,14 +11,17 @@ afterAll(async () => {
 
 describe('removeNonPublishedFiles', () => {
   it.each`
-    name                                                      | dryRun   | pathStyle
-    ${'only keep published files by default'}                 | ${false} | ${'absolute'}
-    ${'not clean anything in dryRun mode'}                    | ${true}  | ${'absolute'}
-    ${'handle relative paths such as .'}                      | ${false} | ${'.'}
-    ${'handle relative paths such as ./package-name'}         | ${false} | ${'./package-name'}
-    ${'handle relative paths such as ./a/package-name'}       | ${false} | ${'./a/package-name'}
-    ${'handle relative paths such as ./a/../a/package-name/'} | ${false} | ${'./a/../a/package-name/'}
-  `('should $name', async ({ dryRun, pathStyle }) => {
+    name                                                                   | dryRun   | keep                       | pathStyle
+    ${'only keep published files by default'}                              | ${false} | ${[]}                      | ${'absolute'}
+    ${'not clean anything in dryRun mode'}                                 | ${true}  | ${[]}                      | ${'absolute'}
+    ${'keep node_modules when using keep'}                                 | ${false} | ${['node_modules']}        | ${'absolute'}
+    ${'keep files matching a glob pattern'}                                | ${false} | ${['tsconfig*']}           | ${'absolute'}
+    ${'keep files matching multiple patterns'}                             | ${false} | ${['src', 'node_modules']} | ${'absolute'}
+    ${'handle relative paths such as .'}                                   | ${false} | ${[]}                      | ${'.'}
+    ${'handle relative paths such as ./package-name'}                      | ${false} | ${[]}                      | ${'./package-name'}
+    ${'handle relative paths such as ./a/package-name'}                    | ${false} | ${[]}                      | ${'./a/package-name'}
+    ${'handle relative paths such as ./a/../a/package-name/'}              | ${false} | ${[]}                      | ${'./a/../a/package-name/'}
+  `('should $name', async ({ dryRun, keep, pathStyle }) => {
     await runPackageTest(async (fileSystem) => {
       // Arrange
       const packageJsonContent = {
@@ -33,6 +36,8 @@ describe('removeNonPublishedFiles', () => {
       await fileSystem.createFile(['src', 'node_modules', 'wtf', 'main.js'], 'console.log("main.js")');
       await fileSystem.createFile(['test', 'main.js'], 'console.log("main.js")');
       await fileSystem.createFile(['node_modules', 'dep-a', 'main.js'], 'console.log("main.js")');
+      await fileSystem.createFile(['tsconfig.json'], '{}');
+      await fileSystem.createFile(['tsconfig.build.json'], '{}');
 
       // Act
       let requestedPath;
@@ -61,26 +66,29 @@ describe('removeNonPublishedFiles', () => {
         default:
           throw new Error(`Unsupported style ${pathStyle}`);
       }
-      const { kept, removed } = await removeNonPublishedFiles(requestedPath, { dryRun });
+      const { kept, removed } = await removeNonPublishedFiles(requestedPath, { dryRun, keep });
 
       // Assert
-      // Returns arrays having the expected sizes
-      expect(kept).toHaveLength(3); // package.json, lib/main.js, lib
-      expect(removed).toHaveLength(3); // src, test, node_modules
+      const keepsSrc = keep.some((p: string) => path.matchesGlob('src', p));
+      const keepsNodeModules = keep.some((p: string) => path.matchesGlob('node_modules', p));
+      const keepsTsconfig = keep.some((p: string) => path.matchesGlob('tsconfig.json', p));
+      const keepsTsconfigBuild = keep.some((p: string) => path.matchesGlob('tsconfig.build.json', p));
       // Remove unpublished files and keep published ones
       expect(await fileSystem.exists(['package.json'])).toBe(true);
       expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun);
-      expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun);
+      expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun || keepsSrc);
+      expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun || keepsSrc);
       expect(await fileSystem.exists(['test', 'main.js'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun);
+      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun || keepsNodeModules);
+      expect(await fileSystem.exists(['tsconfig.json'])).toBe(dryRun || keepsTsconfig);
+      expect(await fileSystem.exists(['tsconfig.build.json'])).toBe(dryRun || keepsTsconfigBuild);
       // Remove empty folders
-      expect(await fileSystem.exists(['src'])).toBe(dryRun);
-      expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun);
-      expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun);
+      expect(await fileSystem.exists(['src'])).toBe(dryRun || keepsSrc);
+      expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun || keepsSrc);
+      expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun || keepsSrc);
       expect(await fileSystem.exists(['test'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun);
+      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun || keepsNodeModules);
+      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun || keepsNodeModules);
     });
   });
 
@@ -218,152 +226,6 @@ describe('removeNonPublishedFiles', () => {
       expect(removed).toHaveLength(0);
       expect(await fileSystem.exists(['package.json'])).toBe(true);
       expect(await fileSystem.exists(['lib', 'a', 'b', 'c', 'd', 'main.js'])).toBe(true);
-    });
-  });
-
-  it('should keep files matching a --keep glob pattern', async () => {
-    await runPackageTest(async (fileSystem) => {
-      // Arrange
-      const packageJsonContent = {
-        name: 'my-package',
-        version: '0.0.0',
-        files: ['lib'],
-        license: 'MIT',
-      };
-      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
-      await fileSystem.createFile(['lib', 'main.js'], 'console.log("main.js")');
-      await fileSystem.createFile(['src', 'main.ts'], 'console.log("main.ts")');
-      await fileSystem.createFile(['test', 'main.spec.ts'], 'console.log("main.spec.ts")');
-      await fileSystem.createFile(['node_modules', 'dep-a', 'main.js'], 'console.log("main.js")');
-
-      // Act
-      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath, { keep: ['src'] });
-
-      // Assert
-      expect(kept).toHaveLength(4); // package.json, lib/main.js, lib, src
-      expect(removed).toHaveLength(2); // test, node_modules
-      expect(await fileSystem.exists(['package.json'])).toBe(true);
-      expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['src', 'main.ts'])).toBe(true);
-      expect(await fileSystem.exists(['test', 'main.spec.ts'])).toBe(false);
-      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(false);
-    });
-  });
-
-  it('should keep files matching multiple --keep glob patterns', async () => {
-    await runPackageTest(async (fileSystem) => {
-      // Arrange
-      const packageJsonContent = {
-        name: 'my-package',
-        version: '0.0.0',
-        files: ['lib'],
-        license: 'MIT',
-      };
-      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
-      await fileSystem.createFile(['lib', 'main.js'], 'console.log("main.js")');
-      await fileSystem.createFile(['src', 'main.ts'], 'console.log("main.ts")');
-      await fileSystem.createFile(['test', 'main.spec.ts'], 'console.log("main.spec.ts")');
-      await fileSystem.createFile(['node_modules', 'dep-a', 'main.js'], 'console.log("main.js")');
-
-      // Act
-      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath, {
-        keep: ['src', 'node_modules'],
-      });
-
-      // Assert
-      expect(kept).toHaveLength(5); // package.json, lib/main.js, lib, src, node_modules
-      expect(removed).toHaveLength(1); // test
-      expect(await fileSystem.exists(['package.json'])).toBe(true);
-      expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['src', 'main.ts'])).toBe(true);
-      expect(await fileSystem.exists(['test', 'main.spec.ts'])).toBe(false);
-      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(true);
-    });
-  });
-
-  it('should keep files matching a --keep wildcard glob pattern', async () => {
-    await runPackageTest(async (fileSystem) => {
-      // Arrange
-      const packageJsonContent = {
-        name: 'my-package',
-        version: '0.0.0',
-        files: ['lib'],
-        license: 'MIT',
-      };
-      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
-      await fileSystem.createFile(['lib', 'main.js'], 'console.log("main.js")');
-      await fileSystem.createFile(['tsconfig.json'], '{}');
-      await fileSystem.createFile(['tsconfig.build.json'], '{}');
-      await fileSystem.createFile(['src', 'main.ts'], 'console.log("main.ts")');
-
-      // Act
-      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath, { keep: ['tsconfig*'] });
-
-      // Assert
-      expect(kept).toHaveLength(5); // package.json, lib/main.js, lib, tsconfig.json, tsconfig.build.json
-      expect(removed).toHaveLength(1); // src
-      expect(await fileSystem.exists(['package.json'])).toBe(true);
-      expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['tsconfig.json'])).toBe(true);
-      expect(await fileSystem.exists(['tsconfig.build.json'])).toBe(true);
-      expect(await fileSystem.exists(['src', 'main.ts'])).toBe(false);
-    });
-  });
-
-  it('should not recurse into directories matched by --keep', async () => {
-    await runPackageTest(async (fileSystem) => {
-      // Arrange
-      const packageJsonContent = {
-        name: 'my-package',
-        version: '0.0.0',
-        files: ['lib'],
-        license: 'MIT',
-      };
-      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
-      await fileSystem.createFile(['lib', 'main.js'], 'console.log("main.js")');
-      await fileSystem.createFile(['src', 'a', 'b', 'c.ts'], 'console.log("c.ts")');
-
-      // Act
-      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath, { keep: ['src'] });
-
-      // Assert
-      expect(kept).toHaveLength(4); // package.json, lib/main.js, lib, src
-      expect(removed).toHaveLength(0);
-      // The whole src directory subtree is preserved
-      expect(await fileSystem.exists(['src', 'a', 'b', 'c.ts'])).toBe(true);
-    });
-  });
-
-  it('should keep files matching a --keep glob with nested path inside a published directory', async () => {
-    await runPackageTest(async (fileSystem) => {
-      // Arrange
-      const packageJsonContent = {
-        name: 'my-package',
-        version: '0.0.0',
-        files: ['lib'],
-        license: 'MIT',
-      };
-      await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
-      await fileSystem.createFile(['lib', 'main.js'], 'console.log("main.js")');
-      await fileSystem.createFile(['lib', 'main.spec.js'], 'console.log("main.spec.js")');
-      await fileSystem.createFile(['lib', 'utils', 'helper.js'], 'console.log("helper.js")');
-      await fileSystem.createFile(['lib', 'utils', 'helper.spec.js'], 'console.log("helper.spec.js")');
-      await fileSystem.createFile(['test', 'main.spec.ts'], 'console.log("main.spec.ts")');
-
-      // Act
-      const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath, {
-        keep: ['lib/**/*.spec.js'],
-      });
-
-      // Assert
-      // lib/main.spec.js is not published but matches the keep glob, so it's kept
-      // lib/utils/helper.spec.js is not published but matches the keep glob, so it's kept
-      expect(await fileSystem.exists(['package.json'])).toBe(true);
-      expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['lib', 'main.spec.js'])).toBe(true);
-      expect(await fileSystem.exists(['lib', 'utils', 'helper.js'])).toBe(true);
-      expect(await fileSystem.exists(['lib', 'utils', 'helper.spec.js'])).toBe(true);
-      expect(await fileSystem.exists(['test', 'main.spec.ts'])).toBe(false);
     });
   });
 
