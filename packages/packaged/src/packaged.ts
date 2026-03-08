@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import packlist from 'npm-packlist';
 import { Arborist } from '@npmcli/arborist';
 import * as path from 'path';
+import picomatch from 'picomatch';
 
 /**
  * Compute the list of all files that will be part of the package if published
@@ -56,13 +57,18 @@ async function traverseAndRemoveNonPublishedFiles(
     dryRun: boolean;
     publishedDirectories: Set<string>;
     publishedFiles: Set<string>;
+    packageRoot: string;
+    keepMatchers: picomatch.Matcher[];
   },
 ): Promise<void> {
   const awaitedTasks: Promise<unknown>[] = [];
   const content = await fs.readdir(currentPath);
   for (const itemName of content) {
     const itemPath = path.join(currentPath, itemName);
+    const relativePath = path.relative(opts.packageRoot, itemPath);
     if (itemPath === opts.rootNodeModulesPath) {
+      out.kept.push(itemPath);
+    } else if (opts.keepMatchers.some((matcher) => matcher(relativePath))) {
       out.kept.push(itemPath);
     } else if (opts.publishedDirectories.has(itemPath)) {
       out.kept.push(itemPath);
@@ -85,7 +91,7 @@ async function traverseAndRemoveNonPublishedFiles(
  */
 export async function removeNonPublishedFiles(
   packageRoot: string,
-  opts: { dryRun?: boolean; keepNodeModules?: boolean } = {},
+  opts: { dryRun?: boolean; keepNodeModules?: boolean; keep?: string[] } = {},
 ): Promise<{ kept: string[]; removed: string[] }> {
   const publishedFiles = await computePublishedFiles(packageRoot);
 
@@ -94,11 +100,14 @@ export async function removeNonPublishedFiles(
   const normalizedPublishedFiles = publishedFiles.map((filename) => path.join(normalizedPackageRoot, filename));
   const normalizedPublishedFilesSet = new Set(normalizedPublishedFiles);
   const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
+  const keepMatchers = (opts.keep ?? []).map((pattern) => picomatch(pattern));
   const traverseOpts = {
     rootNodeModulesPath: opts.keepNodeModules ? path.join(normalizedPackageRoot, 'node_modules') : undefined,
     dryRun: !!opts.dryRun,
     publishedDirectories: normalizedPublishedDirectoriesSet,
     publishedFiles: normalizedPublishedFilesSet,
+    packageRoot: normalizedPackageRoot,
+    keepMatchers,
   };
   await traverseAndRemoveNonPublishedFiles(normalizedPackageRoot, out, traverseOpts);
   return out;

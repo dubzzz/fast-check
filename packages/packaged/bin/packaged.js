@@ -13,11 +13,20 @@ function run(args) {
     console.log('  No removal, just printing');
     console.log('- packaged --keep-node-modules');
     console.log('  Keep root level node_modules if any');
+    console.log('- packaged --keep <glob>');
+    console.log('  Keep files/directories matching the glob pattern (can be specified multiple times)');
     return;
   }
   const dryRun = args.includes('--dry-run');
   const keepNodeModules = args.includes('--keep-node-modules');
-  removeNonPublishedFiles('.', { dryRun, keepNodeModules }).then(
+  const keep = [];
+  for (let i = 0; i < args.length; ++i) {
+    if (args[i] === '--keep' && i + 1 < args.length) {
+      keep.push(args[i + 1]);
+      ++i;
+    }
+  }
+  removeNonPublishedFiles('.', { dryRun, keepNodeModules, keep }).then(
     (out) => {
       if (dryRun) {
         console.log('Those files would have been kept:');
