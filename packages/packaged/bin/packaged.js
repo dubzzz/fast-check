@@ -18,9 +18,16 @@ function run(args) {
   const dryRun = args.includes('--dry-run');
   const keep = [];
   for (let i = 0; i < args.length; ++i) {
-    if (args[i] === '--keep' && i + 1 < args.length) {
+    if (args[i] === '--keep') {
+      if (i + 1 >= args.length) {
+        throw new Error('Missing value for --keep');
+      }
       keep.push(args[i + 1]);
       ++i;
+    } else if (args[i] === '--dry-run') {
+      // already handled
+    } else {
+      throw new Error(`Unknown flag: ${args[i]}`);
     }
   }
   removeNonPublishedFiles('.', { dryRun, keep }).then(
