@@ -242,9 +242,6 @@ importers:
       npm-packlist:
         specifier: ^10.0.0
         version: 10.0.4
-      picomatch:
-        specifier: ^4.0.3
-        version: 4.0.3
     devDependencies:
       '@types/npm-packlist':
         specifier: ^7.0.3
@@ -252,9 +249,6 @@ importers:
       '@types/npmcli__arborist':
         specifier: ^6.3.3
         version: 6.3.3
-      '@types/picomatch':
-        specifier: ^4.0.2
-        version: 4.0.2
       rolldown:
         specifier: ^1.0.0-rc.7
         version: 1.0.0-rc.7
@@ -3786,9 +3780,6 @@ packages:
 
   '@types/pacote@11.1.8':
     resolution: {integrity: sha512-/XLR0VoTh2JEO0jJg1q/e6Rh9bxjBq9vorJuQmtT7rRrXSiWz7e7NsvXVYJQ0i8JxMlBMPPYDTnrRe7MZRFA8Q==}
-
-  '@types/picomatch@4.0.2':
-    resolution: {integrity: sha512-qHHxQ+P9PysNEGbALT8f8YOSHW0KJu6l2xU8DYY0fu/EmGxXdVnuTLvFUvBgPJMSqXq29SYHveejeAha+4AYgA==}
 
   '@types/prismjs@1.26.6':
     resolution: {integrity: sha512-vqlvI7qlMvcCBbVe0AKAb4f97//Hy0EBTaiW8AalRnG/xAN5zOiWWyrNqNXeq8+KAuvRewjCVY1+IPxk4RdNYw==}
@@ -14955,8 +14946,6 @@ snapshots:
       '@types/npm-registry-fetch': 8.0.9
       '@types/npmlog': 7.0.0
       '@types/ssri': 7.1.5
-
-  '@types/picomatch@4.0.2': {}
 
   '@types/prismjs@1.26.6': {}
 
