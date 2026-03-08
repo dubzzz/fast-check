@@ -2,7 +2,6 @@ import { promises as fs } from 'fs';
 import packlist from 'npm-packlist';
 import { Arborist } from '@npmcli/arborist';
 import * as path from 'path';
-import picomatch from 'picomatch';
 
 /**
  * Compute the list of all files that will be part of the package if published
@@ -58,7 +57,7 @@ async function traverseAndRemoveNonPublishedFiles(
     publishedDirectories: Set<string>;
     publishedFiles: Set<string>;
     packageRoot: string;
-    keepMatchers: picomatch.Matcher[];
+    keepPatterns: string[];
   },
 ): Promise<void> {
   const awaitedTasks: Promise<unknown>[] = [];
@@ -68,7 +67,7 @@ async function traverseAndRemoveNonPublishedFiles(
     const relativePath = path.relative(opts.packageRoot, itemPath);
     if (itemPath === opts.rootNodeModulesPath) {
       out.kept.push(itemPath);
-    } else if (opts.keepMatchers.some((matcher) => matcher(relativePath))) {
+    } else if (opts.keepPatterns.some((pattern) => path.matchesGlob(relativePath, pattern))) {
       out.kept.push(itemPath);
     } else if (opts.publishedDirectories.has(itemPath)) {
       out.kept.push(itemPath);
@@ -100,14 +99,14 @@ export async function removeNonPublishedFiles(
   const normalizedPublishedFiles = publishedFiles.map((filename) => path.join(normalizedPackageRoot, filename));
   const normalizedPublishedFilesSet = new Set(normalizedPublishedFiles);
   const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
-  const keepMatchers = (opts.keep ?? []).map((pattern) => picomatch(pattern));
+  const keepPatterns = opts.keep ?? [];
   const traverseOpts = {
     rootNodeModulesPath: opts.keepNodeModules ? path.join(normalizedPackageRoot, 'node_modules') : undefined,
     dryRun: !!opts.dryRun,
     publishedDirectories: normalizedPublishedDirectoriesSet,
     publishedFiles: normalizedPublishedFilesSet,
     packageRoot: normalizedPackageRoot,
-    keepMatchers,
+    keepPatterns,
   };
   await traverseAndRemoveNonPublishedFiles(normalizedPackageRoot, out, traverseOpts);
   return out;
