@@ -30,7 +30,7 @@ When the constraint is tighter than the minimum length required by the regex, th
 
 This release migrates the build pipeline from Rollup to [Rolldown](https://rolldown.rs/) and bumps the random number generator to pure-rand v8. Together with several internal clean-ups these changes reduce the published package from **1618 kB** down to **1344 kB** — a **17% reduction** — while also cutting the file count from 1331 to just 11.
 
-The smaller bundle also translates into faster import times. On a GitHub Codespace, importing fast-check 4.6.0 is **~2.35x faster** than importing 4.5.0. On a Windows machine the speedup is **~1.75x**.
+The smaller bundle also translates into faster import times. On our side we measured import speed improvements ranging from **~1.75x** to **~2.35x** faster depending on the environment (e.g. GitHub Codespace, Windows laptop).
 
 ## Deprecation of `Random::next(n)` and `Random::nextInt()`
 
