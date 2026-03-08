@@ -30,6 +30,8 @@ When the constraint is tighter than the minimum length required by the regex, th
 
 This release migrates the build pipeline from Rollup to [Rolldown](https://rolldown.rs/) and bumps the random number generator to pure-rand v8. Together with several internal clean-ups these changes reduce the published package from **1618 kB** down to **1344 kB** — a **17% reduction** — while also cutting the file count from 1331 to just 11.
 
+The smaller bundle also translates into faster import times. On a GitHub Codespace, importing fast-check 4.6.0 is **~2.35x faster** than importing 4.5.0. On a Windows machine the speedup is **~1.75x**.
+
 ## Deprecation of `Random::next(n)` and `Random::nextInt()`
 
 Following the bump to pure-rand v8, the `Random::next(n)` overload and the no-argument `Random::nextInt()` have been marked as deprecated. These methods relied on legacy APIs from pure-rand that are no longer recommended. If you interact with the `Random` instance directly, switch to the explicit-range overloads instead.
