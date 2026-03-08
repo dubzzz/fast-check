@@ -48,7 +48,7 @@ const publishedFilesRoot = await computePublishedFiles('.');
 const publishedFilesSubDirectory = await computePublishedFiles('./sub-directory');
 
 // Run the deletion of unwanted files
-const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, keepNodeModules: false });
+const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, keep: [] });
 // kept and removed are arrays of strings
 // they may contain files or directories
 ```

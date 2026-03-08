@@ -20,7 +20,7 @@ describe('removeNonPublishedFiles', () => {
     ${'handle relative paths such as ./package-name'}                      | ${false} | ${false}        | ${'./package-name'}
     ${'handle relative paths such as ./a/package-name'}                    | ${false} | ${false}        | ${'./a/package-name'}
     ${'handle relative paths such as ./a/../a/package-name/'}              | ${false} | ${false}        | ${'./a/../a/package-name/'}
-  `('should $name', async ({ dryRun, keepNodeModules, pathStyle }) => {
+  `('should $name', async ({ dryRun, keepNodeModules: keepNodeModulesFlag, pathStyle }) => {
     await runPackageTest(async (fileSystem) => {
       // Arrange
       const packageJsonContent = {
@@ -63,11 +63,12 @@ describe('removeNonPublishedFiles', () => {
         default:
           throw new Error(`Unsupported style ${pathStyle}`);
       }
-      const { kept, removed } = await removeNonPublishedFiles(requestedPath, { dryRun, keepNodeModules });
+      const keep = keepNodeModulesFlag ? ['node_modules'] : [];
+      const { kept, removed } = await removeNonPublishedFiles(requestedPath, { dryRun, keep });
 
       // Assert
       // Returns arrays having the expected sizes
-      if (!keepNodeModules) {
+      if (!keepNodeModulesFlag) {
         expect(kept).toHaveLength(3); // package.json, lib/main.js, lib
         expect(removed).toHaveLength(3); // src, test, node_modules
       } else {
@@ -80,14 +81,14 @@ describe('removeNonPublishedFiles', () => {
       expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun);
       expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun);
       expect(await fileSystem.exists(['test', 'main.js'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun || keepNodeModules);
+      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun || keepNodeModulesFlag);
       // Remove empty folders
       expect(await fileSystem.exists(['src'])).toBe(dryRun);
       expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun);
       expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun);
       expect(await fileSystem.exists(['test'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun || keepNodeModules);
-      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun || keepNodeModules);
+      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun || keepNodeModulesFlag);
+      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun || keepNodeModulesFlag);
     });
   });
 
@@ -358,8 +359,7 @@ describe('removeNonPublishedFiles', () => {
 
       // Act
       const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath, {
-        keepNodeModules: true,
-        keep: ['src'],
+        keep: ['src', 'node_modules'],
       });
 
       // Assert

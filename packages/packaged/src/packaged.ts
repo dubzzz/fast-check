@@ -52,7 +52,6 @@ async function traverseAndRemoveNonPublishedFiles(
   currentPath: string,
   out: { kept: string[]; removed: string[] },
   opts: {
-    rootNodeModulesPath: string | undefined;
     dryRun: boolean;
     publishedDirectories: Set<string>;
     publishedFiles: Set<string>;
@@ -65,9 +64,7 @@ async function traverseAndRemoveNonPublishedFiles(
   for (const itemName of content) {
     const itemPath = path.join(currentPath, itemName);
     const relativePath = path.relative(opts.packageRoot, itemPath);
-    if (itemPath === opts.rootNodeModulesPath) {
-      out.kept.push(itemPath);
-    } else if (opts.keepPatterns.some((pattern) => path.matchesGlob(relativePath, pattern))) {
+    if (opts.keepPatterns.some((pattern) => path.matchesGlob(relativePath, pattern))) {
       out.kept.push(itemPath);
     } else if (opts.publishedDirectories.has(itemPath)) {
       out.kept.push(itemPath);
@@ -90,7 +87,7 @@ async function traverseAndRemoveNonPublishedFiles(
  */
 export async function removeNonPublishedFiles(
   packageRoot: string,
-  opts: { dryRun?: boolean; keepNodeModules?: boolean; keep?: string[] } = {},
+  opts: { dryRun?: boolean; keep?: string[] } = {},
 ): Promise<{ kept: string[]; removed: string[] }> {
   const publishedFiles = await computePublishedFiles(packageRoot);
 
@@ -101,7 +98,6 @@ export async function removeNonPublishedFiles(
   const normalizedPublishedDirectoriesSet = buildNormalizedPublishedDirectoriesSet(normalizedPublishedFiles);
   const keepPatterns = opts.keep ?? [];
   const traverseOpts = {
-    rootNodeModulesPath: opts.keepNodeModules ? path.join(normalizedPackageRoot, 'node_modules') : undefined,
     dryRun: !!opts.dryRun,
     publishedDirectories: normalizedPublishedDirectoriesSet,
     publishedFiles: normalizedPublishedFilesSet,
