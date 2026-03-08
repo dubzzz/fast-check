@@ -15,7 +15,7 @@ function run(args) {
     console.log('  Keep files/directories matching the glob pattern (can be specified multiple times)');
     return;
   }
-  const dryRun = args.includes('--dry-run');
+  let dryRun = false;
   const keep = [];
   for (let i = 0; i < args.length; ++i) {
     if (args[i] === '--keep') {
@@ -25,7 +25,7 @@ function run(args) {
       keep.push(args[i + 1]);
       ++i;
     } else if (args[i] === '--dry-run') {
-      // already handled
+      dryRun = true;
     } else {
       throw new Error(`Unknown flag: ${args[i]}`);
     }
