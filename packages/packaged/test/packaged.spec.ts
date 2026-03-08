@@ -11,16 +11,14 @@ afterAll(async () => {
 
 describe('removeNonPublishedFiles', () => {
   it.each`
-    name                                                                   | dryRun   | keepNodeModules | pathStyle
-    ${'only keep published files by default'}                              | ${false} | ${false}        | ${'absolute'}
-    ${'only keep published files and node_modules at root when requested'} | ${false} | ${true}         | ${'absolute'}
-    ${'not clean anything in dryRun mode even without keepNodeModules'}    | ${true}  | ${false}        | ${'absolute'}
-    ${'not clean anything in dryRun mode even with keepNodeModules'}       | ${true}  | ${true}         | ${'absolute'}
-    ${'handle relative paths such as .'}                                   | ${false} | ${false}        | ${'.'}
-    ${'handle relative paths such as ./package-name'}                      | ${false} | ${false}        | ${'./package-name'}
-    ${'handle relative paths such as ./a/package-name'}                    | ${false} | ${false}        | ${'./a/package-name'}
-    ${'handle relative paths such as ./a/../a/package-name/'}              | ${false} | ${false}        | ${'./a/../a/package-name/'}
-  `('should $name', async ({ dryRun, keepNodeModules: keepNodeModulesFlag, pathStyle }) => {
+    name                                                      | dryRun   | pathStyle
+    ${'only keep published files by default'}                 | ${false} | ${'absolute'}
+    ${'not clean anything in dryRun mode'}                    | ${true}  | ${'absolute'}
+    ${'handle relative paths such as .'}                      | ${false} | ${'.'}
+    ${'handle relative paths such as ./package-name'}         | ${false} | ${'./package-name'}
+    ${'handle relative paths such as ./a/package-name'}       | ${false} | ${'./a/package-name'}
+    ${'handle relative paths such as ./a/../a/package-name/'} | ${false} | ${'./a/../a/package-name/'}
+  `('should $name', async ({ dryRun, pathStyle }) => {
     await runPackageTest(async (fileSystem) => {
       // Arrange
       const packageJsonContent = {
@@ -63,32 +61,26 @@ describe('removeNonPublishedFiles', () => {
         default:
           throw new Error(`Unsupported style ${pathStyle}`);
       }
-      const keep = keepNodeModulesFlag ? ['node_modules'] : [];
-      const { kept, removed } = await removeNonPublishedFiles(requestedPath, { dryRun, keep });
+      const { kept, removed } = await removeNonPublishedFiles(requestedPath, { dryRun });
 
       // Assert
       // Returns arrays having the expected sizes
-      if (!keepNodeModulesFlag) {
-        expect(kept).toHaveLength(3); // package.json, lib/main.js, lib
-        expect(removed).toHaveLength(3); // src, test, node_modules
-      } else {
-        expect(kept).toHaveLength(4); // package.json, lib/main.js, lib, node_modules/*
-        expect(removed).toHaveLength(2); //  src, test
-      }
+      expect(kept).toHaveLength(3); // package.json, lib/main.js, lib
+      expect(removed).toHaveLength(3); // src, test, node_modules
       // Remove unpublished files and keep published ones
       expect(await fileSystem.exists(['package.json'])).toBe(true);
       expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
       expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun);
       expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun);
       expect(await fileSystem.exists(['test', 'main.js'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun || keepNodeModulesFlag);
+      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun);
       // Remove empty folders
       expect(await fileSystem.exists(['src'])).toBe(dryRun);
       expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun);
       expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun);
       expect(await fileSystem.exists(['test'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun || keepNodeModulesFlag);
-      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun || keepNodeModulesFlag);
+      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun);
+      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun);
     });
   });
 
@@ -342,7 +334,7 @@ describe('removeNonPublishedFiles', () => {
     });
   });
 
-  it('should combine --keep with --keep-node-modules', async () => {
+  it('should keep files matching a --keep glob with nested path inside a published directory', async () => {
     await runPackageTest(async (fileSystem) => {
       // Arrange
       const packageJsonContent = {
@@ -353,23 +345,25 @@ describe('removeNonPublishedFiles', () => {
       };
       await fileSystem.createFile(['package.json'], JSON.stringify(packageJsonContent));
       await fileSystem.createFile(['lib', 'main.js'], 'console.log("main.js")');
-      await fileSystem.createFile(['src', 'main.ts'], 'console.log("main.ts")');
+      await fileSystem.createFile(['lib', 'main.spec.js'], 'console.log("main.spec.js")');
+      await fileSystem.createFile(['lib', 'utils', 'helper.js'], 'console.log("helper.js")');
+      await fileSystem.createFile(['lib', 'utils', 'helper.spec.js'], 'console.log("helper.spec.js")');
       await fileSystem.createFile(['test', 'main.spec.ts'], 'console.log("main.spec.ts")');
-      await fileSystem.createFile(['node_modules', 'dep-a', 'main.js'], 'console.log("main.js")');
 
       // Act
       const { kept, removed } = await removeNonPublishedFiles(fileSystem.packagePath, {
-        keep: ['src', 'node_modules'],
+        keep: ['lib/**/*.spec.js'],
       });
 
       // Assert
-      expect(kept).toHaveLength(5); // package.json, lib/main.js, lib, src, node_modules
-      expect(removed).toHaveLength(1); // test
+      // lib/main.spec.js is not published but matches the keep glob, so it's kept
+      // lib/utils/helper.spec.js is not published but matches the keep glob, so it's kept
       expect(await fileSystem.exists(['package.json'])).toBe(true);
       expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['src', 'main.ts'])).toBe(true);
+      expect(await fileSystem.exists(['lib', 'main.spec.js'])).toBe(true);
+      expect(await fileSystem.exists(['lib', 'utils', 'helper.js'])).toBe(true);
+      expect(await fileSystem.exists(['lib', 'utils', 'helper.spec.js'])).toBe(true);
       expect(await fileSystem.exists(['test', 'main.spec.ts'])).toBe(false);
-      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(true);
     });
   });
 

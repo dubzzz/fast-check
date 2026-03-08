@@ -11,17 +11,12 @@ function run(args) {
     console.log('  if published to npm registry');
     console.log('- packaged --dry-run');
     console.log('  No removal, just printing');
-    console.log('- packaged --keep-node-modules');
-    console.log('  Keep root level node_modules if any');
     console.log('- packaged --keep <glob>');
     console.log('  Keep files/directories matching the glob pattern (can be specified multiple times)');
     return;
   }
   const dryRun = args.includes('--dry-run');
   const keep = [];
-  if (args.includes('--keep-node-modules')) {
-    keep.push('node_modules');
-  }
   for (let i = 0; i < args.length; ++i) {
     if (args[i] === '--keep' && i + 1 < args.length) {
       keep.push(args[i + 1]);
