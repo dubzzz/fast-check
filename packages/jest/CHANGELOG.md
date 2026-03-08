@@ -1,3 +1,16 @@
+# 2.2.0
+
+_Add support for `@fast-check/worker` version 0.6.0_
+[[Code](https://github.com/dubzzz/fast-check/tree/jest%2Fv3.0.0)][[Diff](https://github.com/dubzzz/fast-check/compare/jest%2Fv2.1.1...jest%2Fv3.0.0)]
+
+## Fixes
+
+- ([PR#6628](https://github.com/dubzzz/fast-check/pull/6628)) CI: Faster and lighter bundling
+- ([PR#6616](https://github.com/dubzzz/fast-check/pull/6616)) Doc: Add support for worker 0.6.0
+- ([PR#6654](https://github.com/dubzzz/fast-check/pull/6654)) Doc: Update Readme to point to npmx
+
+---
+
 # 2.1.1
 
 _Support for most recent version of `@fast-check/worker`_

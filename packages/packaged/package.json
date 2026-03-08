@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/packaged",
   "description": "Utility package removing any files that will not be part of the final bundle",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
