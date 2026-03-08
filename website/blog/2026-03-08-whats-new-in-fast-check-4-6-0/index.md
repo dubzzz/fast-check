@@ -34,14 +34,6 @@ This release migrates the build pipeline from Rollup to [Rolldown](https://rolld
 
 Following the bump to pure-rand v8, the `Random::next(n)` overload and the no-argument `Random::nextInt()` have been marked as deprecated. These methods relied on legacy APIs from pure-rand that are no longer recommended. If you interact with the `Random` instance directly, switch to the explicit-range overloads instead.
 
-## Bug fixes
-
-A few noteworthy fixes also landed in this release:
-
-- **Bad `.d.ts` import** — A broken import path in the `BuildInversedRelationsMapping` type declaration has been corrected, fixing type resolution in projects that reference internal types.
-- **Detached `ArrayBuffer` crash** — Stringifying a detached `ArrayBuffer` (e.g. after transferring it to a worker) no longer throws.
-- **Object unmapper depth** — The object unmapper now correctly handles depth computation for special keys, preventing incorrect shrinking in deeply nested structures.
-
 ## Changelog since 4.5.0
 
 The version 4.6.0 is based on version 4.5.3.
