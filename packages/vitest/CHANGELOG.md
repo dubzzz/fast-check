@@ -7,9 +7,6 @@ _Support `beforeEach`/`afterEach` hooks and ESM-only bundle_
 
 - ([PR#6499](https://github.com/dubzzz/fast-check/pull/6499)) Drop CommonJS support
 - ([PR#6504](https://github.com/dubzzz/fast-check/pull/6504)) Drop useless "typesVersions"
-
-## Features
-
 - ([PR#6695](https://github.com/dubzzz/fast-check/pull/6695)) Support for `beforeEach`/`afterEach` in `@fast-check/vitest`
 
 ## Fixes
