@@ -4,9 +4,9 @@ authors: [dubzzz]
 tags: [release, stringMatching, regex, bundle-size, performance]
 ---
 
-Generating strings that match a regular expression is one thing — generating _short_ strings that match a regular expression is another. Until now, `stringMatching` had no way to cap the length of the produced strings. This release adds a `maxLength` constraint that smartly clamps the regex AST so that most generated values naturally stay within bounds, avoiding heavy reliance on post-generation filtering.
+Until now, `stringMatching` had no built-in way to cap the length of the produced strings except applying a manual post-filter on the generated values. This release adds a `maxLength` constraint to ensure that values stay within bounds by construct without running excessive and costly filtering.
 
-This version also ships with a significantly lighter bundle thanks to the migration from Rollup to Rolldown and the bump to pure-rand v8: the package dropped from 1618 kB to 1344 kB (a 17% reduction).
+Our published bundle is also lighter by 17% as it went from 1618 kB to 1344 kB.
 
 Continue reading to explore the detailed updates it brings.
 
