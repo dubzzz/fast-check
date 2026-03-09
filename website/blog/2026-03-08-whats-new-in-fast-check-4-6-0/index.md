@@ -28,15 +28,19 @@ Under the hood, the regex AST is rewritten before generation. Unbounded quantifi
 
 This new flow makes generation of bounded values fast thanks to less post-filtering and smaller values being generated.
 
+As an example, the call to `fc.stringMatching(/^[a-z]+@[a-z]+\.[a-z]+$/, { maxLength: 50 })` will result into the regex `/^[a-z]{1,47}@[a-z]{1,47}\.[a-z]{1,47}$/`. This example clearly shows that post-filtering is still needed but that adapted regex tries to limit as much a possible wrong values from being generated.
+
 ## Lighter bundle
 
-This release migrates the build pipeline from Rollup to [Rolldown](https://rolldown.rs/) and bumps the random number generator to pure-rand v8. Together with several internal clean-ups these changes reduce the published package from **1618 kB** down to **1344 kB** — a **17% reduction** — while also cutting the file count from 1331 to just 11.
+This release migrates our build pipeline from pure [Typescript](https://www.typescriptlang.org/) to [Rolldown](https://rolldown.rs/). We also benefit from the same improvements from our underlying random number generator library by moving to its latest major.
 
-The smaller bundle also translates into faster import times. On our side we measured import speed improvements ranging from **~1.75x** to **~2.35x** faster depending on the environment (e.g. GitHub Codespace, Windows workstation).
+These changes reduce the size of our published bundle from 1618 kB down to 1344 kB. It also cut the file count from 1331 to just 11.
+
+A smaller bundle also translates into faster import times. On our side we measured import speed improvements ranging from 1.75x to 2.35x faster depending on the environment (e.g. GitHub Codespace, Windows workstation).
 
 ## Deprecation of `Random::next(n)` and `Random::nextInt()`
 
-Following the bump to pure-rand v8, the `Random::next(n)` overload and the no-argument `Random::nextInt()` have been marked as deprecated. These methods relied on legacy APIs from pure-rand that are no longer recommended. If you interact with the `Random` instance directly, switch to the explicit-range overloads instead.
+The method `Random::next(n)` and the no-argument `Random::nextInt()` have been marked as deprecated. Calls to these methods can be replaced by calls to `Random::nextInt(min, max)`.
 
 ## Changelog since 4.5.0
 
