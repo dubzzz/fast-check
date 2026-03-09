@@ -211,7 +211,6 @@ describe('sparseArray (integration)', () => {
     expect(out).toBe(false);
   });
 
-  // prettier-ignore
   it.each`
     rawValue                                                                                                          | constraints
     ${[1, , , , ,]}                                                                                                   | ${{ noTrailingHole: false }}

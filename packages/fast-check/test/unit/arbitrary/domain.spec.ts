@@ -71,7 +71,6 @@ describe('domain (integration)', () => {
     assertShrinkProducesSameValueWithoutInitialContext(domainBuilder, { extraParameters });
   });
 
-  // prettier-ignore
   it.each`
     source
     ${'very-very-very-very-very-very-very-very-very-very-very-long-label.com' /* label too long >63 */}
