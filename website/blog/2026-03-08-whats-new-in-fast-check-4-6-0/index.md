@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [release, stringMatching, regex, bundle-size, performance]
 ---
 
-Until now, `stringMatching` had no built-in way to cap the length of the produced strings except applying a manual post-filter on the generated values. This release adds a `maxLength` constraint to ensure that values stay within bounds by construct without running excessive and costly filtering.
+Until now, `stringMatching` had no built-in way to cap the length of the produced strings except applying a manual post-filter on the generated values. This release adds a `maxLength` constraint to ensure that values stay within bounds by construct without relying on excessive and costly filtering.
 
 Our published bundle is also lighter by 17% as it went from 1618 kB to 1344 kB.
 
@@ -14,9 +14,9 @@ Continue reading to explore the detailed updates it brings.
 
 ## Bound `stringMatching` with `maxLength`
 
-Before 4.6.0, `stringMatching` could produce strings of arbitrary length depending on the regex. For open-ended patterns such as `/[a-z]+@[a-z]+\.[a-z]+/`, the generator had no upper limit on the number of characters it could emit. The only limit it relied on was controlled by the notion of size.
+Before 4.6.0, `stringMatching` could produce strings of arbitrary length depending on the regex. For open-ended patterns such as `/[a-z]+@[a-z]+\.[a-z]+/`, the generator had no upper limit on the number of characters it could emit. The only limit was the internal notion of _size_.
 
-When testing code that expects bounded inputs the only workaround was to add an external `.filter()` call. Unfortunately such call was hurting generation efficiency as it implied throwing away many already generated values.
+When testing code that expects bounded inputs, the only workaround was to add an external `.filter()` call. Unfortunately, such a call hurt generation efficiency as it required throwing away many already-generated values.
 
 Starting with 4.6.0, you can pass `maxLength` directly:
 
@@ -24,25 +24,25 @@ Starting with 4.6.0, you can pass `maxLength` directly:
 fc.stringMatching(/[a-z]+@[a-z]+\.[a-z]+/, { maxLength: 50 });
 ```
 
-Under the hood, the regex AST is rewritten before generation. Unbounded quantifiers like `*` and `+` are turned into explicit ranges and repetition counts in alternatives are distributed so that the overall length budget is respected. This means most generated candidates already satisfy the constraint without filtering. Even with our adapted regex AST trick, the generator still has to falls back to post-filtering so that invalid values are never exposed.
+Under the hood, the regex AST is rewritten before generation. Unbounded quantifiers like `*` and `+` are turned into explicit ranges and repetition counts in alternatives are distributed so that the overall length budget is respected. This means most generated candidates already satisfy the constraint without filtering. Even with this optimization, the generator still falls back to post-filtering to ensure invalid values are never exposed.
 
-This new flow makes generation of bounded values fast thanks to less post-filtering and smaller values being generated.
+This approach makes bounded-value generation faster by reducing post-filtering and producing smaller candidate values.
 
-As an example, the call to `fc.stringMatching(/^[a-z]+@[a-z]+\.[a-z]+$/, { maxLength: 50 })` will result into the regex `/^[a-z]{1,47}@[a-z]{1,47}\.[a-z]{1,47}$/`. This example clearly shows that post-filtering is still needed but that adapted regex tries to limit as much a possible wrong values from being generated.
+As an example, the call to `fc.stringMatching(/^[a-z]+@[a-z]+\.[a-z]+$/, { maxLength: 50 })` will result in the regex `/^[a-z]{1,47}@[a-z]{1,47}\.[a-z]{1,47}$/`. This example clearly shows that post-filtering is still needed but that the adapted regex significantly reduces the number of invalid values generated.
 
 ## Lighter bundle
 
-This release migrates our build pipeline from pure [Typescript](https://www.typescriptlang.org/) to [Rolldown](https://rolldown.rs/). We also benefit from the same improvements from our underlying random number generator library by moving to its latest major.
+This release migrates our build pipeline from the [TypeScript](https://www.typescriptlang.org/) compiler to [Rolldown](https://rolldown.rs/). We also benefit from improvements in our underlying random number generator library, [pure-rand](https://github.com/dubzzz/pure-rand), by upgrading to its latest major version.
 
-These changes reduce the size of our published bundle from 1618 kB down to 1344 kB. It also cut the file count from 1331 to just 11.
+These changes reduce the size of our published bundle from 1618 kB down to 1344 kB. It also cuts the file count from 1331 to just 11.
 
-A smaller bundle also translates into faster import times. On our side we measured import speed improvements ranging from 1.75x to 2.35x faster depending on the environment (e.g. GitHub Codespace, Windows workstation).
+A smaller bundle also translates into faster import times. On our side, we measured import times improved by 1.75× to 2.35× depending on the environment (e.g. GitHub Codespace, Windows workstation).
 
-## Deprecation of `Random::next(n)` and `Random::nextInt()`
-
-The method `Random::next(n)` and the no-argument `Random::nextInt()` have been marked as deprecated. Calls to these methods can be replaced by calls to `Random::nextInt(min, max)`.
-
-On the long run, we probably plan to deprecate the whole `Random` class in favor of the instances directly coming from `pure-rand`. By doing so we hope dropping one unneeded indirection to have faster random values generation and we also want to let user decide on the distribution they want to raise in their arbitraries.
+ ## Deprecation of `Random#next(n)` and `Random#nextInt()`
+ 
+ The method `Random#next(n)` and the no-argument `Random#nextInt()` have been marked as deprecated. Calls to these methods can be replaced by calls to `Random#nextInt(min, max)`.
+ 
+In the long run, we plan to eventually deprecate the whole `Random` class in favor of the instances directly coming from `pure-rand`. By doing so, we hope to remove an unnecessary indirection layer for faster random value generation. We also want to let users choose the distribution they use in their arbitraries.
 
 ## Changelog since 4.5.0
 
