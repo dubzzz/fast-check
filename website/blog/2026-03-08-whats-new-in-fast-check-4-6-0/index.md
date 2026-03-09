@@ -42,6 +42,8 @@ A smaller bundle also translates into faster import times. On our side we measur
 
 The method `Random::next(n)` and the no-argument `Random::nextInt()` have been marked as deprecated. Calls to these methods can be replaced by calls to `Random::nextInt(min, max)`.
 
+On the long run, we probably plan to deprecate the whole `Random` class in favor of the instances directly coming from `pure-rand`. By doing so we hope dropping one unneeded indirection to have faster random values generation and we also want to let user decide on the distribution they want to raise in their arbitraries.
+
 ## Changelog since 4.5.0
 
 The version 4.6.0 is based on version 4.5.3.
