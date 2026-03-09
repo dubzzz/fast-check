@@ -14,7 +14,9 @@ Continue reading to explore the detailed updates it brings.
 
 ## Bound `stringMatching` with `maxLength`
 
-Before 4.6.0, `stringMatching` could produce strings of arbitrary length depending on the regex. For open-ended patterns such as `/[a-z]+@[a-z]+\.[a-z]+/`, the generator had no upper limit on the number of characters it could emit. When testing code that expects bounded inputs — for example a database column with a character limit — the only workaround was to add an external `.filter()` call, which hurts generation efficiency.
+Before 4.6.0, `stringMatching` could produce strings of arbitrary length depending on the regex. For open-ended patterns such as `/[a-z]+@[a-z]+\.[a-z]+/`, the generator had no upper limit on the number of characters it could emit. The only limit it relied on was controlled by the notion of size.
+
+When testing code that expects bounded inputs the only workaround was to add an external `.filter()` call. Unfortunately such call was hurting generation efficiency as it implied throwing away many already generated values.
 
 Starting with 4.6.0, you can pass `maxLength` directly:
 
@@ -22,9 +24,9 @@ Starting with 4.6.0, you can pass `maxLength` directly:
 fc.stringMatching(/[a-z]+@[a-z]+\.[a-z]+/, { maxLength: 50 });
 ```
 
-Under the hood, the regex AST is rewritten before generation. Unbounded quantifiers like `*` and `+` are turned into explicit ranges, and repetition counts in alternatives are distributed so that the overall length budget is respected. This means most generated candidates already satisfy the constraint without filtering, keeping generation fast.
+Under the hood, the regex AST is rewritten before generation. Unbounded quantifiers like `*` and `+` are turned into explicit ranges and repetition counts in alternatives are distributed so that the overall length budget is respected. This means most generated candidates already satisfy the constraint without filtering. Even with our adapted regex AST trick, the generator still has to falls back to post-filtering so that invalid values are never exposed.
 
-When the constraint is tighter than the minimum length required by the regex, the generator falls back to filtering so that invalid values are never exposed to your property.
+This new flow makes generation of bounded values fast thanks to less post-filtering and smaller values being generated.
 
 ## Lighter bundle
 
