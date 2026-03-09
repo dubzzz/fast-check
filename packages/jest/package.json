@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/jest",
   "description": "Property based testing for Jest based on fast-check",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "type": "module",
   "main": "lib/jest-fast-check.js",
   "exports": {
@@ -68,7 +68,6 @@
     }
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.28.6",
     "@fast-check/jest": "workspace:*",
     "@fast-check/worker": "workspace:*",
     "@jest/expect": "^30.2.0",

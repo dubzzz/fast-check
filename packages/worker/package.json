@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/worker",
   "description": "Provide built-ins to run predicates directly within dedicated workers",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
@@ -37,7 +37,6 @@
     "@fast-check/worker": "workspace:*",
     "@types/node": "^24.12.0",
     "typescript": "~5.9.3",
-    "vite": "^7.3.1",
     "vitest": "^4.0.18"
   },
   "keywords": [
