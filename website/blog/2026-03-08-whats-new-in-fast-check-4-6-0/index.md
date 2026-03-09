@@ -38,10 +38,10 @@ These changes reduce the size of our published bundle from 1618 kB down to 1344 
 
 A smaller bundle also translates into faster import times. On our side, we measured import times improved by 1.75× to 2.35× depending on the environment (e.g. GitHub Codespace, Windows workstation).
 
-## Deprecation of `Random::next(n)` and `Random::nextInt()`
-
-The method `Random::next(n)` and the no-argument `Random::nextInt()` have been marked as deprecated. Calls to these methods can be replaced by calls to `Random::nextInt(min, max)`.
-
+ ## Deprecation of `Random#next(n)` and `Random#nextInt()`
+ 
+ The method `Random#next(n)` and the no-argument `Random#nextInt()` have been marked as deprecated. Calls to these methods can be replaced by calls to `Random#nextInt(min, max)`.
+ 
 In the long run, we plan to eventually deprecate the whole `Random` class in favor of the instances directly coming from `pure-rand`. By doing so, we hope to remove an unnecessary indirection layer for faster random value generation. We also want to let users choose the distribution they use in their arbitraries.
 
 ## Changelog since 4.5.0
