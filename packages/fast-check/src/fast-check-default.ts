@@ -36,6 +36,7 @@ import { context } from './arbitrary/context.js';
 import type { DateConstraints } from './arbitrary/date.js';
 import { date } from './arbitrary/date.js';
 import type { CloneValue } from './arbitrary/clone.js';
+import { chainUntil } from './arbitrary/chainUntil.js';
 import { clone } from './arbitrary/clone.js';
 import type { DictionaryConstraints } from './arbitrary/dictionary.js';
 import { dictionary } from './arbitrary/dictionary.js';
@@ -369,6 +370,7 @@ export {
   mapToConstant,
   option,
   oneof,
+  chainUntil,
   clone,
   noBias,
   noShrink,
