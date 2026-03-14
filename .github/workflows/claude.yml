@@ -37,7 +37,7 @@ jobs:
           persist-credentials: true
       - name: Run Claude Code
         id: claude
-        uses: anthropics/claude-code-action@5d0cc745cd0cce4c0e9e0b3511de26c3bc285eb5 # v1.0.71
+        uses: anthropics/claude-code-action@cd77b50d2b0808657f8e6774085c8bf54484351c # v1.0.72
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           trigger_phrase: '@claude'
