@@ -46,6 +46,6 @@
     "rolldown-plugin-dts": "^0.22.5",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   }
 }
