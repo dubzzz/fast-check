@@ -1,28 +1,22 @@
-.openInCodeSandbox {
+.playgroundActions {
+  display: flex;
+  gap: 0.5em;
+  padding: 0.5em;
   color: #282c34;
   border-radius: 0 0 0.5em 0.5em;
   margin-bottom: 1em;
 }
-.openInCodeSandbox:hover {
-  background: linear-gradient(135deg, #282c3477, #ffffff00 60%, #ffffff00 90%, #282c3477);
-}
-.openInCodeSandbox:hover button,
-.openInCodeSandbox:hover a,
-.openInCodeSandbox:hover a:focus,
-.openInCodeSandbox:hover a:visited {
+
+.playgroundActions button {
+  background-color: #282c34;
   color: #ffffff;
+  border: none;
+  border-radius: 0.25em;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  font-size: 0.9em;
 }
 
-.openInCodeSandbox button,
-.openInCodeSandbox a,
-.openInCodeSandbox a:focus,
-.openInCodeSandbox a:hover,
-.openInCodeSandbox a:visited {
-  color: #282c34;
-  text-decoration: none;
-
-  /* Reset button style (button is the fallback for huge snippets) */
-  background-color: unset;
-  border: none;
-  cursor: pointer;
+.playgroundActions button:hover {
+  background-color: #3a3f4b;
 }
