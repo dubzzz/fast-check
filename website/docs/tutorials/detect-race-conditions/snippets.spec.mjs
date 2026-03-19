@@ -5,7 +5,6 @@ import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import * as snippets from './snippets.mjs';
-import { cwd } from 'process';
 
 const execFile = promisify(_execFile);
 const rootWebsite = path.join(import.meta.dirname, '..', '..', '..');
@@ -13,8 +12,7 @@ const rootWebsite = path.join(import.meta.dirname, '..', '..', '..');
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryName);
 
-const jestBinaryPath = path.join(rootWebsite, './node_modules/jest/bin/jest.js');
-const jestConfigName = `jest.config.cjs`;
+const vitestBinaryPath = path.join(rootWebsite, './node_modules/.bin/vitest');
 
 const allQueueSpecs = {
   unit: snippets.queueUnitSpecCode,
@@ -72,27 +70,19 @@ describe('Playground', () => {
           const testDirectoryName = `test-${seed}`;
           const testDirectoryPath = path.join(generatedTestsDirectory, testDirectoryName);
           const sourceFilePath = path.join(testDirectoryPath, `queue.mjs`);
-          const specFilePath = path.join(testDirectoryPath, `queue.spec.mjs`);
-          const jestConfigPath = path.join(testDirectoryPath, jestConfigName);
-          const sanitizedSpecCode =
-            "import { jest } from '@jest/globals';\n" + specCode.replace('queue.js', 'queue.mjs');
+          const specFilePath = path.join(testDirectoryPath, `queue.test.mjs`);
+          const sanitizedSpecCode = specCode.replace("'./queue.js'", "'./queue.mjs'");
           try {
             await fs.mkdir(testDirectoryPath, { recursive: true });
             await fs.writeFile(sourceFilePath, snippet.code);
             await fs.writeFile(specFilePath, sanitizedSpecCode);
-            await fs.writeFile(jestConfigPath, `module.exports = { testMatch: ['**.spec.mjs'] }`);
-            const specOutput = await runJest(testDirectoryPath);
+            const specOutput = await runVitest(testDirectoryPath);
             if (expectedSuccess) {
               expect(specOutput).toContain('1 passed');
               expect(specOutput).not.toContain('1 failed');
-              expect(specOutput).not.toContain('ERR_UNHANDLED_REJECTION');
             } else {
               expect(specOutput).not.toContain('1 passed');
-              try {
-                expect(specOutput).toContain('1 failed');
-              } catch (err) {
-                expect(specOutput).toContain('ERR_UNHANDLED_REJECTION');
-              }
+              expect(specOutput).toContain('1 failed');
             }
           } finally {
             await fs.rm(testDirectoryPath, { recursive: true });
@@ -105,15 +95,15 @@ describe('Playground', () => {
 
 // Helpers
 
-async function runJest(testDirectoryPath) {
+async function runVitest(testDirectoryPath) {
   try {
-    const { stderr: specOutput } = await execFile(
-      'node',
-      ['--experimental-vm-modules', jestBinaryPath, '--config', jestConfigName],
+    const { stdout, stderr } = await execFile(
+      vitestBinaryPath,
+      ['run', '--reporter=verbose', '--dir', testDirectoryPath],
       { cwd: testDirectoryPath },
     );
-    return specOutput;
+    return stdout + stderr;
   } catch (err) {
-    return err.stderr;
+    return (err.stdout || '') + (err.stderr || '');
   }
 }

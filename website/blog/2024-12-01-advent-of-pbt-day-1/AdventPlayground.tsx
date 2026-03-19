@@ -1,12 +1,5 @@
-import React from 'react';
-import {
-  SandpackProvider,
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackTests,
-  UnstyledOpenInCodeSandboxButton,
-} from '@codesandbox/sandpack-react';
-import { atomDark } from '@codesandbox/sandpack-themes';
+import React, { useEffect, useRef } from 'react';
+import sdk from '@stackblitz/sdk';
 import Admonition from '@theme/Admonition';
 
 type Props = {
@@ -19,10 +12,10 @@ type Props = {
 
 export default function AdventPlayground(props: Props) {
   const { functionName, signature, signatureExtras, snippet, day } = props;
-  const styleCodeEditor = { height: 400 };
-  const styleTests = { height: 200 };
+  const ref = useRef<HTMLDivElement>(null);
 
   const adventSpecLines = [
+    `import { test, expect } from 'vitest';`,
     `import fc from 'fast-check';`,
     `import ${functionName} from './advent.js';`,
     ``,
@@ -34,52 +27,57 @@ export default function AdventPlayground(props: Props) {
     `})`,
   ];
 
+  const files: Record<string, string> = {
+    'advent.js': snippet,
+    'advent.test.ts': adventSpecLines.join('\n'),
+    'package.json': JSON.stringify(
+      {
+        name: 'advent-of-pbt',
+        private: true,
+        scripts: {
+          test: 'vitest',
+        },
+        dependencies: {
+          'fast-check': 'latest',
+        },
+        devDependencies: {
+          vitest: 'latest',
+        },
+        stackblitz: {
+          installDependencies: true,
+          startCommand: 'npx vitest --reporter=verbose',
+        },
+      },
+      null,
+      2,
+    ),
+  };
+
+  useEffect(() => {
+    if (!ref.current) return;
+    sdk.embedProject(
+      ref.current,
+      {
+        title: `Advent of PBT - Day ${day}`,
+        description: 'Advent of PBT puzzle powered by Vitest',
+        template: 'node',
+        files,
+      },
+      {
+        height: 600,
+        openFile: 'advent.test.ts',
+        hideExplorer: true,
+        forceEmbedLayout: true,
+      },
+    );
+  }, []);
+
   return (
     <>
-      <SandpackProvider
-        theme={atomDark}
-        files={{
-          [`/advent.js`]: {
-            code: snippet,
-            readOnly: true,
-            active: false,
-            hidden: true,
-          },
-          [`/advent.spec.ts`]: {
-            code: adventSpecLines.join('\n'),
-            readOnly: false,
-            active: true,
-            hidden: false,
-          },
-          'package.json': {
-            code: JSON.stringify({ main: `src/advent.js` }),
-            readOnly: true,
-            active: false,
-            hidden: true,
-          },
-        }}
-        customSetup={{
-          entry: `/advent.js`,
-          dependencies: {
-            'fast-check': 'latest',
-          },
-        }}
-      >
-        <SandpackLayout>
-          <SandpackCodeEditor style={styleCodeEditor} />
-        </SandpackLayout>
-        <SandpackLayout>
-          <SandpackTests verbose style={styleTests} />
-        </SandpackLayout>
-        <p>
-          <UnstyledOpenInCodeSandboxButton>
-            Open in CodeSandbox for more options: including typings...
-          </UnstyledOpenInCodeSandboxButton>
-        </p>
-      </SandpackProvider>
+      <div ref={ref} />
       <Admonition type="note">
         <p>
-          Can’t access the online playground? Prefer to run it locally?
+          Can't access the online playground? Prefer to run it locally?
           <br />
           No problem! You can download the source file{' '}
           <a
