@@ -87,7 +87,7 @@ function fakerToArb<TValue>(generator: (faker: Faker) => TValue): fc.Arbitrary<T
 }
 ```
 
-### Upadted usage
+### Updated usage
 
 The updated usage would be:
 
