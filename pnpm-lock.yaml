@@ -219,8 +219,8 @@ importers:
         specifier: ^30.3.0
         version: 30.3.0
       typescript:
-        specifier: 6.0.0-beta
-        version: 6.0.0-beta
+        specifier: 6.0.0-dev.20260321
+        version: 6.0.0-dev.20260321
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.12.0)(jiti@1.21.7)(lightningcss@1.31.1)(terser@5.46.0)(yaml@2.8.2)
@@ -9654,8 +9654,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@6.0.0-beta:
-    resolution: {integrity: sha512-CldZdztDpQRLM1HC6WDQjQkQN5Ub5zRau737a1diGh3lPmb9oRsaWHk1y5iqK0o7+1bNJ0oXfEGRkAogFZBL+Q==}
+  typescript@6.0.0-dev.20260321:
+    resolution: {integrity: sha512-q8KCek0F7l5bNyR69CIk+eYmg2i8Xiz2WOe61P9/wTpmaRo+IL9hBByioZjvsofLBh5hRMBvRDq159JHtR2s3Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -21978,7 +21978,7 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  typescript@6.0.0-beta: {}
+  typescript@6.0.0-dev.20260321: {}
 
   uc.micro@2.1.0: {}
 
