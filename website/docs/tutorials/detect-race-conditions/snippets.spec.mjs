@@ -13,7 +13,6 @@ const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryNa
 
 const vitestBinaryPath = path.join(rootWebsite, './node_modules/vitest/vitest.mjs');
 const vitestConfigName = 'vitest.config.mjs';
-const fastCheckSourcePath = path.join(rootWebsite, '..', 'packages', 'fast-check', 'src', 'fast-check.ts');
 
 const allQueueSpecs = {
   unit: snippets.queueUnitSpecCode,
@@ -81,8 +80,7 @@ describe('Playground', () => {
             await fs.writeFile(specFilePath, sanitizedSpecCode);
             await fs.writeFile(
               vitestConfigPath,
-              `import { defineConfig } from 'vitest/config';\n` +
-                `export default defineConfig({ test: { include: ['queue.spec.mjs'] }, resolve: { alias: { 'fast-check': ${JSON.stringify(fastCheckSourcePath)} } } });`,
+              `import { defineConfig } from 'vitest/config';\nexport default defineConfig({ test: { include: ['queue.spec.mjs'] } });`,
             );
             const specOutput = await runVitest(testDirectoryPath);
             if (expectedSuccess) {
