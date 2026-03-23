@@ -14,11 +14,11 @@ Use your best judgment, and feel free to propose changes to this document in a p
   - [Asking questions](#asking-questions)
   - [Reporting bugs](#reporting-bugs)
   - [Issuing pull requests](#issuing-pull-requests)
-    - [Naming your pull request](#naming-your-pull-request)
     - [Getting started](#getting-started)
     - [Code style](#code-style)
     - [GitHub Actions integration](#github-actions-integration)
     - [Notify how impactful your change will be](#notify-how-impactful-your-change-will-be)
+    - [Naming your pull request](#naming-your-pull-request)
     - [Update your PR](#update-your-pr)
     - [Resync PR with main](#resync-pr-with-main)
   - [Examples](#examples)
@@ -43,6 +43,41 @@ If nothing answered your question, please do not hesitate to [create a new issue
 You should report bugs using [create a new issue in GitHub](https://github.com/dubzzz/fast-check/issues).
 
 ### Issuing pull requests
+
+#### Getting started
+
+In order to start playing with the code locally you must run the following set of commands:
+
+```bash
+git clone https://github.com/dubzzz/fast-check.git && cd fast-check
+pnpm install
+pnpm --filter fast-check build    #compile the code in packages/fast-check/src, build the packages/fast-check/lib content
+```
+
+Once done, everything is ready for you to start working on the code.
+
+#### Code style
+
+Code style standard is enforced by Prettier.
+Once done with your development you can check it follow the recommended code style by running `pnpm format:check` or run autofixes with `pnpm format`.
+
+You should also check for linting by running `pnpm lint:check` and fix lint problems with `pnpm lint`.
+
+#### GitHub Actions integration
+
+All pull requests will trigger GitHub Actions checks.
+It ensures that the pull request follow the code style of the project and do not break existing tests.
+
+#### Notify how impactful your change will be
+
+Any change in the code may have impact in the next release. In order to ease our deployment process we try to anticipate as much as possible the impacts of each single pull request from a semver point of view:
+
+- decline: really no impact code side from a bundle point of view
+- patch: no visible impact, generally mostly fixing bugs or typos in the code
+- minor: new features
+- major: breaking changes
+
+In order to ease this work, before opening the PR (or after if you forgot to do it), you should run the script `pnpm -w run bump` to underline which packages have been impacted. Please note that our internals and private packages must always be toggled to 'decline' as we don't plan to bump their versions.
 
 #### Naming your pull request
 
@@ -80,41 +115,6 @@ When the change targets a package **other than `fast-check`**, add the package s
 - `✨ Add new arbitrary for dates` — a feature in the main `fast-check` package (no scope needed)
 - `🐛(vitest) Fix compatibility with vitest 4` — a bug fix in `@fast-check/vitest`
 - `📝(jest) Improve usage examples` — documentation update for `@fast-check/jest`
-
-#### Getting started
-
-In order to start playing with the code locally you must run the following set of commands:
-
-```bash
-git clone https://github.com/dubzzz/fast-check.git && cd fast-check
-pnpm install
-pnpm --filter fast-check build    #compile the code in packages/fast-check/src, build the packages/fast-check/lib content
-```
-
-Once done, everything is ready for you to start working on the code.
-
-#### Code style
-
-Code style standard is enforced by Prettier.
-Once done with your development you can check it follow the recommended code style by running `pnpm format:check` or run autofixes with `pnpm format`.
-
-You should also check for linting by running `pnpm lint:check` and fix lint problems with `pnpm lint`.
-
-#### GitHub Actions integration
-
-All pull requests will trigger GitHub Actions checks.
-It ensures that the pull request follow the code style of the project and do not break existing tests.
-
-#### Notify how impactful your change will be
-
-Any change in the code may have impact in the next release. In order to ease our deployment process we try to anticipate as much as possible the impacts of each single pull request from a semver point of view:
-
-- decline: really no impact code side from a bundle point of view
-- patch: no visible impact, generally mostly fixing bugs or typos in the code
-- minor: new features
-- major: breaking changes
-
-In order to ease this work, before opening the PR (or after if you forgot to do it), you should run the script `pnpm -w run bump` to underline which packages have been impacted. Please note that our internals and private packages must always be toggled to 'decline' as we don't plan to bump their versions.
 
 #### Update your PR
 
