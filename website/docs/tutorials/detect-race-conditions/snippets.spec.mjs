@@ -82,7 +82,7 @@ describe('Playground', () => {
             await fs.writeFile(
               vitestConfigPath,
               `import { defineConfig } from 'vitest/config';\n` +
-                `export default defineConfig({ test: { include: ['queue.spec.mjs'] }, resolve: { alias: { 'fast-check': '${fastCheckSourcePath}' } } });`,
+                `export default defineConfig({ test: { include: ['queue.spec.mjs'] }, resolve: { alias: { 'fast-check': ${JSON.stringify(fastCheckSourcePath)} } } });`,
             );
             const specOutput = await runVitest(testDirectoryPath);
             if (expectedSuccess) {
