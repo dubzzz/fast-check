@@ -1,15 +1,68 @@
-import React, { useState } from 'react';
-import {
-  SandpackProvider,
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackFileExplorer,
-  SandpackTests,
-  UnstyledOpenInCodeSandboxButton,
-} from '@codesandbox/sandpack-react';
-import { atomDark } from '@codesandbox/sandpack-themes';
+import React, { useEffect, useRef, useState } from 'react';
+import sdk from '@stackblitz/sdk';
 import styles from './Playgrounds.module.css';
 import * as snippets from './snippets.mjs';
+
+const defaultPackageJson = (entry: string, deps: Record<string, string> = {}) =>
+  JSON.stringify(
+    {
+      name: 'fast-check-playground',
+      private: true,
+      scripts: {
+        test: 'vitest',
+      },
+      dependencies: {
+        'fast-check': 'latest',
+        ...deps,
+      },
+      devDependencies: {
+        vitest: 'latest',
+      },
+      stackblitz: {
+        installDependencies: true,
+        startCommand: 'npx vitest --reporter=verbose',
+      },
+    },
+    null,
+    2,
+  );
+
+type EmbedProps = {
+  files: Record<string, string>;
+  options?: {
+    height?: number;
+    openFile?: string;
+    view?: 'editor' | 'preview' | 'default';
+    hideExplorer?: boolean;
+  };
+};
+
+function StackBlitzEmbed({ files, options = {} }: EmbedProps) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const el = ref.current;
+    sdk.embedProject(
+      el,
+      {
+        title: 'fast-check playground',
+        description: 'Interactive fast-check playground powered by Vitest',
+        template: 'node',
+        files,
+      },
+      {
+        height: options.height ?? 500,
+        openFile: options.openFile,
+        view: options.view ?? 'default',
+        hideExplorer: options.hideExplorer ?? true,
+        forceEmbedLayout: true,
+      },
+    );
+  }, [files, options.height, options.openFile, options.view, options.hideExplorer]);
+
+  return <div ref={ref} />;
+}
 
 type Props = {
   startSpecCode: string;
@@ -22,54 +75,32 @@ function SetupPlayground(props: Props) {
   const { startSpecCode, anwserSpecCode, fileContent, fileName, fileExtension } = props;
   const [specFile, setSpecFile] = useState({ key: 0, content: startSpecCode });
 
+  const files: Record<string, string> = {
+    [`${fileName}.${fileExtension}`]: fileContent,
+    [`${fileName}.test.${fileExtension}`]: specFile.content,
+    'package.json': defaultPackageJson(`${fileName}.${fileExtension}`),
+  };
+
   return (
-    <SandpackProvider
-      key={specFile.key}
-      theme={atomDark}
-      files={{
-        [`/${fileName}.${fileExtension}`]: {
-          code: fileContent,
-          readOnly: true,
-          active: false,
-          hidden: false,
-        },
-        [`/${fileName}.spec.${fileExtension}`]: {
-          code: specFile.content,
-          readOnly: false,
-          active: true,
-          hidden: false,
-        },
-      }}
-      customSetup={{
-        entry: `/${fileName}.${fileExtension}`,
-        dependencies: {
-          'fast-check': 'latest',
-        },
-      }}
-    >
-      <SandpackLayout>
-        <SandpackCodeEditor style={{ height: 500 }} />
-        <SandpackTests
-          actionsChildren={
-            <>
-              <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: startSpecCode }))}>
-                Reset snippet
-              </button>
-              {specFile.content !== anwserSpecCode && (
-                <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: anwserSpecCode }))}>
-                  Show answer
-                </button>
-              )}
-            </>
-          }
-          verbose
-          style={{ height: 500 }}
-        />
-      </SandpackLayout>
-      <div className={styles.openInCodeSandbox}>
-        <UnstyledOpenInCodeSandboxButton>Open in CodeSandbox</UnstyledOpenInCodeSandboxButton>
+    <div key={specFile.key}>
+      <StackBlitzEmbed
+        files={files}
+        options={{
+          height: 500,
+          openFile: `${fileName}.test.${fileExtension}`,
+        }}
+      />
+      <div className={styles.playgroundActions}>
+        <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: startSpecCode }))}>
+          Reset snippet
+        </button>
+        {specFile.content !== anwserSpecCode && (
+          <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: anwserSpecCode }))}>
+            Show answer
+          </button>
+        )}
       </div>
-    </SandpackProvider>
+    </div>
   );
 }
 
@@ -147,90 +178,53 @@ export function WrapUpPlaygroundQueue() {
   };
   const defaultQueueImplementation = 'queue.v5.js';
   const queueTests = {
-    'queue.p0.spec.js': snippets.queueUnitSpecCode,
-    'queue.p1.spec.js': pastTestSnippet(snippets.queueBasicPBTSpecCode, 'Your first race condition test'),
-    'queue.p1.v2.spec.js': pastTestSnippet(
+    'queue.p0.test.js': snippets.queueUnitSpecCode,
+    'queue.p1.test.js': pastTestSnippet(snippets.queueBasicPBTSpecCode, 'Your first race condition test'),
+    'queue.p1.v2.test.js': pastTestSnippet(
       snippets.queueBasicPBTWaitAllSpecCode,
       'Your first race condition test',
       'With waitAll',
     ),
-    'queue.p2.spec.js': pastTestSnippet(snippets.queueMoreThan2CallsPBTSpecCode, 'One step close to real usages'),
-    'queue.p3.spec.js': pastTestSnippet(snippets.queueFromBatchesPBTSpecCode, 'Multiple batches of calls'),
-    'queue.p3.v2.spec.js': pastTestSnippet(
+    'queue.p2.test.js': pastTestSnippet(snippets.queueMoreThan2CallsPBTSpecCode, 'One step close to real usages'),
+    'queue.p3.test.js': pastTestSnippet(snippets.queueFromBatchesPBTSpecCode, 'Multiple batches of calls'),
+    'queue.p3.v2.test.js': pastTestSnippet(
       snippets.queueBatchesAlternativePBTSpecCode,
       'Multiple batches of calls',
       'With delayed calls (no batches)',
     ),
-    'queue.p4.spec.js': pastTestSnippet(snippets.missingPartPBTSpecCode, 'The missing part'),
-    'queue.pnext.v1.spec.js': codeWithComments(snippets.extendedBackToWaitAllPBTSpecCode, [
-      'Switch back to waitAll in queue.p4.spec',
+    'queue.p4.test.js': pastTestSnippet(snippets.missingPartPBTSpecCode, 'The missing part'),
+    'queue.pnext.v1.test.js': codeWithComments(snippets.extendedBackToWaitAllPBTSpecCode, [
+      'Switch back to waitAll in queue.p4.test',
     ]),
-    'queue.pnext.v2.spec.js': codeWithComments(snippets.extendedWithExceptionsPBTSpecCode, ['Also cover error cases']),
+    'queue.pnext.v2.test.js': codeWithComments(snippets.extendedWithExceptionsPBTSpecCode, [
+      'Also cover error cases',
+    ]),
   };
-  const defaultQueueTest = 'queue.p4.spec.js';
+  const defaultQueueTest = 'queue.p4.test.js';
+
+  const files: Record<string, string> = {};
+  for (const [fileName, fileContent] of Object.entries(queueImplementations)) {
+    files[`src/${fileName}`] = fileContent;
+  }
+  for (const [fileName, fileContent] of Object.entries(queueTests)) {
+    files[`tests/${fileName}`] = fileContent.replace("'./queue.js'", "'./../src/queue.js'");
+  }
+  files['src/queue.js'] = `export {queue} from './${defaultQueueImplementation}'`;
+  files['package.json'] = defaultPackageJson('src/queue.js');
+
   return (
-    <SandpackProvider
-      key={reset}
-      theme={atomDark}
-      files={{
-        ...Object.fromEntries(
-          Object.entries(queueImplementations).map(([fileName, fileContent]) => {
-            return [
-              `src/${fileName}`,
-              {
-                code: fileContent,
-                readOnly: false,
-                active: false,
-                hidden: true,
-              },
-            ];
-          }),
-        ),
-        ...Object.fromEntries(
-          Object.entries(queueTests).map(([fileName, fileContent]) => {
-            return [
-              `tests/${fileName}`,
-              {
-                code: fileContent.replace('./queue.js', './../src/queue.js'),
-                readOnly: false,
-                active: fileName === defaultQueueTest,
-                hidden: fileName !== defaultQueueTest,
-              },
-            ];
-          }),
-        ),
-        'src/queue.js': {
-          code: `export {queue} from './${defaultQueueImplementation}'`,
-          readOnly: false,
-          active: false,
-          hidden: false,
-        },
-        'package.json': {
-          code: JSON.stringify({ main: `src/queue.js` }),
-          readOnly: true,
-          active: false,
-          hidden: true,
-        },
-      }}
-      customSetup={{
-        entry: `src/queue.js`,
-        dependencies: {
-          'fast-check': 'latest',
-        },
-      }}
-    >
-      <SandpackLayout>
-        <SandpackFileExplorer style={{ height: 500 }} />
-        <SandpackCodeEditor style={{ height: 500 }} />
-        <SandpackTests
-          actionsChildren={<button onClick={() => setReset((r) => r + 1)}>Reset snippets</button>}
-          verbose
-          style={{ height: 500 }}
-        />
-      </SandpackLayout>
-      <div className={styles.openInCodeSandbox}>
-        <UnstyledOpenInCodeSandboxButton>Open in CodeSandbox</UnstyledOpenInCodeSandboxButton>
+    <div key={reset}>
+      <StackBlitzEmbed
+        files={files}
+        options={{
+          height: 500,
+          openFile: `tests/${defaultQueueTest}`,
+          hideExplorer: false,
+        }}
+      />
+      <div className={styles.playgroundActions}>
+        <button onClick={() => setReset((r) => r + 1)}>Reset snippets</button>
       </div>
-    </SandpackProvider>
+    </div>
   );
 }
