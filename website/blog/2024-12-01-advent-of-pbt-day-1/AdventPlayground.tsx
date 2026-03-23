@@ -55,8 +55,9 @@ export default function AdventPlayground(props: Props) {
 
   useEffect(() => {
     if (!ref.current) return;
+    const el = ref.current;
     sdk.embedProject(
-      ref.current,
+      el,
       {
         title: `Advent of PBT - Day ${day}`,
         description: 'Advent of PBT puzzle powered by Vitest',
@@ -70,6 +71,9 @@ export default function AdventPlayground(props: Props) {
         forceEmbedLayout: true,
       },
     );
+    return () => {
+      el.innerHTML = '';
+    };
   }, []);
 
   return (

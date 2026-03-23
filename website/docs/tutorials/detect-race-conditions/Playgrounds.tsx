@@ -59,6 +59,9 @@ function StackBlitzEmbed({ files, options = {} }: EmbedProps) {
         forceEmbedLayout: true,
       },
     );
+    return () => {
+      el.innerHTML = '';
+    };
   }, [files, options.height, options.openFile, options.view, options.hideExplorer]);
 
   return <div ref={ref} />;
