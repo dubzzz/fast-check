@@ -18,7 +18,7 @@ importers:
         specifier: workspace:*
         version: link:packages/packaged
       '@typescript-eslint/utils':
-        specifier: ^8.57.1
+        specifier: ^8.57.2
         version: 8.57.2(eslint@10.1.0(jiti@1.21.7))(typescript@5.9.3)
       '@vitest/coverage-v8':
         specifier: ^4.0.18
@@ -57,7 +57,7 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       typescript-eslint:
-        specifier: ^8.57.1
+        specifier: ^8.57.2
         version: 8.57.2(eslint@10.1.0(jiti@1.21.7))(typescript@5.9.3)
       vitest:
         specifier: ^4.1.0
