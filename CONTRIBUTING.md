@@ -83,21 +83,21 @@ In order to ease this work, before opening the PR (or after if you forgot to do 
 
 We follow the [gitmoji](https://gitmoji.dev/) specification for PR titles. Each PR title must start with a gitmoji that describes the nature of the change. Here are some commonly used ones:
 
-| Gitmoji | Code            | Description      |
-| ------- | --------------- | ---------------- |
-| ✨      | `:sparkles:`    | New feature      |
-| 🐛      | `:bug:`         | Bug fix          |
-| 📝      | `:memo:`        | Documentation    |
-| ✅      | `:white_check_mark:` | Tests      |
-| 🏷️      | `:label:`       | Types            |
-| ⚡️      | `:zap:`         | Performance      |
-| ♻️      | `:recycle:`     | Refactoring      |
-| 🔧      | `:wrench:`      | Configuration    |
-| 🎨      | `:art:`         | Code style/format|
-| 🔥      | `:fire:`        | Remove code/files|
-| ⬆️      | `:arrow_up:`    | Upgrade dependencies |
-| 🗑️      | `:wastebasket:` | Deprecation      |
-| 👷      | `:construction_worker:` | CI       |
+| Gitmoji | Code                    | Description          |
+| ------- | ----------------------- | -------------------- |
+| ✨      | `:sparkles:`            | New feature          |
+| 🐛      | `:bug:`                 | Bug fix              |
+| 📝      | `:memo:`                | Documentation        |
+| ✅      | `:white_check_mark:`    | Tests                |
+| 🏷️      | `:label:`               | Types                |
+| ⚡️      | `:zap:`                 | Performance          |
+| ♻️      | `:recycle:`             | Refactoring          |
+| 🔧      | `:wrench:`              | Configuration        |
+| 🎨      | `:art:`                 | Code style/format    |
+| 🔥      | `:fire:`                | Remove code/files    |
+| ⬆️      | `:arrow_up:`            | Upgrade dependencies |
+| 🗑️      | `:wastebasket:`         | Deprecation          |
+| 👷      | `:construction_worker:` | CI                   |
 
 For the full list, see [gitmoji.dev](https://gitmoji.dev/).
 
