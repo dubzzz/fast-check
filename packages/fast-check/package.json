@@ -68,7 +68,7 @@
     "fast-check": "workspace:*",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
-    "typedoc": "^0.28.17",
+    "typedoc": "^0.28.18",
     "typescript": "~5.9.3",
     "vitest": "^4.1.0"
   },
