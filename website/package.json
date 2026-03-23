@@ -43,7 +43,7 @@
     "fast-check": "workspace:*",
     "jest": "^30.3.0",
     "jimp": "^1.6.0",
-    "typescript": "~5.9.3",
+    "typescript": "~6.0.2",
     "vitest": "^4.1.0"
   },
   "browserslist": {
