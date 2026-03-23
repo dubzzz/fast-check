@@ -227,6 +227,24 @@ expectTypeOf(fc.record<Query>({ data: fc.record({ field: fc.constant('X') }) }))
 expectTypeOf(fc.record<Partial<Query>>({ data: fc.record({ field: fc.constant('X') }) })).toEqualTypeOf<
   fc.Arbitrary<Partial<Query>>
 >();
+// "record" with explicit type and requiredKeys listing non-optional keys (issue 4570)
+expectTypeOf(
+  fc.record<{ a: string; b?: number; c: number | undefined }>(
+    { a: fc.string(), b: fc.nat(), c: fc.option(fc.nat(), { nil: undefined }) },
+    { requiredKeys: ['a', 'c'] },
+  ),
+).toEqualTypeOf<fc.Arbitrary<{ a: string; b?: number; c: number | undefined }>>();
+// "record" with explicit type and requiredKeys in reverse order (issue 4570)
+expectTypeOf(
+  fc.record<{ a: string; b?: number; c: number | undefined }>(
+    { a: fc.string(), b: fc.nat(), c: fc.option(fc.nat(), { nil: undefined }) },
+    { requiredKeys: ['c', 'a'] },
+  ),
+).toEqualTypeOf<fc.Arbitrary<{ a: string; b?: number; c: number | undefined }>>();
+// "record" with explicit type where all keys are optional and requiredKeys is empty (issue 4570)
+expectTypeOf(
+  fc.record<{ s?: string; n?: number }>({ s: fc.string(), n: fc.nat() }, { requiredKeys: [] }),
+).toEqualTypeOf<fc.Arbitrary<{ s?: string; n?: number }>>();
 // @ts-expect-error - requiredKeys references an unknown key
 fc.record({ a: fc.nat(), b: fc.string() }, { requiredKeys: ['c'] });
 // @ts-expect-error - record expects arbitraries not raw values

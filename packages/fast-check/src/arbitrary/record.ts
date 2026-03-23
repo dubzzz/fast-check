@@ -38,6 +38,64 @@ export type RecordConstraints<T = unknown> = {
  */
 export type RecordValue<T, K> = Prettify<Partial<T> & Pick<T, K & keyof T>>;
 
+/** @internal */
+type IsOptional<TType, TKey extends keyof TType> = Pick<TType, TKey> extends Record<TKey, TType[TKey]> ? false : true;
+
+/** @internal */
+type RequiredKeysOf<TType> = keyof {
+  [K in keyof TType as IsOptional<TType, K> extends true ? never : K]: never;
+};
+
+/**
+ * Shape of the record model when using an explicit output type.
+ * Required keys in TOut must have their Arbitrary provided.
+ * Optional keys may be omitted or provided with an Arbitrary of the non-undefined type.
+ * @internal
+ */
+type RecordShape<TOut> = {
+  [K in keyof TOut as IsOptional<TOut, K> extends true ? never : K]: Arbitrary<TOut[K]>;
+} & {
+  [K in keyof TOut as IsOptional<TOut, K> extends true ? K : never]?: Arbitrary<Exclude<TOut[K], undefined>>;
+};
+
+/**
+ * Generate all permutations of keys as a tuple type.
+ * Used to enforce that requiredKeys contains exactly all required keys.
+ * @internal
+ */
+type AllPermutations<TKeys extends PropertyKey> = [TKeys] extends [never]
+  ? []
+  : { [K in TKeys]: [K, ...AllPermutations<Exclude<TKeys, K>>] }[TKeys];
+
+/**
+ * Constraints for record when an explicit output type TOut is provided.
+ * requiredKeys must list exactly all non-optional keys of TOut in any order.
+ * @internal
+ */
+type ExplicitRecordConstraints<TOut> = {
+  requiredKeys: AllPermutations<RequiredKeysOf<TOut>>;
+  noNullPrototype?: boolean;
+};
+
+/**
+ * For records following the `recordModel` schema with an explicit output type
+ *
+ * @example
+ * ```typescript
+ * record<{ x: number, y?: number }>({ x: someArbitraryInt, y: someArbitraryInt }, { requiredKeys: ['x'] })
+ * // produce records matching { x: number, y?: number }
+ * ```
+ *
+ * @param recordModel - Schema of the record
+ * @param constraints - Constraints listing exactly the required (non-optional) keys of TOut
+ *
+ * @remarks Since 0.0.12
+ * @public
+ */
+function record<TOut>(
+  model: RecordShape<TOut>,
+  constraints: ExplicitRecordConstraints<TOut>,
+): Arbitrary<TOut>;
 /**
  * For records following the `recordModel` schema
  *
