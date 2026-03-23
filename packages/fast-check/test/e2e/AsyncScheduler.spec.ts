@@ -27,13 +27,13 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     }
     const out = await fc.check(
       fc.asyncProperty(fc.scheduler(), async (s) => {
-        const fetchHeroName = s.scheduleFunction(function fetchHeroName() {
+        const scheduledFetchHeroName = s.scheduleFunction(function fetchHeroName() {
           return Promise.resolve('James Bond');
         });
-        const fetchHeroes = s.scheduleFunction(function fetchHeroesById() {
+        const scheduledFetchHeroes = s.scheduleFunction(function fetchHeroesById() {
           return Promise.resolve([{ name: 'James Bond' }]);
         });
-        const c = new Compo({ fetchHeroName, fetchHeroes });
+        const c = new Compo({ fetchHeroName: scheduledFetchHeroName, fetchHeroes: scheduledFetchHeroes });
         c.componentDidMount();
         c.render();
         while (s.count() !== 0) {
