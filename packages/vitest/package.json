@@ -37,10 +37,10 @@
     "@fast-check/vitest": "workspace:*",
     "@types/node": "^24.12.0",
     "fast-check": "workspace:*",
-    "rolldown": "^1.0.0-rc.9",
+    "rolldown": "^1.0.0-rc.11",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "keywords": [
     "vitest",
