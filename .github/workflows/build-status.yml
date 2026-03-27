@@ -19,7 +19,6 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   # Remove the force-build-status-execution label if it triggered the workflow
@@ -27,6 +26,8 @@ jobs:
     name: 'Remove force label'
     if: github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
@@ -41,7 +42,7 @@ jobs:
   # Root jobs
   warmup_pnpm_cache:
     name: 'Warm up pnpm cache'
-    if: github.event.action != 'labeled' || github.event.label.name == 'force-build-status-execution'
+    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -60,7 +61,7 @@ jobs:
         run: pnpm install --frozen-lockfile
   warmup_pnpm_cache_others:
     name: 'Warm up pnpm cache (others)'
-    if: github.event.action != 'labeled' || github.event.label.name == 'force-build-status-execution'
+    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
