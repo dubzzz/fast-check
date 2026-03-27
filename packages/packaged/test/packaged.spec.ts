@@ -9,6 +9,7 @@ afterAll(async () => {
   await fs.rmdir(testDirname);
 });
 
+// ${'only keep published files and any node_modules when requested'}     | ${false} | ${['**/node_modules']} | ${'absolute'}
 describe('removeNonPublishedFiles', () => {
   it.each`
     name                                                                   | dryRun   | keep                | pathStyle
@@ -35,8 +36,6 @@ describe('removeNonPublishedFiles', () => {
       await fileSystem.createFile(['src', 'node_modules', 'wtf', 'main.js'], 'console.log("main.js")');
       await fileSystem.createFile(['test', 'main.js'], 'console.log("main.js")');
       await fileSystem.createFile(['node_modules', 'dep-a', 'main.js'], 'console.log("main.js")');
-      await fileSystem.createFile(['tsconfig.json'], '{}');
-      await fileSystem.createFile(['tsconfig.build.json'], '{}');
 
       // Act
       let requestedPath;
@@ -68,26 +67,29 @@ describe('removeNonPublishedFiles', () => {
       const { kept, removed } = await removeNonPublishedFiles(requestedPath, { dryRun, keep });
 
       // Assert
-      const keepsSrc = keep.some((p: string) => path.matchesGlob('src', p));
-      const keepsNodeModules = keep.some((p: string) => path.matchesGlob('node_modules', p));
-      const keepsTsconfig = keep.some((p: string) => path.matchesGlob('tsconfig.json', p));
-      const keepsTsconfigBuild = keep.some((p: string) => path.matchesGlob('tsconfig.build.json', p));
+      const keepsRootNodeModules = keep.includes('node_modules');
+      const keepsAnyNodeModules = keep.includes('**/node_modules');
+      if (keepsRootNodeModules) {
+        expect(kept).toHaveLength(4); // package.json, lib/main.js, lib, node_modules/*
+        expect(removed).toHaveLength(2); //  src, test
+      } else {
+        expect(kept).toHaveLength(3); // package.json, lib/main.js, lib
+        expect(removed).toHaveLength(3); // src, test, node_modules
+      }
       // Remove unpublished files and keep published ones
       expect(await fileSystem.exists(['package.json'])).toBe(true);
       expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun || keepsSrc);
-      expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun || keepsSrc);
+      expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun);
+      expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun);
       expect(await fileSystem.exists(['test', 'main.js'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun || keepsNodeModules);
-      expect(await fileSystem.exists(['tsconfig.json'])).toBe(dryRun || keepsTsconfig);
-      expect(await fileSystem.exists(['tsconfig.build.json'])).toBe(dryRun || keepsTsconfigBuild);
+      expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun || keepsRootNodeModules);
       // Remove empty folders
-      expect(await fileSystem.exists(['src'])).toBe(dryRun || keepsSrc);
-      expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun || keepsSrc);
-      expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun || keepsSrc);
+      expect(await fileSystem.exists(['src'])).toBe(dryRun);
+      expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun);
+      expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun);
       expect(await fileSystem.exists(['test'])).toBe(dryRun);
-      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun || keepsNodeModules);
-      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun || keepsNodeModules);
+      expect(await fileSystem.exists(['node_modules'])).toBe(dryRun || keepsRootNodeModules);
+      expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun || keepsRootNodeModules);
     });
   });
 
