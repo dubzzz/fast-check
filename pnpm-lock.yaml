@@ -99,8 +99,8 @@ importers:
         specifier: ^4.17.23
         version: 4.17.23
       pure-rand:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^8.4.0
+        version: 8.4.0
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -152,7 +152,7 @@ importers:
     dependencies:
       pure-rand:
         specifier: ^8.0.0
-        version: 8.3.0
+        version: 8.4.0
     devDependencies:
       '@fast-check/poisoning':
         specifier: workspace:*
@@ -303,7 +303,7 @@ importers:
         version: link:../fast-check
       pure-rand:
         specifier: ^8.0.0
-        version: 8.3.0
+        version: 8.4.0
     devDependencies:
       '@fast-check/worker':
         specifier: workspace:*
@@ -8564,8 +8564,8 @@ packages:
   pure-rand@7.0.1:
     resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
 
-  pure-rand@8.3.0:
-    resolution: {integrity: sha512-1ws1Ab8fnsf4bvpL+SujgBnr3KFs5abgCLVzavBp+f2n8Ld5YTOZlkv/ccYPhu3X9s+MEeqPRMqKlJz/kWDK8A==}
+  pure-rand@8.4.0:
+    resolution: {integrity: sha512-IoM8YF/jY0hiugFo/wOWqfmarlE6J0wc6fDK1PhftMk7MGhVZl88sZimmqBBFomLOCSmcCCpsfj7wXASCpvK9A==}
 
   pvtsutils@1.3.6:
     resolution: {integrity: sha512-PLgQXQ6H2FWCaeRak8vvk1GW462lMxB5s3Jm673N82zI4vqtVUPuZdffdZbPDFRoU8kAhItWFtPCWiPpp4/EDg==}
@@ -20666,7 +20666,7 @@ snapshots:
 
   pure-rand@7.0.1: {}
 
-  pure-rand@8.3.0: {}
+  pure-rand@8.4.0: {}
 
   pvtsutils@1.3.6:
     dependencies:
