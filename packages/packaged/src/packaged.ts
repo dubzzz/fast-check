@@ -63,8 +63,10 @@ async function traverseAndRemoveNonPublishedFiles(
   const content = await fs.readdir(currentPath);
   for (const itemName of content) {
     const itemPath = path.join(currentPath, itemName);
-    const relativePath = path.relative(opts.packageRoot, itemPath);
-    if (opts.keepPatterns.some((pattern) => path.matchesGlob(relativePath, pattern))) {
+    if (
+      opts.keepPatterns.length !== 0 &&
+      opts.keepPatterns.includes(path.normalize(path.relative(opts.packageRoot, itemPath)))
+    ) {
       out.kept.push(itemPath);
     } else if (opts.publishedDirectories.has(itemPath)) {
       out.kept.push(itemPath);

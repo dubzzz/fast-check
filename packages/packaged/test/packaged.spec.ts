@@ -11,19 +11,20 @@ afterAll(async () => {
 
 describe('removeNonPublishedFiles', () => {
   it.each`
-    name                                                                         | dryRun   | keep                       | pathStyle
-    ${'only keep published files by default'}                                    | ${false} | ${[]}                      | ${'absolute'}
-    ${'only keep published files and node_modules at root when requested'}       | ${false} | ${['node_modules']}        | ${'absolute'}
-    ${'only keep published files and src at root when requested'}                | ${false} | ${['src']}                 | ${'absolute'}
-    ${'only keep published files and {src,node_modules} at root when requested'} | ${false} | ${['src', 'node_modules']} | ${'absolute'}
-    ${'not clean anything in dryRun mode even with keep='}                       | ${true}  | ${[]}                      | ${'absolute'}
-    ${'not clean anything in dryRun mode even with keep=node_modules'}           | ${true}  | ${['node_modules']}        | ${'absolute'}
-    ${'not clean anything in dryRun mode even with keep=src'}                    | ${false} | ${['src']}                 | ${'absolute'}
-    ${'not clean anything in dryRun mode even with keep=src,node_modules'}       | ${false} | ${['src', 'node_modules']} | ${'absolute'}
-    ${'handle relative paths such as .'}                                         | ${false} | ${[]}                      | ${'.'}
-    ${'handle relative paths such as ./package-name'}                            | ${false} | ${[]}                      | ${'./package-name'}
-    ${'handle relative paths such as ./a/package-name'}                          | ${false} | ${[]}                      | ${'./a/package-name'}
-    ${'handle relative paths such as ./a/../a/package-name/'}                    | ${false} | ${[]}                      | ${'./a/../a/package-name/'}
+    name                                                                                       | dryRun   | keep                       | pathStyle
+    ${'only keep published files by default'}                                                  | ${false} | ${[]}                      | ${'absolute'}
+    ${'only keep published files and node_modules at root when requested'}                     | ${false} | ${['node_modules']}        | ${'absolute'}
+    ${'only keep published files and src at root when requested'}                              | ${false} | ${['src']}                 | ${'absolute'}
+    ${'only keep published files and {src,node_modules} at root when requested'}               | ${false} | ${['src', 'node_modules']} | ${'absolute'}
+    ${'only keep published files and nothing else if nothing match thing from the keep array'} | ${false} | ${['node*', 'node_mod']}   | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep='}                                     | ${true}  | ${[]}                      | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep=node_modules'}                         | ${true}  | ${['node_modules']}        | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep=src'}                                  | ${false} | ${['src']}                 | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep=src,node_modules'}                     | ${false} | ${['src', 'node_modules']} | ${'absolute'}
+    ${'handle relative paths such as .'}                                                       | ${false} | ${[]}                      | ${'.'}
+    ${'handle relative paths such as ./package-name'}                                          | ${false} | ${[]}                      | ${'./package-name'}
+    ${'handle relative paths such as ./a/package-name'}                                        | ${false} | ${[]}                      | ${'./a/package-name'}
+    ${'handle relative paths such as ./a/../a/package-name/'}                                  | ${false} | ${[]}                      | ${'./a/../a/package-name/'}
   `('should $name', async ({ dryRun, keep, pathStyle }) => {
     await runPackageTest(async (fileSystem) => {
       // Arrange
