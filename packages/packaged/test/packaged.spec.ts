@@ -11,16 +11,16 @@ afterAll(async () => {
 
 describe('removeNonPublishedFiles', () => {
   it.each`
-    name                                                                   | dryRun   | keep                       | pathStyle
-    ${'only keep published files by default'}                              | ${false} | ${[]}                      | ${'absolute'}
-    ${'not clean anything in dryRun mode'}                                 | ${true}  | ${[]}                      | ${'absolute'}
-    ${'keep node_modules when using keep'}                                 | ${false} | ${['node_modules']}        | ${'absolute'}
-    ${'keep files matching a glob pattern'}                                | ${false} | ${['tsconfig*']}           | ${'absolute'}
-    ${'keep files matching multiple patterns'}                             | ${false} | ${['src', 'node_modules']} | ${'absolute'}
-    ${'handle relative paths such as .'}                                   | ${false} | ${[]}                      | ${'.'}
-    ${'handle relative paths such as ./package-name'}                      | ${false} | ${[]}                      | ${'./package-name'}
-    ${'handle relative paths such as ./a/package-name'}                    | ${false} | ${[]}                      | ${'./a/package-name'}
-    ${'handle relative paths such as ./a/../a/package-name/'}              | ${false} | ${[]}                      | ${'./a/../a/package-name/'}
+    name                                                      | dryRun   | keep                       | pathStyle
+    ${'only keep published files by default'}                 | ${false} | ${[]}                      | ${'absolute'}
+    ${'not clean anything in dryRun mode'}                    | ${true}  | ${[]}                      | ${'absolute'}
+    ${'keep node_modules when using keep'}                    | ${false} | ${['node_modules']}        | ${'absolute'}
+    ${'keep files matching a glob pattern'}                   | ${false} | ${['tsconfig*']}           | ${'absolute'}
+    ${'keep files matching multiple patterns'}                | ${false} | ${['src', 'node_modules']} | ${'absolute'}
+    ${'handle relative paths such as .'}                      | ${false} | ${[]}                      | ${'.'}
+    ${'handle relative paths such as ./package-name'}         | ${false} | ${[]}                      | ${'./package-name'}
+    ${'handle relative paths such as ./a/package-name'}       | ${false} | ${[]}                      | ${'./a/package-name'}
+    ${'handle relative paths such as ./a/../a/package-name/'} | ${false} | ${[]}                      | ${'./a/../a/package-name/'}
   `('should $name', async ({ dryRun, keep, pathStyle }) => {
     await runPackageTest(async (fileSystem) => {
       // Arrange
