@@ -11,13 +11,26 @@ function run(args) {
     console.log('  if published to npm registry');
     console.log('- packaged --dry-run');
     console.log('  No removal, just printing');
-    console.log('- packaged --keep-node-modules');
-    console.log('  Keep root level node_modules if any');
+    console.log('- packaged --keep <glob>');
+    console.log('  Keep files/directories matching the glob pattern (can be specified multiple times)');
     return;
   }
-  const dryRun = args.includes('--dry-run');
-  const keepNodeModules = args.includes('--keep-node-modules');
-  removeNonPublishedFiles('.', { dryRun, keepNodeModules }).then(
+  let dryRun = false;
+  const keep = [];
+  for (let i = 0; i < args.length; ++i) {
+    if (args[i] === '--keep') {
+      if (i + 1 >= args.length) {
+        throw new Error('Missing value for --keep');
+      }
+      keep.push(args[i + 1]);
+      ++i;
+    } else if (args[i] === '--dry-run') {
+      dryRun = true;
+    } else {
+      throw new Error(`Unknown flag: ${args[i]}`);
+    }
+  }
+  removeNonPublishedFiles('.', { dryRun, keep }).then(
     (out) => {
       if (dryRun) {
         console.log('Those files would have been kept:');
