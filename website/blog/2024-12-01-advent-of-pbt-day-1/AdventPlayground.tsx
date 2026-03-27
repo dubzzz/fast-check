@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import sdk from '@stackblitz/sdk';
+import React, { useEffect, useId, useRef } from 'react';
 import Admonition from '@theme/Admonition';
 
 type Props = {
@@ -12,7 +11,9 @@ type Props = {
 
 export default function AdventPlayground(props: Props) {
   const { functionName, signature, signatureExtras, snippet, day } = props;
-  const ref = useRef<HTMLDivElement>(null);
+  const rawId = useId();
+  const iframeName = `stackblitz${rawId.replace(/:/g, '-')}`;
+  const formRef = useRef<HTMLFormElement>(null);
 
   const adventSpecLines = [
     `import { test, expect } from 'vitest';`,
@@ -45,7 +46,7 @@ export default function AdventPlayground(props: Props) {
         },
         stackblitz: {
           installDependencies: true,
-          startCommand: 'npx vitest --reporter=verbose',
+          startCommand: 'npx vitest --watch --reporter=verbose',
         },
       },
       null,
@@ -54,31 +55,30 @@ export default function AdventPlayground(props: Props) {
   };
 
   useEffect(() => {
-    if (!ref.current) return;
-    const el = ref.current;
-    sdk.embedProject(
-      el,
-      {
-        title: `Advent of PBT - Day ${day}`,
-        description: 'Advent of PBT puzzle powered by Vitest',
-        template: 'node',
-        files,
-      },
-      {
-        height: 600,
-        openFile: 'advent.test.ts',
-        hideExplorer: true,
-        forceEmbedLayout: true,
-      },
-    );
-    return () => {
-      el.innerHTML = '';
-    };
+    formRef.current?.submit();
   }, []);
 
   return (
     <>
-      <div ref={ref} />
+      <iframe
+        name={iframeName}
+        title={`Advent of PBT - Day ${day}`}
+        style={{ width: '100%', height: 600, border: 0 }}
+      />
+      <form
+        ref={formRef}
+        action={`https://stackblitz.com/run?file=advent.test.ts&hideExplorer=1`}
+        method="POST"
+        target={iframeName}
+        style={{ display: 'none' }}
+      >
+        <input type="hidden" name="project[title]" value={`Advent of PBT - Day ${day}`} />
+        <input type="hidden" name="project[description]" value="Advent of PBT puzzle powered by Vitest" />
+        <input type="hidden" name="project[template]" value="node" />
+        {Object.entries(files).map(([path, content]) => (
+          <input key={path} type="hidden" name={`project[files][${path}]`} value={content} />
+        ))}
+      </form>
       <Admonition type="note">
         <p>
           Can't access the online playground? Prefer to run it locally?

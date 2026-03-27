@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import sdk from '@stackblitz/sdk';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import styles from './Playgrounds.module.css';
 import * as snippets from './snippets.mjs';
 
@@ -20,7 +19,7 @@ const defaultPackageJson = (entry: string, deps: Record<string, string> = {}) =>
       },
       stackblitz: {
         installDependencies: true,
-        startCommand: 'npx vitest --reporter=verbose',
+        startCommand: 'npx vitest --watch --reporter=verbose',
       },
     },
     null,
@@ -38,33 +37,38 @@ type EmbedProps = {
 };
 
 function StackBlitzEmbed({ files, options = {} }: EmbedProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const rawId = useId();
+  const iframeName = `stackblitz${rawId.replace(/:/g, '-')}`;
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
-    const el = ref.current;
-    sdk.embedProject(
-      el,
-      {
-        title: 'fast-check playground',
-        description: 'Interactive fast-check playground powered by Vitest',
-        template: 'node',
-        files,
-      },
-      {
-        height: options.height ?? 500,
-        openFile: options.openFile,
-        view: options.view ?? 'default',
-        hideExplorer: options.hideExplorer ?? true,
-        forceEmbedLayout: true,
-      },
-    );
-    return () => {
-      el.innerHTML = '';
-    };
-  }, [files, options.height, options.openFile, options.view, options.hideExplorer]);
+    formRef.current?.submit();
+  }, []);
 
-  return <div ref={ref} />;
+  const params = new URLSearchParams();
+  if (options.openFile) params.set('file', options.openFile);
+  if (options.hideExplorer !== false) params.set('hideExplorer', '1');
+  if (options.view) params.set('view', options.view);
+  const queryString = params.toString();
+  const action = `https://stackblitz.com/run${queryString ? `?${queryString}` : ''}`;
+
+  return (
+    <>
+      <iframe
+        name={iframeName}
+        title="StackBlitz playground"
+        style={{ width: '100%', height: options.height ?? 500, border: 0 }}
+      />
+      <form ref={formRef} action={action} method="POST" target={iframeName} style={{ display: 'none' }}>
+        <input type="hidden" name="project[title]" value="fast-check playground" />
+        <input type="hidden" name="project[description]" value="Interactive fast-check playground powered by Vitest" />
+        <input type="hidden" name="project[template]" value="node" />
+        {Object.entries(files).map(([path, content]) => (
+          <input key={path} type="hidden" name={`project[files][${path}]`} value={content} />
+        ))}
+      </form>
+    </>
+  );
 }
 
 type Props = {
@@ -97,11 +101,9 @@ function SetupPlayground(props: Props) {
         <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: startSpecCode }))}>
           Reset snippet
         </button>
-        {specFile.content !== anwserSpecCode && (
-          <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: anwserSpecCode }))}>
-            Show answer
-          </button>
-        )}
+        <button onClick={() => setSpecFile((prev) => ({ key: prev.key + 1, content: anwserSpecCode }))}>
+          Show answer
+        </button>
       </div>
     </div>
   );
