@@ -596,6 +596,9 @@ jobs:
     needs: check_publish_fc
     if: needs.check_publish_fc.outputs.tag != ''
     runs-on: ubuntu-latest
+    outputs:
+      tgz_name: ${{steps.set_tgz_name.outputs.tgz_name}}
+      attestation_url: ${{steps.attest.outputs.attestation-url}}
     permissions:
       contents: write
       id-token: write
@@ -620,7 +623,11 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Set package filename
-        run: echo "TGZ_NAME=fast-check-$(tar -xzOf packages/fast-check/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+        id: set_tgz_name
+        run: |
+          TGZ_NAME="fast-check-$(tar -xzOf packages/fast-check/package.tgz package/package.json | jq -r '.version').tgz"
+          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+          echo "tgz_name=$TGZ_NAME" >> $GITHUB_OUTPUT
       - name: Rename package for publication
         run: mv packages/fast-check/package.tgz "packages/fast-check/$TGZ_NAME"
       - name: Publish fast-check
@@ -637,6 +644,30 @@ jobs:
         run: mv "$BUNDLE_PATH" "packages/fast-check/$TGZ_NAME.sigstore.json"
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Upload release assets
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: release-assets-fc
+          path: |
+            packages/fast-check/${{env.TGZ_NAME}}
+            packages/fast-check/${{env.TGZ_NAME}}.sigstore.json
+          if-no-files-found: error
+          retention-days: 1
+  update_release_fc:
+    name: Update GitHub Release fast-check
+    needs:
+      - publish_package_fc
+      - check_publish_fc
+    if: needs.publish_package_fc.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-assets-fc
+          path: assets/
       - name: Update GitHub Release
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
@@ -645,11 +676,11 @@ jobs:
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
-            packages/fast-check/${{env.TGZ_NAME}}
-            packages/fast-check/${{env.TGZ_NAME}}.sigstore.json
+            assets/${{needs.publish_package_fc.outputs.tgz_name}}
+            assets/${{needs.publish_package_fc.outputs.tgz_name}}.sigstore.json
           body: |
 
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+            [View attestation](${{needs.publish_package_fc.outputs.attestation_url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -671,6 +702,9 @@ jobs:
     needs: check_publish_ava
     if: needs.check_publish_ava.outputs.tag != ''
     runs-on: ubuntu-latest
+    outputs:
+      tgz_name: ${{steps.set_tgz_name.outputs.tgz_name}}
+      attestation_url: ${{steps.attest.outputs.attestation-url}}
     permissions:
       contents: write
       id-token: write
@@ -695,7 +729,11 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Set package filename
-        run: echo "TGZ_NAME=ava-$(tar -xzOf packages/ava/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+        id: set_tgz_name
+        run: |
+          TGZ_NAME="ava-$(tar -xzOf packages/ava/package.tgz package/package.json | jq -r '.version').tgz"
+          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+          echo "tgz_name=$TGZ_NAME" >> $GITHUB_OUTPUT
       - name: Rename package for publication
         run: mv packages/ava/package.tgz "packages/ava/$TGZ_NAME"
       - name: Publish @fast-check/ava
@@ -712,6 +750,30 @@ jobs:
         run: mv "$BUNDLE_PATH" "packages/ava/$TGZ_NAME.sigstore.json"
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Upload release assets
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: release-assets-ava
+          path: |
+            packages/ava/${{env.TGZ_NAME}}
+            packages/ava/${{env.TGZ_NAME}}.sigstore.json
+          if-no-files-found: error
+          retention-days: 1
+  update_release_ava:
+    name: Update GitHub Release @fast-check/ava
+    needs:
+      - publish_package_ava
+      - check_publish_ava
+    if: needs.publish_package_ava.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-assets-ava
+          path: assets/
       - name: Update GitHub Release
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
@@ -720,11 +782,11 @@ jobs:
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
-            packages/ava/${{env.TGZ_NAME}}
-            packages/ava/${{env.TGZ_NAME}}.sigstore.json
+            assets/${{needs.publish_package_ava.outputs.tgz_name}}
+            assets/${{needs.publish_package_ava.outputs.tgz_name}}.sigstore.json
           body: |
 
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+            [View attestation](${{needs.publish_package_ava.outputs.attestation_url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -746,6 +808,9 @@ jobs:
     needs: check_publish_jest
     if: needs.check_publish_jest.outputs.tag != ''
     runs-on: ubuntu-latest
+    outputs:
+      tgz_name: ${{steps.set_tgz_name.outputs.tgz_name}}
+      attestation_url: ${{steps.attest.outputs.attestation-url}}
     permissions:
       contents: write
       id-token: write
@@ -770,7 +835,11 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Set package filename
-        run: echo "TGZ_NAME=jest-$(tar -xzOf packages/jest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+        id: set_tgz_name
+        run: |
+          TGZ_NAME="jest-$(tar -xzOf packages/jest/package.tgz package/package.json | jq -r '.version').tgz"
+          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+          echo "tgz_name=$TGZ_NAME" >> $GITHUB_OUTPUT
       - name: Rename package for publication
         run: mv packages/jest/package.tgz "packages/jest/$TGZ_NAME"
       - name: Publish @fast-check/jest
@@ -787,6 +856,30 @@ jobs:
         run: mv "$BUNDLE_PATH" "packages/jest/$TGZ_NAME.sigstore.json"
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Upload release assets
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: release-assets-jest
+          path: |
+            packages/jest/${{env.TGZ_NAME}}
+            packages/jest/${{env.TGZ_NAME}}.sigstore.json
+          if-no-files-found: error
+          retention-days: 1
+  update_release_jest:
+    name: Update GitHub Release @fast-check/jest
+    needs:
+      - publish_package_jest
+      - check_publish_jest
+    if: needs.publish_package_jest.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-assets-jest
+          path: assets/
       - name: Update GitHub Release
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
@@ -795,11 +888,11 @@ jobs:
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
-            packages/jest/${{env.TGZ_NAME}}
-            packages/jest/${{env.TGZ_NAME}}.sigstore.json
+            assets/${{needs.publish_package_jest.outputs.tgz_name}}
+            assets/${{needs.publish_package_jest.outputs.tgz_name}}.sigstore.json
           body: |
 
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+            [View attestation](${{needs.publish_package_jest.outputs.attestation_url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -821,6 +914,9 @@ jobs:
     needs: check_publish_packaged
     if: needs.check_publish_packaged.outputs.tag != ''
     runs-on: ubuntu-latest
+    outputs:
+      tgz_name: ${{steps.set_tgz_name.outputs.tgz_name}}
+      attestation_url: ${{steps.attest.outputs.attestation-url}}
     permissions:
       contents: write
       id-token: write
@@ -845,7 +941,11 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Set package filename
-        run: echo "TGZ_NAME=packaged-$(tar -xzOf packages/packaged/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+        id: set_tgz_name
+        run: |
+          TGZ_NAME="packaged-$(tar -xzOf packages/packaged/package.tgz package/package.json | jq -r '.version').tgz"
+          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+          echo "tgz_name=$TGZ_NAME" >> $GITHUB_OUTPUT
       - name: Rename package for publication
         run: mv packages/packaged/package.tgz "packages/packaged/$TGZ_NAME"
       - name: Publish @fast-check/packaged
@@ -862,6 +962,30 @@ jobs:
         run: mv "$BUNDLE_PATH" "packages/packaged/$TGZ_NAME.sigstore.json"
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Upload release assets
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: release-assets-packaged
+          path: |
+            packages/packaged/${{env.TGZ_NAME}}
+            packages/packaged/${{env.TGZ_NAME}}.sigstore.json
+          if-no-files-found: error
+          retention-days: 1
+  update_release_packaged:
+    name: Update GitHub Release @fast-check/packaged
+    needs:
+      - publish_package_packaged
+      - check_publish_packaged
+    if: needs.publish_package_packaged.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-assets-packaged
+          path: assets/
       - name: Update GitHub Release
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
@@ -870,11 +994,11 @@ jobs:
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
-            packages/packaged/${{env.TGZ_NAME}}
-            packages/packaged/${{env.TGZ_NAME}}.sigstore.json
+            assets/${{needs.publish_package_packaged.outputs.tgz_name}}
+            assets/${{needs.publish_package_packaged.outputs.tgz_name}}.sigstore.json
           body: |
 
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+            [View attestation](${{needs.publish_package_packaged.outputs.attestation_url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -896,6 +1020,9 @@ jobs:
     needs: check_publish_poisoning
     if: needs.check_publish_poisoning.outputs.tag != ''
     runs-on: ubuntu-latest
+    outputs:
+      tgz_name: ${{steps.set_tgz_name.outputs.tgz_name}}
+      attestation_url: ${{steps.attest.outputs.attestation-url}}
     permissions:
       contents: write
       id-token: write
@@ -920,7 +1047,11 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Set package filename
-        run: echo "TGZ_NAME=poisoning-$(tar -xzOf packages/poisoning/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+        id: set_tgz_name
+        run: |
+          TGZ_NAME="poisoning-$(tar -xzOf packages/poisoning/package.tgz package/package.json | jq -r '.version').tgz"
+          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+          echo "tgz_name=$TGZ_NAME" >> $GITHUB_OUTPUT
       - name: Rename package for publication
         run: mv packages/poisoning/package.tgz "packages/poisoning/$TGZ_NAME"
       - name: Publish @fast-check/poisoning
@@ -937,6 +1068,30 @@ jobs:
         run: mv "$BUNDLE_PATH" "packages/poisoning/$TGZ_NAME.sigstore.json"
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Upload release assets
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: release-assets-poisoning
+          path: |
+            packages/poisoning/${{env.TGZ_NAME}}
+            packages/poisoning/${{env.TGZ_NAME}}.sigstore.json
+          if-no-files-found: error
+          retention-days: 1
+  update_release_poisoning:
+    name: Update GitHub Release @fast-check/poisoning
+    needs:
+      - publish_package_poisoning
+      - check_publish_poisoning
+    if: needs.publish_package_poisoning.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-assets-poisoning
+          path: assets/
       - name: Update GitHub Release
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
@@ -945,11 +1100,11 @@ jobs:
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
-            packages/poisoning/${{env.TGZ_NAME}}
-            packages/poisoning/${{env.TGZ_NAME}}.sigstore.json
+            assets/${{needs.publish_package_poisoning.outputs.tgz_name}}
+            assets/${{needs.publish_package_poisoning.outputs.tgz_name}}.sigstore.json
           body: |
 
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+            [View attestation](${{needs.publish_package_poisoning.outputs.attestation_url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -971,6 +1126,9 @@ jobs:
     needs: check_publish_vitest
     if: needs.check_publish_vitest.outputs.tag != ''
     runs-on: ubuntu-latest
+    outputs:
+      tgz_name: ${{steps.set_tgz_name.outputs.tgz_name}}
+      attestation_url: ${{steps.attest.outputs.attestation-url}}
     permissions:
       contents: write
       id-token: write
@@ -995,7 +1153,11 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Set package filename
-        run: echo "TGZ_NAME=vitest-$(tar -xzOf packages/vitest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+        id: set_tgz_name
+        run: |
+          TGZ_NAME="vitest-$(tar -xzOf packages/vitest/package.tgz package/package.json | jq -r '.version').tgz"
+          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+          echo "tgz_name=$TGZ_NAME" >> $GITHUB_OUTPUT
       - name: Rename package for publication
         run: mv packages/vitest/package.tgz "packages/vitest/$TGZ_NAME"
       - name: Publish @fast-check/vitest
@@ -1012,6 +1174,30 @@ jobs:
         run: mv "$BUNDLE_PATH" "packages/vitest/$TGZ_NAME.sigstore.json"
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Upload release assets
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: release-assets-vitest
+          path: |
+            packages/vitest/${{env.TGZ_NAME}}
+            packages/vitest/${{env.TGZ_NAME}}.sigstore.json
+          if-no-files-found: error
+          retention-days: 1
+  update_release_vitest:
+    name: Update GitHub Release @fast-check/vitest
+    needs:
+      - publish_package_vitest
+      - check_publish_vitest
+    if: needs.publish_package_vitest.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-assets-vitest
+          path: assets/
       - name: Update GitHub Release
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
@@ -1020,11 +1206,11 @@ jobs:
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
-            packages/vitest/${{env.TGZ_NAME}}
-            packages/vitest/${{env.TGZ_NAME}}.sigstore.json
+            assets/${{needs.publish_package_vitest.outputs.tgz_name}}
+            assets/${{needs.publish_package_vitest.outputs.tgz_name}}.sigstore.json
           body: |
 
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+            [View attestation](${{needs.publish_package_vitest.outputs.attestation_url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -1046,6 +1232,9 @@ jobs:
     needs: check_publish_worker
     if: needs.check_publish_worker.outputs.tag != ''
     runs-on: ubuntu-latest
+    outputs:
+      tgz_name: ${{steps.set_tgz_name.outputs.tgz_name}}
+      attestation_url: ${{steps.attest.outputs.attestation-url}}
     permissions:
       contents: write
       id-token: write
@@ -1070,7 +1259,11 @@ jobs:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
       - name: Set package filename
-        run: echo "TGZ_NAME=worker-$(tar -xzOf packages/worker/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
+        id: set_tgz_name
+        run: |
+          TGZ_NAME="worker-$(tar -xzOf packages/worker/package.tgz package/package.json | jq -r '.version').tgz"
+          echo "TGZ_NAME=$TGZ_NAME" >> $GITHUB_ENV
+          echo "tgz_name=$TGZ_NAME" >> $GITHUB_OUTPUT
       - name: Rename package for publication
         run: mv packages/worker/package.tgz "packages/worker/$TGZ_NAME"
       - name: Publish @fast-check/worker
@@ -1087,6 +1280,30 @@ jobs:
         run: mv "$BUNDLE_PATH" "packages/worker/$TGZ_NAME.sigstore.json"
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
+      - name: Upload release assets
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: release-assets-worker
+          path: |
+            packages/worker/${{env.TGZ_NAME}}
+            packages/worker/${{env.TGZ_NAME}}.sigstore.json
+          if-no-files-found: error
+          retention-days: 1
+  update_release_worker:
+    name: Update GitHub Release @fast-check/worker
+    needs:
+      - publish_package_worker
+      - check_publish_worker
+    if: needs.publish_package_worker.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-assets-worker
+          path: assets/
       - name: Update GitHub Release
         uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
@@ -1095,8 +1312,8 @@ jobs:
           fail_on_unmatched_files: true
           overwrite_files: false
           files: |
-            packages/worker/${{env.TGZ_NAME}}
-            packages/worker/${{env.TGZ_NAME}}.sigstore.json
+            assets/${{needs.publish_package_worker.outputs.tgz_name}}
+            assets/${{needs.publish_package_worker.outputs.tgz_name}}.sigstore.json
           body: |
 
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+            [View attestation](${{needs.publish_package_worker.outputs.attestation_url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
