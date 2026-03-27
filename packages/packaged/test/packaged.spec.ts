@@ -9,18 +9,21 @@ afterAll(async () => {
   await fs.rmdir(testDirname);
 });
 
-// ${'only keep published files and any node_modules when requested'}     | ${false} | ${['**/node_modules']} | ${'absolute'}
 describe('removeNonPublishedFiles', () => {
   it.each`
-    name                                                                   | dryRun   | keep                | pathStyle
-    ${'only keep published files by default'}                              | ${false} | ${[]}               | ${'absolute'}
-    ${'only keep published files and node_modules at root when requested'} | ${false} | ${['node_modules']} | ${'absolute'}
-    ${'not clean anything in dryRun mode even without keepNodeModules'}    | ${true}  | ${[]}               | ${'absolute'}
-    ${'not clean anything in dryRun mode even with keepNodeModules'}       | ${true}  | ${['node_modules']} | ${'absolute'}
-    ${'handle relative paths such as .'}                                   | ${false} | ${[]}               | ${'.'}
-    ${'handle relative paths such as ./package-name'}                      | ${false} | ${[]}               | ${'./package-name'}
-    ${'handle relative paths such as ./a/package-name'}                    | ${false} | ${[]}               | ${'./a/package-name'}
-    ${'handle relative paths such as ./a/../a/package-name/'}              | ${false} | ${[]}               | ${'./a/../a/package-name/'}
+    name                                                                         | dryRun   | keep                       | pathStyle
+    ${'only keep published files by default'}                                    | ${false} | ${[]}                      | ${'absolute'}
+    ${'only keep published files and node_modules at root when requested'}       | ${false} | ${['node_modules']}        | ${'absolute'}
+    ${'only keep published files and src at root when requested'}                | ${false} | ${['src']}                 | ${'absolute'}
+    ${'only keep published files and {src,node_modules} at root when requested'} | ${false} | ${['src', 'node_modules']} | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep='}                       | ${true}  | ${[]}                      | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep=node_modules'}           | ${true}  | ${['node_modules']}        | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep=src'}                    | ${false} | ${['src']}                 | ${'absolute'}
+    ${'not clean anything in dryRun mode even with keep=src,node_modules'}       | ${false} | ${['src', 'node_modules']} | ${'absolute'}
+    ${'handle relative paths such as .'}                                         | ${false} | ${[]}                      | ${'.'}
+    ${'handle relative paths such as ./package-name'}                            | ${false} | ${[]}                      | ${'./package-name'}
+    ${'handle relative paths such as ./a/package-name'}                          | ${false} | ${[]}                      | ${'./a/package-name'}
+    ${'handle relative paths such as ./a/../a/package-name/'}                    | ${false} | ${[]}                      | ${'./a/../a/package-name/'}
   `('should $name', async ({ dryRun, keep, pathStyle }) => {
     await runPackageTest(async (fileSystem) => {
       // Arrange
@@ -68,10 +71,16 @@ describe('removeNonPublishedFiles', () => {
 
       // Assert
       const keepsRootNodeModules = keep.includes('node_modules');
-      const keepsAnyNodeModules = keep.includes('**/node_modules');
-      if (keepsRootNodeModules) {
+      const keepsRootSrc = keep.includes('src');
+      if (keepsRootSrc && keepsRootNodeModules) {
+        expect(kept).toHaveLength(5); // package.json, lib/main.js, lib, src, node_modules
+        expect(removed).toHaveLength(1); // test
+      } else if (keepsRootSrc) {
+        expect(kept).toHaveLength(4); // package.json, lib/main.js, lib, src/*
+        expect(removed).toHaveLength(2); // node_modules, test
+      } else if (keepsRootNodeModules) {
         expect(kept).toHaveLength(4); // package.json, lib/main.js, lib, node_modules/*
-        expect(removed).toHaveLength(2); //  src, test
+        expect(removed).toHaveLength(2); // src, test
       } else {
         expect(kept).toHaveLength(3); // package.json, lib/main.js, lib
         expect(removed).toHaveLength(3); // src, test, node_modules
@@ -79,14 +88,14 @@ describe('removeNonPublishedFiles', () => {
       // Remove unpublished files and keep published ones
       expect(await fileSystem.exists(['package.json'])).toBe(true);
       expect(await fileSystem.exists(['lib', 'main.js'])).toBe(true);
-      expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun);
-      expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun);
+      expect(await fileSystem.exists(['src', 'main.js'])).toBe(dryRun || keepsRootSrc);
+      expect(await fileSystem.exists(['src', 'node_modules', 'wtf', 'main.js'])).toBe(dryRun || keepsRootSrc);
       expect(await fileSystem.exists(['test', 'main.js'])).toBe(dryRun);
       expect(await fileSystem.exists(['node_modules', 'dep-a', 'main.js'])).toBe(dryRun || keepsRootNodeModules);
       // Remove empty folders
-      expect(await fileSystem.exists(['src'])).toBe(dryRun);
-      expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun);
-      expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun);
+      expect(await fileSystem.exists(['src'])).toBe(dryRun || keepsRootSrc);
+      expect(await fileSystem.exists(['src', 'node_modules'])).toBe(dryRun || keepsRootSrc);
+      expect(await fileSystem.exists(['src', 'node_modules', 'wtf'])).toBe(dryRun || keepsRootSrc);
       expect(await fileSystem.exists(['test'])).toBe(dryRun);
       expect(await fileSystem.exists(['node_modules'])).toBe(dryRun || keepsRootNodeModules);
       expect(await fileSystem.exists(['node_modules', 'dep-a'])).toBe(dryRun || keepsRootNodeModules);
