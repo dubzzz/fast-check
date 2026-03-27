@@ -1,4 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
+import sdk from '@stackblitz/sdk';
 import styles from './Playgrounds.module.css';
 import * as snippets from './snippets.mjs';
 
@@ -38,37 +39,33 @@ type EmbedProps = {
 
 function StackBlitzEmbed({ files, options = {} }: EmbedProps) {
   const rawId = useId();
-  const iframeName = `stackblitz${rawId.replace(/:/g, '-')}`;
-  const formRef = useRef<HTMLFormElement>(null);
+  const containerId = `stackblitz${rawId.replace(/:/g, '-')}`;
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    formRef.current?.submit();
+    const el = containerRef.current;
+    if (!el) return;
+    sdk.embedProject(
+      el,
+      {
+        title: 'fast-check playground',
+        description: 'Interactive fast-check playground powered by Vitest',
+        template: 'node',
+        files,
+      },
+      {
+        height: options.height ?? 500,
+        openFile: options.openFile,
+        view: options.view ?? 'default',
+        hideExplorer: options.hideExplorer !== false,
+      },
+    );
+    return () => {
+      el.innerHTML = '';
+    };
   }, []);
 
-  const params = new URLSearchParams();
-  if (options.openFile) params.set('file', options.openFile);
-  if (options.hideExplorer !== false) params.set('hideExplorer', '1');
-  if (options.view) params.set('view', options.view);
-  const queryString = params.toString();
-  const action = `https://stackblitz.com/run${queryString ? `?${queryString}` : ''}`;
-
-  return (
-    <>
-      <iframe
-        name={iframeName}
-        title="StackBlitz playground"
-        style={{ width: '100%', height: options.height ?? 500, border: 0 }}
-      />
-      <form ref={formRef} action={action} method="POST" target={iframeName} style={{ display: 'none' }}>
-        <input type="hidden" name="project[title]" value="fast-check playground" />
-        <input type="hidden" name="project[description]" value="Interactive fast-check playground powered by Vitest" />
-        <input type="hidden" name="project[template]" value="node" />
-        {Object.entries(files).map(([path, content]) => (
-          <input key={path} type="hidden" name={`project[files][${path}]`} value={content} />
-        ))}
-      </form>
-    </>
-  );
+  return <div ref={containerRef} id={containerId} />;
 }
 
 type Props = {

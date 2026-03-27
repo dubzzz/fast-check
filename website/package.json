@@ -21,6 +21,7 @@
     "@docusaurus/preset-classic": "3.9.2",
     "@docusaurus/remark-plugin-npm2yarn": "3.9.2",
     "@docusaurus/theme-mermaid": "3.9.2",
+    "@stackblitz/sdk": "^1.11.0",
     "clsx": "^2.1.1",
     "lodash": "^4.17.23",
     "prism-react-renderer": "^2.4.1",
