@@ -1,3 +1,14 @@
+# 0.7.0
+
+_Replace `--keepNodeModules` by `--keep`_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.6.0...packaged%2Fv0.7.0)]
+
+## Features
+
+- ([PR#6713](https://github.com/dubzzz/fast-check/pull/6713)) Replace keepNodeModules with flexible keep patterns
+
+---
+
 # 0.6.0
 
 _Only publish ESM bundle_
