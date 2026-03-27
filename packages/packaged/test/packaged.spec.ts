@@ -17,6 +17,7 @@ describe('removeNonPublishedFiles', () => {
     ${'only keep published files and src at root when requested'}                              | ${false} | ${['src']}                 | ${'absolute'}
     ${'only keep published files and {src,node_modules} at root when requested'}               | ${false} | ${['src', 'node_modules']} | ${'absolute'}
     ${'only keep published files and nothing else if nothing match thing from the keep array'} | ${false} | ${['node*', 'node_mod']}   | ${'absolute'}
+    ${'only keep published files and nothing else if requested non-root entries'}              | ${false} | ${['src/node_modules']}    | ${'absolute'}
     ${'not clean anything in dryRun mode even with keep='}                                     | ${true}  | ${[]}                      | ${'absolute'}
     ${'not clean anything in dryRun mode even with keep=node_modules'}                         | ${true}  | ${['node_modules']}        | ${'absolute'}
     ${'not clean anything in dryRun mode even with keep=src'}                                  | ${false} | ${['src']}                 | ${'absolute'}
