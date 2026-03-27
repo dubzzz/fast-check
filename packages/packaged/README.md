@@ -32,7 +32,7 @@ yarn dlx -p @fast-check/packaged packaged
 It also comes with some extra flags:
 
 - `--dry-run`: do not drop any file or directory from the file system and only print what would have been removed
-- `--keep <glob>`: keep files/directories matching the glob pattern (can be specified multiple times)
+- `--keep <name>`: keep a root-level file or directory matching the exact name (not a glob pattern, can be specified multiple times, e.g. `--keep node_modules --keep src`)
 
 ## Simple API
 
