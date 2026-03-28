@@ -21,24 +21,6 @@ permissions:
   contents: read
 
 jobs:
-  # Remove the force-build-status-execution label if it triggered the workflow
-  remove_force_label:
-    name: 'Remove force label'
-    if: github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-        with:
-          script: |
-            await github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: 'force-build-status-execution',
-            });
-
   # Root jobs
   warmup_pnpm_cache:
     name: 'Warm up pnpm cache'
