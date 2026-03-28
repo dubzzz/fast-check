@@ -111,8 +111,5 @@ export {
   forward,
   forwardArray,
   single,
-  CounterArbitrary,
-  ForwardArbitrary,
-  ForwardArrayArbitrary,
   SingleUseArbitrary,
 };
