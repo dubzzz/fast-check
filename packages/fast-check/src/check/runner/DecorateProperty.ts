@@ -1,4 +1,5 @@
 import type { IRawProperty } from '../property/IRawProperty.js';
+import { AbortedProperty } from '../property/AbortedProperty.js';
 import { SkipAfterProperty } from '../property/SkipAfterProperty.js';
 import { TimeoutProperty } from '../property/TimeoutProperty.js';
 import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
@@ -12,7 +13,13 @@ const safeClearTimeout = clearTimeout;
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
   QualifiedParameters<Ts>,
-  'unbiased' | 'timeout' | 'skipAllAfterTimeLimit' | 'interruptAfterTimeLimit' | 'skipEqualValues' | 'ignoreEqualValues'
+  | 'unbiased'
+  | 'timeout'
+  | 'skipAllAfterTimeLimit'
+  | 'interruptAfterTimeLimit'
+  | 'signal'
+  | 'skipEqualValues'
+  | 'ignoreEqualValues'
 >;
 
 /** @internal */
@@ -46,6 +53,9 @@ export function decorateProperty<Ts>(
       safeSetTimeout,
       safeClearTimeout,
     );
+  }
+  if (qParams.signal !== undefined) {
+    prop = new AbortedProperty(prop, qParams.signal);
   }
   if (qParams.skipEqualValues) {
     prop = new IgnoreEqualValuesProperty(prop, true);
