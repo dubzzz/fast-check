@@ -123,7 +123,7 @@ test('should resolve in call order', async () => {
 
 export const queueBasicPBTSpecCode = `
 import {queue} from './queue.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => {
@@ -146,7 +146,7 @@ test('should resolve in call order', async () => {
 
 export const queueBasicPBTWaitAllSpecCode = `
 import {queue} from './queue.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => {
@@ -168,7 +168,7 @@ test('should resolve in call order', async () => {
 
 export const queueMoreThan2CallsPBTSpecCode = `
 import {queue} from './queue.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), fc.integer({min: 1, max: 10}), async (s, numCalls) => {
@@ -194,7 +194,7 @@ test('should resolve in call order', async () => {
 
 export const queueBatchesAlternativePBTSpecCode = `
 import {queue} from './queue.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), fc.integer({min: 1, max: 10}), async (s, numCalls) => {
@@ -226,7 +226,7 @@ test('should resolve in call order', async () => {
 
 export const queueFromBatchesPBTSpecCode = `
 import {queue} from './queue.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
@@ -261,7 +261,7 @@ test('should resolve in call order', async () => {
 
 export const missingPartPBTSpecCode = `
 import {queue} from './queue.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
@@ -305,7 +305,7 @@ test('should resolve in call order', async () => {
 
 export const extendedBackToWaitAllPBTSpecCode = `
 import {queue} from './queue.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), fc.array(fc.integer({min: 1, max: 10}), {minLength: 1}), async (s, batches) => {
@@ -349,7 +349,7 @@ test('should resolve in call order', async () => {
 
 export const extendedWithExceptionsPBTSpecCode = `
 import {queue} from './queue.js';
-import fc from "fast-check";
+import * as fc from "fast-check";
 
 test("should resolve in call order", async () => {
   await fc.assert(

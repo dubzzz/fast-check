@@ -2,7 +2,7 @@
  * @vitest-environment happy-dom
  */
 import { describe, it, vi } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import * as React from 'react';
 
 import AutocompleteField from './src/AutocompleteField';

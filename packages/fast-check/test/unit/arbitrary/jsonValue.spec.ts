@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 import type { JsonSharedConstraints } from '../../../src/arbitrary/jsonValue.js';
 import { jsonValue } from '../../../src/arbitrary/jsonValue.js';

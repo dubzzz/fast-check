@@ -2,7 +2,7 @@ import type { IAsyncPropertyWithHooks } from 'fast-check';
 import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
 
 /**

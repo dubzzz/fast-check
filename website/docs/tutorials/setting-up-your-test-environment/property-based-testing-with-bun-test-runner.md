@@ -27,7 +27,7 @@ One of the things we could assess about such an algorithm is that the array of p
 
 ```js title="decompose.spec.ts"
 import { describe, it, expect } from 'bun:test';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 describe('decompose', () => {
   it('should produce an array such that the product equals the input', () => {

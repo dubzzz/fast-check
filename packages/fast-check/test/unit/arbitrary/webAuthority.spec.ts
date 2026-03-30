@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import type { WebAuthorityConstraints } from '../../../src/arbitrary/webAuthority.js';
 import { webAuthority } from '../../../src/arbitrary/webAuthority.js';
 import { URL } from 'url';

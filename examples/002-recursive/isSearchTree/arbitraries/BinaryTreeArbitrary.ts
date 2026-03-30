@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { Tree } from '../src/isSearchTree';
 
 export const binaryTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tree<number>> => {

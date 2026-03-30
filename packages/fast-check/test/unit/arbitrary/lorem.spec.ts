@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import type { LoremConstraints } from '../../../src/arbitrary/lorem.js';
 import { lorem } from '../../../src/arbitrary/lorem.js';
 import {

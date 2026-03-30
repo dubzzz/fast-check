@@ -3,7 +3,7 @@ import {
   keyValuePairsToObjectMapper,
   keyValuePairsToObjectUnmapper,
 } from '../../../../../src/arbitrary/_internals/mappers/KeyValuePairsToObject.js';
-import fc from '../../../../../src/fast-check.js';
+import * as fc from '../../../../../src/fast-check.js';
 
 describe('keyValuePairsToObjectMapper', () => {
   it('should create instances with Object prototype when requested to', () => {

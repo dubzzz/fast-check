@@ -43,7 +43,7 @@
     "typecheck": "tsc --noEmit",
     "test-bundle": "node test-bundle/run.cjs && node test-bundle/run.mjs && node test-bundle/run-advanced.cjs",
     "test-legacy-bundle": "nvs add 12.17 && $(nvs which 12.17) test-bundle/run.cjs && $(nvs which 12.17) test-bundle/run-advanced.cjs",
-    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts && node postbuild/main.mjs",
+    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check.ts && node postbuild/main.mjs",
     "docs-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run docs",
     "docs:serve": "pnpm run dlx serve docs/"
   },

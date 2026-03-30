@@ -41,7 +41,7 @@ The following code snippets offer an approach to run fast-check continuously wit
 The code snippet presented below consists of a function designed to wrap any predicate into a function that will not fail but will report into a file when a failure is detected.
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import fs from 'fs';
 import process from 'process';
 
@@ -75,7 +75,7 @@ This function can be used to run fast-check indefinitely without stopping on err
 The above helpers can be utilized directly to define properties and execute them in a fuzzer fashion as shown below:
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 fc.configureGlobal({ numRuns: 1_000_000 });
 

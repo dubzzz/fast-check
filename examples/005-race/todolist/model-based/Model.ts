@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 

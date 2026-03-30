@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { toRoman, fromRoman, MaxRoman, LettersValue, NumLetters } from './src/roman';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 describe('toRoman', () => {
   it('should be able to revert toRoman using fromRoman', () => {

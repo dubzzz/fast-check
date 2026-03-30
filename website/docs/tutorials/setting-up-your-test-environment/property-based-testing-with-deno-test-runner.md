@@ -15,7 +15,7 @@ Let's write a test for [FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz) using
 
 ```js title="fizzbuzz.test.ts"
 import { assertStringIncludes } from "jsr:@std/assert";
-import fc from "npm:fast-check";
+import * as fc from "npm:fast-check";
 
 Deno.test({
   name: "should print Fizz whenever divisible by 3",

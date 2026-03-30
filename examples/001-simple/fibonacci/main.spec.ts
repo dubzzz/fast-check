@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { fibo } from './src/fibonacci';
 
 // The complexity of the algorithm is O(n)

@@ -1,5 +1,5 @@
 import { WorkerPropertyFromWorker } from '../../../src/internals/worker-property/WorkerPropertyFromWorker.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { xorshift128plus } from 'pure-rand';
 import { describe, it, expect, vi } from 'vitest';
 

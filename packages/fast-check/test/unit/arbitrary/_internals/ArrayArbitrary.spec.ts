@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import prand from 'pure-rand';
 
 import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary.js';

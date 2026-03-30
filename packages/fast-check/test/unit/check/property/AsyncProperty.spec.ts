@@ -11,7 +11,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { fakeArbitrary } from '../../arbitrary/__test-helpers__/ArbitraryHelpers.js';
 import { Stream } from '../../../../src/stream/Stream.js';
 import type { PropertyFailure } from '../../../../src/check/property/IRawProperty.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 describe('AsyncProperty', () => {
   afterEach(() => resetConfigureGlobal());

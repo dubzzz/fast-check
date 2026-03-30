@@ -23,7 +23,7 @@ export default function AdventPlayground(props: Props) {
   const styleTests = { height: 200 };
 
   const adventSpecLines = [
-    `import fc from 'fast-check';`,
+    `import * as fc from 'fast-check';`,
     `import ${functionName} from './advent.js';`,
     ``,
     ...signatureExtras.map((extra) => `// declare ${extra}`),

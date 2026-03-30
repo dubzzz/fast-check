@@ -2,7 +2,7 @@
  * @vitest-environment happy-dom
  */
 import { describe, it, expect, vi } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import * as React from 'react';
 
 import UserProfilePage from './src/UserProfilePage';

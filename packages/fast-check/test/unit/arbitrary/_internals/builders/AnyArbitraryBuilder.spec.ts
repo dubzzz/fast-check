@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import fc, { stringify } from 'fast-check';
+import * as fc from 'fast-check';
+const { stringify } = fc;
 
 import { anyArbitraryBuilder } from '../../../../../src/arbitrary/_internals/builders/AnyArbitraryBuilder.js';
 import type { ObjectConstraints } from '../../../../../src/arbitrary/_internals/helpers/QualifiedObjectConstraints.js';

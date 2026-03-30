@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { SpaceBuilder, Space } from '../src/space';
 
 export const SpaceArbitrary = fc

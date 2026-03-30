@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 import { dependencyTree, PackageDefinition } from './src/dependencyTree';
 

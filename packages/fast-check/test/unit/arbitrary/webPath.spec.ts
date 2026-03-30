@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import type { WebPathConstraints } from '../../../src/arbitrary/webPath.js';
 import { webPath } from '../../../src/arbitrary/webPath.js';
 import { URL } from 'url';

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from '../../src/fast-check.js';
+import * as fc from '../../src/fast-check.js';
 import { asyncRunWithSanitizedStack, runWithSanitizedStack } from './__test-helpers__/StackSanitizer.js';
 import {
   IncreaseCommand,

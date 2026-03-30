@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import type { UuidConstraints } from '../../../src/arbitrary/uuid.js';
 import { uuid } from '../../../src/arbitrary/uuid.js';
 import { fakeArbitraryStaticValue } from './__test-helpers__/ArbitraryHelpers.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 import * as _IntegerMock from '../../../src/arbitrary/integer.js';
 import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';

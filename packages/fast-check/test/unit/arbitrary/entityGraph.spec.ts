@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import fc, { stringify } from 'fast-check';
+import * as fc from 'fast-check';
+const { stringify } = fc;
 import { string } from '../../../src/arbitrary/string.js';
 import { entityGraph } from '../../../src/arbitrary/entityGraph.js';
 import {

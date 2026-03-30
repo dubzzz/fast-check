@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import type { WebUrlConstraints } from '../../../src/arbitrary/webUrl.js';
 import { webUrl } from '../../../src/arbitrary/webUrl.js';
 import { URL } from 'url';

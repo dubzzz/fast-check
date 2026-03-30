@@ -35,7 +35,7 @@ Install the module with: `pnpm add -D fast-check` or `yarn add fast-check --dev`
 Example of integration in [mocha](http://mochajs.org/):
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 // Code under test
 const contains = (text, pattern) => text.indexOf(pattern) >= 0;

@@ -2,7 +2,7 @@
 // should be enough to ensure that typings will not raise errors regarding incompatible
 // and unknown syntaxes at build time
 
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { expectType, expectTypeAssignable } from '@fast-check/expect-type';
 
 // assert

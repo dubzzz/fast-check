@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { MockedFunction } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import request from 'supertest';
 import type { User } from './src/db';
 import { app, dropDeactivatedInternal } from './src/app';

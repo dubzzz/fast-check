@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import type { RecordConstraints } from '../../../src/arbitrary/record.js';
 import { record } from '../../../src/arbitrary/record.js';
 import type { Arbitrary } from '../../../src/check/arbitrary/definition/Arbitrary.js';

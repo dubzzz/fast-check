@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from '../../src/fast-check.js';
+import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`AsyncScheduler (seed: ${seed})`, () => {

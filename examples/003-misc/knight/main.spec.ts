@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { SpaceArbitrary } from './arbitraries/SpaceArbitrary';
 import { SpaceBuilder } from './src/space';
 import { knight } from './src/knight';
