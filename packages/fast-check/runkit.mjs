@@ -1,4 +1,4 @@
-const fc = require('fast-check');
+import fc from 'fast-check';
 
 // Function under test
 function isSubstring(pattern, text) {

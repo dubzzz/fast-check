@@ -113,7 +113,7 @@ export default [
       'packages/*/dist/',
       'packages/*/lib/',
       'packages/*/lib-*/',
-      'packages/*/runkit.cjs',
+      'packages/*/runkit.mjs',
       'packages/test-minimal-support/',
       'packages/test-types/',
       'website/',

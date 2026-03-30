@@ -17,15 +17,6 @@ fs.readFile(path.join(import.meta.dirname, '../package.json'), (err, data) => {
 
   const packageVersion = JSON.parse(data.toString()).version;
 
-  const commonJsReplacement = replaceInFileSync({
-    files: 'lib/cjs/fast-check-default.js',
-    from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
-    to: ['commonjs', packageVersion, commitHash],
-  });
-  if (commonJsReplacement.length === 1 && commonJsReplacement[0].hasChanged) {
-    console.info(`Package details added onto commonjs version`);
-  }
-
   const moduleReplacement = replaceInFileSync({
     files: 'lib/fast-check-default.js',
     from: [/__PACKAGE_TYPE__/g, /__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
@@ -33,15 +24,6 @@ fs.readFile(path.join(import.meta.dirname, '../package.json'), (err, data) => {
   });
   if (moduleReplacement.length === 1 && moduleReplacement[0].hasChanged) {
     console.info(`Package details added onto module version`);
-  }
-
-  const dTsReplacement = replaceInFileSync({
-    files: 'lib/cjs/types/fast-check-default.d.ts',
-    from: [/__PACKAGE_VERSION__/g, /__COMMIT_HASH__/g],
-    to: [packageVersion, commitHash],
-  });
-  if (dTsReplacement.length === 1 && dTsReplacement[0].hasChanged) {
-    console.info(`Package details added onto d.ts version for cjs`);
   }
 
   const dTsReplacement2 = replaceInFileSync({
@@ -74,15 +56,6 @@ fs.readFile(path.join(import.meta.dirname, '../package.json'), (err, data) => {
   });
   reportArrayReplace(dTsReplacement57);
 
-  fs.cpSync('lib/cjs/types', 'lib/cjs/types57', { recursive: true });
-  const dTsReplacement57cjs = replaceInFileSync({
-    files: 'lib/cjs/types57/arbitrary/*[0-9]*Array.d.ts',
-    from: [/Array<ArrayBuffer>>/g],
-    to: ['Array>'],
-    countMatches: true,
-  });
-  reportArrayReplace(dTsReplacement57cjs);
-
   function escapeHtml(unsafe) {
     return unsafe
       .replace(/&/g, '&amp;')
@@ -101,7 +74,7 @@ fs.readFile(path.join(import.meta.dirname, '../package.json'), (err, data) => {
   }
 
   const noSideEffectsOnAllArbitraries = replaceInFileSync({
-    files: ['lib/arbitrary/*.js', 'lib/cjs/arbitrary/*.js'],
+    files: 'lib/arbitrary/*.js',
     from: [(file) => `function ${path.basename(file).split('.')[0]}(`],
     to: [(match) => `/**@__NO_SIDE_EFFECTS__*/${match}`],
   });

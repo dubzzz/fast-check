@@ -413,26 +413,6 @@ jobs:
         run: node --run publint:all
       - name: Check bundles
         run: pnpm --filter {./packages/**} --parallel run test-bundle
-      - name: Check legacy bundles
-        run: |
-          export NODE_VERSION="$(node --version)"
-          export NVS_HOME="$HOME/.nvs"
-          git clone --branch v1.7.1 --depth 1 https://github.com/jasongin/nvs "$NVS_HOME"
-          if [ "$(git -C "$NVS_HOME" rev-parse HEAD)" != "b87ae9593cd20e7b667e9099240c9befeb50659f" ]; then
-              echo "ERROR: HEAD is not the expected commit hash"
-              exit 1
-          fi
-          chmod +x "$NVS_HOME/nvs"
-          export PATH="$PATH:$NVS_HOME"
-          if [ "$(node --version)" != "$NODE_VERSION" ]; then
-              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
-              exit 2
-          fi
-          pnpm --filter {./packages/**} --parallel run test-legacy-bundle
-          if [ "$(node --version)" != "$NODE_VERSION" ]; then
-              echo "ERROR: Node version got updated from $NODE_VERSION to $(node --version)"
-              exit 3
-          fi
   test_types:
     name: 'Test types'
     needs:

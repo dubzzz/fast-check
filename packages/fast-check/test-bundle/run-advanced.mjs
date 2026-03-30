@@ -1,6 +1,6 @@
 // @ts-check
-var assert = require('assert');
-var fc = require('fast-check');
+import assert from 'node:assert';
+import fc from 'fast-check';
 
 function testArbitrary(arb) {
   // should not crash if running a succesful property
@@ -58,7 +58,7 @@ function testArbitrary(arb) {
   assert.notEqual(stats.length, 0);
 }
 
-console.log('Starting ' + __filename + '...');
+console.log('Starting ' + import.meta.filename + '...');
 testArbitrary(fc.nat());
 testArbitrary(fc.subarray([1, 42, 360]));
 testArbitrary(fc.array(fc.nat()));
