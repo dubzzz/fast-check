@@ -11,7 +11,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
       // Arrange / Act
       let numRuns = 0;
       const outPromise = fc.check(
-        fc.asyncProperty(fc.integer(), async (_x) => {
+        fc.property(fc.integer(), async (_x) => {
           ++numRuns;
           return true;
         }),
@@ -34,7 +34,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
       // Arrange / Act
       let numRuns = 0;
       const out = await fc.check(
-        fc.asyncProperty(fc.integer(), async (_x) => {
+        fc.property(fc.integer(), async (_x) => {
           ++numRuns;
           return true;
         }),
@@ -55,7 +55,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
       const { delay, killAllRunningTasks } = buildDelay();
       let numRuns = 0;
       const out = await fc.check(
-        fc.asyncProperty(fc.integer(), async (_n) => {
+        fc.property(fc.integer(), async (_n) => {
           ++numRuns;
           await delay(LongTimeoutMs);
           return true;
@@ -82,7 +82,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
       const { delay, killAllRunningTasks } = buildDelay();
       let numRuns = 0;
       const outPromise = fc.check(
-        fc.asyncProperty(fc.integer(), async (_n) => {
+        fc.property(fc.integer(), async (_n) => {
           ++numRuns;
           await delay(numRuns === 1 ? 0 : LongTimeoutMs);
           return true;
@@ -112,7 +112,7 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
         const { delay, killAllRunningTasks } = buildDelay();
         let numRuns = 0;
         const out = await fc.check(
-          fc.asyncProperty(fc.integer(), async (_n) => {
+          fc.property(fc.integer(), async (_n) => {
             ++numRuns;
             await delay(0);
             return true;
@@ -133,9 +133,9 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   });
 
   describe('both', () => {
-    it('should consider interrupt with higher priority than skip', () => {
+    it('should consider interrupt with higher priority than skip', async () => {
       let numRuns = 0;
-      const out = fc.check(
+      const out = await fc.check(
         fc.property(fc.integer(), (_n) => {
           ++numRuns;
           return true;

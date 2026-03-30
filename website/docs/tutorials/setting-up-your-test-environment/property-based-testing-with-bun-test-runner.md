@@ -76,7 +76,7 @@ The example of `decompose` can be extended much further with additional properti
 
 fast-check is not only about testing simple algorithms, it can be extended to much more complex pieces of code, including:
 
-- [checking asynchronous code](/docs/core-blocks/properties/#asynchronous-properties),
+- [checking asynchronous code](/docs/core-blocks/properties/),
 - [detecting race conditions](/docs/tutorials/detect-race-conditions/),
 - [building complex inputs](/docs/core-blocks/arbitraries/), and more.
 

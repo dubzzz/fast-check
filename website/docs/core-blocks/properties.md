@@ -13,8 +13,8 @@ Properties bring together arbitrary generators and predicates. They are a key bu
 
 They can be summarized by:
 
-> for any (x, y, ...)  
-> such that precondition(x, y, ...) holds  
+> for any (x, y, ...)
+> such that precondition(x, y, ...) holds
 > predicate(x, y, ...) is true
 
 :::info Equivalence in fast-check
@@ -26,16 +26,18 @@ Each part of the definition can be achieved directly within fast-check:
 
 :::
 
-## Synchronous properties
+## Defining properties
 
 ### Basic
 
-Synchronous properties define synchronous predicates. They can be declared by calling `fc.property(...arbitraries, predicate)`.
+Properties define predicates that can be either synchronous or asynchronous. They are declared by calling `fc.property(...arbitraries, predicate)`.
 
 The syntax is the following:
 
 ```js
 fc.property(...arbitraries, (...args) => {});
+// or with an async predicate
+fc.property(...arbitraries, async (...args) => {});
 ```
 
 When passing N arbitraries, the predicate will receive N arguments: first argument being produced by the first arbitrary, second argument by the second arbitrary...
@@ -59,7 +61,7 @@ fc.property(...arbitraries, (...args) => {})
   .afterEach((previousAfterEach) => {});
 ```
 
-They both only accept synchronous functions and give the user the ability to call the previously defined hook function if any. The before-each (respectively: after-each) function will be launched before (respectively: after) each execution of the predicate.
+They accept synchronous or asynchronous functions and give the user the ability to call the previously defined hook function if any. The before-each (respectively: after-each) function will be launched before (respectively: after) each execution of the predicate.
 
 :::info Independent
 No need to define both. You may only call `beforeEach` or `afterEach` without the other.
@@ -103,22 +105,6 @@ Whatever the filtering solution you chose between `fc.pre` or `.filter`, they bo
 
 As a consequence, whenever feasible it's recommended to prefer relying on options directly providing by the arbitraries rather than filtering them. For instance, if you want to generate strings having at least two characters you should prefer `fc.string({ minLength: 2 })` over `fc.string().filter(s => s.length >= 2)`.
 :::
-
-## Asynchronous properties
-
-### Basic
-
-Similarly to their synchronous counterpart, aynchronous properties define asynchronous predicates. They can be declared by calling `fc.asyncProperty(...arbitraries, asyncPredicate)`.
-
-The syntax is the following:
-
-```js
-fc.asyncProperty(...arbitraries, async (...args) => {});
-```
-
-### Advanced
-
-They also accept `beforeEach` and `afterEach` functions to be provided: the passed functions can either be synchronous or asynchronous.
 
 :::info Lifecycle
 The `beforeEach` and `afterEach` functions will always be executed, regardless of whether the property times out. It's important to note that the `timeout` option passed to `fc.assert` only measures the time taken by the actual property test, not the setup and teardown phases.

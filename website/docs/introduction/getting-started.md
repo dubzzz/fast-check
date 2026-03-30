@@ -87,7 +87,7 @@ A property describes:
 1. what the user wants to assess — _via a predicate_
 2. how to generate the inputs of the predicate — _via arbitraries_
 
-The snippet above declared synchronous properties by calling `fc.property`. Synchronous properties can only deal with synchronous predicates. For asynchronous predicates, users should go for `fc.asyncProperty` instead of `fc.property`.
+The snippet above declared properties by calling `fc.property`. Properties support both synchronous and asynchronous predicates.
 
 Whatever the helper you take, the structure to declare a property is the same:
 

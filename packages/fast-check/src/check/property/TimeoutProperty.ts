@@ -22,17 +22,13 @@ const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTi
 };
 
 /** @internal */
-export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
+export class TimeoutProperty<Ts> implements IRawProperty<Ts> {
   constructor(
     readonly property: IRawProperty<Ts>,
     readonly timeMs: number,
     readonly setTimeoutSafe: typeof setTimeout,
     readonly clearTimeoutSafe: typeof clearTimeout,
   ) {}
-
-  isAsync(): true {
-    return true;
-  }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
     return this.property.generate(mrng, runId);
@@ -49,11 +45,11 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
     return propRun;
   }
 
-  runBeforeEach(): ReturnType<IRawProperty<Ts, true>['runBeforeEach']> {
+  runBeforeEach(): ReturnType<IRawProperty<Ts>['runBeforeEach']> {
     return Promise.resolve(this.property.runBeforeEach());
   }
 
-  runAfterEach(): ReturnType<IRawProperty<Ts, true>['runAfterEach']> {
+  runAfterEach(): ReturnType<IRawProperty<Ts>['runAfterEach']> {
     return Promise.resolve(this.property.runAfterEach());
   }
 }

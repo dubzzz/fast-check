@@ -2,4 +2,4 @@
 "fast-check": minor
 ---
 
-⚡️ Avoid async when doable in `asyncProperty`
+⚡️ Avoid async when doable in `property`

@@ -1,6 +1,6 @@
 import type {
-  AsyncPropertyHookFunction,
-  IAsyncPropertyWithHooks,
+  PropertyHookFunction,
+  IPropertyWithHooks,
   IRawProperty,
   Random,
   Stream,
@@ -57,17 +57,13 @@ function buildInputsAndRegister<Ts extends [unknown, ...unknown[]]>(
  * A WorkerProperty delegating generating the values to the Worker thread
  * instead of running it into the main thread
  */
-export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements IAsyncPropertyWithHooks<Ts> {
+export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implements IPropertyWithHooks<Ts> {
   private readonly numArbitraries: number;
-  private readonly internalProperty: IAsyncPropertyWithHooks<Ts>;
+  private readonly internalProperty: IPropertyWithHooks<Ts>;
 
   constructor(arbitraries: PropertyArbitraries<Ts>, predicate: (...args: Ts) => Promise<boolean | void>) {
     this.numArbitraries = arbitraries.length;
-    this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
-  }
-
-  isAsync(): true {
-    return this.internalProperty.isAsync();
+    this.internalProperty = fc.property<Ts>(...arbitraries, predicate);
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -86,15 +82,15 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     return fc.Stream.nil();
   }
 
-  run(v: Ts): ReturnType<IAsyncPropertyWithHooks<Ts>['run']> {
+  run(v: Ts): ReturnType<IPropertyWithHooks<Ts>['run']> {
     return this.internalProperty.run(v);
   }
 
-  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
+  beforeEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts> {
     return this.internalProperty.beforeEach(hookFunction);
   }
 
-  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts> {
+  afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts> {
     return this.internalProperty.afterEach(hookFunction);
   }
 

@@ -6,16 +6,16 @@ import { isSearchTree, Tree } from './src/isSearchTree';
 import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary';
 
 describe('isSearchTree', () => {
-  it('should always mark binary search trees as search trees', () => {
-    fc.assert(
+  it('should always mark binary search trees as search trees', async () => {
+    await fc.assert(
       fc.property(binarySearchTreeWithMaxDepth(3), (tree) => {
         return isSearchTree(tree);
       }),
     );
   });
 
-  it('should detect invalid search trees whenever tree traversal produces unordered arrays', () => {
-    fc.assert(
+  it('should detect invalid search trees whenever tree traversal produces unordered arrays', async () => {
+    await fc.assert(
       fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
@@ -23,8 +23,8 @@ describe('isSearchTree', () => {
     );
   });
 
-  it('should detect invalid search trees whenever tree traversal produces unordered arrays (2)', () => {
-    fc.assert(
+  it('should detect invalid search trees whenever tree traversal produces unordered arrays (2)', async () => {
+    await fc.assert(
       fc.property(binaryTreeWithoutMaxDepth(), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
@@ -32,8 +32,8 @@ describe('isSearchTree', () => {
     );
   });
 
-  it('should detect invalid search trees whenever one node in the tree has an invalid direct child', () => {
-    fc.assert(
+  it('should detect invalid search trees whenever one node in the tree has an invalid direct child', async () => {
+    await fc.assert(
       fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(
           traversal(tree, (t) => t).some(

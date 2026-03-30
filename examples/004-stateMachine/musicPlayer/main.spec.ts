@@ -5,8 +5,8 @@ import { MusicPlayerCommands, TrackNameArb } from './model-based/MusicPlayerComm
 import { MusicPlayerImplem } from './src/MusicPlayer';
 
 describe('MusicPlayer', () => {
-  it('should detect potential issues with the MusicPlayer', () =>
-    fc.assert(
+  it('should detect potential issues with the MusicPlayer', async () =>
+    await fc.assert(
       fc.property(fc.uniqueArray(TrackNameArb, { minLength: 1 }), MusicPlayerCommands, (initialTracks, commands) => {
         // const real = new MusicPlayerImplem(initialTracks, true); // with bugs
         const real = new MusicPlayerImplem(initialTracks);

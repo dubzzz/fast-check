@@ -37,8 +37,6 @@ In some cases you might be interested into fully customizing, extending or even 
 
 ```javascript
 fc.assert(
-  // You can either use it with `fc.property`
-  // or `fc.asyncProperty`
   fc.property(...),
   {
     reporter(out) {
@@ -54,7 +52,6 @@ fc.assert(
 ```
 
 In case your reporter is relying on asynchronous code, you can specify it by setting `asyncReporter` instead of `reporter`.
-Contrary to `reporter` that will be used for both synchronous and asynchronous properties, `asyncReporter` is forbidden for synchronous properties and makes them throw.
 
 :::info Before `reporter` and `asyncReporter`
 In the past, writing your own reporter would have been done as follow:
@@ -65,14 +62,8 @@ const throwIfFailed = (out) => {
     throw new Error(fc.defaultReportMessage(out));
   }
 };
-const myCustomAssert = (property, parameters) => {
-  const out = fc.check(property, parameters);
-
-  if (property.isAsync()) {
-    return out.then((runDetails) => {
-      throwIfFailed(runDetails);
-    });
-  }
+const myCustomAssert = async (property, parameters) => {
+  const out = await fc.check(property, parameters);
   throwIfFailed(out);
 };
 ```
@@ -161,7 +152,7 @@ Object.defineProperties(myPromisePossiblyResolved, {
 :::info Limitations of async variant
 Note that:
 
-- `asyncToStringMethod` is only used for asynchronous properties.
+- `asyncToStringMethod` is only used for asynchronous predicates.
 - Although `asyncToStringMethod` is marked as asynchronous, it should resolve almost instantly.
 
 :::

@@ -29,7 +29,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
         node: fc.tuple(tie('tree'), tie('tree')),
         leaf: fc.nat(),
       }));
-      const out = fc.check(
+      const out = await fc.check(
         fc.property(tree, (t) => {
           const depth = (n: any): number => {
             if (typeof n === 'number') return 0;
@@ -41,7 +41,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true); // depth can be greater or equal to 5
     });
-    it('Should be able to shrink to smaller cases recursively', () => {
+    it('Should be able to shrink to smaller cases recursively', async () => {
       const { tree } = fc.letrec((tie) => {
         return {
           tree: fc.nat(1).chain((id) => (id === 0 ? tie('leaf') : tie('node'))),
@@ -49,7 +49,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
           leaf: fc.nat(),
         };
       });
-      const out = fc.check(
+      const out = await fc.check(
         fc.property(tree, (t) => typeof t !== 'object'),
         { seed },
       );

@@ -71,7 +71,7 @@ In the above specification file, note that we didn't rely on the `it` or `test` 
 
 ### Your first asynchronous test
 
-Let's now extend our usage of Property-Based Testing to asynchronous properties. While many code snippets can be assessed synchronously, not all can. Let's explore how to work with asynchronous predicates using Jest and fast-check with our connector.
+Let's now extend our usage of Property-Based Testing to asynchronous predicates. While many code snippets can be assessed synchronously, not all can. Let's explore how to work with asynchronous predicates using Jest and fast-check with our connector.
 
 To accomplish this, we can create a new test file containing the code below:
 
@@ -112,7 +112,7 @@ You've connected your first asynchronous Property-Based Test within Jest 🚀
 
 :::info Difference with synchronous predicate
 
-The only difference is that the predicate function is now asynchronous. Compared to the **Manual Integration** (see below), we don't have to use another set of helpers to run asynchronous checks.
+The only difference is that the predicate function is now asynchronous. The same `test.prop` helper supports both synchronous and asynchronous predicates seamlessly.
 
 ```diff
 - test.prop({ s: fc.scheduler() })('should resolve in call order', ({ s }) => {
@@ -212,7 +212,7 @@ You've connected your first Property-Based Test within Jest 🚀
 
 ### Your first asynchronous test
 
-Now that we've covered synchronous tests, let's explore how to integrate an asynchronous one. The key difference here is that `fc.property` does not handle asynchronous predicates, so we'll use its asynchronous counterpart, `fc.asyncProperty`.
+Now that we've covered synchronous predicates, let's explore how to use an asynchronous one. The key difference here is that the predicate is now asynchronous. Since `fc.assert` always returns a `Promise`, we need to `await` it.
 
 ```js title="queue.spec.js"
 const { test } = require('@jest/globals');
@@ -221,7 +221,7 @@ const { queue } = require('./queue.js'); // refer to the section "connector" for
 
 test('should resolve in call order', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.scheduler(), async (s) => {
+    fc.property(fc.scheduler(), async (s) => {
       // Arrange
       const pendingQueries = [];
       const seenAnswers = [];

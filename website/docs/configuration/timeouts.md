@@ -18,15 +18,15 @@ Let's dig into the multiple timeout options provided by fast-check.
 
 You can use the `timeout` option with the `assert` function in fast-check to limit the amount of time allocated to run each instance of the predicate defined by your property. If the predicate takes longer than the specified time, the execution will be reported as a failure. fast-check will then attempt to shrink the inputs so that you can more easily identify the cause of the timeout.
 
-:::warning Need asynchronous properties
-It's important to note that the `timeout` option only works with asynchronous properties as it needs a way to interrupt another running script. If you want to use it with synchronous code, you can check out the `@fast-check/worker` package.
+:::warning Need asynchronous predicates
+It's important to note that the `timeout` option only works with asynchronous predicates as it needs a way to interrupt another running script. If you want to use it with purely synchronous code, you can check out the `@fast-check/worker` package.
 :::
 
 Let's explore how the `timeout` option works by looking at the following code snippet:
 
 ```ts
 await fc.assert(
-  fc.asyncProperty(packagesArb, fc.nat(), async (packages, selectedSeed) => {
+  fc.property(packagesArb, fc.nat(), async (packages, selectedSeed) => {
     // Arrange
     const allPackagesNames = Array.from(packages.keys());
     const selectedPackage = allPackagesNames[allPackagesNames.length % selectedSeed];
@@ -79,7 +79,7 @@ Available since 0.0.11.
 
 ### interruptAfterTimeLimit
 
-The `interruptAfterTimeLimit` option can be used to customize the maximum amount of time that the runner is allowed to execute a property. It works on both synchronous and asynchronous properties.
+The `interruptAfterTimeLimit` option can be used to customize the maximum amount of time that the runner is allowed to execute a property. It works with both synchronous and asynchronous predicates.
 
 By default, interrupting a runner after the deadline is not considered an error unless no predicate succeeded. However, this behavior can be overridden by setting `markInterruptAsFailure: true` in which case any interruption of the execution will be considered a failure.
 
@@ -130,11 +130,11 @@ Available since 1.15.0.
 
 ## All timeout options
 
-| Option                    | Level     | Property kind  | `beforeEach`/`afterEach` included in the measured time | Mark run as failed                                         |
-| ------------------------- | --------- | -------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
-| `timeout`                 | predicate | async          | no                                                     | yes                                                        |
-| `interruptAfterTimeLimit` | runner    | sync and async | yes                                                    | no except when first run or `markInterruptAsFailure:true`  |
-| `skipAllAfterTimeLimit`   | runner    | sync and async | yes                                                    | no except when timeout occured outside of the shrink phase |
+| Option                    | Level     | Predicate kind  | `beforeEach`/`afterEach` included in the measured time | Mark run as failed                                         |
+| ------------------------- | --------- | --------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
+| `timeout`                 | predicate | async predicate | no                                                     | yes                                                        |
+| `interruptAfterTimeLimit` | runner    | any             | yes                                                    | no except when first run or `markInterruptAsFailure:true`  |
+| `skipAllAfterTimeLimit`   | runner    | any             | yes                                                    | no except when timeout occured outside of the shrink phase |
 
 :::info Always run `beforeEach` and `afterEach`
 `beforeEach` and `afterEach` functions will always be executed, regardless of whether they are included in the measured time for the timeout or not

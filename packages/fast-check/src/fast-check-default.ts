@@ -1,10 +1,4 @@
 import { pre } from './check/precondition/Pre.js';
-import type {
-  IAsyncProperty,
-  IAsyncPropertyWithHooks,
-  AsyncPropertyHookFunction,
-} from './check/property/AsyncProperty.js';
-import { asyncProperty } from './check/property/AsyncProperty.js';
 import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './check/property/Property.js';
 import { property } from './check/property/Property.js';
 import type { IRawProperty, PropertyFailure } from './check/property/IRawProperty.js';
@@ -237,9 +231,6 @@ export type {
   IRawProperty,
   IProperty,
   IPropertyWithHooks,
-  IAsyncProperty,
-  IAsyncPropertyWithHooks,
-  AsyncPropertyHookFunction,
   PropertyHookFunction,
   PropertyFailure,
   AsyncCommand,
@@ -346,7 +337,6 @@ export {
   pre,
   PreconditionFailure,
   property,
-  asyncProperty,
   boolean,
   falsy,
   float,

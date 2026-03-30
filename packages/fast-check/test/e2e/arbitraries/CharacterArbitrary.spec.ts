@@ -4,8 +4,8 @@ import { seed } from '../seed.js';
 
 describe(`CharacterArbitrary (seed: ${seed})`, () => {
   describe("string({ unit: 'binary' })", () => {
-    it('should be able to shrink towards a string made of several code-units', () => {
-      const out = fc.check(
+    it('should be able to shrink towards a string made of several code-units', async () => {
+      const out = await fc.check(
         fc.property(fc.string({ unit: 'binary', minLength: 1, maxLength: 1 }), (s: string) => {
           return s.length === 1;
         }),
@@ -17,8 +17,8 @@ describe(`CharacterArbitrary (seed: ${seed})`, () => {
   });
 
   describe("string({ unit: 'grapheme-composite' })", () => {
-    it('should be able to shrink towards a string made of several code-units', () => {
-      const out = fc.check(
+    it('should be able to shrink towards a string made of several code-units', async () => {
+      const out = await fc.check(
         fc.property(fc.string({ unit: 'grapheme-composite', minLength: 1, maxLength: 1 }), (s: string) => {
           return s.length === 1;
         }),
@@ -30,8 +30,8 @@ describe(`CharacterArbitrary (seed: ${seed})`, () => {
   });
 
   describe("string({ unit: 'grapheme' })", () => {
-    it('should be able to shrink towards a string made of several code-points', () => {
-      const out = fc.check(
+    it('should be able to shrink towards a string made of several code-points', async () => {
+      const out = await fc.check(
         fc.property(fc.string({ unit: 'grapheme', minLength: 1, maxLength: 1 }), (s: string) => {
           return [...s].length === 1;
         }),

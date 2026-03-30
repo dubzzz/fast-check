@@ -21,7 +21,7 @@ export function decorateProperty<Ts>(
   qParams: MinimalQualifiedParameters<Ts>,
 ): IRawProperty<Ts> {
   let prop = rawProperty;
-  if (rawProperty.isAsync() && qParams.timeout !== undefined) {
+  if (qParams.timeout !== undefined) {
     prop = new TimeoutProperty(prop, qParams.timeout, safeSetTimeout, safeClearTimeout);
   }
   if (qParams.unbiased) {

@@ -20,30 +20,23 @@ import { Error } from '../../utils/globals.js';
  * @remarks Since 2.2.0
  * @public
  */
-export type PropertyHookFunction = (globalHookFunction: GlobalPropertyHookFunction) => void;
+export type PropertyHookFunction =
+  | ((previousHookFunction: GlobalPropertyHookFunction) => Promise<unknown>)
+  | ((previousHookFunction: GlobalPropertyHookFunction) => void);
 
 /**
- * Interface for synchronous property, see {@link IRawProperty}
+ * Interface for property, see {@link IRawProperty}
  * @remarks Since 1.19.0
  * @public
  */
-export interface IProperty<Ts> extends IRawProperty<Ts, false> {}
+export interface IProperty<Ts> extends IRawProperty<Ts> {}
 
 /**
- * Interface for synchronous property defining hooks, see {@link IProperty}
+ * Interface for property defining hooks, see {@link IProperty}
  * @remarks Since 2.2.0
  * @public
  */
 export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
-  /**
-   * Define a function that should be called before all calls to the predicate
-   * @param invalidHookFunction - Function to be called, please provide a valid hook function
-   * @remarks Since 1.6.0
-   */
-  beforeEach(
-    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>,
-  ): 'beforeEach expects a synchronous function but was given a function returning a Promise';
-
   /**
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
@@ -53,18 +46,23 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
 
   /**
    * Define a function that should be called after all calls to the predicate
-   * @param invalidHookFunction - Function to be called, please provide a valid hook function
-   * @remarks Since 1.6.0
-   */
-  afterEach(
-    invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>,
-  ): 'afterEach expects a synchronous function but was given a function returning a Promise';
-  /**
-   * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    * @remarks Since 1.6.0
    */
   afterEach(hookFunction: PropertyHookFunction): IPropertyWithHooks<Ts>;
+}
+
+/** @internal */
+function outputToPropertyAnswer(output: boolean | void) {
+  return output === undefined || output === true ? null : { error: new Error('Property failed by returning false') };
+}
+
+/** @internal */
+function errorToPropertyAnswer(err: unknown) {
+  // precondition failure considered as success for the first version
+  if (PreconditionFailure.isFailure(err)) return err;
+  // exception as PropertyFailure in case of real failure
+  return { error: err };
 }
 
 /**
@@ -74,7 +72,7 @@ export interface IPropertyWithHooks<Ts> extends IProperty<Ts> {
  *
  * @internal
  */
-export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
+export class Property<Ts> implements IPropertyWithHooks<Ts> {
   // Default hook is a no-op
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   static dummyHook: GlobalPropertyHookFunction = () => {};
@@ -82,29 +80,24 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   private afterEachHook: GlobalPropertyHookFunction;
   constructor(
     readonly arb: Arbitrary<Ts>,
-    readonly predicate: (t: Ts) => boolean | void,
+    readonly predicate: (t: Ts) => Promise<boolean | void> | boolean | void,
   ) {
-    const {
-      beforeEach = Property.dummyHook,
-      afterEach = Property.dummyHook,
-      asyncBeforeEach,
-      asyncAfterEach,
-    } = readConfigureGlobal() || {};
+    const { asyncBeforeEach, asyncAfterEach, beforeEach, afterEach } = readConfigureGlobal() || {};
 
-    if (asyncBeforeEach !== undefined) {
-      throw Error('"asyncBeforeEach" can\'t be set when running synchronous properties');
+    if (asyncBeforeEach !== undefined && beforeEach !== undefined) {
+      throw Error(
+        'Global "asyncBeforeEach" and "beforeEach" parameters can\'t be set at the same time when running async properties',
+      );
     }
 
-    if (asyncAfterEach !== undefined) {
-      throw Error('"asyncAfterEach" can\'t be set when running synchronous properties');
+    if (asyncAfterEach !== undefined && afterEach !== undefined) {
+      throw Error(
+        'Global "asyncAfterEach" and "afterEach" parameters can\'t be set at the same time when running async properties',
+      );
     }
 
-    this.beforeEachHook = beforeEach;
-    this.afterEachHook = afterEach;
-  }
-
-  isAsync(): false {
-    return false;
+    this.beforeEachHook = asyncBeforeEach || beforeEach || Property.dummyHook;
+    this.afterEachHook = asyncAfterEach || afterEach || Property.dummyHook;
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -122,39 +115,48 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
     return this.arb.shrink(value.value_, safeContext).map(noUndefinedAsContext);
   }
 
-  runBeforeEach(): void {
-    this.beforeEachHook();
+  runBeforeEach(): Promise<void> | void {
+    const out = this.beforeEachHook();
+    if (out === undefined) {
+      return;
+    }
+    return Promise.resolve(out).then(() => undefined);
   }
 
-  runAfterEach(): void {
-    this.afterEachHook();
+  runAfterEach(): Promise<void> | void {
+    const out = this.afterEachHook();
+    if (out === undefined) {
+      return;
+    }
+    return Promise.resolve(out).then(() => undefined);
   }
 
-  run(v: Ts): PreconditionFailure | PropertyFailure | null {
+  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null {
     try {
-      const output = this.predicate(v);
-      return output === undefined || output === true
-        ? null
-        : { error: new Error('Property failed by returning false') };
+      const syncOutput = this.predicate(v);
+      if (typeof syncOutput !== 'object') {
+        return outputToPropertyAnswer(syncOutput);
+      }
+      return syncOutput.then(outputToPropertyAnswer, errorToPropertyAnswer);
     } catch (err) {
-      // precondition failure considered as success for the first version
-      if (PreconditionFailure.isFailure(err)) return err;
-      // exception as PropertyFailure in case of real failure
-      return { error: err };
+      return errorToPropertyAnswer(err);
     }
   }
 
-  beforeEach(invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>): never;
-  beforeEach(validHookFunction: PropertyHookFunction): Property<Ts>;
-  beforeEach(hookFunction: PropertyHookFunction): unknown {
+  /**
+   * Define a function that should be called before all calls to the predicate
+   * @param hookFunction - Function to be called
+   */
+  beforeEach(hookFunction: PropertyHookFunction): Property<Ts> {
     const previousBeforeEachHook = this.beforeEachHook;
     this.beforeEachHook = () => hookFunction(previousBeforeEachHook);
     return this;
   }
-
-  afterEach(invalidHookFunction: (hookFunction: GlobalPropertyHookFunction) => Promise<unknown>): never;
-  afterEach(hookFunction: PropertyHookFunction): Property<Ts>;
-  afterEach(hookFunction: PropertyHookFunction): unknown {
+  /**
+   * Define a function that should be called after all calls to the predicate
+   * @param hookFunction - Function to be called
+   */
+  afterEach(hookFunction: PropertyHookFunction): Property<Ts> {
     const previousAfterEachHook = this.afterEachHook;
     this.afterEachHook = () => hookFunction(previousAfterEachHook);
     return this;

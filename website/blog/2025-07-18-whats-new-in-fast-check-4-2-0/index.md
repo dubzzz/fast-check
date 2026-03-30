@@ -25,7 +25,7 @@ import { test, expect } from 'vitest';
 
 test('our test', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.scheduler(), async (s) => {
+    fc.property(fc.scheduler(), async (s) => {
       const fetchIdFor = s.scheduleFunction(async (name) => `id:${name}`);
       const { doStuff, warmup } = buildDoStuff(fetchIdFor);
       await warmup();

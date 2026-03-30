@@ -4,8 +4,8 @@ import { seed } from '../seed.js';
 
 describe(`OneOfArbitrary (seed: ${seed})`, () => {
   describe('oneof', () => {
-    it('Should one of the possible element', () => {
-      const out = fc.check(
+    it('Should one of the possible element', async () => {
+      const out = await fc.check(
         fc.property(fc.oneof(fc.constant(42), fc.constant(5)), (v: number) => v === 42 || v === 5),
         {
           seed: seed,
@@ -13,8 +13,8 @@ describe(`OneOfArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(false);
     });
-    it('Should shrink on the underlying arbitrary', () => {
-      const out = fc.check(
+    it('Should shrink on the underlying arbitrary', async () => {
+      const out = await fc.check(
         fc.property(
           fc.oneof(
             fc.integer({ min: -10, max: -1 }),

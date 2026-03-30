@@ -4,16 +4,16 @@ import _ from 'lodash';
 import { sort } from './src/sort';
 
 describe('sort', () => {
-  it('should have the same length as source', () => {
-    fc.assert(
+  it('should have the same length as source', async () => {
+    await fc.assert(
       fc.property(fc.array(fc.integer()), (data) => {
         expect(sort(data)).toHaveLength(data.length);
       }),
     );
   });
 
-  it('should have exactly the same number of occurences as source for each item', () => {
-    fc.assert(
+  it('should have exactly the same number of occurences as source for each item', async () => {
+    await fc.assert(
       fc.property(fc.array(fc.integer()), (data) => {
         const sorted = sort(data);
         expect(_.groupBy(sorted)).toEqual(_.groupBy(data));
@@ -21,8 +21,8 @@ describe('sort', () => {
     );
   });
 
-  it('should produce an ordered array', () => {
-    fc.assert(
+  it('should produce an ordered array', async () => {
+    await fc.assert(
       fc.property(fc.array(fc.integer()), (data) => {
         const sorted = sort(data);
         for (let idx = 1; idx < sorted.length; ++idx) {
@@ -32,8 +32,8 @@ describe('sort', () => {
     );
   });
 
-  it('should produce an ordered array with respect to a custom compare function', () => {
-    fc.assert(
+  it('should produce an ordered array with respect to a custom compare function', async () => {
+    await fc.assert(
       fc.property(fc.array(fc.integer()), fc.compareBooleanFunc(), (data, compare) => {
         const sorted = sort(data, compare);
         for (let idx = 1; idx < sorted.length; ++idx) {

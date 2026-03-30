@@ -6,52 +6,25 @@ import type { Value } from '../arbitrary/definition/Value.js';
 import type { Stream } from '../../stream/Stream.js';
 
 /** @internal */
-function fromSyncCached<Ts>(
-  cachedValue: ReturnType<IRawProperty<Ts, false>['run']>,
-): ReturnType<IRawProperty<Ts, false>['run']> {
-  return cachedValue === null ? new PreconditionFailure() : cachedValue;
+function fromCached<Ts>(
+  cachedValue: ReturnType<IRawProperty<Ts>['run']>,
+): ReturnType<IRawProperty<Ts>['run']> {
+  const fromSyncCached = (v: Awaited<ReturnType<IRawProperty<Ts>['run']>>) =>
+    v === null ? new PreconditionFailure() : v;
+  if (cachedValue !== null && typeof cachedValue === 'object' && 'then' in cachedValue) {
+    return cachedValue.then(fromSyncCached);
+  }
+  return fromSyncCached(cachedValue);
 }
 
 /** @internal */
-function fromCached<Ts>(
-  cachedValue: ReturnType<IRawProperty<Ts, false>['run']>,
-  isAsync: false,
-): ReturnType<IRawProperty<Ts, false>['run']>;
-/** @internal */
-function fromCached<Ts>(
-  cachedValue: ReturnType<IRawProperty<Ts, true>['run']>,
-  isAsync: true,
-): ReturnType<IRawProperty<Ts, true>['run']>;
-function fromCached<Ts>(
-  ...data: [ReturnType<IRawProperty<Ts, true>['run']>, true] | [ReturnType<IRawProperty<Ts, false>['run']>, false]
-) {
-  // if not async
-  if (!data[1]) return fromSyncCached(data[0]);
-  // if potentially async, check if really async
-  if (data[0] !== null && typeof data[0] === 'object' && 'then' in data[0]) return data[0].then(fromSyncCached);
-  return fromSyncCached(data[0]);
-}
-
-/** @internal */
-function fromCachedUnsafe<Ts, IsAsync extends boolean>(
-  cachedValue: ReturnType<IRawProperty<Ts, IsAsync>['run']>,
-  isAsync: IsAsync,
-): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
-  return fromCached(cachedValue as any, isAsync as any) as any;
-}
-
-/** @internal */
-export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
-  private coveredCases: Map<string, ReturnType<IRawProperty<Ts, IsAsync>['run']>> = new Map();
+export class IgnoreEqualValuesProperty<Ts> implements IRawProperty<Ts> {
+  private coveredCases: Map<string, ReturnType<IRawProperty<Ts>['run']>> = new Map();
 
   constructor(
-    readonly property: IRawProperty<Ts, IsAsync>,
+    readonly property: IRawProperty<Ts>,
     readonly skipRuns: boolean,
   ) {}
-
-  isAsync(): IsAsync {
-    return this.property.isAsync();
-  }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
     return this.property.generate(mrng, runId);
@@ -61,25 +34,25 @@ export class IgnoreEqualValuesProperty<Ts, IsAsync extends boolean> implements I
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
+  run(v: Ts): ReturnType<IRawProperty<Ts>['run']> {
     const stringifiedValue = stringify(v);
     if (this.coveredCases.has(stringifiedValue)) {
-      const lastOutput = this.coveredCases.get(stringifiedValue) as ReturnType<IRawProperty<Ts, IsAsync>['run']>;
+      const lastOutput = this.coveredCases.get(stringifiedValue) as ReturnType<IRawProperty<Ts>['run']>;
       if (!this.skipRuns) {
         return lastOutput;
       }
-      return fromCachedUnsafe(lastOutput, this.property.isAsync());
+      return fromCached(lastOutput);
     }
     const out = this.property.run(v);
     this.coveredCases.set(stringifiedValue, out);
     return out;
   }
 
-  runBeforeEach(): ReturnType<IRawProperty<Ts, IsAsync>['runBeforeEach']> {
+  runBeforeEach(): ReturnType<IRawProperty<Ts>['runBeforeEach']> {
     return this.property.runBeforeEach();
   }
 
-  runAfterEach(): ReturnType<IRawProperty<Ts, IsAsync>['runAfterEach']> {
+  runAfterEach(): ReturnType<IRawProperty<Ts>['runAfterEach']> {
     return this.property.runAfterEach();
   }
 }

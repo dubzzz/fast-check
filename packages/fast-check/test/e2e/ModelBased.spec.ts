@@ -46,8 +46,8 @@ const allCommands = [
 ];
 
 describe(`Model Based (seed: ${seed})`, () => {
-  it('should not detect any issue on built-in list', () => {
-    fc.assert(
+  it('should not detect any issue on built-in list', async () => {
+    await fc.assert(
       fc.property(fc.commands(allCommands, { size: '+1' }), (cmds) => {
         class BuiltinList implements IList<number> {
           data: number[] = [];
@@ -60,8 +60,8 @@ describe(`Model Based (seed: ${seed})`, () => {
       }),
     );
   });
-  it('should detect an issue on fixed size circular list', () => {
-    const out = fc.check(
+  it('should detect an issue on fixed size circular list', async () => {
+    const out = await fc.check(
       fc.property(fc.integer({ min: 1, max: 1000 }), fc.commands(allCommands, { size: '+1' }), (size, cmds) => {
         class CircularList implements IList<number> {
           start = 0;

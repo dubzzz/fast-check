@@ -23,13 +23,8 @@ describe('Runner', () => {
     it('Should throw if property is an Arbitrary', () => {
       expect(() => check(integer() as any as IRawProperty<unknown>)).toThrowError();
     });
-    it.each`
-      isAsync
-      ${false}
-      ${true}
-    `('Should throw if both reporter and asyncReporter are defined (isAsync: $isAsync)', ({ isAsync }) => {
+    it('Should throw if both reporter and asyncReporter are defined', () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => isAsync,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
@@ -38,55 +33,32 @@ describe('Runner', () => {
       };
       expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError();
     });
-    it('Should not throw if reporter is specified on synchronous properties', () => {
+    it('Should not throw if reporter is specified', async () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
         run: () => null,
         runAfterEach: () => {},
       };
-      expect(() => check(p, { reporter: () => {} })).not.toThrowError();
+      const out = await check(p, { reporter: () => {} });
+      expect(out.failed).toBe(false);
     });
-    it('Should not throw if reporter is specified on asynchronous properties', () => {
+    it('Should not throw if asyncReporter is specified', async () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
         run: () => null,
         runAfterEach: () => {},
       };
-      expect(() => check(p, { reporter: () => {} })).not.toThrowError();
+      const out = await check(p, { asyncReporter: async () => {} });
+      expect(out.failed).toBe(false);
     });
-    it('Should throw if asyncReporter is specified on synchronous properties', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
-        generate: () => new Value([0], undefined),
-        shrink: () => Stream.nil(),
-        runBeforeEach: () => {},
-        run: () => null,
-        runAfterEach: () => {},
-      };
-      expect(() => check(p, { asyncReporter: async () => {} })).toThrowError();
-    });
-    it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => true,
-        generate: () => new Value([0], undefined),
-        shrink: () => Stream.nil(),
-        runBeforeEach: () => {},
-        run: () => null,
-        runAfterEach: () => {},
-      };
-      expect(() => check(p, { asyncReporter: async () => {} })).not.toThrowError();
-    });
-    it('Should call the property 100 times by default (on success)', () => {
+    it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => {
           expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
           ++numCallsGenerate;
@@ -101,16 +73,15 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p) as RunDetails<[number]>;
+      const out = await check(p);
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
-    it('Should call the property 100 times even when path provided (on success)', () => {
+    it('Should call the property 100 times even when path provided (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => {
           expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
           ++numCallsGenerate;
@@ -125,16 +96,15 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { path: '3002' }) as RunDetails<[number]>;
+      const out = await check(p, { path: '3002' });
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
-    it('Should call the property on all shrunk values for path (on success)', () => {
+    it('Should call the property on all shrunk values for path (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => {
           ++numCallsGenerate;
           return new Value<[number]>([0], 'shrink-me');
@@ -157,7 +127,7 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { path: '3002:0' }) as RunDetails<[number]>;
+      const out = await check(p, { path: '3002:0' });
       expect(numCallsGenerate).toEqual(1);
       expect(numCallsRun).toEqual(1234);
       expect(out.failed).toBe(false);
@@ -171,15 +141,13 @@ describe('Runner', () => {
         }, []),
       );
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           successfulRunIdsArb,
-          fc.boolean(),
           fc.option(fc.nat(99)),
-          async (successIds, isAsyncProp, failAtId) => {
+          async (successIds, failAtId) => {
             let numCallsGenerate = 0;
             let numCallsRun = 0;
             const p: IRawProperty<[number]> = {
-              isAsync: () => isAsyncProp,
               generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => Stream.nil(),
               runBeforeEach: () => {},
@@ -215,14 +183,12 @@ describe('Runner', () => {
     });
     it('Should fail on too many precondition failures', async () => {
       await fc.assert(
-        fc.asyncProperty(
+        fc.property(
           fc.nat(1000).chain((v) => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
-          fc.boolean(),
-          async (settings, isAsyncProp) => {
+          async (settings) => {
             let numCallsGenerate = 0;
             let numPreconditionFailures = 0;
             const p: IRawProperty<[number]> = {
-              isAsync: () => isAsyncProp,
               generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => Stream.nil(),
               runBeforeEach: () => {},
@@ -244,11 +210,10 @@ describe('Runner', () => {
         ),
       );
     });
-    it('Should never call shrink on success', () => {
+    it('Should never call shrink on success', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => {
           ++numCallsGenerate;
           return new Value([0], undefined);
@@ -263,18 +228,17 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p) as RunDetails<[number]>;
+      const out = await check(p);
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
-    it('Should call the property 100 times by default (except on error)', () =>
-      fc.assert(
-        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), (num, seed) => {
+    it('Should call the property 100 times by default (except on error)', async () =>
+      await fc.assert(
+        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: IRawProperty<[number]> = {
-            isAsync: () => false,
             generate: () => {
               ++numCallsGenerate;
               return new Value([0], undefined);
@@ -286,7 +250,7 @@ describe('Runner', () => {
             },
             runAfterEach: () => {},
           };
-          const out = check(p, { seed: seed }) as RunDetails<[number]>;
+          const out = await check(p, { seed: seed });
           expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
           expect(numCallsRun).toEqual(num); //  no shrink for first failing run
           expect(out.failed).toBe(true);
@@ -295,13 +259,12 @@ describe('Runner', () => {
           return true;
         }),
       ));
-    it('Should alter the number of runs when asked to', () =>
-      fc.assert(
-        fc.property(fc.nat(MAX_NUM_RUNS), (num) => {
+    it('Should alter the number of runs when asked to', async () =>
+      await fc.assert(
+        fc.property(fc.nat(MAX_NUM_RUNS), async (num) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: IRawProperty<[number]> = {
-            isAsync: () => false,
             generate: () => {
               ++numCallsGenerate;
               return new Value([0], undefined);
@@ -314,19 +277,18 @@ describe('Runner', () => {
             },
             runAfterEach: () => {},
           };
-          const out = check(p, { numRuns: num }) as RunDetails<[number]>;
+          const out = await check(p, { numRuns: num });
           expect(numCallsGenerate).toEqual(num);
           expect(numCallsRun).toEqual(num);
           expect(out.failed).toBe(false);
           return true;
         }),
       ));
-    it('Should generate the same values given the same seeds', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should generate the same values given the same seeds', async () =>
+      await fc.assert(
+        fc.property(fc.integer(), async (seed) => {
           const buildPropertyFor = function (runOn: number[]) {
             const p: IRawProperty<[number]> = {
-              isAsync: () => false,
               generate: (rng: Random) => {
                 return new Value([rng.nextInt()], undefined);
               },
@@ -342,15 +304,14 @@ describe('Runner', () => {
           };
           const data1: number[] = [];
           const data2: number[] = [];
-          check(buildPropertyFor(data1), { seed: seed });
-          check(buildPropertyFor(data2), { seed: seed });
+          await check(buildPropertyFor(data1), { seed: seed });
+          await check(buildPropertyFor(data2), { seed: seed });
           expect(data2).toEqual(data1);
           return true;
         }),
       ));
-    it('Should never call shrink if endOnFailure', () => {
+    it('Should never call shrink if endOnFailure', async () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => {
           return new Value([0], undefined);
         },
@@ -363,13 +324,12 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { endOnFailure: true }) as RunDetails<[number]>;
+      const out = await check(p, { endOnFailure: true });
       expect(out.failed).toBe(true);
       expect(out.numShrinks).toEqual(0);
     });
-    it('Should compute values for path before removing shrink if endOnFailure', () => {
+    it('Should compute values for path before removing shrink if endOnFailure', async () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => {
           return new Value([0], undefined);
         },
@@ -385,25 +345,23 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { path: '0:0', endOnFailure: true }) as RunDetails<[number]>;
+      const out = await check(p, { path: '0:0', endOnFailure: true });
       expect(out.failed).toBe(true);
       expect(out.numShrinks).toEqual(0);
     });
-    it('Should not provide list of failures by default (no verbose)', () => {
+    it('Should not provide list of failures by default (no verbose)', async () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
         runAfterEach: () => {},
       };
-      const out = check(p) as RunDetails<[number]>;
+      const out = await check(p);
       expect(out.failures).toHaveLength(0);
     });
-    it('Should provide the list of failures in verbose mode', () => {
+    it('Should provide the list of failures in verbose mode', async () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => new Value([42], undefined),
         shrink: (value) => {
           return value.value[0] === 42
@@ -414,13 +372,13 @@ describe('Runner', () => {
         run: () => ({ error: new Error('failure') }),
         runAfterEach: () => {},
       };
-      const out = check(p, { verbose: true }) as RunDetails<[number]>;
+      const out = await check(p, { verbose: true });
       expect(out.failures).not.toHaveLength(0);
       expect(out.failures).toEqual([[42], [48]]);
     });
-    it('Should build the right counterexamplePath', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }), (seed, failurePoints) => {
+    it('Should build the right counterexamplePath', async () =>
+      await fc.assert(
+        fc.property(fc.integer(), fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }), async (seed, failurePoints) => {
           // Each entry (at index idx) in failurePoints represents the number of runs
           // required before failing for the level <idx>
           // Basically it must fail before the end of the execution (100 runs by default)
@@ -429,7 +387,6 @@ describe('Runner', () => {
           let idx = 0;
           let remainingBeforeFailure = failurePoints[idx];
           const p: IRawProperty<[number]> = {
-            isAsync: () => false,
             generate: (_mrng: Random) => new Value([0], failurePoints.length - 1),
             shrink: (value) => {
               const depth = value.context as number;
@@ -450,7 +407,7 @@ describe('Runner', () => {
             runAfterEach: () => {},
           };
           const expectedFailurePath = failurePoints.join(':');
-          const out = check(p, { seed: seed }) as RunDetails<[number]>;
+          const out = await check(p, { seed: seed });
           expect(out.failed).toBe(true);
           expect(out.seed).toEqual(seed);
           expect(out.numRuns).toEqual(failurePoints[0] + 1);
@@ -459,8 +416,8 @@ describe('Runner', () => {
         }),
       ));
     it('Should wait on async properties to complete', async () =>
-      fc.assert(
-        fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
+      await fc.assert(
+        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
           let runnerHasCompleted = false;
@@ -468,7 +425,6 @@ describe('Runner', () => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
           const p: IRawProperty<[number]> = {
-            isAsync: () => true,
             generate: () => {
               ++numCallsGenerate;
               return new Value([1], undefined);
@@ -485,7 +441,7 @@ describe('Runner', () => {
             },
             runAfterEach: async () => {},
           };
-          const checker = check(p, { seed: seed }) as Promise<RunDetails<[number]>>;
+          const checker = check(p, { seed: seed });
           checker.then(() => (runnerHasCompleted = true));
 
           await delay();
@@ -511,53 +467,49 @@ describe('Runner', () => {
       ));
     it('Should not timeout if no timeout defined', async () => {
       const p: IRawProperty<[number]> = {
-        isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: async () => {},
         run: async (_value: [number]) => null,
         runAfterEach: async () => {},
       };
-      const out = await (check(p) as Promise<RunDetails<[number]>>);
+      const out = await check(p);
       expect(out.failed).toBe(false);
     });
     it('Should not timeout if timeout not reached', async () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
       const p: IRawProperty<[number]> = {
-        isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: async () => {},
         run: async (_value: [number]) => await wait(0),
         runAfterEach: async () => {},
       };
-      const out = await (check(p, { timeout: 100 }) as Promise<RunDetails<[number]>>);
+      const out = await check(p, { timeout: 100 });
       expect(out.failed).toBe(false);
     });
     it('Should timeout if it reached the timeout', async () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
       const p: IRawProperty<[number]> = {
-        isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: async () => {},
         run: async (_value: [number]) => await wait(100),
         runAfterEach: async () => {},
       };
-      const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
+      const out = await check(p, { timeout: 0 });
       expect(out.failed).toBe(true);
     });
     it('Should timeout if task never ends', async () => {
       const neverEnds = () => new Promise<null>(() => {});
       const p: IRawProperty<[number]> = {
-        isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: async () => {},
         run: async (_value: [number]) => await neverEnds(),
         runAfterEach: async () => {},
       };
-      const out = await (check(p, { timeout: 0 }) as Promise<RunDetails<[number]>>);
+      const out = await check(p, { timeout: 0 });
       expect(out.failed).toBe(true);
     });
   });
@@ -565,7 +517,6 @@ describe('Runner', () => {
     const v1 = { toString: () => 'toString(value#1)' };
     const v2 = { a: 'Hello', b: 21 };
     const failingProperty: IRawProperty<[any, any]> = {
-      isAsync: () => false,
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
@@ -573,7 +524,6 @@ describe('Runner', () => {
       runAfterEach: () => {},
     };
     const failingComplexProperty: IRawProperty<[any, any, any]> = {
-      isAsync: () => false,
       generate: () => new Value([[v1, v2], v2, v1], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
@@ -581,7 +531,6 @@ describe('Runner', () => {
       runAfterEach: () => {},
     };
     const successProperty: IRawProperty<[any, any]> = {
-      isAsync: () => false,
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
@@ -598,44 +547,44 @@ describe('Runner', () => {
     it('Should throw if property is an Arbitrary', () => {
       expect(() => rAssert(integer() as any as IRawProperty<unknown>)).toThrowError();
     });
-    it('Should never throw if no failure occured', () => {
-      expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();
+    it('Should never throw if no failure occured', async () => {
+      await expect(rAssert(successProperty, { seed: 42 })).resolves.not.toThrow();
     });
-    it('Should throw on failure', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError();
+    it('Should throw on failure', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError();
     });
-    it('Should put the seed in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`seed: 42, path:`);
+    it('Should put the seed in error message', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(`seed: 42, path:`);
     });
-    it('Should put the number of tests in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`failed after 1 test`);
+    it('Should put the number of tests in error message', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(`failed after 1 test`);
     });
-    it('Should pretty print the failing example in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`[${v1.toString()},${JSON.stringify(v2)}]`);
+    it('Should pretty print the failing example in error message', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(
+        `[${v1.toString()},${JSON.stringify(v2)}]`,
+      );
     });
-    it('Should pretty print the failing complex example in error message', () => {
-      expect(() => rAssert(failingComplexProperty, { seed: 42 })).toThrowError(
+    it('Should pretty print the failing complex example in error message', async () => {
+      await expect(rAssert(failingComplexProperty, { seed: 42 })).rejects.toThrowError(
         `[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`,
       );
     });
-    it('Should put the original error as cause', () => {
-      expect(() => {
-        try {
-          rAssert(failingProperty, { seed: 42 });
-        } catch (err) {
-          throw (err as any).cause;
-        }
-      }).toThrowError('error in failingProperty');
+    it('Should put the original error as cause', async () => {
+      try {
+        await rAssert(failingProperty, { seed: 42 });
+        expect.unreachable('Should have thrown');
+      } catch (err) {
+        expect((err as any).cause.message).toBe('error in failingProperty');
+      }
     });
-    it('Should put the original error in error message when includeErrorInReport', () => {
-      expect(() => rAssert(failingProperty, { seed: 42, includeErrorInReport: true })).toThrowError(
+    it('Should put the original error in error message when includeErrorInReport', async () => {
+      await expect(rAssert(failingProperty, { seed: 42, includeErrorInReport: true })).rejects.toThrowError(
         `Got error: error in failingProperty`,
       );
     });
     describe('Impact of VerbosityLevel in case of failure', () => {
       const baseErrorMessage = 'Property failed';
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => {
           return new Value([42], undefined);
         },
@@ -648,74 +597,73 @@ describe('Runner', () => {
         run: () => ({ error: new Error('failure') }),
         runAfterEach: () => {},
       };
-      it('Should throw with base message by default (no verbose)', () => {
-        expect(() => rAssert(p)).toThrowError(baseErrorMessage);
+      it('Should throw with base message by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
+      it('Should throw without list of failures by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Encountered failures were:');
       });
-      it('Should throw without execution tree by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Execution summary:');
+      it('Should throw without execution tree by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Execution summary:');
       });
-      it('Should throw with base message in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError(baseErrorMessage);
+      it('Should throw with base message in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw with list of failures in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError('Encountered failures were:');
+      it('Should throw with list of failures in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError('Encountered failures were:');
       });
-      it('Should throw without execution tree in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Execution summary:');
+      it('Should throw without execution tree in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError('Execution summary:');
       });
-      it('Should throw with base message in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError(baseErrorMessage);
+      it('Should throw with base message in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
+      it('Should throw without list of failures in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.not.toThrowError(
           'Encountered failures were:',
         );
       });
-      it('Should throw with execution tree in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError('Execution summary:');
+      it('Should throw with execution tree in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError('Execution summary:');
       });
     });
     describe('Impact of VerbosityLevel in case of too many skipped runs', () => {
       const baseErrorMessage = 'Failed to run property, too many pre-condition failures encountered';
       const p: IRawProperty<[number]> = {
-        isAsync: () => false,
         generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
         run: () => new PreconditionFailure(),
         runAfterEach: () => {},
       };
-      it('Should throw with base message by default (no verbose)', () => {
-        expect(() => rAssert(p)).toThrowError(baseErrorMessage);
+      it('Should throw with base message by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
+      it('Should throw without list of failures by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Encountered failures were:');
       });
-      it('Should throw without execution tree by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Execution summary:');
+      it('Should throw without execution tree by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Execution summary:');
       });
-      it('Should throw with base message in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError(baseErrorMessage);
+      it('Should throw with base message in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Encountered failures were:');
+      it('Should throw without list of failures in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError('Encountered failures were:');
       });
-      it('Should throw without execution tree in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Execution summary:');
+      it('Should throw without execution tree in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError('Execution summary:');
       });
-      it('Should throw with base message in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError(baseErrorMessage);
+      it('Should throw with base message in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
+      it('Should throw without list of failures in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.not.toThrowError(
           'Encountered failures were:',
         );
       });
-      it('Should throw with execution tree in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError('Execution summary:');
+      it('Should throw with execution tree in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError('Execution summary:');
       });
     });
   });

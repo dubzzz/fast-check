@@ -1,4 +1,4 @@
-import type { IAsyncPropertyWithHooks } from 'fast-check';
+import type { IPropertyWithHooks } from 'fast-check';
 import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
@@ -9,10 +9,10 @@ import { WorkerPropertyFromWorker } from './WorkerPropertyFromWorker.js';
  * Property tailored for usage with workers
  * it produces the payload to be sent to the workers
  */
-type WorkerProperty<Ts> = IAsyncPropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
+type WorkerProperty<Ts> = IPropertyWithHooks<Ts> & { getPayload: (_inputs: Ts) => Payload<Ts> };
 
 /**
- * Build an async property tailored for workers
+ * Build a property tailored for workers
  * @param arbitraries - Arbitraries supposed to generate our values
  * @param predicate - Predicate for the property
  * @param generateValuesInMainThread - When "true" the value gets generated inside the property itself, otherwise responsability goes to the worker
@@ -23,7 +23,7 @@ export function buildWorkerProperty<Ts extends [unknown, ...unknown[]]>(
   generateValuesInMainThread: boolean,
 ): WorkerProperty<Ts> {
   if (!generateValuesInMainThread) {
-    return Object.assign(fc.asyncProperty<Ts>(...arbitraries, predicate), {
+    return Object.assign(fc.property<Ts>(...arbitraries, predicate), {
       getPayload: (inputs: Ts): Payload<Ts> => ({ source: 'main', value: inputs }),
     });
   }

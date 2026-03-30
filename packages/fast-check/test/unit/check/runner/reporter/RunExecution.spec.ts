@@ -7,8 +7,8 @@ import { ExecutionStatus } from '../../../../../src/fast-check.js';
 import { QualifiedParameters } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 
 describe('RunExecution', () => {
-  it('Should expose data coming from the last failure', () =>
-    fc.assert(
+  it('Should expose data coming from the last failure', async () =>
+      await fc.assert(
       fc.property(
         fc.integer(),
         fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
@@ -53,8 +53,8 @@ describe('RunExecution', () => {
         },
       ),
     ));
-  it('Should generate correct counterexamplePath with no initial offset', () =>
-    fc.assert(
+  it('Should generate correct counterexamplePath with no initial offset', async () =>
+      await fc.assert(
       fc.property(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
         // Simulate the run
         const run = new RunExecution<number>(VerbosityLevel.None, false);
@@ -70,8 +70,8 @@ describe('RunExecution', () => {
         );
       }),
     ));
-  it('Should generate correct counterexamplePath given initial offset', () =>
-    fc.assert(
+  it('Should generate correct counterexamplePath given initial offset', async () =>
+      await fc.assert(
       fc.property(
         fc.integer(),
         fc.array(fc.nat(1000), { minLength: 1 }),
@@ -95,8 +95,8 @@ describe('RunExecution', () => {
         },
       ),
     ));
-  it('Should produce an execution summary corresponding to the execution', () =>
-    fc.assert(
+  it('Should produce an execution summary corresponding to the execution', async () =>
+      await fc.assert(
       fc.property(
         fc.array(
           fc.record({

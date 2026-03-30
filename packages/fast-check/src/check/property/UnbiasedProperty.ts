@@ -4,12 +4,8 @@ import type { Value } from '../arbitrary/definition/Value.js';
 import type { IRawProperty } from './IRawProperty.js';
 
 /** @internal */
-export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
-  constructor(readonly property: IRawProperty<Ts, IsAsync>) {}
-
-  isAsync(): IsAsync {
-    return this.property.isAsync();
-  }
+export class UnbiasedProperty<Ts> implements IRawProperty<Ts> {
+  constructor(readonly property: IRawProperty<Ts>) {}
 
   generate(mrng: Random, _runId?: number): Value<Ts> {
     return this.property.generate(mrng, undefined);
@@ -19,15 +15,15 @@ export class UnbiasedProperty<Ts, IsAsync extends boolean> implements IRawProper
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
+  run(v: Ts): ReturnType<IRawProperty<Ts>['run']> {
     return this.property.run(v);
   }
 
-  runBeforeEach(): ReturnType<IRawProperty<Ts, IsAsync>['runBeforeEach']> {
+  runBeforeEach(): ReturnType<IRawProperty<Ts>['runBeforeEach']> {
     return this.property.runBeforeEach();
   }
 
-  runAfterEach(): ReturnType<IRawProperty<Ts, IsAsync>['runAfterEach']> {
+  runAfterEach(): ReturnType<IRawProperty<Ts>['runAfterEach']> {
     return this.property.runAfterEach();
   }
 }

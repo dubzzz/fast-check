@@ -26,7 +26,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       }
     }
     const out = await fc.check(
-      fc.asyncProperty(fc.scheduler(), async (s) => {
+      fc.property(fc.scheduler(), async (s) => {
         const fetchHeroName = s.scheduleFunction(function fetchHeroName() {
           return Promise.resolve('James Bond');
         });
@@ -112,7 +112,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       return cache; // we just return the cache instead of the garph for simplicity
     };
     const out = await fc.check(
-      fc.asyncProperty(fc.constantFrom(...Object.keys(allPackages)), fc.scheduler(), async (initialPackageName, s) => {
+      fc.property(fc.constantFrom(...Object.keys(allPackages)), fc.scheduler(), async (initialPackageName, s) => {
         let numFetches = 0;
         const originalFetch = (packageName: string) => {
           ++numFetches;
@@ -155,7 +155,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       expect(value).toBe(3);
     };
 
-    const out = await fc.check(fc.asyncProperty(fc.scheduler(), propertyValidator));
+    const out = await fc.check(fc.property(fc.scheduler(), propertyValidator));
     expect(out.failed).toBe(true);
 
     const schedulerTemplatedString = String(out.counterexample![0]);
@@ -169,7 +169,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
       return ${schedulerTemplatedString};
     })()`);
 
-    const outRetry = await fc.check(fc.asyncProperty(fc.scheduler(), propertyValidator), {
+    const outRetry = await fc.check(fc.property(fc.scheduler(), propertyValidator), {
       examples: [[(fc.schedulerFor() as any)(...argsForSchedulerFor)]],
     });
     expect(outRetry.failed).toBe(true);

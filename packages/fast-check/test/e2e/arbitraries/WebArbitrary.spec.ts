@@ -4,8 +4,8 @@ import { seed } from '../seed.js';
 import { URL } from 'url';
 
 describe(`WebArbitrary (seed: ${seed})`, () => {
-  it('Should produce valid domains', () => {
-    fc.assert(
+  it('Should produce valid domains', async () => {
+    await fc.assert(
       fc.property(fc.domain(), (domain) => {
         const p = `http://user:pass@${domain}/path/?query#fragment`;
         const u = new URL(p);
@@ -14,8 +14,8 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
       { seed: seed },
     );
   });
-  it('Should produce valid authorities', () => {
-    fc.assert(
+  it('Should produce valid authorities', async () => {
+    await fc.assert(
       fc.property(
         fc.webAuthority({
           withIPv4: false,
@@ -33,8 +33,8 @@ describe(`WebArbitrary (seed: ${seed})`, () => {
       { seed: seed },
     );
   });
-  it('Should produce valid URL parts', () => {
-    fc.assert(
+  it('Should produce valid URL parts', async () => {
+    await fc.assert(
       fc.property(
         fc.webAuthority({
           withIPv4: true,

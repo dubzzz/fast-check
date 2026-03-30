@@ -8,8 +8,8 @@ import { knight } from './src/knight';
 const solver = knight;
 
 describe('knight', () => {
-  it('should always reach its target', () => {
-    fc.assert(
+  it('should always reach its target', async () => {
+    await fc.assert(
       fc.property(SpaceArbitrary, (inputs) => {
         const [space, max_guesses] = inputs;
         knight(space, max_guesses);

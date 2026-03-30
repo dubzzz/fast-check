@@ -4,8 +4,8 @@ import { seed } from '../seed.js';
 
 describe(`FunctionArbitrary (seed: ${seed})`, () => {
   describe('func', () => {
-    it('Should be able to generate multiple values', () => {
-      const out = fc.check(
+    it('Should be able to generate multiple values', async () => {
+      const out = await fc.check(
         fc.property(fc.func(fc.nat()), fc.integer(), fc.integer(), (f, a, b) => f(a) === f(b)),
         {
           seed: seed,
@@ -13,9 +13,9 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
     });
-    it('Should print the values and corresponding outputs', () => {
+    it('Should print the values and corresponding outputs', async () => {
       expect(() =>
-        fc.assert(
+        await fc.assert(
           fc.property(fc.func(fc.nat()), (f) => {
             f(0, 8);
             f(42, 1);
@@ -27,8 +27,8 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
     });
   });
   describe('compareFunc', () => {
-    it('Should be able to find equivalence between distinct values', () => {
-      const out = fc.check(
+    it('Should be able to find equivalence between distinct values', async () => {
+      const out = await fc.check(
         fc.property(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
           fc.pre(a !== b);
           return f(a, b) !== 0;

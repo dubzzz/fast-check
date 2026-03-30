@@ -1,7 +1,7 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { assert as fcAssert, property as fcProperty } from 'fast-check';
-import type { IAsyncProperty, IProperty, Parameters } from 'fast-check';
+import type { IProperty, Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
@@ -11,10 +11,10 @@ import { generateValueFromState } from './internals/ValueFromState.js';
 
 let lastPredicateId = 0;
 const allKnownTerminateAllWorkersPerProperty = new Map<
-  IAsyncProperty<unknown> | IProperty<unknown>,
+  IProperty<unknown>,
   () => Promise<void>
 >();
-async function clearAllWorkersFor(property: IAsyncProperty<unknown> | IProperty<unknown>): Promise<void> {
+async function clearAllWorkersFor(property: IProperty<unknown>): Promise<void> {
   const terminateAllWorkers = allKnownTerminateAllWorkersPerProperty.get(property);
   if (terminateAllWorkers === undefined) {
     return;
@@ -32,11 +32,11 @@ async function clearAllWorkersFor(property: IAsyncProperty<unknown> | IProperty<
  *
  * It can be called directly from describe/it blocks of Mocha. No meaningful results are produced in case of success.
  *
- * @param property — Synchronous or asynchronous property to be checked
+ * @param property — Property to be checked
  * @param params — Optional parameters to customize the execution
  * @public
  */
-export async function assert<Ts>(property: IAsyncProperty<Ts> | IProperty<Ts>, params?: Parameters<Ts>): Promise<void> {
+export async function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): Promise<void> {
   if (isMainThread) {
     // Main thread code
     try {
@@ -119,8 +119,8 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
 }
 
 /**
- * Create a builder for async properties backed by workers.
- * The output of this function can be used as `fc.property` or `fc.asyncProperty` except it must be executed by the `assert` of this package.
+ * Create a builder for properties backed by workers.
+ * The output of this function can be used as `fc.property` except it must be executed by the `assert` of this package.
  *
  * The properties build from this builder will ALWAYS run predicates in another worker and not within the main thread which will only deal
  * with the generation of the random values and orchestration.

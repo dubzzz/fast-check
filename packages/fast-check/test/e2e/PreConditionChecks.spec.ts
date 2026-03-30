@@ -3,16 +3,16 @@ import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`PreConditionChecks (seed: ${seed})`, () => {
-  it('should skip property execution whenever pre fails', () => {
-    fc.assert(
+  it('should skip property execution whenever pre fails', async () => {
+    await fc.assert(
       fc.property(fc.integer(), fc.integer(), (x, y) => {
         fc.pre(x < y);
         return x < y;
       }),
     );
   });
-  it('should consider run as failure on too many pre failures', () => {
-    const out = fc.check(
+  it('should consider run as failure on too many pre failures', async () => {
+    const out = await fc.check(
       fc.property(fc.integer(), fc.integer(), (_x, _y) => {
         fc.pre(false);
         return true;
@@ -20,8 +20,8 @@ describe(`PreConditionChecks (seed: ${seed})`, () => {
     );
     expect(out.failed).toBe(true);
   });
-  it('should not failed when no skips on no skips allowed', () => {
-    const out = fc.check(
+  it('should not failed when no skips on no skips allowed', async () => {
+    const out = await fc.check(
       fc.property(fc.integer(), fc.integer(), (_x, _y) => true),
       { maxSkipsPerRun: 0 },
     );

@@ -11,7 +11,7 @@ type Leaf = number;
 
 describe(`MemoArbitrary (seed: ${seed})`, () => {
   describe('memo', () => {
-    it('Should be able to build deep tree instances (manual depth)', () => {
+    it('Should be able to build deep tree instances (manual depth)', async () => {
       const leaf = fc.nat;
       const tree: fc.Memo<Tree> = fc.memo((n) => fc.oneof(node(n), leaf()));
       const node: fc.Memo<Tree> = fc.memo((n) => {
@@ -20,7 +20,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
       });
 
       const maxDepth = 3;
-      const out = fc.check(
+      const out = await fc.check(
         fc.property(tree(maxDepth), (t) => {
           const depth = (n: Tree): number => {
             if (typeof n === 'number') return 0;
@@ -32,7 +32,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
     });
-    it('Should be able to build tree instances with limited depth (manual depth)', () => {
+    it('Should be able to build tree instances with limited depth (manual depth)', async () => {
       const leaf = fc.nat;
       const tree: fc.Memo<Tree> = fc.memo((n) => fc.oneof(node(n), leaf()));
       const node: fc.Memo<Tree> = fc.memo((n) => {
@@ -41,7 +41,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
       });
 
       const maxDepth = 3;
-      const out = fc.check(
+      const out = await fc.check(
         fc.property(tree(maxDepth), (t) => {
           const depth = (n: Tree): number => {
             if (typeof n === 'number') return 0;
@@ -53,7 +53,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(false);
     });
-    it('Should be able to shrink to smaller cases recursively', () => {
+    it('Should be able to shrink to smaller cases recursively', async () => {
       const leaf = fc.nat;
       const tree: fc.Memo<Tree> = fc.memo((n) => fc.nat(1).chain((id) => (id === 0 ? leaf() : node(n))));
       const node: fc.Memo<Tree> = fc.memo((n) => {
@@ -61,7 +61,7 @@ describe(`MemoArbitrary (seed: ${seed})`, () => {
         return fc.record({ left: tree(), right: tree() }); // tree() is equivalent to tree(n-1)
       });
 
-      const out = fc.check(
+      const out = await fc.check(
         fc.property(tree(), (t) => typeof t !== 'object'),
         { seed },
       );

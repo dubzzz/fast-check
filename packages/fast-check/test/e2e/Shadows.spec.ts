@@ -157,10 +157,10 @@ const SpaceArbitrary = fc
 // Test
 
 describe(`Shadows (seed: ${seed})`, () => {
-  it('Should detect an implementation issue', () => {
+  it('Should detect an implementation issue', async () => {
     let failed = false;
     try {
-      fc.assert(
+      await fc.assert(
         fc.property(SpaceArbitrary, ([space, maxGuesses]) => {
           locateInSpaceBug(space, maxGuesses);
           return space.solved();
@@ -178,8 +178,8 @@ describe(`Shadows (seed: ${seed})`, () => {
     }
     expect(failed).toBe(true);
   });
-  it('Should not detect any issue', () => {
-    fc.assert(
+  it('Should not detect any issue', async () => {
+    await fc.assert(
       fc.property(SpaceArbitrary, ([space, maxGuesses]) => {
         locateInSpace(space, maxGuesses);
         return space.solved();

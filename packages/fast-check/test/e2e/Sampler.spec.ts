@@ -42,7 +42,7 @@ describe(`Sampler (seed: ${seed})`, () => {
 
     // Act
     const values = fc.sample(
-      fc.asyncProperty(fc.integer(), async (_ignored) => true),
+      fc.property(fc.integer(), async (_ignored) => true),
       { numRuns },
     );
 

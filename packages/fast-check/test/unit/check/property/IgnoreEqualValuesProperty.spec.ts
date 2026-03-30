@@ -32,22 +32,19 @@ describe('IgnoreEqualValuesProperty', () => {
   );
 
   it.each`
-    originalValue                           | originalValuePretty            | isAsync
-    ${null /* success */}                   | ${'null'}                      | ${false}
-    ${'error' /* failure */}                | ${'"error"'}                   | ${false}
-    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${false}
-    ${null /* success */}                   | ${'null'}                      | ${true}
-    ${'error' /* failure */}                | ${'"error"'}                   | ${true}
-    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${true}
+    originalValue                           | originalValuePretty
+    ${null /* success */}                   | ${'null'}
+    ${'error' /* failure */}                | ${'"error"'}
+    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'}
   `(
-    'should always return the cached value for skipRuns=false, originalValue=$originalValuePretty, isAsync=$isAsync',
-    ({ originalValue, isAsync }) => {
+    'should always return the cached value for skipRuns=false, originalValue=$originalValuePretty',
+    ({ originalValue }) => {
       // Arrange
       // success -> success
       // failure -> failure
       // skip    -> skip
-      const { instance: decoratedProperty, run } = fakeProperty(isAsync);
-      run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
+      const { instance: decoratedProperty, run } = fakeProperty();
+      run.mockImplementation(() => originalValue);
 
       // Act
       const property = new IgnoreEqualValuesProperty(decoratedProperty, false);
@@ -64,22 +61,19 @@ describe('IgnoreEqualValuesProperty', () => {
   );
 
   it.each`
-    originalValue                           | originalValuePretty            | isAsync
-    ${null /* success */}                   | ${'null'}                      | ${false}
-    ${'error' /* failure */}                | ${'"error"'}                   | ${false}
-    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${false}
-    ${null /* success */}                   | ${'null'}                      | ${true}
-    ${'error' /* failure */}                | ${'"error"'}                   | ${true}
-    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'} | ${true}
+    originalValue                           | originalValuePretty
+    ${null /* success */}                   | ${'null'}
+    ${'error' /* failure */}                | ${'"error"'}
+    ${new PreconditionFailure() /* skip */} | ${'new PreconditionFailure()'}
   `(
-    'should return the cached value but skip success for skipRuns=true, originalValue=$originalValuePretty, isAsync=$isAsync',
-    async ({ originalValue, isAsync }) => {
+    'should return the cached value but skip success for skipRuns=true, originalValue=$originalValuePretty',
+    async ({ originalValue }) => {
       // Arrange
       // success -> skip
       // failure -> failure
       // skip    -> skip
-      const { instance: decoratedProperty, run } = fakeProperty(isAsync);
-      run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
+      const { instance: decoratedProperty, run } = fakeProperty();
+      run.mockImplementation(() => originalValue);
 
       // Act
       const property = new IgnoreEqualValuesProperty(decoratedProperty, true);

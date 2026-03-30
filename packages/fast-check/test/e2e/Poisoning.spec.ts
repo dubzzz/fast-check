@@ -106,7 +106,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     { name: 'memo', arbitraryBuilder: () => memoTree() },
     { name: 'entityGraph', arbitraryBuilder: () => entityGraphTree() },
     { name: 'gen', arbitraryBuilder: () => fc.gen() },
-  ])('should not be impacted by altered globals when using $name', ({ arbitraryBuilder }) => {
+  ])('should not be impacted by altered globals when using $name', async ({ arbitraryBuilder }) => {
     // Arrange
     let runId = 0;
     let failedOnce = false;
@@ -126,7 +126,7 @@ describe(`Poisoning (seed: ${seed})`, () => {
     // Act
     let interceptedException: unknown = undefined;
     try {
-      fc.assert(
+      await fc.assert(
         fc.property(arbitraryBuilder(), (_v) => testResult()),
         { seed },
       );

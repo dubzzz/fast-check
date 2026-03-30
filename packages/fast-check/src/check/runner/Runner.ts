@@ -1,6 +1,5 @@
 import { Stream, stream } from '../../stream/Stream.js';
-import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { PropertyFailure, IRawProperty } from '../property/IRawProperty.js';
+import type { IRawProperty } from '../property/IRawProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { QualifiedParameters } from './configuration/QualifiedParameters.js';
@@ -12,28 +11,8 @@ import { RunnerIterator } from './RunnerIterator.js';
 import { SourceValuesIterator } from './SourceValuesIterator.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
-import { asyncReportRunDetails, reportRunDetails } from './utils/RunDetailsFormatter.js';
-import type { IAsyncProperty } from '../property/AsyncProperty.js';
-import type { IProperty } from '../property/Property.js';
+import { asyncReportRunDetails } from './utils/RunDetailsFormatter.js';
 import type { Value } from '../arbitrary/definition/Value.js';
-
-/** @internal */
-function runIt<Ts>(
-  property: IRawProperty<Ts>,
-  shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
-  sourceValues: SourceValuesIterator<Value<Ts>>,
-  verbose: VerbosityLevel,
-  interruptedAsFailure: boolean,
-): RunExecution<Ts> {
-  const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
-  for (const v of runner) {
-    (property.runBeforeEach as () => void)();
-    const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
-    (property.runAfterEach as () => void)();
-    runner.handleResult(out);
-  }
-  return runner.runExecution;
-}
 
 /** @internal */
 async function asyncRunIt<Ts>(
@@ -68,32 +47,6 @@ async function asyncRunIt<Ts>(
  *
  * WARNING: Has to be awaited
  *
- * @param property - Asynchronous property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @returns Test status and other useful details
- *
- * @remarks Since 0.0.7
- * @public
- */
-function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
-/**
- * Run the property, do not throw contrary to {@link assert}
- *
- * @param property - Synchronous property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @returns Test status and other useful details
- *
- * @remarks Since 0.0.1
- * @public
- */
-function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
-/**
- * Run the property, do not throw contrary to {@link assert}
- *
- * WARNING: Has to be awaited if the property is asynchronous
- *
  * @param property - Property to be checked
  * @param params - Optional parameters to customize the execution
  *
@@ -102,8 +55,7 @@ function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails
  * @remarks Since 0.0.7
  * @public
  */
-function check<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> | RunDetails<Ts>;
-function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
+async function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
   if (
     rawProperty === null ||
     rawProperty === undefined ||
@@ -119,8 +71,6 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
   });
   if (qParams.reporter !== undefined && qParams.asyncReporter !== undefined)
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
-  if (qParams.asyncReporter !== undefined && !rawProperty.isAsync())
-    throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
   const property = decorateProperty(rawProperty, qParams);
 
   const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
@@ -132,16 +82,9 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
       : pathWalk(qParams.path, stream(lazyToss(property, qParams.seed, qParams.randomType, qParams.examples)), shrink);
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
-  return property.isAsync()
-    ? asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
-        e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
-      )
-    : runIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).toRunDetails(
-        qParams.seed,
-        qParams.path,
-        maxSkips,
-        qParams,
-      );
+  return asyncRunIt(property, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then((e) =>
+    e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
+  );
 }
 
 /**
@@ -152,45 +95,15 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
  *
  * WARNING: Has to be awaited
  *
- * @param property - Asynchronous property to be checked
+ * @param property - Property to be checked
  * @param params - Optional parameters to customize the execution
  *
  * @remarks Since 0.0.7
  * @public
  */
-function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
-/**
- * Run the property, throw in case of failure
- *
- * It can be called directly from describe/it blocks of Mocha.
- * No meaningful results are produced in case of success.
- *
- * @param property - Synchronous property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @remarks Since 0.0.1
- * @public
- */
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
-/**
- * Run the property, throw in case of failure
- *
- * It can be called directly from describe/it blocks of Mocha.
- * No meaningful results are produced in case of success.
- *
- * WARNING: Returns a promise to be awaited if the property is asynchronous
- *
- * @param property - Synchronous or asynchronous property to be checked
- * @param params - Optional parameters to customize the execution
- *
- * @remarks Since 0.0.7
- * @public
- */
-function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> | void;
-function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): unknown {
-  const out = check(property, params);
-  if (property.isAsync()) return (out as Promise<RunDetails<Ts>>).then(asyncReportRunDetails);
-  else reportRunDetails(out as RunDetails<Ts>) as void;
+async function assert<Ts>(property: IRawProperty<Ts>, params?: Parameters<Ts>): Promise<void> {
+  const out = await check(property, params);
+  await asyncReportRunDetails(out);
 }
 
 export { check, assert };

@@ -24,7 +24,7 @@ fc.configureGlobal({ ...fc.readConfigureGlobal(), beforeEach: beforeEachHook });
 describe('app', () => {
   it('should be able to call multiple /drop-deactivated at the same time', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(
           fc.record({
             id: fc.uuid({ version: 4 }),
@@ -81,7 +81,7 @@ describe('app', () => {
 
   it('should be able to call multiple /drop-deactivated at the same time (no supertest)', async () => {
     await fc.assert(
-      fc.asyncProperty(
+      fc.property(
         fc.uniqueArray(
           fc.record({
             id: fc.uuid({ version: 4 }),

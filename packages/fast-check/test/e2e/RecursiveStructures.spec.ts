@@ -7,7 +7,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
   // >  The arbitrary used as base-case for the recursive structure is a constant.
   // >  It either pass or fail. But we ca never geenrate the wrong one and miss shrinking opportunities.
 
-  it('Should shrink letrec/oneof towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink letrec/oneof towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
@@ -15,14 +15,14 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should shrink letrec/option towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink letrec/option towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
@@ -30,14 +30,14 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb: fc.Memo<readonly unknown[]> = fc.memo((n) => {
@@ -46,14 +46,14 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should shrink memo/option towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink memo/option towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
@@ -62,7 +62,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
@@ -78,7 +78,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     ${'xlarge'}
   `(
     'Should be able to generate $baseSize simple recursive structures without reaching out-of-memory',
-    ({ baseSize }) => {
+    async ({ baseSize }) => {
       // Arrange
       const initialGlobal = fc.readConfigureGlobal();
       fc.configureGlobal({ ...initialGlobal, baseSize });
@@ -88,7 +88,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         })).self;
 
         // Act / Assert
-        expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+        await fc.assert(fc.property(arb, () => true));
       } finally {
         fc.configureGlobal(initialGlobal);
       }
@@ -104,7 +104,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     ${'xlarge'}
   `(
     'Should be able to generate $baseSize array-based recursive structures without reaching out-of-memory',
-    ({ baseSize }) => {
+    async ({ baseSize }) => {
       // Arrange
       const initialGlobal = fc.readConfigureGlobal();
       fc.configureGlobal({ ...initialGlobal, baseSize });
@@ -115,7 +115,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         })).self;
 
         // Act / Assert
-        expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+        await fc.assert(fc.property(arb, () => true));
       } finally {
         fc.configureGlobal(initialGlobal);
       }

@@ -6,20 +6,14 @@ import fc from 'fast-check';
 import { expectType, expectTypeAssignable } from '@fast-check/expect-type';
 
 // assert
-expectType<void>()(fc.assert(fc.property(fc.nat(), () => {})), 'Synchronous property means synchronous assert');
+expectType<Promise<void>>()(fc.assert(fc.property(fc.nat(), () => {})), 'assert always returns a Promise');
 expectType<Promise<void>>()(
-  fc.assert(fc.asyncProperty(fc.nat(), async () => {})),
-  'Asynchronous property means asynchronous assert',
+  fc.assert(fc.property(fc.nat(), async () => {})),
+  'assert always returns a Promise even with async predicate',
 );
 
-// assert (beforeEach, afterEach)
-// @ts-expect-error - Synchronous properties do not accept asynchronous beforeEach
-fc.assert(fc.property(fc.nat(), () => {}).beforeEach(async () => {}));
-// @ts-expect-error - Synchronous properties do not accept asynchronous afterEach
-fc.assert(fc.property(fc.nat(), () => {}).afterEach(async () => {}));
-
 // assert (reporter)
-expectType<void>()(
+expectType<Promise<void>>()(
   fc.assert(
     fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
     { reporter: (_out: fc.RunDetails<[number, string]>) => {} },
@@ -41,45 +35,41 @@ expectTypeAssignable<fc.IProperty<[number, string]>>()(
   fc.property(fc.nat(), fc.string(), (_a, _b) => {}),
   '"property" handles tuples',
 );
-expectType<void>()(
+expectType<Promise<void>>()(
   fc.assert(
     fc
       .property(fc.nat(), () => {})
       .beforeEach(() => 123)
       .afterEach(() => 'anything'),
   ),
-  'Synchronous property accepts synchronous hooks',
+  'Property accepts synchronous hooks',
 );
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.property(fc.nat(), fc.string(), (_a: number, _b: number) => {});
 
-// asyncProperty
-expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
-  fc.asyncProperty(fc.nat(), async (_a) => {}),
-  '"asyncProperty" instanciates instances compatible with IAsyncProperty',
+// property with async predicate
+expectTypeAssignable<fc.IProperty<[number]>>()(
+  fc.property(fc.nat(), async (_a) => {}),
+  '"property" with async predicate instanciates instances compatible with IProperty',
 );
-expectTypeAssignable<fc.IAsyncProperty<[number, string]>>()(
-  fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {}),
-  '"asyncProperty" handles tuples',
+expectTypeAssignable<fc.IProperty<[number, string]>>()(
+  fc.property(fc.nat(), fc.string(), async (_a, _b) => {}),
+  '"property" with async predicate handles tuples',
 );
-expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
+expectTypeAssignable<fc.IProperty<[number]>>()(
   fc
-    .asyncProperty(fc.nat(), async (_a) => {})
+    .property(fc.nat(), async (_a) => {})
     .beforeEach(async () => 123)
     .afterEach(async () => 'anything'),
-  'Asynchronous property accepts asynchronous hooks',
+  'Property accepts asynchronous hooks',
 );
-expectTypeAssignable<fc.IAsyncProperty<[number]>>()(
+expectTypeAssignable<fc.IProperty<[number]>>()(
   fc
-    .asyncProperty(fc.nat(), async (_a) => {})
+    .property(fc.nat(), async (_a) => {})
     .beforeEach(() => 123)
     .afterEach(() => 'anything'),
-  'Asynchronous property accepts synchronous hooks',
+  'Property with async predicate accepts synchronous hooks',
 );
-// @ts-expect-error - Types declared in predicate are not compatible with the generators
-fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
-// @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
-fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {});
 
 // base arbitrary (chain)
 expectType<fc.Arbitrary<string[]>>()(

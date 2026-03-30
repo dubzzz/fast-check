@@ -22,7 +22,7 @@ describe('DebouncedAutocomplete', () => {
     vi.useFakeTimers();
     await fc.assert(
       fc
-        .asyncProperty(
+        .property(
           fc.scheduler(),
           fc.uniqueArray(fc.string()),
           fc.string({ minLength: 1 }),

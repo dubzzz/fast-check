@@ -17,7 +17,6 @@ const rngProducer = prand.xorshift128plus as (seed: number) => QualifiedRandomGe
 const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
   new (class implements IRawProperty<T> {
     constructor(readonly arb: Arbitrary<T>) {}
-    isAsync = () => false;
     generate = (rng: Random) => new Value(this.arb.generate(rng, undefined).value_, undefined);
     shrink = () => Stream.nil<Value<T>>();
     runBeforeEach = () => {};
@@ -27,8 +26,8 @@ const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
 
 describe('Tosser', () => {
   describe('toss', () => {
-    it('Should offset the random number generator between calls', () =>
-      fc.assert(
+    it('Should offset the random number generator between calls', async () =>
+      await fc.assert(
         fc.property(fc.integer(), fc.nat(100), (seed, start) => {
           const s = stream(toss(wrap(stubArb.forwardArray(4)), seed, rngProducer, []));
           const [g1, g2] = [
@@ -41,8 +40,8 @@ describe('Tosser', () => {
           return true;
         }),
       ));
-    it('Should produce the same sequence for the same seed', () =>
-      fc.assert(
+    it('Should produce the same sequence for the same seed', async () =>
+      await fc.assert(
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
           expect([
             ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, []))
@@ -55,8 +54,8 @@ describe('Tosser', () => {
           ]);
         }),
       ));
-    it('Should not depend on the order of iteration', () =>
-      fc.assert(
+    it('Should not depend on the order of iteration', async () =>
+      await fc.assert(
         fc.property(fc.integer(), fc.nat(20), (seed, num) => {
           const onGoingItems1 = [...stream(toss(wrap(stubArb.forward()), seed, rngProducer, [])).take(num)];
           const onGoingItems2 = [...stream(toss(wrap(stubArb.forward()), seed, rngProducer, [])).take(num)];
@@ -68,8 +67,8 @@ describe('Tosser', () => {
           ).toStrictEqual(onGoingItems1.map((f) => f.value));
         }),
       ));
-    it('Should offset toss with the provided examples', () =>
-      fc.assert(
+    it('Should offset toss with the provided examples', async () =>
+      await fc.assert(
         fc.property(fc.integer(), fc.nat(20), fc.array(fc.integer()), (seed, num, examples) => {
           const noExamplesProvided = [
             ...stream(toss(wrap(stubArb.forward()), seed, rngProducer, [])).take(num - examples.length),

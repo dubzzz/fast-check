@@ -10,15 +10,11 @@ if (isMainThread) {
     const assertTimeout = 5000;
     const defaultOptions: Parameters<unknown> = { timeout: assertTimeout };
 
-    it.each`
-      type               | sync
-      ${'property'}      | ${true}
-      ${'asyncProperty'} | ${false}
-    `(
-      'should be able to run any basic successful $type',
-      async ({ sync }) => {
+    it(
+      'should be able to run any basic successful property',
+      async () => {
         // Arrange
-        const property = sync ? fc.property(fc.nat(), () => true) : fc.asyncProperty(fc.nat(), async () => true);
+        const property = fc.property(fc.nat(), () => true);
 
         // Act / Assert
         await expect(assert(property, defaultOptions)).resolves.not.toThrow();
@@ -26,15 +22,11 @@ if (isMainThread) {
       testTimeout,
     );
 
-    it.each`
-      type               | sync
-      ${'property'}      | ${true}
-      ${'asyncProperty'} | ${false}
-    `(
-      'should be able to run any basic failing $type',
-      async ({ sync }) => {
+    it(
+      'should be able to run any basic failing property',
+      async () => {
         // Arrange
-        const property = sync ? fc.property(fc.nat(), () => false) : fc.asyncProperty(fc.nat(), async () => false);
+        const property = fc.property(fc.nat(), () => false);
         const expectedError = /Property failed by returning false/;
 
         // Act / Assert

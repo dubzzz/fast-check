@@ -33,9 +33,9 @@ const testFunc = (value: unknown) => {
 const settings = { seed: 42, verbose: 2 };
 
 describe(`NoRegression`, () => {
-  it('.filter', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('.filter', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.nat().filter((n) => n % 3 !== 0),
@@ -43,12 +43,12 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('.map', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('.map', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.nat().map((n) => String(n)),
@@ -56,12 +56,12 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('.chain', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('.chain', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.nat(20).chain((n) => fc.clone(fc.nat(n), n)),
@@ -69,22 +69,22 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('float', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('float', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.float(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('gen', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('gen', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.gen(), (gen) => {
             const v1 = gen(fc.integer);
@@ -93,102 +93,102 @@ describe(`NoRegression`, () => {
           }),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('double', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('double', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.double(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('integer', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('integer', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.integer(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('nat', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('nat', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.nat(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('maxSafeInteger', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('maxSafeInteger', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.maxSafeInteger(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('maxSafeNat', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('maxSafeNat', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.maxSafeNat(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('string', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('string', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.string(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('stringMatching', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('stringMatching', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.stringMatching(/(^|\s)a+[^a][b-eB-E]+[^b-eB-E](\s|$)/), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('base64String', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('base64String', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.base64String(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('lorem', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('lorem', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.lorem(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('mapToConstant', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('mapToConstant', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.mapToConstant({ num: 26, build: (v) => String.fromCharCode(v + 0x61) }),
@@ -197,34 +197,34 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('option', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('option', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.option(fc.nat()), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('oneof', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('oneof', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.oneof<any>(fc.nat(), fc.string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 })), (v) =>
             testFunc(v),
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('oneof[weighted]', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('oneof[weighted]', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.oneof<any>(
@@ -235,56 +235,56 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('clone', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('clone', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.clone(fc.nat(), 2), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('shuffledSubarray', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('shuffledSubarray', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.shuffledSubarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
             testFunc(v.join('')),
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('subarray', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('subarray', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.subarray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (v) =>
             testFunc(v.join('')),
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.array(fc.nat()), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('sparseArray', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('sparseArray', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.sparseArray(fc.nat()),
@@ -298,12 +298,12 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('sparseArray({noTrailingHole:true})', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('sparseArray({noTrailingHole:true})', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.sparseArray(fc.nat(), { noTrailingHole: true }),
@@ -317,382 +317,382 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('infiniteStream', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('infiniteStream', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.infiniteStream(fc.nat()), (s) => testFunc([...s.take(10)])),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('infiniteStream (noHistory)', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('infiniteStream (noHistory)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.infiniteStream(fc.nat(), { noHistory: true }), (s) => testFunc([...s.take(10)])),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('uniqueArray', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('uniqueArray', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('uniqueArray', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('uniqueArray', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.uniqueArray(fc.nat()), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('tuple', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('tuple', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.tuple(fc.nat(), fc.nat()), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('limitShrink', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('limitShrink', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.limitShrink(fc.nat(), 4), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('int8Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('int8Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.int8Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('uint8Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('uint8Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.uint8Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('uint8ClampedArray', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('uint8ClampedArray', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.uint8ClampedArray(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('int16Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('int16Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.int16Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('uint16Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('uint16Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.uint16Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('int32Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('int32Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.int32Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('uint32Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('uint32Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.uint32Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('float32Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('float32Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.float32Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('float64Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('float64Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.float64Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('record', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('record', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.record({ k1: fc.nat(), k2: fc.nat() }, { requiredKeys: [] }), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('dictionary', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('dictionary', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.dictionary(fc.string(), fc.nat()), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('anything', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('anything', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.anything(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('object', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('object', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.object(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('json', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('json', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.json(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('jsonValue', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('jsonValue', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.jsonValue(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('compareFunc', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('compareFunc', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.compareFunc(), (f) => testFunc(f(1, 2))),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('func', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('func', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.func(fc.nat()), (f) => testFunc(f())),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('ipV4', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('ipV4', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.ipV4(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('ipV4Extended', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('ipV4Extended', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.ipV4Extended(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('ipV6', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('ipV6', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.ipV6(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('domain', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('domain', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.domain(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('webAuthority', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('webAuthority', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.webAuthority(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('webSegment', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('webSegment', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.webSegment(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('webFragments', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('webFragments', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.webFragments(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('webQueryParameters', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('webQueryParameters', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.webQueryParameters(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('webPath', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('webPath', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.webPath(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('webUrl', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('webUrl', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.webUrl(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('emailAddress', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('emailAddress', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.emailAddress(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('date', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('date', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.date(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('ulid', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('ulid', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.ulid(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('uuid', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('uuid', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.uuid(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('letrec', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('letrec', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.letrec((tie) => ({
@@ -705,12 +705,12 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('letrec (oneof:maxDepth)', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('letrec (oneof:maxDepth)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.letrec((tie) => ({
@@ -722,12 +722,12 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('letrec (oneof:depthSize)', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('letrec (oneof:depthSize)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.letrec((tie) => ({
@@ -739,12 +739,12 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('commands', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('commands', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.commands([
@@ -769,12 +769,12 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('context', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('context', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.context(), fc.nat(), (ctx, v) => {
             ctx.log(`Value was ${v}`);
@@ -782,13 +782,13 @@ describe(`NoRegression`, () => {
           }),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('Promise<number>', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('Promise<number>', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             fc.integer().map((v) => [v, Promise.resolve(v)] as const),
@@ -796,22 +796,22 @@ describe(`NoRegression`, () => {
           ),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('user defined examples', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('user defined examples', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.string(), (v) => testFunc(v)),
           { ...settings, examples: [['hi'], ['hello'], ['hey']] },
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('user defined examples (including not shrinkable values)', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('user defined examples (including not shrinkable values)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(
             // Shrinkable: built-in
@@ -838,88 +838,88 @@ describe(`NoRegression`, () => {
             ],
           },
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('bigInt', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('bigInt', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.bigInt(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('bigInt({min})', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('bigInt({min})', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16) }), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('bigInt({max})', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('bigInt({max})', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.bigInt({ max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('bigInt({min, max})', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('bigInt({min, max})', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.bigInt({ min: BigInt(1) << BigInt(16), max: BigInt(1) << BigInt(64) }), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('bigInt64Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('bigInt64Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.bigInt64Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('bigUint64Array', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('bigUint64Array', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.bigUint64Array(), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('mixedCase', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('mixedCase', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.mixedCase(fc.constant('cCbAabBAcaBCcCACcABaCAaAabBACaBcBb')), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('mixedCase(string(constantFrom))', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('mixedCase(string(constantFrom))', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.mixedCase(fc.string({ unit: fc.constantFrom('a', 'b', 'c') })), (v) => testFunc(v)),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -931,7 +931,7 @@ describe(`NoRegression (async)`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.scheduler(), async (s) => {
+            fc.property(fc.scheduler(), async (s) => {
               const received = [] as string[];
               for (const v of ['a', 'b', 'c']) {
                 s.schedule(Promise.resolve(v)).then((out) => {
@@ -954,7 +954,7 @@ describe(`NoRegression (async)`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.integer(), async (v) => testFunc(v)),
+            fc.property(fc.integer(), async (v) => testFunc(v)),
             settings,
           ),
       ),
@@ -966,7 +966,7 @@ describe(`NoRegression (async)`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(asyncNumber, async (v) => testFunc(await v)),
+            fc.property(asyncNumber, async (v) => testFunc(await v)),
             settings,
           ),
       ),
@@ -978,7 +978,7 @@ describe(`NoRegression (async)`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.func(asyncNumber), async (f) => testFunc(await f())),
+            fc.property(fc.func(asyncNumber), async (f) => testFunc(await f())),
             settings,
           ),
       ),
@@ -990,7 +990,7 @@ describe(`NoRegression (async)`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
+            fc.property(fc.infiniteStream(asyncNumber), async (s) => testFunc(await Promise.all([...s.take(10)]))),
             settings,
           ),
       ),
@@ -1002,7 +1002,7 @@ describe(`NoRegression (async)`, () => {
       asyncRunWithSanitizedStack(
         async () =>
           await fc.assert(
-            fc.asyncProperty(fc.infiniteStream(asyncNumber, { noHistory: true }), async (s) =>
+            fc.property(fc.infiniteStream(asyncNumber, { noHistory: true }), async (s) =>
               testFunc(await Promise.all([...s.take(10)])),
             ),
             settings,

@@ -14,7 +14,7 @@ if (!fc.readConfigureGlobal()) {
 describe('Counter', () => {
   it('should handle two concurrent calls to "inc"', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.scheduler(), async (s) => {
+      fc.property(fc.scheduler(), async (s) => {
         // Arrange
         let dbValue = 0;
         const db = {
@@ -42,7 +42,7 @@ describe('Counter', () => {
 
   it('should handle concurrent calls to "inc"', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.scheduler(), fc.nat(64), async (s, numCalls) => {
+      fc.property(fc.scheduler(), fc.nat(64), async (s, numCalls) => {
         // Arrange
         let dbValue = 0;
         const db = {
@@ -71,7 +71,7 @@ describe('Counter', () => {
 
   it('should handle concurrent calls to "inc" on multiple "Counter"', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.scheduler(), fc.array(fc.nat(64)), async (s, numCallsByCounter) => {
+      fc.property(fc.scheduler(), fc.array(fc.nat(64)), async (s, numCallsByCounter) => {
         // Arrange
         let dbValue = 0;
         const db = {

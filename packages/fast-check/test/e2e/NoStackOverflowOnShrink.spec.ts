@@ -38,7 +38,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
     }
   };
 
-  it('should not run into stack overflow during very deep shrink tasks', () => {
+  it('should not run into stack overflow during very deep shrink tasks', async () => {
     // We expect the depth used by this test to be greater than
     // the maximal depth we computed before reaching a stack overflow
     expect(maxDepthForArrays).toBeGreaterThan(callStackSizeWithMargin);
@@ -58,7 +58,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
       }
     }
 
-    const out = fc.check(
+    const out = await fc.check(
       fc.property(new InfiniteShrinkingDepth(), (_n) => false),
       { seed },
     );

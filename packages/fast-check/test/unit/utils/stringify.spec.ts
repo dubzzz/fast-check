@@ -472,7 +472,7 @@ describe('possiblyAsyncStringify', () => {
     ));
   it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
     fc.assert(
-      fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
+      fc.property(fc.anything(anythingEnableAll), async (value) => {
         const expectedStringifiedValue = stringify(value);
         const stringifiedValue = possiblyAsyncStringify(Promise.resolve(value));
         expect(typeof stringifiedValue).not.toBe('string');
@@ -484,7 +484,7 @@ describe('possiblyAsyncStringify', () => {
 describe('asyncStringify', () => {
   it('Should return the same string as "stringify" for synchronous values produced by fc.anything()', () =>
     fc.assert(
-      fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
+      fc.property(fc.anything(anythingEnableAll), async (value) => {
         const expectedStringifiedValue = stringify(value);
         const stringifiedValue = asyncStringify(value);
         expect(typeof stringifiedValue).not.toBe('string');
@@ -493,7 +493,7 @@ describe('asyncStringify', () => {
     ));
   it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
     fc.assert(
-      fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
+      fc.property(fc.anything(anythingEnableAll), async (value) => {
         const expectedStringifiedValue = stringify(value);
         const stringifiedValue = asyncStringify(Promise.resolve(value));
         expect(typeof stringifiedValue).not.toBe('string');

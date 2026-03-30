@@ -3,7 +3,7 @@ import type { Arbitrary, GeneratorValue, Parameters } from 'fast-check';
 import type { ExtraContext } from './types.js';
 
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
-import { assert, asyncProperty, gen, readConfigureGlobal } from 'fast-check';
+import { assert, property, gen, readConfigureGlobal } from 'fast-check';
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
@@ -39,7 +39,7 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
                 errorWithCause: true,
               };
               await assert(
-                asyncProperty(gen(), (g) => {
+                property(gen(), (g) => {
                   const refinedG: GeneratorValue = Object.assign(
                     <T, TArgs extends unknown[]>(arb: (...params: TArgs) => Arbitrary<T>, ...args: TArgs): T => {
                       calledOnce = true;

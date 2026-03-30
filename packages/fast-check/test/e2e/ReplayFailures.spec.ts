@@ -17,16 +17,16 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
   const prop = fc.property(propArbitrary, propCheck);
 
   describe('fc.sample', () => {
-    it('Should rebuild counterexample using sample and (path, seed)', () => {
-      const out = fc.check(prop, { seed: seed });
+    it('Should rebuild counterexample using sample and (path, seed)', async () => {
+      const out = await fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
       expect(fc.sample(propArbitrary, { seed: seed, path: out.counterexamplePath!, numRuns: 1 })).toEqual(
         out.counterexample,
       );
     });
-    it('Should rebuild the whole shrink path using sample', () => {
+    it('Should rebuild the whole shrink path using sample', async () => {
       const failuresRecorded: string[][] = [];
-      const out = fc.check(
+      const out = await fc.check(
         fc.property(propArbitrary, (data) => {
           if (propCheck(data)) return true;
           failuresRecorded.push(data);
@@ -47,14 +47,14 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
     });
   });
   describe('fc.assert', () => {
-    it('Should start from the minimal counterexample given its path', () => {
-      const out = fc.check(prop, { seed: seed });
+    it('Should start from the minimal counterexample given its path', async () => {
+      const out = await fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       let numCalls = 0;
       let numValidCalls = 0;
       let validCallIndex = -1;
-      const out2 = fc.check(
+      const out2 = await fc.check(
         fc.property(propArbitrary, (data) => {
           try {
             expect(data).toEqual(out.counterexample![0]);
@@ -75,35 +75,35 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
       expect(out2.counterexamplePath).toEqual(out.counterexamplePath);
       expect(out2.counterexample).toEqual(out.counterexample);
     });
-    it('Should start from any position in the path', () => {
-      const out = fc.check(prop, { seed: seed });
+    it('Should start from any position in the path', async () => {
+      const out = await fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
-        const outMiddlePath = fc.check(prop, { seed: seed, path: p });
+        const outMiddlePath = await fc.check(prop, { seed: seed, path: p });
         expect(outMiddlePath.numRuns).toEqual(1);
         expect(outMiddlePath.numShrinks).toEqual(out.numShrinks - idx + 1);
         expect(outMiddlePath.counterexamplePath).toEqual(out.counterexamplePath);
         expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
     });
-    it('Should only execute one test given path for failure and noShrink flag', () => {
-      const out = fc.check(prop, { seed: seed });
+    it('Should only execute one test given path for failure and noShrink flag', async () => {
+      const out = await fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
       for (let idx = 1; idx !== segments.length + 1; ++idx) {
         const p = segments.slice(0, idx).join(':');
-        const outMiddlePath = fc.check(prop, { seed: seed, path: p, endOnFailure: true });
+        const outMiddlePath = await fc.check(prop, { seed: seed, path: p, endOnFailure: true });
         expect(outMiddlePath.numRuns).toEqual(1);
         expect(outMiddlePath.numShrinks).toEqual(0);
         expect(outMiddlePath.counterexamplePath).toEqual(p);
       }
     });
-    it('Should take initial path into account when computing path', () => {
-      const out = fc.check(prop, { seed: seed });
+    it('Should take initial path into account when computing path', async () => {
+      const out = await fc.check(prop, { seed: seed });
       expect(out.failed).toBe(true);
 
       const segments = out.counterexamplePath!.split(':');
@@ -111,30 +111,30 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
 
       for (let offset = 0; offset !== +segments[playOnIndex]; ++offset) {
         const p = [...segments.slice(0, playOnIndex), offset].join(':');
-        const outMiddlePath = fc.check(prop, { seed: seed, path: p });
+        const outMiddlePath = await fc.check(prop, { seed: seed, path: p });
         expect(outMiddlePath.counterexamplePath).toEqual(out.counterexamplePath);
         expect(outMiddlePath.counterexample).toEqual(out.counterexample);
       }
     });
-    it('Should print the rejected path when unable to replay for path', () => {
-      fc.assert(
+    it('Should print the rejected path when unable to replay for path', async () => {
+      await fc.assert(
         fc.property(
           fc.integer(),
           fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),
-          (internalSeed, path) => {
-            expect(() =>
+          async (internalSeed, path) => {
+            await expect(
               fc.check(
                 fc.property(fc.constant(0), () => {}), // no shrink available on constant, our path should break
                 { seed: internalSeed, path },
               ),
-            ).toThrowError(new RegExp(`wrong path=${path}`));
+            ).rejects.toThrowError(new RegExp(`wrong path=${path}`));
           },
         ),
         { seed },
       );
     });
-    it('Should print the rejected path when unable to replay for path on sample', () => {
-      fc.assert(
+    it('Should print the rejected path when unable to replay for path on sample', async () => {
+      await fc.assert(
         fc.property(
           fc.integer(),
           fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),

@@ -1,38 +1,38 @@
 import { describe, it, expect } from 'vitest';
 import fc from '../../src/fast-check.js';
-import { runWithSanitizedStack } from './__test-helpers__/StackSanitizer.js';
+import { asyncRunWithSanitizedStack } from './__test-helpers__/StackSanitizer.js';
 
 const settings = { seed: 42, verbose: 0 };
 
 describe(`NoRegressionStack`, () => {
-  it('return false', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('return false', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             return a >= b;
           }),
           { ...settings, includeErrorInReport: true },
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('return false (with cause)', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('return false (with cause)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             return a >= b;
           }),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
-  it('throw', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('throw', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             if (a < b) {
@@ -41,13 +41,13 @@ describe(`NoRegressionStack`, () => {
           }),
           { ...settings, includeErrorInReport: true },
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('throw (with cause)', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('throw (with cause)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.nat(), fc.nat(), (a, b) => {
             if (a < b) {
@@ -56,33 +56,33 @@ describe(`NoRegressionStack`, () => {
           }),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('not a function', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('not a function', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.nat(), (v) => {
             (v as any)();
           }),
           { ...settings, includeErrorInReport: true },
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('not a function (with cause)', () => {
-    expect(
-      runWithSanitizedStack(() =>
+  it('not a function (with cause)', async () => {
+    await expect(
+      asyncRunWithSanitizedStack(async () =>
         fc.assert(
           fc.property(fc.nat(), (v) => {
             (v as any)();
           }),
           settings,
         ),
-      ),
-    ).toThrowErrorMatchingSnapshot();
+      )(),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });

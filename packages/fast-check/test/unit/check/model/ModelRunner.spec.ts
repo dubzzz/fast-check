@@ -38,7 +38,7 @@ describe('ModelRunner', () => {
   describe('asyncModelRunner', () => {
     it('Should run in order and skip unchecked', async () =>
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.boolean()), fc.boolean(), async (runOrNot, asyncSetup) => {
+        fc.property(fc.array(fc.boolean()), fc.boolean(), async (runOrNot, asyncSetup) => {
           const setupData = { model: {}, real: null };
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter((v) => v >= 0);

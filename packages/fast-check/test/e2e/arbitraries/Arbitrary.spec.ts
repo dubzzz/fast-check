@@ -4,8 +4,8 @@ import { seed } from '../seed.js';
 
 describe(`Arbitrary (seed: ${seed})`, () => {
   describe('chain', () => {
-    it('Should bias nothing', () => {
-      const out = fc.check(
+    it('Should bias nothing', async () => {
+      const out = await fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] > 100 && v[1] > 100),
@@ -14,8 +14,8 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
     });
-    it('Should bias source only', () => {
-      const out = fc.check(
+    it('Should bias source only', async () => {
+      const out = await fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] <= 100 && v[1] > 100),
@@ -24,8 +24,8 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
     });
-    it('Should bias destination only', () => {
-      const out = fc.check(
+    it('Should bias destination only', async () => {
+      const out = await fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] > 100 && v[1] <= 100),
@@ -34,8 +34,8 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
     });
-    it('Should bias both source and destination', () => {
-      const out = fc.check(
+    it('Should bias both source and destination', async () => {
+      const out = await fc.check(
         fc.property(
           fc.nat().chain((c) => fc.tuple(fc.constant(c), fc.nat())),
           (v: [number, number]) => !(v[0] <= 100 && v[1] <= 100),
@@ -46,8 +46,8 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true);
     });
-    it('Should shrink chain on source', () => {
-      const out = fc.check(
+    it('Should shrink chain on source', async () => {
+      const out = await fc.check(
         fc.property(
           fc.nat().chain((v) => fc.constant(v)),
           (v: number) => v < 1,
@@ -57,8 +57,8 @@ describe(`Arbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
       expect(out.counterexample).toEqual([1]);
     });
-    it('Should shrink chain on destination', () => {
-      const out = fc.check(
+    it('Should shrink chain on destination', async () => {
+      const out = await fc.check(
         fc.property(
           fc.constant(42).chain((_v) => fc.nat()),
           (v: number) => v < 1,

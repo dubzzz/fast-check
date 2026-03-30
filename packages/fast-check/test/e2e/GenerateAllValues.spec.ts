@@ -21,8 +21,8 @@ describe(`Generate all values (seed: ${seed})`, () => {
     it('Should be able to produce true and false', () => lookForMissing(fc.boolean(), 2));
   });
   describe('fc.integer()', () => {
-    it('Should be able to produce all integer values within the range', () =>
-      fc.assert(
+    it('Should be able to produce all integer values within the range', async () =>
+      await fc.assert(
         fc.property(fc.integer(), fc.nat(100), (from, gap) =>
           lookForMissing(fc.integer({ min: from, max: from + gap }), gap + 1),
         ),
@@ -36,8 +36,8 @@ describe(`Generate all values (seed: ${seed})`, () => {
       lookForMissing(fc.string({ unit: 'grapheme-ascii' }), 95));
   });
   describe('fc.constantFrom()', () => {
-    it('Should be able to produce all the constants', () =>
-      fc.assert(
+    it('Should be able to produce all the constants', async () =>
+      await fc.assert(
         fc.property(fc.uniqueArray(fc.string(), { minLength: 1, maxLength: 40 }), (csts) =>
           lookForMissing(fc.constantFrom(...csts), csts.length),
         ),

@@ -31,7 +31,7 @@ describe('AutocompleteField', () => {
   it('should suggest results matching the value of the autocomplete field', async () => {
     await fc.assert(
       fc
-        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
+        .property(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
           const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
             return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
@@ -65,7 +65,7 @@ describe('AutocompleteField', () => {
   it('should display more and more sugestions as results come', async () => {
     await fc.assert(
       fc
-        .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
+        .property(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
           const query = queries[queries.length - 1];
           const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {

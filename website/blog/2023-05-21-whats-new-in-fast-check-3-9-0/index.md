@@ -103,7 +103,7 @@ Following snippet is an updated version of the code above with race condition de
 ```js
 test('should update to the value of the last promise', async () => {
   await fc.assert(
-    fc.asyncProperty(fc.scheduler(), async (s) => {
+    fc.property(fc.scheduler(), async (s) => {
       const promise1 = s.schedule(Promise.resolve(1), undefined, undefined, act);
       const promise2 = s.schedule(Promise.resolve(2), undefined, undefined, act);
 

@@ -14,7 +14,7 @@ function toProperty<Ts>(
   generator: IRawProperty<Ts> | Arbitrary<Ts>,
   qParams: QualifiedParameters<Ts>,
 ): IRawProperty<Ts> {
-  const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
+  const prop = !Object.prototype.hasOwnProperty.call(generator, 'run')
     ? new Property(generator as Arbitrary<Ts>, () => true)
     : (generator as IRawProperty<Ts>);
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;

@@ -12,7 +12,7 @@ describe('TimeoutProperty', () => {
   it('should forward calls to generate', () => {
     // Arrange
     vi.useFakeTimers();
-    const { instance: decoratedProperty, generate } = fakeProperty(true);
+    const { instance: decoratedProperty, generate } = fakeProperty();
     const { instance: mrng } = fakeRandom();
     const expectedRunId = 42;
     const expectedOut = new Value(Symbol('value'), Symbol('context'));
@@ -31,7 +31,7 @@ describe('TimeoutProperty', () => {
   it('should forward inputs to run', async () => {
     // Arrange
     vi.useFakeTimers();
-    const { instance: decoratedProperty, run, runBeforeEach, runAfterEach } = fakeProperty(true);
+    const { instance: decoratedProperty, run, runBeforeEach, runAfterEach } = fakeProperty();
     const expectedRunInput = { anything: Symbol('something') };
 
     // Act
@@ -52,7 +52,7 @@ describe('TimeoutProperty', () => {
   it('should not timeout if it succeeds in time', async () => {
     // Arrange
     vi.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty();
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(null), 10);
@@ -74,7 +74,7 @@ describe('TimeoutProperty', () => {
   it('should not timeout if it succeeds in time while timeout in beforeEach', async () => {
     // Arrange
     vi.useFakeTimers();
-    const { instance: decoratedProperty, runBeforeEach } = fakeProperty(true);
+    const { instance: decoratedProperty, runBeforeEach } = fakeProperty();
     runBeforeEach.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(), 100);
@@ -93,7 +93,7 @@ describe('TimeoutProperty', () => {
   it('should not timeout if it succeeds in time while timeout in afterEach', async () => {
     // Arrange
     vi.useFakeTimers();
-    const { instance: decoratedProperty, runAfterEach } = fakeProperty(true);
+    const { instance: decoratedProperty, runAfterEach } = fakeProperty();
     runAfterEach.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(), 100);
@@ -113,7 +113,7 @@ describe('TimeoutProperty', () => {
     // Arrange
     const errorFromUnderlying = { error: new Error('plop') };
     vi.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty();
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         // underlying property is not supposed to throw (reject)
@@ -138,7 +138,7 @@ describe('TimeoutProperty', () => {
     vi.useFakeTimers();
     vi.spyOn(global, 'setTimeout');
     vi.spyOn(global, 'clearTimeout');
-    const { instance: decoratedProperty, run } = fakeProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty();
     run.mockResolvedValueOnce(null);
 
     // Act
@@ -158,7 +158,7 @@ describe('TimeoutProperty', () => {
     vi.useFakeTimers();
     vi.spyOn(global, 'setTimeout');
     vi.spyOn(global, 'clearTimeout');
-    const { instance: decoratedProperty, run } = fakeProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty();
     run.mockResolvedValueOnce(errorFromUnderlying);
 
     // Act
@@ -175,7 +175,7 @@ describe('TimeoutProperty', () => {
   it('should timeout if it takes to long', async () => {
     // Arrange
     vi.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty();
     run.mockReturnValueOnce(
       new Promise(function (resolve) {
         setTimeout(() => resolve(null), 100);
@@ -196,7 +196,7 @@ describe('TimeoutProperty', () => {
   it('Should timeout if it never ends', async () => {
     // Arrange
     vi.useFakeTimers();
-    const { instance: decoratedProperty, run } = fakeProperty(true);
+    const { instance: decoratedProperty, run } = fakeProperty();
     run.mockReturnValueOnce(new Promise(() => {}));
 
     // Act

@@ -4,8 +4,8 @@ import fc from 'fast-check';
 import _ from 'lodash';
 
 describe('mazeGenerator', () => {
-  it('should contain a single start point located at the specified point', () => {
-    fc.assert(
+  it('should contain a single start point located at the specified point', async () => {
+    await fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         expect(maze[ins.startPt.y][ins.startPt.x]).toBe(CellType.Start);
@@ -14,8 +14,8 @@ describe('mazeGenerator', () => {
     );
   });
 
-  it('should contain a single end point located at the specified point', () => {
-    fc.assert(
+  it('should contain a single end point located at the specified point', async () => {
+    await fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         expect(maze[ins.endPt.y][ins.endPt.x]).toBe(CellType.End);
@@ -24,8 +24,8 @@ describe('mazeGenerator', () => {
     );
   });
 
-  it('should have at least one path from start to end', () => {
-    fc.assert(
+  it('should have at least one path from start to end', async () => {
+    await fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         return hasPathFromStartToEnd(maze, ins.startPt);
@@ -33,8 +33,8 @@ describe('mazeGenerator', () => {
     );
   });
 
-  it('should not have any path loops', () => {
-    fc.assert(
+  it('should not have any path loops', async () => {
+    await fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         const alreadyVisited = new Set<string>();
@@ -65,8 +65,8 @@ describe('mazeGenerator', () => {
     );
   });
 
-  it('should have exactly one path leaving the end', () => {
-    fc.assert(
+  it('should have exactly one path leaving the end', async () => {
+    await fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
         const numPathsLeavingEnd = neighboorsFor(ins.endPt).reduce((count, pt) => {
@@ -79,8 +79,8 @@ describe('mazeGenerator', () => {
     );
   });
 
-  it('should have only non-isolated path, start, end', () => {
-    fc.assert(
+  it('should have only non-isolated path, start, end', async () => {
+    await fc.assert(
       fc.property(seedArb, inputsArb, (seed, ins) => {
         const maze: (CellType | 'Visited')[][] = mazeGenerator(seed, ins.dim, ins.startPt, ins.endPt);
 

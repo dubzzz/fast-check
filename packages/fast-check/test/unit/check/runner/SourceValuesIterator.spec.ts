@@ -31,8 +31,8 @@ function simulateSkips(svIt: SourceValuesIterator<number>, skippedValues: number
 }
 
 describe('SourceValuesIterator', () => {
-  it('Should only call the produce method when iterating on the value', () =>
-    fc.assert(
+  it('Should only call the produce method when iterating on the value', async () =>
+    await fc.assert(
       fc.property(fc.nat(100), (askedValues) => {
         const generatedValues: number[] = [];
         const initialValues: IterableIterator<number> = iota()
@@ -49,8 +49,8 @@ describe('SourceValuesIterator', () => {
       }),
     ));
   describe('Not enough skipped values', () => {
-    it('Should return the first eligible askedValues values if infinite source', () =>
-      fc.assert(
+    it('Should return the first eligible askedValues values if infinite source', async () =>
+      await fc.assert(
         fc.property(fc.nat(100), fc.uniqueArray(fc.nat(100)), (askedValues, skippedValues) => {
           const svIt = new SourceValuesIterator(source(), askedValues, skippedValues.length);
           const svValues = simulateSkips(svIt, skippedValues);
@@ -64,8 +64,8 @@ describe('SourceValuesIterator', () => {
           expect(svValues).toEqual(expectedValues);
         }),
       ));
-    it('Should return the first eligible askedValues values if larger source', () =>
-      fc.assert(
+    it('Should return the first eligible askedValues values if larger source', async () =>
+      await fc.assert(
         fc.property(
           fc.nat(100),
           fc.nat(100),
@@ -85,8 +85,8 @@ describe('SourceValuesIterator', () => {
           },
         ),
       ));
-    it('Should return the first eligible values among sourceValues values if smaller source', () =>
-      fc.assert(
+    it('Should return the first eligible values among sourceValues values if smaller source', async () =>
+      await fc.assert(
         fc.property(
           fc.nat(100),
           fc.nat(100),
@@ -109,8 +109,8 @@ describe('SourceValuesIterator', () => {
       ));
   });
   describe('Too many skipped values', () => {
-    it('Should stop as soon as it passes maxSkips skipped values', () =>
-      fc.assert(
+    it('Should stop as soon as it passes maxSkips skipped values', async () =>
+      await fc.assert(
         fc.property(
           fc.uniqueArray(fc.nat(100), { minLength: 1, maxLength: 20 }),
           fc.integer({ min: 1, max: 100 }),

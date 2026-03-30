@@ -7,8 +7,8 @@ import { fibo } from './src/fibonacci';
 const MaxN = 1000;
 
 describe('fibonacci', () => {
-  it('should be equal to the sum of fibo(n-1) and fibo(n-2)', () => {
-    fc.assert(
+  it('should be equal to the sum of fibo(n-1) and fibo(n-2)', async () => {
+    await fc.assert(
       fc.property(fc.integer({ min: 2, max: MaxN }), (n) => {
         expect(fibo(n)).toBe(fibo(n - 1) + fibo(n - 2));
       }),
@@ -18,25 +18,25 @@ describe('fibonacci', () => {
   // The following properties are listed on the Wikipedia page:
   // https://fr.wikipedia.org/wiki/Suite_de_Fibonacci#Divisibilit%C3%A9_des_nombres_de_Fibonacci
 
-  it('should fulfill fibo(p)*fibo(q+1)+fibo(p-1)*fibo(q) = fibo(p+q)', () => {
-    fc.assert(
+  it('should fulfill fibo(p)*fibo(q+1)+fibo(p-1)*fibo(q) = fibo(p+q)', async () => {
+    await fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), fc.integer({ min: 0, max: MaxN }), (p, q) => {
         expect(fibo(p + q)).toBe(fibo(p) * fibo(q + 1) + fibo(p - 1) * fibo(q));
       }),
     );
   });
 
-  it('should fulfill fibo(2p-1) = fibo²(p-1)+fibo²(p)', () => {
+  it('should fulfill fibo(2p-1) = fibo²(p-1)+fibo²(p)', async () => {
     // Special case of the property above
-    fc.assert(
+    await fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), (p) => {
         expect(fibo(2 * p - 1)).toBe(fibo(p - 1) * fibo(p - 1) + fibo(p) * fibo(p));
       }),
     );
   });
 
-  it('should fulfill Catalan identity', () => {
-    fc.assert(
+  it('should fulfill Catalan identity', async () => {
+    await fc.assert(
       fc.property(fc.integer({ min: 0, max: MaxN }), fc.integer({ min: 0, max: MaxN }), (a, b) => {
         const [p, q] = a < b ? [b, a] : [a, b];
         const sign = (p - q) % 2 === 0 ? 1n : -1n; // (-1)^(p-q)
@@ -45,8 +45,8 @@ describe('fibonacci', () => {
     );
   });
 
-  it('should fulfill Cassini identity', () => {
-    fc.assert(
+  it('should fulfill Cassini identity', async () => {
+    await fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), (p) => {
         const sign = p % 2 === 0 ? 1n : -1n; // (-1)^p
         expect(fibo(p + 1) * fibo(p - 1) - fibo(p) * fibo(p)).toBe(sign);
@@ -54,16 +54,16 @@ describe('fibonacci', () => {
     );
   });
 
-  it('should fibo(nk) divisible by fibo(n)', () => {
-    fc.assert(
+  it('should fibo(nk) divisible by fibo(n)', async () => {
+    await fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), fc.integer({ min: 0, max: 100 }), (n, k) => {
         expect(fibo(n * k) % fibo(n)).toBe(0n);
       }),
     );
   });
 
-  it('should fulfill gcd(fibo(a), fibo(b)) = fibo(gcd(a,b))', () => {
-    fc.assert(
+  it('should fulfill gcd(fibo(a), fibo(b)) = fibo(gcd(a,b))', async () => {
+    await fc.assert(
       fc.property(fc.integer({ min: 1, max: MaxN }), fc.integer({ min: 1, max: MaxN }), (a, b) => {
         const gcd = <T extends bigint | number>(a: T, b: T, zero: T): T => {
           a = a < zero ? (-a as T) : a;
