@@ -145,7 +145,7 @@ export function buildTest<T extends (...args: any[]) => any>(
       atLeastOneExtra = true;
       extraKeys[key] =
         key !== 'each'
-          ? buildTest(((testFn as any)[key] as (...args: unknown[]) => unknown).bind(testFn), testFnExtended[key] as any, fc, new Set([...ancestors, key]))
+          ? buildTest(((testFn as any)[key] as (...args: unknown[]) => unknown).bind(testFn), (testFnExtended[key] as (...args: unknown[]) => unknown).bind(testFnExtended) as any, fc, new Set([...ancestors, key]))
           : ((testFn as any)[key] as (...args: unknown[]) => unknown).bind(testFn);
     }
   }
