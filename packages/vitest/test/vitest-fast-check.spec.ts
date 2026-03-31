@@ -400,6 +400,23 @@ describe.each<DescribeOptions>([
     });
   });
 
+  describe('.each', () => {
+    it.concurrent(`should support ${runnerName}.each`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        runner.each([1, 2, 3])('property %i', (i) => {
+          expectVi(i).toBe(i);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+  });
+
   describe('without .prop', () => {
     it.concurrent(`should support ${runnerName} without any use of the generator on success`, async () => {
       // Arrange
