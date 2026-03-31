@@ -505,3 +505,40 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>();
+// initialPoolConstraints should not widen entity field types
+expectTypeOf(
+  fc.entityGraph(
+    { node: { name: fc.string() } },
+    { node: { linkTo: { arity: 'many', type: 'node' } } },
+    { initialPoolConstraints: { node: { minLength: 2 } } },
+  ),
+).toEqualTypeOf<fc.Arbitrary<{ node: Node[] }>>();
+// initialPoolConstraints combined with unicityConstraints should preserve type inference
+expectTypeOf(
+  fc.entityGraph(
+    {
+      employee: { firstName: fc.string(), lastName: fc.string() },
+      team: { name: fc.string() },
+    },
+    {
+      employee: { team: { arity: '1', type: 'team' } },
+      team: { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } },
+    },
+    {
+      initialPoolConstraints: {
+        employee: { minLength: 2 },
+        team: { minLength: 1 },
+      },
+      unicityConstraints: {
+        employee: (e) => {
+          expectTypeOf(e).toEqualTypeOf<Omit<EmployeeWithTeam, 'team'>>();
+          return `${e.firstName} ${e.lastName}`;
+        },
+        team: (t) => {
+          expectTypeOf(t).toEqualTypeOf<Omit<TeamWithEmployees, 'members'>>();
+          return t.name;
+        },
+      },
+    },
+  ),
+).toEqualTypeOf<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>();
