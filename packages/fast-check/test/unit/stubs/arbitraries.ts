@@ -106,13 +106,4 @@ const forwardArray = (num: number): ForwardArrayArbitrary => new ForwardArrayArb
 const single = <T>(id: T, noCallOnceCheck = false): SingleUseArbitrary<T> =>
   new SingleUseArbitrary(id, noCallOnceCheck);
 
-export {
-  counter,
-  forward,
-  forwardArray,
-  single,
-  CounterArbitrary,
-  ForwardArbitrary,
-  ForwardArrayArbitrary,
-  SingleUseArbitrary,
-};
+export { counter, forward, forwardArray, single, SingleUseArbitrary };

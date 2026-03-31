@@ -1,7 +1,7 @@
 {
   "name": "@fast-check/packaged",
   "description": "Utility package removing any files that will not be part of the final bundle",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/npm-packlist": "^7.0.3",
     "@types/npmcli__arborist": "^6.3.3",
-    "rolldown": "^1.0.0-rc.11",
+    "rolldown": "^1.0.0-rc.12",
     "typescript": "~6.0.2",
     "vitest": "^4.1.0"
   },
