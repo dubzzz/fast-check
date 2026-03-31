@@ -513,6 +513,25 @@ expectTypeOf(
     { initialPoolConstraints: { node: { minLength: 2 } } },
   ),
 ).toEqualTypeOf<fc.Arbitrary<{ node: Node[] }>>();
+// type inference should be preserved when initialPoolConstraints is provided
+expectTypeOf(
+  fc.entityGraph(
+    {
+      employee: { firstName: fc.string(), lastName: fc.string() },
+      team: { name: fc.string() },
+    },
+    {
+      employee: { team: { arity: '1', type: 'team' } },
+      team: { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } },
+    },
+    {
+      initialPoolConstraints: {
+        employee: { minLength: 2 },
+        team: { minLength: 1 },
+      },
+    },
+  ),
+).toEqualTypeOf<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>();
 // initialPoolConstraints combined with unicityConstraints should preserve type inference
 expectTypeOf(
   fc.entityGraph(
