@@ -87,4 +87,4 @@ const mutable = {
   fastincrease: (value: number): Random => new Random(new FastIncreaseRandomGenerator(value)),
 };
 
-export { mutable, raw, CounterRandomGenerator, NoCallGenerator, FastIncreaseRandomGenerator };
+export { mutable, raw };

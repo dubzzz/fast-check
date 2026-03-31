@@ -91,7 +91,7 @@ function smallUintToBase32StringMapper(num: number): string {
 }
 
 /** @internal */
-export function uintToBase32StringMapper(num: number, paddingLength: number): string {
+function uintToBase32StringMapper(num: number, paddingLength: number): string {
   const head = ~~(num / 0x40000000);
   const tail = num & 0x3fffffff;
   return pad(smallUintToBase32StringMapper(head), paddingLength - 6) + pad(smallUintToBase32StringMapper(tail), 6);
