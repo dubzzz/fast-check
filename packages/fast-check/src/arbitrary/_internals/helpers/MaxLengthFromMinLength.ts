@@ -192,4 +192,3 @@ export function resolveSize(size: Exclude<SizeForArbitrary, 'max'> | undefined):
   }
   return relativeSizeToSize(size, defaultSize);
 }
-
