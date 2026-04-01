@@ -10,6 +10,13 @@ import type { UniqueArrayConstraintsRecommended } from './uniqueArray.js';
 const safeObjectCreate = Object.create;
 const safeObjectKeys = Object.keys;
 
+/**
+ * Prevents TypeScript from using this type position as an inference site.
+ * Compatible with TypeScript &lt; 5.4 (where the built-in NoInfer is unavailable).
+ * @internal
+ */
+type _NoInfer<T> = [T][T extends any ? 0 : never];
+
 export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRelations as EntityGraphRelations };
 
 /**
@@ -112,7 +119,7 @@ export type EntityGraphContraints<TEntityFields> = {
 export function entityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   arbitraries: Arbitraries<TEntityFields>,
   relations: TEntityRelations,
-  constraints: EntityGraphContraints<NoInfer<TEntityFields>> = {},
+  constraints: EntityGraphContraints<_NoInfer<TEntityFields>> = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
   const allKeys = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
   const initialPoolConstraints = constraints.initialPoolConstraints || safeObjectCreate(null);
