@@ -154,7 +154,7 @@ export function buildTest<T extends (...args: any[]) => any>(
       extraKeys[key] =
         key !== 'each'
           ? buildTest(testFnChildBound, testFnExtendedChildBound as any, fc, new Set([...ancestors, key]))
-          : testFnChildBound;
+          : testFnExtendedChildBound;
     }
   }
   if (!atLeastOneExtra) {
