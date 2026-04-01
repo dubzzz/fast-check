@@ -143,12 +143,20 @@ export function buildTest<T extends (...args: any[]) => any>(
     const key = unsafeKey as keyof typeof testFnExtended & string;
     if (!ancestors.has(key) && typeof testFnExtended[key] === 'function') {
       atLeastOneExtra = true;
-      const testFnChild = (testFn as any)[key];
+      const testFnChild = testFn != null ? (testFn as any)[key] : undefined;
       const testFnChildBound =
         typeof testFnChild === 'function' ? (testFnChild as (...args: unknown[]) => unknown).bind(testFn) : testFnChild;
+      const testFnExtendedChild = testFnExtended[key];
+      const testFnExtendedChildBound =
+        typeof testFnExtendedChild === 'function'
+          ? Object.defineProperties(
+              (testFnExtendedChild as (...args: unknown[]) => unknown).bind(testFnExtended),
+              Object.getOwnPropertyDescriptors(testFnExtendedChild),
+            )
+          : testFnExtendedChild;
       extraKeys[key] =
         key !== 'each'
-          ? buildTest(testFnChildBound, testFnExtended[key] as any, fc, new Set([...ancestors, key]))
+          ? buildTest(testFnChildBound, testFnExtendedChildBound as any, fc, new Set([...ancestors, key]))
           : testFnChildBound;
     }
   }
