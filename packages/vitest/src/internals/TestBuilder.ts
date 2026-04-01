@@ -143,7 +143,7 @@ export function buildTest<T extends (...args: any[]) => any>(
     const key = unsafeKey as keyof typeof testFnExtended & string;
     if (!ancestors.has(key) && typeof testFnExtended[key] === 'function') {
       atLeastOneExtra = true;
-      const testFnChild = testFn != null ? (testFn as any)[key] : undefined;
+      const testFnChild = (testFn as any)[key];
       const testFnChildBound =
         typeof testFnChild === 'function' ? (testFnChild as (...args: unknown[]) => unknown).bind(testFn) : testFnChild;
       extraKeys[key] =
