@@ -149,10 +149,7 @@ export function buildTest<T extends (...args: any[]) => any>(
       const testFnExtendedChild = testFnExtended[key];
       const testFnExtendedChildBound =
         typeof testFnExtendedChild === 'function'
-          ? Object.defineProperties(
-              (testFnExtendedChild as (...args: unknown[]) => unknown).bind(testFnExtended),
-              Object.getOwnPropertyDescriptors(testFnExtendedChild),
-            )
+          ? (testFnExtendedChild as (...args: unknown[]) => unknown).bind(testFnExtended)
           : testFnExtendedChild;
       extraKeys[key] =
         key !== 'each'
