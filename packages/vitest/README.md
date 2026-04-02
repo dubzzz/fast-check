@@ -116,6 +116,7 @@ describe('with it', () => {
 
 | @fast-check/vitest | vitest                                                              | fast-check                       | Node                   |
 | ------------------ | ------------------------------------------------------------------- | -------------------------------- | ---------------------- |
+| **0.4**            | ^4.1.0<sup>(7)</sup>                                                 | ^3.0.0 \|\| ^4.0.0               | ≥20.19.0<sup>(2)</sup> |
 | **0.3**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4<sup>(1)</sup>                            | ^3.0.0 \|\| ^4.0.0               | ≥20.19.0<sup>(2)</sup> |
 | **0.2**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4<sup>(1)</sup>                            | ^3.0.0 \|\| ^4.0.0               | ≥18<sup>(3)</sup>      |
 | **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(4)</sup> \|\| ^3<sup>(5)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(6)</sup> | ≥14.16.0<sup>(3)</sup> |
@@ -130,5 +131,6 @@ describe('with it', () => {
 4. Official support for version 2.x of vitest starts at 0.1.2.
 5. Official support for version 3.x of vitest starts at 0.1.5.
 6. Official support for version 4.x of fast-check starts at 0.1.6.
+7. Dropped support for vitest <4.1.0 as deprecated `vitest/suite` imports were replaced by `TestRunner` static methods from the `vitest` entry point.
 
 </details>
