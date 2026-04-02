@@ -1,5 +1,5 @@
 import { readConfigureGlobal } from 'fast-check';
-import { getCurrentTest, getHooks } from 'vitest/suite';
+import { TestRunner } from 'vitest';
 
 import type { Parameters as FcParameters } from 'fast-check';
 import type { Prop, PromiseProp, It, ArbitraryTuple, FcExtra } from './types.js';
@@ -35,22 +35,22 @@ function getSuiteChain(suite: RunnerTestSuite): RunnerTestSuite[] {
 }
 
 /** Collect beforeEach hooks in top-down order (parent suites first) as vitest does */
-function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['beforeEach'] {
+function collectBeforeEachHooks(suite: RunnerTestSuite): ReturnType<typeof TestRunner.getSuiteHooks>['beforeEach'] {
   const chain = getSuiteChain(suite);
-  const hooks: ReturnType<typeof getHooks>['beforeEach'] = [];
+  const hooks: ReturnType<typeof TestRunner.getSuiteHooks>['beforeEach'] = [];
   for (let i = chain.length - 1; i >= 0; i--) {
-    const h = getHooks(chain[i]);
+    const h = TestRunner.getSuiteHooks(chain[i]);
     hooks.push(...h.beforeEach);
   }
   return hooks;
 }
 
 /** Collect afterEach hooks in bottom-up order (current suite first) as vitest does */
-function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof getHooks>['afterEach'] {
+function collectAfterEachHooks(suite: RunnerTestSuite): ReturnType<typeof TestRunner.getSuiteHooks>['afterEach'] {
   const chain = getSuiteChain(suite);
-  const hooks: ReturnType<typeof getHooks>['afterEach'] = [];
+  const hooks: ReturnType<typeof TestRunner.getSuiteHooks>['afterEach'] = [];
   for (let i = 0; i < chain.length; i++) {
-    const h = getHooks(chain[i]);
+    const h = TestRunner.getSuiteHooks(chain[i]);
     for (let j = h.afterEach.length - 1; j >= 0; j--) {
       hooks.push(h.afterEach[j]);
     }
@@ -99,7 +99,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
       //   - vitest calls its own afterEach after the test (covers last run)
       //
       // Result: exactly N beforeEach + N afterEach for N property runs.
-      const test = getCurrentTest();
+      const test = TestRunner.getCurrentTest();
       if (test === undefined) {
         throw new Error(
           'Could not find the running test context. Make sure your property-based test is defined inside a vitest test() or it() block. Running outside a standard vitest test callback (e.g. in a worker thread) is not supported.',
