@@ -131,6 +131,5 @@ describe('with it', () => {
 4. Official support for version 2.x of vitest starts at 0.1.2.
 5. Official support for version 3.x of vitest starts at 0.1.5.
 6. Official support for version 4.x of fast-check starts at 0.1.6.
-7. Dropped support for vitest <4.1.0 as deprecated `vitest/suite` imports were replaced by `TestRunner` static methods from the `vitest` entry point.
 
 </details>
