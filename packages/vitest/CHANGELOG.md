@@ -1,6 +1,6 @@
 # 0.4.0
 
-_TODO Description_
+_Move to modern APIs introduced by vitest 4.1_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.3.0...vitest%2Fv0.4.0)]
 
 ## Features
