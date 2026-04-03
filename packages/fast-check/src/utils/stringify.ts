@@ -140,208 +140,308 @@ export function stringifyInternal<Ts>(
   previousValues: any[],
   getAsyncContent: (p: Promise<unknown> | WithAsyncToStringMethod) => AsyncContent,
 ): string {
-  const currentValues = [...previousValues, value];
-  if (typeof value === 'object') {
-    // early cycle detection for objects
-    if (safeIndexOf(previousValues, value) !== -1) {
-      return '[cyclic]';
-    }
-  }
+  // Iterative stack-based approach to avoid call stack overflow on deeply nested values.
+  // Each stack item is either a literal string (appended to output) or a stringify task.
+  type StringifyTask = { value: any; previousValues: any[] };
+  type StackItem = string | StringifyTask;
 
-  if (hasAsyncToStringMethod(value)) {
-    // if user defined custom async serialization function, we use it first
-    const content = getAsyncContent(value);
-    if (content.state === 'fulfilled') {
-      return content.value as string;
-    }
-  }
-  if (hasToStringMethod(value)) {
-    // if user defined custom sync serialization function, we use it before next ones
-    try {
-      return value[toStringMethod]();
-    } catch {
-      // fallback to defaults...
-    }
-  }
+  const resultParts: string[] = [];
+  const stack: StackItem[] = [{ value, previousValues }];
 
-  switch (safeToString(value)) {
-    case '[object Array]': {
-      const arr = value as unknown as unknown[];
-      if (arr.length >= 50 && isSparseArray(arr)) {
-        const assignments: string[] = [];
-        // Discarded: map then join will still show holes
-        // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
-        // eslint-disable-next-line @typescript-eslint/no-for-in-array
-        for (const index in arr) {
-          if (!safeNumberIsNaN(Number(index)))
-            safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
-        }
-        return assignments.length !== 0
-          ? `Object.assign(Array(${arr.length}),{${safeJoin(assignments, ',')}})`
-          : `Array(${arr.length})`;
+  while (stack.length > 0) {
+    const item = stack.pop()!;
+
+    // Literal string: append directly to output
+    if (typeof item === 'string') {
+      resultParts.push(item);
+      continue;
+    }
+
+    const val = item.value;
+    const prevValues = item.previousValues;
+    const curValues = [...prevValues, val];
+
+    // Early cycle detection for objects
+    if (typeof val === 'object') {
+      if (safeIndexOf(prevValues, val) !== -1) {
+        resultParts.push('[cyclic]');
+        continue;
       }
-      // stringifiedArray results in: '' for [,]
-      // stringifiedArray results in: ',' for [,,]
-      // stringifiedArray results in: '1,' for [1,,]
-      // stringifiedArray results in: '1,,2' for [1,,2]
-      const stringifiedArray = safeJoin(
-        safeMap(arr, (v) => stringifyInternal(v, currentValues, getAsyncContent)),
-        ',',
-      );
-      return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
-    case '[object BigInt]':
-      return `${value}n`;
-    case '[object Boolean]': {
-      // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-      const unboxedToString = (value as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing
-      return typeof value === 'boolean' ? unboxedToString : `new Boolean(${unboxedToString})`;
+
+    // Custom async serialization
+    if (hasAsyncToStringMethod(val)) {
+      const content = getAsyncContent(val);
+      if (content.state === 'fulfilled') {
+        resultParts.push(content.value as string);
+        continue;
+      }
     }
-    case '[object Date]': {
-      const d = value as unknown as Date;
-      return safeNumberIsNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${safeJsonStringify(safeToISOString(d))})`;
-    }
-    case '[object Map]':
-      return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
-    case '[object Null]':
-      return `null`;
-    case '[object Number]':
-      return typeof value === 'number' ? stringifyNumber(value) : `new Number(${stringifyNumber(Number(value))})`;
-    case '[object Object]': {
+    // Custom sync serialization
+    if (hasToStringMethod(val)) {
       try {
-        const toStringAccessor = (value as any).toString; // <-- Can throw
-        if (typeof toStringAccessor === 'function' && toStringAccessor !== Object.prototype.toString) {
-          // Instance (or one of its parent prototypes) overrides the default toString of Object
-          return (value as any).toString(); // <-- Can throw
-        }
+        resultParts.push(val[toStringMethod]());
+        continue;
       } catch {
-        // Only return what would have been the default toString on Object
-        return '[object Object]';
+        // fallback to defaults...
       }
+    }
 
-      const mapper = (k: string | symbol) =>
-        `${
-          k === '__proto__'
-            ? '["__proto__"]'
-            : typeof k === 'symbol'
-              ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
-              : safeJsonStringify(k)
-        }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
+    const typeStr = safeToString(val);
+    let handled = true;
 
-      const stringifiedProperties = [
-        ...(safeObjectGetPrototypeOf(value) === null ? ['__proto__:null'] : []),
-        ...safeMap(safeObjectKeys(value as object), mapper),
-        ...safeMap(
-          safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
-            const descriptor = safeObjectGetOwnPropertyDescriptor(value, s);
-            return descriptor && descriptor.enumerable;
-          }),
-          mapper,
-        ),
-      ];
-      return '{' + safeJoin(stringifiedProperties, ',') + '}';
-    }
-    case '[object Set]':
-      return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
-    case '[object String]':
-      return typeof value === 'string' ? safeJsonStringify(value) : `new String(${safeJsonStringify(value)})`;
-    case '[object Symbol]': {
-      const s = value as unknown as symbol;
-      if (StableSymbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${safeJsonStringify(StableSymbol.keyFor(s))})`;
+    switch (typeStr) {
+      case '[object Array]': {
+        const arr = val as unknown as unknown[];
+        if (arr.length >= 50 && isSparseArray(arr)) {
+          // Sparse array path
+          const entries: string[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-for-in-array
+          for (const index in arr) {
+            if (!safeNumberIsNaN(Number(index))) safePush(entries, index);
+          }
+          if (entries.length === 0) {
+            resultParts.push(`Array(${arr.length})`);
+          } else {
+            // Build items in forward order, push reversed onto stack
+            const items: StackItem[] = [`Object.assign(Array(${arr.length}),{`];
+            for (let i = 0; i < entries.length; i++) {
+              if (i > 0) items.push(',');
+              items.push(`${entries[i]}:`);
+              items.push({ value: arr[Number(entries[i])], previousValues: curValues });
+            }
+            items.push('})');
+            for (let i = items.length - 1; i >= 0; i--) stack.push(items[i]);
+          }
+        } else {
+          // Regular array path
+          // For sparse arrays: holes produce no output between commas, matching Array.map+join behavior
+          const suffix = arr.length === 0 || arr.length - 1 in arr ? ']' : ',]';
+          const items: StackItem[] = ['['];
+          for (let i = 0; i < arr.length; i++) {
+            if (i > 0) items.push(',');
+            if (i in arr) {
+              items.push({ value: arr[i], previousValues: curValues });
+            }
+          }
+          items.push(suffix);
+          for (let i = items.length - 1; i >= 0; i--) stack.push(items[i]);
+        }
+        break;
       }
-      const desc = getSymbolDescription(s);
-      if (desc === null) {
-        return 'Symbol()';
+      case '[object BigInt]':
+        resultParts.push(`${val}n`);
+        break;
+      case '[object Boolean]': {
+        // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+        const unboxedToString = (val as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing
+        resultParts.push(typeof val === 'boolean' ? unboxedToString : `new Boolean(${unboxedToString})`);
+        break;
       }
-      const knownSymbol = desc.startsWith('Symbol.') && (StableSymbol as any)[desc.substring(7)];
-      return s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`;
-    }
-    case '[object Promise]': {
-      const promiseContent = getAsyncContent(value as any as Promise<unknown>);
-      switch (promiseContent.state) {
-        case 'fulfilled':
-          return `Promise.resolve(${stringifyInternal(promiseContent.value, currentValues, getAsyncContent)})`;
-        case 'rejected':
-          return `Promise.reject(${stringifyInternal(promiseContent.value, currentValues, getAsyncContent)})`;
-        case 'pending':
-          return `new Promise(() => {/*pending*/})`;
-        case 'unknown':
-        default:
-          return `new Promise(() => {/*unknown*/})`;
+      case '[object Date]': {
+        const d = val as unknown as Date;
+        resultParts.push(
+          safeNumberIsNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${safeJsonStringify(safeToISOString(d))})`,
+        );
+        break;
       }
-    }
-    case '[object Error]':
-      if (value instanceof Error) {
-        return `new Error(${stringifyInternal(value.message, currentValues, getAsyncContent)})`;
+      case '[object Map]':
+        stack.push(')');
+        stack.push({ value: Array.from(val as any), previousValues: curValues });
+        stack.push('new Map(');
+        break;
+      case '[object Null]':
+        resultParts.push('null');
+        break;
+      case '[object Number]':
+        resultParts.push(
+          typeof val === 'number' ? stringifyNumber(val) : `new Number(${stringifyNumber(Number(val))})`,
+        );
+        break;
+      case '[object Object]': {
+        try {
+          const toStringAccessor = (val as any).toString; // <-- Can throw
+          if (typeof toStringAccessor === 'function' && toStringAccessor !== Object.prototype.toString) {
+            // Instance (or one of its parent prototypes) overrides the default toString of Object
+            resultParts.push((val as any).toString()); // <-- Can throw
+            break;
+          }
+        } catch {
+          // Only return what would have been the default toString on Object
+          resultParts.push('[object Object]');
+          break;
+        }
+
+        const items: StackItem[] = ['{'];
+        let first = true;
+
+        if (safeObjectGetPrototypeOf(val) === null) {
+          items.push('__proto__:null');
+          first = false;
+        }
+
+        const keys = safeObjectKeys(val as object);
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (!first) items.push(',');
+          first = false;
+          items.push(
+            `${k === '__proto__' ? '["__proto__"]' : safeJsonStringify(k)}:`,
+          );
+          items.push({ value: (val as any)[k], previousValues: curValues });
+        }
+
+        const symbols = safeFilter(safeObjectGetOwnPropertySymbols(val), (s) => {
+          const descriptor = safeObjectGetOwnPropertyDescriptor(val, s);
+          return descriptor && descriptor.enumerable;
+        });
+        for (let si = 0; si < symbols.length; si++) {
+          const s = symbols[si];
+          if (!first) items.push(',');
+          first = false;
+          items.push('[');
+          items.push({ value: s, previousValues: curValues });
+          items.push(']:');
+          items.push({ value: (val as any)[s], previousValues: curValues });
+        }
+
+        items.push('}');
+        for (let i = items.length - 1; i >= 0; i--) stack.push(items[i]);
+        break;
       }
-      break;
-    case '[object Undefined]':
-      return `undefined`;
-    case '[object Int8Array]':
-    case '[object Uint8Array]':
-    case '[object Uint8ClampedArray]':
-    case '[object Int16Array]':
-    case '[object Uint16Array]':
-    case '[object Int32Array]':
-    case '[object Uint32Array]':
-    case '[object Float32Array]':
-    case '[object Float64Array]':
-    case '[object BigInt64Array]':
-    case '[object BigUint64Array]': {
-      if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(value)) {
-        // Warning: value.values() may crash at runtime if Buffer got poisoned
-        return `Buffer.from(${
+      case '[object Set]':
+        stack.push(')');
+        stack.push({ value: Array.from(val as any), previousValues: curValues });
+        stack.push('new Set(');
+        break;
+      case '[object String]':
+        resultParts.push(typeof val === 'string' ? safeJsonStringify(val) : `new String(${safeJsonStringify(val)})`);
+        break;
+      case '[object Symbol]': {
+        const s = val as unknown as symbol;
+        if (StableSymbol.keyFor(s) !== undefined) {
+          resultParts.push(`Symbol.for(${safeJsonStringify(StableSymbol.keyFor(s))})`);
+        } else {
+          const desc = getSymbolDescription(s);
+          if (desc === null) {
+            resultParts.push('Symbol()');
+          } else {
+            const knownSymbol = desc.startsWith('Symbol.') && (StableSymbol as any)[desc.substring(7)];
+            resultParts.push(s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`);
+          }
+        }
+        break;
+      }
+      case '[object Promise]': {
+        const promiseContent = getAsyncContent(val as any as Promise<unknown>);
+        switch (promiseContent.state) {
+          case 'fulfilled':
+            stack.push(')');
+            stack.push({ value: promiseContent.value, previousValues: curValues });
+            stack.push('Promise.resolve(');
+            break;
+          case 'rejected':
+            stack.push(')');
+            stack.push({ value: promiseContent.value, previousValues: curValues });
+            stack.push('Promise.reject(');
+            break;
+          case 'pending':
+            resultParts.push('new Promise(() => {/*pending*/})');
+            break;
+          case 'unknown':
+          default:
+            resultParts.push('new Promise(() => {/*unknown*/})');
+            break;
+        }
+        break;
+      }
+      case '[object Error]':
+        if (val instanceof Error) {
+          stack.push(')');
+          stack.push({ value: val.message, previousValues: curValues });
+          stack.push('new Error(');
+        } else {
+          handled = false;
+        }
+        break;
+      case '[object Undefined]':
+        resultParts.push('undefined');
+        break;
+      case '[object Int8Array]':
+      case '[object Uint8Array]':
+      case '[object Uint8ClampedArray]':
+      case '[object Int16Array]':
+      case '[object Uint16Array]':
+      case '[object Int32Array]':
+      case '[object Uint32Array]':
+      case '[object Float32Array]':
+      case '[object Float64Array]':
+      case '[object BigInt64Array]':
+      case '[object BigUint64Array]': {
+        if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(val)) {
+          // Warning: value.values() may crash at runtime if Buffer got poisoned
           // This cast is necessary because `detached` only exists in ES2024,
           // but we target ES2020.
-          (value.buffer as { detached?: boolean }).detached
-            ? // Don't try to access the buffer contents if its underlying
-              // `ArrayBuffer` is detached because it will throw.
-              '/*detached ArrayBuffer*/'
-            : stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)
-        })`;
-      }
-      const valuePrototype = safeObjectGetPrototypeOf(value);
-      const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
-      if (typeof className === 'string') {
-        const typedArray = value as unknown as
-          | Int8Array
-          | Uint8Array
-          | Uint8ClampedArray
-          | Int16Array
-          | Uint16Array
-          | Int32Array
-          | Uint32Array
-          | Float32Array
-          | Float64Array
-          | BigInt64Array
-          | BigUint64Array;
-        // This cast is necessary because `detached` only exists in ES2024,
-        // but we target ES2020.
-        if ((typedArray.buffer as { detached?: boolean }).detached) {
-          // Don't try to access the buffer contents if its underlying
-          // `ArrayBuffer` is detached because it will throw.
-          return `${className}.from(/*detached ArrayBuffer*/)`;
+          if ((val.buffer as { detached?: boolean }).detached) {
+            // Don't try to access the buffer contents if its underlying
+            // `ArrayBuffer` is detached because it will throw.
+            resultParts.push('Buffer.from(/*detached ArrayBuffer*/)');
+          } else {
+            stack.push(')');
+            stack.push({ value: safeArrayFrom(val.values()), previousValues: curValues });
+            stack.push('Buffer.from(');
+          }
+          break;
         }
-
-        // Warning: typedArray.values() may crash at runtime if type got poisoned
-        const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
-        return `${className}.from(${stringifyInternal(
-          safeArrayFrom(valuesFromTypedArr),
-          currentValues,
-          getAsyncContent,
-        )})`;
+        const valuePrototype = safeObjectGetPrototypeOf(val);
+        const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
+        if (typeof className === 'string') {
+          const typedArray = val as unknown as
+            | Int8Array
+            | Uint8Array
+            | Uint8ClampedArray
+            | Int16Array
+            | Uint16Array
+            | Int32Array
+            | Uint32Array
+            | Float32Array
+            | Float64Array
+            | BigInt64Array
+            | BigUint64Array;
+          // This cast is necessary because `detached` only exists in ES2024,
+          // but we target ES2020.
+          if ((typedArray.buffer as { detached?: boolean }).detached) {
+            // Don't try to access the buffer contents if its underlying
+            // `ArrayBuffer` is detached because it will throw.
+            resultParts.push(`${className}.from(/*detached ArrayBuffer*/)`);
+          } else {
+            // Warning: typedArray.values() may crash at runtime if type got poisoned
+            const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
+            stack.push(')');
+            stack.push({ value: safeArrayFrom(valuesFromTypedArr), previousValues: curValues });
+            stack.push(`${className}.from(`);
+          }
+          break;
+        }
+        handled = false;
+        break;
       }
-      break;
+      default:
+        handled = false;
+        break;
+    }
+
+    // Default treatment, if none of the above handled the value
+    if (!handled) {
+      try {
+        resultParts.push((val as any).toString());
+      } catch {
+        resultParts.push(safeToString(val));
+      }
     }
   }
 
-  // default treatment, if none of the above are valid
-  try {
-    return (value as any).toString();
-  } catch {
-    return safeToString(value);
-  }
+  return safeJoin(resultParts, '');
 }
 
 /**
