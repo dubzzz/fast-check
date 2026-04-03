@@ -1,0 +1,96 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["rolldown.common.config.js"]
+    },
+    "packages/fast-check": {
+      "entry": [
+        "src/fast-check.ts",
+        "test-bundle/**/*.{mjs,cjs}",
+        "test-types/**/*.{ts,mts}",
+        "babel.config.cjs"
+      ],
+      "ignoreBinaries": ["nvs"],
+      "ignoreDependencies": ["fast-check"]
+    },
+    "packages/vitest": {
+      "entry": [
+        "src/vitest-fast-check.ts",
+        "test/**/*.spec.ts",
+        "test-bundle/**/*.{mjs,cjs}",
+        "test-types/**/*.{ts,mts}"
+      ],
+      "ignoreDependencies": ["@fast-check/vitest", "fast-check"]
+    },
+    "packages/jest": {
+      "entry": [
+        "src/jest-fast-check.ts",
+        "src/jest-fast-check-worker.ts",
+        "test-bundle/**/*.{mjs,cjs}",
+        "test-types/**/*.{ts,mts}",
+        "test/types.ts"
+      ],
+      "ignoreDependencies": ["@fast-check/jest", "fast-check", "jest-jasmine2"]
+    },
+    "packages/ava": {
+      "entry": [
+        "src/ava-fast-check.ts",
+        "test-bundle/**/*.{mjs,cjs,js}",
+        "test-types/**/*.{ts,mts}"
+      ],
+      "ignoreDependencies": ["@fast-check/ava", "fast-check"]
+    },
+    "packages/worker": {
+      "entry": [
+        "src/main.ts",
+        "test-bundle/**/*.{mjs,cjs}",
+        "test-types/**/*.{ts,mts}"
+      ],
+      "ignoreDependencies": ["@fast-check/worker"]
+    },
+    "packages/poisoning": {
+      "entry": [
+        "src/main.ts",
+        "test-types/**/*.{ts,mts}"
+      ],
+      "ignoreDependencies": ["@fast-check/poisoning"]
+    },
+    "packages/packaged": {
+      "entry": [
+        "src/packaged.ts",
+        "test-types/**/*.{ts,mts}"
+      ]
+    },
+    "examples": {
+      "entry": [
+        "**/*.spec.ts",
+        "vitest.setup.ts",
+        "**/src/**/*.{ts,tsx}"
+      ]
+    },
+    "website": {
+      "entry": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        "prebuild/**/*.mjs",
+        "blog/**/*.{tsx,jsx,js,mjs}"
+      ],
+      "ignoreDependencies": [
+        "@docusaurus/plugin-content-docs",
+        "@jest/globals",
+        "@site/.*",
+        "fast-check",
+        "jest"
+      ]
+    }
+  },
+  "ignore": [
+    ".github/workflows/scripts/**",
+    "packages/fast-check/typedoc.json",
+    "vitest.config.mjs"
+  ],
+  "rules": {
+    "duplicates": "off"
+  },
+  "ignoreDependencies": ["@fast-check/packaged", "publint"]
+}
