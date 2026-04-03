@@ -7,8 +7,6 @@ import { unlinkedEntitiesForEntityGraph } from './_internals/UnlinkedEntitiesFor
 import type { ArrayConstraints } from './array.js';
 import type { UniqueArrayConstraintsRecommended } from './uniqueArray.js';
 
-const safeObjectCreate = Object.create;
-const safeObjectKeys = Object.keys;
 
 export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRelations as EntityGraphRelations };
 
@@ -114,9 +112,9 @@ export function entityGraph<TEntityFields, TEntityRelations extends EntityRelati
   relations: TEntityRelations,
   constraints: EntityGraphContraints<TEntityFields> = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
-  const allKeys = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
-  const initialPoolConstraints = constraints.initialPoolConstraints || safeObjectCreate(null);
-  const unicityConstraints = constraints.unicityConstraints || safeObjectCreate(null);
+  const allKeys = Object.keys(arbitraries) as (keyof typeof arbitraries)[];
+  const initialPoolConstraints = constraints.initialPoolConstraints || Object.create(null);
+  const unicityConstraints = constraints.unicityConstraints || Object.create(null);
   const unlinkedContraints = { noNullPrototype: constraints.noNullPrototype };
 
   return (

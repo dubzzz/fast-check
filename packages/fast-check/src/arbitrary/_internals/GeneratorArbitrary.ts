@@ -2,7 +2,6 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import type { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
-import { safeMap } from '../../utils/globals.js';
 import type { GeneratorContext, GeneratorValue, PreBuiltValue } from './builders/GeneratorValueBuilder.js';
 import { buildGeneratorValue } from './builders/GeneratorValueBuilder.js';
 import { buildStableArbitraryGeneratorCache, naiveIsEqual } from './builders/StableArbitraryGeneratorCache.js';
@@ -42,7 +41,7 @@ export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
       function computePreBuiltValues(): PreBuiltValue[] {
         const subValues = shrink.value; // trigger an explicit access to the value in case it needs to be cloned
         const subContexts = shrink.context;
-        return safeMap(history, (entry, index) => ({
+        return history.map((entry, index) => ({
           arb: entry.arb,
           value: subValues[index],
           context: subContexts[index],

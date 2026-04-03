@@ -6,15 +6,7 @@ import {
   refineConstraintsForDoubleOnly,
 } from './_internals/helpers/DoubleOnlyHelpers.js';
 import { bigInt } from './bigInt.js';
-import { BigInt } from '../utils/globals.js';
 
-const safeNumberIsInteger = Number.isInteger;
-const safeNumberIsNaN = Number.isNaN;
-
-const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
-const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeMaxValue = Number.MAX_VALUE;
-const safeNaN = Number.NaN;
 
 /**
  * Constraints to be applied on {@link double}
@@ -76,7 +68,7 @@ export interface DoubleConstraints {
  * @internal
  */
 function safeDoubleToIndex(d: number, constraintsLabel: keyof DoubleConstraints): bigint {
-  if (safeNumberIsNaN(d)) {
+  if (Number.isNaN(d)) {
     // Number.NaN does not have any associated index in the current implementation
     throw new Error('fc.double constraints.' + constraintsLabel + ' must be a 64-bit float');
   }
@@ -91,7 +83,7 @@ function unmapperDoubleToIndex(value: unknown): bigint {
 
 /** @internal */
 function numberIsNotInteger(value: number): boolean {
-  return !safeNumberIsInteger(value);
+  return !Number.isInteger(value);
 }
 
 /** @internal */
@@ -101,8 +93,8 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
     noNaN = false,
     minExcluded = false,
     maxExcluded = false,
-    min = noDefaultInfinity ? -safeMaxValue : safeNegativeInfinity,
-    max = noDefaultInfinity ? safeMaxValue : safePositiveInfinity,
+    min = noDefaultInfinity ? -Number.MAX_VALUE : Number.NEGATIVE_INFINITY,
+    max = noDefaultInfinity ? Number.MAX_VALUE : Number.POSITIVE_INFINITY,
   } = constraints;
   const minIndexRaw = safeDoubleToIndex(min, 'min');
   const minIndex = minExcluded ? minIndexRaw + BigInt(1) : minIndexRaw;
@@ -127,12 +119,12 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
   const maxIndexWithNaN = positiveMaxIdx ? maxIndex + BigInt(1) : maxIndex;
   return bigInt({ min: minIndexWithNaN, max: maxIndexWithNaN }).map(
     (index) => {
-      if (maxIndex < index || index < minIndex) return safeNaN;
+      if (maxIndex < index || index < minIndex) return Number.NaN;
       else return indexToDouble(index);
     },
     (value) => {
       if (typeof value !== 'number') throw new Error('Unsupported type');
-      if (safeNumberIsNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
+      if (Number.isNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
       return doubleToIndex(value);
     },
   );

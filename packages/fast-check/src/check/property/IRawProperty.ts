@@ -3,7 +3,6 @@ import type { Stream } from '../../stream/Stream.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 
-const safeMathLog = Math.log;
 
 /**
  * Represent failures of the property
@@ -93,5 +92,5 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
  */
 export function runIdToFrequency(runId: number): number {
   // 0.4342944819032518 = 1 / log(10)
-  return 2 + ~~(safeMathLog(runId + 1) * 0.4342944819032518);
+  return 2 + ~~(Math.log(runId + 1) * 0.4342944819032518);
 }

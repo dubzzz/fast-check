@@ -3,8 +3,6 @@ import type { FloatConstraints } from './float.js';
 import { float } from './float.js';
 import { array } from './array.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
-import { Float32Array } from '../utils/globals.js';
-
 /**
  * Constraints to be applied on {@link float32Array}
  * @remarks Since 2.9.0

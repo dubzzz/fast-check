@@ -1,11 +1,5 @@
-import { safePush } from '../../../utils/globals.js';
 import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor.js';
 
-const safeObjectCreate = Object.create;
-const safeObjectDefineProperty = Object.defineProperty;
-const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
-const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 
 type OrderedValues<T, TNoKey> = (T[keyof T] | TNoKey)[];
 type ObjectDefinition<T, TNoKey> = [/*items*/ OrderedValues<T, TNoKey>, /*null prototype*/ boolean];
@@ -15,11 +9,11 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
   return function valuesAndSeparateKeysToObjectMapper(
     definition: ObjectDefinition<T, TNoKey>,
   ): Partial<T> & Pick<T, EnumerableKeyOf<T>> {
-    const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = definition[1] ? safeObjectCreate(null) : {};
+    const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = definition[1] ? Object.create(null) : {};
     for (let idx = 0; idx !== keys.length; ++idx) {
       const valueWrapper = definition[0][idx];
       if (valueWrapper !== noKeyValue) {
-        safeObjectDefineProperty(obj, keys[idx], {
+        Object.defineProperty(obj, keys[idx], {
           value: valueWrapper,
           configurable: true,
           enumerable: true,
@@ -45,7 +39,7 @@ export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: Enum
     let extractedPropertiesCount = 0;
     const extractedValues: OrderedValues<T, TNoKey> = [];
     for (let idx = 0; idx !== keys.length; ++idx) {
-      const descriptor = safeObjectGetOwnPropertyDescriptor(value, keys[idx]);
+      const descriptor = Object.getOwnPropertyDescriptor(value, keys[idx]);
       if (descriptor !== undefined) {
         if (!descriptor.configurable || !descriptor.enumerable || !descriptor.writable) {
           throw new Error('Incompatible instance received: should contain only c/e/w properties');
@@ -54,13 +48,13 @@ export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: Enum
           throw new Error('Incompatible instance received: should contain only no get/set properties');
         }
         ++extractedPropertiesCount;
-        safePush(extractedValues, descriptor.value);
+        extractedValues.push(descriptor.value);
       } else {
-        safePush(extractedValues, noKeyValue);
+        extractedValues.push(noKeyValue);
       }
     }
-    const namePropertiesCount = safeObjectGetOwnPropertyNames(value).length;
-    const symbolPropertiesCount = safeObjectGetOwnPropertySymbols(value).length;
+    const namePropertiesCount = Object.getOwnPropertyNames(value).length;
+    const symbolPropertiesCount = Object.getOwnPropertySymbols(value).length;
     if (extractedPropertiesCount !== namePropertiesCount + symbolPropertiesCount) {
       throw new Error('Incompatible instance received: should not contain extra properties');
     }

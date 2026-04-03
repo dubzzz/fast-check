@@ -5,9 +5,6 @@ import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty.js';
 
-const safeDateNow = Date.now;
-const safeSetTimeout = setTimeout;
-const safeClearTimeout = clearTimeout;
 
 /** @internal */
 type MinimalQualifiedParameters<Ts> = Pick<
@@ -22,7 +19,7 @@ export function decorateProperty<Ts>(
 ): IRawProperty<Ts> {
   let prop = rawProperty;
   if (rawProperty.isAsync() && qParams.timeout !== undefined) {
-    prop = new TimeoutProperty(prop, qParams.timeout, safeSetTimeout, safeClearTimeout);
+    prop = new TimeoutProperty(prop, qParams.timeout, setTimeout, clearTimeout);
   }
   if (qParams.unbiased) {
     prop = new UnbiasedProperty(prop);
@@ -30,21 +27,21 @@ export function decorateProperty<Ts>(
   if (qParams.skipAllAfterTimeLimit !== undefined) {
     prop = new SkipAfterProperty(
       prop,
-      safeDateNow,
+      Date.now,
       qParams.skipAllAfterTimeLimit,
       false,
-      safeSetTimeout,
-      safeClearTimeout,
+      setTimeout,
+      clearTimeout,
     );
   }
   if (qParams.interruptAfterTimeLimit !== undefined) {
     prop = new SkipAfterProperty(
       prop,
-      safeDateNow,
+      Date.now,
       qParams.interruptAfterTimeLimit,
       true,
-      safeSetTimeout,
-      safeClearTimeout,
+      setTimeout,
+      clearTimeout,
     );
   }
   if (qParams.skipEqualValues) {

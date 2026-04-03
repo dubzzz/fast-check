@@ -1,11 +1,7 @@
-import { BigInt, String } from '../../../utils/globals.js';
-
-const safeMathFloor = Math.floor;
-const safeMathLog = Math.log;
 
 /** @internal */
 export function integerLogLike(v: number): number {
-  return safeMathFloor(safeMathLog(v) / safeMathLog(2));
+  return Math.floor(Math.log(v) / Math.log(2));
 }
 
 /** @internal */

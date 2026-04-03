@@ -1,13 +1,4 @@
 import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
-import {
-  Error as SError,
-  String as SString,
-  Map as SMap,
-  safeMapGet,
-  safeMapSet,
-  safeMapHas,
-} from '../../../utils/globals.js';
-
 /** @internal */
 export type InversedRelationsEntry<TEntityFields> = { type: keyof TEntityFields; property: string };
 
@@ -19,7 +10,7 @@ export function buildInversedRelationsMapping<TEntityFields>(
   relations: EntityRelations<TEntityFields>,
 ): Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>> {
   let foundInversedRelations = 0;
-  const requestedInversedRelations = new SMap<
+  const requestedInversedRelations = new Map<
     keyof TEntityFields,
     Map<string, InversedRelationsEntry<TEntityFields>>
   >();
@@ -30,27 +21,27 @@ export function buildInversedRelationsMapping<TEntityFields>(
       if (relation.arity !== 'inverse') {
         continue;
       }
-      let existingOnes = safeMapGet(requestedInversedRelations, relation.type);
+      let existingOnes = requestedInversedRelations.get(relation.type);
       if (existingOnes === undefined) {
-        existingOnes = new SMap();
-        safeMapSet(requestedInversedRelations, relation.type, existingOnes);
+        existingOnes = new Map();
+        requestedInversedRelations.set(relation.type, existingOnes);
       }
-      if (safeMapHas(existingOnes, relation.forwardRelationship)) {
-        throw new SError(
-          `Cannot declare multiple inverse relationships for the same forward relationship ${SString(relation.forwardRelationship)} on type ${SString(relation.type)}`,
+      if (existingOnes.has(relation.forwardRelationship)) {
+        throw new Error(
+          `Cannot declare multiple inverse relationships for the same forward relationship ${String(relation.forwardRelationship)} on type ${String(relation.type)}`,
         );
       }
-      safeMapSet(existingOnes, relation.forwardRelationship, { type: name, property: fieldName });
+      existingOnes.set(relation.forwardRelationship, { type: name, property: fieldName });
       foundInversedRelations += 1;
     }
   }
-  const inversedRelations = new SMap<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>();
+  const inversedRelations = new Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>();
   if (foundInversedRelations === 0) {
     return inversedRelations;
   }
   for (const name in relations) {
     const relationsForName = relations[name];
-    const requestedInversedRelationsForName = safeMapGet(requestedInversedRelations, name);
+    const requestedInversedRelationsForName = requestedInversedRelations.get(name);
     if (requestedInversedRelationsForName === undefined) {
       continue;
     }
@@ -59,20 +50,20 @@ export function buildInversedRelationsMapping<TEntityFields>(
       if (relation.arity === 'inverse') {
         continue;
       }
-      const requestedIfAny = safeMapGet(requestedInversedRelationsForName, fieldName);
+      const requestedIfAny = requestedInversedRelationsForName.get(fieldName);
       if (requestedIfAny === undefined) {
         continue;
       }
       if (requestedIfAny.type !== relation.type) {
-        throw new SError(
-          `Inverse relationship ${SString(requestedIfAny.property)} on type ${SString(requestedIfAny.type)} references forward relationship ${SString(fieldName)} but types do not match`,
+        throw new Error(
+          `Inverse relationship ${String(requestedIfAny.property)} on type ${String(requestedIfAny.type)} references forward relationship ${String(fieldName)} but types do not match`,
         );
       }
-      safeMapSet(inversedRelations, relation, requestedIfAny);
+      inversedRelations.set(relation, requestedIfAny);
     }
   }
   if (inversedRelations.size !== foundInversedRelations) {
-    throw new SError(`Some inverse relationships could not be matched with their corresponding forward relationships`);
+    throw new Error(`Some inverse relationships could not be matched with their corresponding forward relationships`);
   }
   return inversedRelations;
 }

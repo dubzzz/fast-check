@@ -2,16 +2,6 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
-import {
-  safeAdd,
-  safeHas,
-  safeMap,
-  safeMapGet,
-  safePush,
-  Set as SSet,
-  Error as SError,
-  String as SString,
-} from '../../utils/globals.js';
 import { constant } from '../constant.js';
 import { integer } from '../integer.js';
 import { noBias } from '../noBias.js';
@@ -29,7 +19,6 @@ import type {
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
-const safeObjectCreate = Object.create;
 
 /** @internal */
 function produceLinkUnitaryIndexArbitrary(
@@ -78,7 +67,7 @@ function computeLinkIndex(
         { nil: [], depthIdentifier: currentEntityDepth },
       ).generate(mrng, biasFactor).value;
       let offset = 0;
-      return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
+      return values.map((v) => (v === countInTargetType ? v + offset++ : v));
     }
   }
 }
@@ -97,8 +86,8 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     super();
 
     // Basic sanity checks on the relations
-    const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
-    const exclusiveEntities = new SSet<keyof TEntityRelations>();
+    const nonExclusiveEntities = new Set<keyof TEntityRelations>();
+    const exclusiveEntities = new Set<keyof TEntityRelations>();
     for (const name in relations) {
       const relationsForName = relations[name];
       for (const fieldName in relationsForName) {
@@ -107,21 +96,21 @@ class OnTheFlyLinksForEntityGraphArbitrary<
           continue;
         }
         if (relation.strategy === 'exclusive') {
-          if (safeHas(nonExclusiveEntities, relation.type)) {
-            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+          if (nonExclusiveEntities.has(relation.type)) {
+            throw new Error(`Cannot mix exclusive with other strategies for type ${String(relation.type)}`);
           }
-          safeAdd(exclusiveEntities, relation.type);
+          exclusiveEntities.add(relation.type);
         } else {
-          if (safeHas(exclusiveEntities, relation.type)) {
-            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+          if (exclusiveEntities.has(relation.type)) {
+            throw new Error(`Cannot mix exclusive with other strategies for type ${String(relation.type)}`);
           }
-          safeAdd(nonExclusiveEntities, relation.type);
+          nonExclusiveEntities.add(relation.type);
         }
         if (relation.strategy === 'successor' && relation.type !== (name as keyof TEntityRelations)) {
-          throw new SError(`Cannot mix types for the strategy successor`);
+          throw new Error(`Cannot mix types for the strategy successor`);
         }
         if (relation.strategy === 'successor' && relation.arity === '1') {
-          throw new SError(`Cannot use an arity of 1 for the strategy successor`);
+          throw new Error(`Cannot use an arity of 1 for the strategy successor`);
         }
       }
     }
@@ -131,7 +120,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
   }
 
   createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
-    const emptyLinksInstance = safeObjectCreate(null);
+    const emptyLinksInstance = Object.create(null);
     const relationsForType = this.relations[targetType];
     for (const name in relationsForType) {
       const relation = relationsForType[name];
@@ -144,15 +133,15 @@ class OnTheFlyLinksForEntityGraphArbitrary<
 
   generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
     // The set of all produced links between entities.
-    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = Object.create(null);
     for (const name in this.relations) {
       producedLinks[name as Extract<keyof TEntityFields, string>] = [];
     }
     // Made of any entity whose links have to be created before building the whole graph.
     const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
     for (const name of this.defaultEntities) {
-      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], this.createEmptyLinksInstanceFor(name));
+      toBeProducedEntities.push({ type: name, indexInType: producedLinks[name].length, depth: 0 });
+      producedLinks[name].push(this.createEmptyLinksInstanceFor(name));
     }
 
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
@@ -187,13 +176,13 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
           if (link >= countInTargetType) {
-            safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, this.createEmptyLinksInstanceFor(targetType));
+            toBeProducedEntities.push({ type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
+            producedLinksInTargetType.push(this.createEmptyLinksInstanceFor(targetType));
           }
-          const inversed = safeMapGet(this.inversedRelations, relation);
+          const inversed = this.inversedRelations.get(relation);
           if (inversed !== undefined) {
             const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
-            safePush(knownInversedLinks as number[], currentEntity.indexInType);
+            (knownInversedLinks as number[]).push(currentEntity.indexInType);
           }
         }
       }

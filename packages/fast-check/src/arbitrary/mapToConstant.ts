@@ -4,8 +4,6 @@ import {
   indexToMappedConstantMapperFor,
   indexToMappedConstantUnmapperFor,
 } from './_internals/mappers/IndexToMappedConstant.js';
-import { Error } from '../utils/globals.js';
-
 /** @internal */
 function computeNumChoices<T>(options: { num: number; build: (idInGroup: number) => T }[]): number {
   if (options.length === 0) throw new Error(`fc.mapToConstant expects at least one option`);

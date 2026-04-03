@@ -2,16 +2,14 @@ import { Value } from '../../../check/arbitrary/definition/Value.js';
 import type { Stream } from '../../../stream/Stream.js';
 import { stream } from '../../../stream/Stream.js';
 
-const safeMathCeil = Math.ceil;
-const safeMathFloor = Math.floor;
 
 /** @internal */
 function halvePosInteger(n: number): number {
-  return safeMathFloor(n / 2);
+  return Math.floor(n / 2);
 }
 /** @internal */
 function halveNegInteger(n: number): number {
-  return safeMathCeil(n / 2);
+  return Math.ceil(n / 2);
 }
 
 /**

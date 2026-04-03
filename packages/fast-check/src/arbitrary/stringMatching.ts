@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
@@ -12,7 +11,6 @@ import { oneof } from './oneof.js';
 import { string } from './string.js';
 import { tuple } from './tuple.js';
 
-const safeStringFromCodePoint = String.fromCodePoint;
 
 /**
  * Constraints to be applied on the arbitrary {@link stringMatching}
@@ -64,20 +62,20 @@ function toMatchingArbitrary(
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar().filter((c) => safeIndexOf(wordChars, c) === -1);
+            return defaultChar().filter((c) => wordChars.indexOf(c) === -1);
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar().filter((c) => safeIndexOf(digitChars, c) === -1);
+            return defaultChar().filter((c) => digitChars.indexOf(c) === -1);
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar().filter((c) => safeIndexOf(spaceChars, c) === -1);
+            return defaultChar().filter((c) => spaceChars.indexOf(c) === -1);
           }
           case '\\b':
           case '\\B': {
@@ -85,7 +83,7 @@ function toMatchingArbitrary(
           }
           case '.': {
             const forbiddenChars = flags.dotAll ? terminatorChars : newLineAndTerminatorChars;
-            return defaultChar().filter((c) => safeIndexOf(forbiddenChars, c) === -1);
+            return defaultChar().filter((c) => forbiddenChars.indexOf(c) === -1);
           }
         }
       }
@@ -124,26 +122,26 @@ function toMatchingArbitrary(
     }
     case 'Alternative': {
       // TODO - No unmap implemented yet!
-      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
-        safeJoin(vs, ''),
+      return tuple(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
+        vs.join(''),
       );
     }
     case 'CharacterClass':
       if (astNode.negative) {
-        const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
-        return defaultChar().filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
+        const childrenArbitraries = astNode.expressions.map((n) => toMatchingArbitrary(n, constraints, flags));
+        return defaultChar().filter((c) => childrenArbitraries.every((arb) => !arb.canShrinkWithoutContext(c)));
       }
-      return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags)));
+      return oneof(...astNode.expressions.map((n) => toMatchingArbitrary(n, constraints, flags)));
     case 'ClassRange': {
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
       return integer({ min, max }).map(
-        (n) => safeStringFromCodePoint(n),
+        (n) => String.fromCodePoint(n),
         (c) => {
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          return safeCharCodeAt(c, 0)!;
+          return c.charCodeAt(0)!;
         },
       );
     }
@@ -165,7 +163,7 @@ function toMatchingArbitrary(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
-                  return [safeSubstring(value, 0, value.length - 1), value[value.length - 1]];
+                  return [value.substring(0, value.length - 1), value[value.length - 1]];
                 },
               ),
             );
@@ -176,7 +174,7 @@ function toMatchingArbitrary(
                 (t) => `${t[0]}${t[1]}`,
                 (value) => {
                   if (typeof value !== 'string' || value.length === 0) throw new Error('Invalid type');
-                  return [value[0], safeSubstring(value, 1)];
+                  return [value[0], value.substring(1)];
                 },
               ),
             );

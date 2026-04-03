@@ -1,13 +1,11 @@
-import { safeIndexOf } from '../../../utils/globals.js';
 import { TokenizerBlockMode, readFrom } from './ReadRegex.js';
 
-const safeStringFromCodePoint = String.fromCodePoint;
 
 /**
  * Pop the last pushed token and return it,
  * Throw if unable to pop it.
  */
-function safePop(tokens: RegexToken[]): RegexToken {
+function popToken(tokens: RegexToken[]): RegexToken {
   const previous = tokens.pop();
   if (previous === undefined) {
     throw new Error('Unable to extract token preceeding the currently parsed one');
@@ -179,7 +177,7 @@ function blockToCharToken(block: string): CharRegexToken {
       case 'x': {
         const allDigits = block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
-        const symbol = safeStringFromCodePoint(codePoint);
+        const symbol = String.fromCodePoint(codePoint);
         return { type: 'Char', kind: 'hex', symbol, value: block, codePoint };
       }
       case 'u': {
@@ -188,7 +186,7 @@ function blockToCharToken(block: string): CharRegexToken {
         }
         const allDigits = block[2] === '{' ? block.substring(3, block.length - 1) : block.substring(2);
         const codePoint = Number.parseInt(allDigits, 16);
-        const symbol = safeStringFromCodePoint(codePoint);
+        const symbol = String.fromCodePoint(codePoint);
         return { type: 'Char', kind: 'unicode', symbol, value: block, codePoint };
       }
 
@@ -224,7 +222,7 @@ function blockToCharToken(block: string): CharRegexToken {
         if (isDigit(next)) {
           const allDigits = block.substring(1);
           const codePoint = Number(allDigits);
-          const symbol = safeStringFromCodePoint(codePoint);
+          const symbol = String.fromCodePoint(codePoint);
           return { type: 'Char', kind: 'decimal', symbol, value: block, codePoint };
         }
         if (block.length > 2 && (next === 'p' || next === 'P')) {
@@ -268,7 +266,7 @@ function pushTokens(
       }
       case '*':
       case '+': {
-        const previous = safePop(tokens);
+        const previous = popToken(tokens);
         tokens.push({
           type: 'Repetition',
           expression: previous,
@@ -277,7 +275,7 @@ function pushTokens(
         break;
       }
       case '?': {
-        const previous = safePop(tokens);
+        const previous = popToken(tokens);
         if (previous.type === 'Repetition') {
           previous.quantifier.greedy = false;
           tokens.push(previous);
@@ -295,7 +293,7 @@ function pushTokens(
           tokens.push(simpleChar(block));
           break;
         }
-        const previous = safePop(tokens);
+        const previous = popToken(tokens);
         const quantifierText = block.substring(1, block.length - 1);
         const quantifierTokens = quantifierText.split(','); // at that point quantifierTokens.length is either 1 or 2 by construct
         const from = Number(quantifierTokens[0]);
@@ -454,7 +452,7 @@ function pushTokens(
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
+  const unicodeMode = [...regex.flags].indexOf('u') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
   pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });

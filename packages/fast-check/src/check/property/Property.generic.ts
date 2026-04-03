@@ -11,8 +11,6 @@ import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
 } from '../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
-import { Error } from '../../utils/globals.js';
-
 /**
  * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
  * on a {@link IPropertyWithHooks}

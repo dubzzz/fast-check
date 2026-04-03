@@ -4,8 +4,6 @@ import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { biasNumericRange, bigIntLogLike } from './helpers/BiasNumericRange.js';
 import { shrinkBigInt } from './helpers/ShrinkBigInt.js';
-import { BigInt } from '../../utils/globals.js';
-
 /** @internal */
 export class BigIntArbitrary extends Arbitrary<bigint> {
   constructor(

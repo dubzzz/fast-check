@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
-import { safeNormalize, safePush } from '../../utils/globals.js';
 import { mapToConstant } from '../mapToConstant.js';
 import type { GraphemeRange } from './data/GraphemeRanges.js';
 import {
@@ -45,15 +44,15 @@ function getOrCreateStringUnitInstance(type: StringUnitType, alphabet: StringUni
   const ranges = type === 'binary' ? alphabetRanges : intersectGraphemeRanges(alphabetRanges, autonomousGraphemeRanges);
   const entries: GraphemeRangeEntry[] = [];
   for (const range of ranges) {
-    safePush(entries, convertGraphemeRangeToMapToConstantEntry(range));
+    entries.push(convertGraphemeRangeToMapToConstantEntry(range));
   }
   if (type === 'grapheme') {
     const decomposedRanges = intersectGraphemeRanges(alphabetRanges, autonomousDecomposableGraphemeRanges);
     for (const range of decomposedRanges) {
       const rawEntry = convertGraphemeRangeToMapToConstantEntry(range);
-      safePush(entries, {
+      entries.push({
         num: rawEntry.num,
-        build: (idInGroup) => safeNormalize(rawEntry.build(idInGroup), 'NFD'),
+        build: (idInGroup) => rawEntry.build(idInGroup).normalize('NFD'),
       });
     }
   }

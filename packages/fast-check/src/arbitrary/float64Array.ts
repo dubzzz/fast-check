@@ -3,8 +3,6 @@ import type { DoubleConstraints } from './double.js';
 import { double } from './double.js';
 import { array } from './array.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
-import { Float64Array } from '../utils/globals.js';
-
 /**
  * Constraints to be applied on {@link float64Array}
  * @remarks Since 2.9.0

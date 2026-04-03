@@ -6,7 +6,6 @@ import type { UniqueArrayConstraintsRecommended } from '../uniqueArray.js';
 import { uniqueArray } from '../uniqueArray.js';
 import type { Arbitraries, UnlinkedEntities } from './interfaces/EntityGraphTypes.js';
 
-const safeObjectCreate = Object.create;
 
 /** @internal */
 export function unlinkedEntitiesForEntityGraph<TEntityFields>(
@@ -17,7 +16,7 @@ export function unlinkedEntitiesForEntityGraph<TEntityFields>(
   ) => UniqueArrayConstraintsRecommended<TEntityFields[TEntityName], unknown>['selector'],
   constraints: Omit<RecordConstraints, 'requiredKeys'>,
 ): Arbitrary<UnlinkedEntities<TEntityFields>> {
-  const recordModel: { [K in keyof TEntityFields]: Arbitrary<TEntityFields[K][]> } = safeObjectCreate(null);
+  const recordModel: { [K in keyof TEntityFields]: Arbitrary<TEntityFields[K][]> } = Object.create(null);
   for (const name in arbitraries) {
     const entityRecordModel = arbitraries[name];
     const entityArbitrary = record(entityRecordModel, constraints);

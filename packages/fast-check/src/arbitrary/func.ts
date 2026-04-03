@@ -7,10 +7,6 @@ import { integer } from './integer.js';
 import { noShrink } from './noShrink.js';
 import { tuple } from './tuple.js';
 import { escapeForMultilineComments } from './_internals/helpers/TextEscaper.js';
-import { safeMap, safeSort } from '../utils/globals.js';
-
-const safeObjectDefineProperties = Object.defineProperties;
-const safeObjectKeys = Object.keys;
 
 /**
  * For pure functions
@@ -31,17 +27,14 @@ export function func<TArgs extends any[], TOut>(arb: Arbitrary<TOut>): Arbitrary
         return hasCloneMethod(val) ? val[cloneMethod]() : val;
       };
       function prettyPrint(stringifiedOuts: string): string {
-        const seenValues = safeMap(
-          safeMap(safeSort(safeObjectKeys(recorded)), (k) => `${k} => ${stringify(recorded[k])}`),
-          (line) => `/* ${escapeForMultilineComments(line)} */`,
-        );
+        const seenValues = Object.keys(recorded).sort().map((k) => `${k} => ${stringify(recorded[k])}`).map((line) => `/* ${escapeForMultilineComments(line)} */`);
         return `function(...args) {
   // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
   const outs = ${stringifiedOuts};
   return outs[hash('${seed}' + stringify(args)) % outs.length];
 }`;
       }
-      return safeObjectDefineProperties(f, {
+      return Object.defineProperties(f, {
         toString: { value: () => prettyPrint(stringify(outs)) },
         [toStringMethod]: { value: () => prettyPrint(stringify(outs)) },
         [asyncToStringMethod]: { value: async () => prettyPrint(await asyncStringify(outs)) },

@@ -1,13 +1,3 @@
-import {
-  Error,
-  safeErrorToString,
-  safeMapGet,
-  Map,
-  safePush,
-  safeReplace,
-  safeToString,
-  String,
-} from '../../../utils/globals.js';
 import { stringify, possiblyAsyncStringify } from '../../../utils/stringify.js';
 import { VerbosityLevel } from '../configuration/VerbosityLevel.js';
 import { ExecutionStatus } from '../reporter/ExecutionStatus.js';
@@ -19,7 +9,6 @@ import type {
   RunDetailsFailureTooManySkips,
 } from '../reporter/RunDetails.js';
 
-const safeObjectAssign = Object.assign;
 
 /** @internal */
 function formatHints(hints: string[]): string {
@@ -79,10 +68,7 @@ function preFormatTooManySkipped<Ts>(out: RunDetailsFailureTooManySkips<Ts>, str
   if (out.verbose >= VerbosityLevel.VeryVerbose) {
     details = formatExecutionSummary(out.executionSummary, stringifyOne);
   } else {
-    safePush(
-      hints,
-      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
-    );
+    hints.push('Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status');
   }
 
   return { message, details, hints };
@@ -105,7 +91,7 @@ function prettyError(errorInstance: unknown) {
   // Second fallback: Error::toString()
   if (errorInstance instanceof Error) {
     try {
-      return safeErrorToString(errorInstance);
+      return errorInstance.toString();
     } catch (_err) {
       // no-op
     }
@@ -114,7 +100,7 @@ function prettyError(errorInstance: unknown) {
   // Third fallback: Object::toString()
   if (errorInstance !== null && typeof errorInstance === 'object') {
     try {
-      return safeToString(errorInstance);
+      return Object.prototype.toString.call(errorInstance);
     } catch (_err) {
       // no-op
     }
@@ -128,7 +114,7 @@ function prettyError(errorInstance: unknown) {
 function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: (value: Ts) => string) {
   const includeErrorInReport = out.runConfiguration.includeErrorInReport;
   const messageErrorPart = includeErrorInReport
-    ? `\nGot ${safeReplace(prettyError(out.errorInstance), /^Error: /, 'error: ')}`
+    ? `\nGot ${prettyError(out.errorInstance).replace(/^Error: /, 'error: ')}`
     : '';
   const message = `Property failed after ${out.numRuns} tests\n{ seed: ${out.seed}, path: "${
     out.counterexamplePath
@@ -143,7 +129,7 @@ function preFormatFailure<Ts>(out: RunDetailsFailureProperty<Ts>, stringifyOne: 
   } else if (out.verbose === VerbosityLevel.Verbose) {
     details = formatFailures(out.failures, stringifyOne);
   } else {
-    safePush(hints, 'Enable verbose mode in order to have the list of all failing values encountered during the run');
+    hints.push('Enable verbose mode in order to have the list of all failing values encountered during the run');
   }
 
   return { message, details, hints };
@@ -158,10 +144,7 @@ function preFormatEarlyInterrupted<Ts>(out: RunDetailsFailureInterrupted<Ts>, st
   if (out.verbose >= VerbosityLevel.VeryVerbose) {
     details = formatExecutionSummary(out.executionSummary, stringifyOne);
   } else {
-    safePush(
-      hints,
-      'Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status',
-    );
+    hints.push('Enable verbose mode at level VeryVerbose in order to check all generated values and their associated status');
   }
 
   return { message, details, hints };
@@ -275,7 +258,7 @@ async function asyncDefaultReportMessage<Ts>(out: RunDetails<Ts>): Promise<strin
   // Retry with async stringified versions in mind
   const registeredValues = new Map(await Promise.all(pendingStringifieds));
   function stringifySecond(value: unknown): string {
-    const asyncStringifiedIfRegistered = safeMapGet(registeredValues, value);
+    const asyncStringifiedIfRegistered = registeredValues.get(value);
     if (asyncStringifiedIfRegistered !== undefined) {
       return asyncStringifiedIfRegistered;
     }
@@ -294,7 +277,7 @@ function buildError<Ts>(errorMessage: string | undefined, out: RunDetails<Ts> & 
   const ErrorWithCause: new (message: string | undefined, options: { cause: unknown }) => Error = Error;
   const error = new ErrorWithCause(errorMessage, { cause: out.errorInstance });
   if (!('cause' in error)) {
-    safeObjectAssign(error, { cause: out.errorInstance });
+    Object.assign(error, { cause: out.errorInstance });
   }
   return error;
 }

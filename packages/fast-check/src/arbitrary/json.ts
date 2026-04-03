@@ -5,7 +5,6 @@ import type { JsonSharedConstraints } from './_internals/helpers/JsonConstraints
 export type { JsonSharedConstraints };
 
 /** @internal */
-const safeJsonStringify = JSON.stringify;
 
 /**
  * For any JSON strings
@@ -19,5 +18,5 @@ const safeJsonStringify = JSON.stringify;
  */
 export function json(constraints: JsonSharedConstraints = {}): Arbitrary<string> {
   const arb = jsonValue(constraints);
-  return arb.map(safeJsonStringify);
+  return arb.map(JSON.stringify);
 }

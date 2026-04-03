@@ -5,9 +5,6 @@ import { Stream } from '../../stream/Stream.js';
 import { integerLogLike, biasNumericRange } from './helpers/BiasNumericRange.js';
 import { shrinkInteger } from './helpers/ShrinkInteger.js';
 
-const safeMathSign = Math.sign;
-const safeNumberIsInteger = Number.isInteger;
-const safeObjectIs = Object.is;
 
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
@@ -26,8 +23,8 @@ export class IntegerArbitrary extends Arbitrary<number> {
   canShrinkWithoutContext(value: unknown): value is number {
     return (
       typeof value === 'number' &&
-      safeNumberIsInteger(value) &&
-      !safeObjectIs(value, -0) &&
+      Number.isInteger(value) &&
+      !Object.is(value, -0) &&
       this.min <= value &&
       value <= this.max
     );
@@ -94,7 +91,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
     if (typeof context !== 'number') {
       throw new Error(`Invalid context type passed to IntegerArbitrary (#1)`);
     }
-    if (context !== 0 && safeMathSign(current) !== safeMathSign(context)) {
+    if (context !== 0 && Math.sign(current) !== Math.sign(context)) {
       throw new Error(`Invalid context value passed to IntegerArbitrary (#2)`);
     }
     return true;

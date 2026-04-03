@@ -4,8 +4,6 @@ import { tuple } from '../../arbitrary/tuple.js';
 import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './Property.generic.js';
 import { Property } from './Property.generic.js';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary.js';
-import { safeForEach, safeMap, safeSlice } from '../../utils/globals.js';
-
 /**
  * Instantiate a new {@link fast-check#IProperty}
  * @param predicate - Assess the success of the property. Would be considered falsy if it throws or if its output evaluates to false
@@ -18,10 +16,10 @@ function property<Ts extends [unknown, ...unknown[]]>(
   if (args.length < 2) {
     throw new Error('property expects at least two parameters');
   }
-  const arbs = safeSlice(args, 0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
+  const arbs = args.slice(0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => boolean | void;
-  safeForEach(arbs, assertIsArbitrary);
-  const mappedArbs = safeMap(arbs, (arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
+  arbs.forEach(assertIsArbitrary);
+  const mappedArbs = arbs.map((arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new Property(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 

@@ -3,9 +3,6 @@ import { Stream } from '../../stream/Stream.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod, hasCloneMethod } from '../../check/symbols.js';
-import { Set, safeHas } from '../../utils/globals.js';
-
-const safeObjectIs = Object.is;
 
 /** @internal */
 class FastConstantValuesLookup<T> {
@@ -18,11 +15,11 @@ class FastConstantValuesLookup<T> {
 
     let hasMinusZero = false;
     let hasPlusZero = false;
-    if (safeHas(this.fastValues, 0)) {
+    if (this.fastValues.has(0)) {
       for (let idx = 0; idx !== this.values.length; ++idx) {
         const value = this.values[idx];
-        hasMinusZero = hasMinusZero || safeObjectIs(value, -0);
-        hasPlusZero = hasPlusZero || safeObjectIs(value, 0);
+        hasMinusZero = hasMinusZero || Object.is(value, -0);
+        hasPlusZero = hasPlusZero || Object.is(value, 0);
       }
     }
     this.hasMinusZero = hasMinusZero;
@@ -31,12 +28,12 @@ class FastConstantValuesLookup<T> {
 
   has(value: unknown): value is T {
     if (value === 0) {
-      if (safeObjectIs(value, 0)) {
+      if (Object.is(value, 0)) {
         return this.hasPlusZero;
       }
       return this.hasMinusZero;
     }
-    return safeHas(this.fastValues, value);
+    return this.fastValues.has(value);
   }
 }
 
@@ -57,7 +54,7 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
   }
   canShrinkWithoutContext(value: unknown): value is T {
     if (this.values.length === 1) {
-      return safeObjectIs(this.values[0], value);
+      return Object.is(this.values[0], value);
     }
     if (this.fastValues === undefined) {
       this.fastValues = new FastConstantValuesLookup(this.values);
@@ -65,7 +62,7 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
     return this.fastValues.has(value);
   }
   shrink(value: T, context?: unknown): Stream<Value<T>> {
-    if (context === 0 || safeObjectIs(value, this.values[0])) {
+    if (context === 0 || Object.is(value, this.values[0])) {
       return Stream.nil();
     }
     return Stream.of(new Value(this.values[0], 0));

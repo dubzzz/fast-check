@@ -1,31 +1,22 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 import { oneof } from '../../oneof.js';
 import { mapToConstant } from '../../mapToConstant.js';
-import {
-  safeCharCodeAt,
-  safeNumberToString,
-  encodeURIComponent,
-  safeMapGet,
-  safeMapSet,
-} from '../../../utils/globals.js';
 import { string } from '../../string.js';
 
-const SMap = Map;
-const safeStringFromCharCode = String.fromCharCode;
 
 /** @internal */
-const lowerCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x61) };
+const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
 
 /** @internal */
-const upperCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x41) };
+const upperCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x41) };
 
 /** @internal */
-const numericMapper = { num: 10, build: (v: number) => safeStringFromCharCode(v + 0x30) };
+const numericMapper = { num: 10, build: (v: number) => String.fromCharCode(v + 0x30) };
 
 /** @internal */
 function percentCharArbMapper(c: string): string {
   const encoded = encodeURIComponent(c);
-  return c !== encoded ? encoded : `%${safeNumberToString(safeCharCodeAt(c, 0), 16)}`; // always %xy / no %x or %xyz
+  return c !== encoded ? encoded : `%${c.charCodeAt(0).toString(16)}`; // always %xy / no %x or %xyz
 }
 /** @internal */
 function percentCharArbUnmapper(value: unknown): string {
@@ -55,15 +46,15 @@ let lowerAlphaNumericArbitraries: Map<string, Arbitrary<string>> | undefined = u
 /** @internal */
 export function getOrCreateLowerAlphaNumericArbitrary(others: string): Arbitrary<string> {
   if (lowerAlphaNumericArbitraries === undefined) {
-    lowerAlphaNumericArbitraries = new SMap();
+    lowerAlphaNumericArbitraries = new Map();
   }
-  let match = safeMapGet(lowerAlphaNumericArbitraries, others);
+  let match = lowerAlphaNumericArbitraries.get(others);
   if (match === undefined) {
     match = mapToConstant(lowerCaseMapper, numericMapper, {
       num: others.length,
       build: (v) => others[v],
     });
-    safeMapSet(lowerAlphaNumericArbitraries, others, match);
+    lowerAlphaNumericArbitraries.set(others, match);
   }
   return match;
 }
@@ -81,15 +72,15 @@ let alphaNumericPercentArbitraries: Map<string, Arbitrary<string>> | undefined =
 /** @internal */
 export function getOrCreateAlphaNumericPercentArbitrary(others: string): Arbitrary<string> {
   if (alphaNumericPercentArbitraries === undefined) {
-    alphaNumericPercentArbitraries = new SMap();
+    alphaNumericPercentArbitraries = new Map();
   }
-  let match = safeMapGet(alphaNumericPercentArbitraries, others);
+  let match = alphaNumericPercentArbitraries.get(others);
   if (match === undefined) {
     match = oneof(
       { weight: 10, arbitrary: buildAlphaNumericArbitrary(others) },
       { weight: 1, arbitrary: percentCharArb() },
     );
-    safeMapSet(alphaNumericPercentArbitraries, others, match);
+    alphaNumericPercentArbitraries.set(others, match);
   }
   return match;
 }

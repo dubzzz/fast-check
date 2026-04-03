@@ -1,4 +1,3 @@
-import { Set, safeAdd, safePush } from '../../../utils/globals.js';
 import type { CustomSet } from '../interfaces/CustomSet.js';
 
 /**
@@ -21,9 +20,9 @@ export class SameValueZeroSet<T, U> implements CustomSet<T> {
   tryAdd(value: T): boolean {
     const selected = this.selector(value);
     const sizeBefore = this.selectedItems.size;
-    safeAdd(this.selectedItems, selected);
+    this.selectedItems.add(selected);
     if (sizeBefore !== this.selectedItems.size) {
-      safePush(this.data, value);
+      this.data.push(value);
       return true;
     }
     return false;

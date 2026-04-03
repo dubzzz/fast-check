@@ -1,7 +1,4 @@
-import { Error, Number, Map, safeMapGet, safeMapSet } from '../../../utils/globals.js';
-
 /** @internal */
-const safeObjectIs = Object.is;
 
 /** @internal */
 type Entry<T> = { num: number; build: (idInGroup: number) => T };
@@ -68,7 +65,7 @@ function buildReverseMapping(entries: { num: number; build: (idInGroup: number) 
       if (value === 0 && 1 / value === Number.NEGATIVE_INFINITY) {
         reverseMapping.negativeZeroIndex = choiceIndex;
       } else {
-        safeMapSet(reverseMapping.mapping, value, choiceIndex);
+        reverseMapping.mapping.set(value, choiceIndex);
       }
       ++choiceIndex;
     }
@@ -85,9 +82,9 @@ export function indexToMappedConstantUnmapperFor<T>(
     if (reverseMapping === null) {
       reverseMapping = buildReverseMapping(entries);
     }
-    const choiceIndex = safeObjectIs(value, -0)
+    const choiceIndex = Object.is(value, -0)
       ? reverseMapping.negativeZeroIndex
-      : safeMapGet(reverseMapping.mapping, value);
+      : reverseMapping.mapping.get(value);
     if (choiceIndex === undefined) {
       throw new Error('Unknown value encountered cannot be built using this mapToConstant');
     }

@@ -4,7 +4,6 @@ import { skipN } from 'pure-rand';
 import { Random } from '../../random/generator/Random.js';
 import type { IRawProperty } from '../property/IRawProperty.js';
 import { Value } from '../arbitrary/definition/Value.js';
-import { safeMap } from '../../utils/globals.js';
 import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters.js';
 
 /**
@@ -43,7 +42,7 @@ export function* lazyToss<Ts>(
   random: (seed: number) => RandomGenerator,
   examples: Ts[],
 ): IterableIterator<() => Value<Ts>> {
-  yield* safeMap(examples, (e) => () => new Value(e, undefined));
+  yield* examples.map((e) => () => new Value(e, undefined));
   let idx = 0;
   let rng = random(seed);
   for (;;) {

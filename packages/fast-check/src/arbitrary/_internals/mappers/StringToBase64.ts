@@ -1,5 +1,3 @@
-import { safeSubstring } from '../../../utils/globals.js';
-
 /** @internal - s is supposed to be composed of valid base64 values, not any '=' */
 export function stringToBase64Mapper(s: string): string {
   switch (s.length % 4) {
@@ -10,7 +8,7 @@ export function stringToBase64Mapper(s: string): string {
     case 2:
       return `${s}==`;
     default:
-      return safeSubstring(s, 1); // remove one extra char to get to %4 == 0
+      return s.substring(1); // remove one extra char to get to %4 == 0
   }
 }
 
@@ -27,5 +25,5 @@ export function stringToBase64Unmapper(value: unknown): string {
   if (numTrailings > 2) {
     throw new Error('Cannot unmap the passed value');
   }
-  return safeSubstring(value, 0, lastTrailingIndex);
+  return value.substring(0, lastTrailingIndex);
 }

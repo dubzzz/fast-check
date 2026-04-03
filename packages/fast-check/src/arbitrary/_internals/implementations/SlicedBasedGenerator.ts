@@ -1,11 +1,8 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../../random/generator/Random.js';
-import { safePush } from '../../../utils/globals.js';
 import type { SlicedGenerator } from '../interfaces/SlicedGenerator.js';
 
-const safeMathMin = Math.min;
-const safeMathMax = Math.max;
 
 /** @internal */
 export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
@@ -25,7 +22,7 @@ export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
       for (let index = 0; index !== this.slices.length; ++index) {
         const slice = this.slices[index];
         if (slice.length === targetLength) {
-          safePush(eligibleIndices, index);
+          eligibleIndices.push(index);
         }
       }
       if (eligibleIndices.length === 0) {
@@ -56,8 +53,8 @@ export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
     }
     const rangeBoundaryA = this.mrng.nextInt(0, slice.length - 1);
     const rangeBoundaryB = this.mrng.nextInt(0, slice.length - 1);
-    this.nextIndexInSlice = safeMathMin(rangeBoundaryA, rangeBoundaryB);
-    this.lastIndexInSlice = safeMathMax(rangeBoundaryA, rangeBoundaryB);
+    this.nextIndexInSlice = Math.min(rangeBoundaryA, rangeBoundaryB);
+    this.lastIndexInSlice = Math.max(rangeBoundaryA, rangeBoundaryB);
     return new Value(slice[this.nextIndexInSlice++], undefined);
   }
 }

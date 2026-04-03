@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { buildCompareFunctionArbitrary } from './_internals/builders/CompareFunctionArbitraryBuilder.js';
 
-const safeObjectAssign = Object.assign;
 
 /**
  * For comparison functions
@@ -20,7 +19,7 @@ const safeObjectAssign = Object.assign;
  */
 export function compareFunc<T>(): Arbitrary<(a: T, b: T) => number> {
   return buildCompareFunctionArbitrary(
-    safeObjectAssign((hA: number, hB: number) => hA - hB, {
+    Object.assign((hA: number, hB: number) => hA - hB, {
       toString() {
         // istanbul coverage tool may override the function for its needs (thus its string representation)
         // assigning explicitly a toString representation avoids this issue

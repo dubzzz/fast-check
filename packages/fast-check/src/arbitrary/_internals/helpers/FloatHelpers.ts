@@ -1,6 +1,3 @@
-const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
-const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeMathImul = Math.imul;
 
 /** @internal */
 export const MIN_VALUE_32: number = 2 ** -126 * 2 ** -23;
@@ -68,7 +65,7 @@ function indexInFloatFromDecomp(exponent: number, significand: number) {
   }
   // Offset due to exp = -126 + Offset of previous exp (excl. -126) + Offset in current exp
   // 2**24 + (exponent - (-126) -1) * 2**23 + (significand - 1) * 2**23
-  return safeMathImul(exponent + 127, 0x800000) + (significand - 1) * 0x800000;
+  return Math.imul(exponent + 127, 0x800000) + (significand - 1) * 0x800000;
 }
 
 /**
@@ -80,16 +77,16 @@ function indexInFloatFromDecomp(exponent: number, significand: number) {
  * @internal
  */
 export function floatToIndex(f: number): number {
-  if (f === safePositiveInfinity) {
+  if (f === Number.POSITIVE_INFINITY) {
     return INDEX_POSITIVE_INFINITY;
   }
-  if (f === safeNegativeInfinity) {
+  if (f === Number.NEGATIVE_INFINITY) {
     return INDEX_NEGATIVE_INFINITY;
   }
   const decomp = decomposeFloat(f);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
-  if (f > 0 || (f === 0 && 1 / f === safePositiveInfinity)) {
+  if (f > 0 || (f === 0 && 1 / f === Number.POSITIVE_INFINITY)) {
     return indexInFloatFromDecomp(exponent, significand);
   } else {
     return -indexInFloatFromDecomp(exponent, -significand) - 1;
@@ -108,7 +105,7 @@ export function indexToFloat(index: number): number {
     return -indexToFloat(-index - 1);
   }
   if (index === INDEX_POSITIVE_INFINITY) {
-    return safePositiveInfinity;
+    return Number.POSITIVE_INFINITY;
   }
   if (index < 0x1000000) {
     // The first 2**24 elements correspond to values having

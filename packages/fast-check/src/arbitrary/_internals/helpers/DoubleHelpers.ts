@@ -1,8 +1,3 @@
-import { BigInt, Number } from '../../../utils/globals.js';
-
-const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
-const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeEpsilon = Number.EPSILON;
 
 /** @internal */
 const INDEX_POSITIVE_INFINITY = BigInt(2146435072) * BigInt(4294967296); // doubleToIndex(Number.MAX_VALUE) + 1;
@@ -43,7 +38,7 @@ export function decomposeDouble(d: number): { exponent: number; significand: num
 
   const exponent = exponentBits === 0 ? -1022 : exponentBits - 1023;
   let significand = exponentBits === 0 ? 0 : 1;
-  significand += significandBits * safeEpsilon; // significand += significandBits / 2**52;
+  significand += significandBits * Number.EPSILON; // significand += significandBits / 2**52;
   significand *= signBit === 0 ? 1 : -1;
 
   return { exponent, significand };
@@ -81,16 +76,16 @@ function indexInDoubleFromDecomp(exponent: number, significand: number): bigint 
  * @internal
  */
 export function doubleToIndex(d: number): bigint {
-  if (d === safePositiveInfinity) {
+  if (d === Number.POSITIVE_INFINITY) {
     return INDEX_POSITIVE_INFINITY;
   }
-  if (d === safeNegativeInfinity) {
+  if (d === Number.NEGATIVE_INFINITY) {
     return INDEX_NEGATIVE_INFINITY;
   }
   const decomp = decomposeDouble(d);
   const exponent = decomp.exponent;
   const significand = decomp.significand;
-  if (d > 0 || (d === 0 && 1 / d === safePositiveInfinity)) {
+  if (d > 0 || (d === 0 && 1 / d === Number.POSITIVE_INFINITY)) {
     return indexInDoubleFromDecomp(exponent, significand);
   } else {
     return -indexInDoubleFromDecomp(exponent, -significand) - BigInt(1);
@@ -109,7 +104,7 @@ export function indexToDouble(index: bigint): number {
     return -indexToDouble(-index - BigInt(1));
   }
   if (index === INDEX_POSITIVE_INFINITY) {
-    return safePositiveInfinity;
+    return Number.POSITIVE_INFINITY;
   }
   if (index < big2Pow53) {
     // if: index < 2 ** 53
@@ -127,6 +122,6 @@ export function indexToDouble(index: bigint): number {
   // significand = 1 + (postIndex % 2**52) / 2**52
   //             = 1 + (postIndex % 2**52) * Number.EPSILON
   //             = 1 + (postIndex & (2**52 -1)) * Number.EPSILON
-  const significand = 1 + Number(postIndex & big2Pow52Mask) * safeEpsilon;
+  const significand = 1 + Number(postIndex & big2Pow52Mask) * Number.EPSILON;
   return significand * 2 ** exponent;
 }

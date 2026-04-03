@@ -1,6 +1,4 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { safePop, safePush, safeSubstring } from '../../../utils/globals.js';
-
 /**
  * Split a string into valid tokens of patternsArb
  * @internal
@@ -31,12 +29,12 @@ export function tokenizeString(
   const stack: StackItem[] = [{ endIndexChunks: 0, nextStartIndex: 1, chunks: [] }];
   while (stack.length > 0) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const last = safePop(stack)!;
+    const last = stack.pop()!;
 
     // Going deeper in the tree
     // TODO - Use larger chunks first instead of small ones then large ones
     for (let index = last.nextStartIndex; index <= value.length; ++index) {
-      const chunk = safeSubstring(value, last.endIndexChunks, index);
+      const chunk = value.substring(last.endIndexChunks, index);
       if (patternsArb.canShrinkWithoutContext(chunk)) {
         const newChunks = [...last.chunks, chunk];
         if (index === value.length) {
@@ -50,11 +48,11 @@ export function tokenizeString(
         // Actually it corresponds to moving to the next index in the for-loop BUT as we want to go deep first,
         // we stop the iteration of the current for-loop via a break and delay the analysis for next index for later
         // with this push.
-        safePush(stack, { endIndexChunks: last.endIndexChunks, nextStartIndex: index + 1, chunks: last.chunks });
+        stack.push({ endIndexChunks: last.endIndexChunks, nextStartIndex: index + 1, chunks: last.chunks });
         // Pushed to go deeper in the tree
         // If it's still acceptable in length
         if (newChunks.length < maxLength) {
-          safePush(stack, { endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
+          stack.push({ endIndexChunks: index, nextStartIndex: index + 1, chunks: newChunks });
         }
         break;
       }

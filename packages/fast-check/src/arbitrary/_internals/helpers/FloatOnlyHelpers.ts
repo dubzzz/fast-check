@@ -2,9 +2,6 @@ import type { FloatConstraints } from '../../float.js';
 import { MAX_VALUE_32 } from './FloatHelpers.js';
 import { refineConstraintsForFloatingOnly } from './FloatingOnlyHelpers.js';
 
-const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
-const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeMaxValue = MAX_VALUE_32;
 
 // The last floating point value available with 32 bits floating point numbers is: 8388607.5
 // The start of integers' world is: 8388608 = 2**23 = 2**(significand_size_with_sign-1)
@@ -18,22 +15,22 @@ export const onlyIntegersAfterThisValue = 8388608;
 export function refineConstraintsForFloatOnly(
   constraints: Omit<FloatConstraints, 'noInteger'>,
 ): Required<Omit<FloatConstraints, 'noInteger'>> {
-  return refineConstraintsForFloatingOnly(constraints, safeMaxValue, maxNonIntegerValue, onlyIntegersAfterThisValue);
+  return refineConstraintsForFloatingOnly(constraints, MAX_VALUE_32, maxNonIntegerValue, onlyIntegersAfterThisValue);
 }
 
 export function floatOnlyMapper(value: number): number {
   return value === onlyIntegersAfterThisValue
-    ? safePositiveInfinity
+    ? Number.POSITIVE_INFINITY
     : value === -onlyIntegersAfterThisValue
-      ? safeNegativeInfinity
+      ? Number.NEGATIVE_INFINITY
       : value;
 }
 
 export function floatOnlyUnmapper(value: unknown): number {
   if (typeof value !== 'number') throw new Error('Unsupported type');
-  return value === safePositiveInfinity
+  return value === Number.POSITIVE_INFINITY
     ? onlyIntegersAfterThisValue
-    : value === safeNegativeInfinity
+    : value === Number.NEGATIVE_INFINITY
       ? -onlyIntegersAfterThisValue
       : value;
 }

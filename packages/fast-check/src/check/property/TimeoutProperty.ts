@@ -1,6 +1,5 @@
 import type { Random } from '../../random/generator/Random.js';
 import type { Stream } from '../../stream/Stream.js';
-import { Error } from '../../utils/globals.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { PropertyFailure, IRawProperty } from './IRawProperty.js';

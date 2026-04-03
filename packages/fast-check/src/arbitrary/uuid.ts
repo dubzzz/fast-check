@@ -2,7 +2,6 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { tuple } from './tuple.js';
 import { buildPaddedNumberArbitrary } from './_internals/builders/PaddedNumberArbitraryBuilder.js';
 import { paddedEightsToUuidMapper, paddedEightsToUuidUnmapper } from './_internals/mappers/PaddedEightsToUuid.js';
-import { Error } from '../utils/globals.js';
 import { buildVersionsAppliersForUuid } from './_internals/mappers/VersionsApplierForUuid.js';
 
 /**

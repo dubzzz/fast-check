@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary.js';
 
-const safeNumberIsInteger = Number.isInteger;
 
 /**
  * Constraints to be applied on {@link nat}
@@ -56,7 +55,7 @@ function nat(arg?: number | NatConstraints): Arbitrary<number> {
   if (max < 0) {
     throw new Error('fc.nat value should be greater than or equal to 0');
   }
-  if (!safeNumberIsInteger(max)) {
+  if (!Number.isInteger(max)) {
     throw new Error('fc.nat maximum value should be an integer');
   }
   return new IntegerArbitrary(0, max);

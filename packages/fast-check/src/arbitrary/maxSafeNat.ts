@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { IntegerArbitrary } from './_internals/IntegerArbitrary.js';
 
-const safeMaxSafeInteger = Number.MAX_SAFE_INTEGER;
 
 /**
  * For positive integers between 0 (included) and Number.MAX_SAFE_INTEGER (included)
@@ -9,5 +8,5 @@ const safeMaxSafeInteger = Number.MAX_SAFE_INTEGER;
  * @public
  */
 export function maxSafeNat(): Arbitrary<number> {
-  return new IntegerArbitrary(0, safeMaxSafeInteger);
+  return new IntegerArbitrary(0, Number.MAX_SAFE_INTEGER);
 }

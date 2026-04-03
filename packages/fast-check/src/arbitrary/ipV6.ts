@@ -19,8 +19,6 @@ import {
   noTrailingUnmapper,
 } from './_internals/mappers/EntitiesToIPv6.js';
 import { integer } from './integer.js';
-import { safeCharCodeAt, Error } from '../utils/globals.js';
-
 /** @internal */
 function h16sTol32Mapper([a, b]: [string, string]): string {
   return `${a}:${b}`;
@@ -47,7 +45,7 @@ function hexa(): Arbitrary<string> {
         if (c.length !== 1) {
           throw new Error('Invalid length');
         }
-        const code = safeCharCodeAt(c, 0); // 0=48,..,9=57,a=97,..,f=102
+        const code = c.charCodeAt(0); // 0=48,..,9=57,a=97,..,f=102
         if (code <= 57) {
           return code - 48; // any char before '0' will lead to <0 (rejected by integer)
         }

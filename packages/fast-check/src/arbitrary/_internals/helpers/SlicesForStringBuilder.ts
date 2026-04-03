@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { safeGet, safePush, safeSet } from '../../../utils/globals.js';
 import type { StringSharedConstraints } from '../../_shared/StringSharedConstraints.js';
 import { patternsToStringUnmapperIsValidLength } from '../mappers/PatternsToString.js';
 import { MaxLengthUpperBound } from './MaxLengthFromMinLength.js';
@@ -65,7 +64,7 @@ export function createSlicesForStringLegacy(
   for (const dangerous of dangerousStrings) {
     const candidate = computeCandidateStringLegacy(dangerous, charArbitrary, stringSplitter);
     if (candidate !== undefined) {
-      safePush(slicesForString, candidate);
+      slicesForString.push(candidate);
     }
   }
   return slicesForString;
@@ -80,7 +79,7 @@ function createSlicesForStringNoConstraints(charArbitrary: Arbitrary<string>): s
   for (const dangerous of dangerousStrings) {
     const candidate = tokenizeString(charArbitrary, dangerous, 0, MaxLengthUpperBound);
     if (candidate !== undefined) {
-      safePush(slicesForString, candidate);
+      slicesForString.push(candidate);
     }
   }
   return slicesForString;
@@ -91,15 +90,15 @@ export function createSlicesForString(
   charArbitrary: Arbitrary<string>,
   constraints: StringSharedConstraints,
 ): string[][] {
-  let slices = safeGet(slicesPerArbitrary, charArbitrary);
+  let slices = slicesPerArbitrary.get(charArbitrary);
   if (slices === undefined) {
     slices = createSlicesForStringNoConstraints(charArbitrary);
-    safeSet(slicesPerArbitrary, charArbitrary, slices);
+    slicesPerArbitrary.set(charArbitrary, slices);
   }
   const slicesForConstraints: string[][] = [];
   for (const slice of slices) {
     if (patternsToStringUnmapperIsValidLength(slice, constraints)) {
-      safePush(slicesForConstraints, slice);
+      slicesForConstraints.push(slice);
     }
   }
   return slicesForConstraints;

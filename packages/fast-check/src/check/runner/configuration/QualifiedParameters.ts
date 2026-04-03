@@ -4,9 +4,6 @@ import { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from 'pure-rand';
 
-const safeDateNow = Date.now;
-const safeMathMin = Math.min;
-const safeMathRandom = Math.random;
 
 /** @internal */
 export type QualifiedRandomGenerator = RandomGenerator & Required<Pick<RandomGenerator, 'unsafeJump'>>;
@@ -107,7 +104,7 @@ export class QualifiedParameters<T> {
 
   private static readSeed = <T>(p: Parameters<T>): number => {
     // No seed specified
-    if (p.seed === undefined) return safeDateNow() ^ (safeMathRandom() * 0x100000000);
+    if (p.seed === undefined) return Date.now() ^ (Math.random() * 0x100000000);
 
     // Seed is a 32 bits signed integer
     const seed32 = p.seed | 0;
@@ -169,7 +166,7 @@ export class QualifiedParameters<T> {
     if (value === undefined) {
       return undefined;
     }
-    return safeMathMin(value, 0x7fffffff);
+    return Math.min(value, 0x7fffffff);
   };
 
   /**

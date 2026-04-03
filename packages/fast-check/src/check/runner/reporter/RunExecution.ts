@@ -4,8 +4,6 @@ import type { ExecutionTree } from './ExecutionTree.js';
 import type { RunDetails } from './RunDetails.js';
 import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
 import type { PropertyFailure } from '../../property/IRawProperty.js';
-import { safeSplit } from '../../../utils/globals.js';
-
 /**
  * Report the status of a run
  *
@@ -76,11 +74,11 @@ export class RunExecution<Ts> {
   }
 
   private firstFailure(): number {
-    return this.pathToFailure !== undefined ? +safeSplit(this.pathToFailure, ':')[0] : -1;
+    return this.pathToFailure !== undefined ? +this.pathToFailure.split(':')[0] : -1;
   }
 
   private numShrinks(): number {
-    return this.pathToFailure !== undefined ? safeSplit(this.pathToFailure, ':').length - 1 : 0;
+    return this.pathToFailure !== undefined ? this.pathToFailure.split(':').length - 1 : 0;
   }
 
   private extractFailures() {

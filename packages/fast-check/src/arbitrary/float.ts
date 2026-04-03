@@ -7,13 +7,7 @@ import {
   refineConstraintsForFloatOnly,
 } from './_internals/helpers/FloatOnlyHelpers.js';
 
-const safeNumberIsInteger = Number.isInteger;
-const safeNumberIsNaN = Number.isNaN;
-const safeMathFround = Math.fround;
 
-const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
-const safePositiveInfinity = Number.POSITIVE_INFINITY;
-const safeNaN = Number.NaN;
 
 /**
  * Constraints to be applied on {@link float}
@@ -77,7 +71,7 @@ export interface FloatConstraints {
 function safeFloatToIndex(f: number, constraintsLabel: keyof FloatConstraints) {
   const conversionTrick = 'you can convert any double to a 32-bit float by using `Math.fround(myDouble)`';
   const errorMessage = 'fc.float constraints.' + constraintsLabel + ' must be a 32-bit float - ' + conversionTrick;
-  if (safeNumberIsNaN(f) || safeMathFround(f) !== f) {
+  if (Number.isNaN(f) || Math.fround(f) !== f) {
     // Number.NaN does not have any associated index in the current implementation
     // If the value isn't the same after fround(), it can't be represented as a 32-bit float
     throw new Error(errorMessage);
@@ -93,7 +87,7 @@ function unmapperFloatToIndex(value: unknown): number {
 
 /** @internal */
 function numberIsNotInteger(value: number): boolean {
-  return !safeNumberIsInteger(value);
+  return !Number.isInteger(value);
 }
 
 function anyFloat(constraints: Omit<FloatConstraints, 'noInteger'>): Arbitrary<number> {
@@ -102,8 +96,8 @@ function anyFloat(constraints: Omit<FloatConstraints, 'noInteger'>): Arbitrary<n
     noNaN = false,
     minExcluded = false,
     maxExcluded = false,
-    min = noDefaultInfinity ? -MAX_VALUE_32 : safeNegativeInfinity,
-    max = noDefaultInfinity ? MAX_VALUE_32 : safePositiveInfinity,
+    min = noDefaultInfinity ? -MAX_VALUE_32 : Number.NEGATIVE_INFINITY,
+    max = noDefaultInfinity ? MAX_VALUE_32 : Number.POSITIVE_INFINITY,
   } = constraints;
   const minIndexRaw = safeFloatToIndex(min, 'min');
   const minIndex = minExcluded ? minIndexRaw + 1 : minIndexRaw;
@@ -126,12 +120,12 @@ function anyFloat(constraints: Omit<FloatConstraints, 'noInteger'>): Arbitrary<n
   const maxIndexWithNaN = maxIndex > 0 ? maxIndex + 1 : maxIndex;
   return integer({ min: minIndexWithNaN, max: maxIndexWithNaN }).map(
     (index) => {
-      if (index > maxIndex || index < minIndex) return safeNaN;
+      if (index > maxIndex || index < minIndex) return Number.NaN;
       else return indexToFloat(index);
     },
     (value) => {
       if (typeof value !== 'number') throw new Error('Unsupported type');
-      if (safeNumberIsNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
+      if (Number.isNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
       return floatToIndex(value);
     },
   );

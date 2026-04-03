@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { safeIndexOf, safePush } from '../../../utils/globals.js';
 import { boolean } from '../../boolean.js';
 import { constant } from '../../constant.js';
 import { option } from '../../option.js';
@@ -25,10 +24,10 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
   for (let index = 0; index !== keys.length; ++index) {
     const k: EnumerableKeyOf<T> = keys[index];
     const requiredArbitrary = recordModel[k];
-    if (requiredKeys === undefined || safeIndexOf(requiredKeys, k as TKeys) !== -1) {
-      safePush(arbs, requiredArbitrary);
+    if (requiredKeys === undefined || requiredKeys.indexOf(k as TKeys) !== -1) {
+      arbs.push(requiredArbitrary);
     } else {
-      safePush(arbs, option(requiredArbitrary, { nil: noKeyValue as NoKeyType }));
+      arbs.push(option(requiredArbitrary, { nil: noKeyValue as NoKeyType }));
     }
   }
   return tuple(tuple(...arbs), noNullPrototype ? constant(false) : boolean()).map(

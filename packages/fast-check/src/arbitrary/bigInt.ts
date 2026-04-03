@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { BigInt } from '../utils/globals.js';
 import { BigIntArbitrary } from './_internals/BigIntArbitrary.js';
 
 /**

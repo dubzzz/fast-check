@@ -1,12 +1,11 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeJoin, safeMap, safeSplit } from '../utils/globals.js';
 import { nat } from './nat.js';
 import { tuple } from './tuple.js';
 import { tryParseStringifiedNat } from './_internals/mappers/NatToStringifiedNat.js';
 
 /** @internal */
 function dotJoinerMapper(data: number[]): string {
-  return safeJoin(data, '.');
+  return data.join('.');
 }
 
 /** @internal */
@@ -14,7 +13,7 @@ function dotJoinerUnmapper(value: unknown): number[] {
   if (typeof value !== 'string') {
     throw new Error('Invalid type');
   }
-  return safeMap(safeSplit(value, '.'), (v) => tryParseStringifiedNat(v, 10));
+  return value.split('.').map((v) => tryParseStringifiedNat(v, 10));
 }
 
 /**
