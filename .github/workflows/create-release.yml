@@ -64,6 +64,6 @@ jobs:
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
           git tag "$TAG"
-          git push origin "$TAG" --force
+          git push origin "refs/tags/$TAG"
         env:
           TAG: ${{ steps.changelog.outputs.tag }}
