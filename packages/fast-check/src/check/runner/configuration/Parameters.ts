@@ -203,4 +203,16 @@ export interface Parameters<T = void> {
    * as part of the message and not as a cause.
    */
   includeErrorInReport?: boolean;
+  /**
+   * Abort signal to interrupt the property execution: disabled by default
+   *
+   * When the signal is aborted, the run will be interrupted.
+   * It can be useful to integrate with test runners such as Vitest that provide a signal to abort tests.
+   *
+   * Behavior is similar to `interruptAfterTimeLimit` but driven by an external signal.
+   * `markInterruptAsFailure` can be used to control whether the interruption counts as a failure.
+   *
+   * @remarks Since 3.x.0
+   */
+  signal?: AbortSignal;
 }
