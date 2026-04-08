@@ -7,10 +7,10 @@ const answerFieldName = 'answer';
 
 type Options = {
   day: number;
-  buildBuggyAdvent: () => (...args: unknown[]) => unknown;
-  buggyAdventSurcharged?: (...args: unknown[]) => unknown;
-  referenceAdvent: (...args: unknown[]) => unknown;
-  postAdvent?: (adventOutput: unknown) => unknown;
+  buildBuggyAdvent: () => (...args: any[]) => unknown;
+  buggyAdventSurcharged?: (...args: any[]) => unknown;
+  referenceAdvent: (...args: any[]) => unknown;
+  postAdvent?: (adventOutput: any) => unknown;
   parser: (answer: string) => unknown[] | undefined;
   placeholderForm: string;
   functionName: string;
@@ -55,7 +55,7 @@ export function buildAdventOfTheDay(options: Options) {
     );
   }
 
-  let lastError = null;
+  let lastError: string | null = null;
   const storageKey = `aopbt24-day${day}`;
 
   function retrievePastAnswerIfSolved(): string | null {
