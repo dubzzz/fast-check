@@ -18,7 +18,7 @@ export default function advent() {
       if (currentSegmentHash === null) {
         currentSegmentHash = hashWord(currentSegment);
       } else {
-        currentSegmentHash = reHashWord(currentSegmentHash, prevSegment, currentSegment);
+        currentSegmentHash = reHashWord(currentSegmentHash, prevSegment ?? '', currentSegment);
       }
       prevSegment = currentSegment;
       if (wordHash === currentSegmentHash) {

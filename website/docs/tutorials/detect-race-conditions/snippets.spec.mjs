@@ -101,6 +101,10 @@ describe('Playground', () => {
 
 // Helpers
 
+/**
+ * @param {string} testDirectoryPath
+ * @returns
+ */
 async function runVitest(testDirectoryPath) {
   try {
     const { stdout, stderr } = await execFile(
@@ -110,6 +114,7 @@ async function runVitest(testDirectoryPath) {
     );
     return stdout + stderr;
   } catch (err) {
+    // @ts-ignore
     return err.stdout + err.stderr;
   }
 }
