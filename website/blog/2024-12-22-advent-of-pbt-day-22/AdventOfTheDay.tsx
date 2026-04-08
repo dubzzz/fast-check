@@ -9,7 +9,7 @@ const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   placeholderForm: '🎄🎁⛄🎈🎅\n🎁🎄⛄🎄🦌',
   functionName: 'computeSantaMindScore',
   signature:
-    'findOptimalPacking(secretSequence: Sequence, guessedSequence: Sequence): { goodPlacement: number; misplaced: number };',
+    'computeSantaMindScore(secretSequence: Sequence, guessedSequence: Sequence): { goodPlacement: number; misplaced: number };',
   signatureExtras: [
     "type Icon = '🎄' | '🦌' | '⛄' | '🛷' | '🎈' | '🎀' | '🎅' | '🎁';",
     'type Sequence = [Icon, Icon, Icon, Icon, Icon];',
