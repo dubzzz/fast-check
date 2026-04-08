@@ -36,9 +36,10 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 
 // Reference implementation
 
-function payslipContentFor(availableCoins, amountToBePaid) {
+type Coin = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+function payslipContentFor(availableCoins: Coin[], amountToBePaid: number) {
   const coins = [...availableCoins].sort((a, b) => b - a);
-  function helper(target, index) {
+  function helper(target: number, index: number): Coin[] | null {
     if (target === 0) {
       return [];
     }

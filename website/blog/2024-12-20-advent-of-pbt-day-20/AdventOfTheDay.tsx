@@ -16,7 +16,7 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 
 // Reference implementation
 
-function findStartIndex(partlyShuffled) {
+function findStartIndex(partlyShuffled: number[]) {
   if (partlyShuffled.length === 0) {
     return -1;
   }

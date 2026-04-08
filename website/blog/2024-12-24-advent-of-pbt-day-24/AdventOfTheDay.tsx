@@ -40,10 +40,11 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 
 // Reference implementation
 
-function distributeCoins(availableCoins, payslips) {
+type Coin = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+function distributeCoins(availableCoins: Coin[], amountsToBePaid: number[]) {
   const coins = [...availableCoins].sort((a, b) => b - a);
 
-  function helper(targets, indexInTarget, nextCoins = coins) {
+  function helper(targets: number[], indexInTarget: number, nextCoins = coins): Coin[][] | null {
     if (indexInTarget >= targets.length) {
       return [];
     }
@@ -67,7 +68,7 @@ function distributeCoins(availableCoins, payslips) {
     const withoutCurrent = helper(targets, indexInTarget, subNextCoins);
     return withoutCurrent;
   }
-  return helper(payslips, 0);
+  return helper(amountsToBePaid, 0);
 }
 
 // Inputs parser
