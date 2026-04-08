@@ -7,6 +7,7 @@ on:
       - 'next-*_*_*'
       - 'fix-v*'
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
     branches:
       - main
       - 'next-*_*_*'
@@ -23,13 +24,14 @@ jobs:
   # Root jobs
   warmup_pnpm_cache:
     name: 'Warm up pnpm cache'
+    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         id: pnpm-cache
@@ -41,6 +43,7 @@ jobs:
         run: pnpm install --frozen-lockfile
   warmup_pnpm_cache_others:
     name: 'Warm up pnpm cache (others)'
+    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
@@ -50,7 +53,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         id: pnpm-cache
@@ -73,7 +76,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -90,7 +93,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -109,7 +112,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -130,7 +133,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -162,7 +165,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -190,7 +193,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -258,7 +261,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -315,7 +318,7 @@ jobs:
           pattern: coverage-*
           path: coverage-reports/
       - name: Codecov
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           name: tests
           flags: tests
@@ -334,7 +337,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0 # all history in order to be able to show last-edited-at dates
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -354,7 +357,7 @@ jobs:
         shell: bash
         run: echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
       - name: Cache for assets
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: |
             website/static/img/sponsors.svg
@@ -390,7 +393,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -406,9 +409,7 @@ jobs:
       - name: Unpack production packages
         run: node --run unpack:all
       - name: Alter internals to behave as if published
-        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
-      - name: Retrieve potentially dropped test-bundle
-        run: pnpm --filter {./packages/**} --parallel -c --workspace-concurrency=1 exec "git restore -s@ -SW -- test-bundle || true"
+        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-bundle
       - name: Check publication lint
         run: node --run publint:all
       - name: Check bundles
@@ -455,7 +456,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Using Node v24.x
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -471,9 +472,7 @@ jobs:
       - name: Unpack production packages
         run: node --run unpack:all
       - name: Alter internals to behave as if published
-        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep-node-modules
-      - name: Retrieve dropped test-types
-        run: pnpm --filter {./packages/**} --parallel -c --workspace-concurrency=1 exec "git restore -s@ -SW -- test-types"
+        run: pnpm --filter {./packages/**} --parallel exec $(pnpm bin)/packaged --keep node_modules --keep test-types
       - name: Switch folder to CommonJS
         run: pnpm --filter {./packages/**} --parallel -c exec "cd test-types && ../../../.github/scripts/rename.sh ts cts"
       - name: Check in CommonJS mode
@@ -642,9 +641,11 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           tag_name: ${{needs.check_publish_fc.outputs.tag}}
+          draft: false
+          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -717,9 +718,11 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           tag_name: ${{needs.check_publish_ava.outputs.tag}}
+          draft: false
+          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -792,9 +795,11 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           tag_name: ${{needs.check_publish_jest.outputs.tag}}
+          draft: false
+          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -867,9 +872,11 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           tag_name: ${{needs.check_publish_packaged.outputs.tag}}
+          draft: false
+          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -942,9 +949,11 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
+          draft: false
+          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -1017,9 +1026,11 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           tag_name: ${{needs.check_publish_vitest.outputs.tag}}
+          draft: false
+          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -1092,9 +1103,11 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           tag_name: ${{needs.check_publish_worker.outputs.tag}}
+          draft: false
+          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false

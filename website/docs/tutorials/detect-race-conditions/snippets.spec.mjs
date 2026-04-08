@@ -5,14 +5,14 @@ import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import * as snippets from './snippets.mjs';
-
 const execFile = promisify(_execFile);
 const rootWebsite = path.join(import.meta.dirname, '..', '..', '..');
 
 const generatedTestsDirectoryName = '.test-artifacts';
 const generatedTestsDirectory = path.join(rootWebsite, generatedTestsDirectoryName);
 
-const vitestBinaryPath = path.join(rootWebsite, './node_modules/.bin/vitest');
+const vitestBinaryPath = path.join(rootWebsite, './node_modules/vitest/vitest.mjs');
+const vitestConfigName = 'vitest.config.mjs';
 
 const allQueueSpecs = {
   unit: snippets.queueUnitSpecCode,
@@ -70,12 +70,18 @@ describe('Playground', () => {
           const testDirectoryName = `test-${seed}`;
           const testDirectoryPath = path.join(generatedTestsDirectory, testDirectoryName);
           const sourceFilePath = path.join(testDirectoryPath, `queue.mjs`);
-          const specFilePath = path.join(testDirectoryPath, `queue.test.mjs`);
-          const sanitizedSpecCode = specCode.replace("'./queue.js'", "'./queue.mjs'");
+          const specFilePath = path.join(testDirectoryPath, `queue.spec.mjs`);
+          const vitestConfigPath = path.join(testDirectoryPath, vitestConfigName);
+          const sanitizedSpecCode =
+            "import { vi as jest, test, expect } from 'vitest';\n" + specCode.replace('queue.js', 'queue.mjs');
           try {
             await fs.mkdir(testDirectoryPath, { recursive: true });
             await fs.writeFile(sourceFilePath, snippet.code);
             await fs.writeFile(specFilePath, sanitizedSpecCode);
+            await fs.writeFile(
+              vitestConfigPath,
+              `import { defineConfig } from 'vitest/config';\nexport default defineConfig({ test: { include: ['queue.spec.mjs'] } });`,
+            );
             const specOutput = await runVitest(testDirectoryPath);
             if (expectedSuccess) {
               expect(specOutput).toContain('1 passed');
@@ -98,12 +104,12 @@ describe('Playground', () => {
 async function runVitest(testDirectoryPath) {
   try {
     const { stdout, stderr } = await execFile(
-      vitestBinaryPath,
-      ['run', '--reporter=verbose', '--dir', testDirectoryPath],
+      'node',
+      [vitestBinaryPath, '--config', vitestConfigName, '--run', '--no-color'],
       { cwd: testDirectoryPath },
     );
     return stdout + stderr;
   } catch (err) {
-    return (err.stdout || '') + (err.stderr || '');
+    return err.stdout + err.stderr;
   }
 }

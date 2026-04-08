@@ -23,7 +23,7 @@
     "@docusaurus/theme-mermaid": "3.9.2",
     "@stackblitz/sdk": "^1.11.0",
     "clsx": "^2.1.1",
-    "lodash": "^4.17.23",
+    "lodash": "^4.18.1",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
@@ -35,13 +35,13 @@
     "@docusaurus/types": "3.9.2",
     "@mdx-js/react": "^3.1.1",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^24.12.0",
+    "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "docusaurus-plugin-llms": "^0.3.0",
     "fast-check": "workspace:*",
     "jimp": "^1.6.0",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "browserslist": {
     "production": [

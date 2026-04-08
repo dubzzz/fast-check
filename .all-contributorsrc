@@ -426,7 +426,7 @@
       "name": "Alexandre Oger",
       "avatar_url": "https://avatars.githubusercontent.com/u/4980521?v=4",
       "profile": "https://github.com/nielk",
-      "contributions": ["doc"]
+      "contributions": ["doc", "code"]
     },
     {
       "login": "ej-shafran",
@@ -532,6 +532,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/41122157?v=4",
       "profile": "https://github.com/rushelex",
       "contributions": ["code"]
+    },
+    {
+      "login": "rugk",
+      "name": "rugk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11966684?v=4",
+      "profile": "https://github.com/rugk",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
