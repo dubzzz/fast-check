@@ -51,7 +51,7 @@ function StackBlitzEmbed({ files, options }: EmbedProps) {
           files,
         },
         {
-          height: 500,
+          height: 600,
           view: 'editor',
           openFile: options.openFile,
           hideExplorer: options.hideExplorer,
