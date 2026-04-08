@@ -16,24 +16,30 @@ export default function AdventPlayground(props: Props) {
   const containerId = `stackblitz-${rawId}`;
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const snippetDTS = [
+    ...(signatureExtras ?? []).map((extra) => `declare ${extra}`),
+    `declare function ${signature}`,
+    `export default ${functionName}`,
+  ].join('\n');
+  const spec = [
+    `import { test, expect } from 'vitest';`,
+    `import fc from 'fast-check';`,
+    `import ${functionName} from './advent.js';`,
+    ``,
+    ...(signatureExtras ?? []).map((extra) => `// declare ${extra}`),
+    `// declare function ${signature}`,
+    `test('helping Santa', () => {`,
+    `  fc.assert(fc.property(fc.constant('noop'), (noop) => {`,
+    `  }));`,
+    `})`,
+  ].join('\n');
+
   useEffect(() => {
     const container = containerRef.current;
     if (container === null) {
       return;
     }
     const mount = async () => {
-      const adventSpecLines = [
-        `import { test, expect } from 'vitest';`,
-        `import fc from 'fast-check';`,
-        `import ${functionName} from './advent.js';`,
-        ``,
-        ...(signatureExtras ?? []).map((extra) => `// declare ${extra}`),
-        `// declare ${signature}`,
-        `test('helping Santa', () => {`,
-        `  fc.assert(fc.property(fc.constant('noop'), (noop) => {`,
-        `  }));`,
-        `})`,
-      ];
       const packageJsonContent = {
         name: `advent-of-pbt-day${day}`,
         private: true,
@@ -49,18 +55,19 @@ export default function AdventPlayground(props: Props) {
           template: 'node',
           files: {
             'advent.js': snippet,
-            'advent.test.ts': adventSpecLines.join('\n'),
+            'advent.d.ts': snippetDTS,
+            'advent.test.ts': spec,
             'package.json': JSON.stringify(packageJsonContent, null, 2),
           },
         },
-        { height: 600, openFile: 'advent.test.ts', hideExplorer: true },
+        { height: 600, openFile: 'advent.test.ts', hideExplorer: true, view: 'editor' },
       );
     };
     mount();
     return () => {
       container.innerHTML = '';
     };
-  }, [functionName, signature, signatureExtras, snippet, day]);
+  }, [snippet, snippetDTS, spec, day]);
 
   return (
     <>
