@@ -1,69 +1,68 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import sdk from '@stackblitz/sdk';
 import styles from './Playgrounds.module.css';
 import * as snippets from './snippets.mjs';
 
-const defaultPackageJson = (entry: string, deps: Record<string, string> = {}) =>
-  JSON.stringify(
-    {
-      name: 'fast-check-playground',
-      private: true,
-      scripts: {
-        test: 'vitest',
-      },
-      dependencies: {
-        'fast-check': 'latest',
-        ...deps,
-      },
-      devDependencies: {
-        vitest: 'latest',
-      },
-      stackblitz: {
-        installDependencies: true,
-        startCommand: 'npx vitest --watch --reporter=verbose',
-      },
+const defaultPackageJson = JSON.stringify(
+  {
+    name: 'fast-check-playground',
+    private: true,
+    scripts: {
+      test: 'vitest',
     },
-    null,
-    2,
-  );
+    devDependencies: {
+      'fast-check': 'latest',
+      vitest: 'latest',
+    },
+    stackblitz: {
+      installDependencies: true,
+      startCommand: 'npx vitest --watch --reporter=verbose',
+    },
+  },
+  null,
+  2,
+);
 
 type EmbedProps = {
   files: Record<string, string>;
-  options?: {
-    height?: number;
-    openFile?: string;
-    view?: 'editor' | 'preview' | 'default';
-    hideExplorer?: boolean;
+  options: {
+    openFile: string;
+    hideExplorer: boolean;
   };
 };
 
-function StackBlitzEmbed({ files, options = {} }: EmbedProps) {
+function StackBlitzEmbed({ files, options }: EmbedProps) {
   const rawId = useId();
-  const containerId = `stackblitz${rawId.replace(/:/g, '-')}`;
+  const containerId = `stackblitz-${rawId}`;
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    sdk.embedProject(
-      el,
-      {
-        title: 'fast-check playground',
-        description: 'Interactive fast-check playground powered by Vitest',
-        template: 'node',
-        files,
-      },
-      {
-        height: options.height ?? 500,
-        openFile: options.openFile,
-        view: options.view ?? 'default',
-        hideExplorer: options.hideExplorer !== false,
-      },
-    );
-    return () => {
-      el.innerHTML = '';
+    const container = containerRef.current;
+    if (container === null) {
+      return;
+    }
+    const mount = async () => {
+      await sdk.embedProject(
+        container,
+        {
+          title: 'fast-check playground',
+          description: 'Interactive fast-check playground powered by Vitest',
+          template: 'node',
+          files,
+        },
+        {
+          height: 500,
+          view: 'editor',
+          openFile: options.openFile,
+          hideExplorer: options.hideExplorer,
+        },
+      );
     };
-  }, []);
+    mount();
+    return () => {
+      container.innerHTML = '';
+    };
+  }, [files, options.openFile, options.hideExplorer]);
 
   return <div ref={containerRef} id={containerId} />;
 }
@@ -79,19 +78,22 @@ function SetupPlayground(props: Props) {
   const { startSpecCode, anwserSpecCode, fileContent, fileName, fileExtension } = props;
   const [specFile, setSpecFile] = useState({ key: 0, content: startSpecCode });
 
-  const files: Record<string, string> = {
-    [`${fileName}.${fileExtension}`]: fileContent,
-    [`${fileName}.test.${fileExtension}`]: specFile.content,
-    'package.json': defaultPackageJson(`${fileName}.${fileExtension}`),
-  };
+  const files: Record<string, string> = useMemo(
+    () => ({
+      [`${fileName}.${fileExtension}`]: fileContent,
+      [`${fileName}.test.${fileExtension}`]: specFile.content,
+      'package.json': defaultPackageJson,
+    }),
+    [fileName, fileExtension, fileContent, specFile.content],
+  );
 
   return (
     <div key={specFile.key}>
       <StackBlitzEmbed
         files={files}
         options={{
-          height: 500,
           openFile: `${fileName}.test.${fileExtension}`,
+          hideExplorer: true,
         }}
       />
       <div className={styles.playgroundActions}>
@@ -168,8 +170,7 @@ function pastTestSnippet(code: string, partName: string, variationName?: string 
   ]);
 }
 
-export function WrapUpPlaygroundQueue() {
-  const [reset, setReset] = useState(0);
+function buildWrapUpFiles() {
   const queueImplementations = {
     'queue.v0.js': pastImplementationSnippet(snippets.queueCodeV0, 'Your first race condition test'),
     'queue.v1.js': pastImplementationSnippet(snippets.queueCodeV1, 'One step close to real usages'),
@@ -198,11 +199,8 @@ export function WrapUpPlaygroundQueue() {
     'queue.pnext.v1.test.js': codeWithComments(snippets.extendedBackToWaitAllPBTSpecCode, [
       'Switch back to waitAll in queue.p4.test',
     ]),
-    'queue.pnext.v2.test.js': codeWithComments(snippets.extendedWithExceptionsPBTSpecCode, [
-      'Also cover error cases',
-    ]),
+    'queue.pnext.v2.test.js': codeWithComments(snippets.extendedWithExceptionsPBTSpecCode, ['Also cover error cases']),
   };
-  const defaultQueueTest = 'queue.p4.test.js';
 
   const files: Record<string, string> = {};
   for (const [fileName, fileContent] of Object.entries(queueImplementations)) {
@@ -212,14 +210,20 @@ export function WrapUpPlaygroundQueue() {
     files[`tests/${fileName}`] = fileContent.replace("'./queue.js'", "'./../src/queue.js'");
   }
   files['src/queue.js'] = `export {queue} from './${defaultQueueImplementation}'`;
-  files['package.json'] = defaultPackageJson('src/queue.js');
+  files['package.json'] = defaultPackageJson;
+  return files;
+}
+const wrapUpFiles = buildWrapUpFiles();
 
+export function WrapUpPlaygroundQueue() {
+  const [reset, setReset] = useState(0);
+
+  const defaultQueueTest = 'queue.p4.test.js';
   return (
     <div key={reset}>
       <StackBlitzEmbed
-        files={files}
+        files={wrapUpFiles}
         options={{
-          height: 500,
           openFile: `tests/${defaultQueueTest}`,
           hideExplorer: false,
         }}
