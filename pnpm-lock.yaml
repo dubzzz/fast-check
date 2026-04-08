@@ -158,8 +158,8 @@ importers:
         specifier: workspace:*
         version: link:../poisoning
       '@microsoft/api-extractor':
-        specifier: ^7.58.0
-        version: 7.58.0(@types/node@24.12.2)
+        specifier: ^7.58.1
+        version: 7.58.1(@types/node@24.12.2)
       '@types/node':
         specifier: ^24.12.2
         version: 24.12.2
@@ -2269,8 +2269,8 @@ packages:
   '@microsoft/api-extractor-model@7.33.5':
     resolution: {integrity: sha512-Xh4dXuusndVQqVz4nEN9xOp0DyzsKxeD2FFJkSPg4arAjDSKPcy6cAc7CaeBPA7kF2wV1fuDlo2p/bNMpVr8yg==}
 
-  '@microsoft/api-extractor@7.58.0':
-    resolution: {integrity: sha512-XcHlDylX5GblbGbs1eBoexjVyvdJMioTPuBCgCorE2rqijzTYxi6eudXyez3xACRxtH9aDtahoL9fYM4XTvQmg==}
+  '@microsoft/api-extractor@7.58.1':
+    resolution: {integrity: sha512-kF3GFME4lN22O5zbnXk2RP4y/4PDQdps0xKiYTipMYprkwCmmpsWLZt/N2Fkbil540cSLfJX0BW7LkHzgMVUYg==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.18.1':
@@ -6713,9 +6713,6 @@ packages:
 
   lodash.uniq@4.5.0:
     resolution: {integrity: sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==}
-
-  lodash@4.17.23:
-    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 
   lodash@4.18.1:
     resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
@@ -12895,7 +12892,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.58.0(@types/node@24.12.2)':
+  '@microsoft/api-extractor@7.58.1(@types/node@24.12.2)':
     dependencies:
       '@microsoft/api-extractor-model': 7.33.5(@types/node@24.12.2)
       '@microsoft/tsdoc': 0.16.0
@@ -12905,7 +12902,7 @@ snapshots:
       '@rushstack/terminal': 0.22.4(@types/node@24.12.2)
       '@rushstack/ts-command-line': 5.3.4(@types/node@24.12.2)
       diff: 8.0.4
-      lodash: 4.17.23
+      lodash: 4.18.1
       minimatch: 10.2.3
       resolve: 1.22.11
       semver: 7.5.4
@@ -18043,8 +18040,6 @@ snapshots:
   lodash.startcase@4.4.0: {}
 
   lodash.uniq@4.5.0: {}
-
-  lodash@4.17.23: {}
 
   lodash@4.18.1: {}
 
