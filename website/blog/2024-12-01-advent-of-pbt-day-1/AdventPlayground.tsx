@@ -1,12 +1,5 @@
-import React from 'react';
-import {
-  SandpackProvider,
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackTests,
-  UnstyledOpenInCodeSandboxButton,
-} from '@codesandbox/sandpack-react';
-import { atomDark } from '@codesandbox/sandpack-themes';
+import React, { useEffect, useId, useRef } from 'react';
+import sdk from '@stackblitz/sdk';
 import Admonition from '@theme/Admonition';
 
 type Props = {
@@ -19,64 +12,66 @@ type Props = {
 
 export default function AdventPlayground(props: Props) {
   const { functionName, signature, signatureExtras, snippet, day } = props;
-  const styleCodeEditor = { height: 400 };
-  const styleTests = { height: 200 };
+  const rawId = useId();
+  const containerId = `stackblitz-${rawId}`;
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const adventSpecLines = [
+  const snippetDTS = [
+    ...(signatureExtras ?? []).map((extra) => `declare ${extra}`),
+    `declare function ${signature}`,
+    `export default ${functionName}`,
+  ].join('\n');
+  const spec = [
+    `import { test, expect } from 'vitest';`,
     `import fc from 'fast-check';`,
     `import ${functionName} from './advent.js';`,
     ``,
-    ...signatureExtras.map((extra) => `// declare ${extra}`),
-    `// declare ${signature}`,
+    ...(signatureExtras ?? []).map((extra) => `// declare ${extra}`),
+    `// declare function ${signature}`,
     `test('helping Santa', () => {`,
     `  fc.assert(fc.property(fc.constant('noop'), (noop) => {`,
     `  }));`,
     `})`,
-  ];
+  ].join('\n');
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container === null) {
+      return;
+    }
+    const mount = async () => {
+      const packageJsonContent = {
+        name: `advent-of-pbt-day${day}`,
+        private: true,
+        scripts: { test: 'vitest' },
+        devDependencies: { 'fast-check': 'latest', typescript: 'latest', vitest: 'latest' },
+        stackblitz: { installDependencies: true, startCommand: 'npx vitest --watch --reporter=verbose' },
+      };
+      await sdk.embedProject(
+        container,
+        {
+          title: `Advent of PBT - Day ${day}`,
+          description: 'Advent of PBT puzzle powered by Vitest',
+          template: 'node',
+          files: {
+            'advent.js': snippet,
+            'advent.d.ts': snippetDTS,
+            'advent.test.ts': spec,
+            'package.json': JSON.stringify(packageJsonContent, null, 2),
+          },
+        },
+        { height: 600, openFile: 'advent.test.ts', hideExplorer: true, view: 'editor' },
+      );
+    };
+    mount();
+    return () => {
+      container.innerHTML = '';
+    };
+  }, [snippet, snippetDTS, spec, day]);
 
   return (
     <>
-      <SandpackProvider
-        theme={atomDark}
-        files={{
-          [`/advent.js`]: {
-            code: snippet,
-            readOnly: true,
-            active: false,
-            hidden: true,
-          },
-          [`/advent.spec.ts`]: {
-            code: adventSpecLines.join('\n'),
-            readOnly: false,
-            active: true,
-            hidden: false,
-          },
-          'package.json': {
-            code: JSON.stringify({ main: `src/advent.js` }),
-            readOnly: true,
-            active: false,
-            hidden: true,
-          },
-        }}
-        customSetup={{
-          entry: `/advent.js`,
-          dependencies: {
-            'fast-check': 'latest',
-          },
-        }}
-      >
-        <SandpackLayout>
-          <SandpackCodeEditor style={styleCodeEditor} />
-        </SandpackLayout>
-        <SandpackLayout>
-          <SandpackTests verbose style={styleTests} />
-        </SandpackLayout>
-        <p>
-          <UnstyledOpenInCodeSandboxButton>
-            Open in CodeSandbox for more options: including typings...
-          </UnstyledOpenInCodeSandboxButton>
-        </p>
-      </SandpackProvider>
+      <div ref={containerRef} id={containerId} />
       <Admonition type="note">
         <p>
           Can’t access the online playground? Prefer to run it locally?
