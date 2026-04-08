@@ -38,7 +38,7 @@ const config: Config = {
 
   future: {
     // More details at https://docusaurus.io/blog/releases/3.6#docusaurus-faster
-    experimental_faster: true,
+    faster: true,
     v4: true,
   },
 
