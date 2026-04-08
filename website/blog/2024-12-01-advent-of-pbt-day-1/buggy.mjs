@@ -9,6 +9,8 @@ export default function advent() {
    */
   return function sortLetters(letters) {
     const clonedLetters = [...letters];
-    return clonedLetters.sort((la, lb) => la.age - lb.age || la.name.codePointAt(0) - lb.name.codePointAt(0));
+    return clonedLetters.sort(
+      (la, lb) => la.age - lb.age || (la.name.codePointAt(0) ?? 0) - (lb.name.codePointAt(0) ?? 0),
+    );
   };
 }

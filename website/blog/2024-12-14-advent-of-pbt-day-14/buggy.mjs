@@ -42,7 +42,7 @@ export default function advent() {
       while ((m = regex.exec(compressed))) {
         const charsInChunk = [...m[0]];
         const count = Number(charsInChunk.slice(0, -1));
-        const char = charsInChunk.at(-1);
+        const char = charsInChunk.at(-1) ?? '';
         text += char.repeat(count);
       }
       return text;

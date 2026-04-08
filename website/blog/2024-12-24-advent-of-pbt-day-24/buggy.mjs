@@ -9,8 +9,18 @@ export default function advent() {
    * @returns {Coin[][] | null}
    */
   return function distributeCoins(availableCoins, amountsToBePaid) {
+    /**
+     * @param {Coin[]} availableCoins
+     * @param {number} amountToBePaid
+     * @returns {Coin[] | null}
+     */
     function payslipContentFor(availableCoins, amountToBePaid) {
       const coins = [...availableCoins].sort((a, b) => b - a);
+      /**
+       * @param {number} target
+       * @param {number} index
+       * @returns {Coin[] | null}
+       */
       function helper(target, index) {
         if (target === 0) {
           return [];

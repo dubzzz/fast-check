@@ -10,7 +10,13 @@ export default function advent() {
    */
   return function payslipContentFor(availableCoins, amountToBePaid) {
     const coins = [...availableCoins].sort((a, b) => b - a);
+    /** @type {(Coin[] | undefined | null)[]} */
     const memo = Array.from({ length: coins.length }, () => undefined);
+    /**
+     * @param {number} target
+     * @param {number} index
+     * @returns {Coin[] | null}
+     */
     function helper(target, index) {
       if (target === 0) {
         return [];
