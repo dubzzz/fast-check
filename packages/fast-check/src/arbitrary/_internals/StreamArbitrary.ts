@@ -60,7 +60,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
     return new Value(enrichedProducer(), undefined);
   }
 
-  canShrinkWithoutContext(value: unknown): value is Stream<T> {
+  canShrinkWithoutContext(_value: unknown): _value is Stream<T> {
     // Knowing if we can generate or not an infinite stream would require to iterate over it
     // (until its "end")
     return false;
