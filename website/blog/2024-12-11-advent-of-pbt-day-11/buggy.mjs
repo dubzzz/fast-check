@@ -34,6 +34,12 @@ export default function advent() {
     return undefined;
   };
 
+  /**
+   * @param {boolean[][]} map
+   * @param {{ x: number; y: number }} start
+   * @param {{ width: number; height: number }} requestedArea
+   * @returns {boolean}
+   */
   function isValidPlace(map, start, requestedArea) {
     for (let dy = 0; dy !== requestedArea.height; ++dy) {
       if (!map[start.y + dy]?.[start.x]) {

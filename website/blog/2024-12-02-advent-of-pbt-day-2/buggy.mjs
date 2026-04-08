@@ -8,6 +8,7 @@ export default function advent() {
    * @returns {Letter[]}
    */
   return function dropLettersFromDuplicatedSenders(letters) {
+    /** @type {Record<string, boolean>} */
     const alreadySeenIds = {};
     return letters.filter((letter) => {
       if (alreadySeenIds[letter.id]) {

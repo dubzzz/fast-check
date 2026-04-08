@@ -40,7 +40,7 @@
     "@types/npm-packlist": "^7.0.3",
     "@types/npmcli__arborist": "^6.3.3",
     "rolldown": "^1.0.0-rc.14",
-    "typescript": "~5.9.3",
+    "typescript": "~6.0.2",
     "vitest": "^4.1.0"
   },
   "keywords": [],

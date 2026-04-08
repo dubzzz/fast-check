@@ -10,6 +10,7 @@ export default function advent() {
    * @returns {Track[]|undefined}
    */
   return function planFastTravel(departure, destination, tracks) {
+    /** @type {Record<string, {distance: number, edges: Track[]}>} */
     const distanceToNode = Object.fromEntries(
       [departure, destination, ...tracks.map((t) => t.from), ...tracks.map((t) => t.to)].map((node) => [
         node,
@@ -37,6 +38,10 @@ export default function advent() {
     }
   };
 
+  /**
+   * @param {Record<string, {distance: number, edges: Track[]}>} distanceToNode
+   * @returns {string | undefined}
+   */
   function findRemainingNodeWithMinimalDistance(distanceToNode) {
     let minNode = undefined;
     let minDistance = Number.POSITIVE_INFINITY;

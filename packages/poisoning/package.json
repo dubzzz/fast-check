@@ -30,7 +30,7 @@
     "@fast-check/poisoning": "workspace:*",
     "@types/node": "^24.12.2",
     "rolldown": "^1.0.0-rc.14",
-    "typescript": "~5.9.3",
+    "typescript": "~6.0.2",
     "vitest": "^4.1.0"
   },
   "keywords": [

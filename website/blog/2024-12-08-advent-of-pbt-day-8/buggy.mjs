@@ -14,6 +14,12 @@ export default function advent() {
     return match.join(' ');
   };
 
+  /**
+   * @param {string} spacelessMessage
+   * @param {string[]} words
+   * @param {number} startIndex
+   * @returns {string[] | undefined}
+   */
   function respaceInternal(spacelessMessage, words, startIndex) {
     if (startIndex === spacelessMessage.length) {
       return [];

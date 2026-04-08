@@ -8,6 +8,7 @@ export default function advent() {
    * @returns {string}
    */
   return function buildSantaURLOfChild(firstName, lastName, birthDateTimestamp) {
+    /** @type {(i: number) => number} */
     const table = (i) => Array.from({ length: 8 }).reduce((c) => (c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1), i);
     let str = String(birthDateTimestamp);
     for (let i = 0; i !== Math.max(firstName.length, lastName.length); ++i) {
