@@ -30,7 +30,7 @@ describe('chainUntil', () => {
       const startValue = new Value(42, { ctx: 'start' });
       class StartArb extends Arbitrary<number> {
         generate = vi.fn().mockReturnValue(startValue);
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink = vi.fn().mockReturnValue(Stream.nil());
@@ -54,7 +54,7 @@ describe('chainUntil', () => {
         generate(_mrng: any, _biasFactor: any): Value<number> {
           return new Value(this.val, undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink(): Stream<Value<number>> {
@@ -88,7 +88,7 @@ describe('chainUntil', () => {
           generateCalls.push(biasFactor);
           return new Value(this.val, undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink(): Stream<Value<number>> {
@@ -116,7 +116,7 @@ describe('chainUntil', () => {
         generate(): Value<number> {
           return new Value(0, undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return true;
         }
         shrink(): Stream<Value<number>> {
@@ -139,7 +139,7 @@ describe('chainUntil', () => {
         generate(): Value<number> {
           return new Value(0, undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink(): Stream<Value<number>> {
@@ -161,7 +161,7 @@ describe('chainUntil', () => {
         generate(_mrng: any): Value<number> {
           return new Value(10, { step: 5 });
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink(value: number, context?: unknown): Stream<Value<number>> {
@@ -196,7 +196,7 @@ describe('chainUntil', () => {
         generate(_mrng: any): Value<number> {
           return new Value(this.val, 'ctx');
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink(_value: number, context?: unknown): Stream<Value<number>> {
@@ -239,7 +239,7 @@ describe('chainUntil', () => {
         generate(_mrng: any): Value<string> {
           return new Value(this.val, 'ctx');
         }
-        canShrinkWithoutContext(value: unknown): value is string {
+        canShrinkWithoutContext(_value: unknown): _value is string {
           return false;
         }
         shrink(value: string, context?: unknown): Stream<Value<string>> {
@@ -295,7 +295,7 @@ describe('chainUntil', () => {
         generate(_mrng: any): Value<number> {
           return new Value(this.val, undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink(): Stream<Value<number>> {
@@ -338,7 +338,7 @@ describe('chainUntil', () => {
         generate(_mrng: any): Value<number> {
           return new Value(this.val, 'has-context');
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           return false;
         }
         shrink(value: number, context?: unknown): Stream<Value<number>> {

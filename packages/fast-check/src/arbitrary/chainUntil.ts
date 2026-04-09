@@ -64,7 +64,7 @@ class ChainUntilArbitrary<T> extends Arbitrary<T> {
     return new Value(current.value_, ctx);
   }
 
-  canShrinkWithoutContext(value: unknown): value is T {
+  canShrinkWithoutContext(_value: unknown): _value is T {
     return false;
   }
 
