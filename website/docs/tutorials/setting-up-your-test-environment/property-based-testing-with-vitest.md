@@ -32,7 +32,7 @@ Congratulations, everything is ready to start plugging some Property-Based Tests
 
 Now that everything is ready, let's write a simple property-based test to ensure everything works properly. First, let's create a new test file that includes both the code and the test for the sake of clarity and conciseness.
 
-The connector supports two syntaxes for defining property inputs — **tuple** and **record** notations:
+The connector supports two syntaxes for defining property inputs:
 
 ```ts title="isSubstring.spec.ts"
 import { test, fc } from '@fast-check/vitest';
