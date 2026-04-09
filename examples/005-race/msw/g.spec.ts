@@ -5,8 +5,8 @@ import { setupServer } from 'msw/node';
 import type { Scheduler } from 'fast-check';
 import type { HttpResponseResolver, DefaultBodyType } from 'msw';
 
-import { switchUser, getDisplayedUser, reset } from './src/UserProfileLoader.js';
-// import { switchUser, getDisplayedUser, reset } from './src/UserProfileLoaderFixed.js';
+// import { switchUser, getDisplayedUser, reset } from './src/UserProfileLoader.js';
+import { switchUser, getDisplayedUser, reset } from './src/UserProfileLoaderFixed.js';
 
 function scheduled<
   Params extends Record<string, string | readonly string[]>,
@@ -24,7 +24,8 @@ function scheduled<
   };
 }
 
-test.prop([fc.scheduler()])('should display the last requested user', async (s) => {
+test('should display the last requested user (g + scheduled)', async ({ g }) => {
+  const s = g(fc.scheduler);
   reset();
 
   const server = setupServer(

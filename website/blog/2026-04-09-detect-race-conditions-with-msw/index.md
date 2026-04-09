@@ -185,15 +185,14 @@ The `scheduled` wrapper intercepts each response, registers it with the schedule
 
 :::info `@fast-check/vitest` integration
 
-If you use [`@fast-check/vitest`](https://www.npmjs.com/package/@fast-check/vitest), you can skip the `fc.assert` / `fc.asyncProperty` boilerplate and write the same test with `test.prop`:
+If you use [`@fast-check/vitest`](https://www.npmjs.com/package/@fast-check/vitest), you do not need to restructure your test around `fc.assert` and `fc.asyncProperty`. The extended `test` function injects a `g` helper that can generate a scheduler inline:
 
 ```ts
 import { test, fc } from '@fast-check/vitest';
 import { expect } from 'vitest';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
 
-test.prop([fc.scheduler()])('should display the last requested user', async (s) => {
+test('should display the last requested user', async ({ g }) => {
+  const s = g(fc.scheduler);
   reset();
 
   const server = setupServer(
@@ -218,7 +217,7 @@ test.prop([fc.scheduler()])('should display the last requested user', async (s) 
 });
 ```
 
-`test.prop` receives an array of arbitraries — here `[fc.scheduler()]` — and injects the generated values directly as arguments of the test function. It handles running the test multiple times with different orderings, shrinking on failure, and seeded replay. It integrates with all vitest features you already know: `.skip`, `.only`, `.concurrent`, `beforeEach` / `afterEach` hooks, and so on.
+`g(fc.scheduler)` gives you a `Scheduler` right inside a regular vitest test, with built-in seeding and reproducibility. A single execution will not explore every possible ordering, but it will try a random one — and if it fails, the seed printed in the output lets you replay it deterministically. It is the lightest way to start introducing race condition coverage without committing to full property-based testing upfront.
 :::
 
 :::info Why `s.waitFor` and not `s.waitIdle`?
