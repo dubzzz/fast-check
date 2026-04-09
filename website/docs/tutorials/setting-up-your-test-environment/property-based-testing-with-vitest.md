@@ -13,6 +13,11 @@ While fast-check is a standalone library that works with any test runner out of 
 
 Best of all, the connector simply provides an enriched version of Vitest's `test` and `it` functions. This means you can incrementally plug it into an existing test suite without any need to rewrite anything. You can just swap the import from vitest with the one from @fast-check/vitest and later start playing with adding `.prop` where it matters.
 
+:::note What the connector handles for you
+
+Behind the scenes, the connector takes care of wiring up timeout management, `beforeEach`/`afterEach` hook integration, and other Vitest-specific concerns so that property-based tests behave as expected out of the box. This list of integrations will continue to grow over time.
+:::
+
 :::info You don't have Vitest yet?
 
 If you don't have Vitest yet, we recommend you to have a look at their official [Getting Started Guide](https://vitest.dev/guide/) first.
@@ -121,36 +126,6 @@ test('the name of your test', ({ g }) => {
 
 :::
 
-## Using test modifiers
-
-The connector supports all Vitest test modifiers — `.only`, `.skip`, `.todo`, `.concurrent`, and `.fails` — as well as combinations of them:
-
-```ts title="modifiers.spec.ts"
-import { it, test, fc } from '@fast-check/vitest';
-
-test.prop([fc.nat(), fc.nat()], { seed: 4242 })('should replay the test for the seed 4242', (a, b) => {
-  return a + b === b + a;
-});
-
-test.skip.prop([fc.string()])('should be skipped', (text) => {
-  return text.length === [...text].length;
-});
-
-describe('with it', () => {
-  it.prop([fc.nat(), fc.nat()])('should run too', (a, b) => {
-    return a + b === b + a;
-  });
-});
-```
-
-## Hook integration
-
-Vitest's `beforeEach` and `afterEach` hooks are natively integrated with the connector. They are called before and after each execution of the predicate. If a property runs _n_ times, `beforeEach` will be invoked _n_ times before it and `afterEach` _n_ times after it.
-
-:::note
-
-Cleanup functions returned by `beforeEach` on the first predicate execution are deferred until the end of the test, as they are handled by Vitest's own teardown mechanism. All other cleanups run between predicate executions as expected.
-:::
 
 ## Detecting race conditions
 
