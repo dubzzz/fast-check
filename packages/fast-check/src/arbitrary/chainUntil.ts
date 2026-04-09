@@ -78,7 +78,7 @@ class ChainUntilArbitrary<T> extends Arbitrary<T> {
   private *shrinkIterator(context: ChainUntilArbitraryContext<T>): IterableIterator<Value<T>> {
     const { entries, currentShrinkLevel, biasFactor } = context;
 
-    for (let level = currentShrinkLevel; level < entries.length; level++) {
+    for (let level = currentShrinkLevel; level < entries.length; ++level) {
       const entry = entries[level];
       const shrinks = entry.arbitrary.shrink(entry.value, entry.context);
 
