@@ -58,8 +58,8 @@ export function buildAdventOfTheDay(options: Options) {
       if (inputs === undefined) {
         return null;
       }
-      const buggyAdvent = buggyAdventSurcharged ?? buggyAdvent;
-      if (isEqual(postAdvent(buggyAdvent(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
+      const buggyFn = buggyAdventSurcharged ?? buggyAdvent;
+      if (isEqual(postAdvent(buggyFn(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
         return null;
       }
       return pastAnswer;
@@ -77,8 +77,8 @@ export function buildAdventOfTheDay(options: Options) {
         lastError = 'Malformed inputs provided!';
         return;
       }
-      const buggyAdvent = buggyAdventSurcharged ?? buggyAdvent;
-      if (isEqual(postAdvent(buggyAdvent(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
+      const buggyFn = buggyAdventSurcharged ?? buggyAdvent;
+      if (isEqual(postAdvent(buggyFn(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
         lastError = 'The input you provided seems to be working well: Santa is looking for a bug!';
         return;
       }
