@@ -26,7 +26,7 @@ function adaptParametersForRecord<Ts>(
 ): FcParameters<Ts> {
   const parametersV3OrV4: FcParameters<[Ts]> & { errorWithCause?: boolean } = parameters;
   const enrichedParameters: FcParameters<Ts> & { errorWithCause?: boolean } = {
-    ...(parameters as Required<FcParameters<[Ts]>>),
+    ...(parameters),
     errorWithCause: parametersV3OrV4.errorWithCause !== undefined ? parametersV3OrV4.errorWithCause : true,
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,

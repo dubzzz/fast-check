@@ -149,8 +149,8 @@ function toMatchingArbitrary(
         (c) => {
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          return safeCharCodeAt(c, 0)!;
+           
+          return safeCharCodeAt(c, 0);
         },
       );
     }

@@ -191,7 +191,7 @@ export function stringifyInternal<Ts>(
       return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
     case '[object BigInt]':
-      return `${value}n`;
+      return `${String(value)}n`;
     case '[object Boolean]': {
       // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
       const unboxedToString = (value as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing
@@ -404,8 +404,8 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
     const delay0 = createDelay0();
     const p: Promise<unknown> =
       asyncToStringMethod in data
-        ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
-        : (data as Promise<unknown>);
+        ? Promise.resolve().then(() => (data)[asyncToStringMethod]())
+        : (data);
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
 

@@ -53,7 +53,7 @@ function extractBigIntConstraints(args: [] | [bigint, bigint] | [BigIntConstrain
     return constraints;
   } // args.length > 1
 
-  return { min: args[0] as bigint, max: args[1] as bigint }; // bigInt(min, max)
+  return { min: args[0] as bigint, max: args[1] }; // bigInt(min, max)
 }
 
 /**

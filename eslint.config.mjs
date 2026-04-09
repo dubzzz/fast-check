@@ -19,34 +19,30 @@ export default [
   },
   {
     rules: {
+      // Rules not in any preset
       '@typescript-eslint/explicit-module-boundary-types': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/no-empty-function': 'warn',
-      '@typescript-eslint/no-empty-interface': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-this-alias': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
-      '@typescript-eslint/no-use-before-define': 'warn',
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
-      '@typescript-eslint/no-restricted-types': 'error',
-      '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'with-single-extends' }],
-      '@typescript-eslint/no-unsafe-function-type': 'error',
-      '@typescript-eslint/no-wrapper-object-types': 'error',
+      '@typescript-eslint/no-empty-function': 'warn',
+      '@typescript-eslint/no-use-before-define': 'warn',
       'require-atomic-updates': 'error',
+
+      // Relaxed from preset defaults
+      '@typescript-eslint/no-this-alias': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-redundant-type-constituents': 'off',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/restrict-plus-operands': 'off',
-      '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/unbound-method': 'off',
+
+      // Customized options
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
+      '@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'with-single-extends' }],
     },
   },
   {
@@ -67,7 +63,6 @@ export default [
     },
     rules: {
       ...tseslint.configs.disableTypeChecked.rules,
-      '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/no-require-imports': 'off',
     },
   },

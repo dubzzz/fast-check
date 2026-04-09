@@ -23,7 +23,7 @@ function extractAllDescriptorsDetails(instance: unknown): [string | symbol, Prop
   const allDescriptorsDetails = PoisoningFreeArray.from(
     allDescriptors[MapSymbol]((name): [string | symbol, PropertyDescriptor] => [
       name,
-      descriptors[name as keyof typeof descriptors],
+      descriptors[name],
     ]),
   );
   return allDescriptorsDetails[SortSymbol](compareKeys);

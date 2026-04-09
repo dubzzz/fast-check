@@ -28,7 +28,7 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
     if (requiredKeys === undefined || safeIndexOf(requiredKeys, k as TKeys) !== -1) {
       safePush(arbs, requiredArbitrary);
     } else {
-      safePush(arbs, option(requiredArbitrary, { nil: noKeyValue as NoKeyType }));
+      safePush(arbs, option(requiredArbitrary, { nil: noKeyValue }));
     }
   }
   return tuple(tuple(...arbs), noNullPrototype ? constant(false) : boolean()).map(

@@ -138,7 +138,7 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
       case 'xoroshiro128plus':
         return xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
       default:
-        throw new Error(`Invalid random specified: '${p.randomType}'`);
+        throw new Error(`Invalid random specified: '${String(p.randomType)}'`);
     }
   }
   const mrng = p.randomType(0);

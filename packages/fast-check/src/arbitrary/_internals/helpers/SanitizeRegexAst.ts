@@ -93,7 +93,7 @@ function addMissingDotStarTraversal(
         traversalResults.hasEnd = true;
         return astNode;
       } else {
-        throw new Error(`Assertions of kind ${astNode.kind} not implemented yet!`);
+        throw new Error(`Assertions of kind ${String(astNode.kind)} not implemented yet!`);
       }
     }
     case 'Backreference':

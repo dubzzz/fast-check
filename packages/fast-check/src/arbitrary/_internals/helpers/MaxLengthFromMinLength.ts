@@ -90,7 +90,7 @@ export function maxLengthFromMinLength(minLength: number, size: Size): number {
     case 'xlarge':
       return 1001 * minLength + 10000; // min + (1000 * min + 10000)
     default:
-      throw new Error(`Unable to compute lengths based on received size: ${size}`);
+      throw new Error(`Unable to compute lengths based on received size: ${String(size)}`);
   }
 }
 

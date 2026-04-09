@@ -25,7 +25,7 @@ function adaptParametersForRecord<Ts>(
   originalParamaters: FcParameters<Ts>,
 ): FcParameters<Ts> {
   return {
-    ...(parameters as Required<FcParameters<[Ts]>>),
+    ...(parameters),
     examples: parameters.examples !== undefined ? parameters.examples.map((example) => example[0]) : undefined,
     reporter: originalParamaters.reporter,
     asyncReporter: originalParamaters.asyncReporter,

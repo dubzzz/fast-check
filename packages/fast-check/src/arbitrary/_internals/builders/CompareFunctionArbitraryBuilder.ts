@@ -37,7 +37,7 @@ export function buildCompareFunctionArbitrary<T, TOut>(
   // With hash and stringify coming from fast-check${
     seenValues.length !== 0 ? `\n  ${safeJoin(seenValues, '\n  ')}` : ''
   }
-  const cmp = ${cmp};
+  const cmp = ${String(cmp)};
   const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
   const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};
   return cmp(hA, hB);

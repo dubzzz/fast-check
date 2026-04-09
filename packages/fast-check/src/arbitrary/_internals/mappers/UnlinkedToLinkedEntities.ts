@@ -74,7 +74,7 @@ export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations e
                 : typeof propValue.index === 'number'
                   ? withReferenceStringifiedValue(propValue.type, propValue.index)
                   : safeMap(propValue.index, (index) => withReferenceStringifiedValue(propValue.type, index))
-            ) as any;
+            );
           }
           return stringify(entity);
         },
