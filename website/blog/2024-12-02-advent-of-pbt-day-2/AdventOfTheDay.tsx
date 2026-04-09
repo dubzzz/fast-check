@@ -1,9 +1,11 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 2,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: dropLettersFromDuplicatedSenders,
   parser,
   placeholderForm: '"first-id"\n"second-id-with\\xA0fancy\\ncharacters\\u{1f431}"\n"with escaped \\" double quotes"',
