@@ -29,7 +29,9 @@ describe('chainUntil', () => {
       const startValue = new Value(42, { ctx: 'start' });
       class StartArb extends Arbitrary<number> {
         generate = vi.fn().mockReturnValue(startValue);
-        canShrinkWithoutContext = vi.fn() as any;
+        canShrinkWithoutContext(value: unknown): value is number {
+          return false;
+        }
         shrink = vi.fn().mockReturnValue(Stream.nil());
       }
 
