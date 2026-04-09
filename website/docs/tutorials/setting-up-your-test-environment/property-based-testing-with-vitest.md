@@ -9,7 +9,7 @@ sidebar_label: With Vitest
 
 Integrating Property Based Testing capabilities within [Vitest](https://vitest.dev/) can be easily achieved using fast-check.
 
-While fast-check is a standalone library that works with any test runner out of the box, we recommend using our dedicated connector library [@fast-check/vitest](https://www.npmjs.com/package/@fast-check/vitest) when working with Vitest. The connector provides a bulletproof integration that takes care of timeouts, lifecycle hooks, and configuration for you — making it the safer and simplest path to property-based testing in Vitest.
+While fast-check is a standalone library that works with any test runner out of the box, we recommend using our dedicated connector library [@fast-check/vitest](https://npmx.dev/package/@fast-check/vitest) when working with Vitest. The connector provides a bulletproof integration that takes care of timeouts, lifecycle hooks and configuration for you. It makes it the safest and simplest path to run property-based testing in Vitest.
 
 Best of all, the connector simply provides an enriched version of Vitest's `test` and `it` functions. This means you can incrementally plug it into an existing test suite — no rewrite needed, just swap your imports and start adding `.prop` where it matters.
 
