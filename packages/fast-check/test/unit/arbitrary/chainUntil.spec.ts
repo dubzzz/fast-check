@@ -228,53 +228,57 @@ describe('chainUntil', () => {
 
     it('should produce the right shrinking tree for a simple chain', () => {
       // Arrange
-      // An arbitrary that counts down: generate 5, shrinks to 3, then to 0
-      class CountArb extends Arbitrary<number> {
-        constructor(readonly val: number) {
+      // An arbitrary that produces string values encoding the chain path.
+      // Each level appends "-L{depth}" (uppercase). Shrinking lowercases the last segment.
+      // This makes the tree output descriptive: you can see exactly which level was shrunk.
+      class LevelArb extends Arbitrary<string> {
+        constructor(readonly val: string) {
           super();
         }
-        generate(_mrng: any): Value<number> {
-          return new Value(this.val, { step: 2 });
+        generate(_mrng: any): Value<string> {
+          return new Value(this.val, 'ctx');
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(value: unknown): value is string {
           return false;
         }
-        shrink(value: number, context?: unknown): Stream<Value<number>> {
-          if (context === undefined) {
-            return Stream.nil();
-          }
-          const currentStep = (context as { step: number }).step;
-          if (value - currentStep < 0) {
-            return Stream.nil();
-          }
-          return Stream.of(new Value(value - currentStep, { step: currentStep + 1 }));
+        shrink(value: string, context?: unknown): Stream<Value<string>> {
+          if (context === undefined) return Stream.nil();
+          const parts = value.split('-');
+          const last = parts[parts.length - 1];
+          if (last === last.toLowerCase()) return Stream.nil();
+          parts[parts.length - 1] = last.toLowerCase();
+          return Stream.of(new Value(parts.join('-'), 'ctx'));
         }
       }
 
-      // Chain: start at 5, if >= 3 chain to same value minus 2, otherwise stop
-      const chainer = (prev: number): Arbitrary<number> | undefined => {
-        if (prev >= 3) {
-          return new CountArb(prev - 2);
-        }
-        return undefined;
+      // Chain: "L0" -> "L0-L1" -> "L0-L1-L2" -> stop (depth >= 3)
+      const chainer = (prev: string): Arbitrary<string> | undefined => {
+        const depth = prev.split('-').length;
+        if (depth >= 3) return undefined;
+        return new LevelArb(prev + '-L' + depth);
       };
 
       // Act
-      const arb = chainUntil(new CountArb(5), chainer);
+      const arb = chainUntil(new LevelArb('L0'), chainer);
       const g = arb.generate(mrngNoCall, undefined);
 
-      // The chain: CountArb(5) -> value 5 -> chainer(5) -> CountArb(3) -> value 3 -> chainer(3) -> CountArb(1) -> value 1 -> chainer(1) -> undefined
-      // Final value: 1
-      expect(g.value_).toBe(1);
+      // The chain: LevelArb("L0") -> "L0" -> chainer -> LevelArb("L0-L1") -> "L0-L1" -> chainer -> LevelArb("L0-L1-L2") -> "L0-L1-L2" -> chainer -> undefined
+      // Final value: "L0-L1-L2"
+      expect(g.value_).toBe('L0-L1-L2');
 
       const renderedTree = renderTree(buildShrinkTree(arb, g, { numItems: 30 })).join('\n');
 
       // Assert - verify the tree structure
+      // Uppercase = unshrunk, lowercase = shrunk at that level
       expect(renderedTree).toMatchInlineSnapshot(`
-        "1
-        ├> 1
-        |  └> 0
-        └> 1"
+        ""L0-L1-L2"
+        ├> "l0-L1-L2"
+        |  ├> "l0-l1-L2"
+        |  |  └> "l0-l1-l2"
+        |  └> "l0-L1-l2"
+        ├> "L0-l1-L2"
+        |  └> "L0-l1-l2"
+        └> "L0-L1-l2""
       `);
     });
 
