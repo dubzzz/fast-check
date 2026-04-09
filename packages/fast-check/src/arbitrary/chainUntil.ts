@@ -149,7 +149,7 @@ class ChainUntilArbitrary<T> extends Arbitrary<T> {
  * @param chainer - A function called with the current value that returns either the next arbitrary to generate from or undefined to stop the chain
  * @returns An arbitrary producing the last value in the chain
  *
- * @remarks Since 3.24.0
+ * @remarks Since 4.7.0
  * @public
  */
 export function chainUntil<T>(startArb: Arbitrary<T>, chainer: (prev: T) => Arbitrary<T> | undefined): Arbitrary<T> {
