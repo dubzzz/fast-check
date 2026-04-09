@@ -74,7 +74,7 @@ jobs:
           git add .
           if ! git diff --cached --quiet; then
             echo "Committing formatting changes..."
-            git commit -m "💄 Format code with prettier
+            git commit -m "💄 Format code with oxfmt
 
             Applied by GitHub Action workflow: $WORKFLOW_NAME
             Run ID: $RUN_ID

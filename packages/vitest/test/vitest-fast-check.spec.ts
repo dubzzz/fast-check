@@ -275,40 +275,37 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
-    it.concurrent(
-      `should call beforeEach, afterEach and clean-ups the same number of times even in failure cases`,
-      async () => {
-        // Arrange
-        const specDirectory = await writeToFile(runnerName, () => {
-          // @ts-expect-error - No Typescript here
-          const probes = [];
-          beforeEachVi(() => {
-            probes.push(`beforeEach`);
-            return () => probes.push(`clean-up beforeEach`);
-          });
-          afterEachVi(() => {
-            probes.push(`afterEach`);
-          });
-          runner.fails.prop([fc.string()])('property', (s) => {
-            probes.push(`predicate`);
-            return s.length % 2 === 0;
-          });
-          afterAllVi(() => {
-            // @ts-expect-error - No Typescript here
-            const counOf = (value) => probes.filter((v) => v === value).length;
-            expectVi(counOf('beforeEach')).toBe(counOf('predicate'));
-            expectVi(counOf('afterEach')).toBe(counOf('predicate'));
-            expectVi(counOf('clean-up beforeEach')).toBe(counOf('predicate'));
-          });
+    it.concurrent(`should call beforeEach, afterEach and clean-ups the same number of times even in failure cases`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        // @ts-expect-error - No Typescript here
+        const probes = [];
+        beforeEachVi(() => {
+          probes.push(`beforeEach`);
+          return () => probes.push(`clean-up beforeEach`);
         });
+        afterEachVi(() => {
+          probes.push(`afterEach`);
+        });
+        runner.fails.prop([fc.string()])('property', (s) => {
+          probes.push(`predicate`);
+          return s.length % 2 === 0;
+        });
+        afterAllVi(() => {
+          // @ts-expect-error - No Typescript here
+          const counOf = (value) => probes.filter((v) => v === value).length;
+          expectVi(counOf('beforeEach')).toBe(counOf('predicate'));
+          expectVi(counOf('afterEach')).toBe(counOf('predicate'));
+          expectVi(counOf('clean-up beforeEach')).toBe(counOf('predicate'));
+        });
+      });
 
-        // Act
-        const out = await runSpec(specDirectory);
+      // Act
+      const out = await runSpec(specDirectory);
 
-        // Assert
-        expectPass(out);
-      },
-    );
+      // Assert
+      expectPass(out);
+    });
 
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
@@ -414,25 +411,22 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
-    it.concurrent(
-      `should support ${runnerName} without any use of the generator on failure but not report it via fast-check`,
-      async () => {
-        // Arrange
-        const specDirectory = await writeToFile(runnerName, () => {
-          runner('no gen', () => {
-            throw new Error('Expect 2 to equal 1');
-          });
+    it.concurrent(`should support ${runnerName} without any use of the generator on failure but not report it via fast-check`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        runner('no gen', () => {
+          throw new Error('Expect 2 to equal 1');
         });
+      });
 
-        // Act
-        const out = await runSpec(specDirectory);
+      // Act
+      const out = await runSpec(specDirectory);
 
-        // Assert
-        expectFail(out);
-        expect(out).toContain('Expect 2 to equal 1');
-        expect(out).not.toContain('Property failed after 1 tests');
-      },
-    );
+      // Assert
+      expectFail(out);
+      expect(out).toContain('Expect 2 to equal 1');
+      expect(out).not.toContain('Property failed after 1 tests');
+    });
 
     it.concurrent(`should support ${runnerName} using the generator on success`, async () => {
       // Arrange
@@ -452,28 +446,25 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
-    it.concurrent(
-      `should support ${runnerName} using the generator on failure and report it using fast-check`,
-      async () => {
-        // Arrange
-        const specDirectory = await writeToFile(runnerName, () => {
-          runner('no gen', ({ g }) => {
-            const value: number = g(() => fc.constant(2));
-            if (value !== 1) {
-              throw new Error(`Expect ${value} to equal 1`);
-            }
-          });
+    it.concurrent(`should support ${runnerName} using the generator on failure and report it using fast-check`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        runner('no gen', ({ g }) => {
+          const value: number = g(() => fc.constant(2));
+          if (value !== 1) {
+            throw new Error(`Expect ${value} to equal 1`);
+          }
         });
+      });
 
-        // Act
-        const out = await runSpec(specDirectory);
+      // Act
+      const out = await runSpec(specDirectory);
 
-        // Assert
-        expectFail(out);
-        expect(out).toContain('Expect 2 to equal 1');
-        expect(out).toContain('Property failed after 1 tests');
-      },
-    );
+      // Assert
+      expectFail(out);
+      expect(out).toContain('Expect 2 to equal 1');
+      expect(out).toContain('Property failed after 1 tests');
+    });
   });
 });
 
