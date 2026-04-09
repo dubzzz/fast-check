@@ -48,6 +48,17 @@
 
     "no-use-before-define": "off",
 
+    "no-fallthrough": "error",
+    "no-case-declarations": "error",
+    "no-prototype-builtins": "error",
+    "no-empty": "error",
+    "no-regex-spaces": "error",
+    "no-unexpected-multiline": "error",
+    "no-redeclare": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-unnecessary-type-constraint": "error",
+
     "typescript/no-explicit-any": "off",
     "typescript/no-redundant-type-constituents": "off",
     "typescript/no-unnecessary-type-assertion": "off",
@@ -83,7 +94,8 @@
         "typescript/no-implied-eval": "off",
         "typescript/no-misused-promises": "off",
         "typescript/no-unsafe-enum-comparison": "off",
-        "typescript/require-await": "off"
+        "typescript/require-await": "off",
+        "no-unexpected-multiline": "off"
       }
     },
     {
