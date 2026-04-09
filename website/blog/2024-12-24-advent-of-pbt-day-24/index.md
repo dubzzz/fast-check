@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking! Emma just reached out with a new challenge: Santa’s coin distribution strategy for multiple elves might leave some unpaid. Can you identify any flaws in the algorithm and ensure every elf gets their fair share? 🎄✨
 
-<!--truncate-->
+{/* truncate */}
 
 ## Money Day: The Revenge
 

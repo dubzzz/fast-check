@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa’s relying on the elves’ algorithm to find the perfect spot for his sleigh at Christmas markets. Can you ensure it works flawlessly? 🎄🔧
 
-<!--truncate-->
+{/* truncate */}
 
 ## Perfect market spots
 

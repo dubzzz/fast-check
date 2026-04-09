@@ -8,7 +8,7 @@ This release comes with a new arbitrary called `stringMatching`. This arbitrary 
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## String from regex
 

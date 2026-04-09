@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves’ journey-planning algorithm might have hidden flaws. Can you identify any issues and ensure Santa takes the shortest route to deliver gifts on time? 🎄✨
 
-<!--truncate-->
+{/* truncate */}
 
 ## Journey planner
 

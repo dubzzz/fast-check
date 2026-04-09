@@ -8,7 +8,7 @@ This release comes with a new arbitrary called `ulid`. This arbitrary is respons
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## ULID
 

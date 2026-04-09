@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking! Santa just reached out with a new challenge: the elves’ compression algorithm for children's letters might have some flaws. Can you identify edge cases that break the system and ensure everything works smoothly? 🎄🔧
 
-<!--truncate-->
+{/* truncate */}
 
 ## Memory efficient storage
 

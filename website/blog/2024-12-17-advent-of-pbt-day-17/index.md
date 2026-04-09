@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves recently implemented a regex to validate email addresses for Santa's newsletter. Santa’s worried that some valid emails might be incorrectly rejected. Can you catch a valid email that’s being rejected? 🎅✨
 
-<!--truncate-->
+{/* truncate */}
 
 ## Email validator
 

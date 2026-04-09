@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves have developed an algorithm to simplify the paths to items stored in Santa’s massive network of nested boxes. Santa fears the algorithm may have flaws, potentially making critical items impossible to find. Can you uncover any issues to ensure the system works perfectly? 🎄🔧
 
-<!--truncate-->
+{/* truncate */}
 
 ## Inventory locator
 

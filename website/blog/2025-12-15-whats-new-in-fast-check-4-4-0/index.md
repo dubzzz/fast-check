@@ -8,7 +8,7 @@ We expand fast-check's collection of arbitraries with two data structures: `Map`
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## New `fc.map` arbitrary
 

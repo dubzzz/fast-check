@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves’ new feature for his remastered Tic-Tac-Toe game might have flaws. Can you uncover any bugs in the algorithm and ensure every child’s favorite game is perfect? 🎄✨
 
-<!--truncate-->
+{/* truncate */}
 
 ## Tic-Tac-Toe
 
