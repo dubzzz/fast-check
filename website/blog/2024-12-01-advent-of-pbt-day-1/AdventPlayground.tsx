@@ -79,7 +79,9 @@ export default function AdventPlayground(props: Props) {
           No problem! You can download the source file{' '}
           <a
             download={`advent-day-${String(day).padStart(2, '0')}.mjs`}
-            href={`data:application/octet-stream;base64,${btoa(snippet)}`}
+            href={`data:application/octet-stream;base64,${btoa(
+              Array.from(new TextEncoder().encode(snippet), (byte) => String.fromCharCode(byte)).join(''),
+            )}`}
           >
             here
           </a>
