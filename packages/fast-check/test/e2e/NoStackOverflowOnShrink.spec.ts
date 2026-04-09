@@ -47,7 +47,7 @@ describe(`NoStackOverflowOnShrink (seed: ${seed})`, () => {
       generate(_mrng: fc.Random): fc.Value<number> {
         return new fc.Value(0, undefined);
       }
-      canShrinkWithoutContext(value: unknown): value is number {
+      canShrinkWithoutContext(_value: unknown): _value is number {
         return false;
       }
       shrink(value: number): fc.Stream<fc.Value<number>> {

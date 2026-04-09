@@ -13,7 +13,7 @@ describe('noBias', () => {
     const generate = vi.fn();
     class MyNextArbitrary extends Arbitrary<any> {
       generate = generate;
-      canShrinkWithoutContext(value: unknown): value is any {
+      canShrinkWithoutContext(_value: unknown): _value is any {
         throw new Error('Not implemented.');
       }
       shrink(): Stream<Value<any>> {
@@ -37,7 +37,7 @@ describe('noBias', () => {
       generate(): Value<any> {
         throw new Error('Not implemented.');
       }
-      canShrinkWithoutContext(value: unknown): value is any {
+      canShrinkWithoutContext(_value: unknown): _value is any {
         throw new Error('Not implemented.');
       }
       shrink(): Stream<Value<any>> {
@@ -62,7 +62,7 @@ describe('noBias', () => {
         generate(): Value<any> {
           throw new Error('Not implemented.');
         }
-        canShrinkWithoutContext(value: unknown): value is any {
+        canShrinkWithoutContext(_value: unknown): _value is any {
           throw new Error('Not implemented.');
         }
         shrink(): Stream<Value<any>> {
