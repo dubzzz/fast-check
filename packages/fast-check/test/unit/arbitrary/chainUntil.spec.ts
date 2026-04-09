@@ -226,7 +226,7 @@ describe('chainUntil', () => {
           return false;
         }
         shrink(value: number, context?: unknown): Stream<Value<number>> {
-          if (typeof context !== 'object' || context === null || !('step' in context)) {
+          if (context === undefined) {
             return Stream.nil();
           }
           const currentStep = (context as { step: number }).step;
