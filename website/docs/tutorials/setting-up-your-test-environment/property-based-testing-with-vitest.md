@@ -66,7 +66,7 @@ In the above specification file, note that we didn't rely on the `it` or `test` 
 
 ## One-time random mode
 
-Beyond full property-based testing, the connector provides a lightweight mode for introducing controlled randomness into your tests — without running them multiple times or shrinking on failure. This is particularly useful when you need random values but want failures to remain deterministic and reproducible.
+Beyond full property-based testing, the connector provides a lightweight mode for introducing controlled randomness into your tests. This is particularly useful when you need random or non-hardcoded values but want failures to remain deterministic and reproducible.
 
 Instead of using `.prop`, you access a generator function `g` from the test context:
 
