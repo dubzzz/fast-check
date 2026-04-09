@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: he needs you to investigate whether the fresh new word lookup system is working as expected. Can you ensure it’s accurate, so everyone gets exactly what they deserve? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Word Lookup in Santa's Letters
 

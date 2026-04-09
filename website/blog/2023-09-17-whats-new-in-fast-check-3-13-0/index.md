@@ -8,7 +8,7 @@ This release introduces some new opt-in options on `date`, `dictionary` and `rec
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Mission
 

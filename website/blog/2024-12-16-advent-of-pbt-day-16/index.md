@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves’ algorithm for generating Santa Codes might have some hidden flaws. Can you use your debugging skills to uncover any issues and ensure the system works flawlessly? 🎄✨
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Santa Code
 

@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking! Santa just sent you a new challenge: his elves’ algorithm for SantaMind might have bugs. Can you uncover any issues and ensure every guess gets the perfect feedback? 🎄✨
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## SantaMind
 

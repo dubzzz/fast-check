@@ -8,7 +8,7 @@ With fast-check, reliability has always been at the heart of our mission. We str
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Pushing `waitFor` to the next level
 

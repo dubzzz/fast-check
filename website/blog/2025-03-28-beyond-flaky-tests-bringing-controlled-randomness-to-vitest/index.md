@@ -6,7 +6,7 @@ tags: [vitest]
 
 Random failures in tests are frustrating and time-consuming to debug. What if your test runner could help eliminate flaky tests by safely handling randomness? In this article, we explore a new approach to testing that integrates built-in fuzzing directly into Vitest, making tests more reliable, reproducible, and robust.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## A hidden threat in your tests
 

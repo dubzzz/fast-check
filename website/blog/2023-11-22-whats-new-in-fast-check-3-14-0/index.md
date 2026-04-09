@@ -8,7 +8,7 @@ This release changes the way we import type-only files internally in fast-check.
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Importing types
 

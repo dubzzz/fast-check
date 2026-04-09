@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your first challenge: he’s struggling to answer children in the proper and efficient order. Something seems to be going wrong—can you uncover the issue and save Christmas? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Letters to Santa
 

@@ -8,7 +8,7 @@ This release added support for the parameter `depthIdentifier` on `dictionary`.
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Recursive dictionary
 

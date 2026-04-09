@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. This time, it’s not Santa but Emma who needs your help: she suspects her coin-payment algorithm might have bugs. Can you uncover any issues and ensure every elf gets paid on time for years to come? 🎄✨
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Money day
 

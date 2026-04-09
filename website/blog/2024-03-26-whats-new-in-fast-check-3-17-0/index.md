@@ -8,7 +8,7 @@ This release exposes additional details regarding the random generator passed to
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Main thread to Workers
 

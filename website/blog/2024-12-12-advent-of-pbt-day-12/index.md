@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves’ newly released routing system for the sleigh might have issues. Can you uncover potential flaws and ensure Santa reaches his destination in record time? 🎄✨
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Fast Travel Planner
 

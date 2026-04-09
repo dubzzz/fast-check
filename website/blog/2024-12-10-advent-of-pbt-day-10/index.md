@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: after the issue you uncovered yesterday, the elves rewrote their algorithm to verify enchanted words. But Santa isn’t fully convinced the new version is flawless. Can you find inputs that expose any remaining flaws? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Santa’s enchanted words
 

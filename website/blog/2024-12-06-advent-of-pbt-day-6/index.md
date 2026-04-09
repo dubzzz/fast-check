@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves have designed an algorithm to compute the next barcode for Santa’s presents—a task that grows harder each year. Santa suspects their implementation might not be reliable. Can you find errors in the algorithm to ensure every present is labeled correctly? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## The barcode
 

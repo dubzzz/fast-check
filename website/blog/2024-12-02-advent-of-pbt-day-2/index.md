@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: he’s worried that some children might be receiving duplicate responses — and possibly double the gifts! Santa suspects something is wrong with the way duplicates are handled by elves. Can you investigate and ensure everyone gets exactly what they deserve? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Never answer twice
 

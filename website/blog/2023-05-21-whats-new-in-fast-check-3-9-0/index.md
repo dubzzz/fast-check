@@ -11,7 +11,7 @@ In this release, our primary focus has been to enhance the race condition detect
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Local act
 

@@ -8,7 +8,7 @@ This release introduces performance optimizations for `float`, `double` and `uli
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Performance optimizations
 

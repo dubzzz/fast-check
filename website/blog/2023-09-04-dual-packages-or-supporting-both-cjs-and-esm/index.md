@@ -10,7 +10,7 @@ The rise of ES Modules was both a relief and a pain. It relieved us of the need 
 
 In this article, we will explore how we publish fast-check to support both CommonJS and ES Modules seamlessly.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## The world before ES Modules
 

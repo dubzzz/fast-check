@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: he’s worried about the security of his high-traffic website. The elves have created a system to validate security keys, but Santa fears it might be flawed. Can you test their implementation and ensure it’s rock solid? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## SSL/TLS security checks
 

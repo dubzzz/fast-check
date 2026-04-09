@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves’ algorithm to restore spaces in compressed messages might be flawed. Can you spot problematic inputs? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Uncompress old text messages
 

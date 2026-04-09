@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves’ sleigh-packing algorithm might have flaws. Can you uncover any issues and ensure Santa minimizes his trips? 🎄✨
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Sleigh packing
 

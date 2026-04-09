@@ -8,7 +8,7 @@ With version 4.2.0, we are re-affirming our will to provide our users with effic
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Context
 

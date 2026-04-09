@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: he tackled a tricky coding problem to boost his morale but suspects his solution might have flaws. Can you find a bug in his implementation and restore his confidence? 🎄✨
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Coding day
 

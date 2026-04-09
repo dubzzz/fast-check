@@ -8,7 +8,7 @@ This release introduces new arbitraries to enhance shrinking capabilities and de
 
 Continue reading to explore the detailed updates it brings.
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## Bye bye `Arbitrary.prototype.noBias`
 

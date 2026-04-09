@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves’ system for generating unique links to children’s letters might be flawed. Can you uncover inputs that reveal potential issues and ensure every child gets their special link? 🎄🔧
 
-{/* truncate */}
+{/_ truncate _/}
 
 ## A glimpse into the past
 
