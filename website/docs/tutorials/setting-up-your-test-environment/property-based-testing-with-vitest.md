@@ -126,7 +126,6 @@ test('the name of your test', ({ g }) => {
 
 :::
 
-
 ## Detecting race conditions
 
 One of the most powerful features of fast-check is its ability to detect race conditions. The connector makes this straightforward — use `fc.scheduler()` as an arbitrary to control the resolution order of asynchronous operations:
