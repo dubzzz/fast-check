@@ -18,6 +18,7 @@
     "test:coverage": "vitest --coverage",
     "typecheck:all": "pnpm --parallel run typecheck",
     "format": "prettier --experimental-cli --cache --write .",
+    "format:file": "prettier --experimental-cli --cache --write",
     "format:check": "prettier --experimental-cli --cache --list-different .",
     "lint": "eslint --concurrency=auto . --fix",
     "lint:check": "eslint --concurrency=auto .",
