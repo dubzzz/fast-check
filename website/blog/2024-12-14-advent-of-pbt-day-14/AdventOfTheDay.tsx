@@ -1,11 +1,13 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 14,
-  buildBuggyAdvent: adventBuggy,
-  buggyAdventSurcharged: (...args: Parameters<ReturnType<ReturnType<typeof adventBuggy>>['compress']>) => {
-    const buggy = adventBuggy()();
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
+  buggyAdventSurcharged: (...args: Parameters<ReturnType<typeof adventBuggy>['compress']>) => {
+    const buggy = adventBuggy();
     return buggy.decompress(buggy.compress(...args));
   },
   referenceAdvent: (text) => text,
