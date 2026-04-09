@@ -30,7 +30,6 @@ describe('chainUntil', () => {
     it('should chain through multiple arbitraries until undefined', () => {
       // Arrange
       const mrng = stubRng.mutable.counter(0);
-      let callCount = 0;
       class NumArb extends Arbitrary<number> {
         constructor(readonly val: number) {
           super();
@@ -46,11 +45,10 @@ describe('chainUntil', () => {
         }
       }
       const startArb = new NumArb(1);
-      const chainer = (prev: number): Arbitrary<number> | undefined => {
-        callCount++;
+      const chainer = vi.fn((prev: number): Arbitrary<number> | undefined => {
         if (prev >= 3) return undefined;
         return new NumArb(prev + 1);
-      };
+      });
 
       // Act
       const arb = chainUntil(startArb, chainer);
@@ -58,7 +56,7 @@ describe('chainUntil', () => {
 
       // Assert
       expect(g.value_).toBe(3);
-      expect(callCount).toBe(3); // called with 1, 2, 3
+      expect(chainer).toHaveBeenCalledTimes(3); // called with 1, 2, 3
     });
 
     it('should pass biasFactor to all generated arbitraries', () => {
