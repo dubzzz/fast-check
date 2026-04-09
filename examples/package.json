@@ -19,6 +19,7 @@
     "fast-check": "workspace:*",
     "happy-dom": "^20.8.9",
     "lodash": "^4.18.1",
+    "msw": "^2.7.0",
     "pure-rand": "^8.4.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
