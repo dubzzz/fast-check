@@ -8,6 +8,20 @@ import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
+const computeMaximalStackSize = () => {
+  let depth = 0;
+  const f = () => {
+    ++depth;
+    f();
+  };
+  try {
+    f();
+  } catch {
+    // throws 'RangeError: Maximum call stack size exceeded'
+  }
+  return depth;
+};
+
 describe('chainUntil', () => {
   describe('generate', () => {
     it('should return startArb value when chainer immediately returns undefined', () => {
@@ -266,6 +280,8 @@ describe('chainUntil', () => {
 
     it('should be non-recursive and handle long chains without stack overflow', () => {
       // Arrange
+      const callStackSize = computeMaximalStackSize();
+      const chainLength = callStackSize * 2;
       const mrng = stubRng.mutable.counter(0);
       class SimpleArb extends Arbitrary<number> {
         constructor(readonly val: number) {
@@ -281,9 +297,16 @@ describe('chainUntil', () => {
           return Stream.nil();
         }
       }
-      // Build a chain of 10000 entries - would overflow stack if recursive
+
+      // Confirm that this chain length would cause a stack overflow with a naive recursive approach
+      const recursiveCall = (n: number): number => {
+        if (n <= 0) return 0;
+        return recursiveCall(n - 1);
+      };
+      expect(() => recursiveCall(chainLength)).toThrow();
+
       const chainer = (prev: number): Arbitrary<number> | undefined => {
-        if (prev >= 10000) return undefined;
+        if (prev >= chainLength) return undefined;
         return new SimpleArb(prev + 1);
       };
 
@@ -292,7 +315,7 @@ describe('chainUntil', () => {
       const g = arb.generate(mrng, undefined);
 
       // Assert
-      expect(g.value_).toBe(10000);
+      expect(g.value_).toBe(chainLength);
       // Shrinking should also not cause stack overflow
       const shrinks = [...arb.shrink(g.value_, g.context)];
       expect(shrinks).toHaveLength(0); // no shrinks since SimpleArb doesn't shrink
