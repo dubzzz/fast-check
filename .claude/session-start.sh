@@ -11,8 +11,7 @@ if ! command -v pnpm &>/dev/null; then
   npm install -g pnpm
 fi
 
-# Install dependencies if node_modules is missing or empty
-if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
-  echo "Installing dependencies with pnpm..."
-  pnpm install --frozen-lockfile
-fi
+# Install/sync dependencies — always run to ensure node_modules matches the lockfile
+# (e.g. after a dependency version bump, node_modules may exist but be stale)
+echo "Installing dependencies with pnpm..."
+pnpm install --frozen-lockfile
