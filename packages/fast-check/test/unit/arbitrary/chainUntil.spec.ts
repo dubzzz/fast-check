@@ -5,6 +5,7 @@ import { Stream } from '../../../src/stream/Stream.js';
 import { chainUntil } from '../../../src/arbitrary/chainUntil.js';
 import * as stubRng from '../stubs/generators.js';
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
+import type { Random } from '../../../src/random/generator/Random.js';
 
 const mrngNoCall = stubRng.mutable.nocall();
 
@@ -378,54 +379,54 @@ describe('chainUntil', () => {
     it('should properly propagate shrink context through multiple levels', () => {
       // Arrange
       const mrng = stubRng.mutable.counter(0);
-      // A simple chain: start -> chain once -> stop
-      // Both start and chained values are shrinkable
-      class MyArb extends Arbitrary<number> {
-        constructor(readonly val: number) {
+      // An arbitrary that generates a string value and shrinks by lowercasing the last segment
+      class ConcatArb extends Arbitrary<string> {
+        constructor(readonly val: string) {
           super();
         }
-        generate(_mrng: any): Value<number> {
-          return new Value(this.val, this.val);
+        generate(_mrng: Random): Value<string> {
+          return new Value(this.val, 'ctx');
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is string {
           return false;
         }
-        shrink(value: number, context?: unknown): Stream<Value<number>> {
-          if (typeof context !== 'number') return Stream.nil();
-          if (value <= 0) return Stream.nil();
-          return Stream.of(new Value(0, 0));
+        shrink(value: string, context?: unknown): Stream<Value<string>> {
+          if (context !== 'ctx') return Stream.nil();
+          const parts = value.split('-');
+          const last = parts[parts.length - 1];
+          if (last === last.toLowerCase()) return Stream.nil();
+          parts[parts.length - 1] = last.toLowerCase();
+          return Stream.of(new Value(parts.join('-'), 'ctx'));
         }
       }
 
-      let step = 0;
-      const chainer = (prev: number): Arbitrary<number> | undefined => {
-        step++;
-        if (step <= 1) {
-          return new MyArb(prev * 2);
+      // Chainer creates a 3-level chain: L0 -> L0-L1 -> L0-L1-L2 -> stop
+      const chainer = (prev: string): Arbitrary<string> | undefined => {
+        const level = prev.split('-').length;
+        if (level < 3) {
+          return new ConcatArb(prev + '-L' + level);
         }
         return undefined;
       };
 
       // Act
-      const arb = chainUntil(new MyArb(5), chainer);
-      step = 0;
+      const arb = chainUntil(new ConcatArb('L0'), chainer);
       const g = arb.generate(mrng, undefined);
 
-      // Chain: MyArb(5) -> value 5 -> chainer(5) -> MyArb(10) -> value 10 -> chainer(10) -> undefined
-      // Final value: 10
-      expect(g.value_).toBe(10);
+      // Chain: ConcatArb('L0') -> 'L0' -> chainer -> ConcatArb('L0-L1') -> 'L0-L1' -> chainer -> ConcatArb('L0-L1-L2') -> 'L0-L1-L2' -> stop
+      expect(g.value_).toBe('L0-L1-L2');
 
-      step = 0;
-      const shrinks = [...arb.shrink(g.value_, g.context)];
-      expect(shrinks).toEqual([
-        expect.objectContaining({ value_: 0 }), // level 0: 5->0, chain regenerates to 0
-        expect.objectContaining({ value_: 0 }), // level 1: 10->0
-      ]);
-
-      // Further shrink should also work (but no more shrinks since values are already 0)
-      step = 0;
-      const secondLevelShrinks = [...arb.shrink(shrinks[0].value_, shrinks[0].context)];
-      expect(secondLevelShrinks).toEqual([]);
+      const renderedTree = renderTree(buildShrinkTree(arb, g, { numItems: 30 })).join('\n');
+      expect(renderedTree).toMatchInlineSnapshot(`
+        ""L0-L1-L2"
+        ├> "l0-L1-L2"
+        |  ├> "l0-l1-L2"
+        |  |  └> "l0-l1-l2"
+        |  └> "l0-L1-l2"
+        ├> "L0-l1-L2"
+        |  └> "L0-l1-l2"
+        └> "L0-L1-l2""
+      `);
     });
   });
 });
