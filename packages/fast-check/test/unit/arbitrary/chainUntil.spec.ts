@@ -126,7 +126,7 @@ describe('chainUntil', () => {
           return false;
         }
         shrink(): Stream<Value<number>> {
-          return Stream.nil();
+          return Stream.of(new Value(42, undefined));
         }
       }
 
