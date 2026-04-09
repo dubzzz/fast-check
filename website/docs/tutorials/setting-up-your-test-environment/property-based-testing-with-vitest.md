@@ -93,7 +93,7 @@ function computeDisplayName(user) {
 }
 ```
 
-The `g` function accepts an arbitrary builder (note: passed without calling it) and returns a generated value. Everything stays deterministic — any failure can be traced back to its exact seed. You can replay a failure by configuring the seed globally:
+The `g` function accepts an arbitrary builder (note: passed without calling it) and returns a generated value. Everything stays deterministic and reproducible. Any failure can be traced back to its exact seed and replayed by configuring the seed globally:
 
 ```ts
 fc.configureGlobal({ seed: <the-seed-from-the-error> });
