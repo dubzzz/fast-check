@@ -203,14 +203,12 @@ describe('chainUntil', () => {
           return Stream.of(new Value(this.shrinkVal, 'ctx-shrunk'));
         }
       }
-      let chainCallCount = 0;
-      const chainer = (prev: number): Arbitrary<number> | undefined => {
-        chainCallCount++;
+      const chainer = vi.fn((prev: number): Arbitrary<number> | undefined => {
         if (prev === 10 || prev === 5) {
           return new FixedArb(20, 15);
         }
         return undefined; // stop after one chain step
-      };
+      });
 
       // Act
       const arb = chainUntil(new FixedArb(10, 5), chainer);
