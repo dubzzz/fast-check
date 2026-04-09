@@ -191,7 +191,7 @@ export function stringifyInternal<Ts>(
       return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
     case '[object BigInt]':
-      return `${String(value)}n`;
+      return `${value}n`;
     case '[object Boolean]': {
       // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
       const unboxedToString = (value as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing

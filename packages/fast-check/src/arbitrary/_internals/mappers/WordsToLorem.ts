@@ -26,9 +26,8 @@ export function wordsToJoinedStringUnmapperFor(wordsArbitrary: Arbitrary<string>
     }
     const words: string[] = [];
     for (const candidate of safeSplit(value, ' ')) {
-      const candidateWithComma = candidate + ',';
       if (wordsArbitrary.canShrinkWithoutContext(candidate)) safePush(words, candidate);
-      else if (wordsArbitrary.canShrinkWithoutContext(candidateWithComma)) safePush(words, candidateWithComma);
+      else if (wordsArbitrary.canShrinkWithoutContext(candidate + ',')) safePush(words, candidate + ',');
       else throw new Error('Unsupported word');
     }
     return words;
@@ -64,10 +63,9 @@ export function wordsToSentenceUnmapperFor(wordsArbitrary: Arbitrary<string>): (
     const candidates = safeSplit(adaptedValue, ' ');
     for (let idx = 0; idx !== candidates.length; ++idx) {
       const candidate = candidates[idx];
-      const candidateWithComma = candidate + ',';
       if (wordsArbitrary.canShrinkWithoutContext(candidate)) safePush(words, candidate);
-      else if (idx === candidates.length - 1 && wordsArbitrary.canShrinkWithoutContext(candidateWithComma))
-        safePush(words, candidateWithComma);
+      else if (idx === candidates.length - 1 && wordsArbitrary.canShrinkWithoutContext(candidate + ','))
+        safePush(words, candidate + ',');
       else throw new Error('Unsupported word');
     }
     return words;
