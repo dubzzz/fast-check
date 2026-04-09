@@ -4,13 +4,13 @@ authors: [dubzzz]
 tags: [tips, race-conditions, integration]
 ---
 
-Race conditions are among the most elusive bugs in JavaScript. They do not crash reliably, they rarely show up in unit tests, and they depend on timing you cannot control. Yet they affect real users every day — stale data rendered on screen, actions applied to the wrong resource, UI states that should be impossible.
+You already mock your API calls with [MSW](https://mswjs.io/). Your tests cover the happy path, edge cases, maybe even error scenarios. But there is one class of bugs they will never catch: **race conditions**. Hard-coded mocks always respond in the same order, so timing-dependent bugs stay invisible.
 
-[MSW](https://mswjs.io/) (Mock Service Worker) is the go-to tool for intercepting network requests in tests. fast-check's [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) can re-order when promises resolve. This post shows how to combine both so that **fast-check controls the timing of your HTTP responses**, exposing race conditions automatically — without modifying the code under test.
+What if you could take those existing MSW handlers and plug in fast-check to **explore every possible response ordering** — automatically? That is exactly what this post is about.
 
 <!--truncate-->
 
-## The bug
+## A test that passes — but shouldn't
 
 Consider a simple helper that fetches and displays a user profile:
 
@@ -26,26 +26,36 @@ export async function switchUser(userId: string): Promise<void> {
 }
 ```
 
-The code looks correct — and it is, as long as only one call is in flight at a time. But what happens when a user navigates quickly from one profile to another?
+A typical MSW-based test would set up a handler, call `switchUser`, and assert the result. That test passes because MSW always delivers responses in the same order. But in production, two rapid navigations can overlap:
 
 ```
 switchUser("alice")   →  fetch starts  →  …  →  response arrives  →  displayedUser = alice
 switchUser("bob")     →  fetch starts  →  response arrives  →  displayedUser = bob
 ```
 
-If Alice's response is slower than Bob's, the final state is Alice — even though the user last requested Bob. This is a classic **stale-response race condition**, and it is nearly impossible to reproduce with hard-coded mocks because those always resolve in a deterministic order.
+If Alice's response is slower than Bob's, the final state is Alice — even though the user last requested Bob. This is a classic **stale-response race condition**.
 
-## The idea
+## From MSW mock to race condition detector
 
-fast-check ships a [`scheduler`](/docs/advanced/race-conditions/) arbitrary. It generates random orderings for promise resolutions. Each test run tries a different ordering; when one triggers a bug, fast-check reports the exact sequence of events that caused it.
+fast-check ships a [`scheduler`](/docs/advanced/race-conditions/) arbitrary. It generates random orderings for promise resolutions: each test run tries a different ordering, and when one triggers a bug, fast-check reports the exact sequence of events that caused it.
 
-The missing link has always been: _how do I plug the scheduler into code that calls `fetch` directly?_
+The key insight is that MSW and the scheduler can be connected with a single line. Inside an MSW handler, call `s.schedule()` to hand control of response timing over to fast-check:
 
-MSW solves that. It intercepts `fetch` at the network level, so the code under test does not need to accept an injected fetcher. Inside an MSW handler we can call `s.schedule()` to hand control of response timing over to fast-check.
+```ts
+http.get('https://api.example.com/users/:id', async ({ params }) => {
+  const id = params['id'] as string;
+  // This single line is all you need:
+  // it holds the response until the scheduler releases it
+  await s.schedule(Promise.resolve(`response for ${id}`), `GET /users/${id}`);
+  return HttpResponse.json({ id, name: `User ${id}` });
+})
+```
 
-## Wiring MSW and the scheduler
+The handler still runs immediately when `fetch` is called — but it pauses before returning the response. The scheduler decides _when_ each paused handler gets to continue, trying a different order on every run.
 
-Here is the full test:
+## The full test
+
+Here is what the complete test looks like:
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -63,8 +73,6 @@ describe('switchUser', () => {
         const server = setupServer(
           http.get('https://api.example.com/users/:id', async ({ params }) => {
             const id = params['id'] as string;
-            // This is the key line:
-            // s.schedule() holds the response until the scheduler releases it.
             await s.schedule(Promise.resolve(`response for ${id}`), `GET /users/${id}`);
             return HttpResponse.json({ id, name: `User ${id}` });
           }),
@@ -92,11 +100,11 @@ describe('switchUser', () => {
 
 Three things make this work:
 
-1. **`s.schedule(promise, label)`** inside the MSW handler registers a task with the scheduler. The handler `await`s it, which means the HTTP response is held until the scheduler releases it.
+1. **`s.schedule(promise, label)`** inside the MSW handler registers a task with the scheduler. The handler `await`s it, so the HTTP response is held until the scheduler releases it.
 2. **`s.waitFor(Promise.all([p1, p2]))`** tells the scheduler to start processing tasks — in a random order — until both `switchUser` calls have completed.
 3. **fast-check runs the property many times**, each time with a different random ordering. If any ordering breaks the assertion, it reports it.
 
-### Running the test
+### The counterexample
 
 ```txt
 Error: Property failed after 1 tests
@@ -108,7 +116,7 @@ Counterexample: [schedulerFor()`
 Caused by: AssertionError: expected 'alice' to be 'bob'
 ```
 
-fast-check found the issue on the very first run. The counterexample tells a clear story: Bob's response arrived first, then Alice's overwrote it.
+fast-check found the issue on the very first run. The counterexample tells a clear story: Bob's response arrived first, then Alice's overwrote it. The `seed` and `path` let you replay this exact scenario at will.
 
 ## The fix
 
@@ -173,7 +181,45 @@ const server = setupServer(
 );
 ```
 
-The `scheduled` wrapper intercepts each response, registers it with the scheduler using the HTTP method and pathname as a label, and holds it until the scheduler decides to release it.
+The `scheduled` wrapper intercepts each response, registers it with the scheduler using the HTTP method and pathname as a label, and holds it until the scheduler decides to release it. If you already have MSW handlers defined elsewhere, wrapping them with `scheduled(s, existingResolver)` is all it takes to turn them into race condition detectors.
+
+:::info `@fast-check/vitest` integration
+
+If you use [`@fast-check/vitest`](https://www.npmjs.com/package/@fast-check/vitest), you can skip the `fc.assert` / `fc.asyncProperty` boilerplate and write the same test with `test.prop`:
+
+```ts
+import { test, fc } from '@fast-check/vitest';
+import { expect } from 'vitest';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+
+test.prop([fc.scheduler()])('should display the last requested user', async (s) => {
+  reset();
+
+  const server = setupServer(
+    http.get(
+      'https://api.example.com/users/:id',
+      scheduled(s, ({ params }) => {
+        const id = params['id'] as string;
+        return HttpResponse.json({ id, name: `User ${id}` });
+      }),
+    ),
+  );
+  server.listen({ onUnhandledRequest: 'error' });
+
+  try {
+    const p1 = switchUser('alice');
+    const p2 = switchUser('bob');
+    await s.waitFor(Promise.all([p1, p2]));
+    expect(getDisplayedUser()?.id).toBe('bob');
+  } finally {
+    server.close();
+  }
+});
+```
+
+`test.prop` receives an array of arbitraries — here `[fc.scheduler()]` — and injects the generated values directly as arguments of the test function. It handles running the test multiple times with different orderings, shrinking on failure, and seeded replay. It integrates with all vitest features you already know: `.skip`, `.only`, `.concurrent`, `beforeEach` / `afterEach` hooks, and so on.
+:::
 
 :::info Why `s.waitFor` and not `s.waitIdle`?
 
@@ -182,7 +228,7 @@ The `scheduled` wrapper intercepts each response, registers it with the schedule
 
 ## Key takeaways
 
+- **Build on what you have**: If you already use MSW, you are one wrapper away from race condition detection. Your existing handlers, your existing assertions — just add a scheduler.
 - **No code modification**: MSW intercepts `fetch` at the network level. The code under test uses the real `fetch` API, unchanged.
 - **No flaky sleeps**: The scheduler explores orderings deterministically. If a race exists, fast-check will find it and report a minimal counterexample.
-- **Reproducible failures**: The `seed` and `path` printed in the error let you replay the exact failing ordering.
 - **Incremental adoption**: Start by wrapping one endpoint with `scheduled()`. You do not need to schedule every handler — only the ones involved in the concurrency scenario you are testing.

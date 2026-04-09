@@ -16,6 +16,7 @@
     "@types/react": "^19.2.14",
     "@types/supertest": "^7.2.0",
     "express": "^5.2.1",
+    "@fast-check/vitest": "workspace:*",
     "fast-check": "workspace:*",
     "happy-dom": "^20.8.9",
     "lodash": "^4.18.1",
