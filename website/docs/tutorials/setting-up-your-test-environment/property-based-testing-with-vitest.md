@@ -64,44 +64,6 @@ You've connected your first Property-Based Test within Vitest 🚀
 In the above specification file, note that we didn't rely on the `it` or `test` functions from `vitest`. Instead, we imported them from `@fast-check/vitest`. These imported functions handle everything supported by Vitest's `it` and `test`, while also extending them with Property-Based Testing capabilities via `.prop`. Synchronous and asynchronous predicates are both supported without any extra helpers — just mark your predicate `async` when needed.
 :::
 
-## Detecting race conditions
-
-One of the most powerful features of fast-check is its ability to detect race conditions. The connector makes this straightforward — use `fc.scheduler()` as an arbitrary to control the resolution order of asynchronous operations:
-
-```ts title="queue.spec.ts"
-import { test, fc } from '@fast-check/vitest';
-import { vi } from 'vitest';
-
-test.prop({ s: fc.scheduler() })('should resolve in call order', async ({ s }) => {
-  // Arrange
-  const pendingQueries = [];
-  const seenAnswers = [];
-  const call = vi.fn().mockImplementation((v) => Promise.resolve(v));
-
-  // Act
-  const queued = queue(s.scheduleFunction(call));
-  pendingQueries.push(queued(1).then((v) => seenAnswers.push(v)));
-  pendingQueries.push(queued(2).then((v) => seenAnswers.push(v)));
-  await s.waitFor(Promise.all(pendingQueries));
-
-  // Assert
-  expect(seenAnswers).toEqual([1, 2]);
-});
-
-// Code under test: should rather be imported from another file
-function queue(fun) {
-  let lastQuery = Promise.resolve();
-  return (...args) => {
-    const currentQuery = fun(...args);
-    const returnedQuery = lastQuery.then(() => currentQuery);
-    lastQuery = currentQuery;
-    return returnedQuery;
-  };
-}
-```
-
-Learn more about this technique in our dedicated tutorial on [detecting race conditions](/docs/tutorials/detect-race-conditions/).
-
 ## One-time random mode
 
 Beyond full property-based testing, the connector provides a lightweight mode for introducing controlled randomness into your tests — without running them multiple times or shrinking on failure. This is particularly useful when you need random values but want failures to remain deterministic and reproducible.
@@ -190,10 +152,48 @@ Vitest's `beforeEach` and `afterEach` hooks are natively integrated with the con
 Cleanup functions returned by `beforeEach` on the first predicate execution are deferred until the end of the test, as they are handled by Vitest's own teardown mechanism. All other cleanups run between predicate executions as expected.
 :::
 
-## Going further
+## Detecting race conditions
 
-For more advanced options and configurations of the connector, explore the [Advanced section of its README](https://github.com/dubzzz/fast-check/tree/main/packages/vitest#advanced).
+One of the most powerful features of fast-check is its ability to detect race conditions. The connector makes this straightforward — use `fc.scheduler()` as an arbitrary to control the resolution order of asynchronous operations:
 
-Now that you have a solid foundation, it's time to delve deeper into the world of property-based testing. Our official documentation covers a range of advanced topics, from [generating custom values](/docs/core-blocks/arbitraries/) tailored to your specific needs to exploring [advanced patterns](/docs/advanced/).
+```ts title="queue.spec.ts"
+import { test, fc } from '@fast-check/vitest';
+import { vi } from 'vitest';
 
-By diving into these resources, you'll gain a deeper understanding of fast-check's capabilities and unlock new possibilities for enhancing your testing workflow. Continue your exploration and elevate your property-based testing skills to new heights.
+test.prop({ s: fc.scheduler() })('should resolve in call order', async ({ s }) => {
+  // Arrange
+  const pendingQueries = [];
+  const seenAnswers = [];
+  const call = vi.fn().mockImplementation((v) => Promise.resolve(v));
+
+  // Act
+  const queued = queue(s.scheduleFunction(call));
+  pendingQueries.push(queued(1).then((v) => seenAnswers.push(v)));
+  pendingQueries.push(queued(2).then((v) => seenAnswers.push(v)));
+  await s.waitFor(Promise.all(pendingQueries));
+
+  // Assert
+  expect(seenAnswers).toEqual([1, 2]);
+});
+
+// Code under test: should rather be imported from another file
+function queue(fun) {
+  let lastQuery = Promise.resolve();
+  return (...args) => {
+    const currentQuery = fun(...args);
+    const returnedQuery = lastQuery.then(() => currentQuery);
+    lastQuery = currentQuery;
+    return returnedQuery;
+  };
+}
+```
+
+Learn more about this technique in our dedicated tutorial on [detecting race conditions](/docs/tutorials/detect-race-conditions/).
+
+## What's next?
+
+Now that you have a solid foundation for running property-based tests with Vitest, here are some recommended next steps:
+
+- **[Getting Started](/docs/introduction/getting-started/)** — Learn the fundamentals of property-based testing with fast-check
+- **[Tutorials](/docs/tutorials/)** — Explore our full range of tutorials covering advanced topics and patterns
+- **[Native Vitest support](https://github.com/vitest-dev/vitest/discussions/2212)** — Upvote and contribute to the discussion about making property-based testing a native first-class feature in Vitest, without requiring any connector
