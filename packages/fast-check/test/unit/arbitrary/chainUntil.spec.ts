@@ -174,8 +174,7 @@ describe('chainUntil', () => {
       const shrinks = [...arb.shrink(g.value_, g.context)];
 
       // Assert
-      expect(shrinks).toHaveLength(1);
-      expect(shrinks[0].value_).toBe(5);
+      expect(shrinks).toEqual([expect.objectContaining({ value_: 5 })]);
     });
 
     it('should shrink earlier levels before later levels', () => {
@@ -216,12 +215,13 @@ describe('chainUntil', () => {
       const shrinks = [...arb.shrink(g.value_, g.context)];
 
       // Assert - level 0 shrink (startArb 10->5) comes first, then level 1 shrink (chained 20->15)
-      expect(shrinks.length).toBeGreaterThanOrEqual(2);
       // First shrink regenerates the chain from the shrunk startArb value (5)
       // The chained arbitrary still produces 20 via regeneration
-      expect(shrinks[0].value_).toBe(20); // regenerated chain from shrunk start value
       // Second shrink is from the chained level
-      expect(shrinks[1].value_).toBe(15); // shrunk chained value
+      expect(shrinks).toEqual([
+        expect.objectContaining({ value_: 20 }), // regenerated chain from shrunk start value
+        expect.objectContaining({ value_: 15 }), // shrunk chained value
+      ]);
     });
 
     it('should produce the right shrinking tree for a simple chain', () => {
@@ -361,7 +361,12 @@ describe('chainUntil', () => {
       // StepArb(5) shrinks to 4, then chainer(4) -> StepArb(3) -> value 3 -> chainer(3) -> StepArb(2) -> value 2 -> chainer(2) -> undefined
       // So the chain is now shorter
       const shrinks = [...arb.shrink(g.value_, g.context)];
-      expect(shrinks.length).toBeGreaterThan(0);
+      expect(shrinks).toEqual([
+        expect.objectContaining({ value_: 2 }), // level 0: 5->4, chain regenerates to 2
+        expect.objectContaining({ value_: 2 }), // level 1: 4->3, chain regenerates to 2
+        expect.objectContaining({ value_: 2 }), // level 2: 3->2, chain stops
+        expect.objectContaining({ value_: 1 }), // level 3: 2->1, chain stops
+      ]);
     });
 
     it('should properly propagate shrink context through multiple levels', () => {
@@ -406,15 +411,15 @@ describe('chainUntil', () => {
 
       step = 0;
       const shrinks = [...arb.shrink(g.value_, g.context)];
-      expect(shrinks.length).toBeGreaterThan(0);
+      expect(shrinks).toEqual([
+        expect.objectContaining({ value_: 0 }), // level 0: 5->0, chain regenerates to 0
+        expect.objectContaining({ value_: 0 }), // level 1: 10->0
+      ]);
 
-      // Further shrink should also work
-      if (shrinks.length > 0) {
-        step = 0;
-        const secondLevelShrinks = [...arb.shrink(shrinks[0].value_, shrinks[0].context)];
-        // Should not throw
-        expect(secondLevelShrinks).toBeDefined();
-      }
+      // Further shrink should also work (but no more shrinks since values are already 0)
+      step = 0;
+      const secondLevelShrinks = [...arb.shrink(shrinks[0].value_, shrinks[0].context)];
+      expect(secondLevelShrinks).toEqual([]);
     });
   });
 });
