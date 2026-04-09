@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 slug: /tutorials/setting-up-your-test-environment/property-based-testing-with-vitest/
-description: Discover how to configure the integration of Property-Based Testing capabilities within Vitest. Learn best practices to setup fast-check for it
+description: Discover how to configure the integration of Property-Based Testing capabilities within Vitest. Learn best practices to set up fast-check for it
 sidebar_label: With Vitest
 ---
 
