@@ -71,7 +71,7 @@ const config: Config = {
         { to: '/docs/tutorials/', label: 'All Tutorials' },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
-        { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
+        { to: '/docs/api/', label: 'API', position: 'right' },
         {
           href: 'https://bsky.app/profile/fast-check.dev',
           'aria-label': 'Bluesky account',
@@ -114,7 +114,7 @@ const config: Config = {
           title: 'More',
           items: [
             { label: 'Blog', to: '/blog' },
-            { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
+            { label: 'API Reference', to: '/docs/api/' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             { label: 'Work with me @Pigment', href: 'https://refer.hellotrusty.io/kz48qf0nh7' },
             {
@@ -208,6 +208,22 @@ const config: Config = {
             content: '#000',
           },
         ],
+      },
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        entryPoints: ['../packages/fast-check/src/fast-check-default.ts'],
+        tsconfig: '../packages/fast-check/tsconfig.typedoc.json',
+        out: 'docs/api',
+        readme: 'none',
+        parametersFormat: 'table',
+        enumMembersFormat: 'table',
+        indexFormat: 'table',
+        textContentMappings: {
+          'title.indexPage': 'API Reference',
+          'title.modulePage': '{name}',
+        },
       },
     ],
     [

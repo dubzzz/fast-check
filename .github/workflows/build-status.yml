@@ -367,12 +367,6 @@ jobs:
           key: assets-${{steps.get-date.outputs.date}}-${{hashFiles('.all-contributorsrc', 'website/prebuild/optimize-images.mjs')}}
       - name: Generate documentation
         run: pnpm --filter website run build
-      - name: Generate API reference
-        run: |
-          pnpm --filter fast-check install --frozen-lockfile
-          pnpm --filter fast-check run docs-ci
-      - name: Copy API reference within documentation
-        run: mv packages/fast-check/docs website/build/api-reference
       - name: Copy raw logo within documentation
         run: cp website/static/img/logo.png website/build/assets/images/logo.png
       - name: Upload documentation artifacts
@@ -549,8 +543,6 @@ jobs:
         run: |
           echo "/*" > artifacts/_headers
           echo "  Content-Security-Policy: default-src 'self'; img-src 'self' data: badge.fury.io *.cloudfront.net img.shields.io raw.githubusercontent.com www.netlify.com api.securityscorecards.dev bestpractices.coreinfrastructure.org www.bestpractices.dev cdn.bsky.app;connect-src *.algolia.net askai.algolia.com *.algolianet.com public.api.bsky.app api.counterapi.dev;script-src 'self' 'unsafe-inline' 'unsafe-eval';frame-src 'self' stackblitz.com www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; manifest-src 'self'; base-uri fast-check.dev;" >> artifacts/_headers
-          echo "/api-reference/*" >> artifacts/_headers
-          echo "  Content-Security-Policy: default-src 'none'; img-src 'self' data:; connect-src data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" >> artifacts/_headers
       - name: Compress documentation artifacts as zip
         run: zip -r artifacts.zip artifacts
       - name: Deploy to Netlify
