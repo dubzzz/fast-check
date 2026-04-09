@@ -1,7 +1,21 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicolo-ribaudo/oxc-project.github.io/refs/heads/oxlint-v1-schema/src/docs/guide/usage/linter/generated/schema.json",
+  "categories": {
+    "correctness": "deny"
+  },
   "plugins": ["typescript", "oxc", "unicorn", "import"],
   "rules": {
+    "no-unused-vars": "off",
+
+    "no-eval": "warn",
+    "no-useless-rename": "warn",
+    "unicorn/no-unnecessary-await": "warn",
+    "unicorn/no-useless-spread": "warn",
+    "unicorn/no-thenable": "warn",
+    "unicorn/no-empty-file": "warn",
+    "unicorn/prefer-string-starts-ends-with": "warn",
+    "oxc/const-comparisons": "warn",
+
     "typescript/explicit-module-boundary-types": "error",
     "typescript/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrors": "none" }],
     "typescript/consistent-type-exports": "error",
@@ -44,7 +58,8 @@
         "typescript/no-empty-function": "off",
         "typescript/no-empty-object-type": "off",
         "typescript/no-use-before-define": "off",
-        "typescript/no-non-null-assertion": "off"
+        "typescript/no-non-null-assertion": "off",
+        "no-control-regex": "off"
       }
     },
     {
