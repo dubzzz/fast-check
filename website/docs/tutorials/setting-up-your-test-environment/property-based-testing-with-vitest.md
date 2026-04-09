@@ -15,7 +15,7 @@ Best of all, the connector simply provides an enriched version of Vitest's `test
 
 :::note What the connector handles for you
 
-Behind the scene, the connector takes care of wiring up the timeout, `beforeEach`/`afterEach` hook integration and other Vitest-specific concerns so that property-based tests behave as expected out of the box.
+Behind the scenes, the connector takes care of wiring up the timeout, `beforeEach`/`afterEach` hook integration and other Vitest-specific concerns so that property-based tests behave as expected out of the box.
 :::
 
 :::info You don't have Vitest yet?
