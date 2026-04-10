@@ -68,7 +68,7 @@ const config: Config = {
       items: [
         { to: '/docs/introduction/what-is-property-based-testing/', label: 'Documentation' },
         { to: '/docs/tutorials/quick-start/basic-setup/', label: 'Quick Start' },
-        { to: '/docs/tutorials/quick-start/basic-setup/', label: 'All Tutorials' },
+        { to: '/docs/tutorials/', label: 'All Tutorials' },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
         { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
@@ -99,7 +99,7 @@ const config: Config = {
           items: [
             { label: 'Documentation', to: '/docs/introduction/what-is-property-based-testing/' },
             { label: 'Quick Start', to: '/docs/tutorials/quick-start/basic-setup/' },
-            { label: 'All Tutorials', to: '/docs/tutorials/quick-start/basic-setup/' },
+            { label: 'All Tutorials', to: '/docs/tutorials/' },
           ],
         },
         {
