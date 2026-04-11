@@ -11,7 +11,7 @@ Composite arbitraries take other arbitraries as input and assemble them into str
 Two concepts recur on every page in this section and are worth learning once:
 
 - **Size control.** Most composites accept `minLength` / `maxLength` bounds and a `size` modifier that scales how large generated values tend to be in practice (see [`size` explained](/docs/configuration/larger-entries-by-default/#size-explained)). These are the main knobs to keep generation costs under control when your children are themselves expensive.
-- **Two-dimensional shrinking.** When a test fails on a composite, fast-check shrinks along two axes independently: the **structure** (it tries shorter arrays, fewer object keys, smaller tuples) *and* the **contents** (each surviving element is shrunk by its own arbitrary). This is why counterexamples on nested data tend to collapse cleanly to the minimal offender rather than to an opaque blob.
+- **Two-dimensional shrinking.** When a test fails on a composite, fast-check shrinks along two axes independently: the **structure** (it tries shorter arrays, fewer object keys, smaller tuples) _and_ the **contents** (each surviving element is shrunk by its own arbitrary). This is why counterexamples on nested data tend to collapse cleanly to the minimal offender rather than to an opaque blob.
 
 ```mdx-code-block
 import DocCardList from '@theme/DocCardList';

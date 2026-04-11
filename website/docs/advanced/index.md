@@ -10,8 +10,8 @@ The pages in this section assume you are already comfortable writing a property 
 
 Each page solves a different class of problem that cannot be expressed cleanly as a one-shot property:
 
-- **Model-based testing** — when the system under test has *state*, and a bug only shows up after a specific sequence of operations. You describe the legal operations as commands and let fast-check search the space of sequences.
-- **Race conditions** — when the bug is not in *what* your async code does but in *which order* its callbacks resolve. fast-check's scheduler lets you deterministically explore those interleavings.
+- **Model-based testing** — when the system under test has _state_, and a bug only shows up after a specific sequence of operations. You describe the legal operations as commands and let fast-check search the space of sequences.
+- **Race conditions** — when the bug is not in _what_ your async code does but in _which order_ its callbacks resolve. fast-check's scheduler lets you deterministically explore those interleavings.
 - **Fuzzing** — when you want to keep hunting for counterexamples across runs or beyond the default budget, turning fast-check into a continuous fuzz loop rather than a CI gate.
 - **Fake data** — when you need large volumes of realistic-looking values outside the property-test context, for seeding environments or staging datasets.
 
