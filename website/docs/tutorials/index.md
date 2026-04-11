@@ -45,7 +45,3 @@ These tutorials are intentionally focused. Once you are comfortable with the bas
 - [**Configuration**](/docs/configuration/user-definable-values/) — fine-tune fast-check to match your project's constraints.
 - [**Advanced**](/docs/advanced/model-based-testing/) — model-based testing, race conditions in depth, and more.
 - [**API Reference**](https://fast-check.dev/api-reference/index.html) — the exhaustive list of every exported symbol.
-
-:::info Got feedback or a tutorial idea?
-Tutorials improve when real users tell us what's missing. If a step is unclear, or you'd love to see a tutorial on a topic we don't cover yet, please [open an issue](https://github.com/dubzzz/fast-check/issues) or start a discussion on the repository. Contributions are very welcome! 💙
-:::
