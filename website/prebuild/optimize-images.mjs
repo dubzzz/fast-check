@@ -5,6 +5,19 @@ import path, { join } from 'path';
 import { createHash } from 'crypto';
 import allContributors from '../src/components/HomepageContributors/all-contributors.json' with { type: 'json' };
 
+// Detect cloud-hosted Claude Code (claude.ai/code): outbound network calls to
+// GitHub are blocked in that sandbox, so we skip remote fetches entirely and
+// write placeholder files so that `docusaurus build` can still run and the
+// local-only MDX validation (`assessMissingSocialImage`) still executes.
+// Every other environment (local Claude Code CLI, developer machines, CI)
+// keeps the original strict fetch-and-verify behavior untouched.
+const IS_CLOUD_CLAUDE = process.env.CLAUDE_CODE_REMOTE === 'true';
+
+async function writePlaceholderImage(finalPath, size) {
+  const img = new Jimp({ width: size, height: size, color: 0xccccccff });
+  await img.write(finalPath, { quality: 80 });
+}
+
 // Collecting AVATARs for contributors
 
 async function collectAvatar(imageUrl, imageFinalPath, squaredSize) {
@@ -43,9 +56,14 @@ async function syncAvatars() {
     const { url, login, size } = avatar;
     const pathFinalImage = join(pathFinalAvatarDirectory, `avatar_${size}_${login}.jpg`);
     if (!existsSync(pathFinalImage)) {
-      console.log(`Importing avatar ${size}x${size} for ${url}`);
       mkdirSync(pathFinalAvatarDirectory, { recursive: true });
-      await collectAvatar(url, pathFinalImage, 64);
+      if (IS_CLOUD_CLAUDE) {
+        console.log(`[prebuild] Cloud Claude Code detected, writing placeholder for avatar ${size}x${size} for ${url}`);
+        await writePlaceholderImage(pathFinalImage, size);
+      } else {
+        console.log(`Importing avatar ${size}x${size} for ${url}`);
+        await collectAvatar(url, pathFinalImage, 64);
+      }
     } else {
       console.log(`Skipped import of avatar ${size}x${size} for ${url}`);
     }
@@ -110,14 +128,42 @@ async function syncStaticAssets() {
     if (existsSync(resultingFilePath)) {
       console.log(`Skipped import of image ${assetName}`);
     } else {
-      console.log(`Importing image for ${assetName}`);
       mkdirSync(resultingFileDirectoryPath, { recursive: true });
-      await collectAsset(assetName, assetHash, resultingFilePath);
+      if (IS_CLOUD_CLAUDE) {
+        console.log(`[prebuild] Cloud Claude Code detected, writing placeholder for asset ${assetName}`);
+        await writePlaceholderImage(resultingFilePath, 1);
+      } else {
+        console.log(`Importing image for ${assetName}`);
+        await collectAsset(assetName, assetHash, resultingFilePath);
+      }
     }
   });
   await Promise.all(pendingImages);
 }
 syncStaticAssets();
+
+// Collecting SPONSORS SVG
+
+async function syncSponsors() {
+  const sponsorsPath = join(import.meta.dirname, '..', 'static', 'img', 'sponsors.svg');
+  if (existsSync(sponsorsPath)) {
+    console.log('Skipped import of sponsors.svg');
+    return;
+  }
+  mkdirSync(path.dirname(sponsorsPath), { recursive: true });
+  if (IS_CLOUD_CLAUDE) {
+    console.log('[prebuild] Cloud Claude Code detected, writing placeholder sponsors.svg');
+    await writeFile(sponsorsPath, '<svg xmlns="http://www.w3.org/2000/svg"/>');
+    return;
+  }
+  console.log('Importing sponsors.svg');
+  const response = await fetch('https://raw.githubusercontent.com/dubzzz/sponsors-svg/main/sponsorkit/sponsors.svg');
+  if (!response.ok) {
+    throw new Error(`Failed to fetch sponsors.svg: ${response.status}`);
+  }
+  await writeFile(sponsorsPath, Buffer.from(await response.arrayBuffer()));
+}
+syncSponsors();
 
 // Make sure we don't miss any static asset
 
