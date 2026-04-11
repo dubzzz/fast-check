@@ -21,38 +21,21 @@ Reading the reference documentation tells you _what_ fast-check can do. Followin
 If the concept itself is new, start by reading [What is Property-Based Testing?](/docs/introduction/what-is-property-based-testing/) and [Why Property-Based?](/docs/introduction/why-property-based/) before diving in.
 :::
 
-## Learning paths
+## Which tutorial is right for me?
 
-Pick the path that matches where you are today.
+Pick the one that matches where you are today:
 
-### 🚀 I'm completely new to fast-check
+- 🚀 **New to fast-check** → [Quick Start](/docs/tutorials/quick-start/basic-setup/)
+- 🧰 **Integrating with an existing test runner** → [Setting up your Test Environment](/docs/tutorials/setting-up-your-test-environment/)
+- 🏎️ **Chasing bugs that only appear under concurrency** → [Detect race conditions](/docs/tutorials/detect-race-conditions/)
 
-Start with the **Quick Start** tutorial. In just three short pages you will bootstrap a project, write your first property, and learn how to read the reports produced when a property fails.
+## All tutorials
 
-1. [Basic Setup](/docs/tutorials/quick-start/basic-setup/) — clone a ready-to-run project and get the tests running.
-2. [Our first Property-Based Test](/docs/tutorials/quick-start/our-first-property-based-test/) — rewrite a classic example-based test into a property.
-3. [Read test reports](/docs/tutorials/quick-start/read-test-reports/) — understand shrinking, seeds, and counterexamples.
+```mdx-code-block
+import DocCardList from '@theme/DocCardList';
 
-### 🧰 I want to plug fast-check into my existing test runner
-
-Head to [Setting up your Test Environment](/docs/tutorials/setting-up-your-test-environment/). fast-check is runner-agnostic, but each ecosystem has its own idioms. You will find dedicated guides for:
-
-- [Jest](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-jest/)
-- [Bun test runner](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-bun-test-runner/)
-- [Deno test runner](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-deno-test-runner/)
-- [Node.js built-in test runner](/docs/tutorials/setting-up-your-test-environment/property-based-testing-with-nodejs-test-runner/)
-
-### 🏎️ I want to hunt bugs that only show up under concurrency
-
-Race conditions are notoriously hard to test with traditional techniques. The [Detect race conditions](/docs/tutorials/detect-race-conditions/) tutorial shows how fast-check can surface them reliably. You will build up — one puzzle at a time — the reflexes needed to catch ordering bugs in asynchronous code.
-
-## What's inside?
-
-| Tutorial | You will learn | Good for |
-| --- | --- | --- |
-| [Quick Start](/docs/tutorials/quick-start/basic-setup/) | Writing your first property, understanding shrinking and seeds | Absolute beginners |
-| [Setting up your Test Environment](/docs/tutorials/setting-up-your-test-environment/) | Integrating fast-check with Jest, Bun, Deno or Node.js built-in test runner | Developers adopting fast-check in an existing project |
-| [Detect race conditions](/docs/tutorials/detect-race-conditions/) | Modeling concurrent scenarios and finding ordering bugs | Developers working on async-heavy code |
+<DocCardList />
+```
 
 ## Looking for something more specific?
 
