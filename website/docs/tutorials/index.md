@@ -18,16 +18,16 @@ Reading the reference documentation tells you _what_ fast-check can do. Followin
 - ends with takeaways you can immediately bring back to your own codebase.
 
 :::tip New to Property-Based Testing?
-If the concept itself is new, start by reading [What is Property-Based Testing?](../introduction/what-is-property-based-testing.md) and [Why Property-Based?](../introduction/why-property-based.md) before diving in.
+If the concept itself is new, start by reading [What is Property-Based Testing?](/docs/introduction/what-is-property-based-testing/) and [Why Property-Based?](/docs/introduction/why-property-based/) before diving in.
 :::
 
 ## Which tutorial is right for me?
 
 Pick the one that matches where you are today:
 
-- 🚀 **New to fast-check** → [Quick Start](./quick-start/basic-setup.md)
-- 🧰 **Integrating with an existing test runner** → [Setting up your Test Environment](./setting-up-your-test-environment/index.md)
-- 🏎️ **Chasing bugs that only appear under concurrency** → [Detect race conditions](./detect-race-conditions/index.md)
+- 🚀 **New to fast-check** → [Quick Start](/docs/tutorials/quick-start/basic-setup/)
+- 🧰 **Integrating with an existing test runner** → [Setting up your Test Environment](/docs/tutorials/setting-up-your-test-environment/)
+- 🏎️ **Chasing bugs that only appear under concurrency** → [Detect race conditions](/docs/tutorials/detect-race-conditions/)
 
 ## All tutorials
 
@@ -41,7 +41,7 @@ import DocCardList from '@theme/DocCardList';
 
 These tutorials are intentionally focused. Once you are comfortable with the basics, the rest of the documentation is organized to help you go further:
 
-- [**Core Blocks**](../core-blocks/properties.md) — the reference for properties, runners and arbitraries.
-- [**Configuration**](../configuration/user-definable-values.md) — fine-tune fast-check to match your project's constraints.
-- [**Advanced**](../advanced/model-based-testing.md) — model-based testing, race conditions in depth, and more.
+- [**Core Blocks**](/docs/core-blocks/properties/) — the reference for properties, runners and arbitraries.
+- [**Configuration**](/docs/configuration/user-definable-values/) — fine-tune fast-check to match your project's constraints.
+- [**Advanced**](/docs/advanced/model-based-testing/) — model-based testing, race conditions in depth, and more.
 - [**API Reference**](https://fast-check.dev/api-reference/index.html) — the exhaustive list of every exported symbol.
