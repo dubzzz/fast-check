@@ -15,3 +15,5 @@ trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 20160
 
 blockExoticSubdeps: true
+
+enableGlobalVirtualStore: true
