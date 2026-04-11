@@ -10,18 +10,25 @@ import { MissingPart } from './Playgrounds';
 
 ## Zoom on previous test
 
-As mentioned earlier, the decision to use sequences was largely driven by the desire to cover most of the scheduler's APIs in this tutorial. However, there are alternative ways of achieving our goals.
+Step 3 introduced `scheduleSequence` so we could fire multiple _ordered_ batches of calls. Between batches, the scheduler was free to interleave whatever it wanted — which gave fast-check a much richer set of timelines to explore, and it kept finding bugs in weaker implementations of `queue`.
 
-One of the issues we wanted to address was the need to trigger queries asynchronously. Although this functionality is not yet built into fast-check, we could use the technique outlined in [scheduling a function call](/docs/advanced/race-conditions/#scheduling-a-function-call). If we were to take this approach, we would update:
+But take another look at the specification we started from:
 
-```js
-for (let id = 0; id !== numCalls; ++id) {
-  expectedAnswers.push(id);
-  pendingQueries.push(queued(id).then((v) => seenAnswers.push(v)));
-}
-```
+> Its purpose is to wrap an asynchronous function and queue subsequent calls to it in two ways:
+>
+> - Promises returned by the function will resolve in order, with the first call resolving before the second one, the second one resolving before the third one, and so on.
+> - Concurrent calls are not allowed, meaning that a call will always wait for the previously started one to finish before being fired.
 
-into:
+Every test so far checked the **first** point: are results received in the right order? Not one of them checked the **second**: does `queue` ever let two calls be in flight at the same time? A broken `queue` that simply re-orders outputs correctly but fires all calls concurrently would still pass every test from steps 1 to 3. We have been staring at the finish line; we never looked at the race itself.
+
+That's the gap step 4 will close.
+
+<details>
+<summary>Alternative: firing each call asynchronously without <code>scheduleSequence</code></summary>
+
+In step 3 we used `scheduleSequence` to spread calls across batches, largely so that you would learn the API. There is a lighter-weight alternative described in [scheduling a function call](/docs/advanced/race-conditions/#scheduling-a-function-call): instead of grouping calls into sequences, wrap each call in a `s.schedule(Promise.resolve(...))` so the scheduler decides when it gets fired.
+
+Concretely:
 
 ```js
 for (let id = 0; id !== numCalls; ++id) {
@@ -37,20 +44,17 @@ for (let id = 0; id !== numCalls; ++id) {
 }
 ```
 
-:::info Comparison
-Contrary to the batch approach, the ordering of ids will not be ensured. For that reason, we decided to include it in the reports by scheduling a resolved promise with a value featuring this id.
+With this version the ordering of ids is no longer guaranteed (any call can fire first), which is why we attach the id as the scheduled promise's label so it shows up in reports. Both approaches are valid — pick whichever better matches the system you are testing.
+
+</details>
+
+## The missing specification point
+
+So far, our tests have been looking at the _output_ of `queue` and asking "did these values arrive in the right order?". To catch a concurrent call, we need a different kind of observation: we need to look at `call` itself and ask "is another call already running when this one starts?". In other words, step 4 is less about tweaking inputs and more about _instrumenting the code under test_ so the race can be witnessed.
+
+:::tip `s.report()` — your debugger when things go sideways
+When a scheduler-driven test fails, it's not always obvious which interleaving fast-check picked. `s.report()` returns the list of scheduled tasks the scheduler processed, in order, each with its label and outcome. Logging it in a `try/finally` around your assertions is often the fastest way to understand "what just happened?". See [The scheduler instance](/docs/advanced/race-conditions/#the-scheduler-instance) for the full signature.
 :::
-
-## Towards next test
-
-Our tests may be incomplete because we are not taking into account all aspects of the specification:
-
-> Its purpose is to wrap an asynchronous function and queue subsequent calls to it in two ways:
->
-> - Promises returned by the function will resolve in order, with the first call resolving before the second one, the second one resolving before the third one, and so on.
-> - Concurrent calls are not allowed, meaning that a call will always wait for the previously started one to finish before being fired.
-
-Although we thoroughly tested the first point, we may have overlooked the second point in the specification. Therefore, in the final section of this tutorial, we will focus on validating the second requirement.
 
 ## Your turn!
 
@@ -62,9 +66,46 @@ Your test should help us to detect a bug in our current implementation of `queue
 
 <details>
 <summary>
-Hint #1
+Hint #1 — A different kind of observation
 </summary>
 
-One potential solution is to wrap the scheduled API in an additional layer that sets a flag to `true` when the API is called, directly invokes the scheduled API, and then resets the flag to `false` when the API resolves. If the flag is already set to `true` when the wrapper layer is invoked, it should cause the test to fail.
+Every previous test asked "were the _results_ received in the right order?". But "no concurrent calls" is a statement about _what's happening right now_, not about results. You need some piece of state that can answer the question "is another call currently in progress?" at the moment a new call starts. Think simple — the state can be tiny.
+
+</details>
+
+<details>
+<summary>
+Hint #2 — Track start and end
+</summary>
+
+One boolean is enough. Wrap `scheduledCall` in your own function that:
+
+- sets the boolean to `true` when a call starts,
+- resets it to `false` when the call resolves.
+
+If the boolean is _already_ `true` when a new call starts, two calls are in flight at the same time — that's a concurrency violation. Remember to pass the wrapper (not `scheduledCall` itself) to `queue(...)` so that the monitoring sees every call the queue makes.
+
+</details>
+
+<details>
+<summary>
+Hint #3 — Detect and fail
+</summary>
+
+Keep a second flag `concurrentQueriesDetected`. Whenever the "is a call in progress?" flag is already `true` at entry, flip `concurrentQueriesDetected` to `true`. After the test drains, assert `expect(concurrentQueriesDetected).toBe(false)`. The wrapper ends up looking like this:
+
+```js
+const scheduledCall = s.scheduleFunction(call);
+let concurrentQueriesDetected = false;
+let queryPending = false;
+const monitoredScheduledCall = (...args) => {
+  concurrentQueriesDetected ||= queryPending;
+  queryPending = true;
+  return scheduledCall(...args).finally(() => (queryPending = false));
+};
+const queued = queue(monitoredScheduledCall);
+```
+
+Then, at the end of the property, check both the ordering (as in step 3) _and_ that `concurrentQueriesDetected` stayed `false`.
 
 </details>

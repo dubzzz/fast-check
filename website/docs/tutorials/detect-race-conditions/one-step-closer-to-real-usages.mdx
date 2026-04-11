@@ -10,6 +10,8 @@ import { OneStepCloserToRealUsages } from './Playgrounds';
 
 ## Zoom on previous test
 
+Step 1's missing piece was **time**: the original test couldn't distinguish a correct `queue` from a broken one because every promise resolved instantly. The fix was to hand control of _when_ promises resolve to the fast-check scheduler. Here's the reasoning behind the two edits we made.
+
 ### What to schedule?
 
 One approach to solve the problem we discussed earlier is to follow a common pattern that we recommend when integrating a scheduler into existing tests. This involves replacing the original occurrences of the asynchronous API with scheduled versions of it. In our case, we replaced the line of code:
@@ -35,11 +37,11 @@ pendingQueries.push(queued(2).then((v) => seenAnswers.push(v)));
 await s.waitFor(Promise.all(pendingQueries));
 ```
 
-An alternative would have been to use `waitAll` instead of `waitFor` but it comes with a precise requirement: promises have to be already scheduled by the time we request the scheduler. In other words, if our code delays a little bit the call to `call`, the scheduler might not wait enough.
+:::info Rule of thumb — `waitFor` vs `waitAll`
+Use `waitFor` when you cannot guarantee that **every** scheduled call is already registered at the moment you stop waiting. `waitAll` is convenient, but it requires every promise you care about to be queued on `s` _before_ you call it. If `queue`'s implementation delays calls even slightly, `waitAll` can return too early and silently miss queries. `waitFor(Promise.all(pendingQueries))` has no such trap: it keeps draining the scheduler until `Promise.all(...)` actually resolves, no matter when each call was registered.
+:::
 
-Given the fact that `call` being fired synchronously is not a requirement for our current function, we can relax the constraint in our test to make evolving this implementation easier.
-
-A `waitAll` version of the code above would be:
+For the record, the `waitAll` version of the code above would be:
 
 ```js
 const queued = queue(s.scheduleFunction(call));
@@ -50,7 +52,7 @@ await s.waitAll();
 
 ## Towards next test
 
-The current implementation of our test only involves running two calls, but there may be potential issues that arise when more calls are made. To capture these scenarios, we will update the test to run an arbitrary number of calls. This will allow us to detect race conditions on a wider range of scenarios, including those with 3, 4, or even more calls.
+Two calls were enough to expose a reordering bug — but is the bug also there with five calls? With ten? Each extra call multiplies the number of possible interleavings, and some bugs only surface when a specific one gets picked. Instead of hard-coding the count, let's parameterise it and let fast-check explore.
 
 ## Your turn!
 
@@ -62,24 +64,45 @@ Your test should help us to detect a bug in our current implementation of `queue
 
 <details>
 <summary>
-Hint #1
+Hint #1 — One generator is not enough
 </summary>
 
-`fc.scheduler` alone will not be enough! You'll have to generate another entry to be able to properly control the number of calls to `call` function.
+`fc.scheduler` alone only gives you the interleavings. You need a **second** arbitrary that tells each run of the property how many calls to fire — otherwise the count stays hard-coded at 2.
 
 </details>
 
 <details>
 <summary>
-Hint #2
+Hint #2 — Which arbitrary?
 </summary>
 
-Some possible options for generating additional test scenarios include:
+Several arbitraries can carry this number for you:
 
-- Using `fc.integer({min: 1, max: 10})` to generate a variable `numCalls` that determines how many times to call `call`. It's important to set a maximal value via `max` to prevent an excessively high number of calls.
-- Using `fc.array(fc.nat(), {minLength: 1})` to generate the list of calls to issue against `call`.
-- Using `fc.func(fc.boolean())` to generate a function that determines when to stop issuing calls.
+- `fc.integer({min: 1, max: 10})` — a single integer `numCalls`. Setting `max` caps execution time.
+- `fc.array(fc.nat(), {minLength: 1})` — an array of inputs to feed directly into `call`.
+- `fc.func(fc.boolean())` — a generated function that decides, each iteration, whether to keep going.
 
-And there are plenty others…
+Any of them works. The simplest for this step is the first one.
+
+</details>
+
+<details>
+<summary>
+Hint #3 — The property skeleton
+</summary>
+
+Pass your new arbitrary as the second argument to `fc.asyncProperty`, right after `fc.scheduler()`. The predicate then receives both values:
+
+```js
+fc.asyncProperty(fc.scheduler(), fc.integer({ min: 1, max: 10 }), async (s, numCalls) => {
+  // Arrange
+  // ...
+  // Act: fire numCalls queries against the scheduled version of call
+  // ...
+  // Assert: seenAnswers matches expectedAnswers
+});
+```
+
+Fill in the loop body yourself — don't forget to push each `queued(id).then(...)` into `pendingQueries` and to drain with `s.waitFor(Promise.all(pendingQueries))`.
 
 </details>
