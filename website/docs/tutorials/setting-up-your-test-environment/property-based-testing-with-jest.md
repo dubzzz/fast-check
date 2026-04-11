@@ -13,9 +13,9 @@ Integrating Property Based Testing capabilities within [Jest](https://jestjs.io/
 We recommend two distinct approaches for integrating fast-check with Jest:
 
 1. **Using our Connector Library:** Simplify your integration process with our dedicated connector library: [@fast-check/jest](https://www.npmjs.com/package/@fast-check/jest). Designed to streamline the setup, this option offers a quick and simple way to leverage fast-check with Jest.
-2. **Manual Integration:** Learn how to connect fast-check with Jest from scratch. This option provides ultimate flexibility and control over your testing setup.
+2. **Manual Integration:** Connect fast-check with Jest without any connector. This option provides ultimate flexibility and control over your testing setup and is covered on our [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) page.
 
-Both options have their unique benefits and strengths. In this guide, we'll walk you through each method in detail.
+Both options have their unique benefits and strengths. This guide walks you through the connector-based approach; the manual path is documented in its own page.
 
 :::info You don't have Jest yet?
 
@@ -112,7 +112,7 @@ You've connected your first asynchronous Property-Based Test within Jest 🚀
 
 :::info Difference with synchronous predicate
 
-The only difference is that the predicate function is now asynchronous. Compared to the **Manual Integration** (see below), we don't have to use another set of helpers to run asynchronous checks.
+The only difference is that the predicate function is now asynchronous. Compared to the [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) approach, we don't have to use another set of helpers to run asynchronous checks.
 
 ```diff
 - test.prop({ s: fc.scheduler() })('should resolve in call order', ({ s }) => {
@@ -127,136 +127,14 @@ For more advanced options and configurations of the connector, explore the [Adva
 
 ## Manual setup
 
-Leveraging fast-check within an existing Jest project doesn't require the use of a connector. In fact, fast-check is designed to be test runner agnostic, making the connector a convenient option for users seeking seamless integration within their existing tooling.
+Prefer full control and do not want to rely on `@fast-check/jest`? fast-check is test runner agnostic and plugs into Jest without any connector.
 
-In this section, we'll explore how to set up fast-check directly in your Jest projects.
+The generic sync and async patterns, along with the recommended usage of `fc.configureGlobal`, are documented in a single runner-agnostic page: [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/). When writing tests the Jest way, you can import `test` and `expect` from [`@jest/globals`](https://jestjs.io/docs/api) (or rely on Jest's global injection).
 
-### Basic setup
+### Sharing `fc.configureGlobal` with Jest
 
-Start by installing the necessary libraries for your project with the following command:
-
-```bash npm2yarn
-npm install --save-dev fast-check
-```
-
-Congratulations! You're now ready to start exploring Property-Based Testing within Jest 🚀
-
-While you could begin writing property-based tests now, we recommend some additional setup to enhance integration and maximize the benefits of fast-check within Jest.
-
-### Recommended setup
-
-As Property-Based Tests can take longer to run compared to other tests, it's recommended to adjust their time allocation appropriately. In this section, we'll focus on ensuring that property-based tests stay within the time constraints set for all your other tests. While it might be tempting to specify separate time limits for them, we recommend letting them run with the same time limit as any other tests, especially in Continuous Integration environments.
-
-To globally apply our setup across all tests, Jest provides a mechanism for executing setup files before tests start running. If you haven't already created a setup file, you can do so as follows:
-
-```js title="jest.config.js"
-module.exports = {
-  setupFiles: ['./jest.setup.js'],
-};
-```
-
-Now that we have the setup file in place, let's configure fast-check:
-
-```js title="jest.setup.js"
-const fc = require('fast-check');
-fc.configureGlobal({ interruptAfterTimeLimit: 5_000 });
-```
-
-With this setup, we ensure that fast-check stops any running property-based tests that exceed the 5-second limit, which is [the default time limit in Jest](https://jestjs.io/docs/cli#--testtimeoutnumber).
-
-:::tip Checking the setup
-
-You can confirm that the setup has been properly applied to your test files by using the following temporary test and running the tests:
-
-```js
-test('fast-check properly configured', () => {
-  expect(fc.readConfigureGlobal()).toEqual({ interruptAfterTimeLimit: 5_000 });
-});
-```
-
-:::
+The most common reason to call `fc.configureGlobal` is to align property-based tests with [Jest's default 5-second timeout](https://jestjs.io/docs/cli#--testtimeoutnumber) via `interruptAfterTimeLimit`. Jest exposes `setupFiles` for this use case — the exact snippet (`jest.config.js` + `jest.setup.js`) is documented in the [Jest section of Global settings](/docs/configuration/global-settings/#jest).
 
 :::warning Multiple time limits
-
-Unlike the implementation provided by `@fast-check/jest`, the global setup documented above does not automatically adapt itself to command-line dependent time limits or test-dependent ones. In other words, our documented setup will ignore any customized time limit passed via `--testTimeout=<number>` or directly defined at test level via `test(label, fn, timeout)`.
+Unlike `@fast-check/jest`, this manual setup does not automatically adapt to command-line or test-level time limits. It will ignore any customized time limit passed via `--testTimeout=<number>` or at test level via `test(label, fn, timeout)`.
 :::
-
-You can even customize this setup further by instructing fast-check to run tests until they reach a specified time limit. While this approach might not be suitable for general Continuous Integration, environments, it can be valuable in fuzzing-like CI pipelines. In such cases, you'll want to increase the number of runs passed to fast-check to an arbitrarily high value, such as `numRuns: Number.POSITIVE_INFINITY`.
-
-### Your first test
-
-Since we're not using a specific connector, there's no direct integration of fast-check within Jest. Instead, writing a property-based test will largely follow your usual Jest practices, with the test's content calling fast-check to generate inputs and expectations.
-
-```js title="isSubstring.spec.js"
-const { test } = require('@jest/globals');
-const fc = require('fast-check');
-
-test('should detect the substring', () => {
-  fc.assert(
-    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
-      const text = a + b + c;
-      expect(isSubtring(text, b)).toBe(true);
-    }),
-  );
-});
-
-// Code under test: should rather be imported from another file
-function isSubtring(text, pattern) {
-  return text.includes(pattern);
-}
-```
-
-You can now run your test with your usual test command.
-
-You've connected your first Property-Based Test within Jest 🚀
-
-### Your first asynchronous test
-
-Now that we've covered synchronous tests, let's explore how to integrate an asynchronous one. The key difference here is that `fc.property` does not handle asynchronous predicates, so we'll use its asynchronous counterpart, `fc.asyncProperty`.
-
-```js title="queue.spec.js"
-const { test } = require('@jest/globals');
-const fc = require('fast-check');
-const { queue } = require('./queue.js'); // refer to the section "connector" for the code
-
-test('should resolve in call order', async () => {
-  await fc.assert(
-    fc.asyncProperty(fc.scheduler(), async (s) => {
-      // Arrange
-      const pendingQueries = [];
-      const seenAnswers = [];
-      const call = jest.fn().mockImplementation((v) => Promise.resolve(v));
-
-      // Act
-      const queued = queue(s.scheduleFunction(call));
-      pendingQueries.push(queued(1).then((v) => seenAnswers.push(v)));
-      pendingQueries.push(queued(2).then((v) => seenAnswers.push(v)));
-      await s.waitFor(Promise.all(pendingQueries));
-
-      // Assert
-      expect(seenAnswers).toEqual([1, 2]);
-    }),
-  );
-});
-
-// Code under test: should rather be imported from another file
-function queue(fun) {
-  let lastQuery = Promise.resolve();
-  return (...args) => {
-    const currentQuery = fun(...args);
-    const returnedQuery = lastQuery.then(() => currentQuery);
-    lastQuery = currentQuery;
-    return returnedQuery;
-  };
-}
-```
-
-You can now run your test with your usual test command.
-
-You've connected your first asynchronous Property-Based Test within Jest 🚀
-
-### Going further
-
-Now that you have a solid foundation, it's time to delve deeper into the world of property-based testing. Our official documentation covers a range of advanced topics, from [generating custom values](/docs/core-blocks/arbitraries/primitives/number/) tailored to your specific needs to exploring [advanced patterns](/docs/advanced/race-conditions/).
-
-By diving into these resources, you'll gain a deeper understanding of fast-check's capabilities and unlock new possibilities for enhancing your testing workflow. Continue your exploration and elevate your property-based testing skills to new heights.
