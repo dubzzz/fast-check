@@ -90,12 +90,12 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
                 params.examples !== undefined ? params.examples.map((example): [TsParameters] => [example]) : undefined,
               reporter:
                 params.reporter !== undefined
-                  ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  ? // oxlint-disable-next-line typescript/no-non-null-assertion
                     (runDetails) => params.reporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
               asyncReporter:
                 params.asyncReporter !== undefined
-                  ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  ? // oxlint-disable-next-line typescript/no-non-null-assertion
                     (runDetails) => params.asyncReporter!(adaptRunDetailsForRecord(runDetails, params))
                   : undefined,
             }

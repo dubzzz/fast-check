@@ -120,14 +120,14 @@ export class RunExecution<Ts> {
         //     At the same time it also assigns a non-null value to this.value
         //     And this is the only path assigning a value to this.value
         // =>  this.value !== undefined
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line typescript/no-non-null-assertion
         counterexample: this.value!,
         // See isSuccess: true <=> this.pathToFailure === undefined
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line typescript/no-non-null-assertion
         counterexamplePath: RunExecution.mergePaths(basePath, this.pathToFailure!),
         // Rq: Same as this.value
         // =>  this.failure !== undefined
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line typescript/no-non-null-assertion
         errorInstance: this.failure!.error,
         failures: this.extractFailures(),
         executionSummary: this.rootExecutionTrees,

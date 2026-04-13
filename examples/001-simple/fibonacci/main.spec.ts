@@ -73,7 +73,7 @@ describe('fibonacci', () => {
             a = b;
             b = temp;
           }
-          // eslint-disable-next-line no-constant-condition
+          // oxlint-disable-next-line no-constant-condition
           while (true) {
             if (b == zero) return a;
             a = (a % b) as T;
