@@ -217,6 +217,7 @@ const config: Config = {
         tsconfig: '../packages/fast-check/tsconfig.typedoc.json',
         out: 'docs/api',
         readme: 'none',
+        skipErrorChecking: true,
         parametersFormat: 'table',
         enumMembersFormat: 'table',
         indexFormat: 'table',
