@@ -1,21 +1,19 @@
 // @ts-check
 
-export default function advent() {
-  /** @typedef {{id:string;}} Letter */
+/** @typedef {{id:string;}} Letter */
 
-  /**
-   * @param {Letter[]} letters
-   * @returns {Letter[]}
-   */
-  return function dropLettersFromDuplicatedSenders(letters) {
-    /** @type {Record<string, boolean>} */
-    const alreadySeenIds = {};
-    return letters.filter((letter) => {
-      if (alreadySeenIds[letter.id]) {
-        return false;
-      }
-      alreadySeenIds[letter.id] = true;
-      return true;
-    });
-  };
+/**
+ * @param {Letter[]} letters
+ * @returns {Letter[]}
+ */
+export default function dropLettersFromDuplicatedSenders(letters) {
+  /** @type {Record<string, boolean>} */
+  const alreadySeenIds = {};
+  return letters.filter((letter) => {
+    if (alreadySeenIds[letter.id]) {
+      return false;
+    }
+    alreadySeenIds[letter.id] = true;
+    return true;
+  });
 }
