@@ -8,7 +8,7 @@
   },
   "plugins": ["typescript", "oxc", "unicorn", "import"],
   "rules": {
-    "no-unused-vars": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrors": "none" }],
 
     "no-eval": "warn",
     "no-useless-rename": "warn",
@@ -22,7 +22,6 @@
     "typescript/no-array-delete": "warn",
 
     "typescript/explicit-module-boundary-types": "error",
-    "typescript/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrors": "none" }],
     "typescript/consistent-type-exports": "error",
     "typescript/consistent-type-imports": "error",
     "typescript/no-import-type-side-effects": "error",
@@ -31,6 +30,7 @@
     "typescript/no-empty-object-type": ["error", { "allowInterfaces": "with-single-extends" }],
     "typescript/no-unsafe-function-type": "error",
     "typescript/no-wrapper-object-types": "error",
+    "typescript/no-require-imports": "error",
 
     "typescript/await-thenable": "error",
     "typescript/no-base-to-string": "error",
@@ -42,11 +42,9 @@
     "typescript/no-unsafe-enum-comparison": "error",
     "typescript/require-await": "error",
 
-    "typescript/no-empty-function": "warn",
+    "no-empty-function": "warn",
     "typescript/no-this-alias": "warn",
-    "typescript/no-use-before-define": "warn",
-
-    "no-use-before-define": "off",
+    "no-use-before-define": "warn",
 
     "no-fallthrough": "error",
     "no-case-declarations": "error",
@@ -81,9 +79,9 @@
         "**/test-types/**/*.mts"
       ],
       "rules": {
-        "typescript/no-empty-function": "off",
+        "no-empty-function": "off",
         "typescript/no-empty-object-type": "off",
-        "typescript/no-use-before-define": "off",
+        "no-use-before-define": "off",
         "typescript/no-non-null-assertion": "off",
         "no-control-regex": "off",
         "typescript/await-thenable": "off",
@@ -95,6 +93,9 @@
         "typescript/no-misused-promises": "off",
         "typescript/no-unsafe-enum-comparison": "off",
         "typescript/require-await": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/require-array-sort-compare": "off",
+        "typescript/no-unsafe-unary-minus": "off",
         "no-unexpected-multiline": "off"
       }
     },
@@ -117,7 +118,10 @@
         "typescript/no-implied-eval": "off",
         "typescript/no-misused-promises": "off",
         "typescript/no-unsafe-enum-comparison": "off",
-        "typescript/require-await": "off"
+        "typescript/require-await": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/require-array-sort-compare": "off",
+        "typescript/no-unsafe-unary-minus": "off"
       }
     },
     {
@@ -134,7 +138,10 @@
         "typescript/no-implied-eval": "off",
         "typescript/no-misused-promises": "off",
         "typescript/no-unsafe-enum-comparison": "off",
-        "typescript/require-await": "off"
+        "typescript/require-await": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/require-array-sort-compare": "off",
+        "typescript/no-unsafe-unary-minus": "off"
       }
     }
   ],
