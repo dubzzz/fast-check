@@ -5,7 +5,7 @@ tags: [advent-of-pbt, advent-of-pbt-2024]
 image: /img/blog/2024-12-24-advent-of-pbt-day-24--social.png
 ---
 
-import {AdventPlaygroundOfTheDay,FormOfTheDay} from './AdventOfTheDay';
+import { AdventPlaygroundOfTheDay, FormOfTheDay } from './AdventOfTheDay';
 import BlueskyComments from '../2024-12-01-advent-of-pbt-day-1/BlueskyComments';
 
 Christmas is at risk! In their rush to meet tight deadlines, Santa’s elves accidentally introduced bugs into critical algorithms. If these issues aren’t discovered in time, Christmas could be delayed for everyone worldwide!
@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking! Emma just reached out with a new challenge: Santa’s coin distribution strategy for multiple elves might leave some unpaid. Can you identify any flaws in the algorithm and ensure every elf gets their fair share? 🎄✨
 
-{/_ truncate _/}
+{/* truncate */}
 
 ## Money Day: The Revenge
 

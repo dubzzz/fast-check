@@ -5,7 +5,7 @@ tags: [advent-of-pbt, advent-of-pbt-2024]
 image: /img/blog/2024-12-17-advent-of-pbt-day-17--social.png
 ---
 
-import {AdventPlaygroundOfTheDay,FormOfTheDay} from './AdventOfTheDay';
+import { AdventPlaygroundOfTheDay, FormOfTheDay } from './AdventOfTheDay';
 import BlueskyComments from '../2024-12-01-advent-of-pbt-day-1/BlueskyComments';
 
 Christmas is at risk! In their rush to meet tight deadlines, Santa’s elves accidentally introduced bugs into critical algorithms. If these issues aren’t discovered in time, Christmas could be delayed for everyone worldwide!
@@ -14,7 +14,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your next challenge: the elves recently implemented a regex to validate email addresses for Santa's newsletter. Santa’s worried that some valid emails might be incorrectly rejected. Can you catch a valid email that’s being rejected? 🎅✨
 
-{/_ truncate _/}
+{/* truncate */}
 
 ## Email validator
 

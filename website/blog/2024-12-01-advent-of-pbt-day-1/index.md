@@ -4,8 +4,8 @@ authors: [dubzzz]
 tags: [advent-of-pbt, advent-of-pbt-2024]
 ---
 
-import {AdventPlaygroundOfTheDay,FormOfTheDay} from './AdventOfTheDay';
-import BlueskyComments from './BlueskyComments'
+import { AdventPlaygroundOfTheDay, FormOfTheDay } from './AdventOfTheDay';
+import BlueskyComments from './BlueskyComments';
 
 Christmas is at risk! In their rush to meet tight deadlines, Santa’s elves accidentally introduced bugs into critical algorithms. If these issues aren’t discovered in time, Christmas could be delayed for everyone worldwide!
 
@@ -13,7 +13,7 @@ Your mission is to troubleshoot these black-box algorithms using the power of fa
 
 The clock is ticking. Santa just pinged you with your first challenge: he’s struggling to answer children in the proper and efficient order. Something seems to be going wrong—can you uncover the issue and save Christmas? 🎄🔧
 
-{/_ truncate _/}
+{/* truncate */}
 
 ## Letters to Santa
 

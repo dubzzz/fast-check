@@ -8,7 +8,7 @@ Prototype pollution is among the most frequent sources of Common Vulnerabilities
 
 In this post, you will learn what they are and how you can find them easily using fast-check.
 
-{/_ truncate _/}
+{/* truncate */}
 
 ## Prototype pollution
 

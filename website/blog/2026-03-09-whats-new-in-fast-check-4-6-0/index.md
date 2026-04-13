@@ -10,7 +10,7 @@ Our published bundle is also lighter by 17% as it went from 1618 kB to 1344 kB.
 
 Continue reading to explore the detailed updates it brings.
 
-{/_ truncate _/}
+{/* truncate */}
 
 ## Bound `stringMatching` with `maxLength`
 
