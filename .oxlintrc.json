@@ -124,10 +124,7 @@
       }
     },
     {
-      "files": [
-        "**/*.mjs",
-        "**/mjs/**/*.js"
-      ],
+      "files": ["**/*.mjs", "**/mjs/**/*.js"],
       "rules": {
         "typescript/await-thenable": "off",
         "typescript/no-base-to-string": "off",
