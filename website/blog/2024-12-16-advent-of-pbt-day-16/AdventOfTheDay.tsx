@@ -1,9 +1,11 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 16,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   buggyAdventSurcharged: (index: number) => {
     return !isBuggyIndexWithBefore(index) && !isBuggyIndexWithBefore(index + 1);
   },
@@ -23,9 +25,9 @@ function isBuggyIndexWithBefore(index: number) {
   if (index <= 0) {
     return false;
   }
-  const codeN = adventBuggy()(index);
+  const codeN = adventBuggy(index);
   const binaryCodeN = BigInt(codeN).toString(2);
-  const codeNBefore = adventBuggy()(index - 1);
+  const codeNBefore = adventBuggy(index - 1);
   const binaryCodeNBefore = BigInt(codeNBefore).toString(2).padStart(binaryCodeN.length, '0');
   let diffCount = 0;
   for (let index = 0; index !== binaryCodeN.length; ++index) {
