@@ -1,13 +1,15 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 24,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: () => true,
-  buggyAdventSurcharged: (...args: Parameters<ReturnType<typeof adventBuggy>>) => {
+  buggyAdventSurcharged: (...args: Parameters<typeof adventBuggy>) => {
     const expected = distributeCoins(...args);
-    const out = adventBuggy()(...args);
+    const out = adventBuggy(...args);
     const [availableCoins, amountsToBePaid] = args;
     if (out === null) {
       return expected === null ? true : 'not supposed to find anything';

@@ -167,7 +167,7 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
     const src = this.arb.generate(mrng, biasFactor);
     return this.valueChainer(src, mrng, clonedMrng, biasFactor);
   }
-  canShrinkWithoutContext(value: unknown): value is U {
+  canShrinkWithoutContext(_value: unknown): _value is U {
     // TODO Need unchainer
     return false;
   }

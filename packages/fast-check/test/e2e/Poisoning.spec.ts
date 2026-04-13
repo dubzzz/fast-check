@@ -315,7 +315,7 @@ class NoopArbitrary extends fc.Arbitrary<number> {
   generate(_mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
     return new fc.Value<number>(0, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
   shrink(value: number, _context: unknown): fc.Stream<fc.Value<number>> {
@@ -338,7 +338,7 @@ class BasicArbitrary extends fc.Arbitrary<number> {
   generate(mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
     return new fc.Value<number>(mrng.nextInt() % 1000, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
   shrink(value: number, _context: unknown): fc.Stream<fc.Value<number>> {

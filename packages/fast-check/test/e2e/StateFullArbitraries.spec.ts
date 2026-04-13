@@ -15,7 +15,7 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           };
           return new fc.Value(v, undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is any {
+        canShrinkWithoutContext(_value: unknown): _value is any {
           return false;
         }
         shrink(): fc.Stream<fc.Value<any>> {
