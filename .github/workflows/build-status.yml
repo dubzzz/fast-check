@@ -182,6 +182,8 @@ jobs:
         run: node --run unpack:all
       - name: Typecheck
         run: node --run typecheck:all
+      - name: Check API surface (missing exports, inconsistent visibility, etc.)
+        run: pnpm --filter fast-check run api-extractor
   preview:
     name: 'Preview'
     needs:
