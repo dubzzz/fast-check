@@ -38,7 +38,8 @@
     "build-ci": "rolldown -c && pnpm run build:post-build",
     "typecheck": "tsc --noEmit",
     "test-bundle": "for f in test-bundle/*.mjs test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && node \"$f\" || exit 1; done",
-    "test-legacy-bundle": "nvs add 12.17.0 && for f in test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && $(nvs which 12.17.0) \"$f\" || exit 1; done"
+    "test-legacy-bundle": "nvs add 12.17.0 && for f in test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && $(nvs which 12.17.0) \"$f\" || exit 1; done",
+    "api-extractor": "api-extractor run --local"
   },
   "repository": {
     "type": "git",
@@ -59,6 +60,7 @@
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
+    "@microsoft/api-extractor": "^7.58.2",
     "@types/node": "^24.12.2",
     "fast-check": "workspace:*",
     "not-node-buffer": "npm:buffer@^6.0.3",
