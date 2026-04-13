@@ -204,7 +204,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     return new Value(producedLinks, undefined);
   }
 
-  canShrinkWithoutContext(value: unknown): value is ProducedLinks<TEntityFields, TEntityRelations> {
+  canShrinkWithoutContext(_value: unknown): _value is ProducedLinks<TEntityFields, TEntityRelations> {
     return false; // for now, we reject any shrink without context
   }
 

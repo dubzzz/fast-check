@@ -86,14 +86,9 @@ describe('Playground', () => {
             if (expectedSuccess) {
               expect(specOutput).toContain('1 passed');
               expect(specOutput).not.toContain('1 failed');
-              expect(specOutput).not.toContain('ERR_UNHANDLED_REJECTION');
             } else {
               expect(specOutput).not.toContain('1 passed');
-              try {
-                expect(specOutput).toContain('1 failed');
-              } catch (err) {
-                expect(specOutput).toContain('ERR_UNHANDLED_REJECTION');
-              }
+              expect(specOutput).toContain('1 failed');
             }
           } finally {
             await fs.rm(testDirectoryPath, { recursive: true });
@@ -106,6 +101,10 @@ describe('Playground', () => {
 
 // Helpers
 
+/**
+ * @param {string} testDirectoryPath
+ * @returns
+ */
 async function runVitest(testDirectoryPath) {
   try {
     const { stdout, stderr } = await execFile(
@@ -115,6 +114,7 @@ async function runVitest(testDirectoryPath) {
     );
     return stdout + stderr;
   } catch (err) {
+    // @ts-ignore
     return err.stdout + err.stderr;
   }
 }

@@ -1,14 +1,16 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 10,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: isProbablyEnchantedWordV2,
   parser,
   placeholderForm: 'any set of characters as long as it fits on one line',
   functionName: 'isProbablyEnchantedWordV2',
-  signature: 'isProbablyEnchantedWordV2(word: string): string;',
+  signature: 'isProbablyEnchantedWordV2(word: string): boolean;',
   signatureExtras: [],
 });
 

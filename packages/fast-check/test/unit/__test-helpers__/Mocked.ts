@@ -31,7 +31,3 @@ type MockedObject<T> = MaybeMockedConstructor<T> & {
 };
 
 export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T extends object ? MockedObject<T> : T;
-
-export function mocked<T>(item: T): MaybeMocked<T> {
-  return item as MaybeMocked<T>;
-}

@@ -302,7 +302,7 @@ class FakeConstant extends Arbitrary<Cmd> {
   generate(): Value<Cmd> {
     return new Value(this.cmd, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is Cmd {
+  canShrinkWithoutContext(_value: unknown): _value is Cmd {
     return false;
   }
   shrink(): Stream<Value<Cmd>> {

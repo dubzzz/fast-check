@@ -20,7 +20,7 @@ export class AlwaysShrinkableArbitrary<Ts> extends Arbitrary<Ts> {
     return noUndefinedAsContext(value);
   }
 
-  canShrinkWithoutContext(value: unknown): value is Ts {
+  canShrinkWithoutContext(_value: unknown): _value is Ts {
     return true;
   }
 

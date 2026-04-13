@@ -19,7 +19,7 @@ class CounterArbitrary extends Arbitrary<number> {
     this.generatedValues.push(last);
     return new Value(last, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
   shrink(_value: number, _context: unknown): Stream<Value<number>> {
@@ -39,7 +39,7 @@ class ForwardArbitrary extends Arbitrary<number> {
   generate(rng: Random): Value<number> {
     return new Value(rng.nextInt(), undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
   shrink(_value: number, _context: unknown): Stream<Value<number>> {
@@ -63,7 +63,7 @@ class ForwardArrayArbitrary extends Arbitrary<number[]> {
     }
     return new Value(out, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is number[] {
+  canShrinkWithoutContext(_value: unknown): _value is number[] {
     return false;
   }
   shrink(_value: number[], _context: unknown): Stream<Value<number[]>> {
@@ -92,7 +92,7 @@ class SingleUseArbitrary<T> extends Arbitrary<T> {
     this.calledOnce = true;
     return new Value(this.id, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is T {
+  canShrinkWithoutContext(_value: unknown): _value is T {
     return false;
   }
   shrink(_value: T, _context: unknown): Stream<Value<T>> {
@@ -106,13 +106,4 @@ const forwardArray = (num: number): ForwardArrayArbitrary => new ForwardArrayArb
 const single = <T>(id: T, noCallOnceCheck = false): SingleUseArbitrary<T> =>
   new SingleUseArbitrary(id, noCallOnceCheck);
 
-export {
-  counter,
-  forward,
-  forwardArray,
-  single,
-  CounterArbitrary,
-  ForwardArbitrary,
-  ForwardArrayArbitrary,
-  SingleUseArbitrary,
-};
+export { counter, forward, forwardArray, single, SingleUseArbitrary };

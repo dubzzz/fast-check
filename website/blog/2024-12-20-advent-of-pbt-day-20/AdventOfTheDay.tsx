@@ -1,9 +1,11 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 20,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: findStartIndex,
   parser,
   placeholderForm: '1\n2\n3\n3\n9',
@@ -16,7 +18,7 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 
 // Reference implementation
 
-function findStartIndex(partlyShuffled) {
+function findStartIndex(partlyShuffled: number[]) {
   if (partlyShuffled.length === 0) {
     return -1;
   }

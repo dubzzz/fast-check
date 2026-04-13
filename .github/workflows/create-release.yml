@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          persist-credentials: false
+          persist-credentials: true
       - name: Extract changelog
         id: changelog
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
@@ -53,10 +53,17 @@ jobs:
             core.setOutput('changelog', changelog);
       - name: Create GitHub Release
         if: ${{ github.event.inputs.dry_run != 'true' }}
-        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{ steps.changelog.outputs.tag }}
           name: ${{ steps.changelog.outputs.release_name }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: true
           make_latest: ${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}
+      - name: Push tag
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          git tag "$TAG"
+          git push origin "refs/tags/$TAG"
+        env:
+          TAG: ${{ steps.changelog.outputs.tag }}
