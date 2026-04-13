@@ -25,7 +25,7 @@ const config: Config = {
   organizationName: 'dubzzz', // Usually your GitHub org/user name.
   projectName: 'fast-check', // Usually your repo name.
 
-  onBrokenAnchors: 'warn',
+  onBrokenAnchors: 'throw',
   onBrokenLinks: 'throw',
 
   // Even if you don't use internalization, you can use this field to set useful
@@ -218,6 +218,7 @@ const config: Config = {
         out: 'docs/api',
         readme: 'none',
         skipErrorChecking: true,
+        useHTMLAnchors: true,
         parametersFormat: 'table',
         enumMembersFormat: 'table',
         indexFormat: 'table',
