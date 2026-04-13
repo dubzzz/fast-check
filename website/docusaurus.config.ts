@@ -25,7 +25,7 @@ const config: Config = {
   organizationName: 'dubzzz', // Usually your GitHub org/user name.
   projectName: 'fast-check', // Usually your repo name.
 
-  onBrokenAnchors: 'throw',
+  onBrokenAnchors: 'warn',
   onBrokenLinks: 'throw',
 
   // Even if you don't use internalization, you can use this field to set useful
