@@ -9,9 +9,9 @@ description: What's the plan for this tutorial?
 Learn how to detect race conditions in your code through clear and instructive examples
 
 :::tip Already familiar with race conditions?
-This tutorial teaches techniques to detect race conditions in code testing, using specific algorithms and tools related to fast-check. It includes examples designed to initially pass the tests, and each section introduces new concepts.
+Skip the definitions and jump straight to the hands-on part.
 
-➡️ You already know what are race conditions? **Let's start immediately with [the first section](/docs/tutorials/detect-race-conditions/your-first-race-condition-test/)!** 🚀
+➡️ **Start with [step 1: your first race condition test](/docs/tutorials/detect-race-conditions/your-first-race-condition-test/)** 🚀
 :::
 
 ## Tutorial structure
@@ -41,9 +41,13 @@ Consider a front-end application where a user types into a text field. User will
 
 JavaScript, being event-based by nature, is prone to race conditions when asynchronous operations or events are used. Despite the language being single-threaded, it does not prevent the occurrence of race conditions.
 
+:::note New to property-based testing?
+This tutorial will introduce the scheduler-specific bits as we go, but if the concepts of "arbitraries" and "properties" are completely new to you, a 5-minute detour through [What is property-based testing?](/docs/introduction/what-is-property-based-testing/) will make the rest much easier to follow.
+:::
+
 ## Race condition explained through an example
 
-To help grasp the concept of a race condition, let's look at a real-world example involving an autocomplete field. As previously discussed, the unpredicable events occuring in the autocomplete field can trigger a race condition. As an example, in the animated image below, we can see that while the user is typing, outdated suggestions appear and disappear in a flickering manner. It makes it difficult for the user to select any option before the input stabilizes. The suggestions seem to appear out of order, causing confusion and frustration for the user.
+To help grasp the concept of a race condition, let's look at a real-world example involving an autocomplete field. As previously discussed, the unpredictable events occurring in the autocomplete field can trigger a race condition. As an example, in the animated image below, we can see that while the user is typing, outdated suggestions appear and disappear in a flickering manner. It makes it difficult for the user to select any option before the input stabilizes. The suggestions seem to appear out of order, causing confusion and frustration for the user.
 
 ![Dancing autocomplete field](@site/static/img/tutorials/autocomplete-bug.gif)
 
@@ -59,6 +63,10 @@ In other words, the issue occurred as the user performed two searches subsequent
 
 As we have seen in this simple example, race conditions are easy to create, as they only require two concurrent events, and can cause significant problems from a user's perspective. It is worth noting that the example we took for this section was only a visual glitch, but race conditions can have much more critical impacts than just a wrong display.
 
+:::info Could you write a test that catches this bug?
+That is exactly what you will learn in the next five steps. We'll start from a test that passes — despite the buggy code under test — and, step by step, turn it into a property that fast-check can break. Every time a page ends with "Your turn!", your job is to make the test fail.
+:::
+
 :::tip How to solve them?
-This tutorial is designed to guide you in adding tests to your codebase, ensuring the absence race condition issues in the future. It will not directly focus on giving you keys to solve them. For more in-depth information on solving race conditions and useful techniques for identifying them outsite of tests, refer to the article ["Handling API request race conditions in React" by Sébastien Lorber](https://sebastienlorber.com/handling-api-request-race-conditions-in-react).
+This tutorial is designed to guide you in adding tests to your codebase, ensuring the absence of race condition issues in the future. It will not directly focus on giving you keys to solve them. For more in-depth information on solving race conditions and useful techniques for identifying them outside of tests, refer to the article ["Handling API request race conditions in React" by Sébastien Lorber](https://sebastienlorber.com/handling-api-request-race-conditions-in-react). Once you're done with the tutorial, the [advanced race-conditions reference](/docs/advanced/race-conditions/) gives you the full map of what the scheduler can do.
 :::
