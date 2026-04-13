@@ -83,7 +83,6 @@
         "typescript/no-empty-object-type": "off",
         "no-use-before-define": "off",
         "typescript/no-non-null-assertion": "off",
-        "no-control-regex": "off",
         "typescript/await-thenable": "off",
         "typescript/no-base-to-string": "off",
         "typescript/no-duplicate-type-constituents": "off",
