@@ -8,7 +8,7 @@ export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
 ): void {
   let assertionHasBeenExecuted = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // oxlint-disable-next-line no-unused-vars
   (function (hash, stringify) {
     assertionHasBeenExecuted = true;
     try {

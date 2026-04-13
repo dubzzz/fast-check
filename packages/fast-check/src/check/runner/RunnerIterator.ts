@@ -48,15 +48,15 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     // As a consequence: currentShrinkable is always defined in the code below
     if (result !== null && typeof result === 'object' && !PreconditionFailure.isFailure(result)) {
       // failed run
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion
       this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result);
       this.currentIdx = -1;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion
       this.nextValues = this.shrink(this.currentValue!);
     } else if (result !== null) {
       if (!result.interruptExecution) {
         // skipped run
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line typescript/no-non-null-assertion
         this.runExecution.skip(this.currentValue!.value_);
         this.sourceValues.skippedOne();
       } else {
@@ -65,7 +65,7 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
       }
     } else {
       // successful run
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion
       this.runExecution.success(this.currentValue!.value_);
     }
   }

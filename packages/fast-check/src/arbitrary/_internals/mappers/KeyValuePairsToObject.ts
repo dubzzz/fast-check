@@ -52,7 +52,7 @@ export function keyValuePairsToObjectUnmapper<K extends PropertyKey, V>(value: u
   const propertyDescriptors = safeMap(safeReflectOwnKeys(value), (key): [PropertyKey, PropertyDescriptor] => [
     key,
     // A key returned by `Reflect.ownKeys` must have a descriptor.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     safeObjectGetOwnPropertyDescriptor(value, key)!,
   ]);
   if (!safeEvery(propertyDescriptors, ([, descriptor]) => isValidPropertyNameFilter(descriptor))) {

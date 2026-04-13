@@ -1,0 +1,159 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicolo-ribaudo/oxc-project.github.io/refs/heads/oxlint-v1-schema/src/docs/guide/usage/linter/generated/schema.json",
+  "options": {
+    "typeAware": true
+  },
+  "categories": {
+    "correctness": "deny"
+  },
+  "plugins": ["typescript", "oxc", "unicorn", "import"],
+  "rules": {
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrors": "none" }],
+
+    "no-eval": "warn",
+    "no-useless-rename": "warn",
+    "unicorn/no-unnecessary-await": "warn",
+    "unicorn/no-useless-spread": "warn",
+    "unicorn/no-thenable": "warn",
+    "unicorn/no-empty-file": "warn",
+    "unicorn/prefer-string-starts-ends-with": "warn",
+    "oxc/const-comparisons": "warn",
+    "typescript/no-misused-spread": "warn",
+    "typescript/no-array-delete": "warn",
+
+    "typescript/explicit-module-boundary-types": "error",
+    "typescript/consistent-type-exports": "error",
+    "typescript/consistent-type-imports": "error",
+    "typescript/no-import-type-side-effects": "error",
+    "typescript/no-non-null-assertion": "error",
+    "typescript/no-restricted-types": "error",
+    "typescript/no-empty-object-type": ["error", { "allowInterfaces": "with-single-extends" }],
+    "typescript/no-unsafe-function-type": "error",
+    "typescript/no-wrapper-object-types": "error",
+    "typescript/no-require-imports": "error",
+
+    "typescript/await-thenable": "error",
+    "typescript/no-base-to-string": "error",
+    "typescript/no-duplicate-type-constituents": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-for-in-array": "error",
+    "typescript/no-implied-eval": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/no-unsafe-enum-comparison": "error",
+    "typescript/require-await": "error",
+
+    "no-empty-function": "warn",
+    "typescript/no-this-alias": "warn",
+    "no-use-before-define": "warn",
+
+    "no-fallthrough": "error",
+    "no-case-declarations": "error",
+    "no-prototype-builtins": "error",
+    "no-empty": "error",
+    "no-regex-spaces": "error",
+    "no-unexpected-multiline": "error",
+    "no-redeclare": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-unnecessary-type-constraint": "error",
+
+    "typescript/no-explicit-any": "off",
+    "typescript/no-redundant-type-constituents": "off",
+    "typescript/no-unnecessary-type-assertion": "off",
+    "typescript/no-unsafe-argument": "off",
+    "typescript/no-unsafe-assignment": "off",
+    "typescript/no-unsafe-call": "off",
+    "typescript/no-unsafe-member-access": "off",
+    "typescript/no-unsafe-return": "off",
+    "typescript/restrict-plus-operands": "off",
+    "typescript/restrict-template-expressions": "off",
+    "typescript/unbound-method": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.spec.ts",
+        "**/test/unit/**/*.ts",
+        "**/test/e2e/**/*.ts",
+        "**/test-types/**/*.ts",
+        "**/test-types/**/*.mts"
+      ],
+      "rules": {
+        "no-empty-function": "off",
+        "typescript/no-empty-object-type": "off",
+        "no-use-before-define": "off",
+        "typescript/no-non-null-assertion": "off",
+        "typescript/await-thenable": "off",
+        "typescript/no-base-to-string": "off",
+        "typescript/no-duplicate-type-constituents": "off",
+        "typescript/no-floating-promises": "off",
+        "typescript/no-for-in-array": "off",
+        "typescript/no-implied-eval": "off",
+        "typescript/no-misused-promises": "off",
+        "typescript/no-unsafe-enum-comparison": "off",
+        "typescript/require-await": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/require-array-sort-compare": "off",
+        "typescript/no-unsafe-unary-minus": "off",
+        "no-unexpected-multiline": "off"
+      }
+    },
+    {
+      "files": [
+        "**/*.cjs",
+        "**/cjs/**/*.js",
+        "packages/ava/test/ava-specs/testProp.js",
+        "**/ava.config.js",
+        "**/jest.config.js",
+        "packages/packaged/bin/*.js"
+      ],
+      "rules": {
+        "typescript/no-require-imports": "off",
+        "typescript/await-thenable": "off",
+        "typescript/no-base-to-string": "off",
+        "typescript/no-duplicate-type-constituents": "off",
+        "typescript/no-floating-promises": "off",
+        "typescript/no-for-in-array": "off",
+        "typescript/no-implied-eval": "off",
+        "typescript/no-misused-promises": "off",
+        "typescript/no-unsafe-enum-comparison": "off",
+        "typescript/require-await": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/require-array-sort-compare": "off",
+        "typescript/no-unsafe-unary-minus": "off"
+      }
+    },
+    {
+      "files": ["**/*.mjs", "**/mjs/**/*.js"],
+      "rules": {
+        "typescript/await-thenable": "off",
+        "typescript/no-base-to-string": "off",
+        "typescript/no-duplicate-type-constituents": "off",
+        "typescript/no-floating-promises": "off",
+        "typescript/no-for-in-array": "off",
+        "typescript/no-implied-eval": "off",
+        "typescript/no-misused-promises": "off",
+        "typescript/no-unsafe-enum-comparison": "off",
+        "typescript/require-await": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/require-array-sort-compare": "off",
+        "typescript/no-unsafe-unary-minus": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    ".github/",
+    "node_modules/",
+    "coverage/",
+    "examples/",
+    "packages/*/coverage/",
+    "packages/*/docs/",
+    "packages/*/dist/",
+    "packages/*/lib/",
+    "packages/*/lib-*/",
+    "packages/*/rolldown.config.js",
+    "packages/**/.test-artifacts/",
+    "rolldown.common.config.js",
+    "website/"
+  ]
+}

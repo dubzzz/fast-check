@@ -78,11 +78,13 @@ describe('tokenizeRegex', () => {
     { regex: /a*^$b*/ }, // matches '', but not 'aa', seems equivalent to /^$/
     { regex: /\^ab\$/ },
     // @ts-expect-error Referencing non-existing group in Regex
+    // oxlint-disable-next-line no-control-regex
     { regex: /\1/, invalidWithUnicode: true },
     // @ts-expect-error Referencing non-existing group in Regex
     { regex: /\1000/, invalidWithUnicode: true }, // in non-unicode: \100 then 0
     { regex: /(a)\1/ },
     // @ts-expect-error Referencing non-existing group in Regex
+    // oxlint-disable-next-line no-control-regex
     { regex: /(a)\2/, invalidWithUnicode: true }, // in non-unicode: \2 is considered as an octal
     { regex: /(?=a)/ },
     { regex: /(?!a)/ },

@@ -47,7 +47,7 @@ describe('StreamArbitrary', () => {
 
           // Act
           const arb = new StreamArbitrary(sourceArb, history);
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          // oxlint-disable-next-line no-unused-expressions
           arb.generate(mrng, biasFactor).value;
 
           // Assert
