@@ -35,7 +35,7 @@ export default function HomepageHeader() {
         </div>
         <div>
           <div className={styles.quickNavigationButtons}>
-            <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/">
+            <Link className="button button--secondary button--lg" to="/docs/tutorials/quick-start/basic-setup/">
               Quick Start – 5min ⏱️
             </Link>
             {/*<Link
