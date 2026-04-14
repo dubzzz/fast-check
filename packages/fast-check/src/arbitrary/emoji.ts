@@ -12,30 +12,33 @@ export type EmojiConstraints = {
    *
    * - `'any'` — Randomly picks from all categories below (default).
    * - `'single'` — Single code point emoji with `Emoji_Presentation` property (e.g. 😀, 🚀, ⭐).
+   * - `'text-with-vs16'` — Text-presentation emoji followed by VS16 (e.g. ☝️, ✂️, ♻️).
    * - `'skin-tone'` — Emoji with a Fitzpatrick skin tone modifier (e.g. 👋🏽, 🧑🏻).
    * - `'flag'` — Flag emoji built from a pair of Regional Indicator symbols (e.g. 🇫🇷, 🇯🇵).
    * - `'keycap'` — Keycap sequence emoji (e.g. 1⃣, #⃣, *⃣).
+   * - `'zwj'` — ZWJ sequences: family (👨‍👩‍👦), profession (👩‍🚀), hair style (🧑‍🦰), couple (🧑‍❤️‍🧑).
    *
    * The produced value is always a single emoji string suitable for use as a `unit` in {@link string}.
    *
    * @defaultValue 'any'
    * @remarks Since 3.22.0
    */
-  kind?: 'any' | 'single' | 'skin-tone' | 'flag' | 'keycap';
+  kind?: 'any' | 'single' | 'text-with-vs16' | 'skin-tone' | 'flag' | 'keycap' | 'zwj';
 };
 
 /**
  * For emoji strings
  *
  * Generates emoji characters and sequences from the Unicode 16.0 specification.
- * The arbitrary covers single code point emoji, skin tone variants,
- * flag sequences, and keycap sequences.
+ * The arbitrary covers single code point emoji, text-presentation emoji with VS16,
+ * skin tone variants, flag sequences, keycap sequences, and ZWJ sequences
+ * (family, profession, hair style, couple).
  *
  * @example
  * ```typescript
  * // Any kind of emoji
  * fc.emoji()
- * // Examples: "😀", "👋🏽", "🇫🇷", "#⃣"
+ * // Examples: "😀", "👋🏽", "🇫🇷", "#⃣", "👨‍👩‍👦", "👩‍🚀"
  *
  * // Only single code point emoji
  * fc.emoji({ kind: 'single' })
