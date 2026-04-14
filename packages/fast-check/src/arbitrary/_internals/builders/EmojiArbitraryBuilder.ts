@@ -82,14 +82,20 @@ const zwjProfessionStrings: string[] = [
 // prettier-ignore
 const zwjHairStrings: string[] = [0x1f9b0, 0x1f9b1, 0x1f9b2, 0x1f9b3].map((cp) => safeStringFromCodePoint(cp));
 
-/** Unmap a ZWJ-joined string back into its parts @internal */
-function zwjUnmapper(expectedParts: number) {
-  return (value: unknown): string[] => {
-    if (typeof value !== 'string') throw new Error('Unsupported type');
-    const parts = safeSplit(value, ZWJ);
-    if (parts.length !== expectedParts) throw new Error('Unsupported value');
-    return parts;
-  };
+/** Unmap a ZWJ-joined string into 2 parts @internal */
+function zwjUnmapper2(value: unknown): [string, string] {
+  if (typeof value !== 'string') throw new Error('Unsupported type');
+  const parts = safeSplit(value, ZWJ);
+  if (parts.length !== 2) throw new Error('Unsupported value');
+  return [parts[0], parts[1]];
+}
+
+/** Unmap a ZWJ-joined string into 3 parts @internal */
+function zwjUnmapper3(value: unknown): [string, string, string] {
+  if (typeof value !== 'string') throw new Error('Unsupported type');
+  const parts = safeSplit(value, ZWJ);
+  if (parts.length !== 3) throw new Error('Unsupported value');
+  return [parts[0], parts[1], parts[2]];
 }
 
 /** @internal */
@@ -162,28 +168,28 @@ function buildZwjEmojiArbitrary(): Arbitrary<string> {
   const hairArb = constantFrom(...zwjHairStrings);
 
   // Family: adult + ZWJ + adult + ZWJ + child (e.g. 👨‍👩‍👦)
-  const familyArb = tuple(personArb, personArb, childArb).map(
+  const familyArb: Arbitrary<string> = tuple(personArb, personArb, childArb).map(
     ([p1, p2, c]) => p1 + ZWJ + p2 + ZWJ + c,
-    zwjUnmapper(3),
+    zwjUnmapper3,
   );
 
   // Profession: person + ZWJ + object (e.g. 👩‍🚀)
-  const professionSeqArb = tuple(personArb, professionArb).map(
+  const professionSeqArb: Arbitrary<string> = tuple(personArb, professionArb).map(
     ([p, o]) => p + ZWJ + o,
-    zwjUnmapper(2),
+    zwjUnmapper2,
   );
 
   // Hair: person + ZWJ + hair component (e.g. 🧑‍🦰)
-  const hairSeqArb = tuple(personArb, hairArb).map(
+  const hairSeqArb: Arbitrary<string> = tuple(personArb, hairArb).map(
     ([p, h]) => p + ZWJ + h,
-    zwjUnmapper(2),
+    zwjUnmapper2,
   );
 
   // Couple with heart: person + ZWJ + ❤️ + ZWJ + person (e.g. 🧑‍❤️‍🧑)
   const heartStr = safeStringFromCodePoint(0x2764) + VS16;
-  const coupleArb = tuple(personArb, personArb).map(
+  const coupleArb: Arbitrary<string> = tuple(personArb, personArb).map(
     ([p1, p2]) => p1 + ZWJ + heartStr + ZWJ + p2,
-    (value: unknown) => {
+    (value: unknown): [string, string] => {
       if (typeof value !== 'string') throw new Error('Unsupported type');
       const parts = safeSplit(value, ZWJ);
       if (parts.length !== 3 || parts[1] !== heartStr) throw new Error('Unsupported value');
