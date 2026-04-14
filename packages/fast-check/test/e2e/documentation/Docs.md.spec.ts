@@ -93,6 +93,22 @@ function addJsCodeBlock(blockContent: string): string {
   return `${JsBlockStart}\n${blockContent}${JsBlockEnd}\n`;
 }
 
+function sanitizeNonCharacters(str: string): string {
+  let result = '';
+  for (const char of str) {
+    const cp = char.codePointAt(0)!;
+    // Unicode noncharacters: U+FDD0-U+FDEF and the last two code points of each plane
+    // (U+FFFE, U+FFFF, U+1FFFE, U+1FFFF, ..., U+10FFFE, U+10FFFF).
+    // These are permanently reserved and cause HTML parse errors.
+    if ((cp >= 0xfdd0 && cp <= 0xfdef) || (cp & 0xffff) >= 0xfffe) {
+      result += '\uFFFD';
+    } else {
+      result += char;
+    }
+  }
+  return result;
+}
+
 function refreshContent(originalContent: string): { content: string; numExecutedSnippets: number } {
   // Re-run all the code (supported) snippets
   // Re-generate all the examples
@@ -146,7 +162,10 @@ function refreshContent(originalContent: string): { content: string; numExecuted
         }
       })(fc);
 
-      const uniqueGeneratedValues = Array.from(new Set(generatedValues)).slice(0, TargetNumExamples);
+      const uniqueGeneratedValues = Array.from(new Set(generatedValues.map(sanitizeNonCharacters))).slice(
+        0,
+        TargetNumExamples,
+      );
       // If the display for generated values is too long, we split it into a list of items
       if (
         uniqueGeneratedValues.some((value) => value.includes('\n')) ||

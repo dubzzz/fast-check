@@ -151,9 +151,6 @@ importers:
       '@types/node':
         specifier: ^24.12.2
         version: 24.12.2
-      cross-env:
-        specifier: ^10.1.0
-        version: 10.1.0
       fast-check:
         specifier: workspace:*
         version: 'link:'
@@ -163,9 +160,6 @@ importers:
       regexp-tree:
         specifier: ^0.1.27
         version: 0.1.27
-      typedoc:
-        specifier: ^0.28.19
-        version: 0.28.19(typescript@6.0.2)
       typescript:
         specifier: ~6.0.2
         version: 6.0.2
@@ -372,12 +366,21 @@ importers:
       docusaurus-plugin-llms:
         specifier: ^0.3.1
         version: 0.3.1(@docusaurus/core@3.10.0(@docusaurus/faster@3.10.0(@docusaurus/types@3.10.0(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.5))(@rspack/core@1.7.10)(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2))
+      docusaurus-plugin-typedoc:
+        specifier: ^1.4.2
+        version: 1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.2)))
       fast-check:
         specifier: workspace:*
         version: link:../packages/fast-check
       jimp:
         specifier: ^1.6.1
         version: 1.6.1
+      typedoc:
+        specifier: ^0.28.18
+        version: 0.28.19(typescript@6.0.2)
+      typedoc-plugin-markdown:
+        specifier: ^4.11.0
+        version: 4.11.0(typedoc@0.28.19(typescript@6.0.2))
       typescript:
         specifier: ~6.0.2
         version: 6.0.2
@@ -5042,6 +5045,11 @@ packages:
     peerDependencies:
       '@docusaurus/core': ^3.0.0
 
+  docusaurus-plugin-typedoc@1.4.2:
+    resolution: {integrity: sha512-1qerRejLSYxEWdyVPLDMMeKFPLA/37yZAsdwJy9ThHFQR78+v3b5spSbk67VHGLr2mAn4FVHu0aGJ6p7iWotSg==}
+    peerDependencies:
+      typedoc-plugin-markdown: '>=4.8.0'
+
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
 
@@ -9117,6 +9125,17 @@ packages:
 
   typedarray-to-buffer@3.1.5:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}
+
+  typedoc-docusaurus-theme@1.4.2:
+    resolution: {integrity: sha512-i9YYDcScLD0WUiX8I+LXHX3ZVvRDlJsmRo9l/uWrFT37cHlMz4Ay0GOnWzHUBnnwAo1uzYOw9RjUXznbWozBEA==}
+    peerDependencies:
+      typedoc-plugin-markdown: '>=4.8.0'
+
+  typedoc-plugin-markdown@4.11.0:
+    resolution: {integrity: sha512-2iunh2ALyfyh204OF7h2u0kuQ84xB3jFZtFyUr01nThJkLvR8oGGSSDlyt2gyO4kXhvUxDcVbO0y43+qX+wFbw==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      typedoc: 0.28.x
 
   typedoc@0.28.19:
     resolution: {integrity: sha512-wKh+lhdmMFivMlc6vRRcMGXeGEHGU2g8a2CkPTJjJlwRf1iXbimWIPcFolCqe4E0d/FRtGszpIrsp3WLpDB8Pw==}
@@ -15846,6 +15865,11 @@ snapshots:
       minimatch: 9.0.9
       yaml: 2.8.3
 
+  docusaurus-plugin-typedoc@1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.2))):
+    dependencies:
+      typedoc-docusaurus-theme: 1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.2)))
+      typedoc-plugin-markdown: 4.11.0(typedoc@0.28.19(typescript@6.0.2))
+
   dom-accessibility-api@0.5.16: {}
 
   dom-converter@0.2.0:
@@ -20857,6 +20881,14 @@ snapshots:
   typedarray-to-buffer@3.1.5:
     dependencies:
       is-typedarray: 1.0.0
+
+  typedoc-docusaurus-theme@1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.2))):
+    dependencies:
+      typedoc-plugin-markdown: 4.11.0(typedoc@0.28.19(typescript@6.0.2))
+
+  typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.2)):
+    dependencies:
+      typedoc: 0.28.19(typescript@6.0.2)
 
   typedoc@0.28.19(typescript@6.0.2):
     dependencies:
