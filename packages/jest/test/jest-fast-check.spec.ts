@@ -649,7 +649,7 @@ async function runSpec(
     );
     return specOutput;
   } catch (err) {
-    return (err as any).stderr;
+    return ((err as any).stdout || '') + ((err as any).stderr || '');
   }
 }
 
