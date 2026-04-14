@@ -153,11 +153,11 @@ The implementation is fully iterative (non-recursive) and supports shrinking. It
 **Usages:**
 
 ```js
-fc.chainUntil(fc.nat(5), (prev) => (prev >= 3 ? undefined : fc.nat({ min: prev, max: prev + 3 })));
+fc.chainUntil(fc.nat(5), (prev) => (prev >= 3 ? undefined : fc.integer({ min: prev, max: prev + 3 })));
 // Note: Start from a value in 0..5, chain with growing values until one reaches 3 or more
 // Examples of generated values: 3, 4, 3, 4, 3…
 
-fc.chainUntil(fc.constant(0), (n) => (n >= 5 ? undefined : fc.nat({ min: n + 1, max: n + 3 })));
+fc.chainUntil(fc.constant(0), (n) => (n >= 5 ? undefined : fc.integer({ min: n + 1, max: n + 3 })));
 // Note: Start from 0, increment by 1 to 3 at each step until reaching 5 or more
 // Examples of generated values: 5, 5, 6, 5, 5…
 ```
