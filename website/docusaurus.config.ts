@@ -249,6 +249,15 @@ const config: Config = {
     hooks: {
       onBrokenMarkdownLinks: 'throw',
     },
+    parseFrontMatter: async (params) => {
+      const result = await params.defaultParseFrontMatter(params);
+      // Typedoc-generated API docs contain TypeScript generics (<T>, {…}) that
+      // the MDX parser interprets as JSX. Force CommonMark format for those files.
+      if (params.filePath.includes('docs/api/')) {
+        result.frontMatter.mdx = { format: 'md' };
+      }
+      return result;
+    },
   },
   themes: ['@docusaurus/theme-mermaid'],
 };
