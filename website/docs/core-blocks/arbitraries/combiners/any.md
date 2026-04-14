@@ -133,6 +133,38 @@ fc.clone(fc.nat(), 3);
 Resources: [API reference](https://fast-check.dev/api-reference/functions/clone.html).  
 Available since 2.5.0.
 
+## chainUntil
+
+Build an arbitrary by iteratively chaining arbitraries until the chainer returns undefined.
+
+Starting from a value produced by `startArb`, the `chainer` function is called with the current value to produce the next arbitrary. This process repeats until `chainer` returns `undefined`. The final value in the chain is the one produced by this arbitrary.
+
+The implementation is fully iterative (non-recursive) and supports shrinking. It can handle long chains without stack overflow.
+
+**Signatures:**
+
+- `fc.chainUntil(startArb, chainer)`
+
+**with:**
+
+- `startArb` — _arbitrary producing the initial value of the chain_
+- `chainer` — _function called with the current value that returns either the next arbitrary to generate from or `undefined` to stop the chain_
+
+**Usages:**
+
+```js
+fc.chainUntil(fc.nat(5), (prev) => (prev >= 3 ? undefined : fc.nat({ min: prev, max: prev + 3 })));
+// Note: Start from a value in 0..5, chain with growing values until one reaches 3 or more
+// Examples of generated values: 3, 4, 3, 4, 3…
+
+fc.chainUntil(fc.constant(0), (n) => (n >= 5 ? undefined : fc.nat({ min: n + 1, max: n + 3 })));
+// Note: Start from 0, increment by 1 to 3 at each step until reaching 5 or more
+// Examples of generated values: 5, 5, 6, 5, 5…
+```
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/chainUntil.html).  
+Available since 4.7.0.
+
 ## noBias
 
 Drop bias from an existing arbitrary. Instead of being more likely to generate certain values the resulting arbitrary will be close to an equi-probable generator.

@@ -2305,6 +2305,25 @@ Execution summary:
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [32m√[0m [BigUint64Array.from([148057437989876989n])]]
 `;
 
+exports[`NoRegression > chainUntil 1`] = `
+[Error: Property failed after 6 tests
+{ seed: 42, path: "5", endOnFailure: true }
+Counterexample: [11]
+Shrunk 0 time(s)
+
+Execution summary:
+[32m√[0m [20]
+[32m√[0m [16]
+[32m√[0m [19]
+[32m√[0m [79]
+[32m√[0m [18]
+[31m×[0m [11]
+. [32m√[0m [39]
+. [32m√[0m [39]
+. [32m√[0m [39]
+. [32m√[0m [10]]
+`;
+
 exports[`NoRegression > clone 1`] = `
 [Error: Property failed after 2 tests
 { seed: 42, path: "1:2:4:3:1:1:0:1:6:0:2", endOnFailure: true }

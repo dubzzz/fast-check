@@ -72,6 +72,19 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it('chainUntil', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(
+            fc.chainUntil(fc.nat(20), (n) => (n >= 10 ? undefined : fc.nat({ min: 10, max: 100 }))),
+            (v) => testFunc(v),
+          ),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('float', () => {
     expect(
       runWithSanitizedStack(() =>
