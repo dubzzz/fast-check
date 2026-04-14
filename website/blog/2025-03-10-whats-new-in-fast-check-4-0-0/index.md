@@ -8,7 +8,7 @@ The release of fast-check 4.0.0 marks the end of the 3.x series. With this new v
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Migration guide
 

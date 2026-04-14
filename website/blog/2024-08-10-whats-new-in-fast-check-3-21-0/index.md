@@ -8,7 +8,7 @@ This release introduces support for UUIDs version 6 to 15. It also extends `uuid
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## New `version` constraint for `uuid`
 

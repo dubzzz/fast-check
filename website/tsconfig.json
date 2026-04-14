@@ -1,7 +1,7 @@
 {
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
-    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "types": ["node", "@docusaurus/module-type-aliases", "@docusaurus/theme-classic"]
   }
 }

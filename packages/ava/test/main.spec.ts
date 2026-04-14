@@ -12,7 +12,7 @@ describe('ava', () => {
       'node',
       ['./node_modules/ava/entrypoints/cli.mjs', '--config', 'test/ava-specs/ava.config.js', '-s', '-t'],
       { cwd: avaPackageRoot },
-    ).catch((err) => err);
+    ).catch((err: { stdout: string }) => err);
     const expectedContentLines = [
       /ok \d+ - should never be executed \(with seed=48\) # SKIP/,
       /ok \d+ - should run first/,

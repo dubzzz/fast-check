@@ -60,7 +60,7 @@ export class GlobalPool<TSuccess, TPayload> implements IWorkerPool<TSuccess, TPa
     pendingTerminationPerFile.set(
       key,
       setTimeout(() => {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        // oxlint-disable-next-line typescript/no-floating-promises
         this.internalPool.terminateAllWorkers();
       }, 0),
     );

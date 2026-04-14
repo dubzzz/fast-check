@@ -12,7 +12,7 @@ function addMissingDotStarTraversalAddMissing(astNode: RegexToken, isFirst: bool
     return astNode;
   }
   const traversalResults = { hasStart: false, hasEnd: false };
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  // oxlint-disable-next-line no-use-before-define
   const revampedNode = addMissingDotStarTraversal(astNode, isFirst, isLast, traversalResults);
   const missingStart = isFirst && !traversalResults.hasStart;
   const missingEnd = isLast && !traversalResults.hasEnd;

@@ -1,13 +1,15 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 24,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: () => true,
-  buggyAdventSurcharged: (...args: Parameters<ReturnType<typeof adventBuggy>>) => {
+  buggyAdventSurcharged: (...args: Parameters<typeof adventBuggy>) => {
     const expected = distributeCoins(...args);
-    const out = adventBuggy()(...args);
+    const out = adventBuggy(...args);
     const [availableCoins, amountsToBePaid] = args;
     if (out === null) {
       return expected === null ? true : 'not supposed to find anything';
@@ -40,10 +42,11 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 
 // Reference implementation
 
-function distributeCoins(availableCoins, payslips) {
+type Coin = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+function distributeCoins(availableCoins: Coin[], amountsToBePaid: number[]) {
   const coins = [...availableCoins].sort((a, b) => b - a);
 
-  function helper(targets, indexInTarget, nextCoins = coins) {
+  function helper(targets: number[], indexInTarget: number, nextCoins = coins): Coin[][] | null {
     if (indexInTarget >= targets.length) {
       return [];
     }
@@ -67,7 +70,7 @@ function distributeCoins(availableCoins, payslips) {
     const withoutCurrent = helper(targets, indexInTarget, subNextCoins);
     return withoutCurrent;
   }
-  return helper(payslips, 0);
+  return helper(amountsToBePaid, 0);
 }
 
 // Inputs parser

@@ -1,3 +1,38 @@
+# 0.4.0
+
+_Move to modern APIs introduced by vitest 4.1_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.4.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.3.0...vitest%2Fv0.4.0)]
+
+## Features
+
+- ([PR#6766](https://github.com/dubzzz/fast-check/pull/6766)) Get rid of deprecated vitest/suite imports
+
+## Fixes
+
+- ([PR#6812](https://github.com/dubzzz/fast-check/pull/6812)) Doc: Document requirements for 0.4.0
+
+---
+
+# 0.3.0
+
+_Support `beforeEach`/`afterEach` hooks and ESM-only bundle_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.3.0)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.2.4...vitest%2Fv0.3.0)]
+
+## Breaking changes
+
+- ([PR#6499](https://github.com/dubzzz/fast-check/pull/6499)) Drop CommonJS support
+- ([PR#6504](https://github.com/dubzzz/fast-check/pull/6504)) Drop useless "typesVersions"
+- ([PR#6695](https://github.com/dubzzz/fast-check/pull/6695)) Support for `beforeEach`/`afterEach` in `@fast-check/vitest`
+
+## Fixes
+
+- ([PR#6508](https://github.com/dubzzz/fast-check/pull/6508)) CI: Speed-up build with rolldown
+- ([PR#6657](https://github.com/dubzzz/fast-check/pull/6657)) Doc: Update Readme to point to npmx
+- ([PR#6697](https://github.com/dubzzz/fast-check/pull/6697)) Doc: Document beforeEach/afterEach hook support and limitations
+- ([PR#6382](https://github.com/dubzzz/fast-check/pull/6382)) Test: Reactivate skipped .only.prop tests
+
+---
+
 # 0.2.4
 
 _Fix support for global configurations of numRuns and others_

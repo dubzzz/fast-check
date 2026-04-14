@@ -38,7 +38,7 @@ export const readerAssert = property(
     // Wait answer
     const filenameAnswer = nextFilenameAnswer();
     appendLog('reader', `Wait answer on ${filenameAnswer}`);
-    // eslint-disable-next-line no-empty
+    // oxlint-disable-next-line no-empty
     while (!existsSync(filenameAnswer)) {}
     appendLog('reader', `Answer found for ${filenameAnswer}`);
     rmSync(filenameAnswer);
@@ -52,7 +52,7 @@ export const writerAssert = property(
     // Wait question
     const filenameQuestion = nextFilenameQuestion();
     appendLog('writer', `Wait question on ${filenameQuestion}`);
-    // eslint-disable-next-line no-empty
+    // oxlint-disable-next-line no-empty
     while (!existsSync(filenameQuestion)) {}
     appendLog('writer', `Question found for ${filenameQuestion}`);
     rmSync(filenameQuestion);

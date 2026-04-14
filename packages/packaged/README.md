@@ -32,7 +32,7 @@ yarn dlx -p @fast-check/packaged packaged
 It also comes with some extra flags:
 
 - `--dry-run`: do not drop any file or directory from the file system and only print what would have been removed
-- `--keep-node-modules`: keep the `node_modules` directory if any at the root of the directory
+- `--keep <name>`: keep a root-level file or directory matching the exact name (not a glob pattern, can be specified multiple times, e.g. `--keep node_modules --keep src`)
 
 ## Simple API
 
@@ -48,7 +48,7 @@ const publishedFilesRoot = await computePublishedFiles('.');
 const publishedFilesSubDirectory = await computePublishedFiles('./sub-directory');
 
 // Run the deletion of unwanted files
-const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, keepNodeModules: false });
+const { kept, removed } = await removeNonPublishedFiles('.', { dryRun: false, keep: [] });
 // kept and removed are arrays of strings
 // they may contain files or directories
 ```

@@ -1,6 +1,6 @@
 import { defineConfig } from 'rolldown';
 import { dts } from 'rolldown-plugin-dts';
-import replace from '@rollup/plugin-replace';
+import { replacePlugin } from 'rolldown/plugins';
 
 const inputDir = 'src';
 const outputDir = 'lib';
@@ -46,7 +46,7 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
       },
       plugins: [
         ...sharedOptions.plugins,
-        ...(replacementsFor !== undefined ? [replace(replacementsFor(true))] : []),
+        ...(replacementsFor !== undefined ? [replacePlugin(replacementsFor(true), { preventAssignment: true })] : []),
         dts({ tsconfig: './tsconfig.publish.types.json' }),
       ],
     },
@@ -61,7 +61,9 @@ export default function buildConfigFor(pkg, dirname, replacementsFor) {
             },
             plugins: [
               ...sharedOptions.plugins,
-              ...(replacementsFor !== undefined ? [replace(replacementsFor(false))] : []),
+              ...(replacementsFor !== undefined
+                ? [replacePlugin(replacementsFor(false), { preventAssignment: true })]
+                : []),
             ],
           },
         ]

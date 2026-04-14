@@ -7,6 +7,7 @@ const safeObjectCreate = Object.create;
 const safeObjectDefineProperty = Object.defineProperty;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const safeObjectGetPrototypeOf = Object.getPrototypeOf;
+const safeObjectPrototype = Object.prototype;
 const safeReflectOwnKeys = Reflect.ownKeys;
 
 /** @internal */
@@ -44,14 +45,14 @@ export function keyValuePairsToObjectUnmapper<K extends PropertyKey, V>(value: u
     throw new Error('Incompatible instance received: should be a non-null object');
   }
   const hasNullPrototype = safeObjectGetPrototypeOf(value) === null;
-  const hasObjectPrototype = 'constructor' in value && value.constructor === Object;
+  const hasObjectPrototype = safeObjectGetPrototypeOf(value) === safeObjectPrototype;
   if (!hasNullPrototype && !hasObjectPrototype) {
     throw new Error('Incompatible instance received: should be of exact type Object');
   }
   const propertyDescriptors = safeMap(safeReflectOwnKeys(value), (key): [PropertyKey, PropertyDescriptor] => [
     key,
     // A key returned by `Reflect.ownKeys` must have a descriptor.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     safeObjectGetOwnPropertyDescriptor(value, key)!,
   ]);
   if (!safeEvery(propertyDescriptors, ([, descriptor]) => isValidPropertyNameFilter(descriptor))) {

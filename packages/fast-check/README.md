@@ -115,21 +115,20 @@ It also proved useful in finding bugs among major open source projects such as [
 
 Here are the minimal requirements to use fast-check properly without any polyfills:
 
-| fast-check | node                                 | ECMAScript version | _TypeScript (optional)_ |
-| ---------- | ------------------------------------ | ------------------ | ----------------------- |
-| **4.x**    | ≥12.20.0<sup>(1)</sup><sup>(2)</sup> | ES2020             | ≥5.0                    |
-| **3.x**    | ≥8<sup>(3)</sup>                     | ES2017             | ≥4.1<sup>(4)</sup>      |
-| **2.x**    | ≥8<sup>(3)</sup>                     | ES2017             | ≥3.2<sup>(5)</sup>      |
-| **1.x**    | ≥0.12<sup>(3)</sup>                  | ES3                | ≥3.0<sup>(5)</sup>      |
+| fast-check | node                   | ECMAScript version | _TypeScript (optional)_ |
+| ---------- | ---------------------- | ------------------ | ----------------------- |
+| **4.x**    | ≥12.17.0<sup>(1)</sup> | ES2020             | ≥5.0                    |
+| **3.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥4.1<sup>(3)</sup>      |
+| **2.x**    | ≥8<sup>(2)</sup>       | ES2017             | ≥3.2<sup>(4)</sup>      |
+| **1.x**    | ≥0.12<sup>(2)</sup>    | ES3                | ≥3.0<sup>(4)</sup>      |
 
 <details>
 <summary>More details...</summary>
 
 1. Even if version 12.x should support most of the ES2020 features that will be leveraged by the version 4, we recommend relying at least on version 14.x of Node as it supports all the targeted specification. In addition, we highly encourage switching to still supported LTS versions of Node and not sticking to unsupported versions for too long.
-2. Starting at 4.6.0 we require at least the version 12.20.0 of node, while we used to consider 12.17.0 as good enough until now. We agreed to introduce this breaking change outside of a major release given it only implies moving to a more recent release of the 12.x without having to switch to another major of node.
-3. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
-4. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
-5. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
+2. Except for features that cannot be polyfilled - such as `bigint`-related ones - all the capabilities of fast-check should be usable given you use at least the minimal recommended version of node associated to your major of fast-check.
+3. Require either lib or target ≥ ES2020 or `@types/node` to be installed.
+4. Require either lib or target ≥ ES2015 or `@types/node` to be installed.
 
 </details>
 
@@ -218,7 +217,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/vecerek"><img src="https://avatars.githubusercontent.com/u/5737996?v=4?s=100" width="100px;" alt="Attila Večerek"/><br /><sub><b>Attila Večerek</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://www.zachbjornson.com/"><img src="https://avatars.githubusercontent.com/u/469365?v=4?s=100" width="100px;" alt="Zach Bjornson"/><br /><sub><b>Zach Bjornson</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/bennettp123"><img src="https://avatars.githubusercontent.com/u/1610227?v=4?s=100" width="100px;" alt="Bennett Perkins"/><br /><sub><b>Bennett Perkins</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=bennettp123" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nielk"><img src="https://avatars.githubusercontent.com/u/4980521?v=4?s=100" width="100px;" alt="Alexandre Oger"/><br /><sub><b>Alexandre Oger</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nielk"><img src="https://avatars.githubusercontent.com/u/4980521?v=4?s=100" width="100px;" alt="Alexandre Oger"/><br /><sub><b>Alexandre Oger</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ej-shafran"><img src="https://avatars.githubusercontent.com/u/116496520?v=4?s=100" width="100px;" alt="ej shafran"/><br /><sub><b>ej shafran</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=ej-shafran" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gruhn"><img src="https://avatars.githubusercontent.com/u/26570572?v=4?s=100" width="100px;" alt="Niklas Gruhn"/><br /><sub><b>Niklas Gruhn</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gruhn" title="Code">💻</a> <a href="#question-gruhn" title="Answering Questions">💬</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://patrickroza.com/"><img src="https://avatars.githubusercontent.com/u/42661?v=4?s=100" width="100px;" alt="Patrick Roza"/><br /><sub><b>Patrick Roza</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=patroza" title="Code">💻</a></td>
@@ -237,6 +236,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://www.russbiggs.com/"><img src="https://avatars.githubusercontent.com/u/8487728?v=4?s=100" width="100px;" alt="Russ Biggs"/><br /><sub><b>Russ Biggs</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=russbiggs" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/adamni21"><img src="https://avatars.githubusercontent.com/u/85580454?v=4?s=100" width="100px;" alt="adamni21"/><br /><sub><b>adamni21</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=adamni21" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/josephjunker"><img src="https://avatars.githubusercontent.com/u/1519098?v=4?s=100" width="100px;" alt="Joseph Junker"/><br /><sub><b>Joseph Junker</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=josephjunker" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rushelex"><img src="https://avatars.githubusercontent.com/u/41122157?v=4?s=100" width="100px;" alt="Aleksey Shelementev"/><br /><sub><b>Aleksey Shelementev</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=rushelex" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rugk"><img src="https://avatars.githubusercontent.com/u/11966684?v=4?s=100" width="100px;" alt="rugk"/><br /><sub><b>rugk</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=rugk" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

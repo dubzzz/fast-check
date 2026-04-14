@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mersenne } from 'pure-rand/generator/MersenneTwister';
+import { mersenne } from 'pure-rand/generator/mersenne';
 import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 

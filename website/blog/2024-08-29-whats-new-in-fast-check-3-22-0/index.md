@@ -8,7 +8,7 @@ This release extends `string` capabilities to generate not only printable ASCII 
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Polyglot `string`
 

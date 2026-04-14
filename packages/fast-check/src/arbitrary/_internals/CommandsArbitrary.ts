@@ -61,7 +61,7 @@ export class CommandsArbitrary<Model extends object, Real, RunResult, CheckAsync
     return this.buildValueFor(items, false);
   }
 
-  canShrinkWithoutContext(value: unknown): value is CommandsIterable<Model, Real, RunResult, CheckAsync> {
+  canShrinkWithoutContext(_value: unknown): _value is CommandsIterable<Model, Real, RunResult, CheckAsync> {
     // Not supported yet on commands
     return false;
   }

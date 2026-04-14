@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 

@@ -9,7 +9,7 @@ import type { Random } from '../../../../src/random/generator/Random.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 
 import * as stubArb from '../../stubs/arbitraries.js';
-import { xorshift128plus } from 'pure-rand/generator/XorShift';
+import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import type { QualifiedRandomGenerator } from '../../../../src/check/runner/configuration/QualifiedParameters.js';
 
 const rngProducer = xorshift128plus as (seed: number) => QualifiedRandomGenerator;

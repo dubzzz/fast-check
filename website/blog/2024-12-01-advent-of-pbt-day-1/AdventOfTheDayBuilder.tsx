@@ -7,10 +7,11 @@ const answerFieldName = 'answer';
 
 type Options = {
   day: number;
-  buildBuggyAdvent: () => (...args: unknown[]) => unknown;
-  buggyAdventSurcharged?: (...args: unknown[]) => unknown;
-  referenceAdvent: (...args: unknown[]) => unknown;
-  postAdvent?: (adventOutput: unknown) => unknown;
+  buggyAdvent: (...args: any[]) => unknown;
+  snippet: string;
+  buggyAdventSurcharged?: (...args: any[]) => unknown;
+  referenceAdvent: (...args: any[]) => unknown;
+  postAdvent?: (adventOutput: any) => unknown;
   parser: (answer: string) => unknown[] | undefined;
   placeholderForm: string;
   functionName: string;
@@ -18,13 +19,11 @@ type Options = {
   signatureExtras?: string[];
 };
 
-// When minified for publish, the value of String(buildBuggyAdvent) is: "function(){return function(e){return[...e].sort(((e,t)=>e.age-t.age||e.name.codePointAt(0)-t.name.codePointAt(0)))}}"
-const coreCodeExtractorRegex = /^function(\s+[^(]+)?\([^)]*\)\s*{(.*)}$/ms;
-
 export function buildAdventOfTheDay(options: Options) {
   const {
     day,
-    buildBuggyAdvent,
+    buggyAdvent,
+    snippet,
     buggyAdventSurcharged,
     referenceAdvent,
     postAdvent = (v) => v,
@@ -34,15 +33,6 @@ export function buildAdventOfTheDay(options: Options) {
     signature,
     signatureExtras,
   } = options;
-
-  const originalSource = String(buildBuggyAdvent).trim();
-  const m = coreCodeExtractorRegex.exec(originalSource);
-  if (m === null) {
-    throw new Error(
-      `Unable to parse the snippet for the advent of code properly, original source code being:\n\n${JSON.stringify(originalSource)}`,
-    );
-  }
-  const snippet = m[2].replace(/return /, 'export default ');
   function AdventPlaygroundOfTheDay() {
     return (
       <AdventPlayground
@@ -55,7 +45,7 @@ export function buildAdventOfTheDay(options: Options) {
     );
   }
 
-  let lastError = null;
+  let lastError: string | null = null;
   const storageKey = `aopbt24-day${day}`;
 
   function retrievePastAnswerIfSolved(): string | null {
@@ -68,8 +58,8 @@ export function buildAdventOfTheDay(options: Options) {
       if (inputs === undefined) {
         return null;
       }
-      const buggyAdvent = buggyAdventSurcharged ?? buildBuggyAdvent();
-      if (isEqual(postAdvent(buggyAdvent(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
+      const buggyFn = buggyAdventSurcharged ?? buggyAdvent;
+      if (isEqual(postAdvent(buggyFn(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
         return null;
       }
       return pastAnswer;
@@ -87,8 +77,8 @@ export function buildAdventOfTheDay(options: Options) {
         lastError = 'Malformed inputs provided!';
         return;
       }
-      const buggyAdvent = buggyAdventSurcharged ?? buildBuggyAdvent();
-      if (isEqual(postAdvent(buggyAdvent(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
+      const buggyFn = buggyAdventSurcharged ?? buggyAdvent;
+      if (isEqual(postAdvent(buggyFn(...inputs)), postAdvent(referenceAdvent(...inputs)))) {
         lastError = 'The input you provided seems to be working well: Santa is looking for a bug!';
         return;
       }

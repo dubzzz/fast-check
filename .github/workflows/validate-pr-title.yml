@@ -8,6 +8,8 @@ on:
       - 'next-*_*_*'
       - 'fix-v*'
 
+permissions: {}
+
 jobs:
   validate-pr-title:
     name: 'Validate PR title'

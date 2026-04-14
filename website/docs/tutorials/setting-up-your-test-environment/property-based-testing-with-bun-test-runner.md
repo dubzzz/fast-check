@@ -78,6 +78,6 @@ fast-check is not only about testing simple algorithms, it can be extended to mu
 
 - [checking asynchronous code](/docs/core-blocks/properties/#asynchronous-properties),
 - [detecting race conditions](/docs/tutorials/detect-race-conditions/),
-- [building complex inputs](/docs/core-blocks/arbitraries/), and more.
+- [building complex inputs](/docs/core-blocks/arbitraries/primitives/number/), and more.
 
 Our documentation is the best place to start to discover all these capabilities.
