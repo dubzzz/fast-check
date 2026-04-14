@@ -41,6 +41,8 @@ import type { DictionaryConstraints } from './arbitrary/dictionary.js';
 import { dictionary } from './arbitrary/dictionary.js';
 import type { EmailAddressConstraints } from './arbitrary/emailAddress.js';
 import { emailAddress } from './arbitrary/emailAddress.js';
+import type { EmojiConstraints } from './arbitrary/emoji.js';
+import { emoji } from './arbitrary/emoji.js';
 import type { DoubleConstraints } from './arbitrary/double.js';
 import { double } from './arbitrary/double.js';
 import type { FloatConstraints } from './arbitrary/float.js';
@@ -265,6 +267,7 @@ export type {
   DomainConstraints,
   DoubleConstraints,
   EmailAddressConstraints,
+  EmojiConstraints,
   EntityGraphContraints,
   FalsyContraints,
   Float32ArrayConstraints,
@@ -407,6 +410,7 @@ export {
   webQueryParameters,
   webUrl,
   emailAddress,
+  emoji,
   ulid,
   uuid,
   int8Array,
