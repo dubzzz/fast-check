@@ -218,9 +218,9 @@ const config: Config = {
         out: 'docs/api',
         readme: 'none',
         skipErrorChecking: true,
-        useHTMLAnchors: true,
+        useCustomAnchors: true,
         parametersFormat: 'table',
-        enumMembersFormat: 'table',
+        enumMembersFormat: 'list',
         indexFormat: 'table',
         textContentMappings: {
           'title.indexPage': 'API Reference',
