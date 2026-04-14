@@ -8,7 +8,7 @@ Dealing with potentially infinite data structures can quickly lead to memory iss
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Reduced memory footprint of `infiniteStream`
 

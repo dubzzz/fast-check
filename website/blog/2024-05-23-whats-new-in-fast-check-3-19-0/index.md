@@ -8,7 +8,7 @@ This release introduces new opt-in options for objects arbitraries such as `anyt
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## The new `withUnicodeString` and `noUnicodeString` options
 

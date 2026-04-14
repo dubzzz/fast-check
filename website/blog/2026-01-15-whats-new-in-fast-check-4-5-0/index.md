@@ -10,7 +10,7 @@ With this release, we aim to go beyond simple unit-level data and offer primitiv
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Why support relational structures?
 
