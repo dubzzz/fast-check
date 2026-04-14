@@ -77,7 +77,10 @@ describe(`NoRegression`, () => {
       runWithSanitizedStack(() =>
         fc.assert(
           fc.property(
-            fc.chainUntil(fc.nat(20), (n) => (n >= 10 ? undefined : fc.integer({ min: 10, max: 100 }))),
+            fc.chainUntil(
+              fc.nat().map((n): number[] => [n]),
+              (tuple) => (tuple[tuple.length - 1] > 10 ? fc.nat().map((n) => [...tuple, n]) : undefined),
+            ),
             (v) => testFunc(v),
           ),
           settings,
