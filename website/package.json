@@ -36,7 +36,7 @@
     "@types/lodash": "^4.17.24",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
-    "docusaurus-plugin-llms": "^0.3.0",
+    "docusaurus-plugin-llms": "^0.3.1",
     "fast-check": "workspace:*",
     "jimp": "^1.6.1",
     "typescript": "~6.0.2",

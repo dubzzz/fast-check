@@ -370,8 +370,8 @@ importers:
         specifier: ^19.2.14
         version: 19.2.14
       docusaurus-plugin-llms:
-        specifier: ^0.3.0
-        version: 0.3.0(@docusaurus/core@3.10.0(@docusaurus/faster@3.10.0(@docusaurus/types@3.10.0(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.5))(@rspack/core@1.7.10)(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2))
+        specifier: ^0.3.1
+        version: 0.3.1(@docusaurus/core@3.10.0(@docusaurus/faster@3.10.0(@docusaurus/types@3.10.0(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.5))(@rspack/core@1.7.10)(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2))
       fast-check:
         specifier: workspace:*
         version: link:../packages/fast-check
@@ -5036,8 +5036,8 @@ packages:
     resolution: {integrity: sha512-l4gcSouhcgIKRvyy99RNVOgxXiicE+2jZoNmaNmZ6JXiGajBOJAesk1OBlJuM5k2c+eudGdLxDqXuPCKIj6kpw==}
     engines: {node: '>=6'}
 
-  docusaurus-plugin-llms@0.3.0:
-    resolution: {integrity: sha512-JuADAJA2fjTv1U4XQUoIu1LyjISDzxFhRK5HbCZiHum4HlmdPwyx8NBXsi+LfdUyjK9acbZgazGsHPhdwEZs0g==}
+  docusaurus-plugin-llms@0.3.1:
+    resolution: {integrity: sha512-2RsDC4czy1pt2kauIACOcLvSaGmjF3X0pgcVtL6fblzzZMgkasQJrOLN0pRur11j7rQkiaiCGR9NsU3mp4M8fg==}
     engines: {node: '>=18.0'}
     peerDependencies:
       '@docusaurus/core': ^3.0.0
@@ -15839,7 +15839,7 @@ snapshots:
     dependencies:
       '@leichtgewicht/ip-codec': 2.0.5
 
-  docusaurus-plugin-llms@0.3.0(@docusaurus/core@3.10.0(@docusaurus/faster@3.10.0(@docusaurus/types@3.10.0(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.5))(@rspack/core@1.7.10)(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2)):
+  docusaurus-plugin-llms@0.3.1(@docusaurus/core@3.10.0(@docusaurus/faster@3.10.0(@docusaurus/types@3.10.0(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.5))(@rspack/core@1.7.10)(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2)):
     dependencies:
       '@docusaurus/core': 3.10.0(@docusaurus/faster@3.10.0(@docusaurus/types@3.10.0(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.5))(@rspack/core@1.7.10)(@swc/core@1.15.21)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.2)
       gray-matter: 4.0.3
