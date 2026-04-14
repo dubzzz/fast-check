@@ -138,7 +138,7 @@ function refreshContent(originalContent: string): { content: string; numExecuted
 
       ++numExecutedSnippets;
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // oxlint-disable-next-line no-unused-vars
       const generatedValues = (function (fc): string[] {
         const numRuns = 5 * TargetNumExamples;
         const lastIndexCommentForStatistics = snippet.lastIndexOf(CommentForStatistics);

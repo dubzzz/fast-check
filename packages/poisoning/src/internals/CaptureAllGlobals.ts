@@ -66,7 +66,7 @@ export function captureAllGlobals(): AllGlobals {
     { instance: globalThis, name: 'globalThis', currentDepth: 0, lastRootInPath: 'globalThis' },
   ]);
   while (nextCaptures.length !== 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     const { instance, name, currentDepth, lastRootInPath } = nextCaptures[ShiftSymbol]()!;
 
     if (typeof instance !== 'function' && typeof instance !== 'object') {

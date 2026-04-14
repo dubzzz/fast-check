@@ -36,7 +36,7 @@ function adaptRandomGeneratorTo8x(rng: RandomGenerator): RandomGenerator8x | Jum
     return {
       clone: () => adaptRandomGeneratorTo8x(rng),
       next: () => rng.unsafeNext(),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion
       jump: () => rng.unsafeJump!(),
       getState: () => rng.getState(),
     };

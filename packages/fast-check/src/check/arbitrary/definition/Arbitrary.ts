@@ -98,7 +98,7 @@ export abstract class Arbitrary<T> {
    */
   filter(predicate: (t: T) => boolean): Arbitrary<T>;
   filter<U extends T>(refinement: (t: T) => t is U): Arbitrary<U> {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    // oxlint-disable-next-line no-use-before-define
     return new FilterArbitrary(this, refinement);
   }
 
@@ -120,7 +120,7 @@ export abstract class Arbitrary<T> {
    * @remarks Since 0.0.1
    */
   map<U>(mapper: (t: T) => U, unmapper?: (possiblyU: unknown) => T): Arbitrary<U> {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    // oxlint-disable-next-line no-use-before-define
     return new MapArbitrary(this, mapper, unmapper);
   }
 
@@ -138,7 +138,7 @@ export abstract class Arbitrary<T> {
    * @remarks Since 1.2.0
    */
   chain<U>(chainer: (t: T) => Arbitrary<U>): Arbitrary<U> {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    // oxlint-disable-next-line no-use-before-define
     return new ChainArbitrary(this, chainer);
   }
 }

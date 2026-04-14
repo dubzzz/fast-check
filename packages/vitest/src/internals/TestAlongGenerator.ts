@@ -7,11 +7,11 @@ import { assert, asyncProperty, gen, readConfigureGlobal } from 'fast-check';
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+// oxlint-disable-next-line typescript/no-unsafe-function-type
 type Sig1 = [name: string | Function, fn: TestFunction<ExtraContext>, options: TestCollectorOptions];
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+// oxlint-disable-next-line typescript/no-unsafe-function-type
 type Sig2 = [name: string | Function, fn?: TestFunction<ExtraContext>, options?: number | TestOptions];
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+// oxlint-disable-next-line typescript/no-unsafe-function-type
 type Sig3 = [name: string | Function, options?: TestCollectorOptions, fn?: TestFunction<ExtraContext>];
 
 function isSig1OrSig2(args: Sig1 | Sig2 | Sig3): args is Sig1 | Sig2 {

@@ -111,7 +111,6 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
           },
           (err) => {
             this.log(schedulingType, taskId, label, metadata, 'rejected', err);
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             reject(err);
           },
         );
@@ -120,7 +119,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     });
     this.scheduledTasks.push({
       original: task,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion
       trigger: trigger!,
       schedulingType,
       taskId,
@@ -167,7 +166,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const dummyResolvedPromise: PromiseLike<any> = { then: (f: () => any) => f() };
 
     // Placeholder resolver, immediately replaced by the one retrieved in `new Promise`
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // oxlint-disable-next-line no-empty-function
     let resolveSequenceTask = () => {};
     const sequenceTask = new Promise<{ done: boolean; faulty: boolean }>((resolve) => {
       resolveSequenceTask = () => resolve({ done: status.done, faulty: status.faulty });
@@ -260,9 +259,9 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
     const onWaitStart = options.onWaitStart;
     const onWaitIdle = options.onWaitIdle;
     const launchAwaiterOnInit = options.launchAwaiterOnInit;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     let resolveFinal: (value: T) => void = undefined!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     let rejectFinal: (error: unknown) => void = undefined!;
 
     // Define the lazy watchers: triggered whenever something new has been scheduled
@@ -305,7 +304,7 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
         return;
       }
       // Schedule the next awaiter (awaiter will reset awaiterPromise to null)
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // oxlint-disable-next-line no-empty-function
       awaiterPromise = awaiter().catch(() => {});
     };
 
@@ -327,7 +326,6 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
       };
       rejectFinal = (error: unknown) => {
         clearAndReplaceWatcher();
-        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         reject(error);
       };
     });

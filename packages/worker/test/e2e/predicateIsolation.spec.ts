@@ -67,7 +67,7 @@ if (isMainThread) {
           let previousLevel = null;
           const summaryLines = summary.split('\n').filter((line) => line.trim() !== '');
           for (const summaryLine of summaryLines) {
-            // eslint-disable-next-line no-control-regex
+            // oxlint-disable-next-line no-control-regex
             const currentLevel = summaryLine.split(/\x1b\[32m\u221A\x1b\[0m|\x1b\[31m\xD7\x1b\[0m/)[0]; // split on success tick or error cross
             if (currentLevel !== previousLevel) {
               foundOne = true;
@@ -103,7 +103,7 @@ if (isMainThread) {
           let previousLevel = null;
           const summaryLines = summary.split('\n').filter((line) => line.trim() !== '');
           for (const summaryLine of summaryLines) {
-            // eslint-disable-next-line no-control-regex
+            // oxlint-disable-next-line no-control-regex
             const currentLevel = summaryLine.split(/\x1b\[32m\u221A\x1b\[0m|\x1b\[31m\xD7\x1b\[0m/)[0]; // split on success tick or error cross
             if (currentLevel !== previousLevel) {
               foundOne = true;

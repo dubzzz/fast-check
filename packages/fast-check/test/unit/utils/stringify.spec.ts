@@ -115,21 +115,21 @@ describe('stringify', () => {
     expect(repr).toEqual('[1,2,3,[cyclic],4]');
   });
   it('Should be able to stringify small sparse arrays', () => {
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([,])).toEqual('[,]'); // empty with one hole
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([, ,])).toEqual('[,,]'); // empty with two holes
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([, , , ,])).toEqual('[,,,,]'); // empty with four holes
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([1, , ,])).toEqual('[1,,,]'); // one value then two holes
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([, , 1, , 2])).toEqual('[,,1,,2]'); // two holes non-trailing holes
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([1, , 2])).toEqual('[1,,2]'); // one hole non-trailing hole
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([1, 2, ,])).toEqual('[1,2,,]'); // two values then one hole
-    // eslint-disable-next-line no-sparse-arrays
+    // oxlint-disable-next-line no-sparse-arrays
     expect(stringify([1, 2, , ,])).toEqual('[1,2,,,]'); // two values then two holes
   });
   it('Should be able to stringify large sparse arrays', () => {

@@ -8,7 +8,7 @@ This release introduces some new opt-in options on floating point number arbitra
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## The new `noInteger` option
 
