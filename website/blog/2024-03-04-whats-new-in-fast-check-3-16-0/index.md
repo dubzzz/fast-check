@@ -8,7 +8,7 @@ This release makes `fc.pre` safer in terms of typings. It leverages the "[assert
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Assertion function
 

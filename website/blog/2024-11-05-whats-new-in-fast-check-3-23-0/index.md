@@ -8,7 +8,7 @@ The previous release introduced the `unit` concept to the string arbitraries, en
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Polyglot `string` to the next level
 

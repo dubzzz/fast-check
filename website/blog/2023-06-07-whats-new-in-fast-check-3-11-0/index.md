@@ -8,7 +8,7 @@ This release comes with a new arbitrary called `ulid`. This arbitrary is respons
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## ULID
 
@@ -29,7 +29,12 @@ fc.ulid();
 
 We have recently enhanced our README by adding additional badges that emphasize the overall security and quality of open-source projects:
 
-<a href="https://securityscorecards.dev/viewer/?platform=github.com&org=dubzzz&repo=fast-check"><img src="https://api.securityscorecards.dev/projects/github.com/dubzzz/fast-check/badge" alt="OpenSSF Scorecard" /></a><a href="https://bestpractices.coreinfrastructure.org/projects/7450"><img src="https://bestpractices.coreinfrastructure.org/projects/7450/badge" alt="OpenSSF Best Practices" /></a>
+<a href="https://securityscorecards.dev/viewer/?platform=github.com&org=dubzzz&repo=fast-check">
+  <img src="https://api.securityscorecards.dev/projects/github.com/dubzzz/fast-check/badge" alt="OpenSSF Scorecard" />
+</a>
+<a href="https://bestpractices.coreinfrastructure.org/projects/7450">
+  <img src="https://bestpractices.coreinfrastructure.org/projects/7450/badge" alt="OpenSSF Best Practices" />
+</a>
 
 Following these changes, we did significant improvements and successfully reduced the number of red flags reported by them.
 
