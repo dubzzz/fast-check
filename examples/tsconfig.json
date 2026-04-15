@@ -3,6 +3,7 @@
   "compilerOptions": {
     "isolatedDeclarations": false,
     "jsx": "react",
-    "lib": ["dom", "dom.iterable", "esnext"]
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["node"]
   }
 }
