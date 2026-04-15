@@ -1,4 +1,11 @@
 /** @internal */
+const NON_BINARY_ALIASES_TO_PROP_NAMES: Record<string, string> = {
+  gc: 'General_Category',
+  sc: 'Script',
+  scx: 'Script_Extensions',
+};
+
+/** @internal */
 const BINARY_PROP_NAMES_TO_ALIASES: Record<string, string> = {
   ASCII: 'ASCII',
   ASCII_Hex_Digit: 'AHex',
@@ -103,6 +110,161 @@ const GENERAL_CATEGORY_VALUE_TO_ALIASES: Record<string, string | string[]> = {
 /** @internal */
 const GENERAL_CATEGORY_VALUE_ALIASES_TO_VALUES: Record<string, string> = inverseMap(GENERAL_CATEGORY_VALUE_TO_ALIASES);
 
+/** @internal */
+const SCRIPT_VALUE_TO_ALIASES: Record<string, string | string[]> = {
+  Adlam: 'Adlm',
+  Ahom: 'Ahom',
+  Anatolian_Hieroglyphs: 'Hluw',
+  Arabic: 'Arab',
+  Armenian: 'Armn',
+  Avestan: 'Avst',
+  Balinese: 'Bali',
+  Bamum: 'Bamu',
+  Bassa_Vah: 'Bass',
+  Batak: 'Batk',
+  Bengali: 'Beng',
+  Bhaiksuki: 'Bhks',
+  Bopomofo: 'Bopo',
+  Brahmi: 'Brah',
+  Braille: 'Brai',
+  Buginese: 'Bugi',
+  Buhid: 'Buhd',
+  Canadian_Aboriginal: 'Cans',
+  Carian: 'Cari',
+  Caucasian_Albanian: 'Aghb',
+  Chakma: 'Cakm',
+  Cham: 'Cham',
+  Cherokee: 'Cher',
+  Common: 'Zyyy',
+  Coptic: ['Copt', 'Qaac'],
+  Cuneiform: 'Xsux',
+  Cypriot: 'Cprt',
+  Cyrillic: 'Cyrl',
+  Deseret: 'Dsrt',
+  Devanagari: 'Deva',
+  Dogra: 'Dogr',
+  Duployan: 'Dupl',
+  Egyptian_Hieroglyphs: 'Egyp',
+  Elbasan: 'Elba',
+  Ethiopic: 'Ethi',
+  Georgian: 'Geor',
+  Glagolitic: 'Glag',
+  Gothic: 'Goth',
+  Grantha: 'Gran',
+  Greek: 'Grek',
+  Gujarati: 'Gujr',
+  Gunjala_Gondi: 'Gong',
+  Gurmukhi: 'Guru',
+  Han: 'Hani',
+  Hangul: 'Hang',
+  Hanifi_Rohingya: 'Rohg',
+  Hanunoo: 'Hano',
+  Hatran: 'Hatr',
+  Hebrew: 'Hebr',
+  Hiragana: 'Hira',
+  Imperial_Aramaic: 'Armi',
+  Inherited: ['Zinh', 'Qaai'],
+  Inscriptional_Pahlavi: 'Phli',
+  Inscriptional_Parthian: 'Prti',
+  Javanese: 'Java',
+  Kaithi: 'Kthi',
+  Kannada: 'Knda',
+  Katakana: 'Kana',
+  Kayah_Li: 'Kali',
+  Kharoshthi: 'Khar',
+  Khmer: 'Khmr',
+  Khojki: 'Khoj',
+  Khudawadi: 'Sind',
+  Lao: 'Laoo',
+  Latin: 'Latn',
+  Lepcha: 'Lepc',
+  Limbu: 'Limb',
+  Linear_A: 'Lina',
+  Linear_B: 'Linb',
+  Lisu: 'Lisu',
+  Lycian: 'Lyci',
+  Lydian: 'Lydi',
+  Mahajani: 'Mahj',
+  Makasar: 'Maka',
+  Malayalam: 'Mlym',
+  Mandaic: 'Mand',
+  Manichaean: 'Mani',
+  Marchen: 'Marc',
+  Medefaidrin: 'Medf',
+  Masaram_Gondi: 'Gonm',
+  Meetei_Mayek: 'Mtei',
+  Mende_Kikakui: 'Mend',
+  Meroitic_Cursive: 'Merc',
+  Meroitic_Hieroglyphs: 'Mero',
+  Miao: 'Plrd',
+  Modi: 'Modi',
+  Mongolian: 'Mong',
+  Mro: 'Mroo',
+  Multani: 'Mult',
+  Myanmar: 'Mymr',
+  Nabataean: 'Nbat',
+  New_Tai_Lue: 'Talu',
+  Newa: 'Newa',
+  Nko: 'Nkoo',
+  Nushu: 'Nshu',
+  Ogham: 'Ogam',
+  Ol_Chiki: 'Olck',
+  Old_Hungarian: 'Hung',
+  Old_Italic: 'Ital',
+  Old_North_Arabian: 'Narb',
+  Old_Permic: 'Perm',
+  Old_Persian: 'Xpeo',
+  Old_Sogdian: 'Sogo',
+  Old_South_Arabian: 'Sarb',
+  Old_Turkic: 'Orkh',
+  Oriya: 'Orya',
+  Osage: 'Osge',
+  Osmanya: 'Osma',
+  Pahawh_Hmong: 'Hmng',
+  Palmyrene: 'Palm',
+  Pau_Cin_Hau: 'Pauc',
+  Phags_Pa: 'Phag',
+  Phoenician: 'Phnx',
+  Psalter_Pahlavi: 'Phlp',
+  Rejang: 'Rjng',
+  Runic: 'Runr',
+  Samaritan: 'Samr',
+  Saurashtra: 'Saur',
+  Sharada: 'Shrd',
+  Shavian: 'Shaw',
+  Siddham: 'Sidd',
+  SignWriting: 'Sgnw',
+  Sinhala: 'Sinh',
+  Sogdian: 'Sogd',
+  Sora_Sompeng: 'Sora',
+  Soyombo: 'Soyo',
+  Sundanese: 'Sund',
+  Syloti_Nagri: 'Sylo',
+  Syriac: 'Syrc',
+  Tagalog: 'Tglg',
+  Tagbanwa: 'Tagb',
+  Tai_Le: 'Tale',
+  Tai_Tham: 'Lana',
+  Tai_Viet: 'Tavt',
+  Takri: 'Takr',
+  Tamil: 'Taml',
+  Tangut: 'Tang',
+  Telugu: 'Telu',
+  Thaana: 'Thaa',
+  Thai: 'Thai',
+  Tibetan: 'Tibt',
+  Tifinagh: 'Tfng',
+  Tirhuta: 'Tirh',
+  Ugaritic: 'Ugar',
+  Vai: 'Vaii',
+  Warang_Citi: 'Wara',
+  Yi: 'Yiii',
+  Zanabazar_Square: 'Zanb',
+};
+
+/** @internal */
+const SCRIPT_VALUE_ALIASES_TO_VALUES: Record<string, string> = inverseMap(SCRIPT_VALUE_TO_ALIASES);
+
 function inverseMap(data: Record<string, string | string[]>): Record<string, string> {
   const inverse: Record<string, string> = {};
   for (const name of Object.keys(data)) {
@@ -126,6 +288,29 @@ function isBinaryPropertyName(name: string): boolean {
   return name in BINARY_PROP_NAMES_TO_ALIASES || name in BINARY_ALIASES_TO_PROP_NAMES;
 }
 
+function getCanonicalName(name: string): string {
+  if (name in NON_BINARY_ALIASES_TO_PROP_NAMES) {
+    return NON_BINARY_ALIASES_TO_PROP_NAMES[name];
+  }
+  if (name in BINARY_ALIASES_TO_PROP_NAMES) {
+    return BINARY_ALIASES_TO_PROP_NAMES[name];
+  }
+  return name;
+}
+
+function getCanonicalValue(value: string): string {
+  if (value in GENERAL_CATEGORY_VALUE_ALIASES_TO_VALUES) {
+    return GENERAL_CATEGORY_VALUE_ALIASES_TO_VALUES[value];
+  }
+  if (value in SCRIPT_VALUE_ALIASES_TO_VALUES) {
+    return SCRIPT_VALUE_ALIASES_TO_VALUES[value];
+  }
+  if (value in BINARY_ALIASES_TO_PROP_NAMES) {
+    return BINARY_ALIASES_TO_PROP_NAMES[value];
+  }
+  return value;
+}
+
 /** @internal */
 export type ResolvedUnicodeProperty = {
   type: 'UnicodeProperty';
@@ -134,10 +319,13 @@ export type ResolvedUnicodeProperty = {
   negative: boolean;
   shorthand: boolean;
   binary: boolean;
+  canonicalName: string;
+  canonicalValue: string;
 };
 
 /**
- * Resolve a Unicode property escape specification into a structured token.
+ * Resolve a Unicode property escape specification into a structured token
+ * that matches the regexp-tree AST format.
  *
  * @param propertySpec - The content between \p\{ and \}, e.g. "Letter", "Script=Latin", "Emoji"
  * @param negative - true for \P\{\}, false for \p\{\}
@@ -156,6 +344,8 @@ export function resolveUnicodeProperty(propertySpec: string, negative: boolean):
       negative,
       shorthand: false,
       binary: false,
+      canonicalName: getCanonicalName(name),
+      canonicalValue: getCanonicalValue(value),
     };
   }
 
@@ -168,10 +358,13 @@ export function resolveUnicodeProperty(propertySpec: string, negative: boolean):
       negative,
       shorthand: true,
       binary: false,
+      canonicalName: 'General_Category',
+      canonicalValue: getCanonicalValue(propertySpec),
     };
   }
 
   if (isBinaryPropertyName(propertySpec)) {
+    const canonicalName = getCanonicalName(propertySpec);
     return {
       type: 'UnicodeProperty',
       name: propertySpec,
@@ -179,6 +372,8 @@ export function resolveUnicodeProperty(propertySpec: string, negative: boolean):
       negative,
       shorthand: false,
       binary: true,
+      canonicalName,
+      canonicalValue: canonicalName,
     };
   }
 

@@ -2,17 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { parse } from 'regexp-tree';
 import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function stripCanonicalFields(node: any): any {
-  if (Array.isArray(node)) return node.map(stripCanonicalFields);
-  if (node && typeof node === 'object') {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { canonicalName, canonicalValue, ...rest } = node;
-    return Object.fromEntries(Object.entries(rest).map(([k, v]) => [k, stripCanonicalFields(v)]));
-  }
-  return node;
-}
-
 describe('tokenizeRegex', () => {
   const allRegexes = [
     // Regexes declared with the /u flag,
@@ -116,8 +105,10 @@ describe('tokenizeRegex', () => {
     { regex: /\P{Script_Extensions=Thaana}/ },
     // Unicode property escapes
     { regex: /\p{Letter}/u },
+    { regex: /\p{L}/u },
     { regex: /\p{Emoji}/u },
     { regex: /\p{Script=Latin}/u },
+    { regex: /\p{sc=Latin}/u },
     { regex: /[\p{Letter}\d]/u },
   ];
 
@@ -137,7 +128,7 @@ describe('tokenizeRegex', () => {
       ({ regex }) => {
         const unicodeRegex = new RegExp(regex, 'u');
         const tokenized = tokenizeRegex(unicodeRegex);
-        expect(tokenized).toEqual(stripCanonicalFields(parse(unicodeRegex).body));
+        expect(tokenized).toEqual(parse(unicodeRegex).body);
       },
     );
 
