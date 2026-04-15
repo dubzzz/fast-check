@@ -44,7 +44,7 @@ Property based testing applied to state machines or user interfaces:
 Property based testing used to detect race conditions in various kind of JavaScript snippets:
 
 - `AutocompleteField` - An autocomplete field written in React providing suggestions as soon as possible
-- `Counter` - Increment a counter stored in a DB - non atomic and atomic versions
+- `Counter` - Increment a counter stored in a DB using compare-and-swap
 - `DebouncedAutocomplete` - An autocomplete field written in React providing suggestions in a debounced way (uses timers)
 - `dependencyTree` - Fetch recursively dependencies for a npm package
 - `TodoList` - Simple todolist React app
