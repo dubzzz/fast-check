@@ -85,11 +85,6 @@ type ValuesArray<Ts extends unknown[]> = { [K in keyof Ts]: Value<Ts[K]> };
 export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
   constructor(readonly arbs: ArbsArray<Ts>) {
     super();
-    for (let idx = 0; idx !== arbs.length; ++idx) {
-      const arb = arbs[idx];
-      if (arb === null || arb === undefined || arb.generate === null || arb.generate === undefined)
-        throw new Error(`Invalid parameter encountered at index ${idx}: expecting an Arbitrary`);
-    }
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
     const mapped = [] as ValuesArray<Ts>;
