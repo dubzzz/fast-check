@@ -4,6 +4,34 @@ import fc from 'fast-check';
 import { CasCounter as Counter } from './src/CasCounter.js';
 
 describe('Counter', () => {
+  it('should handle two concurrent calls to inc', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.scheduler(), async (s) => {
+        // Arrange
+        let dbValue = 0;
+        const db = {
+          read: s.scheduleFunction(async function read() {
+            return dbValue;
+          }),
+          write: s.scheduleFunction(async function write(newValue: number, oldValue?: number) {
+            if (oldValue !== undefined && dbValue !== oldValue) return false;
+            dbValue = newValue;
+            return true;
+          }),
+        };
+        const counter = new Counter(db);
+
+        // Act
+        s.schedule(Promise.resolve('inc1')).then(() => counter.inc());
+        s.schedule(Promise.resolve('inc2')).then(() => counter.inc());
+        await s.waitAll();
+
+        // Assert
+        expect(dbValue).toBe(2);
+      }),
+    );
+  });
+
   it('should correctly count N concurrent increments', async () => {
     await fc.assert(
       fc.asyncProperty(fc.scheduler(), fc.nat(64), async (s, numCalls) => {

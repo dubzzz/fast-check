@@ -10,6 +10,37 @@ import UserProfilePage from './src/UserProfilePage.js';
 import { render, cleanup, act, screen } from '@testing-library/react';
 
 describe('UserProfilePage', () => {
+  it('should not display data related to another user', async () => {
+    await fc.assert(
+      fc
+        .asyncProperty(fc.uuid(), fc.uuid(), fc.scheduler({ act }), async (uid1, uid2, s) => {
+          // Arrange
+          const getUserProfileImplem = s.scheduleFunction(function getUserProfile(userId: string) {
+            return Promise.resolve({ id: userId, name: userId });
+          });
+
+          // Act
+          const { rerender } = render(
+            <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} />,
+          );
+          s.scheduleSequence([
+            async () => {
+              rerender(<UserProfilePage userId={uid2} getUserProfile={getUserProfileImplem} />);
+            },
+          ]);
+          await s.waitAll();
+
+          // Assert
+          expect(await screen.queryByText('Loading...')).toBe(null);
+          expect((await screen.queryByTestId('user-id'))!.textContent).toBe(`Id: ${uid2}`);
+        })
+        .beforeEach(async () => {
+          vi.resetAllMocks();
+          await cleanup();
+        }),
+    );
+  });
+
   it('should never display stale user data after userId changes', async () => {
     await fc.assert(
       fc
