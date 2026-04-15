@@ -192,6 +192,7 @@ import { float64Array } from './arbitrary/float64Array.js';
 import type { SparseArrayConstraints } from './arbitrary/sparseArray.js';
 import { sparseArray } from './arbitrary/sparseArray.js';
 import { Arbitrary } from './check/arbitrary/definition/Arbitrary.js';
+import type { UnmapGuard } from './check/arbitrary/definition/Arbitrary.js';
 import { Value } from './check/arbitrary/definition/Value.js';
 import type { Size, SizeForArbitrary, DepthSize } from './arbitrary/_internals/helpers/MaxLengthFromMinLength.js';
 import type { DepthContext, DepthIdentifier } from './arbitrary/_internals/helpers/DepthContext.js';
@@ -336,6 +337,7 @@ export type {
   RunDetailsSuccess,
   RunDetailsCommon,
   DepthIdentifier,
+  UnmapGuard,
 };
 export {
   __type,

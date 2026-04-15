@@ -347,7 +347,7 @@ describe('NextArbitrary', () => {
         // Assert
         expect(out).toBe(outputCanGenerate);
         expect(unmapper).toHaveBeenCalledTimes(1);
-        expect(unmapper).toHaveBeenCalledWith(originalValue);
+        expect(unmapper).toHaveBeenCalledWith(originalValue, expect.any(Function));
         expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
         expect(canShrinkWithoutContext).toHaveBeenCalledWith(unmapperOutput);
       },
@@ -375,7 +375,7 @@ describe('NextArbitrary', () => {
       // Assert
       expect(out).toBe(false);
       expect(unmapper).toHaveBeenCalledTimes(1);
-      expect(unmapper).toHaveBeenCalledWith(originalValue);
+      expect(unmapper).toHaveBeenCalledWith(originalValue, expect.any(Function));
       expect(canShrinkWithoutContext).not.toHaveBeenCalled();
     });
 
@@ -405,9 +405,118 @@ describe('NextArbitrary', () => {
       // Assert
       expect(shrinks.map((s) => s.value)).toEqual([Symbol.for('titi'), Symbol.for('toto'), Symbol.for('tutu')]);
       expect(unmapper).toHaveBeenCalledTimes(1);
-      expect(unmapper).toHaveBeenCalledWith(originalValue);
+      expect(unmapper).toHaveBeenCalledWith(originalValue, expect.any(Function));
       expect(shrink).toHaveBeenCalledTimes(1);
       expect(shrink).toHaveBeenCalledWith(unmapperOutput, undefined);
+    });
+
+    it('should support guard-based unmapper that passes validation on canShrinkWithoutContext', () => {
+      // Arrange
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn().mockReturnValue(true);
+      const shrink = vi.fn();
+      class MyNextArbitrary extends Arbitrary<any> {
+        generate = generate;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
+        shrink = shrink;
+      }
+
+      // Act
+      const arb = new MyNextArbitrary().map(
+        (v) => String(v),
+        (value, guard) => {
+          guard(typeof value === 'string');
+          return Number(value);
+        },
+      );
+      const out = arb.canShrinkWithoutContext('42');
+
+      // Assert
+      expect(out).toBe(true);
+      expect(canShrinkWithoutContext).toHaveBeenCalledTimes(1);
+      expect(canShrinkWithoutContext).toHaveBeenCalledWith(42);
+    });
+
+    it('should support guard-based unmapper that rejects on canShrinkWithoutContext', () => {
+      // Arrange
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn();
+      class MyNextArbitrary extends Arbitrary<any> {
+        generate = generate;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
+        shrink = shrink;
+      }
+
+      // Act
+      const arb = new MyNextArbitrary().map(
+        (v) => String(v),
+        (value, guard) => {
+          guard(typeof value === 'string');
+          return Number(value);
+        },
+      );
+      const out = arb.canShrinkWithoutContext(123); // not a string
+
+      // Assert
+      expect(out).toBe(false);
+      expect(canShrinkWithoutContext).not.toHaveBeenCalled();
+    });
+
+    it('should support guard-based unmapper with custom message on canShrinkWithoutContext', () => {
+      // Arrange
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn();
+      class MyNextArbitrary extends Arbitrary<any> {
+        generate = generate;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
+        shrink = shrink;
+      }
+
+      // Act
+      const arb = new MyNextArbitrary().map(
+        (v) => String(v),
+        (value, guard) => {
+          guard(typeof value === 'string', 'Expected a string');
+          return Number(value);
+        },
+      );
+      const out = arb.canShrinkWithoutContext(123);
+
+      // Assert
+      expect(out).toBe(false);
+    });
+
+    it('should support guard-based unmapper for shrink', () => {
+      // Arrange
+      const expectedStreamValuesFromSource = Stream.of(
+        new Value(10, undefined),
+        new Value(20, undefined),
+      );
+      const generate = vi.fn();
+      const canShrinkWithoutContext = vi.fn();
+      const shrink = vi.fn().mockReturnValueOnce(expectedStreamValuesFromSource);
+      class MyNextArbitrary extends Arbitrary<any> {
+        generate = generate;
+        canShrinkWithoutContext = canShrinkWithoutContext as any as (value: unknown) => value is any;
+        shrink = shrink;
+      }
+
+      // Act
+      const arb = new MyNextArbitrary().map(
+        (v: number) => String(v),
+        (value, guard) => {
+          guard(typeof value === 'string');
+          return Number(value);
+        },
+      );
+      const shrinks = [...arb.shrink('42', undefined)];
+
+      // Assert
+      expect(shrinks.map((s) => s.value)).toEqual(['10', '20']);
+      expect(shrink).toHaveBeenCalledTimes(1);
+      expect(shrink).toHaveBeenCalledWith(42, undefined);
     });
   });
 
