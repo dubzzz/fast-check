@@ -53,67 +53,6 @@ function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
 }
 
-const MaxOutputLength = Number.POSITIVE_INFINITY;
-
-/**
- * Compute the minimum and maximum number of characters an AST node can produce.
- * Used to constrain backtracking in the Alternative unmapper.
- * @internal
- */
-function computeMinMaxLength(astNode: RegexToken): [number, number] {
-  switch (astNode.type) {
-    case 'Char':
-      return [1, 1];
-    case 'ClassRange':
-      return [1, 1];
-    case 'CharacterClass':
-      return [1, 1];
-    case 'Repetition': {
-      const [unitMin, unitMax] = computeMinMaxLength(astNode.expression);
-      switch (astNode.quantifier.kind) {
-        case '*':
-          return [0, MaxOutputLength];
-        case '+':
-          return [unitMin, MaxOutputLength];
-        case '?':
-          return [0, unitMax];
-        case 'Range': {
-          const from = astNode.quantifier.from;
-          const to = astNode.quantifier.to !== undefined ? astNode.quantifier.to : MaxOutputLength;
-          return [from * unitMin, to === MaxOutputLength ? MaxOutputLength : to * unitMax];
-        }
-        default:
-          return [0, MaxOutputLength];
-      }
-    }
-    case 'Alternative': {
-      let totalMin = 0;
-      let totalMax = 0;
-      for (const expr of astNode.expressions) {
-        const [eMin, eMax] = computeMinMaxLength(expr);
-        totalMin += eMin;
-        totalMax += eMax;
-      }
-      return [totalMin, totalMax];
-    }
-    case 'Group':
-      return computeMinMaxLength(astNode.expression);
-    case 'Disjunction': {
-      const [leftMin, leftMax] = astNode.left !== null ? computeMinMaxLength(astNode.left) : [0, 0];
-      const [rightMin, rightMax] = astNode.right !== null ? computeMinMaxLength(astNode.right) : [0, 0];
-      return [Math.min(leftMin, rightMin), Math.max(leftMax, rightMax)];
-    }
-    case 'Assertion':
-      return [0, MaxOutputLength];
-    case 'Quantifier':
-      return [0, MaxOutputLength];
-    case 'Backreference':
-      return [0, MaxOutputLength];
-    default:
-      return [0, MaxOutputLength];
-  }
-}
-
 type RegexFlags = {
   multiline: boolean;
   dotAll: boolean;
@@ -196,16 +135,9 @@ function toMatchingArbitrary(
     }
     case 'Alternative': {
       const childArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
-      const minLengths: number[] = [];
-      const maxLengths: number[] = [];
-      for (const expr of astNode.expressions) {
-        const [eMin, eMax] = computeMinMaxLength(expr);
-        minLengths.push(eMin);
-        maxLengths.push(eMax);
-      }
       return tuple(...childArbitraries).map(
         partsToJoinedStringMapper,
-        partsToJoinedStringUnmapperFor(childArbitraries, minLengths, maxLengths),
+        partsToJoinedStringUnmapperFor(childArbitraries),
       );
     }
     case 'CharacterClass':

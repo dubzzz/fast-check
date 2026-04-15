@@ -6,8 +6,6 @@ import {
 } from '../../../../../src/arbitrary/_internals/mappers/PartsToJoinedString.js';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
 
-const MaxLen = 0x7fffffff;
-
 function buildUnmapper(acceptedChunksPerArb: string[][]) {
   const arbitraries = acceptedChunksPerArb.map((acceptedChunks) => {
     const acceptedSet = new Set(acceptedChunks);
@@ -15,17 +13,7 @@ function buildUnmapper(acceptedChunksPerArb: string[][]) {
     canShrinkWithoutContext.mockImplementation((value): value is string => acceptedSet.has(value as string));
     return instance;
   });
-  const minLengths = acceptedChunksPerArb.map((chunks) => {
-    let min = MaxLen;
-    for (const c of chunks) if (c.length < min) min = c.length;
-    return min;
-  });
-  const maxLengths = acceptedChunksPerArb.map((chunks) => {
-    let max = 0;
-    for (const c of chunks) if (c.length > max) max = c.length;
-    return max;
-  });
-  return partsToJoinedStringUnmapperFor(arbitraries, minLengths, maxLengths);
+  return partsToJoinedStringUnmapperFor(arbitraries);
 }
 
 describe('partsToJoinedStringMapper', () => {
@@ -45,19 +33,19 @@ describe('partsToJoinedStringMapper', () => {
 describe('partsToJoinedStringUnmapperFor', () => {
   it('should throw on non-string input', () => {
     const { instance } = fakeArbitrary<string>();
-    const unmapper = partsToJoinedStringUnmapperFor([instance], [0], [MaxLen]);
+    const unmapper = partsToJoinedStringUnmapperFor([instance]);
     expect(() => unmapper(42)).toThrowError();
     expect(() => unmapper(null)).toThrowError();
     expect(() => unmapper(undefined)).toThrowError();
   });
 
   it('should unmap empty string with no arbitraries', () => {
-    const unmapper = partsToJoinedStringUnmapperFor([], [], []);
+    const unmapper = partsToJoinedStringUnmapperFor([]);
     expect(unmapper('')).toEqual([]);
   });
 
   it('should throw when string is non-empty but no arbitraries', () => {
-    const unmapper = partsToJoinedStringUnmapperFor([], [], []);
+    const unmapper = partsToJoinedStringUnmapperFor([]);
     expect(() => unmapper('abc')).toThrowError();
   });
 
