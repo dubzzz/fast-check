@@ -53,7 +53,7 @@ function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
 }
 
-const MaxOutputLength = 0x7fffffff;
+const MaxOutputLength = Number.POSITIVE_INFINITY;
 
 /**
  * Compute the minimum and maximum number of characters an AST node can produce.
@@ -92,7 +92,7 @@ function computeMinMaxLength(astNode: RegexToken): [number, number] {
       for (const expr of astNode.expressions) {
         const [eMin, eMax] = computeMinMaxLength(expr);
         totalMin += eMin;
-        totalMax = totalMax > MaxOutputLength - eMax ? MaxOutputLength : totalMax + eMax;
+        totalMax += eMax;
       }
       return [totalMin, totalMax];
     }
