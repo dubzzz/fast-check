@@ -270,7 +270,7 @@ function inverseMap(data: Record<string, string | string[]>): Record<string, str
   for (const name of Object.keys(data)) {
     const value = data[name];
     if (Array.isArray(value)) {
-      for (let i = 0; i < value.length; i++) {
+      for (let i = 0; i !== value.length; ++i) {
         inverse[value[i]] = name;
       }
     } else {
@@ -295,7 +295,10 @@ function getCanonicalName(name: string): string {
   if (name in BINARY_ALIASES_TO_PROP_NAMES) {
     return BINARY_ALIASES_TO_PROP_NAMES[name];
   }
-  return name;
+  if (name in BINARY_PROP_NAMES_TO_ALIASES || name === 'General_Category' || name === 'Script' || name === 'Script_Extensions') {
+    return name;
+  }
+  throw new Error(`Unknown Unicode property name: ${name}`);
 }
 
 function getCanonicalValue(value: string): string {
