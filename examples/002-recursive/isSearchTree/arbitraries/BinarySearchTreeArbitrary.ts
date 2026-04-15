@@ -27,30 +27,3 @@ export const binarySearchTreeWithMaxDepth = (maxDepth: number): fc.Arbitrary<Tre
 
   return tree(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)(maxDepth);
 };
-
-export const binarySearchTreeWithMaxDepthOldWay = (
-  maxDepth: number,
-  minValue: number = Number.MIN_SAFE_INTEGER,
-  maxValue: number = Number.MAX_SAFE_INTEGER,
-): fc.Arbitrary<Tree<number>> => {
-  const valueArbitrary = fc.integer({ min: minValue, max: maxValue });
-  if (maxDepth <= 0) {
-    return fc.record({
-      value: valueArbitrary,
-      left: fc.constant(null),
-      right: fc.constant(null),
-    });
-  }
-  return valueArbitrary.chain((rootValue) => {
-    const leftArb = binarySearchTreeWithMaxDepthOldWay(maxDepth - 1, minValue, rootValue);
-    const rightArb =
-      rootValue < maxValue
-        ? binarySearchTreeWithMaxDepthOldWay(maxDepth - 1, rootValue + 1, maxValue)
-        : fc.constant(null);
-    return fc.record({
-      value: fc.constant(rootValue),
-      left: fc.oneof(fc.constant(null), leftArb),
-      right: fc.oneof(fc.constant(null), rightArb),
-    });
-  });
-};
