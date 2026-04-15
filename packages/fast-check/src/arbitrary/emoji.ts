@@ -16,14 +16,15 @@ export type EmojiConstraints = {
    * - `'skin-tone'` — Emoji with a Fitzpatrick skin tone modifier (e.g. 👋🏽, 🧑🏻).
    * - `'flag'` — Flag emoji built from a pair of Regional Indicator symbols (e.g. 🇫🇷, 🇯🇵).
    * - `'keycap'` — Keycap sequence emoji (e.g. 1⃣, #⃣, *⃣).
-   * - `'zwj'` — ZWJ sequences: family (👨‍👩‍👦), profession (👩‍🚀), hair style (🧑‍🦰), couple (🧑‍❤️‍🧑).
+   * - `'zwj'` — ZWJ sequences: family (👨‍👩‍👦), profession (👩‍🚀), hair style (🧑‍🦰), couple (🧑‍❤️‍🧑), gender (🏃‍♂️).
+   * - `'tag'` — Tag sequences for subdivision flags (🏴󠁧󠁢󠁥󠁮󠁧󠁿, 🏴󠁧󠁢󠁳󠁣󠁴󠁿, 🏴󠁧󠁢󠁷󠁬󠁳󠁿).
    *
    * The produced value is always a single emoji string suitable for use as a `unit` in {@link string}.
    *
    * @defaultValue 'any'
    * @remarks Since 3.22.0
    */
-  kind?: 'any' | 'single' | 'text-with-vs16' | 'skin-tone' | 'flag' | 'keycap' | 'zwj';
+  kind?: 'any' | 'single' | 'text-with-vs16' | 'skin-tone' | 'flag' | 'keycap' | 'zwj' | 'tag';
 };
 
 /**
@@ -31,8 +32,8 @@ export type EmojiConstraints = {
  *
  * Generates emoji characters and sequences from the Unicode 16.0 specification.
  * The arbitrary covers single code point emoji, text-presentation emoji with VS16,
- * skin tone variants, flag sequences, keycap sequences, and ZWJ sequences
- * (family, profession, hair style, couple).
+ * skin tone variants, flag sequences, keycap sequences, ZWJ sequences
+ * (family, profession, hair style, couple, gender), and tag sequences (subdivision flags).
  *
  * @example
  * ```typescript

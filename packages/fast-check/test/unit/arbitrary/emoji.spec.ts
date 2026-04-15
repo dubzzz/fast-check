@@ -55,6 +55,12 @@ function isZwjEmoji(s: string): boolean {
   return s.includes(ZWJ);
 }
 
+function isTagEmoji(s: string): boolean {
+  const cps = [...s];
+  // Tag sequences start with black flag U+1F3F4 and end with cancel tag U+E007F
+  return cps.length >= 4 && cps[0].codePointAt(0) === 0x1f3f4 && cps[cps.length - 1].codePointAt(0) === 0xe007f;
+}
+
 function isAnyEmoji(s: string): boolean {
   if (emojiPresentationRegex.test(s)) return true;
   if (isTextWithVs16Emoji(s)) return true;
@@ -62,6 +68,7 @@ function isAnyEmoji(s: string): boolean {
   if (isFlagEmoji(s)) return true;
   if (isKeycapEmoji(s)) return true;
   if (isZwjEmoji(s)) return true;
+  if (isTagEmoji(s)) return true;
   return false;
 }
 
@@ -140,6 +147,16 @@ describe('emoji', () => {
     );
   });
 
+  it('should generate tag sequences with kind "tag"', () => {
+    fc.assert(
+      fc.property(fc.integer(), (seed) => {
+        const arb = emoji({ kind: 'tag' });
+        const value = arb.generate(randomFromSeed(seed), undefined);
+        expect(isTagEmoji(value.value)).toBe(true);
+      }),
+    );
+  });
+
   it('should generate valid emoji with kind "any"', () => {
     fc.assert(
       fc.property(fc.integer(), (seed) => {
@@ -163,6 +180,7 @@ describe('emoji (integration)', () => {
         'flag' as const,
         'keycap' as const,
         'zwj' as const,
+        'tag' as const,
       ),
     },
     { requiredKeys: [] },
@@ -188,6 +206,9 @@ describe('emoji (integration)', () => {
         break;
       case 'zwj':
         expect(isZwjEmoji(value)).toBe(true);
+        break;
+      case 'tag':
+        expect(isTagEmoji(value)).toBe(true);
         break;
       case 'any':
       default:

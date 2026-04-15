@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { safePush, safeSplit } from '../../../utils/globals.js';
+import { safePush, safeSplit, safeMapGet, safeMapSet } from '../../../utils/globals.js';
 import { mapToConstant } from '../../mapToConstant.js';
 import { oneof } from '../../oneof.js';
 import { tuple } from '../../tuple.js';
@@ -81,6 +81,33 @@ const zwjProfessionStrings: string[] = [
 // Hair components: red🦰, curly🦱, bald🦲, white🦳
 // prettier-ignore
 const zwjHairStrings: string[] = [0x1f9b0, 0x1f9b1, 0x1f9b2, 0x1f9b3].map((cp) => safeStringFromCodePoint(cp));
+// Gender signs for activity + ZWJ + gender (e.g. 🏃‍♂️, 🧘‍♀️)
+const genderSignStrings: string[] = [0x2640, 0x2642].map((cp) => safeStringFromCodePoint(cp) + VS16);
+// Activity emoji that accept gender via ZWJ (running, surfing, swimming, etc.)
+// prettier-ignore
+const genderActivityStrings: string[] = [
+  0x1f3c3, 0x1f3c4, 0x1f3ca, 0x1f3cb, 0x1f3cc,
+  0x1f46e, 0x1f470, 0x1f471, 0x1f473, 0x1f477,
+  0x1f481, 0x1f482, 0x1f486, 0x1f487,
+  0x1f645, 0x1f646, 0x1f647, 0x1f64b, 0x1f64d, 0x1f64e,
+  0x1f6a3, 0x1f6b4, 0x1f6b5, 0x1f6b6,
+  0x1f926, 0x1f935, 0x1f937, 0x1f938, 0x1f939,
+  0x1f93c, 0x1f93d, 0x1f93e,
+  0x1f9b8, 0x1f9b9,
+  0x1f9cd, 0x1f9ce, 0x1f9cf, 0x1f9d1, 0x1f9d4,
+  0x1f9d6, 0x1f9d7, 0x1f9d8, 0x1f9d9, 0x1f9da, 0x1f9db, 0x1f9dc, 0x1f9dd,
+].map((cp) => safeStringFromCodePoint(cp));
+// Tag sequences for subdivision flags (the only 3 valid ones: England, Scotland, Wales)
+const BLACK_FLAG = safeStringFromCodePoint(0x1f3f4);
+const CANCEL_TAG = safeStringFromCodePoint(0xe007f);
+function tagSequence(letters: string): string {
+  let result = BLACK_FLAG;
+  for (let i = 0; i < letters.length; i++) {
+    result += safeStringFromCodePoint(0xe0000 + letters.charCodeAt(i));
+  }
+  return result + CANCEL_TAG;
+}
+const tagSequences: string[] = [tagSequence('gbeng'), tagSequence('gbsct'), tagSequence('gbwls')];
 
 /** Unmap a ZWJ-joined string into 2 parts @internal */
 function zwjUnmapper2(value: unknown): [string, string] {
@@ -197,23 +224,38 @@ function buildZwjEmojiArbitrary(): Arbitrary<string> {
     },
   );
 
+  // Gender: activity + ZWJ + gender sign (e.g. 🏃‍♂️, 🧘‍♀️)
+  const activityArb = constantFrom(...genderActivityStrings);
+  const genderArb = constantFrom(...genderSignStrings);
+  const genderSeqArb: Arbitrary<string> = tuple(activityArb, genderArb).map(
+    ([a, g]) => a + ZWJ + g,
+    zwjUnmapper2,
+  );
+
   return oneof(
     { weight: 3, arbitrary: familyArb },
     { weight: 3, arbitrary: professionSeqArb },
     { weight: 2, arbitrary: hairSeqArb },
     { weight: 2, arbitrary: coupleArb },
+    { weight: 3, arbitrary: genderSeqArb },
   );
+}
+
+/** @internal */
+function buildTagEmojiArbitrary(): Arbitrary<string> {
+  return constantFrom(...tagSequences);
 }
 
 /**
  * Cache for emoji arbitrary instances, keyed by kind.
  * @internal
  */
-const cachedEmojiArbitraries: Partial<Record<string, Arbitrary<string>>> = Object.create(null);
+const SMap = Map;
+const cachedEmojiArbitraries: Map<string, Arbitrary<string>> = new SMap();
 
 /** @internal */
 export function getOrCreateEmojiArbitrary(kind: string): Arbitrary<string> {
-  const cached = cachedEmojiArbitraries[kind];
+  const cached = safeMapGet(cachedEmojiArbitraries, kind);
   if (cached !== undefined) {
     return cached;
   }
@@ -237,6 +279,9 @@ export function getOrCreateEmojiArbitrary(kind: string): Arbitrary<string> {
     case 'zwj':
       arb = buildZwjEmojiArbitrary();
       break;
+    case 'tag':
+      arb = buildTagEmojiArbitrary();
+      break;
     case 'any':
     default:
       arb = oneof(
@@ -246,9 +291,10 @@ export function getOrCreateEmojiArbitrary(kind: string): Arbitrary<string> {
         { weight: 3, arbitrary: buildZwjEmojiArbitrary() },
         { weight: 2, arbitrary: buildFlagEmojiArbitrary() },
         { weight: 1, arbitrary: buildKeycapEmojiArbitrary() },
+        { weight: 1, arbitrary: buildTagEmojiArbitrary() },
       );
       break;
   }
-  cachedEmojiArbitraries[kind] = arb;
+  safeMapSet(cachedEmojiArbitraries, kind, arb);
   return arb;
 }
