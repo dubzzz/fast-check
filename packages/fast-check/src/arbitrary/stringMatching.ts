@@ -6,6 +6,7 @@ import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLeng
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from './_internals/helpers/TokenizeRegex.js';
+import { unicodePropertyArbitrary } from './_internals/helpers/UnicodePropertyArbitraryHelper.js';
 import { constant } from './constant.js';
 import { constantFrom } from './constantFrom.js';
 import { integer } from './integer.js';
@@ -197,7 +198,7 @@ function toMatchingArbitrary(
       throw new Error(`Backreference nodes not implemented yet!`);
     }
     case 'UnicodeProperty': {
-      throw new Error(`UnicodeProperty not supported yet in stringMatching!`);
+      return unicodePropertyArbitrary(astNode);
     }
     default: {
       throw raiseUnsupportedASTNode(astNode);

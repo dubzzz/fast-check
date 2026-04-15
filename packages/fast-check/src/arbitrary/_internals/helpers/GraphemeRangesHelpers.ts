@@ -25,6 +25,92 @@ export function convertGraphemeRangeToMapToConstantEntry(range: GraphemeRange): 
 }
 
 /**
+ * Merge multiple sorted, non-overlapping range arrays into a single sorted, non-overlapping array.
+ * Input arrays must each be sorted and non-overlapping; they may overlap between each other.
+ * @internal
+ */
+export function unionGraphemeRanges(...allRanges: GraphemeRange[][]): GraphemeRange[] {
+  const flat: GraphemeRange[] = [];
+  for (let i = 0; i < allRanges.length; ++i) {
+    for (let j = 0; j < allRanges[i].length; ++j) {
+      safePush(flat, allRanges[i][j]);
+    }
+  }
+  flat.sort((a, b) => a[0] - b[0]);
+
+  const merged: GraphemeRange[] = [];
+  for (let i = 0; i < flat.length; ++i) {
+    const cur = flat[i];
+    const curMin = cur[0];
+    const curMax = cur.length === 1 ? cur[0] : cur[1];
+    if (merged.length === 0) {
+      safePush(merged, curMin === curMax ? [curMin] : [curMin, curMax]);
+    } else {
+      const last = merged[merged.length - 1];
+      const lastMax = last.length === 1 ? last[0] : last[1];
+      if (curMin <= lastMax + 1) {
+        const newMax = safeMathMax(lastMax, curMax);
+        safePop(merged);
+        safePush(merged, last[0] === newMax ? [last[0]] : [last[0], newMax]);
+      } else {
+        safePush(merged, curMin === curMax ? [curMin] : [curMin, curMax]);
+      }
+    }
+  }
+  return merged;
+}
+
+/**
+ * Compute the complement of sorted, non-overlapping ranges within a given universe.
+ * Universe is the set of all valid code points: [0x0000, 0xD7FF] and [0xE000, 0x10FFFF].
+ * @internal
+ */
+export function complementGraphemeRanges(ranges: GraphemeRange[]): GraphemeRange[] {
+  const universeSegments: [number, number][] = [
+    [0x0000, 0xd7ff],
+    [0xe000, 0x10ffff],
+  ];
+  const result: GraphemeRange[] = [];
+  let rangeIdx = 0;
+
+  for (let s = 0; s < universeSegments.length; ++s) {
+    let cursor = universeSegments[s][0];
+    const segEnd = universeSegments[s][1];
+
+    while (cursor <= segEnd) {
+      if (rangeIdx >= ranges.length) {
+        safePush(result, cursor === segEnd ? [cursor] : [cursor, segEnd]);
+        cursor = segEnd + 1;
+        break;
+      }
+      const range = ranges[rangeIdx];
+      const rMin = range[0];
+      const rMax = range.length === 1 ? range[0] : range[1];
+
+      if (rMax < cursor) {
+        rangeIdx++;
+        continue;
+      }
+      if (rMin > segEnd) {
+        safePush(result, cursor === segEnd ? [cursor] : [cursor, segEnd]);
+        cursor = segEnd + 1;
+        break;
+      }
+
+      // There is a gap before this range starts
+      if (rMin > cursor) {
+        const gapEnd = safeMathMin(rMin - 1, segEnd);
+        safePush(result, cursor === gapEnd ? [cursor] : [cursor, gapEnd]);
+      }
+
+      cursor = rMax + 1;
+      rangeIdx++;
+    }
+  }
+  return result;
+}
+
+/**
  * Ranges have to be ordered and non-overlapping
  * @internal
  */
