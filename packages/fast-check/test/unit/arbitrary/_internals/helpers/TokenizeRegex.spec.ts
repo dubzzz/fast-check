@@ -110,6 +110,7 @@ describe('tokenizeRegex', () => {
     { regex: /\p{Script=Latin}/u },
     { regex: /\p{sc=Latin}/u },
     { regex: /[\p{Letter}\d]/u },
+    { regex: /[\p{Letter}-]/u },
   ];
 
   describe('non-unicode regex', () => {
