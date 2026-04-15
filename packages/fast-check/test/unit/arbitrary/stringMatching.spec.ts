@@ -5,6 +5,7 @@ import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
 import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
+  assertProduceValuesShrinkableWithoutContext,
 } from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('stringMatching (integration)', () => {
@@ -21,6 +22,10 @@ describe('stringMatching (integration)', () => {
 
   it('should only produce correct values', () => {
     assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
+  });
+
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(stringMatchingBuilder, { extraParameters });
   });
 });
 
