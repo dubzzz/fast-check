@@ -26,4 +26,3 @@ export const binaryTreeWithoutMaxDepth = (): fc.Arbitrary<Tree<number>> => {
   }));
   return tree as fc.Arbitrary<Tree<number>>;
 };
-

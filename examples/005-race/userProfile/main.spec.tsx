@@ -20,9 +20,7 @@ describe('UserProfilePage', () => {
           });
 
           // Act
-          const { rerender } = render(
-            <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} />,
-          );
+          const { rerender } = render(<UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} />);
           s.scheduleSequence([
             async () => {
               rerender(<UserProfilePage userId={uid2} getUserProfile={getUserProfileImplem} />);
@@ -52,9 +50,7 @@ describe('UserProfilePage', () => {
 
           // Act
           let currentUid = loadedUserIds[0];
-          const { rerender } = render(
-            <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} />,
-          );
+          const { rerender } = render(<UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} />);
           s.scheduleSequence(
             loadedUserIds.slice(1).map((uid) => ({
               label: `Update user id to ${uid}`,
