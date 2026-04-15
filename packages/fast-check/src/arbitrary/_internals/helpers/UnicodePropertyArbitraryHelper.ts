@@ -30,31 +30,31 @@ function getLetterCategoryRanges(canonicalValue: string): GraphemeRange[] {
   let ranges: GraphemeRange[];
   switch (canonicalValue) {
     case 'Uppercase_Letter':
-      ranges = uppercaseLetterRanges;
+      ranges = uppercaseLetterRanges();
       break;
     case 'Lowercase_Letter':
-      ranges = lowercaseLetterRanges;
+      ranges = lowercaseLetterRanges();
       break;
     case 'Titlecase_Letter':
-      ranges = titlecaseLetterRanges;
+      ranges = titlecaseLetterRanges();
       break;
     case 'Modifier_Letter':
-      ranges = modifierLetterRanges;
+      ranges = modifierLetterRanges();
       break;
     case 'Other_Letter':
-      ranges = otherLetterRanges;
+      ranges = otherLetterRanges();
       break;
     case 'Letter':
       ranges = unionGraphemeRanges(
-        uppercaseLetterRanges,
-        lowercaseLetterRanges,
-        titlecaseLetterRanges,
-        modifierLetterRanges,
-        otherLetterRanges,
+        uppercaseLetterRanges(),
+        lowercaseLetterRanges(),
+        titlecaseLetterRanges(),
+        modifierLetterRanges(),
+        otherLetterRanges(),
       );
       break;
     case 'Cased_Letter':
-      ranges = unionGraphemeRanges(uppercaseLetterRanges, lowercaseLetterRanges, titlecaseLetterRanges);
+      ranges = unionGraphemeRanges(uppercaseLetterRanges(), lowercaseLetterRanges(), titlecaseLetterRanges());
       break;
     default:
       throw new Error(

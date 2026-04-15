@@ -66,8 +66,19 @@ function decodeBase64Ranges(encoded: string): GraphemeRange[] {
   return ranges;
 }
 
+/** @internal */
+function lazy(encoded: string): () => GraphemeRange[] {
+  let cached: GraphemeRange[] | undefined;
+  return () => {
+    if (cached === undefined) {
+      cached = decodeBase64Ranges(encoded);
+    }
+    return cached;
+  };
+}
+
 /** Lu: 655 ranges, 1886 code points @internal */
-export const uppercaseLetterRanges: GraphemeRange[] = decodeBase64Ranges(
+export const uppercaseLetterRanges: () => GraphemeRange[] = lazy(
   'AABBAABaAADAAADWAADYAADeAAEAAAEAAAECAAECAAEEAAEEAAEGAAEGAAEIAAEIAAEKAAEKAAEMAAEMAAEOAAEOAAEQAAEQAAESAAESAAEUAAEUAAEWAAEW' +
   'AAEYAAEYAAEaAAEaAAEcAAEcAAEeAAEeAAEgAAEgAAEiAAEiAAEkAAEkAAEmAAEmAAEoAAEoAAEqAAEqAAEsAAEsAAEuAAEuAAEwAAEwAAEyAAEyAAE0AAE0' +
   'AAE2AAE2AAE5AAE5AAE7AAE7AAE9AAE9AAE/AAE/AAFBAAFBAAFDAAFDAAFFAAFFAAFHAAFHAAFKAAFKAAFMAAFMAAFOAAFOAAFQAAFQAAFSAAFSAAFUAAFU' +
@@ -115,7 +126,7 @@ export const uppercaseLetterRanges: GraphemeRange[] = decodeBase64Ranges(
 );
 
 /** Ll: 664 ranges, 2283 code points @internal */
-export const lowercaseLetterRanges: GraphemeRange[] = decodeBase64Ranges(
+export const lowercaseLetterRanges: () => GraphemeRange[] = lazy(
   'AABhAAB6AAC1AAC1AADfAAD2AAD4AAD/AAEBAAEBAAEDAAEDAAEFAAEFAAEHAAEHAAEJAAEJAAELAAELAAENAAENAAEPAAEPAAERAAERAAETAAETAAEVAAEV' +
   'AAEXAAEXAAEZAAEZAAEbAAEbAAEdAAEdAAEfAAEfAAEhAAEhAAEjAAEjAAElAAElAAEnAAEnAAEpAAEpAAErAAErAAEtAAEtAAEvAAEvAAExAAExAAEzAAEz' +
   'AAE1AAE1AAE3AAE4AAE6AAE6AAE8AAE8AAE+AAE+AAFAAAFAAAFCAAFCAAFEAAFEAAFGAAFGAAFIAAFJAAFLAAFLAAFNAAFNAAFPAAFPAAFRAAFRAAFTAAFT' +
@@ -164,12 +175,12 @@ export const lowercaseLetterRanges: GraphemeRange[] = decodeBase64Ranges(
 );
 
 /** Lt: 10 ranges, 31 code points @internal */
-export const titlecaseLetterRanges: GraphemeRange[] = decodeBase64Ranges(
+export const titlecaseLetterRanges: () => GraphemeRange[] = lazy(
   'AAHFAAHFAAHIAAHIAAHLAAHLAAHyAAHyAB+IAB+PAB+YAB+fAB+oAB+vAB+8AB+8AB/MAB/MAB/8AB/8',
 );
 
 /** Lm: 79 ranges, 410 code points @internal */
-export const modifierLetterRanges: GraphemeRange[] = decodeBase64Ranges(
+export const modifierLetterRanges: () => GraphemeRange[] = lazy(
   'AAKwAALBAALGAALRAALgAALkAALsAALsAALuAALuAAN0AAN0AAN6AAN6AAVZAAVZAAZAAAZAAAblAAbmAAf0AAf1AAf6AAf6AAgaAAgaAAgkAAgkAAgoAAgo' +
   'AAjJAAjJAAlxAAlxAA5GAA5GAA7GAA7GABD8ABD8ABfXABfXABhDABhDABqnABqnABx4ABx9AB0sAB1qAB14AB14AB2bAB2/ACBxACBxACB/ACB/ACCQACCc' +
   'ACx8ACx9AC1vAC1vAC4vAC4vADAFADAFADAxADA1ADA7ADA7ADCdADCeADD8ADD+AKAVAKAVAKT4AKT9AKYMAKYMAKZ/AKZ/AKacAKadAKcXAKcfAKdwAKdw' +
@@ -179,7 +190,7 @@ export const modifierLetterRanges: GraphemeRange[] = decodeBase64Ranges(
 );
 
 /** Lo: 537 ranges, 141062 code points @internal */
-export const otherLetterRanges: GraphemeRange[] = decodeBase64Ranges(
+export const otherLetterRanges: () => GraphemeRange[] = lazy(
   'AACqAACqAAC6AAC6AAG7AAG7AAHAAAHDAAKUAAKVAAXQAAXqAAXvAAXyAAYgAAY/AAZBAAZKAAZuAAZvAAZxAAbTAAbVAAbVAAbuAAbvAAb6AAb8AAb/AAb/' +
   'AAcQAAcQAAcSAAcvAAdNAAelAAexAAexAAfKAAfqAAgAAAgVAAhAAAhYAAhgAAhqAAhwAAiHAAiJAAiPAAigAAjIAAkEAAk5AAk9AAk9AAlQAAlQAAlYAAlh' +
   'AAlyAAmAAAmFAAmMAAmPAAmQAAmTAAmoAAmqAAmwAAmyAAmyAAm2AAm5AAm9AAm9AAnOAAnOAAncAAndAAnfAAnhAAnwAAnxAAn8AAn8AAoFAAoKAAoPAAoQ' +
