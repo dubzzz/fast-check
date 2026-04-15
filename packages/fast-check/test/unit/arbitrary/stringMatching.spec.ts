@@ -89,6 +89,21 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
     { regex: /^[\p{Letter}\d]+$/u },
     { regex: /^\p{Ll}{3,6}$/u },
     { regex: /^\p{Lu}\p{Ll}+$/u },
+    // Unicode Script properties
+    { regex: /^\p{Script=Latin}+$/u },
+    { regex: /^\p{sc=Greek}+$/u },
+    { regex: /^\p{Script=Cyrillic}+$/u },
+    // Unicode binary properties
+    { regex: /^\p{Alphabetic}+$/u },
+    { regex: /^\p{Emoji}+$/u },
+    { regex: /^\p{ASCII}+$/u },
+    // Negated Script / binary
+    { regex: /^\P{Script=Latin}+$/u },
+    { regex: /^\P{Emoji}+$/u },
+    // Other General_Category values
+    { regex: /^\p{Number}+$/u },
+    { regex: /^\p{Nd}+$/u },
+    { regex: /^\p{Punctuation}+$/u },
   );
 }
 

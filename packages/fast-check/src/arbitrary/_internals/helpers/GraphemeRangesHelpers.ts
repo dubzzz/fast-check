@@ -25,42 +25,6 @@ export function convertGraphemeRangeToMapToConstantEntry(range: GraphemeRange): 
 }
 
 /**
- * Merge multiple sorted, non-overlapping range arrays into a single sorted, non-overlapping array.
- * Input arrays must each be sorted and non-overlapping; they may overlap between each other.
- * @internal
- */
-export function unionGraphemeRanges(...allRanges: GraphemeRange[][]): GraphemeRange[] {
-  const flat: GraphemeRange[] = [];
-  for (let i = 0; i < allRanges.length; ++i) {
-    for (let j = 0; j < allRanges[i].length; ++j) {
-      safePush(flat, allRanges[i][j]);
-    }
-  }
-  flat.sort((a, b) => a[0] - b[0]);
-
-  const merged: GraphemeRange[] = [];
-  for (let i = 0; i < flat.length; ++i) {
-    const cur = flat[i];
-    const curMin = cur[0];
-    const curMax = cur.length === 1 ? cur[0] : cur[1];
-    if (merged.length === 0) {
-      safePush(merged, curMin === curMax ? [curMin] : [curMin, curMax]);
-    } else {
-      const last = merged[merged.length - 1];
-      const lastMax = last.length === 1 ? last[0] : last[1];
-      if (curMin <= lastMax + 1) {
-        const newMax = safeMathMax(lastMax, curMax);
-        safePop(merged);
-        safePush(merged, last[0] === newMax ? [last[0]] : [last[0], newMax]);
-      } else {
-        safePush(merged, curMin === curMax ? [curMin] : [curMin, curMax]);
-      }
-    }
-  }
-  return merged;
-}
-
-/**
  * Compute the complement of sorted, non-overlapping ranges within a given universe.
  * Universe is the set of all valid code points: [0x0000, 0xD7FF] and [0xE000, 0x10FFFF].
  * @internal
