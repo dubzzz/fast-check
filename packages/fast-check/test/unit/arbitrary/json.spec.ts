@@ -35,9 +35,8 @@ describe('json (integration)', () => {
   );
 
   const isCorrect = (v: string, extra: Extra) => {
-    // Parsing must not throw — this validates the output is valid JSON
+    // JSON.parse not throwing validates the output is valid JSON
     const parsed = JSON.parse(v);
-    expect(typeof parsed).not.toBe('undefined');
 
     if (extra !== undefined && extra.maxDepth !== undefined) {
       expect(computeObjectDepth(parsed)).toBeLessThanOrEqual(extra.maxDepth);
