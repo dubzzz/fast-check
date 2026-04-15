@@ -635,7 +635,7 @@ async function runSpec(
   opts: { jestSeed?: number; testTimeoutCLI?: number } = {},
 ): Promise<string> {
   try {
-    const { stderr: specOutput } = await execFile(
+    const { stdout, stderr } = await execFile(
       'node',
       [
         '../../node_modules/jest/bin/jest.js',
@@ -647,7 +647,7 @@ async function runSpec(
       ],
       { cwd: specDirectory },
     );
-    return specOutput;
+    return stdout + stderr;
   } catch (err) {
     return ((err as any).stdout || '') + ((err as any).stderr || '');
   }
