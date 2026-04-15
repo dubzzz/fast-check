@@ -295,7 +295,12 @@ function getCanonicalName(name: string): string {
   if (name in BINARY_ALIASES_TO_PROP_NAMES) {
     return BINARY_ALIASES_TO_PROP_NAMES[name];
   }
-  if (name in BINARY_PROP_NAMES_TO_ALIASES || name === 'General_Category' || name === 'Script' || name === 'Script_Extensions') {
+  if (
+    name in BINARY_PROP_NAMES_TO_ALIASES ||
+    name === 'General_Category' ||
+    name === 'Script' ||
+    name === 'Script_Extensions'
+  ) {
     return name;
   }
   throw new Error(`Unknown Unicode property name: ${name}`);
@@ -311,7 +316,11 @@ function getCanonicalValue(value: string): string {
   if (value in BINARY_ALIASES_TO_PROP_NAMES) {
     return BINARY_ALIASES_TO_PROP_NAMES[value];
   }
-  if (value in GENERAL_CATEGORY_VALUE_TO_ALIASES || value in SCRIPT_VALUE_TO_ALIASES || value in BINARY_PROP_NAMES_TO_ALIASES) {
+  if (
+    value in GENERAL_CATEGORY_VALUE_TO_ALIASES ||
+    value in SCRIPT_VALUE_TO_ALIASES ||
+    value in BINARY_PROP_NAMES_TO_ALIASES
+  ) {
     return value;
   }
   throw new Error(`Unknown Unicode property value: ${value}`);
