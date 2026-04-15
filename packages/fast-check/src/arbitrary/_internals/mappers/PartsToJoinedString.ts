@@ -66,10 +66,12 @@ export function partsToJoinedStringUnmapperFor(
 ): (value: unknown) => string[] {
   // Precompute suffix sums of min/max lengths
   const n = arbitraries.length;
-  const suffixMinLengths = new Array<number>(n + 1);
-  const suffixMaxLengths = new Array<number>(n + 1);
-  suffixMinLengths[n] = 0;
-  suffixMaxLengths[n] = 0;
+  const suffixMinLengths: number[] = [];
+  const suffixMaxLengths: number[] = [];
+  for (let i = 0; i <= n; ++i) {
+    suffixMinLengths[i] = 0;
+    suffixMaxLengths[i] = 0;
+  }
   for (let i = n - 1; i >= 0; --i) {
     suffixMinLengths[i] = suffixMinLengths[i + 1] + minLengths[i];
     const nextMax = suffixMaxLengths[i + 1];
