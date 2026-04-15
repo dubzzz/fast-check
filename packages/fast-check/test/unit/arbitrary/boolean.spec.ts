@@ -48,8 +48,11 @@ describe('boolean', () => {
     const unmapper = map.mock.calls[0][1]!;
 
     // Assert
-    expect(unmapper(false)).toBe(0);
-    expect(unmapper(true)).toBe(1);
+    const guard = (condition: boolean) => {
+      if (!condition) throw new Error();
+    };
+    expect(unmapper(false, guard as any)).toBe(0);
+    expect(unmapper(true, guard as any)).toBe(1);
   });
 });
 

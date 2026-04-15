@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Arbitrary } from '../../../../../src/check/arbitrary/definition/Arbitrary.js';
+import type { UnmapGuard } from '../../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
 import { Stream } from '../../../../../src/stream/Stream.js';
 import * as stubRng from '../../../stubs/generators.js';
@@ -424,7 +425,7 @@ describe('NextArbitrary', () => {
       // Act
       const arb = new MyNextArbitrary().map(
         (v) => String(v),
-        (value, guard) => {
+        (value: unknown, guard: UnmapGuard) => {
           guard(typeof value === 'string');
           return Number(value);
         },
@@ -451,7 +452,7 @@ describe('NextArbitrary', () => {
       // Act
       const arb = new MyNextArbitrary().map(
         (v) => String(v),
-        (value, guard) => {
+        (value: unknown, guard: UnmapGuard) => {
           guard(typeof value === 'string');
           return Number(value);
         },
@@ -477,7 +478,7 @@ describe('NextArbitrary', () => {
       // Act
       const arb = new MyNextArbitrary().map(
         (v) => String(v),
-        (value, guard) => {
+        (value: unknown, guard: UnmapGuard) => {
           guard(typeof value === 'string', 'Expected a string');
           return Number(value);
         },
@@ -506,7 +507,7 @@ describe('NextArbitrary', () => {
       // Act
       const arb = new MyNextArbitrary().map(
         (v: number) => String(v),
-        (value, guard) => {
+        (value: unknown, guard: UnmapGuard) => {
           guard(typeof value === 'string');
           return Number(value);
         },
