@@ -100,9 +100,39 @@ describe('tokenizeRegex', () => {
     { regex: /(?<label>[A-Z][a-z]*) \k<label>/ },
     { regex: /(?<la>[A-Z][a-z]*) (?<lb>[A-Z][a-z]*) \k<lb> \k<la>/ },
     // @ts-expect-error Missing unicode mode on Regex
-    { regex: /\P{Emoji_Presentation}/, expectThrowUnicode: true }, // not supported for now
+    { regex: /\P{Emoji_Presentation}/ },
     // @ts-expect-error Missing unicode mode on Regex
-    { regex: /\P{Script_Extensions=Thaana}/, expectThrowUnicode: true }, // not supported for now
+    { regex: /\P{Script_Extensions=Thaana}/ },
+    // Unicode property escapes - General Category
+    { regex: /\p{Letter}/u },
+    { regex: /\p{L}/u },
+    { regex: /\p{Uppercase_Letter}/u },
+    { regex: /\p{Lu}/u },
+    { regex: /\p{Lowercase_Letter}/u },
+    { regex: /\p{Decimal_Number}/u },
+    { regex: /\p{Punctuation}/u },
+    { regex: /\p{General_Category=Letter}/u },
+    { regex: /\p{gc=L}/u },
+    // Unicode property escapes - Binary properties
+    { regex: /\p{ASCII}/u },
+    { regex: /\p{Emoji}/u },
+    { regex: /\p{Alphabetic}/u },
+    { regex: /\p{White_Space}/u },
+    // Unicode property escapes - Script
+    { regex: /\p{Script=Latin}/u },
+    { regex: /\p{sc=Latin}/u },
+    { regex: /\p{Script=Greek}/u },
+    // Unicode property escapes - Script Extensions
+    { regex: /\p{Script_Extensions=Latin}/u },
+    { regex: /\p{scx=Thaana}/u },
+    // Unicode property escapes - Negation
+    { regex: /\P{Letter}/u },
+    { regex: /\P{Emoji}/u },
+    { regex: /\P{Script=Latin}/u },
+    // Unicode property escapes - inside character classes
+    { regex: /[\p{Letter}\d]/u },
+    { regex: /[\p{Emoji}abc]/u },
+    { regex: /[^\p{ASCII}]/u },
   ];
 
   describe('non-unicode regex', () => {
@@ -118,14 +148,10 @@ describe('tokenizeRegex', () => {
   describe('unicode regex', () => {
     it.each(allRegexes.filter((i) => !i.invalidWithUnicode))(
       'should properly tokenize the regex $regex in unicode mode',
-      ({ regex, expectThrowUnicode }) => {
+      ({ regex }) => {
         const unicodeRegex = new RegExp(regex, 'u');
-        if (!expectThrowUnicode) {
-          const tokenized = tokenizeRegex(unicodeRegex);
-          expect(tokenized).toEqual(parse(unicodeRegex).body);
-        } else {
-          expect(() => tokenizeRegex(unicodeRegex)).toThrowError();
-        }
+        const tokenized = tokenizeRegex(unicodeRegex);
+        expect(tokenized).toEqual(parse(unicodeRegex).body);
       },
     );
 

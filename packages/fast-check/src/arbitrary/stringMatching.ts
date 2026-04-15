@@ -196,6 +196,9 @@ function toMatchingArbitrary(
     case 'Backreference': {
       throw new Error(`Backreference nodes not implemented yet!`);
     }
+    case 'UnicodeProperty': {
+      throw new Error(`UnicodeProperty not supported yet in stringMatching!`);
+    }
     default: {
       throw raiseUnsupportedASTNode(astNode);
     }

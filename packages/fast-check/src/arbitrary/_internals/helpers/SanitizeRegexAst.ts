@@ -98,6 +98,8 @@ function addMissingDotStarTraversal(
     }
     case 'Backreference':
       return astNode;
+    case 'UnicodeProperty':
+      return astNode;
     default:
       throw raiseUnsupportedASTNode(astNode);
   }
