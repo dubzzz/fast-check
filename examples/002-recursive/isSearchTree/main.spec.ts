@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import _ from 'lodash';
 import { binarySearchTreeWithMaxDepth } from './arbitraries/BinarySearchTreeArbitrary.js';
 import { isSearchTree, Tree } from './src/isSearchTree.js';
-import { binaryTreeWithMaxDepth } from './arbitraries/BinaryTreeArbitrary.js';
+import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary.js';
 
 describe('isSearchTree', () => {
   it('should accept valid binary search trees', () => {
@@ -17,6 +17,15 @@ describe('isSearchTree', () => {
   it('should reject trees with unordered in-order traversal', () => {
     fc.assert(
       fc.property(binaryTreeWithMaxDepth(3), (tree) => {
+        fc.pre(!isSorted(traversal(tree, (t) => t.value)));
+        return !isSearchTree(tree);
+      }),
+    );
+  });
+
+  it('should reject trees with unordered in-order traversal (depthSize)', () => {
+    fc.assert(
+      fc.property(binaryTreeWithoutMaxDepth(), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
       }),
