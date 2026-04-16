@@ -1,0 +1,29 @@
+name: Clean Caches
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  clean_caches:
+    name: 'Clean all caches'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean caches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          echo "Fetching list of cache keys..."
+          cache_keys=$(gh cache list --limit 100 --json key --jq '.[].key')
+          while [ -n "$cache_keys" ]; do
+            echo "$cache_keys" | while IFS= read -r key; do
+              echo "Deleting cache: $key"
+              gh cache delete "$key" || true
+            done
+            echo "Checking for remaining caches..."
+            cache_keys=$(gh cache list --limit 100 --json key --jq '.[].key')
+          done
+          echo "All caches have been deleted."
