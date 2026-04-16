@@ -171,4 +171,177 @@ describe('tokenizeRegex', () => {
       expect(tokenizedRevampedUpdated).toEqual(tokenized);
     });
   });
+
+  describe('unicodeSets regex (v flag)', () => {
+    // For regexes whose shape is identical under u and v (no v-only syntax),
+    // the only AST diff is `unicodeSets: true` added to character class nodes.
+    // We tokenize both and assert structural equality after stripping that flag.
+    function stripUnicodeSetsFlag(node: unknown): unknown {
+      if (Array.isArray(node)) return node.map(stripUnicodeSetsFlag);
+      if (node !== null && typeof node === 'object') {
+        const out: Record<string, unknown> = {};
+        for (const k of Object.keys(node as Record<string, unknown>)) {
+          if (k === 'unicodeSets') continue;
+          out[k] = stripUnicodeSetsFlag((node as Record<string, unknown>)[k]);
+        }
+        return out;
+      }
+      return node;
+    }
+
+    it.each`
+      source
+      ${'abc'}
+      ${'a|b|c'}
+      ${'(foo)+'}
+      ${'\\d{2,4}'}
+      ${'[a-z]'}
+      ${'[^A-Za-z0-9_]'}
+      ${'\\p{Letter}'}
+      ${'(?<name>x)'}
+    `('should tokenize $source identically under /v and /u (modulo unicodeSets flag)', ({ source }) => {
+      const vRegex = new RegExp(source, 'v');
+      const uRegex = new RegExp(source, 'u');
+      const vTokenized = tokenizeRegex(vRegex);
+      const uTokenized = tokenizeRegex(uRegex);
+      expect(stripUnicodeSetsFlag(vTokenized)).toEqual(uTokenized);
+    });
+
+    it('should tokenize a nested character class', () => {
+      const tokenized = tokenizeRegex(new RegExp('[[abc]]', 'v'));
+      expect(tokenized).toEqual({
+        type: 'CharacterClass',
+        unicodeSets: true,
+        negative: undefined,
+        expressions: [
+          {
+            type: 'CharacterClass',
+            unicodeSets: true,
+            negative: undefined,
+            expressions: [
+              { type: 'Char', kind: 'simple', symbol: 'a', value: 'a', codePoint: 97 },
+              { type: 'Char', kind: 'simple', symbol: 'b', value: 'b', codePoint: 98 },
+              { type: 'Char', kind: 'simple', symbol: 'c', value: 'c', codePoint: 99 },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should tokenize a class intersection', () => {
+      const tokenized = tokenizeRegex(new RegExp('[[a-z]&&[^aeiou]]', 'v'));
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        unicodeSets: true,
+        expressions: [
+          {
+            type: 'ClassIntersection',
+            left: { type: 'CharacterClass', unicodeSets: true },
+            right: { type: 'CharacterClass', unicodeSets: true, negative: true },
+          },
+        ],
+      });
+    });
+
+    it('should tokenize a class subtraction', () => {
+      const tokenized = tokenizeRegex(new RegExp('[[a-z]--[aeiou]]', 'v'));
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        unicodeSets: true,
+        expressions: [
+          {
+            type: 'ClassSubtraction',
+            left: { type: 'CharacterClass', unicodeSets: true },
+            right: { type: 'CharacterClass', unicodeSets: true },
+          },
+        ],
+      });
+    });
+
+    it('should tokenize a chained intersection left-associatively', () => {
+      const tokenized = tokenizeRegex(new RegExp('[[a-z]&&[b-y]&&[c-x]]', 'v'));
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        unicodeSets: true,
+        expressions: [
+          {
+            type: 'ClassIntersection',
+            left: {
+              type: 'ClassIntersection',
+              left: { type: 'CharacterClass' },
+              right: { type: 'CharacterClass' },
+            },
+            right: { type: 'CharacterClass' },
+          },
+        ],
+      });
+    });
+
+    it('should tokenize a \\q{...} string literal in a class', () => {
+      const tokenized = tokenizeRegex(new RegExp('[\\q{abc|def}]', 'v'));
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        unicodeSets: true,
+        expressions: [
+          {
+            type: 'ClassStrings',
+            raw: 'abc|def',
+            expressions: [
+              [
+                { type: 'Char', kind: 'simple', symbol: 'a' },
+                { type: 'Char', kind: 'simple', symbol: 'b' },
+                { type: 'Char', kind: 'simple', symbol: 'c' },
+              ],
+              [
+                { type: 'Char', kind: 'simple', symbol: 'd' },
+                { type: 'Char', kind: 'simple', symbol: 'e' },
+                { type: 'Char', kind: 'simple', symbol: 'f' },
+              ],
+            ],
+          },
+        ],
+      });
+    });
+
+    it('should tokenize a class mixing literal char, range, and \\q{}', () => {
+      const tokenized = tokenizeRegex(new RegExp('[a\\q{bc}d-f]', 'v'));
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        unicodeSets: true,
+        expressions: [
+          { type: 'Char', symbol: 'a' },
+          { type: 'ClassStrings', raw: 'bc' },
+          { type: 'ClassRange', from: { symbol: 'd' }, to: { symbol: 'f' } },
+        ],
+      });
+    });
+
+    it('should tokenize a string-valued unicode property', () => {
+      const tokenized = tokenizeRegex(new RegExp('\\p{RGI_Emoji}', 'v'));
+      expect(tokenized).toMatchObject({
+        type: 'UnicodeProperty',
+        name: 'RGI_Emoji',
+        binary: true,
+        isString: true,
+        negative: false,
+      });
+    });
+
+    it('should reject \\p{RGI_Emoji} when not in v mode', () => {
+      // We can't construct /\p{RGI_Emoji}/u — Node throws. Build it manually.
+      const regex = Object.create(RegExp.prototype) as RegExp;
+      Object.defineProperty(regex, 'flags', { value: 'u' });
+      Object.defineProperty(regex, 'source', { value: '\\p{RGI_Emoji}' });
+      expect(() => tokenizeRegex(regex)).toThrowError(/Invalid Unicode property/);
+    });
+
+    it('should reject \\P{RGI_Emoji} (negated string property) under v', () => {
+      // /\P{RGI_Emoji}/v is itself rejected by the RegExp constructor in Node.
+      // Build it manually to exercise the tokenizer-side guard.
+      const regex = Object.create(RegExp.prototype) as RegExp;
+      Object.defineProperty(regex, 'flags', { value: 'v' });
+      Object.defineProperty(regex, 'source', { value: '\\P{RGI_Emoji}' });
+      expect(() => tokenizeRegex(regex)).toThrowError(/negation of string-valued/);
+    });
+  });
 });

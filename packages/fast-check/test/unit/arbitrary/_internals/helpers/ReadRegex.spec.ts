@@ -55,11 +55,31 @@ describe('readFrom', () => {
   `('should properly extract first block of "$source"', ({ source, expected }) => {
     const expectedNonUnicode = typeof expected === 'string' ? expected : expected[0];
     const expectedUnicode = typeof expected === 'string' ? expected : expected[1];
-    expect(readFrom(source, 0, false, TokenizerBlockMode.Full)).toBe(expectedNonUnicode);
+    expect(readFrom(source, 0, false, false, TokenizerBlockMode.Full)).toBe(expectedNonUnicode);
     if (expectedUnicode !== null) {
-      expect(readFrom(source, 0, true, TokenizerBlockMode.Full)).toBe(expectedUnicode);
+      expect(readFrom(source, 0, true, false, TokenizerBlockMode.Full)).toBe(expectedUnicode);
     } else {
-      expect(() => readFrom(source, 0, true, TokenizerBlockMode.Full)).toThrowError();
+      expect(() => readFrom(source, 0, true, false, TokenizerBlockMode.Full)).toThrowError();
     }
+  });
+
+  describe('unicodeSets mode (v flag)', () => {
+    it.each`
+      source                       | expected
+      ${'\\q{a}'}                  | ${'\\q{a}'}
+      ${'\\q{abc}'}                | ${'\\q{abc}'}
+      ${'\\q{abc|def}'}            | ${'\\q{abc|def}'}
+      ${'\\q{}'}                   | ${'\\q{}'}
+      ${'\\q{|abc}'}               | ${'\\q{|abc}'}
+      ${'\\q{ab\\}cd}'}            | ${'\\q{ab\\}cd}'}
+      ${'[[a]]'}                   | ${'[[a]]'}
+      ${'[[a][b]]'}                | ${'[[a][b]]'}
+      ${'[[a-z]&&[^aeiou]]'}       | ${'[[a-z]&&[^aeiou]]'}
+      ${'[[a-z]--[aeiou]]'}        | ${'[[a-z]--[aeiou]]'}
+      ${'[[[[a]]]]'}               | ${'[[[[a]]]]'}
+      ${'[\\q{abc}]'}              | ${'[\\q{abc}]'}
+    `('should properly extract first block of "$source" in unicodeSets mode', ({ source, expected }) => {
+      expect(readFrom(source, 0, true, true, TokenizerBlockMode.Full)).toBe(expected);
+    });
   });
 });

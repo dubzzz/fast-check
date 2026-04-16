@@ -24,14 +24,19 @@ function isDigit(char: string): boolean {
 /**
  * Find the index of the last character of a squared-bracket "[]" block.
  * The returned index corresponds to the one of the ] closing the block.
+ *
+ * Under unicodeSets mode (v flag), nested character classes are valid syntax,
+ * so a `[` opens a recursive sub-class instead of being a literal character.
  */
-function squaredBracketBlockContentEndFrom(text: string, from: number): number {
+function squaredBracketBlockContentEndFrom(text: string, from: number, unicodeSetsMode: boolean): number {
   for (let index = from; index !== text.length; ++index) {
     const char = text[index];
     if (char === '\\') {
       index += 1;
     } else if (char === ']') {
       return index;
+    } else if (char === '[' && unicodeSetsMode) {
+      index = squaredBracketBlockContentEndFrom(text, index + 1, unicodeSetsMode);
     }
   }
   throw new Error(`Missing closing ']'`);
@@ -41,7 +46,7 @@ function squaredBracketBlockContentEndFrom(text: string, from: number): number {
  * Find the index of the last character of a parenthesis "()" block.
  * The returned index corresponds to the one of the ) closing the block.
  */
-function parenthesisBlockContentEndFrom(text: string, from: number): number {
+function parenthesisBlockContentEndFrom(text: string, from: number, unicodeSetsMode: boolean): number {
   let numExtraOpened = 0;
   for (let index = from; index !== text.length; ++index) {
     const char = text[index];
@@ -53,7 +58,7 @@ function parenthesisBlockContentEndFrom(text: string, from: number): number {
       }
       numExtraOpened -= 1;
     } else if (char === '[') {
-      index = squaredBracketBlockContentEndFrom(text, index);
+      index = squaredBracketBlockContentEndFrom(text, index + 1, unicodeSetsMode);
     } else if (char === '(') {
       numExtraOpened += 1;
     }
@@ -95,13 +100,19 @@ export enum TokenizerBlockMode {
 /**
  * Find the index past-one of the last character of the block starting at index "from" in "text"
  */
-function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: TokenizerBlockMode): number {
+function blockEndFrom(
+  text: string,
+  from: number,
+  unicodeMode: boolean,
+  unicodeSetsMode: boolean,
+  mode: TokenizerBlockMode,
+): number {
   switch (text[from]) {
     case '[': {
       if (mode === TokenizerBlockMode.Character) {
         return from + 1;
       }
-      return squaredBracketBlockContentEndFrom(text, from + 1) + 1;
+      return squaredBracketBlockContentEndFrom(text, from + 1, unicodeSetsMode) + 1;
     }
     case '{': {
       if (mode === TokenizerBlockMode.Character) {
@@ -117,7 +128,7 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
       if (mode === TokenizerBlockMode.Character) {
         return from + 1;
       }
-      return parenthesisBlockContentEndFrom(text, from + 1) + 1;
+      return parenthesisBlockContentEndFrom(text, from + 1, unicodeSetsMode) + 1;
     }
     case ']':
     case '}':
@@ -213,6 +224,26 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
           }
           return subIndex + 1;
         }
+        case 'q': {
+          // \q{...} string-alternation literal: only valid inside character classes under v.
+          // Outside of a class the RegExp constructor would reject it; we still treat it as a normal
+          // escaped char when not in unicodeSets mode.
+          if (!unicodeSetsMode) {
+            const charSize = unicodeMode ? charSizeAt(text, from + 1) : 1;
+            return from + charSize + 1;
+          }
+          if (text[from + 2] !== '{') {
+            throw new Error(`Invalid \\q definition`);
+          }
+          let subIndex = from + 3;
+          for (; subIndex < text.length && text[subIndex] !== '}'; subIndex += text[subIndex] === '\\' ? 2 : 1) {
+            // nothing
+          }
+          if (text[subIndex] !== '}') {
+            throw new Error(`Invalid \\q definition`);
+          }
+          return subIndex + 1;
+        }
         default: {
           if (isDigit(next1)) {
             const maxIndex = unicodeMode ? text.length : Math.min(from + 4, text.length);
@@ -238,7 +269,13 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
  * Extract the block starting at "from" in "text"
  * @internal
  */
-export function readFrom(text: string, from: number, unicodeMode: boolean, mode: TokenizerBlockMode): string {
-  const to = blockEndFrom(text, from, unicodeMode, mode);
+export function readFrom(
+  text: string,
+  from: number,
+  unicodeMode: boolean,
+  unicodeSetsMode: boolean,
+  mode: TokenizerBlockMode,
+): string {
+  const to = blockEndFrom(text, from, unicodeMode, unicodeSetsMode, mode);
   return text.substring(from, to);
 }

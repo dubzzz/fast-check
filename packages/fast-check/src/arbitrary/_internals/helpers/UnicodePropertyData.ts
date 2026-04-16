@@ -326,6 +326,26 @@ function getCanonicalValue(value: string): string {
   throw new Error(`Unknown Unicode property value: ${value}`);
 }
 
+/**
+ * String-valued binary properties available only under the `v` (unicodeSets) flag.
+ * Each value matches a sequence of one or more code points, hence "isString".
+ * @internal
+ */
+const STRING_VALUED_BINARY_PROP_NAMES: Record<string, true> = {
+  Basic_Emoji: true,
+  Emoji_Keycap_Sequence: true,
+  RGI_Emoji: true,
+  RGI_Emoji_Flag_Sequence: true,
+  RGI_Emoji_Modifier_Sequence: true,
+  RGI_Emoji_Tag_Sequence: true,
+  RGI_Emoji_ZWJ_Sequence: true,
+};
+
+/** @internal */
+function isStringValuedBinaryPropertyName(name: string): boolean {
+  return Object.prototype.hasOwnProperty.call(STRING_VALUED_BINARY_PROP_NAMES, name);
+}
+
 /** @internal */
 export type ResolvedUnicodeProperty = {
   type: 'UnicodeProperty';
@@ -336,6 +356,7 @@ export type ResolvedUnicodeProperty = {
   binary: boolean;
   canonicalName: string;
   canonicalValue: string;
+  isString?: true;
 };
 
 /**
@@ -344,9 +365,14 @@ export type ResolvedUnicodeProperty = {
  *
  * @param propertySpec - The content between \p\{ and \}, e.g. "Letter", "Script=Latin", "Emoji"
  * @param negative - true for \P\{\}, false for \p\{\}
+ * @param unicodeSetsMode - true when the regex uses the `v` flag; enables string-valued properties
  * @internal
  */
-export function resolveUnicodeProperty(propertySpec: string, negative: boolean): ResolvedUnicodeProperty {
+export function resolveUnicodeProperty(
+  propertySpec: string,
+  negative: boolean,
+  unicodeSetsMode: boolean,
+): ResolvedUnicodeProperty {
   const equalIndex = propertySpec.indexOf('=');
   if (equalIndex !== -1) {
     // Explicit form: \p{Name=Value}
@@ -375,6 +401,27 @@ export function resolveUnicodeProperty(propertySpec: string, negative: boolean):
       binary: false,
       canonicalName: 'General_Category',
       canonicalValue: getCanonicalValue(propertySpec),
+    };
+  }
+
+  if (isStringValuedBinaryPropertyName(propertySpec)) {
+    if (!unicodeSetsMode) {
+      throw new Error(`Invalid Unicode property: ${propertySpec}`);
+    }
+    if (negative) {
+      // ECMAScript forbids \P{StringProperty} under the v flag.
+      throw new Error(`Invalid negation of string-valued Unicode property: ${propertySpec}`);
+    }
+    return {
+      type: 'UnicodeProperty',
+      name: propertySpec,
+      value: propertySpec,
+      negative,
+      shorthand: false,
+      binary: true,
+      canonicalName: propertySpec,
+      canonicalValue: propertySpec,
+      isString: true,
     };
   }
 

@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
 
@@ -6,6 +6,43 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions.js';
+
+describe('stringMatching (v flag)', () => {
+  // Avoid /.../v regex literals: the repo targets ES2020 and `v` is ES2024. Build with RegExp instead.
+  const vRegex = (source: string) => new RegExp(source, 'v');
+
+  it('should accept the v flag on a simple regex', () => {
+    expect(() => stringMatching(vRegex('abc'))).not.toThrow();
+  });
+
+  it('should accept the v flag on a simple character class', () => {
+    expect(() => stringMatching(vRegex('[a-z]'))).not.toThrow();
+  });
+
+  it('should still reject unsupported flags like i', () => {
+    expect(() => stringMatching(/abc/i)).toThrowError(/flag i/);
+  });
+
+  it('should throw for nested character classes (not supported yet)', () => {
+    expect(() => stringMatching(vRegex('[[a]]'))).toThrowError(/v-only constructs/);
+  });
+
+  it('should throw for class intersection (not supported yet)', () => {
+    expect(() => stringMatching(vRegex('[[a-z]&&[^aeiou]]'))).toThrowError(/v-only constructs/);
+  });
+
+  it('should throw for class subtraction (not supported yet)', () => {
+    expect(() => stringMatching(vRegex('[[a-z]--[aeiou]]'))).toThrowError(/v-only constructs/);
+  });
+
+  it('should throw for \\q{...} string literals (not supported yet)', () => {
+    expect(() => stringMatching(vRegex('[\\q{ab}]'))).toThrowError(/v-only constructs/);
+  });
+
+  it('should throw for string-valued unicode properties (not supported yet)', () => {
+    expect(() => stringMatching(vRegex('\\p{RGI_Emoji}'))).toThrowError(/String-valued UnicodeProperty/);
+  });
+});
 
 describe('stringMatching (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc.oneof(hardcodedRegex(), regexBasedOnChunks());

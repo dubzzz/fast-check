@@ -58,11 +58,29 @@ type CharacterClassRegexToken = {
   type: 'CharacterClass';
   expressions: RegexToken[];
   negative?: true;
+  unicodeSets?: true;
 };
 type ClassRangeRegexToken = {
   type: 'ClassRange';
   from: CharRegexToken;
   to: CharRegexToken;
+};
+type ClassStringsRegexToken = {
+  type: 'ClassStrings';
+  // Each alternative is a sequence of CharRegexToken.
+  // An empty alternative (e.g. `\q{|abc}`) is represented by an empty array.
+  expressions: CharRegexToken[][];
+  raw: string;
+};
+type ClassIntersectionRegexToken = {
+  type: 'ClassIntersection';
+  left: RegexToken;
+  right: RegexToken;
+};
+type ClassSubtractionRegexToken = {
+  type: 'ClassSubtraction';
+  left: RegexToken;
+  right: RegexToken;
 };
 type GroupRegexToken =
   | {
@@ -128,7 +146,10 @@ export type RegexToken =
   | DisjunctionRegexToken
   | AssertionRegexToken
   | BackreferenceRegexToken
-  | UnicodePropertyRegexToken;
+  | UnicodePropertyRegexToken
+  | ClassStringsRegexToken
+  | ClassIntersectionRegexToken
+  | ClassSubtractionRegexToken;
 
 /**
  * Create a simple char token
@@ -176,7 +197,7 @@ function toSingleToken(tokens: RegexToken[], allowEmpty?: boolean): RegexToken |
  * Create a character token based on a full block.
  * This function does not check the block itself, only call it with valid blocks.
  */
-function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexToken {
+function blockToCharToken(block: string, unicodeSetsMode: boolean): CharRegexToken | UnicodePropertyRegexToken {
   if (block[0] === '\\') {
     const next = block[1];
     switch (next) {
@@ -234,7 +255,7 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
         if (block.length > 2 && (next === 'p' || next === 'P')) {
           const negative = next === 'P';
           const propertySpec = block.substring(3, block.length - 1);
-          return resolveUnicodeProperty(propertySpec, negative);
+          return resolveUnicodeProperty(propertySpec, negative, unicodeSetsMode);
         }
         const char = block.substring(1); // TODO - Properly handle unicode
         return simpleChar(char, true);
@@ -245,19 +266,165 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
 }
 
 /**
+ * Parse the inner content of a character class under unicodeSets (v) mode.
+ * Recursive-descent parser handling nested classes, set operations (&&, --),
+ * \q{...} string-alternation literals, ranges and single class elements.
+ */
+function parseCharacterClass(
+  content: string,
+  unicodeMode: boolean,
+  unicodeSetsMode: boolean,
+): CharacterClassRegexToken {
+  const cursor = { index: 0 };
+  let negative: true | undefined = undefined;
+  if (content[0] === '^') {
+    negative = true;
+    cursor.index = 1;
+  }
+
+  // Empty class body, e.g. [^]
+  if (cursor.index === content.length) {
+    return { type: 'CharacterClass', expressions: [], negative, unicodeSets: true };
+  }
+
+  const first = parseClassOperand(content, cursor, unicodeMode, unicodeSetsMode);
+  const op = peekClassSetOperator(content, cursor.index);
+
+  if (op === null) {
+    // Union sequence: list of operands.
+    const expressions: RegexToken[] = [first];
+    while (cursor.index < content.length) {
+      // Defensive: if a stray && or -- shows up after a union start, RegExp would have rejected.
+      if (peekClassSetOperator(content, cursor.index) !== null) {
+        throw new Error(`Mixed or misplaced set operator in character class`);
+      }
+      expressions.push(parseClassOperand(content, cursor, unicodeMode, unicodeSetsMode));
+    }
+    return { type: 'CharacterClass', expressions, negative, unicodeSets: true };
+  }
+
+  // Intersection or subtraction chain (left-associative, no operator mixing).
+  let acc: RegexToken = first;
+  while (cursor.index < content.length) {
+    const opHere = peekClassSetOperator(content, cursor.index);
+    if (opHere !== op) {
+      throw new Error(`Mixed or missing set operator in character class`);
+    }
+    cursor.index += 2;
+    const right = parseClassOperand(content, cursor, unicodeMode, unicodeSetsMode);
+    acc = op === '&&' ? { type: 'ClassIntersection', left: acc, right } : { type: 'ClassSubtraction', left: acc, right };
+  }
+  return { type: 'CharacterClass', expressions: [acc], negative, unicodeSets: true };
+}
+
+function peekClassSetOperator(content: string, i: number): '&&' | '--' | null {
+  if (content[i] === '&' && content[i + 1] === '&') return '&&';
+  if (content[i] === '-' && content[i + 1] === '-') return '--';
+  return null;
+}
+
+function parseClassOperand(
+  content: string,
+  cursor: { index: number },
+  unicodeMode: boolean,
+  unicodeSetsMode: boolean,
+): RegexToken {
+  const ch = content[cursor.index];
+
+  // Nested character class
+  if (ch === '[') {
+    const block = readFrom(content, cursor.index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Full);
+    cursor.index += block.length;
+    const inner = block.substring(1, block.length - 1);
+    return parseCharacterClass(inner, unicodeMode, unicodeSetsMode);
+  }
+
+  // \q{...} string-alternation literal
+  if (ch === '\\' && content[cursor.index + 1] === 'q' && content[cursor.index + 2] === '{') {
+    const block = readFrom(content, cursor.index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Full);
+    cursor.index += block.length;
+    return parseClassStrings(block);
+  }
+
+  // Single element (single char or escape, possibly forming a range with what follows).
+  const leftBlock = readFrom(content, cursor.index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Character);
+  cursor.index += leftBlock.length;
+  const leftToken = blockToCharToken(leftBlock, unicodeSetsMode);
+
+  // Range detection: '-' not followed by '-' (subtraction op), not '&&' (intersection), and not class end.
+  const next = content[cursor.index];
+  const next2 = content[cursor.index + 1];
+  if (next === '-' && next2 !== undefined && next2 !== '-' && !(next2 === '&' && content[cursor.index + 2] === '&')) {
+    if (leftToken.type === 'Char') {
+      cursor.index += 1; // consume '-'
+      const rightBlock = readFrom(content, cursor.index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Character);
+      cursor.index += rightBlock.length;
+      const rightToken = blockToCharToken(rightBlock, unicodeSetsMode);
+      if (rightToken.type !== 'Char') {
+        throw new Error(`Invalid range endpoint in character class`);
+      }
+      return { type: 'ClassRange', from: leftToken, to: rightToken };
+    }
+  }
+
+  return leftToken;
+}
+
+/**
+ * Convert a `\q{...}` block into a ClassStrings token.
+ * The block is the full source including the leading `\q{` and trailing `}`.
+ */
+function parseClassStrings(block: string): ClassStringsRegexToken {
+  const inner = block.substring(3, block.length - 1);
+  // Split on unescaped `|`. We tokenize each alternative as a sequence of class chars.
+  const alts: string[] = [];
+  let buffer = '';
+  for (let i = 0; i < inner.length; ++i) {
+    const c = inner[i];
+    if (c === '\\') {
+      buffer += c + (inner[i + 1] || '');
+      i += 1;
+    } else if (c === '|') {
+      alts.push(buffer);
+      buffer = '';
+    } else {
+      buffer += c;
+    }
+  }
+  alts.push(buffer);
+
+  const expressions: CharRegexToken[][] = alts.map((alt) => {
+    const tokens: CharRegexToken[] = [];
+    let i = 0;
+    while (i < alt.length) {
+      const b = readFrom(alt, i, true, true, TokenizerBlockMode.Character);
+      const t = blockToCharToken(b, true);
+      if (t.type !== 'Char') {
+        throw new Error(`Invalid content in \\q{...}`);
+      }
+      tokens.push(t);
+      i += b.length;
+    }
+    return tokens;
+  });
+  return { type: 'ClassStrings', expressions, raw: inner };
+}
+
+/**
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
 function pushTokens(
   tokens: RegexToken[],
   regexSource: string,
   unicodeMode: boolean,
+  unicodeSetsMode: boolean,
   groups: { lastIndex: number; named: Map<string, number> },
 ): void {
   let disjunctions: (RegexToken | null)[] | null = null;
   for (
-    let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
+    let index = 0, block = readFrom(regexSource, index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Full);
     index !== regexSource.length;
-    index += block.length, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full)
+    index += block.length, block = readFrom(regexSource, index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Full)
   ) {
     const firstInBlock = block[0];
     switch (firstInBlock) {
@@ -320,21 +487,26 @@ function pushTokens(
       }
       case '[': {
         const blockContent = block.substring(1, block.length - 1);
+        if (unicodeSetsMode) {
+          tokens.push(parseCharacterClass(blockContent, unicodeMode, unicodeSetsMode));
+          break;
+        }
         const subTokens: (CharRegexToken | ClassRangeRegexToken | UnicodePropertyRegexToken)[] = [];
 
         let negative: true | undefined = undefined;
         let previousWasSimpleDash = false;
         for (
-          let subIndex = 0, subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character);
+          let subIndex = 0,
+            subBlock = readFrom(blockContent, subIndex, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Character);
           subIndex !== blockContent.length;
           subIndex += subBlock.length,
-            subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character)
+            subBlock = readFrom(blockContent, subIndex, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Character)
         ) {
           if (subIndex === 0 && subBlock === '^') {
             negative = true;
             continue;
           }
-          const newToken = blockToCharToken(subBlock);
+          const newToken = blockToCharToken(subBlock, unicodeSetsMode);
           if (subBlock === '-') {
             subTokens.push(newToken);
             previousWasSimpleDash = true;
@@ -363,14 +535,14 @@ function pushTokens(
         const subTokens: RegexToken[] = [];
         if (blockContent[0] === '?') {
           if (blockContent[1] === ':') {
-            pushTokens(subTokens, blockContent.substring(2), unicodeMode, groups);
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Group',
               capturing: false,
               expression: toSingleToken(subTokens),
             });
           } else if (blockContent[1] === '=' || blockContent[1] === '!') {
-            pushTokens(subTokens, blockContent.substring(2), unicodeMode, groups);
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Assertion',
               kind: 'Lookahead',
@@ -378,7 +550,7 @@ function pushTokens(
               assertion: toSingleToken(subTokens),
             });
           } else if (blockContent[1] === '<' && (blockContent[2] === '=' || blockContent[2] === '!')) {
-            pushTokens(subTokens, blockContent.substring(3), unicodeMode, groups);
+            pushTokens(subTokens, blockContent.substring(3), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Assertion',
               kind: 'Lookbehind',
@@ -393,7 +565,7 @@ function pushTokens(
             const groupIndex = ++groups.lastIndex;
             const nameRaw = chunks[0].substring(2);
             groups.named.set(nameRaw, groupIndex);
-            pushTokens(subTokens, chunks.slice(1).join('>'), unicodeMode, groups);
+            pushTokens(subTokens, chunks.slice(1).join('>'), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Group',
               capturing: true,
@@ -405,7 +577,7 @@ function pushTokens(
           }
         } else {
           const groupIndex = ++groups.lastIndex;
-          pushTokens(subTokens, blockContent, unicodeMode, groups);
+          pushTokens(subTokens, blockContent, unicodeMode, unicodeSetsMode, groups);
           tokens.push({
             type: 'Group',
             capturing: true,
@@ -425,7 +597,7 @@ function pushTokens(
           if (unicodeMode || reference <= groups.lastIndex) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
-            tokens.push(blockToCharToken(block));
+            tokens.push(blockToCharToken(block, unicodeSetsMode));
           }
         } else if (block[0] === '\\' && block[1] === 'k' && block.length !== 2) {
           const referenceRaw = block.substring(3, block.length - 1);
@@ -437,7 +609,7 @@ function pushTokens(
             reference: referenceRaw,
           });
         } else {
-          tokens.push(blockToCharToken(block));
+          tokens.push(blockToCharToken(block, unicodeSetsMode));
         }
         break;
       }
@@ -465,9 +637,11 @@ function pushTokens(
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
+  const flagsArr = [...regex.flags];
+  const unicodeSetsMode = safeIndexOf(flagsArr, 'v') !== -1;
+  const unicodeMode = unicodeSetsMode || safeIndexOf(flagsArr, 'u') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
-  pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });
+  pushTokens(tokens, regexSource, unicodeMode, unicodeSetsMode, { lastIndex: 0, named: new Map<string, number>() });
   return toSingleToken(tokens);
 }

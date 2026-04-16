@@ -136,6 +136,21 @@ function toMatchingArbitrary(
       );
     }
     case 'CharacterClass':
+      // v-only constructs (nested classes, set ops, \q{...}) inside a class are not supported yet.
+      // A bare unicodeSets-flagged class containing only Char / ClassRange / UnicodeProperty
+      // tokens behaves like its u-flagged counterpart and is fine.
+      if (astNode.unicodeSets) {
+        for (const child of astNode.expressions) {
+          if (
+            child.type === 'CharacterClass' ||
+            child.type === 'ClassIntersection' ||
+            child.type === 'ClassSubtraction' ||
+            child.type === 'ClassStrings'
+          ) {
+            throw new Error(`unicodeSets character classes with v-only constructs are not supported yet!`);
+          }
+        }
+      }
       if (astNode.negative) {
         const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
         return defaultChar().filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
@@ -197,7 +212,19 @@ function toMatchingArbitrary(
       throw new Error(`Backreference nodes not implemented yet!`);
     }
     case 'UnicodeProperty': {
+      if (astNode.isString) {
+        throw new Error(`String-valued UnicodeProperty not supported yet in stringMatching!`);
+      }
       throw new Error(`UnicodeProperty not supported yet in stringMatching!`);
+    }
+    case 'ClassStrings': {
+      throw new Error(`ClassStrings (\\q{...}) not supported yet in stringMatching!`);
+    }
+    case 'ClassIntersection': {
+      throw new Error(`ClassIntersection (&&) not supported yet in stringMatching!`);
+    }
+    case 'ClassSubtraction': {
+      throw new Error(`ClassSubtraction (--) not supported yet in stringMatching!`);
     }
     default: {
       throw raiseUnsupportedASTNode(astNode);
@@ -221,11 +248,12 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
     //   g - all matches, not limited to first match
     //   m - multiline
     //   s - dot matches newline character
+    //   u - unicode support
+    //   v - unicodeSets (tokenizer-only for v-specific syntax: nested classes, &&, --, \q{}, string properties)
     // Not supported:
     //   i - case-insensitive
-    //   u - unicode support
     //   y - search at the exact position in the text or sticky mode
-    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u') {
+    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u' && flag !== 'v') {
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }
