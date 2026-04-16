@@ -1,5 +1,7 @@
 import { safeIndexOf } from '../../../utils/globals.js';
 import { TokenizerBlockMode, readFrom } from './ReadRegex.js';
+import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
+import { resolveUnicodeProperty } from './UnicodePropertyData.js';
 
 const safeStringFromCodePoint = String.fromCodePoint;
 
@@ -113,6 +115,7 @@ type BackreferenceRegexToken =
       referenceRaw: string;
       reference: string;
     };
+type UnicodePropertyRegexToken = ResolvedUnicodeProperty;
 
 export type RegexToken =
   | CharRegexToken
@@ -124,7 +127,8 @@ export type RegexToken =
   | GroupRegexToken
   | DisjunctionRegexToken
   | AssertionRegexToken
-  | BackreferenceRegexToken;
+  | BackreferenceRegexToken
+  | UnicodePropertyRegexToken;
 
 /**
  * Create a simple char token
@@ -172,7 +176,7 @@ function toSingleToken(tokens: RegexToken[], allowEmpty?: boolean): RegexToken |
  * Create a character token based on a full block.
  * This function does not check the block itself, only call it with valid blocks.
  */
-function blockToCharToken(block: string): CharRegexToken {
+function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexToken {
   if (block[0] === '\\') {
     const next = block[1];
     switch (next) {
@@ -228,7 +232,9 @@ function blockToCharToken(block: string): CharRegexToken {
           return { type: 'Char', kind: 'decimal', symbol, value: block, codePoint };
         }
         if (block.length > 2 && (next === 'p' || next === 'P')) {
-          throw new Error(`UnicodeProperty not implemented yet!`);
+          const negative = next === 'P';
+          const propertySpec = block.substring(3, block.length - 1);
+          return resolveUnicodeProperty(propertySpec, negative);
         }
         const char = block.substring(1); // TODO - Properly handle unicode
         return simpleChar(char, true);
@@ -314,7 +320,7 @@ function pushTokens(
       }
       case '[': {
         const blockContent = block.substring(1, block.length - 1);
-        const subTokens: (CharRegexToken | ClassRangeRegexToken)[] = [];
+        const subTokens: (CharRegexToken | ClassRangeRegexToken | UnicodePropertyRegexToken)[] = [];
 
         let negative: true | undefined = undefined;
         let previousWasSimpleDash = false;
@@ -334,7 +340,12 @@ function pushTokens(
             previousWasSimpleDash = true;
           } else {
             const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
-            if (previousWasSimpleDash && operand1Token !== undefined && operand1Token.type === 'Char') {
+            if (
+              previousWasSimpleDash &&
+              operand1Token !== undefined &&
+              operand1Token.type === 'Char' &&
+              newToken.type === 'Char' // Always true for unicode regexes: JavaScript engines forbids /[a-\p{Letter}]/u
+            ) {
               subTokens.pop(); // dash
               subTokens.pop(); // operator 1
               subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
