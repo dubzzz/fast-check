@@ -27,10 +27,12 @@ description: Expert-level JavaScript testing skill focused on writing high-quali
 
 **⚠️ IMPORTANT:** Do not hesitate to grab details from multiple recipes if the code matches several of them. Read them with the lens of **must-read-test-writing.md**.
 
-| When testing...                                                  | Reference                                               |
-| ---------------------------------------------------------------- | ------------------------------------------------------- |
-| Async functions                                                  | [`test-async-code.md`](./references/test-async-code.md) |
-| Glue code wiring dependencies together (adapters, orchestrators) | [`test-glue-code.md`](./references/test-glue-code.md)   |
+| When testing...                                                  | Reference                                                                               |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Async functions                                                  | [`test-async-code.md`](./references/test-async-code.md)                                 |
+| Glue code wiring dependencies together (adapters, orchestrators) | [`test-glue-code.md`](./references/test-glue-code.md)                                   |
+| Design System components (buttons, inputs, modals…)              | [`test-design-system-components.md`](./references/test-design-system-components.md)     |
+| Complex UI workflows (multi-step forms, dashboards, pages…)      | [`test-complex-ui-workflows.md`](./references/test-complex-ui-workflows.md)             |
 
 ## Detailed patterns
 
