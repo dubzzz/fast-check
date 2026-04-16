@@ -36,8 +36,9 @@ export function appendRangesForRegex(regex: RegExp, from: number, to: number, ra
 }
 
 /** @internal */
-function extractRangesForProperty(propertySpec: string): GraphemeRange[] {
-  const regex = new RegExp(`^\\p{${propertySpec}}$`, 'u');
+function extractRangesForProperty(propertySpec: string, negative: boolean): GraphemeRange[] {
+  const escape = negative ? 'P' : 'p';
+  const regex = new RegExp(`^\\${escape}{${propertySpec}}$`, 'u');
   const ranges: GraphemeRange[] = [];
   appendRangesForRegex(regex, 0, 0xd7ff, ranges);
   appendRangesForRegex(regex, 0xe000, 0x10ffff, ranges);
@@ -48,13 +49,14 @@ function extractRangesForProperty(propertySpec: string): GraphemeRange[] {
 const cache = new Map<string, GraphemeRange[]>();
 
 /** @internal */
-function extractRangesForPropertyOrFromCache(propertySpec: string): GraphemeRange[] {
-  const cachedRanges = cache.get(propertySpec);
+function extractRangesForPropertyOrFromCache(propertySpec: string, negative: boolean): GraphemeRange[] {
+  const cacheKey = `${negative ? 'P' : 'p'}:${propertySpec}`;
+  const cachedRanges = cache.get(cacheKey);
   if (cachedRanges !== undefined) {
     return cachedRanges;
   }
-  const ranges = extractRangesForProperty(propertySpec);
-  cache.set(propertySpec, ranges);
+  const ranges = extractRangesForProperty(propertySpec, negative);
+  cache.set(cacheKey, ranges);
   return ranges;
 }
 
@@ -64,10 +66,7 @@ function extractRangesForPropertyOrFromCache(propertySpec: string): GraphemeRang
  */
 export function unicodePropertyArbitrary(astNode: ResolvedUnicodeProperty): Arbitrary<string> {
   const spec = getPropertySpec(astNode);
-  const ranges = extractRangesForPropertyOrFromCache(spec);
-  if (astNode.negative) {
-    throw new Error(`Negated UnicodeProperty not supported yet in stringMatching!`);
-  }
+  const ranges = extractRangesForPropertyOrFromCache(spec, astNode.negative);
   const rangeEntries = safeMap(ranges, (range) => convertGraphemeRangeToMapToConstantEntry(range));
   return mapToConstant(...rangeEntries);
 }
