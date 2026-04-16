@@ -9,13 +9,13 @@ rules:
     ignore:
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
-      - build-status.yml:608 # fast-check
-      - build-status.yml:685 # ava
-      - build-status.yml:762 # jest
-      - build-status.yml:839 # packaged
-      - build-status.yml:916 # poisoning
-      - build-status.yml:993 # vitest
-      - build-status.yml:1070 # worker
+      - build-status.yml:602 # fast-check
+      - build-status.yml:679 # ava
+      - build-status.yml:756 # jest
+      - build-status.yml:833 # packaged
+      - build-status.yml:910 # poisoning
+      - build-status.yml:987 # vitest
+      - build-status.yml:1064 # worker
   dangerous-triggers:
     ignore:
       # We moved these workflows to "pull_request_target".
