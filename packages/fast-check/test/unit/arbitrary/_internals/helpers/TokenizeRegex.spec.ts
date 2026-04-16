@@ -103,6 +103,8 @@ describe('tokenizeRegex', () => {
     { regex: /\P{Emoji_Presentation}/ },
     // @ts-expect-error Missing unicode mode on Regex
     { regex: /\P{Script_Extensions=Thaana}/ },
+    // @ts-expect-error Missing unicode mode on Regex
+    { regex: /[a-\p{Letter}]/, invalidWithUnicode: true },
     // Unicode property escapes
     { regex: /\p{Letter}/u },
     { regex: /\p{L}/u },

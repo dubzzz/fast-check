@@ -3,12 +3,6 @@ import fc from 'fast-check';
 
 import { dependencyTree, PackageDefinition } from './src/dependencyTree.js';
 
-if (!fc.readConfigureGlobal()) {
-  // Global config of Jest has been ignored, we will have a timeout after 5000ms
-  // (CodeSandbox falls in this category)
-  fc.configureGlobal({ interruptAfterTimeLimit: 4000 });
-}
-
 describe('dependencyTree', () => {
   it('should be able to compute a dependency tree for any package of the registry', async () => {
     await fc.assert(
@@ -20,8 +14,7 @@ describe('dependencyTree', () => {
         });
 
         // Act
-        dependencyTree(selectedPackage, fetch); // without bugs
-        // dependencyTree(selectedPackage, fetch, true); // or with bugs
+        dependencyTree(selectedPackage, fetch);
 
         // Assert
         let numQueries = 0;

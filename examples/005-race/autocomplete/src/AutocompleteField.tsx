@@ -1,13 +1,6 @@
 import React from 'react';
 
-// Injected as a props because CodeSandbox fails to provide jest.mock
-// So it makes such import difficult to test
-//// import { search } from './Api.js';
-
 type Props = {
-  enableBugUnrelatedResults?: boolean;
-  enableBugBetterResults?: boolean;
-  enableBugUnfilteredResults?: boolean;
   search: (query: string, maxResults: number) => Promise<string[]>;
 };
 
@@ -21,21 +14,13 @@ export default function AutocompleteField(props: Props) {
     const runQuery = async () => {
       const results = await props.search(query, 10);
 
-      if (!lastQueryRef.current.startsWith(query) && !props.enableBugUnrelatedResults) {
-        // FIXED BUG:
-        // We show results for queries that are unrelated to the latest started query
-        // eg.: AZ resolves while we look for QS, we show its results even if totally unrelated
+      if (!lastQueryRef.current.startsWith(query)) {
         return;
       }
       if (
         lastQueryRef.current.startsWith(lastSuccessfulQueryRef.current) &&
-        lastSuccessfulQueryRef.current.length > query.length &&
-        !props.enableBugBetterResults
+        lastSuccessfulQueryRef.current.length > query.length
       ) {
-        // FIXED BUG:
-        // We might update results while we already received results
-        // for a query less strict than the last this one
-        // eg.: We receice AZ while we already have results for AZE
         return;
       }
 
@@ -59,10 +44,7 @@ export default function AutocompleteField(props: Props) {
       />
       <ul>
         {searchResults
-          // FIXED BUG: We don't filter the results we receive
-          // As we want to display results as soon as possible, even if our searchResults
-          // are related to a past query we want to use them to provide the user with some hints
-          .filter((r) => (props.enableBugUnfilteredResults ? true : r.startsWith(query)))
+          .filter((r) => r.startsWith(query))
           .map((r) => (
             <li key={r}>{r}</li>
           ))}

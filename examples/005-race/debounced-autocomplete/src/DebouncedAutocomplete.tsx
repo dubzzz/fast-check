@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 type Props = {
-  suggestionsFor: (query: string) => Promise<string[]>; // Unable to mock imports in CodeSandbox
-  bug?: boolean;
+  suggestionsFor: (query: string) => Promise<string[]>;
 };
 
 export default function DebouncedAutocomplete(props: Props) {
-  const { bug, suggestionsFor } = props;
+  const { suggestionsFor } = props;
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([] as string[]);
 
@@ -19,7 +18,7 @@ export default function DebouncedAutocomplete(props: Props) {
     const timer = setTimeout(
       () =>
         suggestionsFor(query).then((suggestions) => {
-          if (!canceled || bug) {
+          if (!canceled) {
             setSuggestions(suggestions);
           }
         }),

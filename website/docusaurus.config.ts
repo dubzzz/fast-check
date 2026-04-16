@@ -71,7 +71,7 @@ const config: Config = {
         { to: '/docs/tutorials/', label: 'All Tutorials' },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
-        { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
+        { to: '/docs/api/', label: 'API', position: 'right' },
         {
           href: 'https://bsky.app/profile/fast-check.dev',
           'aria-label': 'Bluesky account',
@@ -114,7 +114,7 @@ const config: Config = {
           title: 'More',
           items: [
             { label: 'Blog', to: '/blog' },
-            { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
+            { label: 'API Reference', to: '/docs/api/' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
             { label: 'Work with me @Pigment', href: 'https://refer.hellotrusty.io/kz48qf0nh7' },
             {
@@ -211,6 +211,24 @@ const config: Config = {
       },
     ],
     [
+      'docusaurus-plugin-typedoc',
+      {
+        entryPoints: ['../packages/fast-check/src/fast-check-default.ts'],
+        tsconfig: '../packages/fast-check/tsconfig.typedoc.json',
+        out: 'docs/api',
+        readme: 'none',
+        skipErrorChecking: true,
+        useCustomAnchors: true,
+        parametersFormat: 'table',
+        enumMembersFormat: 'list',
+        indexFormat: 'table',
+        textContentMappings: {
+          'title.indexPage': 'API Reference',
+          'title.modulePage': '{name}',
+        },
+      },
+    ],
+    [
       'docusaurus-plugin-llms',
       {
         generateLLMsTxt: true,
@@ -230,6 +248,15 @@ const config: Config = {
     mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: 'throw',
+    },
+    parseFrontMatter: async (params) => {
+      const result = await params.defaultParseFrontMatter(params);
+      // Typedoc-generated API docs contain TypeScript generics (<T>, {…}) that
+      // the MDX parser interprets as JSX. Force CommonMark format for those files.
+      if (params.filePath.includes('docs/api/')) {
+        result.frontMatter.mdx = { format: 'md' };
+      }
+      return result;
     },
   },
   themes: ['@docusaurus/theme-mermaid'],

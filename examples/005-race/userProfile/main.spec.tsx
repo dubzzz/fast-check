@@ -9,15 +9,6 @@ import UserProfilePage from './src/UserProfilePage.js';
 
 import { render, cleanup, act, screen } from '@testing-library/react';
 
-// If you want to test the behaviour of fast-check in case of a bug:
-const bugId = undefined; // = 1; // to enable bug
-
-if (!fc.readConfigureGlobal()) {
-  // Global config of Jest has been ignored, we will have a timeout after 5000ms
-  // (CodeSandbox falls in this category)
-  fc.configureGlobal({ interruptAfterTimeLimit: 4000 });
-}
-
 describe('UserProfilePage', () => {
   it('should not display data related to another user', async () => {
     await fc.assert(
@@ -29,12 +20,10 @@ describe('UserProfilePage', () => {
           });
 
           // Act
-          const { rerender } = render(
-            <UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} bug={bugId} />,
-          );
+          const { rerender } = render(<UserProfilePage userId={uid1} getUserProfile={getUserProfileImplem} />);
           s.scheduleSequence([
             async () => {
-              rerender(<UserProfilePage userId={uid2} getUserProfile={getUserProfileImplem} bug={bugId} />);
+              rerender(<UserProfilePage userId={uid2} getUserProfile={getUserProfileImplem} />);
             },
           ]);
           await s.waitAll();
@@ -50,7 +39,7 @@ describe('UserProfilePage', () => {
     );
   });
 
-  it('should not display data related to another user (complex)', async () => {
+  it('should never display stale user data after userId changes', async () => {
     await fc.assert(
       fc
         .asyncProperty(fc.array(fc.uuid(), { minLength: 1 }), fc.scheduler(), async (loadedUserIds, s) => {
@@ -61,15 +50,13 @@ describe('UserProfilePage', () => {
 
           // Act
           let currentUid = loadedUserIds[0];
-          const { rerender } = render(
-            <UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} bug={bugId} />,
-          );
+          const { rerender } = render(<UserProfilePage userId={currentUid} getUserProfile={getUserProfileImplem} />);
           s.scheduleSequence(
             loadedUserIds.slice(1).map((uid) => ({
               label: `Update user id to ${uid}`,
               builder: async () => {
                 currentUid = uid;
-                rerender(<UserProfilePage userId={uid} getUserProfile={getUserProfileImplem} bug={bugId} />);
+                rerender(<UserProfilePage userId={uid} getUserProfile={getUserProfileImplem} />);
               },
             })),
           );

@@ -630,6 +630,16 @@ async function writeToFile(
   return specDirectory;
 }
 
+// Environment with AI agent env vars removed so that Jest uses its default reporter
+// instead of the AgentReporter (which strips verbose test result markers).
+const jestEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([key]) =>
+      !['AI_AGENT', 'AUGMENT_AGENT', 'CLAUDE_CODE', 'CLAUDECODE', 'CODEX_SANDBOX', 'CODEX_THREAD_ID'].includes(key) &&
+      !['CURSOR_AGENT', 'GEMINI_CLI', 'GOOSE_PROVIDER', 'OPENCODE', 'REPL_ID'].includes(key),
+  ),
+);
+
 async function runSpec(
   specDirectory: string,
   opts: { jestSeed?: number; testTimeoutCLI?: number } = {},
@@ -645,7 +655,7 @@ async function runSpec(
         ...(opts.jestSeed !== undefined ? ['--seed', String(opts.jestSeed)] : []),
         ...(opts.testTimeoutCLI !== undefined ? [`--testTimeout=${opts.testTimeoutCLI}`] : []),
       ],
-      { cwd: specDirectory },
+      { cwd: specDirectory, env: jestEnv },
     );
     return specOutput;
   } catch (err) {
