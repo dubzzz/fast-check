@@ -71,8 +71,6 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
     { regex: /^https?:\/\/twitter.com\/[A-Za-z0-9_]+\/status\/[0-9]+$/ },
     // Emojis
     { regex: /^\p{Emoji}+$/u },
-    // Not emojis
-    { regex: /^\P{Emoji}+$/u },
   );
 }
 

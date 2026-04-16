@@ -3,20 +3,13 @@ import { safePush } from '../../../utils/globals.js';
 import { mapToConstant } from '../../mapToConstant.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 import type { GraphemeRangeEntry } from './GraphemeRangesHelpers.js';
-import { complementGraphemeRanges, convertGraphemeRangeToMapToConstantEntry } from './GraphemeRangesHelpers.js';
+import { convertGraphemeRangeToMapToConstantEntry } from './GraphemeRangesHelpers.js';
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 
 /** @internal */
 const safeStringFromCodePoint = String.fromCodePoint;
 
 /** @internal */
-const rangesCache: Record<string, GraphemeRange[]> = Object.create(null);
-
-/**
- * Build the regex property spec string used to test individual code points.
- * E.g. "Letter", "Script=Latin", "Emoji"
- * @internal
- */
 function getPropertySpec(astNode: ResolvedUnicodeProperty): string {
   if (astNode.binary || astNode.shorthand) {
     return astNode.canonicalValue;
@@ -24,42 +17,35 @@ function getPropertySpec(astNode: ResolvedUnicodeProperty): string {
   return `${astNode.canonicalName}=${astNode.canonicalValue}`;
 }
 
+/** @internal */
+export function appendRangesForRegex(regex: RegExp, from: number, to: number, ranges: GraphemeRange[]): void {
+  let currentRangeStart = -1;
+  for (let cp = from; cp <= to; ++cp) {
+    if (regex.test(safeStringFromCodePoint(cp))) {
+      if (currentRangeStart === -1) {
+        currentRangeStart = cp;
+      }
+    } else if (currentRangeStart !== -1) {
+      const rangeEnd = cp - 1;
+      ranges.push(currentRangeStart === rangeEnd ? [rangeEnd] : [currentRangeStart, rangeEnd]);
+      currentRangeStart = -1;
+    }
+  }
+  if (currentRangeStart !== -1) {
+    ranges.push(currentRangeStart === to ? [to] : [currentRangeStart, to]);
+  }
+}
+
 /**
  * Compute Unicode code point ranges matching a given property spec by testing
  * every valid code point against the JS regex engine. Results are cached.
  * @internal
  */
-function getRangesForProperty(propertySpec: string): GraphemeRange[] {
-  const cached = rangesCache[propertySpec];
-  if (cached !== undefined) {
-    return cached;
-  }
-
+function extractRangesForProperty(propertySpec: string): GraphemeRange[] {
   const regex = new RegExp(`^\\p{${propertySpec}}$`, 'u');
   const ranges: GraphemeRange[] = [];
-  let rangeStart = -1;
-  let rangeLast = -1;
-
-  for (let cp = 0; cp <= 0x10ffff; cp++) {
-    if (cp >= 0xd800 && cp <= 0xdfff) continue;
-    if (regex.test(safeStringFromCodePoint(cp))) {
-      if (rangeStart === -1) {
-        rangeStart = cp;
-        rangeLast = cp;
-      } else if (cp === rangeLast + 1) {
-        rangeLast = cp;
-      } else {
-        ranges.push(rangeStart === rangeLast ? [rangeStart] : [rangeStart, rangeLast]);
-        rangeStart = cp;
-        rangeLast = cp;
-      }
-    }
-  }
-  if (rangeStart !== -1) {
-    ranges.push(rangeStart === rangeLast ? [rangeStart] : [rangeStart, rangeLast]);
-  }
-
-  rangesCache[propertySpec] = ranges;
+  appendRangesForRegex(regex, 0, 0xd7ff, ranges);
+  appendRangesForRegex(regex, 0xe000, 0x10ffff, ranges);
   return ranges;
 }
 
@@ -81,7 +67,10 @@ function rangesToArbitrary(ranges: GraphemeRange[]): Arbitrary<string> {
  */
 export function unicodePropertyArbitrary(astNode: ResolvedUnicodeProperty): Arbitrary<string> {
   const spec = getPropertySpec(astNode);
-  const positiveRanges = getRangesForProperty(spec);
-  const ranges = astNode.negative ? complementGraphemeRanges(positiveRanges) : positiveRanges;
+  const positiveRanges = extractRangesForProperty(spec);
+  if (astNode.negative) {
+    throw new Error(`Negated UnicodeProperty not supported yet in stringMatching!`);
+  }
+  const ranges = positiveRanges;
   return rangesToArbitrary(ranges);
 }
