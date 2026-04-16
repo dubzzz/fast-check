@@ -1,8 +1,7 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { safePush } from '../../../utils/globals.js';
+import { safeMap } from '../../../utils/globals.js';
 import { mapToConstant } from '../../mapToConstant.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
-import type { GraphemeRangeEntry } from './GraphemeRangesHelpers.js';
 import { convertGraphemeRangeToMapToConstantEntry } from './GraphemeRangesHelpers.js';
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 
@@ -36,11 +35,7 @@ export function appendRangesForRegex(regex: RegExp, from: number, to: number, ra
   }
 }
 
-/**
- * Compute Unicode code point ranges matching a given property spec by testing
- * every valid code point against the JS regex engine. Results are cached.
- * @internal
- */
+/** @internal */
 function extractRangesForProperty(propertySpec: string): GraphemeRange[] {
   const regex = new RegExp(`^\\p{${propertySpec}}$`, 'u');
   const ranges: GraphemeRange[] = [];
@@ -50,27 +45,29 @@ function extractRangesForProperty(propertySpec: string): GraphemeRange[] {
 }
 
 /** @internal */
-function rangesToArbitrary(ranges: GraphemeRange[]): Arbitrary<string> {
-  const entries: GraphemeRangeEntry[] = [];
-  for (const range of ranges) {
-    safePush(entries, convertGraphemeRangeToMapToConstantEntry(range));
+const cache = new Map<string, GraphemeRange[]>();
+
+/** @internal */
+function extractRangesForPropertyOrFromCache(propertySpec: string): GraphemeRange[] {
+  const cachedRanges = cache.get(propertySpec);
+  if (cachedRanges !== undefined) {
+    return cachedRanges;
   }
-  return mapToConstant(...entries);
+  const ranges = extractRangesForProperty(propertySpec);
+  cache.set(propertySpec, ranges);
+  return ranges;
 }
 
 /**
- * Build an arbitrary producing characters matching or not matching a Unicode property.
- * Supports any property that the JS regex engine handles with the `u` flag:
- * General_Category values, binary properties, Script, and Script_Extensions.
- * Ranges are computed lazily on first use and cached.
+ * Build an arbitrary producing characters matching a Unicode property (`\p{…}` / `\P{…}`).
  * @internal
  */
 export function unicodePropertyArbitrary(astNode: ResolvedUnicodeProperty): Arbitrary<string> {
   const spec = getPropertySpec(astNode);
-  const positiveRanges = extractRangesForProperty(spec);
+  const ranges = extractRangesForPropertyOrFromCache(spec);
   if (astNode.negative) {
     throw new Error(`Negated UnicodeProperty not supported yet in stringMatching!`);
   }
-  const ranges = positiveRanges;
-  return rangesToArbitrary(ranges);
+  const rangeEntries = safeMap(ranges, (range) => convertGraphemeRangeToMapToConstantEntry(range));
+  return mapToConstant(...rangeEntries);
 }
