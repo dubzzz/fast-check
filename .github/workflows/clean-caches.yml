@@ -2,14 +2,6 @@ name: Clean Caches
 
 on:
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: 'List caches without deleting them'
-        type: boolean
-        default: false
-  pull_request:
-    paths:
-      - '.github/workflows/clean-caches.yml'
 
 permissions:
   actions: write
@@ -18,47 +10,20 @@ jobs:
   clean_caches:
     name: 'Clean all caches'
     runs-on: ubuntu-latest
-    env:
-      DRY_RUN: ${{ github.event_name == 'pull_request' || inputs.dry_run == 'true' }}
     steps:
       - name: Clean caches
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          if [ "$DRY_RUN" = "true" ]; then
-            echo "=== DRY RUN MODE ==="
-          fi
-
           echo "Fetching list of cache keys..."
-          cache_keys=$(gh cache list --limit 100 --json key,size,lastAccessedAt --jq '.[] | "\(.key)\t\(.size)\t\(.lastAccessedAt)"')
-          if [ -z "$cache_keys" ]; then
-            echo "No caches found."
-            exit 0
-          fi
-
-          total=0
+          cache_keys=$(gh cache list --limit 100 --json key --jq '.[].key')
           while [ -n "$cache_keys" ]; do
-            echo "$cache_keys" | while IFS=$'\t' read -r key size accessed; do
-              total=$((total + 1))
-              if [ "$DRY_RUN" = "true" ]; then
-                echo "Would delete: $key (size: $size, last accessed: $accessed)"
-              else
-                echo "Deleting cache: $key (size: $size, last accessed: $accessed)"
-                gh cache delete "$key" || true
-              fi
+            echo "$cache_keys" | while IFS= read -r key; do
+              echo "Deleting cache: $key"
+              gh cache delete "$key" || true
             done
-
-            if [ "$DRY_RUN" = "true" ]; then
-              break
-            fi
-
             echo "Checking for remaining caches..."
-            cache_keys=$(gh cache list --limit 100 --json key,size,lastAccessedAt --jq '.[] | "\(.key)\t\(.size)\t\(.lastAccessedAt)"')
+            cache_keys=$(gh cache list --limit 100 --json key --jq '.[].key')
           done
-
-          if [ "$DRY_RUN" = "true" ]; then
-            echo "=== DRY RUN COMPLETE — no caches were deleted ==="
-          else
-            echo "All caches have been deleted."
-          fi
+          echo "All caches have been deleted."
