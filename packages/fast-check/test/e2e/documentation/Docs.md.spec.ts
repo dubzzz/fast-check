@@ -27,7 +27,7 @@ afterEach(async () => {
 });
 
 describe('Docs.md', () => {
-  if (process.env.SKIP_EXPENSIVE === 'true') {
+  if (process.env.SKIP_DOCUMENTATION === 'true') {
     it('should skip expensive tests', () => {});
     return;
   }

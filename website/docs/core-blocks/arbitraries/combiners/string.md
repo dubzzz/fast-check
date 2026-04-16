@@ -51,6 +51,16 @@ fc.stringMatching(
 fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 });
 // Note: Regex matching very simple email addresses, but we ask for no more than 10 characters for generated email addresses
 // Examples of generated values: "G9-_+@-1..", "U05@--1.yK", "+@tW.dfw", "_@u..t", "dal@2-Z..8"…
+
+fc.stringMatching(/^\p{Emoji}$/u);
+// Note: Regex matching a single Emoji character via a Unicode property escape
+// Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
+// Examples of generated values: "😹", "🫲", "1", "2", "🫱"…
+
+fc.stringMatching(/^\p{Uppercase_Letter}\p{Lowercase_Letter}+$/u);
+// Note: Regex matching a capitalized word
+// Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
+// Examples of generated values: "Cẜѥթℏ𝑗ᾤỡꚉứꮚȭ", "Hcųᶏϊ𞤿h", "Ҁ𝘪ừ𐐬", "Ꙍḛứꬻx𞤰", "I𝕦ҩꝅﬄ"…
 ```
 
 Some constraints are hard to express with a single regex.
