@@ -65,13 +65,6 @@ type ClassRangeRegexToken = {
   from: CharRegexToken;
   to: CharRegexToken;
 };
-type ClassStringsRegexToken = {
-  type: 'ClassStrings';
-  // Each alternative is a sequence of CharRegexToken.
-  // An empty alternative (e.g. `\q{|abc}`) is represented by an empty array.
-  expressions: CharRegexToken[][];
-  raw: string;
-};
 type ClassIntersectionRegexToken = {
   type: 'ClassIntersection';
   left: RegexToken;
@@ -147,7 +140,6 @@ export type RegexToken =
   | AssertionRegexToken
   | BackreferenceRegexToken
   | UnicodePropertyRegexToken
-  | ClassStringsRegexToken
   | ClassIntersectionRegexToken
   | ClassSubtractionRegexToken;
 
@@ -339,11 +331,9 @@ function parseClassOperand(
     return parseCharacterClass(inner, unicodeMode, unicodeSetsMode);
   }
 
-  // \q{...} string-alternation literal
+  // \q{...} string-alternation literal — not supported yet
   if (ch === '\\' && content[cursor.index + 1] === 'q' && content[cursor.index + 2] === '{') {
-    const block = readFrom(content, cursor.index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Full);
-    cursor.index += block.length;
-    return parseClassStrings(block);
+    throw new Error(`\\q{...} in character classes is not supported yet`);
   }
 
   // Single element (single char or escape, possibly forming a range with what follows).
@@ -368,46 +358,6 @@ function parseClassOperand(
   }
 
   return leftToken;
-}
-
-/**
- * Convert a `\q{...}` block into a ClassStrings token.
- * The block is the full source including the leading `\q{` and trailing `}`.
- */
-function parseClassStrings(block: string): ClassStringsRegexToken {
-  const inner = block.substring(3, block.length - 1);
-  // Split on unescaped `|`. We tokenize each alternative as a sequence of class chars.
-  const alts: string[] = [];
-  let buffer = '';
-  for (let i = 0; i < inner.length; ++i) {
-    const c = inner[i];
-    if (c === '\\') {
-      buffer += c + (inner[i + 1] || '');
-      i += 1;
-    } else if (c === '|') {
-      alts.push(buffer);
-      buffer = '';
-    } else {
-      buffer += c;
-    }
-  }
-  alts.push(buffer);
-
-  const expressions: CharRegexToken[][] = alts.map((alt) => {
-    const tokens: CharRegexToken[] = [];
-    let i = 0;
-    while (i < alt.length) {
-      const b = readFrom(alt, i, true, true, TokenizerBlockMode.Character);
-      const t = blockToCharToken(b, true);
-      if (t.type !== 'Char') {
-        throw new Error(`Invalid content in \\q{...}`);
-      }
-      tokens.push(t);
-      i += b.length;
-    }
-    return tokens;
-  });
-  return { type: 'ClassStrings', expressions, raw: inner };
 }
 
 /**

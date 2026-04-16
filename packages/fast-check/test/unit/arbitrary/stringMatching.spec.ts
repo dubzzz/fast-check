@@ -36,7 +36,7 @@ describe('stringMatching (v flag)', () => {
   });
 
   it('should throw for \\q{...} string literals (not supported yet)', () => {
-    expect(() => stringMatching(vRegex('[\\q{ab}]'))).toThrowError(/v-only constructs/);
+    expect(() => stringMatching(vRegex('[\\q{ab}]'))).toThrowError(/\\q\{\.\.\.\}/);
   });
 
   it('should throw for string-valued unicode properties (not supported yet)', () => {

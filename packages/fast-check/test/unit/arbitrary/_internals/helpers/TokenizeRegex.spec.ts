@@ -277,43 +277,8 @@ describe('tokenizeRegex', () => {
       });
     });
 
-    it('should tokenize a \\q{...} string literal in a class', () => {
-      const tokenized = tokenizeRegex(new RegExp('[\\q{abc|def}]', 'v'));
-      expect(tokenized).toMatchObject({
-        type: 'CharacterClass',
-        unicodeSets: true,
-        expressions: [
-          {
-            type: 'ClassStrings',
-            raw: 'abc|def',
-            expressions: [
-              [
-                { type: 'Char', kind: 'simple', symbol: 'a' },
-                { type: 'Char', kind: 'simple', symbol: 'b' },
-                { type: 'Char', kind: 'simple', symbol: 'c' },
-              ],
-              [
-                { type: 'Char', kind: 'simple', symbol: 'd' },
-                { type: 'Char', kind: 'simple', symbol: 'e' },
-                { type: 'Char', kind: 'simple', symbol: 'f' },
-              ],
-            ],
-          },
-        ],
-      });
-    });
-
-    it('should tokenize a class mixing literal char, range, and \\q{}', () => {
-      const tokenized = tokenizeRegex(new RegExp('[a\\q{bc}d-f]', 'v'));
-      expect(tokenized).toMatchObject({
-        type: 'CharacterClass',
-        unicodeSets: true,
-        expressions: [
-          { type: 'Char', symbol: 'a' },
-          { type: 'ClassStrings', raw: 'bc' },
-          { type: 'ClassRange', from: { symbol: 'd' }, to: { symbol: 'f' } },
-        ],
-      });
+    it('should throw on \\q{...} string literals in a class (not supported yet)', () => {
+      expect(() => tokenizeRegex(new RegExp('[\\q{abc|def}]', 'v'))).toThrowError(/\\q\{\.\.\.\}/);
     });
 
     it('should tokenize a string-valued unicode property', () => {

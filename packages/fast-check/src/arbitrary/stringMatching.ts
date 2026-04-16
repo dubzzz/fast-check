@@ -136,7 +136,7 @@ function toMatchingArbitrary(
       );
     }
     case 'CharacterClass':
-      // v-only constructs (nested classes, set ops, \q{...}) inside a class are not supported yet.
+      // v-only constructs (nested classes, set ops) inside a class are not supported yet.
       // A bare unicodeSets-flagged class containing only Char / ClassRange / UnicodeProperty
       // tokens behaves like its u-flagged counterpart and is fine.
       if (astNode.unicodeSets) {
@@ -144,8 +144,7 @@ function toMatchingArbitrary(
           if (
             child.type === 'CharacterClass' ||
             child.type === 'ClassIntersection' ||
-            child.type === 'ClassSubtraction' ||
-            child.type === 'ClassStrings'
+            child.type === 'ClassSubtraction'
           ) {
             throw new Error(`unicodeSets character classes with v-only constructs are not supported yet!`);
           }
@@ -216,9 +215,6 @@ function toMatchingArbitrary(
         throw new Error(`String-valued UnicodeProperty not supported yet in stringMatching!`);
       }
       throw new Error(`UnicodeProperty not supported yet in stringMatching!`);
-    }
-    case 'ClassStrings': {
-      throw new Error(`ClassStrings (\\q{...}) not supported yet in stringMatching!`);
     }
     case 'ClassIntersection': {
       throw new Error(`ClassIntersection (&&) not supported yet in stringMatching!`);
