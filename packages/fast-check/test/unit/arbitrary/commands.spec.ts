@@ -257,12 +257,10 @@ describe('commands (integration)', () => {
 
           // trigger computation of replayPath
           // and extract shrinks for ref
-          const refShrinks = [
-            ...refArbitrary
+          const refShrinks = refArbitrary
               .shrink(refValue.value_, refValue.context)
               .take(numValues)
-              .map((s) => [...s.value_].map((c) => c.toString())),
-          ];
+              .map((s) => [...s.value_].map((c) => c.toString()));
 
           // extract replayPath
           const replayPath = /\/\*replayPath=['"](.*)['"]\*\//.exec(refValue.value_.toString())![1];
@@ -280,12 +278,10 @@ describe('commands (integration)', () => {
           const noExecValue: Value<Iterable<Cmd>> = noExecArbitrary.generate(new Random(rng), biasFactor);
 
           // check shrink values are identical
-          const noExecShrinks = [
-            ...noExecArbitrary
+          const noExecShrinks = noExecArbitrary
               .shrink(noExecValue.value_, noExecValue.context)
               .take(numValues)
-              .map((s) => [...s.value_].map((c) => c.toString())),
-          ];
+              .map((s) => [...s.value_].map((c) => c.toString()));
           expect(noExecShrinks).toEqual(refShrinks);
         },
       ),

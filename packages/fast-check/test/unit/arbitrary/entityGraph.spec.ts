@@ -51,16 +51,12 @@ describe('entityGraph (integration)', () => {
               ? { members: { arity: 'inverse', type: 'employee', forwardRelationship: 'team' } }
               : {}),
           },
-          department: {
-            ...(extra.withExactlyOne === WithValues.ForwardAndReverse
+          department: (extra.withExactlyOne === WithValues.ForwardAndReverse
               ? { teams: { arity: 'inverse', type: 'team', forwardRelationship: 'department' } }
               : {}),
-          },
-          competency: {
-            ...(extra.withMany === WithValues.ForwardAndReverse
+          competency: (extra.withMany === WithValues.ForwardAndReverse
               ? { employees: { arity: 'inverse', type: 'employee', forwardRelationship: 'competencies' } }
               : {}),
-          },
         },
         {
           noNullPrototype: true,

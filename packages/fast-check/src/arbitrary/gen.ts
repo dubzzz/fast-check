@@ -2,7 +2,7 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { GeneratorArbitrary } from './_internals/GeneratorArbitrary.js';
 import type { GeneratorValue } from './_internals/builders/GeneratorValueBuilder.js';
 
-export type { GeneratorValue as GeneratorValue };
+export type { GeneratorValue };
 
 /**
  * Generate values within the test execution itself by leveraging the strength of `gen`

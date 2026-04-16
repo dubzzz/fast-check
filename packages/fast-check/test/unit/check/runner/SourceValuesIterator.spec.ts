@@ -97,11 +97,9 @@ describe('SourceValuesIterator', () => {
             const svValues = simulateSkips(svIt, skippedValues);
 
             const numSkippedValues = skippedValues.filter((v) => v < sourceValues).length;
-            const expectedValues = [
-              ...iota()
+            const expectedValues = iota()
                 .take(sourceValues)
-                .filter((v) => !skippedValues.includes(v)),
-            ];
+                .filter((v) => !skippedValues.includes(v));
             expect(svValues).toHaveLength(sourceValues - numSkippedValues);
             expect(svValues).toEqual(expectedValues);
           },
@@ -120,7 +118,7 @@ describe('SourceValuesIterator', () => {
             const svIt = new SourceValuesIterator(source(), askedValues, skippedValues.length - 1);
             const svValues = simulateSkips(svIt, skippedValues);
 
-            const expectedValues = [...iotaN(lastSkip).filter((v) => !skippedValues.includes(v))];
+            const expectedValues = iotaN(lastSkip).filter((v) => !skippedValues.includes(v));
             expect(svValues).toEqual(expectedValues);
           },
         ),
