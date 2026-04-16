@@ -224,26 +224,6 @@ function blockEndFrom(
           }
           return subIndex + 1;
         }
-        case 'q': {
-          // \q{...} string-alternation literal: only valid inside character classes under v.
-          // Outside of a class the RegExp constructor would reject it; we still treat it as a normal
-          // escaped char when not in unicodeSets mode.
-          if (!unicodeSetsMode) {
-            const charSize = unicodeMode ? charSizeAt(text, from + 1) : 1;
-            return from + charSize + 1;
-          }
-          if (text[from + 2] !== '{') {
-            throw new Error(`Invalid \\q definition`);
-          }
-          let subIndex = from + 3;
-          for (; subIndex < text.length && text[subIndex] !== '}'; subIndex += text[subIndex] === '\\' ? 2 : 1) {
-            // nothing
-          }
-          if (text[subIndex] !== '}') {
-            throw new Error(`Invalid \\q definition`);
-          }
-          return subIndex + 1;
-        }
         default: {
           if (isDigit(next1)) {
             const maxIndex = unicodeMode ? text.length : Math.min(from + 4, text.length);

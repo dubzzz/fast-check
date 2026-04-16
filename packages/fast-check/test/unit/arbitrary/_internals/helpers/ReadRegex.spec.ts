@@ -66,18 +66,11 @@ describe('readFrom', () => {
   describe('unicodeSets mode (v flag)', () => {
     it.each`
       source                       | expected
-      ${'\\q{a}'}                  | ${'\\q{a}'}
-      ${'\\q{abc}'}                | ${'\\q{abc}'}
-      ${'\\q{abc|def}'}            | ${'\\q{abc|def}'}
-      ${'\\q{}'}                   | ${'\\q{}'}
-      ${'\\q{|abc}'}               | ${'\\q{|abc}'}
-      ${'\\q{ab\\}cd}'}            | ${'\\q{ab\\}cd}'}
       ${'[[a]]'}                   | ${'[[a]]'}
       ${'[[a][b]]'}                | ${'[[a][b]]'}
       ${'[[a-z]&&[^aeiou]]'}       | ${'[[a-z]&&[^aeiou]]'}
       ${'[[a-z]--[aeiou]]'}        | ${'[[a-z]--[aeiou]]'}
       ${'[[[[a]]]]'}               | ${'[[[[a]]]]'}
-      ${'[\\q{abc}]'}              | ${'[\\q{abc}]'}
     `('should properly extract first block of "$source" in unicodeSets mode', ({ source, expected }) => {
       expect(readFrom(source, 0, true, true, TokenizerBlockMode.Full)).toBe(expected);
     });
