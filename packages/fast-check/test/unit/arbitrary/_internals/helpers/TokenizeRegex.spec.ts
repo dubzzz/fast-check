@@ -211,7 +211,7 @@ describe('tokenizeRegex', () => {
     };
 
     it('should parse intersection "[a&&b]"', () => {
-      expect(tokenizeRegex(/[a&&b]/v)).toEqual(
+      expect(tokenizeRegex(new RegExp('[a&&b]', 'v'))).toEqual(
         charClass([
           {
             type: 'ClassIntersection',
@@ -223,7 +223,7 @@ describe('tokenizeRegex', () => {
     });
 
     it('should parse subtraction "[a--b]"', () => {
-      expect(tokenizeRegex(/[a--b]/v)).toEqual(
+      expect(tokenizeRegex(new RegExp('[a--b]', 'v'))).toEqual(
         charClass([
           {
             type: 'ClassSubtraction',
@@ -235,7 +235,7 @@ describe('tokenizeRegex', () => {
     });
 
     it('should parse \\q{...} string disjunction', () => {
-      expect(tokenizeRegex(/[\q{ab|cd}]/v)).toEqual(
+      expect(tokenizeRegex(new RegExp('[\\q{ab|cd}]', 'v'))).toEqual(
         charClass([
           {
             type: 'ClassStringDisjunction',
@@ -249,7 +249,7 @@ describe('tokenizeRegex', () => {
     });
 
     it('should parse \\q{} as a single empty alternative', () => {
-      expect(tokenizeRegex(/[\q{}]/v)).toEqual(
+      expect(tokenizeRegex(new RegExp('[\\q{}]', 'v'))).toEqual(
         charClass([
           {
             type: 'ClassStringDisjunction',
@@ -261,7 +261,7 @@ describe('tokenizeRegex', () => {
 
     it('should bind negation to the full set-operation class "[^a&&b]"', () => {
       // [^a&&b] = complement of (a intersection b); negative flag must sit on the outer class
-      expect(tokenizeRegex(/[^a&&b]/v)).toEqual(
+      expect(tokenizeRegex(new RegExp('[^a&&b]', 'v'))).toEqual(
         charClass(
           [
             {
@@ -276,7 +276,7 @@ describe('tokenizeRegex', () => {
     });
 
     it('should parse nested classes "[[a-z]&&[aeiou]]"', () => {
-      const tokenized = tokenizeRegex(/[[a-z]&&[aeiou]]/v);
+      const tokenized = tokenizeRegex(new RegExp('[[a-z]&&[aeiou]]', 'v'));
       // Assert the high-level shape with toMatchObject to avoid coupling to wrapping CharacterClass layers
       expect(tokenized).toMatchObject({
         type: 'CharacterClass',
@@ -292,7 +292,7 @@ describe('tokenizeRegex', () => {
 
     it('should parse multiple operators left-associatively via nested classes', () => {
       // "[[abc]&&[def]&&[ghi]]" — mixing intersection operators is allowed when disambiguated by brackets
-      const tokenized = tokenizeRegex(/[[abc]&&[def]&&[ghi]]/v);
+      const tokenized = tokenizeRegex(new RegExp('[[abc]&&[def]&&[ghi]]', 'v'));
       expect(tokenized).toMatchObject({
         type: 'CharacterClass',
         expressions: [
@@ -311,21 +311,21 @@ describe('tokenizeRegex', () => {
 
     it('should not treat && or -- as operators outside Character mode', () => {
       // && and -- at the regex source level (not inside a class) are just two literal chars
-      expect(tokenizeRegex(/a&&b/v)).toEqual({
+      expect(tokenizeRegex(new RegExp('a&&b', 'v'))).toEqual({
         type: 'Alternative',
         expressions: [simpleChar('a'), simpleChar('&'), simpleChar('&'), simpleChar('b')],
       });
     });
 
     it('should still honour escaped "-" inside a class', () => {
-      expect(tokenizeRegex(/[a\-b]/v)).toMatchObject({
+      expect(tokenizeRegex(new RegExp('[a\\-b]', 'v'))).toMatchObject({
         type: 'CharacterClass',
         expressions: [{ type: 'Char', symbol: 'a' }, { type: 'Char', symbol: '-' }, { type: 'Char', symbol: 'b' }],
       });
     });
 
     it('should parse \\q{...} alternatives that contain escaped "|"', () => {
-      const tokenized = tokenizeRegex(/[\q{a\|b|c}]/v);
+      const tokenized = tokenizeRegex(new RegExp('[\\q{a\\|b|c}]', 'v'));
       expect(tokenized).toMatchObject({
         type: 'CharacterClass',
         expressions: [
