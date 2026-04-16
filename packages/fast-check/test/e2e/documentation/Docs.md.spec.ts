@@ -27,15 +27,19 @@ afterEach(async () => {
 });
 
 describe('Docs.md', () => {
-  if (process.env.SKIP_DOCUMENTATION === 'true') {
-    it('should skip expensive tests', () => {});
-    return;
-  }
   it.each(allPathsFromWebsite)(
     'should check code snippets validity and fix generated values on $shortName',
     ({ filePath }) => {
       const originalFileContent = fs.readFileSync(filePath).toString();
-      const { content: fileContent } = refreshContent(originalFileContent);
+      let { content: fileContent } = refreshContent(originalFileContent);
+
+      // Generated values for snippets relying on `\p{...}` depend on the runtime's
+      // Unicode version and will therefore differ across Node versions. When
+      // SKIP_DOCUMENTATION is set, re-use the original generated values for those
+      // snippets so we still validate execution but tolerate value differences.
+      if (process.env.SKIP_DOCUMENTATION === 'true') {
+        fileContent = mergeTolerantSnippets(originalFileContent, fileContent);
+      }
 
       if (fileContent !== originalFileContent && process.env.UPDATE_CODE_SNIPPETS) {
         console.warn(`Updating code snippets defined in the documentation...`);
@@ -47,6 +51,31 @@ describe('Docs.md', () => {
     },
   );
 });
+
+function mergeTolerantSnippets(originalContent: string, refreshedContent: string): string {
+  // Split both the original and refreshed content on the "Examples of generated values:"
+  // marker. After this split, chunk `i > 0` starts with the generated values belonging to
+  // the code snippet at the end of chunk `i - 1`. When that preceding code uses `\p{...}`,
+  // we restore the original generated values in order to stay Unicode-version agnostic.
+  const separator = `\n${CommentForGeneratedValues}`;
+  const originalChunks = originalContent.split(separator);
+  const refreshedChunks = refreshedContent.split(separator);
+  if (originalChunks.length !== refreshedChunks.length) {
+    return refreshedContent;
+  }
+  return refreshedChunks
+    .map((chunk, index) => {
+      if (index === 0) return chunk;
+      return isTolerantSnippet(refreshedChunks[index - 1]) ? originalChunks[index] : chunk;
+    })
+    .join(separator);
+}
+
+function isTolerantSnippet(precedingChunk: string): boolean {
+  // Only tolerate the `\p{...}` snippets in `stringMatching` whose generated values
+  // depend on the runtime's Unicode version.
+  return /fc\.stringMatching\([^)]*\\p\{/.test(precedingChunk);
+}
 
 // Helpers
 
