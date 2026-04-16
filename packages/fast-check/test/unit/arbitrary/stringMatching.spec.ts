@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
 
@@ -6,6 +6,33 @@ import {
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions.js';
+
+describe('stringMatching (flags)', () => {
+  it('should accept the "v" flag when the regex uses no v-specific construct', () => {
+    expect(() => stringMatching(new RegExp('abc', 'v'))).not.toThrow();
+  });
+
+  it('should still reject the "i" flag', () => {
+    expect(() => stringMatching(new RegExp('abc', 'i'))).toThrow(/flag i/);
+  });
+
+  it('should still reject the "y" flag', () => {
+    expect(() => stringMatching(new RegExp('abc', 'y'))).toThrow(/flag y/);
+  });
+
+  it('should throw a descriptive error when the v-regex uses a construct not yet generated', () => {
+    // \q{...} is parsed by the tokenizer but generation is not yet implemented
+    expect(() => stringMatching(new RegExp('[\\q{ab|cd}]', 'v'))).toThrow(/v-flag construct/);
+  });
+
+  it('should throw a descriptive error when the v-regex uses set intersection', () => {
+    expect(() => stringMatching(new RegExp('[a&&b]', 'v'))).toThrow(/v-flag construct/);
+  });
+
+  it('should throw a descriptive error when the v-regex uses set subtraction', () => {
+    expect(() => stringMatching(new RegExp('[[a-z]--[aeiou]]', 'v'))).toThrow(/v-flag construct/);
+  });
+});
 
 describe('stringMatching (integration)', () => {
   const extraParameters: fc.Arbitrary<Extra> = fc.oneof(hardcodedRegex(), regexBasedOnChunks());

@@ -21,17 +21,31 @@ function isDigit(char: string): boolean {
   return char >= '0' && char <= '9';
 }
 
+export enum UnicodeMode {
+  None = 0,
+  Unicode = 1,
+  UnicodeSets = 2,
+}
+
 /**
  * Find the index of the last character of a squared-bracket "[]" block.
  * The returned index corresponds to the one of the ] closing the block.
+ * In UnicodeSets mode (v flag), nested "[" are tracked so that the matching top-level
+ * "]" is the one returned.
  */
-function squaredBracketBlockContentEndFrom(text: string, from: number): number {
+function squaredBracketBlockContentEndFrom(text: string, from: number, unicodeMode: UnicodeMode): number {
+  let depth = 0;
   for (let index = from; index !== text.length; ++index) {
     const char = text[index];
     if (char === '\\') {
       index += 1;
+    } else if (char === '[' && unicodeMode === UnicodeMode.UnicodeSets) {
+      depth += 1;
     } else if (char === ']') {
-      return index;
+      if (depth === 0) {
+        return index;
+      }
+      depth -= 1;
     }
   }
   throw new Error(`Missing closing ']'`);
@@ -41,7 +55,7 @@ function squaredBracketBlockContentEndFrom(text: string, from: number): number {
  * Find the index of the last character of a parenthesis "()" block.
  * The returned index corresponds to the one of the ) closing the block.
  */
-function parenthesisBlockContentEndFrom(text: string, from: number): number {
+function parenthesisBlockContentEndFrom(text: string, from: number, unicodeMode: UnicodeMode): number {
   let numExtraOpened = 0;
   for (let index = from; index !== text.length; ++index) {
     const char = text[index];
@@ -53,7 +67,7 @@ function parenthesisBlockContentEndFrom(text: string, from: number): number {
       }
       numExtraOpened -= 1;
     } else if (char === '[') {
-      index = squaredBracketBlockContentEndFrom(text, index);
+      index = squaredBracketBlockContentEndFrom(text, index + 1, unicodeMode);
     } else if (char === '(') {
       numExtraOpened += 1;
     }
@@ -87,6 +101,22 @@ function curlyBracketBlockContentEndFrom(text: string, from: number): number {
   return -1; // no end found
 }
 
+/**
+ * Find the index of the "}" closing a "\q{...}" string-disjunction block.
+ * The scanner honours "\\" escapes; it is only used when UnicodeSets mode is active.
+ */
+function qStringDisjunctionBlockContentEndFrom(text: string, from: number): number {
+  for (let index = from; index !== text.length; ++index) {
+    const char = text[index];
+    if (char === '\\') {
+      index += 1;
+    } else if (char === '}') {
+      return index;
+    }
+  }
+  throw new Error(`Missing closing '}' in \\q{...}`);
+}
+
 export enum TokenizerBlockMode {
   Full = 0,
   Character = 1,
@@ -95,13 +125,17 @@ export enum TokenizerBlockMode {
 /**
  * Find the index past-one of the last character of the block starting at index "from" in "text"
  */
-function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: TokenizerBlockMode): number {
+function blockEndFrom(text: string, from: number, unicodeMode: UnicodeMode, mode: TokenizerBlockMode): number {
   switch (text[from]) {
     case '[': {
       if (mode === TokenizerBlockMode.Character) {
+        // In v-mode, a "[" inside a character class starts a nested class
+        if (unicodeMode === UnicodeMode.UnicodeSets) {
+          return squaredBracketBlockContentEndFrom(text, from + 1, unicodeMode) + 1;
+        }
         return from + 1;
       }
-      return squaredBracketBlockContentEndFrom(text, from + 1) + 1;
+      return squaredBracketBlockContentEndFrom(text, from + 1, unicodeMode) + 1;
     }
     case '{': {
       if (mode === TokenizerBlockMode.Character) {
@@ -117,12 +151,36 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
       if (mode === TokenizerBlockMode.Character) {
         return from + 1;
       }
-      return parenthesisBlockContentEndFrom(text, from + 1) + 1;
+      return parenthesisBlockContentEndFrom(text, from + 1, unicodeMode) + 1;
     }
     case ']':
     case '}':
     case ')':
       return from + 1;
+    case '&': {
+      // Double-ampersand "&&" is a set-intersection operator in UnicodeSets mode,
+      // only inside character classes.
+      if (
+        mode === TokenizerBlockMode.Character &&
+        unicodeMode === UnicodeMode.UnicodeSets &&
+        text[from + 1] === '&'
+      ) {
+        return from + 2;
+      }
+      return from + 1;
+    }
+    case '-': {
+      // Double-dash "--" is a set-subtraction operator in UnicodeSets mode,
+      // only inside character classes.
+      if (
+        mode === TokenizerBlockMode.Character &&
+        unicodeMode === UnicodeMode.UnicodeSets &&
+        text[from + 1] === '-'
+      ) {
+        return from + 2;
+      }
+      return from + 1;
+    }
     case '\\': {
       const next1 = text[from + 1];
       switch (next1) {
@@ -133,7 +191,7 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
           throw new Error(`Unexpected token '${text.substring(from, from + 4)}' found`);
         case 'u':
           if (text[from + 2] === '{') {
-            if (!unicodeMode) {
+            if (unicodeMode === UnicodeMode.None) {
               return from + 2;
             }
             if (text[from + 4] === '}') {
@@ -188,7 +246,7 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
           throw new Error(`Unexpected token '${text.substring(from, from + 6)}' found`);
         case 'p':
         case 'P': {
-          if (!unicodeMode) {
+          if (unicodeMode === UnicodeMode.None) {
             return from + 2;
           }
           let subIndex = from + 2;
@@ -200,13 +258,26 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
           }
           return subIndex + 1;
         }
+        case 'q': {
+          // "\q{...}" string-disjunction block is v-mode only, and only inside character classes
+          if (
+            unicodeMode === UnicodeMode.UnicodeSets &&
+            mode === TokenizerBlockMode.Character &&
+            text[from + 2] === '{'
+          ) {
+            return qStringDisjunctionBlockContentEndFrom(text, from + 3) + 1;
+          }
+          // otherwise fall through to generic escaped-char handling below
+          const charSize = unicodeMode !== UnicodeMode.None ? charSizeAt(text, from + 1) : 1;
+          return from + charSize + 1;
+        }
         case 'k': {
           let subIndex = from + 2;
           for (; subIndex < text.length && text[subIndex] !== '>'; ++subIndex) {
             // nothing
           }
           if (text[subIndex] !== '>') {
-            if (!unicodeMode) {
+            if (unicodeMode === UnicodeMode.None) {
               return from + 2;
             }
             throw new Error(`Invalid \\k definition`);
@@ -215,20 +286,20 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
         }
         default: {
           if (isDigit(next1)) {
-            const maxIndex = unicodeMode ? text.length : Math.min(from + 4, text.length);
+            const maxIndex = unicodeMode !== UnicodeMode.None ? text.length : Math.min(from + 4, text.length);
             let subIndex = from + 2;
             for (; subIndex < maxIndex && isDigit(text[subIndex]); ++subIndex) {
               // nothing
             }
             return subIndex;
           }
-          const charSize = unicodeMode ? charSizeAt(text, from + 1) : 1;
+          const charSize = unicodeMode !== UnicodeMode.None ? charSizeAt(text, from + 1) : 1;
           return from + charSize + 1;
         }
       }
     }
     default: {
-      const charSize = unicodeMode ? charSizeAt(text, from) : 1;
+      const charSize = unicodeMode !== UnicodeMode.None ? charSizeAt(text, from) : 1;
       return from + charSize;
     }
   }
@@ -238,7 +309,7 @@ function blockEndFrom(text: string, from: number, unicodeMode: boolean, mode: To
  * Extract the block starting at "from" in "text"
  * @internal
  */
-export function readFrom(text: string, from: number, unicodeMode: boolean, mode: TokenizerBlockMode): string {
+export function readFrom(text: string, from: number, unicodeMode: UnicodeMode, mode: TokenizerBlockMode): string {
   const to = blockEndFrom(text, from, unicodeMode, mode);
   return text.substring(from, to);
 }

@@ -200,6 +200,13 @@ function toMatchingArbitrary(
     case 'UnicodeProperty': {
       return unicodePropertyArbitrary(astNode);
     }
+    case 'ClassStringDisjunction':
+    case 'ClassIntersection':
+    case 'ClassSubtraction': {
+      throw new Error(
+        `Regex v-flag construct "${astNode.type}" is parsed but not yet supported by "stringMatching" for generation`,
+      );
+    }
     default: {
       throw raiseUnsupportedASTNode(astNode);
     }
@@ -222,11 +229,12 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
     //   g - all matches, not limited to first match
     //   m - multiline
     //   s - dot matches newline character
+    //   u - unicode support
+    //   v - unicode sets (tokenizer only; generation for v-only constructs is not yet supported)
     // Not supported:
     //   i - case-insensitive
-    //   u - unicode support
     //   y - search at the exact position in the text or sticky mode
-    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u') {
+    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u' && flag !== 'v') {
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }

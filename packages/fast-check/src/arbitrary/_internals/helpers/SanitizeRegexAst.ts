@@ -100,6 +100,10 @@ function addMissingDotStarTraversal(
       return astNode;
     case 'UnicodeProperty':
       return astNode;
+    case 'ClassStringDisjunction':
+    case 'ClassIntersection':
+    case 'ClassSubtraction':
+      return astNode;
     default:
       throw raiseUnsupportedASTNode(astNode);
   }

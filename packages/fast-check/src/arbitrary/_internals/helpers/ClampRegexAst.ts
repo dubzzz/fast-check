@@ -161,6 +161,13 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
     case 'UnicodeProperty': {
       return { astNode, minLength: 1 };
     }
+    case 'ClassStringDisjunction': {
+      return { astNode, minLength: 0 }; // An alternative may be the empty string; generation not yet supported
+    }
+    case 'ClassIntersection':
+    case 'ClassSubtraction': {
+      return { astNode, minLength: 1 }; // Mirrors CharacterClass; generation not yet supported
+    }
   }
 }
 

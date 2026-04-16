@@ -1,5 +1,5 @@
 import { safeIndexOf } from '../../../utils/globals.js';
-import { TokenizerBlockMode, readFrom } from './ReadRegex.js';
+import { TokenizerBlockMode, UnicodeMode, readFrom } from './ReadRegex.js';
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 import { resolveUnicodeProperty } from './UnicodePropertyData.js';
 
@@ -116,6 +116,30 @@ type BackreferenceRegexToken =
       reference: string;
     };
 type UnicodePropertyRegexToken = ResolvedUnicodeProperty;
+/**
+ * "\q{abc|de}" inside a character class in v-mode: disjunction of string alternatives.
+ * Each alternative is represented as an Alternative token (possibly empty).
+ */
+type ClassStringDisjunctionRegexToken = {
+  type: 'ClassStringDisjunction';
+  alternatives: AlternativeRegexToken[];
+};
+/**
+ * Set intersection ("&&") inside a character class in v-mode.
+ */
+type ClassIntersectionRegexToken = {
+  type: 'ClassIntersection';
+  left: RegexToken;
+  right: RegexToken;
+};
+/**
+ * Set subtraction ("--") inside a character class in v-mode.
+ */
+type ClassSubtractionRegexToken = {
+  type: 'ClassSubtraction';
+  left: RegexToken;
+  right: RegexToken;
+};
 
 export type RegexToken =
   | CharRegexToken
@@ -128,7 +152,10 @@ export type RegexToken =
   | DisjunctionRegexToken
   | AssertionRegexToken
   | BackreferenceRegexToken
-  | UnicodePropertyRegexToken;
+  | UnicodePropertyRegexToken
+  | ClassStringDisjunctionRegexToken
+  | ClassIntersectionRegexToken
+  | ClassSubtractionRegexToken;
 
 /**
  * Create a simple char token
@@ -245,12 +272,141 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
 }
 
 /**
+ * Split the content of a "\q{...}" block into alternatives, honouring "\\" escapes.
+ */
+function splitQDisjunctionContent(content: string): string[] {
+  const alternatives: string[] = [];
+  let start = 0;
+  for (let index = 0; index < content.length; ++index) {
+    const char = content[index];
+    if (char === '\\') {
+      index += 1;
+    } else if (char === '|') {
+      alternatives.push(content.substring(start, index));
+      start = index + 1;
+    }
+  }
+  alternatives.push(content.substring(start));
+  return alternatives;
+}
+
+/**
+ * Tokenize a single alternative inside "\q{...}": a sequence of character atoms.
+ * v-mode only.
+ */
+function tokenizeQAlternative(content: string): AlternativeRegexToken {
+  const expressions: RegexToken[] = [];
+  for (
+    let subIndex = 0, subBlock = readFrom(content, subIndex, UnicodeMode.UnicodeSets, TokenizerBlockMode.Character);
+    subIndex !== content.length;
+    subIndex += subBlock.length,
+      subBlock = readFrom(content, subIndex, UnicodeMode.UnicodeSets, TokenizerBlockMode.Character)
+  ) {
+    expressions.push(blockToCharToken(subBlock));
+  }
+  return { type: 'Alternative', expressions };
+}
+
+/**
+ * Parse the content of a character class (what is between "[" and "]").
+ * Handles the usual range syntax as well as v-mode extensions:
+ *   - "\q{a|b|...}" string disjunction
+ *   - "A&&B" set intersection
+ *   - "A--B" set subtraction
+ *   - nested "[...]" classes
+ * Always returns a CharacterClass so that any outer negation binds to the whole class expression.
+ */
+function parseCharacterClass(blockContent: string, unicodeMode: UnicodeMode): CharacterClassRegexToken {
+  let subTokens: RegexToken[] = [];
+  let negative: true | undefined = undefined;
+  let previousWasSimpleDash = false;
+  let accumulated: RegexToken | null = null;
+  let pendingOperator: 'ClassIntersection' | 'ClassSubtraction' | null = null;
+
+  for (
+    let subIndex = 0, subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character);
+    subIndex !== blockContent.length;
+    subIndex += subBlock.length,
+      subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character)
+  ) {
+    if (subIndex === 0 && subBlock === '^') {
+      negative = true;
+      continue;
+    }
+
+    // v-mode set operators
+    if (subBlock === '&&' || subBlock === '--') {
+      previousWasSimpleDash = false;
+      const current: CharacterClassRegexToken = { type: 'CharacterClass', expressions: subTokens };
+      subTokens = [];
+      if (accumulated === null) {
+        accumulated = current;
+      } else {
+        accumulated = { type: pendingOperator as 'ClassIntersection' | 'ClassSubtraction', left: accumulated, right: current };
+      }
+      pendingOperator = subBlock === '&&' ? 'ClassIntersection' : 'ClassSubtraction';
+      continue;
+    }
+
+    // v-mode nested character class: readFrom returns the full "[...]" block only when UnicodeSets mode is active.
+    if (unicodeMode === UnicodeMode.UnicodeSets && subBlock[0] === '[' && subBlock.length >= 2) {
+      const nested = parseCharacterClass(subBlock.substring(1, subBlock.length - 1), unicodeMode);
+      subTokens.push(nested);
+      previousWasSimpleDash = false;
+      continue;
+    }
+
+    // v-mode "\q{...}" string disjunction
+    if (subBlock.length > 3 && subBlock[0] === '\\' && subBlock[1] === 'q' && subBlock[2] === '{') {
+      const inner = subBlock.substring(3, subBlock.length - 1);
+      const alternatives = splitQDisjunctionContent(inner).map((alt) => tokenizeQAlternative(alt));
+      subTokens.push({ type: 'ClassStringDisjunction', alternatives });
+      previousWasSimpleDash = false;
+      continue;
+    }
+
+    const newToken = blockToCharToken(subBlock);
+    if (subBlock === '-') {
+      subTokens.push(newToken);
+      previousWasSimpleDash = true;
+    } else {
+      const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
+      if (
+        previousWasSimpleDash &&
+        operand1Token !== undefined &&
+        operand1Token.type === 'Char' &&
+        newToken.type === 'Char' // Always true for unicode regexes: JavaScript engines forbids /[a-\p{Letter}]/u
+      ) {
+        subTokens.pop(); // dash
+        subTokens.pop(); // operator 1
+        subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
+      } else {
+        subTokens.push(newToken);
+      }
+      previousWasSimpleDash = false;
+    }
+  }
+
+  if (accumulated === null) {
+    return { type: 'CharacterClass', expressions: subTokens, negative };
+  }
+
+  const tail: CharacterClassRegexToken = { type: 'CharacterClass', expressions: subTokens };
+  const opNode: ClassIntersectionRegexToken | ClassSubtractionRegexToken = {
+    type: pendingOperator as 'ClassIntersection' | 'ClassSubtraction',
+    left: accumulated,
+    right: tail,
+  };
+  return { type: 'CharacterClass', expressions: [opNode], negative };
+}
+
+/**
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
 function pushTokens(
   tokens: RegexToken[],
   regexSource: string,
-  unicodeMode: boolean,
+  unicodeMode: UnicodeMode,
   groups: { lastIndex: number; named: Map<string, number> },
 ): void {
   let disjunctions: (RegexToken | null)[] | null = null;
@@ -320,42 +476,7 @@ function pushTokens(
       }
       case '[': {
         const blockContent = block.substring(1, block.length - 1);
-        const subTokens: (CharRegexToken | ClassRangeRegexToken | UnicodePropertyRegexToken)[] = [];
-
-        let negative: true | undefined = undefined;
-        let previousWasSimpleDash = false;
-        for (
-          let subIndex = 0, subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character);
-          subIndex !== blockContent.length;
-          subIndex += subBlock.length,
-            subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character)
-        ) {
-          if (subIndex === 0 && subBlock === '^') {
-            negative = true;
-            continue;
-          }
-          const newToken = blockToCharToken(subBlock);
-          if (subBlock === '-') {
-            subTokens.push(newToken);
-            previousWasSimpleDash = true;
-          } else {
-            const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
-            if (
-              previousWasSimpleDash &&
-              operand1Token !== undefined &&
-              operand1Token.type === 'Char' &&
-              newToken.type === 'Char' // Always true for unicode regexes: JavaScript engines forbids /[a-\p{Letter}]/u
-            ) {
-              subTokens.pop(); // dash
-              subTokens.pop(); // operator 1
-              subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
-            } else {
-              subTokens.push(newToken);
-            }
-            previousWasSimpleDash = false;
-          }
-        }
-        tokens.push({ type: 'CharacterClass', expressions: subTokens, negative });
+        tokens.push(parseCharacterClass(blockContent, unicodeMode));
         break;
       }
       case '(': {
@@ -422,7 +543,7 @@ function pushTokens(
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block[0] === '\\' && isDigit(block[1])) {
           const reference = Number(block.substring(1));
-          if (unicodeMode || reference <= groups.lastIndex) {
+          if (unicodeMode !== UnicodeMode.None || reference <= groups.lastIndex) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
             tokens.push(blockToCharToken(block));
@@ -465,7 +586,13 @@ function pushTokens(
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
+  const flags = [...regex.flags];
+  const unicodeMode: UnicodeMode =
+    safeIndexOf(flags, 'v') !== -1
+      ? UnicodeMode.UnicodeSets
+      : safeIndexOf(flags, 'u') !== -1
+        ? UnicodeMode.Unicode
+        : UnicodeMode.None;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
   pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });

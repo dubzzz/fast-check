@@ -135,6 +135,29 @@ describe('tokenizeRegex', () => {
       },
     );
 
+    it.each(
+      allRegexes
+        .filter((i) => !i.invalidWithUnicode)
+        // Exclude regexes that are outright invalid under the v flag (JavaScript throws at RegExp construction)
+        .filter((i) => {
+          try {
+            // oxlint-disable-next-line no-new
+            new RegExp(i.regex.source, 'v');
+            return true;
+          } catch {
+            return false;
+          }
+        }),
+    )(
+      'should tokenize $regex identically in v-mode and u-mode when the regex uses no v-specific construct',
+      ({ regex }) => {
+        // regexp-tree does not support the v flag, so we validate v-mode against our own u-mode output instead
+        const uRegex = new RegExp(regex.source, 'u');
+        const vRegex = new RegExp(regex.source, 'v');
+        expect(tokenizeRegex(vRegex)).toEqual(tokenizeRegex(uRegex));
+      },
+    );
+
     it.each`
       regex
       ${/🐱/u}
@@ -169,6 +192,160 @@ describe('tokenizeRegex', () => {
         }),
       );
       expect(tokenizedRevampedUpdated).toEqual(tokenized);
+    });
+  });
+
+  describe('v-mode regex', () => {
+    // regexp-tree predates ES2024 and does not support the v flag, so expected ASTs are asserted explicitly.
+    const simpleChar = (char: string) => ({
+      type: 'Char',
+      kind: 'simple',
+      symbol: char,
+      value: char,
+      codePoint: char.codePointAt(0),
+    });
+    const charClass = (expressions: unknown[], negative?: true) => {
+      const node: Record<string, unknown> = { type: 'CharacterClass', expressions };
+      if (negative) node.negative = true;
+      return node;
+    };
+
+    it('should parse intersection "[a&&b]"', () => {
+      expect(tokenizeRegex(/[a&&b]/v)).toEqual(
+        charClass([
+          {
+            type: 'ClassIntersection',
+            left: charClass([simpleChar('a')]),
+            right: charClass([simpleChar('b')]),
+          },
+        ]),
+      );
+    });
+
+    it('should parse subtraction "[a--b]"', () => {
+      expect(tokenizeRegex(/[a--b]/v)).toEqual(
+        charClass([
+          {
+            type: 'ClassSubtraction',
+            left: charClass([simpleChar('a')]),
+            right: charClass([simpleChar('b')]),
+          },
+        ]),
+      );
+    });
+
+    it('should parse \\q{...} string disjunction', () => {
+      expect(tokenizeRegex(/[\q{ab|cd}]/v)).toEqual(
+        charClass([
+          {
+            type: 'ClassStringDisjunction',
+            alternatives: [
+              { type: 'Alternative', expressions: [simpleChar('a'), simpleChar('b')] },
+              { type: 'Alternative', expressions: [simpleChar('c'), simpleChar('d')] },
+            ],
+          },
+        ]),
+      );
+    });
+
+    it('should parse \\q{} as a single empty alternative', () => {
+      expect(tokenizeRegex(/[\q{}]/v)).toEqual(
+        charClass([
+          {
+            type: 'ClassStringDisjunction',
+            alternatives: [{ type: 'Alternative', expressions: [] }],
+          },
+        ]),
+      );
+    });
+
+    it('should bind negation to the full set-operation class "[^a&&b]"', () => {
+      // [^a&&b] = complement of (a intersection b); negative flag must sit on the outer class
+      expect(tokenizeRegex(/[^a&&b]/v)).toEqual(
+        charClass(
+          [
+            {
+              type: 'ClassIntersection',
+              left: charClass([simpleChar('a')]),
+              right: charClass([simpleChar('b')]),
+            },
+          ],
+          true,
+        ),
+      );
+    });
+
+    it('should parse nested classes "[[a-z]&&[aeiou]]"', () => {
+      const tokenized = tokenizeRegex(/[[a-z]&&[aeiou]]/v);
+      // Assert the high-level shape with toMatchObject to avoid coupling to wrapping CharacterClass layers
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'ClassIntersection',
+            left: { type: 'CharacterClass' },
+            right: { type: 'CharacterClass' },
+          },
+        ],
+      });
+    });
+
+    it('should parse multiple operators left-associatively via nested classes', () => {
+      // "[[abc]&&[def]&&[ghi]]" — mixing intersection operators is allowed when disambiguated by brackets
+      const tokenized = tokenizeRegex(/[[abc]&&[def]&&[ghi]]/v);
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'ClassIntersection',
+            left: {
+              type: 'ClassIntersection',
+              left: { type: 'CharacterClass' },
+              right: { type: 'CharacterClass' },
+            },
+            right: { type: 'CharacterClass' },
+          },
+        ],
+      });
+    });
+
+    it('should not treat && or -- as operators outside Character mode', () => {
+      // && and -- at the regex source level (not inside a class) are just two literal chars
+      expect(tokenizeRegex(/a&&b/v)).toEqual({
+        type: 'Alternative',
+        expressions: [simpleChar('a'), simpleChar('&'), simpleChar('&'), simpleChar('b')],
+      });
+    });
+
+    it('should still honour escaped "-" inside a class', () => {
+      expect(tokenizeRegex(/[a\-b]/v)).toMatchObject({
+        type: 'CharacterClass',
+        expressions: [{ type: 'Char', symbol: 'a' }, { type: 'Char', symbol: '-' }, { type: 'Char', symbol: 'b' }],
+      });
+    });
+
+    it('should parse \\q{...} alternatives that contain escaped "|"', () => {
+      const tokenized = tokenizeRegex(/[\q{a\|b|c}]/v);
+      expect(tokenized).toMatchObject({
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'ClassStringDisjunction',
+            alternatives: [
+              {
+                type: 'Alternative',
+                // first alternative is "a\|b" — three blocks: "a", "\|", "b"
+                expressions: [
+                  { symbol: 'a' },
+                  { symbol: '|', escaped: true },
+                  { symbol: 'b' },
+                ],
+              },
+              { type: 'Alternative', expressions: [{ symbol: 'c' }] },
+            ],
+          },
+        ],
+      });
     });
   });
 });

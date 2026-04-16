@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { TokenizerBlockMode, readFrom } from '../../../../../src/arbitrary/_internals/helpers/ReadRegex.js';
+import {
+  TokenizerBlockMode,
+  UnicodeMode,
+  readFrom,
+} from '../../../../../src/arbitrary/_internals/helpers/ReadRegex.js';
 
 describe('readFrom', () => {
   it.each`
@@ -55,11 +59,69 @@ describe('readFrom', () => {
   `('should properly extract first block of "$source"', ({ source, expected }) => {
     const expectedNonUnicode = typeof expected === 'string' ? expected : expected[0];
     const expectedUnicode = typeof expected === 'string' ? expected : expected[1];
-    expect(readFrom(source, 0, false, TokenizerBlockMode.Full)).toBe(expectedNonUnicode);
+    expect(readFrom(source, 0, UnicodeMode.None, TokenizerBlockMode.Full)).toBe(expectedNonUnicode);
     if (expectedUnicode !== null) {
-      expect(readFrom(source, 0, true, TokenizerBlockMode.Full)).toBe(expectedUnicode);
+      expect(readFrom(source, 0, UnicodeMode.Unicode, TokenizerBlockMode.Full)).toBe(expectedUnicode);
     } else {
-      expect(() => readFrom(source, 0, true, TokenizerBlockMode.Full)).toThrowError();
+      expect(() => readFrom(source, 0, UnicodeMode.Unicode, TokenizerBlockMode.Full)).toThrowError();
     }
+  });
+
+  describe('v-mode (UnicodeSets)', () => {
+    it.each`
+      source                | expected
+      ${'[[a]&&[b]]'}       | ${'[[a]&&[b]]'}
+      ${'[a--[bc]]'}        | ${'[a--[bc]]'}
+      ${'[\\q{ab|cd}]'}     | ${'[\\q{ab|cd}]'}
+      ${'[[a&&b]--[c]]'}    | ${'[[a&&b]--[c]]'}
+      ${'[\\q{a\\|b}]'}     | ${'[\\q{a\\|b}]'}
+      ${'[\\q{}]'}          | ${'[\\q{}]'}
+    `('should extract the full "$source" block in v-mode', ({ source, expected }) => {
+      expect(readFrom(source, 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Full)).toBe(expected);
+    });
+
+    it.each`
+      source    | expected
+      ${'&&'}   | ${'&&'}
+      ${'--'}   | ${'--'}
+      ${'&'}    | ${'&'}
+      ${'-'}    | ${'-'}
+      ${'&a'}   | ${'&'}
+      ${'-a'}   | ${'-'}
+    `('should return "$expected" for "$source" in Character mode under v-mode', ({ source, expected }) => {
+      expect(readFrom(source, 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Character)).toBe(expected);
+    });
+
+    it.each`
+      source    | expected
+      ${'&&'}   | ${'&'}
+      ${'--'}   | ${'-'}
+    `('should NOT fuse "$source" into a single block outside v-mode', ({ source, expected }) => {
+      expect(readFrom(source, 0, UnicodeMode.None, TokenizerBlockMode.Character)).toBe(expected);
+      expect(readFrom(source, 0, UnicodeMode.Unicode, TokenizerBlockMode.Character)).toBe(expected);
+    });
+
+    it('should throw on unterminated \\q{', () => {
+      expect(() => readFrom('\\q{ab', 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Character)).toThrowError();
+    });
+
+    it('should throw on unterminated nested [', () => {
+      expect(() => readFrom('[[a&&', 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Full)).toThrowError();
+    });
+
+    it('should not treat \\q{...} as a block outside Character mode', () => {
+      // In Full mode, \q is a generic escape returning \q (length 2)
+      expect(readFrom('\\q{ab}', 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Full)).toBe('\\q');
+    });
+
+    it('should not treat \\q{...} as a block when not in v-mode', () => {
+      // In Unicode (u flag) Character mode, \q is not special: single escaped char
+      expect(readFrom('\\q{ab}', 0, UnicodeMode.Unicode, TokenizerBlockMode.Character)).toBe('\\q');
+    });
+
+    it('should not treat a nested [...] as a block when not in v-mode', () => {
+      // In Unicode (u flag) Character mode, a "[" inside a class is just a literal '['
+      expect(readFrom('[abc]', 0, UnicodeMode.Unicode, TokenizerBlockMode.Character)).toBe('[');
+    });
   });
 });
