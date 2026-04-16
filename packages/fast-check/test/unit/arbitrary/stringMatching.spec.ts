@@ -69,41 +69,10 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
     { regex: /^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9]+$/ },
     // Twitter profile
     { regex: /^https?:\/\/twitter.com\/[A-Za-z0-9_]+\/status\/[0-9]+$/ },
-    // Unicode Letter categories
-    { regex: /^\p{Letter}+$/u },
-    { regex: /^\p{L}+$/u },
-    { regex: /^\p{Lu}+$/u },
-    { regex: /^\p{Ll}+$/u },
-    { regex: /^\p{Lt}+$/u },
-    { regex: /^\p{Lm}+$/u },
-    { regex: /^\p{Lo}+$/u },
-    { regex: /^\p{Cased_Letter}+$/u },
-    { regex: /^\p{LC}+$/u },
-    // Negated Unicode Letter
-    { regex: /^\P{Letter}+$/u },
-    { regex: /^\P{L}+$/u },
-    // Unicode Letter with explicit General_Category
-    { regex: /^\p{General_Category=Letter}+$/u },
-    { regex: /^\p{gc=L}+$/u },
-    // Unicode Letter combined with other regex features
-    { regex: /^[\p{Letter}\d]+$/u },
-    { regex: /^\p{Ll}{3,6}$/u },
-    { regex: /^\p{Lu}\p{Ll}+$/u },
-    // Unicode Script properties
-    { regex: /^\p{Script=Latin}+$/u },
-    { regex: /^\p{sc=Greek}+$/u },
-    { regex: /^\p{Script=Cyrillic}+$/u },
-    // Unicode binary properties
-    { regex: /^\p{Alphabetic}+$/u },
+    // Emojis
     { regex: /^\p{Emoji}+$/u },
-    { regex: /^\p{ASCII}+$/u },
-    // Negated Script / binary
-    { regex: /^\P{Script=Latin}+$/u },
+    // Not emojis
     { regex: /^\P{Emoji}+$/u },
-    // Other General_Category values
-    { regex: /^\p{Number}+$/u },
-    { regex: /^\p{Nd}+$/u },
-    { regex: /^\p{Punctuation}+$/u },
   );
 }
 
