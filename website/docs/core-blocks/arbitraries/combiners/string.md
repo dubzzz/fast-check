@@ -55,12 +55,12 @@ fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLengt
 fc.stringMatching(/^\p{Emoji}$/u);
 // Note: Regex matching a single Emoji character via a Unicode property escape
 // Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
-// Examples of generated values: "🚞", "🫲", "1", "2", "🫱"…
+// Examples of generated values: "😹", "🫲", "1", "2", "🫱"…
 
 fc.stringMatching(/^\p{Uppercase_Letter}\p{Lowercase_Letter}+$/u);
 // Note: Regex matching a capitalized word
 // Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
-// Examples of generated values: "Cｚ𝖐ᴞ𐳋𝓿𝼍𝕛𐐯ṏⰵ𝐲", "Hc𝚗ḿ𝘃𞤿h", "𝗖𞤫𝛞ᾄ", "𐲘𝖿ʭⱡⲭⳁ", "Iꟶ𐖷𝛚n"…
+// Examples of generated values: "Cẜѥթℏ𝑗ᾤỡꚉứꮚȭ", "Hcųᶏϊ𞤿h", "Ҁ𝘪ừ𐐬", "Ꙍḛứꬻx𞤰", "I𝕦ҩꝅﬄ"…
 ```
 
 Some constraints are hard to express with a single regex.
