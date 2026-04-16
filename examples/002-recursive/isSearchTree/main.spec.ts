@@ -6,7 +6,7 @@ import { isSearchTree, Tree } from './src/isSearchTree.js';
 import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary.js';
 
 describe('isSearchTree', () => {
-  it('should always mark binary search trees as search trees', () => {
+  it('should accept valid binary search trees', () => {
     fc.assert(
       fc.property(binarySearchTreeWithMaxDepth(3), (tree) => {
         return isSearchTree(tree);
@@ -14,7 +14,7 @@ describe('isSearchTree', () => {
     );
   });
 
-  it('should detect invalid search trees whenever tree traversal produces unordered arrays', () => {
+  it('should reject trees with unordered in-order traversal', () => {
     fc.assert(
       fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
@@ -23,7 +23,7 @@ describe('isSearchTree', () => {
     );
   });
 
-  it('should detect invalid search trees whenever tree traversal produces unordered arrays (2)', () => {
+  it('should reject trees with unordered in-order traversal (depthSize)', () => {
     fc.assert(
       fc.property(binaryTreeWithoutMaxDepth(), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
@@ -32,7 +32,7 @@ describe('isSearchTree', () => {
     );
   });
 
-  it('should detect invalid search trees whenever one node in the tree has an invalid direct child', () => {
+  it('should reject trees where a child violates the BST ordering', () => {
     fc.assert(
       fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(

@@ -6,39 +6,21 @@ import fc from 'fast-check';
 import * as React from 'react';
 
 import AutocompleteField from './src/AutocompleteField.js';
-//import AutocompleteField from './src/AutocompleteFieldMostRecentQuery.js';
-//import AutocompleteField from './src/AutocompleteFieldSimple.js';
 
 import { render, cleanup, fireEvent, act, getNodeText, screen } from '@testing-library/react';
 
-import { search } from './src/Api.js';
-
-// If you want to test the behaviour of fast-check in case of a bug:
-const bugs = {
-  //  enableBugBetterResults: true,
-  //  enableBugUnfilteredResults: true,
-  //  enableBugUnrelatedResults: true,
-  //  enableBugDoNotDiscardOldQueries: true
-};
-
-if (!fc.readConfigureGlobal()) {
-  // Global config of Jest has been ignored, we will have a timeout after 5000ms
-  // (CodeSandbox falls in this category)
-  fc.configureGlobal({ interruptAfterTimeLimit: 4000 });
-}
-
 describe('AutocompleteField', () => {
-  it('should suggest results matching the value of the autocomplete field', async () => {
+  it('should only show suggestions that match the current input', async () => {
     await fc.assert(
       fc
         .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
-          const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
+          const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {
             return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
           });
 
           // Act
-          render(<AutocompleteField search={searchImplem} {...bugs} />);
+          render(<AutocompleteField search={searchImplem} />);
           const input = screen.getByRole('textbox') as HTMLElement;
           s.scheduleSequence(buildAutocompleteEvents(input, queries));
 
@@ -62,18 +44,18 @@ describe('AutocompleteField', () => {
     );
   });
 
-  it('should display more and more sugestions as results come', async () => {
+  it('should show increasingly more suggestions as queries resolve', async () => {
     await fc.assert(
       fc
         .asyncProperty(AllResultsArbitrary, QueriesArbitrary, fc.scheduler({ act }), async (allResults, queries, s) => {
           // Arrange
           const query = queries[queries.length - 1];
-          const searchImplem: typeof search = s.scheduleFunction(function search(query, maxResults) {
+          const searchImplem = s.scheduleFunction(function search(query: string, maxResults: number) {
             return Promise.resolve(allResults.filter((r) => r.includes(query)).slice(0, maxResults));
           });
 
           // Act
-          render(<AutocompleteField search={searchImplem} {...bugs} />);
+          render(<AutocompleteField search={searchImplem} />);
           const input = screen.getByRole('textbox') as HTMLElement;
           for (const event of buildAutocompleteEvents(input, queries)) {
             await event.builder();
