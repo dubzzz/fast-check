@@ -344,7 +344,7 @@ function pushTokens(
               previousWasSimpleDash &&
               operand1Token !== undefined &&
               operand1Token.type === 'Char' &&
-              newToken.type === 'Char'
+              newToken.type === 'Char' // Always true for unicode regexes: JavaScript engines forbids /[a-\p{Letter}]/u
             ) {
               subTokens.pop(); // dash
               subTokens.pop(); // operator 1
