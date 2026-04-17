@@ -1,6 +1,6 @@
 # 4.7.0
 
-_Unicode property support in stringMatching_
+_Unicode property support in `stringMatching`_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.6.0...v4.7.0)]
 
 ## Features
