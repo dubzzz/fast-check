@@ -1,3 +1,46 @@
+# 4.7.0
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.6.0...v4.7.0)]
+
+## Features
+
+- ([PR#6866](https://github.com/dubzzz/fast-check/pull/6866)) Reversible `json` arbitrary
+- ([PR#6868](https://github.com/dubzzz/fast-check/pull/6868)) Parse `\p{}` and `\P{}` in `stringMatching`
+- ([PR#6870](https://github.com/dubzzz/fast-check/pull/6870)) Support for `\p{UnicodeProperty}` in `stringMatching`
+- ([PR#6871](https://github.com/dubzzz/fast-check/pull/6871)) Support negated unicode properties in `stringMatching`
+
+## Fixes
+
+- ([PR#6710](https://github.com/dubzzz/fast-check/pull/6710)) CI: Pass explicit string to `make_latest`
+- ([PR#6714](https://github.com/dubzzz/fast-check/pull/6714)) CI: Remove unused vite dependency from multiple packages
+- ([PR#6786](https://github.com/dubzzz/fast-check/pull/6786)) CI: Configure release workflow settings for announcements
+- ([PR#6787](https://github.com/dubzzz/fast-check/pull/6787)) CI: Add force-build-status-execution label trigger to CI workflow
+- ([PR#6818](https://github.com/dubzzz/fast-check/pull/6818)) CI: Push tag after creating draft release
+- ([PR#6827](https://github.com/dubzzz/fast-check/pull/6827)) CI: Update CSP for our playgrounds backed by stackblitz
+- ([PR#6832](https://github.com/dubzzz/fast-check/pull/6832)) CI: Add format/lint/typecheck hooks for Claude Code
+- ([PR#6834](https://github.com/dubzzz/fast-check/pull/6834)) CI: Fix Claude's session start hook
+- ([PR#6852](https://github.com/dubzzz/fast-check/pull/6852)) CI: Skip website prebuild remote fetches on cloud Claude Code
+- ([PR#6869](https://github.com/dubzzz/fast-check/pull/6869)) CI: Add workflow to clean up GitHub Actions caches
+- ([PR#6789](https://github.com/dubzzz/fast-check/pull/6789)) Clean: Remove unused code identified by knip
+- ([PR#6711](https://github.com/dubzzz/fast-check/pull/6711)) Doc: Release note for version 4.6.0
+- ([PR#6756](https://github.com/dubzzz/fast-check/pull/6756)) Doc: Fix typo in the documentation
+- ([PR#6758](https://github.com/dubzzz/fast-check/pull/6758)) Doc: Add rugk as doc contributor
+- ([PR#6764](https://github.com/dubzzz/fast-check/pull/6764)) Doc: Document gitmoji PR naming
+- ([PR#6776](https://github.com/dubzzz/fast-check/pull/6776)) Doc: Add nielk as code contributor
+- ([PR#6753](https://github.com/dubzzz/fast-check/pull/6753)) Doc: Migrate playgrounds in documentation to StackBlitz
+- ([PR#6830](https://github.com/dubzzz/fast-check/pull/6830)) Doc: Switch to `?raw` imports for advents
+- ([PR#6836](https://github.com/dubzzz/fast-check/pull/6836)) Doc: Add Vitest documentation guide for setting up property-based testing
+- ([PR#6833](https://github.com/dubzzz/fast-check/pull/6833)) Doc: Remove dead doc hub pages
+- ([PR#6855](https://github.com/dubzzz/fast-check/pull/6855)) Doc: Integrate API reference natively into our doc
+- ([PR#6867](https://github.com/dubzzz/fast-check/pull/6867)) Doc: Simplify examples
+- ([PR#6835](https://github.com/dubzzz/fast-check/pull/6835)) Script: Migrate from ESLint to oxlint
+- ([PR#6872](https://github.com/dubzzz/fast-check/pull/6872)) Script: Rework hooks for Claude Code
+- ([PR#6754](https://github.com/dubzzz/fast-check/pull/6754)) Test: Migrate race condition tests to Vitest
+- ([PR#6859](https://github.com/dubzzz/fast-check/pull/6859)) Test: Stabilize flaky timeout tests on Windows
+
+---
+
 # 4.6.0
 
 _Better `stringMatching` with `maxLength`_
