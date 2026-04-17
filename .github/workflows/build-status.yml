@@ -613,9 +613,17 @@ jobs:
         id: wait-for-secrets
         with:
           secrets: |
-            OTP: 
+            OTP:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Ensure OTP was provided
+        env:
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: |
+          if [ -z "$OTP_VALUE" ]; then
+            echo "::error::wait-for-secrets did not return an OTP (timed out)"
+            exit 1
+          fi
       - name: Set package filename
         run: echo "TGZ_NAME=fast-check-$(tar -xzOf packages/fast-check/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -690,9 +698,17 @@ jobs:
         id: wait-for-secrets
         with:
           secrets: |
-            OTP: 
+            OTP:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Ensure OTP was provided
+        env:
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: |
+          if [ -z "$OTP_VALUE" ]; then
+            echo "::error::wait-for-secrets did not return an OTP (timed out)"
+            exit 1
+          fi
       - name: Set package filename
         run: echo "TGZ_NAME=ava-$(tar -xzOf packages/ava/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -767,9 +783,17 @@ jobs:
         id: wait-for-secrets
         with:
           secrets: |
-            OTP: 
+            OTP:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Ensure OTP was provided
+        env:
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: |
+          if [ -z "$OTP_VALUE" ]; then
+            echo "::error::wait-for-secrets did not return an OTP (timed out)"
+            exit 1
+          fi
       - name: Set package filename
         run: echo "TGZ_NAME=jest-$(tar -xzOf packages/jest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -844,9 +868,17 @@ jobs:
         id: wait-for-secrets
         with:
           secrets: |
-            OTP: 
+            OTP:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Ensure OTP was provided
+        env:
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: |
+          if [ -z "$OTP_VALUE" ]; then
+            echo "::error::wait-for-secrets did not return an OTP (timed out)"
+            exit 1
+          fi
       - name: Set package filename
         run: echo "TGZ_NAME=packaged-$(tar -xzOf packages/packaged/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -921,9 +953,17 @@ jobs:
         id: wait-for-secrets
         with:
           secrets: |
-            OTP: 
+            OTP:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Ensure OTP was provided
+        env:
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: |
+          if [ -z "$OTP_VALUE" ]; then
+            echo "::error::wait-for-secrets did not return an OTP (timed out)"
+            exit 1
+          fi
       - name: Set package filename
         run: echo "TGZ_NAME=poisoning-$(tar -xzOf packages/poisoning/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -998,9 +1038,17 @@ jobs:
         id: wait-for-secrets
         with:
           secrets: |
-            OTP: 
+            OTP:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Ensure OTP was provided
+        env:
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: |
+          if [ -z "$OTP_VALUE" ]; then
+            echo "::error::wait-for-secrets did not return an OTP (timed out)"
+            exit 1
+          fi
       - name: Set package filename
         run: echo "TGZ_NAME=vitest-$(tar -xzOf packages/vitest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -1075,9 +1123,17 @@ jobs:
         id: wait-for-secrets
         with:
           secrets: |
-            OTP: 
+            OTP:
               name: 'OTP to publish package'
               description: 'OTP from authenticator app'
+      - name: Ensure OTP was provided
+        env:
+          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
+        run: |
+          if [ -z "$OTP_VALUE" ]; then
+            echo "::error::wait-for-secrets did not return an OTP (timed out)"
+            exit 1
+          fi
       - name: Set package filename
         run: echo "TGZ_NAME=worker-$(tar -xzOf packages/worker/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
