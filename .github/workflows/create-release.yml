@@ -51,15 +51,6 @@ jobs:
             core.setOutput('tag', tag);
             core.setOutput('release_name', releaseName);
             core.setOutput('changelog', changelog);
-      - name: Create GitHub Release
-        if: ${{ github.event.inputs.dry_run != 'true' }}
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
-        with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.release_name }}
-          body: ${{ steps.changelog.outputs.changelog }}
-          draft: true
-          make_latest: ${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}
       - name: Push tag
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
@@ -67,3 +58,13 @@ jobs:
           git push origin "refs/tags/$TAG"
         env:
           TAG: ${{ steps.changelog.outputs.tag }}
+      - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.release_name }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          discussion_category_name: Announcements
+          make_latest: ${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}

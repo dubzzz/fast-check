@@ -638,8 +638,6 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{needs.check_publish_fc.outputs.tag}}
-          draft: false
-          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -715,8 +713,6 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{needs.check_publish_ava.outputs.tag}}
-          draft: false
-          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -792,8 +788,6 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{needs.check_publish_jest.outputs.tag}}
-          draft: false
-          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -869,8 +863,6 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{needs.check_publish_packaged.outputs.tag}}
-          draft: false
-          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -946,8 +938,6 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
-          draft: false
-          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -1023,8 +1013,6 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{needs.check_publish_vitest.outputs.tag}}
-          draft: false
-          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
@@ -1100,8 +1088,6 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{needs.check_publish_worker.outputs.tag}}
-          draft: false
-          discussion_category_name: Announcements
           append_body: true
           fail_on_unmatched_files: true
           overwrite_files: false
