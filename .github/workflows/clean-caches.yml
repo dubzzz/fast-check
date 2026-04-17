@@ -3,13 +3,14 @@ name: Clean Caches
 on:
   workflow_dispatch:
 
-permissions:
-  actions: write
+permissions: {}
 
 jobs:
   clean_caches:
     name: 'Clean all caches'
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - name: Clean caches
         env:
