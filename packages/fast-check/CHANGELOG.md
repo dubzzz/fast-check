@@ -14,6 +14,7 @@ _Unicode property support in `stringMatching`_
 
 - ([PR#6710](https://github.com/dubzzz/fast-check/pull/6710)) CI: Pass explicit string to `make_latest`
 - ([PR#6714](https://github.com/dubzzz/fast-check/pull/6714)) CI: Remove unused vite dependency from multiple packages
+- ([PR#6780](https://github.com/dubzzz/fast-check/pull/6780)) CI: Silent zizmor issues (as they used to be)
 - ([PR#6786](https://github.com/dubzzz/fast-check/pull/6786)) CI: Configure release workflow settings for announcements
 - ([PR#6787](https://github.com/dubzzz/fast-check/pull/6787)) CI: Add force-build-status-execution label trigger to CI workflow
 - ([PR#6818](https://github.com/dubzzz/fast-check/pull/6818)) CI: Push tag after creating draft release
