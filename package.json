@@ -44,5 +44,14 @@
     "rolldown-plugin-dts": "^0.23.2",
     "typescript": "~6.0.2",
     "vitest": "^4.1.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "tmp@<0.2.4": "0.2.4",
+      "serialize-javascript@<7.0.5": "7.0.5",
+      "follow-redirects@<1.16.0": "1.16.0",
+      "lodash-es@<4.18.0": "4.18.0",
+      "dompurify@<3.4.0": "3.4.0"
+    }
   }
 }
