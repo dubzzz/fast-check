@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [release, stringMatching, regex, unicode, json]
 ---
 
-Until now, `stringMatching` would fail as soon as a Unicode property escape of the form `\p{...}` or `\P{...}` appeared in the regex passed to it. This release teaches `stringMatching` to understand these escapes and generate matching values directly, without any workaround on the caller side.
+Until now, Unicode property escapes of the form `\p{...}` or `\P{...}` were not implemented in `stringMatching`. This release adds support for them so `stringMatching` can generate matching values directly.
 
 This release also makes `fc.json()` reversible, allowing arbitrary JSON strings to be shrunk even when they did not originate from fast-check itself.
 
@@ -14,13 +14,21 @@ Continue reading to explore the detailed updates it brings.
 
 ## Unicode properties in `stringMatching`
 
-Regular expressions can restrict their character set with Unicode property escapes such as `\p{Emoji}` or `\P{ASCII}`. Before 4.7.0, feeding such a regex to `stringMatching` threw a "not implemented yet" error, forcing users to rewrite the pattern into explicit character classes.
+Regular expressions can restrict their character set with Unicode property escapes such as `\p{Emoji}` or `\P{ASCII}`. Before 4.7.0, feeding such a regex to `stringMatching` threw a "not implemented yet" error.
 
 Starting with 4.7.0, `stringMatching` recognises both `\p{...}` (positive) and `\P{...}` (negated) forms:
 
 ```ts
+// Strings made of emoji characters
+// e.g. "🦎👭👇🚀🕍", "🍻😁🧀🪠🕹"
 fc.stringMatching(/^\p{Emoji}+$/u);
+
+// One uppercase letter followed by one or more lowercase letters
+// e.g. "Gụ", "F𞤻applyg"
 fc.stringMatching(/^\p{Uppercase_Letter}\p{Lowercase_Letter}+$/u);
+
+// Strings made only of non-ASCII characters
+// e.g. "𸉂􏿼", "𿝘𖈝"
 fc.stringMatching(/^\P{ASCII}+$/u);
 ```
 
