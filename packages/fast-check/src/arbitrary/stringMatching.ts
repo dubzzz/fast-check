@@ -200,7 +200,6 @@ function toMatchingArbitrary(
     case 'UnicodeProperty': {
       return unicodePropertyArbitrary(astNode);
     }
-    case 'ClassStringDisjunction':
     case 'ClassIntersection':
     case 'ClassSubtraction': {
       throw new Error(

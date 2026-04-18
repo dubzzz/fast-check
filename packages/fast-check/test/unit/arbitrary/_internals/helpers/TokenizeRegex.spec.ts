@@ -234,31 +234,6 @@ describe('tokenizeRegex', () => {
       );
     });
 
-    it('should parse \\q{...} string disjunction', () => {
-      expect(tokenizeRegex(new RegExp('[\\q{ab|cd}]', 'v'))).toEqual(
-        charClass([
-          {
-            type: 'ClassStringDisjunction',
-            alternatives: [
-              { type: 'Alternative', expressions: [simpleChar('a'), simpleChar('b')] },
-              { type: 'Alternative', expressions: [simpleChar('c'), simpleChar('d')] },
-            ],
-          },
-        ]),
-      );
-    });
-
-    it('should parse \\q{} as a single empty alternative', () => {
-      expect(tokenizeRegex(new RegExp('[\\q{}]', 'v'))).toEqual(
-        charClass([
-          {
-            type: 'ClassStringDisjunction',
-            alternatives: [{ type: 'Alternative', expressions: [] }],
-          },
-        ]),
-      );
-    });
-
     it('should bind negation to the full set-operation class "[^a&&b]"', () => {
       // [^a&&b] = complement of (a intersection b); negative flag must sit on the outer class
       expect(tokenizeRegex(new RegExp('[^a&&b]', 'v'))).toEqual(
@@ -321,30 +296,6 @@ describe('tokenizeRegex', () => {
       expect(tokenizeRegex(new RegExp('[a\\-b]', 'v'))).toMatchObject({
         type: 'CharacterClass',
         expressions: [{ type: 'Char', symbol: 'a' }, { type: 'Char', symbol: '-' }, { type: 'Char', symbol: 'b' }],
-      });
-    });
-
-    it('should parse \\q{...} alternatives that contain escaped "|"', () => {
-      const tokenized = tokenizeRegex(new RegExp('[\\q{a\\|b|c}]', 'v'));
-      expect(tokenized).toMatchObject({
-        type: 'CharacterClass',
-        expressions: [
-          {
-            type: 'ClassStringDisjunction',
-            alternatives: [
-              {
-                type: 'Alternative',
-                // first alternative is "a\|b" — three blocks: "a", "\|", "b"
-                expressions: [
-                  { symbol: 'a' },
-                  { symbol: '|', escaped: true },
-                  { symbol: 'b' },
-                ],
-              },
-              { type: 'Alternative', expressions: [{ symbol: 'c' }] },
-            ],
-          },
-        ],
       });
     });
   });

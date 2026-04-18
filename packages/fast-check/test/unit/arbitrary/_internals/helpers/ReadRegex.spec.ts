@@ -72,10 +72,7 @@ describe('readFrom', () => {
       source                | expected
       ${'[[a]&&[b]]'}       | ${'[[a]&&[b]]'}
       ${'[a--[bc]]'}        | ${'[a--[bc]]'}
-      ${'[\\q{ab|cd}]'}     | ${'[\\q{ab|cd}]'}
       ${'[[a&&b]--[c]]'}    | ${'[[a&&b]--[c]]'}
-      ${'[\\q{a\\|b}]'}     | ${'[\\q{a\\|b}]'}
-      ${'[\\q{}]'}          | ${'[\\q{}]'}
     `('should extract the full "$source" block in v-mode', ({ source, expected }) => {
       expect(readFrom(source, 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Full)).toBe(expected);
     });
@@ -101,22 +98,8 @@ describe('readFrom', () => {
       expect(readFrom(source, 0, UnicodeMode.Unicode, TokenizerBlockMode.Character)).toBe(expected);
     });
 
-    it('should throw on unterminated \\q{', () => {
-      expect(() => readFrom('\\q{ab', 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Character)).toThrowError();
-    });
-
     it('should throw on unterminated nested [', () => {
       expect(() => readFrom('[[a&&', 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Full)).toThrowError();
-    });
-
-    it('should not treat \\q{...} as a block outside Character mode', () => {
-      // In Full mode, \q is a generic escape returning \q (length 2)
-      expect(readFrom('\\q{ab}', 0, UnicodeMode.UnicodeSets, TokenizerBlockMode.Full)).toBe('\\q');
-    });
-
-    it('should not treat \\q{...} as a block when not in v-mode', () => {
-      // In Unicode (u flag) Character mode, \q is not special: single escaped char
-      expect(readFrom('\\q{ab}', 0, UnicodeMode.Unicode, TokenizerBlockMode.Character)).toBe('\\q');
     });
 
     it('should not treat a nested [...] as a block when not in v-mode', () => {

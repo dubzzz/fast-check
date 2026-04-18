@@ -117,14 +117,6 @@ type BackreferenceRegexToken =
     };
 type UnicodePropertyRegexToken = ResolvedUnicodeProperty;
 /**
- * "\q{abc|de}" inside a character class in v-mode: disjunction of string alternatives.
- * Each alternative is represented as an Alternative token (possibly empty).
- */
-type ClassStringDisjunctionRegexToken = {
-  type: 'ClassStringDisjunction';
-  alternatives: AlternativeRegexToken[];
-};
-/**
  * Set intersection ("&&") inside a character class in v-mode.
  */
 type ClassIntersectionRegexToken = {
@@ -153,7 +145,6 @@ export type RegexToken =
   | AssertionRegexToken
   | BackreferenceRegexToken
   | UnicodePropertyRegexToken
-  | ClassStringDisjunctionRegexToken
   | ClassIntersectionRegexToken
   | ClassSubtractionRegexToken;
 
@@ -272,42 +263,6 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
 }
 
 /**
- * Split the content of a "\q{...}" block into alternatives, honouring "\\" escapes.
- */
-function splitQDisjunctionContent(content: string): string[] {
-  const alternatives: string[] = [];
-  let start = 0;
-  for (let index = 0; index < content.length; ++index) {
-    const char = content[index];
-    if (char === '\\') {
-      index += 1;
-    } else if (char === '|') {
-      alternatives.push(content.substring(start, index));
-      start = index + 1;
-    }
-  }
-  alternatives.push(content.substring(start));
-  return alternatives;
-}
-
-/**
- * Tokenize a single alternative inside "\q{...}": a sequence of character atoms.
- * v-mode only.
- */
-function tokenizeQAlternative(content: string): AlternativeRegexToken {
-  const expressions: RegexToken[] = [];
-  for (
-    let subIndex = 0, subBlock = readFrom(content, subIndex, UnicodeMode.UnicodeSets, TokenizerBlockMode.Character);
-    subIndex !== content.length;
-    subIndex += subBlock.length,
-      subBlock = readFrom(content, subIndex, UnicodeMode.UnicodeSets, TokenizerBlockMode.Character)
-  ) {
-    expressions.push(blockToCharToken(subBlock));
-  }
-  return { type: 'Alternative', expressions };
-}
-
-/**
  * Parse the content of a character class (what is between "[" and "]").
  * Handles the usual range syntax as well as v-mode extensions:
  *   - "\q{a|b|...}" string disjunction
@@ -352,15 +307,6 @@ function parseCharacterClass(blockContent: string, unicodeMode: UnicodeMode): Ch
     if (unicodeMode === UnicodeMode.UnicodeSets && subBlock[0] === '[' && subBlock.length >= 2) {
       const nested = parseCharacterClass(subBlock.substring(1, subBlock.length - 1), unicodeMode);
       subTokens.push(nested);
-      previousWasSimpleDash = false;
-      continue;
-    }
-
-    // v-mode "\q{...}" string disjunction
-    if (subBlock.length > 3 && subBlock[0] === '\\' && subBlock[1] === 'q' && subBlock[2] === '{') {
-      const inner = subBlock.substring(3, subBlock.length - 1);
-      const alternatives = splitQDisjunctionContent(inner).map((alt) => tokenizeQAlternative(alt));
-      subTokens.push({ type: 'ClassStringDisjunction', alternatives });
       previousWasSimpleDash = false;
       continue;
     }

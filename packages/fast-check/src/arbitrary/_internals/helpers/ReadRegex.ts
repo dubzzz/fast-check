@@ -101,22 +101,6 @@ function curlyBracketBlockContentEndFrom(text: string, from: number): number {
   return -1; // no end found
 }
 
-/**
- * Find the index of the "}" closing a "\q{...}" string-disjunction block.
- * The scanner honours "\\" escapes; it is only used when UnicodeSets mode is active.
- */
-function qStringDisjunctionBlockContentEndFrom(text: string, from: number): number {
-  for (let index = from; index !== text.length; ++index) {
-    const char = text[index];
-    if (char === '\\') {
-      index += 1;
-    } else if (char === '}') {
-      return index;
-    }
-  }
-  throw new Error(`Missing closing '}' in \\q{...}`);
-}
-
 export enum TokenizerBlockMode {
   Full = 0,
   Character = 1,
@@ -257,19 +241,6 @@ function blockEndFrom(text: string, from: number, unicodeMode: UnicodeMode, mode
             throw new Error(`Invalid \\P definition`);
           }
           return subIndex + 1;
-        }
-        case 'q': {
-          // "\q{...}" string-disjunction block is v-mode only, and only inside character classes
-          if (
-            unicodeMode === UnicodeMode.UnicodeSets &&
-            mode === TokenizerBlockMode.Character &&
-            text[from + 2] === '{'
-          ) {
-            return qStringDisjunctionBlockContentEndFrom(text, from + 3) + 1;
-          }
-          // otherwise fall through to generic escaped-char handling below
-          const charSize = unicodeMode !== UnicodeMode.None ? charSizeAt(text, from + 1) : 1;
-          return from + charSize + 1;
         }
         case 'k': {
           let subIndex = from + 2;

@@ -20,11 +20,6 @@ describe('stringMatching (flags)', () => {
     expect(() => stringMatching(new RegExp('abc', 'y'))).toThrow(/flag y/);
   });
 
-  it('should throw a descriptive error when the v-regex uses a construct not yet generated', () => {
-    // \q{...} is parsed by the tokenizer but generation is not yet implemented
-    expect(() => stringMatching(new RegExp('[\\q{ab|cd}]', 'v'))).toThrow(/v-flag construct/);
-  });
-
   it('should throw a descriptive error when the v-regex uses set intersection', () => {
     expect(() => stringMatching(new RegExp('[a&&b]', 'v'))).toThrow(/v-flag construct/);
   });
