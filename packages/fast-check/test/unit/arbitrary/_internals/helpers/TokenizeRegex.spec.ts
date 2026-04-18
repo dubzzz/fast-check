@@ -135,6 +135,27 @@ describe('tokenizeRegex', () => {
       },
     );
 
+    // regexp-tree does not currently understand the /v (unicodeSets) flag,
+    // so we compare the tokenization against the one produced for /u instead.
+    // Some /u-compatible regexes are simply not valid in /v because of the
+    // stricter escaping rules of unicodeSets mode — we skip those.
+    const isValidUnicodeSets = (regex: RegExp) => {
+      try {
+        new RegExp(regex, 'v');
+        return true;
+      } catch {
+        return false;
+      }
+    };
+    it.each(allRegexes.filter((i) => !i.invalidWithUnicode && isValidUnicodeSets(i.regex)))(
+      'should tokenize the regex $regex in unicodeSets mode like in unicode mode',
+      ({ regex }) => {
+        const unicodeRegex = new RegExp(regex, 'u');
+        const unicodeSetsRegex = new RegExp(regex, 'v');
+        expect(tokenizeRegex(unicodeSetsRegex)).toEqual(tokenizeRegex(unicodeRegex));
+      },
+    );
+
     it.each`
       regex
       ${/🐱/u}

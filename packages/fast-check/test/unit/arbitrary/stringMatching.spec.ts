@@ -73,6 +73,10 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
     { regex: /^\p{Emoji}+$/u },
     // Non-emojis
     { regex: /^\P{Emoji}+$/u },
+    // Simple regex with unicodeSets flag (/v)
+    { regex: new RegExp('^abc$', 'v') },
+    // Unicode property escape with unicodeSets flag (/v)
+    { regex: new RegExp('^\\p{Letter}+$', 'v') },
   );
 }
 
@@ -129,12 +133,14 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
           m: fc.boolean(), // multiline for ^ and $
           s: fc.boolean(), // multiline for .
           u: fc.boolean(), // unicode
+          v: fc.boolean(), // unicodeSets
           // y: fc.boolean(), // sticky
         })
         .map(
           (flags) =>
             `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}${
-              flags.u ? 'u' : ''
+              // u and v cannot coexist on a regex
+              flags.v ? 'v' : flags.u ? 'u' : ''
             }`,
         ),
     })
