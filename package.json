@@ -30,7 +30,7 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/e2e/documentation"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.30.0",
+    "@changesets/cli": "^2.31.0",
     "@fast-check/packaged": "workspace:*",
     "@vitest/coverage-v8": "^4.0.18",
     "all-contributors-cli": "^6.26.1",
