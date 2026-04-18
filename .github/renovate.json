@@ -16,6 +16,11 @@
     {
       "matchFileNames": ["package.json", "examples/package.json", "website/package.json"],
       "rangeStrategy": "bump"
+    },
+    {
+      "matchFileNames": ["package.json"],
+      "matchDepTypes": ["pnpm.overrides"],
+      "enabled": false
     }
   ],
   "vulnerabilityAlerts": {
