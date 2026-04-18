@@ -135,6 +135,27 @@ describe('tokenizeRegex', () => {
       },
     );
 
+    // The `v` flag is a superset of `u` for every construct the tokenizer
+    // currently understands, so a regex whose source is valid under both
+    // flags must yield the exact same AST. `regexp-tree` does not (yet)
+    // parse `v` regexes, so the `u` tokenization is used as the oracle.
+    const isValidUnderV = (regex: RegExp) => {
+      try {
+        new RegExp(regex.source, 'v');
+        return true;
+      } catch {
+        return false;
+      }
+    };
+    it.each(allRegexes.filter((i) => !i.invalidWithUnicode && isValidUnderV(i.regex)))(
+      'should tokenize the regex $regex identically under v and u flags',
+      ({ regex }) => {
+        const uRegex = new RegExp(regex, 'u');
+        const vRegex = new RegExp(regex, 'v');
+        expect(tokenizeRegex(vRegex)).toEqual(tokenizeRegex(uRegex));
+      },
+    );
+
     it.each`
       regex
       ${/🐱/u}

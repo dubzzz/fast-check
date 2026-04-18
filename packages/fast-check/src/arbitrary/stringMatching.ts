@@ -4,6 +4,7 @@ import { stringify } from '../utils/stringify.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
+import { hasUnicodeSetsOnlyGrammar, SUPPORTED_REGEX_FLAGS } from './_internals/helpers/RegexFlags.js';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from './_internals/helpers/TokenizeRegex.js';
 import { unicodePropertyArbitrary } from './_internals/helpers/UnicodePropertyArbitraryHelper.js';
@@ -216,19 +217,19 @@ function toMatchingArbitrary(
  * @public
  */
 export function stringMatching(regex: RegExp, constraints: StringMatchingConstraints = {}): Arbitrary<string> {
+  let hasVFlag = false;
   for (const flag of regex.flags) {
-    // Supported:
-    //   d - generate indices for substring matches
-    //   g - all matches, not limited to first match
-    //   m - multiline
-    //   s - dot matches newline character
-    // Not supported:
-    //   i - case-insensitive
-    //   u - unicode support
-    //   y - search at the exact position in the text or sticky mode
-    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u') {
+    if (!SUPPORTED_REGEX_FLAGS.has(flag)) {
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
+    if (flag === 'v') {
+      hasVFlag = true;
+    }
+  }
+  if (hasVFlag && hasUnicodeSetsOnlyGrammar(regex.source)) {
+    throw new Error(
+      `Unable to use "stringMatching" against a regex using the v flag: unicode-sets constructs (set operations, nested classes, or \\q{...}) are not supported yet`,
+    );
   }
   const maxLength = constraints.maxLength;
   const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size, maxLength };

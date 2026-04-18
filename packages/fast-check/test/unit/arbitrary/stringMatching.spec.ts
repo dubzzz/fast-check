@@ -1,8 +1,9 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
 
 import {
+  assertGenerateEquivalentTo,
   assertProduceCorrectValues,
   assertProduceSameValueGivenSameSeed,
 } from './__test-helpers__/ArbitraryAssertions.js';
@@ -21,6 +22,46 @@ describe('stringMatching (integration)', () => {
 
   it('should only produce correct values', () => {
     assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
+  });
+
+  it.each`
+    source
+    ${'abc'}
+    ${'^[a-z]{3}$'}
+    ${'\\u{1f431}'}
+    ${'^\\p{Emoji}+$'}
+    ${'^\\P{Emoji}+$'}
+  `('should accept regex /$source/v built with the v flag', ({ source }: { source: string }) => {
+    expect(() => stringMatching(new RegExp(source, 'v'))).not.toThrow();
+  });
+
+  it('should produce identical values for equivalent u and v regexes given the same seed', () => {
+    // For any regex valid under both `u` and `v`, `stringMatching` must produce
+    // the same value — the tokenizer treats both flags as unicode-aware.
+    const vCompatibleSources: fc.Arbitrary<string> = fc.constantFrom(
+      'abc',
+      '^[a-z]{3}$',
+      '\\u{1f431}',
+      '^\\p{Emoji}+$',
+      '\\w+',
+      '(foo|bar)',
+    );
+    assertGenerateEquivalentTo(
+      (source: string) => stringMatching(new RegExp(source, 'u')),
+      (source: string) => stringMatching(new RegExp(source, 'v')),
+      { extraParameters: vCompatibleSources },
+    );
+  });
+
+  it.each`
+    source                         | label
+    ${'[\\p{ASCII}&&\\p{Any}]'}    | ${'set intersection'}
+    ${'[\\p{ASCII}--\\p{Letter}]'} | ${'set difference'}
+    ${'[[a-z]&&[^aeiou]]'}         | ${'nested classes'}
+    ${'[\\q{ab|cd}]'}              | ${'string-literal class'}
+  `('should reject v-only $label with an actionable error', ({ source }: { source: string }) => {
+    const regex = new RegExp(source, 'v');
+    expect(() => stringMatching(regex)).toThrow(/unicode-sets constructs.*not supported/);
   });
 });
 
@@ -128,13 +169,13 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
           // i: fc.boolean(), // case-insensitive
           m: fc.boolean(), // multiline for ^ and $
           s: fc.boolean(), // multiline for .
-          u: fc.boolean(), // unicode
+          unicode: fc.constantFrom('none', 'u', 'v'), // unicode-aware mode (u and v are mutually exclusive)
           // y: fc.boolean(), // sticky
         })
         .map(
           (flags) =>
             `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}${
-              flags.u ? 'u' : ''
+              flags.unicode === 'none' ? '' : flags.unicode
             }`,
         ),
     })
