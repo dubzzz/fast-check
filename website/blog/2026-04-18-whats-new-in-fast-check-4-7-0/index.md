@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [release, stringMatching, regex, unicode, json]
 ---
 
-Until now, `stringMatching` would fail as soon as a Unicode property escape — `\p{...}` or `\P{...}` — appeared in the regex passed to it. This release teaches `stringMatching` to understand these escapes and generate matching values directly, without any workaround on the caller side.
+Until now, `stringMatching` would fail as soon as a Unicode property escape of the form `\p{...}` or `\P{...}` appeared in the regex passed to it. This release teaches `stringMatching` to understand these escapes and generate matching values directly, without any workaround on the caller side.
 
 This release also makes `fc.json()` reversible, allowing arbitrary JSON strings to be shrunk even when they did not originate from fast-check itself.
 
@@ -26,11 +26,11 @@ fc.stringMatching(/^\P{ASCII}+$/u);
 
 Under the hood, each property is expanded into the set of codepoints it covers and plugged into the existing machinery backing character classes. The resulting ranges are computed once and cached, so subsequent uses of the same property stay cheap.
 
-Support covers binary properties like `Emoji`, `Alphabetic` or `Math`, general categories such as `Letter`, `Decimal_Number` or `Punctuation`, and scripts through `Script=Greek`, `sc=Han` and friends. This should let you keep your regex expressive when testing code that handles internationalised inputs.
+Support covers binary properties like `Emoji`, `Alphabetic` or `Math`, general categories such as `Letter`, `Decimal_Number` or `Punctuation`, plus scripts through `Script=Greek`, `sc=Han` and friends. This should let you keep your regex expressive when testing code that handles internationalised inputs.
 
 ## Reversible `json` arbitrary
 
-The `json` arbitrary is built by serialising the output of `jsonValue` through `JSON.stringify`. Until this release, that mapping was one-way: fast-check could produce JSON strings but could not recognise externally-provided ones. As a consequence, scenarios relying on replaying or recomposing values — for instance, shrinking a payload captured from production logs — could not leverage `fc.json()`.
+The `json` arbitrary is built by serialising the output of `jsonValue` through `JSON.stringify`. Until this release, that mapping was one-way: fast-check could produce JSON strings but could not recognise externally-provided ones. As a consequence, scenarios relying on replaying or recomposing values (for instance shrinking a payload captured from production logs) could not leverage `fc.json()`.
 
 Starting with 4.7.0, the arbitrary carries an unmapper based on `JSON.parse`. Any valid JSON string is now accepted and shrinkable:
 
@@ -39,7 +39,7 @@ const arb = fc.json();
 arb.canShrinkWithoutContext('{"a":{"b":[1,2,3]}}'); // now true
 ```
 
-This unlocks composition with other arbitraries that expect a reversible building block, and makes `fc.json()` a drop-in candidate wherever you need to replay a JSON input without re-generating it from scratch.
+This unlocks composition with other arbitraries that expect a reversible building block and makes `fc.json()` a drop-in candidate wherever you need to replay a JSON input without re-generating it from scratch.
 
 ## Changelog since 4.6.0
 
