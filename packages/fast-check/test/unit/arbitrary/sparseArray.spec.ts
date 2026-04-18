@@ -235,10 +235,7 @@ describe('sparseArray (integration)', () => {
 
 // Helpers
 
-function validSparseArrayConstraints(
-  removedKeys: (keyof SparseArrayConstraints)[] = [],
-  max: number | undefined = undefined,
-) {
+function validSparseArrayConstraints(removedKeys: (keyof SparseArrayConstraints)[] = [], max?: number | undefined) {
   return fc
     .record(
       {
