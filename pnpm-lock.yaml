@@ -8,7 +8,7 @@ overrides:
   tmp@<0.2.4: 0.2.4
   serialize-javascript@<7.0.5: 7.0.5
   follow-redirects@<1.16.0: 1.16.0
-  lodash-es@<4.18.0: 4.18.0
+  lodash-es@<4.18.0: 4.18.1
   dompurify@<3.4.0: 3.4.0
 
 importers:
@@ -6590,9 +6590,8 @@ packages:
     resolution: {integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  lodash-es@4.18.0:
-    resolution: {integrity: sha512-koAgswPPA+UTaPN64Etp+PGP+WT6oqOS2NMi5yDkMaiGw9qY4VxQbQF0mtKMyr4BlTznWyzePV5UpECTJQmSUA==}
-    deprecated: Bad release. Please use lodash-es@4.17.23 instead.
+  lodash-es@4.18.1:
+    resolution: {integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==}
 
   lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
@@ -10772,12 +10771,12 @@ snapshots:
     dependencies:
       '@chevrotain/gast': 11.1.2
       '@chevrotain/types': 11.1.2
-      lodash-es: 4.18.0
+      lodash-es: 4.18.1
 
   '@chevrotain/gast@11.1.2':
     dependencies:
       '@chevrotain/types': 11.1.2
-      lodash-es: 4.18.0
+      lodash-es: 4.18.1
 
   '@chevrotain/regexp-to-ast@11.1.2': {}
 
@@ -14978,7 +14977,7 @@ snapshots:
   chevrotain-allstar@0.3.1(chevrotain@11.1.2):
     dependencies:
       chevrotain: 11.1.2
-      lodash-es: 4.18.0
+      lodash-es: 4.18.1
 
   chevrotain@11.1.2:
     dependencies:
@@ -14987,7 +14986,7 @@ snapshots:
       '@chevrotain/regexp-to-ast': 11.1.2
       '@chevrotain/types': 11.1.2
       '@chevrotain/utils': 11.1.2
-      lodash-es: 4.18.0
+      lodash-es: 4.18.1
 
   chokidar@3.6.0:
     dependencies:
@@ -15555,7 +15554,7 @@ snapshots:
   dagre-d3-es@7.0.14:
     dependencies:
       d3: 7.9.0
-      lodash-es: 4.18.0
+      lodash-es: 4.18.1
 
   data-view-buffer@1.0.2:
     dependencies:
@@ -17631,7 +17630,7 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
 
-  lodash-es@4.18.0: {}
+  lodash-es@4.18.1: {}
 
   lodash.debounce@4.0.8: {}
 
@@ -17981,7 +17980,7 @@ snapshots:
       dompurify: 3.4.0
       katex: 0.16.44
       khroma: 2.1.0
-      lodash-es: 4.18.0
+      lodash-es: 4.18.1
       marked: 16.4.2
       roughjs: 4.6.6
       stylis: 4.3.6
