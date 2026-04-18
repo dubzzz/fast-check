@@ -20,7 +20,7 @@
     "pure-rand": "^8.4.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "typescript": "~6.0.2",
+    "typescript": "~6.0.3",
     "vitest": "^4.1.0"
   },
   "author": "Nicolas DUBIEN <github@dubien.org>",
