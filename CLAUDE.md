@@ -11,13 +11,24 @@ under `.claude/agents/`.
 
 **Use the team by default.** For any task beyond a typo fix or a
 one-line rename, delegate to the `review-orchestrator` subagent
-first. It fans out to the twelve specialists in parallel
-(`performance`, `memory-leak`, `architecture`,
-`platform-integration`, `documentation`, `test-plan-designer`,
-`community-needs`, `security`, `api-compatibility`, `determinism`,
-`api-ux`, `pr-scope`), funnels through `clarification-seeker` to
-lock down intent, and gates breaking changes / cross-package scope
-through `api-compatibility-reviewer` and `pr-scope-reviewer`.
+first. The orchestrator runs one of two flows depending on the ask:
+
+- **Implementation requests** (add / redesign / extend a capability):
+  the orchestrator opens with **Phase I — parallel prototyping**,
+  fanning out 2–3 `hothead-prototyper` instances in a single message,
+  each on a deliberately different design angle. Each prototype comes
+  with a strengths / weaknesses block so the orchestrator (and the
+  user) can pick a direction *before* any real implementation work.
+  The hothead is always the first agent to intervene on implementation
+  requests.
+- **Review requests** (a diff already exists): the orchestrator skips
+  Phase I and fans out the twelve specialists in parallel
+  (`performance`, `memory-leak`, `architecture`,
+  `platform-integration`, `documentation`, `test-plan-designer`,
+  `community-needs`, `security`, `api-compatibility`, `determinism`,
+  `api-ux`, `pr-scope`), funnels through `clarification-seeker` to
+  lock down intent, and gates breaking changes / cross-package scope
+  through `api-compatibility-reviewer` and `pr-scope-reviewer`.
 
 **Exceptions.** Trivial edits, pure question-answering about the
 codebase, and explicit "do X directly" instructions from the user
