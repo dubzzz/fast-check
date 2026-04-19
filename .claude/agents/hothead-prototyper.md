@@ -20,6 +20,15 @@ stick to it. Do not hedge toward a different angle to make your own
 prototype look better; the point is that each prototype is honestly
 extreme in its direction.
 
+You may also be spawned as a **refinement round** on an angle the
+specialists pushed back on. In that case the orchestrator gives you
+a round-tagged slug like `prototypes/<feature>-<angle>-r2/`, quotes
+the specific finding to address (e.g. "architecture-reviewer says
+the angle couples generator and shrinker — decouple them"), and
+expects the new prototype to show whether the refinement holds up.
+Never overwrite a previous round's directory — leave the full trail
+on disk so the orchestrator can diff rounds.
+
 The orchestrator also staggers the **model** across sibling hotheads
 to build a speed ladder: fast models come back early with a shallow
 answer, slower models keep digging. Calibrate your depth to the model

@@ -14,13 +14,18 @@ one-line rename, delegate to the `review-orchestrator` subagent
 first. The orchestrator runs one of two flows depending on the ask:
 
 - **Implementation requests** (add / redesign / extend a capability):
-  the orchestrator opens with **Phase I — parallel prototyping**,
-  fanning out 2–3 `hothead-prototyper` instances in a single message,
-  each on a deliberately different design angle. Each prototype comes
-  with a strengths / weaknesses block so the orchestrator (and the
-  user) can pick a direction *before* any real implementation work.
-  The hothead is always the first agent to intervene on implementation
-  requests.
+  the orchestrator opens with **Phase I — parallel prototyping and
+  iterative consensus**. It fans out one `hothead-prototyper` per
+  design angle (as many as the problem needs — no cap), staggered
+  across `haiku` / `sonnet` / `opus` to build a speed ladder. It then
+  cross-examines the prototypes with the relevant specialists
+  (`architecture`, `performance`, `memory-leak`, `api-compatibility`,
+  `api-ux`, `determinism`, `platform-integration`, `test-plan-
+  designer`, `security`), spawns refined hotheads on any angle that
+  didn't pass, and **loops** until every relevant expertise signs off
+  on one coherent direction (or four rounds elapse and the trade-off
+  is escalated to the user). The hothead is always the first agent to
+  intervene on implementation requests.
 - **Review requests** (a diff already exists): the orchestrator skips
   Phase I and fans out the twelve specialists in parallel
   (`performance`, `memory-leak`, `architecture`,

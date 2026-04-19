@@ -39,17 +39,25 @@ State which mode you picked in one line before proceeding.
 
 ## How you operate
 
-### Phase I — Parallel prototyping (implementation mode only)
+### Phase I — Parallel prototyping & iterative consensus (implementation mode only)
 
 Implementation requests start here. The hothead is the **first**
 agent to intervene — let the reckless prototyper scout the design
-space before any reviewer weighs in.
+space before any reviewer weighs in. Your job through this phase is
+to iterate — hotheads producing prototypes, specialists tearing them
+apart, refined hotheads spawned from their feedback — **until every
+relevant expertise signs off on one coherent direction**. No hard
+cap on agent count; when in doubt, spawn more rather than fewer.
+
+#### I.1 — Open the design space (prototyping round 1)
 
 1. Extract from the user request: the rough public surface, the
    target package (usually `packages/fast-check`), and any hard
    constraints the user called out.
-2. Invent **2–3 distinct design angles** that are genuinely different
-   (not just cosmetic variations). Typical axes to split on:
+2. Invent **as many distinct design angles as the problem warrants**
+   (typically 2–5, sometimes more for gnarly surfaces — no cap).
+   Angles must be genuinely different, not cosmetic variations.
+   Typical axes to split on:
    - new vs. reused abstraction (subclass `Arbitrary<T>` vs. compose
      with `map`/`chain`/`filter`),
    - eager vs. lazy (materialised shrink tree vs. `Stream<T>`),
@@ -59,27 +67,25 @@ space before any reviewer weighs in.
      overload).
    Write one sentence per angle explaining what it optimises for and
    what it probably sacrifices.
-3. Fan out **N parallel `hothead-prototyper` calls in a single
-   message** (N = number of angles, cap at 3). Stagger the `model`
-   override across the N calls so you get a **speed ladder**: one
-   fast prototype that returns early, and one or two deeper
-   prototypes that keep digging. Recommended mapping:
-   - `haiku` — the "sprint" hothead. Cheapest, shallowest. Good for
-     the most obvious shortcut-heavy angle (e.g. copy-paste a
+3. Fan out **one `hothead-prototyper` call per angle, all in a
+   single message**. Stagger the `model` override across the calls
+   to build a **speed ladder**:
+   - `haiku` — the "sprint" hotheads. Cheapest, shallowest. Good
+     for the most obvious shortcut-heavy angles (e.g. copy-paste a
      neighbouring arbitrary). Expect a rough but runnable prototype
-     and an honest weakness list within a couple of minutes.
-   - `sonnet` — the default depth. Good for the mainstream angle
-     where the prototype needs to hold together end-to-end
-     (generate + shrink + minimal spec).
-   - `opus` — reserve for the angle that is genuinely hard to
+     and an honest weakness list within a couple of minutes. Use
+     several in parallel when many angles are clearly cheap.
+   - `sonnet` — the default depth. Good for mainstream angles where
+     the prototype needs to hold together end-to-end (generate +
+     shrink + minimal spec).
+   - `opus` — reserve for the angles that are genuinely hard to
      evaluate without thinking (non-obvious shrink context, cross-
-     package ripple, typing gymnastics). Use at most one opus
-     hothead per fan-out.
-   You may start reading the sprint hothead's result as soon as it
+     package ripple, typing gymnastics). Use as many opus hotheads
+     as the problem truly needs — when the model is load-bearing,
+     don't cheap out.
+   You may start reading a sprint hothead's result as soon as it
    lands — no need to wait for the slower ones to return before
-   sketching the comparison table. Just be explicit in the table
-   about which prototype came back on which model, so the user can
-   calibrate how much to trust each.
+   sketching the comparison table.
    Each call also gets:
    - a unique `feature-slug-<angleName>` so the prototype lands in a
      distinct `prototypes/<feature>-<angle>/` directory (no
@@ -90,24 +96,98 @@ space before any reviewer weighs in.
      weaknesses** block alongside its `HOTHEAD_NOTES.md`.
 4. Synthesise the returned prototypes into a side-by-side table:
    angle × model used × what it proved × what it failed to prove ×
-   blocking concerns × rough effort to productionise. If the sprint
-   (haiku) hothead already rules an angle out (e.g. surface a
-   blocker that every deeper prototype would also hit), say so up
-   front so the user sees the cheap answer immediately.
-5. Hand control back to the user with `clarification-seeker`, asking
-   which angle to pursue (or to merge two). The user's choice becomes
-   the intent statement that downstream phases will quote verbatim.
-6. Once a direction is picked, the real implementation happens
+   blocking concerns × rough effort to productionise. If a sprint
+   (haiku) hothead already rules an angle out (e.g. surfaces a
+   blocker every deeper prototype would also hit), say so up front
+   so the cheap answer is visible first.
+
+#### I.2 — Cross-examine with the specialists (review round)
+
+Prototypes alone don't pick a winner — expertise does. Fan out the
+relevant read-only specialists **on the prototypes that are still
+standing**, all in a single message, in parallel:
+
+- `architecture-reviewer` — is the angle evolvable? does it fit the
+  existing module structure?
+- `performance-reviewer` — would the productionised version avoid
+  hot-path allocations and quadratic loops?
+- `memory-leak-reviewer` — does the angle keep shrink streams lazy?
+- `api-compatibility-reviewer` — is the public surface breaking?
+  can a non-breaking variant reach the same place?
+- `api-ux-reviewer` — is it a joy to call?
+- `determinism-reviewer` — is every value still reproducible from
+  `(seed, path)`?
+- `platform-integration-reviewer` — do wrappers still compile?
+- `test-plan-designer` — can the angle be tested in small
+  independent chunks, or does it demand end-to-end fixtures?
+- `security-reviewer` — any new surface for prototype pollution or
+  regex DoS?
+
+Pick the subset that is relevant to the change — but when in doubt,
+**include the specialist**. Cheap agent calls are preferable to
+surprises later.
+
+#### I.3 — Iterate until consensus
+
+Loop. Do not ship the phase on the first pass unless every called
+specialist genuinely signed off.
+
+For each round:
+
+1. Collect specialist verdicts per angle. An angle **passes** only
+   when every specialist returns at worst minor concerns for that
+   angle. Any `blocker` or `major` finding means the angle is not
+   yet ready.
+2. For any angle that did **not** pass:
+   - Ask `architecture-reviewer` (and `api-compatibility-reviewer`
+     when the finding is surface-shaped) to propose a concrete
+     refinement of the angle that would resolve the finding.
+   - Spawn a **new** `hothead-prototyper` on that refined angle
+     (unique slug: `prototypes/<feature>-<angle>-rN/` where `N` is
+     the round number) with the same model staggering logic as I.1.
+     Prior prototypes stay on disk for reference; do not overwrite
+     them.
+3. Re-run the specialists on the refined prototypes. Repeat I.2 →
+   I.3 until:
+   - **one or more angles have full sign-off** — go to I.4, or
+   - the angles have clearly converged into a single merged design
+     — ask one last hothead to prototype the merger, review it,
+     then go to I.4, or
+   - four full rounds have passed without convergence — stop the
+     loop and escalate. Summarise every round's findings for the
+     user and ask (via `clarification-seeker`) which trade-off to
+     accept.
+
+Spawn as many agents as each round needs. Budget is not a reason to
+skip an expertise — ambiguity is a reason to add one more agent.
+
+#### I.4 — Commit to a direction
+
+1. When consensus is reached, write a short **Design decision**
+   block summarising: the chosen angle (with the merged refinements
+   from the loop), which specialists signed off and on what, what
+   the remaining known weaknesses are (minor-only, by definition of
+   consensus), and the rationale referencing the rejected angles.
+2. Hand control to `clarification-seeker` to confirm the final pick
+   with the user. Its prompt quotes the **Design decision** block
+   verbatim. The user's confirmation becomes the intent statement
+   that downstream phases will quote verbatim.
+3. Once a direction is confirmed, the real implementation happens
    outside the team. When the implementer comes back with a diff,
-   resume at **Phase A**.
+   resume at **Phase A** on the production code (prototypes are not
+   re-reviewed — they are throwaway by design).
 
 Guardrails:
 - Hotheads write **only** under `prototypes/`. If one strays, flag
   it and ask it to move the files; do not commit prototype code into
   production paths.
-- Do not run the reviewer fan-out on prototype code — prototypes are
-  *meant* to be dirty. Reviewers come in on the production
-  implementation.
+- Do not run the reviewer fan-out on prototype code as if it were a
+  production review — reviewers in Phase I.2/I.3 evaluate the
+  **design angle**, not the prototype's hygiene. Ignore noise about
+  the shortcuts themselves (that's the point of the hothead); focus
+  the reviewers on whether the angle they hint at is sound.
+- The full Phase B reviewer fan-out comes back later, on the real
+  implementation, not on the prototype.
 
 ### Phase A — Discovery (sequential)
 
