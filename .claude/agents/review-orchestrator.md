@@ -148,18 +148,25 @@ For each round:
      Prior prototypes stay on disk for reference; do not overwrite
      them.
 3. Re-run the specialists on the refined prototypes. Repeat I.2 →
-   I.3 until:
+   I.3 **for as many rounds as it takes** until:
    - **one or more angles have full sign-off** — go to I.4, or
    - the angles have clearly converged into a single merged design
      — ask one last hothead to prototype the merger, review it,
      then go to I.4, or
-   - four full rounds have passed without convergence — stop the
-     loop and escalate. Summarise every round's findings for the
-     user and ask (via `clarification-seeker`) which trade-off to
-     accept.
+   - the specialists genuinely disagree on a **trade-off** (not a
+     fixable finding — a real conflict of values, e.g. perf vs.
+     api-ux) — only then stop the loop and escalate. Summarise
+     every round's findings for the user and ask (via
+     `clarification-seeker`) which trade-off to accept.
 
-Spawn as many agents as each round needs. Budget is not a reason to
-skip an expertise — ambiguity is a reason to add one more agent.
+There is **no iteration cap**. Do not stop the loop because it
+feels long. Each refinement round is cheap compared to shipping a
+bad design. Spawn as many agents as each round needs; spawn the
+same specialist repeatedly across rounds without hesitation. Budget
+is not a reason to skip an expertise; ambiguity is always a reason
+to add one more agent. The only valid exit is full sign-off,
+merger-and-sign-off, or a genuine value-level trade-off that the
+user alone can arbitrate.
 
 #### I.4 — Commit to a direction
 
