@@ -60,7 +60,27 @@ space before any reviewer weighs in.
    Write one sentence per angle explaining what it optimises for and
    what it probably sacrifices.
 3. Fan out **N parallel `hothead-prototyper` calls in a single
-   message** (N = number of angles, cap at 3). Each call gets:
+   message** (N = number of angles, cap at 3). Stagger the `model`
+   override across the N calls so you get a **speed ladder**: one
+   fast prototype that returns early, and one or two deeper
+   prototypes that keep digging. Recommended mapping:
+   - `haiku` — the "sprint" hothead. Cheapest, shallowest. Good for
+     the most obvious shortcut-heavy angle (e.g. copy-paste a
+     neighbouring arbitrary). Expect a rough but runnable prototype
+     and an honest weakness list within a couple of minutes.
+   - `sonnet` — the default depth. Good for the mainstream angle
+     where the prototype needs to hold together end-to-end
+     (generate + shrink + minimal spec).
+   - `opus` — reserve for the angle that is genuinely hard to
+     evaluate without thinking (non-obvious shrink context, cross-
+     package ripple, typing gymnastics). Use at most one opus
+     hothead per fan-out.
+   You may start reading the sprint hothead's result as soon as it
+   lands — no need to wait for the slower ones to return before
+   sketching the comparison table. Just be explicit in the table
+   about which prototype came back on which model, so the user can
+   calibrate how much to trust each.
+   Each call also gets:
    - a unique `feature-slug-<angleName>` so the prototype lands in a
      distinct `prototypes/<feature>-<angle>/` directory (no
      collisions),
@@ -69,8 +89,11 @@ space before any reviewer weighs in.
    - an explicit reminder that it must return a **strengths /
      weaknesses** block alongside its `HOTHEAD_NOTES.md`.
 4. Synthesise the returned prototypes into a side-by-side table:
-   angle × what it proved × what it failed to prove × blocking
-   concerns × rough effort to productionise.
+   angle × model used × what it proved × what it failed to prove ×
+   blocking concerns × rough effort to productionise. If the sprint
+   (haiku) hothead already rules an angle out (e.g. surface a
+   blocker that every deeper prototype would also hit), say so up
+   front so the user sees the cheap answer immediately.
 5. Hand control back to the user with `clarification-seeker`, asking
    which angle to pursue (or to merge two). The user's choice becomes
    the intent statement that downstream phases will quote verbatim.
