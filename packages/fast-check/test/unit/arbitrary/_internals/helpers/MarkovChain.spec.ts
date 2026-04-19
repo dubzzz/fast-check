@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { END_TOKEN, START_TOKEN, SuffixTree } from '../../../../../src/arbitrary/_internals/helpers/SuffixTree.js';
+import { END_TOKEN, START_TOKEN, MarkovChain } from '../../../../../src/arbitrary/_internals/helpers/MarkovChain.js';
 
 type PreviousToken = string | typeof START_TOKEN;
 type NextToken = string | typeof END_TOKEN;
@@ -107,7 +107,7 @@ describe('MarkovChain', () => {
     },
   ])('should properly add $corpus and read $start out of it', ({ corpus, start, expected }) => {
     // Arrange
-    const root = new SuffixTree();
+    const root = new MarkovChain();
     for (const word of corpus) {
       root.add(word);
     }
@@ -120,7 +120,7 @@ describe('MarkovChain', () => {
     const values = tree.listPossibleValues();
 
     // Assert
-    const valuesAsMap = new Map<NextToken, number>(values.map((v) => [v.token, v.count]));
+    const valuesAsMap = new Map<NextToken, number>(values.map((v): [NextToken, number] => [v.token, v.count]));
     expect(valuesAsMap).toEqual(expected);
   });
 });
