@@ -113,11 +113,11 @@ describe('MarkovChain', () => {
     }
 
     // Act
-    let tree = root;
-    for (let index = start.length - 1; index >= 0; --index) {
-      tree = tree.next(start[index])!;
+    let tree: MarkovChain | undefined = root;
+    for (let index = start.length - 1; index >= 0 && tree !== undefined; --index) {
+      tree = tree.next(start[index]);
     }
-    const values = tree.listPossibleValues();
+    const values = tree !== undefined ? tree.listPossibleValues() : [];
 
     // Assert
     const valuesAsMap = new Map<NextToken, number>(values.map((v): [NextToken, number] => [v.token, v.count]));
