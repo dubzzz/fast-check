@@ -135,6 +135,27 @@ describe('tokenizeRegex', () => {
       },
     );
 
+    it.each(
+      allRegexes
+        .filter((i) => !i.invalidWithUnicode)
+        .filter((i) => {
+          try {
+            new RegExp(i.regex.source, 'v');
+            return true;
+          } catch {
+            // Some regex patterns valid under the u flag are forbidden under
+            // the stricter v flag (eg. unescaped `{`, `|` inside character
+            // class...). We just skip them — the user is expected to escape
+            // these characters when building a v-flagged regex.
+            return false;
+          }
+        }),
+    )('should tokenize the regex $regex the same way with v flag as with u flag', ({ regex }) => {
+      const unicodeRegex = new RegExp(regex, 'u');
+      const unicodeSetsRegex = new RegExp(regex, 'v');
+      expect(tokenizeRegex(unicodeSetsRegex)).toEqual(tokenizeRegex(unicodeRegex));
+    });
+
     it.each`
       regex
       ${/🐱/u}
