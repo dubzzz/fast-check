@@ -19,18 +19,18 @@ function next(root: MarkovChain, tokens: PreviousToken[], entropyArbitrary: Arbi
   // For each of them we associate a weight
   const eligible = new Map<NextToken, number>();
   let index = tokens.length;
-  let cursor: MarkovChain = root;
+  let currentNode: MarkovChain = root;
   let maxPossibleValuesWeight = 0;
   while (index > 0) {
     // Treating tokens in [index-1, length]
     index -= 1;
-    const nextCursor = cursor.next(tokens[index]);
-    if (nextCursor === undefined) {
+    const nextNode = currentNode.next(tokens[index]);
+    if (nextNode === undefined) {
       break;
     }
-    cursor = nextCursor;
+    currentNode = nextNode;
     let possibleValuesWeight = 0;
-    for (const value of cursor.listPossibleValues()) {
+    for (const value of currentNode.listPossibleValues()) {
       const count = eligible.get(value.token) ?? 0;
       eligible.set(value.token, count + value.count);
       possibleValuesWeight += value.count;

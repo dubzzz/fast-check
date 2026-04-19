@@ -4,7 +4,7 @@ import { END_TOKEN, START_TOKEN, SuffixTree } from '../../../../../src/arbitrary
 type PreviousToken = string | typeof START_TOKEN;
 type NextToken = string | typeof END_TOKEN;
 
-describe('SuffixTree', () => {
+describe('MarkovChain', () => {
   it.each<{ corpus: string[]; start: PreviousToken[]; expected: Map<NextToken, number> }>([
     {
       corpus: ['caracas'],
