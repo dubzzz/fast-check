@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
 
@@ -21,6 +21,42 @@ describe('stringMatching (integration)', () => {
 
   it('should only produce correct values', () => {
     assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
+  });
+});
+
+describe('stringMatching (v flag acceptance)', () => {
+  const supportFlagV = (() => {
+    try {
+      new RegExp('.', 'v');
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  if (supportFlagV) {
+    it.each`
+      source
+      ${'abc'}
+      ${'[abc]'}
+      ${'\\u{1f431}'}
+      ${'\\p{Letter}'}
+      ${'^\\p{Emoji}+$'}
+    `('should not reject /$source/v at the flag guard', ({ source }) => {
+      const vRegex = new RegExp(source, 'v');
+      expect(() => stringMatching(vRegex)).not.toThrow();
+    });
+  } else {
+    it.skip('skipped: current runtime does not support the /v flag', () => {});
+  }
+
+  it.each`
+    flag
+    ${'i'}
+    ${'y'}
+  `('should still reject unsupported flag /$flag', ({ flag }) => {
+    const regex = new RegExp('a', flag);
+    expect(() => stringMatching(regex)).toThrow();
   });
 });
 

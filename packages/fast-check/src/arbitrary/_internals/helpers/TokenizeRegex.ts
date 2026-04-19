@@ -465,7 +465,11 @@ function pushTokens(
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
+  const flagsArray = [...regex.flags];
+  // Both `u` (unicode) and `v` (unicodeSets) enable Unicode-aware parsing at the tokenizer level.
+  // `v` additionally enables set-operation syntax inside character classes which is not yet
+  // handled by the tokenizer; the flag is only accepted at this layer so far.
+  const unicodeMode = safeIndexOf(flagsArray, 'u') !== -1 || safeIndexOf(flagsArray, 'v') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
   pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });

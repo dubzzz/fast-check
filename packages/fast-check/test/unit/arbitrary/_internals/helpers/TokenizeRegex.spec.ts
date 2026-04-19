@@ -171,4 +171,82 @@ describe('tokenizeRegex', () => {
       expect(tokenizedRevampedUpdated).toEqual(tokenized);
     });
   });
+
+  describe('unicodeSets regex (v flag)', () => {
+    const supportFlagV = (() => {
+      try {
+        new RegExp('.', 'v');
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+
+    // Every entry of `allRegexes` that is valid under /u flag (ie. not flagged `invalidWithUnicode`)
+    // can potentially also be valid under /v flag. A few constructs that were legal under /u are
+    // forbidden under /v (eg. lone `]`, `{`, `}` must be escaped, some "useless" escapes are banned).
+    // We therefore try to build the /v variant and only run the equivalence check when the JS engine
+    // accepts it.
+    const vCompatibleRegexes = supportFlagV
+      ? allRegexes
+          .filter((i) => !i.invalidWithUnicode)
+          .map(({ regex }) => {
+            try {
+              return { uRegex: new RegExp(regex, 'u'), vRegex: new RegExp(regex, 'v') };
+            } catch {
+              return undefined;
+            }
+          })
+          .filter((i): i is { uRegex: RegExp; vRegex: RegExp } => i !== undefined)
+      : [];
+
+    if (supportFlagV) {
+      it.each(vCompatibleRegexes)(
+        'should tokenize the regex $vRegex the same way its /u variant is tokenized',
+        ({ uRegex, vRegex }) => {
+          const uTokens = tokenizeRegex(uRegex);
+          const vTokens = tokenizeRegex(vRegex);
+          expect(vTokens).toEqual(uTokens);
+        },
+      );
+
+      it.each`
+        source
+        ${'abc'}
+        ${'.'}
+        ${'[abc]'}
+        ${'a|b|c'}
+        ${'(foo)(?<named>x)'}
+        ${'\\u{1f431}'}
+        ${'\\p{Letter}'}
+        ${'\\p{Script=Latin}'}
+        ${'[\\p{Letter}\\d]'}
+        ${'🐱'}
+        ${'[🐱🐴]'}
+        ${'^\\p{Emoji}+$'}
+      `('should successfully tokenize /$source/v without throwing', ({ source }) => {
+        const vRegex = new RegExp(source, 'v');
+        expect(() => tokenizeRegex(vRegex)).not.toThrow();
+      });
+
+      it('should produce the same AST for /abc/v and /abc/u', () => {
+        expect(tokenizeRegex(new RegExp('abc', 'v'))).toEqual(tokenizeRegex(new RegExp('abc', 'u')));
+      });
+
+      it('should produce the same AST for /\\u{1f431}/v and /\\u{1f431}/u (full unicode escapes)', () => {
+        expect(tokenizeRegex(new RegExp('\\u{1f431}', 'v'))).toEqual(tokenizeRegex(new RegExp('\\u{1f431}', 'u')));
+      });
+
+      it('should produce the same AST for /\\p{Letter}/v and /\\p{Letter}/u (unicode property escapes)', () => {
+        expect(tokenizeRegex(new RegExp('\\p{Letter}', 'v'))).toEqual(tokenizeRegex(new RegExp('\\p{Letter}', 'u')));
+      });
+
+      it('should treat astral code-points as single characters under /v (same as /u)', () => {
+        // 🐱 should be treated as a single unicode character in both modes.
+        expect(tokenizeRegex(new RegExp('🐱', 'v'))).toEqual(tokenizeRegex(new RegExp('🐱', 'u')));
+      });
+    } else {
+      it.skip('skipped: current runtime does not support the /v flag', () => {});
+    }
+  });
 });
