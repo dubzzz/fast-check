@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from 'regexp-tree';
+import type { RegexToken } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from '../../../../../src/arbitrary/_internals/helpers/TokenizeRegex.js';
 
 describe('tokenizeRegex', () => {
@@ -169,6 +170,119 @@ describe('tokenizeRegex', () => {
         }),
       );
       expect(tokenizedRevampedUpdated).toEqual(tokenized);
+    });
+  });
+
+  describe('unicodeSets (v flag) regex', () => {
+    // Regexes that happen to be legal under both `u` and `v` should tokenize
+    // to the same AST as their `u` counterpart.
+    // `regexp-tree` rejects the `v` flag entirely, so we cross-check by tokenizing
+    // both forms and asserting equality.
+    const vAndUEquivalent: string[] = [
+      'abc',
+      'a|b',
+      'a+',
+      '(foo)',
+      '(?<named>x)',
+      '[a-z]',
+      '[^a-z]',
+      '[\\p{Letter}\\d]',
+      '\\p{Letter}',
+    ];
+
+    it.each(vAndUEquivalent)(
+      'should tokenize v-flag regex /%s/v the same as its u-flag equivalent (when legal under both)',
+      (source) => {
+        const vRegex = new RegExp(source, 'v');
+        const uRegex = new RegExp(source, 'u');
+        expect(tokenizeRegex(vRegex)).toEqual(tokenizeRegex(uRegex));
+      },
+    );
+
+    it('should tokenize a v-only \\q{...} into a ClassStrings token', () => {
+      const regex = new RegExp('[\\q{ab|cd}]', 'v');
+      const tokenized = tokenizeRegex(regex) as RegexToken;
+      expect(tokenized).toEqual({
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'ClassStrings',
+            value: '\\q{ab|cd}',
+            strings: ['ab', 'cd'],
+          },
+        ],
+        negative: undefined,
+      });
+    });
+
+    it('should tokenize class intersection [[a-z]&&[^aeiou]] as a ClassIntersection token', () => {
+      const regex = new RegExp('[[a-z]&&[^aeiou]]', 'v');
+      const tokenized = tokenizeRegex(regex) as Extract<RegexToken, { type: 'ClassIntersection' }>;
+      expect(tokenized.type).toBe('ClassIntersection');
+      expect(tokenized.left).toMatchObject({
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'CharacterClass',
+            expressions: [
+              {
+                type: 'ClassRange',
+                from: expect.objectContaining({ type: 'Char', codePoint: 'a'.codePointAt(0) }),
+                to: expect.objectContaining({ type: 'Char', codePoint: 'z'.codePointAt(0) }),
+              },
+            ],
+          },
+        ],
+      });
+      expect(tokenized.right).toMatchObject({
+        type: 'CharacterClass',
+        expressions: [
+          {
+            type: 'CharacterClass',
+            expressions: expect.any(Array),
+            negative: true,
+          },
+        ],
+      });
+    });
+
+    it('should tokenize class subtraction [[abc]--[b]] as a ClassSubtraction token', () => {
+      const regex = new RegExp('[[abc]--[b]]', 'v');
+      const tokenized = tokenizeRegex(regex) as Extract<RegexToken, { type: 'ClassSubtraction' }>;
+      expect(tokenized.type).toBe('ClassSubtraction');
+    });
+
+    it('should tokenize chained class subtraction [[abc]--[a]--[b]] left-associatively', () => {
+      const regex = new RegExp('[[abc]--[a]--[b]]', 'v');
+      const tokenized = tokenizeRegex(regex) as Extract<RegexToken, { type: 'ClassSubtraction' }>;
+      expect(tokenized.type).toBe('ClassSubtraction');
+      // (((abc) -- (a)) -- (b))
+      expect((tokenized.left as Extract<RegexToken, { type: 'ClassSubtraction' }>).type).toBe('ClassSubtraction');
+    });
+
+    it('should reject mixing && and -- operators in the same class', () => {
+      const source = '[' + '[a-z]' + '&' + '&' + '[b-d]' + '--' + '[c]' + ']';
+      expect(() => tokenizeRegex(new RegExp(source, 'v'))).toThrow();
+    });
+
+    it('should tokenize a \\q{...} alternation with escape sequences', () => {
+      const regex = new RegExp('[\\q{\\n|abc|}]', 'v');
+      const tokenized = tokenizeRegex(regex) as Extract<RegexToken, { type: 'CharacterClass' }>;
+      expect(tokenized.expressions[0]).toEqual({
+        type: 'ClassStrings',
+        value: '\\q{\\n|abc|}',
+        strings: ['\n', 'abc', ''],
+      });
+    });
+
+    it('should tokenize a negated class with a set operator', () => {
+      const regex = new RegExp('[^[a-z]&&[^aeiou]]', 'v');
+      const tokenized = tokenizeRegex(regex) as Extract<RegexToken, { type: 'CharacterClass' }>;
+      // Per our representation: negative CharacterClass wrapping a ClassIntersection.
+      expect(tokenized.type).toBe('CharacterClass');
+      expect(tokenized.negative).toBe(true);
+      expect(tokenized.expressions).toHaveLength(1);
+      expect(tokenized.expressions[0].type).toBe('ClassIntersection');
     });
   });
 });

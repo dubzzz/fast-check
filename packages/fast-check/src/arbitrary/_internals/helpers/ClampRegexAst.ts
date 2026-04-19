@@ -115,6 +115,18 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
     case 'ClassRange': {
       return { astNode, minLength: 1 };
     }
+    case 'ClassStrings': {
+      // ES2024 `v` flag only: `\q{ab|cd}` can match 0-or-more code points.
+      // Until the generator supports it we just pass it through with a minLength of 0
+      // (permissive) — the generator will reject it before any value is produced.
+      return { astNode, minLength: 0 };
+    }
+    case 'ClassIntersection':
+    case 'ClassSubtraction': {
+      // ES2024 `v` flag only. Passthrough — the generator will raise a clear error
+      // before any value is produced.
+      return { astNode, minLength: 1 };
+    }
     case 'Group': {
       const clamped = clampRegexAstInternal(astNode.expression, maxLength);
       return { astNode: { ...astNode, expression: clamped.astNode }, minLength: clamped.minLength };

@@ -117,6 +117,40 @@ type BackreferenceRegexToken =
     };
 type UnicodePropertyRegexToken = ResolvedUnicodeProperty;
 
+/**
+ * Only emitted when parsing a regex carrying the ES2024 `v` flag.
+ * Represents the `\q{ab|cd|ef}` class-strings construct that can only appear
+ * inside a character class.
+ * @internal
+ */
+type ClassStringsRegexToken = {
+  type: 'ClassStrings';
+  value: string;
+  strings: string[];
+};
+
+/**
+ * Only emitted when parsing a regex carrying the ES2024 `v` flag.
+ * Represents the `[left && right]` class-intersection operator.
+ * @internal
+ */
+type ClassIntersectionRegexToken = {
+  type: 'ClassIntersection';
+  left: RegexToken;
+  right: RegexToken;
+};
+
+/**
+ * Only emitted when parsing a regex carrying the ES2024 `v` flag.
+ * Represents the `[left -- right]` class-subtraction operator.
+ * @internal
+ */
+type ClassSubtractionRegexToken = {
+  type: 'ClassSubtraction';
+  left: RegexToken;
+  right: RegexToken;
+};
+
 export type RegexToken =
   | CharRegexToken
   | RepetitionRegexToken
@@ -128,7 +162,10 @@ export type RegexToken =
   | DisjunctionRegexToken
   | AssertionRegexToken
   | BackreferenceRegexToken
-  | UnicodePropertyRegexToken;
+  | UnicodePropertyRegexToken
+  | ClassStringsRegexToken
+  | ClassIntersectionRegexToken
+  | ClassSubtractionRegexToken;
 
 /**
  * Create a simple char token
@@ -245,19 +282,191 @@ function blockToCharToken(block: string): CharRegexToken | UnicodePropertyRegexT
 }
 
 /**
+ * Parse the content of a `\q{...}` block (ES2024 `v` flag only) into a list of
+ * literal-string alternatives.
+ *
+ * The body of `\q{...}` accepts plain characters, escape sequences, and the
+ * alternation operator `|`. Nothing else is allowed there by the spec.
+ */
+function parseClassStringsBody(block: string): ClassStringsRegexToken {
+  // `block` is exactly `\q{...}` — strip the wrapping.
+  const body = block.substring(3, block.length - 1);
+  const strings: string[] = [];
+  let current = '';
+  for (let index = 0; index < body.length; ++index) {
+    const ch = body[index];
+    if (ch === '\\') {
+      const next = body[index + 1];
+      if (next === undefined) {
+        throw new Error(`Invalid \\q{...} body: dangling escape`);
+      }
+      if (next === 'n') {
+        current += '\n';
+      } else if (next === 'r') {
+        current += '\r';
+      } else if (next === 't') {
+        current += '\t';
+      } else if (next === 'f') {
+        current += '\f';
+      } else if (next === 'v') {
+        current += '\v';
+      } else if (next === '0') {
+        current += '\0';
+      } else {
+        current += next;
+      }
+      index += 1;
+    } else if (ch === '|') {
+      strings.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  strings.push(current);
+  return { type: 'ClassStrings', value: block, strings };
+}
+
+/**
+ * Tokenize the interior of a character class.
+ *
+ * In non-v mode this produces a flat list of {Char | ClassRange | UnicodeProperty}.
+ * In v mode it may additionally produce nested CharacterClass, ClassStrings,
+ * and split into ClassIntersection / ClassSubtraction when it encounters the
+ * `&&` / `--` set operators.
+ *
+ * Returns the root token to place inside the outer `[` ... `]` wrapper, after
+ * applying the outer `negative` flag at the call site.
+ */
+function tokenizeCharacterClassInterior(
+  blockContent: string,
+  unicodeMode: boolean,
+  unicodeSetsMode: boolean,
+): { expressions: RegexToken[]; setOperator: '&&' | '--' | null; operandBreaks: number[] } {
+  const subTokens: RegexToken[] = [];
+  // In v mode we may detect a `&&` or `--` set operator; we remember where
+  // the breaks happened so the caller can fold the operands into the right
+  // ClassIntersection / ClassSubtraction tree.
+  let setOperator: '&&' | '--' | null = null;
+  const operandBreaks: number[] = [];
+  let previousWasSimpleDash = false;
+  for (
+    let subIndex = 0,
+      subBlock = readFrom(blockContent, subIndex, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Character);
+    subIndex !== blockContent.length;
+    subIndex += subBlock.length,
+      subBlock = readFrom(blockContent, subIndex, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Character)
+  ) {
+    // v-mode: recognize set operators as sub-block-level tokens.
+    if (unicodeSetsMode && (subBlock === '&&' || subBlock === '--')) {
+      if (setOperator !== null && setOperator !== subBlock) {
+        throw new Error(`Mixing set operators '${setOperator}' and '${subBlock}' inside the same character class`);
+      }
+      setOperator = subBlock;
+      operandBreaks.push(subTokens.length);
+      previousWasSimpleDash = false;
+      continue;
+    }
+    // v-mode: a nested character class opens with `[`.
+    if (unicodeSetsMode && subBlock[0] === '[' && subBlock.length > 1 && subBlock[subBlock.length - 1] === ']') {
+      const nestedInner = subBlock.substring(1, subBlock.length - 1);
+      let nestedNegative: true | undefined = undefined;
+      let nestedStartOffset = 0;
+      if (nestedInner[0] === '^') {
+        nestedNegative = true;
+        nestedStartOffset = 1;
+      }
+      const nestedBody = nestedInner.substring(nestedStartOffset);
+      const nestedTokenized = tokenizeCharacterClassInterior(nestedBody, unicodeMode, unicodeSetsMode);
+      const nestedNode = buildClassNodeFromTokenized(nestedTokenized, nestedNegative);
+      subTokens.push(nestedNode);
+      previousWasSimpleDash = false;
+      continue;
+    }
+    // v-mode: \q{...} string literal.
+    if (unicodeSetsMode && subBlock[0] === '\\' && subBlock[1] === 'q') {
+      subTokens.push(parseClassStringsBody(subBlock));
+      previousWasSimpleDash = false;
+      continue;
+    }
+    const newToken = blockToCharToken(subBlock);
+    if (subBlock === '-') {
+      subTokens.push(newToken);
+      previousWasSimpleDash = true;
+    } else {
+      const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
+      if (
+        previousWasSimpleDash &&
+        operand1Token !== undefined &&
+        operand1Token.type === 'Char' &&
+        newToken.type === 'Char' // Always true for unicode regexes: JavaScript engines forbids /[a-\p{Letter}]/u
+      ) {
+        subTokens.pop(); // dash
+        subTokens.pop(); // operator 1
+        subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
+      } else {
+        subTokens.push(newToken);
+      }
+      previousWasSimpleDash = false;
+    }
+  }
+  return { expressions: subTokens, setOperator, operandBreaks };
+}
+
+/**
+ * Given a tokenized class interior and the outer negation flag, build the single
+ * token that represents the class.
+ */
+function buildClassNodeFromTokenized(
+  tokenized: { expressions: RegexToken[]; setOperator: '&&' | '--' | null; operandBreaks: number[] },
+  negative: true | undefined,
+): RegexToken {
+  const { expressions, setOperator, operandBreaks } = tokenized;
+  if (setOperator === null) {
+    return { type: 'CharacterClass', expressions, negative };
+  }
+  // Partition `expressions` by `operandBreaks` into operands.
+  const operands: RegexToken[] = [];
+  let lastBreak = 0;
+  for (const at of operandBreaks) {
+    operands.push({ type: 'CharacterClass', expressions: expressions.slice(lastBreak, at) });
+    lastBreak = at;
+  }
+  operands.push({ type: 'CharacterClass', expressions: expressions.slice(lastBreak) });
+  // Left-associate: (((a op b) op c) op d).
+  let accumulator: RegexToken = operands[0];
+  for (let i = 1; i < operands.length; ++i) {
+    if (setOperator === '&&') {
+      accumulator = { type: 'ClassIntersection', left: accumulator, right: operands[i] };
+    } else {
+      accumulator = { type: 'ClassSubtraction', left: accumulator, right: operands[i] };
+    }
+  }
+  if (negative) {
+    // Wrap the operator tree in a negated CharacterClass. The outer `[^...]`
+    // with set operators is represented as a negative CharacterClass whose
+    // single expression is the operator tree — that preserves negation while
+    // keeping the CharacterClass-is-the-outer-wrapper invariant for consumers.
+    return { type: 'CharacterClass', expressions: [accumulator], negative: true };
+  }
+  return accumulator;
+}
+
+/**
  * Build tokens corresponding to the received regex and push them into the passed array of tokens
  */
 function pushTokens(
   tokens: RegexToken[],
   regexSource: string,
   unicodeMode: boolean,
+  unicodeSetsMode: boolean,
   groups: { lastIndex: number; named: Map<string, number> },
 ): void {
   let disjunctions: (RegexToken | null)[] | null = null;
   for (
-    let index = 0, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full);
+    let index = 0, block = readFrom(regexSource, index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Full);
     index !== regexSource.length;
-    index += block.length, block = readFrom(regexSource, index, unicodeMode, TokenizerBlockMode.Full)
+    index += block.length, block = readFrom(regexSource, index, unicodeMode, unicodeSetsMode, TokenizerBlockMode.Full)
   ) {
     const firstInBlock = block[0];
     switch (firstInBlock) {
@@ -320,42 +529,14 @@ function pushTokens(
       }
       case '[': {
         const blockContent = block.substring(1, block.length - 1);
-        const subTokens: (CharRegexToken | ClassRangeRegexToken | UnicodePropertyRegexToken)[] = [];
-
         let negative: true | undefined = undefined;
-        let previousWasSimpleDash = false;
-        for (
-          let subIndex = 0, subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character);
-          subIndex !== blockContent.length;
-          subIndex += subBlock.length,
-            subBlock = readFrom(blockContent, subIndex, unicodeMode, TokenizerBlockMode.Character)
-        ) {
-          if (subIndex === 0 && subBlock === '^') {
-            negative = true;
-            continue;
-          }
-          const newToken = blockToCharToken(subBlock);
-          if (subBlock === '-') {
-            subTokens.push(newToken);
-            previousWasSimpleDash = true;
-          } else {
-            const operand1Token = subTokens.length >= 2 ? subTokens[subTokens.length - 2] : undefined;
-            if (
-              previousWasSimpleDash &&
-              operand1Token !== undefined &&
-              operand1Token.type === 'Char' &&
-              newToken.type === 'Char' // Always true for unicode regexes: JavaScript engines forbids /[a-\p{Letter}]/u
-            ) {
-              subTokens.pop(); // dash
-              subTokens.pop(); // operator 1
-              subTokens.push({ type: 'ClassRange', from: operand1Token, to: newToken });
-            } else {
-              subTokens.push(newToken);
-            }
-            previousWasSimpleDash = false;
-          }
+        let interior = blockContent;
+        if (blockContent[0] === '^') {
+          negative = true;
+          interior = blockContent.substring(1);
         }
-        tokens.push({ type: 'CharacterClass', expressions: subTokens, negative });
+        const tokenized = tokenizeCharacterClassInterior(interior, unicodeMode, unicodeSetsMode);
+        tokens.push(buildClassNodeFromTokenized(tokenized, negative));
         break;
       }
       case '(': {
@@ -363,14 +544,14 @@ function pushTokens(
         const subTokens: RegexToken[] = [];
         if (blockContent[0] === '?') {
           if (blockContent[1] === ':') {
-            pushTokens(subTokens, blockContent.substring(2), unicodeMode, groups);
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Group',
               capturing: false,
               expression: toSingleToken(subTokens),
             });
           } else if (blockContent[1] === '=' || blockContent[1] === '!') {
-            pushTokens(subTokens, blockContent.substring(2), unicodeMode, groups);
+            pushTokens(subTokens, blockContent.substring(2), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Assertion',
               kind: 'Lookahead',
@@ -378,7 +559,7 @@ function pushTokens(
               assertion: toSingleToken(subTokens),
             });
           } else if (blockContent[1] === '<' && (blockContent[2] === '=' || blockContent[2] === '!')) {
-            pushTokens(subTokens, blockContent.substring(3), unicodeMode, groups);
+            pushTokens(subTokens, blockContent.substring(3), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Assertion',
               kind: 'Lookbehind',
@@ -393,7 +574,7 @@ function pushTokens(
             const groupIndex = ++groups.lastIndex;
             const nameRaw = chunks[0].substring(2);
             groups.named.set(nameRaw, groupIndex);
-            pushTokens(subTokens, chunks.slice(1).join('>'), unicodeMode, groups);
+            pushTokens(subTokens, chunks.slice(1).join('>'), unicodeMode, unicodeSetsMode, groups);
             tokens.push({
               type: 'Group',
               capturing: true,
@@ -405,7 +586,7 @@ function pushTokens(
           }
         } else {
           const groupIndex = ++groups.lastIndex;
-          pushTokens(subTokens, blockContent, unicodeMode, groups);
+          pushTokens(subTokens, blockContent, unicodeMode, unicodeSetsMode, groups);
           tokens.push({
             type: 'Group',
             capturing: true,
@@ -422,7 +603,7 @@ function pushTokens(
           tokens.push({ type: 'Assertion', kind: block });
         } else if (block[0] === '\\' && isDigit(block[1])) {
           const reference = Number(block.substring(1));
-          if (unicodeMode || reference <= groups.lastIndex) {
+          if (unicodeMode || unicodeSetsMode || reference <= groups.lastIndex) {
             tokens.push({ type: 'Backreference', kind: 'number', number: reference, reference });
           } else {
             tokens.push(blockToCharToken(block));
@@ -465,9 +646,11 @@ function pushTokens(
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
+  const flags = [...regex.flags];
+  const unicodeMode = safeIndexOf(flags, 'u') !== -1;
+  const unicodeSetsMode = safeIndexOf(flags, 'v') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
-  pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });
+  pushTokens(tokens, regexSource, unicodeMode, unicodeSetsMode, { lastIndex: 0, named: new Map<string, number>() });
   return toSingleToken(tokens);
 }

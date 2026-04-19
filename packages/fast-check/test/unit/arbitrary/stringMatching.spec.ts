@@ -1,6 +1,7 @@
 import { describe, it } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
+import { sample } from '../../../src/check/runner/Sampler.js';
 
 import {
   assertProduceCorrectValues,
@@ -171,3 +172,58 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
       };
     });
 }
+
+describe('stringMatching (v flag)', () => {
+  it('should accept a regex carrying the v flag when its source is u-compatible', () => {
+    // /abc/v only uses syntax that is also legal under /u → the generator should work.
+    const arb = stringMatching(new RegExp('abc', 'v'));
+    const samples = sample(arb, { numRuns: 5 });
+    for (const sample of samples) {
+      if (!/abc/.test(sample)) {
+        throw new Error(`Expected /abc/ to match, got ${JSON.stringify(sample)}`);
+      }
+    }
+  });
+
+  it('should throw a targeted error when encountering a \\q{...} token at generation time', () => {
+    let threw = false;
+    try {
+      stringMatching(new RegExp('[\\q{ab|cd}]', 'v'));
+    } catch (err: unknown) {
+      threw = true;
+      const message = err instanceof Error ? err.message : String(err);
+      if (!message.includes('ClassStrings')) {
+        throw new Error(`Expected error mentioning ClassStrings, got: ${message}`);
+      }
+    }
+    if (!threw) throw new Error('Expected stringMatching(/[\\q{ab|cd}]/v) to throw a ClassStrings error');
+  });
+
+  it('should throw a targeted error when encountering && set intersection at generation time', () => {
+    let threw = false;
+    try {
+      stringMatching(new RegExp('[[a-z]&&[^aeiou]]', 'v'));
+    } catch (err: unknown) {
+      threw = true;
+      const message = err instanceof Error ? err.message : String(err);
+      if (!message.includes('ClassIntersection')) {
+        throw new Error(`Expected error mentioning ClassIntersection, got: ${message}`);
+      }
+    }
+    if (!threw) throw new Error('Expected stringMatching(/[[a-z]&&[^aeiou]]/v) to throw a ClassIntersection error');
+  });
+
+  it('should throw a targeted error when encountering -- set subtraction at generation time', () => {
+    let threw = false;
+    try {
+      stringMatching(new RegExp('[[abc]--[b]]', 'v'));
+    } catch (err: unknown) {
+      threw = true;
+      const message = err instanceof Error ? err.message : String(err);
+      if (!message.includes('ClassSubtraction')) {
+        throw new Error(`Expected error mentioning ClassSubtraction, got: ${message}`);
+      }
+    }
+    if (!threw) throw new Error('Expected stringMatching(/[[abc]--[b]]/v) to throw a ClassSubtraction error');
+  });
+});

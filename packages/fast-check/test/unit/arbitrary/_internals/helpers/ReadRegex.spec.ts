@@ -55,11 +55,48 @@ describe('readFrom', () => {
   `('should properly extract first block of "$source"', ({ source, expected }) => {
     const expectedNonUnicode = typeof expected === 'string' ? expected : expected[0];
     const expectedUnicode = typeof expected === 'string' ? expected : expected[1];
-    expect(readFrom(source, 0, false, TokenizerBlockMode.Full)).toBe(expectedNonUnicode);
+    expect(readFrom(source, 0, false, false, TokenizerBlockMode.Full)).toBe(expectedNonUnicode);
     if (expectedUnicode !== null) {
-      expect(readFrom(source, 0, true, TokenizerBlockMode.Full)).toBe(expectedUnicode);
+      expect(readFrom(source, 0, true, false, TokenizerBlockMode.Full)).toBe(expectedUnicode);
     } else {
-      expect(() => readFrom(source, 0, true, TokenizerBlockMode.Full)).toThrowError();
+      expect(() => readFrom(source, 0, true, false, TokenizerBlockMode.Full)).toThrowError();
     }
+  });
+
+  describe('unicodeSetsMode (v flag)', () => {
+    it.each`
+      source                 | expected
+      ${'[[a-z]&&[^aeiou]]'} | ${'[[a-z]&&[^aeiou]]'}
+      ${'[[a-z]--[aeiou]]'}  | ${'[[a-z]--[aeiou]]'}
+      ${'[[abc][def]]'}      | ${'[[abc][def]]'}
+      ${'[\\q{ab|cd}]'}      | ${'[\\q{ab|cd}]'}
+      ${'[\\q{ab|cd}def]'}   | ${'[\\q{ab|cd}def]'}
+      ${'[[[ab]--[b]]]'}     | ${'[[[ab]--[b]]]'}
+    `('should extend read in v-mode for "$source"', ({ source, expected }) => {
+      expect(readFrom(source, 0, true, true, TokenizerBlockMode.Full)).toBe(expected);
+    });
+
+    it.each`
+      source  | expected
+      ${'&&'} | ${'&&'}
+      ${'--'} | ${'--'}
+      ${'&a'} | ${'&'}
+      ${'-a'} | ${'-'}
+    `('should recognize set operators "$source" inside a class in v-mode', ({ source, expected }) => {
+      expect(readFrom(source, 0, true, true, TokenizerBlockMode.Character)).toBe(expected);
+    });
+
+    it('should recognize \\q{...} as a single character-class sub-block in v-mode', () => {
+      expect(readFrom('\\q{ab|cd}', 0, true, true, TokenizerBlockMode.Character)).toBe('\\q{ab|cd}');
+    });
+
+    it('should recognize a nested character class as a single character-class sub-block in v-mode', () => {
+      expect(readFrom('[a-z]&&[^aeiou]', 0, true, true, TokenizerBlockMode.Character)).toBe('[a-z]');
+    });
+
+    it('should not treat && or -- as a two-char block outside of v-mode', () => {
+      expect(readFrom('&&', 0, true, false, TokenizerBlockMode.Character)).toBe('&');
+      expect(readFrom('--', 0, true, false, TokenizerBlockMode.Character)).toBe('-');
+    });
   });
 });

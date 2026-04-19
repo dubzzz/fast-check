@@ -70,6 +70,12 @@ function addMissingDotStarTraversal(
       return astNode;
     case 'ClassRange':
       return astNode;
+    case 'ClassStrings':
+      return astNode;
+    case 'ClassIntersection':
+      return astNode;
+    case 'ClassSubtraction':
+      return astNode;
     case 'Group': {
       return {
         ...astNode,

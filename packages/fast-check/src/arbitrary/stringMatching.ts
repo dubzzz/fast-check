@@ -155,6 +155,21 @@ function toMatchingArbitrary(
         },
       );
     }
+    case 'ClassStrings': {
+      throw new Error(
+        `ClassStrings nodes (\\q{...} in "v" mode regex) not implemented yet in stringMatching! Received: ${stringify(astNode)}`,
+      );
+    }
+    case 'ClassIntersection': {
+      throw new Error(
+        `ClassIntersection nodes (&& in "v" mode regex) not implemented yet in stringMatching! Received: ${stringify(astNode)}`,
+      );
+    }
+    case 'ClassSubtraction': {
+      throw new Error(
+        `ClassSubtraction nodes (-- in "v" mode regex) not implemented yet in stringMatching! Received: ${stringify(astNode)}`,
+      );
+    }
     case 'Group': {
       return toMatchingArbitrary(astNode.expression, constraints, flags);
     }
@@ -222,11 +237,14 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
     //   g - all matches, not limited to first match
     //   m - multiline
     //   s - dot matches newline character
+    //   u - unicode support
+    //   v - unicode sets (ES2024); tokenizer-only support for now,
+    //       constructs that only exist in `v` (set operators `&&`/`--`,
+    //       nested classes, `\q{...}`) will throw at generation time
     // Not supported:
     //   i - case-insensitive
-    //   u - unicode support
     //   y - search at the exact position in the text or sticky mode
-    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u') {
+    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u' && flag !== 'v') {
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }
