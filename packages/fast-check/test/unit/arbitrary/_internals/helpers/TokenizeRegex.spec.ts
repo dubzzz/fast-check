@@ -171,4 +171,26 @@ describe('tokenizeRegex', () => {
       expect(tokenizedRevampedUpdated).toEqual(tokenized);
     });
   });
+
+  describe('unicode-sets regex (v flag)', () => {
+    // regexp-tree does not support the /v flag so we compare against the /u flag
+    // on patterns that share the same syntax in both modes. Patterns that are
+    // not valid under /v (eg. unescaped "(" inside "[]") are skipped.
+    const isValidUnderV = (regex: RegExp) => {
+      try {
+        new RegExp(regex, 'v');
+        return true;
+      } catch {
+        return false;
+      }
+    };
+    it.each(allRegexes.filter((i) => !i.invalidWithUnicode && isValidUnderV(i.regex)))(
+      'should tokenize the regex $regex identically with /v and /u',
+      ({ regex }) => {
+        const unicodeRegex = new RegExp(regex, 'u');
+        const unicodeSetsRegex = new RegExp(regex, 'v');
+        expect(tokenizeRegex(unicodeSetsRegex)).toEqual(tokenizeRegex(unicodeRegex));
+      },
+    );
+  });
 });

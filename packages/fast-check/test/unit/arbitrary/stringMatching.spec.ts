@@ -73,6 +73,10 @@ function hardcodedRegex(): fc.Arbitrary<Extra> {
     { regex: /^\p{Emoji}+$/u },
     // Non-emojis
     { regex: /^\P{Emoji}+$/u },
+    // /v flag - tokenizer behaves like /u for patterns that share the same syntax
+    // (regex literals not used here to keep tsc target compatibility)
+    { regex: new RegExp('^[a-z]+$', 'v') },
+    { regex: new RegExp('^\\p{Letter}+$', 'v') },
   );
 }
 
