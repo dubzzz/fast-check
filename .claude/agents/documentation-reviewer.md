@@ -81,7 +81,7 @@ severity-tagged findings with file references.
 - `website/` — Docusaurus site.
 - `README.md` at repo root.
 - Per-package READMEs.
-- `.claude/skills/pr-authoring/SKILL.md` — the PR-authoring skill;
+- `~/.claude/skills/pr-authoring/SKILL.md` — the PR-authoring skill;
   this reviewer must NOT duplicate PR-authoring guidance, just
   remind the orchestrator to invoke the skill.
 

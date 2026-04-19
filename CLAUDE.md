@@ -11,7 +11,7 @@ orchestrator and let it lead.
 
 **The orchestrator runs a squad, not a checklist.** It is responsible
 for driving the request to completion by commanding every other agent
-under `.claude/agents/` — hotheads, architects, perf, memory,
+under `~/.claude/agents/` — hotheads, architects, perf, memory,
 api-compatibility, api-ux, determinism, platform-integration,
 security, test-plan-designer, documentation, pr-scope,
 community-needs, clarification-seeker. The orchestrator picks who
@@ -31,7 +31,7 @@ performance, memory, determinism, API compatibility, cross-package
 hygiene, and community signals. A single pass-through by one agent
 will almost always miss at least one of these axes, so the default
 entry point for any non-trivial task is the multi-agent squad under
-`.claude/agents/`.
+`~/.claude/agents/`.
 
 **Use the squad by default.** For any task beyond a typo fix or a
 one-line rename, delegate to the `review-orchestrator` subagent
@@ -71,7 +71,7 @@ for the actual PR step — it does not replace the skill.
 ## Pull requests
 
 When opening or updating a pull request in this repo, follow the
-`pr-authoring` skill at `.claude/skills/pr-authoring/SKILL.md`.
+`pr-authoring` skill at `~/.claude/skills/pr-authoring/SKILL.md`.
 It covers the PR template, the gitmoji title format, the required
 description structure, and the rule that checkboxes stay unchecked
 (reviewers tick them, not the author).
