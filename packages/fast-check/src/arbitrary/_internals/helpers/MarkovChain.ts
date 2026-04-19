@@ -6,18 +6,19 @@ type NextToken = string | typeof END_TOKEN;
 
 type PossibleValue = { token: NextToken; count: number };
 
-export class SuffixTree {
+export class MarkovChain {
   private values = new Map<NextToken, number>();
-  private nodes = new Map<PreviousToken, SuffixTree>();
+  private nodes = new Map<PreviousToken, MarkovChain>();
 
   add(word: string): void {
-    // for word "abcd" we have to put:
-    //  - end at d>c>b>a>start,
-    //  - d at c>b>a>start,
-    //  - c at b>a>start,
-    //  - b at a>start,
-    //  - a at start
-    // in the suffix-tree
+    // For word "abcd" we register:
+    //  - END_TOKEN after d>c>b>a>start,
+    //  - d after c>b>a>start,
+    //  - c after b>a>start,
+    //  - b after a>start,
+    //  - a after start
+    // Contexts are stored in reverse order so that lookups can progressively
+    // descend to more specific contexts (variable-order / backoff behavior).
     const ancestors: PreviousToken[] = [START_TOKEN];
     for (const c of word) {
       this.push(c, ancestors);
@@ -27,12 +28,12 @@ export class SuffixTree {
   }
   private push(value: NextToken, ancestors: PreviousToken[]) {
     // oxlint-disable-next-line typescript/no-this-alias
-    let currentNode: SuffixTree = this;
+    let currentNode: MarkovChain = this;
     for (let index = ancestors.length - 1; index >= 0; --index) {
       let token = ancestors[index];
       let nextNode = currentNode.nodes.get(token);
       if (nextNode === undefined) {
-        nextNode = new SuffixTree();
+        nextNode = new MarkovChain();
         currentNode.nodes.set(token, nextNode);
       }
       currentNode = nextNode;
@@ -41,7 +42,7 @@ export class SuffixTree {
     }
   }
 
-  next(token: PreviousToken): SuffixTree | undefined {
+  next(token: PreviousToken): MarkovChain | undefined {
     return this.nodes.get(token);
   }
 

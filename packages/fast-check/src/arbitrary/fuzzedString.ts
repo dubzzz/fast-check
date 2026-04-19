@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { SuffixTree, START_TOKEN, END_TOKEN } from './_internals/helpers/SuffixTree.js';
+import { MarkovChain, START_TOKEN, END_TOKEN } from './_internals/helpers/MarkovChain.js';
 import { constant } from './constant.js';
 import { oneof } from './oneof.js';
 
@@ -14,12 +14,12 @@ function hitCountToArbitrary<T>(hit: Map<T, number>): Arbitrary<T> {
   return oneof(...hitArbitraryEntries);
 }
 
-function next(root: SuffixTree, tokens: PreviousToken[], entropyArbitrary: Arbitrary<NextToken>): Arbitrary<string> {
+function next(root: MarkovChain, tokens: PreviousToken[], entropyArbitrary: Arbitrary<NextToken>): Arbitrary<string> {
   // Extract eligible next tokens based on current tokens
   // For each of them we associate a weight
   const eligible = new Map<NextToken, number>();
   let index = tokens.length;
-  let cursor: SuffixTree = root;
+  let cursor: MarkovChain = root;
   let maxPossibleValuesWeight = 0;
   while (index > 0) {
     // Treating tokens in [index-1, length]
@@ -54,7 +54,7 @@ function next(root: SuffixTree, tokens: PreviousToken[], entropyArbitrary: Arbit
 }
 
 export function fuzzedString(corpus: string[]): Arbitrary<string> {
-  const root = new SuffixTree();
+  const root = new MarkovChain();
   for (const word of corpus) {
     root.add(word);
   }

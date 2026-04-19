@@ -9,14 +9,14 @@ describe('SuffixTree', () => {
     {
       corpus: ['caracas'],
       start: ['c'],
-      expected: new Map([
+      expected: new Map<NextToken, number>([
         ['a', 2], // CAracas, caraCAs
       ]),
     },
     {
       corpus: ['caracas'],
       start: ['c', 'a'],
-      expected: new Map([
+      expected: new Map<NextToken, number>([
         ['r', 1], // CARacas
         ['s', 1], // caraCAS
       ]),
@@ -24,14 +24,14 @@ describe('SuffixTree', () => {
     {
       corpus: ['caracas'],
       start: ['c', 'a', 'r'],
-      expected: new Map([
+      expected: new Map<NextToken, number>([
         ['a', 1], // CARAcas
       ]),
     },
     {
       corpus: ['caracas'],
       start: ['a'],
-      expected: new Map([
+      expected: new Map<NextToken, number>([
         ['r', 1], // cARacas
         ['c', 1], // carACas
         ['s', 1], // caracAS
@@ -57,8 +57,51 @@ describe('SuffixTree', () => {
     },
     {
       corpus: ['caracas', 'camberra'],
+      start: [START_TOKEN, 'c'],
+      expected: new Map<NextToken, number>([
+        ['a', 2], // ^CAracas, ^CAmberra
+      ]),
+    },
+    {
+      corpus: ['caracas', 'camberra'],
+      start: [START_TOKEN, 'c', 'a'],
+      expected: new Map<NextToken, number>([
+        ['r', 1], // ^CARacas
+        ['m', 1], // ^CAMberra
+      ]),
+    },
+    {
+      corpus: ['caracas', 'camberra'],
+      start: [START_TOKEN, 'c', 'a', 't'],
+      expected: new Map<NextToken, number>([]),
+    },
+    {
+      corpus: ['caracas', 'camberra'],
+      start: [START_TOKEN, 'c'],
+      expected: new Map<NextToken, number>([
+        ['a', 2], // ^CAracas, ^CAmberra
+      ]),
+    },
+    {
+      corpus: ['caracas', 'camberra'],
+      start: [START_TOKEN, 'c', 'a'],
+      expected: new Map<NextToken, number>([
+        ['r', 1], // ^CARacas
+        ['m', 1], // ^CAMberra
+      ]),
+    },
+    {
+      corpus: ['caracas', 'camberra'],
+      start: [START_TOKEN, 'c', 'a'],
+      expected: new Map<NextToken, number>([
+        ['r', 1], // ^CARacas
+        ['m', 1], // ^CAMberra
+      ]),
+    },
+    {
+      corpus: ['caracas', 'camberra'],
       start: ['c'],
-      expected: new Map([
+      expected: new Map<NextToken, number>([
         ['a', 3], // CAracas, caraCAs, CAmberra
       ]),
     },
@@ -77,7 +120,7 @@ describe('SuffixTree', () => {
     const values = tree.listPossibleValues();
 
     // Assert
-    const valuesAsMap = new Map(values.map((v) => [v.token, v.count]));
+    const valuesAsMap = new Map<NextToken, number>(values.map((v) => [v.token, v.count]));
     expect(valuesAsMap).toEqual(expected);
   });
 });
