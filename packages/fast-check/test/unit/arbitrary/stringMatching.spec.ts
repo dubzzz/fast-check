@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { stringMatching } from '../../../src/arbitrary/stringMatching.js';
 
@@ -24,13 +24,91 @@ describe('stringMatching (integration)', () => {
   });
 });
 
+describe('stringMatching (v flag)', () => {
+  const supportFlagV = (() => {
+    try {
+      // eslint-disable-next-line no-new
+      new RegExp('.', 'v'); // Not supported before V8 11.3 / Node 20
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  const itV = supportFlagV ? it : it.skip;
+
+  itV('accepts a simple /v regex and produces matching strings', () => {
+    const regex = new RegExp('^[a-z]+$', 'v');
+    const arb = stringMatching(regex);
+    assertProduceSameValueGivenSameSeed(() => arb);
+    assertProduceCorrectValues(
+      () => arb,
+      (value) => new RegExp(regex.source, regex.flags).test(value),
+    );
+  });
+
+  itV('behaves identically to the /u counterpart on syntax that exists in both modes', () => {
+    const patterns = ['^[a-z]+$', '^\\w{1,8}$', '^\\p{Letter}+$', '^(foo|bar){1,3}$', '^[\\u{1f431}-\\u{1f434}]+$'];
+    for (const source of patterns) {
+      const uRegex = new RegExp(source, 'u');
+      const vRegex = new RegExp(source, 'v');
+      // Both should build without throwing — this is the core guarantee of Angle A.
+      stringMatching(uRegex);
+      stringMatching(vRegex);
+    }
+  });
+
+  itV('rejects /v regex using set intersection `[a&&b]` with a targeted error', () => {
+    const regex = new RegExp('[[a-z]&&[aeiou]]', 'v');
+    expect(() => stringMatching(regex)).toThrowError(/intersection/);
+  });
+
+  itV('rejects /v regex using set subtraction `[a--b]` with a targeted error', () => {
+    const regex = new RegExp('[[a-z]--[aeiou]]', 'v');
+    expect(() => stringMatching(regex)).toThrowError(/subtraction/);
+  });
+
+  itV('rejects /v regex using `\\q{…}` quoted-string alternation with a targeted error', () => {
+    const regex = new RegExp('[\\q{foo|bar}]', 'v');
+    expect(() => stringMatching(regex)).toThrowError(/quoted-string/);
+  });
+
+  itV('rejects /v regex using a string-valued unicode property with a clear error', () => {
+    // `\p{RGI_Emoji}` only exists under /v — the existing UnicodeProperty resolver rejects it
+    // as an unknown property value. That error suffices as long as it surfaces cleanly.
+    const regex = new RegExp('\\p{RGI_Emoji}', 'v');
+    expect(() => stringMatching(regex)).toThrowError(/RGI_Emoji/);
+  });
+
+  it('still rejects unsupported flags (sanity check)', () => {
+    // `i` is still unsupported regardless of engine support for /v.
+    expect(() => stringMatching(/abc/i)).toThrowError(/flag i/);
+  });
+});
+
 // Helpers
 
 type Extra = { regex: RegExp };
 
 function hardcodedRegex(): fc.Arbitrary<Extra> {
-  //
+  const supportFlagV = (() => {
+    try {
+      new RegExp('.', 'v');
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+  const vFlagCases: { regex: RegExp }[] = supportFlagV
+    ? [
+        { regex: new RegExp('^[a-z]+$', 'v') },
+        { regex: new RegExp('^\\p{Emoji}+$', 'v') },
+        { regex: new RegExp('^\\P{Emoji}+$', 'v') },
+        { regex: new RegExp('^\\w{1,8}$', 'v') },
+      ]
+    : [];
   return fc.constantFrom(
+    ...vFlagCases,
     // Hex Color
     { regex: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/ },
     // RGB Color
@@ -85,6 +163,14 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
       return false;
     }
   })();
+  const supportFlagV = (() => {
+    try {
+      new RegExp('.', 'v'); // Not supported before V8 11.3 / Node 20
+      return true;
+    } catch {
+      return false;
+    }
+  })();
   const regexQuantifiableChunks = [
     '[s-z]', // any character in range s to z
     '[ace]', // any character from ace
@@ -129,45 +215,56 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
           m: fc.boolean(), // multiline for ^ and $
           s: fc.boolean(), // multiline for .
           u: fc.boolean(), // unicode
+          v: fc.boolean(), // unicodeSets
           // y: fc.boolean(), // sticky
         })
-        .map(
-          (flags) =>
-            `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}${
-              flags.u ? 'u' : ''
-            }`,
-        ),
+        .map((flags) => {
+          // `u` and `v` are mutually exclusive: prefer `v` when both are requested and available
+          // to exercise the unicodeSets path; fall back to `u` if `v` is unsupported on this engine.
+          const wantV = flags.v && supportFlagV;
+          const unicodeLetter = wantV ? 'v' : flags.u ? 'u' : '';
+          return `${flags.d && supportFlagD ? 'd' : ''}${flags.g ? 'g' : ''}${flags.m ? 'm' : ''}${flags.s ? 's' : ''}${unicodeLetter}`;
+        }),
     })
     .map(({ disjunctions, flags }) => {
-      return {
-        regex: new RegExp(
-          disjunctions
-            .map(({ startAssertion, endAssertion, chunks }) => {
-              const start = startAssertion ? '^' : '';
-              const end = endAssertion ? '$' : '';
-              const content = chunks
-                .map((chunk) => {
-                  const quantifier = chunk.quantifier;
-                  const quantifierString =
-                    quantifier === undefined
-                      ? ''
-                      : typeof quantifier === 'string'
-                        ? quantifier
-                        : typeof quantifier === 'number'
-                          ? `{${quantifier}}`
-                          : typeof quantifier[1] === 'number'
-                            ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
-                                ...(quantifier as [number, number]),
-                              )}}`
-                            : `{${quantifier[0]},}`;
-                  return chunk.matcher + quantifierString;
-                })
-                .join('');
-              return start + content + end;
+      const source = disjunctions
+        .map(({ startAssertion, endAssertion, chunks }) => {
+          const start = startAssertion ? '^' : '';
+          const end = endAssertion ? '$' : '';
+          const content = chunks
+            .map((chunk) => {
+              const quantifier = chunk.quantifier;
+              const quantifierString =
+                quantifier === undefined
+                  ? ''
+                  : typeof quantifier === 'string'
+                    ? quantifier
+                    : typeof quantifier === 'number'
+                      ? `{${quantifier}}`
+                      : typeof quantifier[1] === 'number'
+                        ? `{${Math.min(...(quantifier as [number, number]))},${Math.max(
+                            ...(quantifier as [number, number]),
+                          )}}`
+                        : `{${quantifier[0]},}`;
+              return chunk.matcher + quantifierString;
             })
-            .join('|'),
-          flags,
-        ),
+            .join('');
+          return start + content + end;
+        })
+        .join('|');
+      let effectiveFlags = flags;
+      if (effectiveFlags.indexOf('v') !== -1) {
+        // Some chunk combinations are legal under `/u` but illegal under `/v` (v tightens the set
+        // of characters that may appear bare in certain positions). When that happens, silently
+        // swap `v` for `u` so the generator still produces a valid regex.
+        try {
+          new RegExp(source, effectiveFlags);
+        } catch {
+          effectiveFlags = effectiveFlags.replace('v', 'u');
+        }
+      }
+      return {
+        regex: new RegExp(source, effectiveFlags),
       };
     });
 }

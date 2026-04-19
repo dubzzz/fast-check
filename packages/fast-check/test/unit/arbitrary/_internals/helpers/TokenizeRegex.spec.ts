@@ -135,6 +135,42 @@ describe('tokenizeRegex', () => {
       },
     );
 
+    const supportFlagV = (() => {
+      try {
+        new RegExp('.', 'v');
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+    const describeV = supportFlagV ? describe : describe.skip;
+
+    describeV('v-flag regexes parse the same way as their u-flag counterparts', () => {
+      // The `v` flag shares its Unicode-aware tokenization with `u` for every construct that
+      // `stringMatching` currently supports. We assert that the tokens produced for a regex
+      // compiled with /v are structurally identical to the ones produced for the same source
+      // compiled with /u — `regexp-tree` is unavailable as an oracle here because it does not
+      // parse the `v` flag, so we cross-check against our own /u output instead.
+      //
+      // Some /u sources are strictly illegal under /v (e.g. `[|]` — the `v` flag tightens the
+      // set of characters that may appear bare inside a character class). We silently skip such
+      // inputs: the goal here is to cover the common subset.
+      const candidates = allRegexes.filter((i) => !i.invalidWithUnicode);
+      const vCompatible = candidates.filter(({ regex }) => {
+        try {
+          new RegExp(regex.source, 'v');
+          return true;
+        } catch {
+          return false;
+        }
+      });
+      it.each(vCompatible)('should produce tokens matching the u-flag variant for $regex', ({ regex }) => {
+        const uRegex = new RegExp(regex.source, 'u');
+        const vRegex = new RegExp(regex.source, 'v');
+        expect(tokenizeRegex(vRegex)).toEqual(tokenizeRegex(uRegex));
+      });
+    });
+
     it.each`
       regex
       ${/🐱/u}

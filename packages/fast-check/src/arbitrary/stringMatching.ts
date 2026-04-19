@@ -4,6 +4,7 @@ import { stringify } from '../utils/stringify.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
+import { assertUnicodeSetsSupportedByStringMatching } from './_internals/helpers/UnicodeSetsRegexValidator.js';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from './_internals/helpers/TokenizeRegex.js';
 import { unicodePropertyArbitrary } from './_internals/helpers/UnicodePropertyArbitraryHelper.js';
@@ -222,13 +223,23 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
     //   g - all matches, not limited to first match
     //   m - multiline
     //   s - dot matches newline character
+    //   u - unicode support
+    //   v - unicodeSets (superset of `u`, with the exception of set-notation `[a&&b]` / `[a--b]`,
+    //                    `\\q{…}` quoted strings inside classes and string-valued `\\p{…}` properties
+    //                    which remain unsupported — they are rejected explicitly below)
     // Not supported:
     //   i - case-insensitive
-    //   u - unicode support
     //   y - search at the exact position in the text or sticky mode
-    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u') {
+    if (flag !== 'd' && flag !== 'g' && flag !== 'm' && flag !== 's' && flag !== 'u' && flag !== 'v') {
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
+  }
+  if (safeIndexOf([...regex.flags], 'v') !== -1) {
+    // The `v` flag is treated as equivalent to `u` for the subset of syntax that `stringMatching`
+    // currently supports. Reject constructs that only exist under `v` and that the tokenizer is
+    // not prepared to handle — doing it here gives a clean, actionable error at the entry point
+    // rather than a confusing downstream failure in the tokenizer.
+    assertUnicodeSetsSupportedByStringMatching(regex.source);
   }
   const maxLength = constraints.maxLength;
   const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size, maxLength };
