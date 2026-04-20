@@ -63,6 +63,17 @@ function next(root: MarkovChain, tokens: PreviousToken[], entropyArbitrary: Arbi
   });
 }
 
+/**
+ * For strings built from a corpus of sample strings
+ *
+ * Generates strings that look similar to the ones provided in the corpus.
+ * For truly realistic data, prefer combining fast-check with a fake data library.
+ *
+ * @param corpus - Array of sample strings used as reference
+ *
+ * @remarks Since 4.8.0
+ * @public
+ */
 export function fuzzedString(corpus: string[]): Arbitrary<string> {
   const root = new MarkovChain();
   for (const word of corpus) {
