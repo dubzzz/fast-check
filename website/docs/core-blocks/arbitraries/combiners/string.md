@@ -88,7 +88,7 @@ fc.stringMatching(
 );
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/stringMatching.html).  
+Resources: [API reference](/docs/api/functions/stringMatching).  
 Available since 3.10.0.
 
 ## mixedCase
@@ -134,5 +134,5 @@ fc.mixedCase(fc.constant('🐱🐢🐱🐢🐱🐢'), {
 // Examples of generated values: "🐯🐇🐱🐢🐯🐢", "🐱🐇🐱🐇🐯🐇", "🐱🐢🐯🐢🐱🐢", "🐱🐢🐱🐇🐯🐢", "🐱🐢🐯🐢🐱🐇"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/mixedCase.html).  
+Resources: [API reference](/docs/api/functions/mixedCase).  
 Available since 1.17.0.

@@ -79,7 +79,7 @@ Useful documentations:
 - [🔧 Custom arbitraries](https://fast-check.dev/docs/core-blocks/arbitraries/combiners/)
 - [🏃‍♂️ Property based runners](https://fast-check.dev/docs/core-blocks/runners/)
 - [💥 Tips](https://fast-check.dev/docs/configuration/)
-- [🔌 API Reference](https://fast-check.dev/api-reference/index.html)
+- [🔌 API Reference](https://fast-check.dev/docs/api/)
 - [⭐ Awesome fast-check](https://fast-check.dev/docs/ecosystem/)
 
 ## Why should I migrate to fast-check?

@@ -67,7 +67,7 @@ fc.dictionary(fc.string(), fc.string(), { noNullPrototype: true });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/dictionary.html).  
+Resources: [API reference](/docs/api/functions/dictionary).  
 Available since 1.0.0.
 
 ## set
@@ -139,7 +139,7 @@ fc.set(fc.constantFrom(-0, 0, Number.NaN, 1, 2));
 // Examples of generated values: new Set([Number.NaN,0,1,2]), new Set([0,2,1,Number.NaN]), new Set([2,1]), new Set([0,Number.NaN,2,1]), new Set([0])…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/set.html).  
+Resources: [API reference](/docs/api/functions/set).  
 Available since 4.4.0.
 
 ## map
@@ -196,7 +196,7 @@ fc.map(fc.constantFrom('a', 'b', 'c'), fc.boolean(), { maxKeys: 3 });
 // Examples of generated values: new Map([]), new Map([["c",false]]), new Map([["c",true],["b",true]]), new Map([["b",true],["a",false]]), new Map([["a",true]])…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/map.html).  
+Resources: [API reference](/docs/api/functions/map).  
 Available since 4.4.0.
 
 ## record
@@ -299,7 +299,7 @@ fc.record(
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/record.html).  
+Resources: [API reference](/docs/api/functions/record).  
 Available since 0.0.12.
 
 ## object
@@ -411,7 +411,7 @@ fc.object({
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/object.html).  
+Resources: [API reference](/docs/api/functions/object).  
 Available since 0.0.7.
 
 ## anything
@@ -518,5 +518,5 @@ fc.anything({
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/anything.html).  
+Resources: [API reference](/docs/api/functions/anything).  
 Available since 0.0.7.

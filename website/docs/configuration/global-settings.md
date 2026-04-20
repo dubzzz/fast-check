@@ -8,7 +8,7 @@ Share settings cross runners.
 
 ## Per test settings
 
-By default, the [runners](/docs/core-blocks/runners/) take an [optional argument for extra settings](https://fast-check.dev/api-reference/interfaces/Parameters.html). Some of these settings can be re-used over-and-over in the same file and across several files.
+By default, the [runners](/docs/core-blocks/runners/) take an [optional argument for extra settings](/docs/api/interfaces/Parameters). Some of these settings can be re-used over-and-over in the same file and across several files.
 
 Example:
 
@@ -58,7 +58,7 @@ fc.configureGlobal({ ...fc.readConfigureGlobal(), ...myNewOptions });
 You can also fully reset all the global options by calling `resetConfigureGlobal`.
 :::
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/configureGlobal.html).  
+Resources: [API reference](/docs/api/functions/configureGlobal).  
 Available since 1.18.0.
 
 ## Integration with test frameworks

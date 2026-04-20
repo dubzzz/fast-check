@@ -43,7 +43,7 @@ fc.option(fc.string(), { nil: undefined });
 // Examples of such recursive structures are available with fc.letrec.
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/option.html).  
+Resources: [API reference](/docs/api/functions/option).  
 Available since 0.0.6.
 
 ## oneof
@@ -96,7 +96,7 @@ fc.oneof({ arbitrary: fc.string(), weight: 5 }, { arbitrary: fc.boolean(), weigh
 // Examples of such recursive structures are available with fc.letrec.
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/oneof.html).  
+Resources: [API reference](/docs/api/functions/oneof).  
 Available since 0.0.1.
 
 ## clone
@@ -130,7 +130,7 @@ fc.clone(fc.nat(), 3);
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/clone.html).  
+Resources: [API reference](/docs/api/functions/clone).  
 Available since 2.5.0.
 
 ## noBias
@@ -154,7 +154,7 @@ fc.noBias(fc.nat());
 // Examples of generated values: 394798768, 980149687, 1298483622, 1164017931, 646759550…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/noBias.html).  
+Resources: [API reference](/docs/api/functions/noBias).  
 Available since 3.20.0.
 
 ## noShrink
@@ -182,7 +182,7 @@ fc.noShrink(fc.nat());
 // Examples of generated values: 1395148595, 7, 1743838935, 879259091, 2147483640…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/noShrink.html).  
+Resources: [API reference](/docs/api/functions/noShrink).  
 Available since 3.20.0.
 
 ## limitShrink
@@ -211,7 +211,7 @@ fc.limitShrink(fc.nat(), 3);
 // Examples of generated values: 487640477, 1460784921, 1601237202, 1623804274, 5…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/limitShrink.html).  
+Resources: [API reference](/docs/api/functions/limitShrink).  
 Available since 3.20.0.
 
 ## .filter
@@ -242,7 +242,7 @@ fc.string().filter((s) => s[0] < s[1]);
 // Examples of generated values: "Aa]tp>", "apply", "?E%a$n x", "#l\"/L\"x&S{", "argument"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#filter).  
+Resources: [API reference](/docs/api/classes/Arbitrary#filter).  
 Available since 0.0.1.
 
 ## .map
@@ -276,7 +276,7 @@ fc.string().map((s) => `[${s.length}] -> ${s}`);
 // Examples of generated values: "[3] -> ref", "[8] -> xeE:81|z", "[9] -> B{1Z\\sxWa", "[3] -> key", "[1] -> _"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#map).  
+Resources: [API reference](/docs/api/classes/Arbitrary#map).  
 Available since 0.0.1.
 
 ## .chain
@@ -303,5 +303,5 @@ fc.nat().chain((min) => fc.tuple(fc.constant(min), fc.integer({ min, max: 0xffff
 // Examples of generated values: [1211945858,4294967292], [1068058184,2981851306], [2147483626,2147483645], [1592081894,1592081914], [2147483623,2147483639]…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/classes/Arbitrary.html#chain).  
+Resources: [API reference](/docs/api/classes/Arbitrary#chain).  
 Available since 1.2.0.

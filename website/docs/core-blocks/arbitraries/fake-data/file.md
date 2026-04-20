@@ -44,7 +44,7 @@ fc.base64String({ minLength: 4, maxLength: 12 });
 // Examples of generated values: "YQ7D/IU8fE+2", "tjhMHtq9", "property", "9lm8Vx7bBF==", "roto"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/base64String.html).  
+Resources: [API reference](/docs/api/functions/base64String).  
 Available since 0.0.1.
 
 ## json
@@ -103,7 +103,7 @@ fc.json({ depthSize: 'medium' });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/json.html).  
+Resources: [API reference](/docs/api/functions/json).  
 Available since 0.0.7.
 
 ## jsonValue
@@ -220,7 +220,7 @@ fc.statistics(fc.jsonValue({ maxDepth: 2 }), (v) => {
 // • 5 to 9 items.......1.34%
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/jsonValue.html).  
+Resources: [API reference](/docs/api/functions/jsonValue).  
 Available since 2.20.0.
 
 ## lorem
@@ -263,5 +263,5 @@ fc.lorem({ maxCount: 3, mode: 'sentences' });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/lorem.html).  
+Resources: [API reference](/docs/api/functions/lorem).  
 Available since 0.0.1.

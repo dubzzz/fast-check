@@ -77,5 +77,5 @@ fc.string({ unit: fc.constantFrom('Hello', 'World') });
 // Examples of generated values: "", "Hello", "HelloWorld", "HelloWorldHello", "WorldWorldHelloWorldHelloWorld"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/string.html).  
+Resources: [API reference](/docs/api/functions/string).  
 Available since 0.0.1.
