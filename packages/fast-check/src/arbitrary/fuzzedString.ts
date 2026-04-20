@@ -6,12 +6,22 @@ import { oneof } from './oneof.js';
 type PreviousToken = string | typeof START_TOKEN;
 type NextToken = string | typeof END_TOKEN;
 
-function hitCountToArbitrary<T>(hit: Map<T, number>): Arbitrary<T> {
-  const hitArbitraryEntries: { weight: number; arbitrary: Arbitrary<T> }[] = [];
+function hitCountToArbitrary(hit: Map<NextToken, number>): Arbitrary<NextToken> {
+  const hitArbitraryEntries: { weight: number; arbitrary: Arbitrary<NextToken> }[] = [];
+  let endTokenArb: Arbitrary<NextToken> | undefined = undefined;
   for (const [value, count] of hit) {
-    hitArbitraryEntries.push({ weight: count, arbitrary: constant(value) });
+    const arbitrary = constant(value);
+    if (value === END_TOKEN) {
+      endTokenArb = arbitrary;
+    }
+    hitArbitraryEntries.push({ weight: count, arbitrary });
   }
-  return oneof(...hitArbitraryEntries);
+  // Place END_TOKEN first so shrinking prefers terminating the string early.
+  // Otherwise `withCrossShrink: true` would shrink toward longer (potentially unbounded) strings.
+  if (endTokenArb !== undefined) {
+    hitArbitraryEntries.sort((a, b) => (a.arbitrary === endTokenArb ? -1 : b.arbitrary === endTokenArb ? 1 : 0));
+  }
+  return oneof({ withCrossShrink: true }, ...hitArbitraryEntries);
 }
 
 function next(root: MarkovChain, tokens: PreviousToken[], entropyArbitrary: Arbitrary<NextToken>): Arbitrary<string> {
