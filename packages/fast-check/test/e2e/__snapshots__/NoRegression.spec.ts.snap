@@ -3204,6 +3204,22 @@ Execution summary:
 }]]
 `;
 
+exports[`NoRegression > fuzzedString 1`] = `
+[Error: Property failed after 7 tests
+{ seed: 42, path: "6", endOnFailure: true }
+Counterexample: ["Lertrr"]
+Shrunk 0 time(s)
+
+Execution summary:
+[32m√[0m ["Ler"]
+[32m√[0m ["Osy"]
+[32m√[0m ["Nor"]
+[32m√[0m ["Oleo"]
+[32m√[0m ["Mur"]
+[32m√[0m ["Noary"]
+[31m×[0m ["Lertrr"]]
+`;
+
 exports[`NoRegression > gen 1`] = `
 [Error: Property failed after 1 tests
 { seed: 42, path: "0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0", endOnFailure: true }

@@ -110,6 +110,7 @@ import { infiniteStream } from './arbitrary/infiniteStream.js';
 import { base64String } from './arbitrary/base64String.js';
 import type { StringSharedConstraints, StringConstraints } from './arbitrary/string.js';
 import { string } from './arbitrary/string.js';
+import { fuzzedString } from './arbitrary/fuzzedString.js';
 import type { SubarrayConstraints } from './arbitrary/subarray.js';
 import { subarray } from './arbitrary/subarray.js';
 import type { ShuffledSubarrayConstraints } from './arbitrary/shuffledSubarray.js';
@@ -362,6 +363,7 @@ export {
   string,
   base64String,
   stringMatching,
+  fuzzedString,
   limitShrink,
   lorem,
   constant,

@@ -198,6 +198,19 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it('fuzzedString', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(
+            fc.fuzzedString(['Noah', 'Oliver', 'George', 'Arthur', 'Muhammad', 'Leo', 'Harry', 'Oscar']),
+            (v) => testFunc(v),
+          ),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('mapToConstant', () => {
     expect(
       runWithSanitizedStack(() =>
