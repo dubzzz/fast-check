@@ -3204,7 +3204,21 @@ Execution summary:
 }]]
 `;
 
-exports[`NoRegression > fuzzedString 1`] = `[Error: Maximum call stack size exceeded]`;
+exports[`NoRegression > fuzzedString 1`] = `
+[Error: Property failed after 2 tests
+{ seed: 42, path: "1:4", endOnFailure: true }
+Counterexample: ["Oscarr"]
+Shrunk 1 time(s)
+
+Execution summary:
+[32m√[0m ["LOliver"]
+[31m×[0m ["Oscarryrth"]
+. [32m√[0m ["Nad"]
+. [32m√[0m ["Oliver"]
+. [32m√[0m ["Oscah"]
+. [32m√[0m ["Oscar"]
+. [31m×[0m ["Oscarr"]]
+`;
 
 exports[`NoRegression > gen 1`] = `
 [Error: Property failed after 1 tests

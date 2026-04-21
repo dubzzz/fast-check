@@ -39,10 +39,7 @@ function next(
   const nextTokenArbitrary =
     eligible.size === 0
       ? entropyArbitrary // No eligible token, fallback to entropy only
-      : oneof(
-          { weight: accumulatedWeight * accumulatedWeight, arbitrary: hitCountToArbitrary(eligible, END_TOKEN) },
-          entropyArbitrary,
-        );
+      : oneof({ weight: accumulatedWeight, arbitrary: hitCountToArbitrary(eligible, END_TOKEN) }, entropyArbitrary);
 
   // Create the arbitrary building the resulting string
   return nextTokenArbitrary.chain((nextToken) => {

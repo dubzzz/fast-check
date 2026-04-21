@@ -55,12 +55,12 @@ fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLengt
 fc.stringMatching(/^\p{Emoji}$/u);
 // Note: Regex matching a single Emoji character via a Unicode property escape
 // Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
-// Examples of generated values: "🚞", "🫲", "1", "2", "🫱"…
+// Examples of generated values: "😹", "🫲", "1", "2", "🫱"…
 
 fc.stringMatching(/^\p{Uppercase_Letter}\p{Lowercase_Letter}+$/u);
 // Note: Regex matching a capitalized word
 // Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
-// Examples of generated values: "Cｚ𝖐ᴞ𐳋𝓿𝼍𝕛𐐯ṏⰵ𝐲", "Hc𝚗ḿ𝘃𞤿h", "𝗖𞤫𝛞ᾄ", "𐲘𝖿ʭⱡⲭⳁ", "Iꟶ𐖷𝛚n"…
+// Examples of generated values: "Cẜѥթℏ𝑗ᾤỡꚉứꮚȭ", "Hcųᶏϊ𞤿h", "Ҁ𝘪ừ𐐬", "Ꙍḛứꬻx𞤰", "I𝕦ҩꝅﬄ"…
 ```
 
 Some constraints are hard to express with a single regex.
@@ -112,7 +112,7 @@ For truly realistic data, prefer combining fast-check with a fake data library.
 fc.fuzzedString(['Noah', 'Oliver', 'George', 'Arthur', 'Muhammad', 'Leo', 'Harry', 'Oscar', 'Archie', 'Henry']);
 // Note: Generated strings look similar to the entries from the corpus
 // They may reproduce entries from the corpus as well as new similar-looking variants
-// Examples of generated values: "OlArcar", "Arge", "OsOliverthury", "Arch", "Harry"…
+// Examples of generated values: "OlArcar", "ArgeArry", "OsOlivertrthu", "Arch", "HLiver"…
 
 fc.fuzzedString([
   'https://github.com/dubzzz/fast-check/pulls',
@@ -121,26 +121,26 @@ fc.fuzzedString([
   'https://npmx.dev/package/fast-check/v/4.7.0',
 ]);
 // Examples of generated values:
-// • "https://npmx.dev/pack/v/4.7.0"
+// • "et-ckathubs/fast-check/pulls"
 // • "httorions"
-// • "https://p/ns/fast-rallls"
-// • "https://fast-check/v/4.7.0"
-// • "ht-check.dev/dororials/fast-cht-check/v/4.0"
+// • "https://p/ns/fast-ra.ct-cs"
+// • "https://fast-check/v/4.7.0ttetps:/pm/docs/fas:/"
+// • "ht-check.dev/t-check/v/fast-cht-check/vcht-4-ce-chrionondule/fasttps:///bsk.dev"
 // • …
 
 fc.fuzzedString([
-  '326 Prohaska Falls',
-  '370 McDermott Ranch',
-  '529 Thiel Port',
-  '730 Garden Street',
-  '18947 Eric Extension',
-  '15660 W 5th Street',
-  '261 S Lincoln Street',
-  '62231 Schmidt Greens',
-  '6405 Nels Shore',
-  '513 Parkside',
+  'Claudie Stehr',
+  'Angela Russel',
+  'Erica Corwin',
+  'Thelma Jast',
+  'Edwin Schiller',
+  'Charlotte Mills',
+  'Deshawn Swift',
+  'Cynthia Koepp',
+  'Brent Blick',
+  'Brandon Flatley',
 ]);
-// Examples of generated values: "26 McDel Port", "313 Street", "7323 Falls", "189470 Extereeen Streeth", "64Shoreet"…
+// Examples of generated values: "CyBla Kotey", "Che Mila ScStlelpp", "Briln Fldwindweselatls", "ClaudCynthiadwin Koey", "DDes"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/fuzzedString.html).  
