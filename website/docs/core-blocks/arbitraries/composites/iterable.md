@@ -32,5 +32,5 @@ fc.infiniteStream(fc.nat(9), { noHistory: true });
 // Examples of generated values: Stream(0 emitted)…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/infiniteStream.html).  
+Resources: [API reference](/docs/api/functions/infiniteStream).  
 Available since 1.8.0.

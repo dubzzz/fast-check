@@ -72,7 +72,7 @@ Hint: Enable verbose mode in order to have the list of all failing values encoun
 Note that the function provided to `beforeEach` and `afterEach` are not included in the measured time for the timeout. If the execution is interrupted due to a timeout, `afterEach` will be called immediately without waiting for the predicate to finish.
 :::
 
-Resources: [API reference](https://fast-check.dev/api-reference/interfaces/Parameters.html#timeout).  
+Resources: [API reference](/docs/api/interfaces/Parameters#timeout).  
 Available since 0.0.11.
 
 ## At runner level
@@ -95,7 +95,7 @@ Here is a summary:
 `interruptAfterTimeLimit` is particularly useful for fuzzing. For instance, setting it to `interruptAfterTimeLimit: 600_000` and adding `numRuns: Number.POSITIVE_INFINITY` would allow the runner to loop for 10 minutes, regardless of the number of predicates executed during that time.
 :::
 
-Resources: [API reference](https://fast-check.dev/api-reference/interfaces/Parameters.html#interruptAfterTimeLimit).  
+Resources: [API reference](/docs/api/interfaces/Parameters#interruptaftertimelimit).  
 Available since 1.19.0.
 
 ### skipAllAfterTimeLimit
@@ -125,7 +125,7 @@ During the shrinking process, skipping predicates will result in one-by-one skip
 When we skip a predicate due to the `skipAllAfterTimeLimit` option, we still pass on it, which may take time. This is because each subsequent run needs to be marked as "will not be executed" one by one. On the other hand, with the `interruptAfterTimeLimit` option, the runner is stopped immediately when the deadline is reached, resulting in a faster stop.
 :::
 
-Resources: [API reference](https://fast-check.dev/api-reference/interfaces/Parameters.html#timeout).  
+Resources: [API reference](/docs/api/interfaces/Parameters#timeout).  
 Available since 1.15.0.
 
 ## All timeout options

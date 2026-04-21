@@ -6,7 +6,7 @@ import { decompPrime } from './src/decompPrime.js';
 const MAX_INPUT = 65536;
 
 describe('decompPrime', () => {
-  it('should produce an array such that the product equals the input', () => {
+  it('should produce factors whose product equals the input', () => {
     fc.assert(
       fc.property(fc.nat(MAX_INPUT), (n) => {
         const factors = decompPrime(n);
@@ -16,7 +16,7 @@ describe('decompPrime', () => {
     );
   });
 
-  it('should be able to decompose a product of two numbers', () => {
+  it('should produce at least 2 factors for any composite number', () => {
     fc.assert(
       fc.property(fc.integer({ min: 2, max: MAX_INPUT }), fc.integer({ min: 2, max: MAX_INPUT }), (a, b) => {
         const n = a * b;
@@ -26,7 +26,7 @@ describe('decompPrime', () => {
     );
   });
 
-  it('should compute the same factors as to the concatenation of the one of a and b for a times b', () => {
+  it('should satisfy factors(a*b) = factors(a) ++ factors(b)', () => {
     fc.assert(
       fc.property(fc.integer({ min: 2, max: MAX_INPUT }), fc.integer({ min: 2, max: MAX_INPUT }), (a, b) => {
         const factorsA = decompPrime(a);

@@ -518,6 +518,16 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
   return specDirectory;
 }
 
+// Environment with AI agent env vars removed so that vitest uses its default reporter
+// instead of the AgentReporter (which strips verbose test result markers).
+const vitestEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([key]) =>
+      !['AI_AGENT', 'AUGMENT_AGENT', 'CLAUDE_CODE', 'CLAUDECODE', 'CODEX_SANDBOX', 'CODEX_THREAD_ID'].includes(key) &&
+      !['CURSOR_AGENT', 'GEMINI_CLI', 'GOOSE_PROVIDER', 'OPENCODE', 'REPL_ID'].includes(key),
+  ),
+);
+
 async function runSpec(specDirectory: string, options?: { allowOnly?: boolean }): Promise<string> {
   try {
     const args = [
@@ -530,7 +540,7 @@ async function runSpec(specDirectory: string, options?: { allowOnly?: boolean })
     if (options?.allowOnly) {
       args.push('--allowOnly');
     }
-    const { stdout: specOutput } = await execFile('node', args, { cwd: specDirectory });
+    const { stdout: specOutput } = await execFile('node', args, { cwd: specDirectory, env: vitestEnv });
     return specOutput;
   } catch (err) {
     return (err as any).stderr;

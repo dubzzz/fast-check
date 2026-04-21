@@ -59,5 +59,5 @@ fc.bigInt({ min: 1n << 64n });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/bigInt.html).  
+Resources: [API reference](/docs/api/functions/bigInt).  
 Available since 1.9.0.

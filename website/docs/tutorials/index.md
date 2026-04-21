@@ -44,4 +44,4 @@ These tutorials are intentionally focused. Once you are comfortable with the bas
 - [**Core Blocks**](/docs/core-blocks/properties/) — the reference for properties, runners and arbitraries.
 - [**Configuration**](/docs/configuration/user-definable-values/) — fine-tune fast-check to match your project's constraints.
 - [**Advanced**](/docs/advanced/model-based-testing/) — model-based testing, race conditions in depth, and more.
-- [**API Reference**](https://fast-check.dev/api-reference/index.html) — the exhaustive list of every exported symbol.
+- [**API Reference**](/docs/api/) — the exhaustive list of every exported symbol.

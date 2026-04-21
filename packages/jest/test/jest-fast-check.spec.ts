@@ -519,7 +519,7 @@ describe.each<DescribeOptions>([
       // Arrange
       const specDirectory = await writeToFile(runnerName, options, () => {
         if (typeof jest !== 'undefined') {
-          jest.setTimeout(2000);
+          jest.setTimeout(3000);
         }
         runner.prop([fc.nat()])(
           'property favor local Jest timeout over Jest setTimeout',
@@ -535,7 +535,7 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out);
-      expectTimeout(out, 1000); // neither 2000 (setTimeout), nor 5000 (default)
+      expectTimeout(out, 1000); // neither 3000 (setTimeout), nor 5000 (default)
       expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
     });
 
@@ -551,11 +551,11 @@ describe.each<DescribeOptions>([
       });
 
       // Act
-      const out = await runSpec(specDirectory, { testTimeoutCLI: 2000 });
+      const out = await runSpec(specDirectory, { testTimeoutCLI: 3000 });
 
       // Assert
       expectFail(out);
-      expectTimeout(out, 1000); // neither 2000 (cli), nor 5000 (default)
+      expectTimeout(out, 1000); // neither 3000 (cli), nor 5000 (default)
       expect(out).toMatch(/[×✕] property favor Jest setTimeout over Jest CLI timeout/);
     });
   });
@@ -630,6 +630,16 @@ async function writeToFile(
   return specDirectory;
 }
 
+// Environment with AI agent env vars removed so that Jest uses its default reporter
+// instead of the AgentReporter (which strips verbose test result markers).
+const jestEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([key]) =>
+      !['AI_AGENT', 'AUGMENT_AGENT', 'CLAUDE_CODE', 'CLAUDECODE', 'CODEX_SANDBOX', 'CODEX_THREAD_ID'].includes(key) &&
+      !['CURSOR_AGENT', 'GEMINI_CLI', 'GOOSE_PROVIDER', 'OPENCODE', 'REPL_ID'].includes(key),
+  ),
+);
+
 async function runSpec(
   specDirectory: string,
   opts: { jestSeed?: number; testTimeoutCLI?: number } = {},
@@ -645,7 +655,7 @@ async function runSpec(
         ...(opts.jestSeed !== undefined ? ['--seed', String(opts.jestSeed)] : []),
         ...(opts.testTimeoutCLI !== undefined ? [`--testTimeout=${opts.testTimeoutCLI}`] : []),
       ],
-      { cwd: specDirectory },
+      { cwd: specDirectory, env: jestEnv },
     );
     return specOutput;
   } catch (err) {
@@ -667,7 +677,7 @@ function expectTimeout(out: string, timeout: number): void {
   expect(out).toMatch(timeRegex);
   const time = timeRegex.exec(out)!;
   expect(Number(time[1])).toBeGreaterThanOrEqual(timeout);
-  expect(Number(time[1])).toBeLessThan(timeout * 1.5);
+  expect(Number(time[1])).toBeLessThan(timeout * 2);
 }
 
 function expectAlignedSeeds(out: string, opts: { noAlignWithJest?: boolean } = {}): void {

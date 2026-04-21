@@ -1,6 +1,6 @@
 {
   "name": "fast-check",
-  "version": "4.6.0",
+  "version": "4.7.0",
   "description": "Property based testing framework for JavaScript (like QuickCheck)",
   "type": "module",
   "main": "lib/fast-check.js",
@@ -39,9 +39,7 @@
     "typecheck": "tsc --noEmit",
     "test-bundle": "for f in test-bundle/*.mjs test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && node \"$f\" || exit 1; done",
     "test-legacy-bundle": "nvs add 12.17.0 && for f in test-bundle/*.cjs; do [ -f \"$f\" ] && echo \"Running ${f##*/}\" && $(nvs which 12.17.0) \"$f\" || exit 1; done",
-    "docs": "api-extractor run --local && rm docs/fast-check.api.json && typedoc --out docs src/fast-check-default.ts",
-    "docs-ci": "cross-env EXPECT_GITHUB_SHA=true pnpm run docs",
-    "docs:serve": "pnpm run dlx serve docs/"
+    "api-extractor": "api-extractor run --local"
   },
   "repository": {
     "type": "git",
@@ -62,14 +60,12 @@
   },
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@microsoft/api-extractor": "^7.58.2",
+    "@microsoft/api-extractor": "^7.58.7",
     "@types/node": "^24.12.2",
-    "cross-env": "^10.1.0",
     "fast-check": "workspace:*",
     "not-node-buffer": "npm:buffer@^6.0.3",
     "regexp-tree": "^0.1.27",
-    "typedoc": "^0.28.19",
-    "typescript": "~6.0.2",
+    "typescript": "~6.0.3",
     "vitest": "^4.1.0"
   },
   "keywords": [

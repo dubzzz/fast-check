@@ -197,7 +197,7 @@ fc.statistics(
 // • 5 to 9 items.......0.14%
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/letrec.html).  
+Resources: [API reference](/docs/api/functions/letrec).  
 Available since 1.16.0.
 
 ## memo
@@ -240,7 +240,7 @@ tree(2);
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/memo.html).  
+Resources: [API reference](/docs/api/functions/memo).  
 Available since 1.16.0.
 
 ## entityGraph
@@ -465,5 +465,5 @@ fc.entityGraph(
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/entityGraph.html).  
+Resources: [API reference](/docs/api/functions/entityGraph).  
 Available since 4.5.0.

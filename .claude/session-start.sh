@@ -14,4 +14,4 @@ fi
 # Install/sync dependencies — always run to ensure node_modules matches the lockfile
 # (e.g. after a dependency version bump, node_modules may exist but be stale)
 echo "Installing dependencies with pnpm..."
-pnpm install --frozen-lockfile
+pnpm -C "$CLAUDE_PROJECT_DIR" install --frozen-lockfile
