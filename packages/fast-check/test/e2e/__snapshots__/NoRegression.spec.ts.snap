@@ -3205,26 +3205,24 @@ Execution summary:
 `;
 
 exports[`NoRegression > fuzzedString 1`] = `
-[Error: Property failed after 10 tests
-{ seed: 42, path: "9:0:2", endOnFailure: true }
-Counterexample: ["Nrr"]
-Shrunk 2 time(s)
+[Error: Property failed after 9 tests
+{ seed: 42, path: "8:2", endOnFailure: true }
+Counterexample: ["HH"]
+Shrunk 1 time(s)
 
 Execution summary:
 [32m√[0m ["Le"]
-[32m√[0m ["Osy"]
-[32m√[0m ["Noaher"]
-[32m√[0m ["Oler"]
-[32m√[0m ["Mur"]
-[32m√[0m ["No"]
+[32m√[0m ["Ose"]
+[32m√[0m ["NoahAr"]
+[32m√[0m ["Olrthur"]
+[32m√[0m ["Muliyh"]
+[32m√[0m ["Nover"]
 [32m√[0m ["Le"]
-[32m√[0m ["Amh"]
-[32m√[0m ["Ha"]
-[31m×[0m ["OscaLammargh"]
-. [31m×[0m ["Nrrrrr"]
-. . [32m√[0m ["N"]
-. . [32m√[0m ["Nr"]
-. . [31m×[0m ["Nrr"]]
+[32m√[0m ["AoOscar"]
+[31m×[0m ["HHNoah"]
+. [32m√[0m ["Nor"]
+. [32m√[0m ["H"]
+. [31m×[0m ["HH"]]
 `;
 
 exports[`NoRegression > gen 1`] = `

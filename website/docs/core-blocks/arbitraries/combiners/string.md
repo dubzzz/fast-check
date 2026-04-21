@@ -112,7 +112,7 @@ For truly realistic data, prefer combining fast-check with a fake data library.
 fc.fuzzedString(['Noah', 'Oliver', 'George', 'Arthur', 'Muhammad', 'Leo', 'Harry', 'Oscar', 'Archie', 'Henry']);
 // Note: Generated strings look similar to the entries from the corpus
 // They may reproduce entries from the corpus as well as new similar-looking variants
-// Examples of generated values: "OlHer", "Arthah", "Olge", "Arry", "HGammad"…
+// Examples of generated values: "OlArGenry", "Arthah", "OlOlrge", "Arry", "HLive"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/fuzzedString.html).  
