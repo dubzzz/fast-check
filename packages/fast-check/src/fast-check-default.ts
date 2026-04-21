@@ -200,6 +200,8 @@ import type { BigIntArrayConstraints } from './arbitrary/bigInt64Array.js';
 import { bigInt64Array } from './arbitrary/bigInt64Array.js';
 import { bigUint64Array } from './arbitrary/bigUint64Array.js';
 import type { SchedulerAct } from './arbitrary/_internals/interfaces/Scheduler.js';
+import type { StringFromCorpusConstraints } from './arbitrary/stringFromCorpus.js';
+import { stringFromCorpus } from './arbitrary/stringFromCorpus.js';
 import type { StringMatchingConstraints } from './arbitrary/stringMatching.js';
 import { stringMatching } from './arbitrary/stringMatching.js';
 import { noShrink } from './arbitrary/noShrink.js';
@@ -290,6 +292,7 @@ export type {
   UniqueArrayConstraintsCustomCompareSelect,
   UuidConstraints,
   SparseArrayConstraints,
+  StringFromCorpusConstraints,
   StringMatchingConstraints,
   StringConstraints,
   StringSharedConstraints,
@@ -361,6 +364,7 @@ export {
   mixedCase,
   string,
   base64String,
+  stringFromCorpus,
   stringMatching,
   limitShrink,
   lorem,

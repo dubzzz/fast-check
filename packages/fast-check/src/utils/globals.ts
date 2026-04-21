@@ -206,11 +206,18 @@ export function safePop<T>(instance: T[]): T | undefined {
   }
   return safeApply(untouchedPop, instance, []);
 }
-export function safeSplice<T>(instance: T[], ...args: [start: number, deleteCount?: number | undefined]): T[] {
+export function safeSplice<T>(
+  instance: T[],
+  start: number,
+  deleteCount?: number,
+  ...items: T[]
+): T[] {
+  const hasDeleteCount = deleteCount !== undefined;
   if (extractSplice(instance) === untouchedSplice) {
-    return instance.splice(...args);
+    return hasDeleteCount ? instance.splice(start, deleteCount, ...items) : instance.splice(start);
   }
-  return safeApply(untouchedSplice, instance, args);
+  const args = hasDeleteCount ? [start, deleteCount, ...items] : [start];
+  return safeApply(untouchedSplice as (...a: unknown[]) => T[], instance, args);
 }
 export function safeSlice<T>(instance: T[], ...args: [start?: number | undefined, end?: number | undefined]): T[] {
   if (extractSlice(instance) === untouchedSlice) {

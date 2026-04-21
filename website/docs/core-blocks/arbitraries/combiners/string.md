@@ -136,3 +136,54 @@ fc.mixedCase(fc.constant('🐱🐢🐱🐢🐱🐢'), {
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/mixedCase.html).  
 Available since 1.17.0.
+
+## stringFromCorpus
+
+Generate strings that look similar to a user-provided corpus of examples.
+
+The arbitrary picks a corpus entry and applies a small number of random edit operations (insert, delete, substitute, transpose) over its code points. Shrinking walks back the edit operations tail-first until the raw corpus entry is recovered, then cross-shrinks toward `corpus[0]`.
+
+**Signatures:**
+
+- `fc.stringFromCorpus(corpus)`
+- `fc.stringFromCorpus(corpus, { size?, minLength?, maxLength?, maxEdits?, includeOriginals?, extraAlphabet? })`
+
+**with:**
+
+- `corpus` — non-empty array of example strings to derive values from
+- `size?` — how big the generated values should be, see [size](/docs/configuration/larger-entries-by-default/)
+- `minLength?` — best-effort lower bound on generated length (see remarks)
+- `maxLength?` — upper bound on generated length
+- `maxEdits?` — maximum number of edit operations applied on top of the picked corpus entry (defaults to a value derived from `size`)
+- `includeOriginals?` — when `true` (default), bias-sampling sometimes emits a raw corpus entry unchanged; may exceed `maxLength`
+- `extraAlphabet?` — additional code points (as a string) merged into the insert/substitute pool; useful when the corpus alphabet is narrow
+
+**Usages:**
+
+```js
+fc.stringFromCorpus(['GET /api/users', 'POST /api/login', 'PATCH /api/users/42']);
+// Examples of generated values: "GET /api/usesr", "POST /api/logn", "GET /apiusers"…
+
+fc.stringFromCorpus(['{"ok":true}', '{"ok":false}'], { maxEdits: 3, extraAlphabet: '"{}:,' });
+// Examples of generated values: "{\"ok\":true}", "{\"ok\":falsse}", "{\"ok:true}"…
+
+fc.stringFromCorpus(['hello', 'world'], { minLength: 3, maxLength: 10 });
+// Examples of generated values: "helo", "wrld", "hellox", "worldd"…
+
+fc.stringFromCorpus(['a'], { size: 'medium' });
+// Examples of generated values: "a", "ab", "aa", …
+
+fc.stringFromCorpus(['hello world', 'foo bar', 'baz'], { includeOriginals: false, maxLength: 12 });
+// Examples of generated values: every output is a perturbation and stays within `maxLength`.
+```
+
+:::note Bias and length bounds
+When `includeOriginals` is `true` (default), the arbitrary may emit raw corpus entries that exceed `maxLength`. Set `includeOriginals: false` to force every value through the edit pipeline and respect `maxLength` strictly.
+:::
+
+:::note Shrinking a manual value
+The arbitrary's replay-without-context path only recognises values that equal a corpus entry exactly (by `===`). Arbitrary inputs that are close to a corpus entry will not be shrunk when passed via `fc.pre` or similar mechanisms.
+:::
+
+Resources: [API reference](https://fast-check.dev/api-reference/functions/stringFromCorpus.html).  
+Available since 4.8.0.

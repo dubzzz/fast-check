@@ -505,3 +505,9 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<fc.Arbitrary<{ employee: EmployeeWithTeam[]; team: TeamWithEmployees[] }>>();
+
+// stringFromCorpus arbitrary
+// "stringFromCorpus" accepts a plain string array and yields Arbitrary<string>
+expectTypeOf(fc.stringFromCorpus(['a', 'b'])).toEqualTypeOf<fc.Arbitrary<string>>();
+// "stringFromCorpus" accepts a readonly string array as well
+expectTypeOf(fc.stringFromCorpus([] as readonly string[])).toEqualTypeOf<fc.Arbitrary<string>>();
