@@ -3,6 +3,8 @@ packages:
   - packages/*
   - website
 
+linkWorkspacePackages: deep
+
 ignoredBuiltDependencies:
   - '@swc/core'
   - core-js
