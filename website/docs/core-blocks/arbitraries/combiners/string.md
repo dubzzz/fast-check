@@ -112,7 +112,7 @@ For truly realistic data, prefer combining fast-check with a fake data library.
 fc.fuzzedString(['Noah', 'Oliver', 'George', 'Arthur', 'Muhammad', 'Leo', 'Harry', 'Oscar', 'Archie', 'Henry']);
 // Note: Generated strings look similar to the entries from the corpus
 // They may reproduce entries from the corpus as well as new similar-looking variants
-// Examples of generated values: "OlArGenry", "Arthah", "OlOlrge", "Arry", "HLive"…
+// Examples of generated values: "OlArchie", "Arthah", "OlOlivery", "Arrr", "Harry"…
 
 fc.fuzzedString([
   'https://github.com/dubzzz/fast-check/pulls',
@@ -121,11 +121,11 @@ fc.fuzzedString([
   'https://npmx.dev/package/fast-check/v/4.7.0',
 ]);
 // Examples of generated values:
-// • "etubs:/fas"
-// • "het-cs/ps://necettpub.7dock//s:/ps:/getpps/donp"
-// • "httub.deck.dev/v/doncondeck.dev//fast-chstonpubzzzzzz/"
-// • "he-ck/ns:/bs/v/fast-check.dev/doubect-ck/bc"
-// • "he/fack.com/4pstoche/iec.ack.0"
+// • "httpstp/detps:/de/fasttt-ritpastub.dut-chteck/pulls"
+// • "het-cs/ps://nde/giondubzz//fagechttppsthe/tulleck.de/fias/bs"
+// • "httub.deck.dev/v/doncondeck.dev//fast-check.dectps:///nde-ckas:/ge-ractev//de/fast-check/v/4.7.0"
+// • "he-ck/ns:/bs/v/fast-check.dev/dochece/giast-check.diachtps://ge/4.cock.de/gitt-rapas://fas:/dev/4.dev//fagitonde/fas/tpuleck/"
+// • "he/fack.cotps://fast-cttiack.0"
 // • …
 ```
 

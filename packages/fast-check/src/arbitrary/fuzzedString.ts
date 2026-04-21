@@ -1,8 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import {
-  computeEntropyEntriesAt,
-  hitCountToArbitrary,
-} from './_internals/helpers/FuzzerHelpers.js';
+import { computeEntropyEntriesAt, hitCountToArbitrary } from './_internals/helpers/FuzzerHelpers.js';
 import { MarkovChain, START_TOKEN, END_TOKEN } from './_internals/helpers/MarkovChain.js';
 import { constant } from './constant.js';
 import { oneof } from './oneof.js';
@@ -20,7 +17,7 @@ function next(
   const eligible = new Map<NextToken, number>();
   let index = tokens.length;
   let currentNode: MarkovChain = root;
-  let maxPossibleValuesWeight = 0;
+  let accumulatedWeight = 0;
   while (index > 0) {
     // Treating tokens in [index-1, length]
     index -= 1;
@@ -29,13 +26,11 @@ function next(
       break;
     }
     currentNode = nextNode;
-    let possibleValuesWeight = 0;
     for (const value of currentNode.listPossibleValues()) {
       const count = eligible.get(value.token) ?? 0;
       eligible.set(value.token, count + value.count);
-      possibleValuesWeight += value.count;
+      accumulatedWeight += value.count;
     }
-    maxPossibleValuesWeight = Math.max(maxPossibleValuesWeight, possibleValuesWeight);
   }
 
   // Create the arbitrary responsible to build the next token
@@ -44,7 +39,7 @@ function next(
     eligible.size === 0
       ? entropyArbitrary // No eligible token, fallback to entropy only
       : oneof(
-          { weight: maxPossibleValuesWeight, arbitrary: hitCountToArbitrary(eligible, END_TOKEN) },
+          { weight: accumulatedWeight * accumulatedWeight, arbitrary: hitCountToArbitrary(eligible, END_TOKEN) },
           entropyArbitrary,
         );
 
