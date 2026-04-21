@@ -379,6 +379,11 @@ const untouchedToLowerCase = String.prototype.toLowerCase;
 const untouchedToUpperCase = String.prototype.toUpperCase;
 const untouchedPadStart = String.prototype.padStart;
 const untouchedCharCodeAt = String.prototype.charCodeAt;
+const untouchedCodePointAt = String.prototype.codePointAt;
+// Note: `String.fromCodePoint` is a static, not a prototype method — it has no
+// `instance` to re-extract from, and it cannot be overridden on a per-instance
+// basis. We cache the static reference once.
+const untouchedFromCodePoint = String.fromCodePoint;
 const untouchedNormalize = String.prototype.normalize;
 const untouchedReplace: (pattern: RegExp | string, replacement: string) => string = String.prototype.replace;
 function extractSplit(instance: string) {
@@ -433,6 +438,13 @@ function extractPadStart(instance: string) {
 function extractCharCodeAt(instance: string) {
   try {
     return instance.charCodeAt;
+  } catch {
+    return undefined;
+  }
+}
+function extractCodePointAt(instance: string) {
+  try {
+    return instance.codePointAt;
   } catch {
     return undefined;
   }
@@ -507,6 +519,18 @@ export function safeCharCodeAt(instance: string, index: number): number {
     return instance.charCodeAt(index);
   }
   return safeApply(untouchedCharCodeAt, instance, [index]);
+}
+export function safeCodePointAt(instance: string, index: number): number | undefined {
+  if (extractCodePointAt(instance) === untouchedCodePointAt) {
+    return instance.codePointAt(index);
+  }
+  return safeApply(untouchedCodePointAt, instance, [index]);
+}
+export function safeStringFromCodePoint(...codePoints: number[]): string {
+  // `String.fromCodePoint` is a static; no per-instance subversion is possible.
+  // We still route through `safeApply` so that a global `Reflect.apply` override
+  // cannot hijack the call.
+  return safeApply(untouchedFromCodePoint, SString, codePoints);
 }
 export function safeNormalize(instance: string, form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): string {
   if (extractNormalize(instance) === untouchedNormalize) {
