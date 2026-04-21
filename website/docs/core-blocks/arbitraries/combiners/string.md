@@ -55,12 +55,12 @@ fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLengt
 fc.stringMatching(/^\p{Emoji}$/u);
 // Note: Regex matching a single Emoji character via a Unicode property escape
 // Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
-// Examples of generated values: "😹", "🫲", "1", "2", "🫱"…
+// Examples of generated values: "🚞", "🫲", "1", "2", "🫱"…
 
 fc.stringMatching(/^\p{Uppercase_Letter}\p{Lowercase_Letter}+$/u);
 // Note: Regex matching a capitalized word
 // Warning: Generated values depend on the Unicode version of your runtime; replaying a seed across different runtimes may produce different results when relying on \p{...}
-// Examples of generated values: "Cẜѥթℏ𝑗ᾤỡꚉứꮚȭ", "Hcųᶏϊ𞤿h", "Ҁ𝘪ừ𐐬", "Ꙍḛứꬻx𞤰", "I𝕦ҩꝅﬄ"…
+// Examples of generated values: "Cｚ𝖐ᴞ𐳋𝓿𝼍𝕛𐐯ṏⰵ𝐲", "Hc𝚗ḿ𝘃𞤿h", "𝗖𞤫𝛞ᾄ", "𐲘𝖿ʭⱡⲭⳁ", "Iꟶ𐖷𝛚n"…
 ```
 
 Some constraints are hard to express with a single regex.
@@ -113,6 +113,20 @@ fc.fuzzedString(['Noah', 'Oliver', 'George', 'Arthur', 'Muhammad', 'Leo', 'Harry
 // Note: Generated strings look similar to the entries from the corpus
 // They may reproduce entries from the corpus as well as new similar-looking variants
 // Examples of generated values: "OlArGenry", "Arthah", "OlOlrge", "Arry", "HLive"…
+
+fc.fuzzedString([
+  'https://github.com/dubzzz/fast-check/pulls',
+  'https://bsky.app/profile/fast-check.dev',
+  'https://fast-check.dev/docs/tutorials/detect-race-conditions/',
+  'https://npmx.dev/package/fast-check/v/4.7.0',
+]);
+// Examples of generated values:
+// • "etubs:/fas"
+// • "het-cs/ps://necettpub.7dock//s:/ps:/getpps/donp"
+// • "httub.deck.dev/v/doncondeck.dev//fast-chstonpubzzzzzz/"
+// • "he-ck/ns:/bs/v/fast-check.dev/doubect-ck/bc"
+// • "he/fack.com/4pstoche/iec.ack.0"
+// • …
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/fuzzedString.html).  
