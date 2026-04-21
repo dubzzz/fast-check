@@ -4,6 +4,7 @@ packages:
   - website
 
 linkWorkspacePackages: deep
+autoInstallPeers: false
 
 ignoredBuiltDependencies:
   - '@swc/core'
