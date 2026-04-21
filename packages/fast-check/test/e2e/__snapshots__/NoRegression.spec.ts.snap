@@ -3204,26 +3204,7 @@ Execution summary:
 }]]
 `;
 
-exports[`NoRegression > fuzzedString 1`] = `
-[Error: Property failed after 9 tests
-{ seed: 42, path: "8:2", endOnFailure: true }
-Counterexample: ["HH"]
-Shrunk 1 time(s)
-
-Execution summary:
-[32m√[0m ["Le"]
-[32m√[0m ["Ose"]
-[32m√[0m ["NoahAr"]
-[32m√[0m ["Olrthur"]
-[32m√[0m ["Muliyh"]
-[32m√[0m ["Nover"]
-[32m√[0m ["Le"]
-[32m√[0m ["AoOscar"]
-[31m×[0m ["HHNoah"]
-. [32m√[0m ["Nor"]
-. [32m√[0m ["H"]
-. [31m×[0m ["HH"]]
-`;
+exports[`NoRegression > fuzzedString 1`] = `[Error: Maximum call stack size exceeded]`;
 
 exports[`NoRegression > gen 1`] = `
 [Error: Property failed after 1 tests

@@ -28,7 +28,8 @@ function next(
     currentNode = nextNode;
     for (const value of currentNode.listPossibleValues()) {
       const count = eligible.get(value.token) ?? 0;
-      eligible.set(value.token, count + value.count);
+      const lift = tokens.length - index;
+      eligible.set(value.token, count + lift * value.count);
       accumulatedWeight += value.count;
     }
   }

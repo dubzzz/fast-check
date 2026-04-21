@@ -112,7 +112,7 @@ For truly realistic data, prefer combining fast-check with a fake data library.
 fc.fuzzedString(['Noah', 'Oliver', 'George', 'Arthur', 'Muhammad', 'Leo', 'Harry', 'Oscar', 'Archie', 'Henry']);
 // Note: Generated strings look similar to the entries from the corpus
 // They may reproduce entries from the corpus as well as new similar-looking variants
-// Examples of generated values: "OlArchie", "Arthah", "OlOlivery", "Arrr", "Harry"…
+// Examples of generated values: "OlArcar", "Arge", "OsOliverthury", "Arch", "Harry"…
 
 fc.fuzzedString([
   'https://github.com/dubzzz/fast-check/pulls',
@@ -121,12 +121,26 @@ fc.fuzzedString([
   'https://npmx.dev/package/fast-check/v/4.7.0',
 ]);
 // Examples of generated values:
-// • "httpstp/detps:/de/fasttt-ritpastub.dut-chteck/pulls"
-// • "het-cs/ps://nde/giondubzz//fagechttppsthe/tulleck.de/fias/bs"
-// • "httub.deck.dev/v/doncondeck.dev//fast-check.dectps:///nde-ckas:/ge-ractev//de/fast-check/v/4.7.0"
-// • "he-ck/ns:/bs/v/fast-check.dev/dochece/giast-check.diachtps://ge/4.cock.de/gitt-rapas://fas:/dev/4.dev//fagitonde/fas/tpuleck/"
-// • "he/fack.cotps://fast-cttiack.0"
+// • "https://npmx.dev/pack/v/4.7.0"
+// • "httorions"
+// • "https://p/ns/fast-rallls"
+// • "https://fast-check/v/4.7.0"
+// • "ht-check.dev/dororials/fast-cht-check/v/4.0"
 // • …
+
+fc.fuzzedString([
+  '326 Prohaska Falls',
+  '370 McDermott Ranch',
+  '529 Thiel Port',
+  '730 Garden Street',
+  '18947 Eric Extension',
+  '15660 W 5th Street',
+  '261 S Lincoln Street',
+  '62231 Schmidt Greens',
+  '6405 Nels Shore',
+  '513 Parkside',
+]);
+// Examples of generated values: "26 McDel Port", "313 Street", "7323 Falls", "189470 Extereeen Streeth", "64Shoreet"…
 ```
 
 Resources: [API reference](https://fast-check.dev/api-reference/functions/fuzzedString.html).  
