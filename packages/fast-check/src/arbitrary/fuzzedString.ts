@@ -1,28 +1,14 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
+import {
+  computeEntropyEntriesAt,
+  hitCountToArbitrary,
+} from './_internals/helpers/FuzzerHelpers.js';
 import { MarkovChain, START_TOKEN, END_TOKEN } from './_internals/helpers/MarkovChain.js';
 import { constant } from './constant.js';
 import { oneof } from './oneof.js';
 
 type PreviousToken = string | typeof START_TOKEN;
 type NextToken = string | typeof END_TOKEN;
-
-function hitCountToArbitrary(hit: Map<NextToken, number>): Arbitrary<NextToken> {
-  const hitArbitraryEntries: { weight: number; arbitrary: Arbitrary<NextToken> }[] = [];
-  let endTokenArb: Arbitrary<NextToken> | undefined = undefined;
-  for (const [value, count] of hit) {
-    const arbitrary = constant(value);
-    if (value === END_TOKEN) {
-      endTokenArb = arbitrary;
-    }
-    hitArbitraryEntries.push({ weight: count, arbitrary });
-  }
-  // Place END_TOKEN first so shrinking prefers terminating the string early.
-  // Otherwise `withCrossShrink: true` would shrink toward longer (potentially unbounded) strings.
-  if (endTokenArb !== undefined) {
-    hitArbitraryEntries.sort((a, b) => (a.arbitrary === endTokenArb ? -1 : b.arbitrary === endTokenArb ? 1 : 0));
-  }
-  return oneof({ withCrossShrink: true }, ...hitArbitraryEntries);
-}
 
 function next(
   root: MarkovChain,
@@ -57,7 +43,10 @@ function next(
   const nextTokenArbitrary =
     eligible.size === 0
       ? entropyArbitrary // No eligible token, fallback to entropy only
-      : oneof({ weight: maxPossibleValuesWeight, arbitrary: hitCountToArbitrary(eligible) }, entropyArbitrary);
+      : oneof(
+          { weight: maxPossibleValuesWeight, arbitrary: hitCountToArbitrary(eligible, END_TOKEN) },
+          entropyArbitrary,
+        );
 
   // Create the arbitrary building the resulting string
   return nextTokenArbitrary.chain((nextToken) => {
@@ -66,31 +55,6 @@ function next(
     }
     return next(root, [...tokens, nextToken], entropyArbitraryAt);
   });
-}
-
-/** @internal */
-function strenghFor(requestedIndex: number, pos: number, maxLength: number) {
-  const cappedIndex = Math.min(requestedIndex, maxLength);
-  const strengh = Math.max(1, 3 - Math.abs(cappedIndex - pos));
-  return strengh * strengh;
-}
-
-/** @internal */
-function buildEntropyAt(corpus: string[]) {
-  const corpusRefined = corpus.map((word) => [...word]);
-  return (index: number) => {
-    const hit = new Map<NextToken, number>();
-    for (const tokens of corpusRefined) {
-      for (let pos = 0; pos !== tokens.length; ++pos) {
-        const c = tokens[pos];
-        const count = hit.get(c) ?? 0;
-        hit.set(c, count + strenghFor(index, pos, tokens.length));
-      }
-      const count = hit.get(END_TOKEN) ?? 0;
-      hit.set(END_TOKEN, count + strenghFor(index, tokens.length, tokens.length));
-    }
-    return hitCountToArbitrary(hit);
-  };
 }
 
 /**
@@ -109,5 +73,10 @@ export function fuzzedString(corpus: string[]): Arbitrary<string> {
   for (const word of corpus) {
     root.add(word);
   }
-  return next(root, [START_TOKEN], buildEntropyAt(corpus));
+  const corpusRefined = corpus.map((word) => [...word]);
+  const entropyArbitraryAt = (index: number) => {
+    const hit = computeEntropyEntriesAt(corpusRefined, END_TOKEN, index);
+    return hitCountToArbitrary(hit, END_TOKEN);
+  };
+  return next(root, [START_TOKEN], entropyArbitraryAt);
 }
