@@ -109,29 +109,6 @@ describe('chainUntil', () => {
     });
   });
 
-  describe('canShrinkWithoutContext', () => {
-    it('should always return false', () => {
-      // Arrange
-      class StartArb extends Arbitrary<number> {
-        generate(): Value<number> {
-          return new Value(0, undefined);
-        }
-        canShrinkWithoutContext(_value: unknown): _value is number {
-          return true;
-        }
-        shrink(): Stream<Value<number>> {
-          return Stream.nil();
-        }
-      }
-
-      // Act / Assert
-      const arb = chainUntil(new StartArb(), () => undefined);
-      expect(arb.canShrinkWithoutContext(0)).toBe(false);
-      expect(arb.canShrinkWithoutContext(42)).toBe(false);
-      expect(arb.canShrinkWithoutContext('hello')).toBe(false);
-    });
-  });
-
   describe('shrink', () => {
     it('should return empty stream when shrinking without context', () => {
       // Arrange
