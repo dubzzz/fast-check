@@ -1,11 +1,7 @@
 # 0.4.1
 
-_TODO Description_
+_Support `test.each`_
 [[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.4.0...vitest%2Fv0.4.1)]
-
-## Features
-
-
 
 ## Fixes
 
