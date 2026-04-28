@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 3
 slug: /core-blocks/arbitraries/combiners/
 description: Transform and compose existing arbitraries — pick among them, constrain them, tie them together recursively or promote plain values into generators.
 ---

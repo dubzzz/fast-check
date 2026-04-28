@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 1
 slug: /core-blocks/arbitraries/
 description: Every arbitrary in fast-check is a generator paired with a shrinker. This page explains that contract and helps you pick the right family for your test.
 ---

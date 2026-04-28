@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 2
 slug: /core-blocks/
 description: The three reference building blocks of fast-check — arbitraries, properties, and runners — and how they fit together into a single test.
 ---

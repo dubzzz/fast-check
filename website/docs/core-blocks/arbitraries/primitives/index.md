@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 1
 slug: /core-blocks/arbitraries/primitives/
 description: The base arbitraries fast-check builds every other generator on — strings, numbers, booleans, dates and bigints, with their canonical shrink targets.
 ---

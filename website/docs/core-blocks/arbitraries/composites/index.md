@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 2
 slug: /core-blocks/arbitraries/composites/
 description: Combine smaller arbitraries into arrays, objects, iterables, functions and typed arrays — with size control and two-dimensional shrinking.
 ---

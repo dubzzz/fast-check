@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 1
 slug: /introduction/
 description: Start here — what property-based testing is, why fast-check exists, who already trusts it, and how to install it in your project.
 ---

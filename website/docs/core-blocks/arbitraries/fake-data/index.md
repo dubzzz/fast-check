@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 4
 slug: /core-blocks/arbitraries/fake-data/
 description: Ready-made generators for realistic-shape values — UUIDs, emails, URLs, IPs, filenames — when your code branches on the shape of its inputs.
 ---

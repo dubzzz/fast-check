@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 1
 slug: /tutorials/quick-start/
 description: A three-step linear walkthrough — set up a project, write your first property, and learn how to read the report fast-check prints on failure.
 ---
