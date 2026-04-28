@@ -11,7 +11,7 @@ The fake-data arbitraries produce values that _look_ like production data: UUIDs
 Reach for them when **your code branches on the shape** of its input — a regex that expects a valid email, a parser that only accepts well-formed URLs, a router that inspects filename extensions. Feeding such code a plain `fc.string()` would spend almost every run in the error path and tell you nothing about the happy path you actually care about.
 
 :::warning Do not over-use fake data
-Fake-data arbitraries have narrower shrink spaces than primitives: a shrunk counterexample for `fc.emailAddress()` is still a valid email, not an empty string. When your code does **not** care about the format, plain primitives give better coverage _and_ tighter counterexamples. Use fake data to unblock a specific branch, not as a default.
+Fake-data arbitraries have narrower shrink spaces than primitives: a shrunk counterexample for `fc.emailAddress()` is still a valid email, not an empty string. When your code does **not** care about the format, plain primitives give better coverage and tighter counterexamples. Use fake data to unblock a specific branch, not as a default.
 :::
 
 ```mdx-code-block
