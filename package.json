@@ -3,7 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.33.2",
   "workspaces": [
     ".github/actions/*",
     "examples",
@@ -35,12 +35,12 @@
     "@vitest/coverage-v8": "^4.0.18",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
-    "oxlint": "^1.59.0",
+    "oxlint": "^1.62.0",
     "oxlint-tsgolint": "^0.20.0",
     "pkg-pr-new": "^0.0.66",
     "prettier": "3.8.3",
     "publint": "^0.3.18",
-    "rolldown": "^1.0.0-rc.15",
+    "rolldown": "^1.0.0-rc.17",
     "rolldown-plugin-dts": "^0.23.2",
     "typescript": "~6.0.3",
     "vitest": "^4.1.0"

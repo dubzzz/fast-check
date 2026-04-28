@@ -146,7 +146,7 @@ export function buildTest<T extends (...args: any[]) => any>(
       extraKeys[key] =
         key !== 'each'
           ? buildTest((testFn as any)[key], testFnExtended[key] as any, fc, new Set([...ancestors, key]))
-          : testFnExtended[key];
+          : (testFn as any)[key].bind(testFn);
     }
   }
   if (!atLeastOneExtra) {
