@@ -19,6 +19,10 @@ bun install -D fast-check
 
 Congratulations, everything is ready to start using Property-Based Tests with the Bun test runner 🚀
 
+:::info Runner-agnostic patterns
+fast-check does not ship a dedicated connector for Bun: you use it the same way you would with any other runner. For the generic sync and async patterns, along with tips on sharing configuration via `fc.configureGlobal`, refer to our [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) page. The rest of this tutorial focuses on the Bun-specific bits.
+:::
+
 ## Your first test
 
 For our first test, we will consider a function called `decompose`. `decompose` takes an integer value between 1 (included) and 2,147,483,647 (included) and decomposes it into the list of its prime factors. For example, the value `20` can be decomposed as `20 = 2 x 2 x 5`, where neither `2` nor `5` can be decomposed further.
