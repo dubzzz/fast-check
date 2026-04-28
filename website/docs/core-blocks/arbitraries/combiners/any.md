@@ -153,13 +153,12 @@ The implementation is fully iterative (non-recursive) and supports shrinking. It
 **Usages:**
 
 ```js
-fc.chainUntil(fc.nat(5), (prev) => (prev >= 3 ? undefined : fc.integer({ min: prev, max: prev + 3 })));
-// Note: Start from a value in 0..5, chain with growing values until one reaches 3 or more
-// Examples of generated values: 3, 4, 3, 4, 3…
-
-fc.chainUntil(fc.constant(0), (n) => (n >= 5 ? undefined : fc.integer({ min: n + 1, max: n + 3 })));
-// Note: Start from 0, increment by 1 to 3 at each step until reaching 5 or more
-// Examples of generated values: 5, 5, 6, 5, 5…
+fc.chainUntil(
+  fc.nat(20).map((n) => [n]),
+  (tuple) => (tuple[tuple.length - 1] > 10 ? fc.nat(20).map((n) => [...tuple, n]) : undefined),
+);
+// Note: Start from a tuple containing one value in 0..20, then keep appending another value in 0..20 while the last appended value is greater than 10
+// Examples of generated values: [14,6], [2], [1], [20,2], [18,17,13,3]…
 ```
 
 Resources: [API reference](/docs/api/functions/chainUntil).  
