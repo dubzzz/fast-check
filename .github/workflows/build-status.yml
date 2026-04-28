@@ -595,6 +595,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
       id-token: write
       attestations: write
     steps:
@@ -672,6 +673,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
       id-token: write
       attestations: write
     steps:
@@ -749,6 +751,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
       id-token: write
       attestations: write
     steps:
@@ -826,6 +829,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
       id-token: write
       attestations: write
     steps:
@@ -903,6 +907,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
       id-token: write
       attestations: write
     steps:
@@ -980,6 +985,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
       id-token: write
       attestations: write
     steps:
@@ -1057,6 +1063,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
       id-token: write
       attestations: write
     steps:
