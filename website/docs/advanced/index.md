@@ -1,7 +1,7 @@
 ---
 sidebar_position: 0
 slug: /advanced/
-description: Techniques that go beyond a single property — model-based testing, race conditions, fuzzing loops, and realistic fake data generation.
+description: Techniques that go beyond a single property — model-based testing, race conditions, fuzzing loops and realistic fake data generation.
 ---
 
 # Advanced
