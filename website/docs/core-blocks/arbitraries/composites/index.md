@@ -6,7 +6,7 @@ description: Combine smaller arbitraries into arrays, objects, iterables, functi
 
 # Composites
 
-Composite arbitraries take other arbitraries as input and assemble them into structured values. An `array` is built from an arbitrary for its elements, a `record` is built from arbitraries for each of its fields, and so on — there is no "random structure" to speak of, only a shape you describe and a child arbitrary that fills it.
+Composite arbitraries take other arbitraries as input and assemble them into structured values. An `array` is built from an arbitrary for its elements, a `record` is built from arbitraries for each of its fields and so on. There is no "random structure" to speak of, only a shape you describe and a child arbitrary that fills it.
 
 Two concepts recur on every page in this section and are worth learning once:
 
