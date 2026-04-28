@@ -162,7 +162,7 @@ fc.chainUntil(fc.constant(0), (n) => (n >= 5 ? undefined : fc.integer({ min: n +
 // Examples of generated values: 5, 5, 6, 5, 5…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/chainUntil.html).  
+Resources: [API reference](/docs/api/functions/chainUntil).  
 Available since 4.8.0.
 
 ## noBias
