@@ -24,7 +24,7 @@ Although the model can be a useful tool, it's important to use it carefully. Mod
 
 ### Define the commands
 
-In fast-check, the commands have to implement the interface [`ICommand`](https://fast-check.dev/api-reference/interfaces/ICommand.html). They basically come with three important methods:
+In fast-check, the commands have to implement the interface [`ICommand`](/docs/api/interfaces/ICommand). They basically come with three important methods:
 
 - `check(model)` — Ensure that the model is in the appropriate state to execute the action
 - `run(model, real)` — Execute the action
@@ -36,7 +36,7 @@ If your system is a music player, here are some commands you may have: play, pau
 
 ### Generate the commands
 
-Then, to ingest your previously defined commands into fast-check as an arbitrary, you can use the [`commands`](https://fast-check.dev/api-reference/functions/commands.html) arbitrary. This function takes an array of commands as input and compiles them to produce a scenario that can be applied to your system.
+Then, to ingest your previously defined commands into fast-check as an arbitrary, you can use the [`commands`](/docs/api/functions/commands) arbitrary. This function takes an array of commands as input and compiles them to produce a scenario that can be applied to your system.
 
 :::info Isn't commands just an array builder?
 Yes and no!
@@ -76,9 +76,9 @@ class GoToTrackCommand {
 
 Commands have to be executed from the predicate. fast-check provides three model-based runners to run your commands:
 
-- [`modelRun`](https://fast-check.dev/api-reference/functions/modelRun.html) — Apply to any synchronous system: the commands have to be synchronous
-- [`asyncModelRun`](https://fast-check.dev/api-reference/functions/asyncModelRun.html) — Can work with asynchronous commands
-- [`scheduledModelRun`](https://fast-check.dev/api-reference/functions/scheduledModelRun.html) — Can work with asynchronous commands in a scheduled way for a better detection of race conditions
+- [`modelRun`](/docs/api/functions/modelRun) — Apply to any synchronous system: the commands have to be synchronous
+- [`asyncModelRun`](/docs/api/functions/asyncModelRun) — Can work with asynchronous commands
+- [`scheduledModelRun`](/docs/api/functions/scheduledModelRun) — Can work with asynchronous commands in a scheduled way for a better detection of race conditions
 
 ### Example
 

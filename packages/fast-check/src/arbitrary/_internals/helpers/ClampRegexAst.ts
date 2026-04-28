@@ -158,6 +158,9 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
     case 'Backreference': {
       return { astNode, minLength: 0 }; // Not supported
     }
+    case 'UnicodeProperty': {
+      return { astNode, minLength: 1 };
+    }
   }
 }
 

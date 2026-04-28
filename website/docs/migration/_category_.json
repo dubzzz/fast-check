@@ -1,1 +1,1 @@
-{ "position": 8, "label": "Migration Guides" }
+{ "position": 8, "label": "Migration Guides", "link": { "type": "doc", "id": "migration/from-3.x-to-4.x" } }

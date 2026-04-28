@@ -28,7 +28,7 @@ fc.constant({});
 // Examples of generated values: {}…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/constant.html).  
+Resources: [API reference](/docs/api/functions/constant).  
 Available since 0.0.1.
 
 ## constantFrom
@@ -55,7 +55,7 @@ fc.constantFrom(1, 'string', {});
 // Examples of generated values: 1, "string", {}…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/constantFrom.html).  
+Resources: [API reference](/docs/api/functions/constantFrom).  
 Available since 0.0.12.
 
 ## mapToConstant
@@ -82,7 +82,7 @@ fc.mapToConstant(
 // Examples of generated values: "6", "8", "d", "9", "r"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/mapToConstant.html).  
+Resources: [API reference](/docs/api/functions/mapToConstant).  
 Available since 1.14.0.
 
 ## subarray
@@ -118,7 +118,7 @@ fc.subarray([1, 42, 48, 69, 75, 92], { minLength: 2, maxLength: 3 });
 // Examples of generated values: [48,75], [48,69,92], [42,75], [69,92], [1,42]…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/subarray.html).  
+Resources: [API reference](/docs/api/functions/subarray).  
 Available since 1.5.0.
 
 ## shuffledSubarray
@@ -154,5 +154,5 @@ fc.shuffledSubarray([1, 42, 48, 69, 75, 92], { minLength: 2, maxLength: 3 });
 // Examples of generated values: [1,92], [92,75], [1,48], [42,75], [48,69]…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/shuffledSubarray.html).  
+Resources: [API reference](/docs/api/functions/shuffledSubarray).  
 Available since 1.5.0.

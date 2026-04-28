@@ -4,9 +4,6 @@ type UserProfile = { id: string; name: string };
 
 type Props = {
   userId: string;
-  bug?: 1;
-  // Injected as a props because CodeSandbox fails to provide jest.mock
-  // Otherwise we might have direclty imported it and mock the import
   getUserProfile: (userId: string) => Promise<UserProfile>;
 };
 
@@ -18,13 +15,13 @@ export default function UserPageProfile(props: Props) {
     const fetchUser = async () => {
       setUserData(null); // reset on fetch
       const data = await props.getUserProfile(props.userId);
-      if (!canceled || props.bug !== undefined) setUserData(data);
+      if (!canceled) setUserData(data);
     };
     fetchUser();
     return () => {
       canceled = true;
     };
-  }, [props.getUserProfile, props.userId, props.bug]);
+  }, [props.getUserProfile, props.userId]);
 
   if (userData === null) {
     return <div>Loading...</div>;

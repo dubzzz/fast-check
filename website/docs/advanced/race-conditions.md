@@ -18,7 +18,7 @@ Identifying and fixing race conditions can be challenging as they can occur unex
 
 ## The scheduler instance
 
-The [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) arbitrary is able to generate instances of [`Scheduler`](https://fast-check.dev/api-reference/interfaces/Scheduler.html). They come with following interface:
+The [`scheduler`](/docs/core-blocks/arbitraries/others/#scheduler) arbitrary is able to generate instances of [`Scheduler`](/docs/api/interfaces/Scheduler). They come with following interface:
 
 - `schedule: <T>(task: Promise<T>, label?: string, metadata?: TMetadata, act?: SchedulerAct) => Promise<T>` - Wrap an existing promise using the scheduler. The newly created promise will resolve when the scheduler decides to resolve it (see `waitFor`, `waitNext` and `waitIdle` methods).
 - `scheduleFunction: <TArgs extends any[], T>(asyncFunction: (...args: TArgs) => Promise<T>, act?: SchedulerAct) => (...args: TArgs) => Promise<T>` - Wrap all the promise produced by an API using the scheduler. `scheduleFunction(callApi)`
@@ -305,7 +305,7 @@ function buildWrapWithTimersAct(s: fc.Scheduler) {
 
 ## Model based testing and race conditions
 
-Model-based testing features can be combined with race condition detection through the use of [`scheduledModelRun`](https://fast-check.dev/api-reference/functions/scheduledModelRun.html). By utilizing this function, the execution of the model will also be processed through the scheduler.
+Model-based testing features can be combined with race condition detection through the use of [`scheduledModelRun`](/docs/api/functions/scheduledModelRun). By utilizing this function, the execution of the model will also be processed through the scheduler.
 
 :::warning Do not depend on other scheduled tasks in the model
 Neither `check` nor `run` should rely on the completion of other scheduled tasks to fulfill themselves. But they can still trigger new scheduled tasks as long as they don't wait for them to resolve.
