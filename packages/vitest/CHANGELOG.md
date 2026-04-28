@@ -1,3 +1,13 @@
+# 0.4.1
+
+_Support `test.each`_
+[[Code](https://github.com/dubzzz/fast-check/tree/vitest%2Fv0.4.1)][[Diff](https://github.com/dubzzz/fast-check/compare/vitest%2Fv0.4.0...vitest%2Fv0.4.1)]
+
+## Fixes
+
+- ([PR#6804](https://github.com/dubzzz/fast-check/pull/6804)) Bug: Fix runtime exception with `test.each`
+- ([PR#6865](https://github.com/dubzzz/fast-check/pull/6865)) Test: Strip AI env vars in child processes
+
 # 0.4.0
 
 _Move to modern APIs introduced by vitest 4.1_
