@@ -133,6 +133,37 @@ fc.clone(fc.nat(), 3);
 Resources: [API reference](/docs/api/functions/clone).  
 Available since 2.5.0.
 
+## chainUntil
+
+Build an arbitrary by iteratively chaining arbitraries until the chainer returns undefined.
+
+Starting from a value produced by `startArb`, the `chainer` function is called with the current value to produce the next arbitrary. This process repeats until `chainer` returns `undefined`. The final value in the chain is the one produced by this arbitrary.
+
+The implementation is fully iterative (non-recursive) and supports shrinking. It can handle long chains without stack overflow.
+
+**Signatures:**
+
+- `fc.chainUntil(startArb, chainer)`
+
+**with:**
+
+- `startArb` — _arbitrary producing the initial value of the chain_
+- `chainer` — _function called with the current value that returns either the next arbitrary to generate from or `undefined` to stop the chain_
+
+**Usages:**
+
+```js
+fc.chainUntil(
+  fc.nat(20).map((n) => [n]),
+  (tuple) => (tuple[tuple.length - 1] > 10 ? fc.nat(20).map((n) => [...tuple, n]) : undefined),
+);
+// Note: Start from a tuple containing one value in 0..20, then keep appending another value in 0..20 while the last appended value is greater than 10
+// Examples of generated values: [14,6], [2], [1], [20,2], [18,17,13,3]…
+```
+
+Resources: [API reference](/docs/api/functions/chainUntil).  
+Available since 4.8.0.
+
 ## noBias
 
 Drop bias from an existing arbitrary. Instead of being more likely to generate certain values the resulting arbitrary will be close to an equi-probable generator.

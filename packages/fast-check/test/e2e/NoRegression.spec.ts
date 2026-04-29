@@ -72,6 +72,22 @@ describe(`NoRegression`, () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+  it('chainUntil', () => {
+    expect(
+      runWithSanitizedStack(() =>
+        fc.assert(
+          fc.property(
+            fc.chainUntil(
+              fc.nat().map((n): number[] => [n]),
+              (tuple) => (tuple[tuple.length - 1] > 10 ? fc.nat().map((n) => [...tuple, n]) : undefined),
+            ),
+            (v) => testFunc(v),
+          ),
+          settings,
+        ),
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
   it('float', () => {
     expect(
       runWithSanitizedStack(() =>

@@ -66,7 +66,7 @@ const config: Config = {
       title: 'fast-check',
       logo: { alt: 'fast-check Logo', src: 'img/mug.svg', width: '40px' },
       items: [
-        { to: '/docs/introduction/what-is-property-based-testing/', label: 'Documentation' },
+        { to: '/docs/introduction/', label: 'Documentation' },
         { to: '/docs/tutorials/quick-start/basic-setup/', label: 'Quick Start' },
         { to: '/docs/tutorials/', label: 'All Tutorials' },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
@@ -97,7 +97,7 @@ const config: Config = {
         {
           title: 'Guides',
           items: [
-            { label: 'Documentation', to: '/docs/introduction/what-is-property-based-testing/' },
+            { label: 'Documentation', to: '/docs/introduction/' },
             { label: 'Quick Start', to: '/docs/tutorials/quick-start/basic-setup/' },
             { label: 'All Tutorials', to: '/docs/tutorials/' },
           ],
