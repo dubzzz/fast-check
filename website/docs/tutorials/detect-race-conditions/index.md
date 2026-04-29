@@ -64,7 +64,7 @@ In other words, the issue occurred as the user performed two searches subsequent
 As we have seen in this simple example, race conditions are easy to create, as they only require two concurrent events, and can cause significant problems from a user's perspective. It is worth noting that the example we took for this section was only a visual glitch, but race conditions can have much more critical impacts than just a wrong display.
 
 :::info Could you write a test that catches this bug?
-That is exactly what you will learn in the next five steps. We'll start from a test that passes — despite the buggy code under test — and, step by step, turn it into a property that fast-check can break. Every time a page ends with "Your turn!", your job is to make the test fail.
+That is exactly what you will learn in the next five steps. We'll start from a test that passes despite the buggy code under test. Then, step by step, we will turn it into a property that fast-check can break. Every time a page ends with "Your turn!", your job is to make the test fail.
 :::
 
 :::tip How to solve them?
