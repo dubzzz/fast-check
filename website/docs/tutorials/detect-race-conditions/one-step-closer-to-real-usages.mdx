@@ -10,7 +10,7 @@ import { OneStepCloserToRealUsages } from './Playgrounds';
 
 ## Zoom on previous test
 
-Step 1's missing piece was **time**: the original test couldn't distinguish a correct `queue` from a broken one because every promise resolved instantly. The fix was to hand control of _when_ promises resolve to the fast-check scheduler. Here's the reasoning behind the two edits we made.
+Step 1's missing pieces were ordering and time: the original test couldn't distinguish a correct `queue` from a broken one because every promise resolved instantly. The fix was to hand control of when promises resolve to fast-check's scheduler. Here's the reasoning behind the two edits we made.
 
 ### What to schedule?
 
