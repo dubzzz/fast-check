@@ -34,7 +34,7 @@
     "fast-check": "^3.0.0 || ^4.0.0"
   },
   "peerDependencies": {
-    "ava": "^8.0.0"
+    "ava": "^7.0.0 || ^8.0.0"
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
