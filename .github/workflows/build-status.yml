@@ -283,8 +283,23 @@ jobs:
         if: matrix.os == 'windows-latest'
         # untar seems to fail on Windows when untaring already existing files
         run: pnpm run unpack:all || true
+      - name: Restore vitest timings cache
+        if: matrix.shard-count != '1'
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .vitest-timings.json
+          # Unique key so we never get an exact hit; restore-keys provides the
+          # latest available timings for this OS.
+          key: vitest-timings-v1-${{matrix.os}}-${{github.run_id}}-${{github.run_attempt}}
+          restore-keys: |
+            vitest-timings-v1-${{matrix.os}}-
       - name: Unit tests
         shell: bash -l {0}
+        env:
+          # Reads previous-run durations to balance shards via LPT (no-op if missing).
+          VITEST_TIMINGS_FILE: ${{ matrix.shard-count != '1' && '.vitest-timings.json' || '' }}
+          # Writes per-file durations to be aggregated by the merge_vitest_timings job.
+          VITEST_TIMINGS_OUTPUT: ${{ matrix.shard-count != '1' && format('.vitest-timings-out/shard-{0}.json', matrix.shard-id) || '' }}
         # The DEFAULT_SEED might be used by some of the packages and might be ignored by others
         # It's aim is to help to diagnose infinite loop that may occur during tests and cannot be stopped by fast-check itself
         run: |
@@ -297,6 +312,14 @@ jobs:
           else
             pnpm run test --shard=${{matrix.shard-id}}/${{matrix.shard-count}}
           fi
+      - name: Upload vitest shard timings
+        if: matrix.shard-count != '1' && always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: 'vitest-timings-${{matrix.os}}-${{matrix.shard-id}}'
+          path: .vitest-timings-out/
+          if-no-files-found: warn
+          retention-days: 1
       - name: Upload coverage
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: env.ENABLE_COVERAGE == 'true'
@@ -305,6 +328,50 @@ jobs:
           path: coverage/
           if-no-files-found: error
           retention-days: 1
+  merge_vitest_timings:
+    name: 'Merge vitest timings (${{matrix.os}})'
+    needs:
+      - test
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write # required to save the cache
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['macos-latest', 'windows-latest']
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Restore previous timings (used as prior for EMA smoothing)
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .vitest-timings.json
+          key: vitest-timings-v1-${{matrix.os}}-${{github.run_id}}-${{github.run_attempt}}
+          restore-keys: |
+            vitest-timings-v1-${{matrix.os}}-
+      - name: Move restored timings aside for use as prior
+        run: |
+          if [ -f .vitest-timings.json ]; then
+            mv .vitest-timings.json .vitest-timings-prev.json
+          fi
+      - name: Download shard timings
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: vitest-timings-${{matrix.os}}-*
+          path: shard-timings/
+      - name: Merge timings
+        run: |
+          PREV=""
+          if [ -f .vitest-timings-prev.json ]; then PREV=".vitest-timings-prev.json"; fi
+          node .github/scripts/merge-vitest-timings.mjs shard-timings/ .vitest-timings.json "$PREV"
+      - name: Save merged timings to cache
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .vitest-timings.json
+          key: vitest-timings-v1-${{matrix.os}}-${{github.run_id}}-${{github.run_attempt}}
   publish_test_coverage:
     name: 'Publish test coverage'
     needs:

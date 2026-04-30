@@ -1,6 +1,7 @@
 import { defaultExclude, defineConfig } from 'vitest/config';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { BalancedSequencer } from './.github/scripts/vitest-balanced-sequencer.mjs';
 
 const allProjects = [
   // All packages
@@ -21,6 +22,10 @@ export default defineConfig({
     coverage: { include: ['packages/fast-check/src/**'] },
     testTimeout,
     env: { TEST_TIMEOUT: testTimeout },
+    sequence: { sequencer: BalancedSequencer },
+    ...(process.env.VITEST_TIMINGS_OUTPUT
+      ? { reporters: ['default', './.github/scripts/vitest-timings-reporter.mjs'] }
+      : {}),
     projects: allProjects.map((projectPath) => {
       const projectName = JSON.parse(readFileSync(join(projectPath, 'package.json')).toString()).name;
       return {
