@@ -14,12 +14,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@docusaurus/core": "3.10.0",
-    "@docusaurus/faster": "3.10.0",
-    "@docusaurus/plugin-pwa": "3.10.0",
-    "@docusaurus/preset-classic": "3.10.0",
-    "@docusaurus/remark-plugin-npm2yarn": "3.10.0",
-    "@docusaurus/theme-mermaid": "3.10.0",
+    "@docusaurus/core": "3.10.1",
+    "@docusaurus/faster": "3.10.1",
+    "@docusaurus/plugin-pwa": "3.10.1",
+    "@docusaurus/preset-classic": "3.10.1",
+    "@docusaurus/remark-plugin-npm2yarn": "3.10.1",
+    "@docusaurus/theme-mermaid": "3.10.1",
     "@stackblitz/sdk": "^1.11.0",
     "clsx": "^2.1.1",
     "lodash": "^4.18.1",
@@ -28,10 +28,10 @@
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.10.0",
-    "@docusaurus/theme-classic": "3.10.0",
-    "@docusaurus/tsconfig": "3.10.0",
-    "@docusaurus/types": "3.10.0",
+    "@docusaurus/module-type-aliases": "3.10.1",
+    "@docusaurus/theme-classic": "3.10.1",
+    "@docusaurus/tsconfig": "3.10.1",
+    "@docusaurus/types": "3.10.1",
     "@mdx-js/react": "^3.1.1",
     "@types/lodash": "^4.17.24",
     "@types/node": "^24.12.2",
