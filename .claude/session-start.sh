@@ -8,7 +8,7 @@ set -e
 # Install pnpm via npm if not already available
 if ! command -v pnpm &>/dev/null; then
   echo "pnpm not found, installing via npm..."
-  npm install -g pnpm
+  npm install -g pnpm@10.33.2
 fi
 
 # Install/sync dependencies — always run to ensure node_modules matches the lockfile

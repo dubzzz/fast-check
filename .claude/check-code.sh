@@ -4,7 +4,7 @@ ERRORS=""
 
 if ! command -v pnpm &>/dev/null; then
   echo "pnpm not found, installing via npm..."
-  if ! npm install -g pnpm 2>&1; then
+  if ! npm install -g pnpm@10.33.2 2>&1; then
     ERRORS+="pnpm install via npm failed. "
   fi
 fi
