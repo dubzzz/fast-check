@@ -79,7 +79,7 @@ function differsOnUnicodePropertySnippet(originalContent: string, refreshedConte
     (originalChunk, index) =>
       index !== 0 &&
       originalChunk !== refreshedChunks[index] &&
-      /fc\.stringMatching\([^)]*\\p\{/.test(refreshedChunks[index - 1]),
+      /fc\.stringMatching\([^)]*\\[pP]\{/.test(refreshedChunks[index - 1]),
   );
 }
 
