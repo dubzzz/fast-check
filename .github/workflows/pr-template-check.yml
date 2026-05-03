@@ -27,6 +27,10 @@ jobs:
               console.log('⏭️ Skipping PR template check for Renovate bot');
               return;
             }
+            if (author === 'dubzzz') {
+              console.log('⏭️ Skipping PR template check for dubzzz');
+              return;
+            }
 
             const body = context.payload.pull_request.body ?? '';
 
