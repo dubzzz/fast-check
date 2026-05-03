@@ -1,7 +1,4 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
-import { Value } from '../../check/arbitrary/definition/Value.js';
-import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
+import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import {
   safeAdd,
   safeHas,
@@ -20,14 +17,12 @@ import { option } from '../option.js';
 import { tuple } from '../tuple.js';
 import { uniqueArray } from '../uniqueArray.js';
 import { buildInversedRelationsMapping } from './helpers/BuildInversedRelationsMapping.js';
-import type { InversedRelationsEntry } from './helpers/BuildInversedRelationsMapping.js';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
 import type {
   Arity,
   EntityLinks,
   EntityRelations,
   ProducedLinks,
-  Relationship,
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
@@ -94,55 +89,46 @@ type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEn
 };
 
 /** @internal */
-class OnTheFlyLinksForEntityGraphArbitrary<
-  TEntityFields,
-  TEntityRelations extends EntityRelations<TEntityFields>,
-> extends Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
-  private inversedRelations: Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>;
-
-  constructor(
-    readonly relations: TEntityRelations,
-    readonly defaultEntities: (keyof TEntityFields)[],
-  ) {
-    super();
-
-    // Basic sanity checks on the relations
-    const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
-    const exclusiveEntities = new SSet<keyof TEntityRelations>();
-    for (const name in relations) {
-      const relationsForName = relations[name];
-      for (const fieldName in relationsForName) {
-        const relation = relationsForName[fieldName];
-        if (relation.arity === 'inverse') {
-          continue;
+export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  defaultEntities: (keyof TEntityFields)[],
+): Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
+  // Basic sanity checks on the relations
+  const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
+  const exclusiveEntities = new SSet<keyof TEntityRelations>();
+  for (const name in relations) {
+    const relationsForName = relations[name];
+    for (const fieldName in relationsForName) {
+      const relation = relationsForName[fieldName];
+      if (relation.arity === 'inverse') {
+        continue;
+      }
+      if (relation.strategy === 'exclusive') {
+        if (safeHas(nonExclusiveEntities, relation.type)) {
+          throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
         }
-        if (relation.strategy === 'exclusive') {
-          if (safeHas(nonExclusiveEntities, relation.type)) {
-            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
-          }
-          safeAdd(exclusiveEntities, relation.type);
-        } else {
-          if (safeHas(exclusiveEntities, relation.type)) {
-            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
-          }
-          safeAdd(nonExclusiveEntities, relation.type);
+        safeAdd(exclusiveEntities, relation.type);
+      } else {
+        if (safeHas(exclusiveEntities, relation.type)) {
+          throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
         }
-        if (relation.strategy === 'successor' && relation.type !== (name as keyof TEntityRelations)) {
-          throw new SError(`Cannot mix types for the strategy successor`);
-        }
-        if (relation.strategy === 'successor' && relation.arity === '1') {
-          throw new SError(`Cannot use an arity of 1 for the strategy successor`);
-        }
+        safeAdd(nonExclusiveEntities, relation.type);
+      }
+      if (relation.strategy === 'successor' && relation.type !== (name as keyof TEntityRelations)) {
+        throw new SError(`Cannot mix types for the strategy successor`);
+      }
+      if (relation.strategy === 'successor' && relation.arity === '1') {
+        throw new SError(`Cannot use an arity of 1 for the strategy successor`);
       }
     }
-
-    // Building inversed relations map
-    this.inversedRelations = buildInversedRelationsMapping(relations);
   }
 
-  createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
+  // Building inversed relations map
+  const inversedRelations = buildInversedRelationsMapping(relations);
+
+  function createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
     const emptyLinksInstance = safeObjectCreate(null);
-    const relationsForType = this.relations[targetType];
+    const relationsForType = relations[targetType];
     for (const name in relationsForType) {
       const relation = relationsForType[name];
       if (relation.arity === 'inverse') {
@@ -152,12 +138,12 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     return emptyLinksInstance;
   }
 
-  private buildEntityStepArbitrary(
+  function buildEntityStepArbitrary(
     state: ProductionState<TEntityFields, TEntityRelations>,
   ): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
     const { producedLinks, toBeProducedEntities, nextIndex } = state;
     const currentEntity = toBeProducedEntities[nextIndex];
-    const currentRelations = this.relations[currentEntity.type];
+    const currentRelations = relations[currentEntity.type];
     const currentEntityDepth = createDepthIdentifier();
     currentEntityDepth.depth = currentEntity.depth;
 
@@ -202,9 +188,9 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         for (const link of links) {
           if (link >= countInTargetType) {
             safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, this.createEmptyLinksInstanceFor(targetType));
+            safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(targetType));
           }
-          const inversed = safeMapGet(this.inversedRelations, relation);
+          const inversed = safeMapGet(inversedRelations, relation);
           if (inversed !== undefined) {
             const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
             safePush(knownInversedLinks as number[], currentEntity.indexInType);
@@ -215,55 +201,25 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     });
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
-    // The set of all produced links between entities.
+  // Initial state arbitrary: rebuilds a fresh state on every generate call so that calls do not
+  // share their `producedLinks` / `toBeProducedEntities` arrays.
+  const initialStateArb = constant(undefined).map<ProductionState<TEntityFields, TEntityRelations>>(() => {
     const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
-    for (const name in this.relations) {
+    for (const name in relations) {
       producedLinks[name as Extract<keyof TEntityFields, string>] = [];
     }
-    // Made of any entity whose links have to be created before building the whole graph.
     const toBeProducedEntities: ToBeProducedEntity<TEntityFields>[] = [];
-    for (const name of this.defaultEntities) {
+    for (const name of defaultEntities) {
       safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], this.createEmptyLinksInstanceFor(name));
+      safePush(producedLinks[name], createEmptyLinksInstanceFor(name));
     }
+    return { producedLinks, toBeProducedEntities, nextIndex: 0 };
+  });
 
-    // Drive the link production loop with chainUntil: at each step we produce all links for the
-    // entity at `nextIndex`. The chainer stops once all entities (including those queued during
-    // earlier steps) have been processed.
-    const initialState: ProductionState<TEntityFields, TEntityRelations> = {
-      producedLinks,
-      toBeProducedEntities,
-      nextIndex: 0,
-    };
-    chainUntil(constant(initialState), (state) => {
-      if (state.nextIndex >= state.toBeProducedEntities.length) {
-        return undefined;
-      }
-      return this.buildEntityStepArbitrary(state);
-    }).generate(mrng, biasFactor);
-    // Drop any item from the array
-    toBeProducedEntities.length = 0;
-
-    return new Value(producedLinks, undefined);
-  }
-
-  canShrinkWithoutContext(_value: unknown): _value is ProducedLinks<TEntityFields, TEntityRelations> {
-    return false; // for now, we reject any shrink without context
-  }
-
-  shrink(
-    _value: ProducedLinks<TEntityFields, TEntityRelations>,
-    _context: unknown | undefined,
-  ): Stream<Value<ProducedLinks<TEntityFields, TEntityRelations>>> {
-    return Stream.nil(); // for now, we don't support any shrink
-  }
-}
-
-/** @internal */
-export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
-  relations: TEntityRelations,
-  defaultEntities: (keyof TEntityFields)[],
-): Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
-  return new OnTheFlyLinksForEntityGraphArbitrary(relations, defaultEntities);
+  return chainUntil(initialStateArb, (state) => {
+    if (state.nextIndex >= state.toBeProducedEntities.length) {
+      return undefined;
+    }
+    return buildEntityStepArbitrary(state);
+  }).map((state) => state.producedLinks);
 }
