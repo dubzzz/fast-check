@@ -62,6 +62,8 @@ describe('Docs.md', () => {
   );
 });
 
+// Helpers
+
 function differsOnUnicodePropertySnippet(originalContent: string, refreshedContent: string): boolean {
   // Split both contents on "Examples of generated values:". In the resulting arrays,
   // chunk `i > 0` starts with the generated values produced by the code snippet at the
@@ -80,8 +82,6 @@ function differsOnUnicodePropertySnippet(originalContent: string, refreshedConte
       /fc\.stringMatching\([^)]*\\p\{/.test(refreshedChunks[index - 1]),
   );
 }
-
-// Helpers
 
 function extractJsCodeBlocks(content: string): string[] {
   const lines = content.split('\n');
