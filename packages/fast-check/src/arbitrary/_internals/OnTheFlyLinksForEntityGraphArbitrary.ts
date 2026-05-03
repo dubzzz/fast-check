@@ -12,10 +12,12 @@ import {
   Error as SError,
   String as SString,
 } from '../../utils/globals.js';
+import { chainUntil } from '../chainUntil.js';
 import { constant } from '../constant.js';
 import { integer } from '../integer.js';
 import { noBias } from '../noBias.js';
 import { option } from '../option.js';
+import { tuple } from '../tuple.js';
 import { uniqueArray } from '../uniqueArray.js';
 import { buildInversedRelationsMapping } from './helpers/BuildInversedRelationsMapping.js';
 import type { InversedRelationsEntry } from './helpers/BuildInversedRelationsMapping.js';
@@ -50,25 +52,22 @@ function produceLinkUnitaryIndexArbitrary(
 }
 
 /** @internal */
-function computeLinkIndex(
+function buildLinkIndexArbitrary(
   arity: Exclude<Arity, 'inverse'>,
   strategy: Strategy,
   currentIndexIfSameType: number | undefined,
   countInTargetType: number,
   currentEntityDepth: DepthIdentifier,
-  mrng: Random,
-  biasFactor: number | undefined,
-): number[] | number | undefined {
+): Arbitrary<number[] | number | undefined> {
   const linkArbitrary = produceLinkUnitaryIndexArbitrary(strategy, currentIndexIfSameType, countInTargetType);
   switch (arity) {
     case '0-1':
-      return option(linkArbitrary, { nil: undefined, depthIdentifier: currentEntityDepth }).generate(mrng, biasFactor)
-        .value;
+      return option(linkArbitrary, { nil: undefined, depthIdentifier: currentEntityDepth });
     case '1':
-      return linkArbitrary.generate(mrng, biasFactor).value;
+      return linkArbitrary;
     case 'many': {
       let randomUnicity = 0;
-      const values = option(
+      return option(
         // given the depth does not control the size of an array, we cheat and use an option to do so
         uniqueArray(linkArbitrary, {
           depthIdentifier: currentEntityDepth, // passed just in case, but probably ignored by arrays
@@ -76,12 +75,23 @@ function computeLinkIndex(
           minLength: 1, // we handle length 0 with the option
         }),
         { nil: [], depthIdentifier: currentEntityDepth },
-      ).generate(mrng, biasFactor).value;
-      let offset = 0;
-      return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
+      ).map((values) => {
+        let offset = 0;
+        return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
+      });
     }
   }
 }
+
+/** @internal */
+type ToBeProducedEntity<TEntityFields> = { type: keyof TEntityFields; indexInType: number; depth: number };
+
+/** @internal */
+type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
+  producedLinks: ProducedLinks<TEntityFields, TEntityRelations>;
+  toBeProducedEntities: ToBeProducedEntity<TEntityFields>[];
+  nextIndex: number;
+};
 
 /** @internal */
 class OnTheFlyLinksForEntityGraphArbitrary<
@@ -142,47 +152,51 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     return emptyLinksInstance;
   }
 
-  generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
-    // The set of all produced links between entities.
-    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
-    for (const name in this.relations) {
-      producedLinks[name as Extract<keyof TEntityFields, string>] = [];
-    }
-    // Made of any entity whose links have to be created before building the whole graph.
-    const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
-    for (const name of this.defaultEntities) {
-      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], this.createEmptyLinksInstanceFor(name));
+  private buildEntityStepArbitrary(
+    state: ProductionState<TEntityFields, TEntityRelations>,
+  ): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
+    const { producedLinks, toBeProducedEntities, nextIndex } = state;
+    const currentEntity = toBeProducedEntities[nextIndex];
+    const currentRelations = this.relations[currentEntity.type];
+    const currentEntityDepth = createDepthIdentifier();
+    currentEntityDepth.depth = currentEntity.depth;
+
+    // Snapshot of the count of entities of each target type at the moment we start producing links
+    // for the current entity. Captured here because both the underlying arbitraries and the post
+    // processing rely on it, and the count would otherwise grow as new entities get queued.
+    const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
+    const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
+    for (const name in currentRelations) {
+      const relation = currentRelations[name];
+      if (relation.arity === 'inverse') {
+        continue;
+      }
+      const targetType = relation.type;
+      const countInTargetType = producedLinks[targetType].length;
+      countsInTargetType[name] = countInTargetType;
+      subArbitraries.push(
+        buildLinkIndexArbitrary(
+          relation.arity,
+          relation.strategy || 'any',
+          targetType === currentEntity.type ? currentEntity.indexInType : undefined,
+          countInTargetType,
+          currentEntityDepth,
+        ),
+      );
     }
 
-    // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
-    // we decided to consider an always growing array that will grow up to the numer of entities before being dropped.
-    let lastTreatedEntities = -1;
-    while (++lastTreatedEntities < toBeProducedEntities.length) {
-      const currentEntity = toBeProducedEntities[lastTreatedEntities];
-      const currentRelations = this.relations[currentEntity.type];
-      const currentProducedLinks = producedLinks[currentEntity.type];
-      // Create all the links going from the current entity to others
-      const currentLinks = currentProducedLinks[currentEntity.indexInType];
-      const currentEntityDepth = createDepthIdentifier();
-      currentEntityDepth.depth = currentEntity.depth;
+    return tuple<(number[] | number | undefined)[]>(...subArbitraries).map((results) => {
+      const currentLinks = producedLinks[currentEntity.type][currentEntity.indexInType];
+      let resultIndex = 0;
       for (const name in currentRelations) {
         const relation = currentRelations[name];
         if (relation.arity === 'inverse') {
           continue;
         }
         const targetType = relation.type;
+        const countInTargetType = countsInTargetType[name];
+        const linkOrLinks = results[resultIndex++];
         const producedLinksInTargetType = producedLinks[targetType];
-        const countInTargetType = producedLinksInTargetType.length;
-        const linkOrLinks = computeLinkIndex(
-          relation.arity,
-          relation.strategy || 'any',
-          targetType === currentEntity.type ? currentEntity.indexInType : undefined,
-          producedLinksInTargetType.length,
-          currentEntityDepth,
-          mrng,
-          biasFactor,
-        );
         currentLinks[name] = { type: targetType, index: linkOrLinks };
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
@@ -197,7 +211,37 @@ class OnTheFlyLinksForEntityGraphArbitrary<
           }
         }
       }
+      return { producedLinks, toBeProducedEntities, nextIndex: nextIndex + 1 };
+    });
+  }
+
+  generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
+    // The set of all produced links between entities.
+    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+    for (const name in this.relations) {
+      producedLinks[name as Extract<keyof TEntityFields, string>] = [];
     }
+    // Made of any entity whose links have to be created before building the whole graph.
+    const toBeProducedEntities: ToBeProducedEntity<TEntityFields>[] = [];
+    for (const name of this.defaultEntities) {
+      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
+      safePush(producedLinks[name], this.createEmptyLinksInstanceFor(name));
+    }
+
+    // Drive the link production loop with chainUntil: at each step we produce all links for the
+    // entity at `nextIndex`. The chainer stops once all entities (including those queued during
+    // earlier steps) have been processed.
+    const initialState: ProductionState<TEntityFields, TEntityRelations> = {
+      producedLinks,
+      toBeProducedEntities,
+      nextIndex: 0,
+    };
+    chainUntil(constant(initialState), (state) => {
+      if (state.nextIndex >= state.toBeProducedEntities.length) {
+        return undefined;
+      }
+      return this.buildEntityStepArbitrary(state);
+    }).generate(mrng, biasFactor);
     // Drop any item from the array
     toBeProducedEntities.length = 0;
 
