@@ -5,6 +5,8 @@ import type { Parameters as FcParameters } from 'fast-check';
 import type { Prop, PromiseProp, It, ArbitraryTuple, FcExtra } from './types.js';
 import type { RunnerTestSuite } from 'vitest';
 
+import { readNumRunsOverride } from './FuzzMode.js';
+
 function wrapProp<Ts extends [any] | any[]>(prop: Prop<Ts>): PromiseProp<Ts> {
   return (...args: Ts) => Promise.resolve(prop(...args));
 }
@@ -83,6 +85,12 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     customParams.interruptAfterTimeLimit = fc.readConfigureGlobal().interruptAfterTimeLimit;
   }
 
+  const numRunsOverride = readNumRunsOverride();
+  const effectiveTimeout = numRunsOverride !== undefined && timeout === undefined ? 0 : timeout;
+  if (numRunsOverride !== undefined) {
+    customParams.numRuns = numRunsOverride;
+  }
+
   const promiseProp = wrapProp(prop);
 
   // Instantiate property outside of testFn for the needs of worker-based version
@@ -158,6 +166,6 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
         }
       }
     },
-    timeout,
+    effectiveTimeout,
   );
 }

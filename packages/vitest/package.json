@@ -7,8 +7,12 @@
     "./package.json": "./package.json",
     ".": "./lib/vitest-fast-check.js"
   },
+  "bin": {
+    "fuzz": "./bin/fuzz.mjs"
+  },
   "files": [
-    "lib"
+    "lib",
+    "bin"
   ],
   "scripts": {
     "build": "rolldown -c",

@@ -4,6 +4,7 @@ import type { ExtraContext } from './types.js';
 
 import { TestRunner } from 'vitest';
 import { assert, asyncProperty, gen, readConfigureGlobal } from 'fast-check';
+import { functionNeedsG, readNumRunsOverride } from './FuzzMode.js';
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
@@ -21,44 +22,43 @@ function isSig1OrSig2(args: Sig1 | Sig2 | Sig3): args is Sig1 | Sig2 {
 function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
   const [name, fn, options] = isSig1OrSig2(args) ? args : [args[0], args[2], args[1]];
   const taskName = typeof name === 'function' ? name.name : name;
-  TestRunner.getCurrentSuite().task(taskName, {
+  const taskOptions = {
     ...this,
     ...(typeof options === 'number' ? { timeout: options } : options),
-    handler:
-      fn !== undefined
-        ? async (context) => {
-            let calledOnce = false;
-            const config = readConfigureGlobal();
-            try {
-              const parameters: Parameters<unknown> = {
-                // Remark: We should turn it back to 1 in case g never gets called by the first execution of the predicate
-                numRuns: config.numRuns ?? 1,
-                endOnFailure: config.endOnFailure ?? true,
-                includeErrorInReport: false,
-                // @ts-expect-error - Added for backward compatility with fast-check@3
-                errorWithCause: true,
-              };
-              await assert(
-                asyncProperty(gen(), (g) => {
-                  const refinedG: GeneratorValue = Object.assign(
-                    <T, TArgs extends unknown[]>(arb: (...params: TArgs) => Arbitrary<T>, ...args: TArgs): T => {
-                      calledOnce = true;
-                      return g(arb, ...args);
-                    },
-                    { values: () => g.values() },
-                  );
-                  return fn({ ...context, g: refinedG });
-                }),
-                parameters,
-              );
-            } catch (error) {
-              if (calledOnce) {
-                throw error;
-              }
-              throw (error as { cause?: unknown }).cause;
-            }
-          }
-        : undefined,
+  };
+
+  if (fn === undefined || !functionNeedsG(fn)) {
+    TestRunner.getCurrentSuite().task(taskName, {
+      ...taskOptions,
+      handler: fn as any,
+    });
+    return;
+  }
+
+  TestRunner.getCurrentSuite().task(taskName, {
+    ...taskOptions,
+    handler: async (context) => {
+      const config = readConfigureGlobal();
+      const numRunsOverride = readNumRunsOverride();
+      const parameters: Parameters<unknown> = {
+        numRuns: numRunsOverride ?? config.numRuns ?? 1,
+        endOnFailure: config.endOnFailure ?? true,
+        includeErrorInReport: false,
+        // @ts-expect-error - Added for backward compatibility with fast-check@3
+        errorWithCause: true,
+      };
+      await assert(
+        asyncProperty(gen(), (g) => {
+          const refinedG: GeneratorValue = Object.assign(
+            <T, TArgs extends unknown[]>(arb: (...params: TArgs) => Arbitrary<T>, ...args: TArgs): T =>
+              g(arb, ...args),
+            { values: () => g.values() },
+          );
+          return fn({ ...context, g: refinedG });
+        }),
+        parameters,
+      );
+    },
   });
 }
 
