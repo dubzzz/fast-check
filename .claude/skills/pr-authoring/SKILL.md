@@ -19,14 +19,9 @@ Common emojis: ✨ feature · 🐛 fix · 📝 docs · ✅ tests · 🏷️ type
 ⚡️ perf · ♻️ refactor · 🔧 config · 🎨 style · 🔥 remove ·
 ⬆️ upgrade deps · ⬇️ downgrade deps · 🗑️ deprecation · 👷 CI.
 
-## Body — always use the template
+## Body
 
-1. Copy `.github/PULL_REQUEST_TEMPLATE.md` **verbatim**. Keep every
-   section and every checklist item, in order. Do not delete, rename,
-   or reorder anything.
-2. **Never tick a checkbox.** Every `- [ ]` stays unchecked — the
-   reviewer (or the author during review) ticks them.
-3. Link the issue with `Fixes #<n>` when one exists.
+Link the issue with `Fixes #<n>` when one exists.
 
 ## Description section — required order
 
@@ -37,10 +32,10 @@ Common emojis: ✨ feature · 🐛 fix · 📝 docs · ✅ tests · 🏷️ type
 2. **Then justify.** Why this change, why this design, main trade-offs
    considered — enough context for a reviewer to evaluate the approach.
 
-## Enrich the description from the checklist
+## Enrich the description
 
-Don't tick the boxes, but use them as prompts to preempt reviewer
-questions inside the description prose:
+Use these as prompts to preempt reviewer questions inside the
+description prose:
 
 - **Impact level** — minor / patch / major (and mention if `pnpm run bump`
   or the changeset bot instructions were followed).
