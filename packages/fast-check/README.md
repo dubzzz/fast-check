@@ -21,7 +21,6 @@ Property based testing framework for JavaScript/TypeScript
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/labels/good%20first%20issue"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
   <a href="https://github.com/dubzzz/fast-check/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/fast-check.svg" alt="License" /></a>
-  <a href="https://tangled.org/fast-check.dev/fast-check"><img src="https://img.shields.io/badge/Tangled-fast--check-%23282ea9.svg" alt="Tangled mirror" /></a>
 </p>
 
 ## Getting started
