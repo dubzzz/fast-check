@@ -4,6 +4,18 @@
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
   "packageManager": "pnpm@10.33.2",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.0.0",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^10.0.0",
+      "onFail": "error"
+    }
+  },
   "workspaces": [
     ".github/actions/*",
     "examples",

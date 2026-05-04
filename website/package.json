@@ -13,6 +13,18 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc --noEmit"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.0.0",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^10.0.0",
+      "onFail": "error"
+    }
+  },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
     "@docusaurus/faster": "3.10.1",
