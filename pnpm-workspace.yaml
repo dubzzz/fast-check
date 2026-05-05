@@ -2,6 +2,14 @@ packages:
   - examples
   - packages/*
   - website
+allowBuilds:
+  '@swc/core': false
+  core-js: false
+  unrs-resolver: false
+
+blockExoticSubdeps: true
+
+enableGlobalVirtualStore: true
 
 ignoredBuiltDependencies:
   - '@swc/core'
@@ -13,7 +21,3 @@ ignoredBuiltDependencies:
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 20160
-
-blockExoticSubdeps: true
-
-enableGlobalVirtualStore: true
