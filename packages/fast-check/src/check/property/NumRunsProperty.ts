@@ -45,7 +45,7 @@ export class NumRunsProperty<Ts, IsAsync extends boolean> implements IRawPropert
         return resolved;
       }) as any;
     }
-    this.accountFor(result);
+    this.accountFor(result as PreconditionFailure | PropertyFailure | null);
     return result;
   }
 
