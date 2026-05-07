@@ -1,6 +1,7 @@
 import { Stream, stream } from '../../stream/Stream.js';
 import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { PropertyFailure, IRawProperty } from '../property/IRawProperty.js';
+import { NumRunsProperty } from '../property/NumRunsProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
@@ -112,9 +113,13 @@ function check<Ts>(rawProperty: IRawProperty<Ts>, params?: Parameters<Ts>): unkn
     throw new Error('Invalid parameters encountered, reporter and asyncReporter cannot be specified together');
   if (qParams.asyncReporter !== undefined && !rawProperty.isAsync())
     throw new Error('Invalid parameters encountered, only asyncProperty can be used when asyncReporter specified');
-  const property = decorateProperty(rawProperty, qParams);
+  const decorated = decorateProperty(rawProperty, qParams);
+  const isPathReplayWithShrink = qParams.path.length !== 0 && qParams.path.indexOf(':') !== -1;
+  const property: IRawProperty<Ts> = isPathReplayWithShrink
+    ? decorated
+    : new NumRunsProperty(decorated, qParams.numRuns);
 
-  const maxInitialIterations = qParams.path.length === 0 || qParams.path.indexOf(':') === -1 ? qParams.numRuns : -1;
+  const maxInitialIterations = isPathReplayWithShrink ? -1 : qParams.numRuns;
   const maxSkips = qParams.numRuns * qParams.maxSkipsPerRun;
   const shrink: typeof property.shrink = (...args) => property.shrink(...args);
   const initialValues =
