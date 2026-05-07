@@ -69,6 +69,13 @@ const config: Config = {
         { to: '/docs/introduction/', label: 'Documentation' },
         { to: '/docs/tutorials/quick-start/', label: 'Quick Start' },
         { to: '/docs/tutorials/', label: 'All Tutorials' },
+        {
+          type: 'docSidebar',
+          docsPluginId: 'vitest',
+          sidebarId: 'vitestSidebar',
+          label: 'Vitest',
+          position: 'left',
+        },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
         { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
@@ -208,6 +215,19 @@ const config: Config = {
             content: '#000',
           },
         ],
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'vitest',
+        path: 'docs-vitest',
+        routeBasePath: 'vitest',
+        sidebarPath: require.resolve('./sidebars-vitest.js'),
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+        editUrl: 'https://github.com/dubzzz/fast-check/edit/main/website/',
+        remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
       },
     ],
     [
