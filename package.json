@@ -30,6 +30,7 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/e2e/documentation"
   },
   "devDependencies": {
+    "@atproto/api": "^0.19.14",
     "@changesets/cli": "^2.31.0",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
