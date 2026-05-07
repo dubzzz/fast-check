@@ -300,20 +300,28 @@ function parseClassStringsBody(block: string): ClassStringsRegexToken {
       if (next === undefined) {
         throw new Error(`Invalid \\q{...} body: dangling escape`);
       }
-      if (next === 'n') {
-        current += '\n';
-      } else if (next === 'r') {
-        current += '\r';
-      } else if (next === 't') {
-        current += '\t';
-      } else if (next === 'f') {
-        current += '\f';
-      } else if (next === 'v') {
-        current += '\v';
-      } else if (next === '0') {
-        current += '\0';
-      } else {
-        current += next;
+      switch (next) {
+        case 'n':
+          current += '\n';
+          break;
+        case 'r':
+          current += '\r';
+          break;
+        case 't':
+          current += '\t';
+          break;
+        case 'f':
+          current += '\f';
+          break;
+        case 'v':
+          current += '\v';
+          break;
+        case '0':
+          current += '\0';
+          break;
+        default:
+          current += next;
+          break;
       }
       index += 1;
     } else if (ch === '|') {
