@@ -11,6 +11,8 @@ blockExoticSubdeps: true
 
 enableGlobalVirtualStore: true
 
+linkWorkspacePackages: deep
+
 ignoredBuiltDependencies:
   - '@swc/core'
   - core-js

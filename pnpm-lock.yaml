@@ -305,7 +305,7 @@ importers:
     dependencies:
       fast-check:
         specifier: ^3.0.0 || ^4.0.0
-        version: 4.7.0
+        version: link:../fast-check
     devDependencies:
       '@fast-check/ava':
         specifier: workspace:*
@@ -367,7 +367,7 @@ importers:
     dependencies:
       fast-check:
         specifier: ^3.0.0 || ^4.0.0
-        version: 4.7.0
+        version: link:../fast-check
     devDependencies:
       '@fast-check/jest':
         specifier: workspace:*
@@ -453,7 +453,7 @@ importers:
     dependencies:
       fast-check:
         specifier: ^3.0.0 || ^4.0.0
-        version: 4.7.0
+        version: link:../fast-check
     devDependencies:
       '@fast-check/vitest':
         specifier: workspace:*
@@ -478,7 +478,7 @@ importers:
     dependencies:
       fast-check:
         specifier: ^4.0.0
-        version: 4.7.0
+        version: link:../fast-check
       pure-rand:
         specifier: ^8.0.0
         version: 8.4.0
@@ -5516,10 +5516,6 @@ packages:
   external-editor@3.1.0:
     resolution: {integrity: sha512-hMQ4CX1p1izmuLYyZqLMO/qGNw10wSv9QDCPfzXfyFrOaCSSoRfqE1Kf1s5an66J5JZC62NewG+mK49jOCtQew==}
     engines: {node: '>=4'}
-
-  fast-check@4.7.0:
-    resolution: {integrity: sha512-NsZRtqvSSoCP0HbNjUD+r1JH8zqZalyp6gLY9e7OYs7NK9b6AHOs2baBFeBG7bVNsuoukh89x2Yg3rPsul8ziQ==}
-    engines: {node: '>=12.17.0'}
 
   fast-content-type-parse@3.0.0:
     resolution: {integrity: sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg==}
@@ -16302,10 +16298,6 @@ snapshots:
       chardet: 0.7.0
       iconv-lite: 0.4.24
       tmp: 0.0.33
-
-  fast-check@4.7.0:
-    dependencies:
-      pure-rand: 8.4.0
 
   fast-content-type-parse@3.0.0: {}
 
