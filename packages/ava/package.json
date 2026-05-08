@@ -30,16 +30,6 @@
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/ava#readme",
-  "devEngines": {
-    "runtime": {
-      "name": "node"
-    },
-    "packageManager": {
-      "name": "pnpm",
-      "version": "11.0.5",
-      "onFail": "download"
-    }
-  },
   "dependencies": {
     "fast-check": "^3.0.0 || ^4.0.0"
   },

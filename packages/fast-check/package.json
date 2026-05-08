@@ -55,17 +55,6 @@
   "engines": {
     "node": ">=12.17.0"
   },
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": ">=12.17.0"
-    },
-    "packageManager": {
-      "name": "pnpm",
-      "version": "11.0.5",
-      "onFail": "download"
-    }
-  },
   "dependencies": {
     "pure-rand": "^8.0.0"
   },

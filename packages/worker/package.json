@@ -29,16 +29,6 @@
     "url": "https://github.com/dubzzz/fast-check/issues"
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/worker#readme",
-  "devEngines": {
-    "runtime": {
-      "name": "node"
-    },
-    "packageManager": {
-      "name": "pnpm",
-      "version": "11.0.5",
-      "onFail": "download"
-    }
-  },
   "dependencies": {
     "fast-check": "^4.0.0",
     "pure-rand": "^8.0.0"
