@@ -84,6 +84,12 @@ const config: Config = {
           position: 'right',
           className: 'header-github-link',
         },
+        {
+          href: 'https://tangled.org/fast-check.dev/fast-check',
+          'aria-label': 'Tangled repository',
+          position: 'right',
+          className: 'header-tangled-link',
+        },
       ],
     },
     docs: {
@@ -116,6 +122,7 @@ const config: Config = {
             { label: 'Blog', to: '/blog' },
             { label: 'API Reference', to: '/docs/api/' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
+            { label: 'Tangled', href: 'https://tangled.org/fast-check.dev/fast-check' },
             { label: 'Work with me @Pigment', href: 'https://refer.hellotrusty.io/kz48qf0nh7' },
             {
               html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" loading="lazy" /></a>`,

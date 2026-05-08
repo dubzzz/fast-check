@@ -82,3 +82,30 @@
     padding-left: 0.2em;
   }
 }
+
+.header-tangled-link:hover {
+  opacity: 0.6;
+}
+
+.header-tangled-link::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  display: flex;
+  background: url('/img/tangled/tangled_dolly_face_only_black_on_trans.svg') no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+[data-theme='dark'] .header-tangled-link::before {
+  background: url('/img/tangled/tangled_dolly_face_only_white_on_trans.svg') no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+@media screen and (max-width: 996px) {
+  .header-tangled-link::after {
+    content: 'Tangled';
+    padding-left: 0.2em;
+  }
+}

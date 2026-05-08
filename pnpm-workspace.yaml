@@ -7,8 +7,6 @@ blockExoticSubdeps: true
 
 enableGlobalVirtualStore: true
 
-linkWorkspacePackages: deep
-
 ignoredBuiltDependencies:
   - '@swc/core'
   - core-js
@@ -16,6 +14,8 @@ ignoredBuiltDependencies:
   - es5-ext
   - esbuild
   - unrs-resolver
+
+linkWorkspacePackages: deep
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 20160
