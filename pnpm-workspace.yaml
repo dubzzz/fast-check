@@ -2,10 +2,6 @@ packages:
   - examples
   - packages/*
   - website
-allowBuilds:
-  '@swc/core': false
-  core-js: false
-  unrs-resolver: false
 
 blockExoticSubdeps: true
 
