@@ -3,6 +3,7 @@
   "name": "@fast-check/monorepo",
   "description": "Test making sure fast-check expose the right typings",
   "type": "module",
+  "packageManager": "pnpm@11.0.5",
   "devEngines": {
     "runtime": {
       "name": "node",
