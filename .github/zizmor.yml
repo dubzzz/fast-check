@@ -3,19 +3,19 @@ rules:
     ignore:
       # These are not real npm publish commands, but pnpm dlx pkg-pr-new publish
       # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
-      - build-status.yml:213
-      - build-status.yml:216
+      - build-status.yml:222
+      - build-status.yml:225
   cache-poisoning:
     ignore:
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
-      - build-status.yml:603 # fast-check
-      - build-status.yml:681 # ava
-      - build-status.yml:759 # jest
-      - build-status.yml:837 # packaged
-      - build-status.yml:915 # poisoning
-      - build-status.yml:993 # vitest
-      - build-status.yml:1071 # worker
+      - build-status.yml:615 # fast-check
+      - build-status.yml:693 # ava
+      - build-status.yml:771 # jest
+      - build-status.yml:849 # packaged
+      - build-status.yml:927 # poisoning
+      - build-status.yml:1005 # vitest
+      - build-status.yml:1083 # worker
   dangerous-triggers:
     ignore:
       # We moved these workflows to "pull_request_target".
