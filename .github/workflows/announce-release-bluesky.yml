@@ -29,7 +29,6 @@ jobs:
         env:
           BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          RELEASE_NAME: ${{ github.event.release.name }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           DISCUSSION_URL: ${{ github.event.release.discussion_url }}
-        run: node .github/workflows/scripts/post-bluesky.cjs
+        run: node .github/workflows/scripts/post-bluesky.mjs
