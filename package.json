@@ -42,7 +42,7 @@
     "pkg-pr-new": "^0.0.70",
     "prettier": "3.8.3",
     "publint": "^0.3.20",
-    "rolldown": "^1.0.0-rc.17",
+    "rolldown": "^1.0.0",
     "rolldown-plugin-dts": "^0.24.1",
     "typescript": "~6.0.3",
     "vitest": "^4.1.0"

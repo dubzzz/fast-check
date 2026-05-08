@@ -29,7 +29,7 @@
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
     "@types/node": "^24.12.2",
-    "rolldown": "^1.0.0-rc.17",
+    "rolldown": "^1.0.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.0"
   },
