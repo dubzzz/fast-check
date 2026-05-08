@@ -3,17 +3,14 @@ packages:
   - packages/*
   - website
 
+allowBuilds:
+  '@swc/core': false
+  core-js: false
+  unrs-resolver: false
+
 blockExoticSubdeps: true
 
 enableGlobalVirtualStore: true
-
-ignoredBuiltDependencies:
-  - '@swc/core'
-  - core-js
-  - core-js-pure
-  - es5-ext
-  - esbuild
-  - unrs-resolver
 
 linkWorkspacePackages: deep
 
