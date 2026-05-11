@@ -1,3 +1,16 @@
+# 3.0.1
+
+_TODO Description_
+[[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv3.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv3.0.0...ava%2Fv3.0.1)]
+
+## Features
+
+
+
+## Fixes
+
+- ([PR#6914](https://github.com/dubzzz/fast-check/pull/6914)) CI: Extend support to ava v8
+
 # 3.0.0
 
 _Only publish ESM bundle_
