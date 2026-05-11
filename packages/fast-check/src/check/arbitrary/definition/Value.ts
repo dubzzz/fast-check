@@ -29,7 +29,7 @@ export class Value<T> {
    * Depending on `hasToBeCloned` it will either be `value_` or a clone of it
    * @remarks Since 2.15.0
    */
-  readonly value!: T;
+  declare readonly value: T;
   /**
    * Internal value of the shrinkable
    * @remarks Since 2.15.0
