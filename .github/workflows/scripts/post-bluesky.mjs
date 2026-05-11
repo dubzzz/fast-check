@@ -7,7 +7,7 @@
 // - DISCUSSION_URL:       URL of the GitHub Release discussion to share
 // - RELEASE_TAG:          Git tag of the release (e.g. "v3.5.0", "vitest/v1.2.0")
 
-import { AtpAgent, RichText } from '@atproto/api';
+import { Agent, CredentialSession, RichText } from '@atproto/api';
 
 /**
  * @param {string} name
@@ -43,8 +43,9 @@ const password = requireEnv('BLUESKY_APP_PASSWORD');
 const discussionUrl = requireEnv('DISCUSSION_URL');
 const releaseTag = requireEnv('RELEASE_TAG');
 
-const agent = new AtpAgent({ service: 'https://bsky.social' });
-await agent.login({ identifier, password });
+const session = new CredentialSession(new URL('https://bsky.social'));
+await session.login({ identifier, password });
+const agent = new Agent(session);
 
 const text = `🚀 New release: ${formatReleaseLabel(releaseTag)}\n\nRead the announcement and changelog: ${discussionUrl}`;
 const richText = new RichText({ text });
