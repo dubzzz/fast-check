@@ -1,11 +1,7 @@
 # 3.0.1
 
-_TODO Description_
+_Extend official support range to ava 8_
 [[Code](https://github.com/dubzzz/fast-check/tree/ava%2Fv3.0.1)][[Diff](https://github.com/dubzzz/fast-check/compare/ava%2Fv3.0.0...ava%2Fv3.0.1)]
-
-## Features
-
-
 
 ## Fixes
 
