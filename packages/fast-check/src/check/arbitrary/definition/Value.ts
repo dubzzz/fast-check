@@ -54,7 +54,11 @@ export class Value<T> {
     this.readOnce = false;
     this.value = value_;
     if (this.hasToBeCloned) {
-      safeObjectDefineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
+      safeObjectDefineProperty(this, 'value', {
+        get: customGetValue !== undefined ? customGetValue : this.getValue,
+        enumerable: false,
+        configurable: false,
+      });
     }
   }
 
