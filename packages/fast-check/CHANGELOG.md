@@ -1,6 +1,6 @@
 # 4.8.0
 
-_TODO Description_
+_New arbitrary to chain in a loop fashion_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.7.0...v4.8.0)]
 
 ## Features
