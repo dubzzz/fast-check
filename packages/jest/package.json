@@ -76,8 +76,8 @@
     "@types/node": "^24.12.3",
     "babel-jest": "^30.4.1",
     "fast-check": "workspace:*",
-    "jest": "^30.4.1",
-    "jest-jasmine2": "^30.4.1",
+    "jest": "^30.4.2",
+    "jest-jasmine2": "^30.4.2",
     "typescript": "~6.0.3",
     "vite": "^8.0.11",
     "vitest": "^4.1.0"
