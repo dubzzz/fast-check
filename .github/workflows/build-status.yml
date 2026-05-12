@@ -58,10 +58,12 @@ jobs:
           # Workaround for pnpm/pnpm#11464: pnpm 11 self-update on Windows
           # leaves the bootstrap loader pointing at the old version, which
           # then fails to parse the multi-document pnpm-lock.yaml emitted
-          # by pnpm 11 (ERR_PNPM_BROKEN_LOCKFILE). Pinning the version on
-          # the action input bypasses the broken self-update path. Linux
-          # and macOS keep using the version resolved from
-          # devEngines.packageManager.
+          # by pnpm 11 (ERR_PNPM_BROKEN_LOCKFILE). pnpm/action-setup runs
+          # `pnpm self-update` unconditionally, so the version input alone
+          # does not bypass the bug; standalone mode is the v6.0.8-fixed
+          # path on Windows. Linux and macOS keep using the non-standalone
+          # bootstrap and the version resolved from devEngines.packageManager.
+          standalone: ${{ matrix.os == 'windows-latest' }}
           version: ${{ matrix.os == 'windows-latest' && '11.1.1' || '' }}
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -274,7 +276,9 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
         with:
-          # Pin pnpm on Windows to dodge pnpm/pnpm#11464 (see warmup job).
+          # Use standalone mode on Windows to dodge pnpm/pnpm#11464 (see
+          # warmup job).
+          standalone: ${{ matrix.os == 'windows-latest' }}
           version: ${{ matrix.os == 'windows-latest' && '11.1.1' || '' }}
       - name: Using Node v${{matrix.node-version}}
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
