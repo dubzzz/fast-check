@@ -3,13 +3,13 @@ packages:
   - packages/*
   - website
 
-ignoredBuiltDependencies:
-  - '@swc/core'
-  - core-js
-  - core-js-pure
-  - es5-ext
-  - esbuild
-  - unrs-resolver
+allowBuilds:
+  '@swc/core': false
+  core-js: false
+  core-js-pure: false
+  es5-ext: false
+  esbuild: false
+  unrs-resolver: false
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 20160
