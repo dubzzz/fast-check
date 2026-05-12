@@ -19,6 +19,7 @@ concurrency:
 
 permissions:
   contents: read
+  security-events: write
 
 jobs:
   audit:
@@ -34,4 +35,3 @@ jobs:
         with:
           config: .github/zizmor.yml
           version: 1.24.1
-          advanced-security: false
