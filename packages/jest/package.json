@@ -35,7 +35,7 @@
   "scripts": {
     "build": "rolldown -c && cp package.cjs-template.json lib/cjs/package.json && cp lib/*.d.ts lib/cjs/",
     "build-ci": "rolldown -c && cp package.cjs-template.json lib/cjs/package.json && cp lib/*.d.ts lib/cjs/",
-    "test-bundle:cjs": "jest --config test-bundle/cjs/jest.config.cjs",
+    "test-bundle:cjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/cjs/jest.config.cjs",
     "test-bundle:mjs": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-bundle/mjs/jest.config.mjs",
     "test-bundle": "pnpm run test-bundle:cjs && pnpm run test-bundle:mjs",
     "typecheck": "tsc --noEmit"

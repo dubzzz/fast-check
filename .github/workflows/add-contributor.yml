@@ -34,7 +34,7 @@ jobs:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Configure GIT
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"

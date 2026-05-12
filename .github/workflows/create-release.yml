@@ -59,7 +59,7 @@ jobs:
           name: ${{ steps.changelog.outputs.release_name }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: true
-          make_latest: ${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}
+          make_latest: "${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}"
       - name: Push tag
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |

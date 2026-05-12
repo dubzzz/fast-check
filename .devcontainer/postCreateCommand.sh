@@ -2,4 +2,4 @@
 set -x
 
 # Install locked dependencies
-pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile --ignore-scripts
