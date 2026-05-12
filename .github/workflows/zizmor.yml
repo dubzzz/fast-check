@@ -6,17 +6,11 @@ on:
       - main
       - 'next-*_*_*'
       - 'fix-v*'
-    paths:
-      - '.github/workflows/**'
-      - '.github/zizmor.yml'
   push:
     branches:
       - main
       - 'next-*_*_*'
       - 'fix-v*'
-    paths:
-      - '.github/workflows/**'
-      - '.github/zizmor.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -33,7 +27,36 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
+          fetch-depth: 0
+      - name: Detect workflow changes
+        id: changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            base="$BASE_SHA"
+            head="$HEAD_SHA"
+          else
+            base="$BEFORE_SHA"
+            head="$AFTER_SHA"
+          fi
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            echo "Cannot determine base SHA, will run audit"
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "$base" "$head" -- '.github/workflows/' '.github/zizmor.yml' | grep -q .; then
+            echo "Workflow files changed, will run audit"
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No workflow files changed, skipping audit steps"
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Install zizmor
+        if: steps.changes.outputs.should_run == 'true'
         run: pipx install zizmor==1.18.0
       - name: Run zizmor
+        if: steps.changes.outputs.should_run == 'true'
         run: zizmor --config .github/zizmor.yml .
