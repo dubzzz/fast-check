@@ -23,6 +23,4 @@ trustPolicyIgnoreAfter: 20160
 
 blockExoticSubdeps: true
 
-enableGlobalVirtualStore: true
-
 linkWorkspacePackages: deep
