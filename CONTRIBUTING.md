@@ -50,7 +50,7 @@ In order to start playing with the code locally you must run the following set o
 
 ```bash
 git clone https://github.com/dubzzz/fast-check.git && cd fast-check
-pnpm install --ignore-scripts
+pnpm install
 pnpm --filter fast-check build    #compile the code in packages/fast-check/src, build the packages/fast-check/lib content
 ```
 
