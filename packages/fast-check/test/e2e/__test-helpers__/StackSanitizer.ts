@@ -5,6 +5,17 @@ function sanitizeStack(initialMessage: string) {
     .join('\n')
     .replace(/at [^(]*fast-check\/(packages|node_modules)(.*):\d+:\d+/g, 'at $1$2:?:?') // line for the spec file itself
     .replace(/at (.*) \(.*fast-check\/(packages|node_modules)(.*):\d+:\d+\)/g, 'at $1 ($2$3:?:?)') // any import linked to internals of fast-check
+    // pnpm v11 stores dependencies under a global virtual store (`.../store/v<N>/links/...`) instead of `<repo>/node_modules/.pnpm/`.
+    // Re-shape unscoped (`@/<pkg>/<version>/<hash>`) and scoped (`@<scope>/<pkg>/<version>/<hash>`) store paths back into the v10
+    // `node_modules/.pnpm/<flat-name>@<version>/...` form so the snapshot stays valid across pnpm versions.
+    .replace(
+      /at (.*) \(file:\/\/[^()]+?\/store\/v\d+\/links\/@\/([^/]+)\/([^/]+)\/[a-f0-9]+\/node_modules\/([^)]*?):\d+:\d+\)/g,
+      'at $1 (node_modules/.pnpm/$2@$3/node_modules/$4:?:?)',
+    )
+    .replace(
+      /at (.*) \(file:\/\/[^()]+?\/store\/v\d+\/links\/@([^/]+)\/([^/]+)\/([^/]+)\/[a-f0-9]+\/node_modules\/([^)]*?):\d+:\d+\)/g,
+      'at $1 (node_modules/.pnpm/@$2+$3@$4/node_modules/$5:?:?)',
+    )
     .replace(/node_modules\/\.pnpm\/([^/]*)@([^/]*)\//g, 'node_modules/.pnpm/$1@<version>/') // drop version from pnpm modules
     .split('\n');
   // Drop internals of Vitest from the stack: internals of vitest, subject to regular changes and OS dependent
