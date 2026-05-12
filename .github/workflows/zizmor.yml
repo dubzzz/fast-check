@@ -2,6 +2,7 @@ name: Workflow Security Audit
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
     branches:
       - main
       - 'next-*_*_*'
@@ -22,6 +23,7 @@ permissions:
 jobs:
   audit:
     name: 'Audit GitHub Actions workflows'
+    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
