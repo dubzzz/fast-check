@@ -132,6 +132,7 @@ async function extractAndParseDiff(fromIdentifier, packageName) {
       case ':truck:':
         maintenanceSection.push({ type: 'Move', pr, title });
         break;
+      case '🔒':
       case '🔒️':
       case ':lock:':
       case '📌':
