@@ -10,7 +10,7 @@ if ! command -v pnpm &>/dev/null; then
 fi
 
 echo "Installing dependencies with pnpm..."
-if ! pnpm -C "$CLAUDE_PROJECT_DIR" install --frozen-lockfile 2>&1; then
+if ! pnpm -C "$CLAUDE_PROJECT_DIR" install --frozen-lockfile --ignore-scripts 2>&1; then
   ERRORS+="Dependency install failed. "
 fi
 

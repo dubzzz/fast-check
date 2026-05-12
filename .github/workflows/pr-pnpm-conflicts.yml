@@ -65,7 +65,7 @@ jobs:
       - name: Regenerate pnpm-lock.yaml
         run: |
           echo "Regenerating pnpm-lock.yaml..."
-          pnpm install --lockfile-only
+          pnpm install --lockfile-only --ignore-scripts
       - name: Commit lock file changes
         env:
           WORKFLOW_NAME: ${{ github.workflow }}

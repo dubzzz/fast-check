@@ -40,7 +40,7 @@ jobs:
           node-version: '24.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Check current branch info
         env:
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
