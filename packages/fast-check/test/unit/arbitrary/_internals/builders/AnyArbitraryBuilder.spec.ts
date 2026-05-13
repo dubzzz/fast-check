@@ -44,6 +44,21 @@ describe('anyArbitraryBuilder (integration)', () => {
     );
   });
 
+  it('should be able to produce bigint typed arrays (when both withBigInt and withTypedArray are set)', () => {
+    assertProduceSomeSpecificValues(
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBigInt: true, withTypedArray: true })),
+      isBigIntTypedArray,
+    );
+  });
+
+  it('should not produce bigint typed arrays when withTypedArray is set without withBigInt', () => {
+    assertProduceCorrectValues(
+      () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withTypedArray: true })),
+      (v) => expect(isBigIntTypedArray(v)).toBe(false),
+      {},
+    );
+  });
+
   it('should be able to produce sparse array (when asked to)', () => {
     assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSparseArray: true })),
@@ -216,8 +231,13 @@ function isTypedArray(v: unknown): boolean {
     v instanceof Int32Array ||
     v instanceof Uint32Array ||
     v instanceof Float32Array ||
-    v instanceof Float64Array
+    v instanceof Float64Array ||
+    isBigIntTypedArray(v)
   );
+}
+
+function isBigIntTypedArray(v: unknown): boolean {
+  return v instanceof BigInt64Array || v instanceof BigUint64Array;
 }
 
 function isSparseArray(v: unknown): boolean {

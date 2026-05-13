@@ -98,6 +98,8 @@ describe(`Generate all values (seed: ${seed})`, () => {
     checkCanProduce('Uint32Array', 'object', '[object Uint32Array]');
     checkCanProduce('Float32Array', 'object', '[object Float32Array]');
     checkCanProduce('Float64Array', 'object', '[object Float64Array]');
+    checkCanProduce('BigInt64Array', 'object', '[object BigInt64Array]');
+    checkCanProduce('BigUint64Array', 'object', '[object BigUint64Array]');
     checkCanProduce('null prototype object', 'object', '[object Object]', (instance: unknown) => {
       return Object.getPrototypeOf(instance) === null;
     });
