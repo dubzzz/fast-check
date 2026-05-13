@@ -73,7 +73,7 @@
     "@jest/expect": "^30.4.1",
     "@jest/globals": "^30.4.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.12.3",
+    "@types/node": "^24.12.4",
     "babel-jest": "^30.4.1",
     "fast-check": "workspace:*",
     "jest": "^30.4.2",
