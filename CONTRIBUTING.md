@@ -245,10 +245,14 @@ The spec is responsible to check that the typings are correct. It also ensures t
 
 ## Can I use AI?
 
-AI is a tool like any other. We're fine with contributions leveraging AI as long as...
+AI is a tool like any other. We're fine with contributions leveraging AI **as long as a human stays in the loop** — both producing and reviewing the change before it reaches us.
 
-1. Contributors understand the change they produced. No matter if the contribution closes a long running issue, when using AI, make sure you understand and agree with each line and character it wrote.
+**Pull Requests opened without any human interaction will be refused and closed without review.** This includes — but is not limited to — PRs opened end-to-end by an autonomous agent with no human author reviewing the diff, the tests, and the description before submission. A human contributor is expected to be accountable for every PR opened against this repository.
 
-2. Contributors review the change before opening any Pull Request.
+Concretely, before opening a Pull Request you must:
 
-3. Contributors tell us about their change. We prefer human-written summaries on Pull Requests rather than AI-generated ones.
+1. Understand the change. No matter if the contribution closes a long running issue, when using AI, make sure you understand and agree with each line and character it wrote.
+
+2. Review the change yourself. Read the full diff before opening the Pull Request — this step cannot be delegated to the same tool that produced the change.
+
+3. Tell us about the change in your own words. We prefer human-written summaries on Pull Requests rather than AI-generated ones.
