@@ -15,26 +15,37 @@ jobs:
     name: 'Fix pnpm lock conflicts and commit changes'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: read
     steps:
-      - name: Determine checkout reference
+      - name: Determine checkout reference and verify gating label
         id: ref
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
           REPO: ${{ github.repository }}
         run: |
-          PR_INFO=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,baseRefName)
+          PR_INFO=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,baseRefName,labels)
           HEAD_BRANCH=$(echo "$PR_INFO" | jq -r '.headRefName')
           BASE_BRANCH=$(echo "$PR_INFO" | jq -r '.baseRefName')
+          HAS_LABEL=$(echo "$PR_INFO" | jq -r '.labels[]? | select(.name=="safe-to-fix-conflicts") | .name')
+          if [ -z "$HAS_LABEL" ]; then
+            echo "::error::PR #$PR_NUMBER is missing the 'safe-to-fix-conflicts' label. A maintainer must apply this label before running this workflow."
+            exit 1
+          fi
           echo "ref=$HEAD_BRANCH" >> $GITHUB_OUTPUT
           echo "base=$BASE_BRANCH" >> $GITHUB_OUTPUT
+      - name: Mint short-lived GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.PR_BOT_APP_ID }}
+          private-key: ${{ secrets.PR_BOT_PRIVATE_KEY }}
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ steps.ref.outputs.ref }}
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
       - name: Configure git
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -71,6 +82,9 @@ jobs:
           WORKFLOW_NAME: ${{ github.workflow }}
           RUN_ID: ${{ github.run_id }}
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          HEAD_BRANCH: ${{ steps.ref.outputs.ref }}
         run: |
           git add pnpm-lock.yaml
           if ! git diff --cached --quiet; then
@@ -80,9 +94,9 @@ jobs:
             Applied by GitHub Action workflow: $WORKFLOW_NAME
             Run ID: $RUN_ID
             Target PR: $PR_NUMBER"
-            
+
             echo "Pushing changes..."
-            git push
+            git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "HEAD:${HEAD_BRANCH}"
           else
             echo "No changes to commit after regenerating lock file"
           fi
