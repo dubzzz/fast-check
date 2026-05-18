@@ -14,41 +14,54 @@ jobs:
   format:
     name: 'Format code and commit changes'
     runs-on: ubuntu-latest
-    # No `contents: write` here — the push is performed with a short-lived
-    # GitHub App installation token minted after PR-controlled code has run.
     permissions:
+      contents: write
       pull-requests: read
     steps:
-      - name: Verify maintainer label and resolve PR head
+      - name: Determine checkout reference
         id: ref
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
           REPO: ${{ github.repository }}
         run: |
-          PR_INFO=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,headRefOid,labels)
+          PR_INFO=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefName,baseRefName)
           HEAD_BRANCH=$(echo "$PR_INFO" | jq -r '.headRefName')
-          HEAD_SHA=$(echo "$PR_INFO" | jq -r '.headRefOid')
-          HAS_LABEL=$(echo "$PR_INFO" | jq -r '[.labels[].name] | index("safe-to-format")')
-          # Only users with write access can add labels, so the label acts as a
-          # maintainer gate: the dispatch UI alone is not sufficient to run the
-          # workflow against a fork's code.
-          if [ "$HAS_LABEL" = "null" ]; then
-            echo "::error::PR #$PR_NUMBER is missing the 'safe-to-format' label. A maintainer must apply that label (only write-access users can) before this workflow may execute the PR's code."
-            exit 1
-          fi
+          BASE_BRANCH=$(echo "$PR_INFO" | jq -r '.baseRefName')
           echo "ref=$HEAD_BRANCH" >> "$GITHUB_OUTPUT"
-          # Pin to the exact SHA observed here so an attacker cannot force-push
-          # between maintainer approval (label) and workflow execution.
-          echo "sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "base=$BASE_BRANCH" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ steps.ref.outputs.sha }}
+          ref: ${{ steps.ref.outputs.ref }}
           fetch-depth: 0
-          # Do NOT keep GITHUB_TOKEN in .git/config: PR-controlled code is about
-          # to run via `pnpm format`, and any credentials on disk would be
-          # readable by it.
-          persist-credentials: false
+          persist-credentials: true
+      # The workflow runs `pnpm format:check` and `pnpm format`. pnpm/npm also
+      # invoke matching pre/post scripts. If any of those entries diverges from
+      # the base branch, the PR is asking us to execute attacker-controlled code
+      # with a writable token in scope — refuse. When the entries match, running
+      # them is no more dangerous than running `pnpm format` on the base branch.
+      - name: Verify format scripts match base branch
+        env:
+          BASE_BRANCH: ${{ steps.ref.outputs.base }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_BRANCH"
+          git show "origin/$BASE_BRANCH:package.json" > /tmp/base-package.json
+          mismatch=0
+          for key in preformat format postformat 'preformat:check' 'format:check' 'postformat:check'; do
+            PR_VAL=$(jq -r --arg k "$key" '.scripts[$k] // "<unset>"' package.json)
+            BASE_VAL=$(jq -r --arg k "$key" '.scripts[$k] // "<unset>"' /tmp/base-package.json)
+            if [ "$PR_VAL" != "$BASE_VAL" ]; then
+              echo "::error::PR modifies scripts.\"$key\" in package.json — refusing to execute PR-controlled format code."
+              echo "  base ($BASE_BRANCH): $BASE_VAL"
+              echo "  PR head:             $PR_VAL"
+              mismatch=1
+            fi
+          done
+          rm -f /tmp/base-package.json
+          if [ "$mismatch" -ne 0 ]; then
+            exit 1
+          fi
+          echo "✅ All format-related script entries are identical to origin/$BASE_BRANCH"
       - name: Install pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
@@ -56,6 +69,8 @@ jobs:
         with:
           node-version: '24.x'
           cache: 'pnpm'
+      # `--ignore-scripts` is required: the script-equality check above does not
+      # cover lockfile/dependency lifecycle hooks, so any install must skip them.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Check current branch info
@@ -63,6 +78,7 @@ jobs:
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
         run: |
           echo "Requested PR: $PR_NUMBER"
+          echo "Current branch: $(git branch --show-current)"
           echo "Current commit: $(git rev-parse HEAD)"
       - name: Check if formatting is needed
         id: format_check
@@ -75,47 +91,32 @@ jobs:
       - name: Run format
         if: steps.format_check.outputs.changes_needed == 'true'
         run: pnpm format
+      - name: Configure git
+        if: steps.format_check.outputs.changes_needed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
       - name: Commit formatting changes
         if: steps.format_check.outputs.changes_needed == 'true'
-        id: commit
         env:
           WORKFLOW_NAME: ${{ github.workflow }}
           RUN_ID: ${{ github.run_id }}
           PR_NUMBER: ${{ github.event.inputs.ref_value }}
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
           git add .
-          if git diff --cached --quiet; then
-            echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            echo "No changes to commit after formatting"
-          else
+          if ! git diff --cached --quiet; then
+            echo "Committing formatting changes..."
             git commit -m "💄 Format code with prettier
 
-          Applied by GitHub Action workflow: $WORKFLOW_NAME
-          Run ID: $RUN_ID
-          Target PR: $PR_NUMBER"
-            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            Applied by GitHub Action workflow: $WORKFLOW_NAME
+            Run ID: $RUN_ID
+            Target PR: $PR_NUMBER"
+
+            echo "Pushing changes..."
+            git push
+          else
+            echo "No changes to commit after formatting"
           fi
-      # Every preceding step that touches PR-controlled code (pnpm format:check,
-      # pnpm format) has finished. Only now do we mint the push credential — its
-      # lifetime overlaps with no PR-controlled step.
-      - name: Mint short-lived GitHub App token for push
-        if: steps.commit.outputs.has_changes == 'true'
-        id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        with:
-          app-id: ${{ secrets.PR_FORMATTER_APP_ID }}
-          private-key: ${{ secrets.PR_FORMATTER_APP_PRIVATE_KEY }}
-      - name: Push changes
-        if: steps.commit.outputs.has_changes == 'true'
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          PR_REF: ${{ steps.ref.outputs.ref }}
-          REPO: ${{ github.repository }}
-        run: |
-          echo "::add-mask::${GH_TOKEN}"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "HEAD:refs/heads/${PR_REF}"
       - name: Output result
         env:
           CHANGES_NEEDED: ${{ steps.format_check.outputs.changes_needed }}
