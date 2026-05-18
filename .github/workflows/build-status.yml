@@ -214,10 +214,10 @@ jobs:
       # pkg-pr-new is a tool for creating preview deployments, not for publishing to npm
       - name: Preview (no comment) # zizmor: ignore[use-trusted-publishing]
         if: github.event_name != 'pull_request'
-        run: pnpm exec pkg-pr-new publish --compact './packages/*' --template './examples' --comment=off
+        run: pnpm exec pkg-pr-new publish --pnpm --compact './packages/*' --template './examples' --comment=off
       - name: Preview # zizmor: ignore[use-trusted-publishing]
         if: github.event_name == 'pull_request'
-        run: pnpm exec pkg-pr-new publish --compact './packages/*' --template './examples'
+        run: pnpm exec pkg-pr-new publish --pnpm --compact './packages/*' --template './examples'
   test:
     name: 'Test'
     needs:
@@ -600,6 +600,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
       - name: Using Node v24.x
@@ -629,7 +631,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -678,6 +680,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
@@ -705,7 +709,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -754,6 +758,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
@@ -781,7 +787,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -830,6 +836,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
@@ -857,7 +865,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -906,6 +914,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
@@ -933,7 +943,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -982,6 +992,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
@@ -1009,7 +1021,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -1058,6 +1070,8 @@ jobs:
       id-token: write
       attestations: write
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
@@ -1085,7 +1099,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
           OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: npm publish --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
