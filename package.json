@@ -39,7 +39,7 @@
     "cross-env": "^10.1.0",
     "oxlint": "^1.64.0",
     "oxlint-tsgolint": "^0.22.1",
-    "pkg-pr-new": "^0.0.71",
+    "pkg-pr-new": "^0.0.74",
     "prettier": "3.8.3",
     "publint": "^0.3.20",
     "rolldown": "^1.0.0",
