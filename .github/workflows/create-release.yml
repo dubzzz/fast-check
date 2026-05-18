@@ -53,13 +53,17 @@ jobs:
             core.setOutput('changelog', changelog);
       - name: Create GitHub Release
         if: ${{ github.event.inputs.dry_run != 'true' }}
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.release_name }}
-          body: ${{ steps.changelog.outputs.changelog }}
-          draft: true
-          make_latest: "${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.changelog.outputs.tag }}
+          RELEASE_NAME: ${{ steps.changelog.outputs.release_name }}
+          RELEASE_BODY: ${{ steps.changelog.outputs.changelog }}
+        run: |
+          printf '%s' "$RELEASE_BODY" > release_notes.md
+          gh release create "$TAG" \
+            --title "$RELEASE_NAME" \
+            --notes-file release_notes.md \
+            --draft
       - name: Push tag
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |

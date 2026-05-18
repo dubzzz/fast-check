@@ -635,19 +635,19 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{needs.check_publish_fc.outputs.tag}}
-          draft: false
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/fast-check/${{env.TGZ_NAME}}
-            packages/fast-check/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+        env:
+          GH_TOKEN: ${{github.token}}
+          TAG: ${{needs.check_publish_fc.outputs.tag}}
+          ATTESTATION_URL: ${{steps.attest.outputs.attestation-url}}
+          TGZ_PATH: packages/fast-check/${{env.TGZ_NAME}}
+          SIGSTORE_PATH: packages/fast-check/${{env.TGZ_NAME}}.sigstore.json
+        run: |
+          {
+            gh release view "$TAG" --json body --jq .body
+            printf '\n[View attestation](%s) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)\n' "$ATTESTATION_URL"
+          } > release_notes.md
+          gh release edit "$TAG" --draft=false --notes-file release_notes.md
+          gh release upload "$TAG" "$TGZ_PATH" "$SIGSTORE_PATH"
   check_publish_ava:
     name: Check publish @fast-check/ava
     needs: check_any_package
@@ -711,19 +711,19 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{needs.check_publish_ava.outputs.tag}}
-          draft: false
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/ava/${{env.TGZ_NAME}}
-            packages/ava/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+        env:
+          GH_TOKEN: ${{github.token}}
+          TAG: ${{needs.check_publish_ava.outputs.tag}}
+          ATTESTATION_URL: ${{steps.attest.outputs.attestation-url}}
+          TGZ_PATH: packages/ava/${{env.TGZ_NAME}}
+          SIGSTORE_PATH: packages/ava/${{env.TGZ_NAME}}.sigstore.json
+        run: |
+          {
+            gh release view "$TAG" --json body --jq .body
+            printf '\n[View attestation](%s) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)\n' "$ATTESTATION_URL"
+          } > release_notes.md
+          gh release edit "$TAG" --draft=false --notes-file release_notes.md
+          gh release upload "$TAG" "$TGZ_PATH" "$SIGSTORE_PATH"
   check_publish_jest:
     name: Check publish @fast-check/jest
     needs: check_any_package
@@ -787,19 +787,19 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{needs.check_publish_jest.outputs.tag}}
-          draft: false
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/jest/${{env.TGZ_NAME}}
-            packages/jest/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+        env:
+          GH_TOKEN: ${{github.token}}
+          TAG: ${{needs.check_publish_jest.outputs.tag}}
+          ATTESTATION_URL: ${{steps.attest.outputs.attestation-url}}
+          TGZ_PATH: packages/jest/${{env.TGZ_NAME}}
+          SIGSTORE_PATH: packages/jest/${{env.TGZ_NAME}}.sigstore.json
+        run: |
+          {
+            gh release view "$TAG" --json body --jq .body
+            printf '\n[View attestation](%s) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)\n' "$ATTESTATION_URL"
+          } > release_notes.md
+          gh release edit "$TAG" --draft=false --notes-file release_notes.md
+          gh release upload "$TAG" "$TGZ_PATH" "$SIGSTORE_PATH"
   check_publish_packaged:
     name: Check publish @fast-check/packaged
     needs: check_any_package
@@ -863,19 +863,19 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{needs.check_publish_packaged.outputs.tag}}
-          draft: false
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/packaged/${{env.TGZ_NAME}}
-            packages/packaged/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+        env:
+          GH_TOKEN: ${{github.token}}
+          TAG: ${{needs.check_publish_packaged.outputs.tag}}
+          ATTESTATION_URL: ${{steps.attest.outputs.attestation-url}}
+          TGZ_PATH: packages/packaged/${{env.TGZ_NAME}}
+          SIGSTORE_PATH: packages/packaged/${{env.TGZ_NAME}}.sigstore.json
+        run: |
+          {
+            gh release view "$TAG" --json body --jq .body
+            printf '\n[View attestation](%s) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)\n' "$ATTESTATION_URL"
+          } > release_notes.md
+          gh release edit "$TAG" --draft=false --notes-file release_notes.md
+          gh release upload "$TAG" "$TGZ_PATH" "$SIGSTORE_PATH"
   check_publish_poisoning:
     name: Check publish @fast-check/poisoning
     needs: check_any_package
@@ -939,19 +939,19 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
-          draft: false
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/poisoning/${{env.TGZ_NAME}}
-            packages/poisoning/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+        env:
+          GH_TOKEN: ${{github.token}}
+          TAG: ${{needs.check_publish_poisoning.outputs.tag}}
+          ATTESTATION_URL: ${{steps.attest.outputs.attestation-url}}
+          TGZ_PATH: packages/poisoning/${{env.TGZ_NAME}}
+          SIGSTORE_PATH: packages/poisoning/${{env.TGZ_NAME}}.sigstore.json
+        run: |
+          {
+            gh release view "$TAG" --json body --jq .body
+            printf '\n[View attestation](%s) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)\n' "$ATTESTATION_URL"
+          } > release_notes.md
+          gh release edit "$TAG" --draft=false --notes-file release_notes.md
+          gh release upload "$TAG" "$TGZ_PATH" "$SIGSTORE_PATH"
   check_publish_vitest:
     name: Check publish @fast-check/vitest
     needs: check_any_package
@@ -1015,19 +1015,19 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{needs.check_publish_vitest.outputs.tag}}
-          draft: false
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/vitest/${{env.TGZ_NAME}}
-            packages/vitest/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+        env:
+          GH_TOKEN: ${{github.token}}
+          TAG: ${{needs.check_publish_vitest.outputs.tag}}
+          ATTESTATION_URL: ${{steps.attest.outputs.attestation-url}}
+          TGZ_PATH: packages/vitest/${{env.TGZ_NAME}}
+          SIGSTORE_PATH: packages/vitest/${{env.TGZ_NAME}}.sigstore.json
+        run: |
+          {
+            gh release view "$TAG" --json body --jq .body
+            printf '\n[View attestation](%s) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)\n' "$ATTESTATION_URL"
+          } > release_notes.md
+          gh release edit "$TAG" --draft=false --notes-file release_notes.md
+          gh release upload "$TAG" "$TGZ_PATH" "$SIGSTORE_PATH"
   check_publish_worker:
     name: Check publish @fast-check/worker
     needs: check_any_package
@@ -1091,16 +1091,16 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
-        with:
-          tag_name: ${{needs.check_publish_worker.outputs.tag}}
-          draft: false
-          append_body: true
-          fail_on_unmatched_files: true
-          overwrite_files: false
-          files: |
-            packages/worker/${{env.TGZ_NAME}}
-            packages/worker/${{env.TGZ_NAME}}.sigstore.json
-          body: |
-
-            [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+        env:
+          GH_TOKEN: ${{github.token}}
+          TAG: ${{needs.check_publish_worker.outputs.tag}}
+          ATTESTATION_URL: ${{steps.attest.outputs.attestation-url}}
+          TGZ_PATH: packages/worker/${{env.TGZ_NAME}}
+          SIGSTORE_PATH: packages/worker/${{env.TGZ_NAME}}.sigstore.json
+        run: |
+          {
+            gh release view "$TAG" --json body --jq .body
+            printf '\n[View attestation](%s) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)\n' "$ATTESTATION_URL"
+          } > release_notes.md
+          gh release edit "$TAG" --draft=false --notes-file release_notes.md
+          gh release upload "$TAG" "$TGZ_PATH" "$SIGSTORE_PATH"
