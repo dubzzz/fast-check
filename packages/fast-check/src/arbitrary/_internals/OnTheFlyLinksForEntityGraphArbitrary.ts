@@ -50,25 +50,22 @@ function produceLinkUnitaryIndexArbitrary(
 }
 
 /** @internal */
-function computeLinkIndex(
+function buildLinkIndexArbitrary(
   arity: Exclude<Arity, 'inverse'>,
   strategy: Strategy,
   currentIndexIfSameType: number | undefined,
   countInTargetType: number,
   currentEntityDepth: DepthIdentifier,
-  mrng: Random,
-  biasFactor: number | undefined,
-): number[] | number | undefined {
+): Arbitrary<number[] | number | undefined> {
   const linkArbitrary = produceLinkUnitaryIndexArbitrary(strategy, currentIndexIfSameType, countInTargetType);
   switch (arity) {
     case '0-1':
-      return option(linkArbitrary, { nil: undefined, depthIdentifier: currentEntityDepth }).generate(mrng, biasFactor)
-        .value;
+      return option(linkArbitrary, { nil: undefined, depthIdentifier: currentEntityDepth });
     case '1':
-      return linkArbitrary.generate(mrng, biasFactor).value;
+      return linkArbitrary;
     case 'many': {
       let randomUnicity = 0;
-      const values = option(
+      return option(
         // given the depth does not control the size of an array, we cheat and use an option to do so
         uniqueArray(linkArbitrary, {
           depthIdentifier: currentEntityDepth, // passed just in case, but probably ignored by arrays
@@ -76,9 +73,10 @@ function computeLinkIndex(
           minLength: 1, // we handle length 0 with the option
         }),
         { nil: [], depthIdentifier: currentEntityDepth },
-      ).generate(mrng, biasFactor).value;
-      let offset = 0;
-      return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
+      ).map((values) => {
+        let offset = 0;
+        return safeMap(values, (v) => (v === countInTargetType ? v + offset++ : v));
+      });
     }
   }
 }
@@ -186,15 +184,14 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         const targetType = relation.type;
         const producedLinksInTargetType = producedLinks[targetType];
         const countInTargetType = producedLinksInTargetType.length;
-        const linkOrLinks = computeLinkIndex(
+        const linkOrLinksArbitrary = buildLinkIndexArbitrary(
           relation.arity,
           relation.strategy || 'any',
           targetType === currentEntity.type ? currentEntity.indexInType : undefined,
           producedLinksInTargetType.length,
           currentEntityDepth,
-          mrng,
-          biasFactor,
         );
+        const linkOrLinks = linkOrLinksArbitrary.generate(mrng, biasFactor).value;
         currentLinks[name] = { type: targetType, index: linkOrLinks };
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
