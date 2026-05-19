@@ -100,6 +100,41 @@ function createEmptyLinksInstanceFor<TEntityFields, TEntityRelations extends Ent
 }
 
 /** @internal */
+function assertAcceptableRelations<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+): void {
+  // Basic sanity checks on the relations
+  const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
+  const exclusiveEntities = new SSet<keyof TEntityRelations>();
+  for (const name in relations) {
+    const relationsForName = relations[name];
+    for (const fieldName in relationsForName) {
+      const relation = relationsForName[fieldName];
+      if (relation.arity === 'inverse') {
+        continue;
+      }
+      if (relation.strategy === 'exclusive') {
+        if (safeHas(nonExclusiveEntities, relation.type)) {
+          throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+        }
+        safeAdd(exclusiveEntities, relation.type);
+      } else {
+        if (safeHas(exclusiveEntities, relation.type)) {
+          throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
+        }
+        safeAdd(nonExclusiveEntities, relation.type);
+      }
+      if (relation.strategy === 'successor' && relation.type !== (name as keyof TEntityRelations)) {
+        throw new SError(`Cannot mix types for the strategy successor`);
+      }
+      if (relation.strategy === 'successor' && relation.arity === '1') {
+        throw new SError(`Cannot use an arity of 1 for the strategy successor`);
+      }
+    }
+  }
+}
+
+/** @internal */
 class OnTheFlyLinksForEntityGraphArbitrary<
   TEntityFields,
   TEntityRelations extends EntityRelations<TEntityFields>,
@@ -113,34 +148,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     super();
 
     // Basic sanity checks on the relations
-    const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
-    const exclusiveEntities = new SSet<keyof TEntityRelations>();
-    for (const name in relations) {
-      const relationsForName = relations[name];
-      for (const fieldName in relationsForName) {
-        const relation = relationsForName[fieldName];
-        if (relation.arity === 'inverse') {
-          continue;
-        }
-        if (relation.strategy === 'exclusive') {
-          if (safeHas(nonExclusiveEntities, relation.type)) {
-            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
-          }
-          safeAdd(exclusiveEntities, relation.type);
-        } else {
-          if (safeHas(exclusiveEntities, relation.type)) {
-            throw new SError(`Cannot mix exclusive with other strategies for type ${SString(relation.type)}`);
-          }
-          safeAdd(nonExclusiveEntities, relation.type);
-        }
-        if (relation.strategy === 'successor' && relation.type !== (name as keyof TEntityRelations)) {
-          throw new SError(`Cannot mix types for the strategy successor`);
-        }
-        if (relation.strategy === 'successor' && relation.arity === '1') {
-          throw new SError(`Cannot use an arity of 1 for the strategy successor`);
-        }
-      }
-    }
+    assertAcceptableRelations(relations);
 
     // Building inversed relations map
     this.inversedRelations = buildInversedRelationsMapping(relations);
