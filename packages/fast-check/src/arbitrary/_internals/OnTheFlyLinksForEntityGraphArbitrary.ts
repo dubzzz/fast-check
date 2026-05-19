@@ -84,6 +84,22 @@ function computeLinkIndex(
 }
 
 /** @internal */
+function createEmptyLinksInstanceFor<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  targetType: keyof TEntityFields,
+): EntityLinks<TEntityFields, TEntityRelations> {
+  const emptyLinksInstance = safeObjectCreate(null);
+  const relationsForType = relations[targetType];
+  for (const name in relationsForType) {
+    const relation = relationsForType[name];
+    if (relation.arity === 'inverse') {
+      emptyLinksInstance[name] = { type: relation.type, index: [] };
+    }
+  }
+  return emptyLinksInstance;
+}
+
+/** @internal */
 class OnTheFlyLinksForEntityGraphArbitrary<
   TEntityFields,
   TEntityRelations extends EntityRelations<TEntityFields>,
@@ -130,18 +146,6 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     this.inversedRelations = buildInversedRelationsMapping(relations);
   }
 
-  createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
-    const emptyLinksInstance = safeObjectCreate(null);
-    const relationsForType = this.relations[targetType];
-    for (const name in relationsForType) {
-      const relation = relationsForType[name];
-      if (relation.arity === 'inverse') {
-        emptyLinksInstance[name] = { type: relation.type, index: [] };
-      }
-    }
-    return emptyLinksInstance;
-  }
-
   generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
     // The set of all produced links between entities.
     const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
@@ -152,7 +156,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
     for (const name of this.defaultEntities) {
       safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], this.createEmptyLinksInstanceFor(name));
+      safePush(producedLinks[name], createEmptyLinksInstanceFor(this.relations, name));
     }
 
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
@@ -188,7 +192,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
         for (const link of links) {
           if (link >= countInTargetType) {
             safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, this.createEmptyLinksInstanceFor(targetType));
+            safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(this.relations, targetType));
           }
           const inversed = safeMapGet(this.inversedRelations, relation);
           if (inversed !== undefined) {
