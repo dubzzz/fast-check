@@ -25,6 +25,7 @@ import type {
   EntityRelations,
   ProducedLinks,
   ReadonlyProducedLinks,
+  Relationship,
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
@@ -243,6 +244,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   currentEntityDepth.depth = currentEntity.depth;
   const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
+  const pushed: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
   for (const name in currentRelations) {
     const relation = currentRelations[name];
     if (relation.arity === 'inverse') {
@@ -259,26 +261,22 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
     );
     countsInTargetType[name] = countInTargetType;
     subArbitraries.push(linkOrLinksArbitrary);
+    pushed.push({ name, relation, sentinelLinkIndex: countInTargetType });
   }
-  return tuple<(number[] | number | undefined)[]>(...subArbitraries).map((results) => {
-    let resultIndex = 0;
-    for (const name in currentRelations) {
-      const relation = currentRelations[name];
-      if (relation.arity === 'inverse') {
-        continue;
-      }
-      const targetType = relation.type;
-      const countInTargetType = countsInTargetType[name];
-      const linkOrLinks = results[resultIndex++];
-      state.setOutboundLink(name, { type: targetType, index: linkOrLinks });
+  return tuple(...subArbitraries).map((results) => {
+    for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
+      const linkOrLinks = results[resultIndex];
+      const { name, relation, sentinelLinkIndex } = pushed[resultIndex];
+
+      state.setOutboundLink(name, { type: relation.type, index: linkOrLinks });
       const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
       for (const link of links) {
-        if (link >= countInTargetType) {
-          state.enqueueNewEntity(relations, targetType);
+        if (link >= sentinelLinkIndex) {
+          state.enqueueNewEntity(relations, relation.type);
         }
         const inversed = safeMapGet(inversedRelations, relation);
         if (inversed !== undefined) {
-          state.appendBackReference(targetType, link, inversed.property);
+          state.appendBackReference(relation.type, link, inversed.property);
         }
       }
     }
