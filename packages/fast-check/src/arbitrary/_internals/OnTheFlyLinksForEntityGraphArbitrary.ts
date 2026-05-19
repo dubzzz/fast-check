@@ -83,6 +83,96 @@ type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEn
 };
 
 /** @internal */
+function createEmptyLinksInstanceFor<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  targetType: keyof TEntityFields,
+): EntityLinks<TEntityFields, TEntityRelations> {
+  const emptyLinksInstance = safeObjectCreate(null);
+  const relationsForType = relations[targetType];
+  for (const name in relationsForType) {
+    const relation = relationsForType[name];
+    if (relation.arity === 'inverse') {
+      emptyLinksInstance[name] = { type: relation.type, index: [] };
+    }
+  }
+  return emptyLinksInstance;
+}
+
+/** @internal */
+function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
+  state: ProductionState<TEntityFields, TEntityRelations>,
+): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
+  const { producedLinks, toBeProducedEntities, nextIndex } = state;
+  const currentEntity = toBeProducedEntities[nextIndex];
+  const currentRelations = relations[currentEntity.type];
+  const currentEntityDepth = createDepthIdentifier();
+  currentEntityDepth.depth = currentEntity.depth;
+
+  // Snapshot of the count of entities of each target type at the moment we start producing links
+  // for the current entity. Captured here because both the underlying arbitraries and the post
+  // processing rely on it, and the count would otherwise grow as new entities get queued.
+  const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
+  const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
+  for (const name in currentRelations) {
+    const relation = currentRelations[name];
+    if (relation.arity === 'inverse') {
+      continue;
+    }
+    const targetType = relation.type;
+    const countInTargetType = producedLinks[targetType].length;
+    countsInTargetType[name] = countInTargetType;
+    subArbitraries.push(
+      buildLinkIndexArbitrary(
+        relation.arity,
+        relation.strategy || 'any',
+        targetType === currentEntity.type ? currentEntity.indexInType : undefined,
+        countInTargetType,
+        currentEntityDepth,
+      ),
+    );
+  }
+
+  return tuple<(number[] | number | undefined)[]>(...subArbitraries).map((results) => {
+    const currentLinks = producedLinks[currentEntity.type][currentEntity.indexInType];
+    let resultIndex = 0;
+    let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
+    for (const name in currentRelations) {
+      const relation = currentRelations[name];
+      if (relation.arity === 'inverse') {
+        continue;
+      }
+      const targetType = relation.type;
+      const countInTargetType = countsInTargetType[name];
+      const linkOrLinks = results[resultIndex++];
+      const producedLinksInTargetType = producedLinks[targetType];
+      currentLinks[name] = { type: targetType, index: linkOrLinks };
+      const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
+      for (const link of links) {
+        if (link >= countInTargetType) {
+          if (newToBeProducedEntities === undefined) {
+            newToBeProducedEntities = [...toBeProducedEntities];
+          }
+          safePush(newToBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
+          safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
+        }
+        const inversed = safeMapGet(inversedRelations, relation);
+        if (inversed !== undefined) {
+          const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
+          safePush(knownInversedLinks as number[], currentEntity.indexInType);
+        }
+      }
+    }
+    return {
+      producedLinks,
+      toBeProducedEntities: newToBeProducedEntities !== undefined ? newToBeProducedEntities : toBeProducedEntities,
+      nextIndex: nextIndex + 1,
+    };
+  });
+}
+
+/** @internal */
 export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
   defaultEntities: (keyof TEntityFields)[],
@@ -117,92 +207,7 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
     }
   }
 
-  // Building inversed relations map
-  const inversedRelations = buildInversedRelationsMapping(relations);
-
-  function createEmptyLinksInstanceFor(targetType: keyof TEntityFields): EntityLinks<TEntityFields, TEntityRelations> {
-    const emptyLinksInstance = safeObjectCreate(null);
-    const relationsForType = relations[targetType];
-    for (const name in relationsForType) {
-      const relation = relationsForType[name];
-      if (relation.arity === 'inverse') {
-        emptyLinksInstance[name] = { type: relation.type, index: [] };
-      }
-    }
-    return emptyLinksInstance;
-  }
-
-  function buildEntityStepArbitrary(
-    state: ProductionState<TEntityFields, TEntityRelations>,
-  ): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
-    const { producedLinks, toBeProducedEntities, nextIndex } = state;
-    const currentEntity = toBeProducedEntities[nextIndex];
-    const currentRelations = relations[currentEntity.type];
-    const currentEntityDepth = createDepthIdentifier();
-    currentEntityDepth.depth = currentEntity.depth;
-
-    // Snapshot of the count of entities of each target type at the moment we start producing links
-    // for the current entity. Captured here because both the underlying arbitraries and the post
-    // processing rely on it, and the count would otherwise grow as new entities get queued.
-    const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
-    const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
-    for (const name in currentRelations) {
-      const relation = currentRelations[name];
-      if (relation.arity === 'inverse') {
-        continue;
-      }
-      const targetType = relation.type;
-      const countInTargetType = producedLinks[targetType].length;
-      countsInTargetType[name] = countInTargetType;
-      subArbitraries.push(
-        buildLinkIndexArbitrary(
-          relation.arity,
-          relation.strategy || 'any',
-          targetType === currentEntity.type ? currentEntity.indexInType : undefined,
-          countInTargetType,
-          currentEntityDepth,
-        ),
-      );
-    }
-
-    return tuple<(number[] | number | undefined)[]>(...subArbitraries).map((results) => {
-      const currentLinks = producedLinks[currentEntity.type][currentEntity.indexInType];
-      let resultIndex = 0;
-      let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
-      for (const name in currentRelations) {
-        const relation = currentRelations[name];
-        if (relation.arity === 'inverse') {
-          continue;
-        }
-        const targetType = relation.type;
-        const countInTargetType = countsInTargetType[name];
-        const linkOrLinks = results[resultIndex++];
-        const producedLinksInTargetType = producedLinks[targetType];
-        currentLinks[name] = { type: targetType, index: linkOrLinks };
-        const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
-        for (const link of links) {
-          if (link >= countInTargetType) {
-            if (newToBeProducedEntities === undefined) {
-              newToBeProducedEntities = [...toBeProducedEntities];
-            }
-            safePush(newToBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(targetType));
-          }
-          const inversed = safeMapGet(inversedRelations, relation);
-          if (inversed !== undefined) {
-            const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
-            safePush(knownInversedLinks as number[], currentEntity.indexInType);
-          }
-        }
-      }
-      return {
-        producedLinks,
-        toBeProducedEntities: newToBeProducedEntities !== undefined ? newToBeProducedEntities : toBeProducedEntities,
-        nextIndex: nextIndex + 1,
-      };
-    });
-  }
-
+  // Building initial state
   const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
   for (const name in relations) {
     producedLinks[name as Extract<keyof TEntityFields, string>] = [];
@@ -210,18 +215,21 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
   const toBeProducedEntities: ToBeProducedEntity<TEntityFields>[] = [];
   for (const name of defaultEntities) {
     safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-    safePush(producedLinks[name], createEmptyLinksInstanceFor(name));
+    safePush(producedLinks[name], createEmptyLinksInstanceFor(relations, name));
   }
   const initialProductionState: ProductionState<TEntityFields, TEntityRelations> = {
     producedLinks,
     toBeProducedEntities,
     nextIndex: 0,
   };
+
+  // Building all relations
+  const inversedRelations = buildInversedRelationsMapping(relations);
   const initialStateArb = constant(initialProductionState);
   return chainUntil(initialStateArb, (state) => {
     if (state.nextIndex >= state.toBeProducedEntities.length) {
       return undefined;
     }
-    return buildEntityStepArbitrary(state);
+    return buildEntityStepArbitrary(relations, inversedRelations, state);
   }).map((state) => state.producedLinks);
 }
