@@ -18,13 +18,7 @@ import { tuple } from '../tuple.js';
 import { uniqueArray } from '../uniqueArray.js';
 import { buildInversedRelationsMapping } from './helpers/BuildInversedRelationsMapping.js';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
-import type {
-  Arity,
-  EntityLinks,
-  EntityRelations,
-  ProducedLinks,
-  Strategy,
-} from './interfaces/EntityGraphTypes.js';
+import type { Arity, EntityLinks, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes.js';
 
 const safeObjectCreate = Object.create;
 
@@ -83,9 +77,9 @@ type ToBeProducedEntity<TEntityFields> = { type: keyof TEntityFields; indexInTyp
 
 /** @internal */
 type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
-  producedLinks: ProducedLinks<TEntityFields, TEntityRelations>;
-  toBeProducedEntities: ToBeProducedEntity<TEntityFields>[];
-  nextIndex: number;
+  readonly producedLinks: ProducedLinks<TEntityFields, TEntityRelations>;
+  readonly toBeProducedEntities: readonly ToBeProducedEntity<TEntityFields>[];
+  readonly nextIndex: number;
 };
 
 /** @internal */
@@ -174,6 +168,7 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
     return tuple<(number[] | number | undefined)[]>(...subArbitraries).map((results) => {
       const currentLinks = producedLinks[currentEntity.type][currentEntity.indexInType];
       let resultIndex = 0;
+      let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
       for (const name in currentRelations) {
         const relation = currentRelations[name];
         if (relation.arity === 'inverse') {
@@ -187,7 +182,10 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
           if (link >= countInTargetType) {
-            safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
+            if (newToBeProducedEntities === undefined) {
+              newToBeProducedEntities = [...toBeProducedEntities];
+            }
+            safePush(newToBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
             safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(targetType));
           }
           const inversed = safeMapGet(inversedRelations, relation);
@@ -197,25 +195,29 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
           }
         }
       }
-      return { producedLinks, toBeProducedEntities, nextIndex: nextIndex + 1 };
+      return {
+        producedLinks,
+        toBeProducedEntities: newToBeProducedEntities !== undefined ? newToBeProducedEntities : toBeProducedEntities,
+        nextIndex: nextIndex + 1,
+      };
     });
   }
 
-  // Initial state arbitrary: rebuilds a fresh state on every generate call so that calls do not
-  // share their `producedLinks` / `toBeProducedEntities` arrays.
-  const initialStateArb = constant(undefined).map<ProductionState<TEntityFields, TEntityRelations>>(() => {
-    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
-    for (const name in relations) {
-      producedLinks[name as Extract<keyof TEntityFields, string>] = [];
-    }
-    const toBeProducedEntities: ToBeProducedEntity<TEntityFields>[] = [];
-    for (const name of defaultEntities) {
-      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], createEmptyLinksInstanceFor(name));
-    }
-    return { producedLinks, toBeProducedEntities, nextIndex: 0 };
-  });
-
+  const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+  for (const name in relations) {
+    producedLinks[name as Extract<keyof TEntityFields, string>] = [];
+  }
+  const toBeProducedEntities: ToBeProducedEntity<TEntityFields>[] = [];
+  for (const name of defaultEntities) {
+    safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
+    safePush(producedLinks[name], createEmptyLinksInstanceFor(name));
+  }
+  const initialProductionState: ProductionState<TEntityFields, TEntityRelations> = {
+    producedLinks,
+    toBeProducedEntities,
+    nextIndex: 0,
+  };
+  const initialStateArb = constant(initialProductionState);
   return chainUntil(initialStateArb, (state) => {
     if (state.nextIndex >= state.toBeProducedEntities.length) {
       return undefined;
