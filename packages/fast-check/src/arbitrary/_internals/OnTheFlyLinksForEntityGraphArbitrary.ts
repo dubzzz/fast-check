@@ -148,7 +148,7 @@ type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEn
 };
 
 /** @internal */
-function toEditableProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+function beginProductionStep<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   state: ProductionState<TEntityFields, TEntityRelations>,
 ) {
   const { producedLinks, toBeProducedEntities, nextIndex } = state;
@@ -175,13 +175,12 @@ function toEditableProductionState<TEntityFields, TEntityRelations extends Entit
 
   const toBeProduced = toBeProducedEntities[nextIndex];
   return {
-    // Direct details on the current entity, the one to be created
-    // The ToBeProducedEntity will not disappear not be altered, no access to it from the toEditableProductionState
-    getToBeProducedEntity: (): ToBeProducedEntity<TEntityFields> => toBeProduced,
-    // something
-    getCountInTargetType: (targetType: keyof TEntityFields) => newProducedLinks[targetType].length,
+    // The entity being produced in this step. Exposed as a value (not a setter) since it cannot be mutated from here.
+    getCurrentEntity: (): Readonly<ToBeProducedEntity<TEntityFields>> => toBeProduced,
+    // Number of entities of the given type already produced so far.
+    getExistingEntityCount: (targetType: keyof TEntityFields) => newProducedLinks[targetType].length,
     // Edit functions
-    alterLinksFor: (
+    setOutboundLink: (
       name: keyof TEntityRelations[keyof TEntityFields],
       value: {
         type: keyof TEntityFields;
@@ -191,7 +190,7 @@ function toEditableProductionState<TEntityFields, TEntityRelations extends Entit
       const currentLinks = getOrCreateLinksFor(toBeProduced.type, toBeProduced.indexInType); // All the links going from the current entity to others
       currentLinks[name] = value;
     },
-    requestNewEntity: (relations: TEntityRelations, targetType: keyof TEntityFields) => {
+    enqueueNewEntity: (relations: TEntityRelations, targetType: keyof TEntityFields) => {
       const producedLinksInTargetType = getOrCreateProducedLinksFor(targetType);
       if (newToBeProducedEntities === undefined) {
         newToBeProducedEntities = safeSlice(toBeProducedEntities as (typeof toBeProducedEntities)[number][]);
@@ -203,13 +202,13 @@ function toEditableProductionState<TEntityFields, TEntityRelations extends Entit
       });
       safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
     },
-    appendReverseLinkOn: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
+    recordInverseLink: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
       const links = getOrCreateLinksFor(targetType, indexInType);
       const knownInversedLinks = links[property].index;
       safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, toBeProduced.indexInType);
     },
-    // Seal the state into an immutable instance (type-wise)
-    build: (): ProductionState<TEntityFields, TEntityRelations> => ({
+    // Seal the step into a new immutable state and advance to the next entity.
+    commit: (): ProductionState<TEntityFields, TEntityRelations> => ({
       producedLinks: newProducedLinks,
       toBeProducedEntities: newToBeProducedEntities !== undefined ? newToBeProducedEntities : toBeProducedEntities,
       nextIndex: nextIndex + 1,
@@ -262,8 +261,8 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
     // we decided to consider an always growing array that will grow up to the numer of entities before being dropped.
     while (lastState.nextIndex <= lastState.toBeProducedEntities.length) {
-      const state = toEditableProductionState(lastState);
-      const currentEntity = state.getToBeProducedEntity();
+      const state = beginProductionStep(lastState);
+      const currentEntity = state.getCurrentEntity();
       const currentRelations = this.relations[currentEntity.type];
       const currentEntityDepth = createDepthIdentifier();
       currentEntityDepth.depth = currentEntity.depth;
@@ -273,29 +272,29 @@ class OnTheFlyLinksForEntityGraphArbitrary<
           continue;
         }
         const targetType = relation.type;
-        const countInTargetType = state.getCountInTargetType(targetType);
+        const countInTargetType = state.getExistingEntityCount(targetType);
         const linkOrLinks = computeLinkIndex(
           relation.arity,
           relation.strategy || 'any',
           targetType === currentEntity.type ? currentEntity.indexInType : undefined,
-          countInTargetType, // will be used as a sentinel to distinguish links heading to new entities (to be created) from links to existing ones
+          countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
           currentEntityDepth,
           mrng,
           biasFactor,
         );
-        state.alterLinksFor(name, { type: targetType, index: linkOrLinks });
+        state.setOutboundLink(name, { type: targetType, index: linkOrLinks });
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
           if (link >= countInTargetType) {
-            state.requestNewEntity(this.relations, targetType);
+            state.enqueueNewEntity(this.relations, targetType);
           }
           const inversed = safeMapGet(this.inversedRelations, relation);
           if (inversed !== undefined) {
-            state.appendReverseLinkOn(targetType, link, inversed.property);
+            state.recordInverseLink(targetType, link, inversed.property);
           }
         }
       }
-      lastState = state.build();
+      lastState = state.commit();
     }
 
     const readOnlyProducedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations> = lastState.producedLinks;
