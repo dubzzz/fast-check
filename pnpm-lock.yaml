@@ -251,7 +251,7 @@ importers:
         specifier: ^0.3.21
         version: 0.3.21
       rolldown:
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1
       rolldown-plugin-dts:
         specifier: ^0.25.0
@@ -327,7 +327,7 @@ importers:
         specifier: ^3.2.25
         version: 3.2.25
       rolldown:
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1
       rxjs:
         specifier: ^7.8.2
@@ -429,7 +429,7 @@ importers:
         specifier: ^6.3.3
         version: 6.3.3
       rolldown:
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1
       typescript:
         specifier: ~6.0.3
@@ -447,7 +447,7 @@ importers:
         specifier: ^24.12.4
         version: 24.12.4
       rolldown:
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1
       typescript:
         specifier: ~6.0.3
@@ -469,7 +469,7 @@ importers:
         specifier: ^24.12.4
         version: 24.12.4
       rolldown:
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1
       typescript:
         specifier: ~6.0.3
