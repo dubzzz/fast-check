@@ -216,4 +216,15 @@ export type ProducedLinks<TEntityFields, TEntityRelations extends EntityRelation
   EntityLinks<TEntityFields, TEntityRelations>[]
 >;
 /** @internal */
+export type ReadonlyEntityLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Readonly<
+  Record<
+    keyof TEntityRelations[keyof TEntityFields],
+    { type: keyof TEntityFields; index: ReadonlyArray<number> | number | undefined }
+  >
+>;
+/** @internal */
+export type ReadonlyProducedLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = Readonly<
+  Record<keyof TEntityFields, ReadonlyArray<ReadonlyEntityLinks<TEntityFields, TEntityRelations>>>
+>;
+/** @internal */
 export type UnlinkedEntities<TEntityFields> = { [K in keyof TEntityFields]: TEntityFields[K][] };

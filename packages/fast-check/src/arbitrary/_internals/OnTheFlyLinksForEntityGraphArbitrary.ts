@@ -11,6 +11,7 @@ import {
   Set as SSet,
   Error as SError,
   String as SString,
+  safeSlice,
 } from '../../utils/globals.js';
 import { constant } from '../constant.js';
 import { integer } from '../integer.js';
@@ -25,10 +26,12 @@ import type {
   EntityLinks,
   EntityRelations,
   ProducedLinks,
+  ReadonlyProducedLinks,
   Relationship,
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
+const safeObjectAssign = Object.assign;
 const safeObjectCreate = Object.create;
 
 /** @internal */
@@ -133,6 +136,104 @@ function assertAcceptableRelations<TEntityFields, TEntityRelations extends Entit
 }
 
 /** @internal */
+type ToBeProducedEntity<TEntityFields> = { type: keyof TEntityFields; indexInType: number; depth: number };
+
+/** @internal */
+type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = {
+  readonly producedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations>;
+  readonly toBeProducedEntities: ReadonlyArray<Readonly<ToBeProducedEntity<TEntityFields>>>;
+  readonly nextIndex: number;
+};
+
+/** @internal */
+function draftNextProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  state: ProductionState<TEntityFields, TEntityRelations>,
+) {
+  const { producedLinks, toBeProducedEntities, nextIndex } = state;
+
+  const newProducedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectAssign(
+    safeObjectCreate(null),
+    producedLinks,
+  );
+  function getOrCreateProducedLinksFor(type: keyof TEntityFields) {
+    if (newProducedLinks[type] === producedLinks[type]) {
+      newProducedLinks[type] = safeSlice(producedLinks[type] as (typeof newProducedLinks)[typeof type]);
+    }
+    return newProducedLinks[type];
+  }
+  function getOrCreateLinksFor(type: keyof TEntityFields, indexInType: number) {
+    const producedLinksForType = getOrCreateProducedLinksFor(type);
+    if (producedLinksForType[indexInType] === producedLinks[type][indexInType]) {
+      producedLinksForType[indexInType] = safeObjectAssign(safeObjectCreate(null), producedLinks[type][indexInType]);
+    }
+    return producedLinksForType[indexInType];
+  }
+
+  let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
+
+  const toBeProduced = toBeProducedEntities[nextIndex];
+  return {
+    // The entity being produced in this step. Exposed as a value (not a setter) since it cannot be mutated from here.
+    getCurrentEntity: (): Readonly<ToBeProducedEntity<TEntityFields>> => toBeProduced,
+    // Number of entities of the given type already produced so far.
+    getExistingEntityCount: (targetType: keyof TEntityFields) => newProducedLinks[targetType].length,
+    // Edit functions
+    setOutboundLink: (
+      name: keyof TEntityRelations[keyof TEntityFields],
+      value: {
+        type: keyof TEntityFields;
+        index: number[] | number | undefined;
+      },
+    ) => {
+      const currentLinks = getOrCreateLinksFor(toBeProduced.type, toBeProduced.indexInType); // All the links going from the current entity to others
+      currentLinks[name] = value;
+    },
+    enqueueNewEntity: (relations: TEntityRelations, targetType: keyof TEntityFields) => {
+      const producedLinksInTargetType = getOrCreateProducedLinksFor(targetType);
+      if (newToBeProducedEntities === undefined) {
+        newToBeProducedEntities = safeSlice(toBeProducedEntities as (typeof toBeProducedEntities)[number][]);
+      }
+      safePush(newToBeProducedEntities, {
+        type: targetType,
+        indexInType: producedLinksInTargetType.length,
+        depth: toBeProduced.depth + 1,
+      });
+      safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
+    },
+    appendBackReference: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
+      const links = getOrCreateLinksFor(targetType, indexInType);
+      const knownInversedLinks = links[property].index;
+      safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, toBeProduced.indexInType);
+    },
+    // Seal the step into a new immutable state and advance to the next entity.
+    commit: (): ProductionState<TEntityFields, TEntityRelations> => ({
+      producedLinks: newProducedLinks,
+      toBeProducedEntities: newToBeProducedEntities !== undefined ? newToBeProducedEntities : toBeProducedEntities,
+      nextIndex: nextIndex + 1,
+    }),
+  };
+}
+
+/** @internal */
+function buildInitialProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  defaultEntities: (keyof TEntityFields)[],
+): ProductionState<TEntityFields, TEntityRelations> {
+  // The set of all produced links between entities.
+  const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+  for (const name in relations) {
+    producedLinks[name as Extract<keyof TEntityFields, string>] = [];
+  }
+  // Made of any entity whose links have to be created before building the whole graph.
+  const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
+  for (const name of defaultEntities) {
+    safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
+    safePush(producedLinks[name], createEmptyLinksInstanceFor(relations, name));
+  }
+  return { producedLinks, toBeProducedEntities, nextIndex: 0 };
+}
+
+/** @internal */
 class OnTheFlyLinksForEntityGraphArbitrary<
   TEntityFields,
   TEntityRelations extends EntityRelations<TEntityFields>,
@@ -153,27 +254,14 @@ class OnTheFlyLinksForEntityGraphArbitrary<
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
-    // The set of all produced links between entities.
-    const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
-    for (const name in this.relations) {
-      producedLinks[name as Extract<keyof TEntityFields, string>] = [];
-    }
-    // Made of any entity whose links have to be created before building the whole graph.
-    const toBeProducedEntities: { type: keyof TEntityFields; indexInType: number; depth: number }[] = [];
-    for (const name of this.defaultEntities) {
-      safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
-      safePush(producedLinks[name], createEmptyLinksInstanceFor(this.relations, name));
-    }
+    let lastState = buildInitialProductionState(this.relations, this.defaultEntities);
 
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
     // we decided to consider an always growing array that will grow up to the numer of entities before being dropped.
-    let lastTreatedEntities = -1;
-    while (++lastTreatedEntities < toBeProducedEntities.length) {
-      const currentEntity = toBeProducedEntities[lastTreatedEntities];
+    while (lastState.nextIndex < lastState.toBeProducedEntities.length) {
+      const state = draftNextProductionState(lastState);
+      const currentEntity = state.getCurrentEntity();
       const currentRelations = this.relations[currentEntity.type];
-      const currentProducedLinks = producedLinks[currentEntity.type];
-      // Create all the links going from the current entity to others
-      const currentLinks = currentProducedLinks[currentEntity.indexInType];
       const currentEntityDepth = createDepthIdentifier();
       currentEntityDepth.depth = currentEntity.depth;
       for (const name in currentRelations) {
@@ -182,35 +270,32 @@ class OnTheFlyLinksForEntityGraphArbitrary<
           continue;
         }
         const targetType = relation.type;
-        const producedLinksInTargetType = producedLinks[targetType];
-        const countInTargetType = producedLinksInTargetType.length;
+        const countInTargetType = state.getExistingEntityCount(targetType);
         const linkOrLinksArbitrary = buildLinkIndexArbitrary(
           relation.arity,
           relation.strategy || 'any',
           targetType === currentEntity.type ? currentEntity.indexInType : undefined,
-          producedLinksInTargetType.length,
+          countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
           currentEntityDepth,
         );
         const linkOrLinks = linkOrLinksArbitrary.generate(mrng, biasFactor).value;
-        currentLinks[name] = { type: targetType, index: linkOrLinks };
+        state.setOutboundLink(name, { type: targetType, index: linkOrLinks });
         const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
         for (const link of links) {
           if (link >= countInTargetType) {
-            safePush(toBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-            safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(this.relations, targetType));
+            state.enqueueNewEntity(this.relations, targetType);
           }
           const inversed = safeMapGet(this.inversedRelations, relation);
           if (inversed !== undefined) {
-            const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
-            safePush(knownInversedLinks as number[], currentEntity.indexInType);
+            state.appendBackReference(targetType, link, inversed.property);
           }
         }
       }
+      lastState = state.commit();
     }
-    // Drop any item from the array
-    toBeProducedEntities.length = 0;
 
-    return new Value(producedLinks, undefined);
+    const readOnlyProducedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations> = lastState.producedLinks;
+    return new Value(readOnlyProducedLinks as ProducedLinks<TEntityFields, TEntityRelations>, undefined);
   }
 
   canShrinkWithoutContext(_value: unknown): _value is ProducedLinks<TEntityFields, TEntityRelations> {
