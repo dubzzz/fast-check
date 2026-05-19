@@ -21,6 +21,7 @@ import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthCont
 import type { Arity, EntityLinks, EntityRelations, ProducedLinks, Strategy } from './interfaces/EntityGraphTypes.js';
 
 const safeObjectCreate = Object.create;
+const safeObjectAssign = Object.assign;
 
 /** @internal */
 function produceLinkUnitaryIndexArbitrary(
@@ -132,6 +133,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   }
 
   return tuple<(number[] | number | undefined)[]>(...subArbitraries).map((results) => {
+    const newProducedLinks = safeObjectAssign(safeObjectCreate(null), producedLinks);
     const currentLinks = producedLinks[currentEntity.type][currentEntity.indexInType];
     let resultIndex = 0;
     let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
@@ -143,7 +145,6 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       const targetType = relation.type;
       const countInTargetType = countsInTargetType[name];
       const linkOrLinks = results[resultIndex++];
-      const producedLinksInTargetType = producedLinks[targetType];
       currentLinks[name] = { type: targetType, index: linkOrLinks };
       const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
       for (const link of links) {
@@ -152,17 +153,20 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
             newToBeProducedEntities = [...toBeProducedEntities];
           }
           safePush(newToBeProducedEntities, { type: targetType, indexInType: link, depth: currentEntity.depth + 1 }); // indexInType should be equal to producedLinksInTargetType.length
-          safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
+          if (newProducedLinks[targetType] === producedLinks[targetType]) {
+            newProducedLinks[targetType] = [...producedLinks[targetType]];
+          }
+          safePush(newProducedLinks[targetType], createEmptyLinksInstanceFor(relations, targetType));
         }
         const inversed = safeMapGet(inversedRelations, relation);
         if (inversed !== undefined) {
-          const knownInversedLinks = producedLinksInTargetType[link][inversed.property].index;
+          const knownInversedLinks = producedLinks[targetType][link][inversed.property].index;
           safePush(knownInversedLinks as number[], currentEntity.indexInType);
         }
       }
     }
     return {
-      producedLinks,
+      producedLinks: newProducedLinks,
       toBeProducedEntities: newToBeProducedEntities !== undefined ? newToBeProducedEntities : toBeProducedEntities,
       nextIndex: nextIndex + 1,
     };
