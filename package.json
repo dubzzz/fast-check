@@ -48,7 +48,7 @@
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
     "oxlint": "^1.66.0",
-    "oxlint-tsgolint": "^0.22.1",
+    "oxlint-tsgolint": "^0.23.0",
     "pkg-pr-new": "^0.0.75",
     "prettier": "3.8.3",
     "publint": "^0.3.21",
