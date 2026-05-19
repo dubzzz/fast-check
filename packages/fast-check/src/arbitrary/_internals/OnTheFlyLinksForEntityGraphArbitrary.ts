@@ -260,8 +260,8 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       currentEntityDepth,
     );
     countsInTargetType[name] = countInTargetType;
-    subArbitraries.push(linkOrLinksArbitrary);
-    pushed.push({ name, relation, sentinelLinkIndex: countInTargetType });
+    safePush(subArbitraries, linkOrLinksArbitrary);
+    safePush(pushed, { name, relation, sentinelLinkIndex: countInTargetType });
   }
   return tuple(...subArbitraries).map((results) => {
     for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
