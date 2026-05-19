@@ -19,8 +19,7 @@ Fixes #issue-number
 <!-- PRs not checking all the boxes may take longer before being reviewed -->
 <!-- More about contributing at https://github.com/dubzzz/fast-check/blob/main/CONTRIBUTING.md -->
 
-# <!--
-
+<!--
 NOTE TO HUMAN CONTRIBUTORS: the block below is addressed to AI
 agents (Claude Code, Codex, Devin, OpenHands, Cursor agents, …)
 that may open this PR on your behalf. If you are a human author
