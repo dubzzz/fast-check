@@ -1,7 +1,4 @@
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
-import { Value } from '../../check/arbitrary/definition/Value.js';
-import type { Random } from '../../random/generator/Random.js';
-import { Stream } from '../../stream/Stream.js';
 import {
   safeAdd,
   safeHas,
@@ -13,13 +10,14 @@ import {
   String as SString,
   safeSlice,
 } from '../../utils/globals.js';
+import { chainUntil } from '../chainUntil.js';
 import { constant } from '../constant.js';
 import { integer } from '../integer.js';
 import { noBias } from '../noBias.js';
 import { option } from '../option.js';
+import { tuple } from '../tuple.js';
 import { uniqueArray } from '../uniqueArray.js';
 import { buildInversedRelationsMapping } from './helpers/BuildInversedRelationsMapping.js';
-import type { InversedRelationsEntry } from './helpers/BuildInversedRelationsMapping.js';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
 import type {
   Arity,
@@ -27,7 +25,6 @@ import type {
   EntityRelations,
   ProducedLinks,
   ReadonlyProducedLinks,
-  Relationship,
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
@@ -234,80 +231,59 @@ function buildInitialProductionState<TEntityFields, TEntityRelations extends Ent
 }
 
 /** @internal */
-class OnTheFlyLinksForEntityGraphArbitrary<
-  TEntityFields,
-  TEntityRelations extends EntityRelations<TEntityFields>,
-> extends Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
-  private inversedRelations: Map<Relationship<keyof TEntityFields>, InversedRelationsEntry<TEntityFields>>;
-
-  constructor(
-    readonly relations: TEntityRelations,
-    readonly defaultEntities: (keyof TEntityFields)[],
-  ) {
-    super();
-
-    // Basic sanity checks on the relations
-    assertAcceptableRelations(relations);
-
-    // Building inversed relations map
-    this.inversedRelations = buildInversedRelationsMapping(relations);
+function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
+  lastState: ProductionState<TEntityFields, TEntityRelations>,
+): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
+  const state = draftNextProductionState(lastState);
+  const currentEntity = state.getCurrentEntity();
+  const currentRelations = relations[currentEntity.type];
+  const currentEntityDepth = createDepthIdentifier();
+  currentEntityDepth.depth = currentEntity.depth;
+  const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
+  const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
+  for (const name in currentRelations) {
+    const relation = currentRelations[name];
+    if (relation.arity === 'inverse') {
+      continue;
+    }
+    const targetType = relation.type;
+    const countInTargetType = state.getExistingEntityCount(targetType);
+    const linkOrLinksArbitrary = buildLinkIndexArbitrary(
+      relation.arity,
+      relation.strategy || 'any',
+      targetType === currentEntity.type ? currentEntity.indexInType : undefined,
+      countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
+      currentEntityDepth,
+    );
+    countsInTargetType[name] = countInTargetType;
+    subArbitraries.push(linkOrLinksArbitrary);
   }
-
-  generate(mrng: Random, biasFactor: number | undefined): Value<ProducedLinks<TEntityFields, TEntityRelations>> {
-    let lastState = buildInitialProductionState(this.relations, this.defaultEntities);
-
-    // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
-    // we decided to consider an always growing array that will grow up to the numer of entities before being dropped.
-    while (lastState.nextIndex < lastState.toBeProducedEntities.length) {
-      const state = draftNextProductionState(lastState);
-      const currentEntity = state.getCurrentEntity();
-      const currentRelations = this.relations[currentEntity.type];
-      const currentEntityDepth = createDepthIdentifier();
-      currentEntityDepth.depth = currentEntity.depth;
-      for (const name in currentRelations) {
-        const relation = currentRelations[name];
-        if (relation.arity === 'inverse') {
-          continue;
+  return tuple<(number[] | number | undefined)[]>(...subArbitraries).map((results) => {
+    let resultIndex = 0;
+    for (const name in currentRelations) {
+      const relation = currentRelations[name];
+      if (relation.arity === 'inverse') {
+        continue;
+      }
+      const targetType = relation.type;
+      const countInTargetType = countsInTargetType[name];
+      const linkOrLinks = results[resultIndex++];
+      state.setOutboundLink(name, { type: targetType, index: linkOrLinks });
+      const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
+      for (const link of links) {
+        if (link >= countInTargetType) {
+          state.enqueueNewEntity(relations, targetType);
         }
-        const targetType = relation.type;
-        const countInTargetType = state.getExistingEntityCount(targetType);
-        const linkOrLinksArbitrary = buildLinkIndexArbitrary(
-          relation.arity,
-          relation.strategy || 'any',
-          targetType === currentEntity.type ? currentEntity.indexInType : undefined,
-          countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
-          currentEntityDepth,
-        );
-        const linkOrLinks = linkOrLinksArbitrary.generate(mrng, biasFactor).value;
-        state.setOutboundLink(name, { type: targetType, index: linkOrLinks });
-        const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
-        for (const link of links) {
-          if (link >= countInTargetType) {
-            state.enqueueNewEntity(this.relations, targetType);
-          }
-          const inversed = safeMapGet(this.inversedRelations, relation);
-          if (inversed !== undefined) {
-            state.appendBackReference(targetType, link, inversed.property);
-          }
+        const inversed = safeMapGet(inversedRelations, relation);
+        if (inversed !== undefined) {
+          state.appendBackReference(targetType, link, inversed.property);
         }
       }
-      lastState = state.commit();
     }
-
-    const readOnlyProducedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations> = lastState.producedLinks;
-    return new Value(readOnlyProducedLinks as ProducedLinks<TEntityFields, TEntityRelations>, undefined);
-  }
-
-  canShrinkWithoutContext(_value: unknown): _value is ProducedLinks<TEntityFields, TEntityRelations> {
-    return false; // for now, we reject any shrink without context
-  }
-
-  shrink(
-    _value: ProducedLinks<TEntityFields, TEntityRelations>,
-    _context: unknown | undefined,
-  ): Stream<Value<ProducedLinks<TEntityFields, TEntityRelations>>> {
-    return Stream.nil(); // for now, we don't support any shrink
-  }
+    return state.commit();
+  });
 }
 
 /** @internal */
@@ -315,5 +291,17 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
   relations: TEntityRelations,
   defaultEntities: (keyof TEntityFields)[],
 ): Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
-  return new OnTheFlyLinksForEntityGraphArbitrary(relations, defaultEntities);
+  assertAcceptableRelations(relations);
+
+  const inversedRelations = buildInversedRelationsMapping(relations);
+  const initialStateArb = constant(buildInitialProductionState(relations, defaultEntities));
+  return chainUntil(initialStateArb, (state) => {
+    if (state.nextIndex >= state.toBeProducedEntities.length) {
+      return undefined;
+    }
+    return buildEntityStepArbitrary(relations, inversedRelations, state);
+  }).map((state) => {
+    const readOnlyProducedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations> = state.producedLinks;
+    return readOnlyProducedLinks as ProducedLinks<TEntityFields, TEntityRelations>;
+  });
 }
