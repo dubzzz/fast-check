@@ -110,9 +110,6 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
 
-  // Snapshot of the count of entities of each target type at the moment we start producing links
-  // for the current entity. Captured here because both the underlying arbitraries and the post
-  // processing rely on it, and the count would otherwise grow as new entities get queued.
   const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
   for (const name in currentRelations) {
@@ -173,10 +170,9 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
 }
 
 /** @internal */
-export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+export function assertAcceptableRelations<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
-  defaultEntities: (keyof TEntityFields)[],
-): Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
+): void {
   // Basic sanity checks on the relations
   const nonExclusiveEntities = new SSet<keyof TEntityRelations>();
   const exclusiveEntities = new SSet<keyof TEntityRelations>();
@@ -206,8 +202,13 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
       }
     }
   }
+}
 
-  // Building initial state
+/** @internal */
+function buildInitialProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  defaultEntities: (keyof TEntityFields)[],
+): ProductionState<TEntityFields, TEntityRelations> {
   const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
   for (const name in relations) {
     producedLinks[name as Extract<keyof TEntityFields, string>] = [];
@@ -217,15 +218,18 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
     safePush(toBeProducedEntities, { type: name, indexInType: producedLinks[name].length, depth: 0 });
     safePush(producedLinks[name], createEmptyLinksInstanceFor(relations, name));
   }
-  const initialProductionState: ProductionState<TEntityFields, TEntityRelations> = {
-    producedLinks,
-    toBeProducedEntities,
-    nextIndex: 0,
-  };
+  return { producedLinks, toBeProducedEntities, nextIndex: 0 };
+}
 
-  // Building all relations
+/** @internal */
+export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  defaultEntities: (keyof TEntityFields)[],
+): Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
+  assertAcceptableRelations(relations);
+
   const inversedRelations = buildInversedRelationsMapping(relations);
-  const initialStateArb = constant(initialProductionState);
+  const initialStateArb = constant(buildInitialProductionState(relations, defaultEntities));
   return chainUntil(initialStateArb, (state) => {
     if (state.nextIndex >= state.toBeProducedEntities.length) {
       return undefined;
