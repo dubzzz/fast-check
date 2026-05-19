@@ -244,7 +244,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   currentEntityDepth.depth = currentEntity.depth;
   const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
-  const pushed: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
+  const linkContexts: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
   for (const name in currentRelations) {
     const relation = currentRelations[name];
     if (relation.arity === 'inverse') {
@@ -261,12 +261,12 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
     );
     countsInTargetType[name] = countInTargetType;
     safePush(subArbitraries, linkOrLinksArbitrary);
-    safePush(pushed, { name, relation, sentinelLinkIndex: countInTargetType });
+    safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
   }
   return tuple(...subArbitraries).map((results) => {
     for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
       const linkOrLinks = results[resultIndex];
-      const { name, relation, sentinelLinkIndex } = pushed[resultIndex];
+      const { name, relation, sentinelLinkIndex } = linkContexts[resultIndex];
 
       state.setOutboundLink(name, { type: relation.type, index: linkOrLinks });
       const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
