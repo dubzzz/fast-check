@@ -148,7 +148,7 @@ type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEn
 };
 
 /** @internal */
-function beginProductionStep<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+function draftNextProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   state: ProductionState<TEntityFields, TEntityRelations>,
 ) {
   const { producedLinks, toBeProducedEntities, nextIndex } = state;
@@ -202,7 +202,7 @@ function beginProductionStep<TEntityFields, TEntityRelations extends EntityRelat
       });
       safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
     },
-    recordInverseLink: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
+    appendBackReference: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
       const links = getOrCreateLinksFor(targetType, indexInType);
       const knownInversedLinks = links[property].index;
       safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, toBeProduced.indexInType);
@@ -261,7 +261,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
     // we decided to consider an always growing array that will grow up to the numer of entities before being dropped.
     while (lastState.nextIndex <= lastState.toBeProducedEntities.length) {
-      const state = beginProductionStep(lastState);
+      const state = draftNextProductionState(lastState);
       const currentEntity = state.getCurrentEntity();
       const currentRelations = this.relations[currentEntity.type];
       const currentEntityDepth = createDepthIdentifier();
@@ -290,7 +290,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
           }
           const inversed = safeMapGet(this.inversedRelations, relation);
           if (inversed !== undefined) {
-            state.recordInverseLink(targetType, link, inversed.property);
+            state.appendBackReference(targetType, link, inversed.property);
           }
         }
       }
