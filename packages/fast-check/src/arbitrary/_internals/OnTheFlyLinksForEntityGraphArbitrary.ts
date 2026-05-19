@@ -258,7 +258,7 @@ class OnTheFlyLinksForEntityGraphArbitrary<
 
     // Ideally toBeProducedEntities should be a queue, but given JavaScript built-ins arrays perform badly in queue mode,
     // we decided to consider an always growing array that will grow up to the numer of entities before being dropped.
-    while (lastState.nextIndex <= lastState.toBeProducedEntities.length) {
+    while (lastState.nextIndex < lastState.toBeProducedEntities.length) {
       const state = draftNextProductionState(lastState);
       const currentEntity = state.getCurrentEntity();
       const currentRelations = this.relations[currentEntity.type];
