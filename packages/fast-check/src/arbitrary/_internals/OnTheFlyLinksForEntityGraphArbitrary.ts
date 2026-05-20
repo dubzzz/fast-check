@@ -174,14 +174,11 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     property: keyof TEntityRelations[keyof TEntityFields],
   ) {
     const links = getOrCreateLinksFor(type, indexInType);
-    // `originalEntity` is `undefined` when the entity was just enqueued in this same draft via `enqueueNewEntity`:
-    // such entities only live in the cloned per-type array, not in the original `producedLinks` — in that case
-    // `links` is the brand-new instance from `createEmptyLinksInstanceFor` and nothing is shared with a previous state.
+    // `undefined` for entities just enqueued in this draft — they only live in the cloned per-type array.
     const originalEntity = producedLinks[type][indexInType];
     if (originalEntity !== undefined && links[property] === originalEntity[property]) {
       const sharedRelation = links[property];
-      // `index` is the only field that can carry a shared mutable reference: when it is an array we must
-      // shallow-clone it; in every other case (`number` or `undefined`) the primitive can be reused as-is.
+      // Only `index` can be a shared array; `number`/`undefined` are primitives and can be reused.
       links[property] = {
         type: sharedRelation.type,
         index: typeof sharedRelation.index === 'object' ? safeSlice(sharedRelation.index) : sharedRelation.index,
