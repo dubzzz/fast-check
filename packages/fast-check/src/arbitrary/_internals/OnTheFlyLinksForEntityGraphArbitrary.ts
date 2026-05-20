@@ -178,7 +178,7 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     if (originalEntity !== undefined && links[property] === originalEntity[property]) {
       const clonedRelation = safeObjectAssign({}, links[property]);
       // When `index` is an array it is still shared with the previous state and must be cloned.
-      // In every other case it is either a primitive (`number` or `undefined`) — so already safely copied by the `Object.assign` above — or nothing left to do.
+      // In every other case (either `number` or `undefined`) it already got safely "cloned" by the `Object.assign`.
       if (typeof clonedRelation.index === 'object') {
         clonedRelation.index = safeSlice(clonedRelation.index);
       }
