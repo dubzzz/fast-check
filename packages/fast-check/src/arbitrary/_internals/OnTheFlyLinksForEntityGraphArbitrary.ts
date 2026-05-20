@@ -168,6 +168,18 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     }
     return producedLinksForType[indexInType];
   }
+  function getOrCreateRelationFor(type: keyof TEntityFields, indexInType: number, property: string) {
+    const links = getOrCreateLinksFor(type, indexInType) as Record<string, EntityLinks<TEntityFields, TEntityRelations>[keyof EntityLinks<TEntityFields, TEntityRelations>]>;
+    const originalEntity = producedLinks[type][indexInType];
+    if (originalEntity !== undefined && links[property] === originalEntity[property]) {
+      const clonedRelation = safeObjectAssign({}, links[property]);
+      if (typeof clonedRelation.index === 'object') {
+        clonedRelation.index = safeSlice(clonedRelation.index);
+      }
+      links[property] = clonedRelation;
+    }
+    return links[property];
+  }
 
   let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
 
@@ -201,8 +213,8 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
       safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
     },
     appendBackReference: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
-      const links = getOrCreateLinksFor(targetType, indexInType);
-      const knownInversedLinks = links[property].index;
+      const relation = getOrCreateRelationFor(targetType, indexInType, property);
+      const knownInversedLinks = relation.index;
       safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, toBeProduced.indexInType);
     },
     // Seal the step into a new immutable state and advance to the next entity.
