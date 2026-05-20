@@ -270,7 +270,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       const linkOrLinks = results[resultIndex];
       const { name, relation, sentinelLinkIndex } = linkContexts[resultIndex];
 
-      state.setOutboundLink(name, { type: relation.type, index: linkOrLinks });
+      const effectiveLinks: number[] = [];
       const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
       for (const link of links) {
         let newEntityIndexInType: number;
@@ -283,11 +283,17 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
         } else {
           newEntityIndexInType = link;
         }
+        safePush(effectiveLinks, newEntityIndexInType);
         const inversed = safeMapGet(inversedRelations, relation);
         if (inversed !== undefined) {
           state.appendBackReference(relation.type, newEntityIndexInType, inversed.property);
         }
       }
+      state.setOutboundLink(name, {
+        type: relation.type,
+        index:
+          linkOrLinks === undefined ? undefined : typeof linkOrLinks === 'number' ? effectiveLinks[0] : effectiveLinks,
+      });
     }
     return state.commit();
   });
