@@ -266,6 +266,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
     safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
   }
   return tuple(...subArbitraries).map((results) => {
+    const state = draftNextProductionState(lastState);
     for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
       const linkOrLinks = results[resultIndex];
       const { name, relation, sentinelLinkIndex } = linkContexts[resultIndex];
