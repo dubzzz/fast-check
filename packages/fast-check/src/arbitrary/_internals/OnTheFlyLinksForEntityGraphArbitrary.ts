@@ -179,12 +179,11 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     // `links` is the brand-new instance from `createEmptyLinksInstanceFor` and nothing is shared with a previous state.
     const originalEntity = producedLinks[type][indexInType];
     if (originalEntity !== undefined && links[property] === originalEntity[property]) {
-      const originalRelation = links[property];
       // `index` is the only field that can carry a shared mutable reference: when it is an array we must
       // shallow-clone it; in every other case (`number` or `undefined`) the primitive can be reused as-is.
       links[property] = {
-        type: originalRelation.type,
-        index: typeof originalRelation.index === 'object' ? safeSlice(originalRelation.index) : originalRelation.index,
+        type: links[property].type,
+        index: typeof links[property].index === 'object' ? safeSlice(links[property].index) : links[property].index,
       };
     }
     return links[property];
