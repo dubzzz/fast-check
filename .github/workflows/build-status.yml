@@ -615,13 +615,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=fast-check-$(tar -xzOf packages/fast-check/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -630,8 +623,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -693,13 +685,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=ava-$(tar -xzOf packages/ava/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -708,8 +693,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -771,13 +755,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=jest-$(tar -xzOf packages/jest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -786,8 +763,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -849,13 +825,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=packaged-$(tar -xzOf packages/packaged/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -864,8 +833,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -927,13 +895,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=poisoning-$(tar -xzOf packages/poisoning/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -942,8 +903,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -1005,13 +965,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=vitest-$(tar -xzOf packages/vitest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -1020,8 +973,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -1083,13 +1035,6 @@ jobs:
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=worker-$(tar -xzOf packages/worker/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -1098,8 +1043,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
+        run: pnpm publish --no-git-checks --access public --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
