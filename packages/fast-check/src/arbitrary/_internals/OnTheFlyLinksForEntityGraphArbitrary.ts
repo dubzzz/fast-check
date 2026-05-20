@@ -174,6 +174,9 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     property: keyof TEntityRelations[keyof TEntityFields],
   ) {
     const links = getOrCreateLinksFor(type, indexInType);
+    // `originalEntity` is `undefined` when the entity was just enqueued in this same draft via `enqueueNewEntity`:
+    // such entities only live in the cloned per-type array, not in the original `producedLinks` — in that case
+    // `links` is the brand-new instance from `createEmptyLinksInstanceFor` and nothing is shared with a previous state.
     const originalEntity = producedLinks[type][indexInType];
     if (originalEntity !== undefined && links[property] === originalEntity[property]) {
       const clonedRelation = { ...links[property] };
