@@ -176,9 +176,9 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     const links = getOrCreateLinksFor(type, indexInType);
     const originalEntity = producedLinks[type][indexInType];
     if (links[property] === originalEntity[property]) {
-      const clonedRelation = safeObjectAssign({}, links[property]);
+      const clonedRelation = { ...links[property] };
       // When `index` is an array it is still shared with the previous state and must be cloned.
-      // In every other case (either `number` or `undefined`) it already got safely "cloned" by the `Object.assign`.
+      // In every other case (either `number` or `undefined`) it already got safely "cloned" by the spread.
       if (typeof clonedRelation.index === 'object') {
         clonedRelation.index = safeSlice(clonedRelation.index);
       }
