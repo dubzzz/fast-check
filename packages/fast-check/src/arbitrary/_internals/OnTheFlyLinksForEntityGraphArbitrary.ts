@@ -178,7 +178,7 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     const originalEntity = producedLinks[type][indexInType];
     if (originalEntity !== undefined && links[property] === originalEntity[property]) {
       const sharedRelation = links[property];
-      // Only `index` can be a shared array; `number`/`undefined` are primitives and can be reused.
+      // When `index` is an array, clone it — otherwise we'd keep sharing it (and mutating it) with the previous state.
       links[property] = {
         type: sharedRelation.type,
         index: typeof sharedRelation.index === 'object' ? safeSlice(sharedRelation.index) : sharedRelation.index,
