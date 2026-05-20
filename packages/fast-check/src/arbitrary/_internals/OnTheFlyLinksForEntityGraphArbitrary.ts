@@ -169,7 +169,10 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     return producedLinksForType[indexInType];
   }
   function getOrCreateRelationFor(type: keyof TEntityFields, indexInType: number, property: string) {
-    const links = getOrCreateLinksFor(type, indexInType) as Record<string, EntityLinks<TEntityFields, TEntityRelations>[keyof EntityLinks<TEntityFields, TEntityRelations>]>;
+    const links = getOrCreateLinksFor(type, indexInType) as Record<
+      string,
+      EntityLinks<TEntityFields, TEntityRelations>[keyof EntityLinks<TEntityFields, TEntityRelations>]
+    >;
     const originalEntity = producedLinks[type][indexInType];
     if (originalEntity !== undefined && links[property] === originalEntity[property]) {
       const clonedRelation = safeObjectAssign({}, links[property]);
