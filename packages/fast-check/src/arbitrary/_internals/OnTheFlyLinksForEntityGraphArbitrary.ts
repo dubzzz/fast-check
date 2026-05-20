@@ -188,15 +188,17 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     },
     enqueueNewEntity: (relations: TEntityRelations, targetType: keyof TEntityFields) => {
       const producedLinksInTargetType = getOrCreateProducedLinksFor(targetType);
+      const newEntityIndexInType = producedLinksInTargetType.length;
       if (newToBeProducedEntities === undefined) {
         newToBeProducedEntities = safeSlice(toBeProducedEntities as (typeof toBeProducedEntities)[number][]);
       }
       safePush(newToBeProducedEntities, {
         type: targetType,
-        indexInType: producedLinksInTargetType.length,
+        indexInType: newEntityIndexInType,
         depth: toBeProduced.depth + 1,
       });
       safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
+      return newEntityIndexInType;
     },
     appendBackReference: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
       const links = getOrCreateLinksFor(targetType, indexInType);
@@ -271,12 +273,19 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       state.setOutboundLink(name, { type: relation.type, index: linkOrLinks });
       const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
       for (const link of links) {
+        let newEntityIndexInType: number;
         if (link >= sentinelLinkIndex) {
-          state.enqueueNewEntity(relations, relation.type);
+          // Links at or above sentinelLinkIndex mark "create a new entity"; enqueueNewEntity
+          // allocates one and returns its index-in-type for later links to reuse.
+          // Known limitation of current design: reuse is scoped to the current relation name
+          // two relation names requesting a new entity of the same type get two separate entities.
+          newEntityIndexInType = state.enqueueNewEntity(relations, relation.type);
+        } else {
+          newEntityIndexInType = link;
         }
         const inversed = safeMapGet(inversedRelations, relation);
         if (inversed !== undefined) {
-          state.appendBackReference(relation.type, link, inversed.property);
+          state.appendBackReference(relation.type, newEntityIndexInType, inversed.property);
         }
       }
     }
