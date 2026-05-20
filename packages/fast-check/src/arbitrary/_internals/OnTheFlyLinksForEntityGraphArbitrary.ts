@@ -178,12 +178,13 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     // such entities only live in the cloned per-type array, not in the original `producedLinks` — in that case
     // `links` is the brand-new instance from `createEmptyLinksInstanceFor` and nothing is shared with a previous state.
     const originalEntity = producedLinks[type][indexInType];
-    if (originalEntity !== undefined && links[property] === originalEntity[property]) {
+    const sharedRelation = links[property];
+    if (originalEntity !== undefined && sharedRelation === originalEntity[property]) {
       // `index` is the only field that can carry a shared mutable reference: when it is an array we must
       // shallow-clone it; in every other case (`number` or `undefined`) the primitive can be reused as-is.
       links[property] = {
-        type: links[property].type,
-        index: typeof links[property].index === 'object' ? safeSlice(links[property].index) : links[property].index,
+        type: sharedRelation.type,
+        index: typeof sharedRelation.index === 'object' ? safeSlice(sharedRelation.index) : sharedRelation.index,
       };
     }
     return links[property];
