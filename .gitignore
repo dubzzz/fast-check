@@ -12,6 +12,10 @@ website/docs/api/
 deopt.out
 v8.log
 v8.out
+isolate-*-v8.log
+
+# Claude Code agent worktrees (ephemeral)
+.claude/worktrees/
 
 # IDE related files
 .idea
