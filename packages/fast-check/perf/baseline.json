@@ -1,0 +1,194 @@
+[
+  {
+    "suite": "integer",
+    "name": "generate default (i32 range)",
+    "median": 32730150.483038433,
+    "mean": 34025989.11392836,
+    "min": 31199520.875812855,
+    "max": 42039356.59649535
+  },
+  {
+    "suite": "integer",
+    "name": "generate small range (0..100)",
+    "median": 40190290.5667453,
+    "mean": 40743770.87861119,
+    "min": 39452755.4183864,
+    "max": 43842842.24240731
+  },
+  {
+    "suite": "integer",
+    "name": "generate biased default",
+    "median": 10930978.893624438,
+    "mean": 10945794.215472769,
+    "min": 10812960.580360284,
+    "max": 11114155.560203126
+  },
+  {
+    "suite": "integer",
+    "name": "generate signed (-100..100)",
+    "median": 35523755.98631708,
+    "mean": 35623119.116776586,
+    "min": 34810816.12215248,
+    "max": 36599649.34895193
+  },
+  {
+    "suite": "integer",
+    "name": "shrink default mid value",
+    "median": 449051.03897887364,
+    "mean": 448688.50913685485,
+    "min": 438052.7533921228,
+    "max": 459771.6538725569
+  },
+  {
+    "suite": "nat",
+    "name": "generate default",
+    "median": 36767221.57141074,
+    "mean": 36907995.73568273,
+    "min": 36143252.925613284,
+    "max": 38009834.910184376
+  },
+  {
+    "suite": "boolean",
+    "name": "generate",
+    "median": 20875677.66746749,
+    "mean": 20852286.139730286,
+    "min": 20584043.91651111,
+    "max": 21120820.674952373
+  },
+  {
+    "suite": "boolean",
+    "name": "generate biased",
+    "median": 17791489.0284351,
+    "mean": 17827470.99661742,
+    "min": 17382510.094179824,
+    "max": 18307743.01473135
+  },
+  {
+    "suite": "constant",
+    "name": "generate single",
+    "median": 53312797.7857437,
+    "mean": 53236987.97374488,
+    "min": 51297082.634474464,
+    "max": 54951176.64722193
+  },
+  {
+    "suite": "constantFrom",
+    "name": "generate 5 values",
+    "median": 28701905.994694736,
+    "mean": 28689027.93341077,
+    "min": 28418658.766643815,
+    "max": 28991583.17351288
+  },
+  {
+    "suite": "constantFrom",
+    "name": "generate 100 values",
+    "median": 28387269.132017616,
+    "mean": 28329304.615130264,
+    "min": 27996309.854605053,
+    "max": 28732440.41350827
+  },
+  {
+    "suite": "tuple",
+    "name": "generate (int, int)",
+    "median": 6879304.862371507,
+    "mean": 6843204.022777928,
+    "min": 6627946.8148184605,
+    "max": 7017373.075698185
+  },
+  {
+    "suite": "tuple",
+    "name": "generate (int, bool, str)",
+    "median": 3344434.53466437,
+    "mean": 3332175.9716824368,
+    "min": 3283511.1205948126,
+    "max": 3354996.612141021
+  },
+  {
+    "suite": "tuple",
+    "name": "generate (5x int)",
+    "median": 2476030.1941170874,
+    "mean": 2462828.015680706,
+    "min": 2402353.123592983,
+    "max": 2509807.4035434094
+  },
+  {
+    "suite": "array",
+    "name": "generate array<int> default",
+    "median": 2181496.1044162726,
+    "mean": 2171718.5617526276,
+    "min": 2125853.3362026466,
+    "max": 2210373.1184787443
+  },
+  {
+    "suite": "array",
+    "name": "generate array<int> small (max 10)",
+    "median": 2004909.9706437262,
+    "mean": 2012267.9193037443,
+    "min": 1986141.5299103453,
+    "max": 2042816.1058192463
+  },
+  {
+    "suite": "array",
+    "name": "generate array<int> fixed len 50",
+    "median": 280085.32280993776,
+    "mean": 278342.5731804301,
+    "min": 270900.2085258284,
+    "max": 281068.0583221908
+  },
+  {
+    "suite": "array",
+    "name": "generate array<bool> default",
+    "median": 1716342.6582604777,
+    "mean": 1718022.2096612882,
+    "min": 1691519.403739393,
+    "max": 1744367.0109237204
+  },
+  {
+    "suite": "string",
+    "name": "generate default",
+    "median": 1246841.6255941682,
+    "mean": 1246101.7720316271,
+    "min": 1235077.699518501,
+    "max": 1255411.4988656694
+  },
+  {
+    "suite": "string",
+    "name": "generate short (max 10)",
+    "median": 1211991.475615298,
+    "mean": 1212019.8881693832,
+    "min": 1208289.6356814618,
+    "max": 1214290.2657107026
+  },
+  {
+    "suite": "string",
+    "name": "generate ascii fixed 50",
+    "median": 165758.0423975199,
+    "mean": 165846.881884727,
+    "min": 164197.28962215627,
+    "max": 166841.61197603395
+  },
+  {
+    "suite": "oneof",
+    "name": "generate 3-way (int,bool,str)",
+    "median": 9888429.920306452,
+    "mean": 9984175.081233453,
+    "min": 9845350.408809748,
+    "max": 10232094.561376568
+  },
+  {
+    "suite": "record",
+    "name": "generate small {a,b,c}",
+    "median": 693426.3405805681,
+    "mean": 693812.0468577328,
+    "min": 690497.881084369,
+    "max": 697185.4953356019
+  },
+  {
+    "suite": "mapToConstant",
+    "name": "generate ascii-ish 3 entries",
+    "median": 15025122.536715804,
+    "mean": 15022551.447609216,
+    "min": 14990510.13285826,
+    "max": 15047441.911850493
+  }
+]
