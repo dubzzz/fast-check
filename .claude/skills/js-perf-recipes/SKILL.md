@@ -7,6 +7,14 @@ description: A dense catalog of JavaScript and software-engineering performance 
 
 These recipes assume V8-class engines (Node, Chrome, Edge, Deno; JSC has similar behaviors). Most are micro-optimizations: only apply them where a profiler points, and always benchmark before/after on the target engine.
 
+> **⚠️ Scope:** Micro-optimization of hot paths in plain JS/TS. Not a substitute for picking a better algorithm.
+>
+> **🎯 Measurement discipline:**
+> 1. Measure first — never guess. Many promising optimizations don't survive a real benchmark.
+> 2. Benchmark across the **full input distribution** — a win at one size can be a loss at another. Identify the cross-over point.
+> 3. Set a minimum effect threshold (e.g. >5%) before merging — micro-benchmark noise routinely fakes 10–40% wins. Replicate across machines, time-of-day, runtime versions.
+> 4. The cheapest operation is the one you delete.
+
 How to use this file:
 
 1. **Find the right category** in the table of contents.
@@ -33,7 +41,8 @@ Source tags throughout:
 11. [Browser / DOM](#11-browser--dom)
 12. [Profiling & measurement](#12-profiling--measurement)
 13. [Anti-pattern → fix cheatsheet](#13-anti-pattern--fix-cheatsheet)
-14. [Profiling-a-hot-path checklist](#14-profiling-a-hot-path-checklist)
+14. [Negative results & cautionary tales](#14-negative-results--cautionary-tales)
+15. [Profiling-a-hot-path checklist](#15-profiling-a-hot-path-checklist)
 
 ---
 
@@ -98,7 +107,7 @@ V8 keeps small integers as tagged `Smi`. Bitwise ops always produce int32; arith
   // good — bit shift, int32-preserving
   const idx = n >> 5;
   ```
-- **Use `Math.imul` for 32-bit multiply.** `a * b` for ints that may overflow forces double-precision multiply + truncate. `Math.imul` is the explicit 32-bit signed multiply intrinsic and maps to a single CPU `imul`. `v8`
+- **Use `Math.imul` for 32-bit multiply.** `a * b` for ints that may overflow forces double-precision multiply + truncate. `Math.imul` is the explicit 32-bit signed multiply intrinsic and maps to a single CPU `imul`. Common targets: LCGs, MurmurHash, xxHash, FNV, any bit-mixer. `v8`
   ```js
   // bad
   return (a * MULTIPLIER + INCREMENT) & MASK;
@@ -118,6 +127,15 @@ V8 keeps small integers as tagged `Smi`. Bitwise ops always produce int32; arith
   const k = total - (total % step);
   // good
   const k = ~~(total / step) * step;
+  ```
+- **For a constant divisor, prefer `~~(D / k) * k` over `D - (D % k)`** — the bitwise truncation specializes to int32; the subtract-of-modulo doesn't. Guard the trivial case if `D` can be a power-of-two boundary. `v8`
+  ```js
+  // bad
+  const MaxAllowed = NumValues - (NumValues % rangeSize);
+  // good
+  const MaxAllowed = rangeSize > 2
+    ? ~~(0x100000000 / rangeSize) * rangeSize
+    : 0x100000000;
   ```
 - **Prefer `+ POSITIVE` over `- NEGATIVE`.** Inlining the positive constant avoids a double-subtraction shape and keeps the result a Smi. `v8`
   ```js
@@ -218,6 +236,38 @@ The single biggest source of perf loss in idiomatic JS is allocations inside loo
   }
   // hot callers use unsafeCompute directly
   ```
+- **In N-step loops, clone once outside, mutate N times inside.** Reduces allocations from `O(N)` to `O(1)`. `general`
+  ```js
+  // bad — O(N) allocations
+  let cur = state;
+  for (let i = 0; i !== num; ++i) {
+    const next = cur.next();
+    out.push(next[0]);
+    cur = next[1];                 // new instance per iteration
+  }
+  // good — O(1) allocation
+  const next = state.clone();
+  for (let i = 0; i !== num; ++i) {
+    out.push(next.unsafeStep());   // mutate in place
+  }
+  ```
+- **Switch fields from `readonly` to `private` when adding an unsafe mutating primitive.** The public contract still looks immutable; only internal code can update them. `general`
+- **Audit the tail of hot functions.** `return new Klass(a, b, c)` from computed values → mutate a working instance you already have and return that. `general`
+- **Push `.slice()` from helpers up to the public `clone()`.** Helpers operate in place; the immutability boundary lives at the API edge. `general`
+  ```js
+  // bad — slice on every call
+  function transform(prev) {
+    const buf = prev.slice();
+    for (let i = 0; i < N; ++i) { /* mutate buf */ }
+    return buf;
+  }
+  // good — mutate in place; slice only at the immutability boundary
+  function transform(buf) {
+    for (let i = 0; i < N; ++i) { /* mutate buf */ }
+  }
+  clone() { return new Self(this.buf.slice(), this.index); }
+  ```
+- **Land the unsafe variant *and* rewire internal callers in the same change** — the optimization is only half-banked until the internals consume it. `general`
 - **Mutate buffers in place; copy only at the boundary.** Replace bulk-rebuild steps (`prev.slice()` + populate) with in-place updates that advance one slot at a time. Reserve copies for `clone()`-style boundaries where they're semantically required. `general`
   ```js
   // bad
@@ -318,6 +368,19 @@ A comparison is much cheaper than `%`, a `while`-loop setup, a `BigInt` op, or a
   while (v >= Accepted) v = compute(...);
   return finish(v);
   ```
+- **Order branches by frequency × cost.** Cheapest likely case first, expensive fallback last. Defer divisions/modulos until you've proven they're necessary. `general`
+- **Extract the inner step of a rejection loop into a named helper** so the initial call and the retry share one code path — better for the JIT, clearer for readers. `general`
+- **Manually unroll a loop when the bound is effectively a small constant (2, 3, 4).** Removes counter, bounds check, and per-iteration branches; lets the JIT keep values in registers. Pairs with the fixed-shape recipe above. `general`
+  ```js
+  // bad — generic, variable-length
+  for (let i = 0; i !== rangeLength; ++i) {
+    const maxI = i === 0 ? rangeSize[0] + 1 : 0x100000000;
+    out[i] = step(maxI);
+  }
+  // good — unrolled to the always-2 case
+  out[0] = step(rangeSize[0] + 1);
+  out[1] = step(0x100000000);
+  ```
 
 ### Drop runtime feature-detection guards at module init
 
@@ -381,7 +444,7 @@ A comparison is much cheaper than `%`, a `while`-loop setup, a `BigInt` op, or a
   // good — offset in number, single BigInt() per draw, no extra sub
   v = (v << SHIFT32) + BigInt(raw + 0x80000000);
   ```
-- **Use `<<` instead of `*` for BigInt powers of two.** `general`
+- **Use `<<` instead of `*` for BigInt powers of two.** The speedup is *larger* than for Number — engines implement `<< 32n` as a word-shift, but `* 0x100000000n` goes through a general multi-precision multiply. `general`
   ```js
   // bad
   v = N * v + step();
@@ -430,6 +493,7 @@ A comparison is much cheaper than `%`, a `while`-loop setup, a `BigInt` op, or a
     return SNumber(slowBigIntPath(SBigInt(from), SBigInt(to))); // cold
   }
   ```
+- **⚠️ BigInt delegation isn't unconditional.** Setup cost can dominate on small ranges where a hand-rolled multi-word `number` implementation wins. Benchmark across the full input distribution and identify the cross-over. `general`
 
 ---
 
@@ -658,6 +722,12 @@ Constant expressions evaluated at module load still cost ns each and bloat init.
 | `prev.slice()` + populate per step | in-place index update | `general` |
 | `new Foo(...)` at loop end | overwrite a reusable runner | `general` |
 | Defensive `.clone()` per call | expose `unsafeFoo` variant | `general` |
+| `.slice()` in helper + slice in `clone()` | helper mutates; only `clone()` slices | `general` |
+| O(N) allocations across N-step loop | clone once outside, mutate N times inside | `general` |
+| `D - (D % k)` with constant `k` | `~~(D / k) * k` | `v8` |
+| `for (let i = 0; i !== n; ++i)` with hand-known `n=2..4` | manual unroll | `general` |
+| Cheap branch evaluated after expensive setup | reorder: cheap & frequent case first | `general` |
+| Inline rejection-loop step | extract named helper shared by initial + retry | `general` |
 | `arr.slice().reverse()` | reverse-index `for` | `general` |
 | `Array(n).join(s)` | `s.repeat(n-1)` | `general` |
 | `[...].map(f).reduce(...)` | fused single loop | `general` |
@@ -696,22 +766,43 @@ Constant expressions evaluated at module load still cost ns each and bloat init.
 
 ---
 
-## 14. Profiling-a-hot-path checklist
+## 14. Negative results & cautionary tales
+
+When *not* to optimize — and how to recognize a benchmark you shouldn't trust.
+
+- **⚠️ "Looked faster, didn't survive replication."** A ~1.4× single-run delta is well within micro-benchmark noise. Replicate across machines / time-of-day / runtime versions before merging.
+- **⚠️ "Win at one input size, regression at others."** Delegating to a native primitive (e.g. BigInt) can deliver multi-× speedups at large inputs but regress small ones. Benchmark a representative spread of inputs — the cross-over point matters.
+- **⚠️ "Barely-visible win, but enabling refactor."** A change can earn its merge by clarifying structure even when the direct benchmark is flat — it sets up later optimizations. State this explicitly in the PR.
+- **⚠️ Bundle-size wins can carry a runtime cost.** Trading ~10% bundle for ~3% slower jumps is the right call if jumps are rare in your workload, the wrong call if you're in a jump-heavy hot loop. Know which budget you're optimizing.
+- **⚠️ Profilers lie at sub-µs scale.** `console.time` rounds, `performance.now()` has resolution caps in some browsers (clamped to 0.1 ms under Spectre mitigations). For inner-loop measurement, count iterations against a wall-clock budget instead.
+- **⚠️ Warmup before measuring.** Without ≥10k warmup iterations you're often measuring the interpreter, not optimized code. A "100× speedup" on a cold function frequently disappears when both versions are warm.
+
+---
+
+## 15. Profiling-a-hot-path checklist
 
 Use this in order when a profile points at a single function:
 
-1. **Allocations in the loop?** → mutate in place, hoist `clone()`, return scalars not tuples, reuse the final runner.
-2. **`+` / `*` on int-shaped numbers?** → try `|`, `^`, `Math.imul`, `~~`.
-3. **`BigInt` in the inner loop?** → stay in `number`, cache constants at module scope, shift instead of multiply, unroll iter 0.
-4. **`%` or `while(true)` rejection?** → add fast-path branches; rewrite as explicit-condition loop.
-5. **Constants computed at import?** → inline literals, comment the derivation.
-6. **Variable-length container with a known fixed length?** → use a fixed-shape object.
-7. **Big constant table?** → consider 6-bit packed string.
-8. **Globals like `BigInt`, `Number` looked up in hot code?** → alias at module scope.
-9. **Defensive `clone()` on every call?** → expose an `unsafe` variant for hot callers.
-10. **Megamorphic helper called from many sites?** → split into N specialized monomorphic copies.
-11. **`await` of a value that's often sync?** → branch on thenable, return directly.
-12. **Layout-thrashing read inside a DOM-write loop?** → batch all reads then all writes.
+1. **`[value, newState]` returns inside a loop?** → mutating primitive + clone-at-boundary.
+2. **`.slice()` / `.map()` / `[...arr]` on a hot buffer?** → mutate in place; push the copy to the public `clone()`.
+3. **Allocations in the loop?** → mutate in place, hoist `clone()`, return scalars not tuples, reuse the final runner.
+4. **`*` between ints that may exceed 2³¹?** → `Math.imul`.
+5. **`+` between disjoint-masked values?** → `|`.
+6. **`>>> 0` / `| 0` at API boundaries?** → can the contract advertise signed int32 instead?
+7. **`BigInt` arithmetic?** → demote anything ≤ 2⁵³ to `number`; replace `* 2^n` with `<< n`; cache constants module-scope; unroll iter 0.
+8. **`Math.floor(a / b)` / `a - (a % b)` with constant `b`?** → `~~(a / b)` / `~~(D / k) * k`.
+9. **Module-top-level expressions** (`1 << 24`, `2 ** -53`)? → constant-fold; keep the formula in a comment.
+10. **Repeated `this.foo.bar` / `arr[i]` reads?** → hoist to local `const`.
+11. **`while (true) { … if (accept) return … }`?** → eager-compute + while-on-rejection.
+12. **Cheap case happens 90% of the time?** → fast-path it before the general algorithm.
+13. **`for` loop with a bound that's effectively constant?** → unroll manually.
+14. **Large constant numeric array?** → consider 6-bit packed-string encoding.
+15. **Megamorphic helper called from many sites?** → split into N specialized monomorphic copies.
+16. **`await` of a value that's often sync?** → branch on thenable, return directly.
+17. **Layout-thrashing read inside a DOM-write loop?** → batch all reads then all writes.
+18. **Defensive `clone()` on every call?** → expose an `unsafe` variant for hot callers.
+19. **Globals like `BigInt`, `Number` looked up in hot code?** → alias at module scope.
+20. **Always**: benchmark before *and* after; benchmark across the input distribution; don't merge under a 5% threshold without replication.
 
 ---
 
