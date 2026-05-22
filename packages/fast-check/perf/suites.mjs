@@ -60,8 +60,9 @@ const SUITES = [
       return () => {
         const stream = arb.shrink(123456, undefined);
         let n = 0;
-        for (const _ of stream) {
+        for (const v of stream) {
           if (++n >= 16) break;
+          if (v === undefined) break;
         }
       };
     },

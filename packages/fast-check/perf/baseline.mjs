@@ -35,7 +35,6 @@ if (mode === 'save') {
   let minDelta = Infinity;
   let maxDelta = -Infinity;
   const worst = [];
-  const best = [];
   for (const r of results) {
     const key = `${r.suite}::${r.name}`;
     const b = baseMap.get(key);
