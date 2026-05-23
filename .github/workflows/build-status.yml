@@ -600,8 +600,6 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       # These are false positives - attestations ensure artifact integrity
       # setup-node actions in publish jobs followed by gh-release for attestation uploads
       - name: Using Node v24.x
@@ -610,18 +608,14 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Install npm with stage publish support
+        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
+        run: cd .. && npm install -g npm@latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=fast-check-$(tar -xzOf packages/fast-check/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -630,8 +624,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/fast-check/$TGZ_NAME"
+        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/fast-check/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -680,26 +673,20 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Install npm with stage publish support
+        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
+        run: cd .. && npm install -g npm@latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=ava-$(tar -xzOf packages/ava/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -708,8 +695,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/ava/$TGZ_NAME"
+        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/ava/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -758,26 +744,20 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Install npm with stage publish support
+        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
+        run: cd .. && npm install -g npm@latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=jest-$(tar -xzOf packages/jest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -786,8 +766,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/jest/$TGZ_NAME"
+        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/jest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -836,26 +815,20 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Install npm with stage publish support
+        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
+        run: cd .. && npm install -g npm@latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=packaged-$(tar -xzOf packages/packaged/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -864,8 +837,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/packaged/$TGZ_NAME"
+        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/packaged/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -914,26 +886,20 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Install npm with stage publish support
+        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
+        run: cd .. && npm install -g npm@latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=poisoning-$(tar -xzOf packages/poisoning/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -942,8 +908,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/poisoning/$TGZ_NAME"
+        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/poisoning/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -992,26 +957,20 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Install npm with stage publish support
+        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
+        run: cd .. && npm install -g npm@latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=vitest-$(tar -xzOf packages/vitest/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -1020,8 +979,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/vitest/$TGZ_NAME"
+        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/vitest/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:
@@ -1070,26 +1028,20 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
       - name: Using Node v24.x
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
+      - name: Install npm with stage publish support
+        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
+        run: cd .. && npm install -g npm@latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: bundles
           path: packages/
-      - uses: step-security/wait-for-secrets@084b3ae774c0e0003a9307ae4f487c10f1f998fe # v1.2.1
-        id: wait-for-secrets
-        with:
-          secrets: |
-            OTP: 
-              name: 'OTP to publish package'
-              description: 'OTP from authenticator app'
       - name: Set package filename
         run: echo "TGZ_NAME=worker-$(tar -xzOf packages/worker/package.tgz package/package.json | jq -r '.version').tgz" >> $GITHUB_ENV
       - name: Rename package for publication
@@ -1098,8 +1050,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-          OTP_VALUE: ${{steps.wait-for-secrets.outputs.OTP}}
-        run: pnpm publish --no-git-checks --access public --otp "$OTP_VALUE" --tag "$PUBLISH_TAG" "packages/worker/$TGZ_NAME"
+        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/worker/$TGZ_NAME"
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         id: attest
         with:

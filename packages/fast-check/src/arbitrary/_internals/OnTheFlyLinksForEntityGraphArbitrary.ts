@@ -166,6 +166,24 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
     }
     return producedLinksForType[indexInType];
   }
+  function getOrCreateRelationFor(
+    type: keyof TEntityFields,
+    indexInType: number,
+    property: keyof TEntityRelations[keyof TEntityFields],
+  ) {
+    const links = getOrCreateLinksFor(type, indexInType);
+    // `originalEntity` is `undefined` for entities just enqueued in this draft: they only exist in the cloned per-type array, not yet in `producedLinks`.
+    const originalEntity = producedLinks[type][indexInType];
+    if (originalEntity !== undefined && links[property] === originalEntity[property]) {
+      const sharedRelation = links[property];
+      // When `index` is an array, clone it — otherwise we'd keep sharing it (and mutating it) with the previous state.
+      links[property] = {
+        type: sharedRelation.type,
+        index: typeof sharedRelation.index === 'object' ? safeSlice(sharedRelation.index) : sharedRelation.index,
+      };
+    }
+    return links[property];
+  }
 
   let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
 
@@ -201,8 +219,8 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
       return newEntityIndexInType;
     },
     appendBackReference: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
-      const links = getOrCreateLinksFor(targetType, indexInType);
-      const knownInversedLinks = links[property].index;
+      const relation = getOrCreateRelationFor(targetType, indexInType, property);
+      const knownInversedLinks = relation.index;
       safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, toBeProduced.indexInType);
     },
     // Seal the step into a new immutable state and advance to the next entity.
