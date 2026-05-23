@@ -3,7 +3,6 @@ import { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import { congruential32 } from 'pure-rand/generator/congruential32';
 import { mersenne } from 'pure-rand/generator/mersenne';
-import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
 import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
 import { fastXorshift128plus } from '../../../random/generator/FastXorshift128Plus.js';

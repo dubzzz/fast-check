@@ -112,12 +112,15 @@ class TossIterator<Ts> implements PullableIterator<Value<Ts>> {
     return { value: v, done: false };
   }
   /**
-   * Hot-path: returns the next {@link Value} directly, never `done` (this
-   * iterator is unbounded once examples are exhausted). Skips the
-   * `{ value, done }` allocation that the standard iterator protocol forces.
+   * Hot-path: returns the next {@link Value} directly. This iterator is
+   * unbounded once examples are exhausted, so it never actually returns
+   * {@link SENTINEL_DONE} — the wider return type satisfies the
+   * {@link PullableIterator} contract so consumers can stay monomorphic.
+   * Skips the `{ value, done }` allocation that the standard iterator
+   * protocol forces.
    * @internal
    */
-  pullNext(): Value<Ts> {
+  pullNext(): Value<Ts> | typeof SENTINEL_DONE {
     const exampleIdx = this.exampleIdx;
     const examples = this.examples;
     if (exampleIdx < examples.length) {
