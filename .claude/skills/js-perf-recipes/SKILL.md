@@ -55,6 +55,7 @@ Source tags throughout:
 - **Push work to setup time / cache time / build time.** Per-call work in a hot loop scales by N; per-setup work runs once. `general`
 - **One pass over a long buffer beats N passes over short slices.** Regex setup/teardown dominates for short inputs; OS syscalls dominate for tiny files. `marvin-1`, `marvin-13`
 - **Identify the contract, then specialize.** A generic helper that handles 5 cases is megamorphic; 5 specialized functions are each monomorphic. `general`
+- **Keep hot-path dependencies fresh.** RNGs, parsers, hashers, codecs routinely ship measurable speedups in major versions. Renovate/Dependabot earns its keep when the dep is called millions of times per run. `general`
 
 ---
 
@@ -196,6 +197,26 @@ The single biggest source of perf loss in idiomatic JS is allocations inside loo
   function step(x, item) { return combine(x, item); }
   function process(items, x) { items.forEach(item => step(x, item)); }
   ```
+- **Hoist `.map(s => …)`-style callbacks into named top-level helpers** when the callback closes over no per-call state. Same allocation cost as above but easier to miss. `general`
+  ```js
+  // bad — fresh arrow per call
+  items.map(s => new Wrapper(s.value, s, () => s.expensive()));
+  // good — single module-level helper, reused
+  function toWrapper(s) { return new Wrapper(s.value, s, () => s.expensive()); }
+  items.map(toWrapper);
+  ```
+- **Fuse `split().map().reduce()` into a single for-loop.** Removes 2 intermediate arrays and N callback frames. `general`
+  ```js
+  // bad — 2 intermediate arrays, 3 callbacks per char
+  return s.split('').map(c => table[c]).reduce((p, c, i, a) =>
+    p + c * Math.pow(32, a.length - 1 - i), 0);
+  // good — one for-loop, no allocation
+  let acc = 0, power = 1;
+  for (let i = s.length - 1; i >= 0; --i) {
+    acc += table[s[i]] * power; power *= 32;
+  }
+  return acc;
+  ```
 - **Collapse `.map().filter().map()` chains.** Each step allocates an intermediate N-element array. Use a single `for` or a lazy iterator. `general`
 - **Reuse output arrays in-place.** `out[i] = …` against a preallocated buffer beats returning a fresh array each iteration. `v8`
 - **Pool small objects on hot paths.** Each `{}` allocates + dirties the write barrier. Reuse a freelist. `v8`
@@ -336,6 +357,25 @@ The single biggest source of perf loss in idiomatic JS is allocations inside loo
   ```
 - **Don't wrap an inner promise in another `async` function** — return it directly. `general`
 - **Replace `while+inner-await` loops with recursive `.then()` chains** to avoid parking on extra ticks. `general`
+- **Collapse `Promise.resolve(value).then(...)` by saving the resolver.** Skips the round-trip through an extra microtask. `general`
+  ```js
+  // bad — wraps then chains
+  return Promise.resolve(taskValue).then(() => ({ done, faulty }));
+  // good — resolve directly via the constructor
+  return new Promise(resolve => { resolveTask = () => resolve({ done, faulty }); });
+  ```
+- **Lazy scheduling: register step N+1 only inside the `then` of step N.** Pre-chaining the entire sequence up front queues many microtasks; lazy registration queues at most one ahead. `general`
+  ```js
+  // bad — pre-chains every step, queues N microtasks
+  let prev = Promise.resolve();
+  for (const item of items) prev = prev.then(() => schedule(item));
+  // good — only schedule N+1 once N resolves
+  const registerNext = (i, prev) => {
+    if (i >= items.length) return prev.then(onDone, onFault);
+    prev.then(() => registerNext(i + 1, schedule(items[i])), onFault);
+  };
+  registerNext(0, Promise.resolve());
+  ```
 
 ### Cheap branch to skip expensive work
 
@@ -431,6 +471,54 @@ A comparison is much cheaper than `%`, a `while`-loop setup, a `BigInt` op, or a
 - When both sides speak the same protocol, detect and call directly instead of going through the wrapper. `general`
 - Audit type-coercion boundaries — each adapter layer adds an iterator-protocol layer that fragments inline caches. `general`
 
+### Short-circuit no-op operations
+
+- Cheap top-of-function checks let the common no-op case skip allocation of intermediate wrappers/streams entirely. `general`
+  ```js
+  drop(n) {
+    if (n <= 0) return this;                        // fast path: no work
+    return new Stream(this[Symbol.iterator](), skip(n));
+  }
+  ```
+- **Skip the dice roll when there's only one outcome.** `if (min === max) return { size: min, ... }` avoids a random draw when the result is forced. `general`
+
+### Push invariants to the caller / trust the contract
+
+- Don't validate inputs that the API contract already validated upstream — every redundant guard pays a branch and risks a deopt. `general`
+  ```js
+  // bad — redundant guard the parent already enforces
+  const u = this.fn(v);
+  if (this.inner.canHandle(u)) return this.inner.process(u).map(this.bound);
+  return Stream.nil();
+  // good — trust the contract
+  return this.inner.process(this.fn(v)).map(this.bound);
+  ```
+
+### Reject-while-generating with a circuit breaker
+
+- For "produce N items satisfying P", a generate-then-filter pass wastes work and may return fewer than N. Generate-and-test with a `skipped` counter as circuit breaker is tighter. `general`
+  ```js
+  // good — generate-and-test with skip cap
+  while (items.length < target && skipped < maxAttempts) {
+    const c = next();
+    if (canAppend(items, c)) { items.push(c); skipped = 0; }
+    else skipped++;
+  }
+  ```
+
+### Sentinel symbols instead of wrapper objects
+
+- When the only reason for a wrapper is "distinguish absent from present", a unique `Symbol` as the absent-marker saves an allocation per value. `general`
+  ```js
+  // bad — wraps every value just so null can mean "absent"
+  const arb = base.map(v => ({ value: v }));
+  // ... later: if (w !== null) obj[k] = w.value;
+  // good — pass a unique Symbol as the "nil" marker
+  const absent = Symbol('absent');
+  const arb = maybe(base, { nil: absent });
+  // ... later: if (w !== absent) obj[k] = w;
+  ```
+
 ---
 
 ## 5. Numeric & BigInt math
@@ -494,6 +582,32 @@ A comparison is much cheaper than `%`, a `while`-loop setup, a `BigInt` op, or a
   }
   ```
 - **⚠️ BigInt delegation isn't unconditional.** Setup cost can dominate on small ranges where a hand-rolled multi-word `number` implementation wins. Benchmark across the full input distribution and identify the cross-over. `general`
+- **Replace `Math.pow`/`Math.log` loops with modulo/division loops.** Each step becomes a single divide + truncate instead of a transcendental call. `general`
+  ```js
+  // bad — Math.pow recomputed every step
+  for (let k = digits; k > 0; k--) {
+    const v = Math.pow(32, k - 1);
+    out += encode(Math.floor(remaining / v));
+    remaining -= Math.floor(remaining / v) * v;
+  }
+  // good — single loop, prepend each symbol
+  for (let r = num; r !== 0; r = Math.floor(r / 32)) out = encode(r % 32) + out;
+  ```
+- **Iterative halving toward a target** beats a recursive tree of candidates — same minimum, far fewer allocations. `general`
+  ```js
+  function* halveToward(value, target) {
+    let gap = value - target;
+    while (gap !== 0) { gap = (gap / 2) | 0; yield target + gap; }
+  }
+  ```
+- **Bit-level reinterpretation for float manipulation.** Walk IEEE-754 bits via a TypedArray-aliased ArrayBuffer instead of recomputing doubles by arithmetic. Each step becomes O(1) integer work — useful for `next-double`, `prev-double`, ULP shifts. `general`
+  ```js
+  const buf = new ArrayBuffer(8);
+  const f64 = new Float64Array(buf);
+  const i32 = new Int32Array(buf);
+  f64[0] = value;
+  // mutate i32[0]/i32[1] then read f64[0] back
+  ```
 
 ---
 
@@ -507,6 +621,16 @@ A comparison is much cheaper than `%`, a `while`-loop setup, a `BigInt` op, or a
 - **Two-phase compute + filter.** When an expensive computation has cheap downstream filtering, do the expensive part once (cache it) and re-run only the cheap filter per call. `general`
 - **Replace `findIndex` with binary search** on sorted stores. `marvin-3`
 - **Push eligibility checks into traversal (`continue` early), not post-filtering.** `general`
+- **Project to a selector instead of pairwise compare for dedupe.** O(n²) `findIndex` scan → O(n) Set/Map lookup keyed on the projection. `general`
+  ```js
+  // bad — O(n²) pairwise compare
+  items.filter((a, i) => items.findIndex(b => a.id === b.id) === i);
+  // good — O(n) hash lookup
+  const seen = new Set();
+  const out = [];
+  for (const a of items) if (!seen.has(a.id)) { seen.add(a.id); out.push(a); }
+  ```
+- **Pre-filter cheap before expensive equality.** Hash/tag-based eligibility filter first, then deep-compare survivors only. `general`
 
 ---
 
@@ -591,6 +715,14 @@ Constant expressions evaluated at module load still cost ns each and bloat init.
   const SNumber = Number;
   // use SBigInt(x), SNumber(x) in hot code
   ```
+- **Cache built-in method references at module scope** too — same pattern, also hardens against prototype poisoning. `general`
+  ```js
+  // at module top
+  const safeIsInteger = Number.isInteger;
+  const safeIs = Object.is;
+  // hot path
+  if (safeIsInteger(x)) ...
+  ```
 
 ### Imports, bundles, build
 
@@ -603,6 +735,13 @@ Constant expressions evaluated at module load still cost ns each and bloat init.
   ```
 - **For library authors: ship granular `exports` and `sideEffects: false`** so consumers can tree-shake. `marvin-7`, `bundler`
 - **Annotate factory functions with `/**@__NO_SIDE_EFFECTS__*/`** so bundlers can tree-shake unused exports. (TSC strips comments — do it post-emit.) `bundler`
+- **Mark factory *calls* (not just functions) with `/*#__PURE__*/`** so the bundler can drop a top-level `export const x = build(opts)` when nobody imports it. `bundler`
+  ```js
+  // bad — bundler must assume build() could have side effects
+  export const myThing = build(opts);
+  // good — bundler drops this export when unused
+  export const myThing = /*#__PURE__*/ build(opts);
+  ```
 - **Raise TS `target` to current syntax** (e.g. ES2020+) — downleveled async/await becomes a state-machine generator that V8 optimizes worse than native. `bundler`
 - **Lazy-require fat modules** that aren't needed on cold paths in CLIs. `npm run` saved ~20 ms by deferring `require('@npmcli/arborist')` into the few commands that use it. `marvin-4`
 - **Replace polyfills for shipped features.** A polyfill should no-op when the runtime has the feature. Don't `require('object.assign')(...)` — call `Object.assign` directly. `marvin-6`
@@ -728,6 +867,21 @@ Constant expressions evaluated at module load still cost ns each and bloat init.
 | `for (let i = 0; i !== n; ++i)` with hand-known `n=2..4` | manual unroll | `general` |
 | Cheap branch evaluated after expensive setup | reorder: cheap & frequent case first | `general` |
 | Inline rejection-loop step | extract named helper shared by initial + retry | `general` |
+| `Promise.resolve(v).then(...)` | save resolver in `new Promise(r => …)` | `general` |
+| Pre-chained `.then().then().then()` sequence | lazy: register N+1 inside N's `.then` | `general` |
+| Items wrapped in `{value: v}` to mark presence | unique `Symbol` as absent-marker | `general` |
+| Generate N then `.filter(…)` | generate-and-test with `skipped` counter | `general` |
+| Redundant guard the caller already enforces | drop — trust the contract | `general` |
+| No-op call goes through full pipeline | top-of-function `if (n <= 0) return this` | `general` |
+| Coin-flip for single-outcome case | `if (min === max) return min` | `general` |
+| `Math.pow(B, k)` recomputed per step | divide-loop `while (r !== 0) { … r = ~~(r/B); }` | `general` |
+| Recursive tree of halving candidates | iterative `gap = (gap/2)|0` toward target | `general` |
+| Float arithmetic for next/prev double | TypedArray-aliased ArrayBuffer (i32 ↔ f64) | `general` |
+| `items.filter((a,i) => items.findIndex(b => a.id===b.id) === i)` | `Set` keyed on the projection | `general` |
+| Top-level `export const x = build()` no annotation | `/*#__PURE__*/` on the call | `bundler` |
+| `Number.isInteger(x)` looked up on hot path | alias at module scope | `general` |
+| `split('').map(...).reduce(...)` | single fused for-loop | `general` |
+| Fresh arrow inside `.map(s => new W(...))` | hoist to named top-level helper | `general` |
 | `arr.slice().reverse()` | reverse-index `for` | `general` |
 | `Array(n).join(s)` | `s.repeat(n-1)` | `general` |
 | `[...].map(f).reduce(...)` | fused single loop | `general` |
