@@ -247,6 +247,14 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const g = this.arb.generate(mrng, biasFactor);
+    // Inline fast path: source value does not require cloning. Avoids an extra call frame
+    // and skips all cloneable wiring. Hits e.g. integer().map(...), tuple(int,int).map(...).
+    if (!g.hasToBeCloned) {
+      const sourceValue = g.value_;
+      const mappedValue = this.mapper(sourceValue);
+      const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: g.context };
+      return new Value(mappedValue, context);
+    }
     return this.valueMapper(g);
   }
   canShrinkWithoutContext(value: unknown): value is U {
@@ -273,23 +281,32 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     }
     return Stream.nil();
   }
-  private mapperWithCloneIfNeeded(v: Value<T>): [U, T] {
+  private mapperWithCloneIfNeeded(v: Value<T>): U {
     const sourceValue = v.value;
     const mappedValue = this.mapper(sourceValue);
     if (
-      v.hasToBeCloned &&
       ((typeof mappedValue === 'object' && mappedValue !== null) || typeof mappedValue === 'function') &&
       Object.isExtensible(mappedValue) &&
       !hasCloneMethod(mappedValue)
     ) {
       // WARNING: In case the mapped value is not extensible it will not be extended
-      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v)[0] });
+      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v) });
     }
-    return [mappedValue, sourceValue];
+    return mappedValue;
   }
   private valueMapper(v: Value<T>): Value<U> {
-    const [mappedValue, sourceValue] = this.mapperWithCloneIfNeeded(v);
-    const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
+    // Note: `generate` already short-circuits the !v.hasToBeCloned case before
+    // calling this helper. `valueMapper` still needs to handle the full general
+    // case because it is also reused by `bindValueMapper` in shrink streams,
+    // where the incoming Value may have hasToBeCloned=true.
+    if (!v.hasToBeCloned) {
+      const sourceValue = v.value_;
+      const mappedValue = this.mapper(sourceValue);
+      const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
+      return new Value(mappedValue, context);
+    }
+    const mappedValue = this.mapperWithCloneIfNeeded(v);
+    const context: MapArbitraryContext<T> = { originalValue: v.value_, originalContext: v.context };
     return new Value(mappedValue, context);
   }
   private isSafeContext(context: unknown): context is MapArbitraryContext<T> {
