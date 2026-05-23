@@ -32,9 +32,10 @@ function tupleMakeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): Wi
 /** @internal */
 function tupleWrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): TupleExtendedValue<Ts> {
   let cloneable = false;
+  const length = values.length;
   const vs = [] as unknown as Ts & unknown[];
   const ctxs: TupleContext = [];
-  for (let idx = 0; idx !== values.length; ++idx) {
+  for (let idx = 0; idx !== length; ++idx) {
     const v = values[idx];
     cloneable = cloneable || v.hasToBeCloned;
     safePush(vs, v.value);
@@ -92,9 +93,11 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     }
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
+    const arbs = this.arbs;
+    const length = arbs.length;
     const mapped = [] as ValuesArray<Ts>;
-    for (let idx = 0; idx !== this.arbs.length; ++idx) {
-      safePush(mapped, this.arbs[idx].generate(mrng, biasFactor));
+    for (let idx = 0; idx !== length; ++idx) {
+      safePush(mapped, arbs[idx].generate(mrng, biasFactor));
     }
     return tupleWrapper<Ts>(mapped);
   }

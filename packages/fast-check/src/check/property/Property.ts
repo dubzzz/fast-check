@@ -22,7 +22,13 @@ function property<Ts extends [unknown, ...unknown[]]>(
   const p = args[args.length - 1] as (...args: Ts) => boolean | void;
   safeForEach(arbs, assertIsArbitrary);
   const mappedArbs = safeMap(arbs, (arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
-  return new Property(tuple<Ts>(...mappedArbs), (t) => p(...t));
+  // Pass `(predicate, arity)` rather than wrapping `p` in `(t) => p(...t)`.
+  // Wrapping built a fresh closure per `property()` call, giving each call site
+  // its own SharedFunctionInfo and feedback cell; this forced V8 to deopt the
+  // hot `Property.run` chain on every fresh property and shifted the call into
+  // a `CallWithSpread` slow path. Letting `Property.run` switch on a stable
+  // arity-tagged dispatch keeps the call site monomorphic across calls.
+  return new Property(tuple<Ts>(...mappedArbs), p as unknown as (t: Ts) => boolean | void, arbs.length);
 }
 
 export type { IProperty, IPropertyWithHooks, PropertyHookFunction };

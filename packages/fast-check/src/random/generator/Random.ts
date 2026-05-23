@@ -34,6 +34,25 @@ export class Random {
   }
 
   /**
+   * Reset the internal random number generator to an already-adapted instance.
+   * Reused by the runner to avoid allocating a fresh {@link Random} wrapper per iteration.
+   * Caller is responsible for ensuring the provided rng has been cloned/jumped as needed.
+   * @internal
+   */
+  unsafeReplaceInternal(internalRng: RandomGeneratorInternal): void {
+    this.internalRng = internalRng;
+  }
+
+  /**
+   * Expose the internal rng for in-place state sync optimizations (e.g. the
+   * runner's hot loop when both pool and work rngs are FastXorshift128Plus).
+   * @internal
+   */
+  unsafeGetInternal(): RandomGeneratorInternal {
+    return this.internalRng;
+  }
+
+  /**
    * Generate an integer having `bits` random bits
    * @param bits - Number of bits to generate
    * @deprecated Prefer {@link nextInt} with explicit bounds: `nextInt(0, (1 << bits) - 1)`

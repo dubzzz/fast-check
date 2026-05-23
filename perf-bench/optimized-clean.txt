@@ -1,0 +1,10 @@
+Node v22.22.2, samples=25, warmup=1000
+
+assert(property(constant(1), () => {}))                  iter= 3000  trimmean=120.42ms (40141.4ns/call)  min=118.54ms
+assert(prebuilt) numRuns=100                             iter= 5000  trimmean=200.15ms (40030.9ns/call)  min=196.76ms
+assert(prebuilt) numRuns=1                               iter=30000  trimmean=21.43ms (714.2ns/call)  min=20.79ms
+assert(prebuilt) numRuns=10                              iter=15000  trimmean=64.91ms (4327.1ns/call)  min=64.11ms
+assert(prebuilt) numRuns=1000                            iter=  600  trimmean=243.52ms (405863.3ns/call)  min=235.71ms
+assert(property(integer(), () => {}))                    iter= 3000  trimmean=168.74ms (56247.2ns/call)  min=163.69ms
+assert(property(int, int, int) -> noop)                  iter= 1500  trimmean=131.29ms (87528.3ns/call)  min=124.83ms
+assert(property(int) -> a+1 > a)                         iter= 3000  trimmean=166.99ms (55664.8ns/call)  min=163.55ms

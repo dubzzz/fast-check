@@ -8,8 +8,11 @@ import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType.js';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
+import { fastXorshift128plus } from '../../../../../src/random/generator/FastXorshift128Plus.js';
 
-const prand = { mersenne, congruential32, xorshift128plus, xoroshiro128plus };
+// Default randomType and string 'xorshift128plus' both resolve to fastXorshift128plus —
+// a faster drop-in for pure-rand's xorshift128plus producing the same value stream.
+const prand = { mersenne, congruential32, xorshift128plus: fastXorshift128plus, xoroshiro128plus };
 const parametersArbitrary = fc.record(
   {
     seed: fc.integer(),
@@ -74,7 +77,7 @@ describe('QualifiedParameters', () => {
           (params, randomType) => {
             const qparams = read({ ...params, randomType });
             const resolvedRandomType = randomType === 'congruential' ? 'congruential32' : randomType;
-            const defaultRandomType = xorshift128plus;
+            const defaultRandomType = fastXorshift128plus;
             if (resolvedRandomType === undefined) {
               expect(qparams.randomType).toBe(defaultRandomType);
             } else if (resolvedRandomType === 'congruential32' || resolvedRandomType === 'mersenne') {

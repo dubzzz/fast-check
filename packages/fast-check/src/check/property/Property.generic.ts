@@ -81,9 +81,16 @@ const dummyHook: GlobalPropertyHookFunction = () => {};
 export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
   private beforeEachHook: GlobalPropertyHookFunction;
   private afterEachHook: GlobalPropertyHookFunction;
+  // -1: predicate accepts the raw tuple value (legacy callers, e.g. Sampler).
+  // 0..N: predicate is the user function and is invoked with the tuple spread
+  // through the matching `case` in `run()`. Keeping arity here (instead of per
+  // `property()` call closures) keeps a single stable feedback cell for the
+  // call site, so V8 does not deopt on "wrong feedback cell" every assert().
+  private readonly predicateArity: number;
   constructor(
     readonly arb: Arbitrary<Ts>,
     readonly predicate: (t: Ts) => boolean | void,
+    predicateArity?: number,
   ) {
     const {
       beforeEach = dummyHook,
@@ -102,6 +109,7 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
 
     this.beforeEachHook = beforeEach;
     this.afterEachHook = afterEach;
+    this.predicateArity = predicateArity !== undefined ? predicateArity : -1;
   }
 
   isAsync(): false {
@@ -110,6 +118,10 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
 
   generate(mrng: Random, runId?: number): Value<Ts> {
     const value = this.arb.generate(mrng, runId !== undefined ? runIdToFrequency(runId) : undefined);
+    // Inline noUndefinedAsContext hot path: when the arb already set a context
+    // (the common case — e.g. TupleArbitrary always uses an array) we skip the
+    // helper call entirely. The wrapper is only needed when context is missing.
+    if (value.context !== undefined) return value;
     return noUndefinedAsContext(value);
   }
 
@@ -133,7 +145,37 @@ export class Property<Ts> implements IProperty<Ts>, IPropertyWithHooks<Ts> {
 
   run(v: Ts): PreconditionFailure | PropertyFailure | null {
     try {
-      const output = this.predicate(v);
+      // Dispatch by stored arity at this single call site so V8 keeps a stable
+      // feedback cell across all `property()` calls — previously each call to
+      // `property()` built a fresh `(t) => p(...t)` closure, defeating IC reuse
+      // and triggering repeated "wrong feedback cell" deopts.
+      const p = this.predicate as unknown as (...args: unknown[]) => boolean | void;
+      const tuple = v as unknown as unknown[];
+      let output: boolean | void;
+      switch (this.predicateArity) {
+        case 1:
+          output = p(tuple[0]);
+          break;
+        case 2:
+          output = p(tuple[0], tuple[1]);
+          break;
+        case 3:
+          output = p(tuple[0], tuple[1], tuple[2]);
+          break;
+        case 4:
+          output = p(tuple[0], tuple[1], tuple[2], tuple[3]);
+          break;
+        case 5:
+          output = p(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4]);
+          break;
+        case -1:
+          // Predicate accepts the raw tuple (legacy/internal callers).
+          output = (this.predicate as (t: Ts) => boolean | void)(v);
+          break;
+        default:
+          // Fallback for higher arities — fall back to spread call.
+          output = p(...tuple);
+      }
       return output === undefined || output === true
         ? null
         : { error: new Error('Property failed by returning false') };
