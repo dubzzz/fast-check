@@ -11,11 +11,17 @@ const safeObjectIs = Object.is;
 
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
+  private readonly defaultTargetValue: number;
   constructor(
     readonly min: number,
     readonly max: number,
   ) {
     super();
+    // Precompute the default shrink target (depends only on min/max).
+    // min <= 0 && max >= 0  => shrink towards zero
+    // min < 0               => shrink towards max (closer to zero)
+    // otherwise             => shrink towards min (closer to zero)
+    this.defaultTargetValue = min <= 0 && max >= 0 ? 0 : min < 0 ? max : min;
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<number> {
@@ -38,8 +44,7 @@ export class IntegerArbitrary extends Arbitrary<number> {
       // No context:
       //   Take default target and shrink towards it
       //   Try the target on first try
-      const target = this.defaultTarget();
-      return shrinkInteger(current, target, true);
+      return shrinkInteger(current, this.defaultTargetValue, true);
     }
     if (this.isLastChanceTry(current, context)) {
       // Last chance try...
@@ -49,16 +54,6 @@ export class IntegerArbitrary extends Arbitrary<number> {
     }
     // Normal shrink process
     return shrinkInteger(current, context, false);
-  }
-
-  private defaultTarget(): number {
-    // min <= 0 && max >= 0   => shrink towards zero
-    if (this.min <= 0 && this.max >= 0) {
-      return 0;
-    }
-    // min < 0                => shrink towards max (closer to zero)
-    // otherwise              => shrink towards min (closer to zero)
-    return this.min < 0 ? this.max : this.min;
   }
 
   private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: number; max: number } {
