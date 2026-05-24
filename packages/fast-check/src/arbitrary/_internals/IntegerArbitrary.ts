@@ -12,6 +12,7 @@ const safeObjectIs = Object.is;
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
   private readonly defaultTargetValue: number;
+  private cachedBiasedRanges: { min: number; max: number }[] | undefined = undefined;
   constructor(
     readonly min: number,
     readonly max: number,
@@ -60,7 +61,11 @@ export class IntegerArbitrary extends Arbitrary<number> {
     if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
       return { min: this.min, max: this.max };
     }
-    const ranges = biasNumericRange(this.min, this.max, integerLogLike);
+    let ranges = this.cachedBiasedRanges;
+    if (ranges === undefined) {
+      ranges = biasNumericRange(this.min, this.max, integerLogLike);
+      this.cachedBiasedRanges = ranges;
+    }
     if (ranges.length === 1) {
       return ranges[0];
     }
