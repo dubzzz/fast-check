@@ -4,7 +4,8 @@ import { array } from './array.js';
 import type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
 import { createSlicesForString } from './_internals/helpers/SlicesForStringBuilder.js';
 import { stringUnit } from './_internals/StringUnitArbitrary.js';
-import { patternsToStringMapper, patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString.js';
+import { patternsToStringUnmapperFor } from './_internals/mappers/PatternsToString.js';
+import { StringArbitrary } from './_internals/StringArbitrary.js';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
 
 /**
@@ -70,5 +71,5 @@ export function string(constraints: StringConstraints = {}): Arbitrary<string> {
   const unmapper = patternsToStringUnmapperFor(charArbitrary, constraints);
   const experimentalCustomSlices = createSlicesForString(charArbitrary, constraints);
   const enrichedConstraints: ArrayConstraintsInternal<string> = { ...constraints, experimentalCustomSlices };
-  return array(charArbitrary, enrichedConstraints).map(patternsToStringMapper, unmapper);
+  return new StringArbitrary(array(charArbitrary, enrichedConstraints), unmapper);
 }
