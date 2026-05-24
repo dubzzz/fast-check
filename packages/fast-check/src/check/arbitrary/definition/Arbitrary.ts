@@ -183,33 +183,32 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
     return false;
   }
   shrink(value: U, context?: unknown): Stream<Value<U>> {
-    if (this.isSafeContext(context)) {
-      const safeContext = context;
-      return (
-        !safeContext.stoppedForOriginal
-          ? this.arb
-              .shrink(safeContext.originalValue, safeContext.originalContext)
-              .map((v) =>
-                this.valueChainer(v, safeContext.clonedMrng.clone(), safeContext.clonedMrng, safeContext.originalBias),
-              )
-          : Stream.nil<Value<U>>()
-      ).join(
-        safeContext.chainedArbitrary.shrink(value, safeContext.chainedContext).map((dst) => {
-          const newContext: ChainArbitraryContext<T, U> = {
-            originalBias: safeContext.originalBias,
-            originalValue: safeContext.originalValue,
-            originalContext: safeContext.originalContext,
-            stoppedForOriginal: true,
-            chainedArbitrary: safeContext.chainedArbitrary,
-            chainedContext: dst.context,
-            clonedMrng: safeContext.clonedMrng,
-          };
-          return new Value(dst.value_, newContext);
-        }),
-      );
+    if (!this.isSafeContext(context)) {
+      // TODO Need unchainer
+      return Stream.nil();
     }
-    // TODO Need unchainer
-    return Stream.nil();
+    const safeContext = context;
+    const chainedShrunk = safeContext.chainedArbitrary.shrink(value, safeContext.chainedContext).map((dst) => {
+      const newContext: ChainArbitraryContext<T, U> = {
+        originalBias: safeContext.originalBias,
+        originalValue: safeContext.originalValue,
+        originalContext: safeContext.originalContext,
+        stoppedForOriginal: true,
+        chainedArbitrary: safeContext.chainedArbitrary,
+        chainedContext: dst.context,
+        clonedMrng: safeContext.clonedMrng,
+      };
+      return new Value(dst.value_, newContext);
+    });
+    if (safeContext.stoppedForOriginal) {
+      return chainedShrunk;
+    }
+    return this.arb
+      .shrink(safeContext.originalValue, safeContext.originalContext)
+      .map((v) =>
+        this.valueChainer(v, safeContext.clonedMrng.clone(), safeContext.clonedMrng, safeContext.originalBias),
+      )
+      .join(chainedShrunk);
   }
   private valueChainer(
     v: Value<T>,
