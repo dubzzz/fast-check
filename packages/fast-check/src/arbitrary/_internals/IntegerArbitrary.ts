@@ -26,7 +26,23 @@ export class IntegerArbitrary extends Arbitrary<number> {
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<number> {
-    const range = this.computeGenerateRange(mrng, biasFactor);
+    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+      return new Value(mrng.nextInt(this.min, this.max), undefined);
+    }
+    // Biased branch: pick one of the precomputed sub-ranges.
+    let ranges = this.cachedBiasedRanges;
+    if (ranges === undefined) {
+      ranges = biasNumericRange(this.min, this.max, integerLogLike);
+      this.cachedBiasedRanges = ranges;
+    }
+    let range;
+    if (ranges.length === 1) {
+      range = ranges[0];
+    } else {
+      // 1st range has the highest priority
+      const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2);
+      range = id < 0 ? ranges[0] : ranges[id + 1];
+    }
     return new Value(mrng.nextInt(range.min, range.max), undefined);
   }
 
@@ -55,22 +71,6 @@ export class IntegerArbitrary extends Arbitrary<number> {
     }
     // Normal shrink process
     return shrinkInteger(current, context, false);
-  }
-
-  private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: number; max: number } {
-    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
-      return { min: this.min, max: this.max };
-    }
-    let ranges = this.cachedBiasedRanges;
-    if (ranges === undefined) {
-      ranges = biasNumericRange(this.min, this.max, integerLogLike);
-      this.cachedBiasedRanges = ranges;
-    }
-    if (ranges.length === 1) {
-      return ranges[0];
-    }
-    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
-    return id < 0 ? ranges[0] : ranges[id + 1];
   }
 
   private isLastChanceTry(current: number, context: number): boolean {
