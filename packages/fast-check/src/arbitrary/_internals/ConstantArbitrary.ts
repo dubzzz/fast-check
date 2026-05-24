@@ -59,8 +59,10 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
     this.hasAnyCloneable = hasAnyCloneable;
   }
   generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
-    const idx = this.values.length === 1 ? 0 : mrng.nextInt(0, this.values.length - 1);
-    const value = this.values[idx];
+    const values = this.values;
+    const len = values.length;
+    const idx = len === 1 ? 0 : mrng.nextInt(0, len - 1);
+    const value = values[idx];
     if (!this.hasAnyCloneable) {
       // Fast path: no value in this arbitrary has a clone method, so we can
       // skip the per-call hasCloneMethod probe (which is megamorphic in
@@ -73,11 +75,20 @@ export class ConstantArbitrary<T> extends Arbitrary<T> {
     return new Value(value, idx, () => value[cloneMethod]());
   }
   canShrinkWithoutContext(value: unknown): value is T {
-    if (this.values.length === 1) {
-      return safeObjectIs(this.values[0], value);
+    const values = this.values;
+    const len = values.length;
+    // Small arrays: linear scan with Object.is is faster than building a Set.
+    // Threshold chosen empirically (Set lookup wins for larger arrays).
+    if (len <= 8) {
+      for (let i = 0; i < len; ++i) {
+        if (safeObjectIs(values[i], value)) {
+          return true;
+        }
+      }
+      return false;
     }
     if (this.fastValues === undefined) {
-      this.fastValues = new FastConstantValuesLookup(this.values);
+      this.fastValues = new FastConstantValuesLookup(values);
     }
     return this.fastValues.has(value);
   }
