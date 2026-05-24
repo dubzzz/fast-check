@@ -304,14 +304,36 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
 }
 
 /** @internal */
+class FilterArbitraryShrinkIterator<T, U extends T> implements IterableIterator<Value<U>> {
+  constructor(
+    private readonly source: IterableIterator<Value<T>>,
+    private readonly refinement: (t: T) => t is U,
+  ) {}
+  [Symbol.iterator](): IterableIterator<Value<U>> {
+    return this;
+  }
+  next(): IteratorResult<Value<U>> {
+    const source = this.source;
+    const refinement = this.refinement;
+    for (;;) {
+      const cur = source.next();
+      if (cur.done) {
+        return cur as IteratorResult<Value<U>>;
+      }
+      if (refinement(cur.value.value)) {
+        return cur as IteratorResult<Value<U>>;
+      }
+    }
+  }
+}
+
+/** @internal */
 class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
-  readonly bindRefinementOnValue: (v: Value<T>) => v is Value<U>;
   constructor(
     readonly arb: Arbitrary<T>,
     readonly refinement: (t: T) => t is U,
   ) {
     super();
-    this.bindRefinementOnValue = (v: Value<T>): v is Value<U> => this.refinementOnValue(v);
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     while (true) {
@@ -325,7 +347,7 @@ class FilterArbitrary<T, U extends T> extends Arbitrary<U> {
     return this.arb.canShrinkWithoutContext(value) && this.refinement(value);
   }
   shrink(value: U, context?: unknown): Stream<Value<U>> {
-    return this.arb.shrink(value, context).filter(this.bindRefinementOnValue);
+    return new Stream(new FilterArbitraryShrinkIterator(this.arb.shrink(value, context), this.refinement));
   }
   private refinementOnValue(v: Value<T>): v is Value<U> {
     return this.refinement(v.value);
