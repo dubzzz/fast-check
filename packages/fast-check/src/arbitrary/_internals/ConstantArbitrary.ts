@@ -43,13 +43,30 @@ class FastConstantValuesLookup<T> {
 /** @internal */
 export class ConstantArbitrary<T> extends Arbitrary<T> {
   private fastValues: FastConstantValuesLookup<T> | undefined;
+  private readonly hasAnyCloneable: boolean;
 
   constructor(readonly values: T[]) {
     super();
+    // Pre-scan once at construction. For the common case (no cloneable inside),
+    // generate() can skip the per-call hasCloneMethod() probe entirely.
+    let hasAnyCloneable = false;
+    for (let idx = 0; idx !== values.length; ++idx) {
+      if (hasCloneMethod(values[idx])) {
+        hasAnyCloneable = true;
+        break;
+      }
+    }
+    this.hasAnyCloneable = hasAnyCloneable;
   }
   generate(mrng: Random, _biasFactor: number | undefined): Value<T> {
     const idx = this.values.length === 1 ? 0 : mrng.nextInt(0, this.values.length - 1);
     const value = this.values[idx];
+    if (!this.hasAnyCloneable) {
+      // Fast path: no value in this arbitrary has a clone method, so we can
+      // skip the per-call hasCloneMethod probe (which is megamorphic in
+      // practice since the values array can contain anything).
+      return new Value(value, idx);
+    }
     if (!hasCloneMethod(value)) {
       return new Value(value, idx);
     }
