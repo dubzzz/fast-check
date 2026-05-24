@@ -165,7 +165,18 @@ class ChainArbitrary<T, U> extends Arbitrary<U> {
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const clonedMrng = mrng.clone();
     const src = this.arb.generate(mrng, biasFactor);
-    return this.valueChainer(src, mrng, clonedMrng, biasFactor);
+    const chainedArbitrary = this.chainer(src.value_);
+    const dst = chainedArbitrary.generate(mrng, biasFactor);
+    const context: ChainArbitraryContext<T, U> = {
+      originalBias: biasFactor,
+      originalValue: src.value_,
+      originalContext: src.context,
+      stoppedForOriginal: false,
+      chainedArbitrary,
+      chainedContext: dst.context,
+      clonedMrng,
+    };
+    return new Value(dst.value_, context);
   }
   canShrinkWithoutContext(_value: unknown): _value is U {
     // TODO Need unchainer
