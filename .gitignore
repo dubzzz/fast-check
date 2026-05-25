@@ -13,5 +13,9 @@ deopt.out
 v8.log
 v8.out
 
+# Benchmark working files
+perf/benchmark-report.md
+perf/package-lock.json
+
 # IDE related files
 .idea

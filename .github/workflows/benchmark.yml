@@ -1,0 +1,172 @@
+name: Benchmark
+
+# Runs after "Build Status" so we can reuse the bundles it already built instead
+# of building anything ourselves.
+#   - on a push to main: cache the freshly built fast-check bundle as the baseline
+#   - on a pull request: compare the PR bundle against that cached baseline and
+#     report the result as a sticky comment on the PR
+# Running on workflow_run (rather than directly on pull_request) lets the
+# comparison comment work for pull requests opened from forks too, and keeps the
+# benchmark away from any untrusted PR scripts: only the already-built artifact is
+# consumed and only the base branch's perf/ scripts are executed.
+on:
+  workflow_run:
+    workflows: ['Build Status']
+    types: [completed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  detect:
+    name: 'Detect bundle artifact'
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read # list artifacts of the triggering run
+    outputs:
+      found: ${{ steps.bundle.outputs.found }}
+    steps:
+      - name: Check the bundle artifact is available
+        id: bundle
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner,
+              repo,
+              run_id: context.payload.workflow_run.id,
+            });
+            const found = artifacts.some((artifact) => artifact.name === 'bundles');
+            if (!found) {
+              core.info('No "bundles" artifact in the triggering run; nothing to benchmark.');
+            }
+            core.setOutput('found', String(found));
+
+  cache-main-bundle:
+    name: 'Cache main bundle'
+    needs: detect
+    if: >-
+      needs.detect.outputs.found == 'true' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read # download the bundle from the triggering run
+    steps:
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Expose fast-check bundle as the cache payload
+        run: cp packages/fast-check/package.tgz package.tgz
+      - name: Save main bundle to cache
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: package.tgz
+          key: fast-check-main-bundle-${{ github.event.workflow_run.head_sha }}
+
+  benchmark:
+    name: 'Benchmark Arbitrary'
+    needs: detect
+    if: >-
+      needs.detect.outputs.found == 'true' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read # download the PR bundle from the triggering run
+      contents: read # checkout the base branch perf/ scripts
+      pull-requests: write # post the result as a comment
+    steps:
+      - name: Checkout base branch perf scripts
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Using Node v24.x
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.x'
+      - name: Download PR bundle
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Expose PR bundle as fast-check-current
+        run: cp packages/fast-check/package.tgz perf/current.tgz
+      - name: Restore main bundle from cache
+        id: main-cache
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          # Must match the path used on save (cache version is derived from it).
+          path: package.tgz
+          key: fast-check-main-bundle-${{ github.event.workflow_run.head_sha }}
+          restore-keys: |
+            fast-check-main-bundle-
+      - name: Install builds to benchmark
+        working-directory: perf
+        run: |
+          if [ -f ../package.tgz ]; then
+            npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund \
+              fast-check-current@file:./current.tgz \
+              fast-check-main@file:../package.tgz
+          else
+            npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund \
+              fast-check-current@file:./current.tgz
+          fi
+      - name: Run benchmark
+        working-directory: perf
+        env:
+          BENCHMARK_REPORT_PATH: ${{ runner.temp }}/benchmark-report.md
+        run: node compare.mjs
+      - name: Publish report to job summary
+        if: always()
+        run: |
+          if [ -f "${{ runner.temp }}/benchmark-report.md" ]; then
+            cat "${{ runner.temp }}/benchmark-report.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'No benchmark report was produced (the main baseline was likely missing).' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Comment result on the pull request
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          REPORT_PATH: ${{ runner.temp }}/benchmark-report.md
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync(process.env.REPORT_PATH, 'utf8');
+            const marker = '<!-- fast-check-benchmark -->';
+            const { owner, repo } = context.repo;
+
+            const associated = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner,
+              repo,
+              commit_sha: process.env.HEAD_SHA,
+            });
+            const pr = associated.data.find((candidate) => candidate.state === 'open') ?? associated.data[0];
+            if (pr === undefined) {
+              core.warning('No pull request associated with this run; skipping comment.');
+              return;
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: pr.number,
+            });
+            const existing = comments.find((comment) => comment.body && comment.body.includes(marker));
+            if (existing !== undefined) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body });
+            }

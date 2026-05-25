@@ -1,0 +1,13 @@
+{
+  "name": "fast-check-perf",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Benchmarks comparing the local/PR build of fast-check against the one published for main",
+  "scripts": {
+    "benchmark": "node compare.mjs",
+    "use:current:local": "npm install --no-save --no-package-lock --ignore-scripts fast-check-current@file:../packages/fast-check",
+    "use:main:pkg-pr-new": "npm install --no-save --no-package-lock --ignore-scripts fast-check-main@https://pkg.pr.new/dubzzz/fast-check@main",
+    "use:main:tarball": "npm install --no-save --no-package-lock --ignore-scripts fast-check-main@file:./package.tgz"
+  }
+}

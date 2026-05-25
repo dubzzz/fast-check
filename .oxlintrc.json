@@ -153,6 +153,7 @@
     "packages/*/lib-*/",
     "packages/*/rolldown.config.js",
     "packages/**/.test-artifacts/",
+    "perf/",
     "rolldown.common.config.js",
     "website/"
   ]
