@@ -26,6 +26,7 @@
     "build-ci:all": "pnpm --filter {./packages/**} run build-ci",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
+    "bench": "vitest bench --config perf/vitest.bench.config.mts --run",
     "typecheck:all": "pnpm --parallel run typecheck",
     "format": "prettier --experimental-cli --cache --write .",
     "format:file": "prettier --experimental-cli --cache --write",
