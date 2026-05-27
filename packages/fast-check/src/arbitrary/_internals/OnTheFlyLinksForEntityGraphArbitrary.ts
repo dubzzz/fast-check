@@ -1,4 +1,4 @@
-import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import {
   safeAdd,
   safeHas,
