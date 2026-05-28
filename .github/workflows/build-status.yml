@@ -544,7 +544,13 @@ jobs:
         run: pnpm --filter fast-check add fast-check-main@file:./package.tgz
       - name: Benchmark
         id: bench
-        run: node --run bench | tee bench-output.txt
+        shell: bash -l {0}
+        # The DEFAULT_SEED has to be specified to make vitest.setup.mjs happy.
+        # But we don't use it for benchmarks.
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED="0"
+          node --run bench | tee bench-output.txt
       - name: Upload bench results
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
