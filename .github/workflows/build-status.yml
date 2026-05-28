@@ -526,13 +526,6 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Download production packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: bundles
-          path: packages/
-      - name: Unpack production packages
-        run: node --run unpack:all
       - name: Restore main bundle of fast-check from cache
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -542,6 +535,13 @@ jobs:
           restore-keys: bundle-main-
       - name: Install version from <main>
         run: pnpm --filter fast-check add fast-check-main@file:./package.tgz --ignore-scripts
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: node --run unpack:all
       - name: Benchmark
         id: bench
         shell: bash -l {0}
