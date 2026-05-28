@@ -152,6 +152,17 @@ jobs:
           path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
+      - name: Prune old main bundle of fast-check caches
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache list --key bundle-main- --json key -q '.[].key' | xargs -rn1 gh cache delete || true
+      - name: Cache bundle of fast-check for main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: packages/fast-check/package.tgz
+          key: bundle-main-${{ github.sha }}
 
   # Jobs requesting warmup_pnpm_cache AND production_packages
   typecheck:
@@ -493,6 +504,88 @@ jobs:
           else
             pnpm --filter {./packages/**} --parallel -c exec "cd test-types && pnpm --package typescript@${{ matrix.ts-version }} dlx tsc --noEmit --skipLibCheck --strict --module NodeNext --moduleResolution NodeNext *.mts"
           fi
+
+  # Optional jobs
+  bench:
+    name: 'Benchmark'
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    needs:
+      - warmup_pnpm_cache
+      - production_packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+      - name: Using Node v24.x
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.x'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Restore main bundle of fast-check from cache
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: packages/fast-check/package.tgz
+          # Non-matching key so restore-keys picks the most recent main cache
+          key: bundle-main-will-not-match
+          restore-keys: bundle-main-
+      - name: Install version from <main>
+        run: pnpm --filter fast-check add fast-check-main@file:./package.tgz --ignore-scripts
+      - name: Download production packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bundles
+          path: packages/
+      - name: Unpack production packages
+        run: node --run unpack:all
+      - name: Benchmark
+        id: bench
+        shell: bash -l {0}
+        # The DEFAULT_SEED has to be specified to make vitest.setup.mjs happy.
+        # But we don't use it for benchmarks.
+        run: |
+          export EXPECT_DEFAULT_SEED="true"
+          export DEFAULT_SEED="0"
+          node --run bench | tee bench-output.txt
+      - name: Upload bench results
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: bench-output
+          path: bench-output.txt
+          if-no-files-found: error
+          retention-days: 1
+  comment_bench:
+    name: 'Comment bench results'
+    needs: bench
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download bench results
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bench-output
+      - name: Comment bench results on PR
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const fs = require("fs");
+            const raw = fs.readFileSync("bench-output.txt", "utf8");
+            const cleaned = raw.replace(/\x1B\[[0-9;]*[mK]/g, "");
+            const commentHeader = "### :stopwatch: Benchmark Results";
+            const body = `${commentHeader}\n\n<details><summary>Click to expand</summary>\n\n\`\`\`\n${cleaned}\n\`\`\`\n</details>\n\nCommit: ${context.payload.pull_request.head.sha} (merge: ${context.sha})`;
+            const { data: comments } = await github.rest.issues.listComments({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number });
+            const existing = comments.find(c => c.user.login === "github-actions[bot]" && c.body.startsWith(commentHeader));
+            if (existing !== undefined) {
+              await github.rest.issues.updateComment({ owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });
+            }
 
   # Job to confirm every required job passed
   pre_all_checks_passed:
