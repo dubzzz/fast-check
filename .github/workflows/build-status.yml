@@ -533,15 +533,17 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
-      - name: Restore main bundle of fast-check from cache
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: packages/fast-check/package.tgz
-          # Non-matching key so restore-keys picks the most recent main cache
-          key: bundle-main-will-not-match
-          restore-keys: bundle-main-
+      #- name: Restore main bundle of fast-check from cache
+      #  uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      #  with:
+      #    path: packages/fast-check/package.tgz
+      #    # Non-matching key so restore-keys picks the most recent main cache
+      #    key: bundle-main-will-not-match
+      #    restore-keys: bundle-main-
+      #- name: Install version from <main>
+      #  run: pnpm --filter fast-check add fast-check-main@file:./package.tgz
       - name: Install version from <main>
-        run: pnpm --filter fast-check add fast-check-main@file:./package.tgz
+        run: pnpm bench:setup
       - name: Benchmark
         id: bench
         shell: bash -l {0}
