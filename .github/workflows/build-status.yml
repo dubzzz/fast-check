@@ -152,6 +152,17 @@ jobs:
           path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
+      - name: Prune old main bundle of fast-check caches
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache list --key bundle-main- --json key -q '.[].key' | xargs -rn1 gh cache delete || true
+      - name: Cache bundle of fast-check for main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: packages/fast-check/package.tgz
+          key: bundle-main-${{ github.sha }}
 
   # Jobs requesting warmup_pnpm_cache AND production_packages
   typecheck:
@@ -522,8 +533,15 @@ jobs:
           path: packages/
       - name: Unpack production packages
         run: node --run unpack:all
+      - name: Restore main bundle of fast-check from cache
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: packages/fast-check/package.tgz
+          # Non-matching key so restore-keys picks the most recent main cache
+          key: bundle-main-will-not-match
+          restore-keys: bundle-main-
       - name: Install version from <main>
-        run: node --run bench:setup
+        run: pnpm --filter fast-check add fast-check-main@file:./package.tgz
       - name: Benchmark
         id: bench
         run: node --run bench | tee bench-output.txt
