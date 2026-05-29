@@ -34,17 +34,6 @@ for (const benchCase of benchCases) {
     const current = benchCase.build(fcCurrent);
     const main = benchCase.build(fcMain);
 
-    describe('construct', () => {
-      for (let i = 0; i !== numReplicas; ++i) {
-        bench(`current-${i}`, () => {
-          benchCase.build(fcCurrent);
-        });
-        bench(`main-${i}`, () => {
-          benchCase.build(fcMain);
-        });
-      }
-    });
-
     describe('generate', () => {
       for (let i = 0; i !== numReplicas; ++i) {
         bench(`current-${i}`, () => {
