@@ -26,57 +26,63 @@ const benchCases: BenchCase[] = [
   { name: 'integer().filter(.)', build: (fc) => fc.integer().filter((n) => n % 2 === 0) },
 ];
 
+const biasFactor = 3;
+const numReplicas = 3;
+
 for (const benchCase of benchCases) {
   describe(benchCase.name, () => {
+    const current = benchCase.build(fcCurrent);
+    const main = benchCase.build(fcMain);
+
     describe('construct', () => {
-      bench('current', () => {
-        benchCase.build(fcCurrent);
-      });
-      bench('main', () => {
-        benchCase.build(fcMain);
-      });
+      for (let i = 0; i !== numReplicas; ++i) {
+        bench(`current-${i}`, () => {
+          benchCase.build(fcCurrent);
+        });
+        bench(`main-${i}`, () => {
+          benchCase.build(fcMain);
+        });
+      }
     });
 
     describe('generate', () => {
-      const current = benchCase.build(fcCurrent);
-      const main = benchCase.build(fcMain);
-      bench('current', () => {
-        current.generate(mrngCurrent, 3);
-      });
-      bench('main', () => {
-        main.generate(mrngMain, 3);
-      });
+      for (let i = 0; i !== numReplicas; ++i) {
+        bench(`current-${i}`, () => {
+          current.generate(mrngCurrent, biasFactor);
+        });
+        bench(`main-${i}`, () => {
+          main.generate(mrngMain, biasFactor);
+        });
+      }
     });
 
     describe('shrink', () => {
-      const current = benchCase.build(fcCurrent);
-      const main = benchCase.build(fcMain);
-      // The value to shrink is produced once per run as a preparation step, so only the shrink
-      // itself is measured. We pull a single shrink candidate out of the lazy stream.
-      let seedCurrent: Value<unknown>;
-      let seedMain: Value<unknown>;
-      bench(
-        'current',
-        () => {
-          current.shrink(seedCurrent.value, seedCurrent.context).next();
-        },
-        {
-          setup() {
-            seedCurrent = current.generate(mrngCurrent, 3);
+      for (let i = 0; i !== numReplicas; ++i) {
+        let seedCurrent: Value<unknown>;
+        let seedMain: Value<unknown>;
+        bench(
+          `current-${i}`,
+          () => {
+            current.shrink(seedCurrent.value, seedCurrent.context).next();
           },
-        },
-      );
-      bench(
-        'main',
-        () => {
-          main.shrink(seedMain.value, seedMain.context).next();
-        },
-        {
-          setup() {
-            seedMain = main.generate(mrngMain, 3);
+          {
+            setup() {
+              seedCurrent = current.generate(mrngCurrent, biasFactor);
+            },
           },
-        },
-      );
+        );
+        bench(
+          `main-${i}`,
+          () => {
+            main.shrink(seedMain.value, seedMain.context).next();
+          },
+          {
+            setup() {
+              seedMain = main.generate(mrngMain, biasFactor);
+            },
+          },
+        );
+      }
     });
   });
 }
