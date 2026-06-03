@@ -571,7 +571,7 @@ importers:
         version: 0.4.0(@docusaurus/core@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.33)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.6))(@rspack/core@1.7.11)(@swc/core@1.15.33)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3))
       docusaurus-plugin-typedoc:
         specifier: ^1.4.2
-        version: 1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.3)))
+        version: 1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@6.0.3)))
       fast-check:
         specifier: workspace:*
         version: link:../packages/fast-check
@@ -582,8 +582,8 @@ importers:
         specifier: ^0.28.19
         version: 0.28.19(typescript@6.0.3)
       typedoc-plugin-markdown:
-        specifier: ^4.11.0
-        version: 4.11.0(typedoc@0.28.19(typescript@6.0.3))
+        specifier: ^4.12.0
+        version: 4.12.0(typedoc@0.28.19(typescript@6.0.3))
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
@@ -9112,8 +9112,8 @@ packages:
     peerDependencies:
       typedoc-plugin-markdown: '>=4.8.0'
 
-  typedoc-plugin-markdown@4.11.0:
-    resolution: {integrity: sha512-2iunh2ALyfyh204OF7h2u0kuQ84xB3jFZtFyUr01nThJkLvR8oGGSSDlyt2gyO4kXhvUxDcVbO0y43+qX+wFbw==}
+  typedoc-plugin-markdown@4.12.0:
+    resolution: {integrity: sha512-eJDEMAfxCmede22c/Jw7d0FA13ggAQv+KkwQYKYCdqI02cin6Rc9QRwbG/7XvvHWinuFejySnZVUWDtvGk3Vbg==}
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.28.x
@@ -15708,10 +15708,10 @@ snapshots:
       minimatch: 9.0.9
       yaml: 2.8.4
 
-  docusaurus-plugin-typedoc@1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.3))):
+  docusaurus-plugin-typedoc@1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@6.0.3))):
     dependencies:
-      typedoc-docusaurus-theme: 1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.3)))
-      typedoc-plugin-markdown: 4.11.0(typedoc@0.28.19(typescript@6.0.3))
+      typedoc-docusaurus-theme: 1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@6.0.3)))
+      typedoc-plugin-markdown: 4.12.0(typedoc@0.28.19(typescript@6.0.3))
 
   dom-accessibility-api@0.5.16: {}
 
@@ -20531,11 +20531,11 @@ snapshots:
     dependencies:
       is-typedarray: 1.0.0
 
-  typedoc-docusaurus-theme@1.4.2(typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.3))):
+  typedoc-docusaurus-theme@1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@6.0.3))):
     dependencies:
-      typedoc-plugin-markdown: 4.11.0(typedoc@0.28.19(typescript@6.0.3))
+      typedoc-plugin-markdown: 4.12.0(typedoc@0.28.19(typescript@6.0.3))
 
-  typedoc-plugin-markdown@4.11.0(typedoc@0.28.19(typescript@6.0.3)):
+  typedoc-plugin-markdown@4.12.0(typedoc@0.28.19(typescript@6.0.3)):
     dependencies:
       typedoc: 0.28.19(typescript@6.0.3)
 
