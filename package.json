@@ -27,6 +27,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "bench": "vitest bench",
+    "bench:ci": "vitest bench --outputJson=bench-output.json",
     "bench:setup": "pnpm --filter fast-check add fast-check-main@https://pkg.pr.new/dubzzz/fast-check@main --ignore-scripts",
     "typecheck:all": "pnpm --parallel run typecheck",
     "format": "prettier --experimental-cli --cache --write .",
