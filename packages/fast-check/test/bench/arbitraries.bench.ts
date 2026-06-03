@@ -16,7 +16,7 @@ type BenchCase = {
 // construction, generation and shrinking. The list intentionally spans the main arbitrary
 // families (numeric, string, collection, combinator, recursive, structured data, formatted
 // strings and operators) so a regression anywhere on the hot path shows up here. A few entries
-// pin an explicit large `size: 'max'` length on top of the default (small) size to keep the
+// pin an explicit larger `size: 'max'` length on top of the default (small) size to keep the
 // bulk-generation path covered. When an arbitrary gets a performance PR, add one key case to the
 // relevant group rather than spreading benchmarks across many files.
 const benchCases: BenchCase[] = [
@@ -29,21 +29,26 @@ const benchCases: BenchCase[] = [
   { name: 'double()', build: (fc) => fc.double() },
   { name: 'date()', build: (fc) => fc.date() },
 
-  // Strings (default small size, an explicit large size and a non-ASCII unit)
+  // Strings (default small size, an explicit larger size and a non-ASCII unit)
   { name: 'string()', build: (fc) => fc.string() },
-  { name: "string({ maxLength: 500, size: 'max' })", build: (fc) => fc.string({ maxLength: 500, size: 'max' }) },
+  { name: "string({ maxLength: 100, size: 'max' })", build: (fc) => fc.string({ maxLength: 100, size: 'max' }) },
   { name: "string({ unit: 'grapheme' })", build: (fc) => fc.string({ unit: 'grapheme' }) },
   { name: 'base64String()', build: (fc) => fc.base64String() },
 
-  // Collections (default small size and an explicit large size for the bulk path)
+  // Collections (default small size and an explicit larger size for the bulk path)
   { name: 'array(integer())', build: (fc) => fc.array(fc.integer()) },
   {
-    name: "array(integer(), { maxLength: 500, size: 'max' })",
-    build: (fc) => fc.array(fc.integer(), { maxLength: 500, size: 'max' }),
+    name: "array(integer(), { maxLength: 100, size: 'max' })",
+    build: (fc) => fc.array(fc.integer(), { maxLength: 100, size: 'max' }),
   },
   { name: 'uniqueArray(integer())', build: (fc) => fc.uniqueArray(fc.integer()) },
-  { name: 'tuple(integer(), integer())', build: (fc) => fc.tuple(fc.integer(), fc.integer()) },
-  { name: 'record({ a: integer(), b: integer() })', build: (fc) => fc.record({ a: fc.integer(), b: fc.integer() }) },
+  { name: 'tuple(constant(0), constant(0))', build: (fc) => fc.tuple(fc.constant(0), fc.constant(0)) },
+  {
+    name: 'record({ a: constant(0), b: constant(0) })',
+    build: (fc) => fc.record({ a: fc.constant(0), b: fc.constant(0) }),
+  },
+  { name: 'dictionary(string(), integer())', build: (fc) => fc.dictionary(fc.string(), fc.integer()) },
+  { name: 'uint8Array()', build: (fc) => fc.uint8Array() },
 
   // Choice and combinators
   { name: 'constantFrom(...)', build: (fc) => fc.constantFrom('a', 'b', 'c', 'd', 'e') },
@@ -54,6 +59,11 @@ const benchCases: BenchCase[] = [
   },
   { name: 'option(integer())', build: (fc) => fc.option(fc.integer()) },
   { name: 'subarray([1, 2, 3, 4, 5])', build: (fc) => fc.subarray([1, 2, 3, 4, 5]) },
+  {
+    name: 'chainUntil(.)',
+    build: (fc) =>
+      fc.chainUntil(fc.integer({ min: 0, max: 4 }), (n) => (n <= 0 ? undefined : fc.integer({ min: 0, max: n - 1 }))),
+  },
 
   // Recursive structures
   {
@@ -84,6 +94,11 @@ const benchCases: BenchCase[] = [
   // Structured data
   { name: 'anything()', build: (fc) => fc.anything() },
   { name: 'json()', build: (fc) => fc.json() },
+  {
+    name: 'entityGraph(node -> node)',
+    build: (fc) =>
+      fc.entityGraph({ node: { id: fc.integer() } }, { node: { linkTo: { arity: 'many', type: 'node' } } }),
+  },
 
   // Formatted strings (web and identifiers)
   { name: 'emailAddress()', build: (fc) => fc.emailAddress() },
@@ -96,7 +111,7 @@ const benchCases: BenchCase[] = [
 
   // Operators chained on top of another arbitrary
   { name: 'integer().map(.)', build: (fc) => fc.integer().map((n) => n + 1) },
-  { name: 'integer().chain(.)', build: (fc) => fc.integer().chain((n) => fc.integer({ min: n })) },
+  { name: 'integer().chain(.)', build: (fc) => fc.integer().chain((n) => fc.constant(n)) },
   { name: 'integer().filter(.)', build: (fc) => fc.integer().filter((n) => n % 2 === 0) },
 ];
 
