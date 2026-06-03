@@ -41,7 +41,7 @@
     "fast-check": "workspace:*",
     "jimp": "^1.6.1",
     "typedoc": "^0.28.19",
-    "typedoc-plugin-markdown": "^4.11.0",
+    "typedoc-plugin-markdown": "^4.12.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.0"
   },
