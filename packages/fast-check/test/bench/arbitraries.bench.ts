@@ -1,5 +1,5 @@
 import { describe, bench } from 'vitest';
-import type { Arbitrary, Value } from '../../src/fast-check.js';
+import type { Arbitrary, Memo, Value } from '../../src/fast-check.js';
 import { fcCurrent, fcMain, mrngCurrent, mrngMain } from './__test-helpers__/Imports.js';
 
 type Fc = typeof fcCurrent;
@@ -13,14 +13,88 @@ type BenchCase = {
 
 // Every benchmarked arbitrary lives in this single array so the full surface we track for
 // performance regressions can be reviewed at a glance. Each entry is benchmarked the same way:
-// construction, generation and shrinking. When an arbitrary gets a performance PR, add one key
-// case here rather than spreading benchmarks across many files.
+// construction, generation and shrinking. The list intentionally spans the main arbitrary
+// families (numeric, string, collection, combinator, recursive, structured data, formatted
+// strings and operators) so a regression anywhere on the hot path shows up here. A few entries
+// pin an explicit large `size: 'max'` length on top of the default (small) size to keep the
+// bulk-generation path covered. When an arbitrary gets a performance PR, add one key case to the
+// relevant group rather than spreading benchmarks across many files.
 const benchCases: BenchCase[] = [
+  // Numeric and primitive values
+  { name: 'boolean()', build: (fc) => fc.boolean() },
   { name: 'integer()', build: (fc) => fc.integer() },
-  { name: 'array(integer())', build: (fc) => fc.array(fc.integer()) },
-  { name: 'tuple(integer(), integer())', build: (fc) => fc.tuple(fc.integer(), fc.integer()) },
-  { name: 'constantFrom(...)', build: (fc) => fc.constantFrom('a', 'b', 'c', 'd', 'e') },
+  { name: 'maxSafeInteger()', build: (fc) => fc.maxSafeInteger() },
+  { name: 'bigInt()', build: (fc) => fc.bigInt() },
+  { name: 'float()', build: (fc) => fc.float() },
+  { name: 'double()', build: (fc) => fc.double() },
+  { name: 'date()', build: (fc) => fc.date() },
+
+  // Strings (default small size, an explicit large size and a non-ASCII unit)
   { name: 'string()', build: (fc) => fc.string() },
+  { name: "string({ maxLength: 500, size: 'max' })", build: (fc) => fc.string({ maxLength: 500, size: 'max' }) },
+  { name: "string({ unit: 'grapheme' })", build: (fc) => fc.string({ unit: 'grapheme' }) },
+  { name: 'base64String()', build: (fc) => fc.base64String() },
+
+  // Collections (default small size and an explicit large size for the bulk path)
+  { name: 'array(integer())', build: (fc) => fc.array(fc.integer()) },
+  {
+    name: "array(integer(), { maxLength: 500, size: 'max' })",
+    build: (fc) => fc.array(fc.integer(), { maxLength: 500, size: 'max' }),
+  },
+  { name: 'uniqueArray(integer())', build: (fc) => fc.uniqueArray(fc.integer()) },
+  { name: 'tuple(integer(), integer())', build: (fc) => fc.tuple(fc.integer(), fc.integer()) },
+  { name: 'record({ a: integer(), b: integer() })', build: (fc) => fc.record({ a: fc.integer(), b: fc.integer() }) },
+
+  // Choice and combinators
+  { name: 'constantFrom(...)', build: (fc) => fc.constantFrom('a', 'b', 'c', 'd', 'e') },
+  { name: 'oneof(integer(), integer())', build: (fc) => fc.oneof(fc.integer(), fc.integer()) },
+  {
+    name: 'oneof({ weight, arbitrary }, ...)',
+    build: (fc) => fc.oneof({ arbitrary: fc.integer(), weight: 1 }, { arbitrary: fc.integer(), weight: 2 }),
+  },
+  { name: 'option(integer())', build: (fc) => fc.option(fc.integer()) },
+  { name: 'subarray([1, 2, 3, 4, 5])', build: (fc) => fc.subarray([1, 2, 3, 4, 5]) },
+
+  // Recursive structures
+  {
+    name: 'letrec(tree)',
+    build: (fc) => {
+      const { tree } = fc.letrec((tie) => ({
+        tree: fc.oneof(tie('leaf'), tie('node')),
+        node: fc.record({ left: tie('tree'), right: tie('tree') }),
+        leaf: fc.nat(),
+      }));
+      return tree;
+    },
+  },
+  {
+    name: 'memo(tree)',
+    build: (fc) => {
+      const leaf = fc.nat;
+      // oxlint-disable-next-line no-use-before-define -- `tree` and `node` reference each other
+      const tree: Memo<unknown> = fc.memo((n) => fc.oneof(node(n), leaf()));
+      const node: Memo<unknown> = fc.memo((n) => {
+        if (n <= 1) return fc.record({ left: leaf(), right: leaf() });
+        return fc.record({ left: tree(), right: tree() });
+      });
+      return tree(3);
+    },
+  },
+
+  // Structured data
+  { name: 'anything()', build: (fc) => fc.anything() },
+  { name: 'json()', build: (fc) => fc.json() },
+
+  // Formatted strings (web and identifiers)
+  { name: 'emailAddress()', build: (fc) => fc.emailAddress() },
+  { name: 'webUrl()', build: (fc) => fc.webUrl() },
+  { name: 'ipV4()', build: (fc) => fc.ipV4() },
+  { name: 'ipV6()', build: (fc) => fc.ipV6() },
+  { name: 'uuid()', build: (fc) => fc.uuid() },
+  { name: 'stringMatching(/^[a-zA-Z0-9]+$/)', build: (fc) => fc.stringMatching(/^[a-zA-Z0-9]+$/) },
+  { name: 'mixedCase(string())', build: (fc) => fc.mixedCase(fc.string()) },
+
+  // Operators chained on top of another arbitrary
   { name: 'integer().map(.)', build: (fc) => fc.integer().map((n) => n + 1) },
   { name: 'integer().chain(.)', build: (fc) => fc.integer().chain((n) => fc.integer({ min: n })) },
   { name: 'integer().filter(.)', build: (fc) => fc.integer().filter((n) => n % 2 === 0) },
