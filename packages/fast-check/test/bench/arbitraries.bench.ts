@@ -11,14 +11,8 @@ type BenchCase = {
   build: (fc: Fc) => Arbitrary<unknown>;
 };
 
-// Every benchmarked arbitrary lives in this single array so the full surface we track for
-// performance regressions can be reviewed at a glance. Each entry is benchmarked the same way:
-// construction, generation and shrinking. The list intentionally spans the main arbitrary
-// families (numeric, string, collection, combinator, recursive, structured data, formatted
-// strings and operators) so a regression anywhere on the hot path shows up here. A few entries
-// pin an explicit larger `size: 'max'` length on top of the default (small) size to keep the
-// bulk-generation path covered. When an arbitrary gets a performance PR, add one key case to the
-// relevant group rather than spreading benchmarks across many files.
+const largeLength = { maxLength: 100, size: 'max' as const };
+
 const benchCases: BenchCase[] = [
   // Numeric and primitive values
   { name: 'boolean()', build: (fc) => fc.boolean() },
@@ -31,24 +25,19 @@ const benchCases: BenchCase[] = [
 
   // Strings (default small size, an explicit larger size and a non-ASCII unit)
   { name: 'string()', build: (fc) => fc.string() },
-  { name: "string({ maxLength: 100, size: 'max' })", build: (fc) => fc.string({ maxLength: 100, size: 'max' }) },
+  { name: "string({ maxLength: 100, size: 'max' })", build: (fc) => fc.string(largeLength) },
   { name: "string({ unit: 'grapheme' })", build: (fc) => fc.string({ unit: 'grapheme' }) },
   { name: 'base64String()', build: (fc) => fc.base64String() },
 
   // Collections (default small size and an explicit larger size for the bulk path)
   { name: 'array(integer())', build: (fc) => fc.array(fc.integer()) },
-  {
-    name: "array(integer(), { maxLength: 100, size: 'max' })",
-    build: (fc) => fc.array(fc.integer(), { maxLength: 100, size: 'max' }),
-  },
+  { name: "array(integer(), { maxLength: 100, size: 'max' })", build: (fc) => fc.array(fc.integer(), largeLength) },
   { name: 'uniqueArray(integer())', build: (fc) => fc.uniqueArray(fc.integer()) },
-  { name: 'tuple(constant(0), constant(0))', build: (fc) => fc.tuple(fc.constant(0), fc.constant(0)) },
-  {
-    name: 'record({ a: constant(0), b: constant(0) })',
-    build: (fc) => fc.record({ a: fc.constant(0), b: fc.constant(0) }),
-  },
+  { name: 'set(integer())', build: (fc) => fc.set(fc.integer()) },
+  { name: 'tuple(integer())', build: (fc) => fc.tuple(fc.integer()) },
+  { name: 'record({ a: integer() })', build: (fc) => fc.record({ a: fc.integer() }) },
   { name: 'dictionary(string(), integer())', build: (fc) => fc.dictionary(fc.string(), fc.integer()) },
-  { name: 'uint8Array()', build: (fc) => fc.uint8Array() },
+  { name: 'map(string(), integer())', build: (fc) => fc.map(fc.string(), fc.integer()) },
 
   // Choice and combinators
   { name: 'constantFrom(...)', build: (fc) => fc.constantFrom('a', 'b', 'c', 'd', 'e') },
@@ -59,11 +48,6 @@ const benchCases: BenchCase[] = [
   },
   { name: 'option(integer())', build: (fc) => fc.option(fc.integer()) },
   { name: 'subarray([1, 2, 3, 4, 5])', build: (fc) => fc.subarray([1, 2, 3, 4, 5]) },
-  {
-    name: 'chainUntil(.)',
-    build: (fc) =>
-      fc.chainUntil(fc.integer({ min: 0, max: 4 }), (n) => (n <= 0 ? undefined : fc.integer({ min: 0, max: n - 1 }))),
-  },
 
   // Recursive structures
   {
@@ -111,7 +95,7 @@ const benchCases: BenchCase[] = [
 
   // Operators chained on top of another arbitrary
   { name: 'integer().map(.)', build: (fc) => fc.integer().map((n) => n + 1) },
-  { name: 'integer().chain(.)', build: (fc) => fc.integer().chain((n) => fc.constant(n)) },
+  { name: 'integer().chain(.)', build: (fc) => fc.integer().chain(() => fc.integer()) },
   { name: 'integer().filter(.)', build: (fc) => fc.integer().filter((n) => n % 2 === 0) },
 ];
 
