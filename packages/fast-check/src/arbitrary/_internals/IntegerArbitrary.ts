@@ -11,18 +11,12 @@ const safeObjectIs = Object.is;
 
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
-  private readonly defaultTargetValue: number;
   private readonly ranges: { min: number; max: number }[];
   constructor(
     readonly min: number,
     readonly max: number,
   ) {
     super();
-    // Precompute the default shrink target (depends only on min/max).
-    // min <= 0 && max >= 0  => shrink towards zero
-    // min < 0               => shrink towards max (closer to zero)
-    // otherwise             => shrink towards min (closer to zero)
-    this.defaultTargetValue = min <= 0 && max >= 0 ? 0 : min < 0 ? max : min;
     // Precompute the ranges to be applied in case of biased generate
     this.ranges = biasNumericRange(min, max, integerLogLike);
   }
@@ -55,8 +49,12 @@ export class IntegerArbitrary extends Arbitrary<number> {
     if (!IntegerArbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
+      //    - min <= 0 && max >= 0  => shrink towards zero
+      //    - min < 0               => shrink towards max (closer to zero)
+      //    - otherwise             => shrink towards min (closer to zero)
       //   Try the target on first try
-      return shrinkInteger(current, this.defaultTargetValue, true);
+      const target = this.min <= 0 && this.max >= 0 ? 0 : this.min < 0 ? this.max : this.min;
+      return shrinkInteger(current, target, true);
     }
     if (this.isLastChanceTry(current, context)) {
       // Last chance try...
