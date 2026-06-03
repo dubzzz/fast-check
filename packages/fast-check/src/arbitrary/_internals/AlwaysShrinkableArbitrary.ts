@@ -17,6 +17,8 @@ export class AlwaysShrinkableArbitrary<Ts> extends Arbitrary<Ts> {
 
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
     const value = this.arb.generate(mrng, biasFactor);
+    // Inline noUndefinedAsContext hot path: skip the helper when context is set.
+    if (value.context !== undefined) return value;
     return noUndefinedAsContext(value);
   }
 

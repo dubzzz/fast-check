@@ -2,7 +2,9 @@ import { vi } from 'vitest';
 import type { MaybeMocked } from '../../__test-helpers__/Mocked.js';
 import { Random } from '../../../../src/random/generator/Random.js';
 
-export function fakeRandom(): { instance: Random } & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn'> {
+export function fakeRandom(): {
+  instance: Random;
+} & Omit<MaybeMocked<Random>, 'internalRng' | 'uniformIn' | 'unsafeReplaceInternal' | 'unsafeGetInternal'> {
   const clone = vi.fn();
   const next = vi.fn();
   const nextBoolean = vi.fn();

@@ -3,9 +3,9 @@ import { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import { congruential32 } from 'pure-rand/generator/congruential32';
 import { mersenne } from 'pure-rand/generator/mersenne';
-import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
 import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
+import { fastXorshift128plus } from '../../../random/generator/FastXorshift128Plus.js';
 
 import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
 
@@ -125,7 +125,10 @@ function readSeed<T>(p: Parameters<T>): number {
 
 /** @internal */
 function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomGenerator {
-  if (p.randomType === undefined) return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+  // Default + explicit xorshift128plus selection both go through the fast variant.
+  // FastXorshift128Plus produces the same value/state sequence as pure-rand's
+  // xorshift128plus but with a much cheaper jump() implementation.
+  if (p.randomType === undefined) return fastXorshift128plus as (seed: number) => QualifiedRandomGenerator;
   if (typeof p.randomType === 'string') {
     switch (p.randomType) {
       case 'mersenne':
@@ -134,7 +137,7 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
       case 'congruential32':
         return createQualifiedRandomGenerator(congruential32);
       case 'xorshift128plus':
-        return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
+        return fastXorshift128plus as (seed: number) => QualifiedRandomGenerator;
       case 'xoroshiro128plus':
         return xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
       default:

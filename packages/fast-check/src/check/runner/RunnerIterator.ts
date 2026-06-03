@@ -4,6 +4,9 @@ import type { PropertyFailure } from '../property/IRawProperty.js';
 import type { VerbosityLevel } from './configuration/VerbosityLevel.js';
 import { RunExecution } from './reporter/RunExecution.js';
 import type { SourceValuesIterator } from './SourceValuesIterator.js';
+import { PullableAdapter, SENTINEL_DONE, type PullableIterator } from './Tosser.js';
+
+const DONE_RESULT: IteratorResult<never> = { value: undefined, done: true };
 
 /**
  * Responsible for the iteration logic
@@ -15,11 +18,13 @@ import type { SourceValuesIterator } from './SourceValuesIterator.js';
  *
  * @internal
  */
-export class RunnerIterator<Ts> implements IterableIterator<Ts> {
+export class RunnerIterator<Ts> implements PullableIterator<Ts> {
   runExecution: RunExecution<Ts>;
   private currentIdx: number;
   private currentValue: Value<Ts> | undefined;
-  private nextValues: IterableIterator<Value<Ts>>;
+  // Always holds a PullableIterator so the receiver shape stays monomorphic on
+  // the hot pullNext path. Shrink streams flow through `PullableAdapter`.
+  private nextValues: PullableIterator<Value<Ts>>;
   constructor(
     readonly sourceValues: SourceValuesIterator<Value<Ts>>,
     readonly shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
@@ -34,13 +39,25 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
     return this;
   }
   next(): IteratorResult<Ts> {
-    const nextValue = this.nextValues.next();
-    if (nextValue.done || this.runExecution.interrupted) {
-      return { done: true, value: undefined };
-    }
-    this.currentValue = nextValue.value;
-    ++this.currentIdx;
-    return { done: false, value: nextValue.value.value_ };
+    const v = this.pullNext();
+    if (v === SENTINEL_DONE) return DONE_RESULT;
+    return { value: v, done: false };
+  }
+  /**
+   * Hot-path: returns the next predicate-input value directly, or
+   * {@link SENTINEL_DONE} when iteration should stop.
+   *
+   * Designed to be monomorphic: `this.nextValues` always holds something
+   * implementing `pullNext`, and field updates (currentIdx, currentValue) are
+   * plain assignments so V8 keeps them in the SMI/object fast path.
+   * @internal
+   */
+  pullNext(): Ts | typeof SENTINEL_DONE {
+    const v = this.nextValues.pullNext();
+    if (v === SENTINEL_DONE || this.runExecution.interrupted) return SENTINEL_DONE;
+    this.currentValue = v;
+    this.currentIdx = this.currentIdx + 1;
+    return v.value_;
   }
   handleResult(result: PreconditionFailure | PropertyFailure | null): void {
     // WARNING: This function has to be called after a call to next
@@ -51,8 +68,9 @@ export class RunnerIterator<Ts> implements IterableIterator<Ts> {
       // oxlint-disable-next-line typescript/no-non-null-assertion
       this.runExecution.fail(this.currentValue!.value_, this.currentIdx, result);
       this.currentIdx = -1;
+      // Wrap shrink stream so nextValues stays monomorphic (always Pullable).
       // oxlint-disable-next-line typescript/no-non-null-assertion
-      this.nextValues = this.shrink(this.currentValue!);
+      this.nextValues = new PullableAdapter(this.shrink(this.currentValue!));
     } else if (result !== null) {
       if (!result.interruptExecution) {
         // skipped run

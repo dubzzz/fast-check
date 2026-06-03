@@ -1,6 +1,7 @@
 import { Stream, stream } from '../../stream/Stream.js';
 import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 import type { PropertyFailure, IRawProperty } from '../property/IRawProperty.js';
+import { SENTINEL_DONE } from './Tosser.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
@@ -27,7 +28,11 @@ function runIt<Ts>(
   interruptedAsFailure: boolean,
 ): RunExecution<Ts> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
-  for (const v of runner) {
+  // Hot loop: drive RunnerIterator's pullNext directly to avoid the per-iter
+  // IteratorResult allocation that `for...of` would force.
+  for (;;) {
+    const v = runner.pullNext();
+    if (v === SENTINEL_DONE) break;
     (property.runBeforeEach as () => void)();
     const out = property.run(v) as PreconditionFailure | PropertyFailure | null;
     (property.runAfterEach as () => void)();
@@ -45,7 +50,9 @@ async function asyncRunIt<Ts>(
   interruptedAsFailure: boolean,
 ): Promise<RunExecution<Ts>> {
   const runner = new RunnerIterator(sourceValues, shrink, verbose, interruptedAsFailure);
-  for (const v of runner) {
+  for (;;) {
+    const v = runner.pullNext();
+    if (v === SENTINEL_DONE) break;
     await property.runBeforeEach();
     const out = await property.run(v);
     await property.runAfterEach();

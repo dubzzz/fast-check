@@ -3,8 +3,6 @@ import type { Stream } from '../../stream/Stream.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
 
-const safeMathLog = Math.log;
-
 /**
  * Represent failures of the property
  * @remarks Since 3.0.0
@@ -84,12 +82,28 @@ export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
 /**
  * Convert runId (IProperty) into a frequency (Arbitrary)
  *
+ * Returns `2 + floor(log10(runId + 1))`. Implemented as a digit-count ladder
+ * to stay on the Int32/SMI fast path and avoid the per-iteration
+ * `DoubleToI` conversion that `~~(Math.log(...) * ...)` triggers in V8.
+ *
  * @param runId - Id of the run starting at 0
  * @returns Frequency of bias starting at 2
  *
  * @internal
  */
 export function runIdToFrequency(runId: number): number {
-  // 0.4342944819032518 = 1 / log(10)
-  return 2 + ~~(safeMathLog(runId + 1) * 0.4342944819032518);
+  // Compares against (10^k - 1) constants written so the bundler does not rewrite
+  // them with scientific notation (e.g. 1000 → 1e3), which would force V8 onto a
+  // Double comparison path and reintroduce per-iteration DoubleToI conversions.
+  const n = runId + 1;
+  if (n <= 9) return 2;
+  if (n <= 99) return 3;
+  if (n <= 999) return 4;
+  if (n <= 9999) return 5;
+  if (n <= 99999) return 6;
+  if (n <= 999999) return 7;
+  if (n <= 9999999) return 8;
+  if (n <= 99999999) return 9;
+  if (n <= 999999999) return 10;
+  return 11;
 }
