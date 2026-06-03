@@ -12,7 +12,7 @@ const safeObjectIs = Object.is;
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
   private readonly defaultTargetValue: number;
-  private cachedBiasedRanges: { min: number; max: number }[] | undefined = undefined;
+  private readonly ranges: { min: number; max: number }[];
   constructor(
     readonly min: number,
     readonly max: number,
@@ -23,26 +23,21 @@ export class IntegerArbitrary extends Arbitrary<number> {
     // min < 0               => shrink towards max (closer to zero)
     // otherwise             => shrink towards min (closer to zero)
     this.defaultTargetValue = min <= 0 && max >= 0 ? 0 : min < 0 ? max : min;
+    // Precompute the ranges to be applied in case of biased generate
+    this.ranges = biasNumericRange(min, max, integerLogLike);
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<number> {
     if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
       return new Value(mrng.nextInt(this.min, this.max), undefined);
     }
-    // Biased branch: pick one of the precomputed sub-ranges.
-    let ranges = this.cachedBiasedRanges;
-    if (ranges === undefined) {
-      ranges = biasNumericRange(this.min, this.max, integerLogLike);
-      this.cachedBiasedRanges = ranges;
-    }
-    let range;
+    const ranges = this.ranges;
     if (ranges.length === 1) {
-      range = ranges[0];
-    } else {
-      // 1st range has the highest priority
-      const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2);
-      range = id < 0 ? ranges[0] : ranges[id + 1];
+      const range = ranges[0];
+      return new Value(mrng.nextInt(range.min, range.max), undefined);
     }
+    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2);
+    const range = id < 0 ? ranges[0] : ranges[id + 1]; // 1st range has the highest priority
     return new Value(mrng.nextInt(range.min, range.max), undefined);
   }
 
