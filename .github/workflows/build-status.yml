@@ -152,17 +152,6 @@ jobs:
           path: packages/**/package.tgz
           if-no-files-found: error
           retention-days: 1
-      - name: Prune old main bundle of fast-check caches
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh cache list --key bundle-main- --json key -q '.[].key' | xargs -rn1 gh cache delete || true
-      - name: Cache bundle of fast-check for main
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: packages/fast-check/package.tgz
-          key: bundle-main-${{ github.sha }}
 
   # Jobs requesting warmup_pnpm_cache AND production_packages
   typecheck:
@@ -333,7 +322,7 @@ jobs:
           pattern: coverage-*
           path: coverage-reports/
       - name: Codecov
-        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         with:
           name: tests
           flags: tests
@@ -508,7 +497,6 @@ jobs:
   # Optional jobs
   bench:
     name: 'Benchmark'
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
     needs:
       - warmup_pnpm_cache
       - production_packages
@@ -526,15 +514,13 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Restore main bundle of fast-check from cache
+      - name: Restore results from last benchmark execution on main
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
-          path: packages/fast-check/package.tgz
+          path: benchmark.json
           # Non-matching key so restore-keys picks the most recent main cache
-          key: bundle-main-will-not-match
-          restore-keys: bundle-main-
-      - name: Install version from <main>
-        run: pnpm --filter fast-check add fast-check-main@file:./package.tgz --ignore-scripts
+          key: bench-main-will-not-match
+          restore-keys: bench-main-
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -558,6 +544,17 @@ jobs:
           path: bench-output.txt
           if-no-files-found: error
           retention-days: 1
+      - name: Prune old benchmark execution from caches
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh cache list --key bench-main- --json key -q '.[].key' | xargs -rn1 gh cache delete || true
+      - name: Cache last benchmark execution for main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: benchmark.json
+          key: bench-main-${{ github.sha }}
   comment_bench:
     name: 'Comment bench results'
     needs: bench
