@@ -16,3 +16,6 @@ benchmark.json
 
 # IDE related files
 .idea
+
+# Claude Code ephemeral worktrees
+.claude/worktrees/
