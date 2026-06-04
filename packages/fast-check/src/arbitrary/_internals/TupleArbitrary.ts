@@ -4,7 +4,7 @@ import type { WithCloneMethod } from '../../check/symbols.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
+import { safePush } from '../../utils/globals.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
 
 const safeArrayIsArray = Array.isArray;
@@ -16,34 +16,25 @@ type TupleContext = unknown[];
 type TupleExtendedValue<Ts> = Value<Ts> & { context: TupleContext };
 
 /** @internal */
-function tupleMakeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): WithCloneMethod<TValue[]> {
+function tupleMakeItCloneable<TValue>(
+  vs: TValue[],
+  ctxs: TupleContext,
+  values: (Value<TValue> | undefined)[],
+): WithCloneMethod<TValue[]> {
   return safeObjectDefineProperty(vs, cloneMethod, {
     value: () => {
       const cloned: TValue[] = [];
       for (let idx = 0; idx !== values.length; ++idx) {
-        safePush(cloned, values[idx].value); // push potentially cloned values
+        let current = values[idx];
+        if (current === undefined) {
+          current = new Value(vs[idx], ctxs[idx]); // backfill missing indices in values. Each missing idx is simply a dummy Value instance
+        }
+        safePush(cloned, current.value); // push potentially cloned values
       }
-      tupleMakeItCloneable(cloned, values);
+      tupleMakeItCloneable(cloned, ctxs, values);
       return cloned;
     },
   }) as unknown as WithCloneMethod<TValue[]>;
-}
-
-/** @internal */
-function tupleWrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): TupleExtendedValue<Ts> {
-  let cloneable = false;
-  const vs = [] as unknown as Ts & unknown[];
-  const ctxs: TupleContext = [];
-  for (let idx = 0; idx !== values.length; ++idx) {
-    const v = values[idx];
-    cloneable = cloneable || v.hasToBeCloned;
-    safePush(vs, v.value);
-    safePush(ctxs, v.context);
-  }
-  if (cloneable) {
-    tupleMakeItCloneable(vs, values);
-  }
-  return new Value(vs, ctxs) as TupleExtendedValue<Ts>;
 }
 
 /** @internal */
@@ -60,16 +51,25 @@ export function tupleShrink<Ts extends unknown[]>(
     safePush(
       shrinks,
       makeLazy(() =>
-        arbs[idx]
-          .shrink(value[idx], safeContext[idx])
-          .map((v) => {
-            const nextValues: Value<unknown>[] = safeMap(
-              value,
-              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx]),
-            );
-            return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
-          })
-          .map(tupleWrapper),
+        arbs[idx].shrink(value[idx], safeContext[idx]).map((v) => {
+          let cloneable = false;
+          const vs = [] as unknown as Ts & unknown[];
+          const ctxs: TupleContext = [];
+          const mapped = [] as ValuesArray<Ts>; // WARNING: Holey array
+          for (let nestedIdx = 0; nestedIdx !== arbs.length; ++nestedIdx) {
+            const nestedV = nestedIdx === idx ? v : new Value(cloneIfNeeded(value[idx]), safeContext[idx]);
+            if (nestedV.hasToBeCloned) {
+              cloneable = true;
+              mapped[nestedIdx] = nestedV;
+            }
+            safePush(vs, nestedV.value);
+            safePush(ctxs, nestedV.context);
+          }
+          if (cloneable) {
+            tupleMakeItCloneable(vs, ctxs, mapped);
+          }
+          return new Value(vs, ctxs) as TupleExtendedValue<Ts>;
+        }),
       ),
     );
   }
@@ -79,7 +79,7 @@ export function tupleShrink<Ts extends unknown[]>(
 /** @internal */
 type ArbsArray<Ts extends unknown[]> = { [K in keyof Ts]: Arbitrary<Ts[K]> };
 /** @internal */
-type ValuesArray<Ts extends unknown[]> = { [K in keyof Ts]: Value<Ts[K]> };
+type ValuesArray<Ts extends unknown[]> = { [K in keyof Ts]?: Value<Ts[K]> };
 
 /** @internal */
 export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
@@ -92,11 +92,23 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     }
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
-    const mapped = [] as ValuesArray<Ts>;
+    let cloneable = false;
+    const vs = [] as unknown as Ts & unknown[];
+    const ctxs: TupleContext = [];
+    const mapped = [] as ValuesArray<Ts>; // WARNING: Holey array
     for (let idx = 0; idx !== this.arbs.length; ++idx) {
-      safePush(mapped, this.arbs[idx].generate(mrng, biasFactor));
+      const v = this.arbs[idx].generate(mrng, biasFactor);
+      if (v.hasToBeCloned) {
+        cloneable = true;
+        mapped[idx] = v;
+      }
+      safePush(vs, v.value);
+      safePush(ctxs, v.context);
     }
-    return tupleWrapper<Ts>(mapped);
+    if (cloneable) {
+      tupleMakeItCloneable(vs, ctxs, mapped);
+    }
+    return new Value(vs, ctxs) as TupleExtendedValue<Ts>;
   }
   canShrinkWithoutContext(value: unknown): value is Ts {
     if (!safeArrayIsArray(value) || value.length !== this.arbs.length) {
