@@ -189,10 +189,6 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
 
   const toBeProduced = toBeProducedEntities[nextIndex];
   return {
-    // The entity being produced in this step. Exposed as a value (not a setter) since it cannot be mutated from here.
-    getCurrentEntity: (): Readonly<ToBeProducedEntity<TEntityFields>> => toBeProduced,
-    // Number of entities of the given type already produced so far.
-    getExistingEntityCount: (targetType: keyof TEntityFields) => newProducedLinks[targetType].length,
     // Edit functions
     setOutboundLink: (
       name: keyof TEntityRelations[keyof TEntityFields],
@@ -257,12 +253,15 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
   lastState: ProductionState<TEntityFields, TEntityRelations>,
 ): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
-  const state = draftNextProductionState(lastState);
-  const currentEntity = state.getCurrentEntity();
+  // Cheap read-only access to the current entity and per-type counts.
+  // We intentionally avoid `draftNextProductionState` here: building it allocates a full clone of the
+  // produced-links state plus several closures, all of which would be thrown away as this preparation
+  // phase only needs read-only data. The mutable draft is created lazily inside the `.map` below.
+  const lastProducedLinks = lastState.producedLinks;
+  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex];
   const currentRelations = relations[currentEntity.type];
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
-  const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
   const linkContexts: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
   for (const name in currentRelations) {
@@ -271,7 +270,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       continue;
     }
     const targetType = relation.type;
-    const countInTargetType = state.getExistingEntityCount(targetType);
+    const countInTargetType = lastProducedLinks[targetType].length;
     const linkOrLinksArbitrary = buildLinkIndexArbitrary(
       relation.arity,
       relation.strategy || 'any',
@@ -279,7 +278,6 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
       currentEntityDepth,
     );
-    countsInTargetType[name] = countInTargetType;
     safePush(subArbitraries, linkOrLinksArbitrary);
     safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
   }
