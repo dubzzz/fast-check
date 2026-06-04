@@ -16,3 +16,6 @@ benchmark.json
 
 # IDE related files
 .idea
+
+# Claude Code transient agent worktrees
+.claude/worktrees/
