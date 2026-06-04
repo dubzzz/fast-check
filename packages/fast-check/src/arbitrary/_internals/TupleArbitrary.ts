@@ -4,6 +4,7 @@ import type { WithCloneMethod } from '../../check/symbols.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
+import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
 
 const safeArrayIsArray = Array.isArray;
@@ -18,11 +19,9 @@ type TupleExtendedValue<Ts> = Value<Ts> & { context: TupleContext };
 function tupleMakeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): WithCloneMethod<TValue[]> {
   return safeObjectDefineProperty(vs, cloneMethod, {
     value: () => {
-      const len = values.length;
-      // oxlint-disable-next-line unicorn/no-new-array
-      const cloned: TValue[] = new Array(len);
-      for (let idx = 0; idx !== len; ++idx) {
-        cloned[idx] = values[idx].value; // potentially cloned values
+      const cloned: TValue[] = [];
+      for (let idx = 0; idx !== values.length; ++idx) {
+        safePush(cloned, values[idx].value); // push potentially cloned values
       }
       tupleMakeItCloneable(cloned, values);
       return cloned;
@@ -32,17 +31,14 @@ function tupleMakeItCloneable<TValue>(vs: TValue[], values: Value<TValue>[]): Wi
 
 /** @internal */
 function tupleWrapper<Ts extends unknown[]>(values: ValuesArray<Ts>): TupleExtendedValue<Ts> {
-  const len = values.length;
-  // oxlint-disable-next-line unicorn/no-new-array
-  const vs = new Array(len) as Ts & unknown[];
-  // oxlint-disable-next-line unicorn/no-new-array
-  const ctxs: TupleContext = new Array(len);
   let cloneable = false;
-  for (let idx = 0; idx !== len; ++idx) {
+  const vs = [] as unknown as Ts & unknown[];
+  const ctxs: TupleContext = [];
+  for (let idx = 0; idx !== values.length; ++idx) {
     const v = values[idx];
-    vs[idx] = v.value;
-    ctxs[idx] = v.context;
     cloneable = cloneable || v.hasToBeCloned;
+    safePush(vs, v.value);
+    safePush(ctxs, v.context);
   }
   if (cloneable) {
     tupleMakeItCloneable(vs, values);
@@ -58,34 +54,23 @@ export function tupleShrink<Ts extends unknown[]>(
 ): Stream<TupleExtendedValue<Ts>> {
   // shrinking one by one is the not the most comprehensive
   // but allows a reasonable number of entries in the shrink
-  const len = arbs.length;
-  // oxlint-disable-next-line unicorn/no-new-array
-  const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = new Array(len);
+  const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = [];
   const safeContext: TupleContext = safeArrayIsArray(context) ? context : [];
-  for (let idx = 0; idx !== len; ++idx) {
-    const localIdx = idx;
-    shrinks[idx] = makeLazy(() =>
-      arbs[localIdx]
-        .shrink(value[localIdx], safeContext[localIdx])
-        .map((v) => {
-          // Build the resulting Value<unknown>[] in one pass: copy `value` wrapped in Value,
-          // and swap in the freshly-shrunk `v` at position `localIdx`.
-          // We deliberately still call cloneIfNeeded on value[localIdx] to preserve the original
-          // behaviour where every position triggers a clone of any cloneable element, even though
-          // the cloned result at position `localIdx` is discarded.
-          cloneIfNeeded(value[localIdx]);
-          // oxlint-disable-next-line unicorn/no-new-array
-          const nextValues = new Array(len) as ValuesArray<Ts>;
-          for (let j = 0; j !== len; ++j) {
-            if (j === localIdx) {
-              nextValues[j] = v as ValuesArray<Ts>[number];
-            } else {
-              nextValues[j] = new Value(cloneIfNeeded(value[j]), safeContext[j]) as ValuesArray<Ts>[number];
-            }
-          }
-          return nextValues;
-        })
-        .map(tupleWrapper),
+  for (let idx = 0; idx !== arbs.length; ++idx) {
+    safePush(
+      shrinks,
+      makeLazy(() =>
+        arbs[idx]
+          .shrink(value[idx], safeContext[idx])
+          .map((v) => {
+            const nextValues: Value<unknown>[] = safeMap(
+              value,
+              (v, idx) => new Value(cloneIfNeeded(v), safeContext[idx]),
+            );
+            return [...safeSlice(nextValues, 0, idx), v, ...safeSlice(nextValues, idx + 1)];
+          })
+          .map(tupleWrapper),
+      ),
     );
   }
   return Stream.nil<TupleExtendedValue<Ts>>().join(...shrinks);
@@ -107,26 +92,11 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     }
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<Ts> {
-    const arbs = this.arbs;
-    const len = arbs.length;
-    // oxlint-disable-next-line unicorn/no-new-array
-    const vs = new Array(len) as Ts & unknown[];
-    // oxlint-disable-next-line unicorn/no-new-array
-    const ctxs: TupleContext = new Array(len);
-    // oxlint-disable-next-line unicorn/no-new-array
-    const values = new Array(len) as ValuesArray<Ts>;
-    let cloneable = false;
-    for (let idx = 0; idx !== len; ++idx) {
-      const v = arbs[idx].generate(mrng, biasFactor);
-      values[idx] = v;
-      vs[idx] = v.value;
-      ctxs[idx] = v.context;
-      cloneable = cloneable || v.hasToBeCloned;
+    const mapped = [] as ValuesArray<Ts>;
+    for (let idx = 0; idx !== this.arbs.length; ++idx) {
+      safePush(mapped, this.arbs[idx].generate(mrng, biasFactor));
     }
-    if (cloneable) {
-      tupleMakeItCloneable(vs, values);
-    }
-    return new Value(vs, ctxs) as TupleExtendedValue<Ts>;
+    return tupleWrapper<Ts>(mapped);
   }
   canShrinkWithoutContext(value: unknown): value is Ts {
     if (!safeArrayIsArray(value) || value.length !== this.arbs.length) {
