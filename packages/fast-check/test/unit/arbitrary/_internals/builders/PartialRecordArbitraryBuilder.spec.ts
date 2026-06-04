@@ -1,6 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fakeArbitrary } from '../../__test-helpers__/ArbitraryHelpers.js';
 import { buildPartialRecordArbitrary } from '../../../../../src/arbitrary/_internals/builders/PartialRecordArbitraryBuilder.js';
+import { ValuesAndSeparateKeysArbitrary } from '../../../../../src/arbitrary/_internals/ValuesAndSeparateKeysArbitrary.js';
 
 import * as BooleanMock from '../../../../../src/arbitrary/boolean.js';
 import * as ConstantMock from '../../../../../src/arbitrary/constant.js';
@@ -59,7 +60,9 @@ describe('buildPartialRecordArbitrary', () => {
       const arb = buildPartialRecordArbitrary(recordModel, requiredKeys, noNullPrototype);
 
       // Assert
-      expect(arb).toBe(mappedInstance);
+      // The builder now wraps the tuple-based arbitrary (used as a shrink fallback) into a dedicated
+      // arbitrary building the record directly on generate.
+      expect(arb).toBeInstanceOf(ValuesAndSeparateKeysArbitrary);
       expect(option).not.toHaveBeenCalled();
       expect(tuple).toHaveBeenCalledTimes(2);
       expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);
@@ -132,7 +135,9 @@ describe('buildPartialRecordArbitrary', () => {
       const arb = buildPartialRecordArbitrary(recordModel, requiredKeys, noNullPrototype);
 
       // Assert
-      expect(arb).toBe(mappedInstance);
+      // The builder now wraps the tuple-based arbitrary (used as a shrink fallback) into a dedicated
+      // arbitrary building the record directly on generate.
+      expect(arb).toBeInstanceOf(ValuesAndSeparateKeysArbitrary);
       expect(option).toHaveBeenCalledTimes(2);
       expect(option).toHaveBeenCalledWith(recordModel.a, { nil: expect.any(Symbol) });
       expect(option).toHaveBeenCalledWith(recordModel.c, { nil: expect.any(Symbol) });
@@ -200,7 +205,9 @@ describe('buildPartialRecordArbitrary', () => {
       const arb = buildPartialRecordArbitrary(recordModel, requiredKeys, noNullPrototype);
 
       // Assert
-      expect(arb).toBe(mappedInstance);
+      // The builder now wraps the tuple-based arbitrary (used as a shrink fallback) into a dedicated
+      // arbitrary building the record directly on generate.
+      expect(arb).toBeInstanceOf(ValuesAndSeparateKeysArbitrary);
       expect(option).not.toHaveBeenCalled();
       expect(tuple).toHaveBeenCalledTimes(2);
       expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);
