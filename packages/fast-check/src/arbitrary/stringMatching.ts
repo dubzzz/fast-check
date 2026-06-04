@@ -1,6 +1,16 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals.js';
+import {
+  safeCharCodeAt,
+  safeEvery,
+  safeJoin,
+  safeSubstring,
+  Error,
+  safeIndexOf,
+  safeMap,
+  safePush,
+} from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
+import { ConstantArbitrary } from './_internals/ConstantArbitrary.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
@@ -48,6 +58,15 @@ const defaultChar = () => string({ unit: 'grapheme-ascii', minLength: 1, maxLeng
 
 function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
+}
+
+/**
+ * Detect arbitraries that always produce the empty string, as built for instance for ^/$ assertions
+ * in non-multiline mode. Such arbitraries contribute nothing when joined within an Alternative.
+ * @internal
+ */
+function isEmptyStringConstant(arb: Arbitrary<string>): boolean {
+  return arb instanceof ConstantArbitrary && arb.values.length === 1 && arb.values[0] === '';
 }
 
 type RegexFlags = {
@@ -132,9 +151,22 @@ function toMatchingArbitrary(
     }
     case 'Alternative': {
       // TODO - No unmap implemented yet!
-      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
-        safeJoin(vs, ''),
-      );
+      const subArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
+      // Empty-string constants (typically produced by ^/$ assertions in non-multiline mode) contribute
+      // nothing to the join, so we drop them to avoid building larger tuples and joining empty parts.
+      const meaningfulArbitraries = [];
+      for (let idx = 0; idx !== subArbitraries.length; ++idx) {
+        if (!isEmptyStringConstant(subArbitraries[idx])) {
+          safePush(meaningfulArbitraries, subArbitraries[idx]);
+        }
+      }
+      if (meaningfulArbitraries.length === 0) {
+        return constant('');
+      }
+      if (meaningfulArbitraries.length === 1) {
+        return meaningfulArbitraries[0];
+      }
+      return tuple(...meaningfulArbitraries).map((vs) => safeJoin(vs, ''));
     }
     case 'CharacterClass':
       if (astNode.negative) {
