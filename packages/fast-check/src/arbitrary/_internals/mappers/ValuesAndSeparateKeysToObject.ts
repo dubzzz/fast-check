@@ -16,15 +16,25 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
     definition: ObjectDefinition<T, TNoKey>,
   ): Partial<T> & Pick<T, EnumerableKeyOf<T>> {
     const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = definition[1] ? safeObjectCreate(null) : {};
+    const values = definition[0];
     for (let idx = 0; idx !== keys.length; ++idx) {
-      const valueWrapper = definition[0][idx];
+      const valueWrapper = values[idx];
       if (valueWrapper !== noKeyValue) {
-        safeObjectDefineProperty(obj, keys[idx], {
-          value: valueWrapper,
-          configurable: true,
-          enumerable: true,
-          writable: true,
-        });
+        const key = keys[idx];
+        // A plain assignment creates the same own configurable/enumerable/writable data property as
+        // `Object.defineProperty` with all flags set, but is significantly cheaper in V8. The only key
+        // needing the slower path is the string "__proto__": a plain assignment would trigger the
+        // prototype setter (on a regular object) instead of defining an own property.
+        if (key === '__proto__') {
+          safeObjectDefineProperty(obj, key, {
+            value: valueWrapper,
+            configurable: true,
+            enumerable: true,
+            writable: true,
+          });
+        } else {
+          obj[key] = valueWrapper as T[keyof T];
+        }
       }
     }
     return obj as Partial<T> & Pick<T, EnumerableKeyOf<T>>;
