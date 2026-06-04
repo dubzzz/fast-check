@@ -18,10 +18,6 @@ export function keyValuePairsToObjectMapper<K extends PropertyKey, V>(
   const keyValues = definition[0];
   for (let idx = 0; idx !== keyValues.length; ++idx) {
     const key = keyValues[idx][0];
-    // A plain assignment creates the same own configurable/enumerable/writable data property as
-    // `Object.defineProperty` with all flags set, but is significantly cheaper in V8. The only key
-    // needing the slower path is the string "__proto__": a plain assignment would trigger the
-    // prototype setter (on a regular object) instead of defining an own property.
     if (key === '__proto__') {
       safeObjectDefineProperty(obj, key, {
         enumerable: true,
