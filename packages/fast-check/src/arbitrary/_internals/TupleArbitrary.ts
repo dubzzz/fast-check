@@ -57,7 +57,7 @@ export function tupleShrink<Ts extends unknown[]>(
           const ctxs: TupleContext = [];
           const mapped = [] as ValuesArray<Ts>; // WARNING: Holey array
           for (let nestedIdx = 0; nestedIdx !== arbs.length; ++nestedIdx) {
-            const nestedV = nestedIdx === idx ? v : new Value(cloneIfNeeded(value[idx]), safeContext[idx]);
+            const nestedV = nestedIdx === idx ? v : new Value(cloneIfNeeded(value[nestedIdx]), safeContext[nestedIdx]);
             if (nestedV.hasToBeCloned) {
               cloneable = true;
               mapped[nestedIdx] = nestedV;
