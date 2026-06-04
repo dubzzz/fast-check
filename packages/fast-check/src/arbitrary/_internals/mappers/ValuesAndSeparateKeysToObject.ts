@@ -16,15 +16,21 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
     definition: ObjectDefinition<T, TNoKey>,
   ): Partial<T> & Pick<T, EnumerableKeyOf<T>> {
     const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = definition[1] ? safeObjectCreate(null) : {};
+    const values = definition[0];
     for (let idx = 0; idx !== keys.length; ++idx) {
-      const valueWrapper = definition[0][idx];
+      const valueWrapper = values[idx];
       if (valueWrapper !== noKeyValue) {
-        safeObjectDefineProperty(obj, keys[idx], {
-          value: valueWrapper,
-          configurable: true,
-          enumerable: true,
-          writable: true,
-        });
+        const key = keys[idx];
+        if (key === '__proto__') {
+          safeObjectDefineProperty(obj, key, {
+            value: valueWrapper,
+            configurable: true,
+            enumerable: true,
+            writable: true,
+          });
+        } else {
+          obj[key] = valueWrapper as T[keyof T];
+        }
       }
     }
     return obj as Partial<T> & Pick<T, EnumerableKeyOf<T>>;
