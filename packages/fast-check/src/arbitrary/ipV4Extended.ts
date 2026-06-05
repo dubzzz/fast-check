@@ -1,12 +1,27 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeJoin, safeSplit } from '../utils/globals.js';
+import { safeSplit } from '../utils/globals.js';
 import { oneof } from './oneof.js';
 import { tuple } from './tuple.js';
 import { buildStringifiedNatArbitrary } from './_internals/builders/StringifiedNatArbitraryBuilder.js';
 
+// Fixed-shape, fused joiners over already-stringified parts. They avoid the
+// poisoning-safe `safeJoin` wrapper (identity-check + generic
+// Array.prototype.join). For string operands, `+` is byte-identical to
+// `data.join('.')`. One joiner per tuple arity used below.
+
 /** @internal */
-function dotJoinerMapper(data: string[]): string {
-  return safeJoin(data, '.');
+function dotJoinerMapper4(data: string[]): string {
+  return data[0] + '.' + data[1] + '.' + data[2] + '.' + data[3];
+}
+
+/** @internal */
+function dotJoinerMapper3(data: string[]): string {
+  return data[0] + '.' + data[1] + '.' + data[2];
+}
+
+/** @internal */
+function dotJoinerMapper2(data: string[]): string {
+  return data[0] + '.' + data[1];
 }
 
 /** @internal */
@@ -34,14 +49,14 @@ export function ipV4Extended(): Arbitrary<string> {
       buildStringifiedNatArbitrary(255),
       buildStringifiedNatArbitrary(255),
       buildStringifiedNatArbitrary(255),
-    ).map(dotJoinerMapper, dotJoinerUnmapper),
+    ).map(dotJoinerMapper4, dotJoinerUnmapper),
     tuple<string[]>(
       buildStringifiedNatArbitrary(255),
       buildStringifiedNatArbitrary(255),
       buildStringifiedNatArbitrary(65535),
-    ).map(dotJoinerMapper, dotJoinerUnmapper),
+    ).map(dotJoinerMapper3, dotJoinerUnmapper),
     tuple<string[]>(buildStringifiedNatArbitrary(255), buildStringifiedNatArbitrary(16777215)).map(
-      dotJoinerMapper,
+      dotJoinerMapper2,
       dotJoinerUnmapper,
     ),
     buildStringifiedNatArbitrary(4294967295),

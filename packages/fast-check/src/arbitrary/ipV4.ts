@@ -1,12 +1,17 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeJoin, safeMap, safeSplit } from '../utils/globals.js';
+import { safeMap, safeSplit } from '../utils/globals.js';
 import { nat } from './nat.js';
 import { tuple } from './tuple.js';
 import { tryParseStringifiedNat } from './_internals/mappers/NatToStringifiedNat.js';
 
 /** @internal */
 function dotJoinerMapper(data: number[]): string {
-  return safeJoin(data, '.');
+  // Fixed-shape, fused join over exactly 4 numbers. Avoids the poisoning-safe
+  // `safeJoin` wrapper (identity-check + generic Array.prototype.join). For the
+  // integers 0..255 produced by `nat(255)`, `+` with a string operand coerces
+  // each number identically to the default number->string used by `join`, so
+  // the output is byte-identical to `data.join('.')`.
+  return data[0] + '.' + data[1] + '.' + data[2] + '.' + data[3];
 }
 
 /** @internal */
