@@ -13,7 +13,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/lodash": "^4.17.24",
     "@types/node": "^24.12.4",
-    "@types/react": "^19.2.16",
+    "@types/react": "^19.2.17",
     "fast-check": "workspace:*",
     "happy-dom": "^20.9.0",
     "lodash": "^4.18.1",
