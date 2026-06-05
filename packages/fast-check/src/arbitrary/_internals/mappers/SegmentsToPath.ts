@@ -2,9 +2,6 @@ import { safeSplice, safeSplit } from '../../../utils/globals.js';
 
 /** @internal */
 export function segmentsToPathMapper(segments: string[]): string {
-  // Fused equivalent of `safeJoin(safeMap(segments, (v) => `/${v}`), '')`:
-  // building the result in a single pass avoids allocating the intermediate
-  // array of `/segment` strings (and the per-element arrow closure).
   let path = '';
   for (let index = 0; index !== segments.length; ++index) {
     path += '/' + segments[index];
