@@ -1,5 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals.js';
+import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeMap, Set, safeHas } from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
@@ -44,6 +44,13 @@ const newLineChars = [...'\r\n'];
 const terminatorChars = [...'\x1E\x15'];
 const newLineAndTerminatorChars = [...newLineChars, ...terminatorChars];
 
+// Precomputed membership sets for faster lookups
+const wordCharsSet = new Set(wordChars);
+const digitCharsSet = new Set(digitChars);
+const spaceCharsSet = new Set(spaceChars);
+const terminatorCharsSet = new Set(terminatorChars);
+const newLineAndTerminatorCharsSet = new Set(newLineAndTerminatorChars);
+
 const defaultChar = () => string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
 
 function raiseUnsupportedASTNode(astNode: never): Error {
@@ -72,28 +79,28 @@ function toMatchingArbitrary(
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar().filter((c) => safeIndexOf(wordChars, c) === -1);
+            return defaultChar().filter((c) => !safeHas(wordCharsSet, c));
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar().filter((c) => safeIndexOf(digitChars, c) === -1);
+            return defaultChar().filter((c) => !safeHas(digitCharsSet, c));
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar().filter((c) => safeIndexOf(spaceChars, c) === -1);
+            return defaultChar().filter((c) => !safeHas(spaceCharsSet, c));
           }
           case '\\b':
           case '\\B': {
             throw new Error(`Meta character ${astNode.value} not implemented yet!`);
           }
           case '.': {
-            const forbiddenChars = flags.dotAll ? terminatorChars : newLineAndTerminatorChars;
-            return defaultChar().filter((c) => safeIndexOf(forbiddenChars, c) === -1);
+            const forbiddenChars = flags.dotAll ? terminatorCharsSet : newLineAndTerminatorCharsSet;
+            return defaultChar().filter((c) => !safeHas(forbiddenChars, c));
           }
         }
       }
