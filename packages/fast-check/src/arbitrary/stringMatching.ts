@@ -1,14 +1,5 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import {
-  safeCharCodeAt,
-  safeEvery,
-  safeJoin,
-  safeSubstring,
-  Error,
-  safeMap,
-  Set,
-  safeHas,
-} from '../utils/globals.js';
+import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeMap, Set, safeHas } from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
