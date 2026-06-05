@@ -53,9 +53,7 @@ const newLineChars = [...'\r\n'];
 const terminatorChars = [...'\x1E\x15'];
 const newLineAndTerminatorChars = [...newLineChars, ...terminatorChars];
 
-// Precomputed membership sets for the negated meta-character filters (\W \D \S and .).
-// Using a Set gives O(1) membership instead of the O(n) linear scan performed by
-// safeIndexOf, without changing which characters are accepted nor the RNG draw sequence.
+// Precomputed membership sets for faster lookups
 const wordCharsSet = new Set(wordChars);
 const digitCharsSet = new Set(digitChars);
 const spaceCharsSet = new Set(spaceChars);
