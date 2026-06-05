@@ -257,12 +257,13 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
   lastState: ProductionState<TEntityFields, TEntityRelations>,
 ): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
-  const state = draftNextProductionState(lastState);
-  const currentEntity = state.getCurrentEntity();
+  // Only the sub-arbitraries are computed here, reading straight from `lastState`. Drafting the next state at this
+  // point would allocate a fresh copy of the links map plus its helper closures for nothing — the actual draft is
+  // built lazily inside the `map` below, once we know the produced links.
+  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex];
   const currentRelations = relations[currentEntity.type];
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
-  const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
   const linkContexts: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
   for (const name in currentRelations) {
@@ -271,7 +272,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       continue;
     }
     const targetType = relation.type;
-    const countInTargetType = state.getExistingEntityCount(targetType);
+    const countInTargetType = lastState.producedLinks[targetType].length;
     const linkOrLinksArbitrary = buildLinkIndexArbitrary(
       relation.arity,
       relation.strategy || 'any',
@@ -279,7 +280,6 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
       currentEntityDepth,
     );
-    countsInTargetType[name] = countInTargetType;
     safePush(subArbitraries, linkOrLinksArbitrary);
     safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
   }
