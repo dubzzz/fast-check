@@ -159,6 +159,7 @@ function toMatchingArbitrary(
           // Any other node, except ^/$ assertions when in no-multiline mode
           if (pendingAggregatedValue !== '') {
             safePush(childrenArbitraries, constant(pendingAggregatedValue));
+            pendingAggregatedValue = '';
           }
           safePush(childrenArbitraries, toMatchingArbitrary(n, constraints, flags));
         }
