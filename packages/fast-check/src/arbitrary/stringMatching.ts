@@ -1,5 +1,16 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeMap, Set, safeHas } from '../utils/globals.js';
+import {
+  safeCharCodeAt,
+  safeEvery,
+  safeJoin,
+  safeSubstring,
+  Error,
+  safeMap,
+  Set,
+  safeHas,
+  safeFilter,
+  safePush,
+} from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
@@ -53,6 +64,32 @@ const newLineAndTerminatorCharsSet = new Set(newLineAndTerminatorChars);
 
 const defaultChar = () => string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
 
+// The set of characters producible by `defaultChar()` (the 95 printable ASCII chars, 0x20..0x7e).
+// Computed once at module load by probing `canShrinkWithoutContext` so it stays in sync with `defaultChar`.
+const defaultCharUniverse: string[] = (() => {
+  const arb = defaultChar();
+  const universe: string[] = [];
+  // The universe is the 95 printable ASCII chars (0x20..0x7e); we probe a slightly wider
+  // range to stay robust if `defaultChar` ever changes.
+  for (let cp = 0x00; cp <= 0xff; ++cp) {
+    const ch = safeStringFromCodePoint(cp);
+    if (arb.canShrinkWithoutContext(ch)) {
+      safePush(universe, ch);
+    }
+  }
+  return universe;
+})();
+
+// Precomputed allowed-character arrays for the negated meta-classes and ".", so we can rely on a
+// direct constantFrom(...) instead of rejection-sampling via defaultChar().filter(...).
+const nonWordChars = safeFilter(defaultCharUniverse, (c) => !safeHas(wordCharsSet, c));
+const nonDigitChars = safeFilter(defaultCharUniverse, (c) => !safeHas(digitCharsSet, c));
+const nonSpaceChars = safeFilter(defaultCharUniverse, (c) => !safeHas(spaceCharsSet, c));
+// "." semantics: exclude line terminators. When dotAll is set only the extra terminator chars are
+// excluded; otherwise new-line chars are excluded too.
+const dotAllChars = safeFilter(defaultCharUniverse, (c) => !safeHas(terminatorCharsSet, c));
+const dotChars = safeFilter(defaultCharUniverse, (c) => !safeHas(newLineAndTerminatorCharsSet, c));
+
 function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
 }
@@ -79,28 +116,27 @@ function toMatchingArbitrary(
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar().filter((c) => !safeHas(wordCharsSet, c));
+            return constantFrom(...nonWordChars);
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar().filter((c) => !safeHas(digitCharsSet, c));
+            return constantFrom(...nonDigitChars);
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar().filter((c) => !safeHas(spaceCharsSet, c));
+            return constantFrom(...nonSpaceChars);
           }
           case '\\b':
           case '\\B': {
             throw new Error(`Meta character ${astNode.value} not implemented yet!`);
           }
           case '.': {
-            const forbiddenChars = flags.dotAll ? terminatorCharsSet : newLineAndTerminatorCharsSet;
-            return defaultChar().filter((c) => !safeHas(forbiddenChars, c));
+            return constantFrom(...(flags.dotAll ? dotAllChars : dotChars));
           }
         }
       }

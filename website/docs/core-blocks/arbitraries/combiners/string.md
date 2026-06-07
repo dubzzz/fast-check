@@ -26,7 +26,7 @@ String matching the passed regex.
 ```js
 fc.stringMatching(/\s(html|php|css|java(script)?)\s/);
 // Note: The regex does not contain ^ or $ assertions, so extra text could be added before and after the match
-// Examples of generated values: "ca\rjava 4&", "K7c<:(\"T\"a\njavascript &IsEnetter", "NXlk\tjava\fto", "e\u000bjavascript\fname", "> java\t2zy:}g"…
+// Examples of generated values: "ca\rjava WU", "'Kn7&cP<5:\tjava\n", "<NfX\rcss\r*.", "m\tjavascript\tg", "#\u000bcss\u000b6leSt"…
 
 fc.stringMatching(/^rgb\((?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\)$/);
 // Note: Regex matching RGB colors
