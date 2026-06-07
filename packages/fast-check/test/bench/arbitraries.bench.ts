@@ -83,6 +83,13 @@ const benchCases: BenchCase[] = [
   { name: 'ipV6()', arbitrary: fc.ipV6() },
   { name: 'uuid()', arbitrary: fc.uuid() },
   { name: 'stringMatching(/^[a-zA-Z0-9]+$/)', arbitrary: fc.stringMatching(/^[a-zA-Z0-9]+$/) },
+  {
+    // A common URL-shaped regex chosen to exercise most of the stringMatching AST branches at once:
+    // alternation (Disjunction), groups, the four quantifiers (?, +, *, {n,m}), positive and negated
+    // character classes, class ranges, meta classes (\w, \d, \s, \S), literals and anchors.
+    name: 'stringMatching(url regex)',
+    arbitrary: fc.stringMatching(/^(https?|ftp):\/\/([\w-]+\.)+[a-z]{2,6}(:\d+)?(\/[^\s?#]*)?(\?\S*)?$/),
+  },
   { name: 'mixedCase(string())', arbitrary: fc.mixedCase(fc.string()) },
 
   // Operators chained on top of another arbitrary
