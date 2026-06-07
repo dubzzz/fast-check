@@ -30,27 +30,27 @@ fc.stringMatching(/\s(html|php|css|java(script)?)\s/);
 
 fc.stringMatching(/^rgb\((?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\)$/);
 // Note: Regex matching RGB colors
-// Examples of generated values: "rgb(237,6,11)", "rgb(143,160,247)", "rgb(257,213,251)", "rgb(4,185,33)", "rgb(253,230,211)"…
+// Examples of generated values: "rgb(251,236,14)", "rgb(143,160,217)", "rgb(227,241,214)", "rgb(4,185,96)", "rgb(223,252,108)"…
 
 fc.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 // Note: Regex matching UUID
 // Examples of generated values:
-// • "fd606aa1-b53b-1c7b-9e2f-1e2c1ff1b8e9"
-// • "e74cec0b-bd5a-4dba-96a9-edbfa9c1a198"
-// • "fcccdcf3-908e-5179-adce-7ebae72c12dc"
-// • "0eab1fab-5bc2-336c-9ccb-a3fecbe72ee2"
-// • "bb3073ee-2283-2538-ba0c-1b976ebb9610"
+// • "edd33232-0151-233b-9ef1-9712e01400d1"
+// • "73ec5ccc-6023-49dd-97d7-703020f1e832"
+// • "ebfcd073-f2d2-5021-85f0-ebd0592d4a3b"
+// • "071d41a5-2c13-3126-ad2d-92bef9003c30"
+// • "211323a3-4622-2230-93e1-0c1e1fc3140e"
 // • …
 
 fc.stringMatching(
   /^(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)$/,
 );
 // Note: Regex matching IP v4, we rather recommend you to rely on `fc.ipV4()`
-// Examples of generated values: "226.4.220.240", "206.2.148.227", "247.32.128.41", "165.252.212.135", "18.225.51.96"…
+// Examples of generated values: "241.214.117.10", "206.2.148.203", "236.225.2.128", "165.248.206.120", "12.183.164.251"…
 
 fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 });
 // Note: Regex matching very simple email addresses, but we ask for no more than 10 characters for generated email addresses
-// Examples of generated values: "G9-_+@-1..", "U05@--1.yK", "+@tW.dfw", "_@u..t", "dal@2-Z..8"…
+// Examples of generated values: "ap@refc.er", "n@edu.HEl", "W+@ca.tN", "f.@a..oZM", "key@u-.Vn"…
 
 fc.stringMatching(/^\p{Emoji}$/u);
 // Note: Regex matching a single Emoji character via a Unicode property escape
