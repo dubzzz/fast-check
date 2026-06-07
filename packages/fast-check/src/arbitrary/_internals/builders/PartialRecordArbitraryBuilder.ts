@@ -31,7 +31,7 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
       safePush(arbs, option(requiredArbitrary, { nil: noKeyValue as NoKeyType }));
     }
   }
-  return tuple(tuple(...arbs), noNullPrototype ? constant(false) : boolean()).map(
+  return tuple(tuple(arbs), noNullPrototype ? constant(false) : boolean()).map(
     buildValuesAndSeparateKeysToObjectMapper<T, NoKeyType>(keys, noKeyValue),
     buildValuesAndSeparateKeysToObjectUnmapper<T, NoKeyType>(keys, noKeyValue),
   );

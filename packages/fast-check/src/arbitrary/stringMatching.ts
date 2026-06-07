@@ -139,7 +139,7 @@ function toMatchingArbitrary(
     }
     case 'Alternative': {
       // TODO - No unmap implemented yet!
-      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
+      return tuple(safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
         safeJoin(vs, ''),
       );
     }

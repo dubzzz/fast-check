@@ -269,8 +269,14 @@ expectTypeOf(fc.tuple(fc.nat())).toEqualTypeOf<fc.Arbitrary<[number]>>();
 expectTypeOf(fc.tuple(fc.nat(), fc.string())).toEqualTypeOf<fc.Arbitrary<[number, string]>>();
 // "tuple" with spread arrays
 expectTypeOf(fc.tuple(...([] as fc.Arbitrary<number>[]))).toEqualTypeOf<fc.Arbitrary<number[]>>();
+// "tuple" with a single tuple of arbitraries
+expectTypeOf(fc.tuple([fc.nat(), fc.string()])).toEqualTypeOf<fc.Arbitrary<[number, string]>>();
+// "tuple" with a single array of arbitraries
+expectTypeOf(fc.tuple([] as fc.Arbitrary<number>[])).toEqualTypeOf<fc.Arbitrary<number[]>>();
 // @ts-expect-error - tuple expects arbitraries not raw values
 fc.tuple(fc.nat(), '');
+// @ts-expect-error - tuple expects arbitraries not raw values in array form
+fc.tuple([fc.nat(), '']);
 
 // oneof arbitrary
 // "oneof" with multiple arguments having the same type

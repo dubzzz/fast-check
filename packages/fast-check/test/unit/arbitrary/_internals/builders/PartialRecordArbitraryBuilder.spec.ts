@@ -62,7 +62,7 @@ describe('buildPartialRecordArbitrary', () => {
       expect(arb).toBe(mappedInstance);
       expect(option).not.toHaveBeenCalled();
       expect(tuple).toHaveBeenCalledTimes(2);
-      expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);
+      expect(tuple).toHaveBeenCalledWith([recordModel.a, recordModel.b]);
       expect(tuple).toHaveBeenCalledWith(tupleInstance, booleanInstance);
       expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
       expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
@@ -137,7 +137,7 @@ describe('buildPartialRecordArbitrary', () => {
       expect(option).toHaveBeenCalledWith(recordModel.a, { nil: expect.any(Symbol) });
       expect(option).toHaveBeenCalledWith(recordModel.c, { nil: expect.any(Symbol) });
       expect(tuple).toHaveBeenCalledTimes(2);
-      expect(tuple).toHaveBeenCalledWith(optionInstance1Old, recordModel.b, optionInstance2Old);
+      expect(tuple).toHaveBeenCalledWith([optionInstance1Old, recordModel.b, optionInstance2Old]);
       expect(tuple).toHaveBeenCalledWith(tupleInstance, booleanInstance);
       expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
       expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));
@@ -203,7 +203,7 @@ describe('buildPartialRecordArbitrary', () => {
       expect(arb).toBe(mappedInstance);
       expect(option).not.toHaveBeenCalled();
       expect(tuple).toHaveBeenCalledTimes(2);
-      expect(tuple).toHaveBeenCalledWith(recordModel.a, recordModel.b);
+      expect(tuple).toHaveBeenCalledWith([recordModel.a, recordModel.b]);
       expect(tuple).toHaveBeenCalledWith(tupleInstance, booleanInstance);
       expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledTimes(1);
       expect(buildValuesAndSeparateKeysToObjectMapper).toHaveBeenCalledWith(allKeys, expect.any(Symbol));

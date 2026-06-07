@@ -36,7 +36,7 @@ export function initialPoolForEntityGraph<TEntityNames extends PropertyKey>(
   const arbitraries: Arbitrary<TEntityNames[]>[] = keys.map((key) => array(constant(key), constraints[key]));
 
   return (
-    tuple(...arbitraries)
+    tuple(arbitraries)
       // While algorithmic-wise it could be great to reverse this mapping, from a usage point-of-view we don't care.
       // This arbitrary will stay internal and be only used to fuel a .chain and thus reversing it will not be useful.
       .map((values) => safeFlat(values))

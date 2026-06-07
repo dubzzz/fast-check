@@ -13,10 +13,12 @@ Generate _tuples_ - or more precisely arrays - by aggregating the values generat
 **Signatures:**
 
 - `fc.tuple(...arbitraries)`
+- `fc.tuple(arbitraries)`
 
 **with:**
 
 - `...arbitraries` — _arbitraries that should be used to generate the values of our tuple_
+- `arbitraries` — _array of arbitraries that should be used to generate the values of our tuple_
 
 **Usages:**
 
@@ -26,6 +28,10 @@ fc.tuple(fc.nat());
 
 fc.tuple(fc.nat(), fc.string());
 // Examples of generated values: [17,"n"], [1187149108,"{}"], [302474255,"!!]"], [2147483618,"$#"], [21,"lv V!\""]…
+
+fc.tuple([fc.nat(), fc.string()]);
+// Note: Passing the arbitraries as a single array is equivalent to spreading them.
+// Examples of generated values: [1804977096,"v,XthfBjY"], [2147483633,"0[xp"], [29,""], [15,""], [2147483635,"rot%}toStr"]…
 ```
 
 Resources: [API reference](/docs/api/functions/tuple).  
