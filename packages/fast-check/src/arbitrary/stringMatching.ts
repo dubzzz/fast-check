@@ -11,6 +11,7 @@ import { constant } from './constant.js';
 import { constantFrom } from './constantFrom.js';
 import { integer } from './integer.js';
 import { oneof } from './oneof.js';
+import { option } from './option.js';
 import { string } from './string.js';
 import { tuple } from './tuple.js';
 
@@ -119,7 +120,11 @@ function toMatchingArbitrary(
           return string({ ...constraints, minLength: 1, unit: node });
         }
         case '?': {
-          return string({ ...constraints, minLength: 0, maxLength: 1, unit: node });
+          // 0-or-1 occurrence: avoid the array/map machinery of string({...}).
+          // option(node, { nil: '', freq: 2 }) yields either '' (the absent case, ~1/2 of the
+          // time, matching the previous string({ minLength: 0, maxLength: 1 }) distribution) or
+          // exactly one occurrence, and shrinks toward '' (cross-shrink) as before.
+          return option(node, { nil: '', freq: 2 });
         }
         case 'Range': {
           return string({
