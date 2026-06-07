@@ -1,5 +1,15 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeMap, Set, safeHas } from '../utils/globals.js';
+import {
+  safeCharCodeAt,
+  safeEvery,
+  safeJoin,
+  safeSubstring,
+  Error,
+  safeMap,
+  Set,
+  safeHas,
+  safePush,
+} from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
@@ -166,9 +176,24 @@ function toMatchingArbitrary(
       return toMatchingArbitrary(astNode.expression, constraints, flags);
     }
     case 'Disjunction': {
-      const left = astNode.left !== null ? toMatchingArbitrary(astNode.left, constraints, flags) : constant('');
-      const right = astNode.right !== null ? toMatchingArbitrary(astNode.right, constraints, flags) : constant('');
-      return oneof(left, right);
+      // A regex alternation `a|b|c|d` parses as a nested binary disjunction tree:
+      // Disjunction(Disjunction(Disjunction(a,b),c),d). Flatten it into a single
+      // oneof over all alternatives to avoid nested FrequencyArbitrary wrappers at
+      // generate time and to keep the selection uniform across alternatives.
+      const branches: Arbitrary<string>[] = [];
+      const collectBranches = (node: RegexToken | null): void => {
+        if (node === null) {
+          safePush(branches, constant(''));
+        } else if (node.type === 'Disjunction') {
+          collectBranches(node.left);
+          collectBranches(node.right);
+        } else {
+          safePush(branches, toMatchingArbitrary(node, constraints, flags));
+        }
+      };
+      collectBranches(astNode.left);
+      collectBranches(astNode.right);
+      return oneof(...branches);
     }
     case 'Assertion': {
       if (astNode.kind === '^' || astNode.kind === '$') {
