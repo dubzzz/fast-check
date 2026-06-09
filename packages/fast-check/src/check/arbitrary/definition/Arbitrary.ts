@@ -293,10 +293,6 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     return mappedValue;
   }
   private valueMapper(v: Value<T>): Value<U> {
-    // Note: `generate` already short-circuits the !v.hasToBeCloned case before
-    // calling this helper. `valueMapper` still needs to handle the full general
-    // case because it is also reused by `bindValueMapper` in shrink streams,
-    // where the incoming Value may have hasToBeCloned=true.
     if (!v.hasToBeCloned) {
       const sourceValue = v.value_;
       const mappedValue = this.mapper(sourceValue);
