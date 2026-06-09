@@ -247,12 +247,6 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const g = this.arb.generate(mrng, biasFactor);
-    if (!g.hasToBeCloned) {
-      const sourceValue = g.value_;
-      const mappedValue = this.mapper(sourceValue);
-      const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: g.context };
-      return new Value(mappedValue, context);
-    }
     return this.valueMapper(g);
   }
   canShrinkWithoutContext(value: unknown): value is U {
