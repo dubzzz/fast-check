@@ -26,11 +26,11 @@ String matching the passed regex.
 ```js
 fc.stringMatching(/\s(html|php|css|java(script)?)\s/);
 // Note: The regex does not contain ^ or $ assertions, so extra text could be added before and after the match
-// Examples of generated values: "ca\rphp\f", "K7c<:(\"T\"a\njavascript &IsEnetter", "NXlk\tphp\r", "e\u000bphp\ng", "> php\u000b&appl"…
+// Examples of generated values: "ca\rcss\f", "K7c<:(\"T\"a\nphp\r5M+,q~KPuj", "NXlk\tcss\r", "e\u000bcss\ng", "> css\u000b&appl"…
 
 fc.stringMatching(/^rgb\((?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\)$/);
 // Note: Regex matching RGB colors
-// Examples of generated values: "rgb(237,2,6)", "rgb(7,3,9)", "rgb(257,23,251)", "rgb(168,0,46)", "rgb(253,230,41)"…
+// Examples of generated values: "rgb(77,226,11)", "rgb(229,247,231)", "rgb(37,104,1)", "rgb(6,4,236)", "rgb(33,80,108)"…
 
 fc.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 // Note: Regex matching UUID
@@ -46,7 +46,7 @@ fc.stringMatching(
   /^(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)$/,
 );
 // Note: Regex matching IP v4, we rather recommend you to rely on `fc.ipV4()`
-// Examples of generated values: "226.0.4.60", "206.0.2.114", "57.189.32.85", "136.58.16.112", "0.18.225.147"…
+// Examples of generated values: "26.211.140.50", "16.201.8.27", "171.225.2.2", "3.5.72.22", "204.233.5.4"…
 
 fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 });
 // Note: Regex matching very simple email addresses, but we ask for no more than 10 characters for generated email addresses
