@@ -176,23 +176,19 @@ function toMatchingArbitrary(
       return toMatchingArbitrary(astNode.expression, constraints, flags);
     }
     case 'Disjunction': {
-      // A regex alternation `a|b|c|d` parses as a nested binary disjunction tree:
-      // Disjunction(Disjunction(Disjunction(a,b),c),d). Flatten it into a single
-      // oneof over all alternatives to avoid nested FrequencyArbitrary wrappers at
-      // generate time and to keep the selection uniform across alternatives.
+      const stack = [astNode.left, astNode.right];
       const branches: Arbitrary<string>[] = [];
-      const collectBranches = (node: RegexToken | null): void => {
+      while (branches.length !== stack.length) {
+        const node = stack[branches.length];
         if (node === null) {
           safePush(branches, constant(''));
         } else if (node.type === 'Disjunction') {
-          collectBranches(node.left);
-          collectBranches(node.right);
+          safePush(stack, node.left);
+          safePush(stack, node.right);
         } else {
           safePush(branches, toMatchingArbitrary(node, constraints, flags));
         }
       };
-      collectBranches(astNode.left);
-      collectBranches(astNode.right);
       return oneof(...branches);
     }
     case 'Assertion': {
