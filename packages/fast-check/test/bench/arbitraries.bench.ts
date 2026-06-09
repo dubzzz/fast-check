@@ -56,7 +56,7 @@ const benchCases: BenchCase[] = [
 
   // Choice and combinators
   { name: 'constant(1)', arbitrary: fc.constant(1) },
-  { name: 'constantFrom(1, 2, 3)', arbitrary: fc.constantFrom(1, 2, 3) },
+  { name: 'constantFrom(1, 2)', arbitrary: fc.constantFrom(1, 2) },
   { name: 'oneof(integer(), integer())', arbitrary: fc.oneof(fc.integer(), fc.integer()) },
   {
     name: 'oneof({ weight, arbitrary }, ...)',
@@ -88,7 +88,7 @@ const benchCases: BenchCase[] = [
   { name: 'mixedCase(string())', arbitrary: fc.mixedCase(fc.string()) },
 
   // Operators chained on top of another arbitrary
-  { name: 'integer().map(value*2)', arbitrary: fc.integer().map((n) => n * 2) },
+  { name: 'integer().map(value+1)', arbitrary: fc.integer().map((n) => n + 1) },
   { name: 'integer().chain(integer())', arbitrary: fc.integer().chain(() => fc.integer()) },
   { name: 'integer().filter(true)', arbitrary: fc.integer().filter(() => true) },
 ];
