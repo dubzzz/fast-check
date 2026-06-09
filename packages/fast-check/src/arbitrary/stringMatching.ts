@@ -178,8 +178,8 @@ function toMatchingArbitrary(
     case 'Disjunction': {
       const stack = [astNode.left, astNode.right];
       const branches: Arbitrary<string>[] = [];
-      while (branches.length !== stack.length) {
-        const node = stack[branches.length];
+      for (let i = 0 ; i !== stack.length ; ++i) {
+        const node = stack[i];
         if (node === null) {
           safePush(branches, constant(''));
         } else if (node.type === 'Disjunction') {
