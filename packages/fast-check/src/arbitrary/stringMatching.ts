@@ -188,7 +188,7 @@ function toMatchingArbitrary(
         } else {
           safePush(branches, toMatchingArbitrary(node, constraints, flags));
         }
-      };
+      }
       return oneof(...branches);
     }
     case 'Assertion': {
