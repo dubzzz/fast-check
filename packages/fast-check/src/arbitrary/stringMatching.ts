@@ -201,9 +201,20 @@ function toMatchingArbitrary(
       return toMatchingArbitrary(astNode.expression, constraints, flags);
     }
     case 'Disjunction': {
-      const left = astNode.left !== null ? toMatchingArbitrary(astNode.left, constraints, flags) : constant('');
-      const right = astNode.right !== null ? toMatchingArbitrary(astNode.right, constraints, flags) : constant('');
-      return oneof(left, right);
+      const stack = [astNode.left, astNode.right];
+      const branches: Arbitrary<string>[] = [];
+      for (let i = 0; i !== stack.length; ++i) {
+        const node = stack[i];
+        if (node === null) {
+          safePush(branches, constant(''));
+        } else if (node.type === 'Disjunction') {
+          safePush(stack, node.left);
+          safePush(stack, node.right);
+        } else {
+          safePush(branches, toMatchingArbitrary(node, constraints, flags));
+        }
+      }
+      return oneof(...branches);
     }
     case 'Assertion': {
       if (astNode.kind === '^' || astNode.kind === '$') {
