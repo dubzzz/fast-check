@@ -148,10 +148,35 @@ function toMatchingArbitrary(
       throw new Error(`Wrongly defined AST tree, Quantifier nodes not supposed to be scanned!`);
     }
     case 'Alternative': {
+      // Glue consecutive Char nodes (and drop ^/$ assertions in no-multiline mode) into fewer children, so we generate faster.
+      const childrenArbitraries: Arbitrary<string>[] = [];
+      let pendingAggregatedValue = '';
+      for (const n of astNode.expressions) {
+        if (n.type === 'Char' && n.kind !== 'meta' && n.symbol !== undefined) {
+          // Plain char: accumulate it into the pending run instead of a dedicated child leading to a constant of one Char
+          pendingAggregatedValue += n.symbol;
+        } else if (flags.multiline || n.type !== 'Assertion' || (n.kind !== '^' && n.kind !== '$')) {
+          // Any other node, except ^/$ assertions when in no-multiline mode
+          if (pendingAggregatedValue !== '') {
+            safePush(childrenArbitraries, constant(pendingAggregatedValue));
+            pendingAggregatedValue = '';
+          }
+          safePush(childrenArbitraries, toMatchingArbitrary(n, constraints, flags));
+        }
+      }
+      if (pendingAggregatedValue !== '') {
+        safePush(childrenArbitraries, constant(pendingAggregatedValue));
+      }
+      // With 0 or 1 child we skip the tuple to avoid extra post-generate work
+      if (childrenArbitraries.length === 0) {
+        return constant(''); // e.g. ^$ in no-multiline mode
+      }
+      if (childrenArbitraries.length === 1) {
+        return childrenArbitraries[0];
+      }
+      // Otherwise join their results
       // TODO - No unmap implemented yet!
-      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
-        safeJoin(vs, ''),
-      );
+      return tuple(...childrenArbitraries).map((vs) => safeJoin(vs, ''));
     }
     case 'CharacterClass':
       if (astNode.negative) {

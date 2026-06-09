@@ -82,6 +82,7 @@ const benchCases: BenchCase[] = [
   { name: 'ipV4()', arbitrary: fc.ipV4() },
   { name: 'ipV6()', arbitrary: fc.ipV6() },
   { name: 'uuid()', arbitrary: fc.uuid() },
+  { name: 'stringMatching(/^abc$/)', arbitrary: fc.stringMatching(/^abc$/) },
   { name: 'stringMatching(/^[a-zA-Z0-9]+$/)', arbitrary: fc.stringMatching(/^[a-zA-Z0-9]+$/) },
   { name: 'mixedCase(string())', arbitrary: fc.mixedCase(fc.string()) },
 
