@@ -11,15 +11,27 @@ const safeObjectIs = Object.is;
 
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
+  private readonly ranges: { min: number; max: number }[];
   constructor(
     readonly min: number,
     readonly max: number,
   ) {
     super();
+    // Precompute the ranges to be applied in case of biased generate
+    this.ranges = biasNumericRange(min, max, integerLogLike);
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<number> {
-    const range = this.computeGenerateRange(mrng, biasFactor);
+    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
+      return new Value(mrng.nextInt(this.min, this.max), undefined);
+    }
+    const ranges = this.ranges;
+    if (ranges.length === 1) {
+      const range = ranges[0];
+      return new Value(mrng.nextInt(range.min, range.max), undefined);
+    }
+    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2);
+    const range = id < 0 ? ranges[0] : ranges[id + 1]; // 1st range has the highest priority
     return new Value(mrng.nextInt(range.min, range.max), undefined);
   }
 
@@ -37,8 +49,11 @@ export class IntegerArbitrary extends Arbitrary<number> {
     if (!IntegerArbitrary.isValidContext(current, context)) {
       // No context:
       //   Take default target and shrink towards it
+      //    - min <= 0 && max >= 0  => shrink towards zero
+      //    - min < 0               => shrink towards max (closer to zero)
+      //    - otherwise             => shrink towards min (closer to zero)
       //   Try the target on first try
-      const target = this.defaultTarget();
+      const target = this.min <= 0 && this.max >= 0 ? 0 : this.min < 0 ? this.max : this.min;
       return shrinkInteger(current, target, true);
     }
     if (this.isLastChanceTry(current, context)) {
@@ -49,28 +64,6 @@ export class IntegerArbitrary extends Arbitrary<number> {
     }
     // Normal shrink process
     return shrinkInteger(current, context, false);
-  }
-
-  private defaultTarget(): number {
-    // min <= 0 && max >= 0   => shrink towards zero
-    if (this.min <= 0 && this.max >= 0) {
-      return 0;
-    }
-    // min < 0                => shrink towards max (closer to zero)
-    // otherwise              => shrink towards min (closer to zero)
-    return this.min < 0 ? this.max : this.min;
-  }
-
-  private computeGenerateRange(mrng: Random, biasFactor: number | undefined): { min: number; max: number } {
-    if (biasFactor === undefined || mrng.nextInt(1, biasFactor) !== 1) {
-      return { min: this.min, max: this.max };
-    }
-    const ranges = biasNumericRange(this.min, this.max, integerLogLike);
-    if (ranges.length === 1) {
-      return ranges[0];
-    }
-    const id = mrng.nextInt(-2 * (ranges.length - 1), ranges.length - 2); // 1st range has the highest priority
-    return id < 0 ? ranges[0] : ranges[id + 1];
   }
 
   private isLastChanceTry(current: number, context: number): boolean {
