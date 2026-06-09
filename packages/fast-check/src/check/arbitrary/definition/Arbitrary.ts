@@ -247,8 +247,6 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const g = this.arb.generate(mrng, biasFactor);
-    // Inline fast path: source value does not require cloning. Avoids an extra call frame
-    // and skips all cloneable wiring. Hits e.g. integer().map(...), tuple(int,int).map(...).
     if (!g.hasToBeCloned) {
       const sourceValue = g.value_;
       const mappedValue = this.mapper(sourceValue);
