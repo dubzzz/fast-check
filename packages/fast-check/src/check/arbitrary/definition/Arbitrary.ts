@@ -270,7 +270,7 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<U> {
     const g = this.arb.generate(mrng, biasFactor);
-    // Fast-path for non-cloneable values in the context of a generate, we avoid an array-allocation from valueMapper
+    // Fast-path for non-cloneable values in the context of a generate, we avoid an array-allocation in valueMapper
     if (!g.hasToBeCloned) {
       const sourceValue = g.value;
       const mappedValue = this.mapper(sourceValue);
