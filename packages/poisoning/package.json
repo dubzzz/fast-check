@@ -28,7 +28,7 @@
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/poisoning#readme",
   "devDependencies": {
     "@fast-check/poisoning": "workspace:*",
-    "@types/node": "^24.12.4",
+    "@types/node": "^24.13.1",
     "rolldown": "^1.0.1",
     "typescript": "~6.0.3",
     "vitest": "^4.1.0"
