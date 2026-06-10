@@ -12,6 +12,7 @@ website/docs/api/
 deopt.out
 v8.log
 v8.out
+benchmark.json
 
 # IDE related files
 .idea
