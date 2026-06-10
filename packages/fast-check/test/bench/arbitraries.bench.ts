@@ -55,7 +55,8 @@ const benchCases: BenchCase[] = [
   { name: 'map(string(), integer())', arbitrary: fc.map(fc.string(), fc.integer()) },
 
   // Choice and combinators
-  { name: 'constantFrom(...)', arbitrary: fc.constantFrom('a', 'b', 'c', 'd', 'e') },
+  { name: 'constant(1)', arbitrary: fc.constant(1) },
+  { name: 'constantFrom(1, 2)', arbitrary: fc.constantFrom(1, 2) },
   { name: 'oneof(integer(), integer())', arbitrary: fc.oneof(fc.integer(), fc.integer()) },
   {
     name: 'oneof({ weight, arbitrary }, ...)',
@@ -82,13 +83,14 @@ const benchCases: BenchCase[] = [
   { name: 'ipV4()', arbitrary: fc.ipV4() },
   { name: 'ipV6()', arbitrary: fc.ipV6() },
   { name: 'uuid()', arbitrary: fc.uuid() },
+  { name: 'stringMatching(/^abc$/)', arbitrary: fc.stringMatching(/^abc$/) },
   { name: 'stringMatching(/^[a-zA-Z0-9]+$/)', arbitrary: fc.stringMatching(/^[a-zA-Z0-9]+$/) },
   { name: 'mixedCase(string())', arbitrary: fc.mixedCase(fc.string()) },
 
   // Operators chained on top of another arbitrary
-  { name: 'integer().map(.)', arbitrary: fc.integer().map((n) => n + 1) },
-  { name: 'integer().chain(.)', arbitrary: fc.integer().chain(() => fc.integer()) },
-  { name: 'integer().filter(.)', arbitrary: fc.integer().filter((n) => n % 2 === 0) },
+  { name: 'integer().map(value+1)', arbitrary: fc.integer().map((n) => n + 1) },
+  { name: 'integer().chain(integer())', arbitrary: fc.integer().chain(() => fc.integer()) },
+  { name: 'integer().filter(true)', arbitrary: fc.integer().filter(() => true) },
 ];
 
 const biasFactor = 3;

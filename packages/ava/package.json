@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@fast-check/ava": "workspace:*",
-    "@types/node": "^24.12.4",
+    "@types/node": "^24.13.1",
     "ava": "^8.0.1",
     "esm": "^3.2.25",
     "fast-check": "workspace:*",
