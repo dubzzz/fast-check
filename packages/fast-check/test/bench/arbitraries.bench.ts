@@ -104,7 +104,7 @@ for (const benchCase of benchCases) {
 describe('generate', () => {
   for (const benchCase of benchCases) {
     bench(benchCase.name, () => {
-      for (let i = 0 ; i !== 1000 ; ++i) {
+      for (let i = 0; i !== 1000; ++i) {
         benchCase.arbitrary.generate(mrng, biasFactor);
       }
     });
