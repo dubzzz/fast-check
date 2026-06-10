@@ -10,7 +10,6 @@ import {
   buildValuesAndSeparateKeysToObjectMapper,
   buildValuesAndSeparateKeysToObjectUnmapper,
 } from '../mappers/ValuesAndSeparateKeysToObject.js';
-import { ValuesAndSeparateKeysArbitrary } from '../ValuesAndSeparateKeysArbitrary.js';
 
 const noKeyValue: unique symbol = Symbol('no-key');
 type NoKeyType = typeof noKeyValue;
@@ -32,17 +31,8 @@ export function buildPartialRecordArbitrary<T, TKeys extends EnumerableKeyOf<T>>
       safePush(arbs, option(requiredArbitrary, { nil: noKeyValue as NoKeyType }));
     }
   }
-  const nullPrototypeArb = noNullPrototype ? constant(false) : boolean();
-  const mapper = buildValuesAndSeparateKeysToObjectMapper<T, NoKeyType>(keys, noKeyValue);
-  const unmapper = buildValuesAndSeparateKeysToObjectUnmapper<T, NoKeyType>(keys, noKeyValue);
-  // The tuple-based arbitrary is kept as a fallback: it powers `canShrinkWithoutContext` and the shrink of
-  // values that were not produced by our own `generate` (eg: user-provided values).
-  const fallback = tuple(tuple(...arbs), nullPrototypeArb).map(mapper, unmapper);
-  type TObj = Partial<T> & Pick<T, TKeys>;
-  return new ValuesAndSeparateKeysArbitrary<TObj>(
-    arbs as Arbitrary<unknown>[],
-    nullPrototypeArb,
-    mapper as unknown as (definition: [unknown[], boolean]) => TObj,
-    fallback as Arbitrary<TObj>,
+  return tuple(tuple(...arbs), noNullPrototype ? constant(false) : boolean()).map(
+    buildValuesAndSeparateKeysToObjectMapper<T, NoKeyType>(keys, noKeyValue),
+    buildValuesAndSeparateKeysToObjectUnmapper<T, NoKeyType>(keys, noKeyValue),
   );
 }
