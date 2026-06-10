@@ -273,28 +273,23 @@ class MapArbitrary<T, U> extends Arbitrary<U> {
     }
     return Stream.nil();
   }
-  private mapperWithCloneIfNeeded(v: Value<T>): U {
+  private mapperWithCloneIfNeeded(v: Value<T>): [U, T] {
     const sourceValue = v.value;
     const mappedValue = this.mapper(sourceValue);
     if (
+      v.hasToBeCloned &&
       ((typeof mappedValue === 'object' && mappedValue !== null) || typeof mappedValue === 'function') &&
       Object.isExtensible(mappedValue) &&
       !hasCloneMethod(mappedValue)
     ) {
       // WARNING: In case the mapped value is not extensible it will not be extended
-      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v) });
+      Object.defineProperty(mappedValue, cloneMethod, { get: () => () => this.mapperWithCloneIfNeeded(v)[0] });
     }
-    return mappedValue;
+    return [mappedValue, sourceValue];
   }
   private valueMapper(v: Value<T>): Value<U> {
-    if (!v.hasToBeCloned) {
-      const sourceValue = v.value_;
-      const mappedValue = this.mapper(sourceValue);
-      const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
-      return new Value(mappedValue, context);
-    }
-    const mappedValue = this.mapperWithCloneIfNeeded(v);
-    const context: MapArbitraryContext<T> = { originalValue: v.value_, originalContext: v.context };
+    const [mappedValue, sourceValue] = this.mapperWithCloneIfNeeded(v);
+    const context: MapArbitraryContext<T> = { originalValue: sourceValue, originalContext: v.context };
     return new Value(mappedValue, context);
   }
   private isSafeContext(context: unknown): context is MapArbitraryContext<T> {
