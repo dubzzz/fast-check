@@ -178,38 +178,41 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {
-    const biasMeta = this.applyBias(mrng, biasFactor);
-    const targetSize = biasMeta.size;
-    const items =
-      this.setBuilder !== undefined
-        ? this.safeGenerateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasMeta.biasFactorItems)
-        : this.safeGenerateNItems(targetSize, mrng, biasMeta.biasFactorItems);
-    return this.wrapper(items, false, undefined, 0);
-  }
-
-  private applyBias(mrng: Random, biasFactor: number | undefined): { size: number; biasFactorItems?: number } {
+    let targetSize: number;
+    let biasFactorItems: number | undefined;
     if (biasFactor === undefined) {
       // We don't bias anything
-      return { size: this.lengthArb.generate(mrng, undefined).value };
+      targetSize = this.lengthArb.generate(mrng, undefined).value;
     }
     // We directly forward bias to items whenever no bias applicable onto length
-    if (this.minLength === this.maxGeneratedLength) {
+    else if (this.minLength === this.maxGeneratedLength) {
       // We only apply bias on items
-      return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
-    }
-    if (mrng.nextInt(1, biasFactor) !== 1) {
+      targetSize = this.lengthArb.generate(mrng, undefined).value;
+      biasFactorItems = biasFactor;
+      // oxlint-disable-next-line no-dupe-else-if
+    } else if (mrng.nextInt(1, biasFactor) !== 1) {
       // We don't bias anything
-      return { size: this.lengthArb.generate(mrng, undefined).value };
+      targetSize = this.lengthArb.generate(mrng, undefined).value;
     }
     // We apply bias (1 chance over biasFactor)
-    if (mrng.nextInt(1, biasFactor) !== 1 || this.minLength === this.maxGeneratedLength) {
+    else if (mrng.nextInt(1, biasFactor) !== 1) {
       // We only apply bias on items ((biasFactor-1) chances over biasFactor²)
-      return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
+      targetSize = this.lengthArb.generate(mrng, undefined).value;
+      biasFactorItems = biasFactor;
     }
     // We apply bias for both items and length (1 chance over biasFactor²)
-    const maxBiasedLength = this.cachedBiasedMaxLength;
-    const targetSizeValue = integer({ min: this.minLength, max: maxBiasedLength }).generate(mrng, undefined);
-    return { size: targetSizeValue.value, biasFactorItems: biasFactor };
+    else {
+      const maxBiasedLength = this.cachedBiasedMaxLength;
+      const targetSizeValue = integer({ min: this.minLength, max: maxBiasedLength }).generate(mrng, undefined);
+      targetSize = targetSizeValue.value;
+      biasFactorItems = biasFactor;
+    }
+
+    const items =
+      this.setBuilder !== undefined
+        ? this.safeGenerateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasFactorItems)
+        : this.safeGenerateNItems(targetSize, mrng, biasFactorItems);
+    return this.wrapper(items, false, undefined, 0);
   }
 
   canShrinkWithoutContext(value: unknown): value is T[] {
