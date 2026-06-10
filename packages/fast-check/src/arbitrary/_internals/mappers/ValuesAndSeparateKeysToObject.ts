@@ -20,12 +20,17 @@ export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: Enumer
     for (let idx = 0; idx !== keys.length; ++idx) {
       const valueWrapper = definition[idx];
       if (valueWrapper !== noKeyValue) {
-        safeObjectDefineProperty(obj, keys[idx], {
-          value: valueWrapper,
-          configurable: true,
-          enumerable: true,
-          writable: true,
-        });
+        const key = keys[idx];
+        if (key === '__proto__') {
+          safeObjectDefineProperty(obj, key, {
+            value: valueWrapper,
+            configurable: true,
+            enumerable: true,
+            writable: true,
+          });
+        } else {
+          obj[key] = valueWrapper as T[keyof T];
+        }
       }
     }
     return obj as Partial<T> & Pick<T, EnumerableKeyOf<T>>;
