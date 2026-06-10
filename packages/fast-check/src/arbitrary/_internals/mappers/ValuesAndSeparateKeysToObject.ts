@@ -8,17 +8,17 @@ const safeObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
 const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
 
 type OrderedValues<T, TNoKey> = (T[keyof T] | TNoKey)[];
-type ObjectDefinition<T, TNoKey> = [/*items*/ OrderedValues<T, TNoKey>, /*null prototype*/ boolean];
+type ObjectDefinition<T, TNoKey> = [/*items*/ ...OrderedValues<T, TNoKey>, /*null prototype*/ boolean];
 
 /** @internal */
 export function buildValuesAndSeparateKeysToObjectMapper<T, TNoKey>(keys: EnumerableKeyOf<T>[], noKeyValue: TNoKey) {
   return function valuesAndSeparateKeysToObjectMapper(
     definition: ObjectDefinition<T, TNoKey>,
   ): Partial<T> & Pick<T, EnumerableKeyOf<T>> {
-    const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = definition[1] ? safeObjectCreate(null) : {};
-    const values = definition[0];
+    const withNullPrototype = definition[definition.length - 1];
+    const obj: Partial<Record<EnumerableKeyOf<T>, T[keyof T]>> = withNullPrototype ? safeObjectCreate(null) : {};
     for (let idx = 0; idx !== keys.length; ++idx) {
-      const valueWrapper = values[idx];
+      const valueWrapper = definition[idx];
       if (valueWrapper !== noKeyValue) {
         const key = keys[idx];
         if (key === '__proto__') {
@@ -70,6 +70,6 @@ export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: Enum
     if (extractedPropertiesCount !== namePropertiesCount + symbolPropertiesCount) {
       throw new Error('Incompatible instance received: should not contain extra properties');
     }
-    return [extractedValues, hasNullPrototype];
+    return [...extractedValues, hasNullPrototype];
   };
 }
