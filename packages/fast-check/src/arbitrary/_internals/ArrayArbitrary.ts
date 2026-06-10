@@ -13,7 +13,6 @@ import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
 
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;
-const safeMathMax = Math.max;
 const safeArrayIsArray = Array.isArray;
 
 /** @internal */
@@ -109,7 +108,10 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     mrng: Random,
     biasFactorItems: number | undefined,
   ): Value<T>[] {
-    const depthImpact = safeMathMax(0, N - this.cachedBiasedMaxLength); // no depth impact for biased lengths
+    const depthImpact = N - this.cachedBiasedMaxLength; // no depth impact for biased lengths
+    if (depthImpact <= 0) {
+      return this.generateNItemsNoDuplicates(setBuilder, N, mrng, biasFactorItems);
+    }
     this.depthContext.depth += depthImpact; // increase depth
     try {
       return this.generateNItemsNoDuplicates(setBuilder, N, mrng, biasFactorItems);
@@ -130,7 +132,10 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
 
   private safeGenerateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): Value<T>[] {
-    const depthImpact = safeMathMax(0, N - this.cachedBiasedMaxLength); // no depth impact for biased lengths
+    const depthImpact = N - this.cachedBiasedMaxLength; // no depth impact for biased lengths
+    if (depthImpact <= 0) {
+      return this.generateNItems(N, mrng, biasFactorItems);
+    }
     this.depthContext.depth += depthImpact; // increase depth
     try {
       return this.generateNItems(N, mrng, biasFactorItems);
