@@ -13,6 +13,7 @@ import { safeMap, safePush, safeSlice } from '../../utils/globals.js';
 
 const safeMathFloor = Math.floor;
 const safeMathLog = Math.log;
+const safeMathMax = Math.max;
 const safeArrayIsArray = Array.isArray;
 
 /** @internal */
@@ -35,12 +36,6 @@ function biasedMaxLength(minLength: number, maxLength: number): number {
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly depthContext: DepthContext;
-  // Cached value of biasedMaxLength(minLength, maxGeneratedLength) - constant for the instance lifetime
-  private readonly cachedBiasedMaxLength: number;
-  // Fast lookup: whether minLength === maxGeneratedLength (so lengthArb always returns the same value)
-  private readonly isFixedLength: boolean;
-  // Whether customSlices.length === 0 (so the slicedGenerator overhead can be skipped)
-  private readonly hasNoCustomSlices: boolean;
 
   constructor(
     readonly arb: Arbitrary<T>,
@@ -56,9 +51,6 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     super();
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
     this.depthContext = getDepthContextFor(depthIdentifier);
-    this.cachedBiasedMaxLength = biasedMaxLength(minLength, maxGeneratedLength);
-    this.isFixedLength = minLength === maxGeneratedLength;
-    this.hasNoCustomSlices = customSlices.length === 0;
   }
 
   private preFilter(tab: Value<T>[]): Value<T>[] {
@@ -115,11 +107,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     mrng: Random,
     biasFactorItems: number | undefined,
   ): Value<T>[] {
-    const depthImpact = N - this.cachedBiasedMaxLength; // no depth impact for biased lengths
-    if (depthImpact <= 0) {
-      // Fast path: no depth impact, no need for try/finally
-      return this.generateNItemsNoDuplicates(setBuilder, N, mrng, biasFactorItems);
-    }
+    const depthImpact = safeMathMax(0, N - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
     this.depthContext.depth += depthImpact; // increase depth
     try {
       return this.generateNItemsNoDuplicates(setBuilder, N, mrng, biasFactorItems);
@@ -129,31 +117,18 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
 
   private generateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): Value<T>[] {
-    // oxlint-disable-next-line unicorn/no-new-array
-    const items = new Array<Value<T>>(N);
-    // Fast path: when biasFactor is undefined or there are no custom slices, the sliced generator
-    // is just a thin wrapper around arb.generate. Skip building it entirely.
-    if (biasFactorItems === undefined || this.hasNoCustomSlices) {
-      const arb = this.arb;
-      for (let index = 0; index !== N; ++index) {
-        items[index] = arb.generate(mrng, biasFactorItems);
-      }
-      return items;
-    }
+    const items: Value<T>[] = [];
     const slicedGenerator = buildSlicedGenerator(this.arb, mrng, this.customSlices, biasFactorItems);
     slicedGenerator.attemptExact(N);
     for (let index = 0; index !== N; ++index) {
-      items[index] = slicedGenerator.next();
+      const current = slicedGenerator.next();
+      safePush(items, current);
     }
     return items;
   }
 
   private safeGenerateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): Value<T>[] {
-    const depthImpact = N - this.cachedBiasedMaxLength; // no depth impact for biased lengths
-    if (depthImpact <= 0) {
-      // Fast path: no depth impact, no need for try/finally
-      return this.generateNItems(N, mrng, biasFactorItems);
-    }
+    const depthImpact = safeMathMax(0, N - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
     this.depthContext.depth += depthImpact; // increase depth
     try {
       return this.generateNItems(N, mrng, biasFactorItems);
@@ -171,17 +146,14 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     // We need to explicitly apply filtering on shrink items
     // has they might have duplicates (on non shrunk it is not the case by construct)
     const items = shrunkOnce ? this.preFilter(itemsRaw) : itemsRaw;
-    const itemsLength = items.length;
     let cloneable = false;
-    // oxlint-disable-next-line unicorn/no-new-array
-    const vs = new Array<T>(itemsLength);
-    // oxlint-disable-next-line unicorn/no-new-array
-    const itemsContexts = new Array<unknown>(itemsLength);
-    for (let idx = 0; idx !== itemsLength; ++idx) {
+    const vs: T[] = [];
+    const itemsContexts: unknown[] = [];
+    for (let idx = 0; idx !== items.length; ++idx) {
       const s = items[idx];
       cloneable = cloneable || s.hasToBeCloned;
-      vs[idx] = s.value;
-      itemsContexts[idx] = s.context;
+      safePush(vs, s.value);
+      safePush(itemsContexts, s.context);
     }
     if (cloneable) {
       ArrayArbitrary.makeItCloneable(vs, items);
@@ -189,7 +161,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     const context: ArrayArbitraryContext = {
       shrunkOnce,
       lengthContext:
-        itemsRaw.length === itemsLength && itemsRawLengthContext !== undefined
+        itemsRaw.length === items.length && itemsRawLengthContext !== undefined
           ? itemsRawLengthContext // items and itemsRaw have the same length context is applicable
           : undefined,
       itemsContexts,
@@ -199,43 +171,38 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {
-    // Inlined applyBias to avoid intermediate object allocation and dispatch overhead.
-    let targetSize: number;
-    let biasFactorItems: number | undefined;
-    if (biasFactor === undefined) {
-      // Fast path: no bias at all - this is the hot path for most uses.
-      targetSize = this.lengthArb.generate(mrng, undefined).value;
-      biasFactorItems = undefined;
-    } else if (this.isFixedLength) {
-      // Length is fixed; only bias items. Preserve RNG state by still calling lengthArb.
-      targetSize = this.lengthArb.generate(mrng, undefined).value;
-      biasFactorItems = biasFactor;
-    } else {
-      // Biased generation: each `mrng.nextInt(1, biasFactor)` advances the RNG independently
-      // and the two rolls together produce the original (biasFactor-1)/biasFactor /
-      // (biasFactor-1)/biasFactor² / 1/biasFactor² split. The repeated expression is
-      // intentional; oxlint's `no-dupe-else-if` does not know `mrng.nextInt` is impure.
-      // oxlint-disable-next-line no-dupe-else-if
-      if (mrng.nextInt(1, biasFactor) !== 1) {
-        // We don't bias anything (most common branch within biased generation).
-        targetSize = this.lengthArb.generate(mrng, undefined).value;
-        biasFactorItems = undefined;
-        // oxlint-disable-next-line no-dupe-else-if
-      } else if (mrng.nextInt(1, biasFactor) !== 1) {
-        // We only apply bias on items ((biasFactor-1) chances over biasFactor²)
-        targetSize = this.lengthArb.generate(mrng, undefined).value;
-        biasFactorItems = biasFactor;
-      } else {
-        // We apply bias for both items and length (1 chance over biasFactor²)
-        targetSize = integer({ min: this.minLength, max: this.cachedBiasedMaxLength }).generate(mrng, undefined).value;
-        biasFactorItems = biasFactor;
-      }
-    }
+    const biasMeta = this.applyBias(mrng, biasFactor);
+    const targetSize = biasMeta.size;
     const items =
       this.setBuilder !== undefined
-        ? this.safeGenerateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasFactorItems)
-        : this.safeGenerateNItems(targetSize, mrng, biasFactorItems);
+        ? this.safeGenerateNItemsNoDuplicates(this.setBuilder, targetSize, mrng, biasMeta.biasFactorItems)
+        : this.safeGenerateNItems(targetSize, mrng, biasMeta.biasFactorItems);
     return this.wrapper(items, false, undefined, 0);
+  }
+
+  private applyBias(mrng: Random, biasFactor: number | undefined): { size: number; biasFactorItems?: number } {
+    if (biasFactor === undefined) {
+      // We don't bias anything
+      return { size: this.lengthArb.generate(mrng, undefined).value };
+    }
+    // We directly forward bias to items whenever no bias applicable onto length
+    if (this.minLength === this.maxGeneratedLength) {
+      // We only apply bias on items
+      return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
+    }
+    if (mrng.nextInt(1, biasFactor) !== 1) {
+      // We don't bias anything
+      return { size: this.lengthArb.generate(mrng, undefined).value };
+    }
+    // We apply bias (1 chance over biasFactor)
+    if (mrng.nextInt(1, biasFactor) !== 1 || this.minLength === this.maxGeneratedLength) {
+      // We only apply bias on items ((biasFactor-1) chances over biasFactor²)
+      return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
+    }
+    // We apply bias for both items and length (1 chance over biasFactor²)
+    const maxBiasedLength = biasedMaxLength(this.minLength, this.maxGeneratedLength);
+    const targetSizeValue = integer({ min: this.minLength, max: maxBiasedLength }).generate(mrng, undefined);
+    return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }
 
   canShrinkWithoutContext(value: unknown): value is T[] {
