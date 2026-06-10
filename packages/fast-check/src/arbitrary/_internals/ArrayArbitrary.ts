@@ -36,6 +36,7 @@ function biasedMaxLength(minLength: number, maxLength: number): number {
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly depthContext: DepthContext;
+  private readonly cachedBiasedMaxLength: number;
 
   constructor(
     readonly arb: Arbitrary<T>,
@@ -51,6 +52,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     super();
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
     this.depthContext = getDepthContextFor(depthIdentifier);
+    this.cachedBiasedMaxLength = biasedMaxLength(minLength, maxGeneratedLength);
   }
 
   private preFilter(tab: Value<T>[]): Value<T>[] {
@@ -107,7 +109,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
     mrng: Random,
     biasFactorItems: number | undefined,
   ): Value<T>[] {
-    const depthImpact = safeMathMax(0, N - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
+    const depthImpact = safeMathMax(0, N - this.cachedBiasedMaxLength); // no depth impact for biased lengths
     this.depthContext.depth += depthImpact; // increase depth
     try {
       return this.generateNItemsNoDuplicates(setBuilder, N, mrng, biasFactorItems);
@@ -128,7 +130,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   }
 
   private safeGenerateNItems(N: number, mrng: Random, biasFactorItems: number | undefined): Value<T>[] {
-    const depthImpact = safeMathMax(0, N - biasedMaxLength(this.minLength, this.maxGeneratedLength)); // no depth impact for biased lengths
+    const depthImpact = safeMathMax(0, N - this.cachedBiasedMaxLength); // no depth impact for biased lengths
     this.depthContext.depth += depthImpact; // increase depth
     try {
       return this.generateNItems(N, mrng, biasFactorItems);
@@ -200,7 +202,7 @@ export class ArrayArbitrary<T> extends Arbitrary<T[]> {
       return { size: this.lengthArb.generate(mrng, undefined).value, biasFactorItems: biasFactor };
     }
     // We apply bias for both items and length (1 chance over biasFactor²)
-    const maxBiasedLength = biasedMaxLength(this.minLength, this.maxGeneratedLength);
+    const maxBiasedLength = this.cachedBiasedMaxLength;
     const targetSizeValue = integer({ min: this.minLength, max: maxBiasedLength }).generate(mrng, undefined);
     return { size: targetSizeValue.value, biasFactorItems: biasFactor };
   }
