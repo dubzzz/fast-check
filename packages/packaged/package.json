@@ -41,7 +41,7 @@
     "@types/npmcli__arborist": "^6.3.3",
     "rolldown": "^1.1.1",
     "typescript": "~6.0.3",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.8"
   },
   "keywords": [],
   "funding": [
