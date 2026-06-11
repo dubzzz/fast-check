@@ -284,7 +284,8 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
     safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
   }
   if (subArbitraries.length === 0) {
-    return undefined;
+    const state = draftNextProductionState(lastState);
+    return constant(state.commit());
   }
   return tuple(...subArbitraries).map((results) => {
     const state = draftNextProductionState(lastState);
