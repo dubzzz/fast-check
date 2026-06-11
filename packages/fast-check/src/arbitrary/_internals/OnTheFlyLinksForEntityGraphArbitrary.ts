@@ -257,7 +257,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   offset: number,
 ): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> | undefined {
   const lastProducedLinks = lastState.producedLinks;
-  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex];
+  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex + offset];
   const currentRelations = relations[currentEntity.type];
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
