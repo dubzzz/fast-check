@@ -256,7 +256,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   relations: TEntityRelations,
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
   lastState: ProductionState<TEntityFields, TEntityRelations>,
-): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
+): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> | undefined {
   const state = draftNextProductionState(lastState);
   const currentEntity = state.getCurrentEntity();
   const currentRelations = relations[currentEntity.type];
@@ -282,6 +282,9 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
     countsInTargetType[name] = countInTargetType;
     safePush(subArbitraries, linkOrLinksArbitrary);
     safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
+  }
+  if (subArbitraries.length === 0) {
+    return undefined;
   }
   return tuple(...subArbitraries).map((results) => {
     const state = draftNextProductionState(lastState);
