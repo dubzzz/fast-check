@@ -253,10 +253,6 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
   lastState: ProductionState<TEntityFields, TEntityRelations>,
 ): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
-  // Cheap read-only access to the current entity and per-type counts.
-  // We intentionally avoid `draftNextProductionState` here: building it allocates a full clone of the
-  // produced-links state plus several closures, all of which would be thrown away as this preparation
-  // phase only needs read-only data. The mutable draft is created lazily inside the `.map` below.
   const lastProducedLinks = lastState.producedLinks;
   const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex];
   const currentRelations = relations[currentEntity.type];
