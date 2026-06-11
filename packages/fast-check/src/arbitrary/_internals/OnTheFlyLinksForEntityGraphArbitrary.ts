@@ -146,8 +146,10 @@ type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEn
 /** @internal */
 function draftNextProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   state: ProductionState<TEntityFields, TEntityRelations>,
+  offset: number,
 ) {
-  const { producedLinks, toBeProducedEntities, nextIndex } = state;
+  const { producedLinks, toBeProducedEntities } = state;
+  const nextIndex = state.nextIndex + offset;
 
   const newProducedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectAssign(
     safeObjectCreate(null),
@@ -189,10 +191,6 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
 
   const toBeProduced = toBeProducedEntities[nextIndex];
   return {
-    // The entity being produced in this step. Exposed as a value (not a setter) since it cannot be mutated from here.
-    getCurrentEntity: (): Readonly<ToBeProducedEntity<TEntityFields>> => toBeProduced,
-    // Number of entities of the given type already produced so far.
-    getExistingEntityCount: (targetType: keyof TEntityFields) => newProducedLinks[targetType].length,
     // Edit functions
     setOutboundLink: (
       name: keyof TEntityRelations[keyof TEntityFields],
@@ -256,13 +254,13 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   relations: TEntityRelations,
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
   lastState: ProductionState<TEntityFields, TEntityRelations>,
-): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
-  const state = draftNextProductionState(lastState);
-  const currentEntity = state.getCurrentEntity();
+  offset: number,
+): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> | undefined {
+  const lastProducedLinks = lastState.producedLinks;
+  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex + offset];
   const currentRelations = relations[currentEntity.type];
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
-  const countsInTargetType: { [name: string]: number } = safeObjectCreate(null);
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
   const linkContexts: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
   for (const name in currentRelations) {
@@ -271,7 +269,7 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       continue;
     }
     const targetType = relation.type;
-    const countInTargetType = state.getExistingEntityCount(targetType);
+    const countInTargetType = lastProducedLinks[targetType].length;
     const linkOrLinksArbitrary = buildLinkIndexArbitrary(
       relation.arity,
       relation.strategy || 'any',
@@ -279,12 +277,14 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
       currentEntityDepth,
     );
-    countsInTargetType[name] = countInTargetType;
     safePush(subArbitraries, linkOrLinksArbitrary);
     safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
   }
+  if (subArbitraries.length === 0) {
+    return undefined;
+  }
   return tuple(...subArbitraries).map((results) => {
-    const state = draftNextProductionState(lastState);
+    const state = draftNextProductionState(lastState, offset);
     for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
       const linkOrLinks = results[resultIndex];
       const { name, relation, sentinelLinkIndex } = linkContexts[resultIndex];
@@ -331,7 +331,16 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
     if (state.nextIndex >= state.toBeProducedEntities.length) {
       return undefined;
     }
-    return buildEntityStepArbitrary(relations, inversedRelations, state);
+    let offset = 0;
+    let next: ReturnType<typeof buildEntityStepArbitrary<TEntityFields, TEntityRelations>> = undefined;
+    while (next === undefined && state.nextIndex + offset < state.toBeProducedEntities.length) {
+      // Loop until we either:
+      // - find an entity with relevant links to build
+      // - reach the end of the set of entities to be built
+      next = buildEntityStepArbitrary(relations, inversedRelations, state, offset);
+      offset += 1;
+    }
+    return next;
   }).map((state) => {
     const readOnlyProducedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations> = state.producedLinks;
     return readOnlyProducedLinks as ProducedLinks<TEntityFields, TEntityRelations>;
