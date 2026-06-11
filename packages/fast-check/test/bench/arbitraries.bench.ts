@@ -73,8 +73,23 @@ const benchCases: BenchCase[] = [
   { name: 'anything()', arbitrary: fc.anything() },
   { name: 'json()', arbitrary: fc.json() },
   {
-    name: 'entityGraph(node -> node)',
-    arbitrary: fc.entityGraph({ node: { id: fc.integer() } }, { node: { linkTo: { arity: 'many', type: 'node' } } }),
+    name: 'entityGraph(employee -> manager? and team)',
+    arbitrary: fc.entityGraph(
+      {
+        employee: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
+        team: { name: fc.stringMatching(/^[A-Z][a-z]*$/) },
+      },
+      {
+        employee: {
+          manager: { arity: '0-1', type: 'employee', strategy: 'successor' },
+          team: { arity: '1', type: 'team' },
+        },
+        team: {},
+      },
+      {
+        unicityConstraints: { employee: (value) => value.name, team: (value) => value.name },
+      },
+    ),
   },
 
   // Formatted strings (web and identifiers)

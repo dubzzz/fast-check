@@ -146,8 +146,10 @@ type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEn
 /** @internal */
 function draftNextProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   state: ProductionState<TEntityFields, TEntityRelations>,
+  offset: number,
 ) {
-  const { producedLinks, toBeProducedEntities, nextIndex } = state;
+  const { producedLinks, toBeProducedEntities } = state;
+  const nextIndex = state.nextIndex + offset;
 
   const newProducedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectAssign(
     safeObjectCreate(null),
@@ -252,9 +254,10 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
   relations: TEntityRelations,
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
   lastState: ProductionState<TEntityFields, TEntityRelations>,
-): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
+  offset: number,
+): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> | undefined {
   const lastProducedLinks = lastState.producedLinks;
-  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex];
+  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex + offset];
   const currentRelations = relations[currentEntity.type];
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
@@ -277,8 +280,11 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
     safePush(subArbitraries, linkOrLinksArbitrary);
     safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
   }
+  if (subArbitraries.length === 0) {
+    return undefined;
+  }
   return tuple(...subArbitraries).map((results) => {
-    const state = draftNextProductionState(lastState);
+    const state = draftNextProductionState(lastState, offset);
     for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
       const linkOrLinks = results[resultIndex];
       const { name, relation, sentinelLinkIndex } = linkContexts[resultIndex];
@@ -325,7 +331,16 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
     if (state.nextIndex >= state.toBeProducedEntities.length) {
       return undefined;
     }
-    return buildEntityStepArbitrary(relations, inversedRelations, state);
+    let offset = 0;
+    let next: ReturnType<typeof buildEntityStepArbitrary<TEntityFields, TEntityRelations>> = undefined;
+    while (next === undefined && state.nextIndex + offset < state.toBeProducedEntities.length) {
+      // Loop until we either:
+      // - find an entity with relevant links to build
+      // - reach the end of the set of entities to be built
+      next = buildEntityStepArbitrary(relations, inversedRelations, state, offset);
+      offset += 1;
+    }
+    return next;
   }).map((state) => {
     const readOnlyProducedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations> = state.producedLinks;
     return readOnlyProducedLinks as ProducedLinks<TEntityFields, TEntityRelations>;
