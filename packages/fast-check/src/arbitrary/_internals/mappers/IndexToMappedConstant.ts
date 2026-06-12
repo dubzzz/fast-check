@@ -7,42 +7,37 @@ const safeObjectIs = Object.is;
 type Entry<T> = { num: number; build: (idInGroup: number) => T };
 
 /** @internal */
-type DicothomyEntry<T> = { from: number; to: number; entry: Pick<Entry<T>, 'build'> };
-
-/** @internal */
-function buildDichotomyEntries<T>(entries: Entry<T>[]): DicothomyEntry<T>[] {
-  let currentFrom = 0;
-  const dichotomyEntries: DicothomyEntry<T>[] = [];
-  for (const entry of entries) {
-    const from = currentFrom;
-    currentFrom = from + entry.num;
-    const to = currentFrom - 1;
-    dichotomyEntries.push({ from, to, entry });
-  }
-  return dichotomyEntries;
-}
-
-/** @internal */
-function findDichotomyEntry<T>(dichotomyEntries: DicothomyEntry<T>[], choiceIndex: number): DicothomyEntry<T> {
-  let min = 0;
-  let max = dichotomyEntries.length;
-  while (max - min > 1) {
-    const mid = ~~((min + max) / 2); // ~~ is Math.floor
-    if (choiceIndex < dichotomyEntries[mid].from) {
-      max = mid;
-    } else {
-      min = mid;
-    }
-  }
-  return dichotomyEntries[min];
-}
-
-/** @internal */
 export function indexToMappedConstantMapperFor<T>(entries: Entry<T>[]): (choiceIndex: number) => T {
-  const dichotomyEntries = buildDichotomyEntries(entries);
+  if (entries.length === 1) {
+    // Fast path: with a single entry there is nothing to search for, `from` is always 0
+    const entry = entries[0];
+    return function indexToMappedConstantMapperSingle(choiceIndex: number): T {
+      return entry.build(choiceIndex);
+    };
+  }
+  // Flat parallel arrays: a packed array of numbers for the cumulative start indexes
+  // and one array for the associated build functions. Searching over numbers only is
+  // faster than going through an array of objects.
+  const froms: number[] = [];
+  const builds: ((idInGroup: number) => T)[] = [];
+  let currentFrom = 0;
+  for (const entry of entries) {
+    froms.push(currentFrom);
+    builds.push(entry.build);
+    currentFrom += entry.num;
+  }
   return function indexToMappedConstantMapper(choiceIndex: number): T {
-    const dichotomyEntry = findDichotomyEntry(dichotomyEntries, choiceIndex);
-    return dichotomyEntry.entry.build(choiceIndex - dichotomyEntry.from);
+    let min = 0;
+    let max = froms.length;
+    while (max - min > 1) {
+      const mid = (min + max) >>> 1; // >>> 1 is the floored half for our positive integers
+      if (choiceIndex < froms[mid]) {
+        max = mid;
+      } else {
+        min = mid;
+      }
+    }
+    return builds[min](choiceIndex - froms[min]);
   };
 }
 
