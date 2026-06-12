@@ -1,10 +1,15 @@
-import type { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import type { Random } from '../../random/generator/Random.js';
+import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
+import { Value } from '../../check/arbitrary/definition/Value.js';
+import { Stream } from '../../stream/Stream.js';
 import {
   safeAdd,
   safeHas,
   safeMap,
   safeMapGet,
+  safeMapSet,
   safePush,
+  Map as SMap,
   Set as SSet,
   Error as SError,
   String as SString,
@@ -15,8 +20,8 @@ import { constant } from '../constant.js';
 import { integer } from '../integer.js';
 import { noBias } from '../noBias.js';
 import { option } from '../option.js';
-import { tuple } from '../tuple.js';
 import { uniqueArray } from '../uniqueArray.js';
+import { tupleShrink } from './TupleArbitrary.js';
 import { buildInversedRelationsMapping } from './helpers/BuildInversedRelationsMapping.js';
 import { createDepthIdentifier, type DepthIdentifier } from './helpers/DepthContext.js';
 import type {
@@ -143,13 +148,17 @@ type ProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEn
   readonly nextIndex: number;
 };
 
-/** @internal */
-function draftNextProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+/**
+ * Copy-on-write draft over a {@link ProductionState} able to absorb the edits of SEVERAL entities in a row.
+ * The underlying state is cloned lazily (top-level map and inner structures) only once per batch: edits applied
+ * for one entity of the batch stay visible to the next ones without any extra cloning.
+ * Once `commit` has been called the draft must not be edited anymore: the committed state is immutable.
+ * @internal
+ */
+function draftBatchProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   state: ProductionState<TEntityFields, TEntityRelations>,
-  offset: number,
 ) {
   const { producedLinks, toBeProducedEntities } = state;
-  const nextIndex = state.nextIndex + offset;
 
   const newProducedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectAssign(
     safeObjectCreate(null),
@@ -189,20 +198,30 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
 
   let newToBeProducedEntities: ToBeProducedEntity<TEntityFields>[] | undefined = undefined;
 
-  const toBeProduced = toBeProducedEntities[nextIndex];
   return {
+    // Read functions
+    countInType: (type: keyof TEntityFields): number => newProducedLinks[type].length,
+    countToBeProduced: (): number =>
+      newToBeProducedEntities !== undefined ? newToBeProducedEntities.length : toBeProducedEntities.length,
+    toBeProducedAt: (entityIndex: number): Readonly<ToBeProducedEntity<TEntityFields>> =>
+      newToBeProducedEntities !== undefined ? newToBeProducedEntities[entityIndex] : toBeProducedEntities[entityIndex],
     // Edit functions
     setOutboundLink: (
+      currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
       name: keyof TEntityRelations[keyof TEntityFields],
       value: {
         type: keyof TEntityFields;
         index: number[] | number | undefined;
       },
     ) => {
-      const currentLinks = getOrCreateLinksFor(toBeProduced.type, toBeProduced.indexInType); // All the links going from the current entity to others
+      const currentLinks = getOrCreateLinksFor(currentEntity.type, currentEntity.indexInType); // All the links going from the current entity to others
       currentLinks[name] = value;
     },
-    enqueueNewEntity: (relations: TEntityRelations, targetType: keyof TEntityFields) => {
+    enqueueNewEntity: (
+      currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
+      relations: TEntityRelations,
+      targetType: keyof TEntityFields,
+    ) => {
       const producedLinksInTargetType = getOrCreateProducedLinksFor(targetType);
       const newEntityIndexInType = producedLinksInTargetType.length;
       if (newToBeProducedEntities === undefined) {
@@ -211,24 +230,34 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
       safePush(newToBeProducedEntities, {
         type: targetType,
         indexInType: newEntityIndexInType,
-        depth: toBeProduced.depth + 1,
+        depth: currentEntity.depth + 1,
       });
       safePush(producedLinksInTargetType, createEmptyLinksInstanceFor(relations, targetType));
       return newEntityIndexInType;
     },
-    appendBackReference: (targetType: keyof TEntityFields, indexInType: number, property: string) => {
+    appendBackReference: (
+      currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
+      targetType: keyof TEntityFields,
+      indexInType: number,
+      property: string,
+    ) => {
       const relation = getOrCreateRelationFor(targetType, indexInType, property);
       const knownInversedLinks = relation.index;
-      safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, toBeProduced.indexInType);
+      safePush(knownInversedLinks as Exclude<typeof knownInversedLinks, number | undefined>, currentEntity.indexInType);
     },
-    // Seal the step into a new immutable state and advance to the next entity.
-    commit: (): ProductionState<TEntityFields, TEntityRelations> => ({
+    // Seal the batch into a new immutable state pointing right after the last entity of the batch.
+    commit: (nextIndex: number): ProductionState<TEntityFields, TEntityRelations> => ({
       producedLinks: newProducedLinks,
       toBeProducedEntities: newToBeProducedEntities !== undefined ? newToBeProducedEntities : toBeProducedEntities,
-      nextIndex: nextIndex + 1,
+      nextIndex,
     }),
   };
 }
+
+/** @internal */
+type BatchProductionStateDraft<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>> = ReturnType<
+  typeof draftBatchProductionState<TEntityFields, TEntityRelations>
+>;
 
 /** @internal */
 function buildInitialProductionState<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
@@ -250,26 +279,72 @@ function buildInitialProductionState<TEntityFields, TEntityRelations extends Ent
 }
 
 /** @internal */
-function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+type EntityLinkContext<TEntityFields> = {
+  name: string;
+  relation: Relationship<keyof TEntityFields>;
+  sentinelLinkIndex: number;
+  inversedProperty: string | undefined;
+};
+
+/** @internal */
+type EntityStepResults = (number[] | number | undefined)[];
+
+/**
+ * Cached set of arbitraries responsible to produce all the outbound links of one single entity.
+ * Two entities sharing the very same parameterization (same type, same counts in target types, same index
+ * within own type) can safely share the very same instance: the only remaining degree of freedom, the depth
+ * of the entity, has to be set onto `depthIdentifier` before any call to generate or shrink.
+ * @internal
+ */
+type EntityLinksArbitrary<TEntityFields> = {
+  subArbitraries: Arbitrary<number[] | number | undefined>[];
+  linkContexts: EntityLinkContext<TEntityFields>[];
+  depthIdentifier: DepthIdentifier;
+};
+
+/**
+ * Build (or fetch from the cache) the arbitraries responsible to produce all the outbound links of one single entity.
+ * Ranges are derived from the current content of the draft: callers must apply the results of an entity
+ * onto the draft before requesting the arbitraries of the next one.
+ * Must only be called for entities having at least one outbound link to produce.
+ * @internal
+ */
+function buildEntityLinksArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
   inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
-  lastState: ProductionState<TEntityFields, TEntityRelations>,
-  offset: number,
-): Arbitrary<ProductionState<TEntityFields, TEntityRelations>> | undefined {
-  const lastProducedLinks = lastState.producedLinks;
-  const currentEntity = lastState.toBeProducedEntities[lastState.nextIndex + offset];
+  cache: Map<string, EntityLinksArbitrary<TEntityFields>>,
+  draft: BatchProductionStateDraft<TEntityFields, TEntityRelations>,
+  currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
+): EntityLinksArbitrary<TEntityFields> {
   const currentRelations = relations[currentEntity.type];
+  // Cache key: full parameterization of the arbitraries except the depth (handled via the mutable depthIdentifier)
+  let cacheKey = currentEntity.type as string;
+  for (const name in currentRelations) {
+    const relation = currentRelations[name];
+    if (relation.arity === 'inverse') {
+      continue;
+    }
+    const countInTargetType = draft.countInType(relation.type);
+    cacheKey +=
+      relation.type === currentEntity.type
+        ? '|' + countInTargetType + ':' + currentEntity.indexInType
+        : '|' + countInTargetType;
+  }
+  const cached = safeMapGet(cache, cacheKey);
+  if (cached !== undefined) {
+    return cached;
+  }
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
-  const linkContexts: { name: string; relation: Relationship<keyof TEntityFields>; sentinelLinkIndex: number }[] = [];
+  const linkContexts: EntityLinkContext<TEntityFields>[] = [];
   for (const name in currentRelations) {
     const relation = currentRelations[name];
     if (relation.arity === 'inverse') {
       continue;
     }
     const targetType = relation.type;
-    const countInTargetType = lastProducedLinks[targetType].length;
+    const countInTargetType = draft.countInType(targetType);
     const linkOrLinksArbitrary = buildLinkIndexArbitrary(
       relation.arity,
       relation.strategy || 'any',
@@ -278,44 +353,272 @@ function buildEntityStepArbitrary<TEntityFields, TEntityRelations extends Entity
       currentEntityDepth,
     );
     safePush(subArbitraries, linkOrLinksArbitrary);
-    safePush(linkContexts, { name, relation, sentinelLinkIndex: countInTargetType });
+    const inversed = safeMapGet(inversedRelations, relation);
+    safePush(linkContexts, {
+      name,
+      relation,
+      sentinelLinkIndex: countInTargetType,
+      inversedProperty: inversed !== undefined ? inversed.property : undefined,
+    });
   }
-  if (subArbitraries.length === 0) {
-    return undefined;
-  }
-  return tuple(...subArbitraries).map((results) => {
-    const state = draftNextProductionState(lastState, offset);
-    for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
-      const linkOrLinks = results[resultIndex];
-      const { name, relation, sentinelLinkIndex } = linkContexts[resultIndex];
+  const entry: EntityLinksArbitrary<TEntityFields> = {
+    subArbitraries,
+    linkContexts,
+    depthIdentifier: currentEntityDepth,
+  };
+  safeMapSet(cache, cacheKey, entry);
+  return entry;
+}
 
+/**
+ * Apply onto the draft the links produced for one entity.
+ * @internal
+ */
+function applyEntityLinks<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  draft: BatchProductionStateDraft<TEntityFields, TEntityRelations>,
+  currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
+  results: EntityStepResults,
+  linkContexts: EntityLinkContext<TEntityFields>[],
+): void {
+  for (let resultIndex = 0; resultIndex !== results.length; ++resultIndex) {
+    const linkOrLinks = results[resultIndex];
+    const { name, relation, sentinelLinkIndex, inversedProperty } = linkContexts[resultIndex];
+
+    let index: number[] | number | undefined;
+    if (linkOrLinks === undefined) {
+      index = undefined;
+    } else if (typeof linkOrLinks === 'number') {
+      index = resolveOneEntityLink(
+        relations,
+        draft,
+        currentEntity,
+        relation,
+        sentinelLinkIndex,
+        inversedProperty,
+        linkOrLinks,
+      );
+    } else {
       const effectiveLinks: number[] = [];
-      const links = linkOrLinks === undefined ? [] : typeof linkOrLinks === 'number' ? [linkOrLinks] : linkOrLinks;
-      for (const link of links) {
-        let newEntityIndexInType: number;
-        if (link >= sentinelLinkIndex) {
-          // Links at or above sentinelLinkIndex mark "create a new entity"; enqueueNewEntity
-          // allocates one and returns its index-in-type for later links to reuse.
-          // Known limitation of current design: reuse is scoped to the current relation name
-          // two relation names requesting a new entity of the same type get two separate entities.
-          newEntityIndexInType = state.enqueueNewEntity(relations, relation.type);
-        } else {
-          newEntityIndexInType = link;
-        }
-        safePush(effectiveLinks, newEntityIndexInType);
-        const inversed = safeMapGet(inversedRelations, relation);
-        if (inversed !== undefined) {
-          state.appendBackReference(relation.type, newEntityIndexInType, inversed.property);
-        }
+      for (const link of linkOrLinks) {
+        safePush(
+          effectiveLinks,
+          resolveOneEntityLink(relations, draft, currentEntity, relation, sentinelLinkIndex, inversedProperty, link),
+        );
       }
-      state.setOutboundLink(name, {
-        type: relation.type,
-        index:
-          linkOrLinks === undefined ? undefined : typeof linkOrLinks === 'number' ? effectiveLinks[0] : effectiveLinks,
-      });
+      index = effectiveLinks;
     }
-    return state.commit();
-  });
+    draft.setOutboundLink(currentEntity, name, { type: relation.type, index });
+  }
+}
+
+/**
+ * Resolve the effective index targeted by one link and register the back-reference when relevant.
+ * @internal
+ */
+function resolveOneEntityLink<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
+  relations: TEntityRelations,
+  draft: BatchProductionStateDraft<TEntityFields, TEntityRelations>,
+  currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
+  relation: Relationship<keyof TEntityFields>,
+  sentinelLinkIndex: number,
+  inversedProperty: string | undefined,
+  link: number,
+): number {
+  let newEntityIndexInType: number;
+  if (link >= sentinelLinkIndex) {
+    // Links at or above sentinelLinkIndex mark "create a new entity"; enqueueNewEntity
+    // allocates one and returns its index-in-type for later links to reuse.
+    // Known limitation of current design: reuse is scoped to the current relation name
+    // two relation names requesting a new entity of the same type get two separate entities.
+    newEntityIndexInType = draft.enqueueNewEntity(currentEntity, relations, relation.type);
+  } else {
+    newEntityIndexInType = link;
+  }
+  if (inversedProperty !== undefined) {
+    draft.appendBackReference(currentEntity, relation.type, newEntityIndexInType, inversedProperty);
+  }
+  return newEntityIndexInType;
+}
+
+/**
+ * One processed entity within a batch: enough material to replay or shrink the batch entity per entity.
+ * @internal
+ */
+type EntityBatchRecord<TEntityFields> = {
+  entityIndex: number;
+  entity: Readonly<ToBeProducedEntity<TEntityFields>>;
+  linksArbitrary: EntityLinksArbitrary<TEntityFields>;
+  value: EntityStepResults;
+  context: unknown;
+  clonedMrng: Random;
+};
+
+/** @internal */
+type EntityBatchStepContext<TEntityFields> = {
+  biasFactor: number | undefined;
+  records: EntityBatchRecord<TEntityFields>[];
+  currentShrinkLevel: number;
+};
+
+/**
+ * Arbitrary responsible to produce the links of ALL the entities pending at the time it gets created,
+ * including the ones enqueued while running the batch itself (the whole graph is built in one batch).
+ * It processes the entities sequentially against the very same mrng (each entity may impact the ranges
+ * used by the next ones) but mutates one single shared draft instead of paying one full copy-on-write
+ * clone and commit per entity.
+ * @internal
+ */
+class EntityBatchStepArbitrary<
+  TEntityFields,
+  TEntityRelations extends EntityRelations<TEntityFields>,
+> extends Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
+  constructor(
+    readonly relations: TEntityRelations,
+    readonly inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
+    readonly typesWithOutboundRelations: Set<keyof TEntityFields>,
+    readonly linksArbitraryCache: Map<string, EntityLinksArbitrary<TEntityFields>>,
+    readonly lastState: ProductionState<TEntityFields, TEntityRelations>,
+  ) {
+    super();
+  }
+
+  /**
+   * Produce the links of one single entity by generating all its sub-arbitraries in order against mrng,
+   * apply them onto the draft and append the freshly built record into records
+   */
+  private generateOneEntity(
+    draft: BatchProductionStateDraft<TEntityFields, TEntityRelations>,
+    records: EntityBatchRecord<TEntityFields>[],
+    entityIndex: number,
+    currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
+    mrng: Random,
+    biasFactor: number | undefined,
+  ): void {
+    const linksArbitrary = buildEntityLinksArbitrary(
+      this.relations,
+      this.inversedRelations,
+      this.linksArbitraryCache,
+      draft,
+      currentEntity,
+    );
+    linksArbitrary.depthIdentifier.depth = currentEntity.depth;
+    const clonedMrng = mrng.clone();
+    const subArbitraries = linksArbitrary.subArbitraries;
+    // Equivalent of a generate on tuple(...subArbitraries) but without the cost of the wrapper:
+    // sub-values are guaranteed to be numbers or arrays of numbers, they can never be cloneable
+    const subValues: EntityStepResults = [];
+    const subContexts: unknown[] = [];
+    for (let index = 0; index !== subArbitraries.length; ++index) {
+      const generated = subArbitraries[index].generate(mrng, biasFactor);
+      safePush(subValues, generated.value_);
+      safePush(subContexts, generated.context);
+    }
+    applyEntityLinks(this.relations, draft, currentEntity, subValues, linksArbitrary.linkContexts);
+    safePush(records, {
+      entityIndex,
+      entity: currentEntity,
+      linksArbitrary,
+      value: subValues,
+      context: subContexts,
+      clonedMrng,
+    });
+  }
+
+  generate(mrng: Random, biasFactor: number | undefined): Value<ProductionState<TEntityFields, TEntityRelations>> {
+    const lastState = this.lastState;
+    const draft = draftBatchProductionState(lastState);
+    const records: EntityBatchRecord<TEntityFields>[] = [];
+    // The batch covers all the pending entities, including the ones enqueued while running it
+    for (let entityIndex = lastState.nextIndex; entityIndex !== draft.countToBeProduced(); ++entityIndex) {
+      const currentEntity = draft.toBeProducedAt(entityIndex);
+      if (!safeHas(this.typesWithOutboundRelations, currentEntity.type)) {
+        continue; // entity without any outbound link to produce
+      }
+      this.generateOneEntity(draft, records, entityIndex, currentEntity, mrng, biasFactor);
+    }
+    const context: EntityBatchStepContext<TEntityFields> = { biasFactor, records, currentShrinkLevel: 0 };
+    return new Value(draft.commit(draft.countToBeProduced()), context);
+  }
+
+  canShrinkWithoutContext(_value: unknown): _value is ProductionState<TEntityFields, TEntityRelations> {
+    return false;
+  }
+
+  shrink(
+    _value: ProductionState<TEntityFields, TEntityRelations>,
+    context?: unknown,
+  ): Stream<Value<ProductionState<TEntityFields, TEntityRelations>>> {
+    if (!this.isSafeContext(context)) {
+      return Stream.nil();
+    }
+    return new Stream(this.shrinkIterator(context));
+  }
+
+  private *shrinkIterator(
+    context: EntityBatchStepContext<TEntityFields>,
+  ): IterableIterator<Value<ProductionState<TEntityFields, TEntityRelations>>> {
+    const { records, currentShrinkLevel, biasFactor } = context;
+    const lastState = this.lastState;
+
+    for (let level = currentShrinkLevel; level < records.length; ++level) {
+      const record = records[level];
+      record.linksArbitrary.depthIdentifier.depth = record.entity.depth;
+      const shrinks = tupleShrink(record.linksArbitrary.subArbitraries, record.value, record.context as unknown[]);
+
+      for (const shrunkValue of shrinks) {
+        const draft = draftBatchProductionState(lastState);
+        const newRecords: EntityBatchRecord<TEntityFields>[] = safeSlice(records, 0, level);
+
+        // Replay entities before this level unchanged (their stored link contexts stay valid:
+        // the state they were derived from is replayed identically)
+        for (let priorLevel = 0; priorLevel !== level; ++priorLevel) {
+          const prior = records[priorLevel];
+          applyEntityLinks(this.relations, draft, prior.entity, prior.value, prior.linksArbitrary.linkContexts);
+        }
+
+        // Apply the shrunk entity at this level
+        applyEntityLinks(this.relations, draft, record.entity, shrunkValue.value_, record.linksArbitrary.linkContexts);
+        safePush(newRecords, {
+          entityIndex: record.entityIndex,
+          entity: record.entity,
+          linksArbitrary: record.linksArbitrary,
+          value: shrunkValue.value_,
+          context: shrunkValue.context,
+          clonedMrng: record.clonedMrng,
+        });
+
+        // Regenerate the subsequent entities of the batch from the cloned mrng,
+        // ranges being recomputed sequentially exactly as in generate
+        const mrng = record.clonedMrng.clone();
+        for (let entityIndex = record.entityIndex + 1; entityIndex !== draft.countToBeProduced(); ++entityIndex) {
+          const nextEntity = draft.toBeProducedAt(entityIndex);
+          if (!safeHas(this.typesWithOutboundRelations, nextEntity.type)) {
+            continue;
+          }
+          this.generateOneEntity(draft, newRecords, entityIndex, nextEntity, mrng, biasFactor);
+        }
+
+        const newContext: EntityBatchStepContext<TEntityFields> = {
+          biasFactor,
+          records: newRecords,
+          currentShrinkLevel: level,
+        };
+        yield new Value(draft.commit(draft.countToBeProduced()), newContext);
+      }
+    }
+  }
+
+  private isSafeContext(context: unknown): context is EntityBatchStepContext<TEntityFields> {
+    return (
+      context !== null &&
+      context !== undefined &&
+      typeof context === 'object' &&
+      'biasFactor' in (context as any) &&
+      'records' in (context as any) &&
+      'currentShrinkLevel' in (context as any)
+    );
+  }
 }
 
 /** @internal */
@@ -326,21 +629,35 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
   assertAcceptableRelations(relations);
 
   const inversedRelations = buildInversedRelationsMapping(relations);
+  // Types referenced below have at least one outbound link to produce per entity:
+  // entities of any other type can safely be skipped, they consume no randomness at all.
+  const typesWithOutboundRelations = new SSet<keyof TEntityFields>();
+  for (const name in relations) {
+    const relationsForName = relations[name];
+    for (const fieldName in relationsForName) {
+      if (relationsForName[fieldName].arity !== 'inverse') {
+        safeAdd(typesWithOutboundRelations, name as unknown as keyof TEntityFields);
+        break;
+      }
+    }
+  }
+  const linksArbitraryCache = new SMap<string, EntityLinksArbitrary<TEntityFields>>();
   const initialStateArb = constant(buildInitialProductionState(relations, defaultEntities));
   return chainUntil(initialStateArb, (state) => {
-    if (state.nextIndex >= state.toBeProducedEntities.length) {
-      return undefined;
+    const toBeProducedEntities = state.toBeProducedEntities;
+    for (let index = state.nextIndex; index < toBeProducedEntities.length; ++index) {
+      if (safeHas(typesWithOutboundRelations, toBeProducedEntities[index].type)) {
+        // At least one pending entity has links to build: process all currently pending entities in one batch
+        return new EntityBatchStepArbitrary(
+          relations,
+          inversedRelations,
+          typesWithOutboundRelations,
+          linksArbitraryCache,
+          state,
+        );
+      }
     }
-    let offset = 0;
-    let next: ReturnType<typeof buildEntityStepArbitrary<TEntityFields, TEntityRelations>> = undefined;
-    while (next === undefined && state.nextIndex + offset < state.toBeProducedEntities.length) {
-      // Loop until we either:
-      // - find an entity with relevant links to build
-      // - reach the end of the set of entities to be built
-      next = buildEntityStepArbitrary(relations, inversedRelations, state, offset);
-      offset += 1;
-    }
-    return next;
+    return undefined;
   }).map((state) => {
     const readOnlyProducedLinks: ReadonlyProducedLinks<TEntityFields, TEntityRelations> = state.producedLinks;
     return readOnlyProducedLinks as ProducedLinks<TEntityFields, TEntityRelations>;
