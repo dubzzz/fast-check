@@ -4683,45 +4683,76 @@ Execution summary:
 `;
 
 exports[`NoRegression > stringMatching 1`] = `
-[Error: Property failed after 3 tests
-{ seed: 42, path: "2:1:0:1:1:1:1", endOnFailure: true }
-Counterexample: ["--@a.a"]
-Shrunk 6 time(s)
+[Error: Property failed after 2 tests
+{ seed: 42, path: "1:0:0:0", endOnFailure: true }
+Counterexample: ["+@-.."]
+Shrunk 3 time(s)
 
 Execution summary:
-[32m√[0m ["e@X.-"]
-[32m√[0m ["rUCO.8y.9Y2@V-mM3.i.-0P-M-"]
-[31m×[0m ["I+---@5r.prototypeCar"]
-. [32m√[0m ["-@5r.prototypeCar"]
-. [31m×[0m ["---@5r.prototypeCar"]
-. . [31m×[0m ["--@5r.prototypeCar"]
-. . . [32m√[0m ["-@5r.prototypeCar"]
-. . . [31m×[0m ["--@r.prototypeCar"]
-. . . . [32m√[0m ["-@r.prototypeCar"]
-. . . . [31m×[0m ["--@a.prototypeCar"]
-. . . . . [32m√[0m ["-@a.prototypeCar"]
-. . . . . [31m×[0m ["--@a.r"]
-. . . . . . [32m√[0m ["-@a.r"]
-. . . . . . [31m×[0m ["--@a.a"]
-. . . . . . . [32m√[0m ["-@a.a"]]
+[32m√[0m ["-@basO.awv"]
+[31m×[0m ["ahSFeiDV-CT@L.."]
+. [31m×[0m ["T@L.."]
+. . [31m×[0m ["+@L.."]
+. . . [31m×[0m ["+@-.."]
+. . . . [32m√[0m ["+@-.-"]]
 `;
 
 exports[`NoRegression > stringMatching({maxLength:10}) 1`] = `
-[Error: Property failed after 2 tests
-{ seed: 42, path: "1:0:0:0:1:0", endOnFailure: true }
-Counterexample: ["0@A.--"]
-Shrunk 5 time(s)
+[Error: Property failed after 1 tests
+{ seed: 42, path: "0:0:2:15:14:8:0:1", endOnFailure: true }
+Counterexample: ["+@--.-"]
+Shrunk 7 time(s)
 
 Execution summary:
-[32m√[0m ["5@i6.Ia"]
-[31m×[0m ["7@2B.ref--"]
-. [31m×[0m ["0@2B.ref--"]
-. . [31m×[0m ["0@B.ref--"]
-. . . [31m×[0m ["0@A.ref--"]
-. . . . [32m√[0m ["0@A.-"]
-. . . . [31m×[0m ["0@A.f--"]
-. . . . . [31m×[0m ["0@A.--"]
-. . . . . . [32m√[0m ["0@A.-"]]
+[31m×[0m ["d@apply.a"]
+. [31m×[0m ["+@apply.a"]
+. . [32m√[0m ["+@y.a"]
+. . [32m√[0m ["+@ply.a"]
+. . [31m×[0m ["+@pply.a"]
+. . . [32m√[0m ["+@ply.a"]
+. . . [32m√[0m ["+@-ply.a"]
+. . . [32m√[0m ["+@Pply.a"]
+. . . [32m√[0m ["+@cply.a"]
+. . . [32m√[0m ["+@jply.a"]
+. . . [32m√[0m ["+@mply.a"]
+. . . [32m√[0m ["+@oply.a"]
+. . . [32m√[0m ["+@py.a"]
+. . . [32m√[0m ["+@ply.a"]
+. . . [32m√[0m ["+@p-ly.a"]
+. . . [32m√[0m ["+@pPly.a"]
+. . . [32m√[0m ["+@pcly.a"]
+. . . [32m√[0m ["+@pjly.a"]
+. . . [32m√[0m ["+@pmly.a"]
+. . . [32m√[0m ["+@poly.a"]
+. . . [31m×[0m ["+@ppy.a"]
+. . . . [32m√[0m ["+@py.a"]
+. . . . [32m√[0m ["+@-py.a"]
+. . . . [32m√[0m ["+@Ppy.a"]
+. . . . [32m√[0m ["+@cpy.a"]
+. . . . [32m√[0m ["+@jpy.a"]
+. . . . [32m√[0m ["+@mpy.a"]
+. . . . [32m√[0m ["+@opy.a"]
+. . . . [32m√[0m ["+@py.a"]
+. . . . [32m√[0m ["+@p-y.a"]
+. . . . [32m√[0m ["+@pPy.a"]
+. . . . [32m√[0m ["+@pcy.a"]
+. . . . [32m√[0m ["+@pjy.a"]
+. . . . [32m√[0m ["+@pmy.a"]
+. . . . [32m√[0m ["+@poy.a"]
+. . . . [31m×[0m ["+@pp-.a"]
+. . . . . [32m√[0m ["+@p-.a"]
+. . . . . [32m√[0m ["+@-p-.a"]
+. . . . . [32m√[0m ["+@Pp-.a"]
+. . . . . [32m√[0m ["+@cp-.a"]
+. . . . . [32m√[0m ["+@jp-.a"]
+. . . . . [32m√[0m ["+@mp-.a"]
+. . . . . [32m√[0m ["+@op-.a"]
+. . . . . [32m√[0m ["+@p-.a"]
+. . . . . [31m×[0m ["+@p--.a"]
+. . . . . . [31m×[0m ["+@--.a"]
+. . . . . . . [32m√[0m ["+@-.a"]
+. . . . . . . [31m×[0m ["+@--.-"]
+. . . . . . . . [32m√[0m ["+@-.-"]]
 `;
 
 exports[`NoRegression > subarray 1`] = `

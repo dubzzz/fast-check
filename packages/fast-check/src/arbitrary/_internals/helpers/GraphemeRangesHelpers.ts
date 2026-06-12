@@ -1,4 +1,4 @@
-import { safePop, safePush } from '../../../utils/globals.js';
+import { safePop, safePush, safeSort } from '../../../utils/globals.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 
 /** @internal */
@@ -76,4 +76,64 @@ export function intersectGraphemeRanges(rangesA: GraphemeRange[], rangesB: Graph
     }
   }
   return mergedRanges;
+}
+
+/**
+ * Compute the union of the received ranges.
+ * Contrary to the other operations, ranges can be received unordered and overlapping.
+ * Produced ranges are ordered, non-overlapping and merged when contiguous.
+ * @internal
+ */
+export function unionGraphemeRanges(ranges: GraphemeRange[]): GraphemeRange[] {
+  const unionRanges: GraphemeRange[] = [];
+  const sortedRanges = safeSort([...ranges], (rangeA, rangeB) => rangeA[0] - rangeB[0]);
+  for (const range of sortedRanges) {
+    const rangeMin = range[0];
+    const rangeMax = range.length === 1 ? range[0] : range[1];
+    if (unionRanges.length >= 1) {
+      const lastRange = unionRanges[unionRanges.length - 1];
+      const lastRangeMin = lastRange[0];
+      const lastRangeMax = lastRange.length === 1 ? lastRange[0] : lastRange[1];
+      if (rangeMin <= lastRangeMax + 1) {
+        if (rangeMax > lastRangeMax) {
+          unionRanges[unionRanges.length - 1] = [lastRangeMin, rangeMax];
+        }
+        continue;
+      }
+    }
+    safePush(unionRanges, rangeMin === rangeMax ? [rangeMin] : [rangeMin, rangeMax]);
+  }
+  return unionRanges;
+}
+
+/**
+ * Everything except the ranges, considering allowed values being the ones from 0 to MAX_SAFE_INTEGER
+ * Ranges have to be ordered and non-overlapping
+ * @internal
+ */
+function complementGraphemeRanges(ranges: GraphemeRange[]): GraphemeRange[] {
+  const maxValue = Number.MAX_SAFE_INTEGER;
+  const complementRanges: GraphemeRange[] = [];
+  let nextMin = 0;
+  for (const range of ranges) {
+    const rangeMin = range[0];
+    const rangeMax = range.length === 1 ? range[0] : range[1];
+    if (rangeMin > nextMin) {
+      safePush(complementRanges, rangeMin - 1 === nextMin ? [nextMin] : [nextMin, rangeMin - 1]);
+    }
+    nextMin = rangeMax + 1;
+  }
+  if (nextMin <= maxValue) {
+    safePush(complementRanges, nextMin === maxValue ? [nextMin] : [nextMin, maxValue]);
+  }
+  return complementRanges;
+}
+
+/**
+ * Compute rangesA minus rangesB: everything from rangesA not being part of rangesB
+ * Ranges have to be ordered and non-overlapping
+ * @internal
+ */
+export function subtractGraphemeRanges(rangesA: GraphemeRange[], rangesB: GraphemeRange[]): GraphemeRange[] {
+  return intersectGraphemeRanges(rangesA, complementGraphemeRanges(rangesB));
 }

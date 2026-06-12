@@ -26,31 +26,31 @@ String matching the passed regex.
 ```js
 fc.stringMatching(/\s(html|php|css|java(script)?)\s/);
 // Note: The regex does not contain ^ or $ assertions, so extra text could be added before and after the match
-// Examples of generated values: "ca\rcss\f", "K7c<:(\"T\"a\nphp\r5M+,q~KPuj", "NXlk\tcss\r", "e\u000bcss\ng", "> css\u000b&appl"…
+// Examples of generated values: "ca html\f4& ", "'Kn7&cP<5: html\t", "<NfX\rhtml\f", "%\tcss\t~eO#", "#\u000bjavascript\r)2;]"…
 
 fc.stringMatching(/^rgb\((?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d),(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\)$/);
 // Note: Regex matching RGB colors
-// Examples of generated values: "rgb(77,226,11)", "rgb(229,247,231)", "rgb(37,104,1)", "rgb(6,4,236)", "rgb(33,80,108)"…
+// Examples of generated values: "rgb(67,203,203)", "rgb(208,110,195)", "rgb(45,1,58)", "rgb(6,204,202)", "rgb(21,236,212)"…
 
 fc.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[12345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 // Note: Regex matching UUID
 // Examples of generated values:
-// • "fd606aa1-b53b-1c7b-9e2f-1e2c1ff1b8e9"
-// • "e74cec0b-bd5a-4dba-96a9-edbfa9c1a198"
-// • "fcccdcf3-908e-5179-adce-7ebae72c12dc"
-// • "0eab1fab-5bc2-336c-9ccb-a3fecbe72ee2"
-// • "bb3073ee-2283-2538-ba0c-1b976ebb9610"
+// • "edd33232-0151-233b-9ef1-9712e01400d1"
+// • "73ec5ccc-6023-49dd-97d7-703020f1e832"
+// • "ebfcd073-f2d2-5021-85f0-ebd0592d4a3b"
+// • "071d41a5-2c13-3126-ad2d-92bef9003c30"
+// • "211323a3-4622-2230-93e1-0c1e1fc3140e"
 // • …
 
 fc.stringMatching(
   /^(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)\.(?:\d|[1-9]\d|1\d\d|2[0-5]\d)$/,
 );
 // Note: Regex matching IP v4, we rather recommend you to rely on `fc.ipV4()`
-// Examples of generated values: "26.211.140.50", "16.201.8.27", "171.225.2.2", "3.5.72.22", "204.233.5.4"…
+// Examples of generated values: "81.203.139.2", "12.223.1.47", "112.212.6.221", "6.157.6.0", "200.208.115.166"…
 
 fc.stringMatching(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, { maxLength: 10 });
 // Note: Regex matching very simple email addresses, but we ask for no more than 10 characters for generated email addresses
-// Examples of generated values: "G9-_+@-1..", "U05@--1.yK", "+@tW.dfw", "_@u..t", "dal@2-Z..8"…
+// Examples of generated values: "ap@refc.er", "A@32J.VS9", "iy@ca.Hb", "2x@-.zCna", "key@Jz.jB"…
 
 fc.stringMatching(/^\p{Emoji}$/u);
 // Note: Regex matching a single Emoji character via a Unicode property escape

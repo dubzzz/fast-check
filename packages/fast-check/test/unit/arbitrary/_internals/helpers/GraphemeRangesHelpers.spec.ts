@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   convertGraphemeRangeToMapToConstantEntry,
   intersectGraphemeRanges,
+  subtractGraphemeRanges,
+  unionGraphemeRanges,
 } from '../../../../../src/arbitrary/_internals/helpers/GraphemeRangesHelpers.js';
 import type { GraphemeRange } from '../../../../../src/arbitrary/_internals/data/GraphemeRanges.js';
 import * as fc from 'fast-check';
@@ -252,14 +254,268 @@ describe('intersectGraphemeRanges', () => {
   });
 });
 
+describe('unionGraphemeRanges', () => {
+  it('should merge overlapping ranges together', () => {
+    // Arrange
+    const ranges: GraphemeRange[] = [
+      [1, 6],
+      [3, 10],
+    ];
+
+    // Act
+    const union = unionGraphemeRanges(ranges);
+
+    // Assert
+    expect(union).toStrictEqual([[1, 10]]);
+  });
+
+  it('should merge contiguous ranges together', () => {
+    // Arrange
+    const ranges: GraphemeRange[] = [[1, 3], [4], [10, 12]];
+
+    // Act
+    const union = unionGraphemeRanges(ranges);
+
+    // Assert
+    expect(union).toStrictEqual([
+      [1, 4],
+      [10, 12],
+    ]);
+  });
+
+  it('should re-order unordered ranges', () => {
+    // Arrange
+    const ranges: GraphemeRange[] = [[10, 12], [1, 2], [5]];
+
+    // Act
+    const union = unionGraphemeRanges(ranges);
+
+    // Assert
+    expect(union).toStrictEqual([[1, 2], [5], [10, 12]]);
+  });
+
+  it('should drop duplicated ranges and normalize ranges made of a single repeated value into [number]', () => {
+    // Arrange
+    const ranges: GraphemeRange[] = [[5, 5], [5], [5, 5]];
+
+    // Act
+    const union = unionGraphemeRanges(ranges);
+
+    // Assert
+    expect(union).toStrictEqual([[5]]);
+  });
+
+  it('should be equivalent to the union of the underlying sets of values', () => {
+    fc.assert(
+      fc.property(fc.array(graphemeRangeArbitrary(MaxValueForSetBasedChecks)), (ranges) => {
+        // Arrange / Act
+        const union = unionGraphemeRanges(ranges);
+
+        // Assert
+        const expectedValues = new Set(ranges.flatMap(expandRange));
+        expect(new Set(union.flatMap(expandRange))).toStrictEqual(expectedValues);
+      }),
+    );
+  });
+
+  it('should produce ordered, non-overlapping and non-contiguous ranges with isolated values as [number]', () => {
+    fc.assert(
+      fc.property(fc.array(graphemeRangeArbitrary()), (ranges) => {
+        // Arrange / Act
+        const union = unionGraphemeRanges(ranges);
+
+        // Assert
+        assertOrderedNonOverlappingNonContiguousNormalizedRanges(union);
+      }),
+    );
+  });
+
+  it('should keep already normalized ranges unchanged', () => {
+    fc.assert(
+      fc.property(orderedNonOverlappingAndNonContiguousGraphemeRangesArbitrary(), (ranges) => {
+        // Arrange / Act
+        const union = unionGraphemeRanges(ranges);
+
+        // Assert
+        expect(union).toStrictEqual(ranges);
+      }),
+    );
+  });
+
+  it('should not depend on the order of the received ranges', () => {
+    fc.assert(
+      fc.property(fc.array(graphemeRangeArbitrary()), fc.array(graphemeRangeArbitrary()), (rangesA, rangesB) => {
+        // Arrange / Act
+        const unionAB = unionGraphemeRanges([...rangesA, ...rangesB]);
+        const unionBA = unionGraphemeRanges([...rangesB, ...rangesA]);
+
+        // Assert
+        expect(unionAB).toStrictEqual(unionBA);
+      }),
+    );
+  });
+});
+
+describe('subtractGraphemeRanges', () => {
+  it('should split ranges #1 when ranges #2 fall strictly inside of them', () => {
+    // Arrange
+    const rangesA: GraphemeRange[] = [[1, 10]];
+    const rangesB: GraphemeRange[] = [[4, 6]];
+
+    // Act
+    const subtraction = subtractGraphemeRanges(rangesA, rangesB);
+
+    // Assert
+    expect(subtraction).toStrictEqual([
+      [1, 3],
+      [7, 10],
+    ]);
+  });
+
+  it('should keep ranges #1 fully when not overlapping with ranges #2', () => {
+    // Arrange
+    const rangesA: GraphemeRange[] = [[1, 3], [7]];
+    const rangesB: GraphemeRange[] = [[5, 6], [12]];
+
+    // Act
+    const subtraction = subtractGraphemeRanges(rangesA, rangesB);
+
+    // Assert
+    expect(subtraction).toStrictEqual([[1, 3], [7]]);
+  });
+
+  it('should drop ranges #1 fully contained inside ranges #2', () => {
+    // Arrange
+    const rangesA: GraphemeRange[] = [[3, 4], [8]];
+    const rangesB: GraphemeRange[] = [[1, 10]];
+
+    // Act
+    const subtraction = subtractGraphemeRanges(rangesA, rangesB);
+
+    // Assert
+    expect(subtraction).toStrictEqual([]);
+  });
+
+  it('should crop ranges #1 when ranges #2 overlap with their edges', () => {
+    // Arrange
+    const rangesA: GraphemeRange[] = [[1, 10]];
+    const rangesB: GraphemeRange[] = [
+      [0, 2],
+      [9, 12],
+    ];
+
+    // Act
+    const subtraction = subtractGraphemeRanges(rangesA, rangesB);
+
+    // Assert
+    expect(subtraction).toStrictEqual([[3, 8]]);
+  });
+
+  it('should normalize remaining ranges made of a single value into [number]', () => {
+    // Arrange
+    const rangesA: GraphemeRange[] = [[1, 3]];
+    const rangesB: GraphemeRange[] = [[2, 3]];
+
+    // Act
+    const subtraction = subtractGraphemeRanges(rangesA, rangesB);
+
+    // Assert
+    expect(subtraction).toStrictEqual([[1]]);
+  });
+
+  it('should be equivalent to the difference of the underlying sets of values', () => {
+    fc.assert(
+      fc.property(
+        orderedNonOverlappingGraphemeRangesArbitrary(MaxValueForSetBasedChecks),
+        orderedNonOverlappingGraphemeRangesArbitrary(MaxValueForSetBasedChecks),
+        (rangesA, rangesB) => {
+          // Arrange / Act
+          const subtraction = subtractGraphemeRanges(rangesA, rangesB);
+
+          // Assert
+          const valuesB = new Set(rangesB.flatMap(expandRange));
+          const expectedValues = new Set(rangesA.flatMap(expandRange).filter((value) => !valuesB.has(value)));
+          expect(new Set(subtraction.flatMap(expandRange))).toStrictEqual(expectedValues);
+        },
+      ),
+    );
+  });
+
+  it('should keep ranges unchanged when subtracting empty ranges', () => {
+    fc.assert(
+      fc.property(orderedNonOverlappingAndNonContiguousGraphemeRangesArbitrary(), (ranges) => {
+        // Arrange / Act
+        const subtraction = subtractGraphemeRanges(ranges, []);
+
+        // Assert
+        expect(subtraction).toStrictEqual(ranges);
+      }),
+    );
+  });
+
+  it('should produce no range when subtracting ranges from a cloned version of themselves', () => {
+    fc.assert(
+      fc.property(fc.clone(orderedNonOverlappingGraphemeRangesArbitrary(), 2), ([ranges, clonedRanges]) => {
+        // Arrange / Act
+        const subtraction = subtractGraphemeRanges(ranges, clonedRanges);
+
+        // Assert
+        expect(subtraction).toStrictEqual([]);
+      }),
+    );
+  });
+
+  it('should produce ordered, non-overlapping and non-contiguous ranges with isolated values as [number]', () => {
+    fc.assert(
+      fc.property(
+        orderedNonOverlappingGraphemeRangesArbitrary(),
+        orderedNonOverlappingGraphemeRangesArbitrary(),
+        (rangesA, rangesB) => {
+          // Arrange / Act
+          const subtraction = subtractGraphemeRanges(rangesA, rangesB);
+
+          // Assert
+          assertOrderedNonOverlappingNonContiguousNormalizedRanges(subtraction);
+        },
+      ),
+    );
+  });
+});
+
 // Helpers
 
-function graphemeRangeArbitrary() {
-  return fc.tuple(fc.nat(), fc.nat()).map(([a, b]): GraphemeRange => (a === b ? [a] : a < b ? [a, b] : [b, a]));
+const MaxValueForSetBasedChecks = 100;
+
+function expandRange(range: GraphemeRange): number[] {
+  const max = range.length === 1 ? range[0] : range[1];
+  const values: number[] = [];
+  for (let value = range[0]; value <= max; ++value) {
+    values.push(value);
+  }
+  return values;
 }
 
-function orderedNonOverlappingGraphemeRangesArbitrary() {
-  return fc.array(graphemeRangeArbitrary()).map((ranges) => {
+function assertOrderedNonOverlappingNonContiguousNormalizedRanges(ranges: GraphemeRange[]): void {
+  for (let index = 0; index < ranges.length; ++index) {
+    const range = ranges[index];
+    if (range.length === 2) {
+      expect(range[0]).toBeLessThan(range[1]);
+    }
+    if (index > 0) {
+      const rangePrevious = ranges[index - 1];
+      const rangePreviousMax = rangePrevious.length === 1 ? rangePrevious[0] : rangePrevious[1];
+      expect(rangePreviousMax + 1).toBeLessThan(range[0]);
+    }
+  }
+}
+
+function graphemeRangeArbitrary(maxValue?: number) {
+  const natArbitrary = maxValue !== undefined ? fc.nat({ max: maxValue }) : fc.nat();
+  return fc.tuple(natArbitrary, natArbitrary).map(([a, b]): GraphemeRange => (a === b ? [a] : a < b ? [a, b] : [b, a]));
+}
+
+function orderedNonOverlappingGraphemeRangesArbitrary(maxValue?: number) {
+  return fc.array(graphemeRangeArbitrary(maxValue)).map((ranges) => {
     if (ranges.length === 0) {
       return [];
     }
