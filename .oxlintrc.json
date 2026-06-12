@@ -142,6 +142,7 @@
     }
   ],
   "ignorePatterns": [
+    ".claude/worktrees/",
     ".github/",
     "node_modules/",
     "coverage/",
