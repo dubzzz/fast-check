@@ -30,7 +30,6 @@ import type {
   EntityRelations,
   ProducedLinks,
   ReadonlyEntityLinks,
-  Relationship,
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
@@ -87,6 +86,19 @@ function buildLinkIndexArbitrary(
   }
 }
 
+/**
+ * Pre-extracted details for one forward (ie non-inverse) relationship of a given entity type
+ * @internal
+ */
+type ForwardRelationSetup<TEntityFields> = {
+  name: string;
+  arity: Exclude<Arity, 'inverse'>;
+  strategy: Strategy;
+  targetType: keyof TEntityFields;
+  targetTypeIndex: number;
+  inversedProperty: string | undefined;
+};
+
 /** @internal */
 type ProductionMeta<TEntityFields> = {
   /** All the entity type names, in declaration order of `relations` */
@@ -95,30 +107,48 @@ type ProductionMeta<TEntityFields> = {
   indexOfType: Map<keyof TEntityFields, number>;
   /** For each entity type (same indexing as `typeNames`): the inverse relations to pre-fill on any newly created entity */
   inverseRelationTemplates: { name: string; type: keyof TEntityFields }[][];
+  /** For each entity type (same indexing as `typeNames`): the pre-extracted forward relations to produce links for */
+  forwardRelationsPerType: ForwardRelationSetup<TEntityFields>[][];
 };
 
 /** @internal */
 function buildProductionMeta<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
 ): ProductionMeta<TEntityFields> {
+  const inversedRelations = buildInversedRelationsMapping<TEntityFields>(relations);
   const typeNames: Extract<keyof TEntityFields, string>[] = [];
   const indexOfType = new SMap<keyof TEntityFields, number>();
-  const inverseRelationTemplates: { name: string; type: keyof TEntityFields }[][] = [];
   for (const name in relations) {
     const typeName = name as unknown as Extract<keyof TEntityFields, string>;
     safeMapSet(indexOfType, typeName, typeNames.length);
     safePush(typeNames, typeName);
+  }
+  const inverseRelationTemplates: { name: string; type: keyof TEntityFields }[][] = [];
+  const forwardRelationsPerType: ForwardRelationSetup<TEntityFields>[][] = [];
+  for (const name in relations) {
     const template: { name: string; type: keyof TEntityFields }[] = [];
+    const forwardRelations: ForwardRelationSetup<TEntityFields>[] = [];
     const relationsForType = relations[name];
     for (const relationName in relationsForType) {
       const relation = relationsForType[relationName];
       if (relation.arity === 'inverse') {
         safePush(template, { name: relationName, type: relation.type });
+      } else {
+        const inversed = safeMapGet(inversedRelations, relation);
+        safePush(forwardRelations, {
+          name: relationName,
+          arity: relation.arity,
+          strategy: relation.strategy || 'any',
+          targetType: relation.type,
+          targetTypeIndex: safeMapGet(indexOfType, relation.type) as number,
+          inversedProperty: inversed !== undefined ? inversed.property : undefined,
+        });
       }
     }
     safePush(inverseRelationTemplates, template);
+    safePush(forwardRelationsPerType, forwardRelations);
   }
-  return { typeNames, indexOfType, inverseRelationTemplates };
+  return { typeNames, indexOfType, inverseRelationTemplates, forwardRelationsPerType };
 }
 
 /** @internal */
@@ -351,11 +381,28 @@ function buildInitialProductionState<TEntityFields, TEntityRelations extends Ent
 /** @internal */
 type EntityLinkContext<TEntityFields> = {
   name: string;
-  relation: Relationship<keyof TEntityFields>;
+  targetType: keyof TEntityFields;
   targetTypeIndex: number;
   sentinelLinkIndex: number;
   inversedProperty: string | undefined;
 };
+
+/**
+ * Counts (or indexes within own type) at or above this bound do not get their per-entity
+ * link arbitraries cached: they correspond to huge graphs unlikely to share their exact
+ * parameterization again, caching them would only grow the cache forever.
+ * @internal
+ */
+const maxCacheableCountInTargetType = 1024;
+
+/**
+ * Cache of {@link EntityLinksArbitrary} per entity type: nested sparse arrays indexed by the
+ * counts in the target types of every forward relation (plus the index of the entity within its
+ * own type for self-referencing relations), in relation order. Leaves hold the cached entries.
+ * Integer-indexed arrays measured faster than string-keyed maps on this hot path.
+ * @internal
+ */
+type EntityLinksArbitraryCache<TEntityFields> = (EntityLinksArbitrary<TEntityFields> | unknown[] | undefined)[][];
 
 /** @internal */
 type EntityStepResults = (number[] | number | undefined)[];
@@ -381,59 +428,65 @@ type EntityLinksArbitrary<TEntityFields> = {
  * @internal
  */
 function buildEntityLinksArbitrary<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
-  relations: TEntityRelations,
   meta: ProductionMeta<TEntityFields>,
-  inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
-  cache: Map<string, EntityLinksArbitrary<TEntityFields>>,
+  cache: EntityLinksArbitraryCache<TEntityFields>,
   draft: ProductionDraft<TEntityFields, TEntityRelations>,
   currentEntity: Readonly<ToBeProducedEntity<TEntityFields>>,
 ): EntityLinksArbitrary<TEntityFields> {
-  const currentRelations = relations[currentEntity.type];
-  const indexOfType = meta.indexOfType;
-  // Cache key: full parameterization of the arbitraries except the depth (handled via the mutable depthIdentifier)
-  let cacheKey = currentEntity.type as string;
-  for (const name in currentRelations) {
-    const relation = currentRelations[name];
-    if (relation.arity === 'inverse') {
-      continue;
+  const forwardRelations = meta.forwardRelationsPerType[currentEntity.typeIndex];
+  const lastRelationIndex = forwardRelations.length - 1;
+  // Cache walk: the full parameterization of the arbitraries except the depth (handled via the
+  // mutable depthIdentifier) maps onto a path of integer indexes within nested sparse arrays
+  let node: unknown[] | undefined = cache[currentEntity.typeIndex];
+  let leafKey = 0;
+  for (let relationIndex = 0; relationIndex !== forwardRelations.length; ++relationIndex) {
+    const forwardRelation = forwardRelations[relationIndex];
+    const countInTargetType = draft.countInType(forwardRelation.targetTypeIndex);
+    if (countInTargetType >= maxCacheableCountInTargetType) {
+      node = undefined; // never cached: build a fresh instance below
+      break;
     }
-    const countInTargetType = draft.countInType(safeMapGet(indexOfType, relation.type) as number);
-    cacheKey +=
-      relation.type === currentEntity.type
-        ? '|' + countInTargetType + ':' + currentEntity.indexInType
-        : '|' + countInTargetType;
+    const selfReferencing = forwardRelation.targetTypeIndex === currentEntity.typeIndex;
+    if (relationIndex !== lastRelationIndex) {
+      node = ((node as unknown[])[countInTargetType] ??= []) as unknown[];
+      if (selfReferencing) {
+        node = (node[currentEntity.indexInType] ??= []) as unknown[];
+      }
+    } else if (selfReferencing) {
+      node = ((node as unknown[])[countInTargetType] ??= []) as unknown[];
+      leafKey = currentEntity.indexInType;
+    } else {
+      leafKey = countInTargetType;
+    }
   }
-  const cached = safeMapGet(cache, cacheKey);
-  if (cached !== undefined) {
-    return cached;
+  if (node !== undefined) {
+    const cached = node[leafKey] as EntityLinksArbitrary<TEntityFields> | undefined;
+    if (cached !== undefined) {
+      return cached;
+    }
   }
   const currentEntityDepth = createDepthIdentifier();
   currentEntityDepth.depth = currentEntity.depth;
   const subArbitraries: Arbitrary<number[] | number | undefined>[] = [];
   const linkContexts: EntityLinkContext<TEntityFields>[] = [];
-  for (const name in currentRelations) {
-    const relation = currentRelations[name];
-    if (relation.arity === 'inverse') {
-      continue;
-    }
-    const targetType = relation.type;
-    const targetTypeIndex = safeMapGet(indexOfType, targetType) as number;
+  for (let relationIndex = 0; relationIndex !== forwardRelations.length; ++relationIndex) {
+    const forwardRelation = forwardRelations[relationIndex];
+    const { targetType, targetTypeIndex } = forwardRelation;
     const countInTargetType = draft.countInType(targetTypeIndex);
     const linkOrLinksArbitrary = buildLinkIndexArbitrary(
-      relation.arity,
-      relation.strategy || 'any',
-      targetType === currentEntity.type ? currentEntity.indexInType : undefined,
+      forwardRelation.arity,
+      forwardRelation.strategy,
+      targetTypeIndex === currentEntity.typeIndex ? currentEntity.indexInType : undefined,
       countInTargetType, // upper bound doubles as the "create a new entity" marker — see the link >= countInTargetType branch below
       currentEntityDepth,
     );
     safePush(subArbitraries, linkOrLinksArbitrary);
-    const inversed = safeMapGet(inversedRelations, relation);
     safePush(linkContexts, {
-      name,
-      relation,
+      name: forwardRelation.name,
+      targetType,
       targetTypeIndex,
       sentinelLinkIndex: countInTargetType,
-      inversedProperty: inversed !== undefined ? inversed.property : undefined,
+      inversedProperty: forwardRelation.inversedProperty,
     });
   }
   const entry: EntityLinksArbitrary<TEntityFields> = {
@@ -441,7 +494,9 @@ function buildEntityLinksArbitrary<TEntityFields, TEntityRelations extends Entit
     linkContexts,
     depthIdentifier: currentEntityDepth,
   };
-  safeMapSet(cache, cacheKey, entry);
+  if (node !== undefined) {
+    node[leafKey] = entry;
+  }
   return entry;
 }
 
@@ -471,7 +526,7 @@ function applyEntityLinks<TEntityFields, TEntityRelations extends EntityRelation
       }
       index = effectiveLinks;
     }
-    draft.setOutboundLink(currentEntity, linkContext.name, { type: linkContext.relation.type, index });
+    draft.setOutboundLink(currentEntity, linkContext.name, { type: linkContext.targetType, index });
   }
 }
 
@@ -491,11 +546,7 @@ function resolveOneEntityLink<TEntityFields, TEntityRelations extends EntityRela
     // allocates one and returns its index-in-type for later links to reuse.
     // Known limitation of current design: reuse is scoped to the current relation name
     // two relation names requesting a new entity of the same type get two separate entities.
-    newEntityIndexInType = draft.enqueueNewEntity(
-      currentEntity,
-      linkContext.relation.type,
-      linkContext.targetTypeIndex,
-    );
+    newEntityIndexInType = draft.enqueueNewEntity(currentEntity, linkContext.targetType, linkContext.targetTypeIndex);
   } else {
     newEntityIndexInType = link;
   }
@@ -543,11 +594,8 @@ class EntityBatchStepArbitrary<
   TEntityRelations extends EntityRelations<TEntityFields>,
 > extends Arbitrary<ProductionState<TEntityFields, TEntityRelations>> {
   constructor(
-    readonly relations: TEntityRelations,
     readonly meta: ProductionMeta<TEntityFields>,
-    readonly inversedRelations: ReturnType<typeof buildInversedRelationsMapping<TEntityFields>>,
-    readonly typesWithOutboundRelations: Set<keyof TEntityFields>,
-    readonly linksArbitraryCache: Map<string, EntityLinksArbitrary<TEntityFields>>,
+    readonly linksArbitraryCache: EntityLinksArbitraryCache<TEntityFields>,
     readonly lastState: ProductionState<TEntityFields, TEntityRelations>,
   ) {
     super();
@@ -565,14 +613,7 @@ class EntityBatchStepArbitrary<
     mrng: Random,
     biasFactor: number | undefined,
   ): void {
-    const linksArbitrary = buildEntityLinksArbitrary(
-      this.relations,
-      this.meta,
-      this.inversedRelations,
-      this.linksArbitraryCache,
-      draft,
-      currentEntity,
-    );
+    const linksArbitrary = buildEntityLinksArbitrary(this.meta, this.linksArbitraryCache, draft, currentEntity);
     linksArbitrary.depthIdentifier.depth = currentEntity.depth;
     const clonedMrng = mrng.clone();
     const subArbitraries = linksArbitrary.subArbitraries;
@@ -598,12 +639,13 @@ class EntityBatchStepArbitrary<
 
   generate(mrng: Random, biasFactor: number | undefined): Value<ProductionState<TEntityFields, TEntityRelations>> {
     const lastState = this.lastState;
+    const forwardRelationsPerType = this.meta.forwardRelationsPerType;
     const draft = new ProductionDraft<TEntityFields, TEntityRelations>(this.meta, lastState);
     const records: EntityBatchRecord<TEntityFields>[] = [];
     // The batch covers all the pending entities, including the ones enqueued while running it
     for (let entityIndex = lastState.nextIndex; entityIndex !== draft.countToBeProduced(); ++entityIndex) {
       const currentEntity = draft.toBeProducedAt(entityIndex);
-      if (!safeHas(this.typesWithOutboundRelations, currentEntity.type)) {
+      if (forwardRelationsPerType[currentEntity.typeIndex].length === 0) {
         continue; // entity without any outbound link to produce
       }
       this.generateOneEntity(draft, records, entityIndex, currentEntity, mrng, biasFactor);
@@ -664,7 +706,7 @@ class EntityBatchStepArbitrary<
         const mrng = record.clonedMrng.clone();
         for (let entityIndex = record.entityIndex + 1; entityIndex !== draft.countToBeProduced(); ++entityIndex) {
           const nextEntity = draft.toBeProducedAt(entityIndex);
-          if (!safeHas(this.typesWithOutboundRelations, nextEntity.type)) {
+          if (this.meta.forwardRelationsPerType[nextEntity.typeIndex].length === 0) {
             continue;
           }
           this.generateOneEntity(draft, newRecords, entityIndex, nextEntity, mrng, biasFactor);
@@ -692,46 +734,39 @@ class EntityBatchStepArbitrary<
   }
 }
 
-/** @internal */
+/**
+ * Prepare a builder of arbitraries producing links between entities.
+ *
+ * All the computations only depending on `relations` (validation, inverse relationships mapping
+ * and per entity type pre-extraction of the relationships) are performed once at preparation time,
+ * so that the returned builder can be invoked on every generation without paying for them again.
+ *
+ * @internal
+ */
 export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   relations: TEntityRelations,
-  defaultEntities: (keyof TEntityFields)[],
-): Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
+): (defaultEntities: (keyof TEntityFields)[]) => Arbitrary<ProducedLinks<TEntityFields, TEntityRelations>> {
   assertAcceptableRelations(relations);
 
   const meta = buildProductionMeta<TEntityFields, TEntityRelations>(relations);
-  const inversedRelations = buildInversedRelationsMapping(relations);
-  // Types referenced below have at least one outbound link to produce per entity:
-  // entities of any other type can safely be skipped, they consume no randomness at all.
-  const typesWithOutboundRelations = new SSet<keyof TEntityFields>();
-  for (const name in relations) {
-    const relationsForName = relations[name];
-    for (const fieldName in relationsForName) {
-      if (relationsForName[fieldName].arity !== 'inverse') {
-        safeAdd(typesWithOutboundRelations, name as unknown as keyof TEntityFields);
-        break;
-      }
-    }
+  const forwardRelationsPerType = meta.forwardRelationsPerType;
+  const linksArbitraryCache: EntityLinksArbitraryCache<TEntityFields> = [];
+  for (let typeIndex = 0; typeIndex !== meta.typeNames.length; ++typeIndex) {
+    safePush(linksArbitraryCache, []);
   }
-  const linksArbitraryCache = new SMap<string, EntityLinksArbitrary<TEntityFields>>();
-  const initialStateArb = constant(buildInitialProductionState<TEntityFields, TEntityRelations>(meta, defaultEntities));
-  return chainUntil(initialStateArb, (state) => {
+  const nextEntityBatchStepArbitrary = (state: ProductionState<TEntityFields, TEntityRelations>) => {
     const toBeProducedEntities = state.toBeProducedEntities;
     for (let index = state.nextIndex; index < toBeProducedEntities.length; ++index) {
-      if (safeHas(typesWithOutboundRelations, toBeProducedEntities[index].type)) {
+      // Types with at least one forward relation have outbound links to produce per entity:
+      // entities of any other type can safely be skipped, they consume no randomness at all.
+      if (forwardRelationsPerType[toBeProducedEntities[index].typeIndex].length !== 0) {
         // At least one pending entity has links to build: process all currently pending entities in one batch
-        return new EntityBatchStepArbitrary(
-          relations,
-          meta,
-          inversedRelations,
-          typesWithOutboundRelations,
-          linksArbitraryCache,
-          state,
-        );
+        return new EntityBatchStepArbitrary(meta, linksArbitraryCache, state);
       }
     }
     return undefined;
-  }).map((state) => {
+  };
+  const extractProducedLinks = (state: ProductionState<TEntityFields, TEntityRelations>) => {
     // Materialize the internal per-type arrays into the externally visible dictionary keyed by entity type names.
     const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
     const { typeNames } = meta;
@@ -742,5 +777,11 @@ export function onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations exte
       >[];
     }
     return producedLinks;
-  });
+  };
+  return (defaultEntities) => {
+    const initialStateArb = constant(
+      buildInitialProductionState<TEntityFields, TEntityRelations>(meta, defaultEntities),
+    );
+    return chainUntil(initialStateArb, nextEntityBatchStepArbitrary).map(extractProducedLinks);
+  };
 }

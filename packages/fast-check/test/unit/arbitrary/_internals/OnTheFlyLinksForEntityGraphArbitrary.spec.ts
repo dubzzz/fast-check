@@ -175,7 +175,9 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
   };
 
   const onTheFlyLinksForEntityGraphBuilder = (extra: Extra) =>
-    onTheFlyLinksForEntityGraph(extra.configurations, extra.defaultEntities);
+    onTheFlyLinksForEntityGraph<EntityFields, EntityRelations<EntityFields>>(extra.configurations)(
+      extra.defaultEntities,
+    );
 
   it('should produce the same values given the same seed', () => {
     assertProduceSameValueGivenSameSeed(onTheFlyLinksForEntityGraphBuilder, { extraParameters });
