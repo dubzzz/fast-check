@@ -32,6 +32,56 @@
   --fc-banner-background-color: rgb(52, 61, 220);
 }
 
+/* ----------------------------------------------------------------------------
+ * Kawaii mode (opt-in easter egg).
+ *
+ * Toggled from the floating dolly button on the homepage, which sets
+ * data-kawaii="on" on <html>. Everything below only takes effect while that
+ * attribute is present, so the default fast-check brand is left untouched and
+ * the whole thing is fully reversible.
+ * ------------------------------------------------------------------------- */
+:root[data-kawaii='on'] {
+  --ifm-color-primary: #ff7ab8;
+  --ifm-color-primary-dark: #ff5ca6;
+  --ifm-color-primary-darker: #ff4d9d;
+  --ifm-color-primary-darkest: #f51f82;
+  --ifm-color-primary-light: #ff98ca;
+  --ifm-color-primary-lighter: #ffa7d3;
+  --ifm-color-primary-lightest: #ffd4ea;
+  --fc-banner-background-color: #ffe3f1;
+}
+
+:root[data-kawaii='on'][data-theme='dark'] {
+  --ifm-color-primary: #ffb3d9;
+  --ifm-color-primary-dark: #ff8ac2;
+  --ifm-color-primary-darker: #ff7ab8;
+  --ifm-color-primary-darkest: #ff4d9d;
+  --ifm-color-primary-light: #ffd0e8;
+  --ifm-color-primary-lighter: #ffe0f0;
+  --ifm-color-primary-lightest: #fff;
+  --fc-banner-background-color: #4a2c3f;
+}
+
+/* Soft pastel hero with a gentle candy gradient and rounded bottom. */
+[data-kawaii='on'] .hero--primary {
+  background-image: linear-gradient(135deg, #ffe3f1 0%, #f3e6ff 50%, #e3f4ff 100%);
+  color: #7a3b63;
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+}
+
+[data-kawaii='on'][data-theme='dark'] .hero--primary {
+  background-image: linear-gradient(135deg, #3a2230 0%, #2f2840 50%, #233140 100%);
+  color: var(--ifm-color-primary-lightest);
+}
+
+/* Round everything off a touch for a cuter, softer feel. */
+[data-kawaii='on'] .button,
+[data-kawaii='on'] .card,
+[data-kawaii='on'] .navbar {
+  border-radius: 16px;
+}
+
 .header-bluesky-link:hover {
   opacity: 0.6;
 }

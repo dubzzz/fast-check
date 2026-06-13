@@ -7,11 +7,13 @@ import HomepageHeader from '@site/src/components/HomepageHeader';
 import HomepageKeyProjects from '@site/src/components/HomepageKeyProjects';
 import HomepageQuotes from '@site/src/components/HomepageQuotes';
 import HomepageSponsors from '@site/src/components/HomepageSponsors';
+import KawaiiMode from '@site/src/components/KawaiiMode';
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout title={`${siteConfig.title} official documentation`} description={siteConfig.tagline}>
+      <KawaiiMode />
       <HomepageHeader />
       <main>
         <HomepageFeatures />
