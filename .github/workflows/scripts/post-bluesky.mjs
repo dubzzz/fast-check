@@ -1,6 +1,7 @@
 // @ts-check
 import { Agent, CredentialSession, RichText } from '@atproto/api';
 
+const url = requireEnv('BLUESKY_URL');
 const identifier = requireEnv('BLUESKY_IDENTIFIER');
 const password = requireEnv('BLUESKY_APP_PASSWORD');
 const discussionUrl = requireEnv('DISCUSSION_URL');
