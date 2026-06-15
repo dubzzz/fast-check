@@ -44,6 +44,7 @@
     "update:documentation": "cross-env UPDATE_CODE_SNIPPETS=true pnpm run test --project fast-check test/e2e/documentation"
   },
   "devDependencies": {
+    "@atproto/api": "^0.19.14",
     "@changesets/cli": "^2.31.0",
     "@fast-check/packaged": "workspace:*",
     "@types/jest": "^30.0.0",
@@ -51,7 +52,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "all-contributors-cli": "^6.26.1",
     "cross-env": "^10.1.0",
-    "oxlint": "^1.69.0",
+    "oxlint": "^1.70.0",
     "oxlint-tsgolint": "^0.23.0",
     "pkg-pr-new": "^0.0.75",
     "prettier": "3.8.4",
