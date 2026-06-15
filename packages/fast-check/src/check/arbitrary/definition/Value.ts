@@ -29,7 +29,7 @@ export class Value<T> {
    * Depending on `hasToBeCloned` it will either be `value_` or a clone of it
    * @remarks Since 2.15.0
    */
-  readonly value!: T;
+  readonly value: T;
   /**
    * Internal value of the shrinkable
    * @remarks Since 2.15.0
@@ -52,10 +52,13 @@ export class Value<T> {
     this.context = context;
     this.hasToBeCloned = customGetValue !== undefined || hasCloneMethod(value_);
     this.readOnce = false;
+    this.value = value_;
     if (this.hasToBeCloned) {
-      safeObjectDefineProperty(this, 'value', { get: customGetValue !== undefined ? customGetValue : this.getValue });
-    } else {
-      this.value = value_;
+      safeObjectDefineProperty(this, 'value', {
+        get: customGetValue !== undefined ? customGetValue : this.getValue,
+        enumerable: false,
+        configurable: false,
+      });
     }
   }
 

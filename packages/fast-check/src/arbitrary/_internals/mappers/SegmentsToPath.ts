@@ -1,11 +1,12 @@
-import { safeJoin, safeMap, safeSplice, safeSplit } from '../../../utils/globals.js';
+import { safeSplice, safeSplit } from '../../../utils/globals.js';
 
 /** @internal */
 export function segmentsToPathMapper(segments: string[]): string {
-  return safeJoin(
-    safeMap(segments, (v) => `/${v}`),
-    '',
-  );
+  let path = '';
+  for (let index = 0; index !== segments.length; ++index) {
+    path += '/' + segments[index];
+  }
+  return path;
 }
 
 /** @internal */
