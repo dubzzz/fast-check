@@ -1,12 +1,13 @@
 // @ts-check
 import { Agent, CredentialSession, RichText } from '@atproto/api';
 
+const url = requireEnv('BLUESKY_URL');
 const identifier = requireEnv('BLUESKY_IDENTIFIER');
 const password = requireEnv('BLUESKY_APP_PASSWORD');
 const discussionUrl = requireEnv('DISCUSSION_URL');
 const releaseTag = requireEnv('RELEASE_TAG');
 
-const session = new CredentialSession(new URL('https://bsky.social'));
+const session = new CredentialSession(new URL(url));
 await session.login({ identifier, password });
 const agent = new Agent(session);
 
