@@ -19,7 +19,7 @@ In the context of this tutorial you'll never have to edit `queue`. The function 
 
 ## Understand current test
 
-Fortunately, we don't have to start from scratch. The function already has a test in place that ensures queries will consistently resolve in the correct order. The test appears rather simple and currently passes.
+Fortunately, we don't have to start from scratch. A test already exists, and it _passes_ — which is suspicious, because the first version of `queue` in the playground below does no queueing at all. Let's read the test carefully and ask ourselves **why** it passes on broken code. That answer is the doorway to everything fast-check can do for us.
 
 ```js
 test('should resolve in call order', async () => {
@@ -46,13 +46,13 @@ We can also see that we assess the order of results by confirming that the value
 
 ## Towards next test
 
-The test above has some limitations. Namely, the promises and their `.then()` callbacks happen to resolve in the correct order only because they were instantiated in the correct order and they did not `await` to yield control back to the JavaScript event loop (because we use `Promise.resolve()`). In other words, we are just testing that the JavaScript event loop is queueing and processing promises in the correct order, which is hopefully already true!
+The test above has a subtle flaw: the two promises it creates resolve _immediately_, because the mocked `call` returns `Promise.resolve(v)`. When a promise is already resolved, its `.then()` callback is enqueued on the JavaScript **microtask queue** in the exact order we called `.then()` — and microtasks run in FIFO order. So `seenAnswers` ends up `[1, 2]` no matter what `queue` does. We are not testing `queue` at all; we are testing that the JavaScript runtime processes the microtask queue in order, which is already true.
 
-In order to address this limitation, our updated test should ensure that promises resolve later rather than instantly.
+To turn this into a real race-condition test we need two things: an API that does _not_ resolve instantly, and a way to decide _when_ each resolution happens. That's what the fast-check scheduler gives us.
 
 ## First glance at schedulers
 
-When adding fast-check into a race condition test, the recommended initial step is to update the test code as follows:
+When adding fast-check into a race condition test, the recommended starting move is to wrap the test body in an async property:
 
 {/* prettier-ignore-start */}
 ```js
@@ -64,18 +64,26 @@ test('should resolve in call order', async () => {
 ```
 {/* prettier-ignore-end */}
 
-This modification runs the test using the fast-check runner. By doing so, any bugs that arise during the predicate will be caught by fast-check.
+That one change pulls three pieces of fast-check into your test. Let's look at each.
 
-In the context of race conditions, we want fast-check to provide us with a scheduler instance that is capable of re-ordering asynchronous operations. This is why we added the `fc.scheduler()` argument: it creates an instance of a scheduler that we refer to as `s`. The first important thing to keep in mind for our new test is that we don't want to change the value returned by the API. But we want to change when it gets returned. We want to give the scheduler the responsibility of resolving API calls. To achieve this, the scheduler exposes a method called `scheduleFunction`. This method wraps a function in a scheduled or controlled version of itself.
+**1. Running the test under a property — [`fc.asyncProperty`](/docs/core-blocks/properties/#asynchronous-properties) + [`fc.assert`](/docs/core-blocks/runners/#assert).** Instead of running once with hard-coded values, the test body becomes a _predicate_ that fast-check will execute many times, each time with different generated inputs. `fc.assert` is the runner that actually drives those executions and throws a readable error on failure.
 
-After pushing scheduled calls into the scheduler, we must execute and release them at some point. This is typically done using `waitAll` or `waitFor`. These APIs simply wait for `waitX` to resolve, indicating that what we were waiting for has been accomplished.
+**2. Generating a scheduler — [`fc.scheduler()`](/docs/core-blocks/arbitraries/others/#scheduler) and `scheduleFunction`.** `fc.scheduler()` is an _arbitrary_ — it generates scheduler instances. Each generated instance `s` represents one possible interleaving of your asynchronous operations. The key insight: we don't want to change _what_ the API returns, only _when_ it returns. The method `s.scheduleFunction(call)` wraps our async function in a version whose resolution is controlled by the scheduler.
+
+**3. Releasing scheduled tasks — `waitAll` vs `waitFor`.** Scheduled calls don't execute on their own; we need to tell the scheduler to drain them. `s.waitAll()` runs _every_ task currently queued on the scheduler (plus any new tasks those resolutions enqueue) until the scheduler is idle. `s.waitFor(p)` runs scheduled tasks only until the promise `p` you pass in has resolved — which is safer when some of your calls may only be registered _after_ waiting starts.
 
 :::info Which wait is the best?
-For this first iteration, both of them will be ok, but we will see later that `waitFor` is probably a better fit in that specific example.
+For this first iteration, both will work. In the next step we will see why `waitFor` is the safer default for this specific example: it doesn't require every call to be already queued when you start waiting.
 :::
 
-:::tip More
-For a comprehensive list of methods exposed on the scheduler, you can checkout the [official documentation for race conditions](/docs/advanced/race-conditions/).
+:::tip How does fast-check find the bug with this?
+The scheduler doesn't cheat — it doesn't know which ordering is "bad". Here's what actually happens: fast-check uses **one seed**, and from that single seed it derives many independent sequences of generated values. For each sequence, the scheduler produces a _different_ interleaving of your scheduled tasks. `fc.assert` then runs the predicate once per sequence (100 times by default), each run exploring a different ordering. As soon as one ordering makes the predicate throw, fast-check **shrinks** that failing sequence down to the smallest reproduction it can find — typically just a handful of calls in a specific order. And because everything is derived deterministically from the single seed, a failing run always replays identically, so you can fix the bug, re-run, and know for sure it's gone.
+
+Want to understand the shrinking story more deeply? See [Counterexample shrinking](/docs/introduction/what-is-property-based-testing/#counterexample-shrinking).
+:::
+
+:::tip More scheduler methods
+For a comprehensive list of methods exposed on the scheduler, check out the [advanced race-conditions reference](/docs/advanced/race-conditions/).
 :::
 
 ## Your turn!
@@ -88,27 +96,27 @@ Your test should help us to detect a bug in our current implementation of `queue
 
 <details>
 <summary>
-Hint #1
+Hint #1 — Wrap the test in a property
 </summary>
 
-You have to run the test via the `assert` runner provided by fast-check. For more details, you may refer to the section [First glance at schedulers](#first-glance-at-schedulers) of this page.
+First, your test needs to run under fast-check. Wrap the existing body in `fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => { ... }))` so that `s` becomes an instance of a scheduler generated by fast-check. See [`fc.asyncProperty`](/docs/core-blocks/properties/#asynchronous-properties) if you need a refresher.
 
 </details>
 
 <details>
 <summary>
-Hint #2
+Hint #2 — Who should own the timing?
 </summary>
 
-No need to touch `call` itself. The function should still return the inputs it received. But, instead of queueing it, we should queue a scheduled version of it. You may refer to [`scheduleFunction`](/docs/advanced/race-conditions/#schedulefunction) for more details.
+Now you have `s`. Ask yourself: which line in the original test is the one that decides _when_ promises resolve? That's the one you need to hand over to the scheduler — don't touch `call` itself, wrap it with [`scheduleFunction`](/docs/advanced/race-conditions/#schedulefunction) so that the scheduler gets to decide when each call resolves.
 
 </details>
 
 <details>
 <summary>
-Hint #3
+Hint #3 — Don't forget to drain the scheduler
 </summary>
 
-Our test should think as a user of the API would think. It has to wait for all queued calls to be resolved before being able to assert anything on the output. You may want to use pass such condition to `waitFor` so that everything gets properly awaited before running any assertion.
+Scheduled tasks are inert until you release them. But there's a subtle trap here: `seenAnswers.push(v)` happens inside a `.then()` callback chained on `queued(id)`, so you need to wait not just for the API calls but for those chained continuations too. `s.waitFor(Promise.all(pendingQueries))` does exactly that — it drains scheduled tasks until the combined promise you pass resolves. Collect every `queued(id).then(...)` promise into `pendingQueries` and wait for all of them.
 
 </details>

@@ -12,13 +12,30 @@ import { WrapUpPlaygroundQueue } from './Playgrounds';
 Want to directly try out the final result? Skip ahead to the [Have fun!](#have-fun) section to play with the code snippets we've created.
 :::
 
+## Recap: your race-condition toolkit
+
+Congratulations — you just built, from scratch, a property-based test that hunts race conditions. Every step added one piece to the puzzle:
+
+| Step | What you added                                                                                                                                                                                                                                       | Why it mattered                                                                                                     |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 1    | [`fc.asyncProperty`](/docs/core-blocks/properties/#asynchronous-properties) + [`fc.assert`](/docs/core-blocks/runners/#assert) + [`fc.scheduler()`](/docs/core-blocks/arbitraries/others/#scheduler) + `s.scheduleFunction(call)` + `s.waitFor(...)` | Turned a deterministic example test into a property where _when_ each call resolves is fast-check's decision.       |
+| 2    | A second arbitrary (`fc.integer`) on the property                                                                                                                                                                                                    | Let fast-check pick the number of concurrent calls — more calls, more possible orderings, more bugs surfaced.       |
+| 3    | [`s.scheduleSequence(...)`](/docs/advanced/race-conditions/#schedulesequence) driven by `fc.array`                                                                                                                                                   | Modelled real-world flows where batches of calls are fired, then paused, then more calls come in.                   |
+| 4    | A monitoring wrapper around `scheduledCall`                                                                                                                                                                                                          | Instrumented the code under test so a _second_ spec point — "no concurrent calls" — could be observed and asserted. |
+
+Keep these four moves in your head and you can adapt the whole approach to any async code you own: swap `queue` for your own function, swap the assertions for your own spec, and let fast-check drive.
+
+:::tip Shrinking: the secret ingredient
+The reason a scheduler-based test is useful in practice is **shrinking**. When fast-check finds a failing scheduling, it doesn't hand you the first broken 20-call timeline it stumbles on — it shrinks that timeline down to the minimal reproduction. More often than not, you end up looking at a counterexample with just two or three calls in a very specific order, which is dramatically easier to reason about than "something went wrong somewhere in 100 calls". This is what makes property-based testing of race conditions actually debuggable. For more, see [Counterexample shrinking](/docs/introduction/what-is-property-based-testing/#counterexample-shrinking).
+:::
+
+:::note Going further: modern scheduler APIs
+Starting with fast-check 4.2.0, `waitAll` is deprecated in favour of `waitIdle`, and `waitOne` in favour of `waitNext(1)`. This tutorial keeps the older names for consistency with the playground snippets; when you write new tests in your own codebase, prefer the newer names. See the [advanced race-conditions reference](/docs/advanced/race-conditions/) for the full list.
+:::
+
 ## Zoom on previous test
 
-Congratulations! You have learned how to detect race conditions using fast-check library. We explored the concept of race conditions, discussed their potential dangers, and demonstrated various techniques to identify them. By leveraging the powerful features of fast-check, such as property-based testing and shrinking, you now have a robust tool at your disposal to uncover and fix race conditions in your code. Remember to apply these techniques in your projects to ensure the reliability and stability of your software.
-
-Throughout this tutorial, we gradually added race condition detection and expanded its coverage. The final iteration brings us close to fully addressing all possible edge cases of a `queue`.
-
-One important aspect of the last added test is that it covers a specification point we had overlooked in previous iterations. The main change involved ensuring that we never get called twice simultaneously but always get queued. We accomplished this by replacing:
+The final iteration brings us close to fully addressing all possible edge cases of a `queue`. The main change in step 4 involved ensuring that we never get called twice simultaneously but always get queued. We accomplished this by replacing:
 
 ```js
 //...
@@ -49,7 +66,7 @@ expect(concurrentQueriesDetected).toBe(false);
 
 The above change ensures that we can detect whenever `scheduledCall` is called before the previous calls to it have resolved.
 
-## Towards next test
+## Going further
 
 Although we have covered the majority of the `queue` algorithm, there are always subtle aspects that we may want to address. In this section, we will provide you with some ideas to ensure that your implementation of `queue` is perfect. All the suggested changes have been implemented in the [CodeSandbox playground below](#have-fun), allowing you to see how they can be achieved. The tests associated with this section have been named `*.pnext.v*` and are stacked on top of each other, with the final test incorporating all the suggestions described in this section.
 
@@ -133,7 +150,7 @@ function fireCall(call) {
 }
 ```
 
-This last iteration, implemented in `src/queue.v4.js`, represents the most advanced solution we will show in that section. However, if you examine the CodeSandbox playground](#have-fun), you'll notice that even this implementation misses some cases and can be fixed.
+This last iteration, implemented in `src/queue.v4.js`, represents the most advanced solution we will show in that section. However, if you examine the [CodeSandbox playground](#have-fun), you'll notice that even this implementation misses some cases and can be fixed.
 
 ### Support exceptions
 
