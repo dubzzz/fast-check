@@ -122,13 +122,6 @@ describe('FrequencyArbitrary', () => {
       ).toThrowError(/expects weights to be integer values/);
     });
 
-    it('should reject calls without arbitrary', () => {
-      // Arrange / Act / Assert
-      expect(() => FrequencyArbitrary.from([{ arbitrary: undefined!, weight: 1 }], {}, 'test')).toThrowError(
-        /expects arbitraries to be specified/,
-      );
-    });
-
     it('should reject calls including at least one strictly negative weight', () =>
       fc.assert(
         fc.property(

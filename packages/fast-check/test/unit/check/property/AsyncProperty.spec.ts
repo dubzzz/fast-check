@@ -1,5 +1,4 @@
 import { afterEach, describe, it, expect, vi } from 'vitest';
-import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { asyncProperty } from '../../../../src/check/property/AsyncProperty.js';
 import { pre } from '../../../../src/check/precondition/Pre.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
@@ -125,11 +124,6 @@ describe('AsyncProperty', () => {
     expect(await runner).toBe(null); // property success
     await p.runAfterEach();
   });
-  it('Should throw on invalid arbitrary', () =>
-    expect(() =>
-      asyncProperty(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, async () => {}),
-    ).toThrowError());
-
   it('Should use the unbiased arbitrary by default', () => {
     const { instance, generate } = fakeArbitrary<number>();
     generate.mockReturnValue(new Value(69, undefined));

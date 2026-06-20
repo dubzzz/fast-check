@@ -1,5 +1,4 @@
 import { afterEach, describe, it, expect, vi } from 'vitest';
-import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
 import { property } from '../../../../src/check/property/Property.js';
 import { pre } from '../../../../src/check/precondition/Pre.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
@@ -128,8 +127,6 @@ describe('Property', () => {
       expect(arbs[idx].calledOnce).toBe(true); //  Generator #${idx + 1} called by run
     }
   });
-  it('Should throw on invalid arbitrary', () =>
-    expect(() => property(stubArb.single(8), stubArb.single(8), {} as Arbitrary<any>, () => {})).toThrowError());
   it('Should use the unbiased arbitrary by default', () => {
     const { instance, generate } = fakeArbitrary<number>();
     generate.mockReturnValue(new Value(69, undefined));

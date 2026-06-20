@@ -31,9 +31,6 @@ function constantFrom<const T = never>(...values: T[]): Arbitrary<T>;
 function constantFrom<TArgs extends any[] | [any]>(...values: TArgs): Arbitrary<TArgs[number]>;
 
 function constantFrom<TArgs extends any[] | [any] | any>(...values: Arrayfy<TArgs>): Arbitrary<Elem<TArgs>> {
-  if (values.length === 0) {
-    throw new Error('fc.constantFrom expects at least one parameter');
-  }
   return new ConstantArbitrary(values) as Arbitrary<Elem<TArgs>>;
 }
 
