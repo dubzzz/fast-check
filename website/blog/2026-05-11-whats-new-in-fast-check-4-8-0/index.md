@@ -4,7 +4,7 @@ authors: [dubzzz]
 tags: [release, chainUntil, combiners, arbitrary]
 ---
 
-Building an arbitrary whose shape depends on previously generated values has always been possible through `.chain`. But `.chain` is one-shot by design: it lets you derive a single follow-up arbitrary from a previous value, and longer dependency chains had to be expressed by nesting `.chain` calls into each other. This release introduces `chainUntil`, a new combiner dedicated to iterative chaining. It runs as a loop, keeps going until you decide to stop, and supports proper shrinking even on very long chains.
+Nesting an arbitrary number of `.chain` calls has never been simple with fast-check. This release introduces `chainUntil`, a new combiner dedicated to iterative chaining. It runs as a loop, keeps going until you decide to stop and supports proper shrinking even on very long chains.
 
 Continue reading to explore the detailed updates it brings.
 
@@ -12,37 +12,19 @@ Continue reading to explore the detailed updates it brings.
 
 ## Iterative chaining with `chainUntil`
 
-The new `chainUntil` arbitrary takes a starting arbitrary and a `chainer` function. It first generates a value from the starting arbitrary, then repeatedly calls `chainer` with the latest value to produce the next arbitrary in the chain. The loop stops as soon as `chainer` returns `undefined`, and the value emitted by `chainUntil` is the last one produced along the way.
+The new `chainUntil` arbitrary takes a starting arbitrary and a `chainer` function. It first generates a value from the starting arbitrary, then repeatedly calls `chainer` with the latest value to produce the next arbitrary in the chain. The loop stops as soon as `chainer` returns `undefined`,and the value emitted by `chainUntil` is the last one produced along the way.
 
 ```ts
 fc.chainUntil(
+  // Start from a tuple containing one value in 0..20,
   fc.nat(20).map((n) => [n]),
-  (tuple) => (tuple[tuple.length - 1] > 10 ? fc.nat(20).map((n) => [...tuple, n]) : undefined),
+  // Then, if value is greater than 10, append another value in 0..20
+  (tuple) => (tuple.at(-1) > 10 ? fc.nat(20).map((n) => [...tuple, n]) : undefined),
 );
-// Start from a tuple containing one value in 0..20, then keep appending another
-// value in 0..20 while the last appended value is greater than 10.
 // Examples of generated values: [14,6], [2], [1], [20,2], [18,17,13,3]…
 ```
 
-In other words, `chainUntil` makes it easy to model recurrences such as random walks that stop on a sentinel, growing a structure step by step, or replaying a sequence of state transitions until some condition is met.
-
-## Why a dedicated combiner?
-
-`chainUntil` covers scenarios that were awkward to express with the existing combiners:
-
-- With `.chain`, expressing a multi-step dependency required nesting `.chain` calls into each other. The depth of those nestings had to be known statically, which made variable-length dependent generation hard to write.
-- A naive recursive helper that calls `.chain` based on the value it just produced quickly hits the JavaScript call-stack limit on long chains, and recursion makes it harder to follow the flow.
-- Shrinking is also tricky to get right when chaining manually. `.chain`'s shrinker has known [limitations](https://github.com/dubzzz/fast-check/issues/650#issuecomment-648397230) and stacking it on itself does not generally produce the smallest counterexamples.
-
-`chainUntil` addresses all three points at once.
-
-## Iterative under the hood
-
-The implementation of `chainUntil` is fully iterative. Both generation and shrinking are written as loops over the chain entries. Each step records the arbitrary used, the value produced, its shrink context and a clone of the random number generator, so that the chain can be re-derived deterministically from any point.
-
-When shrinking, fast-check walks the chain from its start. For each level, it asks the corresponding arbitrary for its shrink candidates, keeps the prefix unchanged, applies the candidate at the current level, and then re-runs the loop from the cloned random source to rebuild the rest of the chain. This means earlier (and usually structurally more impactful) decisions are explored first, and shrinking remains correct even when a smaller intermediate value yields a chain of a different length.
-
-A practical consequence is that `chainUntil` handles chains with thousands of steps without blowing the stack, which used to be a real concern as soon as recursive chaining patterns were involved.
+While doable with `.chain` it required nesting calls but the depth of the nesting has to be known upfront. With `chainUntil`, variable-length dependent generation is possible.
 
 ## Changelog since 4.7.0
 
