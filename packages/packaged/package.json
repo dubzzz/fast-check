@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@npmcli/arborist": "^9.0.0",
-    "npm-packlist": "^10.0.0"
+    "npm-packlist": "^11.0.0"
   },
   "devDependencies": {
     "@types/npm-packlist": "^7.0.3",
