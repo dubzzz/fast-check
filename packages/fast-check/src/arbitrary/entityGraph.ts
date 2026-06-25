@@ -118,21 +118,24 @@ export function entityGraph<TEntityFields, TEntityRelations extends EntityRelati
   const initialPoolConstraints = constraints.initialPoolConstraints || safeObjectCreate(null);
   const unicityConstraints = constraints.unicityConstraints || safeObjectCreate(null);
   const unlinkedContraints = { noNullPrototype: constraints.noNullPrototype };
+  // Builders below are prepared once: everything only depending on `arbitraries`, `relations`
+  // and `constraints` is computed eagerly and not at every generation (chains re-run on each one)
+  const onTheFlyLinksFor = onTheFlyLinksForEntityGraph<TEntityFields, TEntityRelations>(relations);
+  const unlinkedEntitiesFor = unlinkedEntitiesForEntityGraph(
+    arbitraries,
+    (name) => unicityConstraints[name],
+    unlinkedContraints,
+  );
 
   return (
     // Step 1, Computing the list of default entities that should take part in the pool
     initialPoolForEntityGraph<keyof TEntityFields>(allKeys, initialPoolConstraints).chain((defaultEntities) =>
       // Step 2, Producing links between entities
-      onTheFlyLinksForEntityGraph(relations, defaultEntities).chain((producedLinks) =>
+      onTheFlyLinksFor(defaultEntities).chain((producedLinks) =>
         // Step 3, Producing entities themselves
         // As the number of entities for each kind requires the links to be produced,
         // it has to be executed as a chained computation
-        unlinkedEntitiesForEntityGraph(
-          arbitraries,
-          (name) => producedLinks[name].length,
-          (name) => unicityConstraints[name],
-          unlinkedContraints,
-        ).map((unlinkedEntities) =>
+        unlinkedEntitiesFor((name) => producedLinks[name].length).map((unlinkedEntities) =>
           // Step 4, Glueing links and entities together
           unlinkedToLinkedEntitiesMapper(unlinkedEntities, producedLinks),
         ),
