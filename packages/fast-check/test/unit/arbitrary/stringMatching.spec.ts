@@ -90,6 +90,10 @@ function regexBasedOnChunks(): fc.Arbitrary<Extra> {
     '[ace]', // any character from ace
     '[^s-z]', // any character not in range s to z
     '[^ace]', // any character not from ace
+    '[\\dc-e]', // any character matching a meta character, in a range or from a list
+    '[\\Sa]', // any character matching a negated meta character or from a list
+    '[^\\dc-e]', // any character not matching a meta character, not in a range and not from a list
+    '[^\\Sa]', // any character not matching a negated meta character and not from a list
     '.', // 'any' character
     ...['w', 'd', 's' /*'b'*/].map((v) => `\\${v}`), // lower case meta characters
     ...['w', 'd', 's' /*'b'*/].map((v) => `\\${v.toUpperCase()}`), // upper case meta characters

@@ -61,12 +61,21 @@ function extractRangesForPropertyOrFromCache(propertySpec: string, negative: boo
 }
 
 /**
+ * Compute the ranges of code points matching a Unicode property (`\p{…}` / `\P{…}`).
+ * Produced ranges are ordered and non-overlapping.
+ * @internal
+ */
+export function unicodePropertyRanges(astNode: ResolvedUnicodeProperty): GraphemeRange[] {
+  const spec = getPropertySpec(astNode);
+  return extractRangesForPropertyOrFromCache(spec, astNode.negative);
+}
+
+/**
  * Build an arbitrary producing characters matching a Unicode property (`\p{…}` / `\P{…}`).
  * @internal
  */
 export function unicodePropertyArbitrary(astNode: ResolvedUnicodeProperty): Arbitrary<string> {
-  const spec = getPropertySpec(astNode);
-  const ranges = extractRangesForPropertyOrFromCache(spec, astNode.negative);
+  const ranges = unicodePropertyRanges(astNode);
   const rangeEntries = safeMap(ranges, (range) => convertGraphemeRangeToMapToConstantEntry(range));
   return mapToConstant(...rangeEntries);
 }

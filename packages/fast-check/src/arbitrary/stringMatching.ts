@@ -1,25 +1,27 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import {
-  safeCharCodeAt,
-  safeEvery,
-  safeJoin,
-  safeSubstring,
-  Error,
-  safeMap,
-  Set,
-  safeHas,
-  safePush,
-} from '../utils/globals.js';
+import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeMap, safePush } from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
+import type { GraphemeRange } from './_internals/data/GraphemeRanges.js';
+import { asciiAlphabetRanges, autonomousGraphemeRanges } from './_internals/data/GraphemeRanges.js';
 import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
+import {
+  convertGraphemeRangeToMapToConstantEntry,
+  intersectGraphemeRanges,
+  subtractGraphemeRanges,
+  unionGraphemeRanges,
+} from './_internals/helpers/GraphemeRangesHelpers.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from './_internals/helpers/TokenizeRegex.js';
-import { unicodePropertyArbitrary } from './_internals/helpers/UnicodePropertyArbitraryHelper.js';
+import {
+  unicodePropertyArbitrary,
+  unicodePropertyRanges,
+} from './_internals/helpers/UnicodePropertyArbitraryHelper.js';
 import { constant } from './constant.js';
 import { constantFrom } from './constantFrom.js';
 import { integer } from './integer.js';
+import { mapToConstant } from './mapToConstant.js';
 import { oneof } from './oneof.js';
 import { string } from './string.js';
 import { tuple } from './tuple.js';
@@ -45,23 +47,35 @@ export type StringMatchingConstraints = {
   size?: SizeForArbitrary;
 };
 
-// Some predefined chars or groups of chars
+// Some predefined chars or groups of chars, expressed as ranges of code points (ordered and non-overlapping)
 // https://www.w3schools.com/jsref/jsref_regexp_whitespace.asp
-const wordChars = [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'];
-const digitChars = [...'0123456789'];
-const spaceChars = [...' \t\r\n\v\f'];
+const wordCharRanges: GraphemeRange[] = [[0x30, 0x39], [0x41, 0x5a], [0x5f], [0x61, 0x7a]]; // 0-9, A-Z, _, a-z
+const digitCharRanges: GraphemeRange[] = [[0x30, 0x39]]; // 0-9
+const spaceCharRanges: GraphemeRange[] = [[0x09, 0x0d], [0x20]]; // \t, \n, \v, \f, \r and space
+const terminatorCharRanges: GraphemeRange[] = [[0x15], [0x1e]]; // \x15 and \x1E
+const newLineAndTerminatorCharRanges: GraphemeRange[] = [[0x0a], [0x0d], [0x15], [0x1e]]; // \n, \r, \x15 and \x1E
 const newLineChars = [...'\r\n'];
-const terminatorChars = [...'\x1E\x15'];
-const newLineAndTerminatorChars = [...newLineChars, ...terminatorChars];
 
-// Precomputed membership sets for faster lookups
-const wordCharsSet = new Set(wordChars);
-const digitCharsSet = new Set(digitChars);
-const spaceCharsSet = new Set(spaceChars);
-const terminatorCharsSet = new Set(terminatorChars);
-const newLineAndTerminatorCharsSet = new Set(newLineAndTerminatorChars);
+// All the characters producible by defaultChar(): the printable ASCII characters.
+// Decomposable graphemes do not intersect with ASCII so the 'grapheme-ascii' unit boils down to this intersection.
+const defaultCharRanges = intersectGraphemeRanges(asciiAlphabetRanges, autonomousGraphemeRanges);
+
+// Ranges of code points for the negated predefined classes, within the characters producible by defaultChar()
+const nonWordCharRanges = subtractGraphemeRanges(defaultCharRanges, wordCharRanges);
+const nonDigitCharRanges = subtractGraphemeRanges(defaultCharRanges, digitCharRanges);
+const nonSpaceCharRanges = subtractGraphemeRanges(defaultCharRanges, spaceCharRanges);
+const dotCharRanges = subtractGraphemeRanges(defaultCharRanges, newLineAndTerminatorCharRanges);
+const dotAllCharRanges = subtractGraphemeRanges(defaultCharRanges, terminatorCharRanges);
 
 const defaultChar = () => string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
+
+/**
+ * Build an arbitrary producing one single character among the ones declared by the received ranges
+ * @internal
+ */
+function rangesToCharArbitrary(ranges: GraphemeRange[]): Arbitrary<string> {
+  return mapToConstant(...safeMap(ranges, (range) => convertGraphemeRangeToMapToConstantEntry(range)));
+}
 
 function raiseUnsupportedASTNode(astNode: never): Error {
   return new Error(`Unsupported AST node! Received: ${stringify(astNode)}`);
@@ -71,6 +85,54 @@ type RegexFlags = {
   multiline: boolean;
   dotAll: boolean;
 };
+
+/**
+ * Compute the ranges of code points a single-character AST node may produce,
+ * or undefined when the node cannot be translated into plain ranges of code points (e.g. \b).
+ * Produced ranges may be unordered and overlapping.
+ * @internal
+ */
+function toCharRanges(astNode: RegexToken, flags: RegexFlags): GraphemeRange[] | undefined {
+  switch (astNode.type) {
+    case 'Char': {
+      if (astNode.kind === 'meta') {
+        switch (astNode.value) {
+          case '\\w':
+            return wordCharRanges;
+          case '\\W':
+            return nonWordCharRanges;
+          case '\\d':
+            return digitCharRanges;
+          case '\\D':
+            return nonDigitCharRanges;
+          case '\\s':
+            return spaceCharRanges;
+          case '\\S':
+            return nonSpaceCharRanges;
+          case '.':
+            return flags.dotAll ? dotAllCharRanges : dotCharRanges;
+          default:
+            return undefined; // \b and \B have no single-character expansion
+        }
+      }
+      const codePoint = astNode.codePoint;
+      if (codePoint >= 0 && safeStringFromCodePoint(codePoint) === astNode.symbol) {
+        return [[codePoint]];
+      }
+      return undefined;
+    }
+    case 'ClassRange': {
+      const from = astNode.from.codePoint;
+      const to = astNode.to.codePoint;
+      return from === to ? [[from]] : [[from, to]];
+    }
+    case 'UnicodeProperty': {
+      return unicodePropertyRanges(astNode);
+    }
+    default:
+      return undefined;
+  }
+}
 
 /**
  * Convert an AST of tokens into an arbitrary able to produce the requested pattern
@@ -84,34 +146,12 @@ function toMatchingArbitrary(
   switch (astNode.type) {
     case 'Char': {
       if (astNode.kind === 'meta') {
-        switch (astNode.value) {
-          case '\\w': {
-            return constantFrom(...wordChars);
-          }
-          case '\\W': {
-            return defaultChar().filter((c) => !safeHas(wordCharsSet, c));
-          }
-          case '\\d': {
-            return constantFrom(...digitChars);
-          }
-          case '\\D': {
-            return defaultChar().filter((c) => !safeHas(digitCharsSet, c));
-          }
-          case '\\s': {
-            return constantFrom(...spaceChars);
-          }
-
-          case '\\S': {
-            return defaultChar().filter((c) => !safeHas(spaceCharsSet, c));
-          }
-          case '\\b':
-          case '\\B': {
-            throw new Error(`Meta character ${astNode.value} not implemented yet!`);
-          }
-          case '.': {
-            const forbiddenChars = flags.dotAll ? terminatorCharsSet : newLineAndTerminatorCharsSet;
-            return defaultChar().filter((c) => !safeHas(forbiddenChars, c));
-          }
+        if (astNode.value === '\\b' || astNode.value === '\\B') {
+          throw new Error(`Meta character ${astNode.value} not implemented yet!`);
+        }
+        const ranges = toCharRanges(astNode, flags);
+        if (ranges !== undefined) {
+          return rangesToCharArbitrary(ranges);
         }
       }
       if (astNode.symbol === undefined) {
@@ -178,12 +218,33 @@ function toMatchingArbitrary(
       // TODO - No unmap implemented yet!
       return tuple(...childrenArbitraries).map((vs) => safeJoin(vs, ''));
     }
-    case 'CharacterClass':
+    case 'CharacterClass': {
+      // Try to flatten the whole class into ranges of code points to be able to draw the character in one shot,
+      // instead of relying on a oneof tree (non-negated) or on rejection sampling (negated)
+      let flattenedRanges: GraphemeRange[] | undefined = [];
+      for (const n of astNode.expressions) {
+        const childRanges = toCharRanges(n, flags);
+        if (childRanges === undefined) {
+          flattenedRanges = undefined;
+          break;
+        }
+        safePush(flattenedRanges, ...childRanges);
+      }
+      if (flattenedRanges !== undefined) {
+        const ranges = astNode.negative
+          ? subtractGraphemeRanges(defaultCharRanges, unionGraphemeRanges(flattenedRanges))
+          : unionGraphemeRanges(flattenedRanges);
+        if (ranges.length !== 0) {
+          return rangesToCharArbitrary(ranges);
+        }
+        // The class declares no char at all (e.g. [] or [^\s\S]): fall back to the legacy handling below
+      }
       if (astNode.negative) {
         const childrenArbitraries = safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags));
         return defaultChar().filter((c) => safeEvery(childrenArbitraries, (arb) => !arb.canShrinkWithoutContext(c)));
       }
       return oneof(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags)));
+    }
     case 'ClassRange': {
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
