@@ -361,7 +361,7 @@ jobs:
         shell: bash
         run: echo "date=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
       - name: Cache for assets
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             website/static/img/sponsors.svg
@@ -515,7 +515,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Restore results from last benchmark execution on main
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: benchmark.json
           # Non-matching key so restore-keys picks the most recent main cache
@@ -551,7 +551,7 @@ jobs:
         run: gh cache list --key bench-main- --json key -q '.[].key' | xargs -rn1 gh cache delete || true
       - name: Cache last benchmark execution for main
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: benchmark.json
           key: bench-main-${{ github.sha }}
@@ -724,7 +724,7 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_fc.outputs.tag}}
           draft: false
@@ -795,7 +795,7 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_ava.outputs.tag}}
           draft: false
@@ -866,7 +866,7 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_jest.outputs.tag}}
           draft: false
@@ -937,7 +937,7 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_packaged.outputs.tag}}
           draft: false
@@ -1008,7 +1008,7 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
           draft: false
@@ -1079,7 +1079,7 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_vitest.outputs.tag}}
           draft: false
@@ -1150,7 +1150,7 @@ jobs:
         env:
           BUNDLE_PATH: ${{steps.attest.outputs.bundle-path}}
       - name: Update GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_worker.outputs.tag}}
           draft: false
