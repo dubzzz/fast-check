@@ -296,8 +296,8 @@ importers:
         specifier: ^4.18.1
         version: 4.18.1
       pure-rand:
-        specifier: ^8.4.0
-        version: 8.4.0
+        specifier: ^8.4.1
+        version: 8.4.1
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -8285,6 +8285,9 @@ packages:
 
   pure-rand@8.4.0:
     resolution: {integrity: sha512-IoM8YF/jY0hiugFo/wOWqfmarlE6J0wc6fDK1PhftMk7MGhVZl88sZimmqBBFomLOCSmcCCpsfj7wXASCpvK9A==}
+
+  pure-rand@8.4.1:
+    resolution: {integrity: sha512-c58R2+SPFcSIPXoU834QN/KPDDOSd8sXcSrqf6e83Me6Rrp1EYkxukkjXMVrKvKaADs1SOyNkWdfvLf6zY8qLQ==}
 
   pvtsutils@1.3.6:
     resolution: {integrity: sha512-PLgQXQ6H2FWCaeRak8vvk1GW462lMxB5s3Jm673N82zI4vqtVUPuZdffdZbPDFRoU8kAhItWFtPCWiPpp4/EDg==}
@@ -19725,6 +19728,8 @@ snapshots:
   pure-rand@7.0.1: {}
 
   pure-rand@8.4.0: {}
+
+  pure-rand@8.4.1: {}
 
   pvtsutils@1.3.6:
     dependencies:
