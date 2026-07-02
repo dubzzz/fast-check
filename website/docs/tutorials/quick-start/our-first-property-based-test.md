@@ -41,7 +41,7 @@ A property can be expressed as follow:
 > such that precondition(x, y, ...) holds  
 > predicate(x, y, ...) is true
 
-:::info Property-based tests
+:::info
 You may want to refer to our [Why Property-Based?](/docs/introduction/why-property-based/) section to know more about the benefits and strengths of property-based tests.
 :::
 
