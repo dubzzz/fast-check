@@ -546,6 +546,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/90332566?v=4",
       "profile": "https://github.com/makeeno",
       "contributions": ["doc"]
+    },
+    {
+      "login": "jneidel",
+      "name": "Jonathan Neidel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25589715?v=4",
+      "profile": "https://jneidel.com/",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
