@@ -238,6 +238,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/josephjunker"><img src="https://avatars.githubusercontent.com/u/1519098?v=4?s=100" width="100px;" alt="Joseph Junker"/><br /><sub><b>Joseph Junker</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=josephjunker" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/rushelex"><img src="https://avatars.githubusercontent.com/u/41122157?v=4?s=100" width="100px;" alt="Aleksey Shelementev"/><br /><sub><b>Aleksey Shelementev</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=rushelex" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/rugk"><img src="https://avatars.githubusercontent.com/u/11966684?v=4?s=100" width="100px;" alt="rugk"/><br /><sub><b>rugk</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=rugk" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/makeeno"><img src="https://avatars.githubusercontent.com/u/90332566?v=4?s=100" width="100px;" alt="Makien Osman"/><br /><sub><b>Makien Osman</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=makeeno" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
