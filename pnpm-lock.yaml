@@ -296,7 +296,7 @@ importers:
         specifier: ^4.18.1
         version: 4.18.1
       pure-rand:
-        specifier: ^8.4.0
+        specifier: ^8.4.1
         version: 8.4.1
       react:
         specifier: ^19.2.7
