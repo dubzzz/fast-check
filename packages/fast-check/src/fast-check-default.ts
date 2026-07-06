@@ -70,6 +70,7 @@ import type {
 import { letrec } from './arbitrary/letrec.js';
 import type {
   EntityGraphArbitraries,
+  EntityGraphConstraints,
   EntityGraphContraints,
   EntityGraphRelations,
   EntityGraphValue,
@@ -266,6 +267,7 @@ export type {
   DomainConstraints,
   DoubleConstraints,
   EmailAddressConstraints,
+  EntityGraphConstraints,
   EntityGraphContraints,
   FalsyContraints,
   Float32ArrayConstraints,
