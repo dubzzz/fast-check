@@ -539,6 +539,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/11966684?v=4",
       "profile": "https://github.com/rugk",
       "contributions": ["doc"]
+    },
+    {
+      "login": "makeeno",
+      "name": "Makien Osman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90332566?v=4",
+      "profile": "https://github.com/makeeno",
+      "contributions": ["doc"]
     }
   ],
   "contributorsPerLine": 7
