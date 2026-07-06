@@ -422,7 +422,7 @@ importers:
         specifier: ^9.0.0
         version: 9.8.0
       npm-packlist:
-        specifier: ^11.0.0
+        specifier: ^10.0.0 || ^11.0.0
         version: 11.3.0
     devDependencies:
       '@types/npm-packlist':
