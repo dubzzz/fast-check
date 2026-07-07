@@ -410,15 +410,13 @@ export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
   report(): SchedulerReportItem<TMetaData>[] {
     return [
       ...this.triggeredTasks,
-      ...this.scheduledTasks.map(
-        (t): SchedulerReportItem<TMetaData> => ({
-          status: 'pending',
-          schedulingType: t.schedulingType,
-          taskId: t.taskId,
-          label: t.label,
-          metadata: t.metadata,
-        }),
-      ),
+      ...this.scheduledTasks.map((t): SchedulerReportItem<TMetaData> => ({
+        status: 'pending',
+        schedulingType: t.schedulingType,
+        taskId: t.taskId,
+        label: t.label,
+        metadata: t.metadata,
+      })),
     ];
   }
 
