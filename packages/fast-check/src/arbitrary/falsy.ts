@@ -21,13 +21,7 @@ export interface FalsyContraints {
  * @public
  */
 export type FalsyValue<TConstraints extends FalsyContraints = object> =
-  | false
-  | null
-  | 0
-  | ''
-  | typeof NaN
-  | undefined
-  | (TConstraints extends { withBigInt: true } ? 0n : never);
+  false | null | 0 | '' | typeof NaN | undefined | (TConstraints extends { withBigInt: true } ? 0n : never);
 
 /**
  * For falsy values:
