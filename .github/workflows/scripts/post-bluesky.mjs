@@ -11,7 +11,7 @@ const session = new CredentialSession(new URL(url));
 await session.login({ identifier, password });
 const agent = new Agent(session);
 
-const text = `🚀 New release: ${formatReleaseLabel(releaseTag)}\n\nSneak peek at the release notes: ${releaseUrl}`;
+const text = `🚀 New release on its way: ${formatReleaseLabel(releaseTag)}\n\nRelease notes will land shortly at: ${releaseUrl}`;
 const richText = new RichText({ text });
 await richText.detectFacets(agent);
 

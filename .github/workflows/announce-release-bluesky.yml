@@ -1,11 +1,19 @@
 name: Announce Release on Bluesky
 
 on:
-  # Only fires if the release was published with RELEASE_PAT (see the
-  # "Update GitHub Release" steps in build-status.yml): events created
-  # with the default GITHUB_TOKEN never trigger workflows.
-  release:
-    types: [published]
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Tag of the release to announce'
+        required: true
+        type: string
+    secrets:
+      BLUESKY_URL:
+        required: true
+      BLUESKY_IDENTIFIER:
+        required: true
+      BLUESKY_APP_PASSWORD:
+        required: true
 
 permissions:
   contents: read
@@ -32,6 +40,6 @@ jobs:
           BLUESKY_URL: ${{ secrets.BLUESKY_URL }}
           BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-          RELEASE_URL: ${{ github.event.release.html_url }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ inputs.tag }}
         run: node .github/workflows/scripts/post-bluesky.mjs

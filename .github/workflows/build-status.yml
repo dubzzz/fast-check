@@ -728,8 +728,6 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_fc.outputs.tag}}
-          # PAT so 'release: published' triggers announce-release-bluesky.yml
-          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -802,8 +800,6 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_ava.outputs.tag}}
-          # PAT so 'release: published' triggers announce-release-bluesky.yml
-          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -876,8 +872,6 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_jest.outputs.tag}}
-          # PAT so 'release: published' triggers announce-release-bluesky.yml
-          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -950,8 +944,6 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_packaged.outputs.tag}}
-          # PAT so 'release: published' triggers announce-release-bluesky.yml
-          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -1024,8 +1016,6 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
-          # PAT so 'release: published' triggers announce-release-bluesky.yml
-          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -1098,8 +1088,6 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_vitest.outputs.tag}}
-          # PAT so 'release: published' triggers announce-release-bluesky.yml
-          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -1172,8 +1160,6 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_worker.outputs.tag}}
-          # PAT so 'release: published' triggers announce-release-bluesky.yml
-          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
