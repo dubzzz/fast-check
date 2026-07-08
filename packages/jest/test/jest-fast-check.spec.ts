@@ -1,5 +1,6 @@
-import { describe, it, beforeAll, afterAll, expect } from 'vitest';
+import { describe, it, beforeAll, afterAll, expect, vi } from 'vitest';
 import * as path from 'path';
+import { createHash } from 'crypto';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
@@ -22,6 +23,9 @@ const jestConfigName = `jest.config.cjs`;
 
 type RunnerType = 'test' | 'it';
 
+// Batches (see runSpec) can only aggregate specs of tests running concurrently: the default cap of 5 would limit them to 5 specs
+vi.setConfig({ maxConcurrency: 200 });
+
 beforeAll(async () => {
   await fs.mkdir(generatedTestsDirectory, { recursive: true });
 });
@@ -36,7 +40,7 @@ type DescribeOptions = {
   testRunner: 'jasmine' | undefined;
 };
 
-describe.each<DescribeOptions>([
+describe.concurrent.each<DescribeOptions>([
   { specName: 'test', runnerName: 'test', useWorkers: false, testRunner: undefined },
   { specName: 'test (worker)', runnerName: 'test', useWorkers: true, testRunner: undefined },
   {
@@ -281,7 +285,7 @@ describe.each<DescribeOptions>([
       });
 
       // Act
-      const out = await runSpec(specDirectory);
+      const out = await runSpec(specDirectory, { solo: true }); // solo: assertions below are on run-global counts
 
       // Assert
       expect(out).toMatch(/Test Suites:\s+1 skipped, 0 of 1 total/);
@@ -571,13 +575,34 @@ async function writeToFile(
 ): Promise<string> {
   const { useWorkers } = options;
 
-  // Prepare directory for spec
+  // Prepare jest config itself
+  const jestConfig = {
+    testMatch: [`<rootDir>/*/${specFileName}`],
+    transform: {},
+    testTimeout: options.testTimeoutConfig,
+    testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
+    ...(useWorkers
+      ? {
+          transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
+          transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'],
+        }
+      : {}),
+  };
+
+  // Prepare babel config (if needed)
+  const babelConfig = useWorkers
+    ? `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`
+    : undefined;
+
+  // Prepare directory for spec: specs sharing the exact same configuration live in the same group directory,
+  // the configuration files being written once at the group level (allows batched runs, see runSpec)
+  const groupFingerprint = createHash('sha1').update(JSON.stringify({ jestConfig, babelConfig })).digest('hex');
+  const groupDirectory = path.join(generatedTestsDirectory, `group-${groupFingerprint.substring(0, 8)}`);
   const specDirectorySeed = `${Math.random().toString(16).substring(2)}-${++num}`;
-  const specDirectory = path.join(generatedTestsDirectory, `test-${specDirectorySeed}`);
+  const specDirectory = path.join(groupDirectory, `test-${specDirectorySeed}`);
   await fs.mkdir(specDirectory, { recursive: true });
 
   // Prepare test file itself
-  const specFileName = `generated.spec.cjs`;
   const specFilePath = path.join(specDirectory, specFileName);
   let fileContentString = String(fileContent);
   if (fileContentString.includes('expect')) {
@@ -599,35 +624,22 @@ async function writeToFile(
       fileContentString.substring(fileContentString.indexOf('{') + 1, fileContentString.lastIndexOf('}')),
     );
 
-  // Prepare jest config itself
-  const jestConfigPath = path.join(specDirectory, jestConfigName);
-  const jestConfig = {
-    testMatch: [`<rootDir>/${specFileName}`],
-    transform: {},
-    testTimeout: options.testTimeoutConfig,
-    testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
-    ...(useWorkers
-      ? {
-          transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
-          transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'],
-        }
-      : {}),
-  };
-
-  // Prepare babel config (if needed)
-  const babelConfigPath = path.join(specDirectory, 'babel.config.cjs');
-  const babelConfig = useWorkers
-    ? `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`
-    : undefined;
-
   // Write the files
   await Promise.all([
     fs.writeFile(specFilePath, specContent),
-    fs.writeFile(jestConfigPath, `module.exports = ${JSON.stringify(jestConfig)};`),
-    ...(babelConfig !== undefined ? [fs.writeFile(babelConfigPath, babelConfig)] : []),
+    writeFileOnce(path.join(groupDirectory, jestConfigName), `module.exports = ${JSON.stringify(jestConfig)};`),
+    ...(babelConfig !== undefined ? [writeFileOnce(path.join(groupDirectory, 'babel.config.cjs'), babelConfig)] : []),
   ]);
 
   return specDirectory;
+}
+
+function writeFileOnce(filePath: string, content: string): Promise<void> {
+  return fs.writeFile(filePath, content, { flag: 'wx' }).catch((err) => {
+    if ((err as NodeJS.ErrnoException).code !== 'EEXIST') {
+      throw err;
+    }
+  });
 }
 
 // Environment with AI agent env vars removed so that Jest uses its default reporter
@@ -640,10 +652,57 @@ const jestEnv = Object.fromEntries(
   ),
 );
 
+// Booting one Jest process per spec is by far the main cost of this file. Specs sharing the same configuration
+// (ie. same group directory, see writeToFile) and the same CLI options can share a single Jest process: runSpec
+// only fires the process after a short delay so that all the concurrently requested specs join the same run,
+// each caller receiving the part of the output related to its own spec.
+type PendingSpec = { specDirectory: string; resolve: (out: string) => void };
+const pendingBatches = new Map<string, { specs: PendingSpec[]; timer: ReturnType<typeof setTimeout> }>();
+const batchDelayMs = 250;
+
 async function runSpec(
   specDirectory: string,
-  opts: { jestSeed?: number; testTimeoutCLI?: number } = {},
+  opts: { jestSeed?: number; testTimeoutCLI?: number; solo?: boolean } = {},
 ): Promise<string> {
+  const groupDirectory = path.dirname(specDirectory);
+  const cliArgs = [
+    '--show-seed',
+    '--verbose', // print one line per test even for specs passing within a run of many specs
+    ...(opts.jestSeed !== undefined ? ['--seed', String(opts.jestSeed)] : []),
+    ...(opts.testTimeoutCLI !== undefined ? [`--testTimeout=${opts.testTimeoutCLI}`] : []),
+  ];
+  if (opts.solo) {
+    // For assertions relying on run-global outputs (eg. counts in the summary): keep a dedicated run for the spec
+    return execJest(groupDirectory, cliArgs, [specDirectory]);
+  }
+  const batchKey = JSON.stringify([groupDirectory, cliArgs]);
+  return new Promise((resolve) => {
+    let batch = pendingBatches.get(batchKey);
+    if (batch === undefined) {
+      batch = { specs: [], timer: setTimeout(() => {}, 0) };
+      pendingBatches.set(batchKey, batch);
+    }
+    batch.specs.push({ specDirectory, resolve });
+    clearTimeout(batch.timer);
+    batch.timer = setTimeout(() => {
+      pendingBatches.delete(batchKey);
+      void runBatch(groupDirectory, cliArgs, batch.specs);
+    }, batchDelayMs);
+  });
+}
+
+async function runBatch(groupDirectory: string, cliArgs: string[], specs: PendingSpec[]): Promise<void> {
+  const out = await execJest(
+    groupDirectory,
+    cliArgs,
+    specs.map((spec) => spec.specDirectory),
+  );
+  for (const spec of specs) {
+    spec.resolve(extractSpecOutput(out, path.basename(spec.specDirectory)));
+  }
+}
+
+async function execJest(groupDirectory: string, cliArgs: string[], specDirectories: string[]): Promise<string> {
   try {
     const { stderr: specOutput } = await execFile(
       'node',
@@ -651,16 +710,41 @@ async function runSpec(
         '../../node_modules/jest/bin/jest.js',
         '--config',
         jestConfigName,
-        '--show-seed',
-        ...(opts.jestSeed !== undefined ? ['--seed', String(opts.jestSeed)] : []),
-        ...(opts.testTimeoutCLI !== undefined ? [`--testTimeout=${opts.testTimeoutCLI}`] : []),
+        ...cliArgs,
+        // Regex patterns restricting the run to the requested specs only
+        ...specDirectories.map((dir) => `${path.basename(dir)}/`),
       ],
-      { cwd: specDirectory, env: jestEnv },
+      { cwd: groupDirectory, env: jestEnv },
     );
     return specOutput;
   } catch (err) {
     return (err as any).stderr;
   }
+}
+
+// Extracts from the output of a batched run the parts related to a single spec: its own PASS/FAIL block (status,
+// per-test results and failure details are printed contiguously for each spec file) and the run-global footer
+// (holding the Seed among others). Other blocks, including the "Summary of all failing tests", are dropped.
+function extractSpecOutput(out: string, specDirectoryName: string): string {
+  const lines = out.split('\n');
+  const isBlockStart = (line: string) => /^\s*(PASS|FAIL)\s/.test(line);
+  const start = lines.findIndex((line) => isBlockStart(line) && line.includes(`${specDirectoryName}/`));
+  if (start === -1) {
+    return ''; // no output attributable to this spec: fail loudly rather than match against another spec
+  }
+  let end = start + 1;
+  while (
+    end < lines.length &&
+    !isBlockStart(lines[end]) &&
+    !/^(Summary of all failing tests|Seed:|Test Suites:)/.test(lines[end])
+  ) {
+    ++end;
+  }
+  const footerStart = lines.findIndex((line) => /^Seed:\s/.test(line));
+  return lines
+    .slice(start, end)
+    .concat(footerStart !== -1 ? lines.slice(footerStart) : [])
+    .join('\n');
 }
 
 function expectPass(out: string): void {
@@ -677,7 +761,9 @@ function expectTimeout(out: string, timeout: number): void {
   expect(out).toMatch(timeRegex);
   const time = timeRegex.exec(out)!;
   expect(Number(time[1])).toBeGreaterThanOrEqual(timeout);
-  expect(Number(time[1])).toBeLessThan(timeout * 2);
+  // The reported time also includes some fixed overhead (worker spawn, transforms...) that does not scale with
+  // the timeout: an additive margin stays below the closest other candidate timeout (they are 2000ms apart at least)
+  expect(Number(time[1])).toBeLessThan(timeout + 1900);
 }
 
 function expectAlignedSeeds(out: string, opts: { noAlignWithJest?: boolean } = {}): void {
