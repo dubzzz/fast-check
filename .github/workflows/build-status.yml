@@ -728,6 +728,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_fc.outputs.tag}}
+          # PAT so 'release: published' triggers announce-release-bluesky.yml
+          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -800,6 +802,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_ava.outputs.tag}}
+          # PAT so 'release: published' triggers announce-release-bluesky.yml
+          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -872,6 +876,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_jest.outputs.tag}}
+          # PAT so 'release: published' triggers announce-release-bluesky.yml
+          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -944,6 +950,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_packaged.outputs.tag}}
+          # PAT so 'release: published' triggers announce-release-bluesky.yml
+          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -1016,6 +1024,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_poisoning.outputs.tag}}
+          # PAT so 'release: published' triggers announce-release-bluesky.yml
+          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -1088,6 +1098,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_vitest.outputs.tag}}
+          # PAT so 'release: published' triggers announce-release-bluesky.yml
+          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -1160,6 +1172,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
         with:
           tag_name: ${{needs.check_publish_worker.outputs.tag}}
+          # PAT so 'release: published' triggers announce-release-bluesky.yml
+          token: ${{secrets.RELEASE_PAT || github.token}}
           draft: false
           append_body: true
           fail_on_unmatched_files: true
@@ -1170,46 +1184,3 @@ jobs:
           body: |
 
             [View attestation](${{steps.attest.outputs.attestation-url}}) • [Documentation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
-  announce_releases_bluesky:
-    name: Announce releases on Bluesky
-    needs:
-      - check_publish_fc
-      - publish_package_fc
-      - check_publish_ava
-      - publish_package_ava
-      - check_publish_jest
-      - publish_package_jest
-      - check_publish_packaged
-      - publish_package_packaged
-      - check_publish_poisoning
-      - publish_package_poisoning
-      - check_publish_vitest
-      - publish_package_vitest
-      - check_publish_worker
-      - publish_package_worker
-    if: >-
-      ${{ !cancelled() && (
-        needs.publish_package_fc.result == 'success' ||
-        needs.publish_package_ava.result == 'success' ||
-        needs.publish_package_jest.result == 'success' ||
-        needs.publish_package_packaged.result == 'success' ||
-        needs.publish_package_poisoning.result == 'success' ||
-        needs.publish_package_vitest.result == 'success' ||
-        needs.publish_package_worker.result == 'success'
-      ) }}
-    permissions:
-      contents: read
-    uses: ./.github/workflows/announce-release-bluesky.yml
-    with:
-      tags: >-
-        ${{needs.publish_package_fc.result == 'success' && needs.check_publish_fc.outputs.tag || ''}}
-        ${{needs.publish_package_ava.result == 'success' && needs.check_publish_ava.outputs.tag || ''}}
-        ${{needs.publish_package_jest.result == 'success' && needs.check_publish_jest.outputs.tag || ''}}
-        ${{needs.publish_package_packaged.result == 'success' && needs.check_publish_packaged.outputs.tag || ''}}
-        ${{needs.publish_package_poisoning.result == 'success' && needs.check_publish_poisoning.outputs.tag || ''}}
-        ${{needs.publish_package_vitest.result == 'success' && needs.check_publish_vitest.outputs.tag || ''}}
-        ${{needs.publish_package_worker.result == 'success' && needs.check_publish_worker.outputs.tag || ''}}
-    secrets:
-      BLUESKY_URL: ${{ secrets.BLUESKY_URL }}
-      BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
-      BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}

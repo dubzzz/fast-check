@@ -1,19 +1,11 @@
 name: Announce Release on Bluesky
 
 on:
-  workflow_call:
-    inputs:
-      tags:
-        description: 'Space-separated list of release tags to announce'
-        required: true
-        type: string
-    secrets:
-      BLUESKY_URL:
-        required: true
-      BLUESKY_IDENTIFIER:
-        required: true
-      BLUESKY_APP_PASSWORD:
-        required: true
+  # Only fires if the release was published with RELEASE_PAT (see the
+  # "Update GitHub Release" steps in build-status.yml): events created
+  # with the default GITHUB_TOKEN never trigger workflows.
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -35,13 +27,11 @@ jobs:
           package-manager-cache: false
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Post release announcements to Bluesky
+      - name: Post release announcement to Bluesky
         env:
           BLUESKY_URL: ${{ secrets.BLUESKY_URL }}
           BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          RELEASE_TAGS: ${{ inputs.tags }}
-        run: |
-          for tag in $RELEASE_TAGS; do
-            RELEASE_TAG="$tag" RELEASE_URL="https://github.com/$GITHUB_REPOSITORY/releases/tag/$tag" node .github/workflows/scripts/post-bluesky.mjs
-          done
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+        run: node .github/workflows/scripts/post-bluesky.mjs
