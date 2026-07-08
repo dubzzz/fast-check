@@ -73,8 +73,6 @@ jobs:
     name: 'Announce release'
     needs: create-release
     if: ${{ github.event.inputs.dry_run != 'true' }}
-    permissions:
-      contents: read
     uses: ./.github/workflows/announce-release-bluesky.yml
     with:
       tag: ${{ needs.create-release.outputs.tag }}
