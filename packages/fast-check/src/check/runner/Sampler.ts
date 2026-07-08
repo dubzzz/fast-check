@@ -72,7 +72,7 @@ function round2(n: number): string {
 /**
  * Statistics report returned by {@link statistics}
  *
- * @remarks Since 3.25.0
+ * @remarks Since 4.9.0
  * @public
  */
 export type StatisticsReport = {
@@ -133,13 +133,12 @@ function statistics<Ts>(
   }
   const data = Array.from(recorded.entries())
     .sort((a, b) => b[1] - a[1])
-    .map((entry) => [entry[0], `${round2((entry[1] * 100.0) / qParams.numRuns)}%`]);
-  const longestName = data.map((entry) => entry[0].length).reduce((p, c) => Math.max(p, c), 0);
-  const longestPercent = data.map((entry) => entry[1].length).reduce((p, c) => Math.max(p, c), 0);
+    .map((i) => [i[0], `${round2((i[1] * 100.0) / qParams.numRuns)}%`]);
+  const longestName = data.map((i) => i[0].length).reduce((p, c) => Math.max(p, c), 0);
+  const longestPercent = data.map((i) => i[1].length).reduce((p, c) => Math.max(p, c), 0);
   for (const item of data) {
     qParams.logger(`${item[0].padEnd(longestName, '.')}..${item[1].padStart(longestPercent, '.')}`);
   }
-
   return {
     classes: recorded,
     count: qParams.numRuns,
