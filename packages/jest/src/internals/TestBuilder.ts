@@ -73,7 +73,7 @@ function buildTestProp<Ts extends [any] | any[], TsParameters extends Ts = Ts>(
   jest: JestExtra,
   fc: FcExtra,
 ): TestPropTuple<Ts, TsParameters> | TestPropRecord<Ts, TsParameters> {
-  return (arbitraries, params?: FcParameters<TsParameters>) => {
+  return (arbitraries: ArbitraryTuple<Ts> | ArbitraryRecord<Ts>, params?: FcParameters<TsParameters>) => {
     if (Array.isArray(arbitraries)) {
       return (testName: string, prop: Prop<Ts>, timeout?: number) =>
         buildTestWithPropRunner(testFn, testName, arbitraries, prop, params, timeout, jest, fc);
