@@ -32,6 +32,7 @@ _Shrinkable `entityGraph` and few performance chips_
 - ([PR#7105](https://github.com/dubzzz/fast-check/pull/7105)) CI: Switch to actions/attest for attestations
 - ([PR#7117](https://github.com/dubzzz/fast-check/pull/7117)) CI: Use pnpm version in changelog script
 - ([PR#7120](https://github.com/dubzzz/fast-check/pull/7120)) CI: Allow unclean tree in changelog generation
+- ([PR#7125](https://github.com/dubzzz/fast-check/pull/7125)) CI: Stage publish using `pnpm` in publish jobs
 - ([PR#7065](https://github.com/dubzzz/fast-check/pull/7065)) Clean: Delete skills directory
 - ([PR#6983](https://github.com/dubzzz/fast-check/pull/6983)) Doc: Tweak PR Template to hint AI agents into revealing themselves
 - ([PR#7092](https://github.com/dubzzz/fast-check/pull/7092)) Doc: Add back skills directory
