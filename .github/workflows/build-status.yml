@@ -698,9 +698,10 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Install npm with stage publish support
-        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
-        run: cd .. && npm install -g npm@latest
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -714,7 +715,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/fast-check/$TGZ_NAME"
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/fast-check/$TGZ_NAME"
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
         id: attest
         with:
@@ -769,9 +770,10 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Install npm with stage publish support
-        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
-        run: cd .. && npm install -g npm@latest
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -785,7 +787,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/ava/$TGZ_NAME"
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/ava/$TGZ_NAME"
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
         id: attest
         with:
@@ -840,9 +842,10 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Install npm with stage publish support
-        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
-        run: cd .. && npm install -g npm@latest
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -856,7 +859,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/jest/$TGZ_NAME"
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/jest/$TGZ_NAME"
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
         id: attest
         with:
@@ -911,9 +914,10 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Install npm with stage publish support
-        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
-        run: cd .. && npm install -g npm@latest
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -927,7 +931,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/packaged/$TGZ_NAME"
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/packaged/$TGZ_NAME"
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
         id: attest
         with:
@@ -982,9 +986,10 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Install npm with stage publish support
-        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
-        run: cd .. && npm install -g npm@latest
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -998,7 +1003,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/poisoning/$TGZ_NAME"
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/poisoning/$TGZ_NAME"
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
         id: attest
         with:
@@ -1053,9 +1058,10 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Install npm with stage publish support
-        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
-        run: cd .. && npm install -g npm@latest
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -1069,7 +1075,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/vitest/$TGZ_NAME"
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/vitest/$TGZ_NAME"
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
         id: attest
         with:
@@ -1124,9 +1130,10 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           check-latest: true
-      - name: Install npm with stage publish support
-        # Run outside the repo so the project's devEngines pin (pnpm) does not block npm
-        run: cd .. && npm install -g npm@latest
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: latest
       - name: Download production packages
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -1140,7 +1147,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           PUBLISH_TAG: ${{github.ref == 'refs/heads/main' && 'latest' || startsWith(github.ref, 'refs/heads/next-') && 'next' || 'legacy'}}
-        run: cd .. && npm stage publish --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/worker/$TGZ_NAME"
+        run: cd .. && pnpm stage publish --no-git-checks --access public --tag "$PUBLISH_TAG" "$GITHUB_WORKSPACE/packages/worker/$TGZ_NAME"
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
         id: attest
         with:
