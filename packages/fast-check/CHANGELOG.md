@@ -1,6 +1,6 @@
 # 4.9.0
 
-_TODO Description_
+_Shrinkable `entityGraph` and few performance chips_
 [[Code](https://github.com/dubzzz/fast-check/tree/v4.9.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.8.0...v4.9.0)]
 
 ## Features
