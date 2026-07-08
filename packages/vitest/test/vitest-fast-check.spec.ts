@@ -3,7 +3,7 @@ import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import type { afterEach, beforeEach } from 'vitest';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 const execFile = promisify(_execFile);
 
@@ -24,6 +24,9 @@ const vitestConfigName = `vitest.config.mjs`;
 
 type RunnerType = 'test' | 'it';
 
+// Batches (see runSpec) can only aggregate specs of tests running concurrently: the default cap of 5 would limit them to 5 specs
+vi.setConfig({ maxConcurrency: 200 });
+
 beforeAll(async () => {
   await fs.mkdir(generatedTestsDirectory, { recursive: true });
 });
@@ -36,7 +39,7 @@ type DescribeOptions = {
   runnerName: RunnerType;
 };
 
-describe.each<DescribeOptions>([
+describe.concurrent.each<DescribeOptions>([
   { specName: 'test', runnerName: 'test' },
   { specName: 'it', runnerName: 'it' },
 ])('$specName', ({ runnerName }) => {
@@ -324,6 +327,7 @@ describe.each<DescribeOptions>([
           return true;
         });
         afterAllVi(() => {
+          fc.resetConfigureGlobal(); // batched runs (see runSpec) do not isolate specs: avoid leaking the config to others
           if (numExecutions !== requestedNumExecutions) {
             throw new Error('Breach on numRuns, got: ' + numExecutions);
           }
@@ -519,20 +523,25 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       fileContentString.substring(fileContentString.indexOf('{') + 1, fileContentString.lastIndexOf('}')),
     );
 
-  // Prepare jest config itself
-  const vitestConfigPath = path.join(specDirectory, vitestConfigName);
-
-  // Write the files
+  // Write the files (the config being common to all the specs, it is written once at the root of the specs)
   await Promise.all([
     fs.writeFile(specFilePath, specContent),
-    fs.writeFile(
-      vitestConfigPath,
+    writeFileOnce(
+      path.join(generatedTestsDirectory, vitestConfigName),
       `import { defineConfig } from 'vite';\n` +
-        `export default defineConfig({ test: { include: ['${specFileName}'], }, });`,
+        `export default defineConfig({ test: { include: ['*/${specFileName}'], }, });`,
     ),
   ]);
 
   return specDirectory;
+}
+
+function writeFileOnce(filePath: string, content: string): Promise<void> {
+  return fs.writeFile(filePath, content, { flag: 'wx' }).catch((err) => {
+    if ((err as NodeJS.ErrnoException).code !== 'EEXIST') {
+      throw err;
+    }
+  });
 }
 
 // Environment with AI agent env vars removed so that vitest uses its default reporter
@@ -545,23 +554,78 @@ const vitestEnv = Object.fromEntries(
   ),
 );
 
+// Booting one Vitest process per spec is by far the main cost of this file. Specs requested with the same CLI
+// options can share a single Vitest process: runSpec only fires the process after a short delay so that all the
+// concurrently requested specs join the same run, each caller receiving the part of the output related to its
+// own spec.
+type PendingSpec = { specDirectory: string; resolve: (out: string) => void };
+const pendingBatches = new Map<string, { specs: PendingSpec[]; timer: ReturnType<typeof setTimeout> }>();
+const batchDelayMs = 250;
+
 async function runSpec(specDirectory: string, options?: { allowOnly?: boolean }): Promise<string> {
-  try {
-    const args = [
-      '../../node_modules/vitest/vitest.mjs',
-      '--config',
-      vitestConfigName,
-      '--run', // no watch
-      '--no-color',
-    ];
-    if (options?.allowOnly) {
-      args.push('--allowOnly');
+  const cliArgs = [
+    '--run', // no watch
+    '--no-color',
+    '--no-isolate', // re-importing fast-check in a fresh process for each spec would be the main cost of the run
+    ...(options?.allowOnly ? ['--allowOnly'] : []),
+  ];
+  const batchKey = JSON.stringify(cliArgs);
+  return new Promise((resolve) => {
+    let batch = pendingBatches.get(batchKey);
+    if (batch === undefined) {
+      batch = { specs: [], timer: setTimeout(() => {}, 0) };
+      pendingBatches.set(batchKey, batch);
     }
-    const { stdout: specOutput } = await execFile('node', args, { cwd: specDirectory, env: vitestEnv });
-    return specOutput;
+    batch.specs.push({ specDirectory, resolve });
+    clearTimeout(batch.timer);
+    batch.timer = setTimeout(() => {
+      pendingBatches.delete(batchKey);
+      void runBatch(cliArgs, batch.specs);
+    }, batchDelayMs);
+  });
+}
+
+async function runBatch(cliArgs: string[], specs: PendingSpec[]): Promise<void> {
+  let out: string;
+  try {
+    const { stdout, stderr } = await execFile(
+      'node',
+      [
+        '../node_modules/vitest/vitest.mjs',
+        '--config',
+        vitestConfigName,
+        ...cliArgs,
+        // Filters restricting the run to the requested specs only
+        ...specs.map((spec) => `${path.basename(spec.specDirectory)}/`),
+      ],
+      { cwd: generatedTestsDirectory, env: vitestEnv },
+    );
+    out = `${stdout}\n${stderr}`;
   } catch (err) {
-    return (err as any).stderr;
+    out = `${(err as any).stdout}\n${(err as any).stderr}`;
   }
+  for (const spec of specs) {
+    spec.resolve(extractSpecOutput(out, path.basename(spec.specDirectory)));
+  }
+}
+
+// Extracts from the output of a batched run the parts related to a single spec: the per-file reporter lines
+// mention the file explicitly, while the detailed failure blocks all start with a FAIL header naming their file.
+// The directory of the spec is finally dropped from the paths so that assertions can refer to the spec file name.
+function extractSpecOutput(out: string, specDirectoryName: string): string {
+  const kept: string[] = [];
+  let insideOwnFailureBlock = false;
+  for (const line of out.split('\n')) {
+    if (/(^|\s)FAIL\s/.test(line)) {
+      insideOwnFailureBlock = line.includes(`${specDirectoryName}/`);
+    } else if (/^\s*(Test Files|Tests|Errors)\s/.test(line)) {
+      insideOwnFailureBlock = false; // reached the run-global summary
+    }
+    if (insideOwnFailureBlock || line.includes(`${specDirectoryName}/`)) {
+      kept.push(line);
+    }
+  }
+  return kept.join('\n').split(`${specDirectoryName}/`).join('');
 }
 
 function expectPass(out: string): void {
