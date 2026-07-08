@@ -30,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.changelog.outputs.tag }}
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -67,3 +69,14 @@ jobs:
           git push origin "refs/tags/$TAG"
         env:
           TAG: ${{ steps.changelog.outputs.tag }}
+  announce-release:
+    name: 'Announce release'
+    needs: create-release
+    if: ${{ github.event.inputs.dry_run != 'true' }}
+    uses: ./.github/workflows/announce-release-bluesky.yml
+    with:
+      tag: ${{ needs.create-release.outputs.tag }}
+    secrets:
+      BLUESKY_URL: ${{ secrets.BLUESKY_URL }}
+      BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
+      BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
