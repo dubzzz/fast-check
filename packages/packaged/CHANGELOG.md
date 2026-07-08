@@ -1,6 +1,6 @@
 # 0.7.1
 
-_TODO Description_
+_Support `npm-packlist` 11_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.7.0...packaged%2Fv0.7.1)]
 
 ## Features
