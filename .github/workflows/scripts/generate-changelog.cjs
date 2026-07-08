@@ -272,7 +272,7 @@ async function run() {
     await execFile('git', ['add', changelogPath]);
 
     // Update the package.json
-    await execFile('npm', ['--no-git-tag-version', '--workspaces-update=false', 'version', releaseKind], {
+    await execFile('pnpm', ['version', releaseKind, '--no-git-tag-version'], {
       cwd: packageLocation,
     });
     const packageJsonPath = path.join(packageLocation, 'package.json');
