@@ -3,13 +3,9 @@
 _Support `npm-packlist` 11_
 [[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.7.1)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.7.0...packaged%2Fv0.7.1)]
 
-## Features
-
-
-
 ## Fixes
 
-
+- ([PR#7001](https://github.com/dubzzz/fast-check/pull/7001)) Dependency: Update dependency npm-packlist to v11
 
 # 0.7.0
 
