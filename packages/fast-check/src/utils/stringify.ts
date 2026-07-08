@@ -125,7 +125,7 @@ function stringifyNumber(numValue: number) {
 /** @internal */
 function isSparseArray(arr: unknown[]): boolean {
   let previousNumberedIndex = -1;
-  // eslint-disable-next-line @typescript-eslint/no-for-in-array
+  // oxlint-disable-next-line typescript/no-for-in-array
   for (const index in arr) {
     const numberedIndex = Number(index);
     if (numberedIndex !== previousNumberedIndex + 1) return true; // we've got a hole
@@ -171,7 +171,7 @@ export function stringifyInternal<Ts>(
         const assignments: string[] = [];
         // Discarded: map then join will still show holes
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
-        // eslint-disable-next-line @typescript-eslint/no-for-in-array
+        // oxlint-disable-next-line typescript/no-for-in-array
         for (const index in arr) {
           if (!safeNumberIsNaN(Number(index)))
             safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
@@ -193,7 +193,7 @@ export function stringifyInternal<Ts>(
     case '[object BigInt]':
       return `${value}n`;
     case '[object Boolean]': {
-      // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+      // oxlint-disable-next-line typescript/no-wrapper-object-types
       const unboxedToString = (value as unknown as boolean | Boolean) == true ? 'true' : 'false'; // we rely on implicit unboxing
       return typeof value === 'boolean' ? unboxedToString : `new Boolean(${unboxedToString})`;
     }
@@ -291,7 +291,15 @@ export function stringifyInternal<Ts>(
     case '[object BigUint64Array]': {
       if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(value)) {
         // Warning: value.values() may crash at runtime if Buffer got poisoned
-        return `Buffer.from(${stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)})`;
+        return `Buffer.from(${
+          // This cast is necessary because `detached` only exists in ES2024,
+          // but we target ES2020.
+          (value.buffer as { detached?: boolean }).detached
+            ? // Don't try to access the buffer contents if its underlying
+              // `ArrayBuffer` is detached because it will throw.
+              '/*detached ArrayBuffer*/'
+            : stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)
+        })`;
       }
       const valuePrototype = safeObjectGetPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
@@ -308,6 +316,14 @@ export function stringifyInternal<Ts>(
           | Float64Array
           | BigInt64Array
           | BigUint64Array;
+        // This cast is necessary because `detached` only exists in ES2024,
+        // but we target ES2020.
+        if ((typedArray.buffer as { detached?: boolean }).detached) {
+          // Don't try to access the buffer contents if its underlying
+          // `ArrayBuffer` is detached because it will throw.
+          return `${className}.from(/*detached ArrayBuffer*/)`;
+        }
+
         // Warning: typedArray.values() may crash at runtime if type got poisoned
         const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
         return `${className}.from(${stringifyInternal(
@@ -381,7 +397,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
   const getAsyncContent = function getAsyncContent(data: Promise<unknown> | WithAsyncToStringMethod): AsyncContent {
     const cacheKey = data;
     if (cache.has(cacheKey)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion
       return cache.get(cacheKey)!;
     }
 
@@ -390,7 +406,7 @@ export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> 
       asyncToStringMethod in data
         ? Promise.resolve().then(() => (data as WithAsyncToStringMethod)[asyncToStringMethod]())
         : (data as Promise<unknown>);
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // oxlint-disable-next-line no-empty-function
     p.catch(() => {}); // catching potential errors of p to avoid "Unhandled promise rejection"
 
     pendingPromisesForCache.push(

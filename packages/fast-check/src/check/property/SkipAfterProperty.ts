@@ -15,7 +15,7 @@ function interruptAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clear
   });
   return {
     // `timeoutHandle` will always be initialised at this point: body of `new Promise` has already been executed
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     clear: () => clearTimeoutSafe(timeoutHandle!),
     promise,
   };

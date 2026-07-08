@@ -5,8 +5,8 @@
 Bring the power of property based testing framework `fast-check` into Vitest.
 `@fast-check/vitest` simplifies the integration of `fast-check` into Vitest.
 
-<a href="https://badge.fury.io/js/@fast-check%2Fvitest"><img src="https://badge.fury.io/js/@fast-check%2Fvitest.svg" alt="npm version" /></a>
-<a href="https://www.npmjs.com/package/@fast-check/vitest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fvitest" alt="monthly downloads" /></a>
+<a href="https://npmx.dev/package/@fast-check/vitest"><img src="https://badge.fury.io/js/@fast-check%2Fvitest.svg" alt="npm version" /></a>
+<a href="https://npmx.dev/package/@fast-check/vitest"><img src="https://img.shields.io/npm/dm/@fast-check%2Fvitest" alt="monthly downloads" /></a>
 <a href="https://github.com/dubzzz/fast-check/blob/main/packages/jest/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fvitest.svg" alt="License" /></a>
 
 ---
@@ -84,6 +84,10 @@ test.prop({ a: fc.string(), b: fc.string(), c: fc.string() })('should detect the
 
 Please note that the properties accepted by `@fast-check/vitest` as input can either be synchronous or asynchronous (even just `PromiseLike` instances).
 
+### Seamless integration with Vitest's `beforeEach` / `afterEach`
+
+Vitest's `beforeEach` and `afterEach` hooks are natively integrated into predicates. They are called respectively before and after each execution of the predicate. If a predicate runs _n_ times, `beforeEach` will be called _n_ times before it and `afterEach` _n_ times after it. The only caveat is that cleanup functions returned by `beforeEach` on the first predicate execution are deferred until the end of the test, as they are handled by vitest's own teardown mechanism. All other cleanups run between predicate executions as expected.
+
 ### Advanced
 
 If you want to forward custom parameters to fast-check, `test.prop` accepts an optional `fc.Parameters` ([more](https://github.com/dubzzz/fast-check/blob/main/documentation/1-Guides/Runners.md#runners)).
@@ -112,17 +116,20 @@ describe('with it', () => {
 
 | @fast-check/vitest | vitest                                                              | fast-check                       | Node                   |
 | ------------------ | ------------------------------------------------------------------- | -------------------------------- | ---------------------- |
-| **0.2**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4<sup>(1)</sup>                            | ^3.0.0 \|\| ^4.0.0               | ≥18<sup>(2)</sup>      |
-| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(3)</sup> \|\| ^3<sup>(4)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(5)</sup> | ≥14.16.0<sup>(2)</sup> |
-| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                           | ≥14.16.0<sup>(2)</sup> |
+| **0.4**            | ^4.1.0                                                              | ^3.0.0 \|\| ^4.0.0               | ≥20.19.0<sup>(2)</sup> |
+| **0.3**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4                                          | ^3.0.0 \|\| ^4.0.0               | ≥20.19.0<sup>(2)</sup> |
+| **0.2**            | ^1 \|\| ^2 \|\| ^3 \|\| ^4<sup>(1)</sup>                            | ^3.0.0 \|\| ^4.0.0               | ≥18<sup>(3)</sup>      |
+| **0.1**            | >=0.28.1 <1.0.0 \|\| ^1 \|\| ^2<sup>(4)</sup> \|\| ^3<sup>(5)</sup> | ^3.0.0 \|\| ^4.0.0<sup>(6)</sup> | ≥14.16.0<sup>(3)</sup> |
+| **0.0**            | >=0.28.1 <1.0.0 \|\| ^1                                             | ^3.0.0                           | ≥14.16.0<sup>(3)</sup> |
 
 <details>
 <summary>More details...</summary>
 
 1. Official support for version 4.x of vitest starts at 0.2.3.
-2. Same support as vitest.
-3. Official support for version 2.x of vitest starts at 0.1.2.
-4. Official support for version 3.x of vitest starts at 0.1.5.
-5. Official support for version 4.x of fast-check starts at 0.1.6.
+2. Requires support for `require(esm)`.
+3. Same support as vitest.
+4. Official support for version 2.x of vitest starts at 0.1.2.
+5. Official support for version 3.x of vitest starts at 0.1.5.
+6. Official support for version 4.x of fast-check starts at 0.1.6.
 
 </details>

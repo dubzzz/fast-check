@@ -11,7 +11,7 @@ describe('buildValuesAndSeparateKeysToObjectMapper', () => {
     const magicNoValue = Symbol('no-value');
     const values: any[] = [];
     const withNullPrototype = false;
-    const definition: Parameters<typeof mapper>[0] = [values, withNullPrototype];
+    const definition: Parameters<typeof mapper>[0] = [...values, withNullPrototype];
 
     // Act
     const mapper = buildValuesAndSeparateKeysToObjectMapper<any, typeof magicNoValue>(keys, magicNoValue);
@@ -27,7 +27,7 @@ describe('buildValuesAndSeparateKeysToObjectMapper', () => {
     const magicNoValue = Symbol('no-value');
     const values: any[] = [];
     const withNullPrototype = true;
-    const definition: Parameters<typeof mapper>[0] = [values, withNullPrototype];
+    const definition: Parameters<typeof mapper>[0] = [...values, withNullPrototype];
 
     // Act
     const mapper = buildValuesAndSeparateKeysToObjectMapper<any, typeof magicNoValue>(keys, magicNoValue);
@@ -44,7 +44,7 @@ describe('buildValuesAndSeparateKeysToObjectMapper', () => {
       const keys: (string | symbol)[] = ['a', 'b', 'c', 'd'];
       const magicNoValue = Symbol('no-value');
       const values: any[] = [undefined, magicNoValue, null, 0];
-      const definition: Parameters<typeof mapper>[0] = [values, withNullPrototype];
+      const definition: Parameters<typeof mapper>[0] = [...values, withNullPrototype];
 
       // Act
       const mapper = buildValuesAndSeparateKeysToObjectMapper<any, typeof magicNoValue>(keys, magicNoValue);
@@ -66,7 +66,7 @@ describe('buildValuesAndSeparateKeysToObjectMapper', () => {
       const keys: (string | symbol)[] = ['__proto__'];
       const magicNoValue = Symbol('no-value');
       const values: any[] = [0];
-      const definition: Parameters<typeof mapper>[0] = [values, withNullPrototype];
+      const definition: Parameters<typeof mapper>[0] = [...values, withNullPrototype];
 
       // Act
       const mapper = buildValuesAndSeparateKeysToObjectMapper<any, typeof magicNoValue>(keys, magicNoValue);
@@ -93,7 +93,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([[], false]);
+    expect(values).toEqual([false]);
   });
 
   it('should properly unmap basic instances of Object without keys nor prototype', () => {
@@ -107,7 +107,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([[], true]);
+    expect(values).toEqual([true]);
   });
 
   it('should properly unmap basic instances of Object with multiple keys and no missing', () => {
@@ -121,7 +121,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([[undefined, 'hello', 'e'], false]);
+    expect(values).toEqual([undefined, 'hello', 'e', false]);
   });
 
   it('should properly unmap instances of Object with known symbols as keys', () => {
@@ -137,7 +137,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([['hello', undefined, 'e'], false]);
+    expect(values).toEqual(['hello', undefined, 'e', false]);
   });
 
   it('should properly unmap instances of Object with missing keys', () => {
@@ -154,7 +154,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([['hello', magicNoValue, undefined, 'e', magicNoValue, magicNoValue], false]);
+    expect(values).toEqual(['hello', magicNoValue, undefined, 'e', magicNoValue, magicNoValue, false]);
   });
 
   it('should properly unmap instances of Object with "__proto__" as key when set to a value', () => {
@@ -168,7 +168,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([[magicNoValue, 'e', magicNoValue], false]);
+    expect(values).toEqual([magicNoValue, 'e', magicNoValue, false]);
   });
 
   it('should properly unmap instances of Object with "__proto__" as key when set to null', () => {
@@ -182,7 +182,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([[magicNoValue, null, magicNoValue], false]);
+    expect(values).toEqual([magicNoValue, null, magicNoValue, false]);
   });
 
   it('should properly unmap instances of Object with "__proto__" as key when unset', () => {
@@ -196,7 +196,7 @@ describe('buildValuesAndSeparateKeysToObjectUnmapper', () => {
     const values = unmapper(obj);
 
     // Assert
-    expect(values).toEqual([[magicNoValue, magicNoValue, magicNoValue], false]);
+    expect(values).toEqual([magicNoValue, magicNoValue, magicNoValue, false]);
   });
 
   it.each`

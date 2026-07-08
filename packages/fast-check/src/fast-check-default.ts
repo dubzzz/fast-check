@@ -37,6 +37,7 @@ import { context } from './arbitrary/context.js';
 import type { DateConstraints } from './arbitrary/date.js';
 import { date } from './arbitrary/date.js';
 import type { CloneValue } from './arbitrary/clone.js';
+import { chainUntil } from './arbitrary/chainUntil.js';
 import { clone } from './arbitrary/clone.js';
 import type { DictionaryConstraints } from './arbitrary/dictionary.js';
 import { dictionary } from './arbitrary/dictionary.js';
@@ -70,6 +71,7 @@ import type {
 import { letrec } from './arbitrary/letrec.js';
 import type {
   EntityGraphArbitraries,
+  EntityGraphConstraints,
   EntityGraphContraints,
   EntityGraphRelations,
   EntityGraphValue,
@@ -206,26 +208,27 @@ import { stringMatching } from './arbitrary/stringMatching.js';
 import { noShrink } from './arbitrary/noShrink.js';
 import { noBias } from './arbitrary/noBias.js';
 import { limitShrink } from './arbitrary/limitShrink.js';
+import type { RandomGenerator } from './random/generator/RandomGenerator.js';
 
-// Explicit cast into string to avoid to have __type: "__PACKAGE_TYPE__"
+// Explicit cast into string to avoid to have __type: "process.env.__PACKAGE_TYPE__"
 /**
  * Type of module (commonjs or module)
  * @remarks Since 1.22.0
  * @public
  */
-const __type = '__PACKAGE_TYPE__' as string;
+const __type = process.env.__PACKAGE_TYPE__ as string;
 /**
- * Version of fast-check used by your project (eg.: __PACKAGE_VERSION__)
+ * Version of fast-check used by your project (eg.: process.env.__PACKAGE_VERSION__)
  * @remarks Since 1.22.0
  * @public
  */
-const __version = '__PACKAGE_VERSION__' as string;
+const __version = process.env.__PACKAGE_VERSION__ as string;
 /**
- * Commit hash of the current code (eg.: __COMMIT_HASH__)
+ * Commit hash of the current code (eg.: process.env.__COMMIT_HASH__)
  * @remarks Since 2.7.0
  * @public
  */
-const __commitHash = '__COMMIT_HASH__' as string;
+const __commitHash = process.env.__COMMIT_HASH__ as string;
 
 // boolean
 // floating point types
@@ -265,6 +268,7 @@ export type {
   DomainConstraints,
   DoubleConstraints,
   EmailAddressConstraints,
+  EntityGraphConstraints,
   EntityGraphContraints,
   FalsyContraints,
   Float32ArrayConstraints,
@@ -327,6 +331,7 @@ export type {
   GlobalPropertyHookFunction,
   Parameters,
   RandomType,
+  RandomGenerator,
   ExecutionTree,
   RunDetails,
   RunDetailsFailureProperty,
@@ -369,6 +374,7 @@ export {
   mapToConstant,
   option,
   oneof,
+  chainUntil,
   clone,
   noBias,
   noShrink,

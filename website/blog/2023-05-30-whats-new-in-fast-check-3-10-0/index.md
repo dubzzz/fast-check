@@ -1,14 +1,14 @@
 ---
 title: What's new in fast-check 3.10.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, stringMatching, regex, strings]
 ---
 
 This release comes with a new arbitrary called `stringMatching`. This arbitrary is responsible to generate strings matching the provided regex. It should ease the creation of new arbitraries dealing with strings by providing an easy way to build them.
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## String from regex
 

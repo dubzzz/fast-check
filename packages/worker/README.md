@@ -4,8 +4,8 @@
 
 Provide built-ins to run predicates directly within dedicated workers
 
-<a href="https://badge.fury.io/js/@fast-check%2Fworker"><img src="https://badge.fury.io/js/@fast-check%2Fworker.svg" alt="npm version" /></a>
-<a href="https://www.npmjs.com/package/@fast-check/worker"><img src="https://img.shields.io/npm/dm/@fast-check%2Fworker" alt="monthly downloads" /></a>
+<a href="https://npmx.dev/package/@fast-check/worker"><img src="https://badge.fury.io/js/@fast-check%2Fworker.svg" alt="npm version" /></a>
+<a href="https://npmx.dev/package/@fast-check/worker"><img src="https://img.shields.io/npm/dm/@fast-check%2Fworker" alt="monthly downloads" /></a>
 <a href="https://github.com/dubzzz/fast-check/blob/main/packages/worker/LICENSE"><img src="https://img.shields.io/npm/l/@fast-check%2Fworker.svg" alt="License" /></a>
 
 ---

@@ -6,7 +6,6 @@ const allProjects = [
   // All packages
   ...readdirSync(join(import.meta.dirname, 'packages'), { withFileTypes: true })
     .filter((file) => file.isDirectory())
-    .filter((dir) => dir.name !== 'expect-type')
     .map((dir) => join(dir.parentPath, dir.name)),
   // Other directories
   join(import.meta.dirname, 'examples'),

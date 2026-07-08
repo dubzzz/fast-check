@@ -37,7 +37,7 @@ export function buildTestWithPropRunner<Ts extends [any] | any[], TsParameters e
     // Copy global configuration of interruptAfterTimeLimit as local one
     customParams.interruptAfterTimeLimit = fc.readConfigureGlobal().interruptAfterTimeLimit;
   }
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  // oxlint-disable-next-line no-use-before-define
   const jestTimeout = timeout !== undefined ? timeout : extractJestGlobalTimeout();
   if (jestTimeout !== undefined) {
     if (customParams.interruptAfterTimeLimit === undefined) {

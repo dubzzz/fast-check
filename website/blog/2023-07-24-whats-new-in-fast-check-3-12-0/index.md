@@ -1,14 +1,14 @@
 ---
 title: What's new in fast-check 3.12.0?
 authors: [dubzzz]
-tags: [what's new, performance, arbitrary]
+tags: [release, performance, shrinking]
 ---
 
 This release introduces performance optimizations for `float`, `double` and `ulid`, along with the ability to define ranges with excluded boundaries for `float` and `double`.
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Performance optimizations
 

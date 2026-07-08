@@ -5,7 +5,8 @@ import { Property } from '../property/Property.generic.js';
 import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
-import { QualifiedParameters } from './configuration/QualifiedParameters.js';
+import { read } from './configuration/QualifiedParameters.js';
+import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { Map, safeMapGet, safeMapSet } from '../../utils/globals.js';
@@ -30,7 +31,7 @@ function streamSample<Ts>(
     typeof params === 'number'
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
+  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
   const nextProperty = toProperty(generator, qParams);
   const shrink = nextProperty.shrink.bind(nextProperty);
   const tossedValues =
@@ -120,7 +121,7 @@ function statistics<Ts>(
     typeof params === 'number'
       ? { ...(readConfigureGlobal() as Parameters<Ts>), numRuns: params }
       : { ...(readConfigureGlobal() as Parameters<Ts>), ...params };
-  const qParams: QualifiedParameters<Ts> = QualifiedParameters.read<Ts>(extendedParams);
+  const qParams: QualifiedParameters<Ts> = read<Ts>(extendedParams);
   const recorded = new Map<string, number>();
   for (const g of streamSample(generator, params)) {
     const out = classify(g);

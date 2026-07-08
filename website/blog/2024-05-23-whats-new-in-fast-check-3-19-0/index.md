@@ -1,14 +1,14 @@
 ---
 title: What's new in fast-check 3.19.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, unicode, strings, internationalization]
 ---
 
 This release introduces new opt-in options for objects arbitraries such as `anything`, `object`, `json` and `jsonValue`. These options provide more elegant and shorter ways to produce objects with non-ASCII keys and values.
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## The new `withUnicodeString` and `noUnicodeString` options
 

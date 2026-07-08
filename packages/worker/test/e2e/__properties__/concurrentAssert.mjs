@@ -1,23 +1,21 @@
 // @ts-check
-import { pathToFileURL, fileURLToPath } from 'node:url';
-import path, { dirname } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import path from 'node:path';
 import fc from 'fast-check';
 import { propertyFor } from '@fast-check/worker';
 import { writeFileSync, existsSync, rmSync } from 'node:fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const property = propertyFor(pathToFileURL(__filename));
+const property = propertyFor(pathToFileURL(import.meta.filename));
 
-export const concurrentLogFile = path.join(__dirname, `concurrent-log-file`);
+export const concurrentLogFile = path.join(import.meta.dirname, `concurrent-log-file`);
 
 let index = 0;
 function nextFilenameQuestion() {
-  return path.join(__dirname, `concurrent-question-${++index}`);
+  return path.join(import.meta.dirname, `concurrent-question-${++index}`);
 }
 let index2 = 0;
 function nextFilenameAnswer() {
-  return path.join(__dirname, `concurrent-answer-${++index2}`);
+  return path.join(import.meta.dirname, `concurrent-answer-${++index2}`);
 }
 
 /**
@@ -40,7 +38,7 @@ export const readerAssert = property(
     // Wait answer
     const filenameAnswer = nextFilenameAnswer();
     appendLog('reader', `Wait answer on ${filenameAnswer}`);
-    // eslint-disable-next-line no-empty
+    // oxlint-disable-next-line no-empty
     while (!existsSync(filenameAnswer)) {}
     appendLog('reader', `Answer found for ${filenameAnswer}`);
     rmSync(filenameAnswer);
@@ -54,7 +52,7 @@ export const writerAssert = property(
     // Wait question
     const filenameQuestion = nextFilenameQuestion();
     appendLog('writer', `Wait question on ${filenameQuestion}`);
-    // eslint-disable-next-line no-empty
+    // oxlint-disable-next-line no-empty
     while (!existsSync(filenameQuestion)) {}
     appendLog('writer', `Question found for ${filenameQuestion}`);
     rmSync(filenameQuestion);

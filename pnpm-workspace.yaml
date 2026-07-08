@@ -3,21 +3,24 @@ packages:
   - packages/*
   - website
 
-ignoredBuiltDependencies:
-  - '@swc/core'
-  - core-js
-  - core-js-pure
-  - es5-ext
-  - esbuild
-  - unrs-resolver
+overrides:
+  tmp@<0.2.4: ~0.2.4
+  serialize-javascript@<7.0.5: ~7.0.5
+  follow-redirects@<1.16.0: ~1.16.0
+  lodash-es@<4.18.0: ~4.18.0
+  dompurify@<3.4.0: ~3.4.0
+
+allowBuilds:
+  '@swc/core': false
+  core-js: false
+  core-js-pure: false
+  es5-ext: false
+  esbuild: false
+  unrs-resolver: false
 
 trustPolicy: no-downgrade
-trustPolicyExclude:
-  - '@octokit/endpoint@9.0.6'
-  - '@octokit/plugin-paginate-rest@9.2.2'
-  - '@swc/core@1.13.3'
-  - detect-port@1.6.1
-  - rxjs@7.8.2
-  - semver@6.3.1
-  - undici@5.29.0 || 6.21.3
-  - undici-types@6.21.0
+trustPolicyIgnoreAfter: 20160
+
+blockExoticSubdeps: true
+
+linkWorkspacePackages: deep

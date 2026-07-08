@@ -1,14 +1,14 @@
 ---
 title: What's new in fast-check 3.22.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary]
+tags: [release, strings, unicode, internationalization]
 ---
 
 This release extends `string` capabilities to generate not only printable ASCII characters but also a wider range of values, finely definable by the user. It also includes several deprecations.
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Polyglot `string`
 

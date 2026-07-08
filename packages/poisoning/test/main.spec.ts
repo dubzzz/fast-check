@@ -63,7 +63,7 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if global value altered and be able to revert the change', () => {
     // Arrange
     const F = Function;
-    // eslint-disable-next-line no-global-assign
+    // oxlint-disable-next-line no-global-assign
     Function = vi.fn() as any;
 
     // Act / Assert
@@ -72,7 +72,7 @@ describe('assertNoPoisoning', () => {
       restoreGlobals(options);
       expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
-      // eslint-disable-next-line no-global-assign
+      // oxlint-disable-next-line no-global-assign
       Function = F;
     }
   });
@@ -80,7 +80,7 @@ describe('assertNoPoisoning', () => {
   it('should throw an Error if globalThis gets changed into another type and be able to revert the change', () => {
     // Arrange
     const G = globalThis;
-    // eslint-disable-next-line no-global-assign
+    // oxlint-disable-next-line no-global-assign
     (globalThis as any) = 1;
 
     // Act / Assert
@@ -91,12 +91,12 @@ describe('assertNoPoisoning', () => {
       error = err;
     }
     if (error === undefined) {
-      // eslint-disable-next-line no-global-assign
+      // oxlint-disable-next-line no-global-assign
       (globalThis as any) = G;
       throw new Error('No error has been thrown');
     }
     if (!/Poisoning detected/.test((error as Error).message)) {
-      // eslint-disable-next-line no-global-assign
+      // oxlint-disable-next-line no-global-assign
       (globalThis as any) = G;
       throw new Error(`Received error does not fulfill expectations, got: ${error}`);
     }
@@ -104,7 +104,7 @@ describe('assertNoPoisoning', () => {
       restoreGlobals(options);
       expect(() => assertNoPoisoning(options)).not.toThrow();
     } finally {
-      // eslint-disable-next-line no-global-assign
+      // oxlint-disable-next-line no-global-assign
       (globalThis as any) = G;
     }
   });

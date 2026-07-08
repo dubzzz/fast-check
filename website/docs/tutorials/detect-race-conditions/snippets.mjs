@@ -102,12 +102,13 @@ export function queue(fun) {
 }`.trim();
 
 export const queueUnitSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 
 test('should resolve in call order', async () => {
   // Arrange
   const seenAnswers = [];
-  const call = jest.fn()
+  const call = vi.fn()
     .mockImplementation(v => Promise.resolve(v));
 
   // Act
@@ -122,6 +123,7 @@ test('should resolve in call order', async () => {
 })`.trim();
 
 export const queueBasicPBTSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from 'fast-check';
 
@@ -130,21 +132,22 @@ test('should resolve in call order', async () => {
     // Arrange
     const pendingQueries = [];
     const seenAnswers = [];
-    const call = jest.fn()
+    const call = vi.fn()
       .mockImplementation(v => Promise.resolve(v));
-  
+
     // Act
     const queued = queue(s.scheduleFunction(call));
     pendingQueries.push(queued(1).then(v => (seenAnswers.push(v))));
     pendingQueries.push(queued(2).then(v => (seenAnswers.push(v))));
     await s.waitFor(Promise.all(pendingQueries));
-  
+
     // Assert
     expect(seenAnswers).toEqual([1, 2]);
   }))
 })`.trim();
 
 export const queueBasicPBTWaitAllSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from 'fast-check';
 
@@ -152,21 +155,22 @@ test('should resolve in call order', async () => {
   await fc.assert(fc.asyncProperty(fc.scheduler(), async (s) => {
     // Arrange
     const seenAnswers = [];
-    const call = jest.fn()
+    const call = vi.fn()
       .mockImplementation(v => Promise.resolve(v));
-  
+
     // Act
     const queued = queue(s.scheduleFunction(call));
     queued(1).then(v => (seenAnswers.push(v)));
     queued(2).then(v => (seenAnswers.push(v)));
     await s.waitAll();
-  
+
     // Assert
     expect(seenAnswers).toEqual([1, 2]);
   }))
 })`.trim();
 
 export const queueMoreThan2CallsPBTSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from 'fast-check';
 
@@ -176,9 +180,9 @@ test('should resolve in call order', async () => {
     const pendingQueries = [];
     const seenAnswers = [];
     const expectedAnswers = [];
-    const call = jest.fn()
+    const call = vi.fn()
       .mockImplementation(v => Promise.resolve(v));
-  
+
     // Act
     const queued = queue(s.scheduleFunction(call));
     for (let id = 0 ; id !== numCalls ; ++id) {
@@ -186,13 +190,14 @@ test('should resolve in call order', async () => {
       pendingQueries.push(queued(id).then(v => (seenAnswers.push(v))));
     }
     await s.waitFor(Promise.all(pendingQueries));
-  
+
     // Assert
     expect(seenAnswers).toEqual(expectedAnswers);
   }))
 })`.trim();
 
 export const queueBatchesAlternativePBTSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from 'fast-check';
 
@@ -202,9 +207,9 @@ test('should resolve in call order', async () => {
     const pendingQueries = [];
     const seenAnswers = [];
     const expectedAnswers = [];
-    const call = jest.fn()
+    const call = vi.fn()
       .mockImplementation(v => Promise.resolve(v));
-  
+
     // Act
     const queued = queue(s.scheduleFunction(call));
     for (let id = 0 ; id !== numCalls ; ++id) {
@@ -218,13 +223,14 @@ test('should resolve in call order', async () => {
       );
     }
     await s.waitFor(Promise.all(pendingQueries));
-  
+
     // Assert
     expect(seenAnswers).toEqual(expectedAnswers);
   }))
 })`.trim();
 
 export const queueFromBatchesPBTSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from 'fast-check';
 
@@ -234,9 +240,9 @@ test('should resolve in call order', async () => {
     const pendingQueries = [];
     const seenAnswers = [];
     const expectedAnswers = [];
-    const call = jest.fn()
+    const call = vi.fn()
       .mockImplementation(v => Promise.resolve(v));
-  
+
     // Act
     const queued = queue(s.scheduleFunction(call));
     let lastId = 0;
@@ -253,13 +259,14 @@ test('should resolve in call order', async () => {
     }));
     await s.waitFor(task);
     await s.waitFor(Promise.all(pendingQueries));
-  
+
     // Assert
     expect(seenAnswers).toEqual(expectedAnswers);
   }))
 })`.trim();
 
 export const missingPartPBTSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from 'fast-check';
 
@@ -269,7 +276,7 @@ test('should resolve in call order', async () => {
     const pendingQueries = [];
     const seenAnswers = [];
     const expectedAnswers = [];
-    const call = jest.fn()
+    const call = vi.fn()
       .mockImplementation(v => Promise.resolve(v));
     const scheduledCall = s.scheduleFunction(call);
     let concurrentQueriesDetected = false;
@@ -279,7 +286,7 @@ test('should resolve in call order', async () => {
       queryPending = true;
       return scheduledCall(...args).finally(() => (queryPending = false));
     };
-  
+
     // Act
     const queued = queue(monitoredScheduledCall);
     let lastId = 0;
@@ -296,7 +303,7 @@ test('should resolve in call order', async () => {
     }));
     await s.waitFor(task);
     await s.waitFor(Promise.all(pendingQueries));
-  
+
     // Assert
     expect(seenAnswers).toEqual(expectedAnswers);
     expect(concurrentQueriesDetected).toBe(false);
@@ -304,6 +311,7 @@ test('should resolve in call order', async () => {
 })`.trim();
 
 export const extendedBackToWaitAllPBTSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from 'fast-check';
 
@@ -312,7 +320,7 @@ test('should resolve in call order', async () => {
     // Arrange
     const seenAnswers = [];
     const expectedAnswers = [];
-    const call = jest.fn()
+    const call = vi.fn()
       .mockImplementation(v => Promise.resolve(v));
     const scheduledCall = s.scheduleFunction(call);
     let concurrentQueriesDetected = false;
@@ -324,7 +332,7 @@ test('should resolve in call order', async () => {
       out.finally(() => (queryPending = false));
       return out;
     };
-  
+
     // Act
     const queued = queue(monitoredScheduledCall);
     let lastId = 0;
@@ -340,7 +348,7 @@ test('should resolve in call order', async () => {
       }
     }));
     await s.waitAll();
-  
+
     // Assert
     expect(seenAnswers).toEqual(expectedAnswers);
     expect(concurrentQueriesDetected).toBe(false);
@@ -348,6 +356,7 @@ test('should resolve in call order', async () => {
 })`.trim();
 
 export const extendedWithExceptionsPBTSpecCode = `
+import { test, expect, vi } from 'vitest';
 import {queue} from './queue.js';
 import fc from "fast-check";
 
@@ -361,7 +370,7 @@ test("should resolve in call order", async () => {
         // Arrange
         const seenAnswers = [];
         const expectedAnswers = [];
-        const call = jest
+        const call = vi
           .fn()
           .mockImplementation((v) =>
             isFailure(v) ? Promise.reject(v) : Promise.resolve(v)

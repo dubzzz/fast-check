@@ -1,14 +1,14 @@
 ---
 title: What's new in fast-check 3.23.0?
 authors: [dubzzz]
-tags: [what's new, arbitrary, performance]
+tags: [release, strings, unicode, performance]
 ---
 
 The previous release introduced the `unit` concept to the string arbitraries, enhancing control over string generation. In version 3.23.0, we’ve extended this feature to even more arbitraries, broadening its applicability. This update also includes several performance optimizations to make your testing faster and more efficient.
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Polyglot `string` to the next level
 

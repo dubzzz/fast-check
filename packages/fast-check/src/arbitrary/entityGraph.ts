@@ -17,7 +17,7 @@ export type { EntityGraphValue, Arbitraries as EntityGraphArbitraries, EntityRel
  * @remarks Since 4.5.0
  * @public
  */
-export type EntityGraphContraints<TEntityFields> = {
+export type EntityGraphConstraints<TEntityFields> = {
   /**
    * Controls the minimum number of entities generated for each entity type in the initial pool.
    *
@@ -63,6 +63,14 @@ export type EntityGraphContraints<TEntityFields> = {
    */
   noNullPrototype?: boolean;
 };
+
+/**
+ * Constraints to be applied on {@link entityGraph}
+ * @remarks Since 4.5.0
+ * @public
+ * @deprecated This type has a typo. Use `EntityGraphConstraints` instead.
+ */
+export type EntityGraphContraints<TEntityFields> = EntityGraphConstraints<TEntityFields>;
 
 /**
  * Generates interconnected entities with relationships based on a schema definition.
@@ -112,7 +120,7 @@ export type EntityGraphContraints<TEntityFields> = {
 export function entityGraph<TEntityFields, TEntityRelations extends EntityRelations<TEntityFields>>(
   arbitraries: Arbitraries<TEntityFields>,
   relations: TEntityRelations,
-  constraints: EntityGraphContraints<TEntityFields> = {},
+  constraints: EntityGraphConstraints<TEntityFields> = {},
 ): Arbitrary<EntityGraphValue<TEntityFields, TEntityRelations>> {
   const allKeys = safeObjectKeys(arbitraries) as (keyof typeof arbitraries)[];
   const initialPoolConstraints = constraints.initialPoolConstraints || safeObjectCreate(null);

@@ -218,26 +218,31 @@ function dropMainGlobals(): () => void {
     TypeError,
     URIError,
     Atomics,
-    WebAssembly,
     URL,
     CompressionStream,
     DecompressionStream,
     TextDecoder,
     globalThis,
     // The following globals are unknown for TypeScript
-    // @ts-expect-error Unknown for TypeScript given our current compilation options
     AggregateError,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    WebAssembly,
     // @ts-expect-error Unknown for TypeScript given our current compilation options
     FinalizationRegistry,
     // @ts-expect-error Unknown for TypeScript given our current compilation options
     WeakRef,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof Performance !== 'undefined' ? Performance : undefined,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof ErrorEvent !== 'undefined' ? ErrorEvent : undefined,
+    // @ts-expect-error - 'Iterator' only refers to a type, but is being used as a value here. ts(2693)
+    typeof Iterator !== 'undefined' ? Iterator : undefined,
     // The following globals used to be unknown on MacOS,
     // as such we check they exist before referencing them
     typeof File !== 'undefined' ? File : undefined,
     typeof BroadcastChannel !== 'undefined' ? BroadcastChannel : undefined,
     typeof DOMException !== 'undefined' ? DOMException : undefined,
     typeof Blob !== 'undefined' ? Blob : undefined,
-    typeof Performance !== 'undefined' ? Performance : undefined,
     typeof ReadableStream !== 'undefined' ? ReadableStream : undefined,
     typeof ReadableStreamDefaultReader !== 'undefined' ? ReadableStreamDefaultReader : undefined,
     typeof ReadableStreamBYOBReader !== 'undefined' ? ReadableStreamBYOBReader : undefined,
@@ -268,8 +273,6 @@ function dropMainGlobals(): () => void {
     typeof SubtleCrypto !== 'undefined' ? SubtleCrypto : undefined,
     typeof CustomEvent !== 'undefined' ? CustomEvent : undefined,
     typeof WebSocket !== 'undefined' ? WebSocket : undefined,
-    // @ts-expect-error - 'Iterator' only refers to a type, but is being used as a value here. ts(2693)
-    typeof Iterator !== 'undefined' ? Iterator : undefined,
     typeof Navigator !== 'undefined' ? Navigator : undefined,
     typeof CloseEvent !== 'undefined' ? CloseEvent : undefined,
     typeof URLPattern !== 'undefined' ? URLPattern : undefined,
@@ -277,8 +280,11 @@ function dropMainGlobals(): () => void {
     typeof DisposableStack !== 'undefined' ? DisposableStack : undefined,
     typeof AsyncDisposableStack !== 'undefined' ? AsyncDisposableStack : undefined,
     typeof Float16Array !== 'undefined' ? Float16Array : undefined,
-    typeof ErrorEvent !== 'undefined' ? ErrorEvent : undefined,
     typeof Storage !== 'undefined' ? Storage : undefined,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof QuotaExceededError !== 'undefined' ? QuotaExceededError : undefined,
+    // @ts-expect-error Unknown for TypeScript given our current compilation options
+    typeof Temporal !== 'undefined' ? Temporal : undefined,
   ].filter((mainGlobal) => mainGlobal !== undefined);
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
@@ -313,7 +319,7 @@ class NoopArbitrary extends fc.Arbitrary<number> {
   generate(_mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
     return new fc.Value<number>(0, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
   shrink(value: number, _context: unknown): fc.Stream<fc.Value<number>> {
@@ -336,7 +342,7 @@ class BasicArbitrary extends fc.Arbitrary<number> {
   generate(mrng: fc.Random, _biasFactor: number | undefined): fc.Value<number> {
     return new fc.Value<number>(mrng.nextInt() % 1000, undefined);
   }
-  canShrinkWithoutContext(value: unknown): value is number {
+  canShrinkWithoutContext(_value: unknown): _value is number {
     return false;
   }
   shrink(value: number, _context: unknown): fc.Stream<fc.Value<number>> {

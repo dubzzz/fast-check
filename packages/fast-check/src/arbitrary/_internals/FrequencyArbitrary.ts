@@ -44,7 +44,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     const sanitizedConstraints: _SanitizedConstraints = {
       depthBias: depthBiasFromSizeForArbitrary(constraints.depthSize, constraints.maxDepth !== undefined),
-      maxDepth: constraints.maxDepth != undefined ? constraints.maxDepth : safePositiveInfinity,
+      maxDepth: constraints.maxDepth !== undefined ? constraints.maxDepth : safePositiveInfinity,
       withCrossShrink: !!constraints.withCrossShrink,
     };
     return new FrequencyArbitrary(warbs, sanitizedConstraints, getDepthContextFor(constraints.depthIdentifier));

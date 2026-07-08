@@ -1,14 +1,14 @@
 ---
 title: What's new in fast-check 3.15.0?
 authors: [dubzzz]
-tags: [what's new]
+tags: [release, dictionary, recursion]
 ---
 
 This release added support for the parameter `depthIdentifier` on `dictionary`.
 
 Continue reading to explore the detailed updates it brings.
 
-<!--truncate-->
+{/* truncate */}
 
 ## Recursive dictionary
 

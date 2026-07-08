@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { SpaceBuilder, Space } from '../src/space';
+import { SpaceBuilder, Space } from '../src/space.js';
 
 export const SpaceArbitrary = fc
   .record({

@@ -1,15 +1,17 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 22,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: computeSantaMindScore,
   parser,
   placeholderForm: '🎄🎁⛄🎈🎅\n🎁🎄⛄🎄🦌',
   functionName: 'computeSantaMindScore',
   signature:
-    'findOptimalPacking(secretSequence: Sequence, guessedSequence: Sequence): { goodPlacement: number; misplaced: number };',
+    'computeSantaMindScore(secretSequence: Sequence, guessedSequence: Sequence): { goodPlacement: number; misplaced: number };',
   signatureExtras: [
     "type Icon = '🎄' | '🦌' | '⛄' | '🛷' | '🎈' | '🎀' | '🎅' | '🎁';",
     'type Sequence = [Icon, Icon, Icon, Icon, Icon];',

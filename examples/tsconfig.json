@@ -1,19 +1,9 @@
 {
+  "extends": "../tsconfig.common.json",
   "compilerOptions": {
-    "downlevelIteration": true,
-    "target": "es2020",
+    "isolatedDeclarations": false,
+    "jsx": "react",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
+    "types": ["node"]
   }
 }

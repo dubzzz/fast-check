@@ -201,7 +201,7 @@ async function run() {
 
   // Get packages to be bumped via changeset
   const temporaryChangelogFile = 'changelog.json';
-  await execFile('pnpm', ['install']);
+  await execFile('pnpm', ['install', '--frozen-lockfile', '--ignore-scripts']);
   await execFile('pnpm', ['run', 'changelog', `--output=${temporaryChangelogFile}`]);
   const temporaryChangelogFileContentBuffer = await readFile(temporaryChangelogFile);
   const temporaryChangelogFileContent = JSON.parse(temporaryChangelogFileContentBuffer.toString());
@@ -272,7 +272,7 @@ async function run() {
     await execFile('git', ['add', changelogPath]);
 
     // Update the package.json
-    await execFile('npm', ['--no-git-tag-version', '--workspaces-update=false', 'version', releaseKind], {
+    await execFile('pnpm', ['version', releaseKind, '--no-git-tag-version', '--no-git-checks'], {
       cwd: packageLocation,
     });
     const packageJsonPath = path.join(packageLocation, 'package.json');
@@ -280,7 +280,7 @@ async function run() {
   }
 
   // Force pnpm reinstall
-  await execFile('pnpm', ['install']);
+  await execFile('pnpm', ['install', '--ignore-scripts']);
   await execFile('git', ['add', 'pnpm-lock.yaml']);
 
   // Drop all changesets

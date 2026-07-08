@@ -2,6 +2,7 @@ node_modules/
 
 # Various generated files
 packages/fast-check/docs/
+website/docs/api/
 **/coverage/
 **/dist/
 **/lib/
@@ -11,6 +12,7 @@ packages/fast-check/docs/
 deopt.out
 v8.log
 v8.out
+benchmark.json
 
 # IDE related files
 .idea

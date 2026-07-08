@@ -19,7 +19,7 @@ describe('Arbitrary', () => {
         generate(_mrng: Random): Value<number> {
           return new Value(10, { step: 2 });
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('No call expected in current scenario');
         }
         shrink(value: number, context?: unknown): Stream<Value<number>> {
@@ -110,7 +110,7 @@ describe('Arbitrary', () => {
         generate(_mrng: Random): Value<MyArbitraryOutput> {
           return new Value(this.create(10), undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is MyArbitraryOutput {
+        canShrinkWithoutContext(_value: unknown): _value is MyArbitraryOutput {
           throw new Error('No call expected in current scenario');
         }
         shrink(v: MyArbitraryOutput, _context?: unknown): Stream<Value<MyArbitraryOutput>> {
@@ -152,7 +152,7 @@ describe('Arbitrary', () => {
         generate(_mrng: Random): Value<MyArbitraryOutput> {
           return new Value(this.create(10), undefined);
         }
-        canShrinkWithoutContext(value: unknown): value is MyArbitraryOutput {
+        canShrinkWithoutContext(_value: unknown): _value is MyArbitraryOutput {
           throw new Error('No call expected in current scenario');
         }
         shrink(v: MyArbitraryOutput, _context?: unknown): Stream<Value<MyArbitraryOutput>> {
@@ -191,7 +191,7 @@ describe('Arbitrary', () => {
         generate(_mrng: Random): Value<number> {
           return new Value(5, { step: 2 });
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('No call expected in current scenario');
         }
         shrink(value: number, context?: unknown): Stream<Value<number>> {
@@ -219,7 +219,7 @@ describe('Arbitrary', () => {
             value: this.value,
           });
         }
-        canShrinkWithoutContext(value: unknown): value is number[] {
+        canShrinkWithoutContext(_value: unknown): _value is number[] {
           throw new Error('No call expected in current scenario');
         }
         shrink(value: number[], context?: unknown): Stream<Value<number[]>> {
@@ -270,7 +270,7 @@ describe('Arbitrary', () => {
         generate(_mrng: Random): Value<number> {
           return new Value(10, { step: 3 });
         }
-        canShrinkWithoutContext(value: unknown): value is number {
+        canShrinkWithoutContext(_value: unknown): _value is number {
           throw new Error('No call expected in current scenario');
         }
         shrink(value: number, context?: unknown): Stream<Value<number>> {

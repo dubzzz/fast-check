@@ -63,7 +63,7 @@ function record<T>(
   constraints?: RecordConstraints<keyof T>,
 ): unknown {
   const noNullPrototype = constraints !== undefined && !!constraints.noNullPrototype;
-  if (constraints == null) {
+  if (constraints === undefined) {
     return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
@@ -79,7 +79,7 @@ function record<T>(
       throw new Error(`requiredKeys cannot reference keys that have not been defined in recordModel`);
     }
     if (!descriptor.enumerable) {
-      throw new Error(`requiredKeys cannot reference keys that have are enumerable in recordModel`);
+      throw new Error(`requiredKeys cannot reference keys that are not enumerable in recordModel`);
     }
   }
 

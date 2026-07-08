@@ -3,7 +3,7 @@
  */
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import React from 'react';
-import DebouncedAutocomplete from './src/DebouncedAutocomplete';
+import DebouncedAutocomplete from './src/DebouncedAutocomplete.js';
 
 import { act, cleanup, render, screen, fireEvent } from '@testing-library/react';
 import fc from 'fast-check';
@@ -11,11 +11,6 @@ import fc from 'fast-check';
 beforeEach(() => {
   vi.clearAllTimers();
 });
-
-// Copied from https://github.com/testing-library/user-event/issues/586
-function escapeKeyboardInput(value: string): string {
-  return value.replace(/[{[]/g, '$&$&');
-}
 
 describe('DebouncedAutocomplete', () => {
   it('should autocomplete queries (with mocked timers)', async () => {

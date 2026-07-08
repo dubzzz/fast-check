@@ -1,0 +1,69 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to release'
+        required: true
+        type: choice
+        options:
+          - fast-check
+          - ava
+          - jest
+          - vitest
+          - worker
+          - poisoning
+          - packaged
+      dry_run:
+        description: 'Dry run (skip release creation)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  create-release:
+    name: 'Create release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: true
+      - name: Extract changelog
+        id: changelog
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PACKAGE_DIR: ${{ github.event.inputs.package }}
+        with:
+          script: |
+            const {extractLatestChangelog} = require('./.github/workflows/scripts/extract-changelog.cjs');
+            const {version, tag, releaseName, changelog} = extractLatestChangelog(process.env.PACKAGE_DIR);
+            console.log(`Version: ${version}`);
+            console.log(`Tag: ${tag}`);
+            console.log(`Release name: ${releaseName}`);
+            console.log(`Changelog:\n${changelog}`);
+            core.setOutput('version', version);
+            core.setOutput('tag', tag);
+            core.setOutput('release_name', releaseName);
+            core.setOutput('changelog', changelog);
+      - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.release_name }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: true
+          make_latest: "${{ github.event.inputs.package == 'fast-check' && 'true' || 'false' }}"
+      - name: Push tag
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          git tag "$TAG"
+          git push origin "refs/tags/$TAG"
+        env:
+          TAG: ${{ steps.changelog.outputs.tag }}

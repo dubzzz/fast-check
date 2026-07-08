@@ -2,38 +2,33 @@ name: Workflow Security Audit
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
     branches:
       - main
       - 'next-*_*_*'
       - 'fix-v*'
-    paths:
-      - '.github/workflows/**'
-      - '.github/zizmor.yml'
   push:
     branches:
       - main
       - 'next-*_*_*'
       - 'fix-v*'
-    paths:
-      - '.github/workflows/**'
-      - '.github/zizmor.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   audit:
     name: 'Audit GitHub Actions workflows'
+    if: github.event_name == 'push' || github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || (github.event.action == 'labeled' && github.event.label.name == 'force-build-status-execution')
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - name: Install zizmor
-        run: pipx install zizmor==1.18.0
       - name: Run zizmor
-        run: zizmor --config .github/zizmor.yml .
+        uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7

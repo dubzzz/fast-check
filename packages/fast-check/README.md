@@ -8,14 +8,13 @@ Property based testing framework for JavaScript/TypeScript
 
 <p align="center">
   <a href="https://github.com/dubzzz/fast-check/actions?query=branch%3Amain+workflow%3A%22Build+Status%22"><img src="https://github.com/dubzzz/fast-check/actions/workflows/build-status.yml/badge.svg?branch=main" alt="Build Status" /></a>
-  <a href="https://badge.fury.io/js/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
+  <a href="https://npmx.dev/package/fast-check"><img src="https://badge.fury.io/js/fast-check.svg" alt="npm version" /></a>
+  <a href="https://npmx.dev/package/fast-check"><img src="https://img.shields.io/npm/dm/fast-check" alt="monthly downloads" /></a>
   <a href="https://fast-check.dev/"><img src="https://img.shields.io/badge/-Documentation-%23282ea9.svg" title="Documentation" /></a>
 </p>
 <p align="center">
   <a href="https://app.codecov.io/gh/dubzzz/fast-check/branch/main"><img src="https://codecov.io/gh/dubzzz/fast-check/branch/main/graph/badge.svg" alt="Coverage Status (unit tests)" /></a>
   <a href="https://packagequality.com/#?package=fast-check"><img src="https://packagequality.com/shield/fast-check.svg" alt="Package quality" /></a>
-  <a href="https://snyk.io/advisor/npm-package/fast-check"><img src="https://snyk.io/advisor/npm-package/fast-check/badge.svg" alt="Snyk Package quality" /></a>
   <a href="https://securityscorecards.dev/viewer/?platform=github.com&org=dubzzz&repo=fast-check"><img src="https://api.securityscorecards.dev/projects/github.com/dubzzz/fast-check/badge" alt="OpenSSF Scorecard" /></a>
   <a href="https://bestpractices.coreinfrastructure.org/projects/7450"><img src="https://bestpractices.coreinfrastructure.org/projects/7450/badge" alt="OpenSSF Best Practices" /></a>
 </p>
@@ -80,7 +79,7 @@ Useful documentations:
 - [🔧 Custom arbitraries](https://fast-check.dev/docs/core-blocks/arbitraries/combiners/)
 - [🏃‍♂️ Property based runners](https://fast-check.dev/docs/core-blocks/runners/)
 - [💥 Tips](https://fast-check.dev/docs/configuration/)
-- [🔌 API Reference](https://fast-check.dev/api-reference/index.html)
+- [🔌 API Reference](https://fast-check.dev/docs/api/)
 - [⭐ Awesome fast-check](https://fast-check.dev/docs/ecosystem/)
 
 ## Why should I migrate to fast-check?
@@ -218,7 +217,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/vecerek"><img src="https://avatars.githubusercontent.com/u/5737996?v=4?s=100" width="100px;" alt="Attila Večerek"/><br /><sub><b>Attila Večerek</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=vecerek" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://www.zachbjornson.com/"><img src="https://avatars.githubusercontent.com/u/469365?v=4?s=100" width="100px;" alt="Zach Bjornson"/><br /><sub><b>Zach Bjornson</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Code">💻</a> <a href="https://github.com/dubzzz/fast-check/commits?author=zbjornson" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/bennettp123"><img src="https://avatars.githubusercontent.com/u/1610227?v=4?s=100" width="100px;" alt="Bennett Perkins"/><br /><sub><b>Bennett Perkins</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=bennettp123" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nielk"><img src="https://avatars.githubusercontent.com/u/4980521?v=4?s=100" width="100px;" alt="Alexandre Oger"/><br /><sub><b>Alexandre Oger</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/nielk"><img src="https://avatars.githubusercontent.com/u/4980521?v=4?s=100" width="100px;" alt="Alexandre Oger"/><br /><sub><b>Alexandre Oger</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Documentation">📖</a> <a href="https://github.com/dubzzz/fast-check/commits?author=nielk" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ej-shafran"><img src="https://avatars.githubusercontent.com/u/116496520?v=4?s=100" width="100px;" alt="ej shafran"/><br /><sub><b>ej shafran</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=ej-shafran" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gruhn"><img src="https://avatars.githubusercontent.com/u/26570572?v=4?s=100" width="100px;" alt="Niklas Gruhn"/><br /><sub><b>Niklas Gruhn</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=gruhn" title="Code">💻</a> <a href="#question-gruhn" title="Answering Questions">💬</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://patrickroza.com/"><img src="https://avatars.githubusercontent.com/u/42661?v=4?s=100" width="100px;" alt="Patrick Roza"/><br /><sub><b>Patrick Roza</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=patroza" title="Code">💻</a></td>
@@ -235,6 +234,14 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/emilianbold"><img src="https://avatars.githubusercontent.com/u/991554?v=4?s=100" width="100px;" alt="Emi"/><br /><sub><b>Emi</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=emilianbold" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.russbiggs.com/"><img src="https://avatars.githubusercontent.com/u/8487728?v=4?s=100" width="100px;" alt="Russ Biggs"/><br /><sub><b>Russ Biggs</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=russbiggs" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/adamni21"><img src="https://avatars.githubusercontent.com/u/85580454?v=4?s=100" width="100px;" alt="adamni21"/><br /><sub><b>adamni21</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=adamni21" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/josephjunker"><img src="https://avatars.githubusercontent.com/u/1519098?v=4?s=100" width="100px;" alt="Joseph Junker"/><br /><sub><b>Joseph Junker</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=josephjunker" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rushelex"><img src="https://avatars.githubusercontent.com/u/41122157?v=4?s=100" width="100px;" alt="Aleksey Shelementev"/><br /><sub><b>Aleksey Shelementev</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=rushelex" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rugk"><img src="https://avatars.githubusercontent.com/u/11966684?v=4?s=100" width="100px;" alt="rugk"/><br /><sub><b>rugk</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=rugk" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/makeeno"><img src="https://avatars.githubusercontent.com/u/90332566?v=4?s=100" width="100px;" alt="Makien Osman"/><br /><sub><b>Makien Osman</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=makeeno" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://jneidel.com/"><img src="https://avatars.githubusercontent.com/u/25589715?v=4?s=100" width="100px;" alt="Jonathan Neidel"/><br /><sub><b>Jonathan Neidel</b></sub></a><br /><a href="https://github.com/dubzzz/fast-check/commits?author=jneidel" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

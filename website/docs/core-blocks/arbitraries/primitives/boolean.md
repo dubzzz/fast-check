@@ -21,5 +21,5 @@ fc.boolean();
 // Examples of generated values: true, false…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/boolean.html).  
+Resources: [API reference](/docs/api/functions/boolean).  
 Available since 0.0.6.

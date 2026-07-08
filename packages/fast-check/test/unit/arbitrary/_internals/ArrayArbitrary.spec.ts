@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import fc from 'fast-check';
-import prand from 'pure-rand';
+import { mersenne } from 'pure-rand/generator/mersenne';
 
 import { ArrayArbitrary } from '../../../../src/arbitrary/_internals/ArrayArbitrary.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
@@ -278,16 +278,16 @@ describe('ArrayArbitrary', () => {
 
       // Assert
       expect(cloneMethodImpl).not.toHaveBeenCalled();
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // oxlint-disable-next-line no-unused-expressions
       g.value; // not calling clone as this is the first access
       expect(cloneMethodImpl).not.toHaveBeenCalled();
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // oxlint-disable-next-line no-unused-expressions
       g.value; // calling clone as this is the second access
       expect(cloneMethodImpl).toHaveBeenCalledTimes(1);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // oxlint-disable-next-line no-unused-expressions
       g.value; // calling clone (again) as this is the third access
       expect(cloneMethodImpl).toHaveBeenCalledTimes(2);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // oxlint-disable-next-line no-unused-expressions
       g.value_; // not calling clone as we access value_ not value
       expect(cloneMethodImpl).toHaveBeenCalledTimes(2);
     });
@@ -544,7 +544,7 @@ describe('ArrayArbitrary (integration)', () => {
   it('should not re-use twice the same instance of cloneable', () => {
     // Arrange
     const alreadySeenCloneable = new Set<unknown>();
-    const mrng = new Random(prand.mersenne(0));
+    const mrng = new Random(mersenne(0));
     const arb = new ArrayArbitrary(new CloneableArbitrary(), 0, 5, 100, undefined, undefined, []); // 0 to 5 generated items
 
     // Act

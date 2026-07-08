@@ -1,4 +1,4 @@
-/* eslint-disable no-sparse-arrays */
+/* oxlint-disable no-sparse-arrays */
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { SparseArrayConstraints } from '../../../src/arbitrary/sparseArray.js';
@@ -235,10 +235,7 @@ describe('sparseArray (integration)', () => {
 
 // Helpers
 
-function validSparseArrayConstraints(
-  removedKeys: (keyof SparseArrayConstraints)[] = [],
-  max: number | undefined = undefined,
-) {
+function validSparseArrayConstraints(removedKeys: (keyof SparseArrayConstraints)[] = [], max?: number | undefined) {
   return fc
     .record(
       {

@@ -27,7 +27,7 @@ fc.ulid();
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/ulid.html).  
+Resources: [API reference](/docs/api/functions/ulid).  
 Available since 3.11.0.
 
 ### uuid
@@ -74,5 +74,5 @@ fc.uuid({ version: [4, 7] });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/uuid.html).  
+Resources: [API reference](/docs/api/functions/uuid).  
 Available since 1.17.0.

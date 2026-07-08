@@ -1,13 +1,15 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 23,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: () => true,
-  buggyAdventSurcharged: (...args: Parameters<ReturnType<typeof adventBuggy>>) => {
+  buggyAdventSurcharged: (...args: Parameters<typeof adventBuggy>) => {
     const expected = payslipContentFor(...args);
-    const out = adventBuggy()(...args);
+    const out = adventBuggy(...args);
     const [availableCoins, amountToBePaid] = args;
     if (out === null) {
       return expected === null ? true : 'not supposed to find anything';
@@ -36,9 +38,10 @@ export { AdventPlaygroundOfTheDay, FormOfTheDay };
 
 // Reference implementation
 
-function payslipContentFor(availableCoins, amountToBePaid) {
+type Coin = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+function payslipContentFor(availableCoins: Coin[], amountToBePaid: number) {
   const coins = [...availableCoins].sort((a, b) => b - a);
-  function helper(target, index) {
+  function helper(target: number, index: number): Coin[] | null {
     if (target === 0) {
       return [];
     }

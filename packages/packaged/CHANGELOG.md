@@ -1,3 +1,31 @@
+# 0.7.0
+
+_Replace `--keepNodeModules` by `--keep`_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.6.0...packaged%2Fv0.7.0)]
+
+## Features
+
+- ([PR#6713](https://github.com/dubzzz/fast-check/pull/6713)) Replace keepNodeModules with flexible keep patterns
+
+---
+
+# 0.6.0
+
+_Only publish ESM bundle_
+[[Code](https://github.com/dubzzz/fast-check/tree/packaged%2Fv0.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/packaged%2Fv0.5.0...packaged%2Fv0.6.0)]
+
+## Breaking changes
+
+- ([PR#6500](https://github.com/dubzzz/fast-check/pull/6500)) Drop CommonJS support
+- ([PR#6506](https://github.com/dubzzz/fast-check/pull/6506)) Drop useless "typesVersions"
+
+## Fixes
+
+- ([PR#6511](https://github.com/dubzzz/fast-check/pull/6511)) CI: Speed-up build with rolldown
+- ([PR#6655](https://github.com/dubzzz/fast-check/pull/6655)) Doc: Update Readme to point to npmx
+
+---
+
 # 0.5.0
 
 _Fix declaration of the script_

@@ -426,7 +426,7 @@
       "name": "Alexandre Oger",
       "avatar_url": "https://avatars.githubusercontent.com/u/4980521?v=4",
       "profile": "https://github.com/nielk",
-      "contributions": ["doc"]
+      "contributions": ["doc", "code"]
     },
     {
       "login": "ej-shafran",
@@ -510,6 +510,48 @@
       "name": "Russ Biggs",
       "avatar_url": "https://avatars.githubusercontent.com/u/8487728?v=4",
       "profile": "https://www.russbiggs.com/",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "adamni21",
+      "name": "adamni21",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85580454?v=4",
+      "profile": "https://github.com/adamni21",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "josephjunker",
+      "name": "Joseph Junker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1519098?v=4",
+      "profile": "https://github.com/josephjunker",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "rushelex",
+      "name": "Aleksey Shelementev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41122157?v=4",
+      "profile": "https://github.com/rushelex",
+      "contributions": ["code"]
+    },
+    {
+      "login": "rugk",
+      "name": "rugk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11966684?v=4",
+      "profile": "https://github.com/rugk",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "makeeno",
+      "name": "Makien Osman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90332566?v=4",
+      "profile": "https://github.com/makeeno",
+      "contributions": ["doc"]
+    },
+    {
+      "login": "jneidel",
+      "name": "Jonathan Neidel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25589715?v=4",
+      "profile": "https://jneidel.com/",
       "contributions": ["doc"]
     }
   ],

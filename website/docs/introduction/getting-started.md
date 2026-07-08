@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 slug: /introduction/getting-started/
 ---
 
@@ -67,7 +67,7 @@ describe('properties', () => {
 ```
 
 :::tip Hands on Property-Based Testing
-If you want to quickly get started with property-based testing, you may check our tutorials and our [quick start guide](/docs/tutorials/quick-start/).
+If you want to quickly get started with property-based testing, you may check our tutorials and our [quick start guide](/docs/tutorials/quick-start/basic-setup/).
 :::
 
 ## Walk through the test

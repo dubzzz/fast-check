@@ -30,7 +30,7 @@ export function tokenizeString(
   // - nextStartIndex: where to start next time (mostly needed as we want to go deep first)
   const stack: StackItem[] = [{ endIndexChunks: 0, nextStartIndex: 1, chunks: [] }];
   while (stack.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     const last = safePop(stack)!;
 
     // Going deeper in the tree

@@ -21,7 +21,7 @@ fc.ipV4();
 // Examples of generated values: "149.2.84.39", "255.251.100.5", "151.253.2.4", "93.3.251.97", "121.3.113.229"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/ipV4.html).  
+Resources: [API reference](/docs/api/functions/ipV4).  
 Available since 1.14.0.
 
 ### ipV4Extended
@@ -39,7 +39,7 @@ fc.ipV4Extended();
 // Examples of generated values: "0x7.249.0xfe.0x79", "07.0x7b.1.0x6", "0xa5.0265.22.27", "0xd4.0xfd.15664", "0x1ed7207"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/ipV4Extended.html).  
+Resources: [API reference](/docs/api/functions/ipV4Extended).  
 Available since 1.17.0.
 
 ### ipV6
@@ -63,7 +63,7 @@ fc.ipV6();
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/ipV6.html).  
+Resources: [API reference](/docs/api/functions/ipV6).  
 Available since 1.14.0.
 
 ### domain
@@ -102,7 +102,7 @@ fc.domain({ size: '+1' });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/domain.html).  
+Resources: [API reference](/docs/api/functions/domain).  
 Available since 1.14.0.
 
 ### webAuthority
@@ -150,7 +150,7 @@ fc.webAuthority({
 // Examples of generated values: "0rog.cod:63367", "02.0x57fdd:45172", "0247.0332.0315.0x7a", "2498828715:50719", "169.3.232.223"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/webAuthority.html).  
+Resources: [API reference](/docs/api/functions/webAuthority).  
 Available since 1.14.0.
 
 ### webFragments
@@ -175,7 +175,7 @@ fc.webFragments();
 // Examples of generated values: "", "kg%00au@b%08cg", "a", "?x%F1%80%9F%8Cti.k", "%F0%A1%85%AFR%F1%8F%B1%86rQ"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/webFragments.html).  
+Resources: [API reference](/docs/api/functions/webFragments).  
 Available since 1.14.0.
 
 ### webPath
@@ -209,7 +209,7 @@ fc.webPath({ size: '+1' });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/webPath.html).  
+Resources: [API reference](/docs/api/functions/webPath).  
 Available since 3.3.0.
 
 ### webQueryParameters
@@ -234,7 +234,7 @@ fc.webQueryParameters();
 // Examples of generated values: "argumentsp", "zB)MCS9r*", "=gcJbW:1", "RmE9%F1%A6%BE%968y:2", "1=eJ@5ic1"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/webQueryParameters.html).  
+Resources: [API reference](/docs/api/functions/webQueryParameters).  
 Available since 1.14.0.
 
 ### webSegment
@@ -257,7 +257,7 @@ fc.webSegment();
 // Examples of generated values: "*lej@(", "", "+Y", "1FBtTF1GX", "V:%F2%96%A2%A1$PV4Yq"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/webSegment.html).  
+Resources: [API reference](/docs/api/functions/webSegment).  
 Available since 1.14.0.
 
 ### webUrl
@@ -273,7 +273,7 @@ Following the specs specified by RFC 3986 and WHATWG URL Standard.
 
 **with:**
 
-- `authoritySettings?` — default: `{}` — _[constraints](https://fast-check.dev/api-reference/interfaces/WebAuthorityConstraints.html) on the web authority_
+- `authoritySettings?` — default: `{}` — _[constraints](/docs/api/interfaces/WebAuthorityConstraints) on the web authority_
 - `validSchemes?` — default: `['http', 'https']` — _list all the valid schemes_
 - `withFragments?` — default: `false` — _enable fragments_
 - `withQueryParameters?` — default: `false` — _enable query parameters_
@@ -313,7 +313,7 @@ fc.webUrl({ size: '-1' });
 // Examples of generated values: "https://pi.ca", "https://j.3ch.hy/", "https://5c.f.lbi/", "https://px.hw", "https://dcf.qr"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/webUrl.html).  
+Resources: [API reference](/docs/api/functions/webUrl).  
 Available since 1.14.0.
 
 ### emailAddress
@@ -348,5 +348,5 @@ fc.emailAddress({ size: '-1' });
 // Examples of generated values: "k.wh@l7.pc", "u@j.ag", "p.ag@1f.bj", "d@4.yd", "!@is8.gb"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/emailAddress.html).  
+Resources: [API reference](/docs/api/functions/emailAddress).  
 Available since 1.14.0.

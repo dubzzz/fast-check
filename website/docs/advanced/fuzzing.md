@@ -96,11 +96,7 @@ In contrast to normal runs, when using the `neverFailingPredicate` function, the
 test('replay reported error and shrink it', () => {
   fc.assert(fc.property(...arbitraries, predicate), {
     numRuns: 1,
-    examples: [
-      [
-        /* reported error */
-      ],
-    ],
+    examples: [[/* reported error */]],
   });
 });
 ```

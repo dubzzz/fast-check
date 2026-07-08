@@ -3,7 +3,7 @@ import type { FloatConstraints } from './float.js';
 import { float } from './float.js';
 import { array } from './array.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
-import { Float32Array } from '../utils/globals.js';
+import { Float32Array as SFloat32Array } from '../utils/globals.js';
 
 /**
  * Constraints to be applied on {@link float32Array}
@@ -32,12 +32,12 @@ export type Float32ArrayConstraints = {
 
 /** @internal */
 function toTypedMapper(data: number[]): Float32Array<ArrayBuffer> {
-  return Float32Array.from(data);
+  return SFloat32Array.from(data);
 }
 
 /** @internal */
 function fromTypedUnmapper(value: unknown): number[] {
-  if (!(value instanceof Float32Array)) throw new Error('Unexpected type');
+  if (!(value instanceof SFloat32Array)) throw new Error('Unexpected type');
   return [...value];
 }
 

@@ -81,7 +81,7 @@ function smallUintToBase32StringMapper(num: number): string {
   let base32Str = '';
   // num must be in 0 (incl.), 0x7fff_ffff (incl.)
   // >>5 is equivalent to /32 and <<5 to x32
-  for (let remaining = num; remaining !== 0; ) {
+  for (let remaining = num; remaining !== 0;) {
     const next = remaining >> 5;
     const current = remaining - (next << 5);
     base32Str = encodeSymbol(current) + base32Str;
@@ -91,7 +91,7 @@ function smallUintToBase32StringMapper(num: number): string {
 }
 
 /** @internal */
-export function uintToBase32StringMapper(num: number, paddingLength: number): string {
+function uintToBase32StringMapper(num: number, paddingLength: number): string {
   const head = ~~(num / 0x40000000);
   const tail = num & 0x3fffffff;
   return pad(smallUintToBase32StringMapper(head), paddingLength - 6) + pad(smallUintToBase32StringMapper(tail), 6);

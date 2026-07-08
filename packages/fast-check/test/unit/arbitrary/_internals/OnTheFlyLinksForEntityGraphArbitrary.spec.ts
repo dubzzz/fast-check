@@ -34,9 +34,8 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
               type: fc.constantFrom(...allKinds),
               strategy: fc.constantFrom(undefined, 'any'),
             })
-            .map(
-              (rel: Relationship<Kind> & { arity: Exclude<Arity, 'inverse'> }): Relationship<Kind> =>
-                rel.type === 'kind-e' ? { ...rel, strategy: 'exclusive' } : rel,
+            .map((rel: Relationship<Kind> & { arity: Exclude<Arity, 'inverse'> }): Relationship<Kind> =>
+              rel.type === 'kind-e' ? { ...rel, strategy: 'exclusive' } : rel,
             ),
           weight: allKinds.length,
         },

@@ -9,6 +9,10 @@ image: /img/socials/fast-check-deno.png
 
 Want to start playing with property-based testing in [Deno](https://deno.com/)? Welcome to this short and concise tutorial on integrating fast-check within Deno.
 
+:::info Runner-agnostic patterns
+fast-check does not ship a dedicated connector for Deno: you use it the same way you would with any other runner. For the generic sync and async patterns, along with tips on sharing configuration via `fc.configureGlobal`, refer to our [Manual setup](/docs/tutorials/setting-up-your-test-environment/property-based-testing-manual-setup/) page. The rest of this tutorial focuses on the Deno-specific bits.
+:::
+
 ## Your first test
 
 Let's write a test for [FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz) using fast-check.

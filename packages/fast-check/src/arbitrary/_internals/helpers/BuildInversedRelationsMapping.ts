@@ -1,4 +1,4 @@
-import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes';
+import type { EntityRelations, Relationship } from '../interfaces/EntityGraphTypes.js';
 import {
   Error as SError,
   String as SString,

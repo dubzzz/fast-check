@@ -1,22 +1,24 @@
 import * as path from 'path';
-import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
+import type { afterEach, beforeEach } from 'vitest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
-// @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 import type _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
+declare const describeVi: typeof describe;
 declare const afterAllVi: typeof afterAll;
+declare const beforeEachVi: typeof beforeEach;
+declare const afterEachVi: typeof afterEach;
+declare const expectVi: typeof expect;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
+const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 const specFileName = `generated.spec.mjs`;
 const vitestConfigName = `vitest.config.mjs`;
 
@@ -155,6 +157,159 @@ describe.each<DescribeOptions>([
       expectPass(out);
     });
 
+    it.concurrent(`should call beforeEach, afterEach and clean-ups in proper order`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        const requestedNumExecutions = 4;
+        let runId = 0;
+        // @ts-expect-error - No type specified, but expected
+        const probes = [];
+        beforeEachVi(() => {
+          probes.push(`beforeEach A`);
+          return () => probes.push(`clean-up beforeEach A`);
+        });
+        afterEachVi(() => {
+          probes.push(`afterEach A`);
+        });
+        describeVi('describe', () => {
+          beforeEachVi(() => {
+            probes.push(`beforeEach AA`);
+            return () => probes.push(`clean-up beforeEach AA`);
+          });
+          afterEachVi(() => {
+            probes.push(`afterEach AA`);
+          });
+          runner.prop([fc.string()], { numRuns: requestedNumExecutions })('property', (_ignored) => {
+            probes.push(`predicate ${++runId}`);
+            return true;
+          });
+          beforeEachVi(() => {
+            probes.push(`beforeEach BB`);
+            return () => probes.push(`clean-up beforeEach BB`);
+          });
+          afterEachVi(() => {
+            probes.push(`afterEach BB`);
+          });
+        });
+        beforeEachVi(() => {
+          probes.push(`beforeEach B`);
+          return () => probes.push(`clean-up beforeEach B`);
+        });
+        afterEachVi(() => {
+          probes.push(`afterEach B`);
+        });
+        afterAllVi(() => {
+          // @ts-expect-error - No type specified, but expected
+          expectVi(probes).toEqual([
+            // WARNING: First and last run behave differently from other runs!
+            // Normal order being:
+            // - beforeEach from outer-most level to inner level in order of declaration
+            // - test itself
+            // - afterEach from inner-most level to outer level in reversed order of declaration
+            // - clean-ups for beforeEach from inner-most level to outer level in reversed order of declaration
+            // First run: clean-ups of beforeEach are delayed to the end
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 1',
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
+            // Second run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 2',
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+            // Third run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 3',
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+            // Fourth run: we let Vitest handling the afterEach for this run
+            'beforeEach A',
+            'beforeEach B',
+            'beforeEach AA',
+            'beforeEach BB',
+            'predicate 4',
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+            // Vitest handling: clean-ups for first run and afterEach for last one
+            'afterEach BB',
+            'afterEach AA',
+            'afterEach B',
+            'afterEach A',
+            'clean-up beforeEach BB',
+            'clean-up beforeEach AA',
+            'clean-up beforeEach B',
+            'clean-up beforeEach A',
+          ]);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
+    });
+
+    it.concurrent(
+      `should call beforeEach, afterEach and clean-ups the same number of times even in failure cases`,
+      async () => {
+        // Arrange
+        const specDirectory = await writeToFile(runnerName, () => {
+          // @ts-expect-error - No Typescript here
+          const probes = [];
+          beforeEachVi(() => {
+            probes.push(`beforeEach`);
+            return () => probes.push(`clean-up beforeEach`);
+          });
+          afterEachVi(() => {
+            probes.push(`afterEach`);
+          });
+          runner.fails.prop([fc.string()])('property', (s) => {
+            probes.push(`predicate`);
+            return s.length % 2 === 0;
+          });
+          afterAllVi(() => {
+            // @ts-expect-error - No Typescript here
+            const counOf = (value) => probes.filter((v) => v === value).length;
+            expectVi(counOf('beforeEach')).toBe(counOf('predicate'));
+            expectVi(counOf('afterEach')).toBe(counOf('predicate'));
+            expectVi(counOf('clean-up beforeEach')).toBe(counOf('predicate'));
+          });
+        });
+
+        // Act
+        const out = await runSpec(specDirectory);
+
+        // Assert
+        expectPass(out);
+      },
+    );
+
     it.concurrent(`should take into account configureGlobal numRuns in ${runnerName}.prop`, async () => {
       // Arrange
       const specDirectory = await writeToFile(runnerName, () => {
@@ -242,6 +397,23 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectSkip(out);
+    });
+  });
+
+  describe('.each', () => {
+    it.concurrent(`should support ${runnerName}.each`, async () => {
+      // Arrange
+      const specDirectory = await writeToFile(runnerName, () => {
+        runner.each([1, 2, 3])('property %i', (i) => {
+          expectVi(i).toBe(i);
+        });
+      });
+
+      // Act
+      const out = await runSpec(specDirectory);
+
+      // Assert
+      expectPass(out);
     });
   });
 
@@ -340,7 +512,7 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
       : (testCode: string) => testCode;
   const importFromFastCheckVitest = `import {${runner} as runner} from '@fast-check/vitest';\n`;
   const specContent =
-    "import {describe,afterAll as afterAllVi} from 'vitest';\n" +
+    "import {describe,describe as describeVi,afterAll as afterAllVi,beforeEach as beforeEachVi,afterEach as afterEachVi,expect as expectVi} from 'vitest';\n" +
     "import * as fc from 'fast-check';\n" +
     importFromFastCheckVitest +
     wrapInDescribeIfNeeded(
@@ -363,6 +535,16 @@ async function writeToFile(runner: 'test' | 'it', fileContent: () => void): Prom
   return specDirectory;
 }
 
+// Environment with AI agent env vars removed so that vitest uses its default reporter
+// instead of the AgentReporter (which strips verbose test result markers).
+const vitestEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([key]) =>
+      !['AI_AGENT', 'AUGMENT_AGENT', 'CLAUDE_CODE', 'CLAUDECODE', 'CODEX_SANDBOX', 'CODEX_THREAD_ID'].includes(key) &&
+      !['CURSOR_AGENT', 'GEMINI_CLI', 'GOOSE_PROVIDER', 'OPENCODE', 'REPL_ID'].includes(key),
+  ),
+);
+
 async function runSpec(specDirectory: string, options?: { allowOnly?: boolean }): Promise<string> {
   try {
     const args = [
@@ -375,7 +557,7 @@ async function runSpec(specDirectory: string, options?: { allowOnly?: boolean })
     if (options?.allowOnly) {
       args.push('--allowOnly');
     }
-    const { stdout: specOutput } = await execFile('node', args, { cwd: specDirectory });
+    const { stdout: specOutput } = await execFile('node', args, { cwd: specDirectory, env: vitestEnv });
     return specOutput;
   } catch (err) {
     return (err as any).stderr;

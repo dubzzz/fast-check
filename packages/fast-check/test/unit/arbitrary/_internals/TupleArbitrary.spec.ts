@@ -204,50 +204,64 @@ describe('TupleArbitrary', () => {
       expect(shrinkC).toHaveBeenCalledWith(vC, contextC);
     });
 
-    it('should clone cloneable on shrink', () => {
-      // Arrange
-      const { instance: fakeArbitraryNotCloneableA, generate: generateA, shrink: shrinkA } = fakeArbitrary<string[]>();
-      const { instance: fakeArbitraryCloneableB, generate: generateB, shrink: shrinkB } = fakeArbitrary<string[]>();
-
-      const { instance: fakeArbitraryNotCloneableC, generate: generateC, shrink: shrinkC } = fakeArbitrary<string[]>();
-      const cloneMethodImpl = vi
-        .fn()
-        .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
-      generateA.mockReturnValue(new Value([], undefined));
-      shrinkA.mockReturnValue(Stream.of(new Value([], undefined), new Value([], undefined)));
-      generateB.mockReturnValue(
-        new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
-      );
-      shrinkB.mockReturnValue(
-        Stream.of(
+    it.each([
+      { numShrinksA: 2, numShrinksB: 3, numShrinksC: 4 },
+      { numShrinksA: 7, numShrinksB: 11, numShrinksC: 5 },
+    ])(
+      'should clone cloneable on shrink (a:$numShrinksA,b:$numShrinksB,c:$numShrinksC)',
+      ({ numShrinksA, numShrinksB, numShrinksC }) => {
+        // Arrange
+        const {
+          instance: fakeArbitraryNotCloneableA,
+          generate: generateA,
+          shrink: shrinkA,
+        } = fakeArbitrary<string[]>();
+        const { instance: fakeArbitraryCloneableB, generate: generateB, shrink: shrinkB } = fakeArbitrary<string[]>();
+        const {
+          instance: fakeArbitraryNotCloneableC,
+          generate: generateC,
+          shrink: shrinkC,
+        } = fakeArbitrary<string[]>();
+        const cloneMethodImpl = vi
+          .fn()
+          .mockImplementation(() => Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }));
+        generateA.mockReturnValue(new Value([], undefined));
+        shrinkA.mockReturnValue(Stream.of(...Array.from({ length: numShrinksA }).map(() => new Value([], undefined))));
+        generateB.mockReturnValue(
           new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
-          new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
-          new Value(Object.defineProperty([], cloneMethod, { value: cloneMethodImpl }), undefined),
-        ),
-      );
-      generateC.mockReturnValue(new Value([], undefined));
-      shrinkC.mockReturnValue(
-        Stream.of(
-          new Value([], undefined),
-          new Value([], undefined),
-          new Value([], undefined),
-          new Value([], undefined),
-        ),
-      );
-      const { instance: mrng } = fakeRandom();
+        );
+        shrinkB.mockReturnValue(Stream.of(...Array.from({ length: numShrinksB }).map(() => new Value([], undefined))));
+        generateC.mockReturnValue(new Value([], undefined));
+        shrinkC.mockReturnValue(Stream.of(...Array.from({ length: numShrinksC }).map(() => new Value([], undefined))));
+        const { instance: mrng } = fakeRandom();
 
-      // Act
-      const arb = new TupleArbitrary([fakeArbitraryNotCloneableA, fakeArbitraryCloneableB, fakeArbitraryNotCloneableC]);
-      const g = arb.generate(mrng, undefined);
-      expect(cloneMethodImpl).not.toHaveBeenCalled();
-      const shrinkLazy = arb.shrink(g.value, g.context);
-      expect(cloneMethodImpl).not.toHaveBeenCalled();
-      const shrinks = [...shrinkLazy];
+        // Act
+        const arb = new TupleArbitrary([
+          fakeArbitraryNotCloneableA,
+          fakeArbitraryCloneableB,
+          fakeArbitraryNotCloneableC,
+        ]);
+        const g = arb.generate(mrng, undefined);
+        expect(cloneMethodImpl).not.toHaveBeenCalled();
+        const shrinkLazy = arb.shrink(g.value, g.context);
+        expect(cloneMethodImpl).not.toHaveBeenCalled();
+        const shrinks = [...shrinkLazy];
 
-      // Assert
-      expect(shrinks).toHaveLength(2 /* A */ + 3 /* B */ + 4 /* C */);
-      expect(cloneMethodImpl).toHaveBeenCalledTimes(shrinks.length);
-    });
+        // Assert
+        expect(shrinks).toHaveLength(numShrinksA + numShrinksB + numShrinksC);
+        // Let consider #0 to be the initial value and #n with n>0 to be the subsequent values (shrinks), we would have:
+        // - [a#1, b#0, c#0]  -> we have to clone b#0
+        // - ...              -> we have to clone b#0
+        // - [a#n, b#0, c#0]  -> we have to clone b#0
+        // - [a#0, b#1, c#0]  -> no clone needed, b#1 is already a fresh instance
+        // - ...              -> no clone needed, b#? is already a fresh instance
+        // - [a#0, b#n, c#0]  -> no clone needed, b#n is already a fresh instance
+        // - [a#0, b#0, c#1]  -> we have to clone b#0
+        // - ...              -> we have to clone b#0
+        // - [a#0, b#0, c#n]  -> we have to clone b#0
+        expect(cloneMethodImpl).toHaveBeenCalledTimes(numShrinksA + numShrinksC);
+      },
+    );
   });
 });
 

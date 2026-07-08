@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import type { GlobalDetails } from '../../src/internals/types/AllGlobals';
-import { shouldIgnoreGlobal, shouldIgnoreProperty } from '../../src/internals/FilterNonEligibleDiffs';
-import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet';
+import type { GlobalDetails } from '../../src/internals/types/AllGlobals.js';
+import { shouldIgnoreGlobal, shouldIgnoreProperty } from '../../src/internals/FilterNonEligibleDiffs.js';
+import { PoisoningFreeSet } from '../../src/internals/PoisoningFreeSet.js';
 
 describe('shouldIgnore{Global,Property}', () => {
   it('should reject any direct property on globalThis matching the regex', () => {

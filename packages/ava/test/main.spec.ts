@@ -1,21 +1,18 @@
 import * as path from 'path';
-import * as url from 'url';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
 import { describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
-// @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const avaPackageRoot = path.join(__dirname, '..');
+const avaPackageRoot = path.join(import.meta.dirname, '..');
 
 describe('ava', () => {
   it('should pass', async () => {
     const { stdout: specOutput } = await execFile(
       'node',
-      ['./node_modules/ava/entrypoints/cli.mjs', '--config', 'test/ava-specs/ava.config.js', '-s', '-t'],
+      ['./node_modules/ava/entrypoints/cli.js', '--config', 'test/ava-specs/ava.config.js', '-s', '-t'],
       { cwd: avaPackageRoot },
-    ).catch((err) => err);
+    ).catch((err: { stdout: string }) => err);
     const expectedContentLines = [
       /ok \d+ - should never be executed \(with seed=48\) # SKIP/,
       /ok \d+ - should run first/,

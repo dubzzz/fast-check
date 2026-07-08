@@ -8,7 +8,7 @@ import { Stream } from '../../../../src/stream/Stream.js';
 /**
  * Generate a fake Class inheriting from Arbitrary with all methods being mocked
  */
-export function fakeArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
+function fakeArbitraryClass<T = any>(): { Class: new () => Arbitrary<T> } & MaybeMocked<Arbitrary<T>> {
   const generate = vi.fn();
   const canShrinkWithoutContext = vi.fn() as any as ((value: unknown) => value is T) &
     MockWithArgs<(value: unknown) => value is T>;

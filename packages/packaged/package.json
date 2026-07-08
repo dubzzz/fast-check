@@ -1,10 +1,12 @@
 {
   "name": "@fast-check/packaged",
   "description": "Utility package removing any files that will not be part of the final bundle",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "type": "module",
-  "main": "lib/packaged.js",
-  "types": "lib/packaged.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./lib/packaged.js"
+  },
   "bin": "./bin/packaged.js",
   "files": [
     "bin",
@@ -12,10 +14,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "pnpm run build:publish-esm && pnpm run build:publish-types",
-    "build-ci": "pnpm run build",
-    "build:publish-types": "tsc -p tsconfig.publish.types.json",
-    "build:publish-esm": "tsc -p tsconfig.publish.json --module es2015 --moduleResolution node",
+    "build": "rolldown -c",
+    "build-ci": "rolldown -c",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -30,18 +30,18 @@
   },
   "homepage": "https://github.com/dubzzz/fast-check/tree/main/packages/packaged#readme",
   "engines": {
-    "node": ">=14.14.0"
+    "node": ">=20.19.0"
   },
   "dependencies": {
     "@npmcli/arborist": "^9.0.0",
-    "npm-packlist": "^10.0.0"
+    "npm-packlist": "^10.0.0 || ^11.0.0"
   },
   "devDependencies": {
     "@types/npm-packlist": "^7.0.3",
-    "@types/npmcli__arborist": "^6.3.1",
-    "typescript": "~5.9.3",
-    "vite": "^7.3.0",
-    "vitest": "^4.0.5"
+    "@types/npmcli__arborist": "^6.3.3",
+    "rolldown": "^1.1.5",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10"
   },
   "keywords": [],
   "funding": [

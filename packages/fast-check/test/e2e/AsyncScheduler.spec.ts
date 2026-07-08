@@ -27,13 +27,13 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     }
     const out = await fc.check(
       fc.asyncProperty(fc.scheduler(), async (s) => {
-        const fetchHeroName = s.scheduleFunction(function fetchHeroName() {
+        const scheduledFetchHeroName = s.scheduleFunction(function fetchHeroName() {
           return Promise.resolve('James Bond');
         });
-        const fetchHeroes = s.scheduleFunction(function fetchHeroesById() {
+        const scheduledFetchHeroes = s.scheduleFunction(function fetchHeroesById() {
           return Promise.resolve([{ name: 'James Bond' }]);
         });
-        const c = new Compo({ fetchHeroName, fetchHeroes });
+        const c = new Compo({ fetchHeroName: scheduledFetchHeroName, fetchHeroes: scheduledFetchHeroes });
         c.componentDidMount();
         c.render();
         while (s.count() !== 0) {
@@ -47,7 +47,7 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
     expect(out.counterexample![0].toString()).toEqual(
       'schedulerFor()`\n' +
         '-> [task${2}] function::fetchHeroesById() resolved with value [{"name":"James Bond"}]\n' +
-        '-> [task${1}] function::fetchHeroName2() pending`',
+        '-> [task${1}] function::fetchHeroName() pending`',
     );
     // Node  <16: Cannot read property 'toLowerCase' of undefined
     // Node >=16: TypeError: Cannot read properties of undefined (reading 'toLowerCase')
@@ -103,7 +103,6 @@ describe(`AsyncScheduler (seed: ${seed})`, () => {
         if (cache[packageName]) return;
 
         const packageDef = await fetch(packageName); // cache miss
-        // eslint-disable-next-line require-atomic-updates
         cache[packageName] = packageDef;
 
         await Promise.all(Object.keys(packageDef.dependencies).map((dependencyName) => feedCache(dependencyName)));

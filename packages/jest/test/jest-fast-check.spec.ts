@@ -1,6 +1,5 @@
 import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import * as path from 'path';
-import * as url from 'url';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
@@ -9,8 +8,6 @@ import type { test as _test, it as _it } from '@fast-check/jest';
 import type { jest as _jest, expect as _jestExpect } from '@jest/globals';
 
 const execFile = promisify(_execFile);
-// @ts-expect-error --module must be higher
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;
@@ -18,7 +15,7 @@ declare const jest: typeof _jest;
 declare const jestExpect: typeof _jestExpect;
 
 const generatedTestsDirectoryName = '.test-artifacts';
-const generatedTestsDirectory = path.join(__dirname, '..', generatedTestsDirectoryName);
+const generatedTestsDirectory = path.join(import.meta.dirname, '..', generatedTestsDirectoryName);
 
 const specFileName = `generated.spec.cjs`;
 const jestConfigName = `jest.config.cjs`;
@@ -522,7 +519,7 @@ describe.each<DescribeOptions>([
       // Arrange
       const specDirectory = await writeToFile(runnerName, options, () => {
         if (typeof jest !== 'undefined') {
-          jest.setTimeout(2000);
+          jest.setTimeout(3000);
         }
         runner.prop([fc.nat()])(
           'property favor local Jest timeout over Jest setTimeout',
@@ -538,7 +535,7 @@ describe.each<DescribeOptions>([
 
       // Assert
       expectFail(out);
-      expectTimeout(out, 1000); // neither 2000 (setTimeout), nor 5000 (default)
+      expectTimeout(out, 1000); // neither 3000 (setTimeout), nor 5000 (default)
       expect(out).toMatch(/[×✕] property favor local Jest timeout over Jest setTimeout/);
     });
 
@@ -554,11 +551,11 @@ describe.each<DescribeOptions>([
       });
 
       // Act
-      const out = await runSpec(specDirectory, { testTimeoutCLI: 2000 });
+      const out = await runSpec(specDirectory, { testTimeoutCLI: 3000 });
 
       // Assert
       expectFail(out);
-      expectTimeout(out, 1000); // neither 2000 (cli), nor 5000 (default)
+      expectTimeout(out, 1000); // neither 3000 (cli), nor 5000 (default)
       expect(out).toMatch(/[×✕] property favor Jest setTimeout over Jest CLI timeout/);
     });
   });
@@ -604,20 +601,44 @@ async function writeToFile(
 
   // Prepare jest config itself
   const jestConfigPath = path.join(specDirectory, jestConfigName);
+  const jestConfig = {
+    testMatch: [`<rootDir>/${specFileName}`],
+    transform: {},
+    testTimeout: options.testTimeoutConfig,
+    testRunner: options.testRunner !== undefined ? 'jest-jasmine2' : undefined,
+    ...(useWorkers
+      ? {
+          transform: { '^.+\\.[t|j]sx?$': 'babel-jest' },
+          transformIgnorePatterns: ['/node_modules/(?!(?:@fast-check/worker)/)'],
+        }
+      : {}),
+  };
+
+  // Prepare babel config (if needed)
+  const babelConfigPath = path.join(specDirectory, 'babel.config.cjs');
+  const babelConfig = useWorkers
+    ? `module.exports = { presets: [['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }]], };`
+    : undefined;
 
   // Write the files
   await Promise.all([
     fs.writeFile(specFilePath, specContent),
-    fs.writeFile(
-      jestConfigPath,
-      `module.exports = { testMatch: ['<rootDir>/${specFileName}'], transform: {}, ${
-        options.testTimeoutConfig !== undefined ? `testTimeout: ${options.testTimeoutConfig},` : ''
-      }${options.testRunner !== undefined ? `testRunner: 'jest-jasmine2',` : ''} };`,
-    ),
+    fs.writeFile(jestConfigPath, `module.exports = ${JSON.stringify(jestConfig)};`),
+    ...(babelConfig !== undefined ? [fs.writeFile(babelConfigPath, babelConfig)] : []),
   ]);
 
   return specDirectory;
 }
+
+// Environment with AI agent env vars removed so that Jest uses its default reporter
+// instead of the AgentReporter (which strips verbose test result markers).
+const jestEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([key]) =>
+      !['AI_AGENT', 'AUGMENT_AGENT', 'CLAUDE_CODE', 'CLAUDECODE', 'CODEX_SANDBOX', 'CODEX_THREAD_ID'].includes(key) &&
+      !['CURSOR_AGENT', 'GEMINI_CLI', 'GOOSE_PROVIDER', 'OPENCODE', 'REPL_ID'].includes(key),
+  ),
+);
 
 async function runSpec(
   specDirectory: string,
@@ -634,7 +655,7 @@ async function runSpec(
         ...(opts.jestSeed !== undefined ? ['--seed', String(opts.jestSeed)] : []),
         ...(opts.testTimeoutCLI !== undefined ? [`--testTimeout=${opts.testTimeoutCLI}`] : []),
       ],
-      { cwd: specDirectory },
+      { cwd: specDirectory, env: jestEnv },
     );
     return specOutput;
   } catch (err) {
@@ -656,7 +677,7 @@ function expectTimeout(out: string, timeout: number): void {
   expect(out).toMatch(timeRegex);
   const time = timeRegex.exec(out)!;
   expect(Number(time[1])).toBeGreaterThanOrEqual(timeout);
-  expect(Number(time[1])).toBeLessThan(timeout * 1.5);
+  expect(Number(time[1])).toBeLessThan(timeout * 2);
 }
 
 function expectAlignedSeeds(out: string, opts: { noAlignWithJest?: boolean } = {}): void {

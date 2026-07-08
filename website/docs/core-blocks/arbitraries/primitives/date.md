@@ -72,5 +72,5 @@ fc.date({ noInvalidDate: true });
 // • …
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/date.html).  
+Resources: [API reference](/docs/api/functions/date).  
 Available since 1.17.0.

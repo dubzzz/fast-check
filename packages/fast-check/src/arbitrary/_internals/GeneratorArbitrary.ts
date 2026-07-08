@@ -20,7 +20,7 @@ export class GeneratorArbitrary extends Arbitrary<GeneratorValue> {
     return buildGeneratorValue(mrng, biasFactor, () => [], this.arbitraryCache);
   }
 
-  canShrinkWithoutContext(value: unknown): value is GeneratorValue {
+  canShrinkWithoutContext(_value: unknown): _value is GeneratorValue {
     // Auto can NEVER shrink without any context as there is no way to find back what to call to apply the shrink
     return false;
   }

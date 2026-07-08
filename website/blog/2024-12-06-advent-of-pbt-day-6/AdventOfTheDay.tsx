@@ -1,9 +1,11 @@
 import adventBuggy from './buggy.mjs';
+import adventBuggyRaw from './buggy.mjs?raw';
 import { buildAdventOfTheDay } from '../2024-12-01-advent-of-pbt-day-1/AdventOfTheDayBuilder';
 
 const { AdventPlaygroundOfTheDay, FormOfTheDay } = buildAdventOfTheDay({
   day: 6,
-  buildBuggyAdvent: adventBuggy,
+  buggyAdvent: adventBuggy,
+  snippet: adventBuggyRaw,
   referenceAdvent: nextBarcode, // same as adventBuggy but with unitPerNumerical=10, not buggy as 25**10 is far from MAX_SAFE_INTEGER
   parser,
   placeholderForm: '🧺🎁',
@@ -46,7 +48,7 @@ type Unit =
   | '🎁';
 
 function nextBarcode(barcode: Unit[]): Unit[] {
-  const units = [
+  const units: Unit[] = [
     '\u{2709}\u{fe0f}',
     '\u{1f9fa}',
     '\u{1f384}',
@@ -105,8 +107,7 @@ function nextBarcode(barcode: Unit[]): Unit[] {
   nextNumericalVersion.reverse();
 
   // Translate next numerical value into a barcode
-  /** @type {Unit[]} */
-  const next = [];
+  const next: Unit[] = [];
   for (let numericalIndex = 0; numericalIndex !== nextNumericalVersion.length; ++numericalIndex) {
     let numericalBase25 = nextNumericalVersion[numericalIndex].toString(25);
     if (numericalIndex !== 0) {

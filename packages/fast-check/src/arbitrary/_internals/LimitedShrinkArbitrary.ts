@@ -49,7 +49,8 @@ export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
   }
   private isSafeContext(context: unknown): context is LimitedShrinkArbitraryContext {
     return (
-      context != null &&
+      context !== null &&
+      context !== undefined &&
       typeof context === 'object' &&
       'originalContext' in (context as any) &&
       'length' in (context as any)

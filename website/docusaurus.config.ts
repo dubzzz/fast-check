@@ -27,7 +27,6 @@ const config: Config = {
 
   onBrokenAnchors: 'throw',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -39,7 +38,7 @@ const config: Config = {
 
   future: {
     // More details at https://docusaurus.io/blog/releases/3.6#docusaurus-faster
-    experimental_faster: true,
+    faster: true,
     v4: true,
   },
 
@@ -68,11 +67,11 @@ const config: Config = {
       logo: { alt: 'fast-check Logo', src: 'img/mug.svg', width: '40px' },
       items: [
         { to: '/docs/introduction/', label: 'Documentation' },
-        { to: '/docs/tutorials/quick-start/', label: 'Quick Start' },
+        { to: '/docs/tutorials/quick-start/basic-setup/', label: 'Quick Start' },
         { to: '/docs/tutorials/', label: 'All Tutorials' },
         { to: '/docs/support-us/', 'aria-label': 'Support us', label: '❤️' },
         { to: '/blog', label: 'Blog', position: 'right' },
-        { href: 'https://fast-check.dev/api-reference/index.html', label: 'API', position: 'right' },
+        { to: '/docs/api/', label: 'API', position: 'right' },
         {
           href: 'https://bsky.app/profile/fast-check.dev',
           'aria-label': 'Bluesky account',
@@ -84,6 +83,12 @@ const config: Config = {
           'aria-label': 'GitHub repository',
           position: 'right',
           className: 'header-github-link',
+        },
+        {
+          href: 'https://tangled.org/fast-check.dev/fast-check',
+          'aria-label': 'Tangled repository',
+          position: 'right',
+          className: 'header-tangled-link',
         },
       ],
     },
@@ -99,7 +104,7 @@ const config: Config = {
           title: 'Guides',
           items: [
             { label: 'Documentation', to: '/docs/introduction/' },
-            { label: 'Quick Start', to: '/docs/tutorials/quick-start/' },
+            { label: 'Quick Start', to: '/docs/tutorials/quick-start/basic-setup/' },
             { label: 'All Tutorials', to: '/docs/tutorials/' },
           ],
         },
@@ -115,8 +120,9 @@ const config: Config = {
           title: 'More',
           items: [
             { label: 'Blog', to: '/blog' },
-            { label: 'API Reference', href: 'https://fast-check.dev/api-reference/index.html' },
+            { label: 'API Reference', to: '/docs/api/' },
             { label: 'GitHub', href: 'https://github.com/dubzzz/fast-check' },
+            { label: 'Tangled', href: 'https://tangled.org/fast-check.dev/fast-check' },
             { label: 'Work with me @Pigment', href: 'https://refer.hellotrusty.io/kz48qf0nh7' },
             {
               html: `<a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys via Netlify"><img src="https://www.netlify.com/v3/img/components/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" loading="lazy" /></a>`,
@@ -212,6 +218,24 @@ const config: Config = {
       },
     ],
     [
+      'docusaurus-plugin-typedoc',
+      {
+        entryPoints: ['../packages/fast-check/src/fast-check-default.ts'],
+        tsconfig: '../packages/fast-check/tsconfig.typedoc.json',
+        out: 'docs/api',
+        readme: 'none',
+        skipErrorChecking: true,
+        useCustomAnchors: true,
+        parametersFormat: 'table',
+        enumMembersFormat: 'list',
+        indexFormat: 'table',
+        textContentMappings: {
+          'title.indexPage': 'API Reference',
+          'title.modulePage': '{name}',
+        },
+      },
+    ],
+    [
       'docusaurus-plugin-llms',
       {
         generateLLMsTxt: true,
@@ -226,6 +250,23 @@ const config: Config = {
       },
     ],
   ],
+
+  markdown: {
+    mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    },
+    parseFrontMatter: async (params) => {
+      const result = await params.defaultParseFrontMatter(params);
+      // Typedoc-generated API docs contain TypeScript generics (<T>, {…}) that
+      // the MDX parser interprets as JSX. Force CommonMark format for those files.
+      if (params.filePath.includes('docs/api/')) {
+        result.frontMatter.mdx = { format: 'md' };
+      }
+      return result;
+    },
+  },
+  themes: ['@docusaurus/theme-mermaid'],
 };
 
 export default config;

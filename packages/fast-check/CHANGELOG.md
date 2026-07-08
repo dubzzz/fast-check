@@ -1,3 +1,177 @@
+# 4.8.0
+
+_New arbitrary to chain in a loop fashion_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.8.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.7.0...v4.8.0)]
+
+## Features
+
+- ([PR#6678](https://github.com/dubzzz/fast-check/pull/6678)) Add `chainUntil` arbitrary for iterative chaining
+
+## Fixes
+
+- ([PR#6965](https://github.com/dubzzz/fast-check/pull/6965)) Bug: Restore ability not to use `skipLibCheck`
+- ([PR#6877](https://github.com/dubzzz/fast-check/pull/6877)) CI: Lowercase discussion_category_name to "announcements"
+- ([PR#6878](https://github.com/dubzzz/fast-check/pull/6878)) CI: Scope permissions of clean-caches
+- ([PR#6880](https://github.com/dubzzz/fast-check/pull/6880)) CI: Add PR-authoring guidance for Claude
+- ([PR#6887](https://github.com/dubzzz/fast-check/pull/6887)) CI: Delete CLAUDE.md
+- ([PR#6888](https://github.com/dubzzz/fast-check/pull/6888)) CI: Use tilde ranges for security dependency overrides
+- ([PR#6891](https://github.com/dubzzz/fast-check/pull/6891)) CI: Disable Renovate updates on pnpm overrides
+- ([PR#6899](https://github.com/dubzzz/fast-check/pull/6899)) CI: Scope Claude hooks to `$CLAUDE_PROJECT_DIR`
+- ([PR#6905](https://github.com/dubzzz/fast-check/pull/6905)) CI: Enable pnpm global virtual store
+- ([PR#6933](https://github.com/dubzzz/fast-check/pull/6933)) CI: Pin pnpm in npm install commands
+- ([PR#6932](https://github.com/dubzzz/fast-check/pull/6932)) CI: Grant `discussions: write` to release jobs
+- ([PR#6935](https://github.com/dubzzz/fast-check/pull/6935)) CI: Skip PR template check for dubzzz
+- ([PR#6937](https://github.com/dubzzz/fast-check/pull/6937)) CI: Mirror the repo to tangled
+- ([PR#6938](https://github.com/dubzzz/fast-check/pull/6938)) CI: Add missing runs-on for tangled
+- ([PR#6889](https://github.com/dubzzz/fast-check/pull/6889)) Doc: Add release notes for fast-check 4.7.0
+- ([PR#6900](https://github.com/dubzzz/fast-check/pull/6900)) Doc: Fix broken API reference links
+- ([PR#6844](https://github.com/dubzzz/fast-check/pull/6844)) Doc: Extract manual setup guide into dedicated page
+- ([PR#6845](https://github.com/dubzzz/fast-check/pull/6845)) Doc: Add index pages for documentation sections
+- ([PR#6918](https://github.com/dubzzz/fast-check/pull/6918)) Doc: Fix Documentation link to point to first doc page
+- ([PR#6939](https://github.com/dubzzz/fast-check/pull/6939)) Doc: Link to Tangled mirror of fast-check
+- ([PR#6934](https://github.com/dubzzz/fast-check/pull/6934)) Test: Tolerate `\p{...}` value drift in docs tests
+- ([PR#6951](https://github.com/dubzzz/fast-check/pull/6951)) Test: Fix poisoning tests for latest Node
+
+---
+
+# 4.7.0
+
+_Unicode property support in `stringMatching`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.7.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.6.0...v4.7.0)]
+
+## Features
+
+- ([PR#6866](https://github.com/dubzzz/fast-check/pull/6866)) Reversible `json` arbitrary
+- ([PR#6868](https://github.com/dubzzz/fast-check/pull/6868)) Parse `\p{}` and `\P{}` in `stringMatching`
+- ([PR#6870](https://github.com/dubzzz/fast-check/pull/6870)) Support for `\p{UnicodeProperty}` in `stringMatching`
+- ([PR#6871](https://github.com/dubzzz/fast-check/pull/6871)) Support negated unicode properties in `stringMatching`
+
+## Fixes
+
+- ([PR#6710](https://github.com/dubzzz/fast-check/pull/6710)) CI: Pass explicit string to `make_latest`
+- ([PR#6714](https://github.com/dubzzz/fast-check/pull/6714)) CI: Remove unused vite dependency from multiple packages
+- ([PR#6780](https://github.com/dubzzz/fast-check/pull/6780)) CI: Silent zizmor issues (as they used to be)
+- ([PR#6786](https://github.com/dubzzz/fast-check/pull/6786)) CI: Configure release workflow settings for announcements
+- ([PR#6787](https://github.com/dubzzz/fast-check/pull/6787)) CI: Add force-build-status-execution label trigger to CI workflow
+- ([PR#6818](https://github.com/dubzzz/fast-check/pull/6818)) CI: Push tag after creating draft release
+- ([PR#6827](https://github.com/dubzzz/fast-check/pull/6827)) CI: Update CSP for our playgrounds backed by stackblitz
+- ([PR#6832](https://github.com/dubzzz/fast-check/pull/6832)) CI: Add format/lint/typecheck hooks for Claude Code
+- ([PR#6834](https://github.com/dubzzz/fast-check/pull/6834)) CI: Fix Claude's session start hook
+- ([PR#6852](https://github.com/dubzzz/fast-check/pull/6852)) CI: Skip website prebuild remote fetches on cloud Claude Code
+- ([PR#6869](https://github.com/dubzzz/fast-check/pull/6869)) CI: Add workflow to clean up GitHub Actions caches
+- ([PR#6789](https://github.com/dubzzz/fast-check/pull/6789)) Clean: Remove unused code identified by knip
+- ([PR#6711](https://github.com/dubzzz/fast-check/pull/6711)) Doc: Release note for version 4.6.0
+- ([PR#6756](https://github.com/dubzzz/fast-check/pull/6756)) Doc: Fix typo in the documentation
+- ([PR#6758](https://github.com/dubzzz/fast-check/pull/6758)) Doc: Add rugk as doc contributor
+- ([PR#6764](https://github.com/dubzzz/fast-check/pull/6764)) Doc: Document gitmoji PR naming
+- ([PR#6776](https://github.com/dubzzz/fast-check/pull/6776)) Doc: Add nielk as code contributor
+- ([PR#6753](https://github.com/dubzzz/fast-check/pull/6753)) Doc: Migrate playgrounds in documentation to StackBlitz
+- ([PR#6830](https://github.com/dubzzz/fast-check/pull/6830)) Doc: Switch to `?raw` imports for advents
+- ([PR#6836](https://github.com/dubzzz/fast-check/pull/6836)) Doc: Add Vitest documentation guide for setting up property-based testing
+- ([PR#6833](https://github.com/dubzzz/fast-check/pull/6833)) Doc: Remove dead doc hub pages
+- ([PR#6855](https://github.com/dubzzz/fast-check/pull/6855)) Doc: Integrate API reference natively into our doc
+- ([PR#6867](https://github.com/dubzzz/fast-check/pull/6867)) Doc: Simplify examples
+- ([PR#6835](https://github.com/dubzzz/fast-check/pull/6835)) Script: Migrate from ESLint to oxlint
+- ([PR#6872](https://github.com/dubzzz/fast-check/pull/6872)) Script: Rework hooks for Claude Code
+- ([PR#6754](https://github.com/dubzzz/fast-check/pull/6754)) Test: Migrate race condition tests to Vitest
+- ([PR#6859](https://github.com/dubzzz/fast-check/pull/6859)) Test: Stabilize flaky timeout tests on Windows
+
+---
+
+# 4.6.0
+
+_Better `stringMatching` with `maxLength`_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.6.0)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.3...v4.6.0)]
+
+## Features
+
+- ([PR#6599](https://github.com/dubzzz/fast-check/pull/6599)) Add basic `maxLength` support to `stringMatching`
+- ([PR#6600](https://github.com/dubzzz/fast-check/pull/6600)) Better clamp on regexes when `maxLength` on `stringMatching`
+- ([PR#6687](https://github.com/dubzzz/fast-check/pull/6687)) Deprecate `Random::next(n)` and `Random::nextInt()`
+
+## Fixes
+
+- ([PR#6502](https://github.com/dubzzz/fast-check/pull/6502)) Bug: Bad d.ts import in BuildInversedRelationsMapping
+- ([PR#6578](https://github.com/dubzzz/fast-check/pull/6578)) Bug: Don't crash when stringifying detached ArrayBuffers
+- ([PR#6700](https://github.com/dubzzz/fast-check/pull/6700)) Bug: Fix object unmapper and depth computation for special keys
+- ([PR#6432](https://github.com/dubzzz/fast-check/pull/6432)) CI: Move all dependencies to dev on examples/
+- ([PR#6443](https://github.com/dubzzz/fast-check/pull/6443)) CI: Migrate to Docusaurus v4 configuration format
+- ([PR#6456](https://github.com/dubzzz/fast-check/pull/6456)) CI: Enable persist-credentials in add-contributor workflow
+- ([PR#6501](https://github.com/dubzzz/fast-check/pull/6501)) CI: Bump module in tsconfig to node18
+- ([PR#6548](https://github.com/dubzzz/fast-check/pull/6548)) CI: Fix zizmor ignore config line numbers
+- ([PR#6554](https://github.com/dubzzz/fast-check/pull/6554)) CI: Drop tests against Node 20
+- ([PR#6563](https://github.com/dubzzz/fast-check/pull/6563)) CI: Fix check_publish status to be success on no error
+- ([PR#6565](https://github.com/dubzzz/fast-check/pull/6565)) CI: Add create release workflow
+- ([PR#6610](https://github.com/dubzzz/fast-check/pull/6610)) CI: Rework pnpm configuration
+- ([PR#6619](https://github.com/dubzzz/fast-check/pull/6619)) CI: Add PR template enforcement workflow
+- ([PR#6622](https://github.com/dubzzz/fast-check/pull/6622)) CI: Skip Netlify doc publish on PRs
+- ([PR#6625](https://github.com/dubzzz/fast-check/pull/6625)) CI: Run PR template check without approval
+- ([PR#6623](https://github.com/dubzzz/fast-check/pull/6623)) CI: Skip PR template check for Renovate bot
+- ([PR#6638](https://github.com/dubzzz/fast-check/pull/6638)) CI: Bundle `fast-check` using `rolldown`
+- ([PR#6662](https://github.com/dubzzz/fast-check/pull/6662)) CI: Rework configuration of examples
+- ([PR#6683](https://github.com/dubzzz/fast-check/pull/6683)) CI: Add Claude Code GitHub Action workflow
+- ([PR#6684](https://github.com/dubzzz/fast-check/pull/6684)) CI: Add configuration for pre and post tool Claude hooks
+- ([PR#6690](https://github.com/dubzzz/fast-check/pull/6690)) CI: Refine GH Action triggering CLAUDE
+- ([PR#6693](https://github.com/dubzzz/fast-check/pull/6693)) CI: Configure another Claude model
+- ([PR#6703](https://github.com/dubzzz/fast-check/pull/6703)) CI: Add top-level `permissions: {}` to workflows missing it
+- ([PR#6704](https://github.com/dubzzz/fast-check/pull/6704)) CI: Refactor Claude workflow custom instructions configuration
+- ([PR#6705](https://github.com/dubzzz/fast-check/pull/6705)) CI: Add SessionStart hook to ensure dependencies are installed
+- ([PR#6597](https://github.com/dubzzz/fast-check/pull/6597)) Clean: Drop runkit file
+- ([PR#6640](https://github.com/dubzzz/fast-check/pull/6640)) Clean: Drop unused "tsd" in package.json
+- ([PR#6441](https://github.com/dubzzz/fast-check/pull/6441)) Doc: Release note for 4.5.0
+- ([PR#6442](https://github.com/dubzzz/fast-check/pull/6442)) Doc: Replace generic blog tags with feature-specific taxonomy
+- ([PR#6458](https://github.com/dubzzz/fast-check/pull/6458)) Doc: Add adamni21 as doc contributor
+- ([PR#6496](https://github.com/dubzzz/fast-check/pull/6496)) Doc: Refine npm keywords
+- ([PR#6514](https://github.com/dubzzz/fast-check/pull/6514)) Doc: Skill for JavaScript testing expert
+- ([PR#6516](https://github.com/dubzzz/fast-check/pull/6516)) Doc: Add note to avoid overusing filter and fc.pre
+- ([PR#6517](https://github.com/dubzzz/fast-check/pull/6517)) Doc: Update testing skill to recommend mimicking existing test structure
+- ([PR#6523](https://github.com/dubzzz/fast-check/pull/6523)) Doc: Add PR template requirement to Copilot instructions
+- ([PR#6522](https://github.com/dubzzz/fast-check/pull/6522)) Doc: Add note on complementary testing approaches
+- ([PR#6524](https://github.com/dubzzz/fast-check/pull/6524)) Doc: Add snapshot vs screenshot guidance
+- ([PR#6527](https://github.com/dubzzz/fast-check/pull/6527)) Doc: Push to install missing tooling
+- ([PR#6530](https://github.com/dubzzz/fast-check/pull/6530)) Doc: Clearer guidelines for constraints of arbs in skill
+- ([PR#6526](https://github.com/dubzzz/fast-check/pull/6526)) Doc: Add AI-powered testing documentation
+- ([PR#6529](https://github.com/dubzzz/fast-check/pull/6529)) Doc: Add testing-library and browser testing part in skill
+- ([PR#6528](https://github.com/dubzzz/fast-check/pull/6528)) Doc: Add bigint type preference for integer computations in skill
+- ([PR#6531](https://github.com/dubzzz/fast-check/pull/6531)) Doc: Add TDD fashion thinking in skill
+- ([PR#6553](https://github.com/dubzzz/fast-check/pull/6553)) Doc: Add josephjunker as doc contributor
+- ([PR#6561](https://github.com/dubzzz/fast-check/pull/6561)) Doc: Add page on "What is property-based testing" and modify "Why property-based testing"
+- ([PR#6605](https://github.com/dubzzz/fast-check/pull/6605)) Doc: Drop Snyk link on Readme
+- ([PR#6603](https://github.com/dubzzz/fast-check/pull/6603)) Doc: Update CONTRIBUTING.md for AI
+- ([PR#6572](https://github.com/dubzzz/fast-check/pull/6572)) Doc: Rework issue templates
+- ([PR#6613](https://github.com/dubzzz/fast-check/pull/6613)) Doc: Update PR template
+- ([PR#6634](https://github.com/dubzzz/fast-check/pull/6634)) Doc: Rework bug-report template
+- ([PR#6635](https://github.com/dubzzz/fast-check/pull/6635)) Doc: Rework regression-report template
+- ([PR#6652](https://github.com/dubzzz/fast-check/pull/6652)) Doc: Update Readme to point to npmx
+- ([PR#6659](https://github.com/dubzzz/fast-check/pull/6659)) Doc: Update home to link to npmx
+- ([PR#6696](https://github.com/dubzzz/fast-check/pull/6696)) Doc: Add rushelex as code contributor
+- ([PR#6448](https://github.com/dubzzz/fast-check/pull/6448)) Performance: Optimize RunDetailsFormatter array allocations
+- ([PR#5718](https://github.com/dubzzz/fast-check/pull/5718)) Performance: Import less from pure-rand
+- ([PR#6679](https://github.com/dubzzz/fast-check/pull/6679)) Performance: Bump pure-rand to v8
+- ([PR#6446](https://github.com/dubzzz/fast-check/pull/6446)) Performance: Replace loose equality by strict one
+- ([PR#6444](https://github.com/dubzzz/fast-check/pull/6444)) Performance: Slightly faster code for RunExecution
+- ([PR#6437](https://github.com/dubzzz/fast-check/pull/6437)) Refactor: Replace fileURLToPath patterns with import.meta.\*
+- ([PR#6567](https://github.com/dubzzz/fast-check/pull/6567)) Refactor: Remove ErrorWithCause, use Error directly
+- ([PR#6621](https://github.com/dubzzz/fast-check/pull/6621)) Refactor: Replace glob package with native Node.js fs.glob
+- ([PR#6675](https://github.com/dubzzz/fast-check/pull/6675)) Refactor: Drop @rollup/plugin-replace for rolldown builtin
+- ([PR#6550](https://github.com/dubzzz/fast-check/pull/6550)) Security: Fix zizmor template-injection findings
+- ([PR#6472](https://github.com/dubzzz/fast-check/pull/6472)) Test: Provide cause when doc generation fails
+- ([PR#6381](https://github.com/dubzzz/fast-check/pull/6381)) Test: Migrate test-types to vitest
+- ([PR#6507](https://github.com/dubzzz/fast-check/pull/6507)) Test: Filter ESM-only packages from CommonJS mode checks
+- ([PR#6453](https://github.com/dubzzz/fast-check/pull/6453)) Typo: Fix typo for dictionary arbitrary constraint maxKeys
+- ([PR#6552](https://github.com/dubzzz/fast-check/pull/6552)) Typo: Replace `flatMap` with `chain` in error message
+
+---
+
+# 4.5.3
+
+_Proper attestation file naming_
+[[Code](https://github.com/dubzzz/fast-check/tree/v4.5.3)][[Diff](https://github.com/dubzzz/fast-check/compare/v4.5.2...v4.5.3)]
+
+## Fixes
+
+- ([PR#6421](https://github.com/dubzzz/fast-check/pull/6421)) CI: Rename attestation bundles to \*.sigstore.json
+
 # 4.5.2
 
 _Attach tarballs to GitHub releases_

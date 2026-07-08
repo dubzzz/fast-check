@@ -1,10 +1,22 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeCharCodeAt, safeEvery, safeJoin, safeSubstring, Error, safeIndexOf, safeMap } from '../utils/globals.js';
+import {
+  safeCharCodeAt,
+  safeEvery,
+  safeJoin,
+  safeSubstring,
+  Error,
+  safeMap,
+  Set,
+  safeHas,
+  safePush,
+} from '../utils/globals.js';
 import { stringify } from '../utils/stringify.js';
+import { clampRegexAst } from './_internals/helpers/ClampRegexAst.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import { addMissingDotStar } from './_internals/helpers/SanitizeRegexAst.js';
 import type { RegexToken } from './_internals/helpers/TokenizeRegex.js';
 import { tokenizeRegex } from './_internals/helpers/TokenizeRegex.js';
+import { unicodePropertyArbitrary } from './_internals/helpers/UnicodePropertyArbitraryHelper.js';
 import { constant } from './constant.js';
 import { constantFrom } from './constantFrom.js';
 import { integer } from './integer.js';
@@ -21,6 +33,12 @@ const safeStringFromCodePoint = String.fromCodePoint;
  */
 export type StringMatchingConstraints = {
   /**
+   * Upper bound of the generated string length (included)
+   * @defaultValue 0x7fffffff
+   * @remarks Since 4.6.0
+   */
+  maxLength?: number;
+  /**
    * Define how large the generated values should be (at max)
    * @remarks Since 3.10.0
    */
@@ -35,6 +53,13 @@ const spaceChars = [...' \t\r\n\v\f'];
 const newLineChars = [...'\r\n'];
 const terminatorChars = [...'\x1E\x15'];
 const newLineAndTerminatorChars = [...newLineChars, ...terminatorChars];
+
+// Precomputed membership sets for faster lookups
+const wordCharsSet = new Set(wordChars);
+const digitCharsSet = new Set(digitChars);
+const spaceCharsSet = new Set(spaceChars);
+const terminatorCharsSet = new Set(terminatorChars);
+const newLineAndTerminatorCharsSet = new Set(newLineAndTerminatorChars);
 
 const defaultChar = () => string({ unit: 'grapheme-ascii', minLength: 1, maxLength: 1 });
 
@@ -64,28 +89,28 @@ function toMatchingArbitrary(
             return constantFrom(...wordChars);
           }
           case '\\W': {
-            return defaultChar().filter((c) => safeIndexOf(wordChars, c) === -1);
+            return defaultChar().filter((c) => !safeHas(wordCharsSet, c));
           }
           case '\\d': {
             return constantFrom(...digitChars);
           }
           case '\\D': {
-            return defaultChar().filter((c) => safeIndexOf(digitChars, c) === -1);
+            return defaultChar().filter((c) => !safeHas(digitCharsSet, c));
           }
           case '\\s': {
             return constantFrom(...spaceChars);
           }
 
           case '\\S': {
-            return defaultChar().filter((c) => safeIndexOf(spaceChars, c) === -1);
+            return defaultChar().filter((c) => !safeHas(spaceCharsSet, c));
           }
           case '\\b':
           case '\\B': {
             throw new Error(`Meta character ${astNode.value} not implemented yet!`);
           }
           case '.': {
-            const forbiddenChars = flags.dotAll ? terminatorChars : newLineAndTerminatorChars;
-            return defaultChar().filter((c) => safeIndexOf(forbiddenChars, c) === -1);
+            const forbiddenChars = flags.dotAll ? terminatorCharsSet : newLineAndTerminatorCharsSet;
+            return defaultChar().filter((c) => !safeHas(forbiddenChars, c));
           }
         }
       }
@@ -123,10 +148,35 @@ function toMatchingArbitrary(
       throw new Error(`Wrongly defined AST tree, Quantifier nodes not supposed to be scanned!`);
     }
     case 'Alternative': {
+      // Glue consecutive Char nodes (and drop ^/$ assertions in no-multiline mode) into fewer children, so we generate faster.
+      const childrenArbitraries: Arbitrary<string>[] = [];
+      let pendingAggregatedValue = '';
+      for (const n of astNode.expressions) {
+        if (n.type === 'Char' && n.kind !== 'meta' && n.symbol !== undefined) {
+          // Plain char: accumulate it into the pending run instead of a dedicated child leading to a constant of one Char
+          pendingAggregatedValue += n.symbol;
+        } else if (flags.multiline || n.type !== 'Assertion' || (n.kind !== '^' && n.kind !== '$')) {
+          // Any other node, except ^/$ assertions when in no-multiline mode
+          if (pendingAggregatedValue !== '') {
+            safePush(childrenArbitraries, constant(pendingAggregatedValue));
+            pendingAggregatedValue = '';
+          }
+          safePush(childrenArbitraries, toMatchingArbitrary(n, constraints, flags));
+        }
+      }
+      if (pendingAggregatedValue !== '') {
+        safePush(childrenArbitraries, constant(pendingAggregatedValue));
+      }
+      // With 0 or 1 child we skip the tuple to avoid extra post-generate work
+      if (childrenArbitraries.length === 0) {
+        return constant(''); // e.g. ^$ in no-multiline mode
+      }
+      if (childrenArbitraries.length === 1) {
+        return childrenArbitraries[0];
+      }
+      // Otherwise join their results
       // TODO - No unmap implemented yet!
-      return tuple(...safeMap(astNode.expressions, (n) => toMatchingArbitrary(n, constraints, flags))).map((vs) =>
-        safeJoin(vs, ''),
-      );
+      return tuple(...childrenArbitraries).map((vs) => safeJoin(vs, ''));
     }
     case 'CharacterClass':
       if (astNode.negative) {
@@ -142,7 +192,7 @@ function toMatchingArbitrary(
         (c) => {
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          // oxlint-disable-next-line typescript/no-non-null-assertion
           return safeCharCodeAt(c, 0)!;
         },
       );
@@ -151,9 +201,20 @@ function toMatchingArbitrary(
       return toMatchingArbitrary(astNode.expression, constraints, flags);
     }
     case 'Disjunction': {
-      const left = astNode.left !== null ? toMatchingArbitrary(astNode.left, constraints, flags) : constant('');
-      const right = astNode.right !== null ? toMatchingArbitrary(astNode.right, constraints, flags) : constant('');
-      return oneof(left, right);
+      const stack = [astNode.left, astNode.right];
+      const branches: Arbitrary<string>[] = [];
+      for (let i = 0; i !== stack.length; ++i) {
+        const node = stack[i];
+        if (node === null) {
+          safePush(branches, constant(''));
+        } else if (node.type === 'Disjunction') {
+          safePush(stack, node.left);
+          safePush(stack, node.right);
+        } else {
+          safePush(branches, toMatchingArbitrary(node, constraints, flags));
+        }
+      }
+      return oneof(...branches);
     }
     case 'Assertion': {
       if (astNode.kind === '^' || astNode.kind === '$') {
@@ -189,6 +250,9 @@ function toMatchingArbitrary(
     case 'Backreference': {
       throw new Error(`Backreference nodes not implemented yet!`);
     }
+    case 'UnicodeProperty': {
+      return unicodePropertyArbitrary(astNode);
+    }
     default: {
       throw raiseUnsupportedASTNode(astNode);
     }
@@ -219,8 +283,16 @@ export function stringMatching(regex: RegExp, constraints: StringMatchingConstra
       throw new Error(`Unable to use "stringMatching" against a regex using the flag ${flag}`);
     }
   }
-  const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size };
+  const maxLength = constraints.maxLength;
+  const sanitizedConstraints: StringMatchingConstraints = { size: constraints.size, maxLength };
   const flags: RegexFlags = { multiline: regex.multiline, dotAll: regex.dotAll };
-  const regexRootToken = addMissingDotStar(tokenizeRegex(regex));
-  return toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
+  let regexRootToken = addMissingDotStar(tokenizeRegex(regex));
+  if (maxLength !== undefined) {
+    regexRootToken = clampRegexAst(regexRootToken, maxLength);
+  }
+  const baseArbitrary = toMatchingArbitrary(regexRootToken, sanitizedConstraints, flags);
+  if (maxLength !== undefined) {
+    return baseArbitrary.filter((s) => [...s].length <= maxLength);
+  }
+  return baseArbitrary;
 }

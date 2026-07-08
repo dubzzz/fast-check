@@ -8,6 +8,23 @@ Use your best judgment, and feel free to propose changes to this document in a p
 
 **Feel free to contribute, ask questions, report bugs and issue pull requests**
 
+## Table of Contents
+
+- [How Can I Contribute?](#how-can-i-contribute)
+  - [Asking questions](#asking-questions)
+  - [Reporting bugs](#reporting-bugs)
+  - [Issuing pull requests](#issuing-pull-requests)
+    - [Getting started](#getting-started)
+    - [Code style](#code-style)
+    - [GitHub Actions integration](#github-actions-integration)
+    - [Notify how impactful your change will be](#notify-how-impactful-your-change-will-be)
+    - [Naming your pull request](#naming-your-pull-request)
+    - [Update your PR](#update-your-pr)
+    - [Resync PR with main](#resync-pr-with-main)
+  - [Examples](#examples)
+    - [Adding a new arbitrary](#adding-a-new-arbitrary)
+- [Can I use AI?](#can-i-use-ai)
+
 ## How Can I Contribute?
 
 ### Asking questions
@@ -61,6 +78,43 @@ Any change in the code may have impact in the next release. In order to ease our
 - major: breaking changes
 
 In order to ease this work, before opening the PR (or after if you forgot to do it), you should run the script `pnpm -w run bump` to underline which packages have been impacted. Please note that our internals and private packages must always be toggled to 'decline' as we don't plan to bump their versions.
+
+#### Naming your pull request
+
+We follow the [gitmoji](https://gitmoji.dev/) specification for PR titles. Each PR title must start with a gitmoji that describes the nature of the change. Here are some commonly used ones:
+
+| Gitmoji | Code                    | Description          |
+| ------- | ----------------------- | -------------------- |
+| ✨      | `:sparkles:`            | New feature          |
+| 🐛      | `:bug:`                 | Bug fix              |
+| 📝      | `:memo:`                | Documentation        |
+| ✅      | `:white_check_mark:`    | Tests                |
+| 🏷️      | `:label:`               | Types                |
+| ⚡️      | `:zap:`                 | Performance          |
+| ♻️      | `:recycle:`             | Refactoring          |
+| 🔧      | `:wrench:`              | Configuration        |
+| 🎨      | `:art:`                 | Code style/format    |
+| 🔥      | `:fire:`                | Remove code/files    |
+| ⬆️      | `:arrow_up:`            | Upgrade dependencies |
+| 🗑️      | `:wastebasket:`         | Deprecation          |
+| 👷      | `:construction_worker:` | CI                   |
+
+For the full list, see [gitmoji.dev](https://gitmoji.dev/).
+
+When the change targets a package **other than `fast-check`**, add the package scope in parentheses after the emoji. The available scopes correspond to the package directory names:
+
+- `ava` — for `@fast-check/ava`
+- `jest` — for `@fast-check/jest`
+- `vitest` — for `@fast-check/vitest`
+- `worker` — for `@fast-check/worker`
+- `poisoning` — for `@fast-check/poisoning`
+- `packaged` — for `@fast-check/packaged`
+
+**Examples:**
+
+- `✨ Add new arbitrary for dates` — a feature in the main `fast-check` package (no scope needed)
+- `🐛(vitest) Fix compatibility with vitest 4` — a bug fix in `@fast-check/vitest`
+- `📝(jest) Improve usage examples` — documentation update for `@fast-check/jest`
 
 #### Update your PR
 
@@ -188,3 +242,13 @@ The spec is responsible to check that the typings are correct. It also ensures t
 - Provide a minimal JSDoc on top of your new arbitrary and use the `/** @internal */` tag to hide internals - otherwise they would get published into the generated documentation
 
 - Add the arbitrary into the list of Built-in Arbitraries - see https://fast-check.dev/docs/core-blocks/arbitraries/
+
+## Can I use AI?
+
+AI is a tool like any other. We're fine with contributions leveraging AI as long as...
+
+1. Contributors understand the change they produced. No matter if the contribution closes a long running issue, when using AI, make sure you understand and agree with each line and character it wrote.
+
+2. Contributors review the change before opening any Pull Request.
+
+3. Contributors tell us about their change. We prefer human-written summaries on Pull Requests rather than AI-generated ones.

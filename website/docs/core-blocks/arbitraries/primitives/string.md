@@ -7,7 +7,7 @@ slug: /core-blocks/arbitraries/primitives/string/
 Generate string values.
 
 :::tip
-If you want to join several strings together: refer to our [combiners section](/docs/core-blocks/arbitraries/combiners/). We have some [built-in combiners working exclusively on string values](/docs/core-blocks/arbitraries/combiners/string/).
+If you want to join several strings together: refer to our [combiners section](/docs/core-blocks/arbitraries/combiners/any/). We have some [built-in combiners working exclusively on string values](/docs/core-blocks/arbitraries/combiners/string/).
 :::
 
 ## string
@@ -77,5 +77,5 @@ fc.string({ unit: fc.constantFrom('Hello', 'World') });
 // Examples of generated values: "", "Hello", "HelloWorld", "HelloWorldHello", "WorldWorldHelloWorldHelloWorld"…
 ```
 
-Resources: [API reference](https://fast-check.dev/api-reference/functions/string.html).  
+Resources: [API reference](/docs/api/functions/string).  
 Available since 0.0.1.

@@ -8,7 +8,7 @@ export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
 ): void {
   let assertionHasBeenExecuted = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // oxlint-disable-next-line no-unused-vars
   (function (hash, stringify) {
     assertionHasBeenExecuted = true;
     try {
@@ -21,7 +21,7 @@ export function assertToStringIsSameFunction<T extends any[] | [any], TOut>(
       expect(dataFromToStringBefore).toStrictEqual(data);
       expect(dataFromToString).toStrictEqual(data);
     } catch (err) {
-      throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`);
+      throw new Error(`Invalid toString representation encountered, got: ${f}\n\nFailed with: ${err}`, { cause: err });
     }
   })(hash, stringify);
 

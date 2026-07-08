@@ -67,14 +67,16 @@ if (isMainThread) {
           let previousLevel = null;
           const summaryLines = summary.split('\n').filter((line) => line.trim() !== '');
           for (const summaryLine of summaryLines) {
-            // eslint-disable-next-line no-control-regex
+            // oxlint-disable-next-line no-control-regex
             const currentLevel = summaryLine.split(/\x1b\[32m\u221A\x1b\[0m|\x1b\[31m\xD7\x1b\[0m/)[0]; // split on success tick or error cross
             if (currentLevel !== previousLevel) {
               foundOne = true;
               try {
                 expect(summaryLine).toContain('\x1b[32m\u221A\x1b[0m'); // success tick
               } catch (subErr) {
-                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
+                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`, {
+                  cause: subErr,
+                });
               }
               previousLevel = currentLevel;
             }
@@ -101,7 +103,7 @@ if (isMainThread) {
           let previousLevel = null;
           const summaryLines = summary.split('\n').filter((line) => line.trim() !== '');
           for (const summaryLine of summaryLines) {
-            // eslint-disable-next-line no-control-regex
+            // oxlint-disable-next-line no-control-regex
             const currentLevel = summaryLine.split(/\x1b\[32m\u221A\x1b\[0m|\x1b\[31m\xD7\x1b\[0m/)[0]; // split on success tick or error cross
             if (currentLevel !== previousLevel) {
               foundOne = true;
@@ -112,7 +114,9 @@ if (isMainThread) {
                   expect(summaryLine).toContain('\x1b[31m\xD7\x1b[0m'); // error tick, we are still running on the same worker
                 }
               } catch (subErr) {
-                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`);
+                throw new Error(`Invalid summary, received:\n${summaryLines.join('\n')}\n\n${subErr}`, {
+                  cause: subErr,
+                });
               }
               previousLevel = currentLevel;
             }

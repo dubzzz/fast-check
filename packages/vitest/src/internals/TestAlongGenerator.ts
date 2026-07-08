@@ -2,16 +2,16 @@ import type { TestAPI, TestFunction, TestOptions } from 'vitest';
 import type { Arbitrary, GeneratorValue, Parameters } from 'fast-check';
 import type { ExtraContext } from './types.js';
 
-import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
+import { TestRunner } from 'vitest';
 import { assert, asyncProperty, gen, readConfigureGlobal } from 'fast-check';
 
 type TestCollectorOptions = Omit<TestOptions, 'shuffle'>;
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+// oxlint-disable-next-line typescript/no-unsafe-function-type
 type Sig1 = [name: string | Function, fn: TestFunction<ExtraContext>, options: TestCollectorOptions];
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+// oxlint-disable-next-line typescript/no-unsafe-function-type
 type Sig2 = [name: string | Function, fn?: TestFunction<ExtraContext>, options?: number | TestOptions];
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+// oxlint-disable-next-line typescript/no-unsafe-function-type
 type Sig3 = [name: string | Function, options?: TestCollectorOptions, fn?: TestFunction<ExtraContext>];
 
 function isSig1OrSig2(args: Sig1 | Sig2 | Sig3): args is Sig1 | Sig2 {
@@ -21,7 +21,7 @@ function isSig1OrSig2(args: Sig1 | Sig2 | Sig3): args is Sig1 | Sig2 {
 function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
   const [name, fn, options] = isSig1OrSig2(args) ? args : [args[0], args[2], args[1]];
   const taskName = typeof name === 'function' ? name.name : name;
-  getCurrentSuite().task(taskName, {
+  TestRunner.getCurrentSuite().task(taskName, {
     ...this,
     ...(typeof options === 'number' ? { timeout: options } : options),
     handler:
@@ -62,4 +62,6 @@ function taskCollectorBuilder(this: any, ...args: Sig1 | Sig2 | Sig3) {
   });
 }
 
-export const testAPIRefined: TestAPI<ExtraContext> = createTaskCollector(taskCollectorBuilder) as TestAPI<ExtraContext>;
+export const testAPIRefined: TestAPI<ExtraContext> = TestRunner.createTaskCollector(
+  taskCollectorBuilder,
+) as TestAPI<ExtraContext>;

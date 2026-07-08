@@ -38,7 +38,7 @@ describe('noShrink', () => {
       generate(): Value<any> {
         throw new Error('Not implemented.');
       }
-      canShrinkWithoutContext(value: unknown): value is any {
+      canShrinkWithoutContext(_value: unknown): _value is any {
         throw new Error('Not implemented.');
       }
       shrink = shrink;
@@ -60,7 +60,7 @@ describe('noShrink', () => {
       generate(): Value<any> {
         throw new Error('Not implemented.');
       }
-      canShrinkWithoutContext(value: unknown): value is any {
+      canShrinkWithoutContext(_value: unknown): _value is any {
         throw new Error('Not implemented.');
       }
       shrink(): Stream<Value<any>> {
@@ -85,7 +85,7 @@ describe('noShrink', () => {
         generate(): Value<any> {
           throw new Error('Not implemented.');
         }
-        canShrinkWithoutContext(value: unknown): value is any {
+        canShrinkWithoutContext(_value: unknown): _value is any {
           throw new Error('Not implemented.');
         }
         shrink(): Stream<Value<any>> {

@@ -7,6 +7,7 @@ const safeObjectCreate = Object.create;
 const safeObjectDefineProperty = Object.defineProperty;
 const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 const safeObjectGetPrototypeOf = Object.getPrototypeOf;
+const safeObjectPrototype = Object.prototype;
 const safeReflectOwnKeys = Reflect.ownKeys;
 
 /** @internal */
@@ -14,13 +15,19 @@ export function keyValuePairsToObjectMapper<K extends PropertyKey, V>(
   definition: ObjectDefinition<K, V>,
 ): Record<K, V> {
   const obj: Record<K, V> = definition[1] ? safeObjectCreate(null) : {};
-  for (const keyValue of definition[0]) {
-    safeObjectDefineProperty(obj, keyValue[0], {
-      enumerable: true,
-      configurable: true,
-      writable: true,
-      value: keyValue[1],
-    });
+  const keyValues = definition[0];
+  for (let idx = 0; idx !== keyValues.length; ++idx) {
+    const key = keyValues[idx][0];
+    if (key === '__proto__') {
+      safeObjectDefineProperty(obj, key, {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: keyValues[idx][1],
+      });
+    } else {
+      obj[key] = keyValues[idx][1];
+    }
   }
   return obj;
 }
@@ -44,14 +51,14 @@ export function keyValuePairsToObjectUnmapper<K extends PropertyKey, V>(value: u
     throw new Error('Incompatible instance received: should be a non-null object');
   }
   const hasNullPrototype = safeObjectGetPrototypeOf(value) === null;
-  const hasObjectPrototype = 'constructor' in value && value.constructor === Object;
+  const hasObjectPrototype = safeObjectGetPrototypeOf(value) === safeObjectPrototype;
   if (!hasNullPrototype && !hasObjectPrototype) {
     throw new Error('Incompatible instance received: should be of exact type Object');
   }
   const propertyDescriptors = safeMap(safeReflectOwnKeys(value), (key): [PropertyKey, PropertyDescriptor] => [
     key,
     // A key returned by `Reflect.ownKeys` must have a descriptor.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion
     safeObjectGetOwnPropertyDescriptor(value, key)!,
   ]);
   if (!safeEvery(propertyDescriptors, ([, descriptor]) => isValidPropertyNameFilter(descriptor))) {
