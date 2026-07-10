@@ -21,6 +21,40 @@ function bitCastFloatToUInt32(f: number): number {
   f32[0] = f;
   return u32[0];
 }
+/** @internal */
+function bitCastUInt32ToFloat(n: number): number {
+  u32[0] = n;
+  return f32[0];
+}
+
+/**
+ * 32-bit floating point NaN bit patterns that fast-check is able to produce.
+ *
+ * All the values below are indistinguishable from each other -and from any other NaN- as soon as they
+ * hit the language level: `Number.isNaN`, `===`, `Object.is`... never let any difference show up.
+ * The only way to observe the difference is to look at their raw bits, for instance by copying the value
+ * into a `Float32Array` and reading it back as a `Uint32Array` (see #6532).
+ *
+ * NAN_32_BIT_PATTERNS[0] is the canonical one: it is the pattern used whenever JavaScript itself has to
+ * produce a NaN (for instance as the result of `0/0`, or as `Number.NaN`).
+ *
+ * @internal
+ */
+export const NAN_32_BIT_PATTERNS: readonly number[] = [
+  0x7fc00000, // Canonical quiet NaN (positive)
+  0x7f800001, // Signaling NaN (positive, smallest payload)
+  0x7fffffff, // Quiet NaN with all mantissa bits set
+  0xffc00000, // Quiet NaN (negative)
+  0xff800001, // Signaling NaN (negative, smallest payload)
+];
+
+/**
+ * 32-bit floating point NaN values that fast-check is able to produce, derived from {@link NAN_32_BIT_PATTERNS}.
+ * NAN_32_VALUES[0] is the canonical one.
+ *
+ * @internal
+ */
+export const NAN_32_VALUES: readonly number[] = NAN_32_BIT_PATTERNS.map(bitCastUInt32ToFloat);
 
 /**
  * Decompose a 32-bit floating point number into its interpreted parts:
