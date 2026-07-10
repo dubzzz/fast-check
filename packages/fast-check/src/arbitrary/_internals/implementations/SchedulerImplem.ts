@@ -41,7 +41,7 @@ export type TaskSelector<TMetaData> = {
 
 /** @internal */
 export class SchedulerImplem<TMetaData> implements Scheduler<TMetaData> {
-  private lastTaskId: number;
+  declare private lastTaskId: number;
   private readonly sourceTaskSelector: TaskSelector<TMetaData>;
   private readonly scheduledTasks: ScheduledTask<TMetaData>[];
   private readonly triggeredTasks: TriggeredTask<TMetaData>[];

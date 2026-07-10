@@ -12,11 +12,12 @@ const safeObjectIs = Object.is;
 /** @internal */
 export class IntegerArbitrary extends Arbitrary<number> {
   private readonly ranges: { min: number; max: number }[];
-  constructor(
-    readonly min: number,
-    readonly max: number,
-  ) {
+  declare readonly min: number;
+  declare readonly max: number;
+  constructor(min: number, max: number) {
     super();
+    this.min = min;
+    this.max = max;
     // Precompute the ranges to be applied in case of biased generate
     this.ranges = biasNumericRange(min, max, integerLogLike);
   }

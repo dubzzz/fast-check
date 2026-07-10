@@ -18,7 +18,7 @@ const safeMathMin = Math.min;
 /** @internal */
 export class FrequencyArbitrary<T> extends Arbitrary<T> {
   readonly cumulatedWeights: number[];
-  readonly totalWeight: number;
+  declare readonly totalWeight: number;
 
   static from<T>(warbs: _WeightedArbitrary<T>[], constraints: _Constraints, label: string): Arbitrary<T> {
     if (warbs.length === 0) {

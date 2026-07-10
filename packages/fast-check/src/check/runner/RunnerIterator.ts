@@ -17,7 +17,7 @@ import type { SourceValuesIterator } from './SourceValuesIterator.js';
  */
 export class RunnerIterator<Ts> implements IterableIterator<Ts> {
   runExecution: RunExecution<Ts>;
-  private currentIdx: number;
+  declare private currentIdx: number;
   private currentValue: Value<Ts> | undefined;
   private nextValues: IterableIterator<Value<Ts>>;
   constructor(

@@ -5,11 +5,14 @@
  * @internal
  */
 export class SourceValuesIterator<Ts> implements IterableIterator<Ts> {
-  constructor(
-    readonly initialValues: IterableIterator<Ts>,
-    private maxInitialIterations: number,
-    private remainingSkips: number,
-  ) {}
+  declare readonly initialValues: IterableIterator<Ts>;
+  declare private maxInitialIterations: number;
+  declare private remainingSkips: number;
+  constructor(initialValues: IterableIterator<Ts>, maxInitialIterations: number, remainingSkips: number) {
+    this.initialValues = initialValues;
+    this.maxInitialIterations = maxInitialIterations;
+    this.remainingSkips = remainingSkips;
+  }
   [Symbol.iterator](): IterableIterator<Ts> {
     return this;
   }

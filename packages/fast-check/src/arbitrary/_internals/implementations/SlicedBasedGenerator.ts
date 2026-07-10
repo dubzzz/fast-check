@@ -9,15 +9,19 @@ const safeMathMax = Math.max;
 
 /** @internal */
 export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
+  declare private readonly arb: Arbitrary<T>;
+  declare private readonly mrng: Random;
+  declare private readonly slices: T[][];
+  declare private readonly biasFactor: number;
   private activeSliceIndex = 0;
   private nextIndexInSlice = 0; // the next index to take from the slice
   private lastIndexInSlice = -1; // the last index accepted for the current slice
-  constructor(
-    private readonly arb: Arbitrary<T>,
-    private readonly mrng: Random,
-    private readonly slices: T[][],
-    private readonly biasFactor: number,
-  ) {}
+  constructor(arb: Arbitrary<T>, mrng: Random, slices: T[][], biasFactor: number) {
+    this.arb = arb;
+    this.mrng = mrng;
+    this.slices = slices;
+    this.biasFactor = biasFactor;
+  }
   attemptExact(targetLength: number): void {
     if (targetLength !== 0 && this.mrng.nextInt(1, this.biasFactor) === 1) {
       // Let's setup the generator for exact matching if any possible

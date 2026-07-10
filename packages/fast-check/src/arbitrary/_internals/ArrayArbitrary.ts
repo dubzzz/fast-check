@@ -35,20 +35,33 @@ function biasedMaxLength(minLength: number, maxLength: number): number {
 export class ArrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly depthContext: DepthContext;
-  private readonly cachedBiasedMaxLength: number;
+  declare private readonly cachedBiasedMaxLength: number;
+
+  declare readonly arb: Arbitrary<T>;
+  declare readonly minLength: number;
+  declare readonly maxGeneratedLength: number;
+  declare readonly maxLength: number;
+  // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
+  // it's output just in case produced values are too small (below minLength)
+  declare readonly setBuilder: CustomSetBuilder<Value<T>> | undefined;
+  declare readonly customSlices: T[][];
 
   constructor(
-    readonly arb: Arbitrary<T>,
-    readonly minLength: number,
-    readonly maxGeneratedLength: number,
-    readonly maxLength: number,
+    arb: Arbitrary<T>,
+    minLength: number,
+    maxGeneratedLength: number,
+    maxLength: number,
     depthIdentifier: DepthIdentifier | string | undefined,
-    // Whenever passing a isEqual to ArrayArbitrary, you also have to filter
-    // it's output just in case produced values are too small (below minLength)
-    readonly setBuilder: CustomSetBuilder<Value<T>> | undefined,
-    readonly customSlices: T[][],
+    setBuilder: CustomSetBuilder<Value<T>> | undefined,
+    customSlices: T[][],
   ) {
     super();
+    this.arb = arb;
+    this.minLength = minLength;
+    this.maxGeneratedLength = maxGeneratedLength;
+    this.maxLength = maxLength;
+    this.setBuilder = setBuilder;
+    this.customSlices = customSlices;
     this.lengthArb = integer({ min: minLength, max: maxGeneratedLength });
     this.depthContext = getDepthContextFor(depthIdentifier);
     this.cachedBiasedMaxLength = biasedMaxLength(minLength, maxGeneratedLength);

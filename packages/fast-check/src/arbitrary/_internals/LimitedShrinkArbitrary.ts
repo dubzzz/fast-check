@@ -15,11 +15,12 @@ function* iotaFrom(startValue: number) {
 
 /** @internal */
 export class LimitedShrinkArbitrary<T> extends Arbitrary<T> {
-  constructor(
-    readonly arb: Arbitrary<T>,
-    readonly maxShrinks: number,
-  ) {
+  declare readonly arb: Arbitrary<T>;
+  declare readonly maxShrinks: number;
+  constructor(arb: Arbitrary<T>, maxShrinks: number) {
     super();
+    this.arb = arb;
+    this.maxShrinks = maxShrinks;
   }
   generate(mrng: Random, biasFactor: number | undefined): Value<T> {
     const value = this.arb.generate(mrng, biasFactor);

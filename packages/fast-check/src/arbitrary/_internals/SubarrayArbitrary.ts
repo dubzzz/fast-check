@@ -15,13 +15,18 @@ const safeArrayIsArray = Array.isArray;
 export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
   readonly lengthArb: Arbitrary<number>;
   readonly biasedLengthArb: Arbitrary<number>;
-  constructor(
-    readonly originalArray: T[],
-    readonly isOrdered: boolean,
-    readonly minLength: number,
-    readonly maxLength: number,
-  ) {
+
+  declare readonly originalArray: T[];
+  declare readonly isOrdered: boolean;
+  declare readonly minLength: number;
+  declare readonly maxLength: number;
+
+  constructor(originalArray: T[], isOrdered: boolean, minLength: number, maxLength: number) {
     super();
+    this.originalArray = originalArray;
+    this.isOrdered = isOrdered;
+    this.minLength = minLength;
+    this.maxLength = maxLength;
     if (minLength < 0 || minLength > originalArray.length)
       throw new Error(
         'fc.*{s|S}ubarrayOf expects the minimal length to be between 0 and the size of the original array',

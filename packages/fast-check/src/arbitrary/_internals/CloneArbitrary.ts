@@ -11,11 +11,12 @@ const safeObjectIs = Object.is;
 
 /** @internal */
 export class CloneArbitrary<T> extends Arbitrary<T[]> {
-  constructor(
-    readonly arb: Arbitrary<T>,
-    readonly numValues: number,
-  ) {
+  declare readonly arb: Arbitrary<T>;
+  declare readonly numValues: number;
+  constructor(arb: Arbitrary<T>, numValues: number) {
     super();
+    this.arb = arb;
+    this.numValues = numValues;
   }
 
   generate(mrng: Random, biasFactor: number | undefined): Value<T[]> {

@@ -23,7 +23,7 @@ function interruptAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clear
 
 /** @internal */
 export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
-  private skipAfterTime: number;
+  declare private skipAfterTime: number;
 
   constructor(
     readonly property: IRawProperty<Ts, IsAsync>,
