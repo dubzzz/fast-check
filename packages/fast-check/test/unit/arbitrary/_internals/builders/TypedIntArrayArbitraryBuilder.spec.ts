@@ -20,9 +20,9 @@ import { declareCleaningHooksForSpies } from '../../__test-helpers__/SpyCleaner.
 describe('typedIntArrayArbitraryArbitraryBuilder', () => {
   declareCleaningHooksForSpies();
 
-  it('should default constraints for arbitraryBuilder to defaultMin/Max when not specified', () => {
-    fc.assert(
-      fc.property(
+  it('should default constraints for arbitraryBuilder to defaultMin/Max when not specified', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         defaultsMinMaxTypedInt8Arb(),
         validArrayConstraintsArb(),
         ({ defaultMin, defaultMax, TypedArrayClass }, arrayConstraints) => {
@@ -51,9 +51,9 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
     );
   });
 
-  it('should properly distribute constraints accross arbitraries when receiving valid ones', () => {
-    fc.assert(
-      fc.property(
+  it('should properly distribute constraints accross arbitraries when receiving valid ones', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         validArrayConstraintsArb(),
         validIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {
@@ -89,9 +89,9 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
     );
   });
 
-  it('should reject invalid integer ranges', () => {
-    fc.assert(
-      fc.property(
+  it('should reject invalid integer ranges', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         validArrayConstraintsArb(),
         invalidIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {

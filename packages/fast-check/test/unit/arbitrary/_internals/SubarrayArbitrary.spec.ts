@@ -12,9 +12,9 @@ import {
 
 describe('SubarrayArbitrary', () => {
   describe('constructor', () => {
-    it('should raise an error whenever minLength is below zero', () => {
-      fc.assert(
-        fc.property(
+    it('should raise an error whenever minLength is below zero', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -33,9 +33,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever minLength is greater than array size', () => {
-      fc.assert(
-        fc.property(
+    it('should raise an error whenever minLength is greater than array size', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -54,9 +54,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever maxLength is below zero', () => {
-      fc.assert(
-        fc.property(
+    it('should raise an error whenever maxLength is below zero', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -75,9 +75,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever maxLength is greater than array size', () => {
-      fc.assert(
-        fc.property(
+    it('should raise an error whenever maxLength is greater than array size', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -96,9 +96,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever minLength is greater than maxLength', () => {
-      fc.assert(
-        fc.property(
+    it('should raise an error whenever minLength is greater than maxLength', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc
             .tuple(fc.nat(100), fc.nat(100))
             .map(([a, b]) => (a < b ? [a, b] : [b, a]))
@@ -119,9 +119,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should accept any valid combination of inputs', () => {
-      fc.assert(
-        fc.property(
+    it('should accept any valid combination of inputs', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc
             .tuple(fc.nat(100), fc.nat(100))
             .map(([a, b]) => (a < b ? [a, b] : [b, a]))

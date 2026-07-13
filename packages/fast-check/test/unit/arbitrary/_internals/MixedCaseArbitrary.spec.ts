@@ -97,9 +97,9 @@ describe('MixedCaseArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should always check against the arbitrary of string with raw when no untoggleAll', () => {
-      fc.assert(
-        fc.property(fc.string(), fc.boolean(), fc.func(fc.string()), (rawValue, isShrinkable, toggleCase) => {
+    it('should always check against the arbitrary of string with raw when no untoggleAll', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.string(), fc.boolean(), fc.func(fc.string()), (rawValue, isShrinkable, toggleCase) => {
           // Arrange
           const { instance, canShrinkWithoutContext } = fakeArbitrary();
           canShrinkWithoutContext.mockReturnValueOnce(isShrinkable);
@@ -116,9 +116,9 @@ describe('MixedCaseArbitrary', () => {
       );
     });
 
-    it('should always check against the arbitrary of string with untoggled when untoggleAll', () => {
-      fc.assert(
-        fc.property(
+    it('should always check against the arbitrary of string with untoggled when untoggleAll', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.string(),
           fc.string(),
           fc.boolean(),
