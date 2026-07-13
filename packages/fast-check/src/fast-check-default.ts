@@ -5,8 +5,6 @@ import type {
   AsyncPropertyHookFunction,
 } from './check/property/AsyncProperty.js';
 import { asyncProperty } from './check/property/AsyncProperty.js';
-import type { IProperty, IPropertyWithHooks, PropertyHookFunction } from './check/property/Property.js';
-import { property } from './check/property/Property.js';
 import type { IRawProperty, PropertyFailure } from './check/property/IRawProperty.js';
 import type { Parameters } from './check/runner/configuration/Parameters.js';
 import type {
@@ -238,12 +236,9 @@ const __commitHash = process.env.__COMMIT_HASH__ as string;
 // complex combinations
 export type {
   IRawProperty,
-  IProperty,
-  IPropertyWithHooks,
   IAsyncProperty,
   IAsyncPropertyWithHooks,
   AsyncPropertyHookFunction,
-  PropertyHookFunction,
   PropertyFailure,
   AsyncCommand,
   Command,
@@ -350,7 +345,6 @@ export {
   assert,
   pre,
   PreconditionFailure,
-  property,
   asyncProperty,
   boolean,
   falsy,
