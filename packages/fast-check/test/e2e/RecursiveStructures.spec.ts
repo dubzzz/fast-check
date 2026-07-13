@@ -7,7 +7,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
   // >  The arbitrary used as base-case for the recursive structure is a constant.
   // >  It either pass or fail. But we ca never geenrate the wrong one and miss shrinking opportunities.
 
-  it('Should shrink letrec/oneof towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink letrec/oneof towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
@@ -15,14 +15,14 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.asyncProperty(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should shrink letrec/option towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink letrec/option towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb = fc.letrec((tie) => ({
@@ -30,14 +30,14 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     })).data;
 
     // Act
-    const out = fc.check(fc.property(dataArb, (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.asyncProperty(dataArb, (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink memo/oneof towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb: fc.Memo<readonly unknown[]> = fc.memo((n) => {
@@ -46,14 +46,14 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.asyncProperty(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
     expect(flat(out.counterexample![0])).toHaveLength(failingLength);
   });
 
-  it('Should shrink memo/option towards the smallest case (on very simple scenario)', () => {
+  it('Should shrink memo/option towards the smallest case (on very simple scenario)', async () => {
     // Arrange
     const failingLength = 2;
     const dataArb: fc.Memo<unknown[]> = fc.memo((n) => {
@@ -62,7 +62,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     });
 
     // Act
-    const out = fc.check(fc.property(dataArb(5), (data) => flat(data).length < failingLength));
+    const out = await fc.check(fc.asyncProperty(dataArb(5), (data) => flat(data).length < failingLength));
 
     // Assert
     expect(out.failed).toBe(true);
