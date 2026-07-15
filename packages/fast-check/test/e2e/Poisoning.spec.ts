@@ -286,6 +286,8 @@ function dropMainGlobals(): () => void {
     // @ts-expect-error Unknown for TypeScript given our current compilation options
     typeof Temporal !== 'undefined' ? Temporal : undefined,
   ].filter((mainGlobal) => mainGlobal !== undefined);
+  const SPromise = Promise;
+  const SThen = SPromise.prototype.then;
   const skippedGlobals = new Set(['Array']);
   const allAccessibleGlobals = Object.keys(Object.getOwnPropertyDescriptors(globalThis)).filter(
     (globalName) =>
@@ -312,6 +314,10 @@ function dropMainGlobals(): () => void {
     }
     restores.push(...dropAllFromObj(mainGlobal));
   }
+
+  // oxlint-disable-next-line unicorn/no-thenable
+  SPromise.prototype.then = SThen;
+
   return () => restores.forEach((restore) => restore());
 }
 
