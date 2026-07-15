@@ -78,7 +78,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     ${'xlarge'}
   `(
     'Should be able to generate $baseSize simple recursive structures without reaching out-of-memory',
-    ({ baseSize }) => {
+    async ({ baseSize }) => {
       // Arrange
       const initialGlobal = fc.readConfigureGlobal();
       fc.configureGlobal({ ...initialGlobal, baseSize });
@@ -88,7 +88,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         })).self;
 
         // Act / Assert
-        expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+        await fc.assert(fc.asyncProperty(arb, () => true)); // expects no throw
       } finally {
         fc.configureGlobal(initialGlobal);
       }
@@ -104,7 +104,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
     ${'xlarge'}
   `(
     'Should be able to generate $baseSize array-based recursive structures without reaching out-of-memory',
-    ({ baseSize }) => {
+    async ({ baseSize }) => {
       // Arrange
       const initialGlobal = fc.readConfigureGlobal();
       fc.configureGlobal({ ...initialGlobal, baseSize });
@@ -115,7 +115,7 @@ describe(`RecursiveStructures (seed: ${seed})`, () => {
         })).self;
 
         // Act / Assert
-        expect(() => fc.assert(fc.property(arb, () => true))).not.toThrow();
+        await fc.assert(fc.asyncProperty(arb, () => true)); // expects no throw
       } finally {
         fc.configureGlobal(initialGlobal);
       }
