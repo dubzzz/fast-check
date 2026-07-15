@@ -335,11 +335,11 @@ describe('StreamArbitrary (integration)', () => {
 
   const streamBuilder = () => new StreamArbitrary(sourceArb, true);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(streamBuilder, { isEqual });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(streamBuilder, { isEqual });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(streamBuilder, isCorrect);
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(streamBuilder, isCorrect);
   });
 });

@@ -27,9 +27,9 @@ describe(`FunctionArbitrary (seed: ${seed})`, () => {
     });
   });
   describe('compareFunc', () => {
-    it('Should be able to find equivalence between distinct values', () => {
-      const out = fc.check(
-        fc.property(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
+    it('Should be able to find equivalence between distinct values', async () => {
+      const out = await fc.check(
+        fc.asyncProperty(fc.compareFunc(), fc.string(), fc.string(), (f, a, b) => {
           fc.pre(a !== b);
           return f(a, b) !== 0;
         }),

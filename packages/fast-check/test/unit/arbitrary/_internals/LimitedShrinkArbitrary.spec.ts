@@ -182,12 +182,12 @@ describe('LimitedShrinkArbitrary (integration)', () => {
   const limitedShrinkBuilder = (extra: Extra) =>
     new LimitedShrinkArbitrary(new IntegerArbitrary(0, 0x7fffffff), extra.maxShrinks);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(limitedShrinkBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(limitedShrinkBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(limitedShrinkBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(limitedShrinkBuilder, { extraParameters });
   });
 
   it.each`

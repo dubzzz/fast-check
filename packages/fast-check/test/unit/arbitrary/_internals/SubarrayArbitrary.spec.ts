@@ -179,24 +179,26 @@ describe('SubarrayArbitrary (integration)', () => {
   const SubarrayArbitraryBuilder = (extra: Extra) =>
     new SubarrayArbitrary(extra.data, extra.isOrdered, extra.minLength, extra.maxLength);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(SubarrayArbitraryBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(SubarrayArbitraryBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(SubarrayArbitraryBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(SubarrayArbitraryBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(SubarrayArbitraryBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(SubarrayArbitraryBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(SubarrayArbitraryBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(SubarrayArbitraryBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(SubarrayArbitraryBuilder, isStrictlySmallerValue, { extraParameters });
+  it('should preserve strictly smaller ordering in shrink', async () => {
+    await assertShrinkProducesStrictlySmallerValue(SubarrayArbitraryBuilder, isStrictlySmallerValue, {
+      extraParameters,
+    });
   });
 });
 

@@ -228,24 +228,24 @@ describe('IntegerArbitrary (integration)', () => {
 
   const integerBuilder = (extra: Extra) => new IntegerArbitrary(extra.min, extra.max);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(integerBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(integerBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(integerBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(integerBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(integerBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(integerBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(integerBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(integerBuilder, { extraParameters });
   });
 
-  it('should shrink towards strictly smaller values', () => {
-    assertShrinkProducesStrictlySmallerValue(integerBuilder, isStrictlySmaller, { extraParameters });
+  it('should shrink towards strictly smaller values', async () => {
+    await assertShrinkProducesStrictlySmallerValue(integerBuilder, isStrictlySmaller, { extraParameters });
   });
 
   describe('shrink', () => {

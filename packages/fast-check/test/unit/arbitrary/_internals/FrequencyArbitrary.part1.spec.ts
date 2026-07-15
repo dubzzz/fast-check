@@ -634,19 +634,19 @@ describe('FrequencyArbitrary (integration)', () => {
       'test',
     );
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(frequencyBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(frequencyBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(frequencyBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(frequencyBuilder, { extraParameters });
   });
 
-  it('should shrink towards strictly smaller values (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(frequencyBuilder, isStrictlySmaller, { extraParameters });
+  it('should shrink towards strictly smaller values (if underlyings do)', async () => {
+    await assertShrinkProducesStrictlySmallerValue(frequencyBuilder, isStrictlySmaller, { extraParameters });
   });
 });

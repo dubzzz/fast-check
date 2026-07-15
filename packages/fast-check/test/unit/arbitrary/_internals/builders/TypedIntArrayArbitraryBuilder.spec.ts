@@ -165,20 +165,22 @@ describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
       ({ min = 0, max = min }) => new FakeIntegerArbitrary(min, max - min),
     );
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(typedIntArrayArbitraryArbitraryBuilderBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(typedIntArrayArbitraryArbitraryBuilderBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
+      extraParameters,
+    });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
       extraParameters,
     });
   });
