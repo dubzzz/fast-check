@@ -49,8 +49,8 @@ describe('compareBooleanFunc (integration)', () => {
     );
   });
 
-  it('should be equivalent to compareFunc(a, b) < 0', () => {
-    assertGenerateEquivalentTo(
+  it('should be equivalent to compareFunc(a, b) < 0', async () => {
+    await assertGenerateEquivalentTo(
       () => compareBooleanFunc(),
       () => compareFunc().map((f) => (a, b) => f(a, b) < 0),
       {

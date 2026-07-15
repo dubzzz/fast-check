@@ -168,9 +168,9 @@ describe('CloneArbitrary (integration)', () => {
     await assertProduceCorrectValues(cloneBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
+  it('should produce values seen as shrinkable without any context', async () => {
     // Only when equal regarding Object.is
-    assertProduceValuesShrinkableWithoutContext(cloneBuilder, { extraParameters });
+    await assertProduceValuesShrinkableWithoutContext(cloneBuilder, { extraParameters });
   });
 
   it('should be able to shrink to the same values without initial context (if underlyings do)', async () => {

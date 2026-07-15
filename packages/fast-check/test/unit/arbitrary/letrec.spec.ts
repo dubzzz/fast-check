@@ -327,8 +327,8 @@ describe('letrec (integration)', () => {
     return a;
   };
 
-  it('should generate the values as-if we directly called the target arbitrary', () => {
-    assertGenerateEquivalentTo(letrecBuilder, () => new FakeIntegerArbitrary(), {
+  it('should generate the values as-if we directly called the target arbitrary', async () => {
+    await assertGenerateEquivalentTo(letrecBuilder, () => new FakeIntegerArbitrary(), {
       isEqualContext: (c1, c2) => {
         expect(c2).toEqual(c1);
       },
