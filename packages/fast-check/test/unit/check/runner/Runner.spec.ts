@@ -15,21 +15,17 @@ const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
     it('Should throw if property is null', () => {
-      expect(() => check(null as any as IRawProperty<unknown>)).toThrowError();
+      expect(() => check(null as any as IRawProperty<unknown, true>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => check({} as IRawProperty<unknown>)).toThrowError();
+      expect(() => check({} as IRawProperty<unknown, true>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => check(integer() as any as IRawProperty<unknown>)).toThrowError();
+      expect(() => check(integer() as any as IRawProperty<unknown, true>)).toThrowError();
     });
-    it.each`
-      isAsync
-      ${false}
-      ${true}
-    `('Should throw if both reporter and asyncReporter are defined (isAsync: $isAsync)', ({ isAsync }) => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => isAsync,
+    it('Should throw if both reporter and asyncReporter are defined', () => {
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
@@ -39,8 +35,8 @@ describe('Runner', () => {
       expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError();
     });
     it('Should not throw if reporter is specified on synchronous properties', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
@@ -50,7 +46,7 @@ describe('Runner', () => {
       expect(() => check(p, { reporter: () => {} })).not.toThrowError();
     });
     it('Should not throw if reporter is specified on asynchronous properties', () => {
-      const p: IRawProperty<[number]> = {
+      const p: IRawProperty<[number], true> = {
         isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
@@ -61,8 +57,8 @@ describe('Runner', () => {
       expect(() => check(p, { reporter: () => {} })).not.toThrowError();
     });
     it('Should throw if asyncReporter is specified on synchronous properties', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
@@ -72,7 +68,7 @@ describe('Runner', () => {
       expect(() => check(p, { asyncReporter: async () => {} })).toThrowError();
     });
     it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
-      const p: IRawProperty<[number]> = {
+      const p: IRawProperty<[number], true> = {
         isAsync: () => true,
         generate: () => new Value([0], undefined),
         shrink: () => Stream.nil(),
@@ -82,11 +78,11 @@ describe('Runner', () => {
       };
       expect(() => check(p, { asyncReporter: async () => {} })).not.toThrowError();
     });
-    it('Should call the property 100 times by default (on success)', () => {
+    it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => {
           expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
           ++numCallsGenerate;
@@ -101,16 +97,16 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p) as RunDetails<[number]>;
+      const out = await check(p);
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
-    it('Should call the property 100 times even when path provided (on success)', () => {
+    it('Should call the property 100 times even when path provided (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => {
           expect(numCallsRun).toEqual(numCallsGenerate); // called run before calling back
           ++numCallsGenerate;
@@ -125,16 +121,16 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { path: '3002' }) as RunDetails<[number]>;
+      const out = await check(p, { path: '3002' });
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
-    it('Should call the property on all shrunk values for path (on success)', () => {
+    it('Should call the property on all shrunk values for path (on success)', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => {
           ++numCallsGenerate;
           return new Value<[number]>([0], 'shrink-me');
@@ -157,7 +153,7 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { path: '3002:0' }) as RunDetails<[number]>;
+      const out = await check(p, { path: '3002:0' });
       expect(numCallsGenerate).toEqual(1);
       expect(numCallsRun).toEqual(1234);
       expect(out.failed).toBe(false);
@@ -171,58 +167,52 @@ describe('Runner', () => {
         }, []),
       );
       await fc.assert(
-        fc.asyncProperty(
-          successfulRunIdsArb,
-          fc.boolean(),
-          fc.option(fc.nat(99)),
-          async (successIds, isAsyncProp, failAtId) => {
-            let numCallsGenerate = 0;
-            let numCallsRun = 0;
-            const p: IRawProperty<[number]> = {
-              isAsync: () => isAsyncProp,
-              generate: () => new Value([numCallsGenerate++] as [number], undefined),
-              shrink: () => Stream.nil(),
-              runBeforeEach: () => {},
-              run: (value: [number]) => {
-                ++numCallsRun;
-                const successId = successIds.indexOf(value[0]);
-                if (successId !== -1) return successId === failAtId ? { error: new Error('failed') } : null;
-                return new PreconditionFailure();
-              },
-              runAfterEach: () => {},
-            };
-            const out = await check(p);
-            if (failAtId == null) {
-              const expectedGenerate = successIds[successIds.length - 1] + 1;
-              const expectedSkips = expectedGenerate - 100;
-              expect(numCallsGenerate).toEqual(expectedGenerate);
-              expect(numCallsRun).toEqual(expectedGenerate);
-              expect(out.numRuns).toEqual(100);
-              expect(out.numSkips).toEqual(expectedSkips);
-              expect(out.failed).toBe(false);
-            } else {
-              const expectedGenerate = successIds[failAtId] + 1;
-              const expectedSkips = expectedGenerate - failAtId - 1;
-              expect(numCallsGenerate).toEqual(expectedGenerate);
-              expect(numCallsRun).toEqual(expectedGenerate);
-              expect(out.numRuns).toEqual(failAtId + 1);
-              expect(out.numSkips).toEqual(expectedSkips);
-              expect(out.failed).toBe(true);
-            }
-          },
-        ),
+        fc.asyncProperty(successfulRunIdsArb, fc.option(fc.nat(99)), async (successIds, failAtId) => {
+          let numCallsGenerate = 0;
+          let numCallsRun = 0;
+          const p: IRawProperty<[number], true> = {
+            isAsync: () => true,
+            generate: () => new Value([numCallsGenerate++] as [number], undefined),
+            shrink: () => Stream.nil(),
+            runBeforeEach: () => {},
+            run: (value: [number]) => {
+              ++numCallsRun;
+              const successId = successIds.indexOf(value[0]);
+              if (successId !== -1) return successId === failAtId ? { error: new Error('failed') } : null;
+              return new PreconditionFailure();
+            },
+            runAfterEach: () => {},
+          };
+          const out = await check(p);
+          if (failAtId == null) {
+            const expectedGenerate = successIds[successIds.length - 1] + 1;
+            const expectedSkips = expectedGenerate - 100;
+            expect(numCallsGenerate).toEqual(expectedGenerate);
+            expect(numCallsRun).toEqual(expectedGenerate);
+            expect(out.numRuns).toEqual(100);
+            expect(out.numSkips).toEqual(expectedSkips);
+            expect(out.failed).toBe(false);
+          } else {
+            const expectedGenerate = successIds[failAtId] + 1;
+            const expectedSkips = expectedGenerate - failAtId - 1;
+            expect(numCallsGenerate).toEqual(expectedGenerate);
+            expect(numCallsRun).toEqual(expectedGenerate);
+            expect(out.numRuns).toEqual(failAtId + 1);
+            expect(out.numSkips).toEqual(expectedSkips);
+            expect(out.failed).toBe(true);
+          }
+        }),
       );
     });
     it('Should fail on too many precondition failures', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.nat(1000).chain((v) => fc.record({ maxSkipsPerRun: fc.constant(v), onlySuccessId: fc.nat(2 * v + 1) })),
-          fc.boolean(),
-          async (settings, isAsyncProp) => {
+          async (settings) => {
             let numCallsGenerate = 0;
             let numPreconditionFailures = 0;
-            const p: IRawProperty<[number]> = {
-              isAsync: () => isAsyncProp,
+            const p: IRawProperty<[number], true> = {
+              isAsync: () => true,
               generate: () => new Value([numCallsGenerate++] as [number], undefined),
               shrink: () => Stream.nil(),
               runBeforeEach: () => {},
@@ -244,11 +234,11 @@ describe('Runner', () => {
         ),
       );
     });
-    it('Should never call shrink on success', () => {
+    it('Should never call shrink on success', async () => {
       let numCallsGenerate = 0;
       let numCallsRun = 0;
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => {
           ++numCallsGenerate;
           return new Value([0], undefined);
@@ -263,18 +253,18 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p) as RunDetails<[number]>;
+      const out = await check(p);
       expect(numCallsGenerate).toEqual(100);
       expect(numCallsRun).toEqual(100);
       expect(out.failed).toBe(false);
     });
-    it('Should call the property 100 times by default (except on error)', () =>
-      fc.assert(
-        fc.property(fc.integer({ min: 1, max: 100 }), fc.integer(), (num, seed) => {
+    it('Should call the property 100 times by default (except on error)', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
-          const p: IRawProperty<[number]> = {
-            isAsync: () => false,
+          const p: IRawProperty<[number], true> = {
+            isAsync: () => true,
             generate: () => {
               ++numCallsGenerate;
               return new Value([0], undefined);
@@ -286,7 +276,7 @@ describe('Runner', () => {
             },
             runAfterEach: () => {},
           };
-          const out = check(p, { seed: seed }) as RunDetails<[number]>;
+          const out = await check(p, { seed: seed });
           expect(numCallsGenerate).toEqual(num); // stopped generate at first failing run
           expect(numCallsRun).toEqual(num); //  no shrink for first failing run
           expect(out.failed).toBe(true);
@@ -295,13 +285,13 @@ describe('Runner', () => {
           return true;
         }),
       ));
-    it('Should alter the number of runs when asked to', () =>
-      fc.assert(
-        fc.property(fc.nat(MAX_NUM_RUNS), (num) => {
+    it('Should alter the number of runs when asked to', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.nat(MAX_NUM_RUNS), async (num) => {
           let numCallsGenerate = 0;
           let numCallsRun = 0;
-          const p: IRawProperty<[number]> = {
-            isAsync: () => false,
+          const p: IRawProperty<[number], true> = {
+            isAsync: () => true,
             generate: () => {
               ++numCallsGenerate;
               return new Value([0], undefined);
@@ -314,19 +304,19 @@ describe('Runner', () => {
             },
             runAfterEach: () => {},
           };
-          const out = check(p, { numRuns: num }) as RunDetails<[number]>;
+          const out = await check(p, { numRuns: num });
           expect(numCallsGenerate).toEqual(num);
           expect(numCallsRun).toEqual(num);
           expect(out.failed).toBe(false);
           return true;
         }),
       ));
-    it('Should generate the same values given the same seeds', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should generate the same values given the same seeds', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), async (seed) => {
           const buildPropertyFor = function (runOn: number[]) {
-            const p: IRawProperty<[number]> = {
-              isAsync: () => false,
+            const p: IRawProperty<[number], true> = {
+              isAsync: () => true,
               generate: (rng: Random) => {
                 return new Value([rng.nextInt()], undefined);
               },
@@ -348,9 +338,9 @@ describe('Runner', () => {
           return true;
         }),
       ));
-    it('Should never call shrink if endOnFailure', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+    it('Should never call shrink if endOnFailure', async () => {
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => {
           return new Value([0], undefined);
         },
@@ -363,13 +353,13 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { endOnFailure: true }) as RunDetails<[number]>;
+      const out = await check(p, { endOnFailure: true });
       expect(out.failed).toBe(true);
       expect(out.numShrinks).toEqual(0);
     });
-    it('Should compute values for path before removing shrink if endOnFailure', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+    it('Should compute values for path before removing shrink if endOnFailure', async () => {
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => {
           return new Value([0], undefined);
         },
@@ -385,25 +375,25 @@ describe('Runner', () => {
         },
         runAfterEach: () => {},
       };
-      const out = check(p, { path: '0:0', endOnFailure: true }) as RunDetails<[number]>;
+      const out = await check(p, { path: '0:0', endOnFailure: true });
       expect(out.failed).toBe(true);
       expect(out.numShrinks).toEqual(0);
     });
-    it('Should not provide list of failures by default (no verbose)', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+    it('Should not provide list of failures by default (no verbose)', async () => {
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},
         run: () => ({ error: new Error('failure') }),
         runAfterEach: () => {},
       };
-      const out = check(p) as RunDetails<[number]>;
+      const out = await check(p);
       expect(out.failures).toHaveLength(0);
     });
-    it('Should provide the list of failures in verbose mode', () => {
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+    it('Should provide the list of failures in verbose mode', async () => {
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => new Value([42], undefined),
         shrink: (value) => {
           return value.value[0] === 42
@@ -414,52 +404,56 @@ describe('Runner', () => {
         run: () => ({ error: new Error('failure') }),
         runAfterEach: () => {},
       };
-      const out = check(p, { verbose: true }) as RunDetails<[number]>;
+      const out = await check(p, { verbose: true });
       expect(out.failures).not.toHaveLength(0);
       expect(out.failures).toEqual([[42], [48]]);
     });
-    it('Should build the right counterexamplePath', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }), (seed, failurePoints) => {
-          // Each entry (at index idx) in failurePoints represents the number of runs
-          // required before failing for the level <idx>
-          // Basically it must fail before the end of the execution (100 runs by default)
-          // so failure points are between 0 and 99 inclusive
+    it('Should build the right counterexamplePath', async () =>
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer(),
+          fc.array(fc.nat(99), { minLength: 1, maxLength: 100 }),
+          async (seed, failurePoints) => {
+            // Each entry (at index idx) in failurePoints represents the number of runs
+            // required before failing for the level <idx>
+            // Basically it must fail before the end of the execution (100 runs by default)
+            // so failure points are between 0 and 99 inclusive
 
-          let idx = 0;
-          let remainingBeforeFailure = failurePoints[idx];
-          const p: IRawProperty<[number]> = {
-            isAsync: () => false,
-            generate: (_mrng: Random) => new Value([0], failurePoints.length - 1),
-            shrink: (value) => {
-              const depth = value.context as number;
-              if (depth <= 0) {
-                return Stream.nil();
-              }
-              function* g(): IterableIterator<Value<[number]>> {
-                while (true) yield new Value([0], depth - 1);
-              }
-              return new Stream(g());
-            },
-            runBeforeEach: () => {},
-            run: (_value: [number]) => {
-              if (--remainingBeforeFailure >= 0) return null;
-              remainingBeforeFailure = failurePoints[++idx];
-              return { error: new Error('failure') };
-            },
-            runAfterEach: () => {},
-          };
-          const expectedFailurePath = failurePoints.join(':');
-          const out = check(p, { seed: seed }) as RunDetails<[number]>;
-          expect(out.failed).toBe(true);
-          expect(out.seed).toEqual(seed);
-          expect(out.numRuns).toEqual(failurePoints[0] + 1);
-          expect(out.numShrinks).toEqual(failurePoints.length - 1);
-          expect(out.counterexamplePath).toEqual(expectedFailurePath);
-        }),
+            let idx = 0;
+            let remainingBeforeFailure = failurePoints[idx];
+            const p: IRawProperty<[number], true> = {
+              isAsync: () => true,
+              generate: (_mrng: Random) => new Value([0], failurePoints.length - 1),
+              shrink: (value) => {
+                const depth = value.context as number;
+                if (depth <= 0) {
+                  return Stream.nil();
+                }
+                function* g(): IterableIterator<Value<[number]>> {
+                  while (true) yield new Value([0], depth - 1);
+                }
+                return new Stream(g());
+              },
+              runBeforeEach: () => {},
+              run: (_value: [number]) => {
+                if (--remainingBeforeFailure >= 0) return null;
+                remainingBeforeFailure = failurePoints[++idx];
+                return { error: new Error('failure') };
+              },
+              runAfterEach: () => {},
+            };
+            const expectedFailurePath = failurePoints.join(':');
+            const out = await check(p, { seed: seed });
+            expect(out.failed).toBe(true);
+            expect(out.seed).toEqual(seed);
+            expect(out.numRuns).toEqual(failurePoints[0] + 1);
+            expect(out.numShrinks).toEqual(failurePoints.length - 1);
+            expect(out.counterexamplePath).toEqual(expectedFailurePath);
+          },
+        ),
       ));
     it('Should wait on async properties to complete', async () =>
-      fc.assert(
+      await fc.assert(
         fc.asyncProperty(fc.integer({ min: 1, max: 100 }), fc.integer(), async (num, seed) => {
           const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -467,7 +461,7 @@ describe('Runner', () => {
           const waitingResolve: (() => void)[] = [];
           let numCallsGenerate = 0;
           let numCallsRun = 0;
-          const p: IRawProperty<[number]> = {
+          const p: IRawProperty<[number], true> = {
             isAsync: () => true,
             generate: () => {
               ++numCallsGenerate;
@@ -510,7 +504,7 @@ describe('Runner', () => {
         }),
       ));
     it('Should not timeout if no timeout defined', async () => {
-      const p: IRawProperty<[number]> = {
+      const p: IRawProperty<[number], true> = {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
@@ -523,7 +517,7 @@ describe('Runner', () => {
     });
     it('Should not timeout if timeout not reached', async () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
-      const p: IRawProperty<[number]> = {
+      const p: IRawProperty<[number], true> = {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
@@ -536,7 +530,7 @@ describe('Runner', () => {
     });
     it('Should timeout if it reached the timeout', async () => {
       const wait = (timeMs: number) => new Promise<null>((resolve) => setTimeout(() => resolve(null), timeMs));
-      const p: IRawProperty<[number]> = {
+      const p: IRawProperty<[number], true> = {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
@@ -549,7 +543,7 @@ describe('Runner', () => {
     });
     it('Should timeout if task never ends', async () => {
       const neverEnds = () => new Promise<null>(() => {});
-      const p: IRawProperty<[number]> = {
+      const p: IRawProperty<[number], true> = {
         isAsync: () => true,
         generate: () => new Value([1], undefined),
         shrink: () => Stream.nil(),
@@ -564,24 +558,24 @@ describe('Runner', () => {
   describe('assert', () => {
     const v1 = { toString: () => 'toString(value#1)' };
     const v2 = { a: 'Hello', b: 21 };
-    const failingProperty: IRawProperty<[any, any]> = {
-      isAsync: () => false,
+    const failingProperty: IRawProperty<[any, any], true> = {
+      isAsync: () => true,
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
       run: (_v: [any, any]) => ({ error: new Error('error in failingProperty') }),
       runAfterEach: () => {},
     };
-    const failingComplexProperty: IRawProperty<[any, any, any]> = {
-      isAsync: () => false,
+    const failingComplexProperty: IRawProperty<[any, any, any], true> = {
+      isAsync: () => true,
       generate: () => new Value([[v1, v2], v2, v1], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
       run: (_v: [any, any, any]) => ({ error: new Error('error in failingComplexProperty') }),
       runAfterEach: () => {},
     };
-    const successProperty: IRawProperty<[any, any]> = {
-      isAsync: () => false,
+    const successProperty: IRawProperty<[any, any], true> = {
+      isAsync: () => true,
       generate: () => new Value([v1, v2], undefined),
       shrink: () => Stream.nil(),
       runBeforeEach: () => {},
@@ -590,13 +584,13 @@ describe('Runner', () => {
     };
 
     it('Should throw if property is null', () => {
-      expect(() => rAssert(null as any as IRawProperty<unknown>)).toThrowError();
+      expect(() => rAssert(null as any as IRawProperty<unknown, true>)).toThrowError();
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => rAssert({} as IRawProperty<unknown>)).toThrowError();
+      expect(() => rAssert({} as IRawProperty<unknown, true>)).toThrowError();
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => rAssert(integer() as any as IRawProperty<unknown>)).toThrowError();
+      expect(() => rAssert(integer() as any as IRawProperty<unknown, true>)).toThrowError();
     });
     it('Should never throw if no failure occured', () => {
       expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();
@@ -634,8 +628,8 @@ describe('Runner', () => {
     });
     describe('Impact of VerbosityLevel in case of failure', () => {
       const baseErrorMessage = 'Property failed';
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => {
           return new Value([42], undefined);
         },
@@ -680,8 +674,8 @@ describe('Runner', () => {
     });
     describe('Impact of VerbosityLevel in case of too many skipped runs', () => {
       const baseErrorMessage = 'Failed to run property, too many pre-condition failures encountered';
-      const p: IRawProperty<[number]> = {
-        isAsync: () => false,
+      const p: IRawProperty<[number], true> = {
+        isAsync: () => true,
         generate: () => new Value([42], undefined),
         shrink: () => Stream.nil(),
         runBeforeEach: () => {},

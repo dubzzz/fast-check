@@ -62,16 +62,16 @@ describe('map (integration)', () => {
     return map(keyArb, valueArb, constraints);
   };
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(mapBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(mapBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(mapBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(mapBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(mapBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context (if underlyings do)', async () => {
+    await assertProduceValuesShrinkableWithoutContext(mapBuilder, { extraParameters });
   });
 });
 

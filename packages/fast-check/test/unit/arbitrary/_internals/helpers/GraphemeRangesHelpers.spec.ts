@@ -161,9 +161,9 @@ describe('intersectGraphemeRanges', () => {
     expect(intersection).toStrictEqual([[0, 26]]);
   });
 
-  it('should intersect a range with a cloned version of itself to itself', () => {
-    fc.assert(
-      fc.property(
+  it('should intersect a range with a cloned version of itself to itself', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         fc.clone(orderedNonOverlappingAndNonContiguousGraphemeRangesArbitrary(), 2),
         ([ranges, clonedRanges]) => {
           // Arrange / Act
@@ -176,9 +176,9 @@ describe('intersectGraphemeRanges', () => {
     );
   });
 
-  it('should be a symmetrical operation', () => {
-    fc.assert(
-      fc.property(
+  it('should be a symmetrical operation', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         orderedNonOverlappingGraphemeRangesArbitrary(),
         orderedNonOverlappingGraphemeRangesArbitrary(),
         (rangesA, rangesB) => {
@@ -193,9 +193,9 @@ describe('intersectGraphemeRanges', () => {
     );
   });
 
-  it('should produce ordered ranges', () => {
-    fc.assert(
-      fc.property(
+  it('should produce ordered ranges', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         orderedNonOverlappingGraphemeRangesArbitrary(),
         orderedNonOverlappingGraphemeRangesArbitrary(),
         (rangesA, rangesB) => {
@@ -210,9 +210,9 @@ describe('intersectGraphemeRanges', () => {
     );
   });
 
-  it('should produce non-overlapping and non-contiguous ranges', () => {
-    fc.assert(
-      fc.property(
+  it('should produce non-overlapping and non-contiguous ranges', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         orderedNonOverlappingGraphemeRangesArbitrary(),
         orderedNonOverlappingGraphemeRangesArbitrary(),
         (rangesA, rangesB) => {
@@ -231,9 +231,9 @@ describe('intersectGraphemeRanges', () => {
     );
   });
 
-  it('should shrink isolated ranges made of 1 value into a [number] and otherwise range must be ordered (min<max)', () => {
-    fc.assert(
-      fc.property(
+  it('should shrink isolated ranges made of 1 value into a [number] and otherwise range must be ordered (min<max)', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         orderedNonOverlappingGraphemeRangesArbitrary(),
         orderedNonOverlappingGraphemeRangesArbitrary(),
         (rangesA, rangesB) => {

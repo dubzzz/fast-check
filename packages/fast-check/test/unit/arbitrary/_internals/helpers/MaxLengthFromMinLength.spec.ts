@@ -19,9 +19,9 @@ import {
 } from '../../__test-helpers__/SizeHelpers.js';
 
 describe('maxLengthFromMinLength', () => {
-  it('should result into higher or equal maxLength given higher size', () => {
-    fc.assert(
-      fc.property(sizeArb, sizeArb, fc.integer({ min: 0, max: MaxLengthUpperBound }), (sa, sb, minLength) => {
+  it('should result into higher or equal maxLength given higher size', async () => {
+    await fc.assert(
+      fc.asyncProperty(sizeArb, sizeArb, fc.integer({ min: 0, max: MaxLengthUpperBound }), (sa, sb, minLength) => {
         // Arrange
         const [smallSize, largeSize] = isSmallerSize(sa, sb) ? [sa, sb] : [sb, sa];
 
@@ -33,9 +33,9 @@ describe('maxLengthFromMinLength', () => {
     );
   });
 
-  it('should result into higher or equal maxLength given higher minLength', () => {
-    fc.assert(
-      fc.property(
+  it('should result into higher or equal maxLength given higher minLength', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -55,9 +55,9 @@ describe('maxLengthFromMinLength', () => {
 });
 
 describe('maxGeneratedLengthFromSizeForArbitrary', () => {
-  it('should only consider the received size when set to Size', () => {
-    fc.assert(
-      fc.property(
+  it('should only consider the received size when set to Size', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         sizeArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -80,9 +80,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should behave as its equivalent Size taking into account global settings when receiving a RelativeSize', () => {
-    fc.assert(
-      fc.property(
+  it('should behave as its equivalent Size taking into account global settings when receiving a RelativeSize', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         relativeSizeArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -112,9 +112,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should behave as its resolved Size when in unspecified max mode', () => {
-    fc.assert(
-      fc.property(
+  it('should behave as its resolved Size when in unspecified max mode', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         fc.oneof(sizeArb, relativeSizeArb),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -139,9 +139,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should only consider the received maxLength when set to "max"', () => {
-    fc.assert(
-      fc.property(
+  it('should only consider the received maxLength when set to "max"', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -163,9 +163,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should ignore specifiedMaxLength whenever size specified', () => {
-    fc.assert(
-      fc.property(
+  it('should ignore specifiedMaxLength whenever size specified', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         sizeForArbitraryArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -189,9 +189,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should fallback to "max" whenever no size specified but maxLength specified when defaultSizeToMaxWhenMaxSpecified true or unset', () => {
-    fc.assert(
-      fc.property(
+  it('should fallback to "max" whenever no size specified but maxLength specified when defaultSizeToMaxWhenMaxSpecified true or unset', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -215,9 +215,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should fallback to baseSize (or default) whenever no size specified and no maxLength specified', () => {
-    fc.assert(
-      fc.property(
+  it('should fallback to baseSize (or default) whenever no size specified and no maxLength specified', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -239,9 +239,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
     );
   });
 
-  it('should always return a length being between minLength and maxLength', () => {
-    fc.assert(
-      fc.property(
+  it('should always return a length being between minLength and maxLength', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         fc.option(sizeForArbitraryArb, { nil: undefined }),
         fc.integer({ min: 0, max: MaxLengthUpperBound }),
@@ -266,9 +266,9 @@ describe('maxGeneratedLengthFromSizeForArbitrary', () => {
 });
 
 describe('depthSizeFromSizeForArbitrary', () => {
-  it('should only consider the received depthSize when set to a numeric value', () => {
-    fc.assert(
-      fc.property(
+  it('should only consider the received depthSize when set to a numeric value', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         sizeRelatedGlobalConfigArb,
         fc.double({ min: 0 }),
         fc.boolean(),
@@ -285,9 +285,9 @@ describe('depthSizeFromSizeForArbitrary', () => {
     );
   });
 
-  it('should only consider the received size when set to Size', () => {
-    fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, sizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
+  it('should only consider the received size when set to Size', async () => {
+    await fc.assert(
+      fc.asyncProperty(sizeRelatedGlobalConfigArb, sizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
         // Arrange / Act
         const computedDepthBias = withConfiguredGlobal(config, () =>
           depthBiasFromSizeForArbitrary(size, specifiedMaxDepth),
@@ -300,9 +300,9 @@ describe('depthSizeFromSizeForArbitrary', () => {
     );
   });
 
-  it('should behave as its equivalent Size taking into account global settings when receiving a RelativeSize', () => {
-    fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, relativeSizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
+  it('should behave as its equivalent Size taking into account global settings when receiving a RelativeSize', async () => {
+    await fc.assert(
+      fc.asyncProperty(sizeRelatedGlobalConfigArb, relativeSizeArb, fc.boolean(), (config, size, specifiedMaxDepth) => {
         // Arrange
         const { baseSize: defaultSize = DefaultSize } = config;
         const equivalentSize = relativeSizeToSize(size, defaultSize);
@@ -319,9 +319,9 @@ describe('depthSizeFromSizeForArbitrary', () => {
     );
   });
 
-  it('should always return 0 if size is max whatever the global configuration', () => {
-    fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, fc.boolean(), (config, specifiedMaxDepth) => {
+  it('should always return 0 if size is max whatever the global configuration', async () => {
+    await fc.assert(
+      fc.asyncProperty(sizeRelatedGlobalConfigArb, fc.boolean(), (config, specifiedMaxDepth) => {
         // Arrange / Act
         const computedDepthBias = withConfiguredGlobal(config, () =>
           depthBiasFromSizeForArbitrary('max', specifiedMaxDepth),
@@ -333,9 +333,9 @@ describe('depthSizeFromSizeForArbitrary', () => {
     );
   });
 
-  it('should always return 0 if both specifiedMaxDepth and defaultSizeToMaxWhenMaxSpecified are true and size unset', () => {
-    fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, (config) => {
+  it('should always return 0 if both specifiedMaxDepth and defaultSizeToMaxWhenMaxSpecified are true and size unset', async () => {
+    await fc.assert(
+      fc.asyncProperty(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange / Act
         const computedDepthBias = withConfiguredGlobal({ ...config, defaultSizeToMaxWhenMaxSpecified: true }, () =>
           depthBiasFromSizeForArbitrary(undefined, true),

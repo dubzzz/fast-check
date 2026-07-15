@@ -45,9 +45,9 @@ const hardCodedRandomTypeWithJump = fc.constantFrom(
 
 describe('QualifiedParameters', () => {
   describe('read', () => {
-    it('Should forward as-is values already set in Parameters', () =>
-      fc.assert(
-        fc.property(parametersArbitrary, (params) => {
+    it('Should forward as-is values already set in Parameters', async () =>
+      await fc.assert(
+        fc.asyncProperty(parametersArbitrary, (params) => {
           const qualifiedParams = read(params);
           for (const key of Object.keys(params)) {
             expect(qualifiedParams).toHaveProperty(key);
@@ -58,17 +58,17 @@ describe('QualifiedParameters', () => {
           }
         }),
       ));
-    it('Should transform verbose boolean to its corresponding VerbosityLevel', () =>
-      fc.assert(
-        fc.property(parametersArbitrary, fc.boolean(), (params, verbose) => {
+    it('Should transform verbose boolean to its corresponding VerbosityLevel', async () =>
+      await fc.assert(
+        fc.asyncProperty(parametersArbitrary, fc.boolean(), (params, verbose) => {
           const expectedVerbosityLevel = verbose ? VerbosityLevel.Verbose : VerbosityLevel.None;
           const qparams = read({ ...params, verbose });
           return qparams.verbose === expectedVerbosityLevel;
         }),
       ));
-    it('Should transform correctly hardcoded randomType', () =>
-      fc.assert(
-        fc.property(
+    it('Should transform correctly hardcoded randomType', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           parametersArbitrary,
           fc.option(hardCodedRandomTypeWithJump, { nil: undefined }),
           (params, randomType) => {
@@ -86,9 +86,9 @@ describe('QualifiedParameters', () => {
           },
         ),
       ));
-    it('Should throw on invalid randomType', () =>
-      fc.assert(
-        fc.property(parametersArbitrary, (params) => {
+    it('Should throw on invalid randomType', async () =>
+      await fc.assert(
+        fc.asyncProperty(parametersArbitrary, (params) => {
           expect(() => read({ ...params, randomType: 'invalid' as RandomType })).toThrowError();
         }),
       ));
@@ -99,24 +99,24 @@ describe('QualifiedParameters', () => {
         fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }),
         fc.constantFrom(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN),
       );
-      it('Should produce 32 bits signed seed', () =>
-        fc.assert(
-          fc.property(seedsOutsideRangeArb, (unsafeSeed) => {
+      it('Should produce 32 bits signed seed', async () =>
+        await fc.assert(
+          fc.asyncProperty(seedsOutsideRangeArb, (unsafeSeed) => {
             const qparams = read({ seed: unsafeSeed });
             return (qparams.seed | 0) === qparams.seed;
           }),
         ));
-      it('Should produce the same seed given the same input', () =>
-        fc.assert(
-          fc.property(seedsOutsideRangeArb, (unsafeSeed) => {
+      it('Should produce the same seed given the same input', async () =>
+        await fc.assert(
+          fc.asyncProperty(seedsOutsideRangeArb, (unsafeSeed) => {
             const qparams1 = read({ seed: unsafeSeed });
             const qparams2 = read({ seed: unsafeSeed });
             return qparams1.seed === qparams2.seed;
           }),
         ));
-      it('Should transform distinct values between 0 and 1 into distinct seeds', () =>
-        fc.assert(
-          fc.property(
+      it('Should transform distinct values between 0 and 1 into distinct seeds', async () =>
+        await fc.assert(
+          fc.asyncProperty(
             fc.double({ min: 0, max: 1 - Number.EPSILON }),
             fc.double({ min: 0, max: 1 - Number.EPSILON }),
             (unsafeSeed1, unsafeSeed2) => {
@@ -127,9 +127,9 @@ describe('QualifiedParameters', () => {
             },
           ),
         ));
-      it('Should truncate integer values into a 32 signed bits seed', () =>
-        fc.assert(
-          fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (unsafeSeed) => {
+      it('Should truncate integer values into a 32 signed bits seed', async () =>
+        await fc.assert(
+          fc.asyncProperty(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER }), (unsafeSeed) => {
             const qparams = read({ seed: unsafeSeed });
             return qparams.seed === (unsafeSeed | 0);
           }),

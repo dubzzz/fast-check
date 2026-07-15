@@ -14,8 +14,8 @@ import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameF
 describe('compareBooleanFunc (integration)', () => {
   const compareBooleanFuncBuilder = () => compareBooleanFunc();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(compareBooleanFuncBuilder, {
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(compareBooleanFuncBuilder, {
       extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything()), { minLength: 1 }),
       isEqual: (fa, fb, calls) => {
         for (const [a, b] of calls) {
@@ -25,8 +25,8 @@ describe('compareBooleanFunc (integration)', () => {
     });
   });
 
-  it('should be transitive', () => {
-    assertProduceCorrectValues(
+  it('should be transitive', async () => {
+    await assertProduceCorrectValues(
       compareBooleanFuncBuilder,
       (f, [a, b, c]) => {
         const ab = f(a, b);
@@ -39,8 +39,8 @@ describe('compareBooleanFunc (integration)', () => {
     );
   });
 
-  it('should be false when a = b', () => {
-    assertProduceCorrectValues(
+  it('should be false when a = b', async () => {
+    await assertProduceCorrectValues(
       compareBooleanFuncBuilder,
       (f, a) => {
         expect(f(a, a)).toBe(false);
@@ -49,8 +49,8 @@ describe('compareBooleanFunc (integration)', () => {
     );
   });
 
-  it('should be equivalent to compareFunc(a, b) < 0', () => {
-    assertGenerateEquivalentTo(
+  it('should be equivalent to compareFunc(a, b) < 0', async () => {
+    await assertGenerateEquivalentTo(
       () => compareBooleanFunc(),
       () => compareFunc().map((f) => (a, b) => f(a, b) < 0),
       {
@@ -60,14 +60,14 @@ describe('compareBooleanFunc (integration)', () => {
     );
   });
 
-  it('should give a re-usable string representation of the function', () => {
-    assertProduceCorrectValues(compareBooleanFuncBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
+  it('should give a re-usable string representation of the function', async () => {
+    await assertProduceCorrectValues(compareBooleanFuncBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
       extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything())),
     });
   });
 
-  it('should produce cloneable instances with independant histories', () => {
-    assertProduceCorrectValues(
+  it('should produce cloneable instances with independant histories', async () => {
+    await assertProduceCorrectValues(
       compareBooleanFuncBuilder,
       (f, calls) => {
         for (const [a, b] of calls) {

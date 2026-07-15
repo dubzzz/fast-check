@@ -4,26 +4,26 @@ import _ from 'lodash';
 import { sort } from './src/sort.js';
 
 describe('sort', () => {
-  it('should have the same length as source', () => {
-    fc.assert(
-      fc.property(fc.array(fc.integer()), (data) => {
+  it('should have the same length as source', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.array(fc.integer()), (data) => {
         expect(sort(data)).toHaveLength(data.length);
       }),
     );
   });
 
-  it('should have exactly the same number of occurences as source for each item', () => {
-    fc.assert(
-      fc.property(fc.array(fc.integer()), (data) => {
+  it('should have exactly the same number of occurences as source for each item', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.array(fc.integer()), (data) => {
         const sorted = sort(data);
         expect(_.groupBy(sorted)).toEqual(_.groupBy(data));
       }),
     );
   });
 
-  it('should produce an ordered array', () => {
-    fc.assert(
-      fc.property(fc.array(fc.integer()), (data) => {
+  it('should produce an ordered array', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.array(fc.integer()), (data) => {
         const sorted = sort(data);
         for (let idx = 1; idx < sorted.length; ++idx) {
           expect(sorted[idx - 1]).toBeLessThanOrEqual(sorted[idx]);
@@ -32,9 +32,9 @@ describe('sort', () => {
     );
   });
 
-  it('should produce an ordered array with respect to a custom compare function', () => {
-    fc.assert(
-      fc.property(fc.array(fc.integer()), fc.compareBooleanFunc(), (data, compare) => {
+  it('should produce an ordered array with respect to a custom compare function', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.array(fc.integer()), fc.compareBooleanFunc(), (data, compare) => {
         const sorted = sort(data, compare);
         for (let idx = 1; idx < sorted.length; ++idx) {
           // compare(sorted[idx], sorted[idx - 1]):
