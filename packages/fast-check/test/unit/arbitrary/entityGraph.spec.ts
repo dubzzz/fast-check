@@ -213,12 +213,12 @@ describe('entityGraph (integration)', () => {
       return true;
     };
 
-    it('should produce the same values given the same seed', () => {
-      assertProduceSameValueGivenSameSeed(entityGraphBuilder, { isEqual, extraParameters });
+    it('should produce the same values given the same seed', async () => {
+      await assertProduceSameValueGivenSameSeed(entityGraphBuilder, { isEqual, extraParameters });
     });
 
-    it('should only produce correct values', () => {
-      assertProduceCorrectValues(entityGraphBuilder, isCorrect, { extraParameters });
+    it('should only produce correct values', async () => {
+      await assertProduceCorrectValues(entityGraphBuilder, isCorrect, { extraParameters });
     });
   });
 
@@ -266,12 +266,12 @@ describe('entityGraph (integration)', () => {
       return true;
     };
 
-    it('should produce the same values given the same seed', () => {
-      assertProduceSameValueGivenSameSeed(graphBuilder, { isEqual, extraParameters });
+    it('should produce the same values given the same seed', async () => {
+      await assertProduceSameValueGivenSameSeed(graphBuilder, { isEqual, extraParameters });
     });
 
-    it('should only produce correct values', () => {
-      assertProduceCorrectValues(graphBuilder, isCorrect, { extraParameters });
+    it('should only produce correct values', async () => {
+      await assertProduceCorrectValues(graphBuilder, isCorrect, { extraParameters });
     });
   });
 });

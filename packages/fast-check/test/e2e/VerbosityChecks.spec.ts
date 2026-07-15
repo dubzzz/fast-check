@@ -3,12 +3,12 @@ import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`VerbosityChecks (seed: ${seed})`, () => {
-  it('should produce the right list of failing cases in verbose mode', () => {
+  it('should produce the right list of failing cases in verbose mode', async () => {
     let failed = false;
     const expectedLines: string[] = [];
     try {
-      fc.assert(
-        fc.property(fc.integer(), fc.integer(), (x, y) => {
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), fc.integer(), (x, y) => {
           fc.pre(Math.abs(x - y) >= 10);
           if (x < y && x > 0) {
             expectedLines.push(`- [${x},${y}]`);
@@ -28,13 +28,13 @@ describe(`VerbosityChecks (seed: ${seed})`, () => {
     }
     expect(failed).toBe(true);
   });
-  it('should produce the right execution tree in very verbose mode', () => {
+  it('should produce the right execution tree in very verbose mode', async () => {
     let failed = false;
     const expectedLines: string[] = [];
     let indent = '';
     try {
-      fc.assert(
-        fc.property(fc.integer(), fc.integer(), (x, y) => {
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), fc.integer(), (x, y) => {
           if (Math.abs(x - y) < 10) {
             expectedLines.push(`${indent}\x1b[33m!\x1b[0m [${x},${y}]`);
             fc.pre(false);

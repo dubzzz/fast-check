@@ -57,19 +57,19 @@ describe('ulid (integration)', () => {
     expect(u).toMatch(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
   };
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(ulid);
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(ulid);
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(ulid, isCorrect);
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(ulid, isCorrect);
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(ulid);
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(ulid);
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(ulid);
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(ulid);
   });
 });

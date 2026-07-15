@@ -17,9 +17,9 @@ describe('charsToStringUnmapper', () => {
     expect(charsToStringUnmapper(source)).toEqual(expected);
   });
 
-  it('should be able to split any string mapped from chars into chars', () =>
-    fc.assert(
-      fc.property(fc.array(fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n))), (data) => {
+  it('should be able to split any string mapped from chars into chars', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.array(fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n))), (data) => {
         // Arrange
         const source = charsToStringMapper(data);
 

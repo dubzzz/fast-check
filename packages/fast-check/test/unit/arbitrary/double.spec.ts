@@ -28,9 +28,9 @@ import * as BigIntMock from '../../../src/arbitrary/bigInt.js';
 describe('double', () => {
   declareCleaningHooksForSpies();
 
-  it('should accept any valid range of floating point numbers (including infinity)', () => {
-    fc.assert(
-      fc.property(doubleConstraints({ ...defaultDoubleRecordConstraints, noInteger: undefined }), (ct) => {
+  it('should accept any valid range of floating point numbers (including infinity)', async () => {
+    await fc.assert(
+      fc.asyncProperty(doubleConstraints({ ...defaultDoubleRecordConstraints, noInteger: undefined }), (ct) => {
         // Arrange
         spyBigInt();
 
@@ -43,9 +43,9 @@ describe('double', () => {
     );
   });
 
-  it('should accept any constraints defining min (not-NaN) equal to max', () => {
-    fc.assert(
-      fc.property(
+  it('should accept any constraints defining min (not-NaN) equal to max', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         float64raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         (f, otherCt) => {
@@ -63,9 +63,9 @@ describe('double', () => {
     );
   });
 
-  it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', () => {
-    fc.assert(
-      fc.property(
+  it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         float64raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         fc.constantFrom('min', 'max', 'both'),
@@ -107,9 +107,9 @@ describe('double', () => {
     expect(bigInt).not.toHaveBeenCalled();
   });
 
-  it('should reject if specified min is strictly greater than max', () => {
-    fc.assert(
-      fc.property(float64raw(), float64raw(), (da, db) => {
+  it('should reject if specified min is strictly greater than max', async () => {
+    await fc.assert(
+      fc.asyncProperty(float64raw(), float64raw(), (da, db) => {
         // Arrange
         fc.pre(!Number.isNaN(da));
         fc.pre(!Number.isNaN(db));
@@ -135,7 +135,7 @@ describe('double', () => {
     expect(bigInt).not.toHaveBeenCalled();
   });
 
-  it('should properly convert integer value for index between min and max into its associated float value', () => {
+  it('should properly convert integer value for index between min and max into its associated float value', async () => {
     const withoutExcludedConstraints = {
       ...defaultDoubleRecordConstraints,
       minExcluded: fc.constant(false),
@@ -143,8 +143,8 @@ describe('double', () => {
       noInteger: fc.constant(false),
     };
 
-    fc.assert(
-      fc.property(
+    await fc.assert(
+      fc.asyncProperty(
         fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
         fc.bigInt({ min: BigInt(0) }),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -175,9 +175,9 @@ describe('double', () => {
       noInteger: fc.constant(false),
     };
 
-    it('should ask for a range with one extra value (far from zero)', () => {
-      fc.assert(
-        fc.property(doubleConstraints(withNaNRecordConstraints), (ct) => {
+    it('should ask for a range with one extra value (far from zero)', async () => {
+      await fc.assert(
+        fc.asyncProperty(doubleConstraints(withNaNRecordConstraints), (ct) => {
           // Arrange
           const { max } = minMaxForConstraints(ct);
           const bigInt = spyBigInt();
@@ -216,9 +216,9 @@ describe('double', () => {
       );
     });
 
-    it('should properly convert the extra value to NaN', () => {
-      fc.assert(
-        fc.property(
+    it('should properly convert the extra value to NaN', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           doubleConstraints(withNaNRecordConstraints),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (ct, biasFactor) => {
@@ -259,9 +259,9 @@ describe('double', () => {
   });
 
   describe('without NaN', () => {
-    it('should ask integers between the indexes corresponding to min and max', () => {
-      fc.assert(
-        fc.property(
+    it('should ask integers between the indexes corresponding to min and max', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           doubleConstraints({ ...defaultDoubleRecordConstraints, noNaN: undefined, noInteger: undefined }),
           (ctDraft) => {
             // Arrange
@@ -349,24 +349,24 @@ describe('double (integration)', () => {
 
   const doubleBuilder = (extra: Extra) => double(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(doubleBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(doubleBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(doubleBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(doubleBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(doubleBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(doubleBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(doubleBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(doubleBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(doubleBuilder, isStrictlySmaller, { extraParameters });
+  it('should preserve strictly smaller ordering in shrink', async () => {
+    await assertShrinkProducesStrictlySmallerValue(doubleBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 

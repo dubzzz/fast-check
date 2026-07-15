@@ -66,9 +66,9 @@ describe('CloneArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should return false if passed value does not have the right length', () =>
-      fc.assert(
-        fc.property(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (numValues, numRequestedValues) => {
+    it('should return false if passed value does not have the right length', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (numValues, numRequestedValues) => {
           // Arrange
           fc.pre(numValues !== numRequestedValues);
           const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
@@ -160,25 +160,25 @@ describe('CloneArbitrary (integration)', () => {
 
   const cloneBuilder = (extra: Extra) => new CloneArbitrary(new FakeIntegerArbitrary(), extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(cloneBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(cloneBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(cloneBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(cloneBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
+  it('should produce values seen as shrinkable without any context', async () => {
     // Only when equal regarding Object.is
-    assertProduceValuesShrinkableWithoutContext(cloneBuilder, { extraParameters });
+    await assertProduceValuesShrinkableWithoutContext(cloneBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(cloneBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context (if underlyings do)', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(cloneBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(cloneBuilder, isStrictlySmaller, { extraParameters });
+  it('should preserve strictly smaller ordering in shrink (if underlyings do)', async () => {
+    await assertShrinkProducesStrictlySmallerValue(cloneBuilder, isStrictlySmaller, { extraParameters });
   });
 
   it('should produce the right shrinking tree', () => {

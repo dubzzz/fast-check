@@ -36,24 +36,24 @@ describe('set (integration)', () => {
 
   const setBuilder = (extra: Extra) => set(nat(10000), extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(setBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(setBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(setBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(setBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(setBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(setBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(setBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(setBuilder, { extraParameters });
   });
 
-  it('should handle special numeric values correctly (NaN, -0, +0)', () => {
-    assertProduceCorrectValues(
+  it('should handle special numeric values correctly (NaN, -0, +0)', async () => {
+    await assertProduceCorrectValues(
       () => set(constantFrom(-0, 0, Number.NaN, 1, 2)),
       (s) => {
         // In SameValueZero, -0 and +0 are considered equal, so we shouldn't have both

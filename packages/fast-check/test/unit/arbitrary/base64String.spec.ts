@@ -18,9 +18,9 @@ import { sizeForArbitraryArb } from './__test-helpers__/SizeHelpers.js';
 describe('base64String', () => {
   declareCleaningHooksForSpies();
 
-  it('should accept any constraints accepting at least one length multiple of 4', () =>
-    fc.assert(
-      fc.property(
+  it('should accept any constraints accepting at least one length multiple of 4', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.nat({ max: 5 }),
         fc.integer({ min: 3, max: 30 }),
         fc.boolean(),
@@ -35,9 +35,9 @@ describe('base64String', () => {
       ),
     ));
 
-  it('should reject any constraints not accepting at least one length multiple of 4', () =>
-    fc.assert(
-      fc.property(fc.nat({ max: 30 }), fc.nat({ max: 2 }), (min, gap) => {
+  it('should reject any constraints not accepting at least one length multiple of 4', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.nat({ max: 30 }), fc.nat({ max: 2 }), (min, gap) => {
         // Arrange
         const constraints = { minLength: min, maxLength: min + gap };
         let includesMultipleOf4 = false;
@@ -51,9 +51,9 @@ describe('base64String', () => {
       }),
     ));
 
-  it('should always query for arrays that will produce length fitting the requested range', () =>
-    fc.assert(
-      fc.property(
+  it('should always query for arrays that will produce length fitting the requested range', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.nat({ max: 30 }),
         fc.integer({ min: 3, max: 30 }),
         fc.boolean(),
@@ -99,9 +99,9 @@ describe('base64String', () => {
       ),
     ));
 
-  it('should always forward constraints on size to the underlying arbitrary when provided', () =>
-    fc.assert(
-      fc.property(
+  it('should always forward constraints on size to the underlying arbitrary when provided', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.nat({ max: 5 }),
         fc.integer({ min: 3, max: 30 }),
         fc.boolean(),
@@ -157,16 +157,16 @@ describe('base64String (integration)', () => {
 
   const base64StringBuilder = (extra: Extra) => base64String(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(base64StringBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(base64StringBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(base64StringBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(base64StringBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(base64StringBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(base64StringBuilder, { extraParameters });
   });
 
   // assertShrinkProducesSameValueWithoutInitialContext is not applicable for base64String has some values will not shrink exactly the same way.

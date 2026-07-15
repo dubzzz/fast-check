@@ -12,8 +12,8 @@ import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameF
 describe('compareFunc (integration)', () => {
   const compareFuncBuilder = () => compareFunc();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(compareFuncBuilder, {
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(compareFuncBuilder, {
       extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything()), { minLength: 1 }),
       isEqual: (fa, fb, calls) => {
         for (const [a, b] of calls) {
@@ -23,8 +23,8 @@ describe('compareFunc (integration)', () => {
     });
   });
 
-  it('should be transitive', () => {
-    assertProduceCorrectValues(
+  it('should be transitive', async () => {
+    await assertProduceCorrectValues(
       compareFuncBuilder,
       (f, [a, b, c]) => {
         const ab = f(a, b);
@@ -37,8 +37,8 @@ describe('compareFunc (integration)', () => {
     );
   });
 
-  it('should be zero when a = b', () => {
-    assertProduceCorrectValues(
+  it('should be zero when a = b', async () => {
+    await assertProduceCorrectValues(
       compareFuncBuilder,
       (f, a) => {
         expect(f(a, a)).toBe(0);
@@ -47,8 +47,8 @@ describe('compareFunc (integration)', () => {
     );
   });
 
-  it('should be consistent when called in reversed order', () => {
-    assertProduceCorrectValues(
+  it('should be consistent when called in reversed order', async () => {
+    await assertProduceCorrectValues(
       compareFuncBuilder,
       (f, [a, b]) => {
         const ab = f(a, b);
@@ -61,14 +61,14 @@ describe('compareFunc (integration)', () => {
     );
   });
 
-  it('should give a re-usable string representation of the function', () => {
-    assertProduceCorrectValues(compareFuncBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
+  it('should give a re-usable string representation of the function', async () => {
+    await assertProduceCorrectValues(compareFuncBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
       extraParameters: fc.array(fc.tuple(fc.anything(), fc.anything())),
     });
   });
 
-  it('should produce cloneable instances with independant histories', () => {
-    assertProduceCorrectValues(
+  it('should produce cloneable instances with independant histories', async () => {
+    await assertProduceCorrectValues(
       compareFuncBuilder,
       (f, calls) => {
         for (const [a, b] of calls) {
