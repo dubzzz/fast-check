@@ -17,9 +17,9 @@ describe('codePointsToStringUnmapper', () => {
     expect(codePointsToStringUnmapper(source)).toEqual(expected);
   });
 
-  it('should be able to split any string mapped from code-points into code-points', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.string({ unit: 'binary', minLength: 1, maxLength: 1 })), (data) => {
+  it('should be able to split any string mapped from code-points into code-points', () =>
+    fc.assert(
+      fc.property(fc.array(fc.string({ unit: 'binary', minLength: 1, maxLength: 1 })), (data) => {
         // Arrange
         const source = codePointsToStringMapper(data);
 

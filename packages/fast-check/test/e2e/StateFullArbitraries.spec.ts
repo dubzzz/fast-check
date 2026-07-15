@@ -22,42 +22,42 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
           return fc.Stream.nil();
         }
       })();
-    it('normal property', async () => {
+    it('normal property', () => {
       const data = { counter: 0 };
-      await fc.assert(fc.asyncProperty(cloneableWithCount(data), () => {}));
+      fc.assert(fc.property(cloneableWithCount(data), () => {}));
       expect(data.counter).toEqual(0);
     });
-    it('normal property with multiple cloneables', async () => {
+    it('normal property with multiple cloneables', () => {
       const data = { counter: 0 };
-      await fc.assert(fc.asyncProperty(cloneableWithCount(data), cloneableWithCount(data), () => {}));
+      fc.assert(fc.property(cloneableWithCount(data), cloneableWithCount(data), () => {}));
       expect(data.counter).toEqual(0);
     });
-    it('fc.clone', async () => {
+    it('fc.clone', () => {
       const data = { counter: 0 };
-      await fc.assert(fc.asyncProperty(fc.clone(cloneableWithCount(data), 3), () => {}));
+      fc.assert(fc.property(fc.clone(cloneableWithCount(data), 3), () => {}));
       expect(data.counter).toEqual(0);
     });
-    it('fc.tuple', async () => {
+    it('fc.tuple', () => {
       const data = { counter: 0 };
-      await fc.assert(fc.asyncProperty(fc.tuple(cloneableWithCount(data)), () => {}));
+      fc.assert(fc.property(fc.tuple(cloneableWithCount(data)), () => {}));
       expect(data.counter).toEqual(0);
     });
-    it('fc.array', async () => {
+    it('fc.array', () => {
       const data = { counter: 0 };
-      await fc.assert(fc.asyncProperty(fc.array(cloneableWithCount(data)), () => {}));
+      fc.assert(fc.property(fc.array(cloneableWithCount(data)), () => {}));
       expect(data.counter).toEqual(0);
     });
-    it('fc.limitShrink', async () => {
+    it('fc.limitShrink', () => {
       const data = { counter: 0 };
-      await fc.assert(fc.asyncProperty(fc.limitShrink(cloneableWithCount(data), 10), () => {}));
+      fc.assert(fc.property(fc.limitShrink(cloneableWithCount(data), 10), () => {}));
       expect(data.counter).toEqual(0);
     });
   });
   describe('Never call with non-cloned instance and correct counterexample', () => {
-    it('normal property', async () => {
+    it('normal property', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.context(), fc.integer(), (a, ctx, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.context(), fc.integer(), (a, ctx, b) => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
@@ -68,10 +68,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1].size()).toEqual(1);
     });
-    it('fc.oneof', async () => {
+    it('fc.oneof', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.oneof(fc.context()), fc.integer(), (a, ctx, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.oneof(fc.context()), fc.integer(), (a, ctx, b) => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
@@ -82,10 +82,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1].size()).toEqual(1);
     });
-    it('fc.option', async () => {
+    it('fc.option', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.option(fc.context()), fc.integer(), (a, ctx, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.option(fc.context()), fc.integer(), (a, ctx, b) => {
           if (ctx != null) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
@@ -98,10 +98,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1]!.size()).toEqual(1);
     });
-    it('fc.clone', async () => {
+    it('fc.clone', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.clone(fc.context(), 3), fc.integer(), (a, ctxs, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.clone(fc.context(), 3), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
@@ -117,40 +117,30 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         expect(ctx.size()).toEqual(1);
       }
     });
-    it('fc.tuple', async () => {
+    it('fc.tuple', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(
-          fc.integer(),
-          fc.tuple(fc.nat(), fc.context(), fc.nat()),
-          fc.integer(),
-          (a, [_a, ctx, _b], b) => {
-            nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
-            ctx.log('logging stuff');
-            return a < b;
-          },
-        ),
+      const status = fc.check(
+        fc.property(fc.integer(), fc.tuple(fc.nat(), fc.context(), fc.nat()), fc.integer(), (a, [_a, ctx, _b], b) => {
+          nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
+          ctx.log('logging stuff');
+          return a < b;
+        }),
         { seed },
       );
       expect(status.failed).toBe(true);
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1][1].size()).toEqual(1);
     });
-    it('fc.tuple (multiple cloneables)', async () => {
+    it('fc.tuple (multiple cloneables)', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(
-          fc.integer(),
-          fc.tuple(fc.context(), fc.context(), fc.context()),
-          fc.integer(),
-          (a, ctxs, b) => {
-            for (const ctx of ctxs) {
-              nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
-              ctx.log('logging stuff');
-            }
-            return a < b;
-          },
-        ),
+      const status = fc.check(
+        fc.property(fc.integer(), fc.tuple(fc.context(), fc.context(), fc.context()), fc.integer(), (a, ctxs, b) => {
+          for (const ctx of ctxs) {
+            nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
+            ctx.log('logging stuff');
+          }
+          return a < b;
+        }),
         { seed },
       );
       expect(status.failed).toBe(true);
@@ -159,10 +149,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(status.counterexample![1][1].size()).toEqual(1);
       expect(status.counterexample![1][2].size()).toEqual(1);
     });
-    it('fc.array', async () => {
+    it('fc.array', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.array(fc.context(), { minLength: 1 }), fc.integer(), (a, ctxs, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.array(fc.context(), { minLength: 1 }), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
@@ -175,10 +165,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1][0]!.size()).toEqual(1);
     });
-    it('fc.uniqueArray', async () => {
+    it('fc.uniqueArray', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.uniqueArray(fc.context(), { minLength: 1 }), fc.integer(), (a, ctxs, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.uniqueArray(fc.context(), { minLength: 1 }), fc.integer(), (a, ctxs, b) => {
           for (const ctx of ctxs) {
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
             ctx.log('logging stuff');
@@ -191,10 +181,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1][0]!.size()).toEqual(1);
     });
-    it('fc.record', async () => {
+    it('fc.record', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.record({ ctx: fc.context() }), fc.integer(), (a, { ctx }, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.record({ ctx: fc.context() }), fc.integer(), (a, { ctx }, b) => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;
@@ -205,10 +195,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(status.counterexample![1].ctx.size()).toEqual(1);
     });
-    it('fc.dictionary', async () => {
+    it('fc.dictionary', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.dictionary(fc.string(), fc.context()), fc.integer(), (a, dict, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.dictionary(fc.string(), fc.context()), fc.integer(), (a, dict, b) => {
           for (const k in dict) {
             const ctx = dict[k];
             nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
@@ -225,11 +215,11 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
         expect(dict[k].size()).toEqual(1);
       }
     });
-    it('fc.infiniteStream', async () => {
+    it('fc.infiniteStream', () => {
       let alwaysWithElements = true;
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.infiniteStream(fc.context()), fc.integer(), (a, s, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.infiniteStream(fc.context()), fc.integer(), (a, s, b) => {
           let accessedCtx = 0;
           for (const ctx of s.take(3)) {
             ++accessedCtx;
@@ -245,10 +235,10 @@ describe(`StateFullArbitraries (seed: ${seed})`, () => {
       expect(nonClonedDetected).toBe(false);
       expect(alwaysWithElements).toBe(true);
     });
-    it('fc.limitShrink', async () => {
+    it('fc.limitShrink', () => {
       let nonClonedDetected = false;
-      const status = await fc.check(
-        fc.asyncProperty(fc.integer(), fc.limitShrink(fc.context(), 10), fc.integer(), (a, ctx, b) => {
+      const status = fc.check(
+        fc.property(fc.integer(), fc.limitShrink(fc.context(), 10), fc.integer(), (a, ctx, b) => {
           nonClonedDetected = nonClonedDetected || ctx.size() !== 0;
           ctx.log('logging stuff');
           return a < b;

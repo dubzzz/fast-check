@@ -25,18 +25,18 @@ const buildAlreadyRanCommands = (runFlags: boolean[]) => {
 };
 
 describe('CommandsIterable', () => {
-  it('Should not reset hasRun flag on iteration', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.boolean()), (runFlags) => {
+  it('Should not reset hasRun flag on iteration', () =>
+    fc.assert(
+      fc.property(fc.array(fc.boolean()), (runFlags) => {
         const commands = [...new CommandsIterable(buildAlreadyRanCommands(runFlags), () => '')];
         for (let idx = 0; idx !== runFlags.length; ++idx) {
           expect(commands[idx].hasRan).toEqual(runFlags[idx]);
         }
       }),
     ));
-  it('Should not reset hasRun flag on the original iterable on clone', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.boolean()), (runFlags) => {
+  it('Should not reset hasRun flag on the original iterable on clone', () =>
+    fc.assert(
+      fc.property(fc.array(fc.boolean()), (runFlags) => {
         const originalIterable = new CommandsIterable(buildAlreadyRanCommands(runFlags), () => '');
         if (!hasCloneMethod(originalIterable)) {
           throw new Error(`Not cloaneable`);
@@ -48,9 +48,9 @@ describe('CommandsIterable', () => {
         }
       }),
     ));
-  it('Should reset hasRun flag for the clone on clone', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.boolean()), (runFlags) => {
+  it('Should reset hasRun flag for the clone on clone', () =>
+    fc.assert(
+      fc.property(fc.array(fc.boolean()), (runFlags) => {
         const commandsIterable = new CommandsIterable(buildAlreadyRanCommands(runFlags), () => '');
         if (!hasCloneMethod(commandsIterable)) {
           throw new Error(`Not cloaneable`);
@@ -61,9 +61,9 @@ describe('CommandsIterable', () => {
         }
       }),
     ));
-  it('Should only print ran commands and metadata if any', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.boolean()), fc.string({ unit: 'binary' }), (runFlags, metadata) => {
+  it('Should only print ran commands and metadata if any', () =>
+    fc.assert(
+      fc.property(fc.array(fc.boolean()), fc.string({ unit: 'binary' }), (runFlags, metadata) => {
         const commandsIterable = new CommandsIterable(buildAlreadyRanCommands(runFlags), () => metadata);
         const expectedCommands = runFlags
           .map((hasRan, idx) => (hasRan ? String(idx) : ''))

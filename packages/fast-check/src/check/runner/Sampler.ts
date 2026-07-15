@@ -1,7 +1,7 @@
 import { stream } from '../../stream/Stream.js';
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
-import { AsyncProperty } from '../property/AsyncProperty.generic.js';
 import type { IRawProperty } from '../property/IRawProperty.js';
+import { Property } from '../property/Property.generic.js';
 import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
@@ -16,7 +16,7 @@ function toProperty<Ts>(
   qParams: QualifiedParameters<Ts>,
 ): IRawProperty<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'isAsync')
-    ? new AsyncProperty(generator as Arbitrary<Ts>, () => true)
+    ? new Property(generator as Arbitrary<Ts>, () => true)
     : (generator as IRawProperty<Ts>);
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }

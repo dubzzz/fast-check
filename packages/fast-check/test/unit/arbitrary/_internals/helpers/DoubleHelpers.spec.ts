@@ -28,9 +28,9 @@ describe('decomposeDouble', () => {
     expect(decomposeDouble(1 + Number.EPSILON)).toEqual({ exponent: 0, significand: 1 + Number.EPSILON });
   });
 
-  it('should decompose a 64-bit float into its equivalent (significand, exponent)', async () => {
-    await fc.assert(
-      fc.asyncProperty(float64raw(), (f64) => {
+  it('should decompose a 64-bit float into its equivalent (significand, exponent)', () => {
+    fc.assert(
+      fc.property(float64raw(), (f64) => {
         // Arrange
         fc.pre(!Number.isNaN(f64));
 
@@ -87,9 +87,9 @@ describe('doubleToIndex', () => {
     expect(doubleToIndex(Number.POSITIVE_INFINITY)).toEqual(BigInt(doubleToIndex(Number.MAX_VALUE) + BigInt(1)));
   });
 
-  it('should be able to infer index for negative double from the positive one', async () => {
-    await fc.assert(
-      fc.asyncProperty(float64raw(), (d) => {
+  it('should be able to infer index for negative double from the positive one', () => {
+    fc.assert(
+      fc.property(float64raw(), (d) => {
         // Arrange
         fc.pre(!Number.isNaN(d));
         const posD = d > 0 || 1 / d > 0 ? d : -d;
@@ -104,9 +104,9 @@ describe('doubleToIndex', () => {
     );
   });
 
-  it('should return index +1 for the successor of a given double', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should return index +1 for the successor of a given double', () => {
+    fc.assert(
+      fc.property(
         fc.integer({ min: -1022, max: +1023 }),
         fc.integer({ min: 0, max: 2 ** 53 - 1 }),
         (exponent, rescaledSignificand) => {
@@ -127,9 +127,9 @@ describe('doubleToIndex', () => {
     );
   });
 
-  it('should preserve ordering between two doubles', async () => {
-    await fc.assert(
-      fc.asyncProperty(float64raw(), float64raw(), (fa64, fb64) => {
+  it('should preserve ordering between two doubles', () => {
+    fc.assert(
+      fc.property(float64raw(), float64raw(), (fa64, fb64) => {
         // Arrange
         fc.pre(!Number.isNaN(fa64) && !Number.isNaN(fb64));
 
@@ -145,9 +145,9 @@ describe('doubleToIndex', () => {
 });
 
 describe('indexToDouble', () => {
-  it('should reverse doubleToIndex', async () =>
-    await fc.assert(
-      fc.asyncProperty(float64raw(), (f64) => {
+  it('should reverse doubleToIndex', () =>
+    fc.assert(
+      fc.property(float64raw(), (f64) => {
         fc.pre(!Number.isNaN(f64));
         expect(indexToDouble(doubleToIndex(f64))).toBe(f64);
       }),
@@ -163,9 +163,9 @@ describe('indexToDouble', () => {
     expect(indexToDouble(BigInt('9218868437227405312'))).toBe(Number.POSITIVE_INFINITY);
   });
 
-  it('should be reversed by doubleToIndex', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should be reversed by doubleToIndex', () => {
+    fc.assert(
+      fc.property(
         fc.bigInt({ min: BigInt('-9218868437227405313'), max: BigInt('9218868437227405312') }),
         (bigIntIndex) => {
           // The test below checks that indexToDouble(doubleToIndex) is identity

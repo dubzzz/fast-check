@@ -6,35 +6,35 @@ import { isSearchTree, Tree } from './src/isSearchTree.js';
 import { binaryTreeWithMaxDepth, binaryTreeWithoutMaxDepth } from './arbitraries/BinaryTreeArbitrary.js';
 
 describe('isSearchTree', () => {
-  it('should accept valid binary search trees', async () => {
-    await fc.assert(
-      fc.asyncProperty(binarySearchTreeWithMaxDepth(3), (tree) => {
+  it('should accept valid binary search trees', () => {
+    fc.assert(
+      fc.property(binarySearchTreeWithMaxDepth(3), (tree) => {
         return isSearchTree(tree);
       }),
     );
   });
 
-  it('should reject trees with unordered in-order traversal', async () => {
-    await fc.assert(
-      fc.asyncProperty(binaryTreeWithMaxDepth(3), (tree) => {
+  it('should reject trees with unordered in-order traversal', () => {
+    fc.assert(
+      fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
       }),
     );
   });
 
-  it('should reject trees with unordered in-order traversal (depthSize)', async () => {
-    await fc.assert(
-      fc.asyncProperty(binaryTreeWithoutMaxDepth(), (tree) => {
+  it('should reject trees with unordered in-order traversal (depthSize)', () => {
+    fc.assert(
+      fc.property(binaryTreeWithoutMaxDepth(), (tree) => {
         fc.pre(!isSorted(traversal(tree, (t) => t.value)));
         return !isSearchTree(tree);
       }),
     );
   });
 
-  it('should reject trees where a child violates the BST ordering', async () => {
-    await fc.assert(
-      fc.asyncProperty(binaryTreeWithMaxDepth(3), (tree) => {
+  it('should reject trees where a child violates the BST ordering', () => {
+    fc.assert(
+      fc.property(binaryTreeWithMaxDepth(3), (tree) => {
         fc.pre(
           traversal(tree, (t) => t).some(
             (t) => (t.left && t.left.value > t.value) || (t.right && t.right.value <= t.value),

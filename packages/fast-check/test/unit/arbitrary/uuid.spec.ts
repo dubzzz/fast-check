@@ -106,19 +106,19 @@ describe('uuid (integration)', () => {
 
   const uuidBuilder = (extra: Extra) => uuid(extra);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(uuidBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(uuidBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(uuidBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(uuidBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(uuidBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(uuidBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(uuidBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(uuidBuilder, { extraParameters });
   });
 });

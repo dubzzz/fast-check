@@ -16,71 +16,71 @@ import { computeObjectMaxKeys } from '../../__test-helpers__/ComputeObjectMaxKey
 import { sizeArb } from '../../__test-helpers__/SizeHelpers.js';
 
 describe('anyArbitraryBuilder (integration)', () => {
-  it('should be able to produce Set (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce Set (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSet: true })),
       isSet,
     );
   });
 
-  it('should be able to produce Map (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce Map (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withMap: true })),
       isMap,
     );
   });
 
-  it('should be able to produce Date (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce Date (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withDate: true })),
       isDate,
     );
   });
 
-  it('should be able to produce typed arrays (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce typed arrays (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withTypedArray: true })),
       isTypedArray,
     );
   });
 
-  it('should be able to produce sparse array (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce sparse array (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withSparseArray: true })),
       isSparseArray,
     );
   });
 
-  it('should be able to produce stringified representations of objects (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce stringified representations of objects (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true })),
       isStringified,
     );
   });
 
-  it('should be able to produce stringified representations of objects as keys (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce stringified representations of objects as keys (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withObjectString: true })),
       isStringifiedAsKeys,
     );
   });
 
-  it('should be able to produce boxed values (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce boxed values (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBoxedValues: true })),
       isBoxed,
     );
   });
 
-  it('should be able to produce objects without any prototype values (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce objects without any prototype values (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withNullPrototype: true })),
       isNullPrototype,
     );
   });
 
-  it('should be able to produce bigint (when asked to)', async () => {
-    await assertProduceSomeSpecificValues(
+  it('should be able to produce bigint (when asked to)', () => {
+    assertProduceSomeSpecificValues(
       () => anyArbitraryBuilder(toQualifiedObjectConstraints({ maxDepth: 1, withBigInt: true })),
       isBigInt,
     );
@@ -165,16 +165,16 @@ describe('anyArbitraryBuilder (integration)', () => {
 
   const anyArbitraryBuilderBuilder = (extra: Extra) => anyArbitraryBuilder(toQualifiedObjectConstraints(extra));
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(anyArbitraryBuilderBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(anyArbitraryBuilderBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(anyArbitraryBuilderBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(anyArbitraryBuilderBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(anyArbitraryBuilderBuilder, {
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(anyArbitraryBuilderBuilder, {
       // For the moment, we are not able to reverse "object-string" values.
       // In the future our fc.string() should be able to shrink them given it does not receive any constraint on the length
       // but for the moment it somehow assume that it cannot shrink strings having strictly more than 10 characters (value of maxLength when not specified).

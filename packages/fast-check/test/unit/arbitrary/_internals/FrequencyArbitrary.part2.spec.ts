@@ -63,9 +63,9 @@ const frequencyConstraintsArbFor = (keys: {
 
 describe('FrequencyArbitrary', () => {
   describe('from', () => {
-    it('should build instances of FrequencyArbitrary', async () =>
-      await fc.assert(
-        fc.asyncProperty(
+    it('should build instances of FrequencyArbitrary', () =>
+      fc.assert(
+        fc.property(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.nat(),
@@ -85,9 +85,9 @@ describe('FrequencyArbitrary', () => {
         ),
       ));
 
-    it('should always use the context coming from getDepthContextFor', async () =>
-      await fc.assert(
-        fc.asyncProperty(
+    it('should always use the context coming from getDepthContextFor', () =>
+      fc.assert(
+        fc.property(
           frequencyValidInputsArb,
           frequencyConstraintsArbFor({}),
           fc.nat(),
@@ -129,9 +129,9 @@ describe('FrequencyArbitrary', () => {
       );
     });
 
-    it('should reject calls including at least one strictly negative weight', async () =>
-      await fc.assert(
-        fc.asyncProperty(
+    it('should reject calls including at least one strictly negative weight', () =>
+      fc.assert(
+        fc.property(
           fc.integer({ max: -1 }),
           fc.array(fc.nat()),
           fc.array(fc.nat()),
@@ -149,9 +149,9 @@ describe('FrequencyArbitrary', () => {
       ));
 
     // This test does not pass even alone
-    it('should reject calls having a total weight of zero', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.nat({ max: 1000 }), (numEntries) => {
+    it('should reject calls having a total weight of zero', () =>
+      fc.assert(
+        fc.property(fc.nat({ max: 1000 }), (numEntries) => {
           // Arrange
           const weightedArbs = [...Array(numEntries)].map(() => ({
             weight: 0,
@@ -165,9 +165,9 @@ describe('FrequencyArbitrary', () => {
         }),
       ));
 
-    it('should not reject calls defining a strictly positive total weight without any negative weights', async () =>
-      await fc.assert(
-        fc.asyncProperty(
+    it('should not reject calls defining a strictly positive total weight without any negative weights', () =>
+      fc.assert(
+        fc.property(
           fc.integer({ min: 1 }),
           fc.array(fc.nat()),
           fc.array(fc.nat()),

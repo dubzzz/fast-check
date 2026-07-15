@@ -4,10 +4,10 @@ import * as fc from '../../src/fast-check.js';
 
 describe(`IgnoreEqualValues (seed: ${seed})`, () => {
   describe('ignoreEqualValues', () => {
-    it('should not run more than 4 times', async () => {
+    it('should not run more than 4 times', () => {
       let numRuns = 0;
-      const out = await fc.check(
-        fc.asyncProperty(fc.boolean(), fc.boolean(), () => {
+      const out = fc.check(
+        fc.property(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),
         { ignoreEqualValues: true },
@@ -22,10 +22,10 @@ describe(`IgnoreEqualValues (seed: ${seed})`, () => {
   });
 
   describe('skipEqualValues', () => {
-    it('should not run more than 4 times but mark run as failed due to too many skipped values', async () => {
+    it('should not run more than 4 times but mark run as failed due to too many skipped values', () => {
       let numRuns = 0;
-      const out = await fc.check(
-        fc.asyncProperty(fc.boolean(), fc.boolean(), () => {
+      const out = fc.check(
+        fc.property(fc.boolean(), fc.boolean(), () => {
           ++numRuns;
         }),
         { skipEqualValues: true },

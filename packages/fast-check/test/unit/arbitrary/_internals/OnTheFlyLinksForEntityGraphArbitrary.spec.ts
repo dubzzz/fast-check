@@ -176,11 +176,11 @@ describe('onTheFlyLinksForEntityGraph (integration)', () => {
   const onTheFlyLinksForEntityGraphBuilder = (extra: Extra) =>
     onTheFlyLinksForEntityGraph(extra.configurations, extra.defaultEntities);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(onTheFlyLinksForEntityGraphBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(onTheFlyLinksForEntityGraphBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(onTheFlyLinksForEntityGraphBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(onTheFlyLinksForEntityGraphBuilder, isCorrect, { extraParameters });
   });
 });

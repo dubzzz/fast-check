@@ -12,9 +12,9 @@ import {
 
 describe('SubarrayArbitrary', () => {
   describe('constructor', () => {
-    it('should raise an error whenever minLength is below zero', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should raise an error whenever minLength is below zero', () => {
+      fc.assert(
+        fc.property(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -33,9 +33,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever minLength is greater than array size', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should raise an error whenever minLength is greater than array size', () => {
+      fc.assert(
+        fc.property(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -54,9 +54,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever maxLength is below zero', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should raise an error whenever maxLength is below zero', () => {
+      fc.assert(
+        fc.property(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -75,9 +75,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever maxLength is greater than array size', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should raise an error whenever maxLength is greater than array size', () => {
+      fc.assert(
+        fc.property(
           fc.array(fc.integer()),
           fc.nat(),
           fc.nat(),
@@ -96,9 +96,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should raise an error whenever minLength is greater than maxLength', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should raise an error whenever minLength is greater than maxLength', () => {
+      fc.assert(
+        fc.property(
           fc
             .tuple(fc.nat(100), fc.nat(100))
             .map(([a, b]) => (a < b ? [a, b] : [b, a]))
@@ -119,9 +119,9 @@ describe('SubarrayArbitrary', () => {
       );
     });
 
-    it('should accept any valid combination of inputs', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should accept any valid combination of inputs', () => {
+      fc.assert(
+        fc.property(
           fc
             .tuple(fc.nat(100), fc.nat(100))
             .map(([a, b]) => (a < b ? [a, b] : [b, a]))
@@ -179,26 +179,24 @@ describe('SubarrayArbitrary (integration)', () => {
   const SubarrayArbitraryBuilder = (extra: Extra) =>
     new SubarrayArbitrary(extra.data, extra.isOrdered, extra.minLength, extra.maxLength);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(SubarrayArbitraryBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(SubarrayArbitraryBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(SubarrayArbitraryBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(SubarrayArbitraryBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(SubarrayArbitraryBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(SubarrayArbitraryBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(SubarrayArbitraryBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(SubarrayArbitraryBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink', async () => {
-    await assertShrinkProducesStrictlySmallerValue(SubarrayArbitraryBuilder, isStrictlySmallerValue, {
-      extraParameters,
-    });
+  it('should preserve strictly smaller ordering in shrink', () => {
+    assertShrinkProducesStrictlySmallerValue(SubarrayArbitraryBuilder, isStrictlySmallerValue, { extraParameters });
   });
 });
 

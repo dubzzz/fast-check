@@ -55,24 +55,24 @@ describe('ipV6 (integration)', () => {
 
   const ipV6Builder = () => ipV6();
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(ipV6Builder);
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(ipV6Builder);
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(ipV6Builder, isCorrect);
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(ipV6Builder, isCorrect);
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(ipV6Builder);
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(ipV6Builder);
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(ipV6Builder);
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(ipV6Builder);
   });
 
-  it('should be independent of global settings overriding defaults on size', async () => {
-    await assertGenerateIndependentOfSize(ipV6Builder);
+  it('should be independent of global settings overriding defaults on size', () => {
+    assertGenerateIndependentOfSize(ipV6Builder);
   });
 
   it.each`

@@ -18,9 +18,9 @@ describe('StreamArbitrary', () => {
   declareCleaningHooksForSpies();
 
   describe('generate', () => {
-    it('should produce a cloneable instance of Stream', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should produce a cloneable instance of Stream', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           const { instance: sourceArb } = fakeArbitrary();
@@ -37,9 +37,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should not call generate before we pull from the Stream but decide bias', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should not call generate before we pull from the Stream but decide bias', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           const { instance: sourceArb, generate } = fakeArbitrary();
@@ -57,9 +57,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should not check bias again for cloned instances', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should not check bias again for cloned instances', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           const { instance: sourceArb, generate } = fakeArbitrary();
@@ -82,9 +82,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should call generate with cloned instance of Random as we pull from the Stream', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should call generate with cloned instance of Random as we pull from the Stream', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const numValuesToPull = 5;
           const biasFactor = 48;
@@ -111,9 +111,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should call generate with cloned instance of Random specific for each Stream', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should call generate with cloned instance of Random specific for each Stream', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const numValuesToPullS1 = 5;
           const numValuesToPullS2 = 3;
@@ -158,9 +158,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should print pulled values if history is available', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.array(fc.integer()), (expectedValues) => {
+    it('should print pulled values if history is available', () =>
+      fc.assert(
+        fc.property(fc.array(fc.integer()), (expectedValues) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -190,9 +190,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should print count of pulled values if there is no history', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.array(fc.integer()), (expectedValues) => {
+    it('should print count of pulled values if there is no history', () =>
+      fc.assert(
+        fc.property(fc.array(fc.integer()), (expectedValues) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -217,9 +217,9 @@ describe('StreamArbitrary', () => {
         }),
       ));
 
-    it('should create independent Stream even in terms of toString', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should create independent Stream even in terms of toString', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const biasFactor = 48;
           let index = 0;
@@ -280,9 +280,9 @@ describe('StreamArbitrary', () => {
       expect(canShrinkWithoutContext).not.toHaveBeenCalled();
     });
 
-    it('should return false even for its own values', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should return false even for its own values', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const { instance: sourceArb, canShrinkWithoutContext } = fakeArbitrary();
           const { instance: mrng } = fakeRandom();
@@ -300,9 +300,9 @@ describe('StreamArbitrary', () => {
   });
 
   describe('shrink', () => {
-    it('should always shrink to nil', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.boolean(), (history) => {
+    it('should always shrink to nil', () =>
+      fc.assert(
+        fc.property(fc.boolean(), (history) => {
           // Arrange
           const { instance: sourceArb, generate, shrink } = fakeArbitrary<number>();
           generate.mockReturnValue(new Value(0, undefined));
@@ -335,11 +335,11 @@ describe('StreamArbitrary (integration)', () => {
 
   const streamBuilder = () => new StreamArbitrary(sourceArb, true);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(streamBuilder, { isEqual });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(streamBuilder, { isEqual });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(streamBuilder, isCorrect);
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(streamBuilder, isCorrect);
   });
 });

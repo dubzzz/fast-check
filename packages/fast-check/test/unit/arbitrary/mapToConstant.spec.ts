@@ -11,9 +11,9 @@ import {
 import { buildShrinkTree, renderTree } from './__test-helpers__/ShrinkTree.js';
 
 describe('mapToConstant', () => {
-  it('should reject any inputs containing at least one strictly negative entry', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.nat()), fc.array(fc.nat()), fc.integer({ max: -1 }), (beforeNeg, afterNeg, neg) => {
+  it('should reject any inputs containing at least one strictly negative entry', () =>
+    fc.assert(
+      fc.property(fc.array(fc.nat()), fc.array(fc.nat()), fc.integer({ max: -1 }), (beforeNeg, afterNeg, neg) => {
         // Arrange
         const entries = [...beforeNeg, neg, ...afterNeg].map((num) => ({ num, build: vi.fn() }));
 
@@ -22,9 +22,9 @@ describe('mapToConstant', () => {
       }),
     ));
 
-  it('should reject any inputs summing to zero', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.nat({ max: 1000 }), (length) => {
+  it('should reject any inputs summing to zero', () =>
+    fc.assert(
+      fc.property(fc.nat({ max: 1000 }), (length) => {
         // Arrange
         const entries = [...Array(length)].map(() => ({ num: 0, build: vi.fn() }));
 
@@ -33,9 +33,9 @@ describe('mapToConstant', () => {
       }),
     ));
 
-  it('should accept any inputs not summing to zero and with positive or null values', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.nat(), { minLength: 1 }), (nums) => {
+  it('should accept any inputs not summing to zero and with positive or null values', () =>
+    fc.assert(
+      fc.property(fc.array(fc.nat(), { minLength: 1 }), (nums) => {
         // Arrange
         fc.pre(nums.some((n) => n > 0));
         const entries = nums.map((num) => ({ num, build: vi.fn() }));
@@ -74,20 +74,20 @@ describe('mapToConstant (integration)', () => {
     return mapToConstant(...entries);
   };
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(mapToConstantBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(mapToConstantBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(mapToConstantBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(mapToConstantBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(mapToConstantBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(mapToConstantBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(mapToConstantBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(mapToConstantBuilder, { extraParameters });
   });
 
   it('should be able to shrink c given hexa-like entries', () => {

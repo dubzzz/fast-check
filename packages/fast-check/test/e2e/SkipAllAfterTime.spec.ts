@@ -133,10 +133,10 @@ describe(`SkipAllAfterTime (seed: ${seed})`, () => {
   });
 
   describe('both', () => {
-    it('should consider interrupt with higher priority than skip', async () => {
+    it('should consider interrupt with higher priority than skip', () => {
       let numRuns = 0;
-      const out = await fc.check(
-        fc.asyncProperty(fc.integer(), (_n) => {
+      const out = fc.check(
+        fc.property(fc.integer(), (_n) => {
           ++numRuns;
           return true;
         }),

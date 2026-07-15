@@ -36,9 +36,9 @@ describe('decomposeFloat', () => {
     expect(decomposeFloat(1 + EPSILON_32)).toEqual({ exponent: 0, significand: 1 + 2 ** -23 });
   });
 
-  it('should decompose a 32-bit float into its equivalent (significand, exponent)', async () => {
-    await fc.assert(
-      fc.asyncProperty(float32raw(), (f32) => {
+  it('should decompose a 32-bit float into its equivalent (significand, exponent)', () => {
+    fc.assert(
+      fc.property(float32raw(), (f32) => {
         // Arrange
         fc.pre(isFiniteNotNaN32bits(f32));
 
@@ -87,9 +87,9 @@ describe('floatToIndex', () => {
     expect(floatToIndex(Number.POSITIVE_INFINITY)).toBe(floatToIndex(MAX_VALUE_32) + 1);
   });
 
-  it('should be able to infer index for negative float from the positive one', async () => {
-    await fc.assert(
-      fc.asyncProperty(float32raw(), (f) => {
+  it('should be able to infer index for negative float from the positive one', () => {
+    fc.assert(
+      fc.property(float32raw(), (f) => {
         // Arrange
         fc.pre(isNotNaN32bits(f));
         const posD = f > 0 || 1 / f > 0 ? f : -f;
@@ -104,9 +104,9 @@ describe('floatToIndex', () => {
     );
   });
 
-  it('should return index +1 for the successor of a given float', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should return index +1 for the successor of a given float', () => {
+    fc.assert(
+      fc.property(
         fc.integer({ min: -126, max: +127 }),
         fc.integer({ min: 0, max: 2 ** 24 - 1 }),
         (exponent, rescaledSignificand) => {
@@ -123,9 +123,9 @@ describe('floatToIndex', () => {
     );
   });
 
-  it('should preserve ordering between two floats', async () => {
-    await fc.assert(
-      fc.asyncProperty(float32raw(), float32raw(), (fa32, fb32) => {
+  it('should preserve ordering between two floats', () => {
+    fc.assert(
+      fc.property(float32raw(), float32raw(), (fa32, fb32) => {
         // Arrange
         fc.pre(isNotNaN32bits(fa32) && isNotNaN32bits(fb32));
 
@@ -148,9 +148,9 @@ describe('indexToFloat', () => {
     expect(indexToFloat(2139095040)).toBe(Number.POSITIVE_INFINITY);
   });
 
-  it('should only produce 32-bit floating point numbers (excluding NaN)', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.integer({ min: -2139095041, max: 2139095040 }), (index) => {
+  it('should only produce 32-bit floating point numbers (excluding NaN)', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: -2139095041, max: 2139095040 }), (index) => {
         // Arrange / Act
         const f = indexToFloat(index);
 
@@ -160,9 +160,9 @@ describe('indexToFloat', () => {
     );
   });
 
-  it('should reverse floatToIndex', async () => {
-    await fc.assert(
-      fc.asyncProperty(float32raw(), (f32) => {
+  it('should reverse floatToIndex', () => {
+    fc.assert(
+      fc.property(float32raw(), (f32) => {
         // Arrange
         fc.pre(isNotNaN32bits(f32));
 
@@ -172,9 +172,9 @@ describe('indexToFloat', () => {
     );
   });
 
-  it('should be reversed by floatToIndex', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.integer({ min: -2139095041, max: 2139095040 }), (index) => {
+  it('should be reversed by floatToIndex', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: -2139095041, max: 2139095040 }), (index) => {
         // The test below checks that indexToFloat(floatToIndex) is identity
         // It does not confirm that floatToIndex(indexToFloat)) is identity
         expect(floatToIndex(indexToFloat(index))).toBe(index);

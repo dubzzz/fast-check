@@ -10,9 +10,9 @@ import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 describe('oneof', () => {
   declareCleaningHooksForSpies();
 
-  it('should adapt received MaybeWeightedArbitrary for FrequencyArbitrary.from when called with constraints', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should adapt received MaybeWeightedArbitrary for FrequencyArbitrary.from when called with constraints', () => {
+    fc.assert(
+      fc.property(
         fc.record(
           {
             withCrossShrink: fc.boolean(),
@@ -58,9 +58,9 @@ describe('oneof', () => {
     );
   });
 
-  it('should adapt received MaybeWeightedArbitrary for FrequencyArbitrary.from when called without constraints', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.option(fc.nat()), fc.option(fc.nat()), fc.option(fc.nat()), (weight1, weight2, weight3) => {
+  it('should adapt received MaybeWeightedArbitrary for FrequencyArbitrary.from when called without constraints', () => {
+    fc.assert(
+      fc.property(fc.option(fc.nat()), fc.option(fc.nat()), fc.option(fc.nat()), (weight1, weight2, weight3) => {
         // Arrange
         const expectedArb = fakeArbitrary().instance;
         const from = vi.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');

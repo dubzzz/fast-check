@@ -70,9 +70,9 @@ describe('unboxedToBoxedUnmapper', () => {
     expect(unboxedToBoxedUnmapper(source)).toEqual(source);
   });
 
-  it('should be able to box and unbox any non-boxed value', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.anything({ withBoxedValues: false })), (data) => {
+  it('should be able to box and unbox any non-boxed value', () =>
+    fc.assert(
+      fc.property(fc.array(fc.anything({ withBoxedValues: false })), (data) => {
         // Arrange
         const source = unboxedToBoxedMapper(data);
 

@@ -29,7 +29,15 @@ export type PropertyFailure = {
  * @remarks Since 1.19.0
  * @public
  */
-export interface IRawProperty<Ts> {
+export interface IRawProperty<Ts, IsAsync extends boolean = boolean> {
+  /**
+   * Is the property asynchronous?
+   *
+   * true in case of asynchronous property, false otherwise
+   * @remarks Since 0.0.7
+   */
+  isAsync(): IsAsync;
+
   /**
    * Generate values of type Ts
    *
@@ -54,19 +62,25 @@ export interface IRawProperty<Ts> {
    * @param v - Value of which we want to check the predicate
    * @remarks Since 0.0.7
    */
-  run(v: Ts): Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null;
+  run(
+    v: Ts,
+  ):
+    | (IsAsync extends true
+        ? Promise<PreconditionFailure | PropertyFailure | null> | PreconditionFailure | PropertyFailure | null
+        : never)
+    | (IsAsync extends false ? PreconditionFailure | PropertyFailure | null : never);
 
   /**
    * Run before each hook
    * @remarks Since 3.4.0
    */
-  runBeforeEach: () => Promise<void> | void;
+  runBeforeEach: () => (IsAsync extends true ? Promise<void> | void : never) | (IsAsync extends false ? void : never);
 
   /**
    * Run after each hook
    * @remarks Since 3.4.0
    */
-  runAfterEach: () => Promise<void> | void;
+  runAfterEach: () => (IsAsync extends true ? Promise<void> | void : never) | (IsAsync extends false ? void : never);
 }
 
 /**

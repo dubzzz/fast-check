@@ -7,9 +7,9 @@ import { Random } from '../../../../src/random/generator/Random.js';
 const MAX_SIZE = 2048;
 describe('Random', () => {
   describe('next', () => {
-    it('Should produce values within 0 and 2 ** n - 1', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(31), fc.nat(MAX_SIZE), (seed, n, num) => {
+    it('Should produce values within 0 and 2 ** n - 1', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.nat(31), fc.nat(MAX_SIZE), (seed, n, num) => {
           const mrng = new Random(xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx) {
             const v = mrng.next(n);
@@ -20,9 +20,9 @@ describe('Random', () => {
       ));
   });
   describe('nextInt', () => {
-    it('Should produce values within the range', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.integer(), fc.integer(), fc.nat(MAX_SIZE), (seed, a, b, num) => {
+    it('Should produce values within the range', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.integer(), fc.integer(), fc.nat(MAX_SIZE), (seed, a, b, num) => {
           const mrng = new Random(xorshift128plus(seed));
           const min = a < b ? a : b;
           const max = a < b ? b : a;
@@ -33,9 +33,9 @@ describe('Random', () => {
           return true;
         }),
       ));
-    it('Should produce the same sequences given same seeds', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
+    it('Should produce the same sequences given same seeds', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
           const mrng1 = new Random(xorshift128plus(seed));
           const mrng2 = new Random(xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;
@@ -44,9 +44,9 @@ describe('Random', () => {
       ));
   });
   describe('nextDouble', () => {
-    it('Should produce values within 0 and 1', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
+    it('Should produce values within 0 and 1', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
           const mrng = new Random(xorshift128plus(seed));
           for (let idx = 0; idx !== num; ++idx) {
             const v = mrng.nextDouble();
@@ -57,9 +57,9 @@ describe('Random', () => {
       ));
   });
   describe('clone', () => {
-    it('Should produce the same sequences', async () =>
-      await fc.assert(
-        fc.asyncProperty(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
+    it('Should produce the same sequences', () =>
+      fc.assert(
+        fc.property(fc.integer(), fc.nat(MAX_SIZE), (seed, num) => {
           const mrng1 = new Random(xorshift128plus(seed));
           const mrng2 = mrng1.clone();
           for (let idx = 0; idx !== num; ++idx) if (mrng1.nextInt() !== mrng2.nextInt()) return false;

@@ -18,9 +18,9 @@ describe('LimitedShrinkArbitrary', () => {
   declareCleaningHooksForSpies();
 
   describe('generate', () => {
-    it('should only rely on the underlying arbitrary to generate values and forward the target value as-is', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should only rely on the underlying arbitrary to generate values and forward the target value as-is', () => {
+      fc.assert(
+        fc.property(
           fc.anything(),
           fc.anything(),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -47,9 +47,9 @@ describe('LimitedShrinkArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should only rely on the underlying arbitrary to check if it can generate a value without any context', async () => {
-      await fc.assert(
-        fc.asyncProperty(fc.anything(), fc.boolean(), fc.nat(), (assessedValue, expectedOutput, maxShrinksPerLevel) => {
+    it('should only rely on the underlying arbitrary to check if it can generate a value without any context', () => {
+      fc.assert(
+        fc.property(fc.anything(), fc.boolean(), fc.nat(), (assessedValue, expectedOutput, maxShrinksPerLevel) => {
           // Arrange
           const { instance: arbitrary, canShrinkWithoutContext } = fakeArbitrary();
           canShrinkWithoutContext.mockReturnValueOnce(expectedOutput);
@@ -68,9 +68,9 @@ describe('LimitedShrinkArbitrary', () => {
   });
 
   describe('shrink', () => {
-    it('should call shrink of the underlying arbitrary but cut it to maxShrinks when >=1 and receiving its own values of first level', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should call shrink of the underlying arbitrary but cut it to maxShrinks when >=1 and receiving its own values of first level', () => {
+      fc.assert(
+        fc.property(
           fc.anything(),
           fc.anything(),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -98,9 +98,9 @@ describe('LimitedShrinkArbitrary', () => {
       );
     });
 
-    it('should not call shrink of the underlying arbitrary when no shrinks even if receiving its own values', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should not call shrink of the underlying arbitrary when no shrinks even if receiving its own values', () => {
+      fc.assert(
+        fc.property(
           fc.anything(),
           fc.anything(),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -124,9 +124,9 @@ describe('LimitedShrinkArbitrary', () => {
       );
     });
 
-    it('should cut the shrinker to only produce at most maxShrinks shrinks whatever the shrinking path', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should cut the shrinker to only produce at most maxShrinks shrinks whatever the shrinking path', () => {
+      fc.assert(
+        fc.property(
           fc.anything(),
           fc.anything(),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -182,12 +182,12 @@ describe('LimitedShrinkArbitrary (integration)', () => {
   const limitedShrinkBuilder = (extra: Extra) =>
     new LimitedShrinkArbitrary(new IntegerArbitrary(0, 0x7fffffff), extra.maxShrinks);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(limitedShrinkBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(limitedShrinkBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(limitedShrinkBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(limitedShrinkBuilder, { extraParameters });
   });
 
   it.each`

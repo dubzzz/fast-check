@@ -30,9 +30,9 @@ describe('infiniteStream', () => {
     expect(arb).toBe(instance);
   });
 
-  it('should instantiate StreamArbitrary(arb, !noHistory) for infiniteStream(arb, { noHistory })', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.boolean(), (history) => {
+  it('should instantiate StreamArbitrary(arb, !noHistory) for infiniteStream(arb, { noHistory })', () => {
+    fc.assert(
+      fc.property(fc.boolean(), (history) => {
         // Arrange
         const { instance: sourceArbitrary } = fakeArbitrary();
         const { instance } = fakeArbitrary();

@@ -4,23 +4,23 @@ import * as fc from 'fast-check';
 import { hash } from '../../../src/utils/hash.js';
 
 describe('hash', () => {
-  it('Should produce hash values in 0x00000000 and 0xffffffff', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.string({ unit: 'binary' }), (a) => {
+  it('Should produce hash values in 0x00000000 and 0xffffffff', () =>
+    fc.assert(
+      fc.property(fc.string({ unit: 'binary' }), (a) => {
         const h = hash(a);
         return h >= 0 && h <= 0xffffffff;
       }),
     ));
-  it('Should be able to compute hash even for invalid strings', async () =>
-    await fc.assert(fc.asyncProperty(string16bits, (a) => typeof hash(a) === 'number')));
-  it('Should compute the same value as reference for strings of characters <0x80', async () =>
-    await fc.assert(fc.asyncProperty(string0x80, (s) => hash(s) === hashReference(s))));
-  it('Should compute the same value as reference for strings of characters <0x800', async () =>
-    await fc.assert(fc.asyncProperty(string0x800, (s) => hash(s) === hashReference(s))));
-  it('Should compute the same value as reference for any string', async () =>
-    await fc.assert(fc.asyncProperty(fc.string({ unit: 'binary' }), (s) => hash(s) === hashReference(s))));
-  it('Should compute the same value as reference for potentially invalid strings', async () =>
-    await fc.assert(fc.asyncProperty(string16bits, (s) => hash(s) === hashReference(s))));
+  it('Should be able to compute hash even for invalid strings', () =>
+    fc.assert(fc.property(string16bits, (a) => typeof hash(a) === 'number')));
+  it('Should compute the same value as reference for strings of characters <0x80', () =>
+    fc.assert(fc.property(string0x80, (s) => hash(s) === hashReference(s))));
+  it('Should compute the same value as reference for strings of characters <0x800', () =>
+    fc.assert(fc.property(string0x800, (s) => hash(s) === hashReference(s))));
+  it('Should compute the same value as reference for any string', () =>
+    fc.assert(fc.property(fc.string({ unit: 'binary' }), (s) => hash(s) === hashReference(s))));
+  it('Should compute the same value as reference for potentially invalid strings', () =>
+    fc.assert(fc.property(string16bits, (s) => hash(s) === hashReference(s))));
   it('Should consider any invalid surrogate pair as <ef bf bd> or 0xfffd', () => {
     // This is the behaviour of the reference implementation based on Buffer.from (see below)
     // Buffer.from([0xef,0xbf,0xbd]).toString('utf8') === '\ufffd'

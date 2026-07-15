@@ -22,9 +22,9 @@ import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 describe('sparseArray', () => {
   declareCleaningHooksForSpies();
 
-  it('should always specify a minLength and maxLength on the underlying set', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
+  it('should always specify a minLength and maxLength on the underlying set', () => {
+    fc.assert(
+      fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
         const tuple = vi.spyOn(TupleMock, 'tuple');
@@ -48,9 +48,9 @@ describe('sparseArray', () => {
     );
   });
 
-  it('should always pass a not too large maxLength or with a size to set given the length we expect at the end', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
+  it('should always pass a not too large maxLength or with a size to set given the length we expect at the end', () => {
+    fc.assert(
+      fc.property(fc.option(validSparseArrayConstraints(), { nil: undefined }), (ct) => {
         // Arrange
         fc.pre(!isLimitNoTrailingCase(ct));
         const tuple = vi.spyOn(TupleMock, 'tuple');
@@ -104,9 +104,9 @@ describe('sparseArray', () => {
     );
   });
 
-  it('should reject constraints having minNumElements > maxLength', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should reject constraints having minNumElements > maxLength', () => {
+    fc.assert(
+      fc.property(
         validSparseArrayConstraints(['minNumElements', 'maxLength']),
         fc.nat({ max: 4294967295 }),
         fc.nat({ max: 4294967295 }),
@@ -123,9 +123,9 @@ describe('sparseArray', () => {
     );
   });
 
-  it('should reject constraints having minNumElements > maxNumElements', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should reject constraints having minNumElements > maxNumElements', () => {
+    fc.assert(
+      fc.property(
         validSparseArrayConstraints(['minNumElements', 'maxNumElements']),
         fc.nat({ max: 4294967295 }),
         fc.nat({ max: 4294967295 }),
@@ -179,20 +179,20 @@ describe('sparseArray (integration)', () => {
 
   const sparseArrayBuilder = (extra: Extra) => sparseArray(new FakeIntegerArbitrary(), extra);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(sparseArrayBuilder, { extraParameters, isEqual });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(sparseArrayBuilder, { extraParameters, isEqual });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(sparseArrayBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(sparseArrayBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
+  it('should produce values seen as shrinkable without any context', () => {
     // Remark: It will not shrink towards the exact same values for various reasons,
     // - when noTrailingHole=false, there is no real way to buid back the targetLength
     // - the key-value pairs will most of the time not be in the same ordered as the build order,
     //   thus it will lead to a different shrink order
-    await assertProduceValuesShrinkableWithoutContext(sparseArrayBuilder, { extraParameters });
+    assertProduceValuesShrinkableWithoutContext(sparseArrayBuilder, { extraParameters });
   });
 
   it.each`

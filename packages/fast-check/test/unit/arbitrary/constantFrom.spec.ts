@@ -11,9 +11,9 @@ import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 describe('constantFrom', () => {
   declareCleaningHooksForSpies();
 
-  it('should instantiate ConstantArbitrary(csts) for constantFrom(...csts)', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.anything(), { minLength: 1 }), (csts) => {
+  it('should instantiate ConstantArbitrary(csts) for constantFrom(...csts)', () =>
+    fc.assert(
+      fc.property(fc.array(fc.anything(), { minLength: 1 }), (csts) => {
         // Arrange
         const { instance } = fakeArbitrary();
         const ConstantArbitrary = vi.spyOn(ConstantArbitraryMock, 'ConstantArbitrary');

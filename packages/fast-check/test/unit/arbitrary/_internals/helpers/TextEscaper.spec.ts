@@ -35,9 +35,9 @@ describe('escapeForTemplateString', () => {
     }
   });
 
-  it('should escape properly any string', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.string({ unit: 'binary' }), (text) => {
+  it('should escape properly any string', () =>
+    fc.assert(
+      fc.property(fc.string({ unit: 'binary' }), (text) => {
         const escapedText = escapeForTemplateString(text);
         expect(eval('`' + escapedText + '`')).toBe(text);
       }),
@@ -59,9 +59,9 @@ describe('escapeForMultilineComments', () => {
     expect(escapeForMultilineComments('*/ /*/ **// * / /*')).toBe('*\\/ /*\\/ **\\// * / /*');
   });
 
-  it('should escape properly any string', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.string({ unit: 'binary' }), (text) => {
+  it('should escape properly any string', () =>
+    fc.assert(
+      fc.property(fc.string({ unit: 'binary' }), (text) => {
         const escapedText = escapeForMultilineComments(text);
         expect(eval('/*' + escapedText + '*/"success"')).toBe('success');
       }),

@@ -22,11 +22,11 @@ function interruptAfter(timeMs: number, setTimeoutSafe: typeof setTimeout, clear
 }
 
 /** @internal */
-export class SkipAfterProperty<Ts> implements IRawProperty<Ts> {
+export class SkipAfterProperty<Ts, IsAsync extends boolean> implements IRawProperty<Ts, IsAsync> {
   private skipAfterTime: number;
 
   constructor(
-    readonly property: IRawProperty<Ts>,
+    readonly property: IRawProperty<Ts, IsAsync>,
     readonly getTime: () => number,
     timeLimit: number,
     readonly interruptExecution: boolean,
@@ -34,6 +34,10 @@ export class SkipAfterProperty<Ts> implements IRawProperty<Ts> {
     readonly clearTimeoutSafe: typeof clearTimeout,
   ) {
     this.skipAfterTime = this.getTime() + timeLimit;
+  }
+
+  isAsync(): IsAsync {
+    return this.property.isAsync();
   }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
@@ -44,26 +48,30 @@ export class SkipAfterProperty<Ts> implements IRawProperty<Ts> {
     return this.property.shrink(value);
   }
 
-  run(v: Ts): ReturnType<IRawProperty<Ts>['run']> {
+  run(v: Ts): ReturnType<IRawProperty<Ts, IsAsync>['run']> {
     const remainingTime = this.skipAfterTime - this.getTime();
     if (remainingTime <= 0) {
       const preconditionFailure = new PreconditionFailure(this.interruptExecution);
-      return Promise.resolve(preconditionFailure);
+      if (this.isAsync()) {
+        return Promise.resolve(preconditionFailure) as any; // IsAsync => Promise<PreconditionFailure | string | null>
+      } else {
+        return preconditionFailure as any; // !IsAsync => PreconditionFailure | string | null
+      }
     }
-    if (this.interruptExecution) {
+    if (this.interruptExecution && this.isAsync()) {
       const t = interruptAfter(remainingTime, this.setTimeoutSafe, this.clearTimeoutSafe);
       const propRun = Promise.race([this.property.run(v), t.promise]);
       propRun.then(t.clear, t.clear); // always clear timeout handle - catch should never occur
-      return propRun;
+      return propRun as any; // IsAsync => Promise<PreconditionFailure | string | null>
     }
     return this.property.run(v);
   }
 
-  runBeforeEach(): ReturnType<IRawProperty<Ts>['runBeforeEach']> {
+  runBeforeEach(): ReturnType<IRawProperty<Ts, IsAsync>['runBeforeEach']> {
     return this.property.runBeforeEach();
   }
 
-  runAfterEach(): ReturnType<IRawProperty<Ts>['runAfterEach']> {
+  runAfterEach(): ReturnType<IRawProperty<Ts, IsAsync>['runAfterEach']> {
     return this.property.runAfterEach();
   }
 }

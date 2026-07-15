@@ -56,8 +56,8 @@ describe('AsyncProperty', () => {
       error: 'predicate throws', // the original error is a string in this test
     });
   });
-  it('Should fail if predicate throws anything', async () => {
-    await fc.assert(
+  it('Should fail if predicate throws anything', () => {
+    fc.assert(
       fc.asyncProperty(fc.anything(), async (stuff) => {
         // Arrange
         fc.pre(stuff === null || typeof stuff !== 'object' || !('toString' in stuff));

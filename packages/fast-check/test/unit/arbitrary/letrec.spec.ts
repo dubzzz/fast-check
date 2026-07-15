@@ -327,23 +327,23 @@ describe('letrec (integration)', () => {
     return a;
   };
 
-  it('should generate the values as-if we directly called the target arbitrary', async () => {
-    await assertGenerateEquivalentTo(letrecBuilder, () => new FakeIntegerArbitrary(), {
+  it('should generate the values as-if we directly called the target arbitrary', () => {
+    assertGenerateEquivalentTo(letrecBuilder, () => new FakeIntegerArbitrary(), {
       isEqualContext: (c1, c2) => {
         expect(c2).toEqual(c1);
       },
     });
   });
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(letrecBuilder);
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(letrecBuilder);
   });
 
-  it('should produce values seen as shrinkable without any context (if underlyings do)', async () => {
-    await assertProduceValuesShrinkableWithoutContext(letrecBuilder);
+  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
+    assertProduceValuesShrinkableWithoutContext(letrecBuilder);
   });
 
-  it('should be able to shrink to the same values without initial context (if underlyings do)', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(letrecBuilder);
+  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(letrecBuilder);
   });
 });

@@ -22,9 +22,9 @@ import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 describe('array', () => {
   declareCleaningHooksForSpies();
 
-  it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a) for array(arb)', async () => {
-    await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, (config) => {
+  it('should instantiate ArrayArbitrary(arb, 0, ?, 0x7fffffff, n.a) for array(arb)', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, (config) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -55,9 +55,9 @@ describe('array', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, 0, ?, maxLength, n.a) for array(arb, {maxLength})', async () => {
-    await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, maxLength) => {
+  it('should instantiate ArrayArbitrary(arb, 0, ?, maxLength, n.a) for array(arb, {maxLength})', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, maxLength) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -91,9 +91,9 @@ describe('array', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff, n.a) for array(arb, {minLength})', async () => {
-    await fc.assert(
-      fc.asyncProperty(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, minLength) => {
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, 0x7fffffff, n.a) for array(arb, {minLength})', () => {
+    fc.assert(
+      fc.property(sizeRelatedGlobalConfigArb, fc.nat({ max: 2 ** 31 - 1 }), (config, minLength) => {
         // Arrange
         const { instance: childInstance } = fakeArbitrary<unknown>();
         const { instance } = fakeArbitrary<unknown[]>();
@@ -128,9 +128,9 @@ describe('array', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, n.a) for array(arb, {minLength,maxLength})', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, n.a) for array(arb, {minLength,maxLength})', () => {
+    fc.assert(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),
@@ -178,9 +178,9 @@ describe('array', () => {
     );
   });
 
-  it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, identifier) for array(arb, {minLength,maxLength, depthIdentifier})', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should instantiate ArrayArbitrary(arb, minLength, ?, maxLength, identifier) for array(arb, {minLength,maxLength, depthIdentifier})', () => {
+    fc.assert(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),
@@ -231,9 +231,9 @@ describe('array', () => {
     );
   });
 
-  it('should throw when minimum length is greater than maximum one', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should throw when minimum length is greater than maximum one', () => {
+    fc.assert(
+      fc.property(
         sizeRelatedGlobalConfigArb,
         fc.nat({ max: 2 ** 31 - 1 }),
         fc.nat({ max: 2 ** 31 - 1 }),
@@ -278,24 +278,24 @@ describe('array (integration)', () => {
 
   const arrayBuilder = (extra: Extra) => array(new FakeIntegerArbitrary(), extra);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(arrayBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(arrayBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(arrayBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(arrayBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(arrayBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(arrayBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(arrayBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(arrayBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink', async () => {
-    await assertShrinkProducesStrictlySmallerValue(arrayBuilder, isStrictlySmaller, { extraParameters });
+  it('should preserve strictly smaller ordering in shrink', () => {
+    assertShrinkProducesStrictlySmallerValue(arrayBuilder, isStrictlySmaller, { extraParameters });
   });
 
   it.each`

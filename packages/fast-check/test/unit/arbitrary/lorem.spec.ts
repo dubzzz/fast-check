@@ -10,9 +10,9 @@ import {
 } from './__test-helpers__/ArbitraryAssertions.js';
 
 describe('lorem', () => {
-  it('should reject any negative or zero maxCount whatever the mode', async () =>
-    await fc.assert(
-      fc.asyncProperty(
+  it('should reject any negative or zero maxCount whatever the mode', () =>
+    fc.assert(
+      fc.property(
         fc.integer({ max: 0 }),
         fc.constantFrom(...([undefined, 'words', 'sentences'] as const)),
         (maxCount, mode) => {
@@ -68,19 +68,19 @@ describe('lorem (integration)', () => {
 
   const loremBuilder = (extra: Extra) => lorem(extra);
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(loremBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(loremBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(loremBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(loremBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(loremBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(loremBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(loremBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(loremBuilder, { extraParameters });
   });
 });

@@ -20,9 +20,9 @@ import { declareCleaningHooksForSpies } from '../../__test-helpers__/SpyCleaner.
 describe('typedIntArrayArbitraryArbitraryBuilder', () => {
   declareCleaningHooksForSpies();
 
-  it('should default constraints for arbitraryBuilder to defaultMin/Max when not specified', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should default constraints for arbitraryBuilder to defaultMin/Max when not specified', () => {
+    fc.assert(
+      fc.property(
         defaultsMinMaxTypedInt8Arb(),
         validArrayConstraintsArb(),
         ({ defaultMin, defaultMax, TypedArrayClass }, arrayConstraints) => {
@@ -51,9 +51,9 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
     );
   });
 
-  it('should properly distribute constraints accross arbitraries when receiving valid ones', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should properly distribute constraints accross arbitraries when receiving valid ones', () => {
+    fc.assert(
+      fc.property(
         validArrayConstraintsArb(),
         validIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {
@@ -89,9 +89,9 @@ describe('typedIntArrayArbitraryArbitraryBuilder', () => {
     );
   });
 
-  it('should reject invalid integer ranges', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should reject invalid integer ranges', () => {
+    fc.assert(
+      fc.property(
         validArrayConstraintsArb(),
         invalidIntegerConstraintsArb(-128, 127),
         (arrayConstraints, integerConstraints) => {
@@ -165,22 +165,20 @@ describe('typedIntArrayArbitraryArbitraryBuilder (integration)', () => {
       ({ min = 0, max = min }) => new FakeIntegerArbitrary(min, max - min),
     );
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', async () => {
-    await assertProduceCorrectValues(typedIntArrayArbitraryArbitraryBuilderBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', () => {
+    assertProduceCorrectValues(typedIntArrayArbitraryArbitraryBuilderBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', async () => {
-    await assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
-      extraParameters,
-    });
+  it('should produce values seen as shrinkable without any context', () => {
+    assertProduceValuesShrinkableWithoutContext(typedIntArrayArbitraryArbitraryBuilderBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', async () => {
-    await assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
+  it('should be able to shrink to the same values without initial context', () => {
+    assertShrinkProducesSameValueWithoutInitialContext(typedIntArrayArbitraryArbitraryBuilderBuilder, {
       extraParameters,
     });
   });

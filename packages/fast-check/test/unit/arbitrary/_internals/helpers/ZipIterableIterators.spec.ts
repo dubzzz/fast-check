@@ -3,9 +3,9 @@ import * as fc from 'fast-check';
 import { zipIterableIterators } from '../../../../../src/arbitrary/_internals/helpers/ZipIterableIterators.js';
 
 describe('zipIterableIterators', () => {
-  it('should zip two iterators having the same size together', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.tuple(fc.anything(), fc.anything())), (entries) => {
+  it('should zip two iterators having the same size together', () => {
+    fc.assert(
+      fc.property(fc.array(fc.tuple(fc.anything(), fc.anything())), (entries) => {
         // Arrange
         const entriesFirst = entries.map((es) => es[0]);
         const entriesSecond = entries.map((es) => es[1]);
@@ -19,9 +19,9 @@ describe('zipIterableIterators', () => {
     );
   });
 
-  it('should zip two iterators with first maybe longer together by ignoring extra values of the first one', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should zip two iterators with first maybe longer together by ignoring extra values of the first one', () => {
+    fc.assert(
+      fc.property(
         fc.array(fc.tuple(fc.anything(), fc.anything())),
         fc.array(fc.anything()),
         (entries, extraValueFirst) => {
@@ -39,9 +39,9 @@ describe('zipIterableIterators', () => {
     );
   });
 
-  it('should zip two iterators with second maybe longer together by ignoring extra values of the second one', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should zip two iterators with second maybe longer together by ignoring extra values of the second one', () => {
+    fc.assert(
+      fc.property(
         fc.array(fc.tuple(fc.anything(), fc.anything())),
         fc.array(fc.anything()),
         (entries, extraValueSecond) => {

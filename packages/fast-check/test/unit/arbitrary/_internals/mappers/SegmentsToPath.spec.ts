@@ -6,9 +6,9 @@ import {
 } from '../../../../../src/arbitrary/_internals/mappers/SegmentsToPath.js';
 
 describe('segmentsToPathUnmapper', () => {
-  it('should be able to unmap any mapped value', async () =>
-    await fc.assert(
-      fc.asyncProperty(fc.array(fc.webSegment()), (segments) => {
+  it('should be able to unmap any mapped value', () =>
+    fc.assert(
+      fc.property(fc.array(fc.webSegment()), (segments) => {
         // Arrange
         const mapped = segmentsToPathMapper(segments);
 

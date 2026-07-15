@@ -37,16 +37,16 @@ export function assertProduceSameValueGivenSameSeed<T, U = never>(
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   const {
     isEqual,
     noInitialContext,
     extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     assertParameters,
   } = options;
-  return fc.assert(
+  fc.assert(
     fc
-      .asyncProperty(
+      .property(
         fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
         fc.infiniteStream(fc.nat({ max: 20 })),
@@ -88,12 +88,12 @@ export function assertProduceCorrectValues<T, U = never>(
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   const { extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>, assertParameters } =
     options;
-  return fc.assert(
+  fc.assert(
     fc
-      .asyncProperty(
+      .property(
         fc.noShrink(fc.integer()),
         biasFactorArbitrary(),
         fc.infiniteStream(fc.nat({ max: 20 })),
@@ -126,16 +126,16 @@ export function assertGenerateEquivalentTo<T, U = never>(
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   const {
     isEqual,
     isEqualContext,
     extraParameters: extra = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     assertParameters,
   } = options;
-  return fc.assert(
+  fc.assert(
     fc
-      .asyncProperty(fc.noShrink(fc.integer()), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
+      .property(fc.noShrink(fc.integer()), biasFactorArbitrary(), extra, (seed, biasFactor, extraParameters) => {
         // Arrange
         const arbA = arbitraryBuilderA(extraParameters);
         const arbB = arbitraryBuilderB(extraParameters);
@@ -169,7 +169,7 @@ export function assertShrinkProducesSameValueWithoutInitialContext<T, U = never>
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   return assertProduceSameValueGivenSameSeed(arbitraryBuilder, { ...options, noInitialContext: true });
 }
 
@@ -179,7 +179,7 @@ export function assertProduceValuesShrinkableWithoutContext<T, U = never>(
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   return assertProduceCorrectValues(arbitraryBuilder, (v, _, arb) => arb.canShrinkWithoutContext(v), options);
 }
 
@@ -190,7 +190,7 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   const previousValue: { value?: T } = {};
   function arbitraryBuilderInternal(...args: Parameters<typeof arbitraryBuilder>) {
     delete previousValue.value;
@@ -219,14 +219,14 @@ export function assertShrinkProducesStrictlySmallerValue<T, U = never>(
   return assertProduceCorrectValues(arbitraryBuilderInternal, isStrictlySmallerInternal, options);
 }
 
-export async function assertProduceSomeSpecificValues<T, U = never>(
+export function assertProduceSomeSpecificValues<T, U = never>(
   arbitraryBuilder: (extraParameters: U) => Arbitrary<T>,
   isSpecificValue: (value: T) => boolean,
   options: {
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   let foundOne = false;
   function detectSpecificValue(value: T): boolean {
     if (isSpecificValue(value)) {
@@ -236,7 +236,7 @@ export async function assertProduceSomeSpecificValues<T, U = never>(
     return true; // success of the property
   }
   try {
-    await assertProduceCorrectValues(arbitraryBuilder, detectSpecificValue, {
+    assertProduceCorrectValues(arbitraryBuilder, detectSpecificValue, {
       ...options,
       // We default numRuns to 1000, but let user override it whenever needed
       assertParameters: { numRuns: 1000, ...options.assertParameters, endOnFailure: true },
@@ -255,14 +255,14 @@ export function assertGenerateIndependentOfSize<T, U = never>(
     extraParameters?: fc.Arbitrary<U>;
     assertParameters?: fc.Parameters<unknown>;
   } = {},
-): Promise<void> {
+): void {
   const {
     extraParameters = fc.constant(undefined as unknown as U) as fc.Arbitrary<U>,
     isEqual,
     isEqualContext,
     assertParameters,
   } = options;
-  return assertGenerateEquivalentTo(
+  assertGenerateEquivalentTo(
     (extra) => arbitraryBuilder(extra.requested),
     (extra) => withConfiguredGlobal(extra.global, () => arbitraryBuilder(extra.requested)),
     {

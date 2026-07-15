@@ -7,9 +7,9 @@ import { fakeRandom } from '../../__test-helpers__/RandomHelpers.js';
 
 describe('SlicedBasedGenerator', () => {
   describe('attemptExact', () => {
-    it('should take one of the provided slices and return it item by item', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should take one of the provided slices and return it item by item', () => {
+      fc.assert(
+        fc.property(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
           fc.nat(),
           fc.nat(),
@@ -42,9 +42,9 @@ describe('SlicedBasedGenerator', () => {
   });
 
   describe('next', () => {
-    it('should only go for values coming from the source arbitrary when tossing for unbias', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should only go for values coming from the source arbitrary when tossing for unbias', () => {
+      fc.assert(
+        fc.property(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
           fc.infiniteStream(fc.anything()),
           fc.nat({ max: 10 }),
@@ -78,9 +78,9 @@ describe('SlicedBasedGenerator', () => {
       );
     });
 
-    it('should only go for values coming from the slices when tossing for bias', async () => {
-      await fc.assert(
-        fc.asyncProperty(
+    it('should only go for values coming from the slices when tossing for bias', () => {
+      fc.assert(
+        fc.property(
           fc.array(fc.array(fc.anything(), { minLength: 1 }), { minLength: 1 }),
           fc.infiniteStream(fc.nat()),
           fc.nat({ max: 10 }),

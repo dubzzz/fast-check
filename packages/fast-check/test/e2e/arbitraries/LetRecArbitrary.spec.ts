@@ -14,7 +14,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
       }));
       expect(fc.sample(b, { seed })).toEqual(fc.sample(ref, { seed }));
     });
-    it('Should be usable to build deep tree instances', async () => {
+    it('Should be usable to build deep tree instances', () => {
       const { tree } = fc.letrec((tie) => ({
         tree: fc.oneof(
           // `depthSize` is set to 'max' for this test as we want to go as deep as possible.
@@ -29,8 +29,8 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
         node: fc.tuple(tie('tree'), tie('tree')),
         leaf: fc.nat(),
       }));
-      const out = await fc.check(
-        fc.asyncProperty(tree, (t) => {
+      const out = fc.check(
+        fc.property(tree, (t) => {
           const depth = (n: any): number => {
             if (typeof n === 'number') return 0;
             return 1 + Math.max(depth(n[0]), depth(n[1]));
@@ -41,7 +41,7 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
       );
       expect(out.failed).toBe(true); // depth can be greater or equal to 5
     });
-    it('Should be able to shrink to smaller cases recursively', async () => {
+    it('Should be able to shrink to smaller cases recursively', () => {
       const { tree } = fc.letrec((tie) => {
         return {
           tree: fc.nat(1).chain((id) => (id === 0 ? tie('leaf') : tie('node'))),
@@ -49,8 +49,8 @@ describe(`LetRecArbitrary (seed: ${seed})`, () => {
           leaf: fc.nat(),
         };
       });
-      const out = await fc.check(
-        fc.asyncProperty(tree, (t) => typeof t !== 'object'),
+      const out = fc.check(
+        fc.property(tree, (t) => typeof t !== 'object'),
         { seed },
       );
       expect(out.failed).toBe(true);

@@ -4,27 +4,27 @@ import { seed } from '../seed.js';
 
 describe(`RecordArbitrary (seed: ${seed})`, () => {
   describe('record', () => {
-    it('Should shrink on the minimal failing record', async () => {
+    it('Should shrink on the minimal failing record', () => {
       const recordModel = {
         aa: fc.integer(),
         bb: fc.object(),
         cc: fc.string(),
       };
-      const out = await fc.check(
-        fc.asyncProperty(fc.record(recordModel), (obj) => obj.cc.length <= 2),
+      const out = fc.check(
+        fc.property(fc.record(recordModel), (obj) => obj.cc.length <= 2),
         { seed: seed },
       );
       expect(out.failed).toBe(true);
       expect(out.counterexample).toStrictEqual([{ aa: 0, bb: {}, cc: '   ' }]);
     });
-    it('Should shrink on a record with bb as single key', async () => {
+    it('Should shrink on a record with bb as single key', () => {
       const recordModel = {
         aa: fc.integer(),
         bb: fc.object(),
         cc: fc.string(),
       };
-      const out = await fc.check(
-        fc.asyncProperty(fc.record(recordModel, { requiredKeys: [] }), (obj) => obj.bb == null),
+      const out = fc.check(
+        fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => obj.bb == null),
         {
           seed: seed,
         },
@@ -32,7 +32,7 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
       expect(out.counterexample).toStrictEqual([{ bb: {} }]);
     });
-    it('Should shrink on the failing conjonction of keys', async () => {
+    it('Should shrink on the failing conjonction of keys', () => {
       const recordModel = {
         enableA: fc.boolean(),
         enableB: fc.boolean(),
@@ -41,8 +41,8 @@ describe(`RecordArbitrary (seed: ${seed})`, () => {
         forcePositiveOutput: fc.boolean(),
         forceNegativeOutput: fc.boolean(),
       };
-      const out = await fc.check(
-        fc.asyncProperty(fc.record(recordModel, { requiredKeys: [] }), (obj) => {
+      const out = fc.check(
+        fc.property(fc.record(recordModel, { requiredKeys: [] }), (obj) => {
           if (obj.forcePositiveOutput === true && obj.forceNegativeOutput === true) return false;
           return true;
         }),

@@ -31,9 +31,9 @@ describe('commands (integration)', () => {
     }
   }
 
-  it('should generate a cloneable instance', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
+  it('should generate a cloneable instance', () => {
+    fc.assert(
+      fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
         const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
@@ -51,9 +51,9 @@ describe('commands (integration)', () => {
       }),
     );
   });
-  it('should skip skipped commands on shrink', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
+  it('should skip skipped commands on shrink', () => {
+    fc.assert(
+      fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
         const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
@@ -78,9 +78,9 @@ describe('commands (integration)', () => {
     );
   });
 
-  it('should shrink with failure at the end', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
+  it('should shrink with failure at the end', () => {
+    fc.assert(
+      fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
         const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
@@ -109,9 +109,9 @@ describe('commands (integration)', () => {
     );
   });
 
-  it('should shrink with at most one failure and all successes', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
+  it('should shrink with at most one failure and all successes', () => {
+    fc.assert(
+      fc.property(fc.integer(), fc.option(fc.integer({ min: 2 }), { nil: undefined }), (seed, biasFactor) => {
         // Arrange
         const mrng = new Random(xorshift128plus(seed));
         const logOnCheck: { data: string[] } = { data: [] };
@@ -137,7 +137,7 @@ describe('commands (integration)', () => {
     );
   });
 
-  it('should provide commands which have never run', async () => {
+  it('should provide commands which have never run', () => {
     const commandsArb = commands([new FakeConstant(new SuccessCommand({ data: [] }))], {
       disableReplayLog: true,
     });
@@ -160,8 +160,8 @@ describe('commands (integration)', () => {
         expect(String(value.value_[1])).not.toEqual('');
       }
     };
-    await fc.assert(
-      fc.asyncProperty(
+    fc.assert(
+      fc.property(
         fc.noShrink(fc.integer()),
         fc.infiniteStream(fc.nat()),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -196,10 +196,10 @@ describe('commands (integration)', () => {
     );
   });
 
-  it('should shrink to smaller values', async () => {
+  it('should shrink to smaller values', () => {
     const commandsArb = commands([nat(3).map((id) => new SuccessIdCommand(id))]);
-    await fc.assert(
-      fc.asyncProperty(
+    fc.assert(
+      fc.property(
         fc.noShrink(fc.integer()),
         fc.infiniteStream(fc.nat()),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -234,9 +234,9 @@ describe('commands (integration)', () => {
     );
   });
 
-  it('should shrink the same way when based on replay data', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+  it('should shrink the same way when based on replay data', () => {
+    fc.assert(
+      fc.property(
         fc.noShrink(fc.integer()),
         fc.nat(100),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),

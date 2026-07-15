@@ -17,8 +17,8 @@ import { assertToStringIsSameFunction } from './__test-helpers__/ToStringIsSameF
 describe('func (integration)', () => {
   const funcBuilder = () => func(new FakeIntegerArbitrary());
 
-  it('should produce the same values given the same seed', async () => {
-    await assertProduceSameValueGivenSameSeed(funcBuilder, {
+  it('should produce the same values given the same seed', () => {
+    assertProduceSameValueGivenSameSeed(funcBuilder, {
       extraParameters: fc.array(fc.array(fc.anything()), { minLength: 1 }),
       isEqual: (fa, fb, calls) => {
         for (const args of calls) {
@@ -28,8 +28,8 @@ describe('func (integration)', () => {
     });
   });
 
-  it('should not depend on the ordering of the calls', async () => {
-    await assertProduceSameValueGivenSameSeed(funcBuilder, {
+  it('should not depend on the ordering of the calls', () => {
+    assertProduceSameValueGivenSameSeed(funcBuilder, {
       extraParameters: fc.record({
         call: fc.array(fc.anything()),
         noiseCallsA: fc.array(fc.array(fc.anything())),
@@ -47,8 +47,8 @@ describe('func (integration)', () => {
     });
   });
 
-  it('should return the same value given the same input', async () => {
-    await assertProduceCorrectValues(
+  it('should return the same value given the same input', () => {
+    assertProduceCorrectValues(
       funcBuilder,
       (f, { call, noiseCallsA, noiseCallsB }) => {
         for (const args of noiseCallsA) {
@@ -70,14 +70,14 @@ describe('func (integration)', () => {
     );
   });
 
-  it('should give a re-usable string representation of the function', async () => {
-    await assertProduceCorrectValues(funcBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
+  it('should give a re-usable string representation of the function', () => {
+    assertProduceCorrectValues(funcBuilder, (f, calls) => assertToStringIsSameFunction(f, calls), {
       extraParameters: fc.array(fc.array(fc.anything())),
     });
   });
 
-  it('should produce cloneable instances with independant histories', async () => {
-    await assertProduceCorrectValues(
+  it('should produce cloneable instances with independant histories', () => {
+    assertProduceCorrectValues(
       funcBuilder,
       (f, calls) => {
         for (const args of calls) {
@@ -96,7 +96,7 @@ describe('func (integration)', () => {
     );
   });
 
-  it('should only clone produced values if they implement [fc.cloneMethod]', async () => {
+  it('should only clone produced values if they implement [fc.cloneMethod]', () => {
     class CloneableArbitrary extends Arbitrary<number[]> {
       private instance(value: number, cloneable: boolean) {
         if (!cloneable) return [value, 0];
@@ -116,7 +116,7 @@ describe('func (integration)', () => {
         return Stream.of(new Value(this.instance(0, value[1] === 1), { shrunkOnce: true }));
       }
     }
-    await assertProduceCorrectValues(
+    assertProduceCorrectValues(
       () => func(new CloneableArbitrary()),
       (f, args) => {
         const out1 = f(...args);

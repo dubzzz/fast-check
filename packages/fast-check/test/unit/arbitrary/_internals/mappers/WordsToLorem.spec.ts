@@ -80,9 +80,9 @@ describe('wordsToJoinedStringUnmapperFor', () => {
     expect(() => unmapper('hello hello winter world')).toThrowError();
   });
 
-  it('should unmap any string coming from the mapper', async () =>
-    await fc.assert(
-      fc.asyncProperty(wordsArrayArbitrary, (words) => {
+  it('should unmap any string coming from the mapper', () =>
+    fc.assert(
+      fc.property(wordsArrayArbitrary, (words) => {
         // Arrange
         const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
         canShrinkWithoutContext.mockImplementation(
@@ -213,9 +213,9 @@ describe('wordsToSentenceUnmapperFor', () => {
     expect(() => unmapper('Hello hello winter world.')).toThrowError();
   });
 
-  it('should unmap any string coming from the mapper', async () =>
-    await fc.assert(
-      fc.asyncProperty(wordsArrayArbitrary, (words) => {
+  it('should unmap any string coming from the mapper', () =>
+    fc.assert(
+      fc.property(wordsArrayArbitrary, (words) => {
         // Arrange
         const { instance, canShrinkWithoutContext } = fakeArbitrary<string>();
         canShrinkWithoutContext.mockImplementation(
@@ -234,9 +234,9 @@ describe('wordsToSentenceUnmapperFor', () => {
 });
 
 describe('wordsToSentenceUnmapperFor', () => {
-  it('should unmap any string coming from the mapper', async () =>
-    await fc.assert(
-      fc.asyncProperty(
+  it('should unmap any string coming from the mapper', () =>
+    fc.assert(
+      fc.property(
         fc.array(
           wordsArrayArbitrary.map((words) => wordsToSentenceMapper(words)),
           { minLength: 1 },

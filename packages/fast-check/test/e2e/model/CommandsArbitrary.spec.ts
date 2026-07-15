@@ -13,9 +13,9 @@ import { seed } from '../seed.js';
 
 describe(`CommandsArbitrary (seed: ${seed})`, () => {
   describe('commands', () => {
-    it('Should shrink up to the shortest failing commands list', async () => {
-      const out = await fc.check(
-        fc.asyncProperty(
+    it('Should shrink up to the shortest failing commands list', () => {
+      const out = fc.check(
+        fc.property(
           fc.commands(
             [
               fc.nat().map((n) => new IncreaseCommand(n)),
@@ -42,9 +42,9 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       expect(cmdsRepr).toMatch(/check\[(\d+)\]$/);
       expect(cmdsRepr).toEqual('inc[1],check[1]');
     });
-    it('Should result in empty commands if failures happen after the run', async () => {
-      const out = await fc.check(
-        fc.asyncProperty(fc.commands([fc.constant(new SuccessAlwaysCommand())]), (cmds) => {
+    it('Should result in empty commands if failures happen after the run', () => {
+      const out = fc.check(
+        fc.property(fc.commands([fc.constant(new SuccessAlwaysCommand())]), (cmds) => {
           const setup = () => ({
             model: { count: 0 },
             real: {},
@@ -57,7 +57,7 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
       expect([...out.counterexample![0]]).toHaveLength(0);
     });
-    it('Should shrink towards minimal case even with other arbitraries', async () => {
+    it('Should shrink towards minimal case even with other arbitraries', () => {
       // Why this test?
       //
       // fc.commands is one of the rare Arbitrary relying on an internal state.
@@ -67,8 +67,8 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       // First version was failing on this test with the following output:
       // Expected the only played command to be 'failure', got: -,success,failure for steps 2
       // The output for 'steps 2' should have been '-,-,failure'
-      const out = await fc.check(
-        fc.asyncProperty(
+      const out = fc.check(
+        fc.property(
           fc.array(fc.nat(9), { maxLength: 3 }),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
             disableReplayLog: true,
@@ -87,13 +87,13 @@ describe(`CommandsArbitrary (seed: ${seed})`, () => {
       expect(out.failed).toBe(true);
       expect(out.counterexample![1].toString()).toEqual('failure');
     });
-    it('Should not start a run with already started commands', async () => {
+    it('Should not start a run with already started commands', () => {
       // Why this test?
       // fc.commands relies on cloning not to waste the hasRan status of an execution
       // between two runs it is supposed to clone the commands before resetting the hasRan flag
       const unexpectedPartiallyExecuted: string[] = [];
-      const out = await fc.check(
-        fc.asyncProperty(
+      const out = fc.check(
+        fc.property(
           fc.array(fc.nat(9), { maxLength: 3 }),
           fc.commands([fc.constant(new FailureCommand()), fc.constant(new SuccessCommand())], {
             disableReplayLog: true,

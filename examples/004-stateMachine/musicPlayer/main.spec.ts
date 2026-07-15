@@ -5,20 +5,16 @@ import { MusicPlayerCommands, TrackNameArb } from './model-based/MusicPlayerComm
 import { MusicPlayerImplem } from './src/MusicPlayer.js';
 
 describe('MusicPlayer', () => {
-  it('should detect potential issues with the MusicPlayer', async () =>
-    await fc.assert(
-      fc.asyncProperty(
-        fc.uniqueArray(TrackNameArb, { minLength: 1 }),
-        MusicPlayerCommands,
-        (initialTracks, commands) => {
-          const real = new MusicPlayerImplem(initialTracks);
-          const model = new MusicPlayerModel();
-          model.numTracks = initialTracks.length;
-          for (const t of initialTracks) {
-            model.tracksAlreadySeen[t] = true;
-          }
-          fc.modelRun(() => ({ model, real }), commands);
-        },
-      ),
+  it('should detect potential issues with the MusicPlayer', () =>
+    fc.assert(
+      fc.property(fc.uniqueArray(TrackNameArb, { minLength: 1 }), MusicPlayerCommands, (initialTracks, commands) => {
+        const real = new MusicPlayerImplem(initialTracks);
+        const model = new MusicPlayerModel();
+        model.numTracks = initialTracks.length;
+        for (const t of initialTracks) {
+          model.tracksAlreadySeen[t] = true;
+        }
+        fc.modelRun(() => ({ model, real }), commands);
+      }),
     ));
 });

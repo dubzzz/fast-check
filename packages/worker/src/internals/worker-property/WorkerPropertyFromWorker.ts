@@ -66,6 +66,10 @@ export class WorkerPropertyFromWorker<Ts extends [unknown, ...unknown[]]> implem
     this.internalProperty = fc.asyncProperty<Ts>(...arbitraries, predicate);
   }
 
+  isAsync(): true {
+    return this.internalProperty.isAsync();
+  }
+
   generate(mrng: Random, runId?: number): Value<Ts> {
     // Extracting and cloning the state of Random before altering it
     const rawRngState = mrng.getState();

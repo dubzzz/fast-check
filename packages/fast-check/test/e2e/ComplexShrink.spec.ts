@@ -3,7 +3,7 @@ import * as fc from '../../src/fast-check.js';
 import { seed } from './seed.js';
 
 describe(`ComplexShrink (seed: ${seed})`, () => {
-  it('Should shrink two integers linked by a non-symmetric relation', async () => {
+  it('Should shrink two integers linked by a non-symmetric relation', () => {
     // In fast-check version 2.11.0 and before, this shrinking scenario
     // was causing barely infinite shrink. Some runs may take hours too end.
     //
@@ -39,8 +39,8 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // While it was able to reach and report the precise minimal failing case,
     // the shrinker was too slow to be useful (given the range of values generated).
     const MaximalValue = 1000000;
-    const out = await fc.check(
-      fc.asyncProperty(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
+    const out = fc.check(
+      fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
         if (b < a) return true;
@@ -65,12 +65,12 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
     // It implies a shrinker able to shrink on two values at the same time
     expect(minimal).toEqual([1000, 1010]);
   });
-  it('Should shrink two integers linked by a symmetric relation', async () => {
+  it('Should shrink two integers linked by a symmetric relation', () => {
     // Very similar to the case above except that this time
     // if (a, b) fails, (b, a) will also fail.
     const MaximalValue = 1000000;
-    const out = await fc.check(
-      fc.asyncProperty(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
+    const out = fc.check(
+      fc.property(fc.nat(MaximalValue), fc.nat(MaximalValue), (a: number, b: number) => {
         if (a < 1000) return true;
         if (b < 1000) return true;
         if (Math.abs(a - b) < 10) return true;
@@ -106,9 +106,9 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
       return arr.reduce((acc, cur) => [...acc, ...cur], []);
     }
 
-    it('distinct', async () => {
-      const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.integer()), (ls) => {
+    it('distinct', () => {
+      const out = fc.check(
+        fc.property(fc.array(fc.integer()), (ls) => {
           return new Set(ls).size < 3;
         }),
         { seed },
@@ -130,9 +130,9 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
       }
     });
 
-    it('large_union_list', async () => {
-      const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.array(fc.integer())), (ls) => {
+    it('large_union_list', () => {
+      const out = fc.check(
+        fc.property(fc.array(fc.array(fc.integer())), (ls) => {
           return new Set(flat(ls)).size < 5;
         }),
         { seed },
@@ -154,9 +154,9 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
       }
     });
 
-    it('nestedlists', async () => {
-      const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.array(fc.constant(0))), (ls) => {
+    it('nestedlists', () => {
+      const out = fc.check(
+        fc.property(fc.array(fc.array(fc.constant(0))), (ls) => {
           return ls.map((l) => l.length).reduce((a, b) => a + b, 0) <= 10;
         }),
         { seed },
@@ -174,9 +174,9 @@ describe(`ComplexShrink (seed: ${seed})`, () => {
       //expect(minimal[0]).toHaveLength(11);
     });
 
-    it('reverse', async () => {
-      const out = await fc.check(
-        fc.asyncProperty(fc.array(fc.integer()), (ls) => {
+    it('reverse', () => {
+      const out = fc.check(
+        fc.property(fc.array(fc.integer()), (ls) => {
           const rev = [...ls].reverse();
           expect(rev).toEqual(ls);
         }),

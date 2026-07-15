@@ -1,7 +1,7 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
-import { assert as fcAssert, asyncProperty as fcProperty } from 'fast-check';
-import type { IAsyncProperty, Parameters } from 'fast-check';
+import { assert as fcAssert, property as fcProperty } from 'fast-check';
+import type { IAsyncProperty, IProperty, Parameters } from 'fast-check';
 import { runWorker } from './internals/worker-runner/WorkerRunner.js';
 import { runMainThread } from './internals/MainThreadRunner.js';
 import { NoopWorkerProperty } from './internals/worker-property/NoopWorkerProperty.js';
@@ -10,8 +10,11 @@ import { runNoWorker } from './internals/worker-runner/NoWorkerRunner.js';
 import { generateValueFromState } from './internals/ValueFromState.js';
 
 let lastPredicateId = 0;
-const allKnownTerminateAllWorkersPerProperty = new Map<IAsyncProperty<unknown>, () => Promise<void>>();
-async function clearAllWorkersFor(property: IAsyncProperty<unknown>): Promise<void> {
+const allKnownTerminateAllWorkersPerProperty = new Map<
+  IAsyncProperty<unknown> | IProperty<unknown>,
+  () => Promise<void>
+>();
+async function clearAllWorkersFor(property: IAsyncProperty<unknown> | IProperty<unknown>): Promise<void> {
   const terminateAllWorkers = allKnownTerminateAllWorkersPerProperty.get(property);
   if (terminateAllWorkers === undefined) {
     return;
@@ -33,7 +36,7 @@ async function clearAllWorkersFor(property: IAsyncProperty<unknown>): Promise<vo
  * @param params — Optional parameters to customize the execution
  * @public
  */
-export async function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void> {
+export async function assert<Ts>(property: IAsyncProperty<Ts> | IProperty<Ts>, params?: Parameters<Ts>): Promise<void> {
   if (isMainThread) {
     // Main thread code
     try {
@@ -106,7 +109,7 @@ function workerProperty<Ts extends [unknown, ...unknown[]]>(
     // Worker code
     const arbitraries = args.slice(0, -1) as PropertyArbitraries<Ts>;
     const predicate = args[args.length - 1] as PropertyPredicate<Ts>;
-    const property: IAsyncProperty<Ts> = fcProperty(...arbitraries, () => true);
+    const property: IProperty<Ts> = fcProperty(...arbitraries, () => true);
     runWorker(parentPort, currentPredicateId, predicate, (state) => generateValueFromState(property, state));
     registeredPredicates.add(currentPredicateId);
   }
