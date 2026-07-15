@@ -121,13 +121,14 @@ describe(`ReplayFailures (seed: ${seed})`, () => {
         fc.asyncProperty(
           fc.integer(),
           fc.array(fc.nat({ max: 100 }), { minLength: 3 }).map((elements) => elements.join(':')),
-          async (internalSeed, path) => {
-            await expect(
+          (internalSeed, path) => {
+            // Sync throw!!!
+            expect(() =>
               fc.check(
                 fc.asyncProperty(fc.constant(0), () => {}), // no shrink available on constant, our path should break
                 { seed: internalSeed, path },
               ),
-            ).rejects.toThrowError(new RegExp(`wrong path=${path}`));
+            ).toThrowError(new RegExp(`wrong path=${path}`));
           },
         ),
         { seed },
