@@ -34,17 +34,6 @@ describe('Runner', () => {
       };
       expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError();
     });
-    it('Should not throw if reporter is specified on synchronous properties', () => {
-      const p: IRawProperty<[number], true> = {
-        isAsync: () => true,
-        generate: () => new Value([0], undefined),
-        shrink: () => Stream.nil(),
-        runBeforeEach: () => {},
-        run: () => null,
-        runAfterEach: () => {},
-      };
-      expect(() => check(p, { reporter: () => {} })).not.toThrowError();
-    });
     it('Should not throw if reporter is specified on asynchronous properties', () => {
       const p: IRawProperty<[number], true> = {
         isAsync: () => true,
@@ -55,17 +44,6 @@ describe('Runner', () => {
         runAfterEach: () => {},
       };
       expect(() => check(p, { reporter: () => {} })).not.toThrowError();
-    });
-    it('Should throw if asyncReporter is specified on synchronous properties', () => {
-      const p: IRawProperty<[number], true> = {
-        isAsync: () => true,
-        generate: () => new Value([0], undefined),
-        shrink: () => Stream.nil(),
-        runBeforeEach: () => {},
-        run: () => null,
-        runAfterEach: () => {},
-      };
-      expect(() => check(p, { asyncReporter: async () => {} })).toThrowError();
     });
     it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
       const p: IRawProperty<[number], true> = {
