@@ -666,34 +666,36 @@ describe('Runner', () => {
         run: () => new PreconditionFailure(),
         runAfterEach: () => {},
       };
-      it('Should throw with base message by default (no verbose)', () => {
-        expect(() => rAssert(p)).toThrowError(baseErrorMessage);
+      it('Should throw with base message by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
+      it('Should throw without list of failures by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Encountered failures were:');
       });
-      it('Should throw without execution tree by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Execution summary:');
+      it('Should throw without execution tree by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Execution summary:');
       });
-      it('Should throw with base message in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError(baseErrorMessage);
+      it('Should throw with base message in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Encountered failures were:');
-      });
-      it('Should throw without execution tree in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Execution summary:');
-      });
-      it('Should throw with base message in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError(baseErrorMessage);
-      });
-      it('Should throw without list of failures in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
+      it('Should throw without list of failures in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError(
           'Encountered failures were:',
         );
       });
-      it('Should throw with execution tree in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError('Execution summary:');
+      it('Should throw without execution tree in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError('Execution summary:');
+      });
+      it('Should throw with base message in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError(baseErrorMessage);
+      });
+      it('Should throw without list of failures in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.not.toThrowError(
+          'Encountered failures were:',
+        );
+      });
+      it('Should throw with execution tree in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError('Execution summary:');
       });
     });
   });
