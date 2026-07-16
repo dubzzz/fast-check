@@ -36,10 +36,8 @@ You may refer to [Read Test Reports](/docs/tutorials/quick-start/read-test-repor
 In some cases you might be interested into fully customizing, extending or even changing what should be a failure or how it should be formated. You can define your own reporting strategy by passing a custom reporter to `assert` as follow:
 
 ```javascript
-fc.assert(
-  // You can either use it with `fc.property`
-  // or `fc.asyncProperty`
-  fc.property(...),
+await fc.assert(
+  fc.asyncProperty(...),
   {
     reporter(out) {
       // Let's say we want to re-create the default reporter of `assert`
@@ -112,8 +110,8 @@ const buildCodeSandboxReporter = (createFiles) => {
   }
 }
 
-fc.assert(
-  fc.property(...),
+await fc.assert(
+  fc.asyncProperty(...),
   {
     reporter: buildCodeSandboxReporter(counterexample => ({
       'index.js': {

@@ -79,8 +79,8 @@ import fc from 'fast-check';
 
 fc.configureGlobal({ numRuns: 1_000_000 });
 
-test('fuzz predicate against arbitraries', () => {
-  fc.assert(fc.property(...arbitraries, neverFailingPredicate(predicate)));
+test('fuzz predicate against arbitraries', async () => {
+  await fc.assert(fc.asyncProperty(...arbitraries, neverFailingPredicate(predicate)));
 });
 ```
 
@@ -93,8 +93,8 @@ Finally, the `configureGlobal` function is used to set the number of runs for th
 In contrast to normal runs, when using the `neverFailingPredicate` function, the inputs provided to the predicate will never be shrunk. However, if you want to shrink them or just replay the failure, you can do it on a case-by-case basis as demonstrated below:
 
 ```js
-test('replay reported error and shrink it', () => {
-  fc.assert(fc.property(...arbitraries, predicate), {
+test('replay reported error and shrink it', async () => {
+  await fc.assert(fc.asyncProperty(...arbitraries, predicate), {
     numRuns: 1,
     examples: [[/* reported error */]],
   });

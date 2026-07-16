@@ -23,9 +23,9 @@ import fc from "npm:fast-check";
 
 Deno.test({
   name: "should print Fizz whenever divisible by 3",
-  fn() {
-    fc.assert(
-      fc.property(
+  async fn() {
+    await fc.assert(
+      fc.asyncProperty(
         fc.nat().map((n) => n * 3),
         (n) => {
           assertStringIncludes(fizzbuzz(n), "Fizz");

@@ -31,9 +31,9 @@ Since we're not relying on any connector, there's no direct integration of fast-
 // test/expect come from your test runner — adjust the import to match it
 const fc = require('fast-check');
 
-test('should detect the substring', () => {
-  fc.assert(
-    fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+test('should detect the substring', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
       const text = a + b + c;
       expect(isSubstring(text, b)).toBe(true);
     }),
@@ -50,13 +50,13 @@ You can now run your test with your usual test command.
 
 You've just written your first Property-Based Test 🚀
 
-:::info Where does `fc.property` come from?
-`fc.property` is the standard way to declare a synchronous property in fast-check. For a deeper dive into properties, arbitraries, and predicates, refer to the [Properties documentation](/docs/core-blocks/properties/).
+:::info Where does `fc.asyncProperty` come from?
+`fc.asyncProperty` is the standard way to declare a property in fast-check. For a deeper dive into properties, arbitraries, and predicates, refer to the [Properties documentation](/docs/core-blocks/properties/).
 :::
 
 ## Your first asynchronous test
 
-Now that we've covered synchronous tests, let's explore how to write an asynchronous one. The key difference here is that `fc.property` does not handle asynchronous predicates, so we'll use its asynchronous counterpart, `fc.asyncProperty`.
+Now that we've covered synchronous predicates, let's explore how to write an asynchronous one. The only difference is that `fc.asyncProperty` will be passed an asynchronous predicate.
 
 ```js title="queue.spec.js"
 // test/expect come from your test runner — adjust the import to match it
@@ -98,10 +98,6 @@ function queue(fun) {
 You can now run your test with your usual test command.
 
 You've just written your first asynchronous Property-Based Test 🚀
-
-:::info Synchronous vs asynchronous predicates
-When the predicate is asynchronous, you must use `fc.asyncProperty` instead of `fc.property`, and `await` the call to `fc.assert`. More details are available in the [Asynchronous properties section](/docs/core-blocks/properties/#asynchronous-properties).
-:::
 
 ## Share configuration across your tests
 
