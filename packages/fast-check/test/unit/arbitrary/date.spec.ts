@@ -16,9 +16,9 @@ import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 describe('date', () => {
   declareCleaningHooksForSpies();
 
-  it('should map on the output of an integer and specify mapper and unmapper', () =>
-    fc.assert(
-      fc.property(constraintsArb(), (constraints) => {
+  it('should map on the output of an integer and specify mapper and unmapper', async () =>
+    await fc.assert(
+      fc.asyncProperty(constraintsArb(), (constraints) => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
@@ -37,9 +37,9 @@ describe('date', () => {
       }),
     ));
 
-  it('should always map the minimal value of the internal integer to the requested minimal date', () =>
-    fc.assert(
-      fc.property(constraintsArb(), (constraints) => {
+  it('should always map the minimal value of the internal integer to the requested minimal date', async () =>
+    await fc.assert(
+      fc.asyncProperty(constraintsArb(), (constraints) => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
@@ -67,9 +67,9 @@ describe('date', () => {
       }),
     ));
 
-  it('should always map the maximal value (minus one if NaN accepted) of the internal integer to the requested maximal date', () =>
-    fc.assert(
-      fc.property(constraintsArb(), (constraints) => {
+  it('should always map the maximal value (minus one if NaN accepted) of the internal integer to the requested maximal date', async () =>
+    await fc.assert(
+      fc.asyncProperty(constraintsArb(), (constraints) => {
         // Arrange
         const withInvalidDates = !constraints.noInvalidDate;
         const { instance, map } = fakeArbitrary<number>();
@@ -98,9 +98,9 @@ describe('date', () => {
       }),
     ));
 
-  it('should always generate dates between min and max (or invalid ones when accepted) given the range and the mapper', () =>
-    fc.assert(
-      fc.property(constraintsArb(), fc.maxSafeNat(), (constraints, mod) => {
+  it('should always generate dates between min and max (or invalid ones when accepted) given the range and the mapper', async () =>
+    await fc.assert(
+      fc.asyncProperty(constraintsArb(), fc.maxSafeNat(), (constraints, mod) => {
         // Arrange
         const { instance, map } = fakeArbitrary<number>();
         const { instance: mappedInstance } = fakeArbitrary<Date>();
@@ -123,25 +123,25 @@ describe('date', () => {
       }),
     ));
 
-  it('should throw whenever min is an invalid date', () =>
-    fc.assert(
-      fc.property(invalidMinConstraintsArb(), (constraints) => {
+  it('should throw whenever min is an invalid date', async () =>
+    await fc.assert(
+      fc.asyncProperty(invalidMinConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
       }),
     ));
 
-  it('should throw whenever max is an invalid date', () =>
-    fc.assert(
-      fc.property(invalidMaxConstraintsArb(), (constraints) => {
+  it('should throw whenever max is an invalid date', async () =>
+    await fc.assert(
+      fc.asyncProperty(invalidMaxConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
       }),
     ));
 
-  it('should throw whenever min is greater than max', () =>
-    fc.assert(
-      fc.property(invalidRangeConstraintsArb(), (constraints) => {
+  it('should throw whenever min is greater than max', async () =>
+    await fc.assert(
+      fc.asyncProperty(invalidRangeConstraintsArb(), (constraints) => {
         // Act / Assert
         expect(() => date(constraints)).toThrowError();
       }),
@@ -178,24 +178,24 @@ describe('date (integration)', () => {
 
   const dateBuilder = (extra: Extra) => date(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters, isEqual });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(dateBuilder, { extraParameters, isEqual });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(dateBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(dateBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(dateBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(dateBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(dateBuilder, { extraParameters, isEqual });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(dateBuilder, { extraParameters, isEqual });
   });
 
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(dateBuilder, isStrictlySmaller, { extraParameters });
+  it('should preserve strictly smaller ordering in shrink', async () => {
+    await assertShrinkProducesStrictlySmallerValue(dateBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 

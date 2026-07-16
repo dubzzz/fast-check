@@ -45,9 +45,9 @@ function minMaxForConstraints(ct: FloatConstraints) {
 describe('float', () => {
   declareCleaningHooksForSpies();
 
-  it('should accept any valid range of 32-bit floating point numbers (including infinity)', () => {
-    fc.assert(
-      fc.property(floatConstraints({ ...defaultFloatRecordConstraints, noInteger: undefined }), (ct) => {
+  it('should accept any valid range of 32-bit floating point numbers (including infinity)', async () => {
+    await fc.assert(
+      fc.asyncProperty(floatConstraints({ ...defaultFloatRecordConstraints, noInteger: undefined }), (ct) => {
         // Arrange
         spyInteger();
 
@@ -60,9 +60,9 @@ describe('float', () => {
     );
   });
 
-  it('should accept any constraits defining min (32-bit float not-NaN) equal to max', () => {
-    fc.assert(
-      fc.property(
+  it('should accept any constraits defining min (32-bit float not-NaN) equal to max', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         float32raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         (f, otherCt) => {
@@ -80,9 +80,9 @@ describe('float', () => {
     );
   });
 
-  it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', () => {
-    fc.assert(
-      fc.property(
+  it('should reject any constraints defining min (not-NaN) equal to max if one is exclusive', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         float32raw(),
         fc.record({ noDefaultInfinity: fc.boolean(), noNaN: fc.boolean() }, { requiredKeys: [] }),
         fc.constantFrom('min', 'max', 'both'),
@@ -106,9 +106,9 @@ describe('float', () => {
     );
   });
 
-  it('should reject non-32-bit or NaN floating point numbers if specified for min', () => {
-    fc.assert(
-      fc.property(float64raw(), (f64) => {
+  it('should reject non-32-bit or NaN floating point numbers if specified for min', async () => {
+    await fc.assert(
+      fc.asyncProperty(float64raw(), (f64) => {
         // Arrange
         fc.pre(!isNotNaN32bits(f64));
         const integer = spyInteger();
@@ -120,9 +120,9 @@ describe('float', () => {
     );
   });
 
-  it('should reject non-32-bit or NaN floating point numbers if specified for max', () => {
-    fc.assert(
-      fc.property(float64raw(), (f64) => {
+  it('should reject non-32-bit or NaN floating point numbers if specified for max', async () => {
+    await fc.assert(
+      fc.asyncProperty(float64raw(), (f64) => {
         // Arrange
         fc.pre(!isNotNaN32bits(f64));
         const integer = spyInteger();
@@ -134,9 +134,9 @@ describe('float', () => {
     );
   });
 
-  it('should reject if specified min is strictly greater than max', () => {
-    fc.assert(
-      fc.property(float32raw(), float32raw(), (fa32, fb32) => {
+  it('should reject if specified min is strictly greater than max', async () => {
+    await fc.assert(
+      fc.asyncProperty(float32raw(), float32raw(), (fa32, fb32) => {
         // Arrange
         fc.pre(isNotNaN32bits(fa32));
         fc.pre(isNotNaN32bits(fb32));
@@ -162,7 +162,7 @@ describe('float', () => {
     expect(integer).not.toHaveBeenCalled();
   });
 
-  it('should properly convert integer value for index between min and max into its associated float value', () => {
+  it('should properly convert integer value for index between min and max into its associated float value', async () => {
     const withoutExcludedConstraints = {
       ...defaultFloatRecordConstraints,
       minExcluded: fc.constant(false),
@@ -170,8 +170,8 @@ describe('float', () => {
       noInteger: fc.constant(false),
     };
 
-    fc.assert(
-      fc.property(
+    await fc.assert(
+      fc.asyncProperty(
         fc.option(floatConstraints(withoutExcludedConstraints), { nil: undefined }),
         fc.maxSafeNat(),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
@@ -202,9 +202,9 @@ describe('float', () => {
       noInteger: fc.constant(false),
     };
 
-    it('should ask for a range with one extra value (far from zero)', () => {
-      fc.assert(
-        fc.property(floatConstraints(withNaNRecordConstraints), (ct) => {
+    it('should ask for a range with one extra value (far from zero)', async () => {
+      await fc.assert(
+        fc.asyncProperty(floatConstraints(withNaNRecordConstraints), (ct) => {
           // Arrange
           const { max } = minMaxForConstraints(ct);
           const integer = spyInteger();
@@ -230,9 +230,9 @@ describe('float', () => {
       );
     });
 
-    it('should properly convert the extra value to NaN', () =>
-      fc.assert(
-        fc.property(
+    it('should properly convert the extra value to NaN', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           floatConstraints(withNaNRecordConstraints),
           fc.option(fc.integer({ min: 2 }), { nil: undefined }),
           (ct, biasFactor) => {
@@ -262,9 +262,9 @@ describe('float', () => {
   });
 
   describe('without NaN', () => {
-    it('should ask integers between the indexes corresponding to min and max', () => {
-      fc.assert(
-        fc.property(
+    it('should ask integers between the indexes corresponding to min and max', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           floatConstraints({ ...defaultFloatRecordConstraints, noNaN: undefined, noInteger: undefined }),
           (ctDraft) => {
             // Arrange
@@ -329,24 +329,24 @@ describe('float (integration)', () => {
 
   const floatBuilder = (extra: Extra) => float(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(floatBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(floatBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(floatBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(floatBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(floatBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(floatBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(floatBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(floatBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(floatBuilder, isStrictlySmaller, { extraParameters });
+  it('should preserve strictly smaller ordering in shrink', async () => {
+    await assertShrinkProducesStrictlySmallerValue(floatBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 

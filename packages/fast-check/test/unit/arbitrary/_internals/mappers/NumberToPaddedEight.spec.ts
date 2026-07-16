@@ -6,9 +6,9 @@ import {
 } from '../../../../../src/arbitrary/_internals/mappers/NumberToPaddedEight.js';
 
 describe('numberToPaddedEightUnmapper', () => {
-  it('should be able to unmap any mapped value', () =>
-    fc.assert(
-      fc.property(fc.nat({ max: 0xffffffff }), (n) => {
+  it('should be able to unmap any mapped value', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.nat({ max: 0xffffffff }), (n) => {
         // Arrange
         const mapped = numberToPaddedEightMapper(n);
 

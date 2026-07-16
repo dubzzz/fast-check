@@ -88,7 +88,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should forward errors thrown within afterAll to the user even in case of predicate failure', () => {
+  it('should forward errors thrown within afterAll to the user even in case of predicate failure', async () => {
     // Arrange
     const reporterPlugin: fc.Plugin<[number]> = () => ({
       afterAll: () => {
@@ -97,15 +97,15 @@ describe(`Plugins (seed: ${seed})`, () => {
     });
 
     // Act / Assert
-    expect(() =>
+    await expect(() =>
       fc.assert(
-        fc.property(fc.integer(), (x) => x < 42),
+        fc.asyncProperty(fc.integer(), (x) => x < 42),
         { plugins: [reporterPlugin], seed },
       ),
-    ).toThrow(/^boom!$/);
+    ).rejects.toThrow(/^boom!$/);
   });
 
-  it('should give plugins the ability to replace the default reporting of assert via onAllRunsComplete', () => {
+  it('should give plugins the ability to replace the default reporting of assert via onAllRunsComplete', async () => {
     // Arrange
     const reporterPlugin: fc.Plugin<[number]> = () => ({
       onAllRunsComplete: (runDetails) => {
@@ -116,15 +116,15 @@ describe(`Plugins (seed: ${seed})`, () => {
     });
 
     // Act / Assert
-    expect(() =>
+    await expect(() =>
       fc.assert(
-        fc.property(fc.integer(), (x) => x < 42),
+        fc.asyncProperty(fc.integer(), (x) => x < 42),
         { plugins: [reporterPlugin], seed },
       ),
-    ).toThrow(/^Custom report for counterexample \[42\]$/);
+    ).rejects.toThrow(/^Custom report for counterexample \[42\]$/);
   });
 
-  it('should preserve the default reporting of assert when onAllRunsComplete does not throw', () => {
+  it('should preserve the default reporting of assert when onAllRunsComplete does not throw', async () => {
     // Arrange
     const seenFailures: boolean[] = [];
     const reporterPlugin: fc.Plugin<[number]> = () => ({
@@ -134,16 +134,16 @@ describe(`Plugins (seed: ${seed})`, () => {
     });
 
     // Act / Assert
-    expect(() =>
+    await expect(() =>
       fc.assert(
-        fc.property(fc.integer(), (x) => x < 42),
+        fc.asyncProperty(fc.integer(), (x) => x < 42),
         { plugins: [reporterPlugin], seed },
       ),
-    ).toThrow(/Property failed after/);
+    ).rejects.toThrow(/Property failed after/);
     expect(seenFailures).toEqual([true]);
   });
 
-  it('should stack decorateGenerate in declaration order then run the predicate', () => {
+  it('should stack decorateGenerate in declaration order then run the predicate', async () => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
@@ -164,8 +164,8 @@ describe(`Plugins (seed: ${seed})`, () => {
 
     // Act
     probes.push('assert started');
-    fc.assert(
-      fc.property(fc.integer(), (_x) => {
+    await fc.assert(
+      fc.asyncProperty(fc.integer(), (_x) => {
         probes.push('predicate called');
         return true;
       }),
@@ -192,7 +192,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should stack decorateRun with the first plugin being the closest to the predicate', () => {
+  it('should stack decorateRun with the first plugin being the closest to the predicate', async () => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (pluginName: string): fc.Plugin<[number]> => {
@@ -213,8 +213,8 @@ describe(`Plugins (seed: ${seed})`, () => {
 
     // Act
     probes.push('assert started');
-    fc.assert(
-      fc.property(fc.integer(), (_x) => {
+    await fc.assert(
+      fc.asyncProperty(fc.integer(), (_x) => {
         probes.push('predicate called');
         return true;
       }),
@@ -342,7 +342,7 @@ describe(`Plugins (seed: ${seed})`, () => {
     ]);
   });
 
-  it('should apply plugins functions in precise order', () => {
+  it('should apply plugins functions in precise order', async () => {
     // Arrange
     const probes: string[] = [];
     const buildPlugin = (): fc.Plugin<[number]> => {
@@ -375,8 +375,8 @@ describe(`Plugins (seed: ${seed})`, () => {
 
     // Act
     probes.push('assert started');
-    fc.assert(
-      fc.property(fc.integer(), (_x) => {
+    await fc.assert(
+      fc.asyncProperty(fc.integer(), (_x) => {
         probes.push('predicate');
         return true;
       }),

@@ -105,20 +105,20 @@ describe('string (integration)', () => {
 
   const stringBuilder = (extra: Extra) => string(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(stringBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(stringBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(stringBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(stringBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(stringBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(stringBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(stringBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(stringBuilder, { extraParameters });
   });
 
   const patterns = new PatternsArbitrary(['123', 'abc', '!']);

@@ -25,9 +25,9 @@ import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 describe('webUrl', () => {
   declareCleaningHooksForSpies();
 
-  it('should always use the same size value for all its sub-arbitraries (except webAuthority when using its own)', () => {
-    fc.assert(
-      fc.property(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
+  it('should always use the same size value for all its sub-arbitraries (except webAuthority when using its own)', async () => {
+    await fc.assert(
+      fc.asyncProperty(sizeRelatedGlobalConfigArb, webUrlConstraintsBuilder(), (config, constraints) => {
         // Arrange
         const { instance } = fakeArbitrary();
         const webAuthority = vi.spyOn(WebAuthorityMock, 'webAuthority');
@@ -73,20 +73,20 @@ describe('webUrl (integration)', () => {
 
   const webUrlBuilder = (extra: Extra) => webUrl(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters: extraParametersBuilder() });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(webUrlBuilder, { extraParameters: extraParametersBuilder() });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(webUrlBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(webUrlBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(webUrlBuilder, { extraParameters: extraParametersBuilder(true) });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(webUrlBuilder, { extraParameters: extraParametersBuilder(true) });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, {
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(webUrlBuilder, {
       extraParameters: extraParametersBuilder(true),
     });
   });

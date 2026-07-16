@@ -18,9 +18,9 @@ import { declareCleaningHooksForSpies } from './__test-helpers__/SpyCleaner.js';
 describe('option', () => {
   declareCleaningHooksForSpies();
 
-  it('should call FrequencyArbitrary.from with the right parameters when called with constraints', () =>
-    fc.assert(
-      fc.property(
+  it('should call FrequencyArbitrary.from with the right parameters when called with constraints', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.record(
           {
             depthIdentifier: fc.string(),
@@ -106,24 +106,24 @@ describe('option (integration)', () => {
 
   const optionBuilder = (extra: Extra) => option(new FakeIntegerArbitrary(), { ...extra, nil: null });
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(optionBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(optionBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(optionBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(optionBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(optionBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context (if underlyings do)', async () => {
+    await assertProduceValuesShrinkableWithoutContext(optionBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(optionBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context (if underlyings do)', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(optionBuilder, { extraParameters });
   });
 
-  it('should always return nil when freq = 1', () => {
-    assertProduceCorrectValues(
+  it('should always return nil when freq = 1', async () => {
+    await assertProduceCorrectValues(
       () => option(constant(true), { freq: 1 }),
       (o) => {
         expect(o).toBe(null);

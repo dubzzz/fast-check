@@ -29,17 +29,6 @@ function sanitizeStack(initialMessage: string) {
 }
 
 /** Wrap a potentially throwing code within a caller that would sanitize the returned Error */
-export function runWithSanitizedStack(run: () => void) {
-  return (): void => {
-    try {
-      run();
-    } catch (err) {
-      throw new Error(sanitizeStack((err as Error).message), { cause: err });
-    }
-  };
-}
-
-/** Wrap a potentially throwing code within a caller that would sanitize the returned Error */
 export function asyncRunWithSanitizedStack(run: () => Promise<void>) {
   return async (): Promise<void> => {
     try {

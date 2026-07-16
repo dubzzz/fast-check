@@ -50,9 +50,9 @@ describe('computeNextFlags', () => {
     expect(computeNextFlags(flags, 2)).toBe(expectedFlags);
   });
 
-  it('should preserve the same number of flags', () => {
-    fc.assert(
-      fc.property(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, offset) => {
+  it('should preserve the same number of flags', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, offset) => {
         const sourceToggled = countToggledBits(flags);
         const nextSize = sourceToggled + offset; // anything >= sourceToggled
         const nextFlags = computeNextFlags(flags, nextSize);
@@ -61,9 +61,9 @@ describe('computeNextFlags', () => {
     );
   });
 
-  it('should preserve the position of existing flags', () => {
-    fc.assert(
-      fc.property(fc.bigInt({ min: BigInt(0) }), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
+  it('should preserve the position of existing flags', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt({ min: BigInt(0) }), fc.integer({ min: 1, max: 100 }), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         for (let idx = 0, mask = BigInt(1); idx !== nextSize; ++idx, mask <<= BigInt(1)) {
           if (flags & mask) expect(!!(nextFlags & mask)).toBe(true);
@@ -72,9 +72,9 @@ describe('computeNextFlags', () => {
     );
   });
 
-  it('should not return flags larger than the asked size', () => {
-    fc.assert(
-      fc.property(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, nextSize) => {
+  it('should not return flags larger than the asked size', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt({ min: BigInt(0) }), fc.nat(100), (flags, nextSize) => {
         const nextFlags = computeNextFlags(flags, nextSize);
         expect(nextFlags < BigInt(1) << BigInt(nextSize)).toBe(true);
       }),
@@ -83,9 +83,9 @@ describe('computeNextFlags', () => {
 });
 
 describe('computeTogglePositions', () => {
-  it('should properly tag toggleable positions', () => {
-    fc.assert(
-      fc.property(
+  it('should properly tag toggleable positions', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         fc.array(fc.string({ minLength: 1, maxLength: 1 })),
         fc.func(fc.string({ minLength: 1, maxLength: 1 })),
         (chars, toggleCase) => {
@@ -101,9 +101,9 @@ describe('computeTogglePositions', () => {
     );
   });
 
-  it('should not tag untoggleable positions', () => {
-    fc.assert(
-      fc.property(
+  it('should not tag untoggleable positions', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         fc.array(fc.string({ minLength: 1, maxLength: 1 })),
         fc.func(fc.string({ minLength: 1, maxLength: 1 })),
         (chars, toggleCase) => {
@@ -123,9 +123,9 @@ describe('computeTogglePositions', () => {
 });
 
 describe('computeFlagsFromChars', () => {
-  it('should be able to find back flags out of source and final chars', () => {
-    fc.assert(
-      fc.property(
+  it('should be able to find back flags out of source and final chars', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         fc.array(fc.string({ minLength: 1, maxLength: 1 })),
         fc.func(fc.string({ minLength: 1, maxLength: 1 })),
         fc.bigInt({ min: BigInt(0) }),

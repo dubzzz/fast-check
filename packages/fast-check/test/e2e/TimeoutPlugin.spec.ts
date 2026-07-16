@@ -57,14 +57,14 @@ describe(`TimeoutPlugin (seed: ${seed})`, () => {
     },
   );
 
-  it('should have no effect on synchronous properties', async () => {
+  it('should have no effect on synchronous predicates', async () => {
     // Arrange
     const fc = await import('../../src/fast-check.js');
     let numRuns = 0;
 
     // Act
-    const out = fc.check(
-      fc.property(fc.integer(), (_x) => {
+    const out = await fc.check(
+      fc.asyncProperty(fc.integer(), (_x) => {
         ++numRuns;
       }),
       { plugins: [fc.timeout(10)] },

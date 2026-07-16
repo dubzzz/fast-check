@@ -7,9 +7,9 @@ import {
 } from '../../../../../src/arbitrary/_internals/mappers/NatToStringifiedNat.js';
 
 describe('tryParseStringifiedNat', () => {
-  it('should be able to parse any nat serialized with toString(radix)', () =>
-    fc.assert(
-      fc.property(fc.maxSafeNat(), fc.integer({ min: 2, max: 36 }), (n, radix) => {
+  it('should be able to parse any nat serialized with toString(radix)', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.maxSafeNat(), fc.integer({ min: 2, max: 36 }), (n, radix) => {
         // Arrange
         const stringifiedNat = n.toString(radix);
 
@@ -37,9 +37,9 @@ describe('natToStringifiedNatUnmapper', () => {
     expect(() => natToStringifiedNatUnmapper(value)).toThrowError();
   });
 
-  it('should be able to unmap any mapped value', () =>
-    fc.assert(
-      fc.property(fc.maxSafeNat(), fc.constantFrom(...(['dec', 'oct', 'hex'] as const)), (n, base) => {
+  it('should be able to unmap any mapped value', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.maxSafeNat(), fc.constantFrom(...(['dec', 'oct', 'hex'] as const)), (n, base) => {
         // Arrange
         const stringifiedNat = natToStringifiedNatMapper([base, n]);
 

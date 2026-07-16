@@ -32,33 +32,35 @@ describe('webPath (integration)', () => {
 
   const webPathBuilder = (extra: Extra) => webPath(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(webPathBuilder, { extraParameters: extraParametersBuilder() });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(webPathBuilder, { extraParameters: extraParametersBuilder() });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(webPathBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(webPathBuilder, isCorrect, { extraParameters: extraParametersBuilder() });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(webPathBuilder, { extraParameters: extraParametersBuilder(true) });
-  });
-
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(webPathBuilder, {
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(webPathBuilder, {
       extraParameters: extraParametersBuilder(true),
     });
   });
 
-  it(`should be able to produce starting by // when using default-size=${DefaultSize}`, () => {
-    assertProduceSomeSpecificValues(
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(webPathBuilder, {
+      extraParameters: extraParametersBuilder(true),
+    });
+  });
+
+  it(`should be able to produce starting by // when using default-size=${DefaultSize}`, async () => {
+    await assertProduceSomeSpecificValues(
       () => webPath({ size: DefaultSize }),
       (value) => value.startsWith('//'),
     );
   });
 
-  it(`should be able to produce containing // when using default-size=${DefaultSize}`, () => {
-    assertProduceSomeSpecificValues(
+  it(`should be able to produce containing // when using default-size=${DefaultSize}`, async () => {
+    await assertProduceSomeSpecificValues(
       () => webPath({ size: DefaultSize }),
       (value) => value.includes('//'),
     );

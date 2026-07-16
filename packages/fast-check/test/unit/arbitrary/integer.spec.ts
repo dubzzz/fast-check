@@ -47,9 +47,9 @@ describe('integer', () => {
     expect(arb).toBe(instance);
   });
 
-  it('should instantiate IntegerArbitrary(min, 0x7fffffff) for integer({min})', () =>
-    fc.assert(
-      fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: 0x7fffffff }), (min) => {
+  it('should instantiate IntegerArbitrary(min, 0x7fffffff) for integer({min})', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: 0x7fffffff }), (min) => {
         // Arrange
         const instance = fakeIntegerArbitrary();
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
@@ -66,9 +66,9 @@ describe('integer', () => {
       }),
     ));
 
-  it('should instantiate IntegerArbitrary(-0x80000000, max) for integer({max})', () =>
-    fc.assert(
-      fc.property(fc.integer({ min: -0x80000000, max: Number.MAX_SAFE_INTEGER }), (max) => {
+  it('should instantiate IntegerArbitrary(-0x80000000, max) for integer({max})', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.integer({ min: -0x80000000, max: Number.MAX_SAFE_INTEGER }), (max) => {
         // Arrange
         const instance = fakeIntegerArbitrary();
         const IntegerArbitrary = vi.spyOn(IntegerArbitraryMock, 'IntegerArbitrary');
@@ -85,9 +85,9 @@ describe('integer', () => {
       }),
     ));
 
-  it('should instantiate IntegerArbitrary(min, max) for integer({min, max})', () =>
-    fc.assert(
-      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b) => {
+  it('should instantiate IntegerArbitrary(min, max) for integer({min, max})', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b) => {
         // Arrange
         const [min, max] = a < b ? [a, b] : [b, a];
         const instance = fakeIntegerArbitrary();
@@ -105,25 +105,25 @@ describe('integer', () => {
       }),
     ));
 
-  it('should throw when minimum value is greater than default maximum one', () =>
-    fc.assert(
-      fc.property(fc.integer({ min: 0x80000000, max: Number.MAX_SAFE_INTEGER }), (min) => {
+  it('should throw when minimum value is greater than default maximum one', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.integer({ min: 0x80000000, max: Number.MAX_SAFE_INTEGER }), (min) => {
         // Arrange / Act / Assert
         expect(() => integer({ min })).toThrowError();
       }),
     ));
 
-  it('should throw when maximum value is lower than default minimum one', () =>
-    fc.assert(
-      fc.property(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: -0x80000001 }), (max) => {
+  it('should throw when maximum value is lower than default minimum one', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.integer({ min: Number.MIN_SAFE_INTEGER, max: -0x80000001 }), (max) => {
         // Arrange / Act / Assert
         expect(() => integer({ max })).toThrowError();
       }),
     ));
 
-  it('should throw when minimum value is greater than maximum one', () =>
-    fc.assert(
-      fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b) => {
+  it('should throw when minimum value is greater than maximum one', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b) => {
         // Arrange
         fc.pre(a !== b);
         const [low, high] = a < b ? [a, b] : [b, a];
@@ -133,9 +133,9 @@ describe('integer', () => {
       }),
     ));
 
-  it('should throw when minimum value or maximum value is not an integer', () => {
-    fc.assert(
-      fc.property(
+  it('should throw when minimum value or maximum value is not an integer', async () => {
+    await fc.assert(
+      fc.asyncProperty(
         fc.oneof(fc.tuple(fc.maxSafeInteger(), fc.double()), fc.tuple(fc.double(), fc.double())),
         ([a, b]) => {
           // Arrange

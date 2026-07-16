@@ -61,13 +61,13 @@ describe('GlobalParameters', () => {
     fc.resetConfigureGlobal();
   });
 
-  it('should merge global parameters with local ones in fc.check', () => {
+  it('should merge global parameters with local ones in fc.check', async () => {
     const globalConfig = { seed: 42, numRuns: 10 };
     const overridenNumRuns = 100;
 
     const withLocalConfiguration: number[] = [];
-    fc.check(
-      fc.property(fc.nat(), (v) => {
+    await fc.check(
+      fc.asyncProperty(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
       { ...globalConfig, numRuns: overridenNumRuns },
@@ -75,8 +75,8 @@ describe('GlobalParameters', () => {
 
     fc.configureGlobal(globalConfig);
     const withGlobalConfigurationOverriden: number[] = [];
-    fc.check(
-      fc.property(fc.nat(), (v) => {
+    await fc.check(
+      fc.asyncProperty(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
       { numRuns: overridenNumRuns },
@@ -86,13 +86,13 @@ describe('GlobalParameters', () => {
     fc.resetConfigureGlobal();
   });
 
-  it('should merge global parameters with local ones in fc.assert', () => {
+  it('should merge global parameters with local ones in fc.assert', async () => {
     const globalConfig = { seed: 42, numRuns: 10 };
     const overridenNumRuns = 100;
 
     const withLocalConfiguration: number[] = [];
-    fc.assert(
-      fc.property(fc.nat(), (v) => {
+    await fc.assert(
+      fc.asyncProperty(fc.nat(), (v) => {
         withLocalConfiguration.push(v);
       }),
       { ...globalConfig, numRuns: overridenNumRuns },
@@ -100,8 +100,8 @@ describe('GlobalParameters', () => {
 
     fc.configureGlobal(globalConfig);
     const withGlobalConfigurationOverriden: number[] = [];
-    fc.assert(
-      fc.property(fc.nat(), (v) => {
+    await fc.assert(
+      fc.asyncProperty(fc.nat(), (v) => {
         withGlobalConfigurationOverriden.push(v);
       }),
       { numRuns: overridenNumRuns },

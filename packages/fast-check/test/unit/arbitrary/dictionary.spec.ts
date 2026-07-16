@@ -75,16 +75,16 @@ describe('dictionary (integration)', () => {
     return dictionary(keyArb, valueArb, constraints);
   };
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(dictionaryBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(dictionaryBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(dictionaryBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(dictionaryBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(dictionaryBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context (if underlyings do)', async () => {
+    await assertProduceValuesShrinkableWithoutContext(dictionaryBuilder, { extraParameters });
   });
 });
 

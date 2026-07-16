@@ -21,9 +21,9 @@ describe('record', () => {
     .tuple(fc.string(), fc.boolean())
     .map(([name, symbol]) => (symbol ? Symbol.for(name) : name));
 
-  it('should call buildPartialRecordArbitrary with keys=undefined when no constraints on keys', () =>
-    fc.assert(
-      fc.property(
+  it('should call buildPartialRecordArbitrary with keys=undefined when no constraints on keys', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.uniqueArray(keyArb, { minLength: 1 }),
         fc.constantFrom(...([undefined, {}, { noNullPrototype: false }, { noNullPrototype: true }] as const)),
         (keys, constraints) => {
@@ -52,9 +52,9 @@ describe('record', () => {
       ),
     ));
 
-  it('should call buildPartialRecordArbitrary with keys=requiredKeys when constraints defines valid requiredKeys', () =>
-    fc.assert(
-      fc.property(
+  it('should call buildPartialRecordArbitrary with keys=requiredKeys when constraints defines valid requiredKeys', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.uniqueArray(keyArb, { minLength: 1 }),
         fc.func(fc.boolean()),
         fc.option(fc.boolean(), { nil: undefined }),
@@ -92,9 +92,9 @@ describe('record', () => {
       ),
     ));
 
-  it('should reject configurations specifying non existing keys as required', () =>
-    fc.assert(
-      fc.property(fc.uniqueArray(keyArb, { minLength: 1 }), keyArb, (keys, requiredKey) => {
+  it('should reject configurations specifying non existing keys as required', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.uniqueArray(keyArb, { minLength: 1 }), keyArb, (keys, requiredKey) => {
         // Arrange
         fc.pre(!keys.includes(requiredKey));
         const recordModel: Record<string | symbol, Arbitrary<any>> = {};
@@ -221,19 +221,19 @@ describe('record (integration)', () => {
     return record(recordModel, constraints);
   };
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(recordBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(recordBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(recordBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(recordBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context (if underlyings do)', () => {
-    assertProduceValuesShrinkableWithoutContext(recordBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context (if underlyings do)', async () => {
+    await assertProduceValuesShrinkableWithoutContext(recordBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(recordBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context (if underlyings do)', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(recordBuilder, { extraParameters });
   });
 });

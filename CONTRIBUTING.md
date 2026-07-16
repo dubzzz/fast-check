@@ -190,37 +190,37 @@ describe('myArbitrary (integration)', () => {
 
   const isCorrect = (value: /* Type of the value */, extra: Extra) => {
     // Returns true if the value is correct given extra
-    // Returs false or throws (possibly via expect) if value is invalid
+    // Returns false or throws (possibly via expect) if value is invalid
   };
 
   const isStrictlySmaller = (vNew: /* Type of the value */, vOld: /* Type of the value */, extra: Extra) => {
     // Returns true if the vNew is really strictly smaller than vOld
-    // Returs false or throws (possibly via expect) otherwise
+    // Returns false or throws (possibly via expect) otherwise
   };
 
   const myArbitraryBuilder = (extra: Extra) => convertToNext(myArbitrary(extra));
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(myArbitraryBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(myArbitraryBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(myArbitraryBuilder, isCorrect, { extraParameters });
-  });
-
-  // OPTIONAL STEP
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(myArbitraryBuilder, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(myArbitraryBuilder, isCorrect, { extraParameters });
   });
 
   // OPTIONAL STEP
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(myArbitraryBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(myArbitraryBuilder, { extraParameters });
   });
 
   // OPTIONAL STEP
-  it('should preserve strictly smaller ordering in shrink', () => {
-    assertShrinkProducesStrictlySmallerValue(myArbitraryBuilder, isStrictlySmaller, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(myArbitraryBuilder, { extraParameters });
+  });
+
+  // OPTIONAL STEP
+  it('should preserve strictly smaller ordering in shrink', async () => {
+    await assertShrinkProducesStrictlySmallerValue(myArbitraryBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 ```

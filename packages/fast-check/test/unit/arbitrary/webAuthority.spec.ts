@@ -35,20 +35,24 @@ describe('webAuthority (integration)', () => {
 
   const webAuthorityBuilder = (extra: Extra) => webAuthority(extra);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(webAuthorityBuilder, { extraParameters: extraParametersBuilder() });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(webAuthorityBuilder, { extraParameters: extraParametersBuilder() });
   });
 
-  it('should only produce correct values regarding `new URL`', () => {
-    assertProduceCorrectValues(webAuthorityBuilder, isCorrectForURL, { extraParameters: extraParametersBuilder() });
+  it('should only produce correct values regarding `new URL`', async () => {
+    await assertProduceCorrectValues(webAuthorityBuilder, isCorrectForURL, {
+      extraParameters: extraParametersBuilder(),
+    });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(webAuthorityBuilder, { extraParameters: extraParametersBuilder(true) });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(webAuthorityBuilder, {
+      extraParameters: extraParametersBuilder(true),
+    });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(webAuthorityBuilder, {
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(webAuthorityBuilder, {
       extraParameters: extraParametersBuilder(true),
     });
   });

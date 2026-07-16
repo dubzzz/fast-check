@@ -97,9 +97,9 @@ describe('MixedCaseArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should always check against the arbitrary of string with raw when no untoggleAll', () => {
-      fc.assert(
-        fc.property(fc.string(), fc.boolean(), fc.func(fc.string()), (rawValue, isShrinkable, toggleCase) => {
+    it('should always check against the arbitrary of string with raw when no untoggleAll', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.string(), fc.boolean(), fc.func(fc.string()), (rawValue, isShrinkable, toggleCase) => {
           // Arrange
           const { instance, canShrinkWithoutContext } = fakeArbitrary();
           canShrinkWithoutContext.mockReturnValueOnce(isShrinkable);
@@ -116,9 +116,9 @@ describe('MixedCaseArbitrary', () => {
       );
     });
 
-    it('should always check against the arbitrary of string with untoggled when untoggleAll', () => {
-      fc.assert(
-        fc.property(
+    it('should always check against the arbitrary of string with untoggled when untoggleAll', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.string(),
           fc.string(),
           fc.boolean(),
@@ -171,24 +171,24 @@ describe('MixedCaseArbitrary (integration)', () => {
       (rawString) => rawString.toUpperCase(),
     );
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(mixedCaseBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(mixedCaseBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(mixedCaseBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(mixedCaseBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(mixedCaseBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(mixedCaseBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(mixedCaseBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context (if underlyings do)', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(mixedCaseBuilder, { extraParameters });
   });
 
-  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(mixedCaseBuilder, isStrictlySmaller, { extraParameters });
+  it('should preserve strictly smaller ordering in shrink (if underlyings do)', async () => {
+    await assertShrinkProducesStrictlySmallerValue(mixedCaseBuilder, isStrictlySmaller, { extraParameters });
   });
 });
 

@@ -4,9 +4,9 @@ import fc from 'fast-check';
 import { partsToUrlUnmapper } from '../../../../../src/arbitrary/_internals/mappers/PartsToUrl.js';
 
 describe('partsToUrlUnmapper', () => {
-  it('should properly extract all parts of an url', () =>
-    fc.assert(
-      fc.property(
+  it('should properly extract all parts of an url', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.webUrl({
           authoritySettings: {
             withIPv4: true,

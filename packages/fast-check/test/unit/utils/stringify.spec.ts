@@ -51,20 +51,20 @@ const anythingEnableAll: fc.ObjectConstraints = {
 };
 
 describe('stringify', () => {
-  it('Should be able to stringify fc.anything()', () =>
-    fc.assert(fc.property(fc.anything(anythingEnableAll), (a) => typeof stringify(a) === 'string')));
-  it('Should be able to stringify possibly invalid strings', () =>
-    fc.assert(
-      fc.property(
+  it('Should be able to stringify fc.anything()', async () =>
+    await fc.assert(fc.asyncProperty(fc.anything(anythingEnableAll), (a) => typeof stringify(a) === 'string')));
+  it('Should be able to stringify possibly invalid strings', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.string({ unit: fc.nat({ max: 0xffff }).map((n) => String.fromCharCode(n)) }),
         (a) => typeof stringify(a) === 'string',
       ),
     ));
-  it('Should be able to stringify bigint in object correctly', () =>
-    fc.assert(fc.property(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
-  it('Should be equivalent to JSON.stringify for JSON compliant objects', () =>
-    fc.assert(
-      fc.property(
+  it('Should be able to stringify bigint in object correctly', async () =>
+    await fc.assert(fc.asyncProperty(fc.bigInt(), (b) => stringify({ b }) === '{"b":' + b + 'n}')));
+  it('Should be equivalent to JSON.stringify for JSON compliant objects', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         // Remark: While fc.jsonValue() could have been a good alternative to fc.anything()
         //         it unfortunately cannot be used as JSON.stringify poorly handles negative zeros.
         // JSON.parse('{"a": -0}') -> preserves -0
@@ -84,15 +84,15 @@ describe('stringify', () => {
         },
       ),
     ));
-  it('Should be readable from eval', () =>
-    fc.assert(
-      fc.property(fc.anything(anythingEnableAll), (obj) => {
+  it('Should be readable from eval', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.anything(anythingEnableAll), (obj) => {
         expect(eval(`(function() { return ${stringify(obj)}; })()`)).toStrictEqual(obj as any);
       }),
     ));
-  it('Should stringify differently distinct objects', () =>
-    fc.assert(
-      fc.property(fc.anything(), fc.anything(), (a, b) => {
+  it('Should stringify differently distinct objects', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.anything(), fc.anything(), (a, b) => {
         fc.pre(!checkEqual(a, b));
         expect(stringify(a)).not.toEqual(stringify(b));
       }),
@@ -323,12 +323,12 @@ describe('stringify', () => {
 
     [p1, p2, p3].map((p) => p.catch(() => {})); // no unhandled rejections
   });
-  it('Should be able to stringify Buffer', () => {
+  it('Should be able to stringify Buffer', async () => {
     expect(stringify(Buffer.from([1, 2, 3, 4]))).toEqual('Buffer.from([1,2,3,4])');
     expect(stringify(Buffer.alloc(3))).toEqual('Buffer.from([0,0,0])');
     expect(stringify(Buffer.alloc(4, 'a'))).toEqual('Buffer.from([97,97,97,97])');
-    fc.assert(
-      fc.property(fc.array(fc.nat(255)), (data) => {
+    await fc.assert(
+      fc.asyncProperty(fc.array(fc.nat(255)), (data) => {
         const buffer = Buffer.from(data);
         const stringifiedBuffer = stringify(buffer);
         const bufferFromStringified = eval(stringifiedBuffer);
@@ -525,17 +525,17 @@ describe('stringify', () => {
 });
 
 describe('possiblyAsyncStringify', () => {
-  it('Should behave as "stringify" for synchronous values produced by fc.anything()', () =>
-    fc.assert(
-      fc.property(fc.anything(anythingEnableAll), (value) => {
+  it('Should behave as "stringify" for synchronous values produced by fc.anything()', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.anything(anythingEnableAll), (value) => {
         const expectedStringifiedValue = stringify(value);
         const stringifiedValue = possiblyAsyncStringify(value);
         expect(typeof stringifiedValue).toBe('string');
         expect(stringifiedValue as string).toBe(expectedStringifiedValue);
       }),
     ));
-  it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
-    fc.assert(
+  it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', async () =>
+    await fc.assert(
       fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
         const expectedStringifiedValue = stringify(value);
         const stringifiedValue = possiblyAsyncStringify(Promise.resolve(value));
@@ -546,8 +546,8 @@ describe('possiblyAsyncStringify', () => {
 });
 
 describe('asyncStringify', () => {
-  it('Should return the same string as "stringify" for synchronous values produced by fc.anything()', () =>
-    fc.assert(
+  it('Should return the same string as "stringify" for synchronous values produced by fc.anything()', async () =>
+    await fc.assert(
       fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
         const expectedStringifiedValue = stringify(value);
         const stringifiedValue = asyncStringify(value);
@@ -555,8 +555,8 @@ describe('asyncStringify', () => {
         expect(await stringifiedValue).toBe(expectedStringifiedValue);
       }),
     ));
-  it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', () =>
-    fc.assert(
+  it('Should return the same string as "stringify" wrapped into Promise.resolve for Promises on values produced by fc.anything()', async () =>
+    await fc.assert(
       fc.asyncProperty(fc.anything(anythingEnableAll), async (value) => {
         const expectedStringifiedValue = stringify(value);
         const stringifiedValue = asyncStringify(Promise.resolve(value));
@@ -675,12 +675,12 @@ describe('asyncStringify', () => {
 
 // Helpers
 
-function assertStringifyTypedArraysProperly<TNumber>(
+async function assertStringifyTypedArraysProperly<TNumber>(
   arb: fc.Arbitrary<TNumber>,
   typedArrayProducer: (data: TNumber[]) => { values: () => IterableIterator<TNumber>; [Symbol.toStringTag]: string },
-): void {
-  fc.assert(
-    fc.property(fc.array(arb), (data) => {
+): Promise<void> {
+  await fc.assert(
+    fc.asyncProperty(fc.array(arb), (data) => {
       const typedArray = typedArrayProducer(data);
       const stringifiedTypedArray = stringify(typedArray);
       const typedArrayFromStringified: typeof typedArray = eval(stringifiedTypedArray);

@@ -10,9 +10,9 @@ type Real = unknown;
 
 describe('ModelRunner', () => {
   describe('modelRunner', () => {
-    it('Should run in order and skip unchecked', () =>
-      fc.assert(
-        fc.property(fc.array(fc.boolean()), (runOrNot) => {
+    it('Should run in order and skip unchecked', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.array(fc.boolean()), (runOrNot) => {
           const setupData = { model: {}, real: {} };
           const startedRuns: number[] = [];
           const expectedRuns = runOrNot.map((v, idx) => (v === true ? idx : -1)).filter((v) => v >= 0);

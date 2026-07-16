@@ -11,9 +11,9 @@ function hexa(): fc.Arbitrary<string> {
 }
 
 describe('paddedEightsToUuidUnmapper', () => {
-  it('should be able to unmap any mapped value', () =>
-    fc.assert(
-      fc.property(
+  it('should be able to unmap any mapped value', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.string({ unit: hexa(), minLength: 8, maxLength: 8 }),
         fc.string({ unit: hexa(), minLength: 8, maxLength: 8 }),
         fc.string({ unit: hexa(), minLength: 8, maxLength: 8 }),

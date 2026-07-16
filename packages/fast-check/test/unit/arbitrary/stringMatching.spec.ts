@@ -15,12 +15,12 @@ describe('stringMatching (integration)', () => {
   // isCorrect has to clone the instance of RegExp to make sure not to depend on its internal state
   const isCorrect = (value: string, extra: Extra) => new RegExp(extra.regex.source, extra.regex.flags).test(value);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(stringMatchingBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(stringMatchingBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(stringMatchingBuilder, isCorrect, { extraParameters });
   });
 });
 
