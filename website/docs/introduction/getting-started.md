@@ -87,9 +87,9 @@ A property describes:
 1. what the user wants to assess — _via a predicate_
 2. how to generate the inputs of the predicate — _via arbitraries_
 
-The snippet above declared synchronous properties by calling `fc.asyncProperty`. Properties can deal with both synchronous and asynchronous predicates.
+The snippet above declared properties by calling `fc.asyncProperty`. Properties can deal with both synchronous and asynchronous predicates.
 
-Whatever the helper you take, the structure to declare a property is the same:
+The structure to declare a property is always the same:
 
 ```js
 fc.asyncProperty(

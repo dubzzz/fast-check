@@ -52,7 +52,6 @@ await fc.assert(
 ```
 
 In case your reporter is relying on asynchronous code, you can specify it by setting `asyncReporter` instead of `reporter`.
-Contrary to `reporter` that will be used for both synchronous and asynchronous properties, `asyncReporter` is forbidden for synchronous properties and makes them throw.
 
 :::info Before `reporter` and `asyncReporter`
 In the past, writing your own reporter would have been done as follow:
@@ -159,7 +158,7 @@ Object.defineProperties(myPromisePossiblyResolved, {
 :::info Limitations of async variant
 Note that:
 
-- `asyncToStringMethod` is only used for asynchronous properties.
+- `asyncToStringMethod` is only used in asynchronous contexts.
 - Although `asyncToStringMethod` is marked as asynchronous, it should resolve almost instantly.
 
 :::
