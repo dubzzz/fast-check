@@ -3,9 +3,9 @@ import fc from 'fast-check';
 import { shrinkBigInt } from '../../../../../src/arbitrary/_internals/helpers/ShrinkBigInt.js';
 
 describe('shrinkBigInt', () => {
-  it('should always return empty stream when current equals target', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.boolean(), (value, tryAsap) => {
+  it('should always return empty stream when current equals target', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.boolean(), (value, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkBigInt(value, value, tryAsap)];
 
@@ -14,9 +14,9 @@ describe('shrinkBigInt', () => {
       }),
     ));
 
-  it('should always starts stream with target when try asap is requested (when current not target)', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.bigInt(), (current, target) => {
+  it('should always starts stream with target when try asap is requested (when current not target)', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.bigInt(), (current, target) => {
         // Arrange
         fc.pre(current !== target);
 
@@ -30,9 +30,9 @@ describe('shrinkBigInt', () => {
       }),
     ));
 
-  it('should only include values between current and target in the stream', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
+  it('should only include values between current and target in the stream', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkBigInt(current, target, tryAsap)];
         const values = shrinks.map((v) => v.value);
@@ -47,9 +47,9 @@ describe('shrinkBigInt', () => {
       }),
     ));
 
-  it('should never include current in the stream', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
+  it('should never include current in the stream', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkBigInt(current, target, tryAsap)];
         const values = shrinks.map((v) => v.value);
@@ -59,9 +59,9 @@ describe('shrinkBigInt', () => {
       }),
     ));
 
-  it('should never include target in the stream when try asap is not requested', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.bigInt(), (current, target) => {
+  it('should never include target in the stream when try asap is not requested', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.bigInt(), (current, target) => {
         // Arrange / Act
         const shrinks = [...shrinkBigInt(current, target, false)];
         const values = shrinks.map((v) => v.value);
@@ -71,9 +71,9 @@ describe('shrinkBigInt', () => {
       }),
     ));
 
-  it('should always set context to be the value of previous entry in the stream', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
+  it('should always set context to be the value of previous entry in the stream', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkBigInt(current, target, tryAsap)];
 
@@ -84,9 +84,9 @@ describe('shrinkBigInt', () => {
       }),
     ));
 
-  it('should specify first context of the stream to target if and only if no try asap, undefined otherwise', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
+  it('should specify first context of the stream to target if and only if no try asap, undefined otherwise', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange
         const expectedFirstContext = tryAsap ? undefined : target;
 
@@ -100,9 +100,9 @@ describe('shrinkBigInt', () => {
       }),
     ));
 
-  it('should always strictly increase distance from target as we move in the stream', () =>
-    fc.assert(
-      fc.property(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
+  it('should always strictly increase distance from target as we move in the stream', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.bigInt(), fc.bigInt(), fc.boolean(), (current, target, tryAsap) => {
         // Arrange / Act
         const shrinks = [...shrinkBigInt(current, target, tryAsap)];
         const absDiff = (a: bigint, b: bigint): bigint => {

@@ -22,9 +22,9 @@ describe('ArrayArbitrary', () => {
   declareCleaningHooksForSpies();
 
   describe('generate', () => {
-    it('should concat all the generated values together when no set constraints ', () => {
-      fc.assert(
-        fc.property(
+    it('should concat all the generated values together when no set constraints ', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.tuple(fc.anything(), fc.anything())),
           fc.nat(),
           fc.nat(MaxLengthUpperBound),
@@ -68,9 +68,9 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it("should not concat all the values together in case they don't follow set contraints", () => {
-      fc.assert(
-        fc.property(
+    it("should not concat all the values together in case they don't follow set contraints", async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.tuple(fc.anything(), fc.anything(), fc.boolean())),
           fc.nat(),
           fc.nat(MaxLengthUpperBound),
@@ -116,9 +116,9 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it("should always pass bias to values' arbitrary when minLength equals maxGeneratedLength", () => {
-      fc.assert(
-        fc.property(
+    it("should always pass bias to values' arbitrary when minLength equals maxGeneratedLength", async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.tuple(fc.anything(), fc.anything(), fc.boolean())),
           fc.nat(),
           fc.nat(MaxLengthUpperBound),
@@ -175,9 +175,9 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it('should bias depth the same way for any child and reset it at the end', () => {
-      fc.assert(
-        fc.property(
+    it('should bias depth the same way for any child and reset it at the end', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.tuple(fc.anything(), fc.anything(), fc.boolean())),
           fc.nat(),
           fc.nat(MaxLengthUpperBound),
@@ -294,9 +294,9 @@ describe('ArrayArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should reject any array not matching the requirements on length', () => {
-      fc.assert(
-        fc.property(
+    it('should reject any array not matching the requirements on length', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.anything()),
           fc.boolean(),
           fc.nat(MaxLengthUpperBound),
@@ -340,9 +340,9 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it('should reject any array with at least one entry rejected by the sub-arbitrary', () => {
-      fc.assert(
-        fc.property(
+    it('should reject any array with at least one entry rejected by the sub-arbitrary', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.uniqueArray(fc.tuple(fc.anything(), fc.boolean()), {
             minLength: 1,
             selector: (v) => v[0],
@@ -393,9 +393,9 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it('should reject any array not matching requirements for set constraints', () => {
-      fc.assert(
-        fc.property(
+    it('should reject any array not matching requirements for set constraints', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.uniqueArray(fc.tuple(fc.anything(), fc.boolean()), {
             minLength: 1,
             selector: (v) => v[0],
@@ -447,9 +447,9 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it('should reject any sparse array', () => {
-      fc.assert(
-        fc.property(
+    it('should reject any sparse array', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.sparseArray(fc.anything()),
           fc.boolean(),
           fc.nat(MaxLengthUpperBound),
@@ -493,9 +493,9 @@ describe('ArrayArbitrary', () => {
       );
     });
 
-    it('should accept all other arrays', () => {
-      fc.assert(
-        fc.property(
+    it('should accept all other arrays', async () => {
+      await fc.assert(
+        fc.asyncProperty(
           fc.array(fc.anything()),
           fc.boolean(),
           fc.nat(MaxLengthUpperBound),

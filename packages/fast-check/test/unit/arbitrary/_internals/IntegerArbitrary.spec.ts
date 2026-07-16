@@ -22,9 +22,9 @@ describe('IntegerArbitrary', () => {
   declareCleaningHooksForSpies();
 
   describe('generate', () => {
-    it('should never bias and generate the full range when biasFactor is not specified', () =>
-      fc.assert(
-        fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b, c) => {
+    it('should never bias and generate the full range when biasFactor is not specified', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
           const { instance: mrng, nextInt } = fakeRandom();
@@ -41,9 +41,9 @@ describe('IntegerArbitrary', () => {
         }),
       ));
 
-    it('should not always bias values (expect 1 times over biasFreq) and still generate full range when unbiased', () =>
-      fc.assert(
-        fc.property(
+    it('should not always bias values (expect 1 times over biasFreq) and still generate full range when unbiased', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           fc.maxSafeInteger(),
           fc.maxSafeInteger(),
           fc.maxSafeInteger(),
@@ -68,9 +68,9 @@ describe('IntegerArbitrary', () => {
         ),
       ));
 
-    it('should bias values (1 times over biasFreq) by using one of the ranges from biasNumericRange', () =>
-      fc.assert(
-        fc.property(
+    it('should bias values (1 times over biasFreq) by using one of the ranges from biasNumericRange', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           fc.maxSafeInteger(),
           fc.maxSafeInteger(),
           fc.maxSafeInteger(),
@@ -128,9 +128,9 @@ describe('IntegerArbitrary', () => {
   });
 
   describe('canShrinkWithoutContext', () => {
-    it('should always tells it can generate values included in the requested range', () =>
-      fc.assert(
-        fc.property(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b, c) => {
+    it('should always tells it can generate values included in the requested range', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.maxSafeInteger(), fc.maxSafeInteger(), fc.maxSafeInteger(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
 
@@ -143,9 +143,9 @@ describe('IntegerArbitrary', () => {
         }),
       ));
 
-    it('should always reject values outside of the requested range', () =>
-      fc.assert(
-        fc.property(
+    it('should always reject values outside of the requested range', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           fc.maxSafeInteger(),
           fc.maxSafeInteger(),
           fc.maxSafeInteger(),
@@ -189,9 +189,9 @@ describe('IntegerArbitrary', () => {
   });
 
   describe('shrink', () => {
-    it('should always call shrink helper when no context provided', () =>
-      fc.assert(
-        fc.property(fc.maxSafeNat(), fc.maxSafeNat(), fc.maxSafeNat(), (a, b, c) => {
+    it('should always call shrink helper when no context provided', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.maxSafeNat(), fc.maxSafeNat(), fc.maxSafeNat(), (a, b, c) => {
           // Arrange
           const [min, mid, max] = [a, b, c].sort((v1, v2) => v1 - v2);
           const expectedShrinks = Stream.nil<Value<number>>();
@@ -228,30 +228,30 @@ describe('IntegerArbitrary (integration)', () => {
 
   const integerBuilder = (extra: Extra) => new IntegerArbitrary(extra.min, extra.max);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(integerBuilder, { extraParameters });
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(integerBuilder, { extraParameters });
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(integerBuilder, isCorrect, { extraParameters });
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(integerBuilder, isCorrect, { extraParameters });
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(integerBuilder, { extraParameters });
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(integerBuilder, { extraParameters });
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(integerBuilder, { extraParameters });
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(integerBuilder, { extraParameters });
   });
 
-  it('should shrink towards strictly smaller values', () => {
-    assertShrinkProducesStrictlySmallerValue(integerBuilder, isStrictlySmaller, { extraParameters });
+  it('should shrink towards strictly smaller values', async () => {
+    await assertShrinkProducesStrictlySmallerValue(integerBuilder, isStrictlySmaller, { extraParameters });
   });
 
   describe('shrink', () => {
-    it('should build a mirrored version of the shrinking tree if we negate all the values', () =>
-      fc.assert(
-        fc.property(
+    it('should build a mirrored version of the shrinking tree if we negate all the values', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           fc.maxSafeInteger(),
           fc.integer({ min: 0, max: 20 }), // larger trees might be too wide
           fc.integer({ min: 0, max: 20 }),
@@ -282,9 +282,9 @@ describe('IntegerArbitrary (integration)', () => {
         ),
       ));
 
-    it('should build an offset version of the shrinking tree if we offset all the values (keep every value >=0)', () =>
-      fc.assert(
-        fc.property(
+    it('should build an offset version of the shrinking tree if we offset all the values (keep every value >=0)', async () =>
+      await fc.assert(
+        fc.asyncProperty(
           fc.integer({ min: 0, max: Number.MAX_SAFE_INTEGER }),
           fc.integer({ min: 0, max: 20 }), // larger trees might be too wide
           fc.integer({ min: 0, max: 20 }),

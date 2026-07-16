@@ -12,26 +12,26 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 const MAX_NUM_RUNS = 1000;
 describe('Sampler', () => {
   describe('sample', () => {
-    it('Should produce the same sequence given the same seed', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should produce the same sequence given the same seed', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), (seed) => {
           const out1 = sample(stubArb.forward(), { seed: seed });
           const out2 = sample(stubArb.forward(), { seed: seed });
           expect(out2).toEqual(out1);
         }),
       ));
-    it('Should produce the same sequence given the same seed and different lengths', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.nat(MAX_NUM_RUNS), fc.nat(MAX_NUM_RUNS), (seed, l1, l2) => {
+    it('Should produce the same sequence given the same seed and different lengths', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), fc.nat(MAX_NUM_RUNS), fc.nat(MAX_NUM_RUNS), (seed, l1, l2) => {
           const out1 = sample(stubArb.forward(), { seed: seed, numRuns: l1 });
           const out2 = sample(stubArb.forward(), { seed: seed, numRuns: l2 });
           const lmin = Math.min(l1, l2);
           expect(out2.slice(0, lmin)).toEqual(out1.slice(0, lmin));
         }),
       ));
-    it('Should produce exactly the number of outputs', () =>
-      fc.assert(
-        fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
+    it('Should produce exactly the number of outputs', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const arb = stubArb.counter(start);
           const out = sample(arb, num);
           expect(out).toHaveLength(num);
@@ -39,18 +39,18 @@ describe('Sampler', () => {
           // ::generate might have been called one time more than expected depending on its implementation
         }),
       ));
-    it('Should produce exactly the number of outputs when called with number', () =>
-      fc.assert(
-        fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
+    it('Should produce exactly the number of outputs when called with number', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const arb = stubArb.counter(start);
           const out = sample(arb, num);
           expect(out).toHaveLength(num);
           expect(out).toEqual(arb.generatedValues.slice(0, num)); // give back the values in order
         }),
       ));
-    it('Should not call arbitrary more times than the number of values required', () =>
-      fc.assert(
-        fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
+    it('Should not call arbitrary more times than the number of values required', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const arb = stubArb.counter(start);
           sample(arb, num);
           expect(arb.generatedValues).toHaveLength(num);
@@ -79,18 +79,18 @@ describe('Sampler', () => {
   describe('statistics', () => {
     const customGen = (m = 7) => stubArb.forward().map((v) => ((v % m) + m) % m);
     const rePercent = /(\d+\.\d+)%$/;
-    it('Should always produce for non null number of runs', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), (seed, runs) => {
+    it('Should always produce for non null number of runs', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), fc.integer({ min: 1, max: MAX_NUM_RUNS }), (seed, runs) => {
           const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, numRuns: runs, logger: (v: string) => logs.push(v) });
           expect(logs.length).not.toEqual(0); // at least one log
         }),
       ));
-    it('Should produce the same statistics given the same seed', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should produce the same statistics given the same seed', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), (seed) => {
           const logs1: string[] = [];
           const logs2: string[] = [];
           const classify = (g: number) => g.toString();
@@ -99,9 +99,9 @@ describe('Sampler', () => {
           expect(logs2).toEqual(logs1);
         }),
       ));
-    it('Should start log lines with labels', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should start log lines with labels', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), (seed) => {
           const logs: string[] = [];
           const classify = (g: number) => `my_label_${g.toString()}!`;
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
@@ -110,9 +110,9 @@ describe('Sampler', () => {
           }
         }),
       ));
-    it('Should end log lines with percentage', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should end log lines with percentage', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), (seed) => {
           const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
@@ -121,9 +121,9 @@ describe('Sampler', () => {
           }
         }),
       ));
-    it('Should sum to 100% when provided a single classifier', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should sum to 100% when provided a single classifier', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), (seed) => {
           const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
@@ -134,9 +134,9 @@ describe('Sampler', () => {
           expect(upperBound).toBeGreaterThanOrEqual(100);
         }),
       ));
-    it('Should order percentages from the highest to the lowest', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should order percentages from the highest to the lowest', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), (seed) => {
           const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
@@ -146,9 +146,9 @@ describe('Sampler', () => {
           }
         }),
       ));
-    it('Should be able to handle multiple classifiers', () =>
-      fc.assert(
-        fc.property(fc.integer(), (seed) => {
+    it('Should be able to handle multiple classifiers', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), (seed) => {
           const logs: string[] = [];
           const classify = (g: number) => (g % 2 === 0 ? [`a::${g}`, `b::${g}`, `c::${g}`] : [`a::${g}`, `b::${g}`]);
           statistics(customGen(), classify, { seed: seed, logger: (v: string) => logs.push(v) });
@@ -168,9 +168,9 @@ describe('Sampler', () => {
           expect(associatedWithB).toEqual(associatedWithA); // same logs for a:: and b::
         }),
       ));
-    it('Should not produce more logs than the number of classified values', () =>
-      fc.assert(
-        fc.property(fc.integer(), fc.integer({ min: 1, max: 100 }), (seed, mod) => {
+    it('Should not produce more logs than the number of classified values', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.integer(), fc.integer({ min: 1, max: 100 }), (seed, mod) => {
           const logs: string[] = [];
           const classify = (g: number) => g.toString();
           statistics(customGen(mod), classify, { seed: seed, logger: (v: string) => logs.push(v) });
@@ -178,9 +178,9 @@ describe('Sampler', () => {
           expect(logs.length).toBeLessThanOrEqual(mod); // aggregate classified values together
         }),
       ));
-    it('Should not call arbitrary more times than the number of values required', () =>
-      fc.assert(
-        fc.property(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
+    it('Should not call arbitrary more times than the number of values required', async () =>
+      await fc.assert(
+        fc.asyncProperty(fc.nat(MAX_NUM_RUNS), fc.integer(), (num, start) => {
           const classify = (g: number) => g.toString();
           const arb = stubArb.counter(start);
           statistics(arb, classify, { numRuns: num, logger: (_v: string) => {} });

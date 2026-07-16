@@ -46,18 +46,18 @@ const contains = (text, pattern) => text.indexOf(pattern) >= 0;
 // Properties
 describe('properties', () => {
   // string text always contains itself
-  it('should always contain itself', () => {
-    fc.assert(
-      fc.property(fc.string(), (text) => {
+  it('should always contain itself', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.string(), (text) => {
         return contains(text, text);
       }),
     );
   });
 
   // string a + b + c always contains b, whatever the values of a, b and c
-  it('should always contain its substrings', () => {
-    fc.assert(
-      fc.property(fc.string(), fc.string(), fc.string(), (a, b, c) => {
+  it('should always contain its substrings', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.string(), fc.string(), fc.string(), (a, b, c) => {
         // Alternatively: no return statement and direct usage of expect or assert
         return contains(a + b + c, b);
       }),
@@ -87,12 +87,12 @@ A property describes:
 1. what the user wants to assess — _via a predicate_
 2. how to generate the inputs of the predicate — _via arbitraries_
 
-The snippet above declared synchronous properties by calling `fc.property`. Synchronous properties can only deal with synchronous predicates. For asynchronous predicates, users should go for `fc.asyncProperty` instead of `fc.property`.
+The snippet above declared properties by calling `fc.asyncProperty`. Properties can deal with both synchronous and asynchronous predicates.
 
-Whatever the helper you take, the structure to declare a property is the same:
+The structure to declare a property is always the same:
 
 ```js
-fc.property(
+fc.asyncProperty(
   ...arbitraries // how to generate the values received as inputs of the predicate
   predicate // how to check if the code worked
 );
