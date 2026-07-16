@@ -15,13 +15,13 @@ const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
     it('Should throw if property is null', () => {
-      expect(() => check(null as any as IRawProperty<unknown, true>)).toThrowError();
+      expect(() => check(null as any as IRawProperty<unknown, true>)).toThrowError(); // sync throw
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => check({} as IRawProperty<unknown, true>)).toThrowError();
+      expect(() => check({} as IRawProperty<unknown, true>)).toThrowError(); // sync throw
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => check(integer() as any as IRawProperty<unknown, true>)).toThrowError();
+      expect(() => check(integer() as any as IRawProperty<unknown, true>)).toThrowError(); // sync throw
     });
     it('Should throw if both reporter and asyncReporter are defined', () => {
       const p: IRawProperty<[number], true> = {
@@ -32,7 +32,7 @@ describe('Runner', () => {
         run: () => null,
         runAfterEach: () => {},
       };
-      expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError();
+      expect(() => check(p, { reporter: () => {}, asyncReporter: async () => {} })).toThrowError(); // sync throw
     });
     it('Should not throw if reporter is specified on asynchronous properties', () => {
       const p: IRawProperty<[number], true> = {
@@ -43,7 +43,7 @@ describe('Runner', () => {
         run: () => null,
         runAfterEach: () => {},
       };
-      expect(() => check(p, { reporter: () => {} })).not.toThrowError();
+      expect(() => check(p, { reporter: () => {} })).not.toThrowError(); // no sync throw
     });
     it('Should not throw if asyncReporter is specified on asynchronous properties', () => {
       const p: IRawProperty<[number], true> = {
@@ -54,7 +54,7 @@ describe('Runner', () => {
         run: () => null,
         runAfterEach: () => {},
       };
-      expect(() => check(p, { asyncReporter: async () => {} })).not.toThrowError();
+      expect(() => check(p, { asyncReporter: async () => {} })).not.toThrowError(); // no sync throw
     });
     it('Should call the property 100 times by default (on success)', async () => {
       let numCallsGenerate = 0;
@@ -562,45 +562,49 @@ describe('Runner', () => {
     };
 
     it('Should throw if property is null', () => {
-      expect(() => rAssert(null as any as IRawProperty<unknown, true>)).toThrowError();
+      expect(() => rAssert(null as any as IRawProperty<unknown, true>)).toThrowError(); // sync throw
     });
     it('Should throw if property is not a property at all', () => {
-      expect(() => rAssert({} as IRawProperty<unknown, true>)).toThrowError();
+      expect(() => rAssert({} as IRawProperty<unknown, true>)).toThrowError(); // sync throw
     });
     it('Should throw if property is an Arbitrary', () => {
-      expect(() => rAssert(integer() as any as IRawProperty<unknown, true>)).toThrowError();
+      expect(() => rAssert(integer() as any as IRawProperty<unknown, true>)).toThrowError(); // sync throw
     });
-    it('Should never throw if no failure occured', () => {
-      expect(() => rAssert(successProperty, { seed: 42 })).not.toThrow();
+    it('Should never throw if no failure occured', async () => {
+      await rAssert(successProperty, { seed: 42 }); // no throw
     });
-    it('Should throw on failure', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError();
+    it('Should throw on failure', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError();
     });
-    it('Should put the seed in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`seed: 42, path:`);
+    it('Should put the seed in error message', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(`seed: 42, path:`);
     });
-    it('Should put the number of tests in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`failed after 1 test`);
+    it('Should put the number of tests in error message', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(`failed after 1 test`);
     });
-    it('Should pretty print the failing example in error message', () => {
-      expect(() => rAssert(failingProperty, { seed: 42 })).toThrowError(`[${v1.toString()},${JSON.stringify(v2)}]`);
+    it('Should pretty print the failing example in error message', async () => {
+      await expect(rAssert(failingProperty, { seed: 42 })).rejects.toThrowError(
+        `[${v1.toString()},${JSON.stringify(v2)}]`,
+      );
     });
-    it('Should pretty print the failing complex example in error message', () => {
-      expect(() => rAssert(failingComplexProperty, { seed: 42 })).toThrowError(
+    it('Should pretty print the failing complex example in error message', async () => {
+      await expect(rAssert(failingComplexProperty, { seed: 42 })).rejects.toThrowError(
         `[[${v1.toString()},${JSON.stringify(v2)}],${JSON.stringify(v2)},${v1.toString()}]`,
       );
     });
-    it('Should put the original error as cause', () => {
-      expect(() => {
-        try {
-          rAssert(failingProperty, { seed: 42 });
-        } catch (err) {
-          throw (err as any).cause;
-        }
-      }).toThrowError('error in failingProperty');
+    it('Should put the original error as cause', async () => {
+      await expect(
+        (async () => {
+          try {
+            await rAssert(failingProperty, { seed: 42 });
+          } catch (err) {
+            throw (err as any).cause;
+          }
+        })(),
+      ).rejects.toThrowError('error in failingProperty');
     });
-    it('Should put the original error in error message when includeErrorInReport', () => {
-      expect(() => rAssert(failingProperty, { seed: 42, includeErrorInReport: true })).toThrowError(
+    it('Should put the original error in error message when includeErrorInReport', async () => {
+      await expect(rAssert(failingProperty, { seed: 42, includeErrorInReport: true })).rejects.toThrowError(
         `Got error: error in failingProperty`,
       );
     });
@@ -620,34 +624,36 @@ describe('Runner', () => {
         run: () => ({ error: new Error('failure') }),
         runAfterEach: () => {},
       };
-      it('Should throw with base message by default (no verbose)', () => {
-        expect(() => rAssert(p)).toThrowError(baseErrorMessage);
+      it('Should throw with base message by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw without list of failures by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Encountered failures were:');
+      it('Should throw without list of failures by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Encountered failures were:');
       });
-      it('Should throw without execution tree by default (no verbose)', () => {
-        expect(() => rAssert(p)).not.toThrowError('Execution summary:');
+      it('Should throw without execution tree by default (no verbose)', async () => {
+        await expect(rAssert(p)).rejects.not.toThrowError('Execution summary:');
       });
-      it('Should throw with base message in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError(baseErrorMessage);
+      it('Should throw with base message in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError(baseErrorMessage);
       });
-      it('Should throw with list of failures in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).toThrowError('Encountered failures were:');
-      });
-      it('Should throw without execution tree in verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.Verbose })).not.toThrowError('Execution summary:');
-      });
-      it('Should throw with base message in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError(baseErrorMessage);
-      });
-      it('Should throw without list of failures in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).not.toThrowError(
+      it('Should throw with list of failures in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.toThrowError(
           'Encountered failures were:',
         );
       });
-      it('Should throw with execution tree in very verbose mode', () => {
-        expect(() => rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).toThrowError('Execution summary:');
+      it('Should throw without execution tree in verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.Verbose })).rejects.not.toThrowError('Execution summary:');
+      });
+      it('Should throw with base message in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError(baseErrorMessage);
+      });
+      it('Should throw without list of failures in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.not.toThrowError(
+          'Encountered failures were:',
+        );
+      });
+      it('Should throw with execution tree in very verbose mode', async () => {
+        await expect(rAssert(p, { verbose: VerbosityLevel.VeryVerbose })).rejects.toThrowError('Execution summary:');
       });
     });
     describe('Impact of VerbosityLevel in case of too many skipped runs', () => {
