@@ -7,9 +7,6 @@ import { Value } from '../../check/arbitrary/definition/Value.js';
 import { safePush } from '../../utils/globals.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
 
-const safeArrayIsArray = Array.isArray;
-const safeObjectDefineProperty = Object.defineProperty;
-
 /** @internal */
 type TupleContext = unknown[];
 /** @internal */
@@ -21,7 +18,7 @@ function tupleMakeItCloneable<TValue>(
   ctxs: TupleContext,
   values: (Value<TValue> | undefined)[],
 ): WithCloneMethod<TValue[]> {
-  return safeObjectDefineProperty(vs, cloneMethod, {
+  return Object.defineProperty(vs, cloneMethod, {
     value: () => {
       const cloned: TValue[] = [];
       for (let idx = 0; idx !== values.length; ++idx) {
@@ -46,7 +43,7 @@ export function tupleShrink<Ts extends unknown[]>(
   // shrinking one by one is the not the most comprehensive
   // but allows a reasonable number of entries in the shrink
   const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = [];
-  const safeContext: TupleContext = safeArrayIsArray(context) ? context : [];
+  const safeContext: TupleContext = Array.isArray(context) ? context : [];
   for (let idx = 0; idx !== arbs.length; ++idx) {
     safePush(
       shrinks,
@@ -111,7 +108,7 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
     return new Value(vs, ctxs) as TupleExtendedValue<Ts>;
   }
   canShrinkWithoutContext(value: unknown): value is Ts {
-    if (!safeArrayIsArray(value) || value.length !== this.arbs.length) {
+    if (!Array.isArray(value) || value.length !== this.arbs.length) {
       return false;
     }
     for (let index = 0; index !== this.arbs.length; ++index) {

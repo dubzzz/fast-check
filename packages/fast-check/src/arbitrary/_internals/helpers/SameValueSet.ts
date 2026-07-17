@@ -1,8 +1,6 @@
 import { Set, safeAdd, safePush } from '../../../utils/globals.js';
 import type { CustomSet } from '../interfaces/CustomSet.js';
 
-const safeObjectIs = Object.is;
-
 /**
  * CustomSet based on "SameValue" as defined by:
  * https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevalue
@@ -25,7 +23,7 @@ export class SameValueSet<T, U> implements CustomSet<T> {
 
   tryAdd(value: T): boolean {
     const selected = this.selector(value);
-    if (safeObjectIs(selected, -0)) {
+    if (Object.is(selected, -0)) {
       if (this.hasMinusZero) {
         return false;
       }

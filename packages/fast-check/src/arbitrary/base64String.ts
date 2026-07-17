@@ -10,13 +10,11 @@ import { integer } from './integer.js';
 import { Error, safeCharCodeAt } from '../utils/globals.js';
 export type { StringSharedConstraints } from './_shared/StringSharedConstraints.js';
 
-const safeStringFromCharCode = String.fromCharCode;
-
 /** @internal */
 function base64Mapper(v: number) {
-  if (v < 26) return safeStringFromCharCode(v + 65); // A-Z
-  if (v < 52) return safeStringFromCharCode(v + 97 - 26); // a-z
-  if (v < 62) return safeStringFromCharCode(v + 48 - 52); // 0-9
+  if (v < 26) return String.fromCharCode(v + 65); // A-Z
+  if (v < 52) return String.fromCharCode(v + 97 - 26); // a-z
+  if (v < 62) return String.fromCharCode(v + 48 - 52); // 0-9
   return v === 62 ? '+' : '/'; // 43, 47
 }
 

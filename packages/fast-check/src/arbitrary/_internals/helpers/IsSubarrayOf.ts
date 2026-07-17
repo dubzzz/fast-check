@@ -1,12 +1,10 @@
 import { Map, safeMapGet, safeMapSet } from '../../../utils/globals.js';
 
-const safeObjectIs = Object.is;
-
 export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
   const countMap = new Map<unknown, number>();
   let countMinusZero = 0;
   for (const sourceEntry of source) {
-    if (safeObjectIs(sourceEntry, -0)) {
+    if (Object.is(sourceEntry, -0)) {
       ++countMinusZero;
     } else {
       const oldCount = safeMapGet(countMap, sourceEntry) || 0;
@@ -18,7 +16,7 @@ export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
       return false;
     }
     const smallEntry = small[index];
-    if (safeObjectIs(smallEntry, -0)) {
+    if (Object.is(smallEntry, -0)) {
       if (countMinusZero === 0) return false;
       --countMinusZero;
     } else {

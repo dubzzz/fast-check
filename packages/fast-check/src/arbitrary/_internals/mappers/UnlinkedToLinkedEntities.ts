@@ -7,15 +7,9 @@ import type {
   UnlinkedEntities,
 } from '../interfaces/EntityGraphTypes.js';
 
-const safeObjectAssign = Object.assign;
-const safeObjectCreate = Object.create;
-const safeObjectDefineProperty = Object.defineProperty;
-const safeObjectGetPrototypeOf = Object.getPrototypeOf;
-const safeObjectPrototype = Object.prototype;
-
 /** @internal */
 function withTargetStringifiedValue(stringifiedValue: string) {
-  return safeObjectDefineProperty(safeObjectCreate(null), toStringMethod, {
+  return Object.defineProperty(Object.create(null), toStringMethod, {
     configurable: false,
     enumerable: false,
     writable: false,
@@ -34,12 +28,12 @@ export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations e
   producedLinks: ProducedLinks<TEntityFields, TEntityRelations>,
 ): EntityGraphValue<TEntityFields, TEntityRelations> {
   // Create copies of unlinked entities
-  const linkedEntities: EntityGraphValue<TEntityFields, TEntityRelations> = safeObjectCreate(safeObjectPrototype);
+  const linkedEntities: EntityGraphValue<TEntityFields, TEntityRelations> = Object.create(Object.prototype);
   for (const name in unlinkedEntities) {
     const unlinkedEntitiesForName = unlinkedEntities[name];
     const linkedEntitiesForName = [];
     for (const unlinkedEntity of unlinkedEntitiesForName) {
-      const linkedEntity = safeObjectAssign(safeObjectCreate(safeObjectGetPrototypeOf(unlinkedEntity)), unlinkedEntity);
+      const linkedEntity = Object.assign(Object.create(Object.getPrototypeOf(unlinkedEntity)), unlinkedEntity);
       linkedEntitiesForName.push(linkedEntity);
     }
     linkedEntities[name] = linkedEntitiesForName;
@@ -59,13 +53,13 @@ export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations e
               ? (linkedEntities[propValue.type][propValue.index] as any)
               : safeMap(propValue.index, (index) => linkedEntities[propValue.type][index]);
       }
-      safeObjectDefineProperty(linkedInstance, toStringMethod, {
+      Object.defineProperty(linkedInstance, toStringMethod, {
         configurable: false,
         enumerable: false,
         writable: false,
         value: () => {
           const unlinkedEntity = unlinkedEntities[name][entityIndex];
-          const entity = safeObjectAssign(safeObjectCreate(safeObjectGetPrototypeOf(unlinkedEntity)), unlinkedEntity);
+          const entity = Object.assign(Object.create(Object.getPrototypeOf(unlinkedEntity)), unlinkedEntity);
           for (const prop in entityLinksForInstance) {
             const propValue = entityLinksForInstance[prop];
             entity[prop] = (

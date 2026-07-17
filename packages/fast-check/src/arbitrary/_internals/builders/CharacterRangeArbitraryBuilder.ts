@@ -10,17 +10,14 @@ import {
 } from '../../../utils/globals.js';
 import { string } from '../../string.js';
 
-const SMap = Map;
-const safeStringFromCharCode = String.fromCharCode;
+/** @internal */
+const lowerCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x61) };
 
 /** @internal */
-const lowerCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x61) };
+const upperCaseMapper = { num: 26, build: (v: number) => String.fromCharCode(v + 0x41) };
 
 /** @internal */
-const upperCaseMapper = { num: 26, build: (v: number) => safeStringFromCharCode(v + 0x41) };
-
-/** @internal */
-const numericMapper = { num: 10, build: (v: number) => safeStringFromCharCode(v + 0x30) };
+const numericMapper = { num: 10, build: (v: number) => String.fromCharCode(v + 0x30) };
 
 /** @internal */
 function percentCharArbMapper(c: string): string {
@@ -55,7 +52,7 @@ let lowerAlphaNumericArbitraries: Map<string, Arbitrary<string>> | undefined = u
 /** @internal */
 export function getOrCreateLowerAlphaNumericArbitrary(others: string): Arbitrary<string> {
   if (lowerAlphaNumericArbitraries === undefined) {
-    lowerAlphaNumericArbitraries = new SMap();
+    lowerAlphaNumericArbitraries = new Map();
   }
   let match = safeMapGet(lowerAlphaNumericArbitraries, others);
   if (match === undefined) {
@@ -81,7 +78,7 @@ let alphaNumericPercentArbitraries: Map<string, Arbitrary<string>> | undefined =
 /** @internal */
 export function getOrCreateAlphaNumericPercentArbitrary(others: string): Arbitrary<string> {
   if (alphaNumericPercentArbitraries === undefined) {
-    alphaNumericPercentArbitraries = new SMap();
+    alphaNumericPercentArbitraries = new Map();
   }
   let match = safeMapGet(alphaNumericPercentArbitraries, others);
   if (match === undefined) {

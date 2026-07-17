@@ -8,8 +8,6 @@ import type { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache.js
 
 export type InternalGeneratorValueFunction = <T>(arb: Arbitrary<T>) => T;
 
-const safeObjectAssign = Object.assign;
-
 /**
  * Take an arbitrary builder and all its arguments separatly.
  * Generate a value out of it.
@@ -125,6 +123,6 @@ export function buildGeneratorValue(
     },
   };
 
-  const value = safeObjectAssign(memoedValueFunction, valueMethods);
+  const value = Object.assign(memoedValueFunction, valueMethods);
   return new Value(value, context);
 }

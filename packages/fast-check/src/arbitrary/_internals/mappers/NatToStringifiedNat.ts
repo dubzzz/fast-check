@@ -1,7 +1,5 @@
 import { safeNumberToString, safeSubstring } from '../../../utils/globals.js';
 
-const safeNumberParseInt = Number.parseInt;
-
 /** @internal */
 export function natToStringifiedNatMapper(options: ['dec' | 'oct' | 'hex', number]): string {
   const [style, v] = options;
@@ -18,7 +16,7 @@ export function natToStringifiedNatMapper(options: ['dec' | 'oct' | 'hex', numbe
 
 /** @internal */
 export function tryParseStringifiedNat(stringValue: string, radix: number): number {
-  const parsedNat = safeNumberParseInt(stringValue, radix);
+  const parsedNat = Number.parseInt(stringValue, radix);
   if (safeNumberToString(parsedNat, radix) !== stringValue) {
     throw new Error('Invalid value');
   }

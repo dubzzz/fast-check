@@ -6,8 +6,6 @@ import { Stream } from '../../stream/Stream.js';
 import { safeJoin, safePush } from '../../utils/globals.js';
 import { asyncStringify, asyncToStringMethod, stringify, toStringMethod } from '../../utils/stringify.js';
 
-const safeObjectDefineProperties = Object.defineProperties;
-
 /** @internal */
 function prettyPrint(numSeen: number, seenValuesStrings?: string[]): string {
   const seenSegment = seenValuesStrings !== undefined ? `${safeJoin(seenValuesStrings, ',')}…` : `${numSeen} emitted`;
@@ -39,7 +37,7 @@ export class StreamArbitrary<T> extends Arbitrary<Stream<T>> {
         }
       };
       const s = new Stream(g(this.arb, mrng.clone()));
-      return safeObjectDefineProperties(s, {
+      return Object.defineProperties(s, {
         toString: {
           value: () => prettyPrint(numSeenValues, seenValues !== null ? seenValues.map(stringify) : undefined),
         },
