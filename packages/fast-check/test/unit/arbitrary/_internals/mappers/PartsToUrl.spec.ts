@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { URL } from 'url';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { partsToUrlUnmapper } from '../../../../../src/arbitrary/_internals/mappers/PartsToUrl.js';
 
 describe('partsToUrlUnmapper', () => {

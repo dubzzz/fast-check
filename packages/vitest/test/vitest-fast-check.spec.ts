@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFile = promisify(_execFile);
 
-import type _fc from 'fast-check';
+import type * as _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/vitest';
 declare const fc: typeof _fc;
 declare const runner: typeof _test | typeof _it;

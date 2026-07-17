@@ -220,7 +220,7 @@ const config: Config = {
     [
       'docusaurus-plugin-typedoc',
       {
-        entryPoints: ['../packages/fast-check/src/fast-check-default.ts'],
+        entryPoints: ['../packages/fast-check/src/fast-check.ts'],
         tsconfig: '../packages/fast-check/tsconfig.typedoc.json',
         out: 'docs/api',
         readme: 'none',

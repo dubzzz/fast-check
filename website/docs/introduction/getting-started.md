@@ -38,7 +38,7 @@ fast-check is agnostic of the test runner you rely on. It works with any test ru
 Now, that you've it in your project you can start playing with it on any property. Here is an example of property:
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 // Code under test
 const contains = (text, pattern) => text.indexOf(pattern) >= 0;

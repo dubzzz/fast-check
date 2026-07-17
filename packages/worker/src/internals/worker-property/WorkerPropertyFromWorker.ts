@@ -10,7 +10,7 @@ import type { PropertyArbitraries } from '../SharedTypes.js';
 import type { ValueState } from '../ValueFromState.js';
 import type { Payload } from '../worker-pool/IWorkerPool.js';
 
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { generateValueFromState } from '../ValueFromState.js';
 
 const WorkerPropertyFromWorkerCache = new WeakMap<object, ValueState>();

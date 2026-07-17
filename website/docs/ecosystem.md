@@ -285,7 +285,7 @@ Can generate the following fast-check arbitraries file:
 ```js
 // Generated from TypeSpec using `typespec-fast-check`
 
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 export const Car = fc.record({
   /** Kind of car */
@@ -417,7 +417,7 @@ Prototype poisoning is a commonly exploited vulnerability that can lead to vario
 By utilizing this package in conjunction with fast-check, you can effectively safeguard against inadvertently modifying global prototypes when your code interacts with specially crafted inputs. Using both packages together unlocks their full potential and pushes your testing capabilities a step forward.
 
 ```js
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { assertNoPoisoning, restoreGlobals } from '@fast-check/poisoning';
 
 const ignoredRootRegex = /^(__coverage__|console)$/;
@@ -454,7 +454,7 @@ By default fast-check does not change where the code runs: everything run within
 
 ```js
 import { test, expect } from '@jest/globals';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { isMainThread } from 'node:worker_threads';
 import { assert, propertyFor } from '@fast-check/worker';
 

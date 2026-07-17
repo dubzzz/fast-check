@@ -6,7 +6,7 @@ import React from 'react';
 import DebouncedAutocomplete from './src/DebouncedAutocomplete.js';
 
 import { act, cleanup, render, screen, fireEvent } from '@testing-library/react';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 beforeEach(() => {
   vi.clearAllTimers();

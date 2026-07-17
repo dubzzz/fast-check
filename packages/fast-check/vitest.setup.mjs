@@ -1,5 +1,5 @@
 import process from 'process';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 // Setup fast-check
 const defaultSeedRaw = process.env.DEFAULT_SEED;

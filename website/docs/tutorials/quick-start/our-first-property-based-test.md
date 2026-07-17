@@ -70,7 +70,7 @@ Which could be summarized as:
 Let's start by adding import statement for fast-check into our test file.
 
 ```js title="sort.test.mjs"
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 ```
 
 Now that we have our property in mind, let's translate it into a running test:

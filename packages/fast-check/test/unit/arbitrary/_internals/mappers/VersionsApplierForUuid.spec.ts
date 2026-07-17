@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildVersionsAppliersForUuid } from '../../../../../src/arbitrary/_internals/mappers/VersionsApplierForUuid.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 describe('versionsApplierMapper', () => {
   it('should transform the first hexa element to its proper version', () => {
