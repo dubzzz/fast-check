@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { PlayCommand } from './PlayCommand.js';
 import { PauseCommand } from './PauseCommand.js';
 import { NextCommand } from './NextCommand.js';

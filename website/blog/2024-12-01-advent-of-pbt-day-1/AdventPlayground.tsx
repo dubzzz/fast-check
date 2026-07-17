@@ -23,7 +23,7 @@ export default function AdventPlayground(props: Props) {
   ].join('\n');
   const spec = [
     `import { test, expect } from 'vitest';`,
-    `import fc from 'fast-check';`,
+    `import * as fc from 'fast-check';`,
     `import ${functionName} from './advent.js';`,
     ``,
     ...(signatureExtras ?? []).map((extra) => `// declare ${extra}`),

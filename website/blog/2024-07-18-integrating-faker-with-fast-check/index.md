@@ -31,7 +31,7 @@ For some time, our documentation recommended the following basic integration app
 
 ```ts
 import { faker } from '@faker-js/faker';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 function fakerToArb<TValue>(generator: () => TValue): fc.Arbitrary<TValue> {
   return fc.noShrink(fc.integer()).map((seed) => {
@@ -115,7 +115,7 @@ Here is the implmentation we came up with:
 
 ```ts
 import { Faker, Randomizer, base } from '@faker-js/faker';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 class FakerBuilder<TValue> extends fc.Arbitrary<TValue> {
   constructor(private readonly generator: (faker: Faker) => TValue) {

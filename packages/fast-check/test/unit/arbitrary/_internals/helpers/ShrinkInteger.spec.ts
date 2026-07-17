@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { shrinkInteger } from '../../../../../src/arbitrary/_internals/helpers/ShrinkInteger.js';
 
 describe('shrinkInteger', () => {

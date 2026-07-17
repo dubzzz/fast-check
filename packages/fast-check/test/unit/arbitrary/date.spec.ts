@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { date } from '../../../src/arbitrary/date.js';
 import { fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import {
