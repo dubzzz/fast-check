@@ -124,7 +124,7 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
     },
     (value) => {
       if (typeof value !== 'number') throw new Error('Unsupported type');
-      if (Number.isInteger(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
+      if (Number.isNaN(value)) return maxIndex !== maxIndexWithNaN ? maxIndexWithNaN : minIndexWithNaN;
       return doubleToIndex(value);
     },
   );
