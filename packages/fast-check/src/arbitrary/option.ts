@@ -14,6 +14,10 @@ import { safeHasOwnProperty } from '../utils/globals.js';
 export interface OptionConstraints<TNil = null> {
   /**
    * The probability to build a nil value is of `1 / freq`.
+   *
+   * `Number.POSITIVE_INFINITY` is accepted as a way to request a probability of nil equal to zero:
+   * the arbitrary will never produce nil on its own. Nil may still be produced when other constraints
+   * force it — for instance once `maxDepth` has been reached (see below).
    * @defaultValue 6
    * @remarks Since 1.17.0
    */
@@ -63,10 +67,16 @@ export function option<T, TNil = null>(
 ): Arbitrary<T | TNil> {
   const freq = constraints.freq === undefined ? 6 : constraints.freq;
   const nilValue = safeHasOwnProperty(constraints, 'nil') ? constraints.nil : (null as any);
+  // `freq: Number.POSITIVE_INFINITY` is the only non-finite value we special-case: it means
+  // "probability of nil is zero" so we swap in a {nil: 0, arb: 1} weighting instead of computing
+  // `freq - 1` (which would be +Infinity, rejected by FrequencyArbitrary as a non-integer weight).
+  // Every other value (including NaN and -Infinity) keeps going through `freq - 1` unchanged, so it
+  // is rejected by FrequencyArbitrary exactly as it always has been.
+  const isNeverNil = freq === Number.POSITIVE_INFINITY;
   const nilArb = constant(nilValue);
   const weightedArbs = [
-    { arbitrary: nilArb, weight: 1, fallbackValue: { default: nilValue } },
-    { arbitrary: arb, weight: freq - 1 },
+    { arbitrary: nilArb, weight: isNeverNil ? 0 : 1, fallbackValue: { default: nilValue } },
+    { arbitrary: arb, weight: isNeverNil ? 1 : freq - 1 },
   ];
   const frequencyConstraints: FrequencyConstraints = {
     withCrossShrink: true,

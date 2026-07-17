@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import type { OptionConstraints } from '../../../src/arbitrary/option.js';
 import { option } from '../../../src/arbitrary/option.js';
+import { letrec } from '../../../src/arbitrary/letrec.js';
+import { tuple } from '../../../src/arbitrary/tuple.js';
 import { FakeIntegerArbitrary, fakeArbitrary } from './__test-helpers__/ArbitraryHelpers.js';
 import * as FrequencyArbitraryMock from '../../../src/arbitrary/_internals/FrequencyArbitrary.js';
 import * as ConstantMock from '../../../src/arbitrary/constant.js';
@@ -65,6 +67,37 @@ describe('option', () => {
       ),
     ));
 
+  it('should call FrequencyArbitrary.from with weights {nil: 0, arb: 1} when called with freq = Number.POSITIVE_INFINITY', () => {
+    // Arrange
+    const expectedArb = fakeArbitrary().instance;
+    const from = vi.spyOn(FrequencyArbitraryMock.FrequencyArbitrary, 'from');
+    from.mockReturnValue(expectedArb);
+    const expectedConstantArb = fakeArbitrary().instance;
+    const constant = vi.spyOn(ConstantMock, 'constant');
+    constant.mockReturnValue(expectedConstantArb);
+    const { instance: arb } = fakeArbitrary();
+
+    // Act
+    const out = option(arb, { freq: Number.POSITIVE_INFINITY });
+
+    // Assert
+    expect(constant).toHaveBeenCalledWith(null);
+    expect(from).toHaveBeenCalledWith(
+      [
+        { arbitrary: expectedConstantArb, weight: 0, fallbackValue: { default: null } },
+        { arbitrary: arb, weight: 1 },
+      ],
+      {
+        withCrossShrink: true,
+        depthSize: undefined,
+        maxDepth: undefined,
+        depthIdentifier: undefined,
+      },
+      'fc.option',
+    );
+    expect(out).toBe(expectedArb);
+  });
+
   it('should call FrequencyArbitrary.from with the right parameters when called without constraints', () => {
     // Arrange
     const expectedArb = fakeArbitrary().instance;
@@ -127,6 +160,45 @@ describe('option (integration)', () => {
       () => option(constant(true), { freq: 1 }),
       (o) => {
         expect(o).toBe(null);
+      },
+    );
+  });
+
+  it('should never return nil when freq = Number.POSITIVE_INFINITY', () => {
+    assertProduceCorrectValues(
+      () => option(constant(true), { freq: Number.POSITIVE_INFINITY }),
+      (o) => {
+        expect(o).toBe(true);
+      },
+    );
+  });
+
+  it('should always return nil when freq = Number.POSITIVE_INFINITY but maxDepth has been reached', () => {
+    assertProduceCorrectValues(
+      () => option(constant(true), { freq: Number.POSITIVE_INFINITY, maxDepth: 0 }),
+      (o) => {
+        expect(o).toBe(null);
+      },
+    );
+  });
+
+  it('should still terminate a recursive structure when freq = Number.POSITIVE_INFINITY once maxDepth has been reached', () => {
+    // With freq=Infinity, `data` never opts for nil on its own: the only thing forcing
+    // termination of the recursion is maxDepth. This test asserts that boundary still works
+    // by checking that generated trees never exceed the requested depth.
+    const maxDepth = 3;
+    const depthOf = (v: unknown): number => (Array.isArray(v) ? 1 + Math.max(...v.map(depthOf)) : 0);
+    assertProduceCorrectValues(
+      () =>
+        letrec((tie) => ({
+          data: option(tuple(tie('data'), tie('data')), {
+            freq: Number.POSITIVE_INFINITY,
+            nil: null,
+            maxDepth,
+          }),
+        })).data,
+      (data) => {
+        expect(depthOf(data)).toBeLessThanOrEqual(maxDepth);
       },
     );
   });
