@@ -4,7 +4,7 @@ import * as fc from 'fast-check';
 import { toss } from '../../../../src/check/runner/Tosser.js';
 import { Stream, stream } from '../../../../src/stream/Stream.js';
 import type { Arbitrary } from '../../../../src/check/arbitrary/definition/Arbitrary.js';
-import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import type { Property } from '../../../../src/check/property/types/Property.js';
 import type { Random } from '../../../../src/random/generator/Random.js';
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 
@@ -14,8 +14,8 @@ import type { QualifiedRandomGenerator } from '../../../../src/check/runner/conf
 
 const rngProducer = xorshift128plus as (seed: number) => QualifiedRandomGenerator;
 
-const wrap = <T>(arb: Arbitrary<T>): IRawProperty<T> =>
-  new (class implements IRawProperty<T> {
+const wrap = <T>(arb: Arbitrary<T>): Property<T> =>
+  new (class implements Property<T> {
     constructor(readonly arb: Arbitrary<T>) {}
     isAsync = () => false;
     generate = (rng: Random) => new Value(this.arb.generate(rng, undefined).value_, undefined);

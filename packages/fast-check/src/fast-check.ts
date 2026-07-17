@@ -1,11 +1,8 @@
 export { pre } from './check/precondition/Pre.js';
-export type {
-  IAsyncProperty,
-  IAsyncPropertyWithHooks,
-  AsyncPropertyHookFunction,
-} from './check/property/AsyncProperty.js';
 export { asyncProperty } from './check/property/AsyncProperty.js';
-export type { IRawProperty, PropertyFailure } from './check/property/IRawProperty.js';
+export type { PropertyFailure } from './check/property/types/PropertyFailure.js';
+export type { Property } from './check/property/types/Property.js';
+export type { PropertyWithHooks, PropertyHookFunction } from './check/property/types/PropertyWithHooks.js';
 export type { Parameters } from './check/runner/configuration/Parameters.js';
 export type {
   RunDetails,

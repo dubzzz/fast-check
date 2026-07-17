@@ -1,56 +1,18 @@
-import type { Random } from '../../random/generator/Random.js';
-import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
-import { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { PropertyFailure, IRawProperty } from './IRawProperty.js';
-import { runIdToFrequency } from './IRawProperty.js';
-import type { GlobalAsyncPropertyHookFunction } from '../runner/configuration/GlobalParameters.js';
-import { readConfigureGlobal } from '../runner/configuration/GlobalParameters.js';
-import type { Value } from '../arbitrary/definition/Value.js';
-import { Stream } from '../../stream/Stream.js';
+import type { Random } from '../../../random/generator/Random.js';
+import type { Arbitrary } from '../../arbitrary/definition/Arbitrary.js';
+import { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
+import { runIdToFrequency } from './ToFrequency.js';
+import type { GlobalAsyncPropertyHookFunction } from '../../runner/configuration/GlobalParameters.js';
+import { readConfigureGlobal } from '../../runner/configuration/GlobalParameters.js';
+import type { Value } from '../../arbitrary/definition/Value.js';
+import { Stream } from '../../../stream/Stream.js';
 import {
   noUndefinedAsContext,
   UndefinedContextPlaceholder,
-} from '../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
-import { Error } from '../../utils/globals.js';
-
-/**
- * Type of legal hook function that can be used to call `beforeEach` or `afterEach`
- * on a {@link IAsyncPropertyWithHooks}
- *
- * @remarks Since 2.2.0
- * @public
- */
-export type AsyncPropertyHookFunction =
-  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => Promise<unknown>)
-  | ((previousHookFunction: GlobalAsyncPropertyHookFunction) => void);
-
-/**
- * Interface for asynchronous property, see {@link IRawProperty}
- * @remarks Since 1.19.0
- * @public
- */
-export interface IAsyncProperty<Ts> extends IRawProperty<Ts, true> {}
-
-/**
- * Interface for asynchronous property defining hooks, see {@link IAsyncProperty}
- * @remarks Since 2.2.0
- * @public
- */
-export interface IAsyncPropertyWithHooks<Ts> extends IAsyncProperty<Ts> {
-  /**
-   * Define a function that should be called before all calls to the predicate
-   * @param hookFunction - Function to be called
-   * @remarks Since 1.6.0
-   */
-  beforeEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
-
-  /**
-   * Define a function that should be called after all calls to the predicate
-   * @param hookFunction - Function to be called
-   * @remarks Since 1.6.0
-   */
-  afterEach(hookFunction: AsyncPropertyHookFunction): IAsyncPropertyWithHooks<Ts>;
-}
+} from '../../../arbitrary/_internals/helpers/NoUndefinedAsContext.js';
+import { Error } from '../../../utils/globals.js';
+import type { PropertyFailure } from '../types/PropertyFailure.js';
+import type { PropertyWithHooks, PropertyHookFunction } from '../types/PropertyWithHooks.js';
 
 // Default hook is a no-op
 // oxlint-disable-next-line no-empty-function
@@ -70,13 +32,13 @@ function errorToPropertyAnswer(err: unknown) {
 }
 
 /**
- * Asynchronous property, see {@link IAsyncProperty}
+ * Asynchronous property, see {@link Property}
  *
  * Prefer using {@link asyncProperty} instead
  *
  * @internal
  */
-export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
+export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
   private beforeEachHook: GlobalAsyncPropertyHookFunction;
   private afterEachHook: GlobalAsyncPropertyHookFunction;
   constructor(
@@ -152,7 +114,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * Define a function that should be called before all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  beforeEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
+  beforeEach(hookFunction: PropertyHookFunction): PropertyImplem<Ts> {
     const previousBeforeEachHook = this.beforeEachHook;
     this.beforeEachHook = () => hookFunction(previousBeforeEachHook);
     return this;
@@ -161,7 +123,7 @@ export class AsyncProperty<Ts> implements IAsyncPropertyWithHooks<Ts> {
    * Define a function that should be called after all calls to the predicate
    * @param hookFunction - Function to be called
    */
-  afterEach(hookFunction: AsyncPropertyHookFunction): AsyncProperty<Ts> {
+  afterEach(hookFunction: PropertyHookFunction): PropertyImplem<Ts> {
     const previousAfterEachHook = this.afterEachHook;
     this.afterEachHook = () => hookFunction(previousAfterEachHook);
     return this;
