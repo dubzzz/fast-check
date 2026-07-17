@@ -1,9 +1,6 @@
 import { readConfigureGlobal } from '../../../check/runner/configuration/GlobalParameters.js';
 import { safeIndexOf } from '../../../utils/globals.js';
 
-const safeMathFloor = Math.floor;
-const safeMathMin = Math.min;
-
 /**
  * Shared upper bound for max length of array-like entities handled within fast-check
  *
@@ -80,7 +77,7 @@ export const DefaultSize: Size = 'small';
 export function maxLengthFromMinLength(minLength: number, size: Size): number {
   switch (size) {
     case 'xsmall':
-      return safeMathFloor(1.1 * minLength) + 1; // min + (0.1 * min + 1)
+      return Math.floor(1.1 * minLength) + 1; // min + (0.1 * min + 1)
     case 'small':
       return 2 * minLength + 10; // min + (1 * min + 10)
     case 'medium':
@@ -143,7 +140,7 @@ export function maxGeneratedLengthFromSizeForArbitrary(
     return maxLength;
   }
   const finalSize = relativeSizeToSize(definedSize, defaultSize);
-  return safeMathMin(maxLengthFromMinLength(minLength, finalSize), maxLength);
+  return Math.min(maxLengthFromMinLength(minLength, finalSize), maxLength);
 }
 
 /**

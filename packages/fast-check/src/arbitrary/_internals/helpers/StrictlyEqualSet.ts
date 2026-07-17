@@ -1,8 +1,6 @@
 import { safeAdd, safePush, Set } from '../../../utils/globals.js';
 import type { CustomSet } from '../interfaces/CustomSet.js';
 
-const safeNumberIsNaN = Number.isNaN;
-
 /**
  * CustomSet based on "strict equality" as defined by:
  * https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal
@@ -25,7 +23,7 @@ export class StrictlyEqualSet<T, U> implements CustomSet<T> {
 
   tryAdd(value: T): boolean {
     const selected = this.selector(value);
-    if (safeNumberIsNaN(selected)) {
+    if (Number.isNaN(selected)) {
       safePush(this.data, value);
       return true;
     }

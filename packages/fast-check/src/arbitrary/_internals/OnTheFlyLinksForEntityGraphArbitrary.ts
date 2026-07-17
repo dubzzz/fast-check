@@ -29,9 +29,6 @@ import type {
   Strategy,
 } from './interfaces/EntityGraphTypes.js';
 
-const safeObjectAssign = Object.assign;
-const safeObjectCreate = Object.create;
-
 /** @internal */
 function produceLinkUnitaryIndexArbitrary(
   strategy: Strategy,
@@ -87,7 +84,7 @@ function createEmptyLinksInstanceFor<TEntityFields, TEntityRelations extends Ent
   relations: TEntityRelations,
   targetType: keyof TEntityFields,
 ): EntityLinks<TEntityFields, TEntityRelations> {
-  const emptyLinksInstance = safeObjectCreate(null);
+  const emptyLinksInstance = Object.create(null);
   const relationsForType = relations[targetType];
   for (const name in relationsForType) {
     const relation = relationsForType[name];
@@ -151,8 +148,8 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
   const { producedLinks, toBeProducedEntities } = state;
   const nextIndex = state.nextIndex + offset;
 
-  const newProducedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectAssign(
-    safeObjectCreate(null),
+  const newProducedLinks: ProducedLinks<TEntityFields, TEntityRelations> = Object.assign(
+    Object.create(null),
     producedLinks,
   );
   function getOrCreateProducedLinksFor(type: keyof TEntityFields) {
@@ -164,7 +161,7 @@ function draftNextProductionState<TEntityFields, TEntityRelations extends Entity
   function getOrCreateLinksFor(type: keyof TEntityFields, indexInType: number) {
     const producedLinksForType = getOrCreateProducedLinksFor(type);
     if (producedLinksForType[indexInType] === producedLinks[type][indexInType]) {
-      producedLinksForType[indexInType] = safeObjectAssign(safeObjectCreate(null), producedLinks[type][indexInType]);
+      producedLinksForType[indexInType] = Object.assign(Object.create(null), producedLinks[type][indexInType]);
     }
     return producedLinksForType[indexInType];
   }
@@ -236,7 +233,7 @@ function buildInitialProductionState<TEntityFields, TEntityRelations extends Ent
   defaultEntities: (keyof TEntityFields)[],
 ): ProductionState<TEntityFields, TEntityRelations> {
   // The set of all produced links between entities.
-  const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = safeObjectCreate(null);
+  const producedLinks: ProducedLinks<TEntityFields, TEntityRelations> = Object.create(null);
   for (const name in relations) {
     producedLinks[name as Extract<keyof TEntityFields, string>] = [];
   }

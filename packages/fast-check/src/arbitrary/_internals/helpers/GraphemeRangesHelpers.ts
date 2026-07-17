@@ -1,12 +1,6 @@
 import { safePop, safePush } from '../../../utils/globals.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 
-/** @internal */
-const safeStringFromCodePoint = String.fromCodePoint;
-/** @internal */
-const safeMathMin = Math.min;
-/** @internal */
-const safeMathMax = Math.max;
 
 /** @internal */
 export type GraphemeRangeEntry = { num: number; build: (idInGroup: number) => string };
@@ -17,11 +11,11 @@ export type GraphemeRangeEntry = { num: number; build: (idInGroup: number) => st
  */
 export function convertGraphemeRangeToMapToConstantEntry(range: GraphemeRange): GraphemeRangeEntry {
   if (range.length === 1) {
-    const codePointString = safeStringFromCodePoint(range[0]);
+    const codePointString = String.fromCodePoint(range[0]);
     return { num: 1, build: () => codePointString };
   }
   const rangeStart = range[0];
-  return { num: range[1] - range[0] + 1, build: (idInGroup) => safeStringFromCodePoint(rangeStart + idInGroup) };
+  return { num: range[1] - range[0] + 1, build: (idInGroup) => String.fromCodePoint(rangeStart + idInGroup) };
 }
 
 /**
@@ -56,8 +50,8 @@ export function intersectGraphemeRanges(rangesA: GraphemeRange[], rangesB: Graph
       // B:        |        |
       // A:            |         |
       // B:        |        |
-      let min = safeMathMax(rangeAMin, rangeBMin);
-      const max = safeMathMin(rangeAMax, rangeBMax);
+      let min = Math.max(rangeAMin, rangeBMin);
+      const max = Math.min(rangeAMax, rangeBMax);
       if (mergedRanges.length >= 1) {
         const lastMergedRange = mergedRanges[mergedRanges.length - 1];
         const lastMergedRangeMax = lastMergedRange.length === 1 ? lastMergedRange[0] : lastMergedRange[1];

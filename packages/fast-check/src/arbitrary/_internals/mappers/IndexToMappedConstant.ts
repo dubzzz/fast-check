@@ -1,9 +1,6 @@
 import { Error, Number, Map, safeMapGet, safeMapSet } from '../../../utils/globals.js';
 
 /** @internal */
-const safeObjectIs = Object.is;
-
-/** @internal */
 type Entry<T> = { num: number; build: (idInGroup: number) => T };
 
 /** @internal */
@@ -85,7 +82,7 @@ export function indexToMappedConstantUnmapperFor<T>(
     if (reverseMapping === null) {
       reverseMapping = buildReverseMapping(entries);
     }
-    const choiceIndex = safeObjectIs(value, -0)
+    const choiceIndex = Object.is(value, -0)
       ? reverseMapping.negativeZeroIndex
       : safeMapGet(reverseMapping.mapping, value);
     if (choiceIndex === undefined) {
