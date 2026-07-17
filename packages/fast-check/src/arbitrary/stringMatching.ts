@@ -24,8 +24,6 @@ import { oneof } from './oneof.js';
 import { string } from './string.js';
 import { tuple } from './tuple.js';
 
-const safeStringFromCodePoint = String.fromCodePoint;
-
 /**
  * Constraints to be applied on the arbitrary {@link stringMatching}
  * @remarks Since 3.10.0
@@ -188,7 +186,7 @@ function toMatchingArbitrary(
       const min = astNode.from.codePoint;
       const max = astNode.to.codePoint;
       return integer({ min, max }).map(
-        (n) => safeStringFromCodePoint(n),
+        (n) => String.fromCodePoint(n),
         (c) => {
           if (typeof c !== 'string') throw new Error('Invalid type');
           if ([...c].length !== 1) throw new Error('Invalid length');

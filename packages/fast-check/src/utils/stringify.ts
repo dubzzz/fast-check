@@ -12,17 +12,6 @@ import {
   Symbol as StableSymbol,
 } from './globals.js';
 
-const safeArrayFrom = Array.from;
-const safeBufferIsBuffer = typeof Buffer !== 'undefined' ? Buffer.isBuffer : undefined;
-const safeJsonStringify = JSON.stringify;
-const safeNumberIsNaN = Number.isNaN;
-const safeObjectKeys = Object.keys;
-const safeObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
-const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-const safeObjectGetPrototypeOf = Object.getPrototypeOf;
-const safeNegativeInfinity = Number.NEGATIVE_INFINITY;
-const safePositiveInfinity = Number.POSITIVE_INFINITY;
-
 /**
  * Use this symbol to define a custom serializer for your instances.
  * Serializer must be a function returning a string (see {@link WithToStringMethod}).
@@ -112,10 +101,10 @@ function getSymbolDescription(s: symbol): string | null {
 function stringifyNumber(numValue: number) {
   switch (numValue) {
     case 0:
-      return 1 / numValue === safeNegativeInfinity ? '-0' : '0';
-    case safeNegativeInfinity:
+      return 1 / numValue === Number.NEGATIVE_INFINITY ? '-0' : '0';
+    case Number.NEGATIVE_INFINITY:
       return 'Number.NEGATIVE_INFINITY';
-    case safePositiveInfinity:
+    case Number.POSITIVE_INFINITY:
       return 'Number.POSITIVE_INFINITY';
     default:
       return numValue === numValue ? String(numValue) : 'Number.NaN';
@@ -173,7 +162,7 @@ export function stringifyInternal<Ts>(
         // Discarded: forEach is very long on large sparse arrays, but only iterates on non-holes integer keys
         // oxlint-disable-next-line typescript/no-for-in-array
         for (const index in arr) {
-          if (!safeNumberIsNaN(Number(index)))
+          if (!Number.isNaN(Number(index)))
             safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
         }
         return assignments.length !== 0
@@ -199,7 +188,7 @@ export function stringifyInternal<Ts>(
     }
     case '[object Date]': {
       const d = value as unknown as Date;
-      return safeNumberIsNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${safeJsonStringify(safeToISOString(d))})`;
+      return Number.isNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${JSON.stringify(safeToISOString(d))})`;
     }
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -225,15 +214,15 @@ export function stringifyInternal<Ts>(
             ? '["__proto__"]'
             : typeof k === 'symbol'
               ? `[${stringifyInternal(k, currentValues, getAsyncContent)}]`
-              : safeJsonStringify(k)
+              : JSON.stringify(k)
         }:${stringifyInternal((value as any)[k], currentValues, getAsyncContent)}`;
 
       const stringifiedProperties = [
-        ...(safeObjectGetPrototypeOf(value) === null ? ['__proto__:null'] : []),
-        ...safeMap(safeObjectKeys(value as object), mapper),
+        ...(Object.getPrototypeOf(value) === null ? ['__proto__:null'] : []),
+        ...safeMap(Object.keys(value as object), mapper),
         ...safeMap(
-          safeFilter(safeObjectGetOwnPropertySymbols(value), (s) => {
-            const descriptor = safeObjectGetOwnPropertyDescriptor(value, s);
+          safeFilter(Object.getOwnPropertySymbols(value), (s) => {
+            const descriptor = Object.getOwnPropertyDescriptor(value, s);
             return descriptor && descriptor.enumerable;
           }),
           mapper,
@@ -244,18 +233,18 @@ export function stringifyInternal<Ts>(
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
     case '[object String]':
-      return typeof value === 'string' ? safeJsonStringify(value) : `new String(${safeJsonStringify(value)})`;
+      return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
     case '[object Symbol]': {
       const s = value as unknown as symbol;
       if (StableSymbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${safeJsonStringify(StableSymbol.keyFor(s))})`;
+        return `Symbol.for(${JSON.stringify(StableSymbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       if (desc === null) {
         return 'Symbol()';
       }
       const knownSymbol = desc.startsWith('Symbol.') && (StableSymbol as any)[desc.substring(7)];
-      return s === knownSymbol ? desc : `Symbol(${safeJsonStringify(desc)})`;
+      return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
     }
     case '[object Promise]': {
       const promiseContent = getAsyncContent(value as any as Promise<unknown>);
@@ -289,7 +278,7 @@ export function stringifyInternal<Ts>(
     case '[object Float64Array]':
     case '[object BigInt64Array]':
     case '[object BigUint64Array]': {
-      if (typeof safeBufferIsBuffer === 'function' && safeBufferIsBuffer(value)) {
+      if (Buffer.isBuffer(value)) {
         // Warning: value.values() may crash at runtime if Buffer got poisoned
         return `Buffer.from(${
           // This cast is necessary because `detached` only exists in ES2024,
@@ -298,10 +287,10 @@ export function stringifyInternal<Ts>(
             ? // Don't try to access the buffer contents if its underlying
               // `ArrayBuffer` is detached because it will throw.
               '/*detached ArrayBuffer*/'
-            : stringifyInternal(safeArrayFrom(value.values()), currentValues, getAsyncContent)
+            : stringifyInternal(Array.from(value.values()), currentValues, getAsyncContent)
         })`;
       }
-      const valuePrototype = safeObjectGetPrototypeOf(value);
+      const valuePrototype = Object.getPrototypeOf(value);
       const className = valuePrototype && valuePrototype.constructor && valuePrototype.constructor.name;
       if (typeof className === 'string') {
         const typedArray = value as unknown as
@@ -327,7 +316,7 @@ export function stringifyInternal<Ts>(
         // Warning: typedArray.values() may crash at runtime if type got poisoned
         const valuesFromTypedArr: IterableIterator<bigint | number> = typedArray.values();
         return `${className}.from(${stringifyInternal(
-          safeArrayFrom(valuesFromTypedArr),
+          Array.from(valuesFromTypedArr),
           currentValues,
           getAsyncContent,
         )})`;

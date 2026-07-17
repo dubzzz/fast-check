@@ -1,10 +1,6 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 import { Map, safeMapGet, safeMapSet, safePush } from '../../../utils/globals.js';
 
-const safeArrayIsArray = Array.isArray;
-const safeObjectKeys = Object.keys;
-const safeObjectIs = Object.is;
-
 type ArbitraryBuilder = () => Arbitrary<unknown>;
 type MemoedEntry<T = unknown> = { args: unknown[]; value: Arbitrary<T> };
 export type ArbitraryGeneratorCache = <T, TArgs extends unknown[]>(
@@ -44,14 +40,14 @@ export function buildStableArbitraryGeneratorCache(
 
 export function naiveIsEqual(v1: unknown, v2: unknown): boolean {
   if (v1 !== null && typeof v1 === 'object' && v2 !== null && typeof v2 === 'object') {
-    if (safeArrayIsArray(v1)) {
-      if (!safeArrayIsArray(v2)) return false;
+    if (Array.isArray(v1)) {
+      if (!Array.isArray(v2)) return false;
       if (v1.length !== v2.length) return false;
-    } else if (safeArrayIsArray(v2)) {
+    } else if (Array.isArray(v2)) {
       return false;
     }
 
-    if (safeObjectKeys(v1).length !== safeObjectKeys(v2).length) {
+    if (Object.keys(v1).length !== Object.keys(v2).length) {
       return false;
     }
     for (const index in v1) {
@@ -64,6 +60,6 @@ export function naiveIsEqual(v1: unknown, v2: unknown): boolean {
     }
     return true;
   } else {
-    return safeObjectIs(v1, v2);
+    return Object.is(v1, v2);
   }
 }

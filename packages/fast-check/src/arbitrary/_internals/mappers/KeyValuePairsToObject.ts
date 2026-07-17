@@ -3,23 +3,16 @@ import { Error, safeEvery, safeMap } from '../../../utils/globals.js';
 type KeyValuePairs<K extends PropertyKey, V> = [K, V][];
 type ObjectDefinition<K extends PropertyKey, V> = [/*items*/ KeyValuePairs<K, V>, /*null prototype*/ boolean];
 
-const safeObjectCreate = Object.create;
-const safeObjectDefineProperty = Object.defineProperty;
-const safeObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-const safeObjectGetPrototypeOf = Object.getPrototypeOf;
-const safeObjectPrototype = Object.prototype;
-const safeReflectOwnKeys = Reflect.ownKeys;
-
 /** @internal */
 export function keyValuePairsToObjectMapper<K extends PropertyKey, V>(
   definition: ObjectDefinition<K, V>,
 ): Record<K, V> {
-  const obj: Record<K, V> = definition[1] ? safeObjectCreate(null) : {};
+  const obj: Record<K, V> = definition[1] ? Object.create(null) : {};
   const keyValues = definition[0];
   for (let idx = 0; idx !== keyValues.length; ++idx) {
     const key = keyValues[idx][0];
     if (key === '__proto__') {
-      safeObjectDefineProperty(obj, key, {
+      Object.defineProperty(obj, key, {
         enumerable: true,
         configurable: true,
         writable: true,
@@ -50,16 +43,16 @@ export function keyValuePairsToObjectUnmapper<K extends PropertyKey, V>(value: u
   if (typeof value !== 'object' || value === null) {
     throw new Error('Incompatible instance received: should be a non-null object');
   }
-  const hasNullPrototype = safeObjectGetPrototypeOf(value) === null;
-  const hasObjectPrototype = safeObjectGetPrototypeOf(value) === safeObjectPrototype;
+  const hasNullPrototype = Object.getPrototypeOf(value) === null;
+  const hasObjectPrototype = Object.getPrototypeOf(value) === Object.prototype;
   if (!hasNullPrototype && !hasObjectPrototype) {
     throw new Error('Incompatible instance received: should be of exact type Object');
   }
-  const propertyDescriptors = safeMap(safeReflectOwnKeys(value), (key): [PropertyKey, PropertyDescriptor] => [
+  const propertyDescriptors = safeMap(Reflect.ownKeys(value), (key): [PropertyKey, PropertyDescriptor] => [
     key,
     // A key returned by `Reflect.ownKeys` must have a descriptor.
     // oxlint-disable-next-line typescript/no-non-null-assertion
-    safeObjectGetOwnPropertyDescriptor(value, key)!,
+    Object.getOwnPropertyDescriptor(value, key)!,
   ]);
   if (!safeEvery(propertyDescriptors, ([, descriptor]) => isValidPropertyNameFilter(descriptor))) {
     throw new Error('Incompatible instance received: should contain only c/e/w properties without get/set');

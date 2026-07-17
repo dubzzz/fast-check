@@ -8,9 +8,6 @@ import { noShrink } from '../../noShrink.js';
 import { tuple } from '../../tuple.js';
 import { safeJoin } from '../../../utils/globals.js';
 
-const safeObjectAssign = Object.assign;
-const safeObjectKeys = Object.keys;
-
 /** @internal */
 export function buildCompareFunctionArbitrary<T, TOut>(
   cmp: (hA: number, hB: number) => TOut,
@@ -27,9 +24,9 @@ export function buildCompareFunctionArbitrary<T, TOut>(
         recorded[`[${reprA},${reprB}]`] = val;
         return val;
       };
-      return safeObjectAssign(f, {
+      return Object.assign(f, {
         toString: () => {
-          const seenValues = safeObjectKeys(recorded)
+          const seenValues = Object.keys(recorded)
             .sort()
             .map((k) => `${k} => ${stringify(recorded[k])}`)
             .map((line) => `/* ${escapeForMultilineComments(line)} */`);

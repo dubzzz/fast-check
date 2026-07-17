@@ -5,6 +5,7 @@ import { UnbiasedProperty } from '../property/UnbiasedProperty.js';
 import type { QualifiedParameters } from './configuration/QualifiedParameters.js';
 import { IgnoreEqualValuesProperty } from '../property/IgnoreEqualValuesProperty.js';
 
+// This helper MUST capture the following globals to avoid test runners to mock our internals and defeat us
 const safeDateNow = Date.now;
 const safeSetTimeout = setTimeout;
 const safeClearTimeout = clearTimeout;
