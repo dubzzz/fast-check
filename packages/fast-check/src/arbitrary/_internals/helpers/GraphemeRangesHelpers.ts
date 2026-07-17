@@ -1,7 +1,6 @@
 import { safePop, safePush } from '../../../utils/globals.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 
-
 /** @internal */
 export type GraphemeRangeEntry = { num: number; build: (idInGroup: number) => string };
 

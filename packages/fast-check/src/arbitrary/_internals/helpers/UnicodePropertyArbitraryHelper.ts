@@ -5,8 +5,6 @@ import type { GraphemeRange } from '../data/GraphemeRanges.js';
 import { convertGraphemeRangeToMapToConstantEntry } from './GraphemeRangesHelpers.js';
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 
-
-
 /** @internal */
 function getPropertySpec(astNode: ResolvedUnicodeProperty): string {
   if (astNode.binary || astNode.shorthand) {
