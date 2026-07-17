@@ -273,24 +273,24 @@ describe('TupleArbitrary (integration)', () => {
   const tupleBuilder = () =>
     new TupleArbitrary([new FakeIntegerArbitrary(), new FakeIntegerArbitrary(), new FakeIntegerArbitrary()]);
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(tupleBuilder);
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(tupleBuilder);
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(tupleBuilder, isCorrect);
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(tupleBuilder, isCorrect);
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(tupleBuilder);
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(tupleBuilder);
   });
 
-  it('should be able to shrink to the same values without initial context (if underlyings do)', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(tupleBuilder);
+  it('should be able to shrink to the same values without initial context (if underlyings do)', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(tupleBuilder);
   });
 
-  it('should preserve strictly smaller ordering in shrink (if underlyings do)', () => {
-    assertShrinkProducesStrictlySmallerValue(tupleBuilder, isStrictlySmaller);
+  it('should preserve strictly smaller ordering in shrink (if underlyings do)', async () => {
+    await assertShrinkProducesStrictlySmallerValue(tupleBuilder, isStrictlySmaller);
   });
 
   it('should produce the right shrinking tree', () => {

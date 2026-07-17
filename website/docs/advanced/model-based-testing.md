@@ -144,8 +144,8 @@ const allCommands = [
   fc.constant(new SizeCommand()),
 ];
 // run everything
-fc.assert(
-  fc.property(fc.commands(allCommands, { size: '+1' }), (cmds) => {
+await fc.assert(
+  fc.asyncProperty(fc.commands(allCommands, { size: '+1' }), (cmds) => {
     const s = () => ({ model: { num: 0 }, real: new List() });
     fc.modelRun(s, cmds);
   }),
@@ -170,8 +170,8 @@ In order to replay the failure on the counterexample - `[PlayToken[0],NewGame,Pl
 
 ```typescript
 // Original code
-fc.assert(
-  fc.property(
+await fc.assert(
+  fc.asyncProperty(
     fc.commands(/* array of commands */),
     checkEverythingIsOk
   )
@@ -179,8 +179,8 @@ fc.assert(
 
 // Replay code: straight to the minimal counterexample.
 // It only replays the minimal counterexample.
-fc.assert(
-  fc.property(
+await fc.assert(
+  fc.asyncProperty(
     fc.commands(
       /* array of commands */,
       { replayPath: 'AAAAABAAE:VF' }

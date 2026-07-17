@@ -22,20 +22,20 @@ describe('ipV4 (integration)', () => {
 
   const ipV4Builder = () => ipV4();
 
-  it('should produce the same values given the same seed', () => {
-    assertProduceSameValueGivenSameSeed(ipV4Builder);
+  it('should produce the same values given the same seed', async () => {
+    await assertProduceSameValueGivenSameSeed(ipV4Builder);
   });
 
-  it('should only produce correct values', () => {
-    assertProduceCorrectValues(ipV4Builder, isCorrect);
+  it('should only produce correct values', async () => {
+    await assertProduceCorrectValues(ipV4Builder, isCorrect);
   });
 
-  it('should produce values seen as shrinkable without any context', () => {
-    assertProduceValuesShrinkableWithoutContext(ipV4Builder);
+  it('should produce values seen as shrinkable without any context', async () => {
+    await assertProduceValuesShrinkableWithoutContext(ipV4Builder);
   });
 
-  it('should be able to shrink to the same values without initial context', () => {
-    assertShrinkProducesSameValueWithoutInitialContext(ipV4Builder);
+  it('should be able to shrink to the same values without initial context', async () => {
+    await assertShrinkProducesSameValueWithoutInitialContext(ipV4Builder);
   });
 
   it.each`

@@ -93,9 +93,9 @@ fc.configureGlobal({ baseSize: 'medium' });
 
 // Override the local size of the second string only.
 // Size 'medium' will be used by a and c, while b will be 'large' (=medium+1).
-test('should always contain its substrings', () => {
-  fc.assert(
-    fc.property(fc.string(), fc.string({ size: '+1' }), fc.string(), (a, b, c) => {
+test('should always contain its substrings', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.string(), fc.string({ size: '+1' }), fc.string(), (a, b, c) => {
       expect(contains(a + b + c, b)).toBe(true);
     }),
   );

@@ -7,9 +7,9 @@ import { ExecutionStatus } from '../../../../../src/fast-check.js';
 import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
 
 describe('RunExecution', () => {
-  it('Should expose data coming from the last failure', () =>
-    fc.assert(
-      fc.property(
+  it('Should expose data coming from the last failure', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.integer(),
         fc.constantFrom(VerbosityLevel.None, VerbosityLevel.Verbose, VerbosityLevel.VeryVerbose),
         fc.array(
@@ -53,9 +53,9 @@ describe('RunExecution', () => {
         },
       ),
     ));
-  it('Should generate correct counterexamplePath with no initial offset', () =>
-    fc.assert(
-      fc.property(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
+  it('Should generate correct counterexamplePath with no initial offset', async () =>
+    await fc.assert(
+      fc.asyncProperty(fc.integer(), fc.array(fc.nat(1000), { minLength: 1 }), (seed, path) => {
         // Simulate the run
         const run = new RunExecution<number>(VerbosityLevel.None, false);
         for (let idx = 0; idx !== path[0]; ++idx) {
@@ -68,9 +68,9 @@ describe('RunExecution', () => {
         expect(run.toRunDetails(seed, '', 10000, read({})).counterexamplePath).toEqual(path.join(':'));
       }),
     ));
-  it('Should generate correct counterexamplePath given initial offset', () =>
-    fc.assert(
-      fc.property(
+  it('Should generate correct counterexamplePath given initial offset', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.integer(),
         fc.array(fc.nat(1000), { minLength: 1 }),
         fc.array(fc.nat(1000), { minLength: 1 }),
@@ -93,9 +93,9 @@ describe('RunExecution', () => {
         },
       ),
     ));
-  it('Should produce an execution summary corresponding to the execution', () =>
-    fc.assert(
-      fc.property(
+  it('Should produce an execution summary corresponding to the execution', async () =>
+    await fc.assert(
+      fc.asyncProperty(
         fc.array(
           fc.record({
             status: fc.constantFrom(ExecutionStatus.Success, ExecutionStatus.Failure, ExecutionStatus.Skipped),

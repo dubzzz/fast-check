@@ -34,9 +34,9 @@ test('sort users by ascending age', () => {
 Although the previous test successfully generates random users and checks that ordering is applied correctly, it falls short when it comes to providing details about the nature of any failures that may occur. In contrast, property-based testing, while requiring more initial effort, provides more reliable tests that can report failures and simplify the debugging process. To demonstrate this, we can rewrite the previous test using a property-based approach as shown below:
 
 ```js
-test('sort users by ascending age', () => {
-  fc.assert(
-    fc.property(
+test('sort users by ascending age', async () => {
+  await fc.assert(
+    fc.asyncProperty(
       fc
         .record({
           firstName: firstNameArb(),
@@ -67,9 +67,9 @@ The previous test revealed a challenge in generating entries beforehand, which c
 This challenge has been addressed with the introduction of `gen` in fast-check. It makes writing property-based tests as straightforward as writing regular tests. With `gen` the test can be written as follow:
 
 ```js
-test('sort users by ascending age', () => {
-  fc.assert(
-    fc.property(fc.gen(), (g) => {
+test('sort users by ascending age', async () => {
+  await fc.assert(
+    fc.asyncProperty(fc.gen(), (g) => {
       const userA = {
         firstName: g(firstName),
         lastName: g(lastName),
