@@ -1,5 +1,6 @@
 import { isMainThread } from 'node:worker_threads';
-import fc, { type Parameters } from 'fast-check';
+import * as fc from 'fast-check';
+import type { Parameters } from 'fast-check';
 import { assert } from '@fast-check/worker';
 import { describe, it, expect } from 'vitest';
 import { expectThrowWithCause } from './__test-helpers__/ThrowWithCause.js';

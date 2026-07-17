@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { assert, propertyFor } from '@fast-check/worker';
 
 const property = propertyFor(new URL('{{import.meta.url}}'));

@@ -111,6 +111,6 @@ export default defineConfig({
 Then you can add the global settings snippet directly into the setup file:
 
 ```js title="vitest.setup.js"
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 fc.configureGlobal({ numRuns: 10 });
 ```

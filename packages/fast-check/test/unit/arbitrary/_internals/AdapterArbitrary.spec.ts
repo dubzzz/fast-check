@@ -5,7 +5,7 @@ import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
 import { fakeArbitrary } from '../__test-helpers__/ArbitraryHelpers.js';
 import { fakeRandom } from '../__test-helpers__/RandomHelpers.js';
 import { Stream } from '../../../../src/stream/Stream.js';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 
 describe('AdapterArbitrary', () => {
   describe('generate', () => {

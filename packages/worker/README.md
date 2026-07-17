@@ -28,7 +28,7 @@ Here are some of the changes you will have to do:
 
 ```js
 import { test } from '@jest/globals';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { isMainThread } from 'node:worker_threads';
 import { assert, propertyFor } from '@fast-check/worker';
 

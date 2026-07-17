@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import fc from 'fast-check';
+import * as fc from 'fast-check';
 import { mapToConstant } from '../../../src/arbitrary/mapToConstant.js';
 import { Value } from '../../../src/check/arbitrary/definition/Value.js';
 import {

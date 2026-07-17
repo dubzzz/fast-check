@@ -3,7 +3,7 @@ import * as path from 'path';
 import { promises as fs } from 'fs';
 import { promisify } from 'util';
 import { execFile as _execFile } from 'child_process';
-import type _fc from 'fast-check';
+import type * as _fc from 'fast-check';
 import type { test as _test, it as _it } from '@fast-check/jest';
 import type { jest as _jest, expect as _jestExpect } from '@jest/globals';
 
