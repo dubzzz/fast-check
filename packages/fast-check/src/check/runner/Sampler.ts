@@ -1,6 +1,6 @@
 import { stream } from '../../stream/Stream.js';
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
-import { AsyncProperty } from '../property/_internals/PropertyImplem.js';
+import { PropertyImplem } from '../property/_internals/PropertyImplem.js';
 import type { Property } from '../property/types/Property.js';
 import { UnbiasedProperty } from '../property/plugins/UnbiasedProperty.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
@@ -13,7 +13,7 @@ import { pathWalk } from './utils/PathWalker.js';
 /** @internal */
 function toProperty<Ts>(generator: Property<Ts> | Arbitrary<Ts>, qParams: QualifiedParameters<Ts>): Property<Ts> {
   const prop = !Object.prototype.hasOwnProperty.call(generator, 'runBeforeEach')
-    ? new AsyncProperty(generator as Arbitrary<Ts>, () => true)
+    ? new PropertyImplem(generator as Arbitrary<Ts>, () => true)
     : (generator as Property<Ts>);
   return qParams.unbiased === true ? new UnbiasedProperty(prop) : prop;
 }
