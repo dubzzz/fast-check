@@ -63,10 +63,6 @@ export class PropertyImplem<Ts> implements PropertyWithHooks<Ts> {
     this.afterEachHook = asyncAfterEach || afterEach || dummyHook;
   }
 
-  isAsync(): true {
-    return true;
-  }
-
   generate(mrng: Random, runId?: number): Value<Ts> {
     const value = this.arb.generate(mrng, runId !== undefined ? runIdToFrequency(runId) : undefined);
     return noUndefinedAsContext(value);

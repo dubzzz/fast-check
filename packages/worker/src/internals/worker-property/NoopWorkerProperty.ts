@@ -13,9 +13,6 @@ export class NoopWorkerProperty<Ts> implements WorkerProperty<Ts> {
   afterEach(): PropertyWithHooks<Ts> {
     throw new Error('Method not implemented.');
   }
-  isAsync(): true {
-    throw new Error('Method not implemented.');
-  }
   generate(): Value<Ts> {
     throw new Error('Method not implemented.');
   }

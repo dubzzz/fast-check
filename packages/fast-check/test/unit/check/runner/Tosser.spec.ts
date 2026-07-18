@@ -17,7 +17,6 @@ const rngProducer = xorshift128plus as (seed: number) => QualifiedRandomGenerato
 const wrap = <T>(arb: Arbitrary<T>): Property<T> =>
   new (class implements Property<T> {
     constructor(readonly arb: Arbitrary<T>) {}
-    isAsync = () => false;
     generate = (rng: Random) => new Value(this.arb.generate(rng, undefined).value_, undefined);
     shrink = () => Stream.nil<Value<T>>();
     runBeforeEach = () => {};

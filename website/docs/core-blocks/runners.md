@@ -46,10 +46,10 @@ The structure `RunDetails` provides all the details needed to report what happen
 :::tip Rewrite `assert` with `check`
 
 ```js
-function assert(property, params) {
+async function assert(property, params) {
   // In this example we only support synchronous properties.
   // To support both of them, you could use `property.isAsync()` and `asyncDefaultReportMessage`.
-  const out = fc.check(property, params);
+  const out = await fc.check(property, params);
   if (out.failed) {
     throw new Error(fc.defaultReportMessage(out), { cause: out.errorInstance });
   }
