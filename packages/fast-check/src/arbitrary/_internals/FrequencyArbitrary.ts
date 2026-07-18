@@ -18,10 +18,6 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     }
     let totalWeight = 0;
     for (let idx = 0; idx !== warbs.length; ++idx) {
-      const currentArbitrary = warbs[idx].arbitrary;
-      if (currentArbitrary === undefined) {
-        throw new Error(`${label} expects arbitraries to be specified`);
-      }
       const currentWeight = warbs[idx].weight;
       totalWeight += currentWeight;
       if (!Number.isInteger(currentWeight)) {
