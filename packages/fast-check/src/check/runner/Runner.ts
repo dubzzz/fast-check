@@ -57,10 +57,6 @@ async function runIt<Ts>(
  * @public
  */
 function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
-  if (property === null || property === undefined || property.generate === null || property.generate === undefined)
-    throw new Error('Invalid property encountered, please use a valid property');
-  if (property.run === null || property.run === undefined)
-    throw new Error('Invalid property encountered, please use a valid property not an arbitrary');
   const qParams: QualifiedParameters<Ts> = read<Ts>({
     ...(readConfigureGlobal() as Parameters<Ts>),
     ...params,
