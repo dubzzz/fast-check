@@ -93,7 +93,6 @@ function isOneOfContraints(
   param: OneOfConstraints | MaybeWeightedArbitrary<unknown> | undefined,
 ): param is OneOfConstraints {
   return (
-    param !== null &&
     param !== undefined &&
     typeof param === 'object' &&
     // Arbitrary<unknown>
