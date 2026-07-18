@@ -11,8 +11,8 @@ import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/Ty
 export function bigInt64Array(constraints: BigIntArrayConstraints = {}): Arbitrary<BigInt64Array<ArrayBuffer>> {
   return typedIntArrayArbitraryArbitraryBuilder<BigInt64Array<ArrayBuffer>, bigint>(
     constraints,
-    BigInt('-9223372036854775808'),
-    BigInt('9223372036854775807'),
+    -9223372036854775808n,
+    9223372036854775807n,
     BigInt64Array,
     bigInt,
   );

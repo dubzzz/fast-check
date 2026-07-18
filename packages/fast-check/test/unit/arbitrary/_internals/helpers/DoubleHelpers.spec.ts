@@ -46,45 +46,45 @@ describe('decomposeDouble', () => {
 
 describe('doubleToIndex', () => {
   it('should properly compute indexes', () => {
-    expect(doubleToIndex(0)).toEqual(BigInt('0'));
-    expect(doubleToIndex(Number.MIN_VALUE)).toEqual(BigInt('1'));
-    expect(doubleToIndex(2 * Number.MIN_VALUE)).toEqual(BigInt('2'));
-    expect(doubleToIndex(3 * Number.MIN_VALUE)).toEqual(BigInt('3'));
+    expect(doubleToIndex(0)).toEqual(0n);
+    expect(doubleToIndex(Number.MIN_VALUE)).toEqual(1n);
+    expect(doubleToIndex(2 * Number.MIN_VALUE)).toEqual(2n);
+    expect(doubleToIndex(3 * Number.MIN_VALUE)).toEqual(3n);
     // Last double with minimal exponent, ie -1022
     // index(last with min exponent) = 2**53 - 1
-    expect(doubleToIndex(2 ** -1022 * (2 - Number.EPSILON))).toEqual(BigInt('9007199254740991'));
+    expect(doubleToIndex(2 ** -1022 * (2 - Number.EPSILON))).toEqual(9007199254740991n);
     // First double without minimal exponent, ie -1022
     // index(first without min exponent) = index(last with min exponent) + 1
-    expect(doubleToIndex(2 ** -1021)).toEqual(BigInt('9007199254740992'));
+    expect(doubleToIndex(2 ** -1021)).toEqual(9007199254740992n);
     // Number.EPSILON === 1. * 2**-52 --> m = 1, e = -52
     // index(Number.EPSILON) = 2**53 + (-52 - (-1022) -1) * 2**52
-    expect(doubleToIndex(Number.EPSILON)).toEqual(BigInt('4372995238176751616'));
+    expect(doubleToIndex(Number.EPSILON)).toEqual(4372995238176751616n);
     // index(1 - Number.EPSILON / 2) = index(1) - 1
-    expect(doubleToIndex(1 - Number.EPSILON / 2)).toEqual(BigInt('4607182418800017407'));
+    expect(doubleToIndex(1 - Number.EPSILON / 2)).toEqual(4607182418800017407n);
     // 1 === 1. * 2**0 --> m = 1, e = 0
     // index(1) = 2**53 + (0 - (-1022) -1) * 2**52
-    expect(doubleToIndex(1)).toEqual(BigInt('4607182418800017408'));
+    expect(doubleToIndex(1)).toEqual(4607182418800017408n);
     // index(1 + Number.EPSILON) = index(1) + 1
-    expect(doubleToIndex(1 + Number.EPSILON)).toEqual(BigInt('4607182418800017409'));
+    expect(doubleToIndex(1 + Number.EPSILON)).toEqual(4607182418800017409n);
     // index(2 - Number.EPSILON) = index(2) - 1 = index(1 + (2 ** 52 - 1) * Number.EPSILON)
-    expect(doubleToIndex(2 - Number.EPSILON)).toEqual(BigInt('4611686018427387903'));
+    expect(doubleToIndex(2 - Number.EPSILON)).toEqual(4611686018427387903n);
     // 1 === 1. * 2**1 --> m = 1, e = 1
     // index(2) = index(1) + 2**52
-    expect(doubleToIndex(2)).toEqual(BigInt('4611686018427387904'));
+    expect(doubleToIndex(2)).toEqual(4611686018427387904n);
     // Number.MAX_VALUE === (1 + (2**52-1)/2**52) * 2**1023 --> m = 1 + (2**52-1)/2**52, e = 1023
     // index(Number.MAX_VALUE) = index(next(Number.MAX_VALUE)) -1 = 2**53 + (1024 - (-1022) -1) * 2**52 -1
-    expect(doubleToIndex(Number.MAX_VALUE)).toEqual(BigInt('9218868437227405311'));
+    expect(doubleToIndex(Number.MAX_VALUE)).toEqual(9218868437227405311n);
   });
 
   it('should properly compute negative indexes', () => {
-    expect(doubleToIndex(-0)).toEqual(BigInt('-1'));
-    expect(doubleToIndex(-Number.MIN_VALUE)).toEqual(BigInt('-2'));
-    expect(doubleToIndex(-Number.MAX_VALUE)).toEqual(BigInt('-9218868437227405312'));
+    expect(doubleToIndex(-0)).toEqual(-1n);
+    expect(doubleToIndex(-Number.MIN_VALUE)).toEqual(-2n);
+    expect(doubleToIndex(-Number.MAX_VALUE)).toEqual(-9218868437227405312n);
   });
 
   it('should properly compute indexes for infinity', () => {
-    expect(doubleToIndex(Number.NEGATIVE_INFINITY)).toEqual(BigInt(doubleToIndex(-Number.MAX_VALUE) - BigInt(1)));
-    expect(doubleToIndex(Number.POSITIVE_INFINITY)).toEqual(BigInt(doubleToIndex(Number.MAX_VALUE) + BigInt(1)));
+    expect(doubleToIndex(Number.NEGATIVE_INFINITY)).toEqual(BigInt(doubleToIndex(-Number.MAX_VALUE) - 1n));
+    expect(doubleToIndex(Number.POSITIVE_INFINITY)).toEqual(BigInt(doubleToIndex(Number.MAX_VALUE) + 1n));
   });
 
   it('should be able to infer index for negative double from the positive one', async () => {
@@ -99,7 +99,7 @@ describe('doubleToIndex', () => {
         const bigIntIndexNeg = doubleToIndex(-posD);
 
         // Assert
-        expect(bigIntIndexNeg).toEqual(-bigIntIndexPos - BigInt(1));
+        expect(bigIntIndexNeg).toEqual(-bigIntIndexPos - 1n);
       }),
     );
   });
@@ -121,7 +121,7 @@ describe('doubleToIndex', () => {
           const bigIntIndexNext = doubleToIndex(next);
 
           // Assert
-          expect(bigIntIndexNext).toEqual(bigIntIndexCurrent + BigInt(1));
+          expect(bigIntIndexNext).toEqual(bigIntIndexCurrent + 1n);
         },
       ),
     );
@@ -154,30 +154,27 @@ describe('indexToDouble', () => {
     ));
 
   it('should properly find doubles corresponding to well-known values', () => {
-    expect(indexToDouble(BigInt('-9218868437227405313'))).toBe(Number.NEGATIVE_INFINITY);
-    expect(indexToDouble(BigInt('-9218868437227405312'))).toBe(-Number.MAX_VALUE);
-    expect(indexToDouble(BigInt('-1'))).toBe(-0);
-    expect(indexToDouble(BigInt('0'))).toBe(0);
-    expect(indexToDouble(BigInt('4372995238176751616'))).toBe(Number.EPSILON);
-    expect(indexToDouble(BigInt('9218868437227405311'))).toBe(Number.MAX_VALUE);
-    expect(indexToDouble(BigInt('9218868437227405312'))).toBe(Number.POSITIVE_INFINITY);
+    expect(indexToDouble(-9218868437227405313n)).toBe(Number.NEGATIVE_INFINITY);
+    expect(indexToDouble(-9218868437227405312n)).toBe(-Number.MAX_VALUE);
+    expect(indexToDouble(-1n)).toBe(-0);
+    expect(indexToDouble(0n)).toBe(0);
+    expect(indexToDouble(4372995238176751616n)).toBe(Number.EPSILON);
+    expect(indexToDouble(9218868437227405311n)).toBe(Number.MAX_VALUE);
+    expect(indexToDouble(9218868437227405312n)).toBe(Number.POSITIVE_INFINITY);
   });
 
   it('should be reversed by doubleToIndex', async () => {
     await fc.assert(
-      fc.asyncProperty(
-        fc.bigInt({ min: BigInt('-9218868437227405313'), max: BigInt('9218868437227405312') }),
-        (bigIntIndex) => {
-          // The test below checks that indexToDouble(doubleToIndex) is identity
-          // It does not confirm that doubleToIndex(indexToDouble)) is identity
+      fc.asyncProperty(fc.bigInt({ min: -9218868437227405313n, max: 9218868437227405312n }), (bigIntIndex) => {
+        // The test below checks that indexToDouble(doubleToIndex) is identity
+        // It does not confirm that doubleToIndex(indexToDouble)) is identity
 
-          // Arrange
-          const index = BigInt(bigIntIndex);
+        // Arrange
+        const index = BigInt(bigIntIndex);
 
-          // Act / Assert
-          expect(doubleToIndex(indexToDouble(index))).toEqual(index);
-        },
-      ),
+        // Act / Assert
+        expect(doubleToIndex(indexToDouble(index))).toEqual(index);
+      }),
     );
   });
 });

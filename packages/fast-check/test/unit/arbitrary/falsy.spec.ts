@@ -62,6 +62,6 @@ describe('falsy', () => {
     for (const v of possibleValues) {
       expect(!v).toBe(true);
     }
-    expect(possibleValues).toContain(BigInt(0));
+    expect(possibleValues).toContain(0n);
   });
 });

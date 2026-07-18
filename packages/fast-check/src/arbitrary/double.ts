@@ -96,9 +96,9 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
     max = noDefaultInfinity ? Number.MAX_VALUE : Number.POSITIVE_INFINITY,
   } = constraints;
   const minIndexRaw = safeDoubleToIndex(min, 'min');
-  const minIndex = minExcluded ? minIndexRaw + BigInt(1) : minIndexRaw;
+  const minIndex = minExcluded ? minIndexRaw + 1n : minIndexRaw;
   const maxIndexRaw = safeDoubleToIndex(max, 'max');
-  const maxIndex = maxExcluded ? maxIndexRaw - BigInt(1) : maxIndexRaw;
+  const maxIndex = maxExcluded ? maxIndexRaw - 1n : maxIndexRaw;
   if (maxIndex < minIndex) {
     // In other words: minIndex > maxIndex
     // Comparing min and max might be problematic in case min=+0 and max=-0
@@ -113,9 +113,9 @@ function anyDouble(constraints: Omit<DoubleConstraints, 'noInteger'>): Arbitrary
   //               or [min, ..., max, NaN] if min > +0
   // Otherwise,
   //   values will be [NaN, min, ..., max] with max <= +0
-  const positiveMaxIdx = maxIndex > BigInt(0);
-  const minIndexWithNaN = positiveMaxIdx ? minIndex : minIndex - BigInt(1);
-  const maxIndexWithNaN = positiveMaxIdx ? maxIndex + BigInt(1) : maxIndex;
+  const positiveMaxIdx = maxIndex > 0n;
+  const minIndexWithNaN = positiveMaxIdx ? minIndex : minIndex - 1n;
+  const maxIndexWithNaN = positiveMaxIdx ? maxIndex + 1n : maxIndex;
   return bigInt({ min: minIndexWithNaN, max: maxIndexWithNaN }).map(
     (index) => {
       if (maxIndex < index || index < minIndex) return Number.NaN;

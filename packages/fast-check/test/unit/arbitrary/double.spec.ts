@@ -146,7 +146,7 @@ describe('double', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.option(doubleConstraints(withoutExcludedConstraints), { nil: undefined }),
-        fc.bigInt({ min: BigInt(0) }),
+        fc.bigInt({ min: 0n }),
         fc.option(fc.integer({ min: 2 }), { nil: undefined }),
         (ct, mod, biasFactor) => {
           // Arrange
@@ -154,7 +154,7 @@ describe('double', () => {
           const { min, max } = minMaxForConstraints(ct || {});
           const minIndex = doubleToIndex(min);
           const maxIndex = doubleToIndex(max);
-          const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + BigInt(1))) + minIndex;
+          const arbitraryGeneratedIndex = (mod % (maxIndex - minIndex + 1n)) + minIndex;
           spyBigIntWithValue(() => arbitraryGeneratedIndex);
 
           // Act
@@ -203,12 +203,12 @@ describe('double', () => {
             // max > 0  --> NaN will be added as the greatest value
             expect(constraintsWithNaN[0]).toEqual({
               min: constraintsNoNaN[0].min,
-              max: constraintsNoNaN[0].max! + BigInt(1),
+              max: constraintsNoNaN[0].max! + 1n,
             });
           } else {
             // max <= 0 --> NaN will be added as the smallest value
             expect(constraintsWithNaN[0]).toEqual({
-              min: constraintsNoNaN[0].min! - BigInt(1),
+              min: constraintsNoNaN[0].min! - 1n,
               max: constraintsNoNaN[0].max,
             });
           }
@@ -270,8 +270,8 @@ describe('double', () => {
             const { min, max } = minMaxForConstraints(ct);
             const minIndex = doubleToIndex(min);
             const maxIndex = doubleToIndex(max);
-            const expectedMinIndex = ct.minExcluded ? minIndex + BigInt(1) : minIndex;
-            const expectedMaxIndex = ct.maxExcluded ? maxIndex - BigInt(1) : maxIndex;
+            const expectedMinIndex = ct.minExcluded ? minIndex + 1n : minIndex;
+            const expectedMaxIndex = ct.maxExcluded ? maxIndex - 1n : maxIndex;
 
             // Act
             double(ct);
