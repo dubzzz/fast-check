@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { IRawProperty } from '../../../../src/check/property/IRawProperty.js';
+import type { Property } from '../../../../src/check/property/types/Property.js';
 import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
 import type { RunDetails } from '../../../../src/check/runner/reporter/RunDetails.js';
 
@@ -17,7 +17,7 @@ describe('TimeLimitPlugins', () => {
     it('should forward inputs to run when started within the time limit', async () => {
       // Arrange
       const { interruptAfterTimeLimit } = await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => null);
+      const nestedRun = vi.fn<Property<unknown>['run']>(() => null);
       const expectedRunInput = Symbol('something');
 
       // Act
@@ -34,7 +34,7 @@ describe('TimeLimitPlugins', () => {
     it('should interrupt executions started after the time limit without calling run', async () => {
       // Arrange
       const { interruptAfterTimeLimit } = await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => null);
+      const nestedRun = vi.fn<Property<unknown>['run']>(() => null);
 
       // Act
       const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());
@@ -51,7 +51,7 @@ describe('TimeLimitPlugins', () => {
     it('should interrupt long-running executions started within the time limit', async () => {
       // Arrange
       const { interruptAfterTimeLimit } = await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
-      const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => new Promise(() => {}));
+      const nestedRun = vi.fn<Property<unknown>['run']>(() => new Promise(() => {}));
 
       // Act
       const instance = interruptAfterTimeLimit(10)(0, new Map<symbol, any>());
@@ -81,7 +81,7 @@ describe('TimeLimitPlugins', () => {
         vi.spyOn(global, 'clearTimeout');
         const { interruptAfterTimeLimit } =
           await import('../../../../src/check/plugin/InterruptAfterTimeLimitPlugin.js');
-        const nestedRun = vi.fn<IRawProperty<unknown, boolean>['run']>(() => runOutput);
+        const nestedRun = vi.fn<Property<unknown>['run']>(() => runOutput);
 
         // Act
         const instance = interruptAfterTimeLimit(100)(0, new Map<symbol, any>());

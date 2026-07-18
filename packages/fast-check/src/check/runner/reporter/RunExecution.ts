@@ -3,7 +3,7 @@ import { ExecutionStatus } from './ExecutionStatus.js';
 import type { ExecutionTree } from './ExecutionTree.js';
 import type { RunDetails } from './RunDetails.js';
 import type { QualifiedParameters } from '../configuration/QualifiedParameters.js';
-import type { PropertyFailure } from '../../property/IRawProperty.js';
+import type { PropertyFailure } from '../../property/types/PropertyFailure.js';
 import { safeSplit } from '../../../utils/globals.js';
 
 /**

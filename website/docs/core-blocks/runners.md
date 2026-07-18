@@ -14,7 +14,7 @@ Probably the most useful of all the runners provided within fast-check. This run
 Its signature can be summarized by:
 
 ```ts
-function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void>;
 ```
 
 :::tip
@@ -31,7 +31,7 @@ Similar to `assert` except that caller is responsible to handle the output.
 In terms of signatures, `check` provides the following:
 
 ```ts
-function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
+function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 ```
 
 The structure `RunDetails` provides all the details needed to report what happened. There are four major reasons for `check` to end:
@@ -67,7 +67,7 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: IRawProperty<Ts, boolean> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
 ```
 
 Resources: [API reference](/docs/api/functions/sample).  
@@ -81,7 +81,7 @@ Its signature is:
 
 ```ts
 function statistics<Ts>(
-  generator: IRawProperty<Ts, boolean> | Arbitrary<Ts>,
+  generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: number | Parameters<Ts>,
 ): void;

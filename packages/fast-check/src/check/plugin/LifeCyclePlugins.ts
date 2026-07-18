@@ -1,4 +1,4 @@
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
 import type { Plugin, PluginInstance } from './Plugin.js';
 
 const LifeCyclePluginSymbol = Symbol.for('fast-check/plugin/life-cycle');
@@ -38,7 +38,7 @@ function computeResultingAfterHooks(
 
 function lifeCycleHooksRunner(
   hooks: LifeCycleHooks,
-  nestedRun: IRawProperty<unknown, boolean>['run'],
+  nestedRun: Property<unknown>['run'],
   value: unknown,
 ): ReturnType<typeof nestedRun> {
   let wrappedRunOutput: Awaited<ReturnType<typeof nestedRun>> = null; // null means success

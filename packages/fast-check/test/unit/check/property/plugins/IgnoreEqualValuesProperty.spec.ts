@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { IgnoreEqualValuesProperty } from '../../../../src/check/property/IgnoreEqualValuesProperty.js';
-import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
-import { fakeProperty } from './__test-helpers__/PropertyHelpers.js';
+import { IgnoreEqualValuesProperty } from '../../../../../src/check/property/plugins/IgnoreEqualValuesProperty.js';
+import { PreconditionFailure } from '../../../../../src/check/precondition/PreconditionFailure.js';
+import { fakeProperty } from '../__test-helpers__/PropertyHelpers.js';
 
 describe('IgnoreEqualValuesProperty', () => {
   it.each`
@@ -46,7 +46,7 @@ describe('IgnoreEqualValuesProperty', () => {
       // success -> success
       // failure -> failure
       // skip    -> skip
-      const { instance: decoratedProperty, run } = fakeProperty(isAsync);
+      const { instance: decoratedProperty, run } = fakeProperty();
       run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
       // Act
@@ -78,7 +78,7 @@ describe('IgnoreEqualValuesProperty', () => {
       // success -> skip
       // failure -> failure
       // skip    -> skip
-      const { instance: decoratedProperty, run } = fakeProperty(isAsync);
+      const { instance: decoratedProperty, run } = fakeProperty();
       run.mockImplementation(() => (isAsync ? Promise.resolve(originalValue) : originalValue));
 
       // Act

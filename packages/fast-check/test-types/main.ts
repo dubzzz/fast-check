@@ -36,11 +36,11 @@ fc.assert(fc.asyncProperty(fc.nat(), fc.string(), (_a, _b) => {}), { reporter: (
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
 
 // asyncProperty
-// "asyncProperty" instantiates instances compatible with IAsyncProperty
-expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
+// "asyncProperty" instantiates instances compatible with Property
+expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
 // "asyncProperty" handles tuples
 expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<
-  fc.IAsyncProperty<[number, string]>
+  fc.Property<[number, string]>
 >();
 // Asynchronous property accepts asynchronous hooks
 expectTypeOf(
@@ -48,14 +48,14 @@ expectTypeOf(
     .asyncProperty(fc.nat(), async (_a) => {})
     .beforeEach(async () => 123)
     .afterEach(async () => 'anything'),
-).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
+).toMatchTypeOf<fc.Property<[number]>>();
 // Asynchronous property accepts synchronous hooks
 expectTypeOf(
   fc
     .asyncProperty(fc.nat(), async (_a) => {})
     .beforeEach(() => 123)
     .afterEach(() => 'anything'),
-).toMatchTypeOf<fc.IAsyncProperty<[number]>>();
+).toMatchTypeOf<fc.Property<[number]>>();
 // @ts-expect-error - Types declared in predicate are not compatible with the generators
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
