@@ -173,7 +173,6 @@ export { scheduler, schedulerFor } from './arbitrary/scheduler.js';
 export { defaultReportMessage, asyncDefaultReportMessage } from './check/runner/utils/RunDetailsFormatter.js';
 export type { CommandsContraints } from './check/model/commands/CommandsContraints.js';
 export { PreconditionFailure } from './check/precondition/PreconditionFailure.js';
-export type { RandomType } from './check/runner/configuration/RandomType.js';
 export type { IntArrayConstraints } from './arbitrary/int8Array.js';
 export { int8Array } from './arbitrary/int8Array.js';
 export { int16Array } from './arbitrary/int16Array.js';

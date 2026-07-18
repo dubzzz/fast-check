@@ -1,10 +1,7 @@
 import type { Parameters } from './Parameters.js';
 import { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
-import { congruential32 } from 'pure-rand/generator/congruential32';
-import { mersenne } from 'pure-rand/generator/mersenne';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
-import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
 import { adaptRandomGenerator } from '../../../random/generator/RandomGenerator.js';
 
 import type { RandomGenerator, RandomGeneratorInternal } from '../../../random/generator/RandomGenerator.js';
@@ -125,20 +122,8 @@ function readSeed<T>(p: Parameters<T>): number {
 /** @internal */
 function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomGenerator {
   if (p.randomType === undefined) return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
-  if (typeof p.randomType === 'string') {
-    switch (p.randomType) {
-      case 'mersenne':
-        return createQualifiedRandomGenerator(mersenne);
-      case 'congruential':
-      case 'congruential32':
-        return createQualifiedRandomGenerator(congruential32);
-      case 'xorshift128plus':
-        return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
-      case 'xoroshiro128plus':
-        return xoroshiro128plus as (seed: number) => QualifiedRandomGenerator;
-      default:
-        throw new Error(`Invalid random specified: '${p.randomType}'`);
-    }
+  if (typeof p.randomType !== 'function') {
+    throw new Error(`Invalid random specified: '${String(p.randomType)}'`);
   }
   const mrng = p.randomType(0);
   if ('min' in mrng && mrng.min !== -0x80000000) {

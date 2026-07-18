@@ -1,4 +1,3 @@
-import type { RandomType } from './RandomType.js';
 import type { VerbosityLevel } from './VerbosityLevel.js';
 import type { RunDetails } from '../reporter/RunDetails.js';
 import type { RandomGenerator } from '../../../random/generator/RandomGenerator.js';
@@ -24,15 +23,13 @@ export interface Parameters<T = void> {
    * Random number generator: `xorshift128plus` by default
    *
    * Random generator is the core element behind the generation of random values - changing it might directly impact the quality and performances of the generation of random values.
-   * It can be one of: 'mersenne', 'congruential', 'congruential32', 'xorshift128plus', 'xoroshiro128plus'
-   * Or any function able to build a `RandomGenerator` based on a seed
+   * It can be any function able to build a `RandomGenerator` based on a seed.
    *
-   * As required since pure-rand v6.0.0, when passing a builder for {@link RandomGenerator},
-   * the random number generator must generate values between -0x80000000 and 0x7fffffff.
+   * As required since pure-rand v6.0.0, the random number generator must generate values between -0x80000000 and 0x7fffffff.
    *
    * @remarks Since 1.6.0
    */
-  randomType?: RandomType | ((seed: number) => RandomGenerator);
+  randomType?: (seed: number) => RandomGenerator;
   /**
    * Number of runs before success: 100 by default
    * @remarks Since 1.0.0
