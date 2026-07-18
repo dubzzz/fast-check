@@ -29,13 +29,6 @@ function assertValidVersions(versions: number[]) {
       throw new Error(`Version ${version} has been requested at least twice for uuid`);
     }
     found[version] = true;
-    // Check version
-    if (version < 1 || version > 15) {
-      throw new Error(`Version must be a value in [1-15] for uuid, but received ${version}`);
-    }
-    if (~~version !== version) {
-      throw new Error(`Version must be an integer value for uuid, but received ${version}`);
-    }
   }
   if (versions.length === 0) {
     throw new Error(`Must provide at least one version for uuid`);

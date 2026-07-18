@@ -157,7 +157,6 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
 function readNumRuns<T>(p: Parameters<T>): number {
   const defaultValue = 100;
   if (p.numRuns !== undefined) return p.numRuns;
-  if ((p as { num_runs?: number }).num_runs !== undefined) return (p as { num_runs: number }).num_runs;
   return defaultValue;
 }
 
@@ -167,13 +166,7 @@ function readVerbose<T>(p: Parameters<T>): VerbosityLevel {
   if (typeof p.verbose === 'boolean') {
     return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
   }
-  if (p.verbose <= VerbosityLevel.None) {
-    return VerbosityLevel.None;
-  }
-  if (p.verbose >= VerbosityLevel.VeryVerbose) {
-    return VerbosityLevel.VeryVerbose;
-  }
-  return p.verbose | 0;
+  return p.verbose;
 }
 
 /** @internal */
