@@ -204,6 +204,6 @@ describe('refineConstraintsForDoubleOnly', () => {
 
 function nextDouble(value: number): number {
   const index = doubleToIndex(value);
-  const nextIndex = index + BigInt(1);
+  const nextIndex = index + 1n;
   return indexToDouble(nextIndex);
 }

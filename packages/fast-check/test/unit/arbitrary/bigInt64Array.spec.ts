@@ -46,7 +46,7 @@ describe('bigInt64Array', () => {
     // Assert
     expect(Class.from([min])[0]).toBe(min);
     expect(Class.from([max])[0]).toBe(max);
-    expect(Class.from([min - BigInt(1)])[0]).not.toBe(min - BigInt(1));
-    expect(Class.from([max + BigInt(1)])[0]).not.toBe(max + BigInt(1));
+    expect(Class.from([min - 1n])[0]).not.toBe(min - 1n);
+    expect(Class.from([max + 1n])[0]).not.toBe(max + 1n);
   });
 });

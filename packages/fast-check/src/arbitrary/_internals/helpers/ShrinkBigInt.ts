@@ -8,7 +8,7 @@ import { BigInt } from '../../../utils/globals.js';
  * @internal
  */
 function halveBigInt(n: bigint): bigint {
-  return n / BigInt(2);
+  return n / 2n;
 }
 
 /**
