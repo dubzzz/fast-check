@@ -47,7 +47,7 @@ function adaptRandomGeneratorTo8x(rng: RandomGenerator): RandomGenerator8x | Jum
 
 /** @internal */
 function adaptRandomGeneratorToInternal(rng: RandomGenerator8x | JumpableRandomGenerator8x): RandomGeneratorInternal {
-  if ('jump' in rng && typeof rng.jump === 'function') {
+  if ('jump' in rng) {
     return rng;
   }
   return {
