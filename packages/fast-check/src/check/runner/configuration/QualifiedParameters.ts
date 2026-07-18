@@ -157,7 +157,6 @@ function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomG
 function readNumRuns<T>(p: Parameters<T>): number {
   const defaultValue = 100;
   if (p.numRuns !== undefined) return p.numRuns;
-  if ((p as { num_runs?: number }).num_runs !== undefined) return (p as { num_runs: number }).num_runs;
   return defaultValue;
 }
 
