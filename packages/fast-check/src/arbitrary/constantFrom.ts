@@ -9,7 +9,7 @@ type Elem<T> = T extends any[] ? T[number] : T;
 /**
  * For one `...values` values - all equiprobable
  *
- * **WARNING**: It expects at least one value, otherwise it should throw
+ * **WARNING**: It expects at least one value
  *
  * @param values - Constant values to be produced (all values shrink to the first one)
  *
@@ -21,7 +21,7 @@ function constantFrom<const T = never>(...values: T[]): Arbitrary<T>;
 /**
  * For one `...values` values - all equiprobable
  *
- * **WARNING**: It expects at least one value, otherwise it should throw
+ * **WARNING**: It expects at least one value
  *
  * @param values - Constant values to be produced (all values shrink to the first one)
  *
@@ -31,9 +31,6 @@ function constantFrom<const T = never>(...values: T[]): Arbitrary<T>;
 function constantFrom<TArgs extends any[] | [any]>(...values: TArgs): Arbitrary<TArgs[number]>;
 
 function constantFrom<TArgs extends any[] | [any] | any>(...values: Arrayfy<TArgs>): Arbitrary<Elem<TArgs>> {
-  if (values.length === 0) {
-    throw new Error('fc.constantFrom expects at least one parameter');
-  }
   return new ConstantArbitrary(values) as Arbitrary<Elem<TArgs>>;
 }
 
