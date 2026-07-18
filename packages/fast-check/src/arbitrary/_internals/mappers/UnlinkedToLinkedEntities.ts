@@ -1,4 +1,3 @@
-import { safeMap, String as SString } from '../../../utils/globals.js';
 import { stringify, toStringMethod } from '../../../utils/stringify.js';
 import type {
   EntityGraphValue,
@@ -19,7 +18,7 @@ function withTargetStringifiedValue(stringifiedValue: string) {
 
 /** @internal */
 function withReferenceStringifiedValue(type: string | symbol | number, index: number) {
-  return withTargetStringifiedValue(`<${SString(type)}#${index}>`);
+  return withTargetStringifiedValue(`<${String(type)}#${index}>`);
 }
 
 /** @internal */
@@ -51,7 +50,7 @@ export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations e
             ? undefined
             : typeof propValue.index === 'number'
               ? (linkedEntities[propValue.type][propValue.index] as any)
-              : safeMap(propValue.index, (index) => linkedEntities[propValue.type][index]);
+              : propValue.index.map((index) => linkedEntities[propValue.type][index]);
       }
       Object.defineProperty(linkedInstance, toStringMethod, {
         configurable: false,
@@ -67,7 +66,7 @@ export function unlinkedToLinkedEntitiesMapper<TEntityFields, TEntityRelations e
                 ? undefined
                 : typeof propValue.index === 'number'
                   ? withReferenceStringifiedValue(propValue.type, propValue.index)
-                  : safeMap(propValue.index, (index) => withReferenceStringifiedValue(propValue.type, index))
+                  : propValue.index.map((index) => withReferenceStringifiedValue(propValue.type, index))
             ) as any;
           }
           return stringify(entity);

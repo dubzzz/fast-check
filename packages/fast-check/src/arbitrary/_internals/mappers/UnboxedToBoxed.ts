@@ -1,5 +1,3 @@
-import { Boolean, Number, String } from '../../../utils/globals.js';
-
 /** @internal */
 export function unboxedToBoxedMapper(value: unknown): unknown {
   switch (typeof value) {
@@ -23,6 +21,7 @@ export function unboxedToBoxedUnmapper(value: unknown): unknown {
     return value;
   }
   return value.constructor === Boolean || value.constructor === Number || value.constructor === String
-    ? (value as Boolean | Number | String).valueOf()
+    ? // oxlint-disable-next-line typescript/no-wrapper-object-types
+      (value as Boolean | Number | String).valueOf()
     : value;
 }

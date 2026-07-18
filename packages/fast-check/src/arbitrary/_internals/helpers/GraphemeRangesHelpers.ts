@@ -1,4 +1,3 @@
-import { safePop, safePush } from '../../../utils/globals.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 
 /** @internal */
@@ -56,10 +55,10 @@ export function intersectGraphemeRanges(rangesA: GraphemeRange[], rangesB: Graph
         const lastMergedRangeMax = lastMergedRange.length === 1 ? lastMergedRange[0] : lastMergedRange[1];
         if (lastMergedRangeMax + 1 === min) {
           min = lastMergedRange[0];
-          safePop(mergedRanges);
+          mergedRanges.pop();
         }
       }
-      safePush(mergedRanges, min === max ? [min] : [min, max]);
+      mergedRanges.push(min === max ? [min] : [min, max]);
       if (rangeAMax <= max) {
         cursorA += 1;
       }

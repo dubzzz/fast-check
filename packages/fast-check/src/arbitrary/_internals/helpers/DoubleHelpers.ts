@@ -1,5 +1,3 @@
-import { BigInt, Number } from '../../../utils/globals.js';
-
 /** @internal */
 const INDEX_POSITIVE_INFINITY = BigInt(2146435072) * BigInt(4294967296); // doubleToIndex(Number.MAX_VALUE) + 1;
 /** @internal */
