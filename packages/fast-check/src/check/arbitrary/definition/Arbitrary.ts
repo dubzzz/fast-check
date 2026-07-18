@@ -357,14 +357,3 @@ export function isArbitrary(instance: unknown): instance is Arbitrary<unknown> {
     'canShrinkWithoutContext' in instance
   );
 }
-
-/**
- * Ensure an instance is an instance of Arbitrary
- * @param instance - The instance to be checked
- * @internal
- */
-export function assertIsArbitrary(instance: unknown): asserts instance is Arbitrary<unknown> {
-  if (!isArbitrary(instance)) {
-    throw new Error('Unexpected value received: not an instance of Arbitrary');
-  }
-}

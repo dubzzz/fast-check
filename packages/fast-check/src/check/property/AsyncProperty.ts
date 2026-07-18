@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../arbitrary/definition/Arbitrary.js';
-import { assertIsArbitrary } from '../arbitrary/definition/Arbitrary.js';
 import { tuple } from '../../arbitrary/tuple.js';
 import type { PropertyWithHooks } from './types/PropertyWithHooks.js';
 import { PropertyImplem } from './_internals/PropertyImplem.js';
@@ -17,12 +16,8 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
     predicate: (...args: Ts) => Promise<boolean | void> | boolean | void,
   ]
 ): PropertyWithHooks<Ts> {
-  if (args.length < 2) {
-    throw new Error('asyncProperty expects at least two parameters');
-  }
   const arbs = args.slice(0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => Promise<boolean | void>;
-  arbs.forEach(assertIsArbitrary);
   const mappedArbs = arbs.map((arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new PropertyImplem(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
