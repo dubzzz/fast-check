@@ -6,7 +6,6 @@ import {
   refineConstraintsForDoubleOnly,
 } from './_internals/helpers/DoubleOnlyHelpers.js';
 import { bigInt } from './bigInt.js';
-import { BigInt } from '../utils/globals.js';
 
 /**
  * Constraints to be applied on {@link double}
