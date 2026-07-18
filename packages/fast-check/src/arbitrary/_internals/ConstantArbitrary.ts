@@ -3,7 +3,6 @@ import { Stream } from '../../stream/Stream.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod, hasCloneMethod } from '../../check/symbols.js';
-import { Set, safeHas } from '../../utils/globals.js';
 
 /** @internal */
 class FastConstantValuesLookup<T> {
@@ -16,7 +15,7 @@ class FastConstantValuesLookup<T> {
 
     let hasMinusZero = false;
     let hasPlusZero = false;
-    if (safeHas(this.fastValues, 0)) {
+    if (this.fastValues.has(0)) {
       for (let idx = 0; idx !== this.values.length; ++idx) {
         const value = this.values[idx];
         hasMinusZero = hasMinusZero || Object.is(value, -0);
@@ -34,7 +33,7 @@ class FastConstantValuesLookup<T> {
       }
       return this.hasMinusZero;
     }
-    return safeHas(this.fastValues, value);
+    return this.fastValues.has(value);
   }
 }
 
