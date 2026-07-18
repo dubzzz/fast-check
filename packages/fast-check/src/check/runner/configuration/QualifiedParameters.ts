@@ -166,13 +166,7 @@ function readVerbose<T>(p: Parameters<T>): VerbosityLevel {
   if (typeof p.verbose === 'boolean') {
     return p.verbose === true ? VerbosityLevel.Verbose : VerbosityLevel.None;
   }
-  if (p.verbose <= VerbosityLevel.None) {
-    return VerbosityLevel.None;
-  }
-  if (p.verbose >= VerbosityLevel.VeryVerbose) {
-    return VerbosityLevel.VeryVerbose;
-  }
-  return p.verbose | 0;
+  return p.verbose;
 }
 
 /** @internal */
