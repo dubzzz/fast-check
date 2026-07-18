@@ -1,17 +1,3 @@
-import {
-  safeFilter,
-  safeGetTime,
-  safeIndexOf,
-  safeJoin,
-  safeMap,
-  safePush,
-  safeToISOString,
-  safeToString,
-  Map,
-  String,
-  Symbol as StableSymbol,
-} from './globals.js';
-
 /**
  * Use this symbol to define a custom serializer for your instances.
  * Serializer must be a function returning a string (see {@link WithToStringMethod}).
@@ -132,7 +118,7 @@ export function stringifyInternal<Ts>(
   const currentValues = [...previousValues, value];
   if (typeof value === 'object') {
     // early cycle detection for objects
-    if (safeIndexOf(previousValues, value) !== -1) {
+    if (previousValues.indexOf(value) !== -1) {
       return '[cyclic]';
     }
   }
@@ -153,7 +139,7 @@ export function stringifyInternal<Ts>(
     }
   }
 
-  switch (safeToString(value)) {
+  switch (Object.prototype.toString.call(value)) {
     case '[object Array]': {
       const arr = value as unknown as unknown[];
       if (arr.length >= 50 && isSparseArray(arr)) {
@@ -163,20 +149,17 @@ export function stringifyInternal<Ts>(
         // oxlint-disable-next-line typescript/no-for-in-array
         for (const index in arr) {
           if (!Number.isNaN(Number(index)))
-            safePush(assignments, `${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
+            assignments.push(`${index}:${stringifyInternal(arr[index], currentValues, getAsyncContent)}`);
         }
         return assignments.length !== 0
-          ? `Object.assign(Array(${arr.length}),{${safeJoin(assignments, ',')}})`
+          ? `Object.assign(Array(${arr.length}),{${assignments.join(',')}})`
           : `Array(${arr.length})`;
       }
       // stringifiedArray results in: '' for [,]
       // stringifiedArray results in: ',' for [,,]
       // stringifiedArray results in: '1,' for [1,,]
       // stringifiedArray results in: '1,,2' for [1,,2]
-      const stringifiedArray = safeJoin(
-        safeMap(arr, (v) => stringifyInternal(v, currentValues, getAsyncContent)),
-        ',',
-      );
+      const stringifiedArray = arr.map((v) => stringifyInternal(v, currentValues, getAsyncContent)).join(',');
       return arr.length === 0 || arr.length - 1 in arr ? `[${stringifiedArray}]` : `[${stringifiedArray},]`;
     }
     case '[object BigInt]':
@@ -188,7 +171,7 @@ export function stringifyInternal<Ts>(
     }
     case '[object Date]': {
       const d = value as unknown as Date;
-      return Number.isNaN(safeGetTime(d)) ? `new Date(NaN)` : `new Date(${JSON.stringify(safeToISOString(d))})`;
+      return Number.isNaN(d.getTime()) ? `new Date(NaN)` : `new Date(${JSON.stringify(d.toISOString())})`;
     }
     case '[object Map]':
       return `new Map(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -219,16 +202,15 @@ export function stringifyInternal<Ts>(
 
       const stringifiedProperties = [
         ...(Object.getPrototypeOf(value) === null ? ['__proto__:null'] : []),
-        ...safeMap(Object.keys(value as object), mapper),
-        ...safeMap(
-          safeFilter(Object.getOwnPropertySymbols(value), (s) => {
+        ...Object.keys(value as object).map(mapper),
+        ...Object.getOwnPropertySymbols(value)
+          .filter((s) => {
             const descriptor = Object.getOwnPropertyDescriptor(value, s);
             return descriptor && descriptor.enumerable;
-          }),
-          mapper,
-        ),
+          })
+          .map(mapper),
       ];
-      return '{' + safeJoin(stringifiedProperties, ',') + '}';
+      return '{' + stringifiedProperties.join(',') + '}';
     }
     case '[object Set]':
       return `new Set(${stringifyInternal(Array.from(value as any), currentValues, getAsyncContent)})`;
@@ -236,14 +218,14 @@ export function stringifyInternal<Ts>(
       return typeof value === 'string' ? JSON.stringify(value) : `new String(${JSON.stringify(value)})`;
     case '[object Symbol]': {
       const s = value as unknown as symbol;
-      if (StableSymbol.keyFor(s) !== undefined) {
-        return `Symbol.for(${JSON.stringify(StableSymbol.keyFor(s))})`;
+      if (Symbol.keyFor(s) !== undefined) {
+        return `Symbol.for(${JSON.stringify(Symbol.keyFor(s))})`;
       }
       const desc = getSymbolDescription(s);
       if (desc === null) {
         return 'Symbol()';
       }
-      const knownSymbol = desc.startsWith('Symbol.') && (StableSymbol as any)[desc.substring(7)];
+      const knownSymbol = desc.startsWith('Symbol.') && (Symbol as any)[desc.substring(7)];
       return s === knownSymbol ? desc : `Symbol(${JSON.stringify(desc)})`;
     }
     case '[object Promise]': {
@@ -329,7 +311,7 @@ export function stringifyInternal<Ts>(
   try {
     return (value as any).toString();
   } catch {
-    return safeToString(value);
+    return Object.prototype.toString.call(value);
   }
 }
 
@@ -356,7 +338,7 @@ export function stringify<Ts>(value: Ts): string {
  * @internal
  */
 export function possiblyAsyncStringify<Ts>(value: Ts): string | Promise<string> {
-  const stillPendingMarker = StableSymbol();
+  const stillPendingMarker = Symbol();
   const pendingPromisesForCache: Promise<void>[] = [];
   const cache = new Map<unknown, AsyncContent>();
 
