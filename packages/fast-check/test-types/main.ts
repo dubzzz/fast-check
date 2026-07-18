@@ -36,7 +36,7 @@ fc.assert(fc.asyncProperty(fc.nat(), fc.string(), (_a, _b) => {}), { reporter: (
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {}); // missing _b
 
 // asyncProperty
-// "asyncProperty" instantiates instances compatible with IAsyncProperty
+// "asyncProperty" instantiates instances compatible with Property
 expectTypeOf(fc.asyncProperty(fc.nat(), async (_a) => {})).toMatchTypeOf<fc.Property<[number]>>();
 // "asyncProperty" handles tuples
 expectTypeOf(fc.asyncProperty(fc.nat(), fc.string(), async (_a, _b) => {})).toMatchTypeOf<

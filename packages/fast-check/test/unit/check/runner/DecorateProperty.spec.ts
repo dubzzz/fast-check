@@ -9,10 +9,10 @@ import { SkipAfterProperty } from '../../../../src/check/property/plugins/SkipAf
 import { TimeoutProperty } from '../../../../src/check/property/plugins/TimeoutProperty.js';
 import { UnbiasedProperty } from '../../../../src/check/property/plugins/UnbiasedProperty.js';
 import { IgnoreEqualValuesProperty } from '../../../../src/check/property/plugins/IgnoreEqualValuesProperty.js';
-vi.mock('../../../../src/check/property/SkipAfterProperty');
-vi.mock('../../../../src/check/property/TimeoutProperty');
-vi.mock('../../../../src/check/property/UnbiasedProperty');
-vi.mock('../../../../src/check/property/IgnoreEqualValuesProperty');
+vi.mock('../../../../src/check/property/plugins/SkipAfterProperty');
+vi.mock('../../../../src/check/property/plugins/TimeoutProperty');
+vi.mock('../../../../src/check/property/plugins/UnbiasedProperty');
+vi.mock('../../../../src/check/property/plugins/IgnoreEqualValuesProperty');
 
 function buildProperty() {
   return {
