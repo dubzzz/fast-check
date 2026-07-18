@@ -63,16 +63,11 @@ function record<T>(
   constraints?: RecordConstraints<keyof T>,
 ): unknown {
   const noNullPrototype = constraints !== undefined && !!constraints.noNullPrototype;
-  if (constraints === undefined) {
+  const requiredKeys = constraints !== undefined ? constraints.requiredKeys : undefined;
+  if (requiredKeys === undefined) {
     return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
   }
 
-  const requireDeletedKeys = 'requiredKeys' in constraints && constraints.requiredKeys !== undefined;
-  if (!requireDeletedKeys) {
-    return buildPartialRecordArbitrary(recordModel, undefined, noNullPrototype);
-  }
-
-  const requiredKeys = ('requiredKeys' in constraints ? constraints.requiredKeys : undefined) || [];
   for (let idx = 0; idx !== requiredKeys.length; ++idx) {
     const descriptor = Object.getOwnPropertyDescriptor(recordModel, requiredKeys[idx]);
     if (descriptor === undefined) {
