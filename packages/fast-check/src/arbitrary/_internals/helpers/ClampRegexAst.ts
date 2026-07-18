@@ -1,4 +1,3 @@
-import { safePush } from '../../../utils/globals.js';
 import { noSuchValue } from '../../../utils/noSuchValue.js';
 import type { RegexToken } from './TokenizeRegex.js';
 
@@ -94,7 +93,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
         const temporaryAllowance = maxLength - totalMinLength;
         const clamped = clampRegexAstInternal(astNode.expressions[index], temporaryAllowance);
         totalMinLength += clamped.minLength;
-        safePush(extendedClampeds, { value: clamped, allowance: temporaryAllowance });
+        extendedClampeds.push({ value: clamped, allowance: temporaryAllowance });
       }
       const refinedExpressions: RegexToken[] = [];
       for (let index = 0; index !== extendedClampeds.length; ++index) {
@@ -102,7 +101,7 @@ function clampRegexAstInternal(astNode: RegexToken, maxLength: number): { astNod
         const pastAllowance = extendedClampeds[index].allowance;
         const allowance = maxLength - totalMinLength + current.minLength;
         const reclamped = allowance !== pastAllowance ? clampRegexAstInternal(current.astNode, allowance) : current;
-        safePush(refinedExpressions, reclamped.astNode);
+        refinedExpressions.push(reclamped.astNode);
       }
       return { astNode: { ...astNode, expressions: refinedExpressions }, minLength: totalMinLength };
     }
