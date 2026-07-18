@@ -78,7 +78,7 @@ describe('SkipAfterProperty', () => {
     expect(runAfterEach).toHaveBeenCalledTimes(1);
   });
 
-  it('should call timer on run and fail after time limit', () => {
+  it('should call timer on run and fail after time limit', async () => {
     // Arrange
     const timerMock = vi
       .fn()
@@ -93,7 +93,9 @@ describe('SkipAfterProperty', () => {
     p.runAfterEach();
 
     // Assert
-    expect(PreconditionFailure.isFailure(out)).toBe(true);
+    const resolvedOut = await out;
+    expect(PreconditionFailure.isFailure(out)).toBe(false);
+    expect(PreconditionFailure.isFailure(resolvedOut)).toBe(true);
     expect(timerMock).toHaveBeenCalledTimes(2);
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
@@ -118,11 +120,13 @@ describe('SkipAfterProperty', () => {
     p.runAfterEach();
 
     // Assert
-    expect(PreconditionFailure.isFailure(out)).toBe(true);
-    expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(false);
+    const resolvedOut = await out;
+    expect(PreconditionFailure.isFailure(out)).toBe(false);
+    expect(PreconditionFailure.isFailure(resolvedOut)).toBe(true);
+    expect(PreconditionFailure.isFailure(resolvedOut) && resolvedOut.interruptExecution).toBe(false);
   });
 
-  it('should forward truthy interrupt flag to the precondition failure', () => {
+  it('should forward truthy interrupt flag to the precondition failure', async () => {
     // Arrange
     const timerMock = vi
       .fn()
@@ -137,8 +141,10 @@ describe('SkipAfterProperty', () => {
     p.runAfterEach();
 
     // Assert
-    expect(PreconditionFailure.isFailure(out)).toBe(true);
-    expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
+    const resolvedOut = await out;
+    expect(PreconditionFailure.isFailure(out)).toBe(false);
+    expect(PreconditionFailure.isFailure(resolvedOut)).toBe(true);
+    expect(PreconditionFailure.isFailure(resolvedOut) && resolvedOut.interruptExecution).toBe(true);
   });
 
   describe('timeout', () => {
