@@ -80,9 +80,7 @@ export function indexToMappedConstantUnmapperFor<T>(
     if (reverseMapping === null) {
       reverseMapping = buildReverseMapping(entries);
     }
-    const choiceIndex = Object.is(value, -0)
-      ? reverseMapping.negativeZeroIndex
-      : reverseMapping.mapping.get(value);
+    const choiceIndex = Object.is(value, -0) ? reverseMapping.negativeZeroIndex : reverseMapping.mapping.get(value);
     if (choiceIndex === undefined) {
       throw new Error('Unknown value encountered cannot be built using this mapToConstant');
     }
