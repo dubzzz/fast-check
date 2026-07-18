@@ -1,7 +1,6 @@
 import type { Stream } from '../../../stream/Stream.js';
 import { stream } from '../../../stream/Stream.js';
 import { Value } from '../../../check/arbitrary/definition/Value.js';
-import { BigInt } from '../../../utils/globals.js';
 
 /**
  * Halve towards zero

@@ -3,7 +3,6 @@ import type { RandomGenerator } from 'pure-rand/types/RandomGenerator';
 import { Random } from '../../random/generator/Random.js';
 import type { Property } from '../property/types/Property.js';
 import { Value } from '../arbitrary/definition/Value.js';
-import { safeMap } from '../../utils/globals.js';
 import type { QualifiedRandomGenerator } from './configuration/QualifiedParameters.js';
 import { adaptRandomGenerator } from '../../random/generator/RandomGenerator.js';
 
@@ -43,7 +42,7 @@ export function* lazyToss<Ts>(
   random: (seed: number) => RandomGenerator,
   examples: Ts[],
 ): IterableIterator<() => Value<Ts>> {
-  yield* safeMap(examples, (e) => () => new Value(e, undefined));
+  yield* examples.map((e) => () => new Value(e, undefined));
   let idx = 0;
   const rng = adaptRandomGenerator(random(seed));
   for (;;) {

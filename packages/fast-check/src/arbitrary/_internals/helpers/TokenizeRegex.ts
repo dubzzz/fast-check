@@ -1,4 +1,3 @@
-import { safeIndexOf } from '../../../utils/globals.js';
 import { TokenizerBlockMode, readFrom } from './ReadRegex.js';
 import type { ResolvedUnicodeProperty } from './UnicodePropertyData.js';
 import { resolveUnicodeProperty } from './UnicodePropertyData.js';
@@ -463,7 +462,7 @@ function pushTokens(
  * Build the AST corresponding to the passed instance of RegExp
  */
 export function tokenizeRegex(regex: RegExp): RegexToken {
-  const unicodeMode = safeIndexOf([...regex.flags], 'u') !== -1;
+  const unicodeMode = [...regex.flags].indexOf('u') !== -1;
   const regexSource = regex.source;
   const tokens: RegexToken[] = [];
   pushTokens(tokens, regexSource, unicodeMode, { lastIndex: 0, named: new Map<string, number>() });

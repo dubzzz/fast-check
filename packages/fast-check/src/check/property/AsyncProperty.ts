@@ -4,7 +4,6 @@ import { tuple } from '../../arbitrary/tuple.js';
 import type { PropertyWithHooks } from './types/PropertyWithHooks.js';
 import { PropertyImplem } from './_internals/PropertyImplem.js';
 import { AlwaysShrinkableArbitrary } from '../../arbitrary/_internals/AlwaysShrinkableArbitrary.js';
-import { safeForEach, safeMap, safeSlice } from '../../utils/globals.js';
 
 /**
  * Instantiate a new {@link fast-check#Property}
@@ -21,10 +20,10 @@ function asyncProperty<Ts extends [unknown, ...unknown[]]>(
   if (args.length < 2) {
     throw new Error('asyncProperty expects at least two parameters');
   }
-  const arbs = safeSlice(args, 0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
+  const arbs = args.slice(0, args.length - 1) as { [K in keyof Ts]: Arbitrary<Ts[K]> };
   const p = args[args.length - 1] as (...args: Ts) => Promise<boolean | void>;
-  safeForEach(arbs, assertIsArbitrary);
-  const mappedArbs = safeMap(arbs, (arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
+  arbs.forEach(assertIsArbitrary);
+  const mappedArbs = arbs.map((arb): Arbitrary<unknown> => new AlwaysShrinkableArbitrary(arb)) as typeof arbs;
   return new PropertyImplem(tuple<Ts>(...mappedArbs), (t) => p(...t));
 }
 

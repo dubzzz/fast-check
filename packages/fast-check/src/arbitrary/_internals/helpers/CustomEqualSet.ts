@@ -1,4 +1,3 @@
-import { safePush } from '../../../utils/globals.js';
 import type { CustomSet } from '../interfaces/CustomSet.js';
 
 /**
@@ -19,7 +18,7 @@ export class CustomEqualSet<T> implements CustomSet<T> {
         return false;
       }
     }
-    safePush(this.data, value);
+    this.data.push(value);
     return true;
   }
 

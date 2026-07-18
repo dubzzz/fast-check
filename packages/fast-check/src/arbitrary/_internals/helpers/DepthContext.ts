@@ -1,5 +1,3 @@
-import { safeMapGet, safeMapSet } from '../../../utils/globals.js';
-
 /**
  * Internal symbol used to declare an opaque type for DepthIdentifier
  * @internal
@@ -56,12 +54,12 @@ export function getDepthContextFor(contextMeta: DepthContext | DepthIdentifier |
   if (typeof contextMeta !== 'string') {
     return contextMeta as DepthContext;
   }
-  const cachedContext = safeMapGet(depthContextCache, contextMeta);
+  const cachedContext = depthContextCache.get(contextMeta);
   if (cachedContext !== undefined) {
     return cachedContext;
   }
   const context = { depth: 0 };
-  safeMapSet(depthContextCache, contextMeta, context);
+  depthContextCache.set(contextMeta, context);
   return context;
 }
 

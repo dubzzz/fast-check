@@ -1,5 +1,3 @@
-import { safeSplice, safeSplit } from '../../../utils/globals.js';
-
 /** @internal */
 export function segmentsToPathMapper(segments: string[]): string {
   let path = '';
@@ -17,5 +15,5 @@ export function segmentsToPathUnmapper(value: unknown): string[] {
   if (value.length !== 0 && value[0] !== '/') {
     throw new Error('Incompatible value received: start');
   }
-  return safeSplice(safeSplit(value, '/'), 1);
+  return value.split('/').splice(1);
 }
