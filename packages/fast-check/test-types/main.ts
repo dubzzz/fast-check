@@ -60,6 +60,8 @@ expectTypeOf(
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number, _b: number) => {});
 // @ts-expect-error - Enforce users to declare all the generated values as arguments of the predicate
 fc.asyncProperty(fc.nat(), fc.string(), async (_a: number) => {});
+// @ts-expect-error - Expect at least one arbitrary to be provided
+fc.asyncProperty(() => {});
 
 // base arbitrary (chain)
 // Type of "chain" corresponds to the return type of the passed lambda
