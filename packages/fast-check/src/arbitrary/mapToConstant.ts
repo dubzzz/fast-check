@@ -4,7 +4,6 @@ import {
   indexToMappedConstantMapperFor,
   indexToMappedConstantUnmapperFor,
 } from './_internals/mappers/IndexToMappedConstant.js';
-import { Error } from '../utils/globals.js';
 
 /** @internal */
 function computeNumChoices<T>(options: { num: number; build: (idInGroup: number) => T }[]): number {

@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Array, safeMap, safeSlice } from '../utils/globals.js';
 import { tuple } from './tuple.js';
 import { uniqueArray } from './uniqueArray.js';
 import { restrictedIntegerArbitraryBuilder } from './_internals/builders/RestrictedIntegerArbitraryBuilder.js';
@@ -145,7 +144,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       if (noTrailingHole && value.length !== 0 && !(value.length - 1 in value)) {
         throw new Error('No trailing hole');
       }
-      return safeMap(Object.entries(value as T[]), (entry): [number, T] => [Number(entry[0]), entry[1]]);
+      return Object.entries(value as T[]).map((entry): [number, T] => [Number(entry[0]), entry[1]]);
     },
   );
 
@@ -163,7 +162,7 @@ export function sparseArray<T>(arb: Arbitrary<T>, constraints: SparseArrayConstr
       if (sparse.length >= targetLength) {
         return sparse;
       }
-      const longerSparse = safeSlice(sparse);
+      const longerSparse = sparse.slice();
       longerSparse.length = targetLength;
       return longerSparse;
     },

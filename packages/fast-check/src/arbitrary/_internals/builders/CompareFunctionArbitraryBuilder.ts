@@ -6,7 +6,6 @@ import { stringify } from '../../../utils/stringify.js';
 import { integer } from '../../integer.js';
 import { noShrink } from '../../noShrink.js';
 import { tuple } from '../../tuple.js';
-import { safeJoin } from '../../../utils/globals.js';
 
 /** @internal */
 export function buildCompareFunctionArbitrary<T, TOut>(
@@ -31,9 +30,7 @@ export function buildCompareFunctionArbitrary<T, TOut>(
             .map((k) => `${k} => ${stringify(recorded[k])}`)
             .map((line) => `/* ${escapeForMultilineComments(line)} */`);
           return `function(a, b) {
-  // With hash and stringify coming from fast-check${
-    seenValues.length !== 0 ? `\n  ${safeJoin(seenValues, '\n  ')}` : ''
-  }
+  // With hash and stringify coming from fast-check${seenValues.length !== 0 ? `\n  ${seenValues.join('\n  ')}` : ''}
   const cmp = ${cmp};
   const hA = hash('${seed}' + stringify(a)) % ${hashEnvSize};
   const hB = hash('${seed}' + stringify(b)) % ${hashEnvSize};

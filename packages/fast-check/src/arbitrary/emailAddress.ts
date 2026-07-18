@@ -7,7 +7,6 @@ import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import type { SizeForArbitrary } from './_internals/helpers/MaxLengthFromMinLength.js';
 import type { AdapterOutput } from './_internals/AdapterArbitrary.js';
 import { adapter } from './_internals/AdapterArbitrary.js';
-import { safeJoin, safeSlice, safeSplit } from '../utils/globals.js';
 
 /** @internal */
 function dotAdapter(a: string[]): AdapterOutput<string[]> {
@@ -17,21 +16,21 @@ function dotAdapter(a: string[]): AdapterOutput<string[]> {
   for (let index = 1; index !== a.length; ++index) {
     currentLength += 1 + a[index].length;
     if (currentLength > 64) {
-      return { adapted: true, value: safeSlice(a, 0, index) };
+      return { adapted: true, value: a.slice(0, index) };
     }
   }
   return { adapted: false, value: a };
 }
 /** @internal */
 function dotMapper(a: string[]): string {
-  return safeJoin(a, '.');
+  return a.join('.');
 }
 /** @internal */
 function dotUnmapper(value: unknown): string[] {
   if (typeof value !== 'string') {
     throw new Error('Unsupported');
   }
-  return safeSplit(value, '.');
+  return value.split('.');
 }
 /** @internal */
 function atMapper(data: [string, string]): string {
@@ -42,7 +41,7 @@ function atUnmapper(value: unknown): [string, string] {
   if (typeof value !== 'string') {
     throw new Error('Unsupported');
   }
-  return safeSplit(value, '@', 2) as [string, string];
+  return value.split('@', 2) as [string, string];
 }
 
 /**

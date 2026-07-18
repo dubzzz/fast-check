@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeToUpperCase, safeToLowerCase } from '../utils/globals.js';
 import { MixedCaseArbitrary } from './_internals/MixedCaseArbitrary.js';
 
 /**
@@ -24,9 +23,9 @@ export interface MixedCaseConstraints {
 
 /** @internal */
 function defaultToggleCase(rawChar: string) {
-  const upper = safeToUpperCase(rawChar);
+  const upper = rawChar.toUpperCase();
   if (upper !== rawChar) return upper;
-  return safeToLowerCase(rawChar);
+  return rawChar.toLowerCase();
 }
 
 /**

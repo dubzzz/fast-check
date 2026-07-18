@@ -3,7 +3,6 @@ import { Value } from '../../check/arbitrary/definition/Value.js';
 import { cloneMethod } from '../../check/symbols.js';
 import type { Random } from '../../random/generator/Random.js';
 import { Stream } from '../../stream/Stream.js';
-import { safeMap, safePush } from '../../utils/globals.js';
 
 /** @internal */
 export class CloneArbitrary<T> extends Arbitrary<T[]> {
@@ -21,9 +20,9 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     }
     // We call generate multiple times to have fully independent values
     for (let idx = 0; idx !== this.numValues - 1; ++idx) {
-      safePush(items, this.arb.generate(mrng.clone(), biasFactor));
+      items.push(this.arb.generate(mrng.clone(), biasFactor));
     }
-    safePush(items, this.arb.generate(mrng, biasFactor));
+    items.push(this.arb.generate(mrng, biasFactor));
     return this.wrapper(items);
   }
 
@@ -55,11 +54,11 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
   }
 
   private *shrinkImpl(value: T[], contexts: unknown[]): IterableIterator<Value<T>[]> {
-    const its = safeMap(value, (v, idx) => this.arb.shrink(v, contexts[idx])[Symbol.iterator]());
-    let cur = safeMap(its, (it) => it.next());
+    const its = value.map((v, idx) => this.arb.shrink(v, contexts[idx])[Symbol.iterator]());
+    let cur = its.map((it) => it.next());
     while (!cur[0].done) {
-      yield safeMap(cur, (c) => c.value);
-      cur = safeMap(its, (it) => it.next());
+      yield cur.map((c) => c.value);
+      cur = its.map((it) => it.next());
     }
   }
 
@@ -67,7 +66,7 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     (vs as any)[cloneMethod] = () => {
       const cloned: T[] = [];
       for (let idx = 0; idx !== shrinkables.length; ++idx) {
-        safePush(cloned, shrinkables[idx].value); // push potentially cloned values
+        cloned.push(shrinkables[idx].value); // push potentially cloned values
       }
       this.makeItCloneable(cloned, shrinkables);
       return cloned;
@@ -82,8 +81,8 @@ export class CloneArbitrary<T> extends Arbitrary<T[]> {
     for (let idx = 0; idx !== items.length; ++idx) {
       const s = items[idx];
       cloneable = cloneable || s.hasToBeCloned;
-      safePush(vs, s.value);
-      safePush(contexts, s.context);
+      vs.push(s.value);
+      contexts.push(s.context);
     }
     if (cloneable) {
       CloneArbitrary.makeItCloneable(vs, items);
