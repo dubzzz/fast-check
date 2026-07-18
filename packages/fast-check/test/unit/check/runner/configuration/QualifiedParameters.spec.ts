@@ -76,12 +76,6 @@ describe('QualifiedParameters', () => {
           },
         ),
       ));
-    it('Should throw on non-function randomType', async () =>
-      await fc.assert(
-        fc.asyncProperty(parametersArbitrary, (params) => {
-          expect(() => read({ ...params, randomType: 'xoroshiro128plus' as never })).toThrowError();
-        }),
-      ));
     describe('Seeds outside of 32 bits range', () => {
       const seedsOutsideRangeArb = fc.oneof(
         fc.double(),

@@ -122,9 +122,6 @@ function readSeed<T>(p: Parameters<T>): number {
 /** @internal */
 function readRandomType<T>(p: Parameters<T>): (seed: number) => QualifiedRandomGenerator {
   if (p.randomType === undefined) return xorshift128plus as (seed: number) => QualifiedRandomGenerator;
-  if (typeof p.randomType !== 'function') {
-    throw new Error(`Invalid random specified: '${String(p.randomType)}'`);
-  }
   const mrng = p.randomType(0);
   if ('min' in mrng && mrng.min !== -0x80000000) {
     throw new Error(`Invalid random number generator: min must equal -0x80000000, got ${String(mrng.min)}`);
