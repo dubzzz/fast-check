@@ -1,9 +1,10 @@
-import type { Random } from '../../random/generator/Random.js';
-import type { Stream } from '../../stream/Stream.js';
-import { Error } from '../../utils/globals.js';
-import type { Value } from '../arbitrary/definition/Value.js';
-import type { PreconditionFailure } from '../precondition/PreconditionFailure.js';
-import type { PropertyFailure, IRawProperty } from './IRawProperty.js';
+import type { Random } from '../../../random/generator/Random.js';
+import type { Stream } from '../../../stream/Stream.js';
+import { Error } from '../../../utils/globals.js';
+import type { Value } from '../../arbitrary/definition/Value.js';
+import type { PreconditionFailure } from '../../precondition/PreconditionFailure.js';
+import type { PropertyFailure } from '../types/PropertyFailure.js';
+import type { Property } from '../types/Property.js';
 
 /** @internal */
 const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTimeoutSafe: typeof clearTimeout) => {
@@ -22,17 +23,13 @@ const timeoutAfter = (timeMs: number, setTimeoutSafe: typeof setTimeout, clearTi
 };
 
 /** @internal */
-export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
+export class TimeoutProperty<Ts> implements Property<Ts> {
   constructor(
-    readonly property: IRawProperty<Ts>,
+    readonly property: Property<Ts>,
     readonly timeMs: number,
     readonly setTimeoutSafe: typeof setTimeout,
     readonly clearTimeoutSafe: typeof clearTimeout,
   ) {}
-
-  isAsync(): true {
-    return true;
-  }
 
   generate(mrng: Random, runId?: number): Value<Ts> {
     return this.property.generate(mrng, runId);
@@ -49,11 +46,11 @@ export class TimeoutProperty<Ts> implements IRawProperty<Ts, true> {
     return propRun;
   }
 
-  runBeforeEach(): ReturnType<IRawProperty<Ts, true>['runBeforeEach']> {
+  runBeforeEach(): ReturnType<Property<Ts>['runBeforeEach']> {
     return Promise.resolve(this.property.runBeforeEach());
   }
 
-  runAfterEach(): ReturnType<IRawProperty<Ts, true>['runAfterEach']> {
+  runAfterEach(): ReturnType<Property<Ts>['runAfterEach']> {
     return Promise.resolve(this.property.runAfterEach());
   }
 }

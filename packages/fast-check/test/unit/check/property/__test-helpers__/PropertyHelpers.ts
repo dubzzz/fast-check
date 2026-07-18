@@ -1,29 +1,26 @@
 import { vi } from 'vitest';
-import type { MaybeMocked } from '../../../__test-helpers__/Mocked.js';
-import type { IRawProperty } from '../../../../../src/check/property/IRawProperty.js';
+import type { MockInstance } from 'vitest';
+import type { Property } from '../../../../../src/check/property/types/Property.js';
+import { Stream } from '../../../../../src/stream/Stream.js';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
 
 /**
- * Generate a fake instance inheriting from IRawProperty with all methods being mocked
+ * Generate a fake instance inheriting from IProperty with all methods being mocked
  */
-export function fakeProperty<T = unknown, TIsAsync extends boolean = boolean>(
-  isAsyncResponse?: TIsAsync,
-): { instance: IRawProperty<T, TIsAsync> } & MaybeMocked<Required<IRawProperty<T, TIsAsync>>> {
-  const isAsync = vi.fn();
-  if (isAsyncResponse !== undefined) {
-    isAsync.mockReturnValue(isAsyncResponse);
-  }
-  const generate = vi.fn();
-  const shrink = vi.fn();
-  const runBeforeEach = vi.fn();
-  const runAfterEach = vi.fn();
-  const run = vi.fn();
-  class MyProperty implements IRawProperty<unknown, boolean> {
-    isAsync = isAsync;
+export function fakeProperty<T = unknown>(): { instance: Property<T> } & {
+  [K in keyof Property<T>]: MockInstance<Property<T>[K]>;
+} {
+  const generate = vi.fn<Property<T>['generate']>(() => new Value(Symbol() as unknown as T, undefined));
+  const shrink = vi.fn<Property<T>['shrink']>(() => Stream.nil());
+  const runBeforeEach = vi.fn<Property<T>['runBeforeEach']>(() => undefined);
+  const runAfterEach = vi.fn<Property<T>['runAfterEach']>(() => undefined);
+  const run = vi.fn<Property<T>['run']>(() => null);
+  class MyProperty implements Property<unknown> {
     generate = generate;
     shrink = shrink;
     run = run;
     runBeforeEach = runBeforeEach;
     runAfterEach = runAfterEach;
   }
-  return { instance: new MyProperty(), isAsync, generate, shrink, run, runBeforeEach, runAfterEach };
+  return { instance: new MyProperty(), generate, shrink, run, runBeforeEach, runAfterEach };
 }

@@ -14,8 +14,7 @@ Probably the most useful of all the runners provided within fast-check. This run
 Its signature can be summarized by:
 
 ```ts
-function assert<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): void;
-function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void>;
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void>;
 ```
 
 :::tip
@@ -32,8 +31,7 @@ Similar to `assert` except that caller is responsible to handle the output.
 In terms of signatures, `check` provides the following:
 
 ```ts
-function check<Ts>(property: IProperty<Ts>, params?: Parameters<Ts>): RunDetails<Ts>;
-function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
+function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>>;
 ```
 
 The structure `RunDetails` provides all the details needed to report what happened. There are four major reasons for `check` to end:
@@ -48,10 +46,10 @@ The structure `RunDetails` provides all the details needed to report what happen
 :::tip Rewrite `assert` with `check`
 
 ```js
-function assert(property, params) {
+async function assert(property, params) {
   // In this example we only support synchronous properties.
   // To support both of them, you could use `property.isAsync()` and `asyncDefaultReportMessage`.
-  const out = fc.check(property, params);
+  const out = await fc.check(property, params);
   if (out.failed) {
     throw new Error(fc.defaultReportMessage(out), { cause: out.errorInstance });
   }
@@ -70,7 +68,7 @@ Certainly one of the most useful when attempting to create your own arbitraries.
 Its signature is:
 
 ```ts
-function sample<Ts>(generator: IRawProperty<Ts, boolean> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
+function sample<Ts>(generator: Property<Ts> | Arbitrary<Ts>, params?: number | Parameters<Ts>): Ts[];
 ```
 
 Resources: [API reference](/docs/api/functions/sample).  
@@ -84,7 +82,7 @@ Its signature is:
 
 ```ts
 function statistics<Ts>(
-  generator: IRawProperty<Ts, boolean> | Arbitrary<Ts>,
+  generator: Property<Ts> | Arbitrary<Ts>,
   classify: (v: Ts) => string | string[],
   params?: number | Parameters<Ts>,
 ): void;

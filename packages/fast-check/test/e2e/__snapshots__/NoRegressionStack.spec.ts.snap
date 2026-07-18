@@ -16,9 +16,9 @@ Counterexample: [0]
 Shrunk 1 time(s)
 Got TypeError: v is not a function
     at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?
-    at AsyncProperty.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
+    at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at packages/fast-check/test/e2e/__test-helpers__/StackSanitizer.ts:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
@@ -39,9 +39,9 @@ exports[`NoRegressionStack > return false 1`] = `
 Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: Property failed by returning false
-    at outputToPropertyAnswer (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at outputToPropertyAnswer (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
+    at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at node_modules/.pnpm/@vitest+runner@<version>/node_modules/@vitest/runner/dist/chunk-artifact.js:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]
@@ -63,9 +63,9 @@ Counterexample: [0,1]
 Shrunk 32 time(s)
 Got error: a must be >= b
     at packages/fast-check/test/e2e/NoRegressionStack.spec.ts:?:?
-    at AsyncProperty.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
-    at AsyncProperty.run (packages/fast-check/src/check/property/AsyncProperty.generic.ts:?:?)
-    at asyncRunIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
+    at PropertyImplem.predicate (packages/fast-check/src/check/property/AsyncProperty.ts:?:?)
+    at PropertyImplem.run (packages/fast-check/src/check/property/_internals/PropertyImplem.ts:?:?)
+    at runIt (packages/fast-check/src/check/runner/Runner.ts:?:?)
     at node_modules/.pnpm/@vitest+runner@<version>/node_modules/@vitest/runner/dist/chunk-artifact.js:?:?
 
 Hint: Enable verbose mode in order to have the list of all failing values encountered during the run]

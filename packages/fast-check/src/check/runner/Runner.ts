@@ -1,5 +1,5 @@
 import { Stream, stream } from '../../stream/Stream.js';
-import type { IRawProperty } from '../property/IRawProperty.js';
+import type { Property } from '../property/types/Property.js';
 import { readConfigureGlobal } from './configuration/GlobalParameters.js';
 import type { Parameters } from './configuration/Parameters.js';
 import { read } from './configuration/QualifiedParameters.js';
@@ -13,12 +13,11 @@ import { SourceValuesIterator } from './SourceValuesIterator.js';
 import { lazyToss, toss } from './Tosser.js';
 import { pathWalk } from './utils/PathWalker.js';
 import { asyncReportRunDetails } from './utils/RunDetailsFormatter.js';
-import type { IAsyncProperty } from '../property/AsyncProperty.js';
 import type { Value } from '../arbitrary/definition/Value.js';
 
 /** @internal */
-async function asyncRunIt<Ts>(
-  property: IRawProperty<Ts>,
+async function runIt<Ts>(
+  property: Property<Ts>,
   shrink: (value: Value<Ts>) => IterableIterator<Value<Ts>>,
   sourceValues: SourceValuesIterator<Value<Ts>>,
   verbose: VerbosityLevel,
@@ -57,7 +56,7 @@ async function asyncRunIt<Ts>(
  * @remarks Since 0.0.7
  * @public
  */
-function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
+function check<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<RunDetails<Ts>> {
   if (property === null || property === undefined || property.generate === null || property.generate === undefined)
     throw new Error('Invalid property encountered, please use a valid property');
   if (property.run === null || property.run === undefined)
@@ -83,7 +82,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
         );
   const sourceValues = new SourceValuesIterator(initialValues, maxInitialIterations, maxSkips);
   const finalShrink = !qParams.endOnFailure ? shrink : Stream.nil;
-  return asyncRunIt(decoratedProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then(
+  return runIt(decoratedProperty, finalShrink, sourceValues, qParams.verbose, qParams.markInterruptAsFailure).then(
     (e) => e.toRunDetails(qParams.seed, qParams.path, maxSkips, qParams),
   );
 }
@@ -102,7 +101,7 @@ function check<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promi
  * @remarks Since 0.0.7
  * @public
  */
-function assert<Ts>(property: IAsyncProperty<Ts>, params?: Parameters<Ts>): Promise<void> {
+function assert<Ts>(property: Property<Ts>, params?: Parameters<Ts>): Promise<void> {
   const out = check(property, params);
   return out.then(asyncReportRunDetails);
 }

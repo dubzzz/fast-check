@@ -62,15 +62,9 @@ const throwIfFailed = (out) => {
     throw new Error(fc.defaultReportMessage(out));
   }
 };
-const myCustomAssert = (property, parameters) => {
-  const out = fc.check(property, parameters);
-
-  if (property.isAsync()) {
-    return out.then((runDetails) => {
-      throwIfFailed(runDetails);
-    });
-  }
-  throwIfFailed(out);
+const myCustomAssert = async (property, parameters) => {
+  const runDetails = await fc.check(property, parameters);
+  throwIfFailed(runDetails);
 };
 ```
 

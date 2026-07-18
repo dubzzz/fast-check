@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { SkipAfterProperty } from '../../../../src/check/property/SkipAfterProperty.js';
-import { PreconditionFailure } from '../../../../src/check/precondition/PreconditionFailure.js';
-import { fakeProperty } from './__test-helpers__/PropertyHelpers.js';
-import { fakeRandom } from '../../arbitrary/__test-helpers__/RandomHelpers.js';
-import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
+import { SkipAfterProperty } from '../../../../../src/check/property/plugins/SkipAfterProperty.js';
+import { PreconditionFailure } from '../../../../../src/check/precondition/PreconditionFailure.js';
+import { fakeProperty } from '../__test-helpers__/PropertyHelpers.js';
+import { fakeRandom } from '../../../arbitrary/__test-helpers__/RandomHelpers.js';
+import { Value } from '../../../../../src/check/arbitrary/definition/Value.js';
 
 const startTimeMs = 200;
 const timeLimitMs = 100;
@@ -21,29 +21,10 @@ describe('SkipAfterProperty', () => {
     expect(timerMock).toHaveBeenCalledTimes(1);
   });
 
-  it('should not call timer on isAsync but forward call', async () => {
-    // Arrange
-    const timerMock = vi.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
-
-    // Act
-    const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
-    p.isAsync();
-
-    // Assert
-    expect(timerMock).toHaveBeenCalledTimes(1);
-    expect(isAsync).toHaveBeenCalledTimes(1);
-    expect(generate).not.toHaveBeenCalled();
-    expect(shrink).not.toHaveBeenCalled();
-    expect(run).not.toHaveBeenCalled();
-    expect(runBeforeEach).not.toHaveBeenCalled();
-    expect(runAfterEach).not.toHaveBeenCalled();
-  });
-
   it('should not call timer on generate but forward call', async () => {
     // Arrange
     const timerMock = vi.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
+    const { instance: decoratedProperty, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
     const { instance: mrng } = fakeRandom();
 
     // Act
@@ -52,7 +33,6 @@ describe('SkipAfterProperty', () => {
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(1);
-    expect(isAsync).not.toHaveBeenCalled();
     expect(generate).toHaveBeenCalledTimes(1);
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
@@ -63,7 +43,7 @@ describe('SkipAfterProperty', () => {
   it('should not call timer on shrink but forward call', async () => {
     // Arrange
     const timerMock = vi.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
+    const { instance: decoratedProperty, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
@@ -71,7 +51,6 @@ describe('SkipAfterProperty', () => {
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(1);
-    expect(isAsync).not.toHaveBeenCalled();
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).toHaveBeenCalledTimes(1);
     expect(run).not.toHaveBeenCalled();
@@ -82,7 +61,7 @@ describe('SkipAfterProperty', () => {
   it('should call timer on run and forward call if ok', () => {
     // Arrange
     const timerMock = vi.fn();
-    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
+    const { instance: decoratedProperty, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
@@ -92,7 +71,6 @@ describe('SkipAfterProperty', () => {
 
     // Assert
     expect(timerMock).toHaveBeenCalledTimes(2);
-    expect(isAsync).not.toHaveBeenCalled();
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).toHaveBeenCalledTimes(1);
@@ -100,13 +78,13 @@ describe('SkipAfterProperty', () => {
     expect(runAfterEach).toHaveBeenCalledTimes(1);
   });
 
-  it('should call timer on run and fail after time limit', () => {
+  it('should call timer on run and fail after time limit', async () => {
     // Arrange
     const timerMock = vi
       .fn()
       .mockReturnValueOnce(startTimeMs)
       .mockReturnValueOnce(startTimeMs + timeLimitMs);
-    const { instance: decoratedProperty, isAsync, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
+    const { instance: decoratedProperty, generate, shrink, run, runBeforeEach, runAfterEach } = fakeProperty();
 
     // Act
     const p = new SkipAfterProperty(decoratedProperty, timerMock, 0, false, setTimeout, clearTimeout);
@@ -115,9 +93,10 @@ describe('SkipAfterProperty', () => {
     p.runAfterEach();
 
     // Assert
-    expect(PreconditionFailure.isFailure(out)).toBe(true);
+    const resolvedOut = await out;
+    expect(PreconditionFailure.isFailure(out)).toBe(false);
+    expect(PreconditionFailure.isFailure(resolvedOut)).toBe(true);
     expect(timerMock).toHaveBeenCalledTimes(2);
-    expect(isAsync).toHaveBeenCalledTimes(1); // check expected return type: return a resolved Promise if async, a value otherwise
     expect(generate).not.toHaveBeenCalled();
     expect(shrink).not.toHaveBeenCalled();
     expect(run).not.toHaveBeenCalled();
@@ -141,11 +120,13 @@ describe('SkipAfterProperty', () => {
     p.runAfterEach();
 
     // Assert
-    expect(PreconditionFailure.isFailure(out)).toBe(true);
-    expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(false);
+    const resolvedOut = await out;
+    expect(PreconditionFailure.isFailure(out)).toBe(false);
+    expect(PreconditionFailure.isFailure(resolvedOut)).toBe(true);
+    expect(PreconditionFailure.isFailure(resolvedOut) && resolvedOut.interruptExecution).toBe(false);
   });
 
-  it('should forward truthy interrupt flag to the precondition failure', () => {
+  it('should forward truthy interrupt flag to the precondition failure', async () => {
     // Arrange
     const timerMock = vi
       .fn()
@@ -160,8 +141,10 @@ describe('SkipAfterProperty', () => {
     p.runAfterEach();
 
     // Assert
-    expect(PreconditionFailure.isFailure(out)).toBe(true);
-    expect(PreconditionFailure.isFailure(out) && out.interruptExecution).toBe(true);
+    const resolvedOut = await out;
+    expect(PreconditionFailure.isFailure(out)).toBe(false);
+    expect(PreconditionFailure.isFailure(resolvedOut)).toBe(true);
+    expect(PreconditionFailure.isFailure(resolvedOut) && resolvedOut.interruptExecution).toBe(true);
   });
 
   describe('timeout', () => {
@@ -170,7 +153,7 @@ describe('SkipAfterProperty', () => {
       vi.useFakeTimers();
       vi.spyOn(global, 'setTimeout');
       vi.spyOn(global, 'clearTimeout');
-      const { instance: decoratedProperty, run } = fakeProperty(true);
+      const { instance: decoratedProperty, run } = fakeProperty();
       run.mockResolvedValueOnce(null);
 
       // Act
@@ -190,7 +173,7 @@ describe('SkipAfterProperty', () => {
       vi.useFakeTimers();
       vi.spyOn(global, 'setTimeout');
       vi.spyOn(global, 'clearTimeout');
-      const { instance: decoratedProperty, run } = fakeProperty(true);
+      const { instance: decoratedProperty, run } = fakeProperty();
       run.mockResolvedValueOnce(errorFromUnderlying);
 
       // Act
@@ -207,7 +190,7 @@ describe('SkipAfterProperty', () => {
     it('should timeout if it takes to long', async () => {
       // Arrange
       vi.useFakeTimers();
-      const { instance: decoratedProperty, run } = fakeProperty(true);
+      const { instance: decoratedProperty, run } = fakeProperty();
       run.mockReturnValueOnce(
         new Promise(function (resolve) {
           setTimeout(() => resolve(null), 100);
