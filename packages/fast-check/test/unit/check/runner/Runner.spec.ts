@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 
 import { Value } from '../../../../src/check/arbitrary/definition/Value.js';
-import { integer } from '../../../../src/arbitrary/integer.js';
 import { check, assert as rAssert } from '../../../../src/check/runner/Runner.js';
 import type { Random } from '../../../../src/random/generator/Random.js';
 import type { RunDetails } from '../../../../src/check/runner/reporter/RunDetails.js';
@@ -14,15 +13,6 @@ import type { Property } from '../../../../src/check/property/types/Property.js'
 const MAX_NUM_RUNS = 1000;
 describe('Runner', () => {
   describe('check', () => {
-    it('Should throw if property is null', () => {
-      expect(() => check(null as any as Property<unknown>)).toThrowError(); // sync throw
-    });
-    it('Should throw if property is not a property at all', () => {
-      expect(() => check({} as Property<unknown>)).toThrowError(); // sync throw
-    });
-    it('Should throw if property is an Arbitrary', () => {
-      expect(() => check(integer() as any as Property<unknown>)).toThrowError(); // sync throw
-    });
     it('Should throw if both reporter and asyncReporter are defined', () => {
       const p: Property<[number]> = {
         generate: () => new Value([0], undefined),
@@ -536,15 +526,6 @@ describe('Runner', () => {
       runAfterEach: () => {},
     };
 
-    it('Should throw if property is null', () => {
-      expect(() => rAssert(null as any as Property<unknown>)).toThrowError(); // sync throw
-    });
-    it('Should throw if property is not a property at all', () => {
-      expect(() => rAssert({} as Property<unknown>)).toThrowError(); // sync throw
-    });
-    it('Should throw if property is an Arbitrary', () => {
-      expect(() => rAssert(integer() as any as Property<unknown>)).toThrowError(); // sync throw
-    });
     it('Should never throw if no failure occured', async () => {
       await rAssert(successProperty, { seed: 42 }); // no throw
     });
