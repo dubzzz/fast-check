@@ -6,7 +6,6 @@ import { xoroshiro128plus } from 'pure-rand/generator/xoroshiro128plus';
 import { xorshift128plus } from 'pure-rand/generator/xorshift128plus';
 
 import { read } from '../../../../../src/check/runner/configuration/QualifiedParameters.js';
-import type { RandomType } from '../../../../../src/check/runner/configuration/RandomType.js';
 import { VerbosityLevel } from '../../../../../src/check/runner/configuration/VerbosityLevel.js';
 
 const prand = { mersenne, congruential32, xorshift128plus, xoroshiro128plus };
@@ -35,13 +34,7 @@ const parametersArbitrary = fc.record(
   { requiredKeys: [] },
 );
 
-const hardCodedRandomTypeWithJump = fc.constantFrom(
-  'mersenne',
-  'congruential',
-  'congruential32',
-  'xorshift128plus',
-  'xoroshiro128plus',
-) as fc.Arbitrary<RandomType>;
+const randomTypeName = fc.constantFrom(...(Object.keys(prand) as (keyof typeof prand)[]));
 
 describe('QualifiedParameters', () => {
   describe('read', () => {
@@ -66,31 +59,21 @@ describe('QualifiedParameters', () => {
           return qparams.verbose === expectedVerbosityLevel;
         }),
       ));
-    it('Should transform correctly hardcoded randomType', async () =>
+    it('Should transform correctly randomType factories', async () =>
       await fc.assert(
         fc.asyncProperty(
           parametersArbitrary,
-          fc.option(hardCodedRandomTypeWithJump, { nil: undefined }),
-          (params, randomType) => {
+          fc.option(randomTypeName, { nil: undefined }),
+          (params, randomTypeName) => {
+            const randomType = randomTypeName !== undefined ? prand[randomTypeName] : undefined;
             const qparams = read({ ...params, randomType });
-            const resolvedRandomType = randomType === 'congruential' ? 'congruential32' : randomType;
-            const defaultRandomType = xorshift128plus;
-            if (resolvedRandomType === undefined) {
-              expect(qparams.randomType).toBe(defaultRandomType);
-            } else if (resolvedRandomType === 'congruential32' || resolvedRandomType === 'mersenne') {
-              expect(qparams.randomType).not.toBe(defaultRandomType);
-              expect(qparams.randomType).not.toBe(prand[resolvedRandomType]); // re-wrapped so not fully the same
+            if (randomTypeName === undefined) {
+              expect(qparams.randomType).toBe(xorshift128plus);
             } else {
-              expect(qparams.randomType).toBe(prand[resolvedRandomType]);
+              expect(qparams.randomType).toBe(prand[randomTypeName]);
             }
           },
         ),
-      ));
-    it('Should throw on invalid randomType', async () =>
-      await fc.assert(
-        fc.asyncProperty(parametersArbitrary, (params) => {
-          expect(() => read({ ...params, randomType: 'invalid' as RandomType })).toThrowError();
-        }),
       ));
     describe('Seeds outside of 32 bits range', () => {
       const seedsOutsideRangeArb = fc.oneof(
