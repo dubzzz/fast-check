@@ -2,7 +2,6 @@ import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js
 import { Value } from '../../../check/arbitrary/definition/Value.js';
 import { cloneMethod } from '../../../check/symbols.js';
 import type { Random } from '../../../random/generator/Random.js';
-import { safeMap, safePush } from '../../../utils/globals.js';
 import { stringify, toStringMethod } from '../../../utils/stringify.js';
 import type { ArbitraryGeneratorCache } from './StableArbitraryGeneratorCache.js';
 
@@ -90,7 +89,7 @@ export function buildGeneratorValue(
     if (preBuiltValue !== undefined && preBuiltValue.arb === arb) {
       // Until it matches we just re-use the originally produced value
       const value = preBuiltValue.value;
-      safePush(context.history, { arb, value, context: preBuiltValue.context, mrng: preBuiltValue.mrng });
+      context.history.push({ arb, value, context: preBuiltValue.context, mrng: preBuiltValue.mrng });
       localMrng = preBuiltValue.mrng.clone();
       return value as T;
     }
@@ -100,7 +99,7 @@ export function buildGeneratorValue(
     // In other words: `preBuiltValue !== undefined && context.history.length === 0` is a legit case!
     // If we start to mismatch we run a new random value computation
     const g = arb.generate(localMrng, biasFactor);
-    safePush(context.history, { arb, value: g.value_, context: g.context, mrng: localMrng.clone() });
+    context.history.push({ arb, value: g.value_, context: g.context, mrng: localMrng.clone() });
     return g.value;
   };
 
@@ -113,13 +112,13 @@ export function buildGeneratorValue(
 
   const valueMethods = {
     values(): unknown[] {
-      return safeMap(context.history, (c) => c.value);
+      return context.history.map((c) => c.value);
     },
     [cloneMethod](): GeneratorValue {
       return buildGeneratorValue(mrng, biasFactor, computePreBuiltValues, arbitraryCache).value;
     },
     [toStringMethod](): string {
-      return stringify(safeMap(context.history, (c) => c.value));
+      return stringify(context.history.map((c) => c.value));
     },
   };
 

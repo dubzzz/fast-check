@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { safeGetTime } from '../utils/globals.js';
 import { integer } from './integer.js';
 import {
   timeToDateMapper,
@@ -44,8 +43,8 @@ export interface DateConstraints {
  */
 export function date(constraints: DateConstraints = {}): Arbitrary<Date> {
   // Date min and max in ECMAScript specification : https://stackoverflow.com/a/11526569/3707828
-  const intMin = constraints.min !== undefined ? safeGetTime(constraints.min) : -8640000000000000;
-  const intMax = constraints.max !== undefined ? safeGetTime(constraints.max) : 8640000000000000;
+  const intMin = constraints.min !== undefined ? constraints.min.getTime() : -8640000000000000;
+  const intMax = constraints.max !== undefined ? constraints.max.getTime() : 8640000000000000;
   const noInvalidDate = constraints.noInvalidDate;
   if (Number.isNaN(intMin)) throw new Error('fc.date min must be valid instance of Date');
   if (Number.isNaN(intMax)) throw new Error('fc.date max must be valid instance of Date');

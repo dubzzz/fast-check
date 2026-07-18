@@ -4,7 +4,6 @@ import type { WithCloneMethod } from '../../check/symbols.js';
 import { cloneIfNeeded, cloneMethod } from '../../check/symbols.js';
 import { Arbitrary } from '../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../check/arbitrary/definition/Value.js';
-import { safePush } from '../../utils/globals.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
 
 /** @internal */
@@ -26,7 +25,7 @@ function tupleMakeItCloneable<TValue>(
         if (current === undefined) {
           current = new Value(vs[idx], ctxs[idx]); // backfill missing indices in values. Each missing idx is simply a dummy Value instance
         }
-        safePush(cloned, current.value); // push potentially cloned values
+        cloned.push(current.value); // push potentially cloned values
       }
       tupleMakeItCloneable(cloned, ctxs, values);
       return cloned;
@@ -45,8 +44,7 @@ export function tupleShrink<Ts extends unknown[]>(
   const shrinks: IterableIterator<TupleExtendedValue<Ts>>[] = [];
   const safeContext: TupleContext = Array.isArray(context) ? context : [];
   for (let idx = 0; idx !== arbs.length; ++idx) {
-    safePush(
-      shrinks,
+    shrinks.push(
       makeLazy(() =>
         arbs[idx].shrink(value[idx], safeContext[idx]).map((v) => {
           let cloneable = false;
@@ -59,8 +57,8 @@ export function tupleShrink<Ts extends unknown[]>(
               cloneable = true;
               mapped[nestedIdx] = nestedV;
             }
-            safePush(vs, nestedV.value);
-            safePush(ctxs, nestedV.context);
+            vs.push(nestedV.value);
+            ctxs.push(nestedV.context);
           }
           if (cloneable) {
             tupleMakeItCloneable(vs, ctxs, mapped);
@@ -99,8 +97,8 @@ export class TupleArbitrary<Ts extends unknown[]> extends Arbitrary<Ts> {
         cloneable = true;
         mapped[idx] = v;
       }
-      safePush(vs, v.value);
-      safePush(ctxs, v.context);
+      vs.push(v.value);
+      ctxs.push(v.context);
     }
     if (cloneable) {
       tupleMakeItCloneable(vs, ctxs, mapped);

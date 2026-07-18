@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
 import { jsonValue } from './jsonValue.js';
 import type { JsonSharedConstraints, JsonValue } from './_internals/helpers/JsonConstraintsBuilder.js';
-import { Error } from '../utils/globals.js';
 
 export type { JsonSharedConstraints };
 

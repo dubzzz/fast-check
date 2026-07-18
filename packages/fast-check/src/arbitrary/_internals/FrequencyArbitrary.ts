@@ -6,7 +6,6 @@ import type { DepthContext, DepthIdentifier } from './helpers/DepthContext.js';
 import { getDepthContextFor } from './helpers/DepthContext.js';
 import type { DepthSize } from './helpers/MaxLengthFromMinLength.js';
 import { depthBiasFromSizeForArbitrary } from './helpers/MaxLengthFromMinLength.js';
-import { safePush } from '../../utils/globals.js';
 
 /** @internal */
 export class FrequencyArbitrary<T> extends Arbitrary<T> {
@@ -53,7 +52,7 @@ export class FrequencyArbitrary<T> extends Arbitrary<T> {
     this.cumulatedWeights = [];
     for (let idx = 0; idx !== warbs.length; ++idx) {
       currentWeight += warbs[idx].weight;
-      safePush(this.cumulatedWeights, currentWeight);
+      this.cumulatedWeights.push(currentWeight);
     }
     this.totalWeight = currentWeight;
   }

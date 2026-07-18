@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../check/arbitrary/definition/Arbitrary.js';
-import { Int32Array as SInt32Array } from '../utils/globals.js';
 import { integer } from './integer.js';
 import type { IntArrayConstraints } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
 import { typedIntArrayArbitraryArbitraryBuilder } from './_internals/builders/TypedIntArrayArbitraryBuilder.js';
@@ -14,7 +13,7 @@ export function int32Array(constraints: IntArrayConstraints = {}): Arbitrary<Int
     constraints,
     -0x80000000,
     0x7fffffff,
-    SInt32Array,
+    Int32Array,
     integer,
   );
 }
