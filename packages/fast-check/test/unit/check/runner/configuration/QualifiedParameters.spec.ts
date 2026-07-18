@@ -70,7 +70,6 @@ describe('QualifiedParameters', () => {
             if (randomTypeName === undefined) {
               expect(qparams.randomType).toBe(xorshift128plus);
             } else {
-              // all pure-rand generators are jumpable, so the factory is passed through as-is
               expect(qparams.randomType).toBe(prand[randomTypeName]);
             }
           },
