@@ -1,5 +1,4 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
-import { safeMap } from '../../../utils/globals.js';
 import { mapToConstant } from '../../mapToConstant.js';
 import type { GraphemeRange } from '../data/GraphemeRanges.js';
 import { convertGraphemeRangeToMapToConstantEntry } from './GraphemeRangesHelpers.js';
@@ -64,6 +63,6 @@ function extractRangesForPropertyOrFromCache(propertySpec: string, negative: boo
 export function unicodePropertyArbitrary(astNode: ResolvedUnicodeProperty): Arbitrary<string> {
   const spec = getPropertySpec(astNode);
   const ranges = extractRangesForPropertyOrFromCache(spec, astNode.negative);
-  const rangeEntries = safeMap(ranges, (range) => convertGraphemeRangeToMapToConstantEntry(range));
+  const rangeEntries = ranges.map((range) => convertGraphemeRangeToMapToConstantEntry(range));
   return mapToConstant(...rangeEntries);
 }

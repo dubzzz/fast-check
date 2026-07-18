@@ -3,7 +3,6 @@ import { Value } from '../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../random/generator/Random.js';
 import { makeLazy } from '../../stream/LazyIterableIterator.js';
 import { Stream } from '../../stream/Stream.js';
-import { safeMap, safePush, safeSlice, safeSort, safeSplice } from '../../utils/globals.js';
 import { isSubarrayOf } from './helpers/IsSubarrayOf.js';
 import { IntegerArbitrary } from './IntegerArbitrary.js';
 
@@ -42,19 +41,19 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
     const size = lengthArb.generate(mrng, undefined);
     const sizeValue = size.value;
 
-    const remainingElements = safeMap(this.originalArray, (_v, idx) => idx);
+    const remainingElements = this.originalArray.map((_v, idx) => idx);
     const ids: number[] = [];
     for (let index = 0; index !== sizeValue; ++index) {
       const selectedIdIndex = mrng.nextInt(0, remainingElements.length - 1);
-      safePush(ids, remainingElements[selectedIdIndex]);
-      safeSplice(remainingElements, selectedIdIndex, 1);
+      ids.push(remainingElements[selectedIdIndex]);
+      remainingElements.splice(selectedIdIndex, 1);
     }
     if (this.isOrdered) {
-      safeSort(ids, (a, b) => a - b);
+      ids.sort((a, b) => a - b);
     }
 
     return new Value(
-      safeMap(ids, (i) => this.originalArray[i]),
+      ids.map((i) => this.originalArray[i]),
       size.context,
     );
   }
@@ -79,14 +78,14 @@ export class SubarrayArbitrary<T> extends Arbitrary<T[]> {
       .shrink(value.length, context)
       .map((newSize) => {
         return new Value(
-          safeSlice(value, value.length - newSize.value), // array of length newSize.value
+          value.slice(value.length - newSize.value), // array of length newSize.value
           newSize.context, // integer context for value newSize.value (the length)
         );
       })
       .join(
         value.length > this.minLength
           ? makeLazy(() =>
-              this.shrink(safeSlice(value, 1), undefined)
+              this.shrink(value.slice(1), undefined)
                 .filter((newValue) => this.minLength <= newValue.value.length + 1)
                 .map((newValue) => new Value([value[0], ...newValue.value], undefined)),
             )

@@ -1,4 +1,3 @@
-import { safePush } from '../../../utils/globals.js';
 import type { EnumerableKeyOf } from '../helpers/EnumerableKeysExtractor.js';
 
 type OrderedValues<T, TNoKey> = (T[keyof T] | TNoKey)[];
@@ -54,9 +53,9 @@ export function buildValuesAndSeparateKeysToObjectUnmapper<T, TNoKey>(keys: Enum
           throw new Error('Incompatible instance received: should contain only no get/set properties');
         }
         ++extractedPropertiesCount;
-        safePush(extractedValues, descriptor.value);
+        extractedValues.push(descriptor.value);
       } else {
-        safePush(extractedValues, noKeyValue);
+        extractedValues.push(noKeyValue);
       }
     }
     const namePropertiesCount = Object.getOwnPropertyNames(value).length;

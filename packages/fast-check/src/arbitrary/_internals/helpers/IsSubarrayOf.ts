@@ -1,5 +1,3 @@
-import { Map, safeMapGet, safeMapSet } from '../../../utils/globals.js';
-
 export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
   const countMap = new Map<unknown, number>();
   let countMinusZero = 0;
@@ -7,8 +5,8 @@ export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
     if (Object.is(sourceEntry, -0)) {
       ++countMinusZero;
     } else {
-      const oldCount = safeMapGet(countMap, sourceEntry) || 0;
-      safeMapSet(countMap, sourceEntry, oldCount + 1);
+      const oldCount = countMap.get(sourceEntry) || 0;
+      countMap.set(sourceEntry, oldCount + 1);
     }
   }
   for (let index = 0; index !== small.length; ++index) {
@@ -20,9 +18,9 @@ export function isSubarrayOf(source: unknown[], small: unknown[]): boolean {
       if (countMinusZero === 0) return false;
       --countMinusZero;
     } else {
-      const oldCount = safeMapGet(countMap, smallEntry) || 0;
+      const oldCount = countMap.get(smallEntry) || 0;
       if (oldCount === 0) return false;
-      safeMapSet(countMap, smallEntry, oldCount - 1);
+      countMap.set(smallEntry, oldCount - 1);
     }
   }
   return true;

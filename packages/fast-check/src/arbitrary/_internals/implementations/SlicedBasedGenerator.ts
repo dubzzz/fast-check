@@ -1,7 +1,6 @@
 import type { Arbitrary } from '../../../check/arbitrary/definition/Arbitrary.js';
 import { Value } from '../../../check/arbitrary/definition/Value.js';
 import type { Random } from '../../../random/generator/Random.js';
-import { safePush } from '../../../utils/globals.js';
 import type { SlicedGenerator } from '../interfaces/SlicedGenerator.js';
 
 /** @internal */
@@ -22,7 +21,7 @@ export class SlicedBasedGenerator<T> implements SlicedGenerator<T> {
       for (let index = 0; index !== this.slices.length; ++index) {
         const slice = this.slices[index];
         if (slice.length === targetLength) {
-          safePush(eligibleIndices, index);
+          eligibleIndices.push(index);
         }
       }
       if (eligibleIndices.length === 0) {

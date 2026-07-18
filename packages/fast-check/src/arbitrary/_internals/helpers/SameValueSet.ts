@@ -1,4 +1,3 @@
-import { Set, safeAdd, safePush } from '../../../utils/globals.js';
 import type { CustomSet } from '../interfaces/CustomSet.js';
 
 /**
@@ -27,14 +26,14 @@ export class SameValueSet<T, U> implements CustomSet<T> {
       if (this.hasMinusZero) {
         return false;
       }
-      safePush(this.data, value);
+      this.data.push(value);
       this.hasMinusZero = true;
       return true;
     }
     const sizeBefore = this.selectedItemsExceptMinusZero.size;
-    safeAdd(this.selectedItemsExceptMinusZero, selected);
+    this.selectedItemsExceptMinusZero.add(selected);
     if (sizeBefore !== this.selectedItemsExceptMinusZero.size) {
-      safePush(this.data, value);
+      this.data.push(value);
       return true;
     }
     return false;
